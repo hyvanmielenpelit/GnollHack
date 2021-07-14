@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
+using GnollHackCommon;
 
 namespace GnollHackClient
 {
@@ -91,6 +92,7 @@ namespace GnollHackClient
             switch(_data.style)
             {
                 case 0:
+                    return ClientUtils.NHColor2SKColor((nhcolor)_data.color);
                 case 1:
                     return SKColors.Green;
                 case 2:
@@ -107,6 +109,10 @@ namespace GnollHackClient
                     return SKColors.LightGreen;
                 case 8:
                     return SKColors.LightPink;
+                case 9:
+                    return SKColors.Cyan;
+                case 10:
+                    return SKColors.Crimson;
                 default:
                     break;
             }

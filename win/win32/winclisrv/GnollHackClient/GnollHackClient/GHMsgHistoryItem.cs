@@ -16,9 +16,9 @@ namespace GnollHackClient
         { get 
             { 
                 if(IsLast)
-                    return Pages.Game.GamePage.NHColor2Color(NHColor);
+                    return ClientUtils.NHColor2XColor(NHColor);
                 else
-                    return Pages.Game.GamePage.NHColor2Color(NHColor); //NHColor2GrayedColor(NHColor); 
+                    return ClientUtils.NHColor2XColor(NHColor); //NHColor2GrayedXColor(NHColor); 
             } 
         }
         public bool IsLast { get; set; }
