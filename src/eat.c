@@ -121,6 +121,21 @@ int x, y, nutr;
     }
 }
 
+void
+display_famine_floating_text(x, y, nutrloss)
+int x, y, nutrloss;
+{
+    if (!isok(x, y))
+        return;
+
+    if (nutrloss > 0)
+    {
+        char ftbuf[BUFSZ];
+        Sprintf(ftbuf, "-%d nutrition", nutrloss);
+        display_floating_text(x, y, ftbuf, FLOATING_TEXT_NUTRITION_LOSS, ATR_NONE, NO_COLOR, 0UL);
+    }
+}
+
 /* used for hero init, life saving (if choking), and prayer results of fix
    starving, fix weak from hunger, or golden glow boon (if u.uhunger < 900) */
 void
@@ -4262,6 +4277,11 @@ boolean stopping;
         (void) eatfood();   /* calls done_eating() to use up
                                context.victual.piece */
         return TRUE;
+    }
+    if (stopping && context.victual.piece)
+    {
+        int nutr = context.victual.total_nutrition - context.victual.piece->oeaten;
+        display_nutrition_floating_text(u.ux, u.uy, nutr);
     }
     return FALSE;
 }

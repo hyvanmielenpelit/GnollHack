@@ -2987,7 +2987,9 @@ register struct obj* omonwep;
         exercise(A_CON, FALSE);
         if (!is_fainted())
         {
-            morehungry(rn1(40, 40));
+            int nutrloss = rn1(40, 40);
+            morehungry(nutrloss);
+            display_famine_floating_text(u.ux, u.uy, nutrloss);
             display_u_being_hit(HIT_FAMINE, damagedealt, 0UL);
         }
         else
