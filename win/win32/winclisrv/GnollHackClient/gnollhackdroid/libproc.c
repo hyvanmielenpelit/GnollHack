@@ -531,7 +531,6 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
 {
     __lib_status_update(idx, ptr, chg, percent, color, colormasks);
 
-#if 0
     char* txt = (char*)0;
     long condbits = 0L;
     if (ptr)
@@ -546,7 +545,6 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
     }
 
     lib_callbacks.callback_status_update(idx, txt, condbits, chg, percent, color, colormasks);
-#endif
 }
 
 

@@ -87,6 +87,21 @@
                         <Button Text="&#x2699;" x:Name="LookModeButton" Clicked="LookModeButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" WidthRequest="50" />
                         <Button Text="&#x265C;" x:Name="ToggleModeButton" Clicked="ToggleModeButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" WidthRequest="50" />
                     </StackLayout>
+
+                    <StackLayout x:Name="StatusLayout" Padding="0,2"
+                        HorizontalOptions="Start"
+                        AbsoluteLayout.LayoutBounds="0.0, 0.0, AutoSize, AutoSize" 
+                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" >
+                        <Grid x:Name="AbilitiesGrid" HeightRequest="60" WidthRequest="70" IsVisible="true" >
+                            <Image x:Name="AbilitiesImg" HeightRequest="50" WidthRequest="60" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
+                            <Button x:Name="AbilitiesButton" Clicked="AbilitiesButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
+                        </Grid>
+                        <Grid x:Name="SkillGrid" HeightRequest="60" WidthRequest="70" IsVisible="false" >
+                            <Image x:Name="SkillImg" HeightRequest="50" WidthRequest="60" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
+                            <Label x:Name="SkillLbl" Text="Skill" TextColor="White" FontFamily="LatoRegular" FontSize="10" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
+                            <Button x:Name="SkillButton" Clicked="SkillButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
+                        </Grid>
+                    </StackLayout>
                 </AbsoluteLayout>
             <!-- AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.35"  AbsoluteLayout.LayoutFlags="All"  -->
 

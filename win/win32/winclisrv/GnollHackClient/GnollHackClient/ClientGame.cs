@@ -605,6 +605,21 @@ namespace GnollHackClient
             if (_statusInfo == null)
                 return;
 
+            if(idx == (int)statusfields.BL_SKILL)
+            {
+                GHRequestType rtype;
+                if (str != null && str == "Skill")
+                    rtype = GHRequestType.ShowSkillButton;
+                else
+                    rtype = GHRequestType.HideSkillButton;
+
+                ConcurrentQueue<GHRequest> queue;
+                if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                {
+                    queue.Enqueue(new GHRequest(this, rtype));
+                }
+
+            }
             //Int32[] colormasks = new Int32[GHConstants.BlCondMaskBits];
             //if(colormasksptr != null)
             //{

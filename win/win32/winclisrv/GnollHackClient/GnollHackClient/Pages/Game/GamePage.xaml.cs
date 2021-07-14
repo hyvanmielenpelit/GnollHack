@@ -170,6 +170,7 @@ namespace GnollHackClient.Pages.Game
             InventoryImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.inventory.png");
             SearchImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.search.png");
             WaitImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.wait.png");
+            SkillImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.skill.png");
 
             _gnollHackService = DependencyService.Get<IGnollHackService>();
             _gnollHackService.InitializeGnollHack();
@@ -582,6 +583,12 @@ namespace GnollHackClient.Pages.Game
                                 break;
                             case GHRequestType.DisplayScreenText:
                                 DisplayScreenText(req.ScreenTextData);
+                                break;
+                            case GHRequestType.ShowSkillButton:
+                                SkillGrid.IsVisible = true;
+                                break;
+                            case GHRequestType.HideSkillButton:
+                                SkillGrid.IsVisible = false;
                                 break;
                         }
                     }
@@ -1229,9 +1236,15 @@ namespace GnollHackClient.Pages.Game
 
                                                     darken_dx = dx;
                                                     darken_dy = 0;
-                                                    int darken_x = mapx + darken_dx;
-                                                    int darken_y = mapy + darken_dy;
-                                                    bool darken = ((_mapData[darken_x, darken_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
+                                                    //int darken_x = mapx + darken_dx;
+                                                    //int darken_y = mapy + darken_dy;
+                                                    //bool darken = ((_mapData[darken_x, darken_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
+                                                    //if (_mapData[mapx, mapy].Layers.layer_glyphs != null
+                                                    //    && (_mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
+                                                    //        || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
+                                                    //   )
+                                                    //    darken = false;
+
 
                                                     int sheet_idx = TileSheetIdx(ntile);
                                                     int tile_x = TileSheetX(ntile);
@@ -1271,6 +1284,13 @@ namespace GnollHackClient.Pages.Game
                                         for (int mapy = startY; mapy <= endY; mapy++)
                                         {
                                             bool darken = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
+                                            
+                                            if (_mapData[mapx, mapy].Layers.layer_glyphs != null 
+                                                && (_mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph 
+                                                    || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
+                                               )
+                                                darken = false;
+
                                             // Draw rectangle with blend mode in bottom half
                                             if(darken)
                                             {
@@ -1285,8 +1305,8 @@ namespace GnollHackClient.Pages.Game
                                                 {
                                                     paint.Color = color;
                                                     paint.BlendMode = blendMode;
-                                                    tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                                                    ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+                                                    tx = 1.0f + (offsetX + _mapOffsetX + width * (float)mapx);
+                                                    ty = 0.0f + (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
                                                     SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                                                     canvas.DrawRect(targetrect, paint);
                                                 }
@@ -2327,6 +2347,16 @@ namespace GnollHackClient.Pages.Game
         private void SacrificeContextButton_Clicked(object sender, EventArgs e)
         {
             GenericButton_Clicked(sender, e, GHUtils.Meta('o'));
+        }
+
+        private void SkillButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'S');
+        }
+
+        private void AbilitiesButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 'A');
         }
     }
 

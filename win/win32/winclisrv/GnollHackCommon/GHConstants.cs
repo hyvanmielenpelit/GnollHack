@@ -374,6 +374,19 @@ namespace GnollHackCommon
         MAX_GENERAL_TILES
     }
 
+    public enum statusfields
+    {
+        BL_CHARACTERISTICS = -3, /* alias for BL_STR..BL_CH */
+        BL_RESET = -2,           /* Force everything to redisplay */
+        BL_FLUSH = -1,           /* Finished cycling through bot fields */
+        BL_TITLE = 0,
+        BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_ALIGN,
+        BL_SCORE, BL_CAP, BL_ENE, BL_ENEMAX,
+        BL_XP, BL_2WEP, BL_SKILL, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_UWEP, BL_UWEP2, BL_HD, BL_TIME, BL_HUNGER, BL_HP,
+        BL_HPMAX, BL_LEVELDESC, BL_EXP, BL_CONDITION,
+        BL_PARTYSTATS, BL_PARTYSTATS2, BL_PARTYSTATS3, BL_PARTYSTATS4, BL_PARTYSTATS5,
+        MAXBLSTATS
+    }
 
     public class GHConstants
     {

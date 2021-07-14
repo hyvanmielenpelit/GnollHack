@@ -29,6 +29,8 @@ namespace GnollHackClient
         AddContextMenu,
         DisplayFloatingText,
         DisplayScreenText,
+        ShowSkillButton,
+        HideSkillButton,
     }
 
     public struct AddContextMenuData
