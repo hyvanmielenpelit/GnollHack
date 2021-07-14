@@ -4953,6 +4953,7 @@ struct ext_func_tab extcmdlist[] = {
     { M('d'), "dip", "dip an object into something", dodip, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_GENERAL, 0, getobj_allowall, "dip" },
     { '>', "down", "go down a staircase", dodown },
     { 'd', "drop", "drop an item", dodrop, SINGLE_OBJ_CMD_GENERAL, 0, getobj_drop_types, "drop"},
+    { '%', "dropmany", "drop many items", dodropmany },
     { 'D', "droptype", "drop specific item types", doddrop },
     { 'e', "eat", "eat something", doeat, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_comestibles, "eat" },
     { 'E', "engrave", "engrave writing on the floor", doengrave, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_styluses, "write with" },

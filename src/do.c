@@ -4988,6 +4988,84 @@ struct obj *obj;
 #endif
 }
 
+/* '%' command: drop several things */
+int
+dodropmany()
+{
+    int result = 0;
+
+    if (!invent) {
+        You("have nothing to drop.");
+        return 0;
+    }
+    add_valid_menu_class(0); /* clear any classes already there */
+    if (*u.ushops)
+        sellobj_state(SELL_DELIBERATE);
+
+    int n, n_dropped = 0, i, cnt;
+    struct obj* otmp, * otmp2;
+    menu_item* pick_list = (menu_item*)0;
+
+    /* should coordinate with perm invent, maybe not show worn items */
+    n = query_objlist("What would you like to drop?", &invent,
+        (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ANY, allow_all, 3);
+
+    if (n > 0 && pick_list)
+    {
+        /*
+         * picklist[] contains a set of pointers into inventory, but
+         * as soon as something gets dropped, they might become stale
+         * (see the drop_everything code above for an explanation).
+         * Just checking to see whether one is still in the invent
+         * chain is not sufficient validation since destroyed items
+         * will be freed and items we've split here might have already
+         * reused that memory and put the same pointer value back into
+         * invent.  Ditto for using invlet to validate.  So we start
+         * by setting bypass on all of invent, then check each pointer
+         * to verify that it is in invent and has that bit set.
+         */
+        bypass_objlist(invent, TRUE);
+        for (i = 0; i < n; i++)
+        {
+            otmp = pick_list[i].item.a_obj;
+            for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
+                if (otmp2 == otmp)
+                    break;
+            if (!otmp2 || !otmp2->bypass)
+                continue;
+            /* found next selected invent item */
+            cnt = pick_list[i].count;
+            if (cnt < otmp->quan)
+            {
+                if (welded(otmp, &youmonst))
+                {
+                    ; /* don't split */
+                }
+                else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed)
+                {
+                    /* same kludge as getobj(), for canletgo()'s use */
+                    otmp->corpsenm = (int)cnt; /* don't split */
+                }
+                else
+                {
+                    otmp = splitobj(otmp, cnt);
+                }
+            }
+            n_dropped += drop(otmp);
+        }
+        bypass_objlist(invent, FALSE); /* reset invent to normal */
+        free((genericptr_t)pick_list);
+    }
+    result = n_dropped;
+
+    if (*u.ushops)
+        sellobj_state(SELL_NORMAL);
+    if (result)
+        reset_occupations();
+
+    return result;
+}
+
 /* 'D' command: drop several things */
 int
 doddrop()

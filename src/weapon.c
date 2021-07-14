@@ -95,7 +95,7 @@ int skill;
 {
     play_sfx_sound(SFX_GAIN_SKILL);
 
-    You_feel("more confident in your %sskills.",
+    You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "more confident in your %sskills.",
              (skill == P_NONE) ? ""
                  : (skill <= P_LAST_WEAPON) ? "weapon "
                      : (skill <= P_LAST_SPELL) ? "spell casting "

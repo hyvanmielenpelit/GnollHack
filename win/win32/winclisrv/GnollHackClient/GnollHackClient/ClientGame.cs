@@ -503,11 +503,13 @@ namespace GnollHackClient
             if (force == 0 && (_gamePage.MapNoClipMode || _gamePage.MapLookMode))
                 return; /* No clip mode ignores cliparound commands */
 
-            lock(_gamePage.ClipLock)
-            {
-                _gamePage.ClipX = x;
-                _gamePage.ClipY = y;
-            }
+            _gamePage.SetTargetClip(x, y, force != 0);
+
+            //lock (_gamePage.ClipLock)
+            //{
+            //    _gamePage.ClipX = x;
+            //    _gamePage.ClipY = y;
+            //}
         }
 
         public void ClientCallback_RawPrint(string str)

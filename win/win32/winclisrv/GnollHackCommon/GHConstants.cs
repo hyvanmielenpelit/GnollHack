@@ -415,7 +415,7 @@ namespace GnollHackCommon
         public const int MaxPlayedZapAnimations = 16;
         public const int MaxNormalImmediateSoundInstances = 64;
         public const int MaxLongImmediateSoundInstances = 64;
-
+        public const int DefaultPanTime = 5;
     }
 
     [StructLayout(LayoutKind.Sequential)]

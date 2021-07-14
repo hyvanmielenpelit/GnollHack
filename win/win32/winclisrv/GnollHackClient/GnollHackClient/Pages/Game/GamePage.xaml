@@ -134,7 +134,11 @@
                             <Label x:Name="WaitLbl" Text="Wait" TextColor="White" FontFamily="LatoRegular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
                             <Button x:Name="WaitButton" Clicked="WaitButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
                         </Grid>
-                        <Button Grid.Column="3" Text=":" x:Name="LookHereButton" Clicked="LookHereButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                        <Grid Grid.Column="3" HeightRequest="60" WidthRequest="50" >
+                            <Image x:Name="DropManyImg" HeightRequest="50" WidthRequest="50" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
+                            <Label x:Name="DropManyLbl" Text="Drop Items" TextColor="White" FontFamily="LatoRegular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
+                            <Button x:Name="DropManyButton" Clicked="DropManyButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
+                        </Grid>
                         <Button Grid.Column="4" Text="C" x:Name="ChatButton" Clicked="ChatButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                         <Button Grid.Column="5" Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                         <Button Grid.Column="6" Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />

@@ -60,11 +60,18 @@ namespace GnollHackClient.Pages.Game
         private bool showNumberPad { get { return _showNumberPad; } set { _showNumberPad = value; } }
         private MainPage _mainPage;
 
+        private object TargetClipLock = new object();
+        private float _originMapOffsetWithNewClipX;
+        private float _originMapOffsetWithNewClipY;
+        private bool _targetClipOn;
+        private long _targetClipStartCounterValue;
+        private long _targetClipPanTime;
+
         private int _clipX;
         private int _clipY;
         public object ClipLock = new object();
-        public int ClipX { get { return _clipX; } set { _clipX = value; _mapOffsetX = 0 ; } }
-        public int ClipY { get { return _clipY; } set { _clipY = value; _mapOffsetY = 0; } }
+        public int ClipX { get { return _clipX; } set { _clipX = value; lock (MapOffsetLock) { _mapOffsetX = 0; } } }
+        public int ClipY { get { return _clipY; } set { _clipY = value; lock (MapOffsetLock) { _mapOffsetY = 0; } } }
         public GHMapMode MapMode { get; set; }
         public bool MapNoClipMode { get; set; }
         public bool MapLookMode { get; set; }
@@ -170,6 +177,7 @@ namespace GnollHackClient.Pages.Game
             InventoryImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.inventory.png");
             SearchImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.search.png");
             WaitImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.wait.png");
+            DropManyImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.dropmany.png");
             SkillImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.skill.png");
 
             _gnollHackService = DependencyService.Get<IGnollHackService>();
@@ -299,6 +307,22 @@ namespace GnollHackClient.Pages.Game
                     {
                         if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))
                             _screenText = null;
+                    }
+
+                    lock (TargetClipLock)
+                    {
+                        if (AnimationTimers.general_animation_counter < _targetClipStartCounterValue 
+                            || AnimationTimers.general_animation_counter > _targetClipStartCounterValue + _targetClipPanTime)
+                            _targetClipOn = false;
+
+                        if(_targetClipOn)
+                        {
+                            lock(MapOffsetLock)
+                            {
+                                _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                                _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                            }
+                        }
                     }
                 }
 
@@ -945,8 +969,8 @@ namespace GnollHackClient.Pages.Game
                                 {
                                     str = _mapData[mapx, mapy].Symbol;
                                     textPaint.Color = _mapData[mapx, mapy].Color;
-                                    tx = (startX + offsetX + _mapOffsetX + width * (float)mapx);
-                                    ty = (startY + offsetY + _mapOffsetY + height * (float)mapy);
+                                    tx = (offsetX + _mapOffsetX + width * (float)mapx);
+                                    ty = (offsetY + _mapOffsetY + height * (float)mapy);
                                     if (CursorStyle == TTYCursorStyle.GreenBlock && _mapCursorX == mapx && _mapCursorY == mapy)
                                     {
                                         textPaint.Style = SKPaintStyle.Fill;
@@ -994,8 +1018,8 @@ namespace GnollHackClient.Pages.Game
                                                 int tile_x = TileSheetX(mtile);
                                                 int tile_y = TileSheetY(mtile);
 
-                                                tx = (startX + offsetX + _mapOffsetX + width * (float)mapx);
-                                                ty = (startY + offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+                                                tx = (offsetX + _mapOffsetX + width * (float)mapx);
+                                                ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
                                                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
 
                                                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -1010,8 +1034,8 @@ namespace GnollHackClient.Pages.Game
                                                 int tile_x = TileSheetX(mtile);
                                                 int tile_y = TileSheetY(mtile);
 
-                                                tx = (startX + offsetX + _mapOffsetX + width * (float)mapx);
-                                                ty = (startY + offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+                                                tx = (offsetX + _mapOffsetX + width * (float)mapx);
+                                                ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
                                                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
 
                                                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -1252,8 +1276,8 @@ namespace GnollHackClient.Pages.Game
 
                                                     SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
 
-                                                    tx = (startX + offsetX + _mapOffsetX + width * (float)draw_map_x);
-                                                    ty = (startY + offsetY + _mapOffsetY + _mapFontAscent + height * (float)draw_map_y);
+                                                    tx = (offsetX + _mapOffsetX + width * (float)draw_map_x);
+                                                    ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)draw_map_y);
 
                                                     if (hflip_glyph || vflip_glyph)
                                                     {
@@ -1305,8 +1329,8 @@ namespace GnollHackClient.Pages.Game
                                                 {
                                                     paint.Color = color;
                                                     paint.BlendMode = blendMode;
-                                                    tx = 1.0f + (offsetX + _mapOffsetX + width * (float)mapx);
-                                                    ty = 0.0f + (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+                                                    tx = (offsetX + _mapOffsetX + width * (float)mapx);
+                                                    ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
                                                     SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                                                     canvas.DrawRect(targetrect, paint);
                                                 }
@@ -1824,6 +1848,7 @@ namespace GnollHackClient.Pages.Game
         }
 
         private Dictionary<long, TouchEntry> TouchDictionary = new Dictionary<long, TouchEntry>();
+        public object MapOffsetLock = new object();
         private float _mapOffsetX = 0;
         private float _mapOffsetY = 0;
         private bool _touchMoved = false;
@@ -1834,6 +1859,11 @@ namespace GnollHackClient.Pages.Game
         {
             if (_clientGame != null)
             {
+                lock(TargetClipLock)
+                {
+                    _targetClipOn = false;
+                }
+
                 switch (e?.ActionType)
                 {
                     case SKTouchAction.Entered:
@@ -1892,15 +1922,18 @@ namespace GnollHackClient.Pages.Game
                                         /* Just one finger => Move the map */
                                         if (diffX != 0 || diffY != 0)
                                         {
-                                            _mapOffsetX += diffX;
-                                            _mapOffsetY += diffY;
-                                            if (_mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * _mapWidth)
+                                            lock (MapOffsetLock)
                                             {
-                                                _mapOffsetX = 10 * _mapWidth * Math.Sign(_mapOffsetX);
-                                            }
-                                            if (_mapHeight > 0 && Math.Abs(_mapOffsetY) > 10 * _mapHeight)
-                                            {
-                                                _mapOffsetY = 10 * _mapHeight * Math.Sign(_mapOffsetY);
+                                                _mapOffsetX += diffX;
+                                                _mapOffsetY += diffY;
+                                                if (_mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * _mapWidth)
+                                                {
+                                                    _mapOffsetX = 10 * _mapWidth * Math.Sign(_mapOffsetX);
+                                                }
+                                                if (_mapHeight > 0 && Math.Abs(_mapOffsetY) > 10 * _mapHeight)
+                                                {
+                                                    _mapOffsetY = 10 * _mapHeight * Math.Sign(_mapOffsetY);
+                                                }
                                             }
                                             TouchDictionary[e.Id].Location = e.Location;
                                             _touchMoved = true;
@@ -2122,6 +2155,39 @@ namespace GnollHackClient.Pages.Game
                         _mapData[x, y].Layers.bkglyph = NoGlyph;
                     }
                 }
+            }
+        }
+
+
+        public void SetTargetClip(int x, int y, bool force)
+        {
+            lock (TargetClipLock)
+            {
+                if (force)
+                {
+                    _targetClipOn = false;
+                    _originMapOffsetWithNewClipX = 0;
+                    _originMapOffsetWithNewClipY = 0;
+                }
+                else
+                {
+                    _targetClipOn = true;
+                    _originMapOffsetWithNewClipX = _mapOffsetX + (float)(x - ClipX) * _tileWidth;
+                    _originMapOffsetWithNewClipY = _mapOffsetY + (float)(y - ClipY) * _tileHeight;
+                    _targetClipStartCounterValue = AnimationTimers.general_animation_counter;
+                    _targetClipPanTime = GHConstants.DefaultPanTime;
+                }
+            }
+
+            lock (ClipLock)
+            {
+                _clipX = x;
+                _clipY = y;
+            }
+            lock (MapOffsetLock)
+            {
+                _mapOffsetX = _originMapOffsetWithNewClipX;
+                _mapOffsetY = _originMapOffsetWithNewClipY;
             }
         }
 
@@ -2357,6 +2423,11 @@ namespace GnollHackClient.Pages.Game
         private void AbilitiesButton_Clicked(object sender, EventArgs e)
         {
             GenericButton_Clicked(sender, e, 'A');
+        }
+
+        private void DropManyButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, '%');
         }
     }
 

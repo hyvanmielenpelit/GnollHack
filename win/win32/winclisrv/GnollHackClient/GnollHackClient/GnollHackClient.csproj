@@ -24,6 +24,7 @@
     <None Remove="Assets\gnollhack-logo-test-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits.png" />
+    <None Remove="Assets\Icons\dropmany.png" />
     <None Remove="Assets\Icons\eat.png" />
     <None Remove="Assets\Icons\engrave.png" />
     <None Remove="Assets\Icons\inventory.png" />
@@ -58,6 +59,7 @@
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
+    <EmbeddedResource Include="Assets\Icons\dropmany.png" />
     <EmbeddedResource Include="Assets\Icons\eat.png" />
     <EmbeddedResource Include="Assets\Icons\engrave.png" />
     <EmbeddedResource Include="Assets\Icons\inventory.png" />
