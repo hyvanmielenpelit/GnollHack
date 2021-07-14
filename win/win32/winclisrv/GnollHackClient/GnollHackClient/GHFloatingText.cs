@@ -85,7 +85,7 @@ namespace GnollHackClient
         }
         public SKTypeface GetTypeface(long counter_value)
         {
-            return App.ImmortalTypeface;
+            return App.LatoBold;
         }
         public SKColor GetBaseColor(long counter_value)
         {
@@ -139,9 +139,9 @@ namespace GnollHackClient
             else
                 return baseclr;
         }
-        public float GetOutlineWidth(long counter_value)
+        public float GetRelativeOutlineWidth(long counter_value)
         {
-            return 0.0f;
+            return 1f / 48f;
         }
         public SKColor GetOutlineColor(long counter_value)
         {

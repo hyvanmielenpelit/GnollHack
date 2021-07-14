@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GnollHackCommon;
 using SkiaSharp;
 
 namespace GnollHackClient
@@ -20,11 +21,17 @@ namespace GnollHackClient
 
         public float GetFinishTime()
         {
-            return 2.0f;
+            if (_data.style >= 3)
+                return 20.0f;
+            else
+                return 2.0f;
         }
         public float GetFadeOutTime()
         {
-            return 1.5f;
+            if (_data.style >= 3)
+                return 19.0f;
+            else
+                return 1.5f;
         }
         public float GetFadeInTime()
         {
@@ -86,14 +93,17 @@ namespace GnollHackClient
 
         public float GetMainTextSizeRelativeToScreenWidth(long counter_value)
         {
-            switch (_data.style)
-            {
-                case 1:
-                    return 0.85f;
-                default:
-                    break;
-            }
-            return 0.85f;
+            if (_data.style >= 3)
+                return 0.70f;
+            else
+                return 0.85f;
+        }
+        public float GetYOffsetPctOfScreen(long counter_value)
+        {
+            if (_data.style >= 3)
+                return -0.05f;
+            else
+                return 0.0f;
         }
         public float GetMainTextMaxFontSize(long counter_value)
         {
@@ -119,6 +129,25 @@ namespace GnollHackClient
 
         public SKColor GetTextBaseColor(long counter_value)
         {
+            switch(_data.style)
+            {
+                case 0:
+                    return ClientUtils.NHColor2SKColor((nhcolor)_data.color);
+                case 1:
+                    return TransparentGold;
+                case 2:
+                    return TransparentGold;
+                case 3:
+                    return SKColors.Red;
+                case 4:
+                    return SKColors.White;
+                case 5:
+                    return SKColors.LightBlue;
+                case 6:
+                    return SKColors.Pink;
+                default:
+                    break;
+            }
             return TransparentGold;
         }
 
@@ -157,13 +186,13 @@ namespace GnollHackClient
         {
             return GetColor(GetSubTextBaseColor(counter_value), counter_value);
         }
-        public float GetTextOutlineWidth(long counter_value)
+        public float GetRelativeTextOutlineWidth(long counter_value)
         {
-            return 0.0f;
+            return 1f / 48f;
         }
-        public float GetSubTextOutlineWidth(long counter_value)
+        public float GetRelativeSubTextOutlineWidth(long counter_value)
         {
-            return 0.0f;
+            return 1f / 48f;
         }
         public SKColor GetTextOutlineColor(long counter_value)
         {

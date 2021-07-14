@@ -1364,25 +1364,38 @@ namespace GnollHackClient.Pages.Game
                     foreach (GHFloatingText ft in _floatingTexts)
                     {
                         SKPoint p;
+                        float relativestrokewidth = 0.0f;
+                        SKColor strokecolor = SKColors.White;
                         lock (AnimationTimerLock)
                         {
                             p = ft.GetPosition(AnimationTimers.general_animation_counter);
                             textPaint.Color = ft.GetColor(AnimationTimers.general_animation_counter);
                             textPaint.Typeface = ft.GetTypeface(AnimationTimers.general_animation_counter);
                             textPaint.TextSize = MapFontSize * ft.GetRelativeTextSize(AnimationTimers.general_animation_counter);
+                            relativestrokewidth = ft.GetRelativeOutlineWidth(AnimationTimers.general_animation_counter);
+                            strokecolor = ft.GetOutlineColor(AnimationTimers.general_animation_counter);
                             str = ft.GetText(AnimationTimers.general_animation_counter);
                         }
                         textPaint.MeasureText(str, ref textBounds);
                         tx = (offsetX + _mapOffsetX + width * p.X - textBounds.Width / 2);
                         ty = (offsetY + _mapOffsetY + height * p.Y - textBounds.Height / 2);
                         canvas.DrawText(str, tx, ty, textPaint);
+                        if(relativestrokewidth > 0)
+                        {
+                            textPaint.Style = SKPaintStyle.Stroke;
+                            textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
+                            textPaint.Color = strokecolor;
+                            canvas.DrawText(str, tx, ty, textPaint);
+                            textPaint.Style = SKPaintStyle.Fill;
+                        }
                     }
                 }
                 lock (_screenTextLock)
                 {
                     if (_screenText != null)
                     {
-                        float targetwidth = 0;
+                        float targetwidth = 0, yoffsetpct = 0, relativestrokewidth = 0, relativesubstrokewidth = 0;
+                        SKColor strokecolor = SKColors.White, substrokecolor = SKColors.White;
                         float maxfontsize = 9999.0f;
                         lock (AnimationTimerLock)
                         {
@@ -1390,6 +1403,9 @@ namespace GnollHackClient.Pages.Game
                             textPaint.Typeface = _screenText.GetTextTypeface(AnimationTimers.general_animation_counter);
                             targetwidth = canvaswidth * _screenText.GetMainTextSizeRelativeToScreenWidth(AnimationTimers.general_animation_counter);
                             maxfontsize = _screenText.GetMainTextMaxFontSize(AnimationTimers.general_animation_counter);
+                            yoffsetpct = _screenText.GetYOffsetPctOfScreen(AnimationTimers.general_animation_counter);
+                            relativestrokewidth = _screenText.GetRelativeTextOutlineWidth(AnimationTimers.general_animation_counter);
+                            strokecolor = _screenText.GetTextOutlineColor(AnimationTimers.general_animation_counter);
                             str = _screenText.GetText(AnimationTimers.general_animation_counter);
                         }
                         textPaint.TextSize = MapFontSize;
@@ -1407,8 +1423,16 @@ namespace GnollHackClient.Pages.Game
                         float maintextdescent = textPaint.FontMetrics.Descent;
 
                         tx = (canvaswidth / 2 - textBounds.Width / 2);
-                        ty = (canvasheight / 2 - textBounds.Height / 2 - (maintextascent + maintextdescent) / 2);
+                        ty = (canvasheight / 2 - textBounds.Height / 2 - (maintextascent + maintextdescent) / 2) + yoffsetpct * canvasheight;
                         canvas.DrawText(str, tx, ty, textPaint);
+                        if (relativestrokewidth > 0)
+                        {
+                            textPaint.Style = SKPaintStyle.Stroke;
+                            textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
+                            textPaint.Color = strokecolor;
+                            canvas.DrawText(str, tx, ty, textPaint);
+                            textPaint.Style = SKPaintStyle.Fill;
+                        }
 
                         float maintextsize = textPaint.TextSize;
                         float maintextspacing = textPaint.FontSpacing;
@@ -1421,6 +1445,8 @@ namespace GnollHackClient.Pages.Game
                                 textPaint.Color = _screenText.GetSubTextColor(AnimationTimers.general_animation_counter);
                                 textPaint.Typeface = _screenText.GetSubTextTypeface(AnimationTimers.general_animation_counter);
                                 textPaint.TextSize = maintextsize * _screenText.GetSubTextSizeRelativeToMainText(AnimationTimers.general_animation_counter);
+                                relativesubstrokewidth = _screenText.GetRelativeSubTextOutlineWidth(AnimationTimers.general_animation_counter);
+                                substrokecolor = _screenText.GetSubTextOutlineColor(AnimationTimers.general_animation_counter);
                                 str = _screenText.GetSubText(AnimationTimers.general_animation_counter);
                             }
                             textPaint.MeasureText(str, ref textBounds);
@@ -1431,8 +1457,15 @@ namespace GnollHackClient.Pages.Game
                                 ty = maintexty + maintextdescent - textPaint.FontMetrics.Ascent;
 
                             canvas.DrawText(str, tx, ty, textPaint);
+                            if (relativesubstrokewidth > 0)
+                            {
+                                textPaint.Style = SKPaintStyle.Stroke;
+                                textPaint.StrokeWidth = textPaint.TextSize * relativesubstrokewidth;
+                                textPaint.Color = substrokecolor;
+                                canvas.DrawText(str, tx, ty, textPaint);
+                                textPaint.Style = SKPaintStyle.Fill;
+                            }
                         }
-
                     }
                 }
             }

@@ -1318,6 +1318,57 @@ int how;
     }
     update_game_music();
 
+    const char* endtext = 0;
+    int screentextstyle = 0;
+    switch (how)
+    {
+    case DIED:
+    case CHOKING:
+    case POISONING:
+    case STARVING:
+    case DROWNING:
+    case DROWNED:
+    case BURNING:
+    case DISSOLVED:
+    case CRUSHING:
+    case STRANGULATION:
+    case SUFFOCATION:
+    case STONING:
+    case DISINTEGRATION:
+    case ILLNESS:
+    case ROTTED:
+    case GENOCIDED:
+        endtext = "You are dead.";
+        screentextstyle = SCREEN_TEXT_DEAD;
+        break;
+    case TURNED_SLIME:
+        endtext = "You have turned into slime.";
+        screentextstyle = SCREEN_TEXT_DEAD;
+        break;
+    case PANICKED:
+        endtext = "Panic!";
+        screentextstyle = SCREEN_TEXT_SPECIAL_END;
+        break;
+    case TRICKED:
+        endtext = "Trickery!";
+        screentextstyle = SCREEN_TEXT_SPECIAL_END;
+        break;
+    case ESCAPED:
+        endtext = "You escaped the dungeon.";
+        screentextstyle = SCREEN_TEXT_ESCAPED;
+        break;
+    case ASCENDED:
+        endtext = "You have ascended!";
+        screentextstyle = SCREEN_TEXT_ASCENDED;
+        break;
+    case QUIT:
+    default:
+        break;
+    }
+ 
+    if(endtext)
+        display_screen_text(endtext, (const char*)0, screentextstyle, ATR_NONE, NO_COLOR, 0UL);
+
     /* might have been killed while using a disposable item, so make sure
        it's gone prior to inventory disclosure and creation of bones data */
     inven_inuse(TRUE);
