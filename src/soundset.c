@@ -13240,7 +13240,7 @@ enum shopkeeper_lines line_idx;
     info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
     info.dialogue_mid = shkp->m_id;
 
-    if (info.ghsound > GHSOUND_NONE)
+    if (info.ghsound > GHSOUND_NONE && info.volume >= SHOPKEEPER_DISTANT_VOLUME_THRESHOLD)
         play_immediate_ghsound(info);
 
 }
