@@ -147,6 +147,11 @@ register struct monst *mtmp;
             setnotworn(ygold);
         freeinv(ygold);
         add_to_minv(mtmp, ygold);
+
+        char ftbuf[BUFSZ];
+        Sprintf(ftbuf, "-%ld gold", tmp);
+        display_floating_text(u.ux, u.uy, ftbuf, FLOATING_TEXT_GOLD_STOLEN, ATR_NONE, NO_COLOR, 0UL);
+
         play_sfx_sound(SFX_STEAL_GOLD);
         Your("purse feels lighter.");
         if (!tele_restrict(mtmp))

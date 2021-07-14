@@ -98,12 +98,14 @@ namespace GnollHackClient
                 case 3:
                     return SKColors.Gold;
                 case 4:
-                    return SKColors.Blue;
+                    return SKColors.Orange;
                 case 5:
-                    return SKColors.Magenta;
+                    return SKColors.Blue;
                 case 6:
-                    return SKColors.LightGreen;
+                    return SKColors.Magenta;
                 case 7:
+                    return SKColors.LightGreen;
+                case 8:
                     return SKColors.LightPink;
                 default:
                     break;
