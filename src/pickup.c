@@ -861,7 +861,7 @@ int show_weights;
     else if (show_weights == 2) { // Pick up
         loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
     }
-    else if (show_weights == 3) // Drop
+    else if (show_weights == 3) // Drop or sell
         loadstonecorrectly = TRUE;
 
     *pick_list = (menu_item *) 0;
