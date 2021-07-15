@@ -1179,7 +1179,7 @@ dll_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct exte
              presel);
      
     int color = CLR_WHITE;
-#ifdef TEXTCOLOR;
+#ifdef TEXTCOLOR
     get_menu_coloring(str, &color, &attr);
 #endif
 
