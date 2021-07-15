@@ -18,15 +18,12 @@ namespace GnollHackClient
 
         }
 
-        public override bool IsEmpty => (GamePage == null || Glyph <= 0 || Glyph >= GamePage.Glyph2Tile.Length);
-
+        public override bool IsEmpty => (GamePage == null || Glyph == 0 || Glyph >= GamePage.Glyph2Tile.Length);
 
         protected override void OnPropertyChanged(string propertyName)
         {
             if (propertyName == GlyphProperty.PropertyName ||
                 propertyName == GamePageProperty.PropertyName ||
-                propertyName == XProperty.PropertyName ||
-                propertyName == YProperty.PropertyName ||
                 propertyName == WidthProperty.PropertyName ||
                 propertyName == HeightProperty.PropertyName)
             {
@@ -45,23 +42,23 @@ namespace GnollHackClient
             set => SetValue(GlyphProperty, value);
         }
 
-        public static readonly BindableProperty XProperty = BindableProperty.Create(
-            "X", typeof(int), typeof(GlyphImageSource));
+        //public static readonly BindableProperty XProperty = BindableProperty.Create(
+        //    "X", typeof(int), typeof(GlyphImageSource));
 
-        public int X
-        {
-            get => (int)GetValue(XProperty);
-            set => SetValue(XProperty, value);
-        }
+        //public int X
+        //{
+        //    get => (int)GetValue(XProperty);
+        //    set => SetValue(XProperty, value);
+        //}
 
-        public static readonly BindableProperty YProperty = BindableProperty.Create(
-            "Y", typeof(int), typeof(GlyphImageSource));
+        //public static readonly BindableProperty YProperty = BindableProperty.Create(
+        //    "Y", typeof(int), typeof(GlyphImageSource));
 
-        public int Y
-        {
-            get => (int)GetValue(YProperty);
-            set => SetValue(YProperty, value);
-        }
+        //public int Y
+        //{
+        //    get => (int)GetValue(YProperty);
+        //    set => SetValue(YProperty, value);
+        //}
 
         public static readonly BindableProperty WidthProperty = BindableProperty.Create(
             "Width", typeof(int), typeof(GlyphImageSource));
@@ -110,14 +107,33 @@ namespace GnollHackClient
 
             if (GamePage != null && abs_glyph > 0 && Width > 0 && Height > 0 && abs_glyph < GamePage.Glyph2Tile.Length)
             {
+                bool tileflag_halfsize = (GamePage.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
                 int ntile = GamePage.Glyph2Tile[abs_glyph];
                 int sheet_idx = GamePage.TileSheetIdx(ntile);
                 int tile_x = GamePage.TileSheetX(ntile);
                 int tile_y = GamePage.TileSheetY(ntile);
 
-                SKRect sourcerect = new SKRect(tile_x + X, tile_y + Y, tile_x + X + Width, tile_y + Y + Height);
+                SKRect sourcerect;
+                if(tileflag_halfsize)
+                {
+                    sourcerect = new SKRect(tile_x, tile_y + (float)GHConstants.TileHeight / 2, tile_x + (float)GHConstants.TileWidth, tile_y + (float)GHConstants.TileHeight);
+                }
+                else
+                {
+                    sourcerect = new SKRect(tile_x, tile_y, tile_x + (float)GHConstants.TileWidth, tile_y + (float)GHConstants.TileHeight);
+                }
 
-                SKRect targetrect = new SKRect(0, 0, Width, Height);
+                SKRect targetrect;
+                if (tileflag_halfsize)
+                {
+                    targetrect = new SKRect(0, 0, Width, Height);
+                }
+                else
+                {
+                    float fullsizewidth = Height / (float)GHConstants.TileHeight * (float)GHConstants.TileWidth;
+                    float fullsizepadding = Math.Max(0, Width - fullsizewidth) / 2;
+                    targetrect = new SKRect(fullsizepadding, 0, fullsizepadding + fullsizewidth, Height);
+                }
 
                 canvas.DrawBitmap(GamePage.TileMap[sheet_idx], sourcerect, targetrect);
             }

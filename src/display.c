@@ -398,10 +398,13 @@ boolean exclude_ascii;
         {
             new_glyph = random_obj_to_glyph(newsym_rn2);
         }
-        if (!exclude_ascii)
-            levl[x][y].hero_memory_layers.glyph = new_glyph;
 
-        levl[x][y].hero_memory_layers.layer_glyphs[layer] = new_glyph;
+        if (!exclude_ascii)
+        {
+            levl[x][y].hero_memory_layers.glyph = new_glyph;
+            levl[x][y].hero_memory_layers.layer_glyphs[layer] = new_glyph; /* Object layer glyph should be aligned with ascii glyph */
+        }
+
         if (in_pit)
             levl[x][y].hero_memory_layers.layer_flags |= LFLAGS_O_IN_PIT;
 
@@ -420,10 +423,12 @@ boolean exclude_ascii;
 
     if (show)
     {
-        if(!exclude_ascii)
+        if (!exclude_ascii)
+        {
             show_glyph_ascii(x, y, glyph);
+            show_glyph_on_layer(x, y, glyph, layer); /* Object layer glyph should be aligned with ascii glyph */
+        }
 
-        show_glyph_on_layer(x, y, glyph, layer);
         if(in_pit)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_O_IN_PIT);
         if (isok(x, y) && uchain && obj == uchain && uchain->ox == x && uchain->oy == y)

@@ -212,9 +212,12 @@ uchar* tilemapflags;
                     if (gender == 0)
                     {
                         tilemaparray[i + male_glyph_offset] = tile_count;
-                        if(spset == MAX_ACTION_TILES || spset == MAX_ACTION_TILES + 1)
+                        if (spset == MAX_ACTION_TILES || spset == MAX_ACTION_TILES + 1)
+                        {
                             tilemapflags[i + male_glyph_offset] |= fullsizedflag;
-
+                            if(!fullsizedflag)
+                                tilemapflags[i + male_glyph_offset] |= GLYPH_TILE_FLAG_HALF_SIZED_TILE;
+                        }
                         if (spset == ACTION_TILE_NO_ACTION)
                         {
                             enum action_tile_types action;
@@ -252,8 +255,11 @@ uchar* tilemapflags;
                     /* write female versions twice just in case, first as base monster, and then override as female, if we get here */
                     tilemaparray[i + female_glyph_offset] = tile_count;
                     if (spset == MAX_ACTION_TILES || spset == MAX_ACTION_TILES + 1)
+                    {
                         tilemapflags[i + female_glyph_offset] |= fullsizedflag;
-
+                        if (!fullsizedflag)
+                            tilemapflags[i + female_glyph_offset] |= GLYPH_TILE_FLAG_HALF_SIZED_TILE;
+                    }
                     if (spset == ACTION_TILE_NO_ACTION)
                     {
                         enum action_tile_types action;
@@ -346,7 +352,7 @@ uchar* tilemapflags;
                     continue;
 
                 first_scroll_found = TRUE;
-                uchar fullsizedflag = !!(objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP);
+                uchar gtflags = (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
 
                 /* First, generic scroll tile */
                 if (process_style == 0)
@@ -450,7 +456,7 @@ uchar* tilemapflags;
                     else
                     {
                         tilemaparray[i + glyph_offset] = tile_count;
-                        tilemapflags[i + glyph_offset] |= fullsizedflag;
+                        tilemapflags[i + glyph_offset] |= gtflags;
 
                         /* Add the tile to all scrolls */
                         for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
@@ -459,7 +465,7 @@ uchar* tilemapflags;
                             {
                                 /* Other scroll's main tile */
                                 tilemaparray[m + glyph_offset] = tile_count;
-                                tilemapflags[m + glyph_offset] |= fullsizedflag;
+                                tilemapflags[m + glyph_offset] |= gtflags;
 
                                 /* Add others if they do not have their own */
                                 if (j == 0)
@@ -556,13 +562,13 @@ uchar* tilemapflags;
                     else
                     {
 #ifdef MAIL
-                        fullsizedflag = !!(objects[SCR_MAIL].oc_flags4 & O4_FULL_SIZED_BITMAP);
+                        gtflags = (objects[SCR_MAIL].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
 
                         /* Main tile */
                         tilemaparray[SCR_MAIL + glyph_offset] = tile_count;
-                        tilemapflags[SCR_MAIL + glyph_offset] |= fullsizedflag;
+                        tilemapflags[SCR_MAIL + glyph_offset] |= gtflags;
 
-                        /* Add to others, if they have not tiles of their own */
+                        /* Add to others, if they do not have tiles of their own */
                         if (j == 0)
                         {
                             if (tsd->missile_tile_style != 1)
@@ -612,8 +618,9 @@ uchar* tilemapflags;
                 nameless_idx++;
             }
 
-            /* Full-sized item */
-            uchar fullsizedflag = (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : 0;
+            /* Full-sized item and other flags */
+            uchar gtflags = (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
+            gtflags |= (objects[i].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
 
             if (process_style == 0)
             {
@@ -733,7 +740,7 @@ uchar* tilemapflags;
                 {
                     /* Write to the tile to the main glyph */
                     tilemaparray[i + glyph_offset] = tile_count;
-                    tilemapflags[i + glyph_offset] |= fullsizedflag;
+                    tilemapflags[i + glyph_offset] |= gtflags;
 
                     if (j == 0)
                     {
@@ -760,7 +767,7 @@ uchar* tilemapflags;
                             {
                                 /* Write to the tile to the main glyph */
                                 tilemaparray[m + glyph_offset] = tile_count;
-                                tilemapflags[m + glyph_offset] |= fullsizedflag;
+                                tilemapflags[m + glyph_offset] |= gtflags;
 
                                 /* Write to the tile to the inventory, lit, and inventory lit glyphs if they do not have their own */
                                 if (j == 0)
@@ -795,7 +802,7 @@ uchar* tilemapflags;
 
                                 int glyph_offset2 = (gender == 0 ? (i == CORPSE ? GLYPH_BODY_OFF : GLYPH_STATUE_OFF) : (i == CORPSE ? GLYPH_FEMALE_BODY_OFF : GLYPH_FEMALE_STATUE_OFF));
                                 tilemaparray[k + glyph_offset2] = tile_count;
-                                tilemapflags[k + glyph_offset2] |= fullsizedflag;
+                                tilemapflags[k + glyph_offset2] |= gtflags;
                             }
                         }
                     }
@@ -1005,6 +1012,8 @@ uchar* tilemapflags;
                     {
                         if (objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
                             tilemapflags[i + glyph_offset] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                        else
+                            tilemapflags[i + glyph_offset] |= GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                     }
 
                     /* copy an out-limited tiles to all limited cmaps */
@@ -1025,6 +1034,8 @@ uchar* tilemapflags;
                                 {
                                     if (objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
                                         tilemapflags[i + glyph_offset2] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                                    else
+                                        tilemapflags[i + glyph_offset2] |= GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                                 }
                             }
                         }

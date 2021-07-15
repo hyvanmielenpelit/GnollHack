@@ -156,7 +156,7 @@ namespace GnollHackClient
             return TransparentWhite;
         }
 
-        private SKColor GetColor(SKColor baseclr, long counter_value)
+        private SKColor GetTimedColor(SKColor baseclr, long counter_value)
         {
             float vsecs = GetVSecs(counter_value);
             if (vsecs < GetFadeInTime())
@@ -179,12 +179,12 @@ namespace GnollHackClient
 
         public SKColor GetTextColor(long counter_value)
         {
-            return GetColor(GetTextBaseColor(counter_value), counter_value);
+            return GetTimedColor(GetTextBaseColor(counter_value), counter_value);
         }
 
         public SKColor GetSubTextColor(long counter_value)
         {
-            return GetColor(GetSubTextBaseColor(counter_value), counter_value);
+            return GetTimedColor(GetSubTextBaseColor(counter_value), counter_value);
         }
         public float GetRelativeTextOutlineWidth(long counter_value)
         {
@@ -194,13 +194,21 @@ namespace GnollHackClient
         {
             return 1f / 48f;
         }
-        public SKColor GetTextOutlineColor(long counter_value)
+        public SKColor GetTextOutlineBaseColor(long counter_value)
         {
             return SKColors.Black;
         }
-        public SKColor GetSubTextOutlineColor(long counter_value)
+        public SKColor GetSubTextOutlineBaseColor(long counter_value)
         {
             return SKColors.Black;
+        }
+        public SKColor GetTextOutlineColor(long counter_value)
+        {
+            return GetTimedColor(GetTextOutlineBaseColor(counter_value), counter_value);
+        }
+        public SKColor GetSubTextOutlineColor(long counter_value)
+        {
+            return GetTimedColor(GetSubTextOutlineBaseColor(counter_value), counter_value);
         }
     }
 }

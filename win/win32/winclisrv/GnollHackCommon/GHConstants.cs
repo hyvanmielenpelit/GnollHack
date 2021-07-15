@@ -171,7 +171,8 @@ namespace GnollHackCommon
         GLYPH_TILE_FLAG_FLIP_VERTICALLY = 0x02,
         GLYPH_TILE_FLAG_FULL_SIZED_ITEM = 0x04,
         GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE = 0x08,
-        GLYPH_TILE_FLAG_HALF_SIZED_NONITEM = 0x10,
+        GLYPH_TILE_FLAG_HALF_SIZED_TILE = 0x10,
+        GLYPH_TILE_FLAG_HAS_FLOOR_TILE = 0x20,
     }
 
     [StructLayout(LayoutKind.Sequential)]

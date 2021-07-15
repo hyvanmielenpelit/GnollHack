@@ -115,6 +115,7 @@ namespace GnollHackClient
         public int NHColor { get; set; }
         public bool Is_Heading { get; set; }
         public char HeadingGroupAccelerator { get; set; }
+        public bool HeadingUnselectGroup { get; set; }
         public ulong MenuFlags { get; set; }
         public UInt64 Oid { get; set; }
         public UInt64 Mid { get; set; }
@@ -134,8 +135,6 @@ namespace GnollHackClient
             _noGlyph = noGlyph;
             _gamePage = gamePage;
             _glyphImageSource.GamePage = gamePage;
-            _glyphImageSource.X = 0;
-            _glyphImageSource.Y = GHConstants.TileHeight / 2;
             _glyphImageSource.Width = GHConstants.TileWidth;
             _glyphImageSource.Height = GHConstants.TileHeight / 2;
             EntryTextColor = Color.White;

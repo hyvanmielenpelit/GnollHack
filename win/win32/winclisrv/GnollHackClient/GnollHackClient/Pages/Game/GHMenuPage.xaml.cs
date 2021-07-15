@@ -124,16 +124,19 @@ namespace GnollHackClient.Pages.Game
                         {
                             if(o.GroupAccelerator == mi.HeadingGroupAccelerator)
                             {
-                                if (!MenuView.SelectedItems.Contains(o))
+                                if (!mi.HeadingUnselectGroup)
                                 {
-                                    MenuView.SelectedItems.Add(o);
+                                    if (!MenuView.SelectedItems.Contains(o))
+                                        MenuView.SelectedItems.Add(o);
                                 }
                                 else
                                 {
-                                    MenuView.SelectedItems.Remove(o);
+                                    if (MenuView.SelectedItems.Contains(o))
+                                        MenuView.SelectedItems.Remove(o);
                                 }
                             }
                         }
+                        mi.HeadingUnselectGroup = !mi.HeadingUnselectGroup;
                     }
                 }
                 else

@@ -1134,7 +1134,7 @@ struct obj *otmp;
         newsym(u.ux, u.uy);   /* see yourself! */
         flush_screen(1);
         if (msg && !Blind) {  /* Blind possible if polymorphed */
-            You("can see through yourself, but you are visible!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can see through yourself, but you are visible!");
             unkn--;
         }
         break;

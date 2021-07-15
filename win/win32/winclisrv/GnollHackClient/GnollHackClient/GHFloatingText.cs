@@ -120,8 +120,12 @@ namespace GnollHackClient
         }
         public SKColor GetColor(long counter_value)
         {
+            return GetTimedColor(GetBaseColor(counter_value), counter_value);
+        }
+
+        public SKColor GetTimedColor(SKColor baseclr, long counter_value)
+        {
             float vsecs = GetVSecs(counter_value);
-            SKColor baseclr = GetBaseColor(counter_value);
             if (vsecs < GetFadeInTime())
             {
                 byte val = (byte)(baseclr.Alpha * Math.Max(0.0f, Math.Min(1.0f, (vsecs) / GetFadeInLength())));
@@ -143,9 +147,13 @@ namespace GnollHackClient
         {
             return 1f / 48f;
         }
-        public SKColor GetOutlineColor(long counter_value)
+        public SKColor GetOutlineBaseColor(long counter_value)
         {
             return SKColors.Black;
+        }
+        public SKColor GetOutlineColor(long counter_value)
+        {
+            return GetTimedColor(GetOutlineBaseColor(counter_value), counter_value);
         }
     }
 }

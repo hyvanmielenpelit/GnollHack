@@ -1393,6 +1393,8 @@ int *wt_before, *wt_after;
         prefx2 = "is too heavy for you to ";
         suffx = "";
     }
+
+    play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
     There("%s %s %s, but %s%s%s%s.", otense(obj, "are"), obj_nambuf, where,
           prefx1, prefx2, verb, suffx);
 

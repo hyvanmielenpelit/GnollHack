@@ -1055,12 +1055,14 @@ namespace GnollHackClient.Pages.Game
                                             bool manual_hflip = false;
                                             bool manual_vflip = false;
 
-                                            /* Tile flips */
-                                            bool tileflag_hflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_HORIZONTALLY) != 0;
-                                            bool tileflag_vflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_VERTICALLY) != 0;
-
                                             if (glyph < Glyph2Tile.Length)
                                             {
+                                                /* Tile flips */
+                                                bool tileflag_hflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_HORIZONTALLY) != 0;
+                                                bool tileflag_vflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_VERTICALLY) != 0;
+                                                bool tileflag_halfsize = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
+                                                bool tileflag_floortile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
+
                                                 int ntile = Glyph2Tile[glyph];
                                                 int replacement = Tile2Replacement[ntile];
                                                 /* Replace tile here */
@@ -1274,7 +1276,18 @@ namespace GnollHackClient.Pages.Game
                                                     int tile_x = TileSheetX(ntile);
                                                     int tile_y = TileSheetY(ntile);
 
-                                                    SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                    SKRect sourcerect;
+                                                    if(tileflag_halfsize)
+                                                    {
+                                                        if(tileflag_floortile)
+                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight / 2);
+                                                        else
+                                                            sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                    }
+                                                    else
+                                                    {
+                                                        sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                    }
 
                                                     tx = (offsetX + _mapOffsetX + width * (float)draw_map_x);
                                                     ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)draw_map_y);
@@ -1285,13 +1298,22 @@ namespace GnollHackClient.Pages.Game
                                                         {
                                                             canvas.Translate(tx + (hflip_glyph ? width : 0), ty + (vflip_glyph ? height : 0));
                                                             canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
-                                                            SKRect targetrect = new SKRect(0, 0, width, height);
+                                                            SKRect targetrect;
+                                                            if (tileflag_halfsize)
+                                                                targetrect = new SKRect(0, height / 2, width, height);
+                                                            else
+                                                                targetrect = new SKRect(0, 0, width, height);
                                                             canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                        SKRect targetrect;
+                                                        if (tileflag_halfsize)
+                                                            targetrect = new SKRect(tx, ty + height / 2, tx + width, ty + height);
+                                                        else
+                                                            targetrect = new SKRect(tx, ty, tx + width, ty + height);
+
                                                         canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
                                                     }
                                                 }
