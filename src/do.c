@@ -4431,7 +4431,7 @@ register struct obj *obj;
     }
 
     if (obj->blessed || obj->cursed) {
-        There("is %s flash as %s %s the altar.",
+        There_ex(ATR_NONE, obj->blessed ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "is %s flash as %s %s the altar.",
               an(hcolor(obj->blessed ? NH_AMBER : NH_BLACK)), doname(obj),
               otense(obj, "hit"));
         if (!Hallucination)
