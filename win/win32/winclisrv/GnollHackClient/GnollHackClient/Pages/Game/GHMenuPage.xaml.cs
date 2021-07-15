@@ -49,7 +49,7 @@ namespace GnollHackClient.Pages.Game
 
             myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             myImage2.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-
+            BackgroundImage.Source = ImageSource.FromResource("GnollHackClient.Assets.UI.menubackground.png", assembly);
         }
 
 
