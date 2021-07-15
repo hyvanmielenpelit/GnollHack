@@ -93,17 +93,31 @@ namespace GnollHackClient
 
         public float GetMainTextSizeRelativeToScreenWidth(long counter_value)
         {
-            if (_data.style >= 3)
-                return 0.70f;
-            else
-                return 0.85f;
+            switch(_data.style)
+            {
+                case 0:
+                case 1:
+                case 2:
+                    return 0.85f;
+                case 3:
+                    return 0.60f;
+                default:
+                    return 0.70f;
+            }
         }
         public float GetYOffsetPctOfScreen(long counter_value)
         {
-            if (_data.style >= 3)
-                return -0.05f;
-            else
-                return 0.0f;
+            switch (_data.style)
+            {
+                case 0:
+                case 1:
+                case 2:
+                    return 0.0f;
+                case 3:
+                    return 0.0f;
+                default:
+                    return -0.05f;
+            }
         }
         public float GetMainTextMaxFontSize(long counter_value)
         {
@@ -138,12 +152,14 @@ namespace GnollHackClient
                 case 2:
                     return TransparentGold;
                 case 3:
-                    return SKColors.Red;
+                    return SKColors.Beige;
                 case 4:
-                    return SKColors.White;
+                    return SKColors.Red;
                 case 5:
-                    return SKColors.LightBlue;
+                    return SKColors.White;
                 case 6:
+                    return SKColors.LightBlue;
+                case 7:
                     return SKColors.Pink;
                 default:
                     break;

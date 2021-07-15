@@ -4,6 +4,7 @@
              xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms" 
              xmlns:local="clr-namespace:GnollHackClient.Pages.Game"
              xmlns:client="clr-namespace:GnollHackClient"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              x:Class="GnollHackClient.Pages.Game.GHMenuPage"
              Disappearing="ContentPage_Disappearing"
              BackgroundColor="Black">
@@ -31,7 +32,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Image x:Name="BackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+            <ff:CachedImage x:Name="BackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+                            Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>
             <StackLayout x:Name="menuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical"  BackgroundColor="Transparent">
                 <Label x:Name="HeaderLabel"
                        FontFamily="Diablo" FontSize="22" TextColor="White" FontAttributes="Bold" Margin="2,10,2,2" BackgroundColor="Transparent"

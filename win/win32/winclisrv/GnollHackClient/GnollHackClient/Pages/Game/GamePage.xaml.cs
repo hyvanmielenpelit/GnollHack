@@ -17,6 +17,7 @@ using Xamarin.Essentials;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using System.IO;
+using FFImageLoading.Forms;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -58,7 +59,12 @@ namespace GnollHackClient.Pages.Game
         private bool _showDirections = false;
         private bool _showNumberPad = false;
         private bool showNumberPad { get { return _showNumberPad; } set { _showNumberPad = value; } }
+        private bool _showWaitIcon = false;
+        public bool ShowWaitIcon { get { return _showWaitIcon; } set { _showWaitIcon = value; } }
+
+
         private MainPage _mainPage;
+        private SKBitmap _logoBitmap;
 
         private object TargetClipLock = new object();
         private float _originMapOffsetWithNewClipX;
@@ -173,7 +179,10 @@ namespace GnollHackClient.Pages.Game
             {
                 _tileMap[1] = SKBitmap.Decode(stream);
             }
-
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack-logo-test-2.png"))
+            {
+                _logoBitmap = SKBitmap.Decode(stream);
+            }
             InventoryImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.inventory.png");
             SearchImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.search.png");
             WaitImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.wait.png");
@@ -384,7 +393,7 @@ namespace GnollHackClient.Pages.Game
 
             if (icon_string != "")
             {
-                Image img = new Image();
+                CachedImage img = new CachedImage();
                 img.Source = ImageSource.FromResource(icon_string);
                 img.BackgroundColor = Color.Transparent;
                 img.HeightRequest = 50;
@@ -784,6 +793,7 @@ namespace GnollHackClient.Pages.Game
         }
         private async void ShowMenuPage(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
+            ShowWaitIcon = true;
             var menuPage = new GHMenuPage(this, ghwindow);
             menuPage.SelectionHow = menuinfo.SelectionHow;
             if (menuinfo.Header == null)
@@ -1765,7 +1775,19 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
-
+            if(ShowWaitIcon)
+            {
+                SKRect targetrect;
+                float[] sizearray = { 10.0f, 10.1f, 10.2f, 10.3f, 10.4f, 10.3f, 10.2f, 10.1f, 10.0f, 9.9f };
+                long sizeidx = 0;
+                lock (AnimationTimerLock)
+                {
+                    sizeidx = AnimationTimers.general_animation_counter % 10;
+                }
+                float size = sizearray[sizeidx];
+                targetrect = new SKRect(canvaswidth / 2 - canvaswidth / size, canvasheight / 2 - canvaswidth / size, canvaswidth / 2 + canvaswidth / size, canvasheight / 2 + canvaswidth / size);
+                canvas.DrawBitmap(_logoBitmap, targetrect);
+            }
 
             /* RawPrint */
             /*

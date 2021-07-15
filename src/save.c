@@ -167,6 +167,7 @@ dosave0()
         return 0;
     }
 
+    display_screen_text("Saving...", (const char*)0, SCREEN_TEXT_SAVING, ATR_NONE, NO_COLOR, 0UL);
     vision_recalc(2); /* shut down vision to prevent problems
                          in the event of an impossible() call */
 

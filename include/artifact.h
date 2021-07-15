@@ -53,7 +53,7 @@
 #define AF2_MISSILE_TILE                       0x00000001UL  
 #define AF2_SINGLE_MISSILE_TILE                0x00000002UL  
 #define AF2_FLOOR_TILE                         0x00000004UL  
-/* free bit */
+#define AF2_FULL_SIZED_ITEM                    0x00000008UL  
 #define AF2_APPLICABLE_AS_AXE                  0x00000010UL  
 #define AF2_NAME_IS_PROPER_NAME                0x00000020UL  /* Do not use 'The' */
 

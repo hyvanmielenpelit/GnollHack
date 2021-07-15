@@ -477,7 +477,7 @@ uchar* tilemapflags;
                                         for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                                         {
                                             tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
-                                            tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset4] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                            tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset4] |= gtflags | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                         }
                                     }
                                 }
@@ -578,7 +578,7 @@ uchar* tilemapflags;
                                 for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                                 {
                                     tilemaparray[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
-                                    tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset4] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                    tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset4] |= gtflags | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                 }
                             }
                         }
@@ -751,7 +751,7 @@ uchar* tilemapflags;
                             for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                             {
                                 tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
-                                tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset4] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset4] |= gtflags | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                             }
                         }
                     }
@@ -779,7 +779,7 @@ uchar* tilemapflags;
                                         for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                                         {
                                             tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
-                                            tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset4] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                            tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset4] |= gtflags | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                         }
                                     }
                                 }
@@ -849,7 +849,8 @@ uchar* tilemapflags;
             boolean no_base_item_name = !OBJ_NAME(objects[base_item]);
             boolean no_base_item_description = !obj_descr[objects[base_item].oc_name_idx].oc_descr;
 
-            uchar fullsizedflag = !!(objects[base_item].oc_flags4 & O4_FULL_SIZED_BITMAP);
+            uchar gtflags = (artilist[i].aflags2 & AF2_FULL_SIZED_ITEM) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
+            gtflags |= (artilist[i].aflags2 & AF2_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
 
             if (process_style == 0)
             {
@@ -939,7 +940,7 @@ uchar* tilemapflags;
                 else
                 {
                     tilemaparray[(i - 1) + glyph_offset] = tile_count;
-                    tilemapflags[(i - 1) + glyph_offset] |= fullsizedflag;
+                    tilemapflags[(i - 1) + glyph_offset] |= gtflags;
 
                     if (j == 0)
                     {
@@ -949,7 +950,7 @@ uchar* tilemapflags;
                             for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                             {
                                 tilemaparray[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
-                                tilemapflags[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset4] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                tilemapflags[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset4] |= gtflags | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                             }
                         }
                     }

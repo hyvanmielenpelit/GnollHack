@@ -49,7 +49,7 @@ namespace GnollHackClient.Pages.Game
 
             myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             myImage2.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            BackgroundImage.Source = ImageSource.FromResource("GnollHackClient.Assets.UI.menubackground.png", assembly);
+            //BackgroundImage.Source = ImageSource.FromResource("GnollHackClient.Assets.UI.menubackground.png", assembly);
         }
 
 
@@ -164,7 +164,8 @@ namespace GnollHackClient.Pages.Game
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            if(!_responseSent)
+            _gamePage.ShowWaitIcon = false;
+            if (!_responseSent)
             {
                 ConcurrentQueue<GHResponse> queue;
                 if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))

@@ -27,7 +27,7 @@ namespace GnollHackClient.Droid
 
             MainActivity.StaticAssets = this.Assets;
             CurrentMainActivity = this;
-
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
             LoadApplication(new App());
         }
 

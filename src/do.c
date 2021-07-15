@@ -3606,7 +3606,7 @@ register struct obj* obj;
         int spellcnt = 0;
         for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
         {
-            if (is_obj_component_for(i, obj))
+            if (is_obj_component_for(i, obj) > 0)
                 spellcnt++;
         }
         if (spellcnt > 0)
@@ -3620,7 +3620,8 @@ register struct obj* obj;
             int splres;
             for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
             {
-                if (splres = is_obj_component_for(i, obj))
+                splres = is_obj_component_for(i, obj);
+                if (splres > 0)
                 {
                     compcnt++;
                     splname = OBJ_NAME(objects[spellid(i)]);

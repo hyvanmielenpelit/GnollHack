@@ -26,7 +26,6 @@ namespace GnollHackClient
         public App()
         {
             InitializeComponent();
-
             var mainPage = new MainPage();
             var navPage = new NavigationPage(mainPage);
             

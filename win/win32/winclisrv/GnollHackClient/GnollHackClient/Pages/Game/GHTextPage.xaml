@@ -1,14 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              x:Class="GnollHackClient.Pages.Game.GHTextPage"
              Disappearing="GHTextPage_Disappearing">
     <ContentPage.Content>
-        <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-            <AbsoluteLayout.GestureRecognizers>
-                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-            </AbsoluteLayout.GestureRecognizers>
-            <CollectionView Margin="3" x:Name="TextView" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  BackgroundColor="Transparent"  >
+        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <ff:CachedImage x:Name="BackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" InputTransparent="False"
+                            Source="resource://GnollHackClient.Assets.UI.menubackground.png">
+                <ff:CachedImage.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                </ff:CachedImage.GestureRecognizers>
+            </ff:CachedImage>
+            <CollectionView Margin="5" x:Name="TextView" HorizontalOptions="FillAndExpand" VerticalOptions="Start" BackgroundColor="Transparent">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -34,6 +38,6 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </AbsoluteLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
