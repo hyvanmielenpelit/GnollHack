@@ -5401,10 +5401,10 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
         {
             for (int i = 0; i < 2; i++)
             {
-                int tile_upside = glyph2tile[abs(data->map[rx][ry].glyph)];
-                int bktile_upside = glyph2tile[abs(data->map[rx][ry].bkglyph)];
-                short replacement_idx_upside = tile2replacement[tile_upside];
-                short bk_replacement_idx_upside = tile2replacement[bktile_upside];
+                int tile_upside = abs(data->map[rx][ry].glyph) < MAX_GLYPH ? glyph2tile[abs(data->map[rx][ry].glyph)] : -1;
+                int bktile_upside = abs(data->map[rx][ry].bkglyph) < MAX_GLYPH ? glyph2tile[abs(data->map[rx][ry].bkglyph)] : -1;
+                short replacement_idx_upside = tile_upside >= 0 ? tile2replacement[tile_upside] : 0;
+                short bk_replacement_idx_upside = bktile_upside >= 0 ? tile2replacement[bktile_upside] : 0;
 
                 short used_ridx = (i == 0 ? replacement_idx_upside : bk_replacement_idx_upside);
                 int used_tile = (i == 0 ? tile_upside : bktile_upside);
@@ -5703,6 +5703,8 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                 int anim_frame_idx = -1, main_tile_idx = -1;
                 int signed_glyph = data->map[x][y].layer_glyphs[layer_idx];
                 int glyph = abs(signed_glyph);
+                if (glyph <= 0 || glyph >= MAX_GLYPH)
+                    continue;
                 flipped = (signed_glyph < 0);
                 int ntile = glyph2tile[glyph];
                 ntile = maybe_get_replaced_tile(ntile, x, y, data_to_replacement_info(signed_glyph, layer_idx, (struct obj*)0, m_at(x, y), data->map[x][y].layer_flags), &autodraw);

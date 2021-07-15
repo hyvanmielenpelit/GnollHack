@@ -320,7 +320,7 @@
 /* Some special tile flags */
 #define M5_FULL_SIZED_CORPSE_TILE        0x00010000UL
 #define M5_FULL_SIZED_FEMALE_CORPSE_TILE 0x00020000UL
-/* free bit */
+#define M5_HALF_SIZED_MONSTER_TILE       0x00040000UL /* Upper half of the tile is empty, so one can draw in menus just the lower half */
 /* free bit */
 
 /* Remaining bits are normal monster flags */
