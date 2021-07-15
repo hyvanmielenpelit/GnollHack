@@ -5689,7 +5689,10 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
 
                     if (otmp)
                     {
-                        int ntile = glyph2tile[abs(otmp->glyph)];
+                        int glyph = abs(otmp->glyph);
+                        if (glyph <= 0 || glyph >= MAX_GLYPH)
+                            continue;
+                        int ntile = glyph2tile[glyph];
                         enum autodraw_types autodraw = AUTODRAW_NONE;
                         ntile = maybe_get_replaced_tile(ntile, x, y, data_to_replacement_info(otmp->glyph, layer_idx, otmp, m_at(x, y), data->map[x][y].layer_flags), &autodraw);
                         enlarg = tile2enlargement[ntile]; // obj_to_glyph(otmp, rn2_on_display_rng))]];
