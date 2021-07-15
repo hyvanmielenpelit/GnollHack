@@ -2409,10 +2409,10 @@ int spe_type_index;
         maxspe = 5;
         break;
     case ENCHTYPE_LEATHER_NONBODY_ARMOR:
-        maxspe = 6;
+        maxspe = 4;
         break;
     case ENCHTYPE_LEATHER_BODY_ARMOR:
-        maxspe = 9;
+        maxspe = 5;
         break;
     case ENCHTYPE_ALWAYS_1:
         maxspe = 1;

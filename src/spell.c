@@ -22,7 +22,7 @@
 #define spellhotkey(spell) spl_book[spell].sp_hotkey
 #define spellname(spell) OBJ_NAME(objects[spellid(spell)])
 #define spellet(spell) \
-    ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))
+    ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))  /* Obsolete! Do not use! */
 
 STATIC_DCL int FDECL(spell_let_to_idx, (CHAR_P));
 STATIC_DCL boolean FDECL(cursed_book, (struct obj * bp));
@@ -3203,7 +3203,7 @@ dovspell()
             } 
             else 
             {
-                Sprintf(qbuf, "Reordering spells; swap '%c' with", spellet(splnum));
+                Sprintf(qbuf, "Reordering spells; swap '%s' with", spellname(splnum));
                 if (!dospellmenu(qbuf, splnum, &othnum))
                     break;
 

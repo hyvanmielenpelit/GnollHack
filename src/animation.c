@@ -1976,6 +1976,343 @@ enum autodraw_types* autodraw_ptr;
     return ntile;
 }
 
+
+int
+maybe_get_replaced_glyph(glyph, x, y, info)
+int glyph;
+int x, y;
+struct replacement_info info;
+{
+#ifdef USE_TILES
+    int sign = sgn(glyph);
+    int absglyph = abs(glyph);
+    struct obj* otmp = info.object;
+    struct monst* mtmp = info.monster;
+    unsigned long layer_flags = info.layer_flags;
+    short replacement_idx = glyph2replacement[absglyph];
+    if (replacement_idx > 0)
+    {
+        if (replacements[replacement_idx].number_of_tiles < 1)
+            return glyph;
+
+        switch (replacements[replacement_idx].replacement_action)
+        {
+        case REPLACEMENT_ACTION_BOTTOM_TILE:
+        {
+            int below_y = y + 1;
+            if (!isok(x, below_y)
+                || glyph_is_specific_cmap_or_its_variation(levl[x][below_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
+                || (IS_DOORJOIN(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ))
+                || levl[x][below_y].typ == DOOR
+                || levl[x][below_y].typ == UNDEFINED_LOCATION
+                || (!cansee(x, y) && glyph_is_specific_cmap_or_its_variation(levl[x][below_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_stone))
+                || (levl[x][y].seenv & (SV3 | SV4 | SV5 | SV6 | SV7)) == 0)
+            {
+                /* No action */
+            }
+            else
+            {
+                /* Return the tile based on stone's vartyp (i.e., take the right variation) */
+                int repl_idx = (int)min(replacements[replacement_idx].number_of_tiles - 1, levl[x][y].vartyp);
+                return sign * (repl_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_SHORE_TILE:
+        {
+            int above_y = y - 1;
+            //int below_y = y + 1;
+            int floortype = IS_FLOOR(levl[x][y].typ) || IS_POOL(levl[x][y].typ) || levl[x][y].typ == LAVAPOOL || levl[x][y].typ == ICE ? levl[x][y].typ : levl[x][y].floortyp;
+            boolean is_water_or_air_level = (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz));
+
+            if (!(is_water_or_air_level && info.layer == LAYER_FLOOR) && (Underwater || !isok(x, above_y)
+                || (levl[x][y].typ == levl[x][above_y].typ && levl[x][y].subtyp == levl[x][above_y].subtyp)
+                || (level.flags.hero_memory && glyph_is_specific_cmap_or_its_variation(levl[x][above_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored))
+                || levl[x][above_y].typ == UNDEFINED_LOCATION || (IS_SOLID_FLOOR(floortype) && (IS_DOORJOIN(levl[x][above_y].typ)))))
+            {
+                /* No action */
+            }
+            else
+            {
+                int tileidx = -1;
+                /* Kludge for water and air levels */
+                if (is_water_or_air_level && info.layer == LAYER_FLOOR)
+                {
+                    struct layer_info this_l = layers_at(x, y);
+                    struct layer_info above_l = layers_at(x, above_y);
+                    int this_g = this_l.layer_glyphs[info.layer];
+                    int above_g = above_l.layer_glyphs[info.layer];
+                    int this_cmap = generic_glyph_to_cmap(this_g);
+                    int above_cmap = generic_glyph_to_cmap(above_g);
+                    if (this_cmap == above_cmap)
+                        return glyph;
+
+                    if (above_cmap == S_water)
+                        tileidx = MAX_FLOOR_SUBTYPES + MAX_GRASS_SUBTYPES + MAX_GROUND_SUBTYPES + MAX_CORRIDOR_SUBTYPES + 6;
+                    else if (above_cmap == S_cloud)
+                        tileidx = MAX_FLOOR_SUBTYPES + MAX_GRASS_SUBTYPES + MAX_GROUND_SUBTYPES + MAX_CORRIDOR_SUBTYPES + 5;
+                    else if (above_cmap == S_air)
+                        tileidx = MAX_FLOOR_SUBTYPES + MAX_GRASS_SUBTYPES + MAX_GROUND_SUBTYPES + MAX_CORRIDOR_SUBTYPES + 4;
+                    else
+                        tileidx = get_shore_tile_index(&levl[x][y], &levl[x][above_y]);
+                }
+                else
+                    tileidx = get_shore_tile_index(&levl[x][y], &levl[x][above_y]);
+
+                if (tileidx < 0 || tileidx >= MAX_TILES_PER_REPLACEMENT || (replacements[replacement_idx].tile_flags[tileidx] & RTF_SKIP))
+                    return glyph;
+
+                return sign * (tileidx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+
+            break;
+        }
+        case REPLACEMENT_ACTION_SHORE_ADJUSTED_TILE:
+        {
+            int above_y = y - 1;
+            if (Underwater || !isok(x, above_y) || glyph_is_specific_cmap_or_its_variation(levl[x][above_y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
+                || levl[x][above_y].typ == UNDEFINED_LOCATION)
+            {
+                /* No action */
+            }
+            else if (levl[x][above_y].typ == DRAWBRIDGE_DOWN || levl[x][above_y].typ == LAVAPOOL || levl[x][above_y].typ == POOL || levl[x][above_y].typ == MOAT || levl[x][above_y].typ == WATER || levl[x][above_y].typ == DRAWBRIDGE_UP)
+            {
+                int tileidx = 0;
+                return sign * (tileidx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+
+            break;
+        }
+        case REPLACEMENT_ACTION_FLOOR_ADJUSTED_TILE:
+        {
+            if (Underwater || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
+                || !IS_SOLID_FLOOR(levl[x][y].floortyp))
+            {
+                /* No action */
+            }
+            else
+            {
+                int tileidx = get_solid_floor_tile_index(&levl[x][y]);
+                return sign * (tileidx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_SHORE_AND_FLOOR_ADJUSTED_TILE:
+        {
+            int above_y = y - 1;
+            int left_x = x - 1;
+            int right_x = x + 1;
+            if (Underwater || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored)
+                || !IS_SOLID_FLOOR(levl[x][y].floortyp))
+            {
+                /* No action */
+            }
+            else
+            {
+                int tileidx = get_shore_and_floor_adjusted_tile_index(&levl[x][y], isok(x, above_y) ? &levl[x][above_y] : 0, isok(left_x, y) ? &levl[left_x][y] : 0, isok(right_x, y) ? &levl[right_x][y] : 0);
+                return sign * (tileidx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_OBJECT_LIT:
+        {
+            if (!otmp)
+                return glyph;
+
+            if (is_obj_activated(otmp))
+            {
+                /* Return the first tile with index 0 */
+                return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_LOCATION_LIT:
+        {
+            if (isok(x, y) && get_location_light_range(x, y) != 0 && levl[x][y].lamplit == TRUE)
+            {
+                /* Return the first tile with index 0 */
+                return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_LOCATION_HORIZONTAL:
+        {
+            if (isok(x, y) && levl[x][y].horizontal == TRUE)
+            {
+                return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_LEVER_STATE:
+        {
+            struct trap* ttmp = 0;
+            unsigned long leverstate = 0UL;
+            if (isok(x, y) && (ttmp = t_at(x, y)) != 0 && ttmp->ttyp == LEVER && (leverstate = ttmp->tflags & TRAPFLAGS_STATE_MASK) > 0)
+            {
+                int glyph_idx = max(0, min((int)replacements[replacement_idx].number_of_tiles, (int)leverstate) - 1);
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_COIN_QUANTITY:
+        {
+            if (!otmp)
+                return glyph;
+
+            if (otmp->quan > 1)
+            {
+                int glyph_idx = (otmp->quan <= 8 ? otmp->quan - 2 : otmp->quan <= 30 ? 7 : otmp->quan <= 100 ? 8 : otmp->quan <= 1000 ? 9 : 10);
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_PEBBLE_QUANTITY:
+        {
+            if (!otmp)
+                return glyph;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return glyph;
+
+            if (otmp->quan > 1)
+            {
+                int glyph_idx = (otmp->quan <= 8 ? otmp->quan - 2 : otmp->quan <= 20 ? 7 : otmp->quan <= 50 ? 8 : otmp->quan <= 100 ? 9 : 10);
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_CHEST:
+        {
+            if (!otmp)
+                return glyph;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return glyph;
+
+            if (otmp->olocked)
+            {
+                int glyph_idx = 0;
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            else if (otmp->obroken)
+            {
+                int glyph_idx = 1;
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_AUTODRAW:
+        {
+            break;
+        }
+        case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_LIT:
+        {
+            if (!otmp)
+                return glyph;
+
+            if (is_obj_activated(otmp))
+            {
+                /* Return the first tile with index 0 */
+                return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_UCHAIN:
+        {
+            if (!otmp)
+                return glyph;
+
+            if (otmp == uchain)
+            {
+                /* Return the first tile with index 0 */
+                return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_AUTODRAW_AND_LONG_WORM:
+        {
+            if (!mtmp)
+                return glyph;
+
+            if (count_wsegs(mtmp) > 0)
+            {
+                /* Return the first tile with index 0 */
+                return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_PIERCER:
+        {
+            if (!mtmp && !(layer_flags & LFLAGS_M_DROPPING_PIERCER))
+                return glyph;
+
+            if ((layer_flags & LFLAGS_M_DROPPING_PIERCER) || (mtmp && mtmp->mundetected))
+            {
+                int glyph_idx = (layer_flags & LFLAGS_M_DROPPING_PIERCER) ? 1 : 0;
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_BEAR_TRAP:
+        {
+            if (!(layer_flags & LFLAGS_T_TRAPPED))
+                return glyph;
+
+            if (layer_flags & LFLAGS_T_TRAPPED)
+            {
+                int glyph_idx = 0;
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_COFFIN:
+        {
+            if (!otmp)
+                return glyph;
+
+            if (otmp->speflags & SPEFLAGS_LID_OPENED)
+            {
+                int glyph_idx = 0;
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_ALIGNED_PRIEST:
+        {
+            if (!mtmp)
+                return glyph;
+
+            aligntyp algn = mon_aligntyp(mtmp);
+            if (algn == A_NONE)
+            {
+                int glyph_idx = 0;
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_ALIGNED_PRIEST_STATUE:
+        {
+            if (!otmp)
+                return glyph;
+
+            struct monst* mtmp2 = get_mtraits(otmp, FALSE);
+            if (mtmp2 && has_epri(mtmp2) && EPRI(mtmp2)->shralign == A_NONE)
+            {
+                int glyph_idx = 0;
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+#endif
+    return glyph;
+}
+
+
+
 STATIC_OVL int
 get_shore_tile_index(mainlev, lev)
 struct rm* mainlev, *lev;
