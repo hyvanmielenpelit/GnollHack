@@ -54,8 +54,8 @@ STATIC_DCL void FDECL(add_spell_prepare_menu_item, (winid, int, int, int, int, B
 STATIC_DCL void FDECL(add_spell_prepare_menu_heading, (winid, int, int, BOOLEAN_P));
 STATIC_DCL boolean FDECL(is_acceptable_component_object_type, (struct materialcomponent*, int));
 STATIC_DCL boolean FDECL(is_acceptable_component_monster_type, (struct materialcomponent*, int));
+STATIC_DCL uchar FDECL(is_obj_acceptable_component, (struct materialcomponent*, struct obj* otmp, BOOLEAN_P));
 STATIC_DCL int FDECL(count_matcomp_alternatives, (struct materialcomponent*));
-
 
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
 static const char explodes[] = "radiates explosive energy";
@@ -4471,25 +4471,7 @@ int spell;
         selcomps[j] = otmp;
 
         //Check if acceptable
-        boolean acceptable = FALSE;
-        if (is_acceptable_component_object_type(mc, otmp->otyp))
-            acceptable = TRUE;
-
-        if ((mc->flags & MATCOMP_BLESSED_REQUIRED) && !otmp->blessed)
-            acceptable = FALSE;
-
-        if ((mc->flags & MATCOMP_CURSED_REQUIRED) && !otmp->cursed)
-            acceptable = FALSE;
-
-        if ((mc->flags & MATCOMP_NOT_CURSED) && otmp->cursed)
-            acceptable = FALSE;
-
-        if ((mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED) && otmp->elemental_enchantment != DEATH_ENCHANTMENT)
-            acceptable = FALSE;
-
-        if ((is_acceptable_component_object_type(mc, CORPSE) || is_acceptable_component_object_type(mc, TIN) || is_acceptable_component_object_type(mc, EGG))
-            && mc->monsterid[0] >= 0 && !is_acceptable_component_monster_type(mc, otmp->corpsenm))
-            acceptable = FALSE;
+        boolean acceptable = !!is_obj_acceptable_component(mc, otmp, FALSE);
 
         //Check quantity
         if (otmp->quan < mc->amount)
@@ -4764,6 +4746,51 @@ int mnum;
     return FALSE;
 }
 
+STATIC_OVL
+uchar
+is_obj_acceptable_component(mc, otmp, also_possible)
+struct materialcomponent* mc;
+struct obj* otmp;
+boolean also_possible;
+{
+    boolean acceptable = FALSE;
+    if (is_acceptable_component_object_type(mc, otmp->otyp))
+        acceptable = TRUE;
+
+    if ((mc->flags & MATCOMP_BLESSED_REQUIRED) && !otmp->blessed)
+        acceptable = otmp->bknown || !also_possible ? FALSE : 2;
+
+    if ((mc->flags & MATCOMP_CURSED_REQUIRED) && !otmp->cursed)
+        acceptable = otmp->bknown || !also_possible ? FALSE : 2;
+
+    if ((mc->flags & MATCOMP_NOT_CURSED) && otmp->cursed)
+        acceptable = otmp->bknown || !also_possible ? FALSE : 2;
+
+    if ((mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED) && otmp->elemental_enchantment != DEATH_ENCHANTMENT)
+        acceptable = FALSE;
+
+    if ((is_acceptable_component_object_type(mc, CORPSE) || is_acceptable_component_object_type(mc, TIN) || is_acceptable_component_object_type(mc, EGG))
+        && mc->monsterid[0] >= 0 && !is_acceptable_component_monster_type(mc, otmp->corpsenm))
+        acceptable = FALSE;
+
+    return acceptable;
+}
+
+uchar
+is_obj_component_for(spell, otmp)
+int spell;
+struct obj* otmp;
+{
+    int j;
+    uchar res;
+    for (j = 0; matlists[spellmatcomp(spell)].matcomp[j].amount != 0; j++)
+    {
+        struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
+        if (res = is_obj_acceptable_component(mc, otmp, TRUE))
+            return res;
+    }
+    return 0;
+}
 
 const char*
 domatcompname(mc)

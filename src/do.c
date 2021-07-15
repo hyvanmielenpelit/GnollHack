@@ -961,6 +961,7 @@ register struct obj* obj;
     boolean stats_known = object_stats_known(obj);
     boolean uses_spell_flags = object_uses_spellbook_wand_flags_and_properties(obj);
     double wep_avg_dmg = 0;
+    int i;
 
     char buf[BUFSZ];
     char buf2[BUFSZ];
@@ -3598,6 +3599,40 @@ register struct obj* obj;
         }
     }
 
+
+    /* Note if used as a component for a spell */
+    if (objects[otyp].oc_name_known)
+    {
+        int spellcnt = 0;
+        for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+        {
+            if (is_obj_component_for(i, obj))
+                spellcnt++;
+        }
+        if (spellcnt > 0)
+        {
+            Sprintf(buf, "Component for the following spell%s:", plur(spellcnt));
+            txt = buf;
+            putstr(datawin, 0, txt);
+            int compcnt = 0;
+            const char* splname = 0;
+            char sbuf[BUFSZ];
+            int splres;
+            for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+            {
+                if (splres = is_obj_component_for(i, obj))
+                {
+                    compcnt++;
+                    splname = OBJ_NAME(objects[spellid(i)]);
+                    strcpy(sbuf, splname);
+                    *sbuf = highc(*sbuf);
+                    Sprintf(buf, " %2d - %s%s%s", compcnt, splres >= 2 ? "Maybe: " : "", sbuf, splres == 2 ? " (blessedness unknown)" : "");
+                    txt = buf;
+                    putstr(datawin, 0, txt);
+                }
+            }
+        }
+    }
 
     /* Description */
     if (stats_known && OBJ_ITEM_DESC(otyp) /* && !(obj->oartifact && obj->nknown) */)
