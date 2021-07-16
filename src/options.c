@@ -132,7 +132,7 @@ static struct Bool_Opt {
 #endif
     { "eight_bit_tty", &iflags.wc_eight_bit_input, FALSE, SET_IN_GAME }, /*WC*/
 #if defined(UNIX) && !defined(GNH_ANDROID) 
-    { "enablettyarrowkeys", &flags.enablettyarrowkeys, FALSE, SET_IN_GAME }, 
+    { "enablettyarrowkeys", &iflags.enablettyarrowkeys, FALSE, SET_IN_GAME }, 
 #endif
 #if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS) || defined(X11_GRAPHICS)
     { "extmenu", &iflags.extmenu, FALSE, SET_IN_GAME },

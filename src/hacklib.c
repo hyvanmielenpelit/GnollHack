@@ -1568,7 +1568,7 @@ is_stdin_empty()
 #if 0 // defined(UNIX) && !defined(GNH_ANDROID)
     unix_is_stdin_empty();
 #else
-    return !flags.enablettyarrowkeys;
+    return !iflags.enablettyarrowkeys;
 #endif
 }
 

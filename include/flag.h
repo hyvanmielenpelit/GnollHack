@@ -58,7 +58,6 @@ struct flag {
     boolean displace_peaceful;  /* displace peaceful monsters */
     boolean showexp;         /* show experience points */
     boolean tellexp;         /* tell experience points when received */
-    boolean enablettyarrowkeys;  /* experimental: enable tty arrow keys but comes with drawvback of double ESC */
     boolean showmove;         /* show move on statusline */
     boolean show_weapon_style;         /* show weapon style on statusline */
     boolean show_buff_timer;    /* show buff timers in GUI */
@@ -350,6 +349,7 @@ struct instance_flags {
     boolean menu_tab_sep;     /* Use tabs to separate option menu fields */
     boolean news;             /* print news */
     boolean num_pad;          /* use numbers for movement commands */
+    boolean enablettyarrowkeys;  /* experimental: enable tty arrow keys but comes with drawvback of double ESC */
     boolean perm_invent;      /* keep full inventories up until dismissed */
     boolean renameallowed;    /* can change hero name during role selection */
     boolean renameinprogress; /* we are changing hero name */
