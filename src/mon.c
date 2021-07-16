@@ -5250,7 +5250,11 @@ int mnum;
     if (mnum == PM_SCORPIUS)
         mnum = PM_SCORPION;
 
-    mnum = little_to_big(mnum);
+    if(mons[mnum].mflags6 & M6_HATCHLING)
+        mnum = little_to_big(mnum);
+    else if (mons[mnum].mflags6 & M6_ELDER)
+        mnum = big_to_little(mnum);
+
     /*
      * Queen bees lay killer bee eggs (usually), but killer bees don't
      * grow into queen bees.  Ditto for [winged-]gargoyles.
@@ -5269,6 +5273,11 @@ egg_type_from_parent(mnum, force_ordinary)
 int mnum; /* parent monster; caller must handle lays_eggs() check */
 boolean force_ordinary;
 {
+    if (mons[mnum].mflags6 & M6_HATCHLING)
+        mnum = little_to_big(mnum);
+    else if (mons[mnum].mflags6 & M6_ELDER)
+        mnum = big_to_little(mnum);
+
     if (force_ordinary || !BREEDER_EGG) {
         if (mnum == PM_QUEEN_BEE)
             mnum = PM_KILLER_BEE;
