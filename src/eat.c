@@ -2456,35 +2456,48 @@ eataccessory(otmp)
 struct obj *otmp;
 {
     int typ = otmp->otyp;
+    int usedprop = objects[typ].oc_oprop;
     long oldprop;
+
+    if (objects[typ].oc_oprop2 && objects[typ].oc_oprop3 && rn2(3))
+        usedprop = rn2(2) ? objects[typ].oc_oprop2 : objects[typ].oc_oprop3;
+    else if (objects[typ].oc_oprop2 && rn2(2))
+        usedprop = objects[typ].oc_oprop2;
 
     /* Note: rings are not so common that this is unbalancing. */
     /* (How often do you even _find_ 3 rings of polymorph in a game?) */
-    oldprop = u.uprops[objects[typ].oc_oprop].intrinsic;
-    if (otmp == uleft || otmp == uright) {
+
+    oldprop = u.uprops[usedprop].intrinsic;
+    if (otmp == uleft || otmp == uright) 
+    {
         Ring_gone(otmp);
         if (u.uhp <= 0)
             return; /* died from sink fall */
     }
     otmp->known = otmp->dknown = 1; /* by taste */
-    if (!rn2(otmp->oclass == RING_CLASS ? 3 : 5)) {
-        switch (otmp->otyp) {
+    if (!rn2(otmp->oclass == RING_CLASS ? 3 : 5)) 
+    {
+        switch (otmp->otyp) 
+        {
         default:
-            if (!objects[typ].oc_oprop)
+            if (!usedprop)
                 break; /* should never happen */
 
-            if (!(u.uprops[objects[typ].oc_oprop].intrinsic & FROM_ACQUIRED))
+            if (!(u.uprops[usedprop].intrinsic & FROM_ACQUIRED))
                 accessory_has_effect(otmp);
 
-            u.uprops[objects[typ].oc_oprop].intrinsic |= FROM_ACQUIRED;
+            boolean was_seeing_invisible = See_invisible;
+            boolean was_invisible = Invis;
 
-            switch (typ) {
-            case RIN_SUPREME_POWER:
-            case RIN_SEE_INVISIBLE:
+            u.uprops[usedprop].intrinsic |= FROM_ACQUIRED;
+
+            switch (usedprop) 
+            {
+            case SEE_INVISIBLE:
                 set_mimic_blocking();
                 see_monsters();
-                if (Invis && !oldprop && !ESee_invisible
-                    && !has_innate_see_invisible(youmonst.data) && !Blind) {
+                if (Invis && !was_seeing_invisible && See_invisible && !Blind) 
+                {
                     newsym(u.ux, u.uy);
                     pline("Suddenly you can see yourself.");
                     makeknown(typ);
@@ -2493,22 +2506,23 @@ struct obj *otmp;
                     break;
 
                 /* FALLTHRU */
-            case RIN_INVISIBILITY:
-                if (!oldprop && !EInvis && !Blocks_Invisibility && !See_invisible
-                    && !Blind) {
+            case INVISIBILITY:
+                if (!was_invisible && Invis && !See_invisible && !Blind) 
+                {
                     newsym(u.ux, u.uy);
                     Your("body takes on a %s transparency...",
                          Hallucination ? "normal" : "strange");
                     makeknown(typ);
                 }
                 break;
-            case RIN_PROTECTION_FROM_SHAPE_CHANGERS:
+            case PROT_FROM_SHAPE_CHANGERS:
                 rescham();
                 break;
-            case RIN_LEVITATION:
+            case LEVITATION:
                 /* undo the `.intrinsic |= FROM_ACQUIRED' done above */
                 u.uprops[LEVITATION].intrinsic = oldprop;
-                if (!Levitation) {
+                if (!Levitation) 
+                {
                     float_up();
                     incr_itimeout(&HLevitation, d(10, 20));
                     makeknown(typ);
@@ -2516,7 +2530,6 @@ struct obj *otmp;
                 break;
             } /* inner switch */
             break; /* default case of outer switch */
-
         case RIN_GAIN_STRENGTH:
             accessory_has_effect(otmp);
             if (adjattrib(A_STR, otmp->enchantment, -1))
@@ -2613,7 +2626,8 @@ struct obj *otmp;
             break;
         case AMULET_OF_UNCHANGING:
             /* un-change: it's a pun */
-            if (!Unchanging && Upolyd) {
+            if (!Unchanging && Upolyd) 
+            {
                 accessory_has_effect(otmp);
                 makeknown(typ);
                 rehumanize();
@@ -2623,7 +2637,8 @@ struct obj *otmp;
             /* no message--this gives no permanent effect */
             choke(otmp);
             break;
-        case AMULET_OF_RESTFUL_SLEEP: { /* another bad idea! */
+        case AMULET_OF_RESTFUL_SLEEP: 
+        { /* another bad idea! */
             //long newnap = (long) rnd(100), oldnap = (HSleepy & TIMEOUT);
 
             if (!(HSleepy & FROM_ACQUIRED))
