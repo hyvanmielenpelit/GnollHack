@@ -401,8 +401,8 @@ int *rank_indx, *title_length;
     for (i = 0; roles[i].name.m; i++)
         for (j = 0; j < 9; j++) {
             if (roles[i].rank[j].m
-                && !strncmpi(str, roles[i].rank[j].m,
-                             strlen(roles[i].rank[j].m))) {
+                && !strcmpi(str, roles[i].rank[j].m)) //, strlen(roles[i].rank[j].m)
+            {
                 if (rank_indx)
                     *rank_indx = j;
                 if (title_length)
@@ -410,8 +410,8 @@ int *rank_indx, *title_length;
                 return roles[i].monsternum;
             }
             if (roles[i].rank[j].f
-                && !strncmpi(str, roles[i].rank[j].f,
-                             strlen(roles[i].rank[j].f))) {
+                && !strcmpi(str, roles[i].rank[j].f)) //, strlen(roles[i].rank[j].f)
+            {
                 if (rank_indx)
                     *rank_indx = j;
                 if (title_length)
