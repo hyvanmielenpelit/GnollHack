@@ -2185,7 +2185,7 @@ register struct obj* obj;
                     }
                     else if (j == 6)
                     {
-                        for (int k = 0; k < 13; k++)
+                        for (int k = 0; k < 14; k++)
                         {
                             strcpy(buf2, "");
                             int stat = (k == 9 ? /* MC */ objects[otyp].oc_attribute_bonus / 3 : objects[otyp].oc_attribute_bonus);
