@@ -290,6 +290,7 @@ namespace GnollHackCommon
         public short damage_displayed;
         public short hit_tile;
         public short special_monster_layer_height;
+        public short object_height;
 
         public byte missile_poisoned;
         public byte missile_elemental_enchantment;
@@ -417,6 +418,8 @@ namespace GnollHackCommon
         public const int MaxNormalImmediateSoundInstances = 64;
         public const int MaxLongImmediateSoundInstances = 64;
         public const int DefaultPanTime = 5;
+        public const int PIT_BOTTOM_BORDER = 2;
+        
     }
 
     [StructLayout(LayoutKind.Sequential)]

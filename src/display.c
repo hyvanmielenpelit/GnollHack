@@ -393,6 +393,9 @@ boolean exclude_ascii;
     if (isok(x, y) && (t = t_at(x, y)) != 0 && t->tseen && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
         in_pit = TRUE;
 
+    int artidx = obj->oartifact;
+    int obj_height = artidx ? artilist[artidx].tile_floor_height : OBJ_TILE_HEIGHT(obj->otyp);
+
     /* Replace */
     int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, layer, obj, (struct monst*)0, 0UL));
 
@@ -410,12 +413,14 @@ boolean exclude_ascii;
         {
             new_glyph = random_obj_to_glyph(newsym_rn2);
             new_gui_glyph = maybe_get_replaced_glyph(new_glyph, x, y, data_to_replacement_info(glyph, layer, obj, (struct monst*)0, 0UL));
+            obj_height = 0;
         }
 
         if (!exclude_ascii)
         {
             levl[x][y].hero_memory_layers.glyph = new_glyph;
             levl[x][y].hero_memory_layers.layer_glyphs[layer] = new_gui_glyph; /* Object layer glyph should be aligned with ascii glyph */
+            levl[x][y].hero_memory_layers.object_height = obj_height;
         }
 
         if (in_pit)
@@ -440,6 +445,7 @@ boolean exclude_ascii;
         {
             show_glyph_ascii(x, y, glyph);
             show_glyph_on_layer(x, y, gui_glyph, layer); /* Object layer glyph should be aligned with ascii glyph */
+            set_glyph_buffer_object_height(x, y, obj_height);
         }
 
         if(in_pit)
@@ -2502,6 +2508,18 @@ unsigned long removed_flags;
         }
     }
 }
+
+void
+set_glyph_buffer_object_height(x, y, height)
+int x, y;
+short height;
+{
+    if (isok(x, y))
+    {
+        gbuf[y][x].layers.object_height = height;
+    }
+}
+
 
 void
 clear_monster_layer_memory_at(x, y)

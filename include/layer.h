@@ -50,6 +50,7 @@ struct layer_info {
     short damage_displayed;
     short hit_tile;
     short special_monster_layer_height;
+    short object_height;
 
     uchar missile_poisoned;
     uchar missile_elemental_enchantment;
