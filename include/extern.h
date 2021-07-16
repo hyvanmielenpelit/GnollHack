@@ -3946,6 +3946,7 @@ E boolean FDECL(break_statue, (struct obj *));
 E void FDECL(destroy_item, (int, int));
 E int FDECL(destroy_mitem, (struct monst *, int, int));
 E void FDECL(destroy_one_item, (struct obj*, int, int, BOOLEAN_P));
+E boolean FDECL(is_obj_protected_by_property, (struct obj*, struct monst*, int));
 E boolean FDECL(check_magic_resistance_and_inflict_damage, (struct monst *, struct obj *, struct monst*, BOOLEAN_P, int, int, int));
 E boolean FDECL(inflict_spell_damage, (struct monst*, struct obj*, struct monst*, int, int, int));
 E void FDECL(makewish, (BOOLEAN_P));

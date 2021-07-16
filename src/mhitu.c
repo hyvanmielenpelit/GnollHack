@@ -3757,6 +3757,12 @@ boolean ufound;
                     burn_away_slime();
 
                 mdamageu_with_hit_tile(mtmp, damage, TRUE, get_hit_tile_by_adtyp(mattk->adtyp));
+
+                destroy_item(SCROLL_CLASS, (int)mattk->adtyp);
+                destroy_item(SPBOOK_CLASS, (int)mattk->adtyp);
+                destroy_item(POTION_CLASS, (int)mattk->adtyp);
+                destroy_item(RING_CLASS, (int)mattk->adtyp);
+                destroy_item(WAND_CLASS, (int)mattk->adtyp);
             }
             break;
 

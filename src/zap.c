@@ -9933,7 +9933,7 @@ boolean forcedestroy;
     switch (dmgtyp) 
     {
     case AD_COLD:
-        if (osym == POTION_CLASS && obj->otyp != POT_OIL && !oresist_cold(obj))
+        if (osym == POTION_CLASS && obj->otyp != POT_OIL && !oresist_cold(obj) && !is_obj_protected_by_property(obj, &youmonst, dmgtyp))
         {
             obj_sound_type = OBJECT_SOUND_TYPE_FROZEN;
             quan = obj->quan;
@@ -9952,7 +9952,7 @@ boolean forcedestroy;
                 pline("%s glows a strange %s, but remains intact.",
                       The(xname(obj)), hcolor("dark red"));
         }
-        else if (oresist_fire(obj))
+        else if (oresist_fire(obj) || is_obj_protected_by_property(obj, &youmonst, dmgtyp))
             skip++;
 
         quan = obj->quan;
@@ -9994,7 +9994,7 @@ boolean forcedestroy;
         switch (osym) 
         {
         case RING_CLASS:
-            if (oresist_elec(obj))
+            if (oresist_elec(obj) || is_obj_protected_by_property(obj, &youmonst, dmgtyp))
             {
                 skip++;
                 break;
@@ -10003,7 +10003,7 @@ boolean forcedestroy;
             dmg = 0;
             break;
         case WAND_CLASS:
-            if (oresist_elec(obj)) 
+            if (oresist_elec(obj) || is_obj_protected_by_property(obj, &youmonst, dmgtyp))
             {
                 skip++;
                 break;
@@ -10212,7 +10212,7 @@ int osym, dmgtyp;
         {
         case AD_COLD:
             obj_sound_type = OBJECT_SOUND_TYPE_FROZEN;
-            if (oresist_cold(obj))
+            if (oresist_cold(obj) || is_obj_protected_by_property(obj, mtmp, dmgtyp))
             {
                 skip++;
                 break;
@@ -10234,7 +10234,7 @@ int osym, dmgtyp;
                     pline("%s glows a strange %s, but remains intact.",
                           The(distant_name(obj, xname)), hcolor("dark red"));
             }
-            if (oresist_fire(obj))
+            if (oresist_fire(obj) || is_obj_protected_by_property(obj, mtmp, dmgtyp))
             {
                 skip++;
                 break;
@@ -10272,7 +10272,7 @@ int osym, dmgtyp;
         case AD_ELEC:
             obj_sound_type = OBJECT_SOUND_TYPE_ELECTROCUTED;
             quan = obj->quan;
-            if(oresist_elec(obj))
+            if(oresist_elec(obj) || is_obj_protected_by_property(obj, mtmp, dmgtyp))
             {
                 skip++;
                 break;
@@ -10281,19 +10281,9 @@ int osym, dmgtyp;
             switch (osym)
             {
             case RING_CLASS:
-                if (obj->otyp == RIN_SHOCK_RESISTANCE) 
-                {
-                    skip++;
-                    break;
-                }
                 dindx = 5;
                 break;
             case WAND_CLASS:
-                if (obj->otyp == WAN_LIGHTNING) 
-                {
-                    skip++;
-                    break;
-                }
                 dindx = 6;
                 tmp++;
                 break;
@@ -10330,6 +10320,86 @@ int osym, dmgtyp;
     }
     return tmp;
 }
+
+boolean
+is_obj_protected_by_property(otmp, mtmp, adtyp)
+struct obj* otmp;
+struct monst* mtmp;
+int adtyp;
+{
+    if (!otmp || !mtmp)
+        return FALSE;
+
+    /* Worn items only, but including any wielded items (even if improperly like wielded rings and potions) */
+    if ((otmp->owornmask & ~(W_SWAP_WEAPON | W_QUIVER)) == 0L)
+        return FALSE;
+    
+    boolean isyou = (mtmp == &youmonst);
+
+    switch (adtyp)
+    {
+    case AD_FIRE:
+        if (isyou ? Fire_immunity : is_mon_immune_to_fire(mtmp))
+            return TRUE;
+        else if (isyou ? Improved_fire_resistance : mon_resists_fire_strongly(mtmp))
+        {
+            if (rn2(4))
+                return TRUE;
+        }
+        else if (isyou ? Fire_resistance : mon_resists_fire_weakly(mtmp))
+        {
+            if (rn2(2))
+                return TRUE;
+        }
+        break;
+    case AD_COLD:
+        if (isyou ? Cold_immunity : is_mon_immune_to_cold(mtmp))
+            return TRUE;
+        else if (isyou ? Improved_cold_resistance : mon_resists_cold_strongly(mtmp))
+        {
+            if (rn2(4))
+                return TRUE;
+        }
+        else if (isyou ? Cold_resistance : mon_resists_cold_weakly(mtmp))
+        {
+            if (rn2(2))
+                return TRUE;
+        }
+        break;
+    case AD_ELEC:
+        if (isyou ? Shock_immunity : is_mon_immune_to_elec(mtmp))
+            return TRUE;
+        else if (isyou ? Improved_shock_resistance : mon_resists_elec_strongly(mtmp))
+        {
+            if (rn2(4))
+                return TRUE;
+        }
+        else if (isyou ? Shock_resistance : mon_resists_elec_weakly(mtmp))
+        {
+            if (rn2(2))
+                return TRUE;
+        }
+        break;
+    case AD_ACID:
+        if (isyou ? Acid_immunity : is_mon_immune_to_acid(mtmp))
+            return TRUE;
+        else if (isyou ? Improved_acid_resistance : mon_resists_acid_strongly(mtmp))
+        {
+            if (rn2(4))
+                return TRUE;
+        }
+        else if (isyou ? Acid_resistance : mon_resists_acid_weakly(mtmp))
+        {
+            if (rn2(2))
+                return TRUE;
+        }
+        break;
+    default:
+        break;
+    }
+    return FALSE;
+}
+
 
 boolean
 check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, resisting_halves_damage, dmg, adtyp, tell)

@@ -3703,7 +3703,7 @@ struct obj* obj;
                     {
                         suggestnamingwand = TRUE;
                         pline("%s a strange %s, but %s intact.",
-                            Tobjnam(otmp, "glow"), otense(otmp, "remain"), hcolor("black"));
+                            Tobjnam(otmp, "glow"), hcolor("black"), otense(otmp, "remain"));
                     }
                     break;
                 }
