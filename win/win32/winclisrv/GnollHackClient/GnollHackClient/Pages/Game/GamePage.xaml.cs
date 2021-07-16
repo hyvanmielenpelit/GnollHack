@@ -1011,6 +1011,7 @@ namespace GnollHackClient.Pages.Game
                     {
                         if (Glyph2Tile != null && _tilesPerRow[0] > 0 && UsedTileSheets > 0)
                         {
+                            float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
                             for (int layer_idx = 0; layer_idx <= (int)layer_types.MAX_LAYERS; layer_idx++)
                             {
                                 for (int mapx = startX; mapx <= endX; mapx++)
@@ -1057,6 +1058,7 @@ namespace GnollHackClient.Pages.Game
                                         {
                                             int signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
                                             short obj_height = _mapData[mapx, mapy].Layers.object_height;
+                                            short missile_height = _mapData[mapx, mapy].Layers.missile_height;
 
                                             if (signed_glyph == NoGlyph)
                                                 continue;
@@ -1074,6 +1076,8 @@ namespace GnollHackClient.Pages.Game
                                                 bool tileflag_vflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_VERTICALLY) != 0;
                                                 bool tileflag_halfsize = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
                                                 bool tileflag_floortile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
+                                                bool tileflag_normalobjmissile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0;
+                                                bool tileflag_fullsizeditem = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
 
                                                 int ntile = Glyph2Tile[glyph];
                                                 int replacement = Tile2Replacement[ntile];
@@ -1298,7 +1302,6 @@ namespace GnollHackClient.Pages.Game
                                                     int source_height = GHConstants.TileHeight / 2;
                                                     if (tileflag_halfsize)
                                                     {
-                                                        float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
                                                         if (tileflag_floortile)
                                                         {
                                                             if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
@@ -1330,7 +1333,29 @@ namespace GnollHackClient.Pages.Game
                                                     }
                                                     else
                                                     {
-                                                        sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                        if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                                                        {
+                                                            if (tileflag_floortile)
+                                                            {
+                                                                sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight / 2);
+                                                            }
+                                                            else
+                                                            {
+                                                                float scale = 1.0f;
+                                                                if (missile_height > 0 && missile_height < 48)
+                                                                {
+                                                                    scale = ((float)missile_height) / 48.0f;
+                                                                }
+                                                                scaled_tile_width = scale * width;
+                                                                scaled_tile_height = scale * height / 2;
+                                                                scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                                scaled_y_padding = (height / 2 - scaled_tile_height) / 2;
+
+                                                                sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                            }
+                                                        }
+                                                        else
+                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                                                     }
 
                                                     tx = (offsetX + _mapOffsetX + width * (float)draw_map_x);
@@ -1344,7 +1369,12 @@ namespace GnollHackClient.Pages.Game
                                                         if (tileflag_halfsize)
                                                             targetrect = new SKRect(scaled_x_padding, height / 2 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 2 + scaled_y_padding + scaled_tile_height);
                                                         else
-                                                            targetrect = new SKRect(0, 0, width, height);
+                                                        {
+                                                            if(tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                                                                targetrect = new SKRect(scaled_x_padding, height / 4 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 4 + scaled_y_padding + scaled_tile_height);
+                                                            else
+                                                                targetrect = new SKRect(0, 0, width, height);
+                                                        }
                                                         canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
                                                     }
                                                 }

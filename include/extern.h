@@ -500,7 +500,7 @@ E void FDECL(clear_monster_extra_info, (int, int));
 E void FDECL(clear_monster_layer_at, (int, int));
 E void FDECL(clear_monster_layer_memory_at, (int, int));
 E void FDECL(show_extra_info, (int, int, unsigned long, int, int));
-E void FDECL(show_missile_info, (int, int, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, unsigned long));
+E void FDECL(show_missile_info, (int, int, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, unsigned long, SHORT_P));
 E unsigned long FDECL(get_missile_flags, (struct obj*, BOOLEAN_P));
 E void FDECL(show_leash_info, (int, int, XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P));
 E void FDECL(clear_layer_info, (struct layer_info*));
@@ -540,6 +540,9 @@ E void NDECL(u_shieldeff);
 E void FDECL(m_shieldeff, (struct monst*));
 E boolean NDECL(use_extra_special_staircase);
 E int FDECL(wall_angle, (struct rm*));
+E short FDECL(get_obj_height, (struct obj*));
+E boolean FDECL(generic_has_floor_tile, (struct obj*));
+
 
 /* ### do.c ### */
 

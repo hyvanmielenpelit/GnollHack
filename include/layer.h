@@ -60,6 +60,7 @@ struct layer_info {
     uchar missile_eroded;
     uchar missile_eroded2;
     unsigned long missile_flags;
+    short missile_height;
 
     xchar leash_mon_x[MAXLEASHED + 1]; /* the last coordinate is the other end of the leash, i.e., u.ux at the time */
     xchar leash_mon_y[MAXLEASHED + 1]; /* the last coordinate is the other end of the leash, i.e., u.uy at the time */

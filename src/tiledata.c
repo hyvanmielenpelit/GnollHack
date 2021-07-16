@@ -353,7 +353,10 @@ uchar* tilemapflags;
                     continue;
 
                 first_scroll_found = TRUE;
+                uchar fullsizedflag = (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : 0;
+                fullsizedflag |= (objects[i].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
                 uchar gtflags = (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
+                gtflags |= (objects[i].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
 
                 /* First, generic scroll tile */
                 if (process_style == 0)
@@ -477,7 +480,7 @@ uchar* tilemapflags;
                                         for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                                         {
                                             tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
-                                            tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset4] |= gtflags | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                            tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset4] |= fullsizedflag | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                         }
                                     }
                                 }
@@ -563,7 +566,10 @@ uchar* tilemapflags;
                     else
                     {
 #ifdef MAIL
+                        fullsizedflag = (objects[SCR_MAIL].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : 0;
+                        fullsizedflag |= (objects[SCR_MAIL].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
                         gtflags = (objects[SCR_MAIL].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
+                        gtflags |= (objects[SCR_MAIL].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
 
                         /* Main tile */
                         tilemaparray[SCR_MAIL + glyph_offset] = tile_count;
@@ -578,7 +584,7 @@ uchar* tilemapflags;
                                 for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                                 {
                                     tilemaparray[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
-                                    tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset4] |= gtflags | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                    tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset4] |= fullsizedflag | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                 }
                             }
                         }
@@ -620,6 +626,8 @@ uchar* tilemapflags;
             }
 
             /* Full-sized item and other flags */
+            uchar fullsizedflag = (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : 0;
+            fullsizedflag |= (objects[i].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
             uchar gtflags = (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
             gtflags |= (objects[i].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
 
@@ -751,7 +759,7 @@ uchar* tilemapflags;
                             for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                             {
                                 tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
-                                tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset4] |= gtflags | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset4] |= fullsizedflag | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                             }
                         }
                     }
@@ -779,7 +787,7 @@ uchar* tilemapflags;
                                         for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                                         {
                                             tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
-                                            tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset4] |= gtflags | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                            tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset4] |= fullsizedflag | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                         }
                                     }
                                 }
@@ -849,6 +857,8 @@ uchar* tilemapflags;
             boolean no_base_item_name = !OBJ_NAME(objects[base_item]);
             boolean no_base_item_description = !obj_descr[objects[base_item].oc_name_idx].oc_descr;
 
+            uchar fullsizedflag = (artilist[i].aflags2 & AF2_FULL_SIZED_ITEM) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : 0;
+            fullsizedflag |= (artilist[i].aflags2 & AF2_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
             uchar gtflags = (artilist[i].aflags2 & AF2_FULL_SIZED_ITEM) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
             gtflags |= (artilist[i].aflags2 & AF2_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
 
@@ -950,7 +960,7 @@ uchar* tilemapflags;
                             for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                             {
                                 tilemaparray[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
-                                tilemapflags[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset4] |= gtflags | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                tilemapflags[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset4] |= fullsizedflag | GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                             }
                         }
                     }

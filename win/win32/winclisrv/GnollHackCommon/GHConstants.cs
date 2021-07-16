@@ -300,6 +300,7 @@ namespace GnollHackCommon
         public byte missile_eroded;
         public byte missile_eroded2;
         public ulong missile_flags;
+        public short missile_height;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxLeashed + 1)]
         public sbyte[] leash_mon_x; /* the last coordinate is the other end of the leash, i.e., u.ux at the time */
