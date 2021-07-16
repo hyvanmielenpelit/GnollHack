@@ -1214,8 +1214,9 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
         return FALSE;
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NON_WISHABLE) && is_wish)
         return FALSE;
-    if (affix_type == 0 && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_RACIAL_PREFIX) && (objects[(obj)->otyp].oc_flags5 & O5_NO_MYTHIC_RACIAL_PREFIXES))
-        return FALSE;
+    /* Deactivated until there are more valid prefixes for racial items, particularly armors */
+    //if (affix_type == 0 && (mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_RACIAL_PREFIX) && (objects[(obj)->otyp].oc_flags5 & O5_NO_MYTHIC_RACIAL_PREFIXES))
+    //    return FALSE;
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_WEAPON_REQUIRED) && !is_weapon(obj))
         return FALSE;
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_ARMOR_REQUIRED) && obj->oclass != ARMOR_CLASS)

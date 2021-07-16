@@ -1316,9 +1316,9 @@ boolean silently;
     /* add them all back*/
     for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
     {
-        for (int i = 1; i <= 7; i++)
+        for (int i = 1; i <= 9; i++)
         {
-            if (i > 3 && !otmp->oartifact)
+            if (!otmp->oartifact && i >= 6)
                 break;
 
             int otyp = otmp->otyp;
@@ -1366,50 +1366,89 @@ boolean silently;
                     wornrequired = FALSE;
                 break;
             case 4:
-                which = artilist[otmp->oartifact].carried_prop;
-                wornrequired = FALSE;
-                yields_power = TRUE;
-                break;
             case 5:
-                which = artilist[otmp->oartifact].worn_prop;
-                wornrequired = TRUE;
-                yields_power = TRUE;
-                break;
-            case 6:
-                which = otmp->invokeon && artilist[otmp->oartifact].inv_prop > 0 ? artilist[otmp->oartifact].inv_prop : 0;
-                wornrequired = FALSE;
-                yields_power = TRUE;
-                break;
-            default:
-                if (i >= 7 && i <= 38)
+                yields_power = FALSE; /* Set them separately below */
+                if (otmp->owornmask)
                 {
-                    wornrequired = TRUE;
-                    yields_power = TRUE;
+                    /* Mythic */
+                    boolean isprefix = (i == 4);
+                    uchar mythic_quality = (isprefix ? otmp->mythic_prefix : otmp->mythic_suffix);
+                    if (mythic_quality == 0)
+                        continue;
 
-                    int bitnum = i - 6;
-                    unsigned long bit = 0x00000001UL;
-                    if (bitnum > 1)
-                        bit = bit << bitnum;
+                    struct mythic_power_definition* mythic_powers = (isprefix ? mythic_prefix_powers : mythic_suffix_powers);
+                    struct mythic_definition* mythic_definitions = (isprefix ? mythic_prefix_qualities : mythic_suffix_qualities);
+                    uchar max_mythic_powers = (isprefix ? MAX_MYTHIC_PREFIX_POWERS : MAX_MYTHIC_SUFFIX_POWERS);
 
-                    int propnum = spfx_to_prop(bit);
-                    if (artilist[otmp->oartifact].spfx & bit)
-                        which = propnum;
+                    for (uchar k = 0; k < max_mythic_powers; k++)
+                    {
+                        if (!mythic_powers[k].name)
+                            break;
+
+                        unsigned long mythic_power_bit = 1UL << ((unsigned long)k);
+
+                        if ((mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit) && mythic_power_applies_to_obj(otmp, mythic_powers[k].power_flags))
+                        {
+                            if (mythic_powers[k].power_type == MYTHIC_POWER_TYPE_CONFERS_PROPERTY)
+                            {
+                                mon->mprops[mythic_powers[k].parameter1] |= M_EXTRINSIC;
+                            }
+                        }
+                    }
                 }
-                else if (i >= 39 && i <= 70)
+                break;
+            case 6: /* Artifact carried */
+                if (otmp->oartifact)
                 {
+                    which = artilist[otmp->oartifact].carried_prop;
                     wornrequired = FALSE;
                     yields_power = TRUE;
-
-                    int bitnum = i - 38;
-                    unsigned long bit = 0x00000001UL;
-                    if (bitnum > 1)
-                        bit = bit << bitnum;
-
-                    int propnum = spfx_to_prop(bit);
-                    if (artilist[otmp->oartifact].cspfx & bit)
-                        which = propnum;
                 }
                 break;
+            case 7: /* Artifact worn */
+                if (otmp->oartifact)
+                {
+                    which = artilist[otmp->oartifact].worn_prop;
+                    wornrequired = TRUE;
+                    yields_power = TRUE;
+                }
+                break;
+            case 8: /* Artifact invoked */
+                if (otmp->oartifact)
+                {
+                    which = otmp->invokeon && artilist[otmp->oartifact].inv_prop > 0 ? artilist[otmp->oartifact].inv_prop : 0;
+                    wornrequired = FALSE;
+                    yields_power = TRUE;
+                }
+                break;
+            case 9: /* Artifact spfx and cspfx */
+                yields_power = FALSE; /* Handled separately below */
+                if (otmp->oartifact)
+                {
+                    int k;
+                    if (otmp->owornmask)
+                    {
+                        for (k = 0; k < 32; k++)
+                        {
+                            unsigned long bit = 1UL << k;
+                            int propnum = spfx_to_prop(bit);
+                            if (artilist[otmp->oartifact].spfx & bit)
+                                mon->mprops[propnum] |= M_EXTRINSIC;
+                        }
+                    }
+
+                    for (k = 0; k < 32; k++)
+                    {
+                        unsigned long bit = 1UL << k;
+                        int propnum = spfx_to_prop(bit);
+                        if (artilist[otmp->oartifact].cspfx & bit)
+                            mon->mprops[propnum] |= M_EXTRINSIC;
+                    }
+                }
+                break;
+            default:
+                break;
+
             }
 
             if (yields_power && (!wornrequired || (wornrequired && otmp->owornmask)))

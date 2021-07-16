@@ -836,12 +836,6 @@ update_extrinsics()
                     }
                 }
             }
-#if 0
-            int p = 0;
-            /* Properties blocked by item */
-            if (!inappr && (p = w_blocks(uitem, bit)) != 0)
-                u.uprops[p].blocked |= bit;
-#endif
         }
 
         /* Artifacts include all items, also wands and spellbooks */
