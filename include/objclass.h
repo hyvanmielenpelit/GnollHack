@@ -543,9 +543,9 @@ struct objclass {
 
 #define S2_NONE                                       0x00000000UL
 
-    short oc_hitbonus;                        /* weapons: "to hit" bonus */
+    short oc_hitbonus;                         /* weapons: "to hit" bonus */
     short oc_mc_adjustment;                    /* weapons: adjustment to any MC checks; spells and wands: MC adjustment */
-    short oc_fixed_damage_bonus;                /* fixed strength-based damage bonus for crossbows; O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH must be on; can be used for other purposes for a spellbook flag */
+    short oc_fixed_damage_bonus;               /* fixed strength-based damage bonus for crossbows; O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH must be on; can be used for other purposes for a spellbook flag */
     short oc_range;                            /* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
 
     /* general purpose */
@@ -568,22 +568,25 @@ struct objclass {
 #define oc_spell_casting_penalty oc_oc7              /* non-spells/wands: spell casting penalty when worn */
 #define oc_multishot_style oc_oc8                    /* multishot style specifying when the weapon can multishot and how many times */
 
-#define BONUS_TO_STR 0x0001
-#define BONUS_TO_DEX 0x0002
-#define BONUS_TO_CON 0x0004
-#define BONUS_TO_INT 0x0008
-#define BONUS_TO_WIS 0x0010
-#define BONUS_TO_CHA 0x0020
-#define BONUS_TO_DAMAGE 0x0040
-#define BONUS_TO_HIT 0x0080
-#define BONUS_TO_AC 0x0100
-#define BONUS_TO_MC 0x0200
-#define BONUS_TO_SPELL_CASTING 0x0400
-#define BONUS_TO_EXPERIENCE 0x0800
-#define BONUS_TO_ARCHERY 0x1000
-#define SETS_FIXED_ATTRIBUTE 0x2000
-#define FIXED_IS_MAXIMUM 0x4000
-#define IGNORE_ENCHANTMENT 0x8000
+#define BONUS_TO_STR            0x00000001
+#define BONUS_TO_DEX            0x00000002
+#define BONUS_TO_CON            0x00000004
+#define BONUS_TO_INT            0x00000008
+#define BONUS_TO_WIS            0x00000010
+#define BONUS_TO_CHA            0x00000020
+#define BONUS_TO_DAMAGE         0x00000040
+#define BONUS_TO_HIT            0x00000080
+#define BONUS_TO_AC             0x00000100
+#define BONUS_TO_MC             0x00000200
+#define BONUS_TO_UNRESTRICTED_SPELL_CASTING 0x00000400
+#define BONUS_TO_EXPERIENCE     0x00000800
+#define BONUS_TO_ARCHERY        0x00001000
+#define BONUS_TO_ALL_SPELL_CASTING 0x00002000
+    /* free bit */
+    /* free bit */
+#define SETS_FIXED_ATTRIBUTE    0x00010000
+#define FIXED_IS_MAXIMUM        0x00020000
+#define IGNORE_ENCHANTMENT      0x00040000
 
 #define BONUS_TO_ALLSTATS BONUS_TO_STR | BONUS_TO_DEX | BONUS_TO_CON | BONUS_TO_INT | BONUS_TO_WIS | BONUS_TO_CHA
 

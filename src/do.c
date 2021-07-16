@@ -2312,11 +2312,11 @@ register struct obj* obj;
 
                                 Sprintf(buf2, "%s %s%d %s to magic cancellation", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
                             }
-                            if (k == 10 && prop & BONUS_TO_SPELL_CASTING)
+                            if (k == 10 && prop & BONUS_TO_UNRESTRICTED_SPELL_CASTING)
                             {
                                 powercnt++;
 
-                                Sprintf(buf2, "%s %s%d%% %s to spell casting", grantbuf, stat >= 0 ? "+" : "", stat * 5, bonusbuf);
+                                Sprintf(buf2, "%s %s%d%% %s to casting unrestricted school spells", grantbuf, stat >= 0 ? "+" : "", stat * 5, bonusbuf);
                             }
                             if (k == 11 && prop & BONUS_TO_EXPERIENCE)
                             {
@@ -2329,6 +2329,11 @@ register struct obj* obj;
                                 powercnt++;
 
                                 Sprintf(buf2, "%s %s%d %s to hit and damage of archery weapons", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
+                            }
+                            if (k == 13 && prop & BONUS_TO_ALL_SPELL_CASTING)
+                            {
+                                powercnt++;
+                                Sprintf(buf2, "%s %s%d%% %s to casting all spells", grantbuf, stat >= 0 ? "+" : "", stat * 5, bonusbuf);
                             }
 
                             if (strcmp(buf2, "") != 0) // Something else than ""

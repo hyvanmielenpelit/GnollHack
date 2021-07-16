@@ -221,6 +221,21 @@ register int x;
      */
 }
 
+/* 1 <= rne(3) <= x */
+int
+rngh(x, limit)
+register int x, limit;
+{
+    register int tmp, utmp;
+
+    utmp = limit;
+    tmp = 1;
+    while (tmp < utmp && !rn2(x))
+        tmp++;
+    return tmp;
+
+}
+
 /* rnz: everyone's favorite! */
 /* Note: expected value of rnz(i) is 2i -- JG */
 int

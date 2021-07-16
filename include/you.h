@@ -431,7 +431,8 @@ struct you {
     schar udaminc;
     schar uacbonus;
     schar umcbonus;
-    schar uspellcastingbonus;
+    schar uspellcastingbonus_unrestricted;
+    schar uspellcastingbonus_all;
     schar uexperiencebonus;
     schar uarcherybonus;
     schar uac;                 /* current armor class */

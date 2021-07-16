@@ -2307,10 +2307,10 @@ int spe_type_index;
         initspe = 0;
         break;
     case ENCHTYPE_GENERAL_WEAPON:
-        initspe = Inhell ? rne(6) : rne(3);
+        initspe = Inhell ? rngh(2, 6) : rngh(3, 3);
         break;
     case ENCHTYPE_GENERAL_ARMOR:
-        initspe = Inhell ? rne(4) : rne(3);
+        initspe = Inhell ? rngh(3, 4) : rngh(3, 3);
         break;
     case ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0:
     case ENCHTYPE_GENERAL_ARMOR_ALWAYS_START_0:
@@ -2318,13 +2318,13 @@ int spe_type_index;
         initspe = 0;
         break;
     case ENCHTYPE_ELVEN_ARMOR:
-        initspe = Inhell ? rne(5) : rne(4);
+        initspe = Inhell ? rngh(2, 5) : rngh(3, 4);
         break;
     case ENCHTYPE_LEATHER_NONBODY_ARMOR:
-        initspe = Inhell ? rne(6) : rne(4);
+        initspe = Inhell ? rngh(3, 4) : rngh(3, 3);
         break;
     case ENCHTYPE_LEATHER_BODY_ARMOR:
-        initspe = Inhell ? rne(9) : rne(5);
+        initspe = Inhell ? rngh(2, 5) : rngh(3, 4);
         break;
     case ENCHTYPE_ALWAYS_1:
         initspe = 1;
@@ -2357,28 +2357,28 @@ int spe_type_index;
         initspe = rnd(3);
         break;
     case ENCHTYPE_PROJECTILE:
-        initspe = Inhell ? rne(4) : rne(3);
+        initspe = Inhell ? rngh(3, 4) : rngh(3, 3);
         break;
     case ENCHTYPE_THROWN_WEAPON:
-        initspe = Inhell ? rne(7) : rne(4);
+        initspe = Inhell ? rngh(2, 7) : rngh(3, 4);
         break;
     case ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON:
-        initspe = Inhell ? rne(7) : rne(4);
+        initspe = Inhell ? rngh(2, 7) : rngh(3, 4);
         break;
     case ENCHTYPE_TWO_HANDED_MELEE_WEAPON:
-        initspe = Inhell ? rne(12) : rne(7);
+        initspe = Inhell ? rngh(2, 12) : rngh(3, 7);
         break;
     case ENCHTYPE_SINGLE_HANDED_LAUNCHER:
-        initspe = Inhell ? rne(4) : rne(3);
+        initspe = Inhell ? rngh(3, 4) : rngh(3, 3);
         break;
     case ENCHTYPE_TWO_HANDED_LAUNCHER:
-        initspe = Inhell ? rne(5) : rne(3);
+        initspe = Inhell ? rngh(2, 5) : rngh(3, 3);
         break;
     case ENCHTYPE_TWO_HANDED_ELVEN_LAUNCHER:
-        initspe = Inhell ? rne(7) : rne(4);
+        initspe = Inhell ? rngh(2, 7) : rngh(3, 4);
         break;
     case ENCHTYPE_SINGLE_HANDED_ELVEN_MELEE_WEAPON:
-        initspe = Inhell ? rne(10) : rne(6);
+        initspe = Inhell ? rngh(2, 10) : rngh(3, 6);
         break;
     }
 

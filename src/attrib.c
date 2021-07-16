@@ -2097,7 +2097,8 @@ struct monst* mon;
         mcbonus_ptr = &u.umcbonus;
 
         /* properties that monsters do not have */
-        u.uspellcastingbonus = 0;
+        u.uspellcastingbonus_unrestricted = 0;
+        u.uspellcastingbonus_all = 0;
         u.uexperiencebonus = 0;
         u.uarcherybonus = 0;
         u.xray_range = XRay_vision ? 6 : -1;
@@ -2194,7 +2195,7 @@ struct monst* mon;
                 long multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
                     ((objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1L : 1L;
 
-                for (int i = 0; i <= A_MAX + 6; i++)
+                for (int i = 0; i <= A_MAX + 7; i++)
                 {
                     long bit = 0;
                     switch (i)
@@ -2230,13 +2231,16 @@ struct monst* mon;
                         bit = BONUS_TO_MC;
                         break;
                     case A_MAX + 4:
-                        bit = BONUS_TO_SPELL_CASTING;
+                        bit = BONUS_TO_UNRESTRICTED_SPELL_CASTING;
                         break;
                     case A_MAX + 5:
                         bit = BONUS_TO_EXPERIENCE;
                         break;
                     case A_MAX + 6:
                         bit = BONUS_TO_ARCHERY;
+                        break;
+                    case A_MAX + 7:
+                        bit = BONUS_TO_ALL_SPELL_CASTING;
                         break;
                     default:
                         bit = 0;
@@ -2303,9 +2307,9 @@ struct monst* mon;
                         }
                         else if (i == A_MAX + 4 && is_you)
                         {
-                            u.uspellcastingbonus += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
+                            u.uspellcastingbonus_unrestricted += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
                             if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-                                u.uspellcastingbonus += (schar)applicable_enchantment;
+                                u.uspellcastingbonus_unrestricted += (schar)applicable_enchantment;
                         }
                         else if (i == A_MAX + 5 && is_you)
                         {
@@ -2318,6 +2322,12 @@ struct monst* mon;
                             u.uarcherybonus += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
                             if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
                                 u.uarcherybonus += (schar)applicable_enchantment;
+                        }
+                        else if (i == A_MAX + 7 && is_you)
+                        {
+                            u.uspellcastingbonus_all += (schar)(multiplier * objects[otyp].oc_attribute_bonus);
+                            if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
+                                u.uspellcastingbonus_all += (schar)applicable_enchantment;
                         }
                     }
                 }
