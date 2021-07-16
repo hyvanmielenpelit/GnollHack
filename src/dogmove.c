@@ -211,23 +211,23 @@ struct obj *obj;
         switch (mtmp->data->msize)
         {
         case MZ_TINY:
-            nutrit *= 8;
+            nutrit *= 4;
             break;
         case MZ_SMALL:
-            nutrit *= 6;
+            nutrit *= 2;
             break;
         default:
         case MZ_MEDIUM:
-            nutrit *= 5;
+            nutrit *= 1;
             break;
         case MZ_LARGE:
-            nutrit *= 4;
+            nutrit *= 1;
             break;
         case MZ_HUGE:
-            nutrit *= 3;
+            nutrit *= 1;
             break;
         case MZ_GIGANTIC:
-            nutrit *= 2;
+            nutrit *= 1;
             break;
         }
         if (obj->oeaten)
@@ -240,7 +240,7 @@ struct obj *obj;
         mtmp->meating = (int) (obj->quan / 2000) + 1;
         if (mtmp->meating < 0)
             mtmp->meating = 1;
-        nutrit = (int) (obj->quan / 20);
+        nutrit = (int) (obj->quan / 2);
         if (nutrit < 0)
             nutrit = 0;
     }
@@ -252,7 +252,7 @@ struct obj *obj;
          * eat.c.  (This also applies to pets eating gold.)
          */
         mtmp->meating = obj->owt / 20 + 1;
-        nutrit = 5 * objects[obj->otyp].oc_nutrition;
+        nutrit = 1 * objects[obj->otyp].oc_nutrition;
     }
     return nutrit;
 }
@@ -308,7 +308,8 @@ boolean devour;
     if (mtmp->mtame > 0 && mtmp->mtame < 20)
         mtmp->mtame++;
 
-    display_nutrition_floating_text(mtmp->mx, mtmp->my, nutrit);
+    if(canspotmon(mtmp))
+        display_nutrition_floating_text(mtmp->mx, mtmp->my, nutrit);
 
     if (x != mtmp->mx || y != mtmp->my)
     { /* moved & ate on same turn */

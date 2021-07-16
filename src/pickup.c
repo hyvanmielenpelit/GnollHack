@@ -948,7 +948,12 @@ int show_weights;
                 
                 char applied_group_accelerator = def_oc_syms[(int)objects[curr->otyp].oc_class].sym;
 
-                add_extended_menu(win, obj_to_glyph(curr, rn2_on_display_rng), &any, obj_to_extended_menu_info(curr),
+                xchar x = 0, y = 0;
+                get_obj_location(curr, &x, &y, CONTAINED_TOO | BURIED_TOO);
+                int glyph = obj_to_glyph(curr, rn2_on_display_rng);
+                int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, curr, (struct monst*)0, 0UL));
+
+                add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, obj_to_extended_menu_info(curr),
                     applied_invlet,
                     applied_group_accelerator,
                          ATR_NONE, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(curr, loadstonecorrectly) : doname_with_price_and_weight_first(curr, loadstonecorrectly)) : doname_with_price(curr), MENU_UNSELECTED);
@@ -972,7 +977,9 @@ int show_weights;
         fake_hero_object = zeroobj;
         fake_hero_object.quan = 1L; /* not strictly necessary... */
         any.a_obj = &fake_hero_object;
-        add_menu(win, any_mon_to_glyph(&youmonst, rn2_on_display_rng), &any,
+        int glyph = any_mon_to_glyph(&youmonst, rn2_on_display_rng);
+        int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
+        add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
                  /* fake inventory letter, no group accelerator */
                  CONTAINED_SYM, 0, ATR_NONE, an(self_lookat(buf)),
                  MENU_UNSELECTED);

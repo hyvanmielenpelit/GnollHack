@@ -2131,7 +2131,7 @@ uchar* tilemapflags;
     else if (process_style == 1)
     {
         /*
-         *Set tile2replacement
+         *Set tile2replacement, glyph2replacement, glyphtileflags, and tile2autodraw
          */
 
          /* Monsters */
@@ -2147,6 +2147,11 @@ uchar* tilemapflags;
                     int repl = mons[i].replacement.actions[action];
                     tile2replacement[tile] = glyph2replacement[glyph] = repl;
                     tile2autodraw[tile] = replacements[repl].general_autodraw;
+                    for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                    {
+                        int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                        glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    }
                 }
             }
             if (mons[i].replacement.corpse)
@@ -2156,6 +2161,11 @@ uchar* tilemapflags;
                 int repl = mons[i].replacement.corpse;
                 tile2replacement[tile] = glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                }
             }
             if (mons[i].replacement.statue)
             {
@@ -2164,6 +2174,11 @@ uchar* tilemapflags;
                 int repl = mons[i].replacement.statue;
                 tile2replacement[tile] = glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                }
             }
 
 
@@ -2176,6 +2191,11 @@ uchar* tilemapflags;
                     int repl = mons[i].female_replacement.actions[action];
                     tile2replacement[tile] = glyph2replacement[glyph] = repl;
                     tile2autodraw[tile] = replacements[repl].general_autodraw;
+                    for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                    {
+                        int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                        glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    }
                 }
             }
             if (mons[i].female_replacement.corpse)
@@ -2185,6 +2205,11 @@ uchar* tilemapflags;
                 int repl = mons[i].female_replacement.corpse;
                 tile2replacement[tile] = glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                }
             }
             if (mons[i].female_replacement.statue)
             {
@@ -2193,6 +2218,11 @@ uchar* tilemapflags;
                 int repl = mons[i].female_replacement.statue;
                 tile2replacement[tile] = glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                }
             }
         }
 
@@ -2206,6 +2236,11 @@ uchar* tilemapflags;
                 int repl = obj_descr[i].replacement;
                 tile2replacement[tile] = glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                }
             }
         }
 
@@ -2219,6 +2254,11 @@ uchar* tilemapflags;
                 int repl = artilist[i].replacement;
                 tile2replacement[tile] = glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                }
             }
         }
 
@@ -2234,6 +2274,11 @@ uchar* tilemapflags;
                     int repl = defsyms[i].replacement[cmap_type_idx];
                     tile2replacement[tile] = glyph2replacement[glyph] = repl;
                     tile2autodraw[tile] = replacements[repl].general_autodraw;
+                    for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                    {
+                        int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                        glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    }
                 }
                 if (defsyms[i].broken_replacement[cmap_type_idx])
                 {
@@ -2242,6 +2287,11 @@ uchar* tilemapflags;
                     int repl = defsyms[i].broken_replacement[cmap_type_idx];
                     tile2replacement[tile] = glyph2replacement[glyph] = repl;
                     tile2autodraw[tile] = replacements[repl].general_autodraw;
+                    for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                    {
+                        int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                        glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    }
                 }
             }
         }
@@ -2258,6 +2308,11 @@ uchar* tilemapflags;
                     int repl = defsym_variations[i].replacement[cmap_type_idx];
                     tile2replacement[tile] = glyph2replacement[glyph] = repl;
                     tile2autodraw[tile] = replacements[repl].general_autodraw;
+                    for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                    {
+                        int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                        glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    }
                 }
                 if (defsym_variations[i].broken_replacement[cmap_type_idx])
                 {
@@ -2266,6 +2321,11 @@ uchar* tilemapflags;
                     int repl = defsym_variations[i].broken_replacement[cmap_type_idx];
                     tile2replacement[tile] = glyph2replacement[glyph] = repl;
                     tile2autodraw[tile] = replacements[repl].general_autodraw;
+                    for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                    {
+                        int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                        glyphtileflags[rglyph] = glyphtileflags[glyph];
+                    }
                 }
             }
         }
@@ -2291,6 +2351,11 @@ uchar* tilemapflags;
                                     int tile = glyph2tile[glyph];
                                     tile2replacement[tile] = glyph2replacement[glyph] = repl;
                                     tile2autodraw[tile] = replacements[repl].general_autodraw;
+                                    for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                                    {
+                                        int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                                        glyphtileflags[rglyph] = glyphtileflags[glyph];
+                                    }
                                 }
                             }
                         }
@@ -2309,6 +2374,11 @@ uchar* tilemapflags;
                 int repl = special_effects[i].replacement;
                 tile2replacement[tile] = glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                }
             }
         }
 
@@ -2322,6 +2392,11 @@ uchar* tilemapflags;
                 int repl = game_cursors[i].replacement;
                 tile2replacement[tile] = glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                }
             }
         }
 
@@ -2335,6 +2410,11 @@ uchar* tilemapflags;
                 int repl = hit_tile_definitions[i].replacement;
                 tile2replacement[tile] = glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                }
             }
         }
 
@@ -2348,6 +2428,11 @@ uchar* tilemapflags;
                 int repl = general_tile_definitions[i].replacement;
                 tile2replacement[tile] = glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                }
             }
         }
 
@@ -2361,6 +2446,11 @@ uchar* tilemapflags;
                 int repl = ui_tile_component_array[i].replacement;
                 tile2replacement[tile] = glyph2replacement[glyph] = repl;
                 tile2autodraw[tile] = replacements[repl].general_autodraw;
+                for (j = 0; j < replacements[repl].number_of_tiles; j++)
+                {
+                    int rglyph = j + replacement_offsets[repl] + GLYPH_REPLACEMENT_OFF;
+                    glyphtileflags[rglyph] = glyphtileflags[glyph];
+                }
             }
         }
 
@@ -2368,7 +2458,21 @@ uchar* tilemapflags;
 
 
         /*
-         *Set tile2animation 
+         * Set tile2autodraw for replacement tiles; the rest has been done above
+         */
+        for (i = 0; i < MAX_REPLACEMENTS; i++)
+        {
+            for (j = 0; j < replacements[i].number_of_tiles; j++)
+            {
+                int glyph = i + replacement_offsets[j] + GLYPH_REPLACEMENT_OFF;
+                int tile = tilemaparray[glyph];
+                tile2autodraw[tile] = replacements[i].tile_autodraw[j];
+            }
+        }
+
+
+        /*
+         * Set tile2animation 
          */
 
         /* Monsters */

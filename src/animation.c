@@ -1983,7 +1983,10 @@ int glyph;
 int x, y;
 struct replacement_info info;
 {
-#ifdef USE_TILES
+#if defined(USE_TILES) && defined(GNH_ANDROID)
+    if (!iflags.using_gui_tiles)
+        return glyph;
+
     int sign = sgn(glyph);
     int absglyph = abs(glyph);
     struct obj* otmp = info.object;

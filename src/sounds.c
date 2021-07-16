@@ -7729,8 +7729,9 @@ int* spell_otyps;
         any.a_int = i;
         char let = 'a' + spell_count;
         int glyph = obj_to_glyph(&pseudo, rn2_on_display_rng);
+        int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_OBJECT, &pseudo, (struct monst*)0, 0UL));
 
-        add_menu(win, glyph, &any,
+        add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
             let, 0, ATR_NONE,
             spellbuf, MENU_UNSELECTED);
 
