@@ -1293,22 +1293,36 @@ namespace GnollHackClient.Pages.Game
                                                     float scaled_tile_height = height /2;
                                                     float scaled_x_padding = 0;
                                                     float scaled_y_padding = 0;
+                                                    int source_y_added = 0;
+                                                    int source_height_deducted = 0;
+                                                    int source_height = GHConstants.TileHeight / 2;
                                                     if (tileflag_halfsize)
                                                     {
-                                                        if(tileflag_floortile)
-                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight / 2);
+                                                        float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
+                                                        if (tileflag_floortile)
+                                                        {
+                                                            if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
+                                                                && obj_height > 0 && obj_height < 48)
+                                                            {
+                                                                source_y_added = (GHConstants.TileHeight / 2 - obj_height) / 2;
+                                                                source_height_deducted = GHConstants.TileHeight / 2 - obj_height;
+                                                                source_height = GHConstants.TileHeight / 2 - source_height_deducted;
+                                                                scaled_y_padding = Math.Max(0, (float)source_height_deducted * height / (float)GHConstants.TileHeight - pit_border);
+                                                                scaled_tile_height = (float)source_height * height / (float)GHConstants.TileHeight;
+                                                            }
+                                                            sourcerect = new SKRect(tile_x, tile_y + source_y_added, tile_x + GHConstants.TileWidth, tile_y + source_y_added + source_height);
+                                                        }
                                                         else
                                                         {
                                                             float scale = 1.0f;
                                                             if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
-                                                                && tileflag_halfsize && obj_height > 0 && obj_height < 48)
+                                                                && obj_height > 0 && obj_height < 48)
                                                             {
                                                                 scale = ((float)obj_height) / 48.0f;
                                                             }
                                                             scaled_tile_width = scale * width;
                                                             scaled_tile_height = scale * height / 2;
                                                             scaled_x_padding = (width - scaled_tile_width) / 2;
-                                                            float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
                                                             scaled_y_padding = Math.Max(0, height / 2 - scaled_tile_height - pit_border);
 
                                                             sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
