@@ -1610,7 +1610,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             }
         }
     }
-    if (artifact_has_flag(otmp, AF_DRLI)) 
+    if (artifact_has_flag(otmp, AF_DRLI) && !(youdefend ? Drain_resistance : resists_drli(mdef)))
     {
         /* some non-living creatures (golems, vortices) are
            vulnerable to life drain effects */
@@ -1622,17 +1622,17 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             {
                 if (otmp->oartifact == ART_STORMBRINGER)
                     pline_The("%s draws the %s from %s!",
-                              artifact_hit_desc, life, mon_nam(mdef));
+                        artifact_hit_desc, life, mon_nam(mdef));
                 else
                     pline("%s draws the %s from %s!",
-                          The(distant_name(otmp, xname)), life,
-                          mon_nam(mdef));
+                        The(distant_name(otmp, xname)), life,
+                        mon_nam(mdef));
             }
-            if (mdef->m_lev == 0) 
+            if (mdef->m_lev == 0)
             {
                 *dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
             }
-            else 
+            else
             {
                 int drain = monbasehp_per_lvl(mdef);
 
@@ -1657,15 +1657,15 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
             if (Blind)
                 You_feel("an %s drain your %s!",
-                         (otmp->oartifact == ART_STORMBRINGER)
-                            ? "unholy blade"
-                            : "object",
-                         life);
+                    (otmp->oartifact == ART_STORMBRINGER)
+                    ? "unholy blade"
+                    : "object",
+                    life);
             else if (otmp->oartifact == ART_STORMBRINGER)
                 pline_The("%s blade drains your %s!", hcolor(NH_BLACK), life);
             else
                 pline("%s drains your %s!", The(distant_name(otmp, xname)),
-                      life);
+                    life);
             losexp("life drainage");
             if (magr && magr->mhp < magr->mhpmax)
             {
