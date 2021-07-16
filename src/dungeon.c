@@ -2703,6 +2703,11 @@ recalc_mapseen()
                 break;
             case FOUNTAIN:
                 count = mptr->feat.nfount + 1;
+                if (FOUNTAIN_IS_KNOWN(x, y) && (count == 1 || mptr->feat.fountaintype == levl[x][y].subtyp))
+                    mptr->feat.fountaintype = levl[x][y].subtyp;
+                else
+                    mptr->feat.fountaintype = MAX_FOUNTAIN_SUBTYPES;
+
                 if (count <= 3)
                     mptr->feat.nfount = count;
                 break;
@@ -3065,8 +3070,8 @@ char *outbuf;
 #define ADDNTOBUF(nam, var)                                                  \
     do {                                                                     \
         if (var)                                                             \
-            Sprintf(eos(buf), "%s%s %s%s", COMMA, seen_string((var), (nam)), \
-                    (nam), plur(var));                                       \
+            Sprintf(eos(buf), "%s%s %s", COMMA, seen_string((var), (nam)), \
+                    var != 1 ? makeplural(nam) : (nam));                                       \
     } while (0)
 #define ADDTOBUF(nam, var)                           \
     do {                                             \
@@ -3173,8 +3178,8 @@ boolean printdun;
         if (mptr->feat.nnpcroom > 0)
         {
             uchar npctype = mptr->feat.npcroomtype - 1;
-            if (mptr->feat.nshop > 1 || mptr->feat.npcroomtype <= 0 || npctype == UNSPECIFIED_NPC_ROOM)
-                ADDNTOBUF("residence", mptr->feat.nshop);
+            if (mptr->feat.nnpcroom > 1 || mptr->feat.npcroomtype <= 0 || npctype == UNSPECIFIED_NPC_ROOM)
+                ADDNTOBUF("residence", mptr->feat.nnpcroom);
             else
             {
                 Sprintf(eos(buf), "%s%s", COMMA,
@@ -3182,7 +3187,7 @@ boolean printdun;
             }
         }
         ADDNTOBUF("throne", mptr->feat.nthrone);
-        ADDNTOBUF("fountain", mptr->feat.nfount);
+        ADDNTOBUF(fountain_type_text(mptr->feat.fountaintype), mptr->feat.nfount);
         ADDNTOBUF("sink", mptr->feat.nsink);
         ADDNTOBUF("grave", mptr->feat.ngrave);
         ADDNTOBUF("brazier", mptr->feat.nbrazier);

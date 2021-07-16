@@ -240,6 +240,7 @@ typedef struct mapseen {
 
         Bitfield(shoptype, 5);
         uchar npcroomtype;
+        uchar fountaintype;
     } feat;
     struct mapseen_flags {
         char special_description[BUFSZ];
