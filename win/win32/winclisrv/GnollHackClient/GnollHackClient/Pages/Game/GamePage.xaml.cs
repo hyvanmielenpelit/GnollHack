@@ -1018,9 +1018,9 @@ namespace GnollHackClient.Pages.Game
                             float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
                             for (int layer_idx = 0; layer_idx <= (int)layer_types.MAX_LAYERS; layer_idx++)
                             {
-                                for (int mapx = startX; mapx <= endX; mapx++)
+                                for (int mapy = startY; mapy <= endY; mapy++)
                                 {
-                                    for (int mapy = startY; mapy <= endY; mapy++)
+                                    for (int mapx = startX; mapx <= endX; mapx++)
                                     {
                                         short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
                                         float scaled_y_height_change = 0;

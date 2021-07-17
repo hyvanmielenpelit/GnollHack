@@ -1901,6 +1901,8 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
     }
 
     context.botl = context.botlx = TRUE;
+    newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS_AND_FLAGS);
+    flush_screen(1);
     return;
 }
 

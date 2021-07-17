@@ -1079,7 +1079,8 @@ struct monst* origmonst;
                 pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
         }
         special_effect_wait_until_end(0);
-
+        newsym(mtmp->mx, mtmp->my);
+        flush_screen(1);
         break;
     }
     case SPE_CURE_BLINDNESS:
@@ -1099,6 +1100,8 @@ struct monst* origmonst;
             pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
 
         special_effect_wait_until_end(0);
+        newsym(mtmp->mx, mtmp->my);
+        flush_screen(1);
         break;
     }
     case SPE_CURE_PETRIFICATION:
@@ -1124,6 +1127,8 @@ cure_petrification_here:
         else
             pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
         special_effect_wait_until_end(0);
+        newsym(mtmp->mx, mtmp->my);
+        flush_screen(1);
         break;
     }
     case JAR_OF_EXTRA_HEALING_SALVE:
