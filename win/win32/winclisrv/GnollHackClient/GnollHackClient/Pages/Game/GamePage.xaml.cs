@@ -1018,8 +1018,14 @@ namespace GnollHackClient.Pages.Game
                                 {
                                     for (int mapy = startY; mapy <= endY; mapy++)
                                     {
+                                        short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
+                                        float scaled_y_height_change = 0;
+
                                         if (layer_idx == (int)layer_types.MAX_LAYERS)
                                         {
+                                            if (monster_height > 0)
+                                                scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
+
                                             /* Draw death and hit markers */
                                             if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0)
                                             {
@@ -1030,7 +1036,7 @@ namespace GnollHackClient.Pages.Game
                                                 int tile_y = TileSheetY(mtile);
 
                                                 tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                                                ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+                                                ty = (offsetY + _mapOffsetY + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
                                                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
 
                                                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -1046,7 +1052,7 @@ namespace GnollHackClient.Pages.Game
                                                 int tile_y = TileSheetY(mtile);
 
                                                 tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                                                ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+                                                ty = (offsetY + _mapOffsetY + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
                                                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
 
                                                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -1057,375 +1063,373 @@ namespace GnollHackClient.Pages.Game
                                         else
                                         {
                                             int signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
+                                            if (signed_glyph == NoGlyph)
+                                                continue;
+
+                                            int glyph = Math.Abs(signed_glyph);
+                                            if (glyph == 0 || glyph >= Glyph2Tile.Length)
+                                                continue;
+
                                             short obj_height = _mapData[mapx, mapy].Layers.object_height;
                                             short missile_height = _mapData[mapx, mapy].Layers.missile_height;
-                                            short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
                                             bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
                                             sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
                                             sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
                                             long glyphprintcountervalue = _mapData[mapx, mapy].GlyphPrintCounterValue;
                                             long currentcountervalue = 0;
 
-                                            if (signed_glyph == NoGlyph)
-                                                continue;
-
-                                            int glyph = Math.Abs(signed_glyph);
-
+                                            /* Base flips */
                                             bool hflip = (signed_glyph < 0);
                                             bool manual_hflip = false;
                                             bool manual_vflip = false;
 
-                                            if (glyph < Glyph2Tile.Length)
+                                            /* Tile flips */
+                                            bool tileflag_hflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_HORIZONTALLY) != 0;
+                                            bool tileflag_vflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_VERTICALLY) != 0;
+                                            bool tileflag_halfsize = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
+                                            bool tileflag_floortile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
+                                            bool tileflag_normalobjmissile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0;
+                                            bool tileflag_fullsizeditem = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
+
+                                            if ((!tileflag_halfsize || monster_height > 0) && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
+                                                scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
+
+                                            int ntile = Glyph2Tile[glyph];
+                                            /* Replace tile here */
+                                            int animation = Tile2Animation[ntile];
+                                            int anim_frame_idx = 0, main_tile_idx = 0, autodraw = 0;
+                                            sbyte mapAnimated = 0;
+                                            int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
+                                            bool is_dropping_piercer = false;
+
+                                            /* Determine animation tile here */
+                                            lock (AnimationTimerLock)
                                             {
-                                                /* Tile flips */
-                                                bool tileflag_hflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_HORIZONTALLY) != 0;
-                                                bool tileflag_vflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_VERTICALLY) != 0;
-                                                bool tileflag_halfsize = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
-                                                bool tileflag_floortile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
-                                                bool tileflag_normalobjmissile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0;
-                                                bool tileflag_fullsizeditem = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
-
-                                                int ntile = Glyph2Tile[glyph];
-                                                int replacement = Tile2Replacement[ntile];
-                                                /* Replace tile here */
-                                                int animation = Tile2Animation[ntile];
-                                                int anim_frame_idx = 0, main_tile_idx = 0, autodraw = 0;
-                                                sbyte mapAnimated = 0;
-                                                int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
-                                                bool is_dropping_piercer = false;
-
-                                                /* Determine animation tile here */
-                                                lock (AnimationTimerLock)
+                                                currentcountervalue = AnimationTimers.general_animation_counter;
+                                                if (AnimationTimers.u_action_animation_counter_on && layer_idx == (int)layer_types.LAYER_MONSTER && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
+                                                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MONSTER) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
+                                                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                else if (_gnollHackService.GlyphIsExplosion(glyph))
+                                                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.explosion_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                else if (_gnollHackService.GlyphIsZap(glyph))
                                                 {
-                                                    currentcountervalue = AnimationTimers.general_animation_counter;
-                                                    if (AnimationTimers.u_action_animation_counter_on && layer_idx == (int)layer_types.LAYER_MONSTER && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
-                                                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                    else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MONSTER) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
-                                                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                    else if (_gnollHackService.GlyphIsExplosion(glyph))
-                                                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.explosion_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                    else if (_gnollHackService.GlyphIsZap(glyph))
+                                                    for (int zap_anim_idx = 0; zap_anim_idx < GHConstants.MaxPlayedZapAnimations; zap_anim_idx++)
                                                     {
-                                                        for (int zap_anim_idx = 0; zap_anim_idx < GHConstants.MaxPlayedZapAnimations; zap_anim_idx++)
+                                                        if (AnimationTimers.zap_animation_counter_on[zap_anim_idx]
+                                                            && mapx == AnimationTimers.zap_animation_x[zap_anim_idx]
+                                                            && mapy == AnimationTimers.zap_animation_y[zap_anim_idx])
                                                         {
-                                                            if (AnimationTimers.zap_animation_counter_on[zap_anim_idx]
-                                                                && mapx == AnimationTimers.zap_animation_x[zap_anim_idx]
-                                                                && mapy == AnimationTimers.zap_animation_y[zap_anim_idx])
-                                                            {
-                                                                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.zap_animation_counter[zap_anim_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                                break;
-                                                            }
+                                                            ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.zap_animation_counter[zap_anim_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                            break;
                                                         }
-                                                    }
-                                                    else
-                                                    {
-                                                        /* Check for special effect animations */
-                                                        bool spef_found = false;
-                                                        for (int spef_idx = 0; spef_idx < GHConstants.MaxPlayedSpecialEffects; spef_idx++)
-                                                        {
-                                                            if (AnimationTimers.special_effect_animation_counter_on[spef_idx]
-                                                                && layer_idx == (int)AnimationTimers.spef_action_animation_layer[spef_idx]
-                                                                && mapx == AnimationTimers.spef_action_animation_x[spef_idx]
-                                                                && mapy == AnimationTimers.spef_action_animation_y[spef_idx])
-                                                            {
-                                                                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.special_effect_animation_counter[spef_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                                spef_found = true;
-                                                                break;
-                                                            }
-                                                        }
-
-                                                        /* Otherwise, normal animation check */
-                                                        if (!spef_found)
-                                                            ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, AnimationTimers.general_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
                                                     }
                                                 }
-
-                                                int enlargement = Tile2Enlargement[ntile];
-                                                for (int enl_idx = -1; enl_idx < 5; enl_idx++)
+                                                else
                                                 {
-                                                    if (enlargement == 0 && enl_idx >= 0)
-                                                        break;
-
-                                                    bool vflip_glyph = false;
-                                                    bool hflip_glyph = false;
-                                                    if ((hflip != tileflag_hflip) != manual_hflip) /* XOR */
-                                                        hflip_glyph = true;
-                                                    else
-                                                        hflip_glyph = false;
-
-                                                    if (tileflag_vflip != manual_vflip) /* XOR */
-                                                        vflip_glyph = true;
-                                                    else
-                                                        vflip_glyph = false;
-
-
-                                                    int enlarg_idx = enl_idx;
-                                                    int position_index = -1;
-                                                    int orig_position_index = -1;
-                                                    if (enlargement > 0)
+                                                    /* Check for special effect animations */
+                                                    bool spef_found = false;
+                                                    for (int spef_idx = 0; spef_idx < GHConstants.MaxPlayedSpecialEffects; spef_idx++)
                                                     {
-                                                        orig_position_index = -1;
-                                                        /* Set position_index */
-                                                        if (enlarg_idx == -1)
+                                                        if (AnimationTimers.special_effect_animation_counter_on[spef_idx]
+                                                            && layer_idx == (int)AnimationTimers.spef_action_animation_layer[spef_idx]
+                                                            && mapx == AnimationTimers.spef_action_animation_x[spef_idx]
+                                                            && mapy == AnimationTimers.spef_action_animation_y[spef_idx])
                                                         {
-                                                            if (vflip_glyph)
-                                                                position_index = 1;
-                                                            else
-                                                                position_index = -1;
+                                                            ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.special_effect_animation_counter[spef_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                            spef_found = true;
+                                                            break;
                                                         }
-                                                        else if (enlarg_idx == 0)
-                                                        {
-                                                            orig_position_index = 4;
-                                                            if (vflip_glyph)
-                                                                position_index = hflip_glyph ? 0 : 2;
-                                                            else
-                                                                position_index = hflip_glyph ? 3 : 4;
-                                                        }
-                                                        else if (enlarg_idx == 1)
-                                                        {
-                                                            orig_position_index = 3;
-                                                            if (vflip_glyph)
-                                                                position_index = hflip_glyph ? 2 : 0;
-                                                            else
-                                                                position_index = hflip_glyph ? 4 : 3;
-                                                        }
-                                                        else if (enlarg_idx == 2)
-                                                        {
-                                                            orig_position_index = 2;
-                                                            if (vflip_glyph)
-                                                                position_index = hflip_glyph ? 3 : 4;
-                                                            else
-                                                                position_index = hflip_glyph ? 0 : 2;
-                                                        }
-                                                        else if (enlarg_idx == 3)
-                                                        {
-                                                            orig_position_index = 1;
-                                                            if (vflip_glyph)
-                                                                position_index = -1;
-                                                            else
-                                                                position_index = 1;
-                                                        }
-                                                        else if (enlarg_idx == 4)
-                                                        {
-                                                            orig_position_index = 0;
-                                                            if (vflip_glyph)
-                                                                position_index = hflip_glyph ? 4 : 3;
-                                                            else
-                                                                position_index = hflip_glyph ? 2 : 0;
-                                                        }
-
                                                     }
 
-                                                    if (enlargement > 0 && orig_position_index >= 0)
+                                                    /* Otherwise, normal animation check */
+                                                    if (!spef_found)
+                                                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, AnimationTimers.general_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                }
+                                            }
+
+                                            int enlargement = Tile2Enlargement[ntile];
+                                            for (int enl_idx = -1; enl_idx < 5; enl_idx++)
+                                            {
+                                                if (enlargement == 0 && enl_idx >= 0)
+                                                    break;
+
+                                                bool vflip_glyph = false;
+                                                bool hflip_glyph = false;
+                                                if ((hflip != tileflag_hflip) != manual_hflip) /* XOR */
+                                                    hflip_glyph = true;
+                                                else
+                                                    hflip_glyph = false;
+
+                                                if (tileflag_vflip != manual_vflip) /* XOR */
+                                                    vflip_glyph = true;
+                                                else
+                                                    vflip_glyph = false;
+
+
+                                                int enlarg_idx = enl_idx;
+                                                int position_index = -1;
+                                                int orig_position_index = -1;
+                                                if (enlargement > 0)
+                                                {
+                                                    orig_position_index = -1;
+                                                    /* Set position_index */
+                                                    if (enlarg_idx == -1)
                                                     {
-                                                        int enl_tile_idx = _enlargementDefs[enlargement].position2tile[orig_position_index];
-                                                        if (enl_tile_idx >= 0)
-                                                        {
-                                                            int addedindex = 0;
-                                                            if (_enlargementDefs[enlargement].number_of_animation_frames > 0)
-                                                            {
-                                                                if (main_tile_idx == -1
-                                                                    && anim_frame_idx >= 0
-                                                                    && anim_frame_idx < _enlargementDefs[enlargement].number_of_animation_frames
-                                                                    )
-                                                                {
-                                                                    addedindex = anim_frame_idx * _enlargementDefs[enlargement].number_of_enlargement_tiles;
-                                                                }
-                                                                else if (main_tile_idx == 0
-                                                                    && anim_frame_idx > 0
-                                                                    && anim_frame_idx <= _enlargementDefs[enlargement].number_of_animation_frames)
-                                                                {
-                                                                    addedindex = (anim_frame_idx - 1) * _enlargementDefs[enlargement].number_of_enlargement_tiles;
-                                                                }
-                                                                else if (main_tile_idx == _enlargementDefs[enlargement].number_of_animation_frames
-                                                                    && anim_frame_idx >= 0
-                                                                    && anim_frame_idx < _enlargementDefs[enlargement].number_of_animation_frames
-                                                                    )
-                                                                {
-                                                                    addedindex = anim_frame_idx * _enlargementDefs[enlargement].number_of_enlargement_tiles;
-                                                                }
-                                                            }
-                                                            int enl_glyph = enl_tile_idx + addedindex + EnlargementOffsets[enlargement] + EnlargementOff;
-                                                            ntile = Glyph2Tile[enl_glyph]; /* replace */
-                                                        }
+                                                        if (vflip_glyph)
+                                                            position_index = 1;
                                                         else
-                                                            continue;
+                                                            position_index = -1;
                                                     }
-
-                                                    int dx = 0, dy = 0;
-                                                    int darken_dx = 0, darken_dy = 0;
-                                                    switch (position_index)
+                                                    else if (enlarg_idx == 0)
                                                     {
-                                                        case 0:
-                                                            dx = -1;
-                                                            dy = -1;
-                                                            break;
-                                                        case 1:
-                                                            dx = 0;
-                                                            dy = -1;
-                                                            break;
-                                                        case 2:
-                                                            dx = 1;
-                                                            dy = -1;
-                                                            break;
-                                                        case 3:
-                                                            dx = -1;
-                                                            dy = 0;
-                                                            break;
-                                                        case 4:
-                                                            dx = 1;
-                                                            dy = 0;
-                                                            break;
+                                                        orig_position_index = 4;
+                                                        if (vflip_glyph)
+                                                            position_index = hflip_glyph ? 0 : 2;
+                                                        else
+                                                            position_index = hflip_glyph ? 3 : 4;
+                                                    }
+                                                    else if (enlarg_idx == 1)
+                                                    {
+                                                        orig_position_index = 3;
+                                                        if (vflip_glyph)
+                                                            position_index = hflip_glyph ? 2 : 0;
+                                                        else
+                                                            position_index = hflip_glyph ? 4 : 3;
+                                                    }
+                                                    else if (enlarg_idx == 2)
+                                                    {
+                                                        orig_position_index = 2;
+                                                        if (vflip_glyph)
+                                                            position_index = hflip_glyph ? 3 : 4;
+                                                        else
+                                                            position_index = hflip_glyph ? 0 : 2;
+                                                    }
+                                                    else if (enlarg_idx == 3)
+                                                    {
+                                                        orig_position_index = 1;
+                                                        if (vflip_glyph)
+                                                            position_index = -1;
+                                                        else
+                                                            position_index = 1;
+                                                    }
+                                                    else if (enlarg_idx == 4)
+                                                    {
+                                                        orig_position_index = 0;
+                                                        if (vflip_glyph)
+                                                            position_index = hflip_glyph ? 4 : 3;
+                                                        else
+                                                            position_index = hflip_glyph ? 2 : 0;
                                                     }
 
-                                                    int draw_map_x = mapx + dx;
-                                                    int draw_map_y = mapy + dy;
-                                                    if (!GHUtils.isok(draw_map_x, draw_map_y))
+                                                }
+
+                                                if (enlargement > 0 && orig_position_index >= 0)
+                                                {
+                                                    int enl_tile_idx = _enlargementDefs[enlargement].position2tile[orig_position_index];
+                                                    if (enl_tile_idx >= 0)
+                                                    {
+                                                        int addedindex = 0;
+                                                        if (_enlargementDefs[enlargement].number_of_animation_frames > 0)
+                                                        {
+                                                            if (main_tile_idx == -1
+                                                                && anim_frame_idx >= 0
+                                                                && anim_frame_idx < _enlargementDefs[enlargement].number_of_animation_frames
+                                                                )
+                                                            {
+                                                                addedindex = anim_frame_idx * _enlargementDefs[enlargement].number_of_enlargement_tiles;
+                                                            }
+                                                            else if (main_tile_idx == 0
+                                                                && anim_frame_idx > 0
+                                                                && anim_frame_idx <= _enlargementDefs[enlargement].number_of_animation_frames)
+                                                            {
+                                                                addedindex = (anim_frame_idx - 1) * _enlargementDefs[enlargement].number_of_enlargement_tiles;
+                                                            }
+                                                            else if (main_tile_idx == _enlargementDefs[enlargement].number_of_animation_frames
+                                                                && anim_frame_idx >= 0
+                                                                && anim_frame_idx < _enlargementDefs[enlargement].number_of_animation_frames
+                                                                )
+                                                            {
+                                                                addedindex = anim_frame_idx * _enlargementDefs[enlargement].number_of_enlargement_tiles;
+                                                            }
+                                                        }
+                                                        int enl_glyph = enl_tile_idx + addedindex + EnlargementOffsets[enlargement] + EnlargementOff;
+                                                        ntile = Glyph2Tile[enl_glyph]; /* replace */
+                                                    }
+                                                    else
                                                         continue;
+                                                }
 
-                                                    darken_dx = dx;
-                                                    darken_dy = 0;
-                                                    //int darken_x = mapx + darken_dx;
-                                                    //int darken_y = mapy + darken_dy;
-                                                    //bool darken = ((_mapData[darken_x, darken_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
-                                                    //if (_mapData[mapx, mapy].Layers.layer_glyphs != null
-                                                    //    && (_mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
-                                                    //        || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
-                                                    //   )
-                                                    //    darken = false;
+                                                int dx = 0, dy = 0;
+                                                int darken_dx = 0, darken_dy = 0;
+                                                switch (position_index)
+                                                {
+                                                    case 0:
+                                                        dx = -1;
+                                                        dy = -1;
+                                                        break;
+                                                    case 1:
+                                                        dx = 0;
+                                                        dy = -1;
+                                                        break;
+                                                    case 2:
+                                                        dx = 1;
+                                                        dy = -1;
+                                                        break;
+                                                    case 3:
+                                                        dx = -1;
+                                                        dy = 0;
+                                                        break;
+                                                    case 4:
+                                                        dx = 1;
+                                                        dy = 0;
+                                                        break;
+                                                }
+
+                                                int draw_map_x = mapx + dx;
+                                                int draw_map_y = mapy + dy;
+                                                if (!GHUtils.isok(draw_map_x, draw_map_y))
+                                                    continue;
+
+                                                darken_dx = dx;
+                                                darken_dy = 0;
+                                                //int darken_x = mapx + darken_dx;
+                                                //int darken_y = mapy + darken_dy;
+                                                //bool darken = ((_mapData[darken_x, darken_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
+                                                //if (_mapData[mapx, mapy].Layers.layer_glyphs != null
+                                                //    && (_mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
+                                                //        || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
+                                                //   )
+                                                //    darken = false;
 
 
-                                                    int sheet_idx = TileSheetIdx(ntile);
-                                                    int tile_x = TileSheetX(ntile);
-                                                    int tile_y = TileSheetY(ntile);
+                                                int sheet_idx = TileSheetIdx(ntile);
+                                                int tile_x = TileSheetX(ntile);
+                                                int tile_y = TileSheetY(ntile);
 
-                                                    SKRect sourcerect;
-                                                    float scaled_tile_width = width;
-                                                    float scaled_tile_height = tileflag_halfsize ? height / 2 : height;
-                                                    float scaled_x_padding = 0;
-                                                    float scaled_y_padding = 0;
-                                                    float scaled_y_height_change = 0;
-                                                    if(!tileflag_halfsize && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
-                                                        scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
-                                                    int source_y_added = 0;
-                                                    int source_height_deducted = 0;
-                                                    int source_height = tileflag_halfsize ? GHConstants.TileHeight / 2 : GHConstants.TileHeight;
+                                                SKRect sourcerect;
+                                                float scaled_tile_width = width;
+                                                float scaled_tile_height = tileflag_halfsize ? height / 2 : height;
+                                                float scaled_x_padding = 0;
+                                                float scaled_y_padding = 0;
+                                                int source_y_added = 0;
+                                                int source_height_deducted = 0;
+                                                int source_height = tileflag_halfsize ? GHConstants.TileHeight / 2 : GHConstants.TileHeight;
 
-                                                    if (tileflag_halfsize)
+                                                if (tileflag_halfsize)
+                                                {
+                                                    float scale = 1.0f;
+                                                    if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
                                                     {
-                                                        float scale = 1.0f;
+                                                        if (obj_in_pit)
+                                                            scale *= GHConstants.OBJECT_PIT_SCALING_FACTOR;
+                                                    }
+
+                                                    if (monster_height < 0 && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
+                                                        scale *= Math.Min(1.0f, Math.Max(0.1f, 1.0f - (1.0f - (float)GHConstants.OBJECT_PIT_SCALING_FACTOR) * (float)monster_height / (float)GHConstants.SPECIAL_HEIGHT_IN_PIT));
+
+                                                    if (tileflag_floortile)
+                                                    {
+                                                        if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
+                                                            && obj_height > 0 && obj_height < 48)
+                                                        {
+                                                            source_y_added = (GHConstants.TileHeight / 2 - obj_height) / 2;
+                                                            source_height_deducted = GHConstants.TileHeight / 2 - obj_height;
+                                                            source_height = GHConstants.TileHeight / 2 - source_height_deducted;
+                                                            scaled_tile_width = scale * width;
+                                                            scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                            scaled_tile_height = scale * (float)source_height * height / (float)GHConstants.TileHeight;
+                                                            scaled_y_padding = Math.Max(0, scale * (float)source_height_deducted * height / (float)GHConstants.TileHeight - pit_border);
+                                                        }
+                                                        sourcerect = new SKRect(tile_x, tile_y + source_y_added, tile_x + GHConstants.TileWidth, tile_y + source_y_added + source_height);
+                                                    }
+                                                    else
+                                                    {
                                                         if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
                                                         {
-                                                            if (obj_in_pit)
-                                                                scale *= GHConstants.OBJECT_PIT_SCALING_FACTOR;
+                                                            if(obj_height > 0 && obj_height < 48)
+                                                                scale *= ((float)obj_height) / 48.0f;
                                                         }
+                                                        scaled_tile_width = scale * width;
+                                                        scaled_tile_height = scale * height / 2;
+                                                        scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                        scaled_y_padding = Math.Max(0, height / 2 - scaled_tile_height - pit_border);
 
-                                                        if (monster_height < 0 && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
-                                                            scale *= Math.Min(1.0f, Math.Max(0.1f, 1.0f - (1.0f - (float)GHConstants.OBJECT_PIT_SCALING_FACTOR) * (float)monster_height / (float)GHConstants.SPECIAL_HEIGHT_IN_PIT));
-
+                                                        sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                                                    {
                                                         if (tileflag_floortile)
                                                         {
-                                                            if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
-                                                                && obj_height > 0 && obj_height < 48)
-                                                            {
-                                                                source_y_added = (GHConstants.TileHeight / 2 - obj_height) / 2;
-                                                                source_height_deducted = GHConstants.TileHeight / 2 - obj_height;
-                                                                source_height = GHConstants.TileHeight / 2 - source_height_deducted;
-                                                                scaled_tile_width = scale * width;
-                                                                scaled_x_padding = (width - scaled_tile_width) / 2;
-                                                                scaled_tile_height = scale * (float)source_height * height / (float)GHConstants.TileHeight;
-                                                                scaled_y_padding = Math.Max(0, scale * (float)source_height_deducted * height / (float)GHConstants.TileHeight - pit_border);
-                                                            }
-                                                            sourcerect = new SKRect(tile_x, tile_y + source_y_added, tile_x + GHConstants.TileWidth, tile_y + source_y_added + source_height);
+                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight / 2);
                                                         }
                                                         else
                                                         {
-                                                            if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
+                                                            float scale = 1.0f;
+                                                            if (missile_height > 0 && missile_height < 48)
                                                             {
-                                                                if(obj_height > 0 && obj_height < 48)
-                                                                    scale *= ((float)obj_height) / 48.0f;
+                                                                scale = ((float)missile_height) / 48.0f;
                                                             }
                                                             scaled_tile_width = scale * width;
                                                             scaled_tile_height = scale * height / 2;
                                                             scaled_x_padding = (width - scaled_tile_width) / 2;
-                                                            scaled_y_padding = Math.Max(0, height / 2 - scaled_tile_height - pit_border);
+                                                            scaled_y_padding = (height / 2 - scaled_tile_height) / 2;
 
                                                             sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                                                        if(monster_height < 0 && dy == 0)
                                                         {
-                                                            if (tileflag_floortile)
-                                                            {
-                                                                sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight / 2);
-                                                            }
-                                                            else
-                                                            {
-                                                                float scale = 1.0f;
-                                                                if (missile_height > 0 && missile_height < 48)
-                                                                {
-                                                                    scale = ((float)missile_height) / 48.0f;
-                                                                }
-                                                                scaled_tile_width = scale * width;
-                                                                scaled_tile_height = scale * height / 2;
-                                                                scaled_x_padding = (width - scaled_tile_width) / 2;
-                                                                scaled_y_padding = (height / 2 - scaled_tile_height) / 2;
-
-                                                                sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                                                            }
+                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight + monster_height);
+                                                            source_height_deducted = -monster_height;
+                                                            source_height = GHConstants.TileHeight - source_height_deducted;
+                                                            scaled_tile_height = (float)source_height * height / (float)GHConstants.TileHeight;
                                                         }
                                                         else
                                                         {
-                                                            if(monster_height < 0 && dy == 0)
-                                                            {
-                                                                sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight + monster_height);
-                                                                source_height_deducted = -monster_height;
-                                                                source_height = GHConstants.TileHeight - source_height_deducted;
-                                                                scaled_tile_height = (float)source_height * height / (float)GHConstants.TileHeight;
-                                                            }
-                                                            else
-                                                            {
-                                                                sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                                                            }
+                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                                                         }
                                                     }
+                                                }
 
-                                                    float move_offset_x = 0, move_offset_y = 0;
-                                                    int movediffx = (int)monster_origin_x - draw_map_x;
-                                                    int movediffy = (int)monster_origin_y - draw_map_y;
-                                                    long counterdiff = currentcountervalue - glyphprintcountervalue;
-                                                    if ((layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT) 
-                                                        && GHUtils.isok(monster_origin_x, monster_origin_y)
-                                                        && (movediffx != 0 || movediffy != 0)
-                                                        && counterdiff >= 0 && counterdiff < GHConstants.MoveIntervals)
+                                                float move_offset_x = 0, move_offset_y = 0;
+                                                int movediffx = (int)monster_origin_x - draw_map_x;
+                                                int movediffy = (int)monster_origin_y - draw_map_y;
+                                                long counterdiff = currentcountervalue - glyphprintcountervalue;
+                                                if ((layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT) 
+                                                    && GHUtils.isok(monster_origin_x, monster_origin_y)
+                                                    && (movediffx != 0 || movediffy != 0)
+                                                    && counterdiff >= 0 && counterdiff < GHConstants.MoveIntervals)
+                                                {
+                                                    move_offset_x = width * (float)movediffx * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
+                                                    move_offset_y = height * (float)movediffy * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
+                                                }
+
+                                                tx = (offsetX + _mapOffsetX + move_offset_x + width * (float)draw_map_x);
+                                                ty = (offsetY + _mapOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
+
+                                                using (new SKAutoCanvasRestore(canvas, true))
+                                                {
+                                                    canvas.Translate(tx + (hflip_glyph ? width : 0), ty + (vflip_glyph ? height : 0));
+                                                    canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
+                                                    SKRect targetrect;
+                                                    if (tileflag_halfsize)
                                                     {
-                                                        move_offset_x = width * (float)movediffx * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
-                                                        move_offset_y = height * (float)movediffy * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
+                                                        targetrect = new SKRect(scaled_x_padding, height / 2 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 2 + scaled_y_padding + scaled_tile_height);
                                                     }
-
-                                                    tx = (offsetX + _mapOffsetX + move_offset_x + width * (float)draw_map_x);
-                                                    ty = (offsetY + _mapOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
-
-                                                    using (new SKAutoCanvasRestore(canvas, true))
+                                                    else
                                                     {
-                                                        canvas.Translate(tx + (hflip_glyph ? width : 0), ty + (vflip_glyph ? height : 0));
-                                                        canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
-                                                        SKRect targetrect;
-                                                        if (tileflag_halfsize)
-                                                        {
-                                                            targetrect = new SKRect(scaled_x_padding, height / 2 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 2 + scaled_y_padding + scaled_tile_height);
-                                                        }
+                                                        if(tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                                                            targetrect = new SKRect(scaled_x_padding, height / 4 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 4 + scaled_y_padding + scaled_tile_height);
                                                         else
-                                                        {
-                                                            if(tileflag_normalobjmissile && !tileflag_fullsizeditem)
-                                                                targetrect = new SKRect(scaled_x_padding, height / 4 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 4 + scaled_y_padding + scaled_tile_height);
-                                                            else
-                                                                targetrect = new SKRect(scaled_x_padding, scaled_y_padding, scaled_x_padding + scaled_tile_width, scaled_y_padding + scaled_tile_height);
-                                                        }
-                                                        canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                                                            targetrect = new SKRect(scaled_x_padding, scaled_y_padding, scaled_x_padding + scaled_tile_width, scaled_y_padding + scaled_tile_height);
                                                     }
+                                                    canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
                                                 }
                                             }
                                         }
