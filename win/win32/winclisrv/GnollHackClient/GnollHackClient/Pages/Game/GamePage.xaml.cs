@@ -1490,7 +1490,7 @@ namespace GnollHackClient.Pages.Game
 
                                                 SKRect sourcerect;
                                                 float scaled_tile_width = width;
-                                                float scaled_tile_height = tileflag_halfsize ? height / 2 : height;
+                                                float scaled_tile_height = tileflag_halfsize || (tileflag_normalobjmissile && !tileflag_fullsizeditem) ? height / 2 : height;
                                                 float scaled_x_padding = 0;
                                                 float scaled_y_padding = 0;
                                                 int source_y_added = 0;
