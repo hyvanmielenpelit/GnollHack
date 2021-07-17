@@ -4965,7 +4965,7 @@ double hp_d;
     }
 
     if (iflags.using_gui_tiles && flags.show_tile_u_hp_bar)
-        force_redraw_at(u.ux, u.uy);
+        newsym(u.ux, u.uy);
 
     return *target_integer_part_ptr;
 }

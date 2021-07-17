@@ -3888,7 +3888,7 @@ struct monst* mtmp;
     else
         pline("%s does not seem to react to your gesture.", Monnam(mtmp));
 
-    force_redraw_at(mtmp->mx, mtmp->my);
+    newsym(mtmp->mx, mtmp->my);
     flush_screen(1);
 
     return 1;

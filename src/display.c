@@ -489,10 +489,30 @@ register xchar x, y;
         {
             levl[x][y].hero_memory_layers.glyph = GLYPH_INVISIBLE;
             levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = GLYPH_INVISIBLE;
-            levl[x][y].hero_memory_layers.special_monster_layer_height = 0;;
+            clear_monster_layerinfo(&levl[x][y].hero_memory_layers);
         }
         show_monster_glyph_with_extra_info(x, y, GLYPH_INVISIBLE, (struct monst*)0, 0UL, 0, 0);
     }
+}
+
+void
+clear_monster_layerinfo(linfo)
+struct layer_info* linfo;
+{
+    if (!linfo)
+        return;
+
+    linfo->m_id = 0;
+    linfo->special_monster_layer_height = 0;
+    linfo->monster_origin_x = 0;
+    linfo->monster_origin_y = 0;
+    linfo->monster_hp = 0;
+    linfo->monster_maxhp = 0;
+    linfo->rider_glyph = NO_GLYPH;
+    linfo->status_bits = 0UL;
+    linfo->condition_bits = 0UL;
+    for(int i = 0; i < NUM_BUFF_BIT_ULONGS; i++)
+        linfo->buff_bits[i] = 0UL;
 }
 
 boolean
@@ -2551,7 +2571,7 @@ clear_monster_layer_memory_at(x, y)
 int x, y;
 {
     levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH;
-    levl[x][y].hero_memory_layers.special_monster_layer_height = 0;
+    clear_monster_layerinfo(&levl[x][y].hero_memory_layers);
 }
 
 void
@@ -2583,9 +2603,8 @@ int x, y;
 {
     show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
     clear_monster_extra_info(x, y);
+    clear_monster_layerinfo(&gbuf[y][x].layers);
 
-    gbuf[y][x].layers.m_id = 0;
-    gbuf[y][x].layers.special_monster_layer_height = 0;
 }
 
 
@@ -2610,6 +2629,8 @@ boolean exclude_ascii;
 {
     if (isok(x, y))
     {
+        boolean loc_is_you = (u.ux == x && u.uy == y);
+
         /* Replace */
         int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL));
 
@@ -2620,11 +2641,12 @@ boolean exclude_ascii;
         clear_monster_extra_info(x, y);
         show_extra_info(x, y, disp_flags, hit_tile_id, damage_displayed);
 
+        clear_monster_layerinfo(&gbuf[y][x].layers);
         gbuf[y][x].layers.monster_origin_x = x0;
         gbuf[y][x].layers.monster_origin_y = y0;
-
-        gbuf[y][x].layers.m_id = 0;
-        gbuf[y][x].layers.special_monster_layer_height = 0;
+        gbuf[y][x].layers.monster_hp = loc_is_you ? (Upolyd ? u.mh : u.uhp) : mtmp->mhp;
+        gbuf[y][x].layers.monster_maxhp = loc_is_you ? (Upolyd ? u.mhmax : u.uhpmax) : mtmp->mhpmax;
+        gbuf[y][x].layers.rider_glyph = NO_GLYPH;
 
         if (disp_flags & LFLAGS_M_YOU)
         {
@@ -2649,13 +2671,13 @@ boolean exclude_ascii;
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;
         }
 
+        unsigned long extra_flags = 0UL;
         if (mtmp)
         {
             if (!Hallucination)
                 gbuf[y][x].layers.m_id = mtmp->m_id;
 
-            unsigned long extra_flags = 0UL;
-            if(is_tame(mtmp) && !Hallucination)
+            if (is_tame(mtmp) && !Hallucination)
                 extra_flags |= LFLAGS_M_PET;
 
             if (is_peaceful(mtmp) && !is_tame(mtmp) && !Hallucination)
@@ -2664,10 +2686,182 @@ boolean exclude_ascii;
             if ((mtmp->worn_item_flags & W_SADDLE) && !Hallucination)
                 extra_flags |= LFLAGS_M_SADDLED;
 
+            if (canspotmon(mtmp))
+                extra_flags |= LFLAGS_M_CANSPOTMON;
+
             /* Other conditions here */
 
             /* Add to layer */
             add_glyph_buffer_layer_flags(x, y, extra_flags);
+        }
+
+        if(loc_is_you || mtmp)
+        {
+            if (loc_is_you && !mtmp)
+                mtmp = &youmonst;
+
+            /* Status bits*/
+            boolean issteed = (mtmp == u.usteed);
+            unsigned long layer_flags = disp_flags | extra_flags;
+            boolean ispeaceful = (layer_flags & LFLAGS_M_PEACEFUL) != 0;
+            boolean ispet = (layer_flags & LFLAGS_M_PET) != 0;
+
+            gbuf[y][x].layers.status_bits = 0UL;
+            for (int status_mark = STATUS_MARK_PET; status_mark < MAX_STATUS_MARKS; status_mark++)
+            {
+                boolean display_this_status_mark = FALSE;
+                switch (status_mark)
+                {
+                case STATUS_MARK_TOWNGUARD_PEACEFUL:
+                    if (!loc_is_you && ispeaceful && !ispet && is_watch(mtmp->data))
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_TOWNGUARD_HOSTILE:
+                    if (!loc_is_you && !ispeaceful && !ispet && is_watch(mtmp->data))
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_PET:
+                    if (!loc_is_you && ispet)
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_PEACEFUL:
+                    if (!loc_is_you && ispeaceful && !is_watch(mtmp->data))
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_DETECTED:
+                    if (!loc_is_you && (layer_flags & LFLAGS_M_DETECTED) != 0)
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_PILE:
+                    //if (!loc_is_you && data->map[i][j].layer_flags & LFLAGS_O_PILE)
+                    //    display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_HUNGRY:
+                    if ((loc_is_you && u.uhs == HUNGRY)
+                        || (!loc_is_you && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty == 0)
+                        )
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_WEAK:
+                    if (loc_is_you && u.uhs == WEAK
+                        || (!loc_is_you && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty > 0)
+                        )
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_FAINTING:
+                    if (loc_is_you && u.uhs >= FAINTING)
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_BURDENED:
+                    if (loc_is_you && u.carrying_capacity_level == SLT_ENCUMBER)
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_STRESSED:
+                    if (loc_is_you && u.carrying_capacity_level == MOD_ENCUMBER)
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_STRAINED:
+                    if (loc_is_you && u.carrying_capacity_level == HVY_ENCUMBER)
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_OVERTAXED:
+                    if (loc_is_you && u.carrying_capacity_level == EXT_ENCUMBER)
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_OVERLOADED:
+                    if (loc_is_you && u.carrying_capacity_level == OVERLOADED)
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_2WEP:
+                    if (loc_is_you && u.twoweap)
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_SKILL:
+                    if (loc_is_you && u.canadvanceskill)
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_SADDLED:
+                    if (!loc_is_you && (layer_flags & LFLAGS_M_SADDLED))
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_LOW_HP:
+                case STATUS_MARK_CRITICAL_HP:
+                {
+                    if ((loc_is_you && !flags.show_tile_u_hp_bar) || (ispet && !flags.show_tile_pet_hp_bar))
+                    {
+                        int relevant_hp_max = loc_is_you ? (Upolyd ? u.mhmax : u.uhpmax) : mtmp->mhpmax;
+                        int low_threshold = min(relevant_hp_max / 2, max(4, relevant_hp_max / 3));
+                        if (relevant_hp_max < 4)
+                            low_threshold = 0;
+                        int critical_threshold = max(1, min(relevant_hp_max / 4, max(4, relevant_hp_max / 6)));
+                        if (relevant_hp_max < 2)
+                            critical_threshold = 0;
+
+                        int relevant_hp = loc_is_you ? (Upolyd ? u.mh : u.uhp) : mtmp->mhp;
+                        if (status_mark == STATUS_MARK_CRITICAL_HP && relevant_hp <= critical_threshold)
+                            display_this_status_mark = TRUE;
+                        if (status_mark == STATUS_MARK_LOW_HP && relevant_hp <= low_threshold && relevant_hp > critical_threshold)
+                            display_this_status_mark = TRUE;
+                    }
+                    break;
+                }
+                case STATUS_MARK_SPEC_USED:
+                    if (!loc_is_you && ispet && any_spec_used(mtmp))
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_TRAPPED:
+                    if ((loc_is_you && u.utrap) || (!loc_is_you && mtmp->mtrapped))
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_USTUCK:
+                    if (mtmp == u.ustuck && !u.uswallow)
+                        display_this_status_mark = TRUE;
+                    break;
+                case STATUS_MARK_INVENTORY:
+                    if (!loc_is_you && ispet && !mtmp->ispartymember && count_unworn_items(mtmp->minvent) > 0)
+                        display_this_status_mark = TRUE;
+                    break;
+                default:
+                    break;
+                }
+
+                if (display_this_status_mark)
+                {
+                    gbuf[y][x].layers.status_bits |= 1UL << status_mark;
+
+                }
+            }
+
+            /* Conditions */
+            gbuf[y][x].layers.condition_bits = get_m_condition_bits(loc_is_you ? &youmonst : mtmp);
+
+            /* Buffs */
+            int i;
+            for(i = 0; i < NUM_BUFF_BIT_ULONGS; i++)
+                gbuf[y][x].layers.buff_bits[i] = 0UL;
+
+            int ulongidx = 0;
+            unsigned long buffbit = 0UL;
+            for (int propidx = 1; propidx <= LAST_PROP; propidx++)
+            {
+                if (!property_definitions[propidx].show_buff)
+                    continue;
+
+                long duration = loc_is_you ? (u.uprops[propidx].intrinsic & TIMEOUT) : (long)(mtmp->mprops[propidx] & M_TIMEOUT);
+                if (duration == 0L)
+                    continue;
+
+                ulongidx = propidx / 32;
+                if (ulongidx >= NUM_BUFF_BIT_ULONGS)
+                    break;
+
+                buffbit = 1UL << (propidx - ulongidx * 32);
+                gbuf[y][x].layers.buff_bits[ulongidx] |= buffbit;
+            }
+
+            /* Steed mark (you as small) */
+            if (loc_is_you && issteed)
+                gbuf[y][x].layers.rider_glyph = u_to_glyph();
         }
 
     }
@@ -2706,11 +2900,9 @@ boolean remove;
         {
             if (!remove)
                 glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, m_at(x, y), 0UL));
-
             gbuf[y][x].layers.layer_glyphs[LAYER_MONSTER] = remove ? NO_GLYPH : glyph;
-            gbuf[y][x].layers.special_monster_layer_height = 0;
-            gbuf[y][x].layers.layer_flags &= ~LFLAGS_M_MASK;
-            gbuf[y][x].layers.m_id = 0;
+            clear_monster_extra_info(x, y);
+            clear_monster_layerinfo(&gbuf[y][x].layers);
         }
         else if (glyph_is_object(glyph))
         {

@@ -151,6 +151,10 @@ namespace GnollHackClient.Droid
         public static extern int LibGetGeneralTileOff();
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibGetHitTileOff();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetUITileOff();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetBuffTileOff();
 
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibGetAnimationArraySize();
@@ -342,13 +346,15 @@ namespace GnollHackClient.Droid
             return LibGetNoGlyph();
         }
 
-        public void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile)
+        public void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile, out int ui_tile, out int buff_tile)
         {
             a = LibGetAnimationOff();
             e = LibGetEnlargementOff();
             r = LibGetReplacementOff();
             gen_tile = LibGetGeneralTileOff();
             hit_tile = LibGetHitTileOff();
+            ui_tile = LibGetUITileOff();
+            buff_tile = LibGetBuffTileOff();
         }
 
         public List<AnimationDefinition> GetAnimationArray()

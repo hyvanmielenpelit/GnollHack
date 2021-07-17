@@ -1602,7 +1602,7 @@ dotwoweapon()
 
     update_hand_unweapon(2);
     context.botl = context.botlx = TRUE;
-    force_redraw_at(u.ux, u.uy);
+    newsym(u.ux, u.uy);
     flush_screen(1);
     update_inventory();
 #ifdef STATUS_HILITES

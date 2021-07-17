@@ -8168,7 +8168,7 @@ const char *fltxt;
         {
             display_u_being_hit(HIT_SLEEP, 0, 0UL);
             fall_asleep(-rn1(5, 8), TRUE); /* sleep ray */
-            force_redraw_at(u.ux, u.uy);
+            newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS_AND_FLAGS);
         }
         break;
     case ZT_DISINTEGRATION:

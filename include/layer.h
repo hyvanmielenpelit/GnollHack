@@ -34,6 +34,7 @@ enum layer_types
 
 
 #define MAXLEASHED 2
+#define NUM_BUFF_BIT_ULONGS 7 // 1 + (MAX_PROPS - 1) / 32
 
 struct layer_info {
     int glyph; /* For ascii compatibility */
@@ -49,9 +50,17 @@ struct layer_info {
 
     short damage_displayed;
     short hit_tile;
+
     short special_monster_layer_height;
     xchar monster_origin_x;
     xchar monster_origin_y;
+    int monster_hp;
+    int monster_maxhp;
+    int rider_glyph;
+    unsigned long status_bits;
+    unsigned long condition_bits;
+    unsigned long buff_bits[NUM_BUFF_BIT_ULONGS];
+
     short object_height;
 
     uchar missile_poisoned;
@@ -86,7 +95,7 @@ struct layer_info {
 #define LFLAGS_M_WORM_TAIL          0x00001000UL
 #define LFLAGS_M_WORM_SEEN          0x00002000UL
 #define LFLAGS_M_KILLED             0x00004000UL
-/* free bit */
+#define LFLAGS_M_CANSPOTMON         0x00008000UL /* canspotmon is true */
 #define LFLAGS_M_MASK               0x0000FFFFUL
 
 /* These are flags for showing extra stuff in graphical interfaces */

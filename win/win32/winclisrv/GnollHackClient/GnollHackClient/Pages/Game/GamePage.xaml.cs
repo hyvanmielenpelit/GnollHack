@@ -116,6 +116,8 @@ namespace GnollHackClient.Pages.Game
         public int ReplacementOff { get; set; }
         public int GeneralTileOff { get; set; }
         public int HitTileOff { get; set; }
+        public int UITileOff { get; set; }
+        public int BuffTileOff { get; set; }
 
 
         private int[] _tilesPerRow = new int[GHConstants.MaxTileSheets];
@@ -194,13 +196,15 @@ namespace GnollHackClient.Pages.Game
             UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
             NoGlyph = _gnollHackService.GetNoGlyph();
 
-            int animoff, enloff, reoff, general_tile_off, hit_tile_off;
-            _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off);
+            int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, buff_tile_off;
+            _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out buff_tile_off);
             AnimationOff = animoff;
             EnlargementOff = enloff;
             ReplacementOff = reoff;
             GeneralTileOff = general_tile_off;
             HitTileOff = hit_tile_off;
+            UITileOff = ui_tile_off;
+            BuffTileOff = buff_tile_off;
 
             _animationDefs = _gnollHackService.GetAnimationArray();
             _enlargementDefs = _gnollHackService.GetEnlargementArray();
@@ -1020,11 +1024,191 @@ namespace GnollHackClient.Pages.Game
                                     {
                                         short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
                                         float scaled_y_height_change = 0;
+                                        sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
+                                        sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
+                                        long glyphprintcountervalue = _mapData[mapx, mapy].GlyphPrintCounterValue;
+                                        long currentcountervalue = 0;
+                                        lock (AnimationTimerLock)
+                                        {
+                                            currentcountervalue = AnimationTimers.general_animation_counter;
+                                        }
+                                        float base_move_offset_x = 0, base_move_offset_y = 0;
+                                        int movediffx = (int)monster_origin_x - mapx;
+                                        int movediffy = (int)monster_origin_y - mapy;
+                                        long counterdiff = currentcountervalue - glyphprintcountervalue;
+                                        if (GHUtils.isok(monster_origin_x, monster_origin_y)
+                                            && (movediffx != 0 || movediffy != 0)
+                                            && counterdiff >= 0 && counterdiff < GHConstants.MoveIntervals)
+                                        {
+                                            base_move_offset_x = width * (float)movediffx * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
+                                            base_move_offset_y = height * (float)movediffy * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
+                                        }
 
                                         if (layer_idx == (int)layer_types.MAX_LAYERS)
                                         {
                                             if (monster_height > 0)
                                                 scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
+
+                                            if((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_YOU | LayerFlags.LFLAGS_UXUY | LayerFlags.LFLAGS_M_CANSPOTMON ))!= 0)
+                                            {
+                                                tx = (offsetX + _mapOffsetX + base_move_offset_x + width * (float)mapx);
+                                                ty = (offsetY + _mapOffsetY + base_move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+
+                                                /* Draw condition and status marks */
+                                                float x_scaling_factor = width / (float)(GHConstants.TileWidth);
+                                                float y_scaling_factor = height / (float)(GHConstants.TileHeight);
+                                                int max_fitted_rows = (GHConstants.TileWidth - 4) / (GHConstants.StatusMarkWidth + 2);
+                                                int status_count = 0;
+
+                                                ulong status_bits = _mapData[mapx, mapy].Layers.status_bits;
+                                                if (status_bits != 0)
+                                                {
+                                                    int[] statusmarkorder = { (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_PEACEFUL, (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+                                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                    int mglyph = (int)game_ui_tile_types.STATUS_MARKS + UITileOff;
+                                                    int mtile = Glyph2Tile[mglyph];
+                                                    int sheet_idx = TileSheetIdx(mtile);
+                                                    int tile_x = TileSheetX(mtile);
+                                                    int tile_y = TileSheetY(mtile);
+                                                    foreach (int status_mark in statusmarkorder)
+                                                    {
+                                                        ulong statusbit = 1UL << status_mark;
+                                                        if ((status_bits & statusbit) != 0)
+                                                        {
+                                                            int within_tile_x = status_mark % tiles_per_row;
+                                                            int within_tile_y = status_mark / tiles_per_row;
+                                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                            SKRect source_rt = new SKRect();
+                                                            source_rt.Left = c_x;
+                                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                            source_rt.Top = c_y;
+                                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                            /* Define draw location in target */
+                                                            int unscaled_left = GHConstants.TileWidth - 2 - GHConstants.StatusMarkWidth;
+                                                            int unscaled_right = unscaled_left + GHConstants.StatusMarkWidth;
+                                                            int unscaled_top = 2 + (2 + GHConstants.StatusMarkWidth) * status_count;
+                                                            int unscaled_bottom = unscaled_top + GHConstants.StatusMarkHeight;
+
+                                                            SKRect target_rt = new SKRect();
+                                                            target_rt.Left = tx + (int)(x_scaling_factor * (double)unscaled_left);
+                                                            target_rt.Right = tx + (int)(x_scaling_factor * (double)unscaled_right);
+                                                            target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
+                                                            target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
+
+                                                            status_count++;
+
+                                                            if (status_count >= max_fitted_rows)
+                                                                break;
+
+                                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                                        }
+                                                    }
+                                                }
+
+                                                ulong condition_bits = _mapData[mapx, mapy].Layers.condition_bits;
+                                                if (condition_bits != 0)
+                                                {
+                                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                    int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + UITileOff;
+                                                    int mtile = Glyph2Tile[mglyph];
+                                                    int sheet_idx = TileSheetIdx(mtile);
+                                                    int tile_x = TileSheetX(mtile);
+                                                    int tile_y = TileSheetY(mtile);
+                                                    for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
+                                                    {
+                                                        ulong conditionbit = 1UL << condition_mark;
+                                                        if ((condition_bits & conditionbit) != 0)
+                                                        {
+                                                            int within_tile_x = condition_mark % tiles_per_row;
+                                                            int within_tile_y = condition_mark / tiles_per_row;
+                                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                            SKRect source_rt = new SKRect();
+                                                            source_rt.Left = c_x;
+                                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                            source_rt.Top = c_y;
+                                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                            /* Define draw location in target */
+                                                            int unscaled_left = GHConstants.TileWidth - 2 - GHConstants.StatusMarkWidth;
+                                                            int unscaled_right = unscaled_left + GHConstants.StatusMarkWidth;
+                                                            int unscaled_top = 2 + (2 + GHConstants.StatusMarkWidth) * status_count;
+                                                            int unscaled_bottom = unscaled_top + GHConstants.StatusMarkHeight;
+
+                                                            SKRect target_rt = new SKRect();
+                                                            target_rt.Left = tx + (int)(x_scaling_factor * (double)unscaled_left);
+                                                            target_rt.Right = tx + (int)(x_scaling_factor * (double)unscaled_right);
+                                                            target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
+                                                            target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
+
+                                                            status_count++;
+
+                                                            if (status_count >= max_fitted_rows)
+                                                                break;
+
+                                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                                        }
+                                                    }
+                                                }
+
+                                                for(int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
+                                                {
+                                                    ulong buff_bits = _mapData[mapx, mapy].Layers.buff_bits[buff_ulong];
+                                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                    if (buff_bits != 0)
+                                                    {
+                                                        for (int buff_idx = 0; buff_idx < 32; buff_idx++)
+                                                        {
+                                                            ulong buffbit = 1UL << buff_idx;
+                                                            if ((buff_bits & buffbit) != 0)
+                                                            {
+                                                                int propidx = buff_ulong * 32 + buff_idx;
+                                                                int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + BuffTileOff;
+                                                                int mtile = Glyph2Tile[mglyph];
+                                                                int sheet_idx = TileSheetIdx(mtile);
+                                                                int tile_x = TileSheetX(mtile);
+                                                                int tile_y = TileSheetY(mtile);
+
+                                                                int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
+                                                                int within_tile_x = buff_mark % tiles_per_row;
+                                                                int within_tile_y = buff_mark / tiles_per_row;
+                                                                int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                                int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                                SKRect source_rt = new SKRect();
+                                                                source_rt.Left = c_x;
+                                                                source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                                source_rt.Top = c_y;
+                                                                source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                                /* Define draw location in target */
+                                                                int unscaled_left = GHConstants.TileWidth - 2 - GHConstants.StatusMarkWidth;
+                                                                int unscaled_right = unscaled_left + GHConstants.StatusMarkWidth;
+                                                                int unscaled_top = 2 + (2 + GHConstants.StatusMarkWidth) * status_count;
+                                                                int unscaled_bottom = unscaled_top + GHConstants.StatusMarkHeight;
+
+                                                                SKRect target_rt = new SKRect();
+                                                                target_rt.Left = tx + (int)(x_scaling_factor * (double)unscaled_left);
+                                                                target_rt.Right = tx + (int)(x_scaling_factor * (double)unscaled_right);
+                                                                target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
+                                                                target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
+
+                                                                status_count++;
+
+                                                                if (status_count >= max_fitted_rows)
+                                                                    break;
+
+                                                                canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                            }
 
                                             /* Draw death and hit markers */
                                             if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0)
@@ -1073,10 +1257,6 @@ namespace GnollHackClient.Pages.Game
                                             short obj_height = _mapData[mapx, mapy].Layers.object_height;
                                             short missile_height = _mapData[mapx, mapy].Layers.missile_height;
                                             bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
-                                            sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
-                                            sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
-                                            long glyphprintcountervalue = _mapData[mapx, mapy].GlyphPrintCounterValue;
-                                            long currentcountervalue = 0;
 
                                             /* Base flips */
                                             bool hflip = (signed_glyph < 0);
@@ -1105,7 +1285,6 @@ namespace GnollHackClient.Pages.Game
                                             /* Determine animation tile here */
                                             lock (AnimationTimerLock)
                                             {
-                                                currentcountervalue = AnimationTimers.general_animation_counter;
                                                 if (AnimationTimers.u_action_animation_counter_on && layer_idx == (int)layer_types.LAYER_MONSTER && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
                                                     ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
                                                 else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MONSTER) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
@@ -1398,16 +1577,10 @@ namespace GnollHackClient.Pages.Game
                                                 }
 
                                                 float move_offset_x = 0, move_offset_y = 0;
-                                                int movediffx = (int)monster_origin_x - draw_map_x;
-                                                int movediffy = (int)monster_origin_y - draw_map_y;
-                                                long counterdiff = currentcountervalue - glyphprintcountervalue;
-                                                if ((layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT) 
-                                                    && GHUtils.isok(monster_origin_x, monster_origin_y)
-                                                    && (movediffx != 0 || movediffy != 0)
-                                                    && counterdiff >= 0 && counterdiff < GHConstants.MoveIntervals)
+                                                if ((layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
                                                 {
-                                                    move_offset_x = width * (float)movediffx * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
-                                                    move_offset_y = height * (float)movediffy * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
+                                                    move_offset_x = base_move_offset_x;
+                                                    move_offset_y = base_move_offset_y;
                                                 }
 
                                                 tx = (offsetX + _mapOffsetX + move_offset_x + width * (float)draw_map_x);

@@ -144,6 +144,7 @@ namespace GnollHackCommon
          LFLAGS_M_WORM_TAIL =       0x00001000UL,
          LFLAGS_M_WORM_SEEN =       0x00002000UL,
          LFLAGS_M_KILLED =          0x00004000UL,
+         LFLAGS_M_CANSPOTMON =      0x00008000UL,
          LFLAGS_M_MASK =            0x0000FFFFUL,
          LFLAGS_O_PILE =            0x00010000UL,
          LFLAGS_O_IN_PIT =          0x00020000UL,
@@ -289,9 +290,18 @@ namespace GnollHackCommon
 
         public short damage_displayed;
         public short hit_tile;
+
         public short special_monster_layer_height;
         public sbyte monster_origin_x;
         public sbyte monster_origin_y;
+        public int monster_hp;
+        public int monster_maxhp;
+        public int rider_glyph;
+        public ulong status_bits;
+        public ulong condition_bits;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.NUM_BUFF_BIT_ULONGS)]
+        public ulong[] buff_bits;
+
         public short object_height;
 
         public byte missile_poisoned;
@@ -379,6 +389,21 @@ namespace GnollHackCommon
         MAX_GENERAL_TILES
     }
 
+    public enum game_ui_tile_types
+    {
+        GENERAL_UI_ELEMENTS = 0,        /* Check box etc. */
+        STATUS_MARKS,               /* Pet mark, detection mark, ridden mark, pile mark, etc. */
+        CONDITION_MARKS,            /* One tile for each specified condition (the same as on status line) */
+        MAIN_TILE_MARK,
+        U_TILE_MARK,
+        ITEM_AUTODRAW_GRAPHICS,
+        ITEM2_AUTODRAW_GRAPHICS,
+        ITEM_PROPERTY_MARKS,
+        JAR_GRAPHICS,
+        JAR_FOREGROUND,
+        MAX_UI_TILES
+    }
+
     public enum statusfields
     {
         BL_CHARACTERISTICS = -3, /* alias for BL_STR..BL_CH */
@@ -392,6 +417,92 @@ namespace GnollHackCommon
         BL_PARTYSTATS, BL_PARTYSTATS2, BL_PARTYSTATS3, BL_PARTYSTATS4, BL_PARTYSTATS5,
         MAXBLSTATS
     }
+
+    public enum bl_conditions
+    {
+        BL_COND_STONE = 0,
+        BL_COND_SLIME,
+        BL_COND_STRNGL,
+        BL_COND_SUFFOC,
+        BL_COND_FOODPOIS,
+        BL_COND_TERMILL,
+        BL_COND_BLIND,
+        BL_COND_DEAF,
+        BL_COND_STUN,
+        BL_COND_CONF,
+        BL_COND_HALLU,
+        BL_COND_LEV,
+        BL_COND_FLY,
+        BL_COND_RIDE,
+        BL_COND_SLOWED,
+        BL_COND_PARALYZED,
+        BL_COND_FEARFUL,
+        BL_COND_SLEEPING,
+        BL_COND_CANCELLED,
+        BL_COND_SILENCED,
+        BL_COND_GRAB,
+        BL_COND_ROT,
+        BL_COND_LYCANTHROPY,
+        NUM_BL_CONDITIONS
+    }
+
+    public enum game_ui_status_mark_types
+    {
+        STATUS_MARK_PET = 0,
+        STATUS_MARK_PEACEFUL,
+        STATUS_MARK_DETECTED,
+        STATUS_MARK_PILE,
+        STATUS_MARK_HUNGRY,
+        STATUS_MARK_WEAK,
+        STATUS_MARK_FAINTING,
+        STATUS_MARK_BURDENED,
+        STATUS_MARK_STRESSED,
+        STATUS_MARK_STRAINED,
+        STATUS_MARK_OVERTAXED,
+        STATUS_MARK_OVERLOADED,
+        STATUS_MARK_2WEP,
+        STATUS_MARK_SKILL,
+        STATUS_MARK_SADDLED,
+        STATUS_MARK_LOW_HP,
+        STATUS_MARK_CRITICAL_HP,
+        STATUS_MARK_SPEC_USED,
+        STATUS_MARK_TRAPPED,
+        STATUS_MARK_USTUCK,
+        STATUS_MARK_INVENTORY,
+        STATUS_MARK_TOWNGUARD_PEACEFUL,
+        STATUS_MARK_TOWNGUARD_HOSTILE,
+        MAX_STATUS_MARKS
+    }
+
+    public enum item_property_mark_types
+    {
+        ITEM_PROPERTY_MARK_POISONED = 0,
+        ITEM_PROPERTY_MARK_DEATH_MAGICAL,
+        ITEM_PROPERTY_MARK_FLAMING,
+        ITEM_PROPERTY_MARK_FREEZING,
+        ITEM_PROPERTY_MARK_ELECTRIFIED,
+        ITEM_PROPERTY_MARK_EXCEPTIONAL,
+        ITEM_PROPERTY_MARK_ELITE,
+        ITEM_PROPERTY_MARK_CELESTIAL,
+        ITEM_PROPERTY_MARK_PRIMORDIAL,
+        ITEM_PROPERTY_MARK_INFERNAL,
+        ITEM_PROPERTY_MARK_MYTHIC,
+        ITEM_PROPERTY_MARK_LEGENDARY,
+        ITEM_PROPERTY_MARK_CORRODED,
+        ITEM_PROPERTY_MARK_ROTTED,
+        ITEM_PROPERTY_MARK_BURNT,
+        ITEM_PROPERTY_MARK_RUSTY,
+        ITEM_PROPERTY_MARK_VERY_CORRODED,
+        ITEM_PROPERTY_MARK_VERY_ROTTED,
+        ITEM_PROPERTY_MARK_VERY_BURNT,
+        ITEM_PROPERTY_MARK_VERY_RUSTY,
+        ITEM_PROPERTY_MARK_THOROUGHLY_CORRODED,
+        ITEM_PROPERTY_MARK_THOROUGHLY_ROTTED,
+        ITEM_PROPERTY_MARK_THOROUGHLY_BURNT,
+        ITEM_PROPERTY_MARK_THOROUGHLY_RUSTY,
+        MAX_ITEM_PROPERTY_MARKS
+    }
+
 
     public class GHConstants
     {
@@ -409,6 +520,8 @@ namespace GnollHackCommon
         public const int MaxStatusFieldsPerLine = 24;
         public const int TileWidth = 64;
         public const int TileHeight = 96;
+        public const int StatusMarkWidth = 16;
+        public const int StatusMarkHeight = 16;
         public const int MaxTileSheets = 4;
         public const int NumberOfTilesPerSheet = 16224;
         public const int MaxSoundParameters = 8;
@@ -426,9 +539,13 @@ namespace GnollHackCommon
         public const int SPECIAL_HEIGHT_LEVITATION = 32;
         public const float OBJECT_PIT_SCALING_FACTOR = 0.75f;
         public const long MoveIntervals = 3;
-    }
+        public const int NUM_BUFF_BIT_ULONGS = 7;
+        public const int BUFFS_PER_TILE = 24;
+        public const int MAX_PROPS = 167;
+        public const int LAST_PROP = (MAX_PROPS - 1);
+}
 
-    [StructLayout(LayoutKind.Sequential)]
+[StructLayout(LayoutKind.Sequential)]
     public struct GHSelectedItem
     {
         public IntPtr Identifier;

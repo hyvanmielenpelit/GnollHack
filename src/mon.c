@@ -4484,7 +4484,7 @@ register struct monst *mtmp;
     else if (levl[mtmp->mx][mtmp->my].typ == ROOM || levl[mtmp->mx][mtmp->my].typ == GRASS || levl[mtmp->mx][mtmp->my].typ == GROUND)
     {
         mtmp->mundetected = 1;
-        force_redraw_at(mtmp->mx, mtmp->my);
+        newsym(mtmp->mx, mtmp->my);
         return TRUE;
     }
 
@@ -4523,7 +4523,7 @@ struct monst *mtmp;
     else
         mtmp->mundetected = undetected;
 
-    force_redraw_at(x, y);
+    newsym(x, y);
 
     return undetected;
 }

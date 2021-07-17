@@ -2343,7 +2343,7 @@ struct monst *mon;
         pline("%s grip relaxes.", s_suffix(Monnam(mon)));
         unstuck(mon);
     }
-    force_redraw_at(mon->mx, mon->my);
+    newsym(mon->mx, mon->my);
 }
 
 void

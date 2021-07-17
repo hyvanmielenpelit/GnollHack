@@ -6648,12 +6648,12 @@ dotogglehpbars()
     flags.show_tile_mon_hp_bar = !main_flag;
     flags.show_tile_pet_hp_bar = !main_flag;
 
-    force_redraw_at(u.ux, u.uy);
+    newsym(u.ux, u.uy);  // force_redraw_at(u.ux, u.uy);
 
     for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
         if (canseemon(mtmp))
-            force_redraw_at(mtmp->mx, mtmp->my);
+            newsym(mtmp->mx, mtmp->my);  // force_redraw_at(mtmp->mx, mtmp->my);
     }
     flush_screen(1);
 //    redraw_map();
@@ -6674,11 +6674,11 @@ int
 dotogglebufftimers()
 {
     flags.show_buff_timer = !flags.show_buff_timer;
-    force_redraw_at(u.ux, u.uy);
+    newsym(u.ux, u.uy); //force_redraw_at(u.ux, u.uy);
     for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
         if (canseemon(mtmp) && is_tame(mtmp))
-            force_redraw_at(mtmp->mx, mtmp->my);
+            newsym(mtmp->mx, mtmp->my); //force_redraw_at(mtmp->mx, mtmp->my);
     }
     flush_screen(1);
 
@@ -6695,7 +6695,7 @@ dotogglemonstertargeting()
     for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
         //if (canseemon(mtmp))
-        force_redraw_at(mtmp->mx, mtmp->my);
+        newsym(mtmp->mx, mtmp->my);  //force_redraw_at(mtmp->mx, mtmp->my);
     }
     flush_screen(1);
 
@@ -6709,7 +6709,7 @@ dotoggleumark()
 
     flags.show_tile_u_mark = !current_flag;
 
-    force_redraw_at(u.ux, u.uy);
+    newsym(u.ux, u.uy); //force_redraw_at(u.ux, u.uy);
 
     flush_screen(1);
 

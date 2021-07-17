@@ -1850,7 +1850,7 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
     {
         lidopened = TRUE;
         cobj->speflags |= SPEFLAGS_LID_OPENED;
-        force_redraw_at(u.ux, u.uy);
+        newsym(u.ux, u.uy);
         play_simple_container_sound(cobj, CONTAINER_SOUND_TYPE_OPEN);
         You("carefully push the lid of %s aside...", the(xname(cobj)));
         flush_screen(1);
@@ -1915,7 +1915,7 @@ struct obj* cobj;
                     lid_opened = TRUE;
                     play_simple_container_sound(cobj, CONTAINER_SOUND_TYPE_OPEN);
                     cobj->speflags |= SPEFLAGS_LID_OPENED;
-                    force_redraw_at(x, y);
+                    newsym(x, y);
                 }
             }
 

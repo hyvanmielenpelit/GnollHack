@@ -185,6 +185,16 @@ int LibGetHitTileOff()
     return GLYPH_HIT_TILE_OFF;
 }
 
+int LibGetUITileOff()
+{
+    return GLYPH_UI_TILE_OFF;
+}
+
+int LibGetBuffTileOff()
+{
+    return GLYPH_BUFF_OFF;
+}
+
 int LibGetAnimationArraySize()
 {
     return MAX_ANIMATIONS;

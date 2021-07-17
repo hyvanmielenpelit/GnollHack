@@ -4029,7 +4029,7 @@ boolean incr;
         u.uhs = newhs;
         context.botl = context.botlx = TRUE;
         bot();
-        force_redraw_at(u.ux, u.uy);
+        newsym(u.ux, u.uy);  //force_redraw_at(u.ux, u.uy);
         flush_screen(1);
         if ((Upolyd ? u.mh : u.uhp) < 1) {
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die from hunger and exhaustion.");
