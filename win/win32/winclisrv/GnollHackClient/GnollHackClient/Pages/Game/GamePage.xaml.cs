@@ -1059,6 +1059,8 @@ namespace GnollHackClient.Pages.Game
                                             int signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
                                             short obj_height = _mapData[mapx, mapy].Layers.object_height;
                                             short missile_height = _mapData[mapx, mapy].Layers.missile_height;
+                                            short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
+                                            bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
 
                                             if (signed_glyph == NoGlyph)
                                                 continue;
@@ -1294,14 +1296,28 @@ namespace GnollHackClient.Pages.Game
 
                                                     SKRect sourcerect;
                                                     float scaled_tile_width = width;
-                                                    float scaled_tile_height = height /2;
+                                                    float scaled_tile_height = tileflag_halfsize ? height / 2 : height;
                                                     float scaled_x_padding = 0;
                                                     float scaled_y_padding = 0;
+                                                    float scaled_y_height_change = 0;
+                                                    if(!tileflag_halfsize && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
+                                                        scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
                                                     int source_y_added = 0;
                                                     int source_height_deducted = 0;
-                                                    int source_height = GHConstants.TileHeight / 2;
+                                                    int source_height = tileflag_halfsize ? GHConstants.TileHeight / 2 : GHConstants.TileHeight;
+
                                                     if (tileflag_halfsize)
                                                     {
+                                                        float scale = 1.0f;
+                                                        if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
+                                                        {
+                                                            if (obj_in_pit)
+                                                                scale *= GHConstants.OBJECT_PIT_SCALING_FACTOR;
+                                                        }
+
+                                                        if (monster_height < 0 && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
+                                                            scale *= Math.Min(1.0f, Math.Max(0.1f, 1.0f - (1.0f - (float)GHConstants.OBJECT_PIT_SCALING_FACTOR) * (float)monster_height / (float)GHConstants.SPECIAL_HEIGHT_IN_PIT));
+
                                                         if (tileflag_floortile)
                                                         {
                                                             if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
@@ -1310,18 +1326,19 @@ namespace GnollHackClient.Pages.Game
                                                                 source_y_added = (GHConstants.TileHeight / 2 - obj_height) / 2;
                                                                 source_height_deducted = GHConstants.TileHeight / 2 - obj_height;
                                                                 source_height = GHConstants.TileHeight / 2 - source_height_deducted;
-                                                                scaled_y_padding = Math.Max(0, (float)source_height_deducted * height / (float)GHConstants.TileHeight - pit_border);
-                                                                scaled_tile_height = (float)source_height * height / (float)GHConstants.TileHeight;
+                                                                scaled_tile_width = scale * width;
+                                                                scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                                scaled_tile_height = scale * (float)source_height * height / (float)GHConstants.TileHeight;
+                                                                scaled_y_padding = Math.Max(0, scale * (float)source_height_deducted * height / (float)GHConstants.TileHeight - pit_border);
                                                             }
                                                             sourcerect = new SKRect(tile_x, tile_y + source_y_added, tile_x + GHConstants.TileWidth, tile_y + source_y_added + source_height);
                                                         }
                                                         else
                                                         {
-                                                            float scale = 1.0f;
-                                                            if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
-                                                                && obj_height > 0 && obj_height < 48)
+                                                            if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
                                                             {
-                                                                scale = ((float)obj_height) / 48.0f;
+                                                                if(obj_height > 0 && obj_height < 48)
+                                                                    scale *= ((float)obj_height) / 48.0f;
                                                             }
                                                             scaled_tile_width = scale * width;
                                                             scaled_tile_height = scale * height / 2;
@@ -1355,11 +1372,23 @@ namespace GnollHackClient.Pages.Game
                                                             }
                                                         }
                                                         else
-                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                        {
+                                                            if(monster_height < 0 && dy == 0)
+                                                            {
+                                                                sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight + monster_height);
+                                                                source_height_deducted = -monster_height;
+                                                                source_height = GHConstants.TileHeight - source_height_deducted;
+                                                                scaled_tile_height = (float)source_height * height / (float)GHConstants.TileHeight;
+                                                            }
+                                                            else
+                                                            {
+                                                                sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                            }
+                                                        }
                                                     }
 
                                                     tx = (offsetX + _mapOffsetX + width * (float)draw_map_x);
-                                                    ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)draw_map_y);
+                                                    ty = (offsetY + _mapOffsetY + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
 
                                                     using (new SKAutoCanvasRestore(canvas, true))
                                                     {
@@ -1367,13 +1396,15 @@ namespace GnollHackClient.Pages.Game
                                                         canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
                                                         SKRect targetrect;
                                                         if (tileflag_halfsize)
+                                                        {
                                                             targetrect = new SKRect(scaled_x_padding, height / 2 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 2 + scaled_y_padding + scaled_tile_height);
+                                                        }
                                                         else
                                                         {
                                                             if(tileflag_normalobjmissile && !tileflag_fullsizeditem)
                                                                 targetrect = new SKRect(scaled_x_padding, height / 4 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 4 + scaled_y_padding + scaled_tile_height);
                                                             else
-                                                                targetrect = new SKRect(0, 0, width, height);
+                                                                targetrect = new SKRect(scaled_x_padding, scaled_y_padding, scaled_x_padding + scaled_tile_width, scaled_y_padding + scaled_tile_height);
                                                         }
                                                         canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
                                                     }

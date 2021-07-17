@@ -50,6 +50,8 @@ struct layer_info {
     short damage_displayed;
     short hit_tile;
     short special_monster_layer_height;
+    xchar monster_origin_x;
+    xchar monster_origin_y;
     short object_height;
 
     uchar missile_poisoned;

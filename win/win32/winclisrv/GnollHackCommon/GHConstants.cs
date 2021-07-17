@@ -290,6 +290,8 @@ namespace GnollHackCommon
         public short damage_displayed;
         public short hit_tile;
         public short special_monster_layer_height;
+        public sbyte monster_origin_x;
+        public sbyte monster_origin_y;
         public short object_height;
 
         public byte missile_poisoned;
@@ -420,7 +422,9 @@ namespace GnollHackCommon
         public const int MaxLongImmediateSoundInstances = 64;
         public const int DefaultPanTime = 5;
         public const int PIT_BOTTOM_BORDER = 2;
-        
+        public const int SPECIAL_HEIGHT_IN_PIT = -32;
+        public const int SPECIAL_HEIGHT_LEVITATION = 32;
+        public const float OBJECT_PIT_SCALING_FACTOR = 0.75f;
     }
 
     [StructLayout(LayoutKind.Sequential)]

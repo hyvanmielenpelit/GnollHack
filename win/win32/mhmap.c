@@ -2109,7 +2109,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         dest_top_added += (int)(applicable_scaling_factor_y * ((double)-OBJECT_PILE_HEIGHT_DIFFERENCE * (double)(max(0, layer_round - (layer_rounds - objcnt)) /*layer_rounds - 1 - layer_round*/)));
                                     }
                                     if (otmp_round && !showing_detection && objects_in_pit)
-                                        obj_scaling_factor *= 0.75;
+                                        obj_scaling_factor *= OBJECT_PIT_SCALING_FACTOR;
                                 }
                             }
                         }
