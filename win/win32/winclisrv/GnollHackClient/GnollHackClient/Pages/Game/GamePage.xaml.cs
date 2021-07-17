@@ -1167,6 +1167,8 @@ namespace GnollHackClient.Pages.Game
                                                             if ((buff_bits & buffbit) != 0)
                                                             {
                                                                 int propidx = buff_ulong * 32 + buff_idx;
+                                                                if (propidx > GHConstants.LAST_PROP)
+                                                                    break;
                                                                 int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + BuffTileOff;
                                                                 int mtile = Glyph2Tile[mglyph];
                                                                 int sheet_idx = TileSheetIdx(mtile);

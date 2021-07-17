@@ -2644,8 +2644,8 @@ boolean exclude_ascii;
         clear_monster_layerinfo(&gbuf[y][x].layers);
         gbuf[y][x].layers.monster_origin_x = x0;
         gbuf[y][x].layers.monster_origin_y = y0;
-        gbuf[y][x].layers.monster_hp = loc_is_you ? (Upolyd ? u.mh : u.uhp) : mtmp->mhp;
-        gbuf[y][x].layers.monster_maxhp = loc_is_you ? (Upolyd ? u.mhmax : u.uhpmax) : mtmp->mhpmax;
+        gbuf[y][x].layers.monster_hp = loc_is_you ? (Upolyd ? u.mh : u.uhp) : (mtmp ? mtmp->mhp : 0);
+        gbuf[y][x].layers.monster_maxhp = loc_is_you ? (Upolyd ? u.mhmax : u.uhpmax) : (mtmp ? mtmp->mhpmax : 0);
         gbuf[y][x].layers.rider_glyph = NO_GLYPH;
 
         if (disp_flags & LFLAGS_M_YOU)
@@ -2861,7 +2861,11 @@ boolean exclude_ascii;
 
             /* Steed mark (you as small) */
             if (loc_is_you && issteed)
-                gbuf[y][x].layers.rider_glyph = u_to_glyph();
+            {
+                int rider_glyph = u_to_glyph();
+                int rider_gui_glyph = maybe_get_replaced_glyph(rider_glyph, x, y, data_to_replacement_info(rider_glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
+                gbuf[y][x].layers.rider_glyph = rider_gui_glyph;
+            }
         }
 
     }
