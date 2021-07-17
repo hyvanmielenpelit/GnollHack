@@ -1061,6 +1061,10 @@ namespace GnollHackClient.Pages.Game
                                             short missile_height = _mapData[mapx, mapy].Layers.missile_height;
                                             short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
                                             bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
+                                            sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
+                                            sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
+                                            long glyphprintcountervalue = _mapData[mapx, mapy].GlyphPrintCounterValue;
+                                            long currentcountervalue = 0;
 
                                             if (signed_glyph == NoGlyph)
                                                 continue;
@@ -1093,6 +1097,7 @@ namespace GnollHackClient.Pages.Game
                                                 /* Determine animation tile here */
                                                 lock (AnimationTimerLock)
                                                 {
+                                                    currentcountervalue = AnimationTimers.general_animation_counter;
                                                     if (AnimationTimers.u_action_animation_counter_on && layer_idx == (int)layer_types.LAYER_MONSTER && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
                                                         ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
                                                     else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MONSTER) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
@@ -1387,8 +1392,21 @@ namespace GnollHackClient.Pages.Game
                                                         }
                                                     }
 
-                                                    tx = (offsetX + _mapOffsetX + width * (float)draw_map_x);
-                                                    ty = (offsetY + _mapOffsetY + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
+                                                    float move_offset_x = 0, move_offset_y = 0;
+                                                    int movediffx = (int)monster_origin_x - draw_map_x;
+                                                    int movediffy = (int)monster_origin_y - draw_map_y;
+                                                    long counterdiff = currentcountervalue - glyphprintcountervalue;
+                                                    if ((layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT) 
+                                                        && GHUtils.isok(monster_origin_x, monster_origin_y)
+                                                        && (movediffx != 0 || movediffy != 0)
+                                                        && counterdiff >= 0 && counterdiff < GHConstants.MoveIntervals)
+                                                    {
+                                                        move_offset_x = width * (float)movediffx * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
+                                                        move_offset_y = height * (float)movediffy * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
+                                                    }
+
+                                                    tx = (offsetX + _mapOffsetX + move_offset_x + width * (float)draw_map_x);
+                                                    ty = (offsetY + _mapOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
 
                                                     using (new SKAutoCanvasRestore(canvas, true))
                                                     {
@@ -2271,6 +2289,17 @@ namespace GnollHackClient.Pages.Game
         {
             lock (_mapDataLock)
             {
+                if (((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0 && (_mapData[x, y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) == 0) ||
+                    (layers.m_id != 0 && layers.m_id != _mapData[x, y].Layers.m_id))
+                {
+                    /* Update counter value only if the monster just moved here, not, e.g. if it changes action in the same square,
+                     * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
+                     */
+                    lock (AnimationTimerLock)
+                    {
+                        _mapData[x, y].GlyphPrintCounterValue = AnimationTimers.general_animation_counter;
+                    }
+                }
                 _mapData[x, y].Glyph = glyph;
                 _mapData[x, y].BkGlyph = bkglyph;
                 _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);

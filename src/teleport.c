@@ -399,6 +399,8 @@ boolean allow_drag, keep_effect_glyphs;
     spoteffects(TRUE);
     invocation_message();
 
+    reset_origin_coordinates(&youmonst);
+
     if (keep_effect_glyphs)
     {
         show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_GENERAL_EFFECT], LAYER_GENERAL_EFFECT);

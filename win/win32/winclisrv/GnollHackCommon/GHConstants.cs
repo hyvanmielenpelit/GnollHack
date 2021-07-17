@@ -425,6 +425,7 @@ namespace GnollHackCommon
         public const int SPECIAL_HEIGHT_IN_PIT = -32;
         public const int SPECIAL_HEIGHT_LEVITATION = 32;
         public const float OBJECT_PIT_SCALING_FACTOR = 0.75f;
+        public const long MoveIntervals = 3;
     }
 
     [StructLayout(LayoutKind.Sequential)]

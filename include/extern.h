@@ -34,6 +34,8 @@ E const char* FDECL(get_game_difficulty_symbol, (int));
 E void FDECL(welcome, (BOOLEAN_P));
 E time_t NDECL(get_realtime);
 E int FDECL(argcheck, (int, char **, enum earlyarg));
+E void FDECL(reset_origin_coordinates, (struct monst*));
+E void NDECL(reset_all_monster_origin_coordinates);
 
 /* ### animation.c ### */
 
@@ -495,7 +497,7 @@ E void FDECL(show_glyph_ascii, (int, int, int));
 E void FDECL(show_glyph_on_layer_and_ascii, (int, int, int, enum layer_types));
 E void FDECL(clear_glyph_buffer_at, (int, int));
 E void FDECL(show_monster_glyph_with_extra_info, (int, int, int, struct monst*, unsigned long, int, int));
-E void FDECL(show_monster_glyph_with_extra_info_choose_ascii, (int, int, int, struct monst*, unsigned long, int, int, BOOLEAN_P));
+E void FDECL(show_monster_glyph_with_extra_info_choose_ascii, (int, int, int, struct monst*, int, int, unsigned long, int, int, BOOLEAN_P));
 E void FDECL(clear_monster_extra_info, (int, int));
 E void FDECL(clear_monster_layer_at, (int, int));
 E void FDECL(clear_monster_layer_memory_at, (int, int));

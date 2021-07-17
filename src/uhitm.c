@@ -5338,6 +5338,8 @@ unsigned long extra_flags;
     if (!iflags.using_gui_tiles || hit_symbol_shown >= MAX_HIT_TILES || hit_symbol_shown < 0)
         return;
 
+    //reset_origin_coordinates(mon);
+
     //boolean is_you = (x == u.ux && y == u.uy);
     unsigned long hflags = (LFLAGS_M_BEING_HIT | extra_flags);
 

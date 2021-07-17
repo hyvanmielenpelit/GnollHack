@@ -14,6 +14,7 @@ namespace GnollHackClient
         public SKColor Color { get; set; }
         public uint Special { get; set; }
         public LayerInfo Layers;
+        public long GlyphPrintCounterValue { get; set; }
     }
 
 }

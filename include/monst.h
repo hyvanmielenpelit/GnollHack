@@ -77,6 +77,7 @@ struct monst {
     uchar m_lev;          /* adjusted difficulty level of monster */
     aligntyp malign;      /* alignment of this monster, relative to the
                              player (positive = good to kill) */
+    xchar mx0, my0;       /* where the monster is moving from */
     xchar mx, my;
     xchar mux, muy;       /* where the monster thinks you are */
 #define MTSZ 4
@@ -84,11 +85,11 @@ struct monst {
 
     struct attribs 
         acurr,            /* monster's current attributes (eg. str)*/
-        abonus,            /* monster's bonus attributes (eg. str) */
-        afixmin,        /* monster's fixed min attributes (eg. str), set by an item */
-        afixmax,        /* monster's fixed max attributes (eg. str), set by an item */
-        amin,            /* monster's min attributes (eg. str) */
-        amax,            /* monster's max attributes (eg. str) */
+        abonus,           /* monster's bonus attributes (eg. str) */
+        afixmin,          /* monster's fixed min attributes (eg. str), set by an item */
+        afixmax,          /* monster's fixed max attributes (eg. str), set by an item */
+        amin,             /* monster's min attributes (eg. str) */
+        amax,             /* monster's max attributes (eg. str) */
         atemp,            /* used for temporary loss/gain */
         atime;            /* used for loss/gain countdown */
 
@@ -131,11 +132,11 @@ struct monst {
     xchar yell_x, yell_y;   /* location where the pet heard you yelling from */
     int notalktimer;
     short rumorsleft;       /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
-    uchar action;        /* the monster is currently in the midst of one of its attacks or actions */
+    uchar action;           /* the monster is currently in the midst of one of its attacks or actions */
 
-    short mflee_timer;  /* timeout for mflee */
+    short mflee_timer;      /* timeout for mflee */
     short mfrozen;
-    short mstaying;    /* commanded to stay in place, similar to frozen, but commanded */
+    short mstaying;         /* commanded to stay in place, similar to frozen, but commanded */
     short mcarrying;
 
     /* Bitfield flags -- Keep all bitfields in a row */
@@ -145,13 +146,13 @@ struct monst {
     Bitfield(mwantstomove, 1);  /* mon wants to move, not staying in place */
     Bitfield(mwantstodrop, 1);
 
-    Bitfield(female, 1);        /* is female */
+    Bitfield(female, 1);         /* is female */
     Bitfield(mburied, 1);        /* has been buried */
     Bitfield(mundetected, 1);    /* not seen in present hiding place;
-                                 * implies one of M1_CONCEAL or M1_HIDE,
-                               * but not mimic (that is, snake, spider,
-                               * trapper, piercer, eel)
-                               */
+                                  * implies one of M1_CONCEAL or M1_HIDE,
+                                  * but not mimic (that is, snake, spider,
+                                  * trapper, piercer, eel)
+                                  */
     Bitfield(mrevived, 1);  /* has been revived from the dead */
     Bitfield(mcloned, 1);   /* has been cloned from another */
 
@@ -164,26 +165,26 @@ struct monst {
     Bitfield(isgd, 1);      /* is guard */
     Bitfield(ispriest, 1);  /* is an aligned priest or high priest */
     Bitfield(issmith, 1);   /* is a smith */
-    Bitfield(isnpc, 1);   /* is a non-player character */
+    Bitfield(isnpc, 1);     /* is a non-player character */
 
-    Bitfield(issummoned, 1);                    /* is a summoned monster */
+    Bitfield(issummoned, 1);                       /* is a summoned monster */
     Bitfield(disregards_enemy_strength, 1);        /* the monster attacks too strong enemies */
     Bitfield(disregards_own_health, 1);            /* the monster attacks even when its health is low */
-    Bitfield(hasbloodlust, 1);                    /* attacks also peaceful */
-    Bitfield(ispacifist, 1);                    /* does not attack peaceful, NOW DEACTIVATED, APPLIES TO ALL */
-    Bitfield(isfaithful, 1);                    /* being separate from the owner does not reduce tameness */
-    Bitfield(isprotector, 1);                    /* attacks hostiles if itself is being peaceful */
+    Bitfield(hasbloodlust, 1);                     /* attacks also peaceful */
+    Bitfield(ispacifist, 1);                       /* does not attack peaceful, NOW DEACTIVATED, APPLIES TO ALL */
+    Bitfield(isfaithful, 1);                       /* being separate from the owner does not reduce tameness */
+    Bitfield(isprotector, 1);                      /* attacks hostiles if itself is being peaceful */
     Bitfield(ispartymember, 1);                    /* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
     /* 4 free bits to 32 bit integer */
     /* The follow splits bitfields so they fit in one int both in 32 bit and 64 bit systems */
-    uchar  talkstate_item_trading;                           /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
-    uchar  talkstate_special;                           /* Special index, e.g., for Aleax */
-    short  general_special_index;                       /* Special general purpose index */
-    Bitfield(leaves_no_corpse, 1);                /* this particular monster does not leave a corpse */
+    uchar  talkstate_item_trading;                 /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
+    uchar  talkstate_special;                      /* Special index, e.g., for Aleax */
+    short  general_special_index;                  /* Special general purpose index */
+    Bitfield(leaves_no_corpse, 1);                 /* this particular monster does not leave a corpse */
     Bitfield(delayed_killer_by_you, 1);            /* is petrification or other delayed killer initiated by you */
-    Bitfield(u_know_mname, 1);                  /* you know the monster's name */
-    Bitfield(told_rumor, 1);                    /* the monster had told the player at least one rumor */
-    Bitfield(facing_right, 1);                    /* the monster is facing right */
+    Bitfield(u_know_mname, 1);                     /* you know the monster's name */
+    Bitfield(told_rumor, 1);                       /* the monster had told the player at least one rumor */
+    Bitfield(facing_right, 1);                     /* the monster is facing right */
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */
@@ -225,7 +226,7 @@ struct monst {
 
     struct obj *mw;        /* mon's weapon */
     long worn_item_flags;  /* mon's wornmask */
-    xchar weapon_strategy;    /* flag for whether to try switching weapons */
+    xchar weapon_strategy; /* flag for whether to try switching weapons */
 
     int meating;           /* monster is eating timeout */
     long summonduration;   /* duration for summoned units */

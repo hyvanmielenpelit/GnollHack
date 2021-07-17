@@ -1565,6 +1565,9 @@ movemon()
 
     for (mtmp = fmon; mtmp; mtmp = nmtmp)
     {
+        /* Reset mx0 and my0 */
+        mtmp->mx0 = mtmp->mx, mtmp->my0 = mtmp->my;
+
         /* end monster movement early if hero is flagged to leave the level */
         if (u.utotype
 #ifdef SAFERHANGUP
@@ -3072,6 +3075,7 @@ unsigned long mdiedflags;
     struct permonst *mptr;
     int tmp;
 
+    reset_origin_coordinates(mtmp);
     mtmp->mhp = 0; /* in case caller hasn't done this */
     if (iflags.wc2_statuslines > 3 && is_tame(mtmp))
         context.botl = 1;
@@ -3422,6 +3426,8 @@ struct monst *mdef;
     struct obj *otmp, *obj, *oldminvent;
     xchar x = mdef->mx, y = mdef->my;
     boolean wasinside = FALSE;
+
+    reset_origin_coordinates(mdef);
 
     if (!vamp_stone(mdef)) /* vampshifter reverts to vampire */
         return;

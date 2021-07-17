@@ -416,6 +416,8 @@ boolean resuming;
             curs_on_u();
         }
 
+        reset_origin_coordinates(&youmonst);
+
         context.move = 1;
 
         if (multi >= 0 && occupation && !Sleeping && !Paralyzed_or_immobile) /* No occupation when sleeping or paralyzed */
@@ -530,6 +532,33 @@ boolean resuming;
             /* [should this be flush_screen() instead?] */
             display_nhwindow(WIN_MAP, FALSE);
         }
+    }
+}
+
+void 
+reset_origin_coordinates(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return;
+
+    if (mtmp == &youmonst)
+    {
+        /* Reset u.ux0 and u.uy0 */
+        u.ux0 = u.ux, u.uy0 = u.uy;
+    }
+    
+    mtmp->mx0 = mtmp->mx;
+    mtmp->my0 = mtmp->my;
+}
+
+void
+reset_all_monster_origin_coordinates()
+{
+    struct monst* mtmp;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    {
+        reset_origin_coordinates(mtmp);
     }
 }
 

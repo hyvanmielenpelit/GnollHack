@@ -3958,6 +3958,7 @@ long hmask, emask; /* might cancel timeout */
         (void) pickup(1);
 
     newsym(u.ux, u.uy);
+
     return 1;
 }
 

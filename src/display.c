@@ -2596,12 +2596,13 @@ struct monst* mtmp;
 unsigned long disp_flags;
 int hit_tile_id, damage_displayed;
 {
-    show_monster_glyph_with_extra_info_choose_ascii(x, y, glyph, mtmp, disp_flags, hit_tile_id, damage_displayed, FALSE);
+    boolean isyou = (mtmp == &youmonst);
+    show_monster_glyph_with_extra_info_choose_ascii(x, y, glyph, mtmp, mtmp ? (isyou ? u.ux0 : mtmp->mx0) : 0, mtmp ? (isyou ? u.uy0 : mtmp->my0) : 0, disp_flags, hit_tile_id, damage_displayed, FALSE);
 }
 
 void
-show_monster_glyph_with_extra_info_choose_ascii(x, y, glyph,  mtmp, disp_flags, hit_tile_id, damage_displayed, exclude_ascii)
-int x, y, glyph;
+show_monster_glyph_with_extra_info_choose_ascii(x, y, glyph,  mtmp, x0, y0, disp_flags, hit_tile_id, damage_displayed, exclude_ascii)
+int x, y, glyph, x0, y0;
 struct monst* mtmp;
 unsigned long disp_flags;
 int hit_tile_id, damage_displayed;
@@ -2618,6 +2619,9 @@ boolean exclude_ascii;
         show_glyph_on_layer(x, y, gui_glyph, LAYER_MONSTER);
         clear_monster_extra_info(x, y);
         show_extra_info(x, y, disp_flags, hit_tile_id, damage_displayed);
+
+        gbuf[y][x].layers.monster_origin_x = x0;
+        gbuf[y][x].layers.monster_origin_y = y0;
 
         gbuf[y][x].layers.m_id = 0;
         gbuf[y][x].layers.special_monster_layer_height = 0;
@@ -4670,7 +4674,7 @@ boolean exclude_ascii;
             /* else U_AP_TYPE == M_AP_MONSTER */
             : any_monnum_to_glyph(flags.female, youmonst.mappearance)
         ),
-        u.usteed,
+        u.usteed, u.ux0, u.uy0,
         displayed_flags | LFLAGS_M_YOU | (u.usteed && mon_visible(u.usteed) ? LFLAGS_M_RIDDEN : 0UL) | (u.usteed && mon_visible(u.usteed) && (u.usteed->worn_item_flags & W_SADDLE) ? LFLAGS_M_SADDLED : 0UL),
         hit_tile_id, dmg_received, exclude_ascii);
 

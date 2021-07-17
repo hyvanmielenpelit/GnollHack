@@ -6410,6 +6410,7 @@ register char *cmd;
 
     create_context_menu();
     update_here_window();
+    reset_all_monster_origin_coordinates();
 
     iflags.menu_requested = FALSE;
 #ifdef SAFERHANGUP
