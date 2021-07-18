@@ -131,9 +131,9 @@ namespace GnollHackCommon
          None =                     0x00000000UL,
          LFLAGS_M_PET =             0x00000001UL,
          LFLAGS_M_PEACEFUL =        0x00000002UL,
+         LFLAGS_M_RIDDEN =          0x00000004UL,
          LFLAGS_M_DETECTED =        0x00000004UL,
-         LFLAGS_M_RIDDEN =          0x00000008UL,
-         LFLAGS_M_SADDLED =         0x00000010UL,
+         LFLAGS_M_CANSPOTMON =      0x00000010UL,
          LFLAGS_M_YOU =             0x00000020UL,
          LFLAGS_M_MIMIC_OBJECT =    0x00000040UL,
          LFLAGS_M_MIMIC_FURNITURE = 0x00000080UL,
@@ -144,13 +144,13 @@ namespace GnollHackCommon
          LFLAGS_M_WORM_TAIL =       0x00001000UL,
          LFLAGS_M_WORM_SEEN =       0x00002000UL,
          LFLAGS_M_KILLED =          0x00004000UL,
-         LFLAGS_M_CANSPOTMON =      0x00008000UL,
-         LFLAGS_M_MASK =            0x0000FFFFUL,
-         LFLAGS_O_PILE =            0x00010000UL,
-         LFLAGS_O_IN_PIT =          0x00020000UL,
-         LFLAGS_O_CHAIN =           0x00040000UL,
-         LFLAGS_O_MASK =            0x00070000UL,
-         LFLAGS_CMAP_MASK =         0x00080000UL,
+         LFLAGS_M_SEMI_TRANSPARENT =    0x00008000UL,
+         LFLAGS_M_RADIAL_TRANSPARENCY = 0x00010000UL,
+         LFLAGS_M_MASK =            0x0001FFFFUL,
+         LFLAGS_O_PILE =            0x00020000UL,
+         LFLAGS_O_IN_PIT =          0x00040000UL,
+         LFLAGS_O_CHAIN =           0x00080000UL,
+         LFLAGS_O_MASK =            0x000E0000UL,
          LFLAGS_ZAP_LEADING_EDGE =  0x00100000UL, /* First (leading) tile in a zap */
          LFLAGS_ZAP_TRAILING_EDGE = 0x00200000UL, /* Last (trailing) tile in a zap */
          LFLAGS_ZAP_MASK = (0x00100000UL | 0x00200000UL),
@@ -165,6 +165,14 @@ namespace GnollHackCommon
     }
 
     [Flags]
+    public enum LayerMonsterFlags : ulong
+    {
+        None =                        0x00000000UL,
+        LMFLAGS_WORM_HEAD =           0x00000001UL,
+        LMFLAGS_WORM_TAILEND =        0x00000002UL,
+    }
+
+        [Flags]
     public enum glyph_tile_flags : byte
     {
         None = 0x00,
@@ -301,6 +309,9 @@ namespace GnollHackCommon
         public ulong condition_bits;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.NUM_BUFF_BIT_ULONGS)]
         public ulong[] buff_bits;
+        public sbyte wsegdir;
+        public sbyte reverse_prev_wsegdir;
+        public ulong monster_flags;
 
         public short object_height;
 
@@ -501,6 +512,22 @@ namespace GnollHackCommon
         ITEM_PROPERTY_MARK_THOROUGHLY_BURNT,
         ITEM_PROPERTY_MARK_THOROUGHLY_RUSTY,
         MAX_ITEM_PROPERTY_MARKS
+    }
+
+    public enum autodraw_drawing_types
+    {
+        AUTODRAW_DRAW_GENERAL = 0,
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DRAW_BOOKSHELF_CONTENTS,
+        AUTODRAW_DRAW_WEAPON_RACK_CONTENTS,
+        AUTODRAW_DRAW_COFFIN_CONTENTS,
+        AUTODRAW_DRAW_CANDELABRUM_CANDLES,
+        AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES,
+        AUTODRAW_DRAW_JAR_CONTENTS,
+        AUTODRAW_DRAW_FIGURINE,
+        AUTODRAW_DRAW_CHAIN,
+        AUTODRAW_DRAW_BALL,
+        AUTODRAW_DRAW_LONG_WORM,
     }
 
 

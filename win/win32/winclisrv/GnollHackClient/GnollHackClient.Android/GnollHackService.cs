@@ -130,6 +130,8 @@ namespace GnollHackClient.Droid
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int GetTile2Replacement(out IntPtr array_ptr, out int size);
         [DllImport(@"libgnollhackdroid.so")]
+        public static extern int GetTile2Autodraw(out IntPtr array_ptr, out int size);
+        [DllImport(@"libgnollhackdroid.so")]
         public static extern int GetAnimationOffsets(out IntPtr array_ptr, out int size);
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int GetEnlargementOffsets(out IntPtr array_ptr, out int size);
@@ -321,14 +323,14 @@ namespace GnollHackClient.Droid
             }
         }
 
-        public void GetTileArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size, out IntPtr ti2an, out int size2, out IntPtr ti2en, out int size3, out IntPtr ti2re, out int size4, 
+        public void GetTileArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size, out IntPtr ti2an, out int size2, out IntPtr ti2en, out int size3, out IntPtr ti2ad, out int size4, 
             out IntPtr anoff_ptr, out int anoff_size, out IntPtr enoff_ptr, out int enoff_size, out IntPtr reoff_ptr, out int reoff_size)
         {
             GetGlyph2Tile(out gl2ti, out size1);
             GetGlyphTileFlags(out gltifl, out gltifl_size);
             GetTile2Animation(out ti2an, out size2);
             GetTile2Enlargement(out ti2en, out size3);
-            GetTile2Replacement(out ti2re, out size4);
+            GetTile2Autodraw(out ti2ad, out size4);
             GetAnimationOffsets(out anoff_ptr, out anoff_size);
             GetEnlargementOffsets(out enoff_ptr, out enoff_size);
             GetReplacementOffsets(out reoff_ptr, out reoff_size);

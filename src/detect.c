@@ -79,14 +79,6 @@ boolean showtail;
 {
     show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), mtmp, 0UL, 0, 0);
     check_special_level_naming_by_mon(mtmp);
-#if 0
-    if (def_monsyms[(int) mtmp->data->mlet].sym == ' ')
-        show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my,
-                   any_mon_to_glyph(mtmp, newsym_rn2), mtmp, LFLAGS_M_DETECTED, 0, 0);
-    else
-        show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), mtmp, LFLAGS_M_DETECTED, 0, 0);
-#endif
-
     if (showtail && is_long_worm_with_tail(mtmp->data))
         detect_wsegs(mtmp, 0);
 }

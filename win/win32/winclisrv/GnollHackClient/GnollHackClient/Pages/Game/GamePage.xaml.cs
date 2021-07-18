@@ -100,7 +100,7 @@ namespace GnollHackClient.Pages.Game
         public byte[] GlyphTileFlags { get; set; }
         public short[] Tile2Animation { get; set; }
         public short[] Tile2Enlargement { get; set; }
-        public short[] Tile2Replacement { get; set; }
+        public short[] Tile2Autodraw { get; set; }
         public int[] AnimationOffsets { get; set; }
         public int[] EnlargementOffsets { get; set; }
         public int[] ReplacementOffsets { get; set; }
@@ -126,7 +126,7 @@ namespace GnollHackClient.Pages.Game
         private List<AnimationDefinition> _animationDefs = null;
         private List<EnlargementDefinition> _enlargementDefs = null;
         private List<ReplacementDefinition> _replacementDefs = null;
-        private List<AutoDrawDefinition> _autoDrawDefs = null;
+        private List<AutoDrawDefinition> autodraws = null;
 
         private object _floatingTextLock = new object();
         private List<GHFloatingText> _floatingTexts = new List<GHFloatingText>();
@@ -209,7 +209,7 @@ namespace GnollHackClient.Pages.Game
             _animationDefs = _gnollHackService.GetAnimationArray();
             _enlargementDefs = _gnollHackService.GetEnlargementArray();
             _replacementDefs = _gnollHackService.GetReplacementArray();
-            _autoDrawDefs = _gnollHackService.GetAutoDrawArray();
+            autodraws = _gnollHackService.GetAutoDrawArray();
 
             for (int i = 0; i < GHConstants.MapCols; i++)
             {
@@ -841,811 +841,935 @@ namespace GnollHackClient.Pages.Game
             float x = info.Width;
             float y = info.Height;
 
-            SKPaint textPaint = new SKPaint
+            using (SKPaint textPaint = new SKPaint())
             {
-                Color = SKColors.White
-            };
-            textPaint.Typeface = App.DiabloTypeface;
+                textPaint.Color = SKColors.White;
+                textPaint.Typeface = App.DiabloTypeface;
 
-            // Adjust TextSize property so text is 90% of screen width
-            float textWidth = textPaint.MeasureText(str);
-            textPaint.TextSize = 0.65f * info.Width * textPaint.TextSize / textWidth;
+                // Adjust TextSize property so text is 90% of screen width
+                float textWidth = textPaint.MeasureText(str);
+                textPaint.TextSize = 0.65f * info.Width * textPaint.TextSize / textWidth;
 
-            // Find the text bounds
-            SKRect textBounds = new SKRect();
-            textPaint.MeasureText(str, ref textBounds);
+                // Find the text bounds
+                SKRect textBounds = new SKRect();
+                textPaint.MeasureText(str, ref textBounds);
 
-            var xText = 10;
-            var yText = 0;
-            string additional_info = "";
-            if (_connection == null && _connectionAttempted)
-                additional_info = ", no _connection";
-            else if (_connection == null)
-            {
-                /* Do nothing */
-            }
-            else if (_connection.State == HubConnectionState.Connected)
-                additional_info = ", connected";
-            else if (_connection.State == HubConnectionState.Connecting)
-                additional_info = ", connecting";
-            else if (_connection.State == HubConnectionState.Disconnected)
-                additional_info = ", disconnected";
-            else if (_connection.State == HubConnectionState.Reconnecting)
-                additional_info = ", reconnecting";
-
-            str = _connection_status + additional_info;
-            textPaint.TextSize = 36;
-            yText = yText + 50;
-            canvas.DrawText(str, xText, yText, textPaint);
-
-            str = _message;
-            textPaint.TextSize = 36;
-            yText = yText + 50;
-            canvas.DrawText(str, xText, yText, textPaint);
-
-            str = _message2;
-            textPaint.TextSize = 36;
-            yText = yText + 50;
-            canvas.DrawText(str, xText, yText, textPaint);
-
-            if (_result != 0)
-            {
-                str = _result.ToString();
-                yText = yText + 50;
-                canvas.DrawText(str, xText, yText, textPaint);
-            }
-
-            if (_result2 != 0)
-            {
-                str = _result2.ToString();
-                yText = yText + 50;
-                canvas.DrawText(str, xText, yText, textPaint);
-            }
-
-            str = _message3;
-            yText = yText + 50;
-            canvas.DrawText(str, xText, yText, textPaint);
-
-            str = _message4;
-            yText = yText + 50;
-            canvas.DrawText(str, xText, yText, textPaint);
-
-            str = _message5;
-            yText = yText + 50;
-            canvas.DrawText(str, xText, yText, textPaint);
-
-
-            /* Map */
-            textPaint.Typeface = App.DejaVuSansMonoTypeface;
-            textPaint.TextSize = MapFontSize;
-            float canvaswidth = canvasView.CanvasSize.Width;
-            float canvasheight = canvasView.CanvasSize.Height;
-            float width = textPaint.FontMetrics.AverageCharacterWidth;
-            float height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-
-            if (GraphicsStyle == GHGraphicsStyle.Tiles)
-            {
-                width = GHConstants.TileWidth * MapFontSize / 48;
-                height = GHConstants.TileHeight * MapFontSize / 48;
-            }
-
-            float mapwidth = width * (GHConstants.MapCols -1);
-            float mapheight = height * (GHConstants.MapRows);
-
-            _tileWidth = width;
-            _tileHeight = height;
-            _mapWidth = mapwidth;
-            _mapHeight = mapheight;
-            _mapFontAscent = textPaint.FontMetrics.Ascent;
-
-            int startX = 1;
-            int endX = GHConstants.MapCols - 1;
-            int startY = 0;
-            int endY = GHConstants.MapRows - 1;
-
-            float offsetX = (canvaswidth - mapwidth) / 2;
-            float offsetY = (canvasheight - mapheight) / 2;
-
-            lock (ClipLock)
-            {
-                if (ClipX > 0 && (mapwidth > canvaswidth || mapheight > canvasheight))
+                var xText = 10;
+                var yText = 0;
+                string additional_info = "";
+                if (_connection == null && _connectionAttempted)
+                    additional_info = ", no _connection";
+                else if (_connection == null)
                 {
-                    offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * width;
-                    offsetY -= (ClipY - GHConstants.MapRows / 2) * height;
+                    /* Do nothing */
                 }
-            }
+                else if (_connection.State == HubConnectionState.Connected)
+                    additional_info = ", connected";
+                else if (_connection.State == HubConnectionState.Connecting)
+                    additional_info = ", connecting";
+                else if (_connection.State == HubConnectionState.Disconnected)
+                    additional_info = ", disconnected";
+                else if (_connection.State == HubConnectionState.Reconnecting)
+                    additional_info = ", reconnecting";
 
-            float tx = 0, ty = 0;
-            float startx = 0, starty = 0;
-            if(_clientGame != null)
-            {
-                lock (_clientGame.WindowsLock)
+                str = _connection_status + additional_info;
+                textPaint.TextSize = 36;
+                yText = yText + 50;
+                canvas.DrawText(str, xText, yText, textPaint);
+
+                str = _message;
+                textPaint.TextSize = 36;
+                yText = yText + 50;
+                canvas.DrawText(str, xText, yText, textPaint);
+
+                str = _message2;
+                textPaint.TextSize = 36;
+                yText = yText + 50;
+                canvas.DrawText(str, xText, yText, textPaint);
+
+                if (_result != 0)
                 {
-                    if (_clientGame.Windows[_clientGame.MapWindowId] != null)
+                    str = _result.ToString();
+                    yText = yText + 50;
+                    canvas.DrawText(str, xText, yText, textPaint);
+                }
+
+                if (_result2 != 0)
+                {
+                    str = _result2.ToString();
+                    yText = yText + 50;
+                    canvas.DrawText(str, xText, yText, textPaint);
+                }
+
+                str = _message3;
+                yText = yText + 50;
+                canvas.DrawText(str, xText, yText, textPaint);
+
+                str = _message4;
+                yText = yText + 50;
+                canvas.DrawText(str, xText, yText, textPaint);
+
+                str = _message5;
+                yText = yText + 50;
+                canvas.DrawText(str, xText, yText, textPaint);
+
+
+                /* Map */
+                textPaint.Typeface = App.DejaVuSansMonoTypeface;
+                textPaint.TextSize = MapFontSize;
+                float canvaswidth = canvasView.CanvasSize.Width;
+                float canvasheight = canvasView.CanvasSize.Height;
+                float width = textPaint.FontMetrics.AverageCharacterWidth;
+                float height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+
+                if (GraphicsStyle == GHGraphicsStyle.Tiles)
+                {
+                    width = GHConstants.TileWidth * MapFontSize / 48;
+                    height = GHConstants.TileHeight * MapFontSize / 48;
+                }
+
+                float mapwidth = width * (GHConstants.MapCols - 1);
+                float mapheight = height * (GHConstants.MapRows);
+
+                _tileWidth = width;
+                _tileHeight = height;
+                _mapWidth = mapwidth;
+                _mapHeight = mapheight;
+                _mapFontAscent = textPaint.FontMetrics.Ascent;
+
+                int startX = 1;
+                int endX = GHConstants.MapCols - 1;
+                int startY = 0;
+                int endY = GHConstants.MapRows - 1;
+
+                float offsetX = (canvaswidth - mapwidth) / 2;
+                float offsetY = (canvasheight - mapheight) / 2;
+
+                lock (ClipLock)
+                {
+                    if (ClipX > 0 && (mapwidth > canvaswidth || mapheight > canvasheight))
                     {
-                        startx = _clientGame.Windows[_clientGame.MapWindowId].Left;
-                        starty = _clientGame.Windows[_clientGame.MapWindowId].Top;
+                        offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * width;
+                        offsetY -= (ClipY - GHConstants.MapRows / 2) * height;
                     }
                 }
-            }
 
-            lock(Glyph2TileLock)
-            {
-                lock (_mapDataLock)
+                float tx = 0, ty = 0;
+                float startx = 0, starty = 0;
+                if (_clientGame != null)
                 {
-                    if (GraphicsStyle == GHGraphicsStyle.ASCII)
+                    lock (_clientGame.WindowsLock)
                     {
-                        for (int mapx = startX; mapx <= endX; mapx++)
+                        if (_clientGame.Windows[_clientGame.MapWindowId] != null)
                         {
-                            for (int mapy = startY; mapy <= endY; mapy++)
-                            {
-                                if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
-                                {
-                                    str = _mapData[mapx, mapy].Symbol;
-                                    textPaint.Color = _mapData[mapx, mapy].Color;
-                                    tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                                    ty = (offsetY + _mapOffsetY + height * (float)mapy);
-                                    if (CursorStyle == TTYCursorStyle.GreenBlock && _mapCursorX == mapx && _mapCursorY == mapy)
-                                    {
-                                        textPaint.Style = SKPaintStyle.Fill;
-                                        textPaint.Color = _cursorDefaultGreen;
-                                        SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width, ty + textPaint.FontMetrics.Ascent + height);
-                                        canvas.DrawRect(winRect, textPaint);
-                                        textPaint.Color = SKColors.Black;
-                                    }
-                                    else if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Pet) != 0)
-                                    {
-                                        textPaint.Style = SKPaintStyle.Fill;
-                                        SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width, ty + textPaint.FontMetrics.Ascent + height);
-                                        canvas.DrawRect(winRect, textPaint);
-                                        textPaint.Color = SKColors.Black;
-                                    }
-
-                                    canvas.DrawText(str, tx, ty, textPaint);
-
-                                    if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Peaceful) != 0)
-                                    {
-                                        canvas.DrawText("_", tx, ty, textPaint);
-                                    }
-                                }
-                            }
+                            startx = _clientGame.Windows[_clientGame.MapWindowId].Left;
+                            starty = _clientGame.Windows[_clientGame.MapWindowId].Top;
                         }
                     }
-                    else
+                }
+
+                lock (Glyph2TileLock)
+                {
+                    lock (_mapDataLock)
                     {
-                        if (Glyph2Tile != null && _tilesPerRow[0] > 0 && UsedTileSheets > 0)
+                        if (GraphicsStyle == GHGraphicsStyle.ASCII)
                         {
-                            float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
-                            for (int layer_idx = 0; layer_idx <= (int)layer_types.MAX_LAYERS; layer_idx++)
+                            for (int mapx = startX; mapx <= endX; mapx++)
                             {
                                 for (int mapy = startY; mapy <= endY; mapy++)
                                 {
-                                    for (int mapx = startX; mapx <= endX; mapx++)
+                                    if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
                                     {
-                                        short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
-                                        float scaled_y_height_change = 0;
-                                        sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
-                                        sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
-                                        long glyphprintcountervalue = _mapData[mapx, mapy].GlyphPrintCounterValue;
-                                        long currentcountervalue = 0;
-                                        lock (AnimationTimerLock)
+                                        str = _mapData[mapx, mapy].Symbol;
+                                        textPaint.Color = _mapData[mapx, mapy].Color;
+                                        tx = (offsetX + _mapOffsetX + width * (float)mapx);
+                                        ty = (offsetY + _mapOffsetY + height * (float)mapy);
+                                        if (CursorStyle == TTYCursorStyle.GreenBlock && _mapCursorX == mapx && _mapCursorY == mapy)
                                         {
-                                            currentcountervalue = AnimationTimers.general_animation_counter;
+                                            textPaint.Style = SKPaintStyle.Fill;
+                                            textPaint.Color = _cursorDefaultGreen;
+                                            SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width, ty + textPaint.FontMetrics.Ascent + height);
+                                            canvas.DrawRect(winRect, textPaint);
+                                            textPaint.Color = SKColors.Black;
                                         }
-                                        float base_move_offset_x = 0, base_move_offset_y = 0;
-                                        int movediffx = (int)monster_origin_x - mapx;
-                                        int movediffy = (int)monster_origin_y - mapy;
-                                        long counterdiff = currentcountervalue - glyphprintcountervalue;
-                                        if (GHUtils.isok(monster_origin_x, monster_origin_y)
-                                            && (movediffx != 0 || movediffy != 0)
-                                            && counterdiff >= 0 && counterdiff < GHConstants.MoveIntervals)
+                                        else if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Pet) != 0)
                                         {
-                                            base_move_offset_x = width * (float)movediffx * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
-                                            base_move_offset_y = height * (float)movediffy * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
+                                            textPaint.Style = SKPaintStyle.Fill;
+                                            SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width, ty + textPaint.FontMetrics.Ascent + height);
+                                            canvas.DrawRect(winRect, textPaint);
+                                            textPaint.Color = SKColors.Black;
                                         }
 
-                                        if (layer_idx == (int)layer_types.MAX_LAYERS)
+                                        canvas.DrawText(str, tx, ty, textPaint);
+
+                                        if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Peaceful) != 0)
                                         {
-                                            if (monster_height > 0)
-                                                scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
-
-                                            if((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_YOU | LayerFlags.LFLAGS_UXUY | LayerFlags.LFLAGS_M_CANSPOTMON ))!= 0)
-                                            {
-                                                tx = (offsetX + _mapOffsetX + base_move_offset_x + width * (float)mapx);
-                                                ty = (offsetY + _mapOffsetY + base_move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
-
-                                                /* Draw condition and status marks */
-                                                float x_scaling_factor = width / (float)(GHConstants.TileWidth);
-                                                float y_scaling_factor = height / (float)(GHConstants.TileHeight);
-                                                int max_fitted_rows = (GHConstants.TileWidth - 4) / (GHConstants.StatusMarkWidth + 2);
-                                                int status_count = 0;
-
-                                                ulong status_bits = _mapData[mapx, mapy].Layers.status_bits;
-                                                if (status_bits != 0)
-                                                {
-                                                    int[] statusmarkorder = { (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_PEACEFUL, (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
-                                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                                    int mglyph = (int)game_ui_tile_types.STATUS_MARKS + UITileOff;
-                                                    int mtile = Glyph2Tile[mglyph];
-                                                    int sheet_idx = TileSheetIdx(mtile);
-                                                    int tile_x = TileSheetX(mtile);
-                                                    int tile_y = TileSheetY(mtile);
-                                                    foreach (int status_mark in statusmarkorder)
-                                                    {
-                                                        ulong statusbit = 1UL << status_mark;
-                                                        if ((status_bits & statusbit) != 0)
-                                                        {
-                                                            int within_tile_x = status_mark % tiles_per_row;
-                                                            int within_tile_y = status_mark / tiles_per_row;
-                                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                                            SKRect source_rt = new SKRect();
-                                                            source_rt.Left = c_x;
-                                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                                            source_rt.Top = c_y;
-                                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                                            /* Define draw location in target */
-                                                            int unscaled_left = GHConstants.TileWidth - 2 - GHConstants.StatusMarkWidth;
-                                                            int unscaled_right = unscaled_left + GHConstants.StatusMarkWidth;
-                                                            int unscaled_top = 2 + (2 + GHConstants.StatusMarkWidth) * status_count;
-                                                            int unscaled_bottom = unscaled_top + GHConstants.StatusMarkHeight;
-
-                                                            SKRect target_rt = new SKRect();
-                                                            target_rt.Left = tx + (int)(x_scaling_factor * (double)unscaled_left);
-                                                            target_rt.Right = tx + (int)(x_scaling_factor * (double)unscaled_right);
-                                                            target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
-                                                            target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
-
-                                                            status_count++;
-
-                                                            if (status_count >= max_fitted_rows)
-                                                                break;
-
-                                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
-                                                        }
-                                                    }
-                                                }
-
-                                                ulong condition_bits = _mapData[mapx, mapy].Layers.condition_bits;
-                                                if (condition_bits != 0)
-                                                {
-                                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                                    int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + UITileOff;
-                                                    int mtile = Glyph2Tile[mglyph];
-                                                    int sheet_idx = TileSheetIdx(mtile);
-                                                    int tile_x = TileSheetX(mtile);
-                                                    int tile_y = TileSheetY(mtile);
-                                                    for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
-                                                    {
-                                                        ulong conditionbit = 1UL << condition_mark;
-                                                        if ((condition_bits & conditionbit) != 0)
-                                                        {
-                                                            int within_tile_x = condition_mark % tiles_per_row;
-                                                            int within_tile_y = condition_mark / tiles_per_row;
-                                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                                            SKRect source_rt = new SKRect();
-                                                            source_rt.Left = c_x;
-                                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                                            source_rt.Top = c_y;
-                                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                                            /* Define draw location in target */
-                                                            int unscaled_left = GHConstants.TileWidth - 2 - GHConstants.StatusMarkWidth;
-                                                            int unscaled_right = unscaled_left + GHConstants.StatusMarkWidth;
-                                                            int unscaled_top = 2 + (2 + GHConstants.StatusMarkWidth) * status_count;
-                                                            int unscaled_bottom = unscaled_top + GHConstants.StatusMarkHeight;
-
-                                                            SKRect target_rt = new SKRect();
-                                                            target_rt.Left = tx + (int)(x_scaling_factor * (double)unscaled_left);
-                                                            target_rt.Right = tx + (int)(x_scaling_factor * (double)unscaled_right);
-                                                            target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
-                                                            target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
-
-                                                            status_count++;
-
-                                                            if (status_count >= max_fitted_rows)
-                                                                break;
-
-                                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
-                                                        }
-                                                    }
-                                                }
-
-                                                for(int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
-                                                {
-                                                    ulong buff_bits = _mapData[mapx, mapy].Layers.buff_bits[buff_ulong];
-                                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                                    if (buff_bits != 0)
-                                                    {
-                                                        for (int buff_idx = 0; buff_idx < 32; buff_idx++)
-                                                        {
-                                                            ulong buffbit = 1UL << buff_idx;
-                                                            if ((buff_bits & buffbit) != 0)
-                                                            {
-                                                                int propidx = buff_ulong * 32 + buff_idx;
-                                                                if (propidx > GHConstants.LAST_PROP)
-                                                                    break;
-                                                                int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + BuffTileOff;
-                                                                int mtile = Glyph2Tile[mglyph];
-                                                                int sheet_idx = TileSheetIdx(mtile);
-                                                                int tile_x = TileSheetX(mtile);
-                                                                int tile_y = TileSheetY(mtile);
-
-                                                                int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
-                                                                int within_tile_x = buff_mark % tiles_per_row;
-                                                                int within_tile_y = buff_mark / tiles_per_row;
-                                                                int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                                                int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                                                SKRect source_rt = new SKRect();
-                                                                source_rt.Left = c_x;
-                                                                source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                                                source_rt.Top = c_y;
-                                                                source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                                                /* Define draw location in target */
-                                                                int unscaled_left = GHConstants.TileWidth - 2 - GHConstants.StatusMarkWidth;
-                                                                int unscaled_right = unscaled_left + GHConstants.StatusMarkWidth;
-                                                                int unscaled_top = 2 + (2 + GHConstants.StatusMarkWidth) * status_count;
-                                                                int unscaled_bottom = unscaled_top + GHConstants.StatusMarkHeight;
-
-                                                                SKRect target_rt = new SKRect();
-                                                                target_rt.Left = tx + (int)(x_scaling_factor * (double)unscaled_left);
-                                                                target_rt.Right = tx + (int)(x_scaling_factor * (double)unscaled_right);
-                                                                target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
-                                                                target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
-
-                                                                status_count++;
-
-                                                                if (status_count >= max_fitted_rows)
-                                                                    break;
-
-                                                                canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                            }
-
-                                            /* Draw death and hit markers */
-                                            if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0)
-                                            {
-                                                int mglyph = (int)general_tile_types.GENERAL_TILE_DEATH + GeneralTileOff;
-                                                int mtile = Glyph2Tile[mglyph];
-                                                int sheet_idx = TileSheetIdx(mtile);
-                                                int tile_x = TileSheetX(mtile);
-                                                int tile_y = TileSheetY(mtile);
-
-                                                tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                                                ty = (offsetY + _mapOffsetY + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
-                                                SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
-
-                                                SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                                                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
-                                            }
-                                            else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_BEING_HIT) != 0)
-                                            {
-                                                short hit_text_num = _mapData[mapx, mapy].Layers.hit_tile;
-                                                int mglyph = Math.Max(0, Math.Min((int)hit_tile_types.MAX_HIT_TILES - 1, (int)hit_text_num)) + HitTileOff;
-                                                int mtile = Glyph2Tile[mglyph];
-                                                int sheet_idx = TileSheetIdx(mtile);
-                                                int tile_x = TileSheetX(mtile);
-                                                int tile_y = TileSheetY(mtile);
-
-                                                tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                                                ty = (offsetY + _mapOffsetY + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
-                                                SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
-
-                                                SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                                                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            int signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
-                                            if (signed_glyph == NoGlyph)
-                                                continue;
-
-                                            int glyph = Math.Abs(signed_glyph);
-                                            if (glyph == 0 || glyph >= Glyph2Tile.Length)
-                                                continue;
-
-                                            short obj_height = _mapData[mapx, mapy].Layers.object_height;
-                                            short missile_height = _mapData[mapx, mapy].Layers.missile_height;
-                                            bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
-
-                                            /* Base flips */
-                                            bool hflip = (signed_glyph < 0);
-                                            bool manual_hflip = false;
-                                            bool manual_vflip = false;
-
-                                            /* Tile flips */
-                                            bool tileflag_hflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_HORIZONTALLY) != 0;
-                                            bool tileflag_vflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_VERTICALLY) != 0;
-                                            bool tileflag_halfsize = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
-                                            bool tileflag_floortile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
-                                            bool tileflag_normalobjmissile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0;
-                                            bool tileflag_fullsizeditem = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
-
-                                            if ((!tileflag_halfsize || monster_height > 0) && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
-                                                scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
-
-                                            int ntile = Glyph2Tile[glyph];
-                                            /* Replace tile here */
-                                            int animation = Tile2Animation[ntile];
-                                            int anim_frame_idx = 0, main_tile_idx = 0, autodraw = 0;
-                                            sbyte mapAnimated = 0;
-                                            int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
-                                            bool is_dropping_piercer = false;
-
-                                            /* Determine animation tile here */
-                                            lock (AnimationTimerLock)
-                                            {
-                                                if (AnimationTimers.u_action_animation_counter_on && layer_idx == (int)layer_types.LAYER_MONSTER && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
-                                                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MONSTER) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
-                                                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                else if (_gnollHackService.GlyphIsExplosion(glyph))
-                                                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.explosion_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                else if (_gnollHackService.GlyphIsZap(glyph))
-                                                {
-                                                    for (int zap_anim_idx = 0; zap_anim_idx < GHConstants.MaxPlayedZapAnimations; zap_anim_idx++)
-                                                    {
-                                                        if (AnimationTimers.zap_animation_counter_on[zap_anim_idx]
-                                                            && mapx == AnimationTimers.zap_animation_x[zap_anim_idx]
-                                                            && mapy == AnimationTimers.zap_animation_y[zap_anim_idx])
-                                                        {
-                                                            ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.zap_animation_counter[zap_anim_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    /* Check for special effect animations */
-                                                    bool spef_found = false;
-                                                    for (int spef_idx = 0; spef_idx < GHConstants.MaxPlayedSpecialEffects; spef_idx++)
-                                                    {
-                                                        if (AnimationTimers.special_effect_animation_counter_on[spef_idx]
-                                                            && layer_idx == (int)AnimationTimers.spef_action_animation_layer[spef_idx]
-                                                            && mapx == AnimationTimers.spef_action_animation_x[spef_idx]
-                                                            && mapy == AnimationTimers.spef_action_animation_y[spef_idx])
-                                                        {
-                                                            ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.special_effect_animation_counter[spef_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                            spef_found = true;
-                                                            break;
-                                                        }
-                                                    }
-
-                                                    /* Otherwise, normal animation check */
-                                                    if (!spef_found)
-                                                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, AnimationTimers.general_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                }
-                                            }
-
-                                            int enlargement = Tile2Enlargement[ntile];
-                                            for (int enl_idx = -1; enl_idx < 5; enl_idx++)
-                                            {
-                                                if (enlargement == 0 && enl_idx >= 0)
-                                                    break;
-
-                                                bool vflip_glyph = false;
-                                                bool hflip_glyph = false;
-                                                if ((hflip != tileflag_hflip) != manual_hflip) /* XOR */
-                                                    hflip_glyph = true;
-                                                else
-                                                    hflip_glyph = false;
-
-                                                if (tileflag_vflip != manual_vflip) /* XOR */
-                                                    vflip_glyph = true;
-                                                else
-                                                    vflip_glyph = false;
-
-
-                                                int enlarg_idx = enl_idx;
-                                                int position_index = -1;
-                                                int orig_position_index = -1;
-                                                if (enlargement > 0)
-                                                {
-                                                    orig_position_index = -1;
-                                                    /* Set position_index */
-                                                    if (enlarg_idx == -1)
-                                                    {
-                                                        if (vflip_glyph)
-                                                            position_index = 1;
-                                                        else
-                                                            position_index = -1;
-                                                    }
-                                                    else if (enlarg_idx == 0)
-                                                    {
-                                                        orig_position_index = 4;
-                                                        if (vflip_glyph)
-                                                            position_index = hflip_glyph ? 0 : 2;
-                                                        else
-                                                            position_index = hflip_glyph ? 3 : 4;
-                                                    }
-                                                    else if (enlarg_idx == 1)
-                                                    {
-                                                        orig_position_index = 3;
-                                                        if (vflip_glyph)
-                                                            position_index = hflip_glyph ? 2 : 0;
-                                                        else
-                                                            position_index = hflip_glyph ? 4 : 3;
-                                                    }
-                                                    else if (enlarg_idx == 2)
-                                                    {
-                                                        orig_position_index = 2;
-                                                        if (vflip_glyph)
-                                                            position_index = hflip_glyph ? 3 : 4;
-                                                        else
-                                                            position_index = hflip_glyph ? 0 : 2;
-                                                    }
-                                                    else if (enlarg_idx == 3)
-                                                    {
-                                                        orig_position_index = 1;
-                                                        if (vflip_glyph)
-                                                            position_index = -1;
-                                                        else
-                                                            position_index = 1;
-                                                    }
-                                                    else if (enlarg_idx == 4)
-                                                    {
-                                                        orig_position_index = 0;
-                                                        if (vflip_glyph)
-                                                            position_index = hflip_glyph ? 4 : 3;
-                                                        else
-                                                            position_index = hflip_glyph ? 2 : 0;
-                                                    }
-
-                                                }
-
-                                                if (enlargement > 0 && orig_position_index >= 0)
-                                                {
-                                                    int enl_tile_idx = _enlargementDefs[enlargement].position2tile[orig_position_index];
-                                                    if (enl_tile_idx >= 0)
-                                                    {
-                                                        int addedindex = 0;
-                                                        if (_enlargementDefs[enlargement].number_of_animation_frames > 0)
-                                                        {
-                                                            if (main_tile_idx == -1
-                                                                && anim_frame_idx >= 0
-                                                                && anim_frame_idx < _enlargementDefs[enlargement].number_of_animation_frames
-                                                                )
-                                                            {
-                                                                addedindex = anim_frame_idx * _enlargementDefs[enlargement].number_of_enlargement_tiles;
-                                                            }
-                                                            else if (main_tile_idx == 0
-                                                                && anim_frame_idx > 0
-                                                                && anim_frame_idx <= _enlargementDefs[enlargement].number_of_animation_frames)
-                                                            {
-                                                                addedindex = (anim_frame_idx - 1) * _enlargementDefs[enlargement].number_of_enlargement_tiles;
-                                                            }
-                                                            else if (main_tile_idx == _enlargementDefs[enlargement].number_of_animation_frames
-                                                                && anim_frame_idx >= 0
-                                                                && anim_frame_idx < _enlargementDefs[enlargement].number_of_animation_frames
-                                                                )
-                                                            {
-                                                                addedindex = anim_frame_idx * _enlargementDefs[enlargement].number_of_enlargement_tiles;
-                                                            }
-                                                        }
-                                                        int enl_glyph = enl_tile_idx + addedindex + EnlargementOffsets[enlargement] + EnlargementOff;
-                                                        ntile = Glyph2Tile[enl_glyph]; /* replace */
-                                                    }
-                                                    else
-                                                        continue;
-                                                }
-
-                                                int dx = 0, dy = 0;
-                                                int darken_dx = 0, darken_dy = 0;
-                                                switch (position_index)
-                                                {
-                                                    case 0:
-                                                        dx = -1;
-                                                        dy = -1;
-                                                        break;
-                                                    case 1:
-                                                        dx = 0;
-                                                        dy = -1;
-                                                        break;
-                                                    case 2:
-                                                        dx = 1;
-                                                        dy = -1;
-                                                        break;
-                                                    case 3:
-                                                        dx = -1;
-                                                        dy = 0;
-                                                        break;
-                                                    case 4:
-                                                        dx = 1;
-                                                        dy = 0;
-                                                        break;
-                                                }
-
-                                                int draw_map_x = mapx + dx;
-                                                int draw_map_y = mapy + dy;
-                                                if (!GHUtils.isok(draw_map_x, draw_map_y))
-                                                    continue;
-
-                                                darken_dx = dx;
-                                                darken_dy = 0;
-                                                //int darken_x = mapx + darken_dx;
-                                                //int darken_y = mapy + darken_dy;
-                                                //bool darken = ((_mapData[darken_x, darken_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
-                                                //if (_mapData[mapx, mapy].Layers.layer_glyphs != null
-                                                //    && (_mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
-                                                //        || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
-                                                //   )
-                                                //    darken = false;
-
-
-                                                int sheet_idx = TileSheetIdx(ntile);
-                                                int tile_x = TileSheetX(ntile);
-                                                int tile_y = TileSheetY(ntile);
-
-                                                SKRect sourcerect;
-                                                float scaled_tile_width = width;
-                                                float scaled_tile_height = tileflag_halfsize || (tileflag_normalobjmissile && !tileflag_fullsizeditem) ? height / 2 : height;
-                                                float scaled_x_padding = 0;
-                                                float scaled_y_padding = 0;
-                                                int source_y_added = 0;
-                                                int source_height_deducted = 0;
-                                                int source_height = tileflag_halfsize ? GHConstants.TileHeight / 2 : GHConstants.TileHeight;
-
-                                                if (tileflag_halfsize)
-                                                {
-                                                    float scale = 1.0f;
-                                                    if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
-                                                    {
-                                                        if (obj_in_pit)
-                                                            scale *= GHConstants.OBJECT_PIT_SCALING_FACTOR;
-                                                    }
-
-                                                    if (monster_height < 0 && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
-                                                        scale *= Math.Min(1.0f, Math.Max(0.1f, 1.0f - (1.0f - (float)GHConstants.OBJECT_PIT_SCALING_FACTOR) * (float)monster_height / (float)GHConstants.SPECIAL_HEIGHT_IN_PIT));
-
-                                                    if (tileflag_floortile)
-                                                    {
-                                                        if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
-                                                            && obj_height > 0 && obj_height < 48)
-                                                        {
-                                                            source_y_added = (GHConstants.TileHeight / 2 - obj_height) / 2;
-                                                            source_height_deducted = GHConstants.TileHeight / 2 - obj_height;
-                                                            source_height = GHConstants.TileHeight / 2 - source_height_deducted;
-                                                            scaled_tile_width = scale * width;
-                                                            scaled_x_padding = (width - scaled_tile_width) / 2;
-                                                            scaled_tile_height = scale * (float)source_height * height / (float)GHConstants.TileHeight;
-                                                            scaled_y_padding = Math.Max(0, scale * (float)source_height_deducted * height / (float)GHConstants.TileHeight - pit_border);
-                                                        }
-                                                        sourcerect = new SKRect(tile_x, tile_y + source_y_added, tile_x + GHConstants.TileWidth, tile_y + source_y_added + source_height);
-                                                    }
-                                                    else
-                                                    {
-                                                        if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
-                                                        {
-                                                            if(obj_height > 0 && obj_height < 48)
-                                                                scale *= ((float)obj_height) / 48.0f;
-                                                        }
-                                                        scaled_tile_width = scale * width;
-                                                        scaled_tile_height = scale * height / 2;
-                                                        scaled_x_padding = (width - scaled_tile_width) / 2;
-                                                        scaled_y_padding = Math.Max(0, height / 2 - scaled_tile_height - pit_border);
-
-                                                        sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
-                                                    {
-                                                        if (tileflag_floortile)
-                                                        {
-                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight / 2);
-                                                        }
-                                                        else
-                                                        {
-                                                            float scale = 1.0f;
-                                                            if (missile_height > 0 && missile_height < 48)
-                                                            {
-                                                                scale = ((float)missile_height) / 48.0f;
-                                                            }
-                                                            scaled_tile_width = scale * width;
-                                                            scaled_tile_height = scale * height / 2;
-                                                            scaled_x_padding = (width - scaled_tile_width) / 2;
-                                                            scaled_y_padding = (height / 2 - scaled_tile_height) / 2;
-
-                                                            sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        if(monster_height < 0 && dy == 0)
-                                                        {
-                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight + monster_height);
-                                                            source_height_deducted = -monster_height;
-                                                            source_height = GHConstants.TileHeight - source_height_deducted;
-                                                            scaled_tile_height = (float)source_height * height / (float)GHConstants.TileHeight;
-                                                        }
-                                                        else
-                                                        {
-                                                            sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                                                        }
-                                                    }
-                                                }
-
-                                                float move_offset_x = 0, move_offset_y = 0;
-                                                if ((layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
-                                                {
-                                                    move_offset_x = base_move_offset_x;
-                                                    move_offset_y = base_move_offset_y;
-                                                }
-
-                                                tx = (offsetX + _mapOffsetX + move_offset_x + width * (float)draw_map_x);
-                                                ty = (offsetY + _mapOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
-
-                                                using (new SKAutoCanvasRestore(canvas, true))
-                                                {
-                                                    canvas.Translate(tx + (hflip_glyph ? width : 0), ty + (vflip_glyph ? height : 0));
-                                                    canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
-                                                    SKRect targetrect;
-                                                    if (tileflag_halfsize)
-                                                    {
-                                                        targetrect = new SKRect(scaled_x_padding, height / 2 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 2 + scaled_y_padding + scaled_tile_height);
-                                                    }
-                                                    else
-                                                    {
-                                                        if(tileflag_normalobjmissile && !tileflag_fullsizeditem)
-                                                            targetrect = new SKRect(scaled_x_padding, height / 4 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 4 + scaled_y_padding + scaled_tile_height);
-                                                        else
-                                                            targetrect = new SKRect(scaled_x_padding, scaled_y_padding, scaled_x_padding + scaled_tile_width, scaled_y_padding + scaled_tile_height);
-                                                    }
-                                                    canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
-                                                }
-                                            }
+                                            canvas.DrawText("_", tx, ty, textPaint);
                                         }
                                     }
                                 }
-
-                                /* Darkening at the end of layers */
-                                if (layer_idx == (int)layer_types.LAYER_OBJECT)
+                            }
+                        }
+                        else
+                        {
+                            if (Glyph2Tile != null && _tilesPerRow[0] > 0 && UsedTileSheets > 0)
+                            {
+                                using (SKPaint paint = new SKPaint())
                                 {
-                                    for (int mapx = startX; mapx <= endX; mapx++)
+                                    float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
+                                    for (int layer_idx = 0; layer_idx <= (int)layer_types.MAX_LAYERS; layer_idx++)
                                     {
                                         for (int mapy = startY; mapy <= endY; mapy++)
                                         {
-                                            bool darken = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
-                                            
-                                            if (_mapData[mapx, mapy].Layers.layer_glyphs != null 
-                                                && (_mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph 
-                                                    || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
-                                               )
-                                                darken = false;
-
-                                            // Draw rectangle with blend mode in bottom half
-                                            if(darken)
+                                            for (int mapx = startX; mapx <= endX; mapx++)
                                             {
-                                                bool uloc = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0);
-                                                bool unlit = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_APPEARS_UNLIT) != 0);
-                                                // Get values from XAML controls
-                                                SKBlendMode blendMode = SKBlendMode.Modulate;
-                                                int val = ((uloc ? 85 : unlit ? 35 : 65) * 255) / 100;
-                                                SKColor color = new SKColor((byte)val, (byte)val, (byte)val);
-
-                                                using (SKPaint paint = new SKPaint())
+                                                short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
+                                                float scaled_y_height_change = 0;
+                                                sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
+                                                sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
+                                                long glyphprintcountervalue = _mapData[mapx, mapy].GlyphPrintCounterValue;
+                                                long currentcountervalue = 0;
+                                                lock (AnimationTimerLock)
                                                 {
-                                                    paint.Color = color;
-                                                    paint.BlendMode = blendMode;
-                                                    tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                                                    ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
-                                                    SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
-                                                    canvas.DrawRect(targetrect, paint);
+                                                    currentcountervalue = AnimationTimers.general_animation_counter;
+                                                }
+                                                float base_move_offset_x = 0, base_move_offset_y = 0;
+                                                int movediffx = (int)monster_origin_x - mapx;
+                                                int movediffy = (int)monster_origin_y - mapy;
+                                                long counterdiff = currentcountervalue - glyphprintcountervalue;
+                                                if (GHUtils.isok(monster_origin_x, monster_origin_y)
+                                                    && (movediffx != 0 || movediffy != 0)
+                                                    && counterdiff >= 0 && counterdiff < GHConstants.MoveIntervals)
+                                                {
+                                                    base_move_offset_x = width * (float)movediffx * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
+                                                    base_move_offset_y = height * (float)movediffy * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
                                                 }
 
+                                                if (layer_idx == (int)layer_types.MAX_LAYERS)
+                                                {
+                                                    if (monster_height > 0)
+                                                        scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
+
+                                                    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_YOU | LayerFlags.LFLAGS_UXUY | LayerFlags.LFLAGS_M_CANSPOTMON)) != 0
+                                                        && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_WORM_TAIL)) == 0)
+                                                    {
+                                                        tx = (offsetX + _mapOffsetX + base_move_offset_x + width * (float)mapx);
+                                                        ty = (offsetY + _mapOffsetY + base_move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+
+                                                        /* Draw condition and status marks */
+                                                        float x_scaling_factor = width / (float)(GHConstants.TileWidth);
+                                                        float y_scaling_factor = height / (float)(GHConstants.TileHeight);
+                                                        int max_fitted_rows = (GHConstants.TileWidth - 4) / (GHConstants.StatusMarkWidth + 2);
+                                                        int status_count = 0;
+
+                                                        ulong status_bits = _mapData[mapx, mapy].Layers.status_bits;
+                                                        if (status_bits != 0)
+                                                        {
+                                                            int[] statusmarkorder = { (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_PEACEFUL, (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+                                                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                            int mglyph = (int)game_ui_tile_types.STATUS_MARKS + UITileOff;
+                                                            int mtile = Glyph2Tile[mglyph];
+                                                            int sheet_idx = TileSheetIdx(mtile);
+                                                            int tile_x = TileSheetX(mtile);
+                                                            int tile_y = TileSheetY(mtile);
+                                                            foreach (int status_mark in statusmarkorder)
+                                                            {
+                                                                ulong statusbit = 1UL << status_mark;
+                                                                if ((status_bits & statusbit) != 0)
+                                                                {
+                                                                    int within_tile_x = status_mark % tiles_per_row;
+                                                                    int within_tile_y = status_mark / tiles_per_row;
+                                                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                                    SKRect source_rt = new SKRect();
+                                                                    source_rt.Left = c_x;
+                                                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                                    source_rt.Top = c_y;
+                                                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                                    /* Define draw location in target */
+                                                                    int unscaled_left = GHConstants.TileWidth - 2 - GHConstants.StatusMarkWidth;
+                                                                    int unscaled_right = unscaled_left + GHConstants.StatusMarkWidth;
+                                                                    int unscaled_top = 2 + (2 + GHConstants.StatusMarkWidth) * status_count;
+                                                                    int unscaled_bottom = unscaled_top + GHConstants.StatusMarkHeight;
+
+                                                                    SKRect target_rt = new SKRect();
+                                                                    target_rt.Left = tx + (int)(x_scaling_factor * (double)unscaled_left);
+                                                                    target_rt.Right = tx + (int)(x_scaling_factor * (double)unscaled_right);
+                                                                    target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
+                                                                    target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
+
+                                                                    status_count++;
+
+                                                                    if (status_count >= max_fitted_rows)
+                                                                        break;
+
+                                                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                                                }
+                                                            }
+                                                        }
+
+                                                        ulong condition_bits = _mapData[mapx, mapy].Layers.condition_bits;
+                                                        if (condition_bits != 0)
+                                                        {
+                                                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                            int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + UITileOff;
+                                                            int mtile = Glyph2Tile[mglyph];
+                                                            int sheet_idx = TileSheetIdx(mtile);
+                                                            int tile_x = TileSheetX(mtile);
+                                                            int tile_y = TileSheetY(mtile);
+                                                            for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
+                                                            {
+                                                                ulong conditionbit = 1UL << condition_mark;
+                                                                if ((condition_bits & conditionbit) != 0)
+                                                                {
+                                                                    int within_tile_x = condition_mark % tiles_per_row;
+                                                                    int within_tile_y = condition_mark / tiles_per_row;
+                                                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                                    SKRect source_rt = new SKRect();
+                                                                    source_rt.Left = c_x;
+                                                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                                    source_rt.Top = c_y;
+                                                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                                    /* Define draw location in target */
+                                                                    int unscaled_left = GHConstants.TileWidth - 2 - GHConstants.StatusMarkWidth;
+                                                                    int unscaled_right = unscaled_left + GHConstants.StatusMarkWidth;
+                                                                    int unscaled_top = 2 + (2 + GHConstants.StatusMarkWidth) * status_count;
+                                                                    int unscaled_bottom = unscaled_top + GHConstants.StatusMarkHeight;
+
+                                                                    SKRect target_rt = new SKRect();
+                                                                    target_rt.Left = tx + (int)(x_scaling_factor * (double)unscaled_left);
+                                                                    target_rt.Right = tx + (int)(x_scaling_factor * (double)unscaled_right);
+                                                                    target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
+                                                                    target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
+
+                                                                    status_count++;
+
+                                                                    if (status_count >= max_fitted_rows)
+                                                                        break;
+
+                                                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                                                }
+                                                            }
+                                                        }
+
+                                                        for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
+                                                        {
+                                                            ulong buff_bits = _mapData[mapx, mapy].Layers.buff_bits[buff_ulong];
+                                                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                            if (buff_bits != 0)
+                                                            {
+                                                                for (int buff_idx = 0; buff_idx < 32; buff_idx++)
+                                                                {
+                                                                    ulong buffbit = 1UL << buff_idx;
+                                                                    if ((buff_bits & buffbit) != 0)
+                                                                    {
+                                                                        int propidx = buff_ulong * 32 + buff_idx;
+                                                                        if (propidx > GHConstants.LAST_PROP)
+                                                                            break;
+                                                                        int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + BuffTileOff;
+                                                                        int mtile = Glyph2Tile[mglyph];
+                                                                        int sheet_idx = TileSheetIdx(mtile);
+                                                                        int tile_x = TileSheetX(mtile);
+                                                                        int tile_y = TileSheetY(mtile);
+
+                                                                        int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
+                                                                        int within_tile_x = buff_mark % tiles_per_row;
+                                                                        int within_tile_y = buff_mark / tiles_per_row;
+                                                                        int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                                        int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                                        SKRect source_rt = new SKRect();
+                                                                        source_rt.Left = c_x;
+                                                                        source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                                        source_rt.Top = c_y;
+                                                                        source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                                        /* Define draw location in target */
+                                                                        int unscaled_left = GHConstants.TileWidth - 2 - GHConstants.StatusMarkWidth;
+                                                                        int unscaled_right = unscaled_left + GHConstants.StatusMarkWidth;
+                                                                        int unscaled_top = 2 + (2 + GHConstants.StatusMarkWidth) * status_count;
+                                                                        int unscaled_bottom = unscaled_top + GHConstants.StatusMarkHeight;
+
+                                                                        SKRect target_rt = new SKRect();
+                                                                        target_rt.Left = tx + (int)(x_scaling_factor * (double)unscaled_left);
+                                                                        target_rt.Right = tx + (int)(x_scaling_factor * (double)unscaled_right);
+                                                                        target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
+                                                                        target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
+
+                                                                        status_count++;
+
+                                                                        if (status_count >= max_fitted_rows)
+                                                                            break;
+
+                                                                        canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                    }
+
+                                                    /* Draw death and hit markers */
+                                                    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_KILLED) != 0)
+                                                    {
+                                                        int mglyph = (int)general_tile_types.GENERAL_TILE_DEATH + GeneralTileOff;
+                                                        int mtile = Glyph2Tile[mglyph];
+                                                        int sheet_idx = TileSheetIdx(mtile);
+                                                        int tile_x = TileSheetX(mtile);
+                                                        int tile_y = TileSheetY(mtile);
+
+                                                        tx = (offsetX + _mapOffsetX + width * (float)mapx);
+                                                        ty = (offsetY + _mapOffsetY + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+                                                        SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+
+                                                        SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                        canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                                                    }
+                                                    else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_BEING_HIT) != 0)
+                                                    {
+                                                        short hit_text_num = _mapData[mapx, mapy].Layers.hit_tile;
+                                                        int mglyph = Math.Max(0, Math.Min((int)hit_tile_types.MAX_HIT_TILES - 1, (int)hit_text_num)) + HitTileOff;
+                                                        int mtile = Glyph2Tile[mglyph];
+                                                        int sheet_idx = TileSheetIdx(mtile);
+                                                        int tile_x = TileSheetX(mtile);
+                                                        int tile_y = TileSheetY(mtile);
+
+                                                        tx = (offsetX + _mapOffsetX + width * (float)mapx);
+                                                        ty = (offsetY + _mapOffsetY + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+                                                        SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+
+                                                        SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                        canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    int signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
+                                                    if (signed_glyph == NoGlyph)
+                                                        continue;
+
+                                                    int glyph = Math.Abs(signed_glyph);
+                                                    if (glyph == 0 || glyph >= Glyph2Tile.Length)
+                                                        continue;
+
+                                                    short obj_height = _mapData[mapx, mapy].Layers.object_height;
+                                                    short missile_height = _mapData[mapx, mapy].Layers.missile_height;
+                                                    bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
+
+                                                    /* Base flips */
+                                                    bool hflip = (signed_glyph < 0);
+                                                    bool manual_hflip = false;
+                                                    bool manual_vflip = false;
+
+                                                    /* Tile flips */
+                                                    bool tileflag_hflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_HORIZONTALLY) != 0;
+                                                    bool tileflag_vflip = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FLIP_VERTICALLY) != 0;
+                                                    bool tileflag_halfsize = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
+                                                    bool tileflag_floortile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
+                                                    bool tileflag_normalobjmissile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0;
+                                                    bool tileflag_fullsizeditem = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
+
+                                                    if ((!tileflag_halfsize || monster_height > 0) && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
+                                                        scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
+
+                                                    int ntile = Glyph2Tile[glyph];
+                                                    /* Replace tile here */
+                                                    int animation = Tile2Animation[ntile];
+                                                    int autodraw = Tile2Autodraw[ntile];
+                                                    int anim_frame_idx = 0, main_tile_idx = 0;
+                                                    sbyte mapAnimated = 0;
+                                                    int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
+                                                    bool is_dropping_piercer = false;
+
+                                                    /* Determine animation tile here */
+                                                    lock (AnimationTimerLock)
+                                                    {
+                                                        if (AnimationTimers.u_action_animation_counter_on && layer_idx == (int)layer_types.LAYER_MONSTER && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
+                                                            ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                        else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MONSTER) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
+                                                            ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                        else if (_gnollHackService.GlyphIsExplosion(glyph))
+                                                            ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.explosion_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                        else if (_gnollHackService.GlyphIsZap(glyph))
+                                                        {
+                                                            for (int zap_anim_idx = 0; zap_anim_idx < GHConstants.MaxPlayedZapAnimations; zap_anim_idx++)
+                                                            {
+                                                                if (AnimationTimers.zap_animation_counter_on[zap_anim_idx]
+                                                                    && mapx == AnimationTimers.zap_animation_x[zap_anim_idx]
+                                                                    && mapy == AnimationTimers.zap_animation_y[zap_anim_idx])
+                                                                {
+                                                                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.zap_animation_counter[zap_anim_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            /* Check for special effect animations */
+                                                            bool spef_found = false;
+                                                            for (int spef_idx = 0; spef_idx < GHConstants.MaxPlayedSpecialEffects; spef_idx++)
+                                                            {
+                                                                if (AnimationTimers.special_effect_animation_counter_on[spef_idx]
+                                                                    && layer_idx == (int)AnimationTimers.spef_action_animation_layer[spef_idx]
+                                                                    && mapx == AnimationTimers.spef_action_animation_x[spef_idx]
+                                                                    && mapy == AnimationTimers.spef_action_animation_y[spef_idx])
+                                                                {
+                                                                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.special_effect_animation_counter[spef_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                                    spef_found = true;
+                                                                    break;
+                                                                }
+                                                            }
+
+                                                            /* Otherwise, normal animation check */
+                                                            if (!spef_found)
+                                                                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, AnimationTimers.general_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                        }
+                                                    }
+
+                                                    int enlargement = Tile2Enlargement[ntile];
+                                                    for (int enl_idx = -1; enl_idx < 5; enl_idx++)
+                                                    {
+                                                        if (enlargement == 0 && enl_idx >= 0)
+                                                            break;
+
+                                                        bool vflip_glyph = false;
+                                                        bool hflip_glyph = false;
+                                                        if ((hflip != tileflag_hflip) != manual_hflip) /* XOR */
+                                                            hflip_glyph = true;
+                                                        else
+                                                            hflip_glyph = false;
+
+                                                        if (tileflag_vflip != manual_vflip) /* XOR */
+                                                            vflip_glyph = true;
+                                                        else
+                                                            vflip_glyph = false;
+
+
+                                                        int enlarg_idx = enl_idx;
+                                                        int position_index = -1;
+                                                        int orig_position_index = -1;
+                                                        if (enlargement > 0)
+                                                        {
+                                                            orig_position_index = -1;
+                                                            /* Set position_index */
+                                                            if (enlarg_idx == -1)
+                                                            {
+                                                                if (vflip_glyph)
+                                                                    position_index = 1;
+                                                                else
+                                                                    position_index = -1;
+                                                            }
+                                                            else if (enlarg_idx == 0)
+                                                            {
+                                                                orig_position_index = 4;
+                                                                if (vflip_glyph)
+                                                                    position_index = hflip_glyph ? 0 : 2;
+                                                                else
+                                                                    position_index = hflip_glyph ? 3 : 4;
+                                                            }
+                                                            else if (enlarg_idx == 1)
+                                                            {
+                                                                orig_position_index = 3;
+                                                                if (vflip_glyph)
+                                                                    position_index = hflip_glyph ? 2 : 0;
+                                                                else
+                                                                    position_index = hflip_glyph ? 4 : 3;
+                                                            }
+                                                            else if (enlarg_idx == 2)
+                                                            {
+                                                                orig_position_index = 2;
+                                                                if (vflip_glyph)
+                                                                    position_index = hflip_glyph ? 3 : 4;
+                                                                else
+                                                                    position_index = hflip_glyph ? 0 : 2;
+                                                            }
+                                                            else if (enlarg_idx == 3)
+                                                            {
+                                                                orig_position_index = 1;
+                                                                if (vflip_glyph)
+                                                                    position_index = -1;
+                                                                else
+                                                                    position_index = 1;
+                                                            }
+                                                            else if (enlarg_idx == 4)
+                                                            {
+                                                                orig_position_index = 0;
+                                                                if (vflip_glyph)
+                                                                    position_index = hflip_glyph ? 4 : 3;
+                                                                else
+                                                                    position_index = hflip_glyph ? 2 : 0;
+                                                            }
+
+                                                        }
+
+                                                        if (enlargement > 0 && orig_position_index >= 0)
+                                                        {
+                                                            int enl_tile_idx = _enlargementDefs[enlargement].position2tile[orig_position_index];
+                                                            if (enl_tile_idx >= 0)
+                                                            {
+                                                                int addedindex = 0;
+                                                                if (_enlargementDefs[enlargement].number_of_animation_frames > 0)
+                                                                {
+                                                                    if (main_tile_idx == -1
+                                                                        && anim_frame_idx >= 0
+                                                                        && anim_frame_idx < _enlargementDefs[enlargement].number_of_animation_frames
+                                                                        )
+                                                                    {
+                                                                        addedindex = anim_frame_idx * _enlargementDefs[enlargement].number_of_enlargement_tiles;
+                                                                    }
+                                                                    else if (main_tile_idx == 0
+                                                                        && anim_frame_idx > 0
+                                                                        && anim_frame_idx <= _enlargementDefs[enlargement].number_of_animation_frames)
+                                                                    {
+                                                                        addedindex = (anim_frame_idx - 1) * _enlargementDefs[enlargement].number_of_enlargement_tiles;
+                                                                    }
+                                                                    else if (main_tile_idx == _enlargementDefs[enlargement].number_of_animation_frames
+                                                                        && anim_frame_idx >= 0
+                                                                        && anim_frame_idx < _enlargementDefs[enlargement].number_of_animation_frames
+                                                                        )
+                                                                    {
+                                                                        addedindex = anim_frame_idx * _enlargementDefs[enlargement].number_of_enlargement_tiles;
+                                                                    }
+                                                                }
+                                                                int enl_glyph = enl_tile_idx + addedindex + EnlargementOffsets[enlargement] + EnlargementOff;
+                                                                ntile = Glyph2Tile[enl_glyph]; /* replace */
+                                                            }
+                                                            else
+                                                                continue;
+                                                        }
+
+                                                        int dx = 0, dy = 0;
+                                                        int darken_dx = 0, darken_dy = 0;
+                                                        switch (position_index)
+                                                        {
+                                                            case 0:
+                                                                dx = -1;
+                                                                dy = -1;
+                                                                break;
+                                                            case 1:
+                                                                dx = 0;
+                                                                dy = -1;
+                                                                break;
+                                                            case 2:
+                                                                dx = 1;
+                                                                dy = -1;
+                                                                break;
+                                                            case 3:
+                                                                dx = -1;
+                                                                dy = 0;
+                                                                break;
+                                                            case 4:
+                                                                dx = 1;
+                                                                dy = 0;
+                                                                break;
+                                                        }
+
+                                                        int draw_map_x = mapx + dx;
+                                                        int draw_map_y = mapy + dy;
+                                                        if (!GHUtils.isok(draw_map_x, draw_map_y))
+                                                            continue;
+
+                                                        darken_dx = dx;
+                                                        darken_dy = 0;
+                                                        //int darken_x = mapx + darken_dx;
+                                                        //int darken_y = mapy + darken_dy;
+                                                        //bool darken = ((_mapData[darken_x, darken_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
+                                                        //if (_mapData[mapx, mapy].Layers.layer_glyphs != null
+                                                        //    && (_mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
+                                                        //        || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
+                                                        //   )
+                                                        //    darken = false;
+
+
+                                                        int sheet_idx = TileSheetIdx(ntile);
+                                                        int tile_x = TileSheetX(ntile);
+                                                        int tile_y = TileSheetY(ntile);
+
+                                                        SKRect sourcerect;
+                                                        float scaled_tile_width = width;
+                                                        float scaled_tile_height = tileflag_halfsize || (tileflag_normalobjmissile && !tileflag_fullsizeditem) ? height / 2 : height;
+                                                        float scaled_x_padding = 0;
+                                                        float scaled_y_padding = 0;
+                                                        int source_y_added = 0;
+                                                        int source_height_deducted = 0;
+                                                        int source_height = tileflag_halfsize ? GHConstants.TileHeight / 2 : GHConstants.TileHeight;
+
+                                                        if (tileflag_halfsize)
+                                                        {
+                                                            float scale = 1.0f;
+                                                            if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
+                                                            {
+                                                                if (obj_in_pit)
+                                                                    scale *= GHConstants.OBJECT_PIT_SCALING_FACTOR;
+                                                            }
+
+                                                            if (monster_height < 0 && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
+                                                                scale *= Math.Min(1.0f, Math.Max(0.1f, 1.0f - (1.0f - (float)GHConstants.OBJECT_PIT_SCALING_FACTOR) * (float)monster_height / (float)GHConstants.SPECIAL_HEIGHT_IN_PIT));
+
+                                                            if (tileflag_floortile)
+                                                            {
+                                                                if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_OBJECT)
+                                                                    && obj_height > 0 && obj_height < 48)
+                                                                {
+                                                                    source_y_added = (GHConstants.TileHeight / 2 - obj_height) / 2;
+                                                                    source_height_deducted = GHConstants.TileHeight / 2 - obj_height;
+                                                                    source_height = GHConstants.TileHeight / 2 - source_height_deducted;
+                                                                    scaled_tile_width = scale * width;
+                                                                    scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                                    scaled_tile_height = scale * (float)source_height * height / (float)GHConstants.TileHeight;
+                                                                    scaled_y_padding = Math.Max(0, scale * (float)source_height_deducted * height / (float)GHConstants.TileHeight - pit_border);
+                                                                }
+                                                                sourcerect = new SKRect(tile_x, tile_y + source_y_added, tile_x + GHConstants.TileWidth, tile_y + source_y_added + source_height);
+                                                            }
+                                                            else
+                                                            {
+                                                                if ((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
+                                                                {
+                                                                    if (obj_height > 0 && obj_height < 48)
+                                                                        scale *= ((float)obj_height) / 48.0f;
+                                                                }
+                                                                scaled_tile_width = scale * width;
+                                                                scaled_tile_height = scale * height / 2;
+                                                                scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                                scaled_y_padding = Math.Max(0, height / 2 - scaled_tile_height - pit_border);
+
+                                                                sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                                                            {
+                                                                if (tileflag_floortile)
+                                                                {
+                                                                    sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight / 2);
+                                                                }
+                                                                else
+                                                                {
+                                                                    float scale = 1.0f;
+                                                                    if (missile_height > 0 && missile_height < 48)
+                                                                    {
+                                                                        scale = ((float)missile_height) / 48.0f;
+                                                                    }
+                                                                    scaled_tile_width = scale * width;
+                                                                    scaled_tile_height = scale * height / 2;
+                                                                    scaled_x_padding = (width - scaled_tile_width) / 2;
+                                                                    scaled_y_padding = (height / 2 - scaled_tile_height) / 2;
+
+                                                                    sourcerect = new SKRect(tile_x, tile_y + GHConstants.TileHeight / 2, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                if (monster_height < 0 && dy == 0)
+                                                                {
+                                                                    sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight + monster_height);
+                                                                    source_height_deducted = -monster_height;
+                                                                    source_height = GHConstants.TileHeight - source_height_deducted;
+                                                                    scaled_tile_height = (float)source_height * height / (float)GHConstants.TileHeight;
+                                                                }
+                                                                else
+                                                                {
+                                                                    sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                                }
+                                                            }
+                                                        }
+
+                                                        float move_offset_x = 0, move_offset_y = 0;
+                                                        float opaqueness = 1.0f;
+                                                        if ((layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
+                                                        {
+                                                            move_offset_x = base_move_offset_x;
+                                                            move_offset_y = base_move_offset_y;
+                                                            if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_SEMI_TRANSPARENT | LayerFlags.LFLAGS_M_RADIAL_TRANSPARENCY)) != 0)
+                                                                opaqueness = 0.5f;
+                                                        }
+
+                                                        tx = (offsetX + _mapOffsetX + move_offset_x + width * (float)draw_map_x);
+                                                        ty = (offsetY + _mapOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
+
+                                                        using (new SKAutoCanvasRestore(canvas, true))
+                                                        {
+                                                            canvas.Translate(tx + (hflip_glyph ? width : 0), ty + (vflip_glyph ? height : 0));
+                                                            canvas.Scale(hflip_glyph ? -1 : 1, vflip_glyph ? -1 : 1, 0, 0);
+                                                            SKRect targetrect;
+                                                            if (tileflag_halfsize)
+                                                            {
+                                                                targetrect = new SKRect(scaled_x_padding, height / 2 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 2 + scaled_y_padding + scaled_tile_height);
+                                                            }
+                                                            else
+                                                            {
+                                                                if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                                                                    targetrect = new SKRect(scaled_x_padding, height / 4 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 4 + scaled_y_padding + scaled_tile_height);
+                                                                else
+                                                                    targetrect = new SKRect(scaled_x_padding, scaled_y_padding, scaled_x_padding + scaled_tile_width, scaled_y_padding + scaled_tile_height);
+                                                            }
+                                                            paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                                                            canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
+                                                        }
+
+                                                        /* AUTODRAW */
+                                                        if (autodraws != null && autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LONG_WORM)
+                                                        {
+                                                            /* Long worm here */
+
+                                                            int source_glyph_seg_end = autodraws[autodraw].source_glyph;
+                                                            int source_glyph_seg_dir_out = autodraws[autodraw].source_glyph2;
+                                                            int source_glyph_seg_dir_in = autodraws[autodraw].source_glyph2 + 4;
+                                                            int source_glyph_seg_layer = autodraws[autodraw].source_glyph3;
+                                                            int drawing_tail = autodraws[autodraw].flags;
+                                                            float scale = height / (float)GHConstants.TileHeight;
+                                                            int wdir_out = _mapData[mapx, mapy].Layers.wsegdir;
+                                                            int wdir_in = _mapData[mapx, mapy].Layers.reverse_prev_wsegdir;
+                                                            bool is_head = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_HEAD) != 0;
+                                                            bool is_tailend = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_TAILEND) != 0;
+                                                            for (int wlayer = 0; wlayer < 5; wlayer++)
+                                                            {
+                                                                int source_glyph = NoGlyph;
+                                                                bool hflip_seg = false;
+                                                                bool vflip_seg = false;
+                                                                switch (wlayer)
+                                                                {
+                                                                    case 0:
+                                                                    case 2:
+                                                                    case 4:
+                                                                        if (is_head || is_tailend)
+                                                                            continue;
+                                                                        source_glyph = source_glyph_seg_layer + wlayer / 2;
+                                                                        break;
+                                                                    case 1:
+                                                                        source_glyph = is_tailend ? NoGlyph : is_head ? source_glyph_seg_end : source_glyph_seg_dir_in;
+                                                                        break;
+                                                                    case 3:
+                                                                        source_glyph = is_tailend ? source_glyph_seg_end : is_head ? NoGlyph : source_glyph_seg_dir_out;
+                                                                        break;
+                                                                    default:
+                                                                        break;
+                                                                }
+
+                                                                if (source_glyph != NoGlyph)
+                                                                {
+                                                                    int wdir = (wlayer == 1 ? wdir_in : wlayer == 3 ? wdir_out : 0);
+                                                                    switch (wdir)
+                                                                    {
+                                                                        case 1:
+                                                                            source_glyph += 2;
+                                                                            hflip_seg = false;
+                                                                            vflip_seg = false;
+                                                                            break;
+                                                                        case 2:
+                                                                            source_glyph += 0;
+                                                                            hflip_seg = false;
+                                                                            vflip_seg = false;
+                                                                            break;
+                                                                        case 3:
+                                                                            source_glyph += 3;
+                                                                            hflip_seg = false;
+                                                                            vflip_seg = true;
+                                                                            break;
+                                                                        case 4:
+                                                                            source_glyph += 1;
+                                                                            hflip_seg = true;
+                                                                            vflip_seg = false;
+                                                                            break;
+                                                                        case 5:
+                                                                            source_glyph += 3;
+                                                                            hflip_seg = false;
+                                                                            vflip_seg = false;
+                                                                            break;
+                                                                        case 6:
+                                                                            source_glyph += 0;
+                                                                            hflip_seg = false;
+                                                                            vflip_seg = true;
+                                                                            break;
+                                                                        case 7:
+                                                                            source_glyph += 2;
+                                                                            hflip_seg = false;
+                                                                            vflip_seg = true;
+                                                                            break;
+                                                                        case 8:
+                                                                            source_glyph += 1;
+                                                                            hflip_seg = false;
+                                                                            vflip_seg = false;
+                                                                            break;
+                                                                        default:
+                                                                            break;
+                                                                    }
+
+                                                                    int atile = Glyph2Tile[source_glyph];
+                                                                    int a_sheet_idx = TileSheetIdx(atile);
+                                                                    int at_x = TileSheetX(atile);
+                                                                    int at_y = TileSheetY(atile);
+
+                                                                    int worm_source_x = at_x;
+                                                                    int worm_source_y = at_y;
+                                                                    int worm_source_width = GHConstants.TileWidth;
+                                                                    int worm_source_height = GHConstants.TileHeight;
+                                                                    sourcerect = new SKRect(worm_source_x, worm_source_y, worm_source_x + worm_source_width, worm_source_y + worm_source_height);
+
+                                                                    float target_x = tx;
+                                                                    float target_y = ty;
+                                                                    float target_width = ((float)worm_source_width * scale);
+                                                                    float target_height = ((float)worm_source_height * scale);
+                                                                    SKRect targetrect;
+                                                                    targetrect = new SKRect(0, 0, target_width, target_height);
+
+                                                                    using (new SKAutoCanvasRestore(canvas, true))
+                                                                    {
+                                                                        canvas.Translate(target_x + (hflip_seg ? width : 0), target_y + (vflip_seg ? height : 0));
+                                                                        canvas.Scale(hflip_seg ? -1 : 1, vflip_seg ? -1 : 1, 0, 0);
+                                                                        paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                                                                        canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        /* Darkening at the end of layers */
+                                        if (layer_idx == (int)layer_types.LAYER_OBJECT)
+                                        {
+                                            for (int mapx = startX; mapx <= endX; mapx++)
+                                            {
+                                                for (int mapy = startY; mapy <= endY; mapy++)
+                                                {
+                                                    bool darken = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
+
+                                                    if (_mapData[mapx, mapy].Layers.layer_glyphs != null
+                                                        && (_mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
+                                                            || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
+                                                       )
+                                                        darken = false;
+
+                                                    // Draw rectangle with blend mode in bottom half
+                                                    if (darken)
+                                                    {
+                                                        bool uloc = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0);
+                                                        bool unlit = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_APPEARS_UNLIT) != 0);
+                                                        // Get values from XAML controls
+                                                        SKBlendMode blendMode = SKBlendMode.Modulate;
+                                                        int val = ((uloc ? 85 : unlit ? 35 : 65) * 255) / 100;
+                                                        SKColor color = new SKColor((byte)val, (byte)val, (byte)val);
+
+                                                        paint.Color = color;
+                                                        SKBlendMode old_bm = paint.BlendMode;
+                                                        paint.BlendMode = blendMode;
+                                                        tx = (offsetX + _mapOffsetX + width * (float)mapx);
+                                                        ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+                                                        SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                        canvas.DrawRect(targetrect, paint);
+                                                        paint.BlendMode = old_bm;
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -1653,434 +1777,434 @@ namespace GnollHackClient.Pages.Game
                             }
                         }
                     }
-                }
 
-                /* Cursor */
-                if (GraphicsStyle == GHGraphicsStyle.ASCII && CursorStyle == TTYCursorStyle.BlinkingUnderline && _cursorIsOn && _mapCursorX >= 1 && _mapCursorY >= 0)
-                {
-                    int cx = _mapCursorX, cy = _mapCursorY;
-                    str = "_";
-                    textPaint.Color = SKColors.White;
-                    tx = (offsetX + _mapOffsetX + width * (float)cx);
-                    ty = (offsetY + _mapOffsetY + height * (float)cy);
-                    canvas.DrawText(str, tx, ty, textPaint);
-                }
-            }
-
-            /* Floating Texts */
-            if(GraphicsStyle != GHGraphicsStyle.ASCII)
-            {
-                lock (_floatingTextLock)
-                {
-                    foreach (GHFloatingText ft in _floatingTexts)
+                    /* Cursor */
+                    if (GraphicsStyle == GHGraphicsStyle.ASCII && CursorStyle == TTYCursorStyle.BlinkingUnderline && _cursorIsOn && _mapCursorX >= 1 && _mapCursorY >= 0)
                     {
-                        SKPoint p;
-                        float relativestrokewidth = 0.0f;
-                        SKColor strokecolor = SKColors.White;
-                        lock (AnimationTimerLock)
-                        {
-                            p = ft.GetPosition(AnimationTimers.general_animation_counter);
-                            textPaint.Color = ft.GetColor(AnimationTimers.general_animation_counter);
-                            textPaint.Typeface = ft.GetTypeface(AnimationTimers.general_animation_counter);
-                            textPaint.TextSize = MapFontSize * ft.GetRelativeTextSize(AnimationTimers.general_animation_counter);
-                            relativestrokewidth = ft.GetRelativeOutlineWidth(AnimationTimers.general_animation_counter);
-                            strokecolor = ft.GetOutlineColor(AnimationTimers.general_animation_counter);
-                            str = ft.GetText(AnimationTimers.general_animation_counter);
-                        }
-                        textPaint.MeasureText(str, ref textBounds);
-                        tx = (offsetX + _mapOffsetX + width * p.X - textBounds.Width / 2);
-                        ty = (offsetY + _mapOffsetY + height * p.Y - textBounds.Height / 2);
+                        int cx = _mapCursorX, cy = _mapCursorY;
+                        str = "_";
+                        textPaint.Color = SKColors.White;
+                        tx = (offsetX + _mapOffsetX + width * (float)cx);
+                        ty = (offsetY + _mapOffsetY + height * (float)cy);
                         canvas.DrawText(str, tx, ty, textPaint);
-                        if(relativestrokewidth > 0)
-                        {
-                            textPaint.Style = SKPaintStyle.Stroke;
-                            textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
-                            textPaint.Color = strokecolor;
-                            canvas.DrawText(str, tx, ty, textPaint);
-                            textPaint.Style = SKPaintStyle.Fill;
-                        }
                     }
                 }
-                lock (_screenTextLock)
+
+                /* Floating Texts */
+                if (GraphicsStyle != GHGraphicsStyle.ASCII)
                 {
-                    if (_screenText != null)
+                    lock (_floatingTextLock)
                     {
-                        float targetwidth = 0, yoffsetpct = 0, relativestrokewidth = 0, relativesubstrokewidth = 0;
-                        SKColor strokecolor = SKColors.White, substrokecolor = SKColors.White;
-                        float maxfontsize = 9999.0f;
-                        lock (AnimationTimerLock)
+                        foreach (GHFloatingText ft in _floatingTexts)
                         {
-                            textPaint.Color = _screenText.GetTextColor(AnimationTimers.general_animation_counter);
-                            textPaint.Typeface = _screenText.GetTextTypeface(AnimationTimers.general_animation_counter);
-                            targetwidth = canvaswidth * _screenText.GetMainTextSizeRelativeToScreenWidth(AnimationTimers.general_animation_counter);
-                            maxfontsize = _screenText.GetMainTextMaxFontSize(AnimationTimers.general_animation_counter);
-                            yoffsetpct = _screenText.GetYOffsetPctOfScreen(AnimationTimers.general_animation_counter);
-                            relativestrokewidth = _screenText.GetRelativeTextOutlineWidth(AnimationTimers.general_animation_counter);
-                            strokecolor = _screenText.GetTextOutlineColor(AnimationTimers.general_animation_counter);
-                            str = _screenText.GetText(AnimationTimers.general_animation_counter);
-                        }
-                        textPaint.TextSize = MapFontSize;
-                        textPaint.MeasureText(str, ref textBounds);
-                        if(textBounds.Width > 0)
-                        {
-                            float relativesize = targetwidth / textBounds.Width;
-                            //if (relativesize > maxfontsize)
-                            //    relativesize = maxfontsize;
-                            textPaint.TextSize = MapFontSize * relativesize;
-                        }
-
-                        textPaint.MeasureText(str, ref textBounds);
-                        float maintextascent = textPaint.FontMetrics.Ascent;
-                        float maintextdescent = textPaint.FontMetrics.Descent;
-
-                        tx = (canvaswidth / 2 - textBounds.Width / 2);
-                        ty = (canvasheight / 2 - textBounds.Height / 2 - (maintextascent + maintextdescent) / 2) + yoffsetpct * canvasheight;
-                        canvas.DrawText(str, tx, ty, textPaint);
-                        if (relativestrokewidth > 0)
-                        {
-                            textPaint.Style = SKPaintStyle.Stroke;
-                            textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
-                            textPaint.Color = strokecolor;
-                            canvas.DrawText(str, tx, ty, textPaint);
-                            textPaint.Style = SKPaintStyle.Fill;
-                        }
-
-                        float maintextsize = textPaint.TextSize;
-                        float maintextspacing = textPaint.FontSpacing;
-                        float maintexty = ty;
-
-                        if (_screenText.HasSubText)
-                        {
+                            SKPoint p;
+                            float relativestrokewidth = 0.0f;
+                            SKColor strokecolor = SKColors.White;
                             lock (AnimationTimerLock)
                             {
-                                textPaint.Color = _screenText.GetSubTextColor(AnimationTimers.general_animation_counter);
-                                textPaint.Typeface = _screenText.GetSubTextTypeface(AnimationTimers.general_animation_counter);
-                                textPaint.TextSize = maintextsize * _screenText.GetSubTextSizeRelativeToMainText(AnimationTimers.general_animation_counter);
-                                relativesubstrokewidth = _screenText.GetRelativeSubTextOutlineWidth(AnimationTimers.general_animation_counter);
-                                substrokecolor = _screenText.GetSubTextOutlineColor(AnimationTimers.general_animation_counter);
-                                str = _screenText.GetSubText(AnimationTimers.general_animation_counter);
+                                p = ft.GetPosition(AnimationTimers.general_animation_counter);
+                                textPaint.Color = ft.GetColor(AnimationTimers.general_animation_counter);
+                                textPaint.Typeface = ft.GetTypeface(AnimationTimers.general_animation_counter);
+                                textPaint.TextSize = MapFontSize * ft.GetRelativeTextSize(AnimationTimers.general_animation_counter);
+                                relativestrokewidth = ft.GetRelativeOutlineWidth(AnimationTimers.general_animation_counter);
+                                strokecolor = ft.GetOutlineColor(AnimationTimers.general_animation_counter);
+                                str = ft.GetText(AnimationTimers.general_animation_counter);
                             }
                             textPaint.MeasureText(str, ref textBounds);
-                            tx = (canvaswidth / 2 - textBounds.Width / 2);
-                            if(_screenText.IsSubTextAbove)
-                                ty = maintexty + maintextascent - textPaint.FontMetrics.Descent;
-                            else
-                                ty = maintexty + maintextdescent - textPaint.FontMetrics.Ascent;
-
+                            tx = (offsetX + _mapOffsetX + width * p.X - textBounds.Width / 2);
+                            ty = (offsetY + _mapOffsetY + height * p.Y - textBounds.Height / 2);
                             canvas.DrawText(str, tx, ty, textPaint);
-                            if (relativesubstrokewidth > 0)
+                            if (relativestrokewidth > 0)
                             {
                                 textPaint.Style = SKPaintStyle.Stroke;
-                                textPaint.StrokeWidth = textPaint.TextSize * relativesubstrokewidth;
-                                textPaint.Color = substrokecolor;
+                                textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
+                                textPaint.Color = strokecolor;
                                 canvas.DrawText(str, tx, ty, textPaint);
                                 textPaint.Style = SKPaintStyle.Fill;
                             }
                         }
                     }
-                }
-            }
-
-
-            /* Window strings */
-            canvasButtonRect.Top = 0; /* Maybe overrwritten below */
-            canvasButtonRect.Bottom = canvasheight; /* Maybe overrwritten below */
-            if (_clientGame != null)
-            {
-                lock (_clientGame.WindowsLock)
-                {
-                    for (int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
+                    lock (_screenTextLock)
                     {
-                        if (_clientGame.Windows[i].Visible && (
-                            _clientGame.Windows[i].WindowPrintStyle == GHWindowPrintLocations.PrintToMap
-                            || _clientGame.Windows[i].WindowPrintStyle == GHWindowPrintLocations.RawPrint))
+                        if (_screenText != null)
                         {
-                            textPaint.Typeface = _clientGame.Windows[i].Typeface;
-                            textPaint.TextSize = _clientGame.Windows[i].TextSize;
-                            textPaint.Color = _clientGame.Windows[i].TextColor;
-                            width = textPaint.FontMetrics.AverageCharacterWidth;
-                            height = textPaint.FontSpacing; // textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-
-                            if(_clientGame.Windows[i].AutoPlacement)
+                            float targetwidth = 0, yoffsetpct = 0, relativestrokewidth = 0, relativesubstrokewidth = 0;
+                            SKColor strokecolor = SKColors.White, substrokecolor = SKColors.White;
+                            float maxfontsize = 9999.0f;
+                            lock (AnimationTimerLock)
                             {
-                                if (_clientGame.Windows[i].WindowType == GHWinType.Message)
-                                {
-                                    float newleft = 0;
-                                    float newtop = canvasheight - height * _shownMessageRows - 30;
-                                    _clientGame.Windows[i].Left = newleft;
-                                    _clientGame.Windows[i].Top = newtop;
-                                }
-                                else if (_clientGame.Windows[i].WindowType == GHWinType.Here)
-                                {
-                                    float newleft = 0;
-                                    float messagetop = _clientGame.Windows[_clientGame.MessageWindowId].Top;
-                                    float newtop = messagetop - _clientGame.Windows[i].Height - 30;
-                                    _clientGame.Windows[i].Left = newleft;
-                                    _clientGame.Windows[i].Top = newtop;
-                                }
+                                textPaint.Color = _screenText.GetTextColor(AnimationTimers.general_animation_counter);
+                                textPaint.Typeface = _screenText.GetTextTypeface(AnimationTimers.general_animation_counter);
+                                targetwidth = canvaswidth * _screenText.GetMainTextSizeRelativeToScreenWidth(AnimationTimers.general_animation_counter);
+                                maxfontsize = _screenText.GetMainTextMaxFontSize(AnimationTimers.general_animation_counter);
+                                yoffsetpct = _screenText.GetYOffsetPctOfScreen(AnimationTimers.general_animation_counter);
+                                relativestrokewidth = _screenText.GetRelativeTextOutlineWidth(AnimationTimers.general_animation_counter);
+                                strokecolor = _screenText.GetTextOutlineColor(AnimationTimers.general_animation_counter);
+                                str = _screenText.GetText(AnimationTimers.general_animation_counter);
+                            }
+                            textPaint.TextSize = MapFontSize;
+                            textPaint.MeasureText(str, ref textBounds);
+                            if (textBounds.Width > 0)
+                            {
+                                float relativesize = targetwidth / textBounds.Width;
+                                //if (relativesize > maxfontsize)
+                                //    relativesize = maxfontsize;
+                                textPaint.TextSize = MapFontSize * relativesize;
                             }
 
-                            SKRect winRect = new SKRect(_clientGame.Windows[i].Left, _clientGame.Windows[i].Top,
-                                _clientGame.Windows[i].Right,
-                                _clientGame.Windows[i].Bottom);
+                            textPaint.MeasureText(str, ref textBounds);
+                            float maintextascent = textPaint.FontMetrics.Ascent;
+                            float maintextdescent = textPaint.FontMetrics.Descent;
 
-                            if(_clientGame.Windows[i].CenterHorizontally && winRect.Right - winRect.Left < canvaswidth)
+                            tx = (canvaswidth / 2 - textBounds.Width / 2);
+                            ty = (canvasheight / 2 - textBounds.Height / 2 - (maintextascent + maintextdescent) / 2) + yoffsetpct * canvasheight;
+                            canvas.DrawText(str, tx, ty, textPaint);
+                            if (relativestrokewidth > 0)
                             {
-                                float newleft = (canvaswidth - (winRect.Right - winRect.Left)) / 2;
-                                float addition = newleft - winRect.Left;
-                                winRect.Left += addition;
-                                winRect.Right += addition;
+                                textPaint.Style = SKPaintStyle.Stroke;
+                                textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
+                                textPaint.Color = strokecolor;
+                                canvas.DrawText(str, tx, ty, textPaint);
+                                textPaint.Style = SKPaintStyle.Fill;
                             }
 
-                            SKPaint winPaint = new SKPaint
+                            float maintextsize = textPaint.TextSize;
+                            float maintextspacing = textPaint.FontSpacing;
+                            float maintexty = ty;
+
+                            if (_screenText.HasSubText)
                             {
-                                Color = _clientGame.Windows[i].BackgroundColor,
-                                Style = SKPaintStyle.Fill
-                            };
-
-                            if(winPaint.Color != SKColors.Transparent)
-                                canvas.DrawRect(winRect, winPaint);
-
-                            if(i == _clientGame.StatusWindowId)
-                                canvasButtonRect.Top = winRect.Bottom;
-                            else if (i == _clientGame.MessageWindowId)
-                                canvasButtonRect.Bottom = winRect.Top;
-
-                            if (_clientGame.Windows[i].WindowType != GHWinType.Message)
-                            {
-                                lock (_clientGame.Windows[i].PutStrsLock)
+                                lock (AnimationTimerLock)
                                 {
-                                    int j = 0;
-                                    foreach (GHPutStrItem putstritem in _clientGame.Windows[i].PutStrs)
-                                    {
-                                        int pos = 0;
-                                        float xpos = 0;
-                                        float totwidth = 0;
-                                        foreach (GHPutStrInstructions instr in putstritem.InstructionList)
-                                        {
-                                            if (putstritem.Text == null)
-                                                str = "";
-                                            else if (pos + instr.PrintLength <= putstritem.Text.Length)
-                                                str = putstritem.Text.Substring(pos, instr.PrintLength);
-                                            else if (putstritem.Text.Length - pos > 0)
-                                                str = putstritem.Text.Substring(pos, putstritem.Text.Length - pos);
-                                            else
-                                                str = "";
-                                            pos += str.Length;
-                                            textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? (nhcolor)instr.Color : nhcolor.CLR_WHITE);
-                                            totwidth = textPaint.MeasureText(str, ref textBounds);
-
-                                            /* attributes */
-                                            tx = xpos + winRect.Left + _clientGame.Windows[i].Padding.Left;
-                                            ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
-                                            canvas.DrawText(str, tx, ty, textPaint);
-                                            textPaint.Style = SKPaintStyle.Stroke;
-                                            textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
-                                            textPaint.Color = SKColors.Black;
-                                            canvas.DrawText(str, tx, ty, textPaint);
-                                            textPaint.Style = SKPaintStyle.Fill;
-                                            xpos += totwidth;
-                                        }
-                                        j++;
-                                    }
+                                    textPaint.Color = _screenText.GetSubTextColor(AnimationTimers.general_animation_counter);
+                                    textPaint.Typeface = _screenText.GetSubTextTypeface(AnimationTimers.general_animation_counter);
+                                    textPaint.TextSize = maintextsize * _screenText.GetSubTextSizeRelativeToMainText(AnimationTimers.general_animation_counter);
+                                    relativesubstrokewidth = _screenText.GetRelativeSubTextOutlineWidth(AnimationTimers.general_animation_counter);
+                                    substrokecolor = _screenText.GetSubTextOutlineColor(AnimationTimers.general_animation_counter);
+                                    str = _screenText.GetSubText(AnimationTimers.general_animation_counter);
                                 }
-                            }
+                                textPaint.MeasureText(str, ref textBounds);
+                                tx = (canvaswidth / 2 - textBounds.Width / 2);
+                                if (_screenText.IsSubTextAbove)
+                                    ty = maintexty + maintextascent - textPaint.FontMetrics.Descent;
+                                else
+                                    ty = maintexty + maintextdescent - textPaint.FontMetrics.Ascent;
 
-                            if (_clientGame.Windows[i].WindowType == GHWinType.Message)
-                            {
-                                lock (msgHistoryLock)
+                                canvas.DrawText(str, tx, ty, textPaint);
+                                if (relativesubstrokewidth > 0)
                                 {
-                                    if(_msgHistory != null)
-                                    {
-                                        int j = _shownMessageRows - 1, idx;
-                                        for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
-                                        {
-                                            GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
-                                            string longLine = msgHistoryItem.Text;
-                                            SKColor printColor = ClientUtils.NHColor2SKColor(msgHistoryItem.NHColor < nhcolor.CLR_MAX ? msgHistoryItem.NHColor : nhcolor.CLR_WHITE);
-
-                                            textPaint.Style = SKPaintStyle.Fill;
-                                            textPaint.StrokeWidth = 0;
-                                            textPaint.Color = printColor;
-                                            /* attributes */
-
-                                            float lineLengthLimit = 0.8f * canvaswidth;
-                                            var wrappedLines = new List<string>();
-                                            var lineLength = 0.0f;
-                                            var line = "";
-                                            foreach (var word in longLine.Split(' '))
-                                            {
-                                                var wordWithSpace = word + " ";
-                                                var wordWithSpaceLength = textPaint.MeasureText(wordWithSpace);
-                                                if (lineLength + wordWithSpaceLength > lineLengthLimit)
-                                                {
-                                                    wrappedLines.Add(line);
-                                                    line = "" + wordWithSpace;
-                                                    lineLength = wordWithSpaceLength;
-                                                }
-                                                else
-                                                {
-                                                    line += wordWithSpace;
-                                                    lineLength += wordWithSpaceLength;
-                                                }
-                                            }
-                                            wrappedLines.Add(line);
-
-                                            int lineidx;
-                                            for (lineidx = 0; lineidx < wrappedLines.Count; lineidx++)
-                                            {
-                                                string wrappedLine = wrappedLines[lineidx];
-                                                int window_row_idx = j + lineidx - wrappedLines.Count + 1;
-                                                if (window_row_idx < 0)
-                                                    continue;
-                                                tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
-                                                ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
-                                                canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                textPaint.Style = SKPaintStyle.Stroke;
-                                                textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
-                                                textPaint.Color = SKColors.Black;
-                                                canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                textPaint.Style = SKPaintStyle.Fill;
-                                                textPaint.StrokeWidth = 0;
-                                                textPaint.Color = printColor;
-                                            }
-                                            j -= wrappedLines.Count;
-                                        }
-                                    }
+                                    textPaint.Style = SKPaintStyle.Stroke;
+                                    textPaint.StrokeWidth = textPaint.TextSize * relativesubstrokewidth;
+                                    textPaint.Color = substrokecolor;
+                                    canvas.DrawText(str, tx, ty, textPaint);
+                                    textPaint.Style = SKPaintStyle.Fill;
                                 }
                             }
                         }
                     }
                 }
 
-            }
 
-            canvasButtonRect.Right = canvaswidth * (float)(0.8);
-            canvasButtonRect.Left = canvaswidth * (float)(0.2);
-
-            if (_showDirections || showNumberPad)
-            {
-                textPaint.Color = new SKColor(255, 255, 255, 128);
-                textPaint.Typeface = App.DejaVuSansMonoTypeface;
-                textPaint.TextSize = showNumberPad ? 250 : 400;
-                for (int i = 0; i <= 9;i++)
+                /* Window strings */
+                canvasButtonRect.Top = 0; /* Maybe overrwritten below */
+                canvasButtonRect.Bottom = canvasheight; /* Maybe overrwritten below */
+                if (_clientGame != null)
                 {
-                    switch (i)
+                    lock (_clientGame.WindowsLock)
                     {
-                        case 0:
-                            if (_showDirections)
-                                str = "\u2190";
-                            else
-                                str = "4";
-                            tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
-                            break;
-                        case 1:
-                            if (_showDirections)
-                                str = "\u2191";
-                            else
-                                str = "8";
-                            tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.15f + textPaint.FontMetrics.Descent;
-                            break;
-                        case 2:
-                            if (_showDirections)
-                                str = "\u2192";
-                            else
-                                str = "6";
-                            tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
-                            break;
-                        case 3:
-                            if (_showDirections)
-                                str = "\u2193";
-                            else
-                                str = "2";
-                            tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.85f + textPaint.FontMetrics.Descent;
-                            break;
-                        case 4:
-                            if (_showDirections)
-                                str = "\u2196";
-                            else
-                                str = "7";
-                            tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.15f + textPaint.FontMetrics.Descent;
-                            break;
-                        case 5:
-                            if (_showDirections)
-                                str = "";
-                            else
-                                str = "5";
-                            tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
-                            break;
-                        case 6:
-                            if (_showDirections)
-                                str = "\u2197";
-                            else
-                                str = "9";
-                            tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.15f + textPaint.FontMetrics.Descent;
-                            break;
-                        case 7:
-                            if (_showDirections)
-                                str = "\u2198";
-                            else
-                                str = "3";
-                            tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.85f + textPaint.FontMetrics.Descent;
-                            break;
-                        case 8:
-                            if (_showDirections)
-                                str = "\u2199";
-                            else
-                                str = "1";
-                            tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.85f + textPaint.FontMetrics.Descent;
-                            break;
-                        case 9:
-                            if (_showDirections)
-                                continue;
-                            else
-                                str = "0";
-                            tx = 0 + canvasButtonRect.Left / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                            ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.15f + textPaint.FontMetrics.Descent;
-                            textPaint.TextSize = Math.Max(10.0f, textPaint.TextSize * Math.Min(1.0f, canvasButtonRect.Left / (canvasButtonRect.Width * 0.3f)));
-                            break;
+                        for (int i = 0; _clientGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
+                        {
+                            if (_clientGame.Windows[i].Visible && (
+                                _clientGame.Windows[i].WindowPrintStyle == GHWindowPrintLocations.PrintToMap
+                                || _clientGame.Windows[i].WindowPrintStyle == GHWindowPrintLocations.RawPrint))
+                            {
+                                textPaint.Typeface = _clientGame.Windows[i].Typeface;
+                                textPaint.TextSize = _clientGame.Windows[i].TextSize;
+                                textPaint.Color = _clientGame.Windows[i].TextColor;
+                                width = textPaint.FontMetrics.AverageCharacterWidth;
+                                height = textPaint.FontSpacing; // textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+
+                                if (_clientGame.Windows[i].AutoPlacement)
+                                {
+                                    if (_clientGame.Windows[i].WindowType == GHWinType.Message)
+                                    {
+                                        float newleft = 0;
+                                        float newtop = canvasheight - height * _shownMessageRows - 30;
+                                        _clientGame.Windows[i].Left = newleft;
+                                        _clientGame.Windows[i].Top = newtop;
+                                    }
+                                    else if (_clientGame.Windows[i].WindowType == GHWinType.Here)
+                                    {
+                                        float newleft = 0;
+                                        float messagetop = _clientGame.Windows[_clientGame.MessageWindowId].Top;
+                                        float newtop = messagetop - _clientGame.Windows[i].Height - 30;
+                                        _clientGame.Windows[i].Left = newleft;
+                                        _clientGame.Windows[i].Top = newtop;
+                                    }
+                                }
+
+                                SKRect winRect = new SKRect(_clientGame.Windows[i].Left, _clientGame.Windows[i].Top,
+                                    _clientGame.Windows[i].Right,
+                                    _clientGame.Windows[i].Bottom);
+
+                                if (_clientGame.Windows[i].CenterHorizontally && winRect.Right - winRect.Left < canvaswidth)
+                                {
+                                    float newleft = (canvaswidth - (winRect.Right - winRect.Left)) / 2;
+                                    float addition = newleft - winRect.Left;
+                                    winRect.Left += addition;
+                                    winRect.Right += addition;
+                                }
+
+                                SKPaint winPaint = new SKPaint
+                                {
+                                    Color = _clientGame.Windows[i].BackgroundColor,
+                                    Style = SKPaintStyle.Fill
+                                };
+
+                                if (winPaint.Color != SKColors.Transparent)
+                                    canvas.DrawRect(winRect, winPaint);
+
+                                if (i == _clientGame.StatusWindowId)
+                                    canvasButtonRect.Top = winRect.Bottom;
+                                else if (i == _clientGame.MessageWindowId)
+                                    canvasButtonRect.Bottom = winRect.Top;
+
+                                if (_clientGame.Windows[i].WindowType != GHWinType.Message)
+                                {
+                                    lock (_clientGame.Windows[i].PutStrsLock)
+                                    {
+                                        int j = 0;
+                                        foreach (GHPutStrItem putstritem in _clientGame.Windows[i].PutStrs)
+                                        {
+                                            int pos = 0;
+                                            float xpos = 0;
+                                            float totwidth = 0;
+                                            foreach (GHPutStrInstructions instr in putstritem.InstructionList)
+                                            {
+                                                if (putstritem.Text == null)
+                                                    str = "";
+                                                else if (pos + instr.PrintLength <= putstritem.Text.Length)
+                                                    str = putstritem.Text.Substring(pos, instr.PrintLength);
+                                                else if (putstritem.Text.Length - pos > 0)
+                                                    str = putstritem.Text.Substring(pos, putstritem.Text.Length - pos);
+                                                else
+                                                    str = "";
+                                                pos += str.Length;
+                                                textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? (nhcolor)instr.Color : nhcolor.CLR_WHITE);
+                                                totwidth = textPaint.MeasureText(str, ref textBounds);
+
+                                                /* attributes */
+                                                tx = xpos + winRect.Left + _clientGame.Windows[i].Padding.Left;
+                                                ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
+                                                canvas.DrawText(str, tx, ty, textPaint);
+                                                textPaint.Style = SKPaintStyle.Stroke;
+                                                textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
+                                                textPaint.Color = SKColors.Black;
+                                                canvas.DrawText(str, tx, ty, textPaint);
+                                                textPaint.Style = SKPaintStyle.Fill;
+                                                xpos += totwidth;
+                                            }
+                                            j++;
+                                        }
+                                    }
+                                }
+
+                                if (_clientGame.Windows[i].WindowType == GHWinType.Message)
+                                {
+                                    lock (msgHistoryLock)
+                                    {
+                                        if (_msgHistory != null)
+                                        {
+                                            int j = _shownMessageRows - 1, idx;
+                                            for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
+                                            {
+                                                GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                                string longLine = msgHistoryItem.Text;
+                                                SKColor printColor = ClientUtils.NHColor2SKColor(msgHistoryItem.NHColor < nhcolor.CLR_MAX ? msgHistoryItem.NHColor : nhcolor.CLR_WHITE);
+
+                                                textPaint.Style = SKPaintStyle.Fill;
+                                                textPaint.StrokeWidth = 0;
+                                                textPaint.Color = printColor;
+                                                /* attributes */
+
+                                                float lineLengthLimit = 0.8f * canvaswidth;
+                                                var wrappedLines = new List<string>();
+                                                var lineLength = 0.0f;
+                                                var line = "";
+                                                foreach (var word in longLine.Split(' '))
+                                                {
+                                                    var wordWithSpace = word + " ";
+                                                    var wordWithSpaceLength = textPaint.MeasureText(wordWithSpace);
+                                                    if (lineLength + wordWithSpaceLength > lineLengthLimit)
+                                                    {
+                                                        wrappedLines.Add(line);
+                                                        line = "" + wordWithSpace;
+                                                        lineLength = wordWithSpaceLength;
+                                                    }
+                                                    else
+                                                    {
+                                                        line += wordWithSpace;
+                                                        lineLength += wordWithSpaceLength;
+                                                    }
+                                                }
+                                                wrappedLines.Add(line);
+
+                                                int lineidx;
+                                                for (lineidx = 0; lineidx < wrappedLines.Count; lineidx++)
+                                                {
+                                                    string wrappedLine = wrappedLines[lineidx];
+                                                    int window_row_idx = j + lineidx - wrappedLines.Count + 1;
+                                                    if (window_row_idx < 0)
+                                                        continue;
+                                                    tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
+                                                    ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
+                                                    canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
+                                                    textPaint.Color = SKColors.Black;
+                                                    canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.StrokeWidth = 0;
+                                                    textPaint.Color = printColor;
+                                                }
+                                                j -= wrappedLines.Count;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                    canvas.DrawText(str, tx, ty, textPaint);
 
                 }
-            }
 
-            if(ShowWaitIcon)
-            {
-                SKRect targetrect;
-                float[] sizearray = { 10.0f, 10.1f, 10.2f, 10.3f, 10.4f, 10.3f, 10.2f, 10.1f, 10.0f, 9.9f };
-                long sizeidx = 0;
-                lock (AnimationTimerLock)
+                canvasButtonRect.Right = canvaswidth * (float)(0.8);
+                canvasButtonRect.Left = canvaswidth * (float)(0.2);
+
+                if (_showDirections || showNumberPad)
                 {
-                    sizeidx = AnimationTimers.general_animation_counter % 10;
+                    textPaint.Color = new SKColor(255, 255, 255, 128);
+                    textPaint.Typeface = App.DejaVuSansMonoTypeface;
+                    textPaint.TextSize = showNumberPad ? 250 : 400;
+                    for (int i = 0; i <= 9; i++)
+                    {
+                        switch (i)
+                        {
+                            case 0:
+                                if (_showDirections)
+                                    str = "\u2190";
+                                else
+                                    str = "4";
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
+                                break;
+                            case 1:
+                                if (_showDirections)
+                                    str = "\u2191";
+                                else
+                                    str = "8";
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.15f + textPaint.FontMetrics.Descent;
+                                break;
+                            case 2:
+                                if (_showDirections)
+                                    str = "\u2192";
+                                else
+                                    str = "6";
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
+                                break;
+                            case 3:
+                                if (_showDirections)
+                                    str = "\u2193";
+                                else
+                                    str = "2";
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.85f + textPaint.FontMetrics.Descent;
+                                break;
+                            case 4:
+                                if (_showDirections)
+                                    str = "\u2196";
+                                else
+                                    str = "7";
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.15f + textPaint.FontMetrics.Descent;
+                                break;
+                            case 5:
+                                if (_showDirections)
+                                    str = "";
+                                else
+                                    str = "5";
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
+                                break;
+                            case 6:
+                                if (_showDirections)
+                                    str = "\u2197";
+                                else
+                                    str = "9";
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.15f + textPaint.FontMetrics.Descent;
+                                break;
+                            case 7:
+                                if (_showDirections)
+                                    str = "\u2198";
+                                else
+                                    str = "3";
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.85f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.85f + textPaint.FontMetrics.Descent;
+                                break;
+                            case 8:
+                                if (_showDirections)
+                                    str = "\u2199";
+                                else
+                                    str = "1";
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width * 0.15f - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.85f + textPaint.FontMetrics.Descent;
+                                break;
+                            case 9:
+                                if (_showDirections)
+                                    continue;
+                                else
+                                    str = "0";
+                                tx = 0 + canvasButtonRect.Left / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height * 0.15f + textPaint.FontMetrics.Descent;
+                                textPaint.TextSize = Math.Max(10.0f, textPaint.TextSize * Math.Min(1.0f, canvasButtonRect.Left / (canvasButtonRect.Width * 0.3f)));
+                                break;
+                        }
+                        canvas.DrawText(str, tx, ty, textPaint);
+
+                    }
                 }
-                float size = sizearray[sizeidx];
-                targetrect = new SKRect(canvaswidth / 2 - canvaswidth / size, canvasheight / 2 - canvaswidth / size, canvaswidth / 2 + canvaswidth / size, canvasheight / 2 + canvaswidth / size);
-                canvas.DrawBitmap(_logoBitmap, targetrect);
-            }
 
-            /* RawPrint */
-            /*
-            lock(MessageLock)
-            {
-                str = Message;
-            }
+                if (ShowWaitIcon)
+                {
+                    SKRect targetrect;
+                    float[] sizearray = { 10.0f, 10.1f, 10.2f, 10.3f, 10.4f, 10.3f, 10.2f, 10.1f, 10.0f, 9.9f };
+                    long sizeidx = 0;
+                    lock (AnimationTimerLock)
+                    {
+                        sizeidx = AnimationTimers.general_animation_counter % 10;
+                    }
+                    float size = sizearray[sizeidx];
+                    targetrect = new SKRect(canvaswidth / 2 - canvaswidth / size, canvasheight / 2 - canvaswidth / size, canvaswidth / 2 + canvaswidth / size, canvasheight / 2 + canvaswidth / size);
+                    canvas.DrawBitmap(_logoBitmap, targetrect);
+                }
 
-            textPaint.Typeface = App.DiabloTypeface;
-            textPaint.TextSize = 36;
-            textPaint.Color = SKColors.White;
-            yText = 50;
-            canvas.DrawText(str, xText, yText, textPaint);
-            */
+                /* RawPrint */
+                /*
+                lock(MessageLock)
+                {
+                    str = Message;
+                }
+
+                textPaint.Typeface = App.DiabloTypeface;
+                textPaint.TextSize = 36;
+                textPaint.Color = SKColors.White;
+                yText = 50;
+                canvas.DrawText(str, xText, yText, textPaint);
+                */
+            }
 
         }
 

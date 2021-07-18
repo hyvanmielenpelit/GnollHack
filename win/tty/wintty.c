@@ -2305,7 +2305,7 @@ struct WinDesc *cw;
     boolean linestart;
     register char *cp;
 
-    init_print_glyph(2);
+    init_print_glyph(INIT_GLYPH_START_FLUSH);
 
     for (n = 0, i = 0; i < cw->maxrow; i++) {
         HUPSKIP();
@@ -2375,7 +2375,7 @@ struct WinDesc *cw;
             cw->flags |= WIN_CANCELLED;
     }
 
-    init_print_glyph(3);
+    init_print_glyph(INIT_GLYPH_FINISH_FLUSH);
 }
 
 /*ARGSUSED*/
@@ -3359,7 +3359,7 @@ register int xmin, ymax;
     }
 #endif /*0*/
 
-    init_print_glyph(2);
+    init_print_glyph(INIT_GLYPH_START_FLUSH);
 
 #if defined(SIGWINCH) && defined(CLIPPING)
     if (ymax > LI)
@@ -3385,7 +3385,7 @@ register int xmin, ymax;
         row_refresh(xmin - (int) cw->offx, COLNO - 1, y - (int) cw->offy);
 #endif
     }
-    init_print_glyph(3);
+    init_print_glyph(INIT_GLYPH_FINISH_FLUSH);
 
     end_glyphout();
     if (ymax >= (int) wins[WIN_STATUS]->offy) {

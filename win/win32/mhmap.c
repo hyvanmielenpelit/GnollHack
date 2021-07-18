@@ -4603,7 +4603,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_SADDLED:
-                                    if (!loc_is_you && (data->map[i][j].layer_flags & LFLAGS_M_SADDLED))
+                                    if (!loc_is_you && (mtmp->worn_item_flags & W_SADDLE) && !Hallucination)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_LOW_HP:

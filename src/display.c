@@ -513,6 +513,9 @@ struct layer_info* linfo;
     linfo->condition_bits = 0UL;
     for(int i = 0; i < NUM_BUFF_BIT_ULONGS; i++)
         linfo->buff_bits[i] = 0UL;
+    linfo->wsegdir = 0;
+    linfo->reverse_prev_wsegdir = 0;
+    linfo->monster_flags = 0UL;
 }
 
 boolean
@@ -2219,14 +2222,14 @@ redraw_map()
      * the map would currently be showing.
      */
     struct layer_info layers;
-    init_print_glyph(2);
+    init_print_glyph(INIT_GLYPH_START_FLUSH);
     for (y = 0; y < ROWNO; ++y)
         for (x = 1; x < COLNO; ++x) {
             layers = layers_at(x, y); /* not levl[x][y].hero_memory_layers.glyph */
             print_glyph(WIN_MAP, x, y, layers);
         }
+    init_print_glyph(INIT_GLYPH_FINISH_FLUSH);
     flush_screen(1);
-    init_print_glyph(3);
 }
 
 /* FIXME: This is a dirty hack, because newsym() doesn't distinguish
@@ -2672,6 +2675,19 @@ boolean exclude_ascii;
         }
 
         unsigned long extra_flags = 0UL;
+
+        if (loc_is_you || mtmp)
+        {
+            if (loc_is_you && !mtmp)
+                mtmp = &youmonst;
+
+            if (is_semi_transparent(mtmp->data) && !Hallucination)
+                extra_flags |= LFLAGS_M_SEMI_TRANSPARENT;
+
+            if (is_radially_transparent(mtmp->data) && !Hallucination)
+                extra_flags |= LFLAGS_M_RADIAL_TRANSPARENCY;
+        }
+        
         if (mtmp)
         {
             if (!Hallucination)
@@ -2683,17 +2699,25 @@ boolean exclude_ascii;
             if (is_peaceful(mtmp) && !is_tame(mtmp) && !Hallucination)
                 extra_flags |= LFLAGS_M_PEACEFUL;
 
-            if ((mtmp->worn_item_flags & W_SADDLE) && !Hallucination)
-                extra_flags |= LFLAGS_M_SADDLED;
-
             if (canspotmon(mtmp))
                 extra_flags |= LFLAGS_M_CANSPOTMON;
 
-            /* Other conditions here */
-
-            /* Add to layer */
-            add_glyph_buffer_layer_flags(x, y, extra_flags);
+            /* Worm info */
+            int wdir_out = get_wseg_dir_at(mtmp, x, y);
+            int wdir_in = get_reverse_prev_wseg_dir_at(mtmp, x, y);
+            boolean is_head = is_wseg_head(mtmp, x, y);
+            boolean is_tailend = is_wseg_tailend(mtmp, x, y);
+            gbuf[y][x].layers.wsegdir = wdir_out;
+            gbuf[y][x].layers.reverse_prev_wsegdir = wdir_in;
+            if (is_head)
+                gbuf[y][x].layers.monster_flags |= LMFLAGS_WORM_HEAD;
+            if (is_tailend)
+                gbuf[y][x].layers.monster_flags |= LMFLAGS_WORM_TAILEND;
         }
+
+        /* Add to layer */
+        if(extra_flags != 0UL)
+            add_glyph_buffer_layer_flags(x, y, extra_flags);
 
         if(loc_is_you || mtmp)
         {
@@ -2781,7 +2805,7 @@ boolean exclude_ascii;
                         display_this_status_mark = TRUE;
                     break;
                 case STATUS_MARK_SADDLED:
-                    if (!loc_is_you && (layer_flags & LFLAGS_M_SADDLED))
+                    if (!loc_is_you && (mtmp->worn_item_flags & W_SADDLE) && !Hallucination)
                         display_this_status_mark = TRUE;
                     break;
                 case STATUS_MARK_LOW_HP:
@@ -2898,7 +2922,6 @@ boolean remove;
             if (!remove)
                 glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, defsyms[cmap_idx].layer, (struct obj*)0, (struct monst*)0, 0UL));
             gbuf[y][x].layers.layer_glyphs[defsyms[cmap_idx].layer] = remove ? NO_GLYPH : glyph;
-            gbuf[y][x].layers.layer_flags &= ~LFLAGS_CMAP_MASK;
         }
         else if (glyph_is_monster(glyph) || glyph_is_invisible(glyph) || glyph_is_warning(glyph)) /* includes also players */
         {
@@ -3192,7 +3215,7 @@ int cursor_on_u;
         return;
 #endif
 
-    init_print_glyph(2);
+    init_print_glyph(INIT_GLYPH_START_FLUSH);
     for (y = 0; y < ROWNO; y++) {
         register gbuf_entry *gptr = &gbuf[y][x = gbuf_start[y]];
 
@@ -3202,7 +3225,7 @@ int cursor_on_u;
                 gptr->isnew = 0;
             }
     }
-    init_print_glyph(3);
+    init_print_glyph(INIT_GLYPH_FINISH_FLUSH);
 
     if (cursor_on_u)
         curs(WIN_MAP, u.ux, u.uy); /* move cursor to the hero */
@@ -4871,7 +4894,7 @@ boolean exclude_ascii;
             : any_monnum_to_glyph(flags.female, youmonst.mappearance)
         ),
         u.usteed, u.ux0, u.uy0,
-        displayed_flags | LFLAGS_M_YOU | (u.usteed && mon_visible(u.usteed) ? LFLAGS_M_RIDDEN : 0UL) | (u.usteed && mon_visible(u.usteed) && (u.usteed->worn_item_flags & W_SADDLE) ? LFLAGS_M_SADDLED : 0UL),
+        displayed_flags | LFLAGS_M_YOU | (u.usteed && mon_visible(u.usteed) ? LFLAGS_M_RIDDEN : 0UL),
         hit_tile_id, dmg_received, exclude_ascii);
 
 }

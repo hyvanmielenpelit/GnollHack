@@ -515,6 +515,16 @@ enum main_menu_command {
 #define TRAVP_GUESS  1
 #define TRAVP_VALID  2
 
+/* init_print_glyph_stages */
+enum init_print_glyph_stages {
+    INIT_GLYPH_PROGRAM_START = 0,
+    INIT_GLYPH_PREFERENCE_SET,
+    INIT_GLYPH_START_FLUSH,
+    INIT_GLYPH_FINISH_FLUSH,
+    INIT_GLYPH_PROGRAM_FINISH,
+};
+
+
 /* Other */
 #define DISREGARD_HEALTH_LEVEL_MULTIPLIER 2
 #define DISREGARD_HEALTH_LEVEL_DIFFERENCE_THRESHOLD 5

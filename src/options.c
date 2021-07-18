@@ -5408,7 +5408,7 @@ doset() /* changing options via menu by Per Liboriussen */
 
     if (need_init_print_glyph)
     {
-        init_print_glyph(1);
+        init_print_glyph(INIT_GLYPH_PREFERENCE_SET);
     }
 
     if (need_stretch_map)

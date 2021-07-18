@@ -137,15 +137,15 @@ namespace GnollHackClient
             int ti2an_size;
             IntPtr ti2en_ptr;
             int ti2en_size;
-            IntPtr ti2re_ptr;
-            int ti2re_size;
+            IntPtr ti2ad_ptr;
+            int ti2ad_size;
             IntPtr anoff_ptr;
             int anoff_size;
             IntPtr enoff_ptr;
             int enoff_size;
             IntPtr reoff_ptr;
             int reoff_size;
-            _gamePage.GnollHackService.GetTileArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size, out ti2an_ptr, out ti2an_size, out ti2en_ptr, out ti2en_size, out ti2re_ptr, out ti2re_size,
+            _gamePage.GnollHackService.GetTileArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size, out ti2an_ptr, out ti2an_size, out ti2en_ptr, out ti2en_size, out ti2ad_ptr, out ti2ad_size,
                 out anoff_ptr, out anoff_size, out enoff_ptr, out enoff_size, out reoff_ptr, out reoff_size);
             lock (_gamePage.Glyph2TileLock)
             {
@@ -169,10 +169,10 @@ namespace GnollHackClient
                     _gamePage.Tile2Enlargement = new short[ti2en_size];
                     Marshal.Copy(ti2en_ptr, _gamePage.Tile2Enlargement, 0, ti2en_size);
                 }
-                if (ti2re_ptr != null && ti2re_size > 0)
+                if (ti2ad_ptr != null && ti2ad_size > 0)
                 {
-                    _gamePage.Tile2Replacement = new short[ti2re_size];
-                    Marshal.Copy(ti2re_ptr, _gamePage.Tile2Replacement, 0, ti2re_size);
+                    _gamePage.Tile2Autodraw = new short[ti2ad_size];
+                    Marshal.Copy(ti2ad_ptr, _gamePage.Tile2Autodraw, 0, ti2ad_size);
                 }
                 if (anoff_ptr != null && anoff_size > 0)
                 {

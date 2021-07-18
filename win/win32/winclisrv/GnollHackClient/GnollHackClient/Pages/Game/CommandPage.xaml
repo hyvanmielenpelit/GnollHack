@@ -20,7 +20,7 @@
                 <Button Text="Cf" x:Name="WizMapButton" Clicked="WizMapButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Column="1" />
                 <Button Text="Mm" x:Name="WizGenesisButton" Clicked="WizGenesisButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="2" />
                 <Button Text="Cv" x:Name="WizLevelportButton" Clicked="WizLevelportButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="3" />
-                <Button Text="Ct" x:Name="WizTeleportButton" Clicked="WizTeleportButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="4" />
+                <Button Text="Ci" x:Name="WizIdentifyButton" Clicked="WizIdentifyButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="0" Grid.Column="4" />
             </Grid>
             <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
                 <Grid.RowDefinitions>
@@ -54,7 +54,7 @@
                 <Button Text="Cy" x:Name="YellButton" Clicked="YellButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="0" />
                 <Button Text="E" x:Name="EngraveButton" Clicked="EngraveButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="1" />
                 <Button Text="D" x:Name="DropManyButton" Clicked="DropManyButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="2" />
-                <Button Text="CL" x:Name="LightButton" Clicked="LightButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="3" />
+                <Button Text="Cl" x:Name="LightButton" Clicked="LightButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="3" />
                 <Button Text="Mp" x:Name="PrayButton" Clicked="PrayButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="2" Grid.Column="4" />
                 
                 <Button Text="Mo" x:Name="SacrificeButton" Clicked="SacrificeButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="3" Grid.Column="0" />
@@ -72,8 +72,8 @@
                 <Button Text="n" x:Name="CountButton" Clicked="CountButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="0" />
                 <Button Text="n20s" x:Name="Search20Button" Clicked="Search20Button_Clicked" FontFamily="Immortal" FontSize="14" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="1" />
                 <Button Text="n200s" x:Name="Search200Button" Clicked="Search200Button_Clicked" FontFamily="Immortal" FontSize="14" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="2" />
-                <Button Text="" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="3" />
-                <Button Text="" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="4" />
+                <Button Text="Ct" x:Name="WizTeleportButton" Clicked="WizTeleportButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="3" />
+                <Button Text="Co" x:Name="OverviewButton" Clicked="OverviewButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="5" Grid.Column="4" />
 
                 <Button Text="/" x:Name="WhatIsButton" Clicked="WhatIsButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="6" Grid.Column="0" />
                 <Button Text=";" x:Name="LookFarButton" Clicked="LookFarButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" Grid.Row="6" Grid.Column="1" />
