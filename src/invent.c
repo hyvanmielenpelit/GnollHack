@@ -4810,7 +4810,7 @@ char avoidlet;
                     any.a_char = ilet;
                     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
                     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL));
-                    add_extended_menu(win, obj_to_glyph(otmp, rn2_on_display_rng),
+                    add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph,
                              &any, obj_to_extended_menu_info(otmp), ilet, 0, ATR_NONE,
                              (flags.inventory_weights_last ? doname_with_weight_last(otmp, TRUE) : doname_with_weight_first(otmp, TRUE)), MENU_UNSELECTED);
                 }

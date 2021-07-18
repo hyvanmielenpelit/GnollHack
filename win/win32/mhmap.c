@@ -4565,7 +4565,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_WEAK:
-                                    if (loc_is_you && u.uhs == WEAK
+                                    if ((loc_is_you && u.uhs == WEAK)
                                         || (!loc_is_you && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty > 0)
                                         )
                                         display_this_status_mark = TRUE;

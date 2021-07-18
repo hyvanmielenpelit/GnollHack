@@ -787,8 +787,7 @@ doability(VOID_ARGS)
         any = zeroany;
         any.a_int = abilitynum + 1;
         glyph = flags.female ? female_monnum_to_glyph(u.umonnum) : monnum_to_glyph(u.umonnum);
-
-        int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
+        gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
 
         add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
             0, 0, ATR_NONE,
@@ -1087,8 +1086,8 @@ doability(VOID_ARGS)
         )
     {
         any = zeroany;
-        int glyph = abs(mon_to_glyph(u.usteed, rn2_on_display_rng));
-        int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, u.usteed, 0UL));
+        glyph = abs(mon_to_glyph(u.usteed, rn2_on_display_rng));
+        gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, u.usteed, 0UL));
         add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, menu_heading_info(),
             0, 0, iflags.menu_headings,
             "Use Your Steed's Abilities            ", MENU_UNSELECTED);
@@ -1171,8 +1170,8 @@ doability(VOID_ARGS)
                 any = zeroany;
                 any.a_int = abilitynum + 1;
 
-                int glyph = abs(mon_to_glyph(mtmp, rn2_on_display_rng));
-                int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL));
+                glyph = abs(mon_to_glyph(mtmp, rn2_on_display_rng));
+                gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL));
 
                 add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
                     0, 0, ATR_NONE,

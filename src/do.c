@@ -2811,7 +2811,7 @@ register struct obj* obj;
             int powercnt = 0;
             if (obj->mythic_prefix)
             {
-                for (int i = 0; i < MAX_MYTHIC_PREFIX_POWERS; i++)
+                for (i = 0; i < MAX_MYTHIC_PREFIX_POWERS; i++)
                 {
                     unsigned long bit = 1UL << (unsigned long)i;
                     if (mythic_prefix_powers[i].description && (mythic_prefix_qualities[obj->mythic_prefix].mythic_powers & bit) && mythic_power_applies_to_obj(obj, mythic_prefix_powers[i].power_flags) && strcmp(mythic_prefix_powers[i].description, ""))
@@ -2827,7 +2827,7 @@ register struct obj* obj;
             }
             if (obj->mythic_suffix)
             {
-                for (int i = 0; i < MAX_MYTHIC_SUFFIX_POWERS; i++)
+                for (i = 0; i < MAX_MYTHIC_SUFFIX_POWERS; i++)
                 {
                     unsigned long bit = 1UL << (unsigned long)i;
                     if (mythic_suffix_powers[i].description && (mythic_suffix_qualities[obj->mythic_suffix].mythic_powers & bit) && mythic_power_applies_to_obj(obj, mythic_suffix_powers[i].power_flags) && strcmp(mythic_suffix_powers[i].description, ""))
@@ -3414,7 +3414,7 @@ register struct obj* obj;
 
 
 
-        for (int i = 1; i <= 2; i++)
+        for (i = 1; i <= 2; i++)
         {
             unsigned long specialeffect = 0;
             char endbuf[BUFSIZ] = "";
@@ -3546,7 +3546,6 @@ register struct obj* obj;
                 strcpy(affectbuf, "");
 
                 int cnt = 0;
-                int i;
                 for (i = 0; i < NUM_UNSIGNED_LONG_BITS; i++)
                 {
                     unsigned long bit = 1UL;

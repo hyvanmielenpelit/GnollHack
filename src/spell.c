@@ -4787,7 +4787,8 @@ struct obj* otmp;
     for (j = 0; matlists[spellmatcomp(spell)].matcomp[j].amount != 0; j++)
     {
         struct materialcomponent* mc = &matlists[spellmatcomp(spell)].matcomp[j];
-        if (res = is_obj_acceptable_component(mc, otmp, TRUE))
+        res = is_obj_acceptable_component(mc, otmp, TRUE);
+        if (res)
             return res;
     }
     return 0;

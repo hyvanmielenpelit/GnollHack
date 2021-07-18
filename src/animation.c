@@ -1979,11 +1979,11 @@ enum autodraw_types* autodraw_ptr;
 
 int
 maybe_get_replaced_glyph(glyph, x, y, info)
+#if defined(USE_TILES) && defined(GNH_ANDROID)
 int glyph;
 int x, y;
 struct replacement_info info;
 {
-#if defined(USE_TILES) && defined(GNH_ANDROID)
     if (!iflags.using_gui_tiles)
         return glyph;
 
@@ -2310,6 +2310,11 @@ struct replacement_info info;
             break;
         }
     }
+#else
+int glyph UNUSED;
+int x UNUSED, y UNUSED;
+struct replacement_info info UNUSED;
+{
 #endif
     return glyph;
 }

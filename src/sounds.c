@@ -6302,7 +6302,7 @@ struct obj* otmp;
 }
 
 
-STATIC_OVL
+STATIC_OVL int
 sell_many_to_npc(mtmp, allow)
 struct monst* mtmp;
 boolean FDECL((*allow), (OBJ_P)); /* allow function */

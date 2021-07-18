@@ -828,6 +828,9 @@ namespace GnollHackClient.Pages.Game
             App.BackButtonPressed -= BackButtonPressed;
         }
 
+
+        private List<string> wrappedLines = new List<string>();
+
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             SKImageInfo info = e.Info;
@@ -1955,19 +1958,19 @@ namespace GnollHackClient.Pages.Game
                                     winRect.Right += addition;
                                 }
 
-                                SKPaint winPaint = new SKPaint
+                                using (SKPaint winPaint = new SKPaint())
                                 {
-                                    Color = _clientGame.Windows[i].BackgroundColor,
-                                    Style = SKPaintStyle.Fill
-                                };
+                                    winPaint.Color = _clientGame.Windows[i].BackgroundColor;
+                                    winPaint.Style = SKPaintStyle.Fill;
 
-                                if (winPaint.Color != SKColors.Transparent)
-                                    canvas.DrawRect(winRect, winPaint);
+                                    if (winPaint.Color != SKColors.Transparent)
+                                        canvas.DrawRect(winRect, winPaint);
 
-                                if (i == _clientGame.StatusWindowId)
-                                    canvasButtonRect.Top = winRect.Bottom;
-                                else if (i == _clientGame.MessageWindowId)
-                                    canvasButtonRect.Bottom = winRect.Top;
+                                    if (i == _clientGame.StatusWindowId)
+                                        canvasButtonRect.Top = winRect.Bottom;
+                                    else if (i == _clientGame.MessageWindowId)
+                                        canvasButtonRect.Bottom = winRect.Top;
+                                }
 
                                 if (_clientGame.Windows[i].WindowType != GHWinType.Message)
                                 {
@@ -2028,7 +2031,8 @@ namespace GnollHackClient.Pages.Game
                                                 /* attributes */
 
                                                 float lineLengthLimit = 0.8f * canvaswidth;
-                                                var wrappedLines = new List<string>();
+
+                                                wrappedLines.Clear();
                                                 var lineLength = 0.0f;
                                                 var line = "";
                                                 foreach (var word in longLine.Split(' '))
