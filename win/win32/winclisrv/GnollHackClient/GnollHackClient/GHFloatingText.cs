@@ -81,7 +81,17 @@ namespace GnollHackClient
         }
         public float GetRelativeTextSize(long counter_value)
         {
-            return 0.5f;
+            switch (_data.style)
+            {
+                case 1:
+                case 2:
+                case 5:
+                case 6:
+                    return 0.75f;
+               default:
+                    break;
+            }
+            return 0.6f;
         }
         public SKTypeface GetTypeface(long counter_value)
         {
