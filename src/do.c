@@ -4538,7 +4538,7 @@ teleport_sink()
         /* create sink at new position */
         create_simple_location(cx, cy, SINK, levl[u.ux][u.uy].subtyp, levl[u.ux][u.uy].vartyp, levl[u.ux][u.uy].looted, 0, levl[cx][cy].floortyp, levl[cx][cy].floorsubtyp, levl[cx][cy].floorvartyp, TRUE);
         /* remove old sink */
-        create_basic_floor_location(u.ux, u.uy, levl[cx][cy].floortyp ? levl[cx][cy].floortyp : ROOM, levl[cx][cy].floorsubtyp ? levl[cx][cy].floorsubtyp : 0, 0, TRUE);
+        create_current_floor_location(u.ux, u.uy, 0, NO_GLYPH, TRUE);
         return TRUE;
     }
     return FALSE;

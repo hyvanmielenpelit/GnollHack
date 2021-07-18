@@ -9533,7 +9533,7 @@ short exploding_wand_typ;
                 if (*in_rooms(x, y, SHOPBASE)) 
                 {
                     /* in case we ever have a shop bounded by bars */
-                    create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, FALSE);
+                    create_current_floor_location(x, y, 0, NO_GLYPH, FALSE);
                     if (see_it)
                         newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
                     add_damage(x, y, (type >= 0) ? SHOP_BARS_COST : 0L);

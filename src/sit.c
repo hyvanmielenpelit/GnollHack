@@ -369,10 +369,13 @@ dosit()
 
         if (!rn2(3) && IS_THRONE(levl[u.ux][u.uy].typ))
         {
+            play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
+            special_effect_wait_until_action(0);
             /* may have teleported */
-            create_basic_floor_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp ? levl[u.ux][u.uy].floortyp : ROOM, 0, 0, TRUE);
+            create_current_floor_location(u.ux, u.uy, 0, NO_GLYPH, TRUE);
             pline_The("throne vanishes in a puff of logic.");
+            special_effect_wait_until_end(0);
         }
     } 
     else

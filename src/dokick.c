@@ -1590,7 +1590,7 @@ dokick() {
                 adjalign(-sgn(u.ualign.type));
             }
             play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
-            create_basic_floor_location(x, y, maploc->floortyp ? maploc->floortyp : ROOM, maploc->floorsubtyp ? maploc->floorsubtyp : 0, 0, FALSE);
+            create_current_floor_location(x, y, 0, NO_GLYPH, FALSE);
             (void) mksobj_at(ROCK, x, y, TRUE, FALSE);
             del_engr_at(x, y);
             if (Blind)

@@ -2488,9 +2488,22 @@ long timeout;
 
     if (flags.verbose && canseeunsummon) {
         char* bbname = xname(obj);
+        boolean animon = FALSE;
+        if (isok(x, y))
+        {
+            animon = TRUE;
+            play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, x, y, FALSE);
+            play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, x, y);
+            special_effect_wait_until_action(0);
+        }
 
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%s%s %s in a puff of smoke%c", whosebuf, iswielded ? "wielded " : "", bbname,
             otense(obj, "vanish"), iswielded ? '!' : '.');
+
+        if (animon)
+        {
+            special_effect_wait_until_end(0);
+        }
     }
 
 
@@ -2556,11 +2569,15 @@ long timeout;
         /* Do nothing */
     }
 
-
-    play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mon->mx, mon->my);
     if (canseemon(mon)) {
+        play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, mon->mx, mon->my, FALSE);
+        play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mon->mx, mon->my);
+        special_effect_wait_until_action(0);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s vanishes in a puff of smoke!", Monnam(mon));
+        special_effect_wait_until_end(0);
     }
+    else
+        play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mon->mx, mon->my);
 
     //Note: assume that the monster drops all its items
 
