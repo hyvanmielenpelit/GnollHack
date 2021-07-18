@@ -5371,7 +5371,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
     {
         int rx = 0;
         int ry = 0;
-        int dir_bit = 0;
+        unsigned long dir_bit = 0;
         switch (dir)
         {
         case 0:

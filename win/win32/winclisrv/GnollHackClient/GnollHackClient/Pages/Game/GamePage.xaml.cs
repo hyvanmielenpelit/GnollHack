@@ -830,6 +830,8 @@ namespace GnollHackClient.Pages.Game
 
 
         private List<string> wrappedLines = new List<string>();
+        private string longLine;
+        private string wordWithSpace;
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -2019,10 +2021,12 @@ namespace GnollHackClient.Pages.Game
                                         if (_msgHistory != null)
                                         {
                                             int j = _shownMessageRows - 1, idx;
+                                            float lineLengthLimit = 0.85f * canvaswidth;
+
                                             for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
                                             {
                                                 GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
-                                                string longLine = msgHistoryItem.Text;
+                                                longLine = msgHistoryItem.Text;
                                                 SKColor printColor = ClientUtils.NHColor2SKColor(msgHistoryItem.NHColor < nhcolor.CLR_MAX ? msgHistoryItem.NHColor : nhcolor.CLR_WHITE);
 
                                                 textPaint.Style = SKPaintStyle.Fill;
@@ -2030,15 +2034,13 @@ namespace GnollHackClient.Pages.Game
                                                 textPaint.Color = printColor;
                                                 /* attributes */
 
-                                                float lineLengthLimit = 0.8f * canvaswidth;
-
                                                 wrappedLines.Clear();
-                                                var lineLength = 0.0f;
-                                                var line = "";
-                                                foreach (var word in longLine.Split(' '))
+                                                float lineLength = 0.0f;
+                                                string line = "";
+                                                foreach (string word in longLine.Split(' '))
                                                 {
-                                                    var wordWithSpace = word + " ";
-                                                    var wordWithSpaceLength = textPaint.MeasureText(wordWithSpace);
+                                                    wordWithSpace = word + " ";
+                                                    float wordWithSpaceLength = textPaint.MeasureText(wordWithSpace);
                                                     if (lineLength + wordWithSpaceLength > lineLengthLimit)
                                                     {
                                                         wrappedLines.Add(line);

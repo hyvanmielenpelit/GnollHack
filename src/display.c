@@ -3215,6 +3215,77 @@ int cursor_on_u;
         return;
 #endif
 
+#if defined(GNH_ANDROID)
+    char saved_gbuf_start[ROWNO];
+    char saved_gbuf_stop[ROWNO];
+    memcpy(saved_gbuf_start, gbuf_start, ROWNO);
+    memcpy(saved_gbuf_stop, gbuf_stop, ROWNO);
+    int layer_idx, signed_glyph, repl;
+    register gbuf_entry* gptr_adj;
+    for (y = 0; y < ROWNO; y++)
+    {
+        register gbuf_entry* gptr = &gbuf[y][x = saved_gbuf_start[y]];
+
+        for (; x <= saved_gbuf_stop[y]; gptr++, x++)
+        {
+            if (gptr->isnew)
+            {
+                for (int dir = 0; dir < 4; dir++)
+                {
+                    int rx = 0;
+                    int ry = 0;
+                    unsigned long dir_bit = 0;
+                    switch (dir)
+                    {
+                    case 0:
+                        rx = x - 1;
+                        ry = y;
+                        dir_bit = REPLACEMENT_EVENT_UPDATE_FROM_RIGHT;
+                        break;
+                    case 1:
+                        rx = x + 1;
+                        ry = y;
+                        dir_bit = REPLACEMENT_EVENT_UPDATE_FROM_LEFT;
+                        break;
+                    case 2:
+                        rx = x;
+                        ry = y - 1;
+                        dir_bit = REPLACEMENT_EVENT_UPDATE_FROM_BELOW;
+                        break;
+                    case 3:
+                        rx = x;
+                        ry = y + 1;
+                        dir_bit = REPLACEMENT_EVENT_UPDATE_FROM_TOP;
+                        break;
+                    default:
+                        break;
+                    }
+                    
+                    if (isok(rx, ry))
+                    {
+                        gptr_adj = &gbuf[ry][rx];
+                        for (layer_idx = 0; layer_idx < MAX_LAYERS; layer_idx++)
+                        {
+                            signed_glyph = gptr_adj->layers.layer_glyphs[layer_idx];
+                            if (signed_glyph != NO_GLYPH)
+                            {
+                                repl = glyph2replacement[abs(signed_glyph)];
+                                if (repl)
+                                {
+                                    if (replacements[repl].replacement_events & dir_bit)
+                                    {
+                                        newsym_with_flags(rx, ry, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS_AND_FLAGS);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+#endif
+
     init_print_glyph(INIT_GLYPH_START_FLUSH);
     for (y = 0; y < ROWNO; y++) {
         register gbuf_entry *gptr = &gbuf[y][x = gbuf_start[y]];
