@@ -1228,8 +1228,8 @@ namespace GnollHackClient.Pages.Game
                                                         int tile_x = TileSheetX(mtile);
                                                         int tile_y = TileSheetY(mtile);
 
-                                                        tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                                                        ty = (offsetY + _mapOffsetY + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+                                                        tx = (offsetX + _mapOffsetX + base_move_offset_x + width * (float)mapx);
+                                                        ty = (offsetY + _mapOffsetY + base_move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
                                                         SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
 
                                                         SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
@@ -1244,8 +1244,8 @@ namespace GnollHackClient.Pages.Game
                                                         int tile_x = TileSheetX(mtile);
                                                         int tile_y = TileSheetY(mtile);
 
-                                                        tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                                                        ty = (offsetY + _mapOffsetY + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+                                                        tx = (offsetX + _mapOffsetX + base_move_offset_x + width * (float)mapx);
+                                                        ty = (offsetY + _mapOffsetY + base_move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
                                                         SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
 
                                                         SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);

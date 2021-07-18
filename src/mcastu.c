@@ -268,10 +268,15 @@ boolean foundyou;
     unsigned short* appr_spec_ptr = &mtmp->mspec_used;
     boolean is_ultimate = FALSE;
     boolean is_intermediate = FALSE;
+    enum action_tile_types action = nodirspell ? ACTION_TILE_CAST_NODIR : ACTION_TILE_CAST_DIR;
+    boolean next2u = (distmin(u.ux, u.uy, mtmp->mx, mtmp->my) <= 1);
+    boolean show_action_tile = (next2u || !nodirspell);
 
-    update_m_action(mtmp, nodirspell ? ACTION_TILE_CAST_NODIR : ACTION_TILE_CAST_DIR);
+    if(show_action_tile)
+        update_m_action(mtmp, action);
     play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CAST);
-    m_wait_until_action();
+    if (show_action_tile)
+        m_wait_until_action();
 
     if (mattk->adtyp == AD_SPEL)
     {
@@ -296,9 +301,12 @@ boolean foundyou;
     if (is_cancelled(mtmp) || is_silenced(mtmp) || *appr_spec_ptr > 0 || !ml)
     {
         cursetxt(mtmp, nodirspell);
-        m_wait_until_end();
-        update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
-        m_wait_until_end();
+        if (show_action_tile)
+        {
+            m_wait_until_end();
+            update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+            m_wait_until_end();
+        }
         return (0);
     }
 
@@ -314,9 +322,13 @@ boolean foundyou;
               canseemon(mtmp) ? Monnam(mtmp) : "Something",
               levl[mtmp->mux][mtmp->muy].typ == WATER ? "empty water"
                                                       : "thin air");
-        m_wait_until_end();
-        update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
-        m_wait_until_end();
+
+        if (show_action_tile)
+        {
+            m_wait_until_end();
+            update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+            m_wait_until_end();
+        }
         return (0);
     }
 
@@ -342,9 +354,12 @@ boolean foundyou;
             }
         }
 
-        m_wait_until_end();
-        update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
-        m_wait_until_end();
+        if (show_action_tile)
+        {
+            m_wait_until_end();
+            update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+            m_wait_until_end();
+        }
         return (0);
     }
     if (canspotmon(mtmp) || !is_undirected_spell(mattk->adtyp, spellnum))
@@ -375,9 +390,12 @@ boolean foundyou;
               "%s casting non-hand-to-hand version of hand-to-hand spell %d?",
                        Monnam(mtmp), mattk->adtyp);
 
-            m_wait_until_end();
-            update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
-            m_wait_until_end();
+            if (show_action_tile)
+            {
+                m_wait_until_end();
+                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+                m_wait_until_end();
+            }
             return (0);
         }
     } 
@@ -443,9 +461,12 @@ boolean foundyou;
     if (damage > 0)
         mdamageu(mtmp, damage, TRUE);
 
-    m_wait_until_end();
-    update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
-    m_wait_until_end();
+    if (show_action_tile)
+    {
+        m_wait_until_end();
+        update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
+        m_wait_until_end();
+    }
     return (ret);
 }
 
@@ -487,7 +508,7 @@ int spellnum;
         impossible("cast directed wizard spell (%d) with damage=0?", spellnum);
         return;
     }
-
+    enum hit_tile_types hit_tile = HIT_GENERAL;
     switch (spellnum) 
     {
     case MGC_DEATH_TOUCH:
@@ -738,7 +759,7 @@ int spellnum;
     }
 
     if (damage > 0)
-        mdamageu(mtmp, damage, TRUE);
+        mdamageu_with_hit_tile(mtmp, damage, TRUE, hit_tile);
 }
 
 STATIC_OVL
@@ -756,7 +777,9 @@ int spellnum;
         return;
     }
 
-    switch (spellnum) 
+    enum hit_tile_types hit_tile = HIT_GENERAL;
+
+    switch (spellnum)
     {
     case CLC_DEATH_TOUCH:
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Oh no, %s's using the touch of death!", mhe(mtmp));
@@ -957,12 +980,15 @@ int spellnum;
                 play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
                 You("are frozen in place!");
             }
-            int duration = 4 + (int) mtmp->m_lev;
+            int duration = d(3, 4); // 4 + (int)mtmp->m_lev;
             if (Half_spell_damage)
                 duration = (duration + 1) / 2;
 //            nomul(-duration);
 //            multi_reason = "paralyzed by a monster";
             incr_itimeout(&HParalyzed, duration);
+
+            /* No new paralysis for a while */
+            set_itimeout(&HFree_action, 20);
         }
         nomovemsg = 0;
         damage = 0;
@@ -1017,7 +1043,7 @@ int spellnum;
     }
 
     if (damage > 0)
-        mdamageu(mtmp, damage, TRUE);
+        mdamageu_with_hit_tile(mtmp, damage, TRUE, hit_tile);
 }
 
 STATIC_DCL
@@ -1157,16 +1183,9 @@ int spellnum;
         if ((has_invisibility(mtmp) || has_blocks_invisibility(mtmp)) && spellnum == MGC_DISAPPEAR)
             return TRUE;
 
-#if 0
-        /* Removed becoming invisible completely from peaceful monsters -- JG */
-        /* peaceful monster won't cast invisibility if you can't see
-           invisible,
-           same as when monsters drink potions of invisibility.  This doesn't
-           really make a lot of sense, but lets the player avoid hitting
-           peaceful monsters by mistake */
-        if (is_peaceful(mtmp) && !See_invisible && spellnum == MGC_DISAPPEAR)
+        /* peaceful monster won't cast invisibility */
+        if (spellnum == MGC_DISAPPEAR && is_peaceful(mtmp))
             return TRUE;
-#endif
 
         /* healing when already healed */
         if (mtmp->mhp == mtmp->mhpmax && spellnum == MGC_CURE_SELF)
@@ -1226,8 +1245,13 @@ int spellnum;
         if (spellnum == CLC_SNAKES && mkclass(S_SNAKE, 0) == (struct permonst*)0)
             return TRUE;
         /* blindness spell on blinded player */
-        if (Blinded && spellnum == CLC_BLIND_YOU)
+        if (spellnum == CLC_BLIND_YOU && Blinded)
             return TRUE;
+        if (spellnum == CLC_PARALYZE && Free_action)
+            return TRUE;
+        if (spellnum == CLC_DEATH_TOUCH && (is_not_living(youmonst.data) || is_demon(youmonst.data) || Death_resistance))
+            return TRUE;
+        /* Only high priests and demon lords can cast the touch of death */
         if (mtmp->mnum != PM_HIGH_PRIEST && !((mtmp->data->geno & G_UNIQ) && (mtmp->data->mlet == S_DEMON))
             && spellnum == CLC_DEATH_TOUCH)
             return TRUE;

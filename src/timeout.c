@@ -1119,6 +1119,7 @@ nh_timeout()
             default:
                 property_expiry_message(propnum, was_flying);
             }
+            newsym(u.ux, u.uy);
         }
         else if ((upp->intrinsic & TIMEOUT) && ((upp->intrinsic & TIMEOUT) == 3) && !(upp->intrinsic & ~TIMEOUT) && !(upp->extrinsic))
         {

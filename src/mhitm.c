@@ -395,6 +395,7 @@ register struct monst *magr, *mdef;
     int tmp2 = tmp;
     int bite_butt_count = 0;
     boolean first_attack = TRUE;
+    enum action_tile_types action = 0;
 
     /* Now perform all attacks for the monster. */
     for (i = 0; i < NATTK; i++) 
@@ -488,7 +489,8 @@ register struct monst *magr, *mdef;
                 first_attack = FALSE;
             }
 
-            update_m_action(magr, mattk->action_tile ? mattk->action_tile : mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
+            action = mattk->action_tile ? mattk->action_tile : mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK;
+            update_m_action(magr, action);
             play_monster_simple_weapon_sound(magr, i, otmp, OBJECT_SOUND_TYPE_SWING_MELEE);
             m_wait_until_action();
             for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
@@ -609,7 +611,8 @@ register struct monst *magr, *mdef;
                 first_attack = FALSE;
             }
 
-            update_m_action(magr, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
+            action = mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK;
+            update_m_action(magr, action);
             play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
             m_wait_until_action();
             strike = (i >= 2 && res[i - 1] == MM_HIT && res[i - 2] == MM_HIT);

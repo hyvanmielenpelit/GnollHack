@@ -1889,7 +1889,7 @@ struct attack* mattk;
             if ((typ >= AD_MAGM) && (typ <= AD_STON))
             {
                 boolean action_taken = FALSE;
-                if (canseemon(mtmp))
+                if (canspotmon(mtmp))
                 {
                     action_taken = TRUE;
                     update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);

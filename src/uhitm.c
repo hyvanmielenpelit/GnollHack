@@ -5180,7 +5180,7 @@ enum action_tile_types action;
     update_m_action_core(mtmp, action, 0, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
     if(mtmp == &youmonst)
         u_wait_until_action();
-    else if(canseemon(mtmp))
+    else if(canspotmon(mtmp))
         m_wait_until_action();
 }
 
@@ -5214,12 +5214,15 @@ unsigned long additional_newsym_flags;
         return;
     }
 
+    if (!should_display_m_action_tile(mtmp, action))
+        return;
+
     enum action_tile_types action_before = mtmp->action;
     if (iflags.using_gui_tiles && action == ACTION_TILE_NO_ACTION)
     {
         if (context.m_intervals_to_wait_until_end > 0)
         {
-            if(canseemon(mtmp))
+            if(canspotmon(mtmp))
                 delay_output_intervals(context.m_intervals_to_wait_until_end);
             context.m_intervals_to_wait_until_end = 0UL;
         }

@@ -1613,7 +1613,7 @@ E int FDECL(doseduce, (struct monst *));
 E void FDECL(update_m_facing, (struct monst*, int, BOOLEAN_P));
 E int FDECL(get_pm_attack_index, (struct permonst*, struct attack*));
 E enum hit_tile_types FDECL(get_hit_tile_by_adtyp, (int));
-
+boolean FDECL(should_display_m_action_tile, (struct monst*, enum action_tile_types action));
 
 /* ### minion.c ### */
 

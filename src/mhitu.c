@@ -5018,6 +5018,23 @@ int adtyp;
     return hit_tile;
 }
 
+boolean
+should_display_m_action_tile(mtmp, action)
+struct monst* mtmp;
+enum action_tile_types action;
+{
+    if (!mtmp)
+        return FALSE;
 
+    if((uchar)action == mtmp->action || !canspotmon(mtmp))
+        return FALSE;
+
+    if (action == ACTION_TILE_NO_ACTION || action == ACTION_TILE_DEATH)
+        return TRUE;
+
+    unsigned long tile_mflag = (1UL << ((unsigned long)action - 1UL));
+    boolean has_action_tile = (mtmp->data->mflags5 & tile_mflag) != 0UL;
+    return has_action_tile;
+}
 
 /*mhitu.c*/

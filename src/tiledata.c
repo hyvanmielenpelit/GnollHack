@@ -2151,7 +2151,7 @@ uchar* tilemapflags;
             for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
             {
                 unsigned long m5_action_flag = action == ACTION_TILE_NO_ACTION ? 0UL : M5_ATTACK_TILE << (action - 1);
-                boolean has_this_action = action == ACTION_TILE_NO_ACTION ? TRUE : (mons[i].mflags5 & m5_action_flag);
+                boolean has_this_action = action == ACTION_TILE_NO_ACTION ? TRUE : (mons[i].mflags5 & m5_action_flag) != 0;
                 int repl;
                 if (!has_this_action)
                     repl = mons[i].replacement.actions[ACTION_TILE_NO_ACTION];
@@ -2222,7 +2222,7 @@ uchar* tilemapflags;
             for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
             {
                 unsigned long m5_action_flag = action == ACTION_TILE_NO_ACTION ? 0UL : M5_ATTACK_TILE << (action - 1);
-                boolean has_this_action = action == ACTION_TILE_NO_ACTION ? TRUE : (mons[i].mflags5 & m5_action_flag);
+                boolean has_this_action = action == ACTION_TILE_NO_ACTION ? TRUE : (mons[i].mflags5 & m5_action_flag) != 0;
                 int repl;
                 if (!has_female_tile)
                 {
