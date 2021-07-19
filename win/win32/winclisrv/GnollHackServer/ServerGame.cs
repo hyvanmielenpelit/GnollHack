@@ -105,7 +105,8 @@ namespace GnollHackServer
             VoidIntCallback callback_outrip_begin,
             VoidIntCallback callback_outrip_end,
 
-            FreeMemoryCallback callback_free_memory
+            FreeMemoryCallback callback_free_memory,
+            SendObjectDataCallback callback_send_object_data
         );
 
         [DllImport(@"gnollhacklib.dll")]
@@ -255,7 +256,8 @@ namespace GnollHackServer
                 GameCallback_MessageBox,
                 GameCallback_VoidIntDummy,
                 GameCallback_VoidIntDummy,
-                GameCallback_FreeMemory
+                GameCallback_FreeMemory,
+                GameCallback_SendObjectData
             );
         }
 
@@ -324,6 +326,10 @@ namespace GnollHackServer
         }
 
         protected void GameCallback_FreeMemory(ref IntPtr ptr)
+        {
+
+        }
+        public void GameCallback_SendObjectData(int x, int y, obj otmp, int cmdtype, int where, int tile_height, ulong oflags)
         {
 
         }

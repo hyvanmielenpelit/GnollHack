@@ -129,6 +129,7 @@ typedef int (__callconv* MessageBoxCallback)(char*, char*, unsigned int);
 typedef VoidIntCallback OutRipBeginCallback;
 typedef VoidIntCallback OutRipEndCallback;
 typedef void(__callconv* FreeMemoryCallback)(long long**);
+typedef void(__callconv* SendObjectDataCallback)(int, int, struct obj, int, int, int, unsigned long);
 
 struct callback_procs {
     InitWindowsCallback callback_init_nhwindows;
@@ -219,7 +220,7 @@ struct callback_procs {
     OutRipEndCallback callback_outrip_end;
 
     FreeMemoryCallback callback_free_memory;
-
+    SendObjectDataCallback callback_send_object_data;
 };
 
 

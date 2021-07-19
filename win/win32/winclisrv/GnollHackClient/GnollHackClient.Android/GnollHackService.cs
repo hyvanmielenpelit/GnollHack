@@ -116,7 +116,8 @@ namespace GnollHackClient.Droid
             VoidIntCallback callback_outrip_begin,
             VoidIntCallback callback_outrip_end,
 
-            FreeMemoryCallback callback_free_memory
+            FreeMemoryCallback callback_free_memory,
+            SendObjectDataCallback callback_send_object_data
         );
 
         [DllImport(@"libgnollhackdroid.so")]
@@ -535,7 +536,8 @@ namespace GnollHackClient.Droid
                 clientGame.ClientCallback_VoidIntDummy,
                 clientGame.ClientCallback_VoidIntDummy,
 
-                clientGame.ClientCallback_FreeMemory
+                clientGame.ClientCallback_FreeMemory,
+                clientGame.ClientCallback_SendObjectData
                 );
 
         }

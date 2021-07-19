@@ -383,7 +383,8 @@ int RunGnollHack(
     OutRipBeginCallback callback_outrip_begin,
     OutRipEndCallback callback_outrip_end,
 
-    FreeMemoryCallback callback_free_memory
+    FreeMemoryCallback callback_free_memory,
+    SendObjectDataCallback callback_send_object_data
 )
 {
     /* Set wincaps */
@@ -483,6 +484,7 @@ int RunGnollHack(
     lib_callbacks.callback_outrip_end = callback_outrip_end;
 
     lib_callbacks.callback_free_memory = callback_free_memory;
+    lib_callbacks.callback_send_object_data = callback_send_object_data;
 
 
     windowprocs.win_raw_print = libdef_raw_print;

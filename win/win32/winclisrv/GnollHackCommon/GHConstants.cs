@@ -531,6 +531,141 @@ namespace GnollHackCommon
     }
 
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct obj
+    {
+        public IntPtr nobj;
+        public IntPtr v;
+        public IntPtr cobj; /* contents list for containers */
+        public uint o_id;
+        public sbyte ox, oy;
+        public short otyp; /* object class number */
+        public uint owt;
+        public long quan; /* number of items */
+
+        public short enchantment; /* Always set to zero by cancellation */
+        public short charges; /* number of charges for wand or charged tool ( >= -1 ), always set to -1/0 by cancellation */
+        public short special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
+        public ulong speflags; /* anything else that might be going on with an item, not affected by cancellation */
+        public sbyte oclass;    /* object class */
+        public sbyte invlet;    /* designation in inventory */
+        public short oartifact; /* artifact array index */
+        public byte mythic_prefix; /* magical quality for a weapon or armor giving additional powers */
+        public byte mythic_suffix;  /* magical quality for a weapon or armor giving additional powers */
+        public byte exceptionality; /* exceptional, elite, etc. weapon, multiplies base damage */
+        public byte elemental_enchantment; /* cold, fire, lightning, or deathly */
+
+        public sbyte recharged; /* number of times it's been recharged */
+        public sbyte where;        /* where the object thinks it is */
+        public sbyte timed; /* # of fuses (timers) attached to this obj */
+
+        public uint bitfields;
+
+        public int corpsenm;         /* type of corpse is mons[corpsenm] */
+        public int usecount;           /* overloaded for various things that tally */
+        public uint oeaten;        /* nutrition left in food, if partly eaten */
+        public long age;               /* creation date */
+        public long owornmask;
+        public short cooldownleft;       /* item cooldown left before it can be used again*/
+        public short repowerleft;       /* artifact cooldown left before its invoke ability can be used again*/
+        public short detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
+        public byte invokeon;      /* the object's / artifact's invoked ability is on */
+        public uint o_id_memory;  /* This is a memory object of this o_id */
+        public uint m_id_memory;  /* This is a memory object of this mimic m_id */
+
+        public byte special_tileset;
+        public int glyph;
+        public IntPtr oextra; /* pointer to oextra struct */
+    }
+
+    public enum obj_where_types
+    {
+        OBJ_FREE = 0,      /* object not attached to anything */
+        OBJ_FLOOR = 1  ,   /* object on floor */
+        OBJ_CONTAINED = 2, /* object in a container */
+        OBJ_INVENT = 3,    /* object in the hero's inventory */
+        OBJ_MINVENT = 4,   /* object in a monster inventory */
+        OBJ_MIGRATING = 5, /* object sent off to another level */
+        OBJ_BURIED = 6,    /* object buried */
+        OBJ_ONBILL = 7,    /* object on shk bill */
+        OBJ_HEROMEMORY = 8,/* object remembered by hero */
+        NOBJ_STATES = 9
+    }
+
+    [Flags]
+    public enum speflag_types : ulong
+    {
+        SPEFLAGS_YOURS                         = 0x00000001UL,
+        SPEFLAGS_FEMALE                        = 0x00000002UL,
+        SPEFLAGS_MALE                          = 0x00000004UL,
+        SPEFLAGS_FACING_RIGHT                  = 0x00000008UL,
+        SPEFLAGS_SCHROEDINGERS_BOX             = 0x00000010UL,
+        SPEFLAGS_STATUE_HISTORIC               = 0x00000020UL,
+        SPEFLAGS_CORPSE_ON_ICE                 = 0x00000040UL,
+        SPEFLAGS_DETECTED                      = 0x00000080UL,
+        SPEFLAGS_SERVICED_SPELL                = 0x00000100UL,
+        SPEFLAGS_MINES_PRIZE                   = 0x00000200UL,
+        SPEFLAGS_SOKO_PRIZE1                   = 0x00000400UL,
+        SPEFLAGS_SOKO_PRIZE2                   = 0x00000800UL,
+        SPEFLAGS_FROM_SINK                     = 0x00001000UL,
+        SPEFLAGS_INDESTRUCTIBLE                = 0x00002000UL,
+        SPEFLAGS_USES_UP_KEY                   = 0x00004000UL,
+        SPEFLAGS_NO_PICKUP                     = 0x00008000UL,  /* Monsters will not pick up this item */
+        SPEFLAGS_ROYAL_COFFER                  = 0x00010000UL,
+        SPEFLAGS_LID_OPENED                    = 0x00020000UL,
+        SPEFLAGS_GRABBED_FROM_YOU              = 0x00040000UL,
+        SPEFLAGS_ADDED_TO_YOUR_BILL            = 0x00080000UL,
+        SPEFLAGS_WILL_TURN_TO_DUST_ON_PICKUP   = 0x00100000UL,
+        SPEFLAGS_CAUGHT_IN_LEAVES              = 0x00200000UL,
+        SPEFLAGS_CLONED_ITEM                   = 0x00400000UL,
+        SPEFLAGS_INSCRIPTION_REVEALED          = 0x00800000UL
+    }
+
+    [Flags]
+    public enum obj_bitfield_types : ulong
+    {
+        cursed = 0x00000001UL,
+        blessed = 0x00000002UL,
+        unpaid = 0x00000004UL,
+        no_charge = 0x00000008UL,
+        known = 0x00000010UL,
+        dknown = 0x00000020UL,
+        bknown = 0x00000040UL,
+        rknown = 0x00000080UL,
+        oeroded = 0x00000100UL | 0x00000200UL,
+        oeroded2 = 0x00000400UL | 0x00000800UL,
+        oerodeproof = 0x00001000UL,
+        olocked = 0x00002000UL,
+        degraded_horn = 0x00004000UL,
+        otrapped = 0x00008000UL,  /* Monsters will not pick up this item */
+        lamplit = 0x00010000UL,
+        makingsound = 0x00020000UL,
+        globby = 0x00040000UL,
+        greased = 0x00080000UL,
+        nomerge = 0x00100000UL,
+        was_thrown = 0x00200000UL,
+        has_special_tileset = 0x00400000UL,
+        in_use = 0x00800000UL,
+        bypass = 0x01000000UL,
+        cknown = 0x02000000UL,
+        lknown = 0x04000000UL,
+        tknown = 0x08000000UL,
+        nknown = 0x10000000UL,
+        aknown = 0x20000000UL,
+        mknown = 0x40000000UL
+        /* 1 free bit to 32-bit integer */
+    }
+
+    public enum elemental_enchantment_types
+    {
+        None = 0,
+        COLD_ENCHANTMENT = 1,
+        FIRE_ENCHANTMENT = 2,
+        LIGHTNING_ENCHANTMENT = 3,
+        DEATH_ENCHANTMENT = 4
+    }
+
+
     public class GHConstants
     {
         public const int InputBufferLength = 32;
@@ -570,9 +705,14 @@ namespace GnollHackCommon
         public const int BUFFS_PER_TILE = 24;
         public const int MAX_PROPS = 167;
         public const int LAST_PROP = (MAX_PROPS - 1);
-}
+        public const int MaxObjectsDrawn = 12;
+        public const int OBJECT_PILE_START_HEIGHT = 2;
+        public const int OBJECT_PILE_HEIGHT_DIFFERENCE = 2;
 
-[StructLayout(LayoutKind.Sequential)]
+    }
+
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct GHSelectedItem
     {
         public IntPtr Identifier;

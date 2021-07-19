@@ -118,7 +118,8 @@ DLL int WINAPI RunGnollHack(
     OutRipBeginCallback callback_outrip_begin,
     OutRipEndCallback callback_outrip_end,
 
-    FreeMemoryCallback callback_free_memory
+    FreeMemoryCallback callback_free_memory,
+    SendObjectDataCallback callback_send_object_data
 )
 {
     /* Set wincaps */
@@ -211,6 +212,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_outrip_end = callback_outrip_end;
 
     dll_callbacks.callback_free_memory = callback_free_memory;
+    dll_callbacks.callback_send_object_data = callback_send_object_data;
 
     /* Start GnollHack by calling main */
     return GnollHackStart(cmdlineargs);

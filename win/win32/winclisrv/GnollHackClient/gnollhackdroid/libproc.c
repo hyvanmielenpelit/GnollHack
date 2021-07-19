@@ -324,6 +324,44 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     (void)mapglyph(layers, &sym, &ocolor, &special, x, y);
     symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (long)cp437toUnicode[sym] : (long)sym;
     lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, layers);
+
+    struct obj* otmp;
+    int i;
+    for (i = 0; i <= 1; i++)
+    {
+        int basewhere = 0;
+        boolean use_nexthere = FALSE;
+        switch (i)
+        {
+        case 0:
+            otmp = level.objects[x][y];
+            use_nexthere = TRUE;
+            basewhere = OBJ_FLOOR;
+            break;
+        case 1:
+            otmp = level.locations[x][y].hero_memory_layers.memory_objchn;
+            use_nexthere = TRUE;
+            basewhere = OBJ_HEROMEMORY;
+            break;
+        }
+        lib_callbacks.callback_send_object_data(x, y, zeroobj, 1, basewhere, 0, 0UL);
+        if(basewhere == OBJ_FLOOR)
+            lib_callbacks.callback_send_object_data(x, y, zeroobj, 1, basewhere, 0, 1UL); /* Clear also cover objects */
+
+        for (; otmp; otmp = (use_nexthere ? otmp->nexthere : otmp->nobj))
+        {
+            unsigned long oflags = !!is_obj_drawn_in_front(otmp);
+            lib_callbacks.callback_send_object_data(x, y, *otmp, 2, basewhere, get_obj_height(otmp), oflags);
+            if (otmp->cobj)
+            {
+                struct obj* cotmp;
+                for (cotmp = otmp->cobj; cotmp; cotmp = cotmp->nobj)
+                {
+                    lib_callbacks.callback_send_object_data(x, y, *cotmp, 3, basewhere, get_obj_height(cotmp), oflags); /* Use main object oflags to find the correct list */
+                }
+            }
+        }
+    }
 }
 
 void lib_init_print_glyph(int initid)
