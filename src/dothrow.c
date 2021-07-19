@@ -664,6 +664,13 @@ dofire()
         }
     }
 
+    if (obj && is_ammo(obj) && (!uwep || (uwep && !is_launcher(uwep))))
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "need to wield a launcher to fire %s.", an(cxname_singular(obj)));
+        return 0;
+    }
+
     if (obj && uwep && is_launcher(uwep) && !ammo_and_launcher(obj, uwep))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
