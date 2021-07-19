@@ -62,7 +62,8 @@ namespace GnollHackClient.Pages.Game
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
         public bool ShowFPS { get; set; }
-        private float _fps;
+        private double _fps;
+        private long _previousGeneralCounterValue;
         private object _fpslock = new object();
         private Stopwatch _stopWatch = new Stopwatch();
 
@@ -274,6 +275,10 @@ namespace GnollHackClient.Pages.Game
             }
 
             _stopWatch.Start();
+            lock (AnimationTimerLock)
+            {
+                _previousGeneralCounterValue = AnimationTimers.general_animation_counter;
+            }
 
             Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
             {
@@ -2295,11 +2300,17 @@ namespace GnollHackClient.Pages.Game
                 {
                     _stopWatch.Stop();
                     TimeSpan ts = _stopWatch.Elapsed;
-                    long millisecs = _stopWatch.ElapsedMilliseconds;
+                    long _currentGeneralCounterValue = 0L;
+                    lock (AnimationTimerLock)
+                    {
+                        _currentGeneralCounterValue = AnimationTimers.general_animation_counter;
+                    }
+                    long diff = _currentGeneralCounterValue - _previousGeneralCounterValue;
+                    _previousGeneralCounterValue = _currentGeneralCounterValue;
                     lock (_fpslock)
                     {
-                        _fps = millisecs == 0 ? 0.0f : 1000.0f / (float)millisecs;
-                        str = "FPS: " + string.Format("{0:0.0}", _fps);
+                        _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : 1000.0 / ts.TotalMilliseconds;
+                        str = "FPS: " + string.Format("{0:0.0}", _fps)+ ", D:" + diff;
                     }
                     textPaint.Typeface = App.LatoBold;
                     textPaint.TextSize = 30;
