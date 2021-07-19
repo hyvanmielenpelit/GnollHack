@@ -325,6 +325,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (long)cp437toUnicode[sym] : (long)sym;
     lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, layers);
 
+    /* Note: print_glyph clears all object data */
     struct obj* otmp;
     int i;
     for (i = 0; i <= 1; i++)
@@ -344,8 +345,6 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
             basewhere = OBJ_HEROMEMORY;
             break;
         }
-        lib_callbacks.callback_send_object_data(x, y, zeroobj, 1, basewhere, 0, 0UL);
-        lib_callbacks.callback_send_object_data(x, y, zeroobj, 1, basewhere, 0, 1UL); /* Clear also cover objects, if such exist */
 
         for (; otmp; otmp = (use_nexthere ? otmp->nexthere : otmp->nobj))
         {

@@ -1269,15 +1269,19 @@ namespace GnollHackClient.Pages.Game
                                                         {
                                                             if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
                                                                 sub_layer_cnt = _objectData[mapx, mapy].MemoryObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].MemoryObjectList.Count);
-                                                            else
+                                                            else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
                                                                 sub_layer_cnt = _objectData[mapx, mapy].FloorObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].FloorObjectList.Count);
+                                                            else
+                                                                sub_layer_cnt = 1; /* As a backup, show layer glyph (probably often NoGlyph) */
                                                         }
                                                         else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
                                                         {
                                                             if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
                                                                 sub_layer_cnt = _objectData[mapx, mapy].CoverMemoryObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].CoverMemoryObjectList.Count);
-                                                            else
+                                                            else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
                                                                 sub_layer_cnt = _objectData[mapx, mapy].CoverFloorObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].CoverFloorObjectList.Count);
+                                                            else
+                                                                sub_layer_cnt = 1; /* As a backup, show layer glyph (probably often NoGlyph) */
                                                         }
                                                         for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
                                                         {
@@ -1291,10 +1295,14 @@ namespace GnollHackClient.Pages.Game
                                                                     signed_glyph = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.glyph;
                                                                     obj_height = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].TileHeight;
                                                                 }
-                                                                else
+                                                                else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
                                                                 {
                                                                     signed_glyph = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.glyph;
                                                                     obj_height = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].TileHeight;
+                                                                }
+                                                                else
+                                                                {
+                                                                    signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
                                                                 }
                                                             }
                                                             else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
@@ -1304,10 +1312,14 @@ namespace GnollHackClient.Pages.Game
                                                                     signed_glyph = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.glyph;
                                                                     obj_height = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].TileHeight;
                                                                 }
-                                                                else
+                                                                else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
                                                                 {
                                                                     signed_glyph = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.glyph;
                                                                     obj_height = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].TileHeight;
+                                                                }
+                                                                else
+                                                                {
+                                                                    signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
                                                                 }
                                                             }
                                                             else
@@ -2752,6 +2764,24 @@ namespace GnollHackClient.Pages.Game
             {
                 _mapOffsetX = _originMapOffsetWithNewClipX;
                 _mapOffsetY = _originMapOffsetWithNewClipY;
+            }
+        }
+
+        public void ClearAllObjectData(int x, int y)
+        {
+            lock (_objectDataLock)
+            {
+                if (_objectData[x, y] != null)
+                {
+                    if (_objectData[x, y].FloorObjectList != null)
+                        _objectData[x, y].FloorObjectList.Clear();
+                    if (_objectData[x, y].CoverFloorObjectList != null)
+                        _objectData[x, y].CoverFloorObjectList.Clear();
+                    if (_objectData[x, y].MemoryObjectList != null)
+                        _objectData[x, y].MemoryObjectList.Clear();
+                    if (_objectData[x, y].CoverMemoryObjectList != null)
+                        _objectData[x, y].CoverMemoryObjectList.Clear();
+                }
             }
         }
 

@@ -467,7 +467,7 @@ outgoldmap:
         newsym(u.ux, u.uy);
         ter_typ |= TER_MON; /* so autodescribe will recognize hero */
     }
-    show_detection_everywhere();
+    show_memory_and_detection_everywhere();
     if (sobj)
         play_simple_object_sound(sobj, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
 
@@ -588,7 +588,7 @@ register struct obj *sobj;
             newsym(u.ux, u.uy);
             ter_typ |= TER_MON; /* for autodescribe of self */
         }
-        show_detection_everywhere();
+        show_memory_and_detection_everywhere();
 
         if (sobj) {
             if (sobj->blessed) {
@@ -805,7 +805,7 @@ int class;            /* an object class, 0 for all */
         newsym(u.ux, u.uy);
         ter_typ |= TER_MON;
     }
-    show_detection_everywhere();
+    show_memory_and_detection_everywhere();
     You("detect the %s of %s.", ct ? "presence" : "absence", stuff);
     if (detector)
         play_simple_object_sound(detector, OBJECT_SOUND_TYPE_GENERAL_EFFECT);

@@ -8305,6 +8305,11 @@ create_context_menu(VOID_ARGS)
         }
     }
 
+    if (Blind)
+    {
+        add_context_menu(':', cmd_from_func(dolook), 0, NO_GLYPH, "Look Here", "", 0, NO_COLOR);
+    }
+
     if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration_left > 0)
     {
         struct obj* lpobj;

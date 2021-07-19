@@ -327,6 +327,12 @@ namespace GnollHackClient
                 if (_ghWindows[winHandle] != null)
                     _ghWindows[winHandle].PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, layers);
             }
+
+            lock (_gamePageLock)
+            {
+                _gamePage.ClearAllObjectData(x, y);
+            }
+
         }
 
         public string ClientCallback_AskName()

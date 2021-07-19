@@ -3184,10 +3184,22 @@ show_detection_everywhere()
     for (int x = 1; x < COLNO; x++)
     {
         for (int y = 0; y < ROWNO; y++)
+            add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_DETECTION);
+    }
+
+}
+
+void
+show_memory_and_detection_everywhere()
+{
+    for (int x = 1; x < COLNO; x++)
+    {
+        for (int y = 0; y < ROWNO; y++)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY | LFLAGS_SHOWING_DETECTION);
     }
 
 }
+
 
 /*
  * Synch the third screen with the display.
