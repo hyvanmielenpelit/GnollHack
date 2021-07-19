@@ -345,8 +345,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
             break;
         }
         lib_callbacks.callback_send_object_data(x, y, zeroobj, 1, basewhere, 0, 0UL);
-        if(basewhere == OBJ_FLOOR)
-            lib_callbacks.callback_send_object_data(x, y, zeroobj, 1, basewhere, 0, 1UL); /* Clear also cover objects */
+        lib_callbacks.callback_send_object_data(x, y, zeroobj, 1, basewhere, 0, 1UL); /* Clear also cover objects, if such exist */
 
         for (; otmp; otmp = (use_nexthere ? otmp->nexthere : otmp->nobj))
         {

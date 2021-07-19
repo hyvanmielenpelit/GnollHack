@@ -1265,36 +1265,49 @@ namespace GnollHackClient.Pages.Game
                                                     int sub_layer_cnt = 1;
                                                     lock (_objectDataLock)
                                                     {
-                                                        if (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
+                                                        if (layer_idx == (int)layer_types.LAYER_OBJECT)
                                                         {
                                                             if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
                                                                 sub_layer_cnt = _objectData[mapx, mapy].MemoryObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].MemoryObjectList.Count);
-                                                            else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
-                                                                sub_layer_cnt = _objectData[mapx, mapy].CoverObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].CoverObjectList.Count);
                                                             else
                                                                 sub_layer_cnt = _objectData[mapx, mapy].FloorObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].FloorObjectList.Count);
+                                                        }
+                                                        else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
+                                                        {
+                                                            if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
+                                                                sub_layer_cnt = _objectData[mapx, mapy].CoverMemoryObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].CoverMemoryObjectList.Count);
+                                                            else
+                                                                sub_layer_cnt = _objectData[mapx, mapy].CoverFloorObjectList == null ? 0 : Math.Min(GHConstants.MaxObjectsDrawn, _objectData[mapx, mapy].CoverFloorObjectList.Count);
                                                         }
                                                         for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
                                                         {
 
                                                             int signed_glyph = NoGlyph;
                                                             short obj_height = _mapData[mapx, mapy].Layers.object_height;
-                                                            if (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
+                                                            if (layer_idx == (int)layer_types.LAYER_OBJECT)
                                                             {
                                                                 if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
                                                                 {
                                                                     signed_glyph = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.glyph;
                                                                     obj_height = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].TileHeight;
                                                                 }
-                                                                else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
-                                                                {
-                                                                    signed_glyph = _objectData[mapx, mapy].CoverObjectList[sub_layer_idx].ObjData.glyph;
-                                                                    obj_height = _objectData[mapx, mapy].CoverObjectList[sub_layer_idx].TileHeight;
-                                                                }
                                                                 else
                                                                 {
                                                                     signed_glyph = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.glyph;
                                                                     obj_height = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].TileHeight;
+                                                                }
+                                                            }
+                                                            else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
+                                                            {
+                                                                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
+                                                                {
+                                                                    signed_glyph = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.glyph;
+                                                                    obj_height = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].TileHeight;
+                                                                }
+                                                                else
+                                                                {
+                                                                    signed_glyph = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.glyph;
+                                                                    obj_height = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].TileHeight;
                                                                 }
                                                             }
                                                             else
@@ -1641,6 +1654,10 @@ namespace GnollHackClient.Pages.Game
                                                                     move_offset_y = base_move_offset_y;
                                                                     if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_SEMI_TRANSPARENT | LayerFlags.LFLAGS_M_RADIAL_TRANSPARENCY)) != 0)
                                                                         opaqueness = 0.5f;
+                                                                }
+                                                                else if (layer_idx == (int)layer_types.LAYER_COVER_TRAP)
+                                                                {
+                                                                    opaqueness = 0.5f;
                                                                 }
 
                                                                 tx = (offsetX + _mapOffsetX + move_offset_x + width * (float)draw_map_x);
@@ -2746,7 +2763,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     bool is_memoryobj = (where == (int)obj_where_types.OBJ_HEROMEMORY);
                     bool is_drawn_in_front = (oflags & 1UL) != 0UL;
-                    List<ObjectDataItem> ObjectList = is_memoryobj ? _objectData[x, y].MemoryObjectList : is_drawn_in_front ? _objectData[x, y].CoverObjectList : _objectData[x, y].FloorObjectList; 
+                    List<ObjectDataItem> ObjectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList); 
 
                     switch(cmdtype)
                     {
@@ -2758,13 +2775,21 @@ namespace GnollHackClient.Pages.Game
                             if (ObjectList == null)
                             {
                                 if (is_memoryobj)
-                                    _objectData[x, y].MemoryObjectList = new List<ObjectDataItem>();
-                                else if(is_drawn_in_front)
-                                    _objectData[x, y].CoverObjectList = new List<ObjectDataItem>();
-                                else
-                                    _objectData[x, y].FloorObjectList = new List<ObjectDataItem>();
+                                {
+                                    if (is_drawn_in_front)
+                                        _objectData[x, y].CoverMemoryObjectList = new List<ObjectDataItem>();
+                                    else
+                                        _objectData[x, y].MemoryObjectList = new List<ObjectDataItem>();
+                                }
+                                else 
+                                {
+                                    if (is_drawn_in_front)
+                                        _objectData[x, y].CoverFloorObjectList = new List<ObjectDataItem>();
+                                    else
+                                        _objectData[x, y].FloorObjectList = new List<ObjectDataItem>();
+                                }
 
-                                ObjectList = is_memoryobj ? _objectData[x, y].MemoryObjectList : is_drawn_in_front ? _objectData[x, y].CoverObjectList : _objectData[x, y].FloorObjectList;
+                                ObjectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
                             }
                             ObjectList.Add(new ObjectDataItem(otmp, tile_height));
                             break;

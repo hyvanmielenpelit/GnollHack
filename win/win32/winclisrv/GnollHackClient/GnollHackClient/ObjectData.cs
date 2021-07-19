@@ -9,7 +9,8 @@ namespace GnollHackClient
     {
         public List<ObjectDataItem> FloorObjectList = null;
         public List<ObjectDataItem> MemoryObjectList = null;
-        public List<ObjectDataItem> CoverObjectList = null;
+        public List<ObjectDataItem> CoverFloorObjectList = null;
+        public List<ObjectDataItem> CoverMemoryObjectList = null;
         public ObjectData()
         {
 
