@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 using System.Reflection;
 using System.IO;
 using FFImageLoading.Forms;
+using System.Diagnostics;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -60,6 +61,11 @@ namespace GnollHackClient.Pages.Game
         public int NumDisplayedMessages { get { return _shownMessageRows; } set { _shownMessageRows = value; } }
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
+        public bool ShowFPS { get; set; }
+        private float _fps;
+        private object _fpslock = new object();
+        private Stopwatch _stopWatch = new Stopwatch();
+
         private bool _cursorIsOn;
         private bool _showDirections = false;
         private bool _showNumberPad = false;
@@ -161,6 +167,13 @@ namespace GnollHackClient.Pages.Game
                 GraphicsStyle = (GHGraphicsStyle)gparseint;
             }
 
+            string fpsstyle = Preferences.Get("ShowFPS", "0");
+            int fpsparseint;
+            if (int.TryParse(style, out fpsparseint))
+            {
+                ShowFPS = (fpsparseint == 1);
+            }
+
             string msgnum = Preferences.Get("NumDisplayedMessages", "4");
             int mparseint;
             if (int.TryParse(msgnum, out mparseint))
@@ -259,6 +272,8 @@ namespace GnollHackClient.Pages.Game
                 _gnhthread = t;
                 _gnhthread.Start();
             }
+
+            _stopWatch.Start();
 
             Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
             {
@@ -866,8 +881,8 @@ namespace GnollHackClient.Pages.Game
                 SKRect textBounds = new SKRect();
                 textPaint.MeasureText(str, ref textBounds);
 
-                var xText = 10;
-                var yText = 0;
+                float xText = 10;
+                float yText = 0;
                 string additional_info = "";
                 if (_connection == null && _connectionAttempted)
                     additional_info = ", no _connection";
@@ -2274,6 +2289,27 @@ namespace GnollHackClient.Pages.Game
                     float size = sizearray[sizeidx];
                     targetrect = new SKRect(canvaswidth / 2 - canvaswidth / size, canvasheight / 2 - canvaswidth / size, canvaswidth / 2 + canvaswidth / size, canvasheight / 2 + canvaswidth / size);
                     canvas.DrawBitmap(_logoBitmap, targetrect);
+                }
+
+                if(ShowFPS)
+                {
+                    _stopWatch.Stop();
+                    TimeSpan ts = _stopWatch.Elapsed;
+                    long millisecs = _stopWatch.ElapsedMilliseconds;
+                    lock (_fpslock)
+                    {
+                        _fps = millisecs == 0 ? 0.0f : 1000.0f / (float)millisecs;
+                        str = "FPS: " + string.Format("{0:0.0}", _fps);
+                    }
+                    textPaint.Typeface = App.LatoBold;
+                    textPaint.TextSize = 30;
+                    textPaint.Color = SKColors.Yellow;
+                    textWidth = textPaint.MeasureText(str, ref textBounds);
+                    yText = -textPaint.FontMetrics.Ascent + 5;
+                    xText = canvaswidth - textWidth - 5;
+                    canvas.DrawText(str, xText, yText, textPaint);
+
+                    _stopWatch.Restart();
                 }
 
                 /* RawPrint */

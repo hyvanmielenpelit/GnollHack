@@ -29,6 +29,9 @@ namespace GnollHackClient.Pages.Game
             _gamePage.GraphicsStyle = (GHGraphicsStyle)GraphicsPicker.SelectedIndex;
             Preferences.Set("GraphicsStyle", ((int)_gamePage.GraphicsStyle).ToString());
 
+            _gamePage.ShowFPS = FPSSwitch.IsToggled;
+            Preferences.Set("ShowFPS", _gamePage.ShowFPS ? "1" : "0");
+
             int res = 4, tryres = 0;
             string str = MessageLengthPicker.SelectedItem.ToString();
             if (int.TryParse(str, out tryres))
@@ -45,7 +48,8 @@ namespace GnollHackClient.Pages.Game
         {
             CursorPicker.SelectedIndex = (int)_gamePage.CursorStyle;
             GraphicsPicker.SelectedIndex = (int)_gamePage.GraphicsStyle;
-            for(int i = 0; i < MessageLengthPicker.Items.Count; i++)
+            FPSSwitch.IsToggled = _gamePage.ShowFPS;
+            for (int i = 0; i < MessageLengthPicker.Items.Count; i++)
             {
                 int tryint = 0;
                 if (int.TryParse(MessageLengthPicker.Items[i].ToString(), out tryint) && tryint > 0 && tryint == _gamePage.NumDisplayedMessages)

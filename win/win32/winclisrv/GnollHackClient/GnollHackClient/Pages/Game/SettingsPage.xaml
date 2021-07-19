@@ -13,6 +13,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -79,6 +80,13 @@
                         </x:Array>
                     </Picker.ItemsSource>
                 </Picker>
+
+                <Label Text="Show FPS" Grid.Column="0" Grid.Row="3"
+                       FontFamily="Diablo"
+                       VerticalOptions="Center" 
+                       HorizontalOptions="Start" />
+                <Switch x:Name="FPSSwitch"  Grid.Column="1" Grid.Row="3" HorizontalOptions="Start" VerticalOptions="Center" />
+
             </Grid>
         </StackLayout>
     </ContentPage.Content>
