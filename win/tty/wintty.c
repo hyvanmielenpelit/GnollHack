@@ -4748,10 +4748,11 @@ render_status(VOID_ARGS)
         y = row;
         tty_curs(WIN_STATUS, 1, y);
         int removedspaces = 0;
+        int x_start;
         for (i = 0; (idx = fieldorder[row][i]) != BL_FLUSH; ++i) {
             if (!status_activefields[idx])
                 continue;
-            x = tty_status[NOW][idx].x - removedspaces;
+            x = x_start = tty_status[NOW][idx].x - removedspaces;
             text = status_vals[idx];
             tlth = (int) tty_status[NOW][idx].lth;
             if (x <= 1 && *text == ' ')
@@ -4794,10 +4795,13 @@ render_status(VOID_ARGS)
                             k = cw->cols - tlth;
                         else
                             k = x;
-                        while (x < k) {
+                        while (x < k) 
+                        {
                             if (dat[x - 1] != ' ')
+                            {
                                 tty_putstatusfield(" ", x, y);
-                            ++x;
+                                x++;
+                            }
                         }
                         tty_status[NOW][BL_CONDITION].x = x;
                         tty_curs(WIN_STATUS, x, y);
@@ -4851,8 +4855,8 @@ render_status(VOID_ARGS)
                                      " unexpected truncation.");
                         x = cw->cols;
                     }
-                    tty_status[NOW][BL_CONDITION].lth = max(0, x - tty_status[NOW][BL_CONDITION].x);
-                } 
+                    tty_status[NOW][BL_CONDITION].lth = max(0, x - x_start);
+                }
                 else if (hitpointbar) 
                 {
                     /*
@@ -5028,8 +5032,11 @@ render_status(VOID_ARGS)
                         if (coloridx != NO_COLOR)
                             term_start_color(coloridx);
                     }
-                    tty_putstatusfield(text, x, y);
-                    x += (int) strlen(text);
+                    if (strcmp(text, ""))
+                    {
+                        tty_putstatusfield(text, x, y);
+                        x += (int)strlen(text);
+                    }
                     if (iflags.hilite_delta) {
                         if (coloridx != NO_COLOR)
                             term_end_color();
