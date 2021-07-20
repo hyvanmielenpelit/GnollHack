@@ -575,6 +575,7 @@ namespace GnollHackCommon
 
         public byte special_tileset;
         public int glyph;
+        public int gui_glyph;
         public IntPtr oextra; /* pointer to oextra struct */
     }
 

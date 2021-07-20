@@ -2762,6 +2762,7 @@ int level_limit;
         quest_status.leader_m_id = mtmp->m_id;
     mtmp->mnum = mndx;
     mtmp->glyph = NO_GLYPH;
+    mtmp->gui_glyph = NO_GLYPH;
 
     /* set up stats*/
     for (int i = 0; i < A_MAX; i++)

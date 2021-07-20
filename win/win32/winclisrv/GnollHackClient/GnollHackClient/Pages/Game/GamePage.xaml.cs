@@ -1312,12 +1312,12 @@ namespace GnollHackClient.Pages.Game
                                                             {
                                                                 if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
                                                                 {
-                                                                    signed_glyph = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.glyph;
+                                                                    signed_glyph = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
                                                                     obj_height = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].TileHeight;
                                                                 }
                                                                 else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
                                                                 {
-                                                                    signed_glyph = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.glyph;
+                                                                    signed_glyph = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.gui_glyph;
                                                                     obj_height = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].TileHeight;
                                                                 }
                                                                 else
@@ -1329,12 +1329,12 @@ namespace GnollHackClient.Pages.Game
                                                             {
                                                                 if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_MEMORY) != 0)
                                                                 {
-                                                                    signed_glyph = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.glyph;
+                                                                    signed_glyph = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
                                                                     obj_height = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].TileHeight;
                                                                 }
                                                                 else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
                                                                 {
-                                                                    signed_glyph = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.glyph;
+                                                                    signed_glyph = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.gui_glyph;
                                                                     obj_height = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].TileHeight;
                                                                 }
                                                                 else

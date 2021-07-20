@@ -181,6 +181,7 @@ struct obj {
 
     uchar special_tileset;
     int glyph;
+    int gui_glyph;
     struct oextra *oextra; /* pointer to oextra struct */
 };
 

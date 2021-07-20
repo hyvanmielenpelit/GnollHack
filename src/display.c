@@ -399,8 +399,9 @@ boolean exclude_ascii;
     /* Replace */
     int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, layer, obj, (struct monst*)0, 0UL));
 
-    /* Save this object's glyph for showing in object pile */
-    obj->glyph = gui_glyph;
+    /* Save this object's glyph for showing in here window (ASCII) and in object pile in GUI */
+    obj->glyph = glyph;
+    obj->gui_glyph = gui_glyph;
 
     if (level.flags.hero_memory)
     {
@@ -1069,6 +1070,7 @@ int x, y;
     for (struct obj* otmp = vobj_at(x, y); otmp; otmp = otmp->nexthere)
     {
         otmp->glyph = NO_GLYPH;
+        otmp->gui_glyph = NO_GLYPH;
     }
 }
 

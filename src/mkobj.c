@@ -1302,6 +1302,7 @@ unsigned long mkflags;
     otmp->otyp = otyp;
     otmp->where = OBJ_FREE;
     otmp->glyph = NO_GLYPH;
+    otmp->gui_glyph = NO_GLYPH;
     otmp->dknown = index(dknowns, let) ? 0 : 1;
     if ((otmp->otyp >= ELVEN_SHIELD && otmp->otyp <= ORCISH_SHIELD)
         || otmp->otyp == SHIELD_OF_REFLECTION
