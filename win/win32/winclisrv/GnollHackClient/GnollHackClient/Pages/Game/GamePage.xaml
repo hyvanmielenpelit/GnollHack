@@ -4,7 +4,8 @@
              x:Class="GnollHackClient.Pages.Game.GamePage"
              Appearing="ContentPage_Appearing" Disappearing="ContentPage_Disappearing"
              xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms" 
-             xmlns:local="clr-namespace:GnollHackClient.Pages.Game"
+             xmlns:local="clr-namespace:GnollHackClient.Pages.Game" 
+             xmlns:gnollhackclient="clr-namespace:GnollHackClient"
              BackgroundColor="Black"
              >
     <ContentPage.Resources>
@@ -28,13 +29,13 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <AbsoluteLayout Grid.Row="0" x:Name="GameLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-                    <skia:SKCanvasView x:Name="canvasView"
+                    <gnollhackclient:GHCanvasView x:Name="canvasView"
                             EnableTouchEvents="True"
                             PaintSurface="canvasView_PaintSurface" 
                             Touch="canvasView_Touch"
                             AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
                             AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
-                    </skia:SKCanvasView>
+                    </gnollhackclient:GHCanvasView>
                 
                     <StackLayout x:Name="YnGrid" Padding="10" Margin="60,0"
                           HorizontalOptions="Center" VerticalOptions="Center"

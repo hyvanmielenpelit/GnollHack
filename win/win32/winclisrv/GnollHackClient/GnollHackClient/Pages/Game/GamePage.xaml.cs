@@ -78,12 +78,12 @@ namespace GnollHackClient.Pages.Game
         private MainPage _mainPage;
         private SKBitmap _logoBitmap;
 
-        private object TargetClipLock = new object();
-        private float _originMapOffsetWithNewClipX;
-        private float _originMapOffsetWithNewClipY;
-        private bool _targetClipOn;
-        private long _targetClipStartCounterValue;
-        private long _targetClipPanTime;
+        public object TargetClipLock = new object();
+        public float _originMapOffsetWithNewClipX;
+        public float _originMapOffsetWithNewClipY;
+        public bool _targetClipOn;
+        public long _targetClipStartCounterValue;
+        public long _targetClipPanTime;
 
         private int _clipX;
         private int _clipY;
@@ -140,10 +140,10 @@ namespace GnollHackClient.Pages.Game
         private List<ReplacementDefinition> _replacementDefs = null;
         private List<AutoDrawDefinition> autodraws = null;
 
-        private object _floatingTextLock = new object();
-        private List<GHFloatingText> _floatingTexts = new List<GHFloatingText>();
-        private object _screenTextLock = new object();
-        private GHScreenText _screenText = null;
+        public object _floatingTextLock = new object();
+        public List<GHFloatingText> _floatingTexts = new List<GHFloatingText>();
+        public object _screenTextLock = new object();
+        public GHScreenText _screenText = null;
 
         public bool EnableWizardMode { get; set; }
 
@@ -280,91 +280,96 @@ namespace GnollHackClient.Pages.Game
                 _previousGeneralCounterValue = AnimationTimers.general_animation_counter;
             }
 
+            canvasView._gamePage = this;
+            uint timeToAnimate = 2000;
+            Xamarin.Forms.Animation animation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
+            animation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: 25, repeat: ()=> true );
+
             Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
             {
-                canvasView.InvalidateSurface();
+                //canvasView.InvalidateSurface();
                 pollRequestQueue();
 
-                /* Increment counters */
-                lock(AnimationTimerLock)
-                {
-                    AnimationTimers.general_animation_counter++;
-                    if (AnimationTimers.general_animation_counter < 0)
-                        AnimationTimers.general_animation_counter = 0;
+                ///* Increment counters */
+                //lock(AnimationTimerLock)
+                //{
+                //    AnimationTimers.general_animation_counter++;
+                //    if (AnimationTimers.general_animation_counter < 0)
+                //        AnimationTimers.general_animation_counter = 0;
 
-                    if (AnimationTimers.u_action_animation_counter_on)
-                    {
-                        AnimationTimers.u_action_animation_counter++;
-                        if (AnimationTimers.u_action_animation_counter < 0)
-                            AnimationTimers.u_action_animation_counter = 0;
-                    }
+                //    if (AnimationTimers.u_action_animation_counter_on)
+                //    {
+                //        AnimationTimers.u_action_animation_counter++;
+                //        if (AnimationTimers.u_action_animation_counter < 0)
+                //            AnimationTimers.u_action_animation_counter = 0;
+                //    }
 
-                    if (AnimationTimers.m_action_animation_counter_on)
-                    {
-                        AnimationTimers.m_action_animation_counter++;
-                        if (AnimationTimers.m_action_animation_counter < 0)
-                            AnimationTimers.m_action_animation_counter = 0;
-                    }
+                //    if (AnimationTimers.m_action_animation_counter_on)
+                //    {
+                //        AnimationTimers.m_action_animation_counter++;
+                //        if (AnimationTimers.m_action_animation_counter < 0)
+                //            AnimationTimers.m_action_animation_counter = 0;
+                //    }
 
-                    if (AnimationTimers.explosion_animation_counter_on)
-                    {
-                        AnimationTimers.explosion_animation_counter++;
-                        if (AnimationTimers.explosion_animation_counter < 0)
-                            AnimationTimers.explosion_animation_counter = 0;
-                    }
+                //    if (AnimationTimers.explosion_animation_counter_on)
+                //    {
+                //        AnimationTimers.explosion_animation_counter++;
+                //        if (AnimationTimers.explosion_animation_counter < 0)
+                //            AnimationTimers.explosion_animation_counter = 0;
+                //    }
 
-                    int i;
-                    for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
-                    {
-                        if (AnimationTimers.zap_animation_counter_on[i])
-                        {
-                            AnimationTimers.zap_animation_counter[i]++;
-                            if (AnimationTimers.zap_animation_counter[i] < 0)
-                                AnimationTimers.zap_animation_counter[i] = 0;
-                        }
-                    }
+                //    int i;
+                //    for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
+                //    {
+                //        if (AnimationTimers.zap_animation_counter_on[i])
+                //        {
+                //            AnimationTimers.zap_animation_counter[i]++;
+                //            if (AnimationTimers.zap_animation_counter[i] < 0)
+                //                AnimationTimers.zap_animation_counter[i] = 0;
+                //        }
+                //    }
 
-                    for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
-                    {
-                        if (AnimationTimers.special_effect_animation_counter_on[i])
-                        {
-                            AnimationTimers.special_effect_animation_counter[i]++;
-                            if (AnimationTimers.special_effect_animation_counter[i] < 0)
-                                AnimationTimers.special_effect_animation_counter[i] = 0;
-                        }
-                    }
+                //    for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
+                //    {
+                //        if (AnimationTimers.special_effect_animation_counter_on[i])
+                //        {
+                //            AnimationTimers.special_effect_animation_counter[i]++;
+                //            if (AnimationTimers.special_effect_animation_counter[i] < 0)
+                //                AnimationTimers.special_effect_animation_counter[i] = 0;
+                //        }
+                //    }
 
-                    lock (_floatingTextLock)
-                    {
-                        for(i = _floatingTexts.Count -1; i >= 0; i--)
-                        {
-                            if(_floatingTexts[i].IsFinished(AnimationTimers.general_animation_counter))
-                                _floatingTexts.RemoveAt(i);
-                        }
-                    }
+                //    lock (_floatingTextLock)
+                //    {
+                //        for(i = _floatingTexts.Count -1; i >= 0; i--)
+                //        {
+                //            if(_floatingTexts[i].IsFinished(AnimationTimers.general_animation_counter))
+                //                _floatingTexts.RemoveAt(i);
+                //        }
+                //    }
 
-                    lock (_screenTextLock)
-                    {
-                        if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))
-                            _screenText = null;
-                    }
+                //    lock (_screenTextLock)
+                //    {
+                //        if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))
+                //            _screenText = null;
+                //    }
 
-                    lock (TargetClipLock)
-                    {
-                        if (AnimationTimers.general_animation_counter < _targetClipStartCounterValue 
-                            || AnimationTimers.general_animation_counter > _targetClipStartCounterValue + _targetClipPanTime)
-                            _targetClipOn = false;
+                //    lock (TargetClipLock)
+                //    {
+                //        if (AnimationTimers.general_animation_counter < _targetClipStartCounterValue 
+                //            || AnimationTimers.general_animation_counter > _targetClipStartCounterValue + _targetClipPanTime)
+                //            _targetClipOn = false;
 
-                        if(_targetClipOn)
-                        {
-                            lock(MapOffsetLock)
-                            {
-                                _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                                _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                            }
-                        }
-                    }
-                }
+                //        if(_targetClipOn)
+                //        {
+                //            lock(MapOffsetLock)
+                //            {
+                //                _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                //                _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                //            }
+                //        }
+                //    }
+                //}
 
                 return true;
             });
@@ -2350,6 +2355,8 @@ namespace GnollHackClient.Pages.Game
                 */
             }
 
+            canvas.Flush();
+
         }
 
         private double _currentPageWidth = 0;
@@ -2473,8 +2480,8 @@ namespace GnollHackClient.Pages.Game
 
         private Dictionary<long, TouchEntry> TouchDictionary = new Dictionary<long, TouchEntry>();
         public object MapOffsetLock = new object();
-        private float _mapOffsetX = 0;
-        private float _mapOffsetY = 0;
+        public float _mapOffsetX = 0;
+        public float _mapOffsetY = 0;
         private bool _touchMoved = false;
         private object _savedSender = null;
         private SKTouchEventArgs _savedEventArgs = null;

@@ -6,7 +6,7 @@ using GnollHackCommon;
 
 namespace GnollHackClient
 {
-    class GHFloatingText
+    public class GHFloatingText
     {
         private DisplayFloatingTextData _data;
         public long _created_at_count;
