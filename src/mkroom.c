@@ -1018,12 +1018,12 @@ morguemon()
         }
     }
 
-    if (hd > 8 && i > 85)
+    if (hd > 8 && i > 90)
         return mkclass(S_VAMPIRE, 0);
 
     return ((i < 20) ? &mons[PM_GHOST]
                      : (i < 30) ? &mons[PM_WRAITH]
-                     : (i < 55) ? mkclass(S_GREATER_UNDEAD, 0)
+                     : (i < 45) ? mkclass(S_GREATER_UNDEAD, 0)
                         : mkclass(S_LESSER_UNDEAD, 0));
 }
 

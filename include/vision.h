@@ -11,10 +11,12 @@ extern char **viz_array;        /* could see/in sight row pointers */
 extern char *viz_rmin;            /* min could see indices */
 extern char *viz_rmax;            /* max could see indices */
 #endif
-#define COULD_SEE 0x1 /* location could be seen, if it were lit */
-#define IN_SIGHT 0x2  /* location can be seen */
-#define TEMP_LIT 0x4  /* location is temporarily lit */
-#define TEMP_MAGICAL_DARKNESS 0x8  /* location is darkened by magic darkness source (overrides TEMP_LIT and lit) */
+#define COULD_SEE 0x01 /* location could be seen, if it were lit */
+#define IN_SIGHT 0x02  /* location can be seen */
+#define TEMP_LIT 0x04  /* location is temporarily lit */
+#define TEMP_MAGICAL_DARKNESS 0x08  /* location is darkened by magic darkness source (overrides TEMP_LIT and lit) */
+#define IN_XRAY_SIGHT 0x10  /* location can be seen by xray vision */
+#define IN_NV_SIGHT 0x20  /* location can be seen by infrared vision */
 
 /*
  * Light source sources
@@ -29,9 +31,12 @@ extern char *viz_rmax;            /* max could see indices */
  *  couldsee()    - Returns true if the hero has a clear line of sight to
  *          the location.
  */
-#define cansee(x, y) (viz_array[y][x] & IN_SIGHT)
-#define couldsee(x, y) (viz_array[y][x] & COULD_SEE)
-#define templit(x, y) (viz_array[y][x] & TEMP_LIT)
+#define cansee(x, y) ((viz_array[y][x] & (IN_SIGHT | IN_XRAY_SIGHT | IN_NV_SIGHT)) != 0)
+#define couldsee(x, y) ((viz_array[y][x] & COULD_SEE) != 0)
+#define templit(x, y) ((viz_array[y][x] & TEMP_LIT) != 0)
+#define canxraysee(x, y) ((viz_array[y][x] & IN_XRAY_SIGHT) != 0)
+#define cannvsee(x, y) ((viz_array[y][x] & IN_NV_SIGHT) != 0)
+#define canseenormal(x, y) ((viz_array[y][x] & IN_SIGHT) != 0)
 
 /*
  *  The following assume the monster is not blind.

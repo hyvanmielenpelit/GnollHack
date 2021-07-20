@@ -4541,7 +4541,7 @@ struct monst *mon;
         char save_viz = viz_array[y][x];
 
         /* override vision, forcing hero to be unable to see monster's spot */
-        viz_array[y][x] &= ~(IN_SIGHT | COULD_SEE);
+        viz_array[y][x] &= ~(IN_SIGHT | IN_XRAY_SIGHT | IN_NV_SIGHT | COULD_SEE);
         if (is_hider(mon->data))
             (void) restrap(mon);
         /* try again if mimic missed its 1/3 chance to hide */

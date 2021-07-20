@@ -574,7 +574,7 @@ int control;
             stop = max(viz_rmax[row], next_rmax[row]);
 
             for (col = start; col <= stop; col++)
-                if (old_row[col] & IN_SIGHT)
+                if (old_row[col] & (IN_SIGHT | IN_XRAY_SIGHT | IN_NV_SIGHT))
                     newsym(col, row);
         }
 
@@ -655,11 +655,11 @@ int control;
                     for (col = start; col <= stop; col++) 
                     {
                         char old_row_val = next_row[col];
-                        next_row[col] |= IN_SIGHT;
+                        next_row[col] |= IN_XRAY_SIGHT;
                         oldseenv = levl[col][row].seenv;
                         levl[col][row].seenv = SVALL; /* see all! */
                         /* Update if previously not in sight or new angle. */
-                        if (!(old_row_val & IN_SIGHT) || oldseenv != SVALL)
+                        if (!(old_row_val & IN_XRAY_SIGHT) || oldseenv != SVALL)
                             newsym(col, row);
                     }
 
@@ -670,18 +670,18 @@ int control;
             }
             else 
             { /* range is 0 */
-                next_array[u.uy][u.ux] |= IN_SIGHT;
+                next_array[u.uy][u.ux] |= IN_XRAY_SIGHT;
                 levl[u.ux][u.uy].seenv = SVALL;
                 next_rmin[u.uy] = min(u.ux, next_rmin[u.uy]);
                 next_rmax[u.uy] = max(u.ux, next_rmax[u.uy]);
             }
         }
 
-        if (has_night_vision && u.xray_range < u.nv_range)
+        if (has_night_vision) // && u.xray_range < u.nv_range
         {
             if (!u.nv_range) 
             { /* range is 0 */
-                next_array[u.uy][u.ux] |= IN_SIGHT;
+                next_array[u.uy][u.ux] |= IN_NV_SIGHT;
                 levl[u.ux][u.uy].seenv = SVALL;
                 next_rmin[u.uy] = min(u.ux, next_rmin[u.uy]);
                 next_rmax[u.uy] = max(u.ux, next_rmax[u.uy]);
@@ -705,7 +705,7 @@ int control;
 
                     for (col = start; col <= stop; col++)
                         if (next_row[col])
-                            next_row[col] |= IN_SIGHT;
+                            next_row[col] |= IN_NV_SIGHT;
 
                     next_rmin[row] = min(start, next_rmin[row]);
                     next_rmax[row] = max(stop, next_rmax[row]);
@@ -758,7 +758,7 @@ int control;
         for (col = start; col <= stop;
              lev += ROWNO, sv += (int) colbump[++col]) 
         {
-            if (next_row[col] & IN_SIGHT) 
+            if (next_row[col] & (IN_XRAY_SIGHT | IN_NV_SIGHT)) 
             {
                 /*
                  * We see this position because of night- or xray-vision.
@@ -768,7 +768,7 @@ int control;
                     new_angle(lev, sv, row, col); /* update seen angle */
 
                 /* Update pos if previously not in sight or new angle. */
-                if (!(old_row[col] & IN_SIGHT) || oldseenv != lev->seenv)
+                if (!(old_row[col] & (IN_SIGHT | IN_XRAY_SIGHT | IN_NV_SIGHT)) || oldseenv != lev->seenv)
                     newsym(col, row);
 
             } 
@@ -799,7 +799,7 @@ int control;
 
                         /* Update pos if previously not in sight or new
                          * angle.*/
-                        if (!(old_row[col] & IN_SIGHT)
+                        if (!(old_row[col] & (IN_SIGHT | IN_XRAY_SIGHT | IN_NV_SIGHT))
                             || oldseenv != lev->seenv)
                             newsym(col, row);
                     } 
@@ -815,7 +815,7 @@ int control;
                     lev->seenv |= new_angle(lev, sv, row, col);
 
                     /* Update pos if previously not in sight or new angle. */
-                    if (!(old_row[col] & IN_SIGHT) || oldseenv != lev->seenv)
+                    if (!(old_row[col] & (IN_SIGHT | IN_XRAY_SIGHT | IN_NV_SIGHT)) || oldseenv != lev->seenv)
                         newsym(col, row);
                 }
             } 
@@ -848,7 +848,7 @@ int control;
             else 
             {
             not_in_sight:
-                if ((old_row[col] & IN_SIGHT)
+                if ((old_row[col] & (IN_SIGHT | IN_XRAY_SIGHT | IN_NV_SIGHT))
                     || ((next_row[col] & COULD_SEE)
                         ^ (old_row[col] & COULD_SEE)))
                     newsym(col, row);
