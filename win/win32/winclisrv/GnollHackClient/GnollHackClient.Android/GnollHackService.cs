@@ -479,7 +479,7 @@ namespace GnollHackClient.Droid
                 /* If positionbar is on */
                 clientGame.ClientCallback_VoidCharDummy,
                 clientGame.ClientCallback_PrintGlyph,
-                clientGame.ClientCallback_VoidIntDummy,
+                clientGame.ClientCallback_InitPrintGlyph,
                 clientGame.ClientCallback_RawPrint,
                 clientGame.ClientCallback_RawPrintBold,
                 clientGame.ClientCallback_nhgetch,

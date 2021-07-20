@@ -15,6 +15,9 @@ namespace GnollHackClient
         public uint Special { get; set; }
         public LayerInfo Layers;
         public long GlyphPrintCounterValue { get; set; }
+        public bool NeedsUpdate { get; set; }
+        public bool MapAnimated { get; set; }
+        public bool RedrawTile { get; set; }
     }
 
 }

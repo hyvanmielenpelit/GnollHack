@@ -977,6 +977,14 @@ namespace GnollHackClient
         }
 
 
+        public void ClientCallback_InitPrintGlyph(int cmdtype)
+        {
+            switch(cmdtype)
+            {
+                case 2:
+                    break;
+            }
+        }
 
 
 
