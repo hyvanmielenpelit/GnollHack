@@ -3553,30 +3553,41 @@ mkclass(class, spc)
 char class;
 int spc;
 {
-    return mkclass_aligned(class, spc, A_NONE);
+    return mkclass_core(class, spc, A_NONE, 0);
 }
 
 /* mkclass() with alignment restrictions; used by ndemon() */
-struct permonst *
+struct permonst*
 mkclass_aligned(class, spc, atyp)
 char class;
 int spc;
 aligntyp atyp;
 {
+    mkclass_core(class, spc, atyp, 0);
+}
+
+struct permonst *
+mkclass_core(class, spc, atyp, difficulty_adj)
+char class;
+int spc;
+aligntyp atyp;
+int difficulty_adj;
+{
     register int first, last, num = 0;
     int k, nums[SPECIAL_PM + 1]; /* +1: insurance for final return value */
     int minmlev = 0, maxmlev = 0, mask = (G_NOGEN | G_UNIQ) & ~spc;
+
+    if (class < 1 || class >= MAX_MONSTER_CLASSES) {
+        impossible("mkclass called with bad class!");
+        return (struct permonst*)0;
+    }
 
     (void) memset((genericptr_t) nums, 0, sizeof nums);
 
     for(int i = 1; i <= 3; i++)
     {
-        get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, 0);
+        get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, difficulty_adj);
     
-        if (class < 1 || class >= MAX_MONSTER_CLASSES) {
-            impossible("mkclass called with bad class!");
-            return (struct permonst *) 0;
-        }
         /*  Assumption #1:  monsters of a given class are contiguous in the
          *                  mons[] array.  Player monsters and quest denizens
          *                  are an exception; mkclass() won't pick them.
