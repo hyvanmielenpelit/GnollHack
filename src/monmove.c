@@ -2584,7 +2584,6 @@ long allowflags;
 found:
     *mon_dx_ptr = 0;
     *mon_dy_ptr = 0;
-    nomul(0);
     return FALSE;
 }
 

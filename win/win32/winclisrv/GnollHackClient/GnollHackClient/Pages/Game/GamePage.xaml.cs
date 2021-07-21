@@ -3407,13 +3407,13 @@ namespace GnollHackClient.Pages.Game
                     ButtonRowStack.Orientation = StackOrientation.Horizontal;
                     ModeLayout.Orientation = StackOrientation.Horizontal;
                     ZoomLayout.Orientation = StackOrientation.Horizontal;
-                    UpperCmdLayout.Orientation = StackOrientation.Vertical;
+                    UpperCmdLayout.Orientation = StackOrientation.Horizontal;
                 }
                 else
                 {
                     ButtonRowStack.Orientation = StackOrientation.Vertical;
                     ModeLayout.Orientation = StackOrientation.Vertical;
-                    ZoomLayout.Orientation = StackOrientation.Vertical;
+                    ZoomLayout.Orientation = StackOrientation.Horizontal;
                     UpperCmdLayout.Orientation = StackOrientation.Horizontal;
                 }
             }
