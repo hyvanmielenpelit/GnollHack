@@ -74,12 +74,12 @@
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 -->
-                    <StackLayout x:Name="UpperCmdLayout" Orientation="Horizontal"
+                    <StackLayout x:Name="UpperCmdLayout" Orientation="Horizontal" InputTransparent="true" CascadeInputTransparent="false"
                         HorizontalOptions="End"
                         AbsoluteLayout.LayoutBounds="1.0, 0.10, AutoSize, AutoSize" 
                         AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent">
                         <StackLayout x:Name="ZoomLayout" Padding="0" Orientation="Horizontal"
-                            HorizontalOptions="End" BackgroundColor="Transparent" >
+                            HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
                             <Button Text="m" x:Name="ToggleZoomMiniButton" Clicked="ToggleZoomMiniButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />
                             <Button Text="a" x:Name="ToggleZoomAlternateButton" Clicked="ToggleZoomAlternateButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />
                         </StackLayout>

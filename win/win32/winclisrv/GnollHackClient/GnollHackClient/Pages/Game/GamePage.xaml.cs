@@ -56,6 +56,7 @@ namespace GnollHackClient.Pages.Game
         private ObjectData[,] _objectData = new ObjectData[GHConstants.MapCols, GHConstants.MapRows];
         private object _objectDataLock = new object();
 
+        private bool _useMapBitmap = false;
 
         private int _shownMessageRows = 4;
         public int NumDisplayedMessages { get { return _shownMessageRows; } set { _shownMessageRows = value; } }
@@ -103,7 +104,7 @@ namespace GnollHackClient.Pages.Game
         private object _mapFontSizeLock = new object();
         public float MapFontSize { get { lock (_mapFontSizeLock) { return _mapFontSize; } } set { lock (_mapFontSizeLock) { _mapFontSize = value; } } }
         public float MapFontAlternateSize { get { lock (_mapFontSizeLock) { return _mapFontAlternateSize; } } set { lock (_mapFontSizeLock) { _mapFontAlternateSize = value; } } }
-        
+
         private float _tileWidth;
         private float _tileHeight;
         private float _mapWidth;
@@ -306,7 +307,8 @@ namespace GnollHackClient.Pages.Game
             Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
             {
                 //canvasView.InvalidateSurface();
-                //UpdateMap();
+                if(_useMapBitmap)
+                    UpdateMap();
                 pollRequestQueue();
 
                 ///* Increment counters */
@@ -2020,21 +2022,23 @@ namespace GnollHackClient.Pages.Game
                 }
 
 
-                lock (_mapBitmapLock)
+                if(_useMapBitmap)
                 {
-                    //if (_mapBitmap != null)
-                    //{
-                    //    float sourcewidth = (float)(GHConstants.MapCols * GHConstants.TileWidth);
-                    //    float sourceheight = (float)(GHConstants.MapRows * GHConstants.TileHeight);
-                    //    SKRect sourcerect = new SKRect(0, 0, sourcewidth, sourceheight);
-                    //    tx = offsetX + _mapOffsetX;
-                    //    ty = offsetY + _mapOffsetY + _mapFontAscent;
-                    //    SKRect targetrect = new SKRect(tx, ty, tx + sourcewidth * width / (float)GHConstants.TileWidth, ty + sourceheight * height / GHConstants.TileHeight);
-                    //    canvas.DrawBitmap(_mapBitmap, sourcerect, targetrect);
-                    //}
+                    lock (_mapBitmapLock)
+                    {
+                        if (_mapBitmap != null)
+                        {
+                            float sourcewidth = (float)(GHConstants.MapCols * GHConstants.TileWidth);
+                            float sourceheight = (float)(GHConstants.MapRows * GHConstants.TileHeight);
+                            SKRect sourcerect = new SKRect(0, 0, sourcewidth, sourceheight);
+                            tx = offsetX + _mapOffsetX;
+                            ty = offsetY + _mapOffsetY + _mapFontAscent;
+                            SKRect targetrect = new SKRect(tx, ty, tx + sourcewidth * width / (float)GHConstants.TileWidth, ty + sourceheight * height / GHConstants.TileHeight);
+                            canvas.DrawBitmap(_mapBitmap, sourcerect, targetrect);
+                        }
+                    }
                 }
-
-                lock (_mapBitmapLock)
+                else
                 {
                     lock (Glyph2TileLock)
                     {
@@ -3699,12 +3703,20 @@ namespace GnollHackClient.Pages.Game
                 float offsetX = (canvaswidth - _mapWidth) / 2;
                 float offsetY = (canvasheight - _mapHeight) / 2;
 
-                lock (ClipLock)
+                if (ZoomMiniMode)
                 {
-                    if (ClipX > 0 && (_mapWidth > canvaswidth || _mapHeight > canvasheight))
+                    offsetX -= _mapOffsetX;
+                    offsetY -= _mapOffsetY;
+                }
+                else
+                {
+                    lock (ClipLock)
                     {
-                        offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * _tileWidth;
-                        offsetY -= (ClipY - GHConstants.MapRows / 2) * _tileHeight;
+                        if (ClipX > 0 && (_mapWidth > canvaswidth || _mapHeight > canvasheight))
+                        {
+                            offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * _tileWidth;
+                            offsetY -= (ClipY - GHConstants.MapRows / 2) * _tileHeight;
+                        }
                     }
                 }
                 offsetX += _mapOffsetX;
