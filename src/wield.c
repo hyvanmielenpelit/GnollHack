@@ -1499,7 +1499,7 @@ const char *verb; /* "rub",&c */
             strcpy(handbuf, "");
 
             if(u.twoweap)
-                Sprintf(handbuf, "in your %s %s", selected_hand_is_right ? "right" : "left", body_part(HAND));
+                Sprintf(handbuf, " in your %s %s", selected_hand_is_right ? "right" : "left", body_part(HAND));
 
             You("now wield %s%s.", doname(obj), handbuf);
 

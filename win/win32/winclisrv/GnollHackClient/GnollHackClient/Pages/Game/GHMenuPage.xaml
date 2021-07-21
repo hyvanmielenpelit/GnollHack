@@ -195,7 +195,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
                 -->
-                <CollectionView x:Name="MenuView" BackgroundColor="Transparent" SelectionChanged="MenuView_SelectionChanged" HorizontalOptions="FillAndExpand"  >
+                <CollectionView x:Name="MenuView" BackgroundColor="Transparent" SelectionChanged="MenuView_SelectionChanged" HorizontalOptions="FillAndExpand">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <SwipeView BackgroundColor="Transparent"

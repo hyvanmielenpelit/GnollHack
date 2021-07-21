@@ -3596,7 +3596,7 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
         M2_HOSTILE,
         M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_NONE, M5_NONE, M6_QUANTUM_MECHANIC | M6_ELDER, M7_NONE, M8_NONE,
-        7, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        7, CLR_MAGENTA, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     /*
      * Rust monster or disenchanter
      */
