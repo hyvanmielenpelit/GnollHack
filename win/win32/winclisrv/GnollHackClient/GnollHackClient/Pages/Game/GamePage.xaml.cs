@@ -94,11 +94,16 @@ namespace GnollHackClient.Pages.Game
         public bool MapNoClipMode { get; set; }
         public bool MapLookMode { get; set; }
         public bool MapTravelMode { get; set; }
+        public bool ZoomMiniMode { get; set; }
+        public bool ZoomAlternateMode { get; set; }
 
 
-        private float _mapFontSize = 48;
+        private float _mapFontSize = 60;
+        private float _mapFontAlternateSize = 24;
         private object _mapFontSizeLock = new object();
         public float MapFontSize { get { lock (_mapFontSizeLock) { return _mapFontSize; } } set { lock (_mapFontSizeLock) { _mapFontSize = value; } } }
+        public float MapFontAlternateSize { get { lock (_mapFontSizeLock) { return _mapFontAlternateSize; } } set { lock (_mapFontSizeLock) { _mapFontAlternateSize = value; } } }
+        
         private float _tileWidth;
         private float _tileHeight;
         private float _mapWidth;
@@ -186,6 +191,10 @@ namespace GnollHackClient.Pages.Game
             }
 
             ToggleModeButton_Clicked(null, null);
+            ZoomMiniMode = true;
+            ZoomAlternateMode = true;
+            ToggleZoomMiniButton_Clicked(null, null);
+            ToggleZoomAlternateButton_Clicked(null, null);
         }
 
         public async void StartGame()
@@ -1931,17 +1940,35 @@ namespace GnollHackClient.Pages.Game
 
 
                 /* Map */
-                textPaint.Typeface = App.DejaVuSansMonoTypeface;
-                textPaint.TextSize = MapFontSize;
                 float canvaswidth = canvasView.CanvasSize.Width;
                 float canvasheight = canvasView.CanvasSize.Height;
+                float UsedFontSize = ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
+                textPaint.Typeface = App.DejaVuSansMonoTypeface;
+                textPaint.TextSize = UsedFontSize;
+                if (ZoomMiniMode)
+                {
+                    float tmpwidth = textPaint.FontMetrics.AverageCharacterWidth;
+                    float tmpheight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+                    if(GraphicsStyle == GHGraphicsStyle.Tiles)
+                    {
+                        tmpwidth = GHConstants.TileWidth * UsedFontSize / 48;
+                        tmpheight = GHConstants.TileHeight * UsedFontSize / 48;
+                    }
+                    float tmpmapwidth = tmpwidth * (GHConstants.MapCols - 1);
+                    float tmpmapheight = tmpheight * GHConstants.MapRows;
+                    float xscale = tmpmapwidth > 0 ? canvaswidth / tmpmapwidth : 0;
+                    float yscale = tmpmapheight > 0 ? canvasheight / tmpmapheight : 0;
+                    float cscale = Math.Min(xscale, yscale);
+                    UsedFontSize = Math.Max(2.0f, UsedFontSize * cscale);
+                    textPaint.TextSize = UsedFontSize;
+                }
                 float width = textPaint.FontMetrics.AverageCharacterWidth;
                 float height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
 
                 if (GraphicsStyle == GHGraphicsStyle.Tiles)
                 {
-                    width = GHConstants.TileWidth * MapFontSize / 48;
-                    height = GHConstants.TileHeight * MapFontSize / 48;
+                    width = GHConstants.TileWidth * UsedFontSize / 48;
+                    height = GHConstants.TileHeight * UsedFontSize / 48;
                 }
 
                 float mapwidth = width * (GHConstants.MapCols - 1);
@@ -1961,12 +1988,20 @@ namespace GnollHackClient.Pages.Game
                 float offsetX = (canvaswidth - mapwidth) / 2;
                 float offsetY = (canvasheight - mapheight) / 2;
 
-                lock (ClipLock)
+                if(ZoomMiniMode)
                 {
-                    if (ClipX > 0 && (mapwidth > canvaswidth || mapheight > canvasheight))
+                    offsetX -= _mapOffsetX;
+                    offsetY -= _mapOffsetY;
+                }
+                else 
+                {
+                    lock (ClipLock)
                     {
-                        offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * width;
-                        offsetY -= (ClipY - GHConstants.MapRows / 2) * height;
+                        if (ClipX > 0 && (mapwidth > canvaswidth || mapheight > canvasheight))
+                        {
+                            offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * width;
+                            offsetY -= (ClipY - GHConstants.MapRows / 2) * height;
+                        }
                     }
                 }
 
@@ -2911,7 +2946,7 @@ namespace GnollHackClient.Pages.Game
                                 p = ft.GetPosition(AnimationTimers.general_animation_counter);
                                 textPaint.Color = ft.GetColor(AnimationTimers.general_animation_counter);
                                 textPaint.Typeface = ft.GetTypeface(AnimationTimers.general_animation_counter);
-                                textPaint.TextSize = MapFontSize * ft.GetRelativeTextSize(AnimationTimers.general_animation_counter);
+                                textPaint.TextSize = UsedFontSize * ft.GetRelativeTextSize(AnimationTimers.general_animation_counter);
                                 relativestrokewidth = ft.GetRelativeOutlineWidth(AnimationTimers.general_animation_counter);
                                 strokecolor = ft.GetOutlineColor(AnimationTimers.general_animation_counter);
                                 str = ft.GetText(AnimationTimers.general_animation_counter);
@@ -2948,14 +2983,14 @@ namespace GnollHackClient.Pages.Game
                                 strokecolor = _screenText.GetTextOutlineColor(AnimationTimers.general_animation_counter);
                                 str = _screenText.GetText(AnimationTimers.general_animation_counter);
                             }
-                            textPaint.TextSize = MapFontSize;
+                            textPaint.TextSize = UsedFontSize;
                             textPaint.MeasureText(str, ref textBounds);
                             if (textBounds.Width > 0)
                             {
                                 float relativesize = targetwidth / textBounds.Width;
                                 //if (relativesize > maxfontsize)
                                 //    relativesize = maxfontsize;
-                                textPaint.TextSize = MapFontSize * relativesize;
+                                textPaint.TextSize = UsedFontSize * relativesize;
                             }
 
                             textPaint.MeasureText(str, ref textBounds);
@@ -3371,11 +3406,15 @@ namespace GnollHackClient.Pages.Game
                 {
                     ButtonRowStack.Orientation = StackOrientation.Horizontal;
                     ModeLayout.Orientation = StackOrientation.Horizontal;
+                    ZoomLayout.Orientation = StackOrientation.Horizontal;
+                    UpperCmdLayout.Orientation = StackOrientation.Vertical;
                 }
                 else
                 {
                     ButtonRowStack.Orientation = StackOrientation.Vertical;
                     ModeLayout.Orientation = StackOrientation.Vertical;
+                    ZoomLayout.Orientation = StackOrientation.Vertical;
+                    UpperCmdLayout.Orientation = StackOrientation.Horizontal;
                 }
             }
         }
@@ -3543,9 +3582,9 @@ namespace GnollHackClient.Pages.Game
                                         _savedSender = sender;
                                         _savedEventArgs = e;
                                     }
-                                    else if(dist > 25 ||
+                                    else if(!ZoomMiniMode && (dist > 25 ||
                                         (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond > GHConstants.MoveOrPressTimeThreshold
-                                           )
+                                           ))
                                     {
                                         /* Just one finger => Move the map */
                                         if (diffX != 0 || diffY != 0)
@@ -3589,7 +3628,7 @@ namespace GnollHackClient.Pages.Game
                                         }
                                     }
 
-                                    if (other_key != 0)
+                                    if (other_key != 0 && !ZoomMiniMode)
                                     {
                                         otherloc = TouchDictionary[other_key].Location;
                                         float prevdist = (float)Math.Sqrt((Math.Pow((double)otherloc.X - (double)prevloc.X, 2) + Math.Pow((double)otherloc.Y - (double)prevloc.Y, 2)));
@@ -3597,13 +3636,17 @@ namespace GnollHackClient.Pages.Game
                                         if (prevdist > 0 && curdist > 0)
                                         {
                                             float ratio = curdist / prevdist;
-                                            float curfontsize = MapFontSize;
+                                            float curfontsize = ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
                                             float newfontsize = curfontsize * ratio;
                                             if (newfontsize > 500)
                                                 newfontsize = 500;
                                             if (newfontsize < 4)
                                                 newfontsize = 4;
-                                            MapFontSize = newfontsize;
+
+                                            if(ZoomAlternateMode)
+                                                MapFontAlternateSize = newfontsize;
+                                            else
+                                                MapFontSize = newfontsize;
                                         }
                                     }
 
@@ -4137,6 +4180,33 @@ namespace GnollHackClient.Pages.Game
         private void DropManyButton_Clicked(object sender, EventArgs e)
         {
             GenericButton_Clicked(sender, e, '%');
+        }
+
+        private void ToggleZoomMiniButton_Clicked(object sender, EventArgs e)
+        {
+            ZoomMiniMode = !ZoomMiniMode;
+            if (ZoomMiniMode)
+            {
+                ToggleZoomMiniButton.BackgroundColor = Color.Green;
+            }
+            else
+            {
+                ToggleZoomMiniButton.BackgroundColor = Color.DarkBlue;
+            }
+        }
+
+        private void ToggleZoomAlternateButton_Clicked(object sender, EventArgs e)
+        {
+            ZoomAlternateMode = !ZoomAlternateMode;
+            if (ZoomAlternateMode)
+            {
+                ToggleZoomAlternateButton.BackgroundColor = Color.Green;
+            }
+            else
+            {
+                ToggleZoomAlternateButton.BackgroundColor = Color.DarkBlue;
+            }
+
         }
     }
 

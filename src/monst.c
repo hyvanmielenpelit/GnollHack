@@ -3575,7 +3575,7 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
     /*
      * Quantum mechanics
      */
-    MON("quantum mechanic", None, "humanoid that can teleport the opponents away", None, None, S_QUANTMECH, LVL(7, 12, 3, 1, 10, 0), (G_GENO | 3),
+    MON("quantum mechanic", None, "humanoid that can teleport opponents away", None, None, S_QUANTMECH, LVL(7, 12, 3, 1, 10, 0), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_TLPT, 1, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 20, MS_HUMANOID, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(7, 9, 9, 18, 12, 7), 
@@ -3584,8 +3584,19 @@ MON("red naga hatchling", None, "human-headed snake", None, None, S_NAGA, LVL(3,
         M1_HUMANOID | M1_OMNIVORE, 
         M2_HOSTILE,
         M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
-        M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
+        M4_NONE, M5_NONE, M6_QUANTUM_MECHANIC, M7_NONE, M8_NONE,
         3, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+    MON("elder quantum mechanic", None, "powerful humanoid that can teleport opponents away", None, None, S_QUANTMECH, LVL(11, 15, 0, 10, 50, 0), (G_GENO | 1),
+        A(ATTK(AT_CLAW, AD_TLPT, 1, 8, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
+          NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(WT_HUMAN, 20, MS_HUMANOID, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(15, 15, 15, 21, 18, 15), 
+        MR_POISON | MR_TELEPORT, 
+        MR2_NONE, MC_TELEPORT,
+        M1_HUMANOID | M1_OMNIVORE, 
+        M2_HOSTILE,
+        M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
+        M4_NONE, M5_NONE, M6_QUANTUM_MECHANIC | M6_ELDER, M7_NONE, M8_NONE,
+        7, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     /*
      * Rust monster or disenchanter
      */

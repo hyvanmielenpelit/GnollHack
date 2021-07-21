@@ -1766,7 +1766,7 @@ register struct monst *mtmp;
             otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
             (void)mpickobj(mtmp, otmp);
         }
-        if (!rn2(20)) {
+        if (!rn2(ptr == &mons[PM_ELDER_QUANTUM_MECHANIC] ? 5: 20)) {
             struct obj* catcorpse;
 
             otmp = mksobj(LARGE_BOX, FALSE, FALSE, FALSE);

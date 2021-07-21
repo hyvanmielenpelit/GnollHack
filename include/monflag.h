@@ -347,6 +347,7 @@
 #define M6_PEACEFUL_SPECIAL_SHOUT   0x00000040UL
 #define M6_HATCHLING                0x00000080UL /* Elder version of the base monster; for eggs do little_to_big */
 #define M6_ELDER                    0x00000100UL /* Elder version of the base monster; for eggs do big_to_little */
+#define M6_QUANTUM_MECHANIC         0x00000200UL /* Is a quantum mechanic */
 
 #define M7_NONE                        0x00000000UL
 #define M8_NONE                        0x00000000UL

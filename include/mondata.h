@@ -186,6 +186,7 @@
 
 #define has_mflag_is_non_eater(ptr) (((ptr)->mflags6 & M6_NON_EATER) != 0L)
 #define is_corpse_eater(ptr) (((ptr)->mflags6 & M6_CORPSE_EATER) != 0L)
+#define is_quantum_mechanic(ptr) (((ptr)->mflags6 & M6_QUANTUM_MECHANIC) != 0)
 
 /* combinations */
 #define is_not_living(ptr) \

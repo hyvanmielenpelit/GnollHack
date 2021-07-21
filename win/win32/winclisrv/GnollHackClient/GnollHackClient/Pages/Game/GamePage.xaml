@@ -74,19 +74,27 @@
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 -->
+                    <StackLayout x:Name="UpperCmdLayout" Orientation="Horizontal"
+                        HorizontalOptions="End"
+                        AbsoluteLayout.LayoutBounds="1.0, 0.10, AutoSize, AutoSize" 
+                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent">
+                        <StackLayout x:Name="ZoomLayout" Padding="0"
+                            HorizontalOptions="End" BackgroundColor="Transparent" >
+                            <Button Text="m" x:Name="ToggleZoomMiniButton" Clicked="ToggleZoomMiniButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />
+                            <Button Text="a" x:Name="ToggleZoomAlternateButton" Clicked="ToggleZoomAlternateButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />
+                        </StackLayout>
+                        <StackLayout x:Name="ModeLayout" Padding="0"
+                        HorizontalOptions="End" BackgroundColor="Transparent" >
+                            <Button Text="&#x2205;" x:Name="ESCButton" Clicked="ESCButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />
+                            <Button Text="&#x2699;" x:Name="LookModeButton" Clicked="LookModeButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />
+                            <Button Text="&#x265C;" x:Name="ToggleModeButton" Clicked="ToggleModeButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />
+                        </StackLayout>
+                    </StackLayout>
+
                     <StackLayout x:Name="ContextGrid" Padding="0,2"
                         HorizontalOptions="End" VerticalOptions="End"
                         AbsoluteLayout.LayoutBounds="1.0, 1.0, AutoSize, AutoSize" 
                         AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" IsVisible="true">
-                    </StackLayout>
-                
-                    <StackLayout x:Name="ModeLayout" Padding="0,2"
-                        HorizontalOptions="End"
-                        AbsoluteLayout.LayoutBounds="1.0, 0.10, AutoSize, AutoSize" 
-                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" >
-                        <Button Text="&#x2205;" x:Name="ESCButton" Clicked="ESCButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" WidthRequest="50" />
-                        <Button Text="&#x2699;" x:Name="LookModeButton" Clicked="LookModeButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" WidthRequest="50" />
-                        <Button Text="&#x265C;" x:Name="ToggleModeButton" Clicked="ToggleModeButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="50" WidthRequest="50" />
                     </StackLayout>
 
                     <StackLayout x:Name="StatusLayout" Padding="0,2"

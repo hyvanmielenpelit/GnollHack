@@ -1322,6 +1322,7 @@ int pm;
         }
         break;
     case PM_QUANTUM_MECHANIC:
+    case PM_ELDER_QUANTUM_MECHANIC:
         Your("velocity suddenly seems very uncertain!");
         if (HFast & INTRINSIC) {
             HFast &= ~INTRINSIC;

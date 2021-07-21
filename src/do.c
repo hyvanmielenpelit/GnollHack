@@ -562,8 +562,8 @@ register struct obj* obj;
     putstr(datawin, 0, txt);
 
     struct permonst* ptr = &mons[mnum];
-    if ((ptr)->mconveys != 0UL || flesh_petrifies(ptr) || mnum == PM_GREEN_SLIME || obj->otyp == GLOB_OF_GREEN_SLIME || is_mimic(ptr) || is_were(ptr) || is_bat(ptr) || nonrotting_corpse(mnum) || is_rider(ptr)
-        || mnum == PM_STALKER || mnum == PM_LIZARD || mnum == PM_CHAMELEON || mnum == PM_DOPPELGANGER || mnum == PM_NURSE || mnum == PM_QUANTUM_MECHANIC || mnum == PM_DISENCHANTER
+    if ((ptr)->mconveys != 0UL || flesh_petrifies(ptr) || is_quantum_mechanic(ptr) || mnum == PM_GREEN_SLIME || obj->otyp == GLOB_OF_GREEN_SLIME || is_mimic(ptr) || is_were(ptr) || is_bat(ptr) || nonrotting_corpse(mnum) || is_rider(ptr)
+        || mnum == PM_STALKER || mnum == PM_LIZARD || mnum == PM_CHAMELEON || mnum == PM_DOPPELGANGER || mnum == PM_NURSE || mnum == PM_DISENCHANTER
         || is_reviver(ptr)
         ) 
     {
@@ -597,7 +597,7 @@ register struct obj* obj;
             cnt++;
         }
 
-        if (mnum == PM_QUANTUM_MECHANIC)
+        if (is_quantum_mechanic(ptr))
         {
             Sprintf(buf, "  %d - Causes uncertain velocity", cnt);
             txt = buf;

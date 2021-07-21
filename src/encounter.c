@@ -594,7 +594,7 @@ struct encounterdef encounter_definitions[] =
     {
         {
             /* Monster 1 */
-            { { { PM_QUANTUM_MECHANIC, 1, 0, NAMELIST_QUANTUM_MECHANIC, EM_NAME_KNOWN | EM_MAXIMUM_HIT_POINTS, 100, 
+            { { { PM_ELDER_QUANTUM_MECHANIC, 1, 0, NAMELIST_QUANTUM_MECHANIC, EM_NAME_KNOWN | EM_MAXIMUM_HIT_POINTS, 100, 
                     { 
                       { 
                         { { WAN_TELEPORTATION, 0, 0, 0, 0, 100 }, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM, NORANDOMIZEDITEM }
@@ -612,12 +612,13 @@ struct encounterdef encounter_definitions[] =
                 },
                 NOMONSTERALTERNATIVE,
                 NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
-            NORANDOMIZEDMONSTER,
+            { { { PM_QUANTUM_MECHANIC, 0, 2, 0, 0, 100, NOMONSTERITEMS },
+            NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE, NOMONSTERALTERNATIVE }  },
             NORANDOMIZEDMONSTER,
             NORANDOMIZEDMONSTER,
             NORANDOMIZEDMONSTER
         },
-        20,
+        5,
         0
     },
 

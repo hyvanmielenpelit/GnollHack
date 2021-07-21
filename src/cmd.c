@@ -8249,7 +8249,6 @@ create_context_menu(VOID_ARGS)
     struct rm* lev = &levl[u.ux][u.uy];
     if (IS_ALTAR(lev->typ))
     {
-        add_context_menu('D', cmd_from_func(doddrop), 0, back_to_glyph(u.ux, u.uy), "Drop many", 0, 0, NO_COLOR);
         add_context_menu(M('o'), cmd_from_func(dosacrifice), 0, back_to_glyph(u.ux, u.uy), "Offer", 0, 0, NO_COLOR);
         add_context_menu(M('p'), cmd_from_func(dopray), 0, back_to_glyph(u.ux, u.uy), "Pray", 0, 0, NO_COLOR);
     }
@@ -8278,9 +8277,13 @@ create_context_menu(VOID_ARGS)
     }
 
     struct monst* shkp = can_pay_to_shkp();
-    if (shkp)
+    if (shkp && has_eshk(shkp))
     {
-        add_context_menu('p', cmd_from_func(dopay), 0, mon_to_glyph(shkp, rn2_on_display_rng), "Pay", 0, 0, NO_COLOR);
+        struct eshk* eshkp = ESHK(shkp);
+        if (eshkp->robbed || eshkp->debit || eshkp->billct)
+        {
+            add_context_menu('p', cmd_from_func(dopay), 0, mon_to_glyph(shkp, rn2_on_display_rng), "Pay", 0, 0, NO_COLOR);
+        }
     }
 
     if (otmp)

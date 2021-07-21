@@ -285,7 +285,7 @@ boolean devour;
     grow = mlevelgain(obj);
     heal = mhealup(obj);
     eyes = (obj->otyp == CARROT);
-    catavenged = ((is_domestic(mtmp->data) && mtmp->data->mlet == S_FELINE) && (obj->otyp == CORPSE && obj->corpsenm == PM_QUANTUM_MECHANIC));
+    catavenged = ((is_domestic(mtmp->data) && mtmp->data->mlet == S_FELINE) && (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM && is_quantum_mechanic(&mons[obj->corpsenm])));
 
     if (devour) 
     {
