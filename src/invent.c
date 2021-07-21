@@ -3046,6 +3046,7 @@ struct obj* otmp_only;
                 || (is_dip_into && !otyp_allows_object_to_be_dipped_into_it(otyp))
                 || (!strcmp(word, "adjust") && otmp->oclass == COIN_CLASS && !usegold)
                 || (!strcmp(word, "attach candles to") && (!is_obj_candelabrum(otmp) || otmp->special_quality >= objects[otmp->otyp].oc_special_quality))
+                || (!strcmp(word, "name the type for") && objects[otmp->otyp].oc_name_known)
                 )
             {
                 foo--;

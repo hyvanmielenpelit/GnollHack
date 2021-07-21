@@ -1576,6 +1576,40 @@ int i;
                           && index(callable, objects[i].oc_class)));
 }
 
+int
+doname_specific_object()
+{
+    struct obj* obj = 0;
+    char allowall[2];
+    allowall[0] = ALL_CLASSES;
+    allowall[1] = '\0';
+    obj = getobj(allowall, "name", 0, "");
+    if (obj)
+        do_uoname(obj);
+}
+
+int
+doname_type_of_object()
+{
+    struct obj* obj = 0;
+    obj = getobj(callable, "call", 0, "");
+    if (obj) {
+        /* behave as if examining it in inventory;
+           this might set dknown if it was picked up
+           while blind and the hero can now see */
+        (void)xname(obj);
+
+        if (!obj->dknown) {
+            You("would never recognize another one.");
+        }
+        else {
+            docall(obj);
+        }
+
+    }
+    return 0;
+}
+
 /* C and #name commands - player can name monster or object or type of obj */
 int
 docallcmd()
@@ -1588,28 +1622,30 @@ docallcmd()
     /* if player wants a,b,c instead of i,o when looting, do that here too */
     boolean abc = flags.lootabc;
 
-    if (getobj_autoselect_obj)
+    if (getobj_autoselect_obj && !invent)
+        getobj_autoselect_obj = 0;
+
+    win = create_nhwindow(NHW_MENU);
+    start_menu(win);
+    any = zeroany;
+    if (!getobj_autoselect_obj)
     {
-        ch = 'o';
-    }
-    else
-    {
-        win = create_nhwindow(NHW_MENU);
-        start_menu(win);
-        any = zeroany;
         any.a_char = 'm'; /* group accelerator 'C' */
         add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'C', ATR_NONE,
             "a monster", MENU_UNSELECTED);
-        if (invent) {
-            /* we use y and n as accelerators so that we can accept user's
-               response keyed to old "name an individual object?" prompt */
-            any.a_char = 'i'; /* group accelerator 'y' */
-            add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'y', ATR_NONE,
-                "a particular object in inventory", MENU_UNSELECTED);
-            any.a_char = 'o'; /* group accelerator 'n' */
-            add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'n', ATR_NONE,
-                "the type of an object in inventory", MENU_UNSELECTED);
-        }
+    }
+    if (invent) {
+        /* we use y and n as accelerators so that we can accept user's
+            response keyed to old "name an individual object?" prompt */
+        any.a_char = 'i'; /* group accelerator 'y' */
+        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'y', ATR_NONE,
+            "a particular object in inventory", MENU_UNSELECTED);
+        any.a_char = 'o'; /* group accelerator 'n' */
+        add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'n', ATR_NONE,
+            "the type of an object in inventory", MENU_UNSELECTED);
+    }
+    if (!getobj_autoselect_obj)
+    {
         any.a_char = 'f'; /* group accelerator ',' (or ':' instead?) */
         add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, ',', ATR_NONE,
             "the type of an object upon the floor", MENU_UNSELECTED);
@@ -1620,14 +1656,14 @@ docallcmd()
         add_menu(win, NO_GLYPH, &any, abc ? 0 : any.a_char, 'l', ATR_NONE,
             "record an annotation for the current level", MENU_UNSELECTED);
         end_menu(win, "What do you want to name?");
-        if (select_menu(win, PICK_ONE, &pick_list) > 0) {
-            ch = pick_list[0].item.a_char;
-            free((genericptr_t)pick_list);
-        }
-        else
-            ch = 'q';
-        destroy_nhwindow(win);
     }
+    if (select_menu(win, PICK_ONE, &pick_list) > 0) {
+        ch = pick_list[0].item.a_char;
+        free((genericptr_t)pick_list);
+    }
+    else
+        ch = 'q';
+    destroy_nhwindow(win);
 
     switch (ch) {
     default:

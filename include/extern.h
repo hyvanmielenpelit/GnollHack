@@ -637,6 +637,8 @@ E struct obj *FDECL(oname, (struct obj *, const char *));
 E struct obj* FDECL(uoname, (struct obj*, const char*));
 E boolean FDECL(objtyp_is_callable, (int));
 E int NDECL(docallcmd);
+E int NDECL(doname_specific_object);
+E int NDECL(doname_type_of_object);
 E void FDECL(docall, (struct obj *));
 E const char *NDECL(rndghostname);
 E char *FDECL(x_monnam, (struct monst *, int, const char *, int, BOOLEAN_P));
