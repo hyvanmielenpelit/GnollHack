@@ -200,13 +200,20 @@ struct obj *obj;
      */
     if (obj->oclass == FOOD_CLASS) 
     {
+        boolean is_veg = FALSE;
         if (obj->otyp == CORPSE)
         {
             mtmp->meating = 3 + (mons[obj->corpsenm].cwt >> 6);
             nutrit = mons[obj->corpsenm].cnutrit;
+            if (obj->corpsenm >= LOW_PM && (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm])))
+                is_veg = TRUE;
         } else {
             mtmp->meating = objects[obj->otyp].oc_delay;
             nutrit = objects[obj->otyp].oc_nutrition;
+            if(obj->otyp == TIN && (obj->special_quality == 1 || (obj->corpsenm >= LOW_PM && (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm])))))
+                is_veg = TRUE;
+            else if(objects[obj->otyp].oc_material == MAT_VEGGY)
+                is_veg = TRUE;
         }
         switch (mtmp->data->msize)
         {
@@ -230,6 +237,10 @@ struct obj *obj;
             nutrit *= 1;
             break;
         }
+
+        if(herbivorous(mtmp->data) && is_veg)
+            nutrit *= 4;
+
         if (obj->oeaten)
         {
             mtmp->meating = eaten_stat(mtmp->meating, obj);
