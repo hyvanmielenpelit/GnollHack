@@ -1595,6 +1595,12 @@ dotwoweapon()
     }
     else
     {
+        if (P_SKILL_LEVEL(P_TWO_WEAPON_COMBAT) == P_ISRESTRICTED)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You("do not have the two-weapon combat skill.");
+            return 0;
+        }
         play_ui_sound(UI_SOUND_START_TWO_WEAPON_COMBAT);
         You("begin two-weapon fighting.");
         u.twoweap = 1;

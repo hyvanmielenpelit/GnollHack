@@ -895,6 +895,8 @@ namespace GnollHackClient.Pages.Game
 
             using (SKPaint textPaint = new SKPaint())
             {
+                textPaint.FilterQuality = SKFilterQuality.None;
+
                 /* Map */
                 textPaint.Typeface = App.DejaVuSansMonoTypeface;
                 textPaint.TextSize = 48;
@@ -983,6 +985,8 @@ namespace GnollHackClient.Pages.Game
 
                                         using (SKPaint paint = new SKPaint())
                                         {
+                                            paint.FilterQuality = SKFilterQuality.None;
+
                                             float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
                                             for (int layer_idx = 0; layer_idx <= (int)layer_types.MAX_LAYERS; layer_idx++)
                                             {
@@ -2088,6 +2092,8 @@ namespace GnollHackClient.Pages.Game
                                 {
                                     using (SKPaint paint = new SKPaint())
                                     {
+                                        paint.FilterQuality = SKFilterQuality.None;
+
                                         float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
                                         for (int layer_idx = 0; layer_idx <= (int)layer_types.MAX_LAYERS; layer_idx++)
                                         {
@@ -3102,6 +3108,8 @@ namespace GnollHackClient.Pages.Game
 
                                 using (SKPaint winPaint = new SKPaint())
                                 {
+                                    winPaint.FilterQuality = SKFilterQuality.None;
+
                                     winPaint.Color = _clientGame.Windows[i].BackgroundColor;
                                     winPaint.Style = SKPaintStyle.Fill;
 

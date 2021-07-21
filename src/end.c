@@ -1564,7 +1564,7 @@ int how;
         if (deepest > 20)
             tmp += 1000L * (long) ((deepest > 30) ? 10 : deepest - 20);
 #endif
-        //u.u_gamescore = get_current_game_score();
+        u.u_gamescore = get_current_game_score();
 
 #if 0
         nowrap_add(u.u_gamescore, tmp);

@@ -96,7 +96,7 @@ boolean clumsy;
     if (uarmf)
         dmg += weapon_dmg_value(uarmf, mon, &youmonst, 0);
     
-    dmg += weapon_skill_dmg_bonus(uarmf, P_MARTIAL_ARTS, FALSE);
+    dmg += weapon_skill_dmg_bonus(uarmf, P_MARTIAL_ARTS, FALSE, FALSE);
 
     /* excessive wt affects dex, so it affects dmg */
     if (clumsy)
