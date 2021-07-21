@@ -3563,7 +3563,7 @@ char class;
 int spc;
 aligntyp atyp;
 {
-    mkclass_core(class, spc, atyp, 0);
+    return mkclass_core(class, spc, atyp, 0);
 }
 
 struct permonst *

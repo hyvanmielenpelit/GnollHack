@@ -930,7 +930,7 @@ namespace GnollHackClient.Pages.Game
                                                     canvas.DrawRect(winRect, textPaint);
                                                     textPaint.Color = SKColors.Black;
                                                 }
-                                                else if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Pet) != 0)
+                                                else if ((_mapData[mapx, mapy].Special & ((uint)MapSpecial.Pet | (uint)MapSpecial.ObjectPile)) != 0)
                                                 {
                                                     textPaint.Style = SKPaintStyle.Fill;
                                                     SKRect winRect = new SKRect(tx, ty, tx + width, ty + height);
