@@ -10,17 +10,24 @@
 
     <AbsoluteLayout VerticalOptions="FillAndExpand"
                     HorizontalOptions="FillAndExpand" BackgroundColor="Black">
-        <skia:SKCanvasView x:Name="canvasView"
+
+        <Image x:Name="StartLogoImage" Opacity="0" IsVisible="true" HeightRequest="250" WidthRequest="250"
+               HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
+               AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
+               AbsoluteLayout.LayoutFlags="PositionProportional" Aspect="AspectFit"/>
+
+        <skia:SKCanvasView x:Name="canvasView" Opacity="0" IsVisible="false"
                        PaintSurface="canvasView_PaintSurface" 
                            AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
                            AbsoluteLayout.LayoutFlags="All" />
 
-        <Grid HorizontalOptions="End" VerticalOptions="Start" Margin="10,20,15,10" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional" >
+        <Grid x:Name="ClearButtonGrid" IsVisible="false" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,20,15,10" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional" >
             <Image x:Name="clearImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="100" HeightRequest="50"/>
             <Button Text="Clear" x:Name="ClearFilesButton" Clicked="ClearFilesButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
         </Grid>
-        <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.5, 0.90, AutoSize, AutoSize"
-                           AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300" HeightRequest="160">
+        <Grid x:Name="StartButtonGrid" Opacity="0" IsVisible="false"
+              HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.5, 0.90, AutoSize, AutoSize"
+              AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300" HeightRequest="160">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />

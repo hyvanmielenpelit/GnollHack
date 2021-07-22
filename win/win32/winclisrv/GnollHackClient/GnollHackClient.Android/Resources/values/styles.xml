@@ -15,5 +15,6 @@
          which is used to tint widgets -->
     <!--<item name="colorAccent">#FF4081</item>-->
     <item name="android:textAllCaps">false</item>
+    <item name="android:color">@color/splash_background</item>
   </style>
 </resources>

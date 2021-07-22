@@ -18876,34 +18876,37 @@ namespace GnollHackClient.Droid
 			public const int secondary_text_disabled_material_light = 2131034310;
 			
 			// aapt resource value: 0x7F0500C7
-			public const int switch_thumb_disabled_material_dark = 2131034311;
+			public const int splash_background = 2131034311;
 			
 			// aapt resource value: 0x7F0500C8
-			public const int switch_thumb_disabled_material_light = 2131034312;
+			public const int switch_thumb_disabled_material_dark = 2131034312;
 			
 			// aapt resource value: 0x7F0500C9
-			public const int switch_thumb_material_dark = 2131034313;
+			public const int switch_thumb_disabled_material_light = 2131034313;
 			
 			// aapt resource value: 0x7F0500CA
-			public const int switch_thumb_material_light = 2131034314;
+			public const int switch_thumb_material_dark = 2131034314;
 			
 			// aapt resource value: 0x7F0500CB
-			public const int switch_thumb_normal_material_dark = 2131034315;
+			public const int switch_thumb_material_light = 2131034315;
 			
 			// aapt resource value: 0x7F0500CC
-			public const int switch_thumb_normal_material_light = 2131034316;
+			public const int switch_thumb_normal_material_dark = 2131034316;
 			
 			// aapt resource value: 0x7F0500CD
-			public const int test_mtrl_calendar_day = 2131034317;
+			public const int switch_thumb_normal_material_light = 2131034317;
 			
 			// aapt resource value: 0x7F0500CE
-			public const int test_mtrl_calendar_day_selected = 2131034318;
+			public const int test_mtrl_calendar_day = 2131034318;
 			
 			// aapt resource value: 0x7F0500CF
-			public const int tooltip_background_dark = 2131034319;
+			public const int test_mtrl_calendar_day_selected = 2131034319;
 			
 			// aapt resource value: 0x7F0500D0
-			public const int tooltip_background_light = 2131034320;
+			public const int tooltip_background_dark = 2131034320;
+			
+			// aapt resource value: 0x7F0500D1
+			public const int tooltip_background_light = 2131034321;
 			
 			static Color()
 			{

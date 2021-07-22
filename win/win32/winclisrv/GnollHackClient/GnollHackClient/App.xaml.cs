@@ -30,78 +30,6 @@ namespace GnollHackClient
             var navPage = new NavigationPage(mainPage);
             
             MainPage = navPage;
-
-            Assembly assembly = GetType().GetTypeInfo().Assembly;
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.diablo_h.ttf"))
-            {
-                if (stream != null)
-                {
-                    DiabloTypeface = SKTypeface.FromStream(stream);
-                }                    
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.uwch.ttf"))
-            {
-                if (stream != null)
-                {
-                    UnderwoodTypeface = SKTypeface.FromStream(stream);
-                }
-            }
-
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.endr.ttf"))
-            {
-                if (stream != null)
-                {
-                    EndorTypeface = SKTypeface.FromStream(stream);
-                }
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.imrl.ttf"))
-            {
-                if (stream != null)
-                {
-                    ImmortalTypeface = SKTypeface.FromStream(stream);
-                }
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.shxi.ttf"))
-            {
-                if (stream != null)
-                {
-                    XizorTypeface = SKTypeface.FromStream(stream);
-                }
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono.ttf"))
-            {
-                if (stream != null)
-                {
-                    DejaVuSansMonoTypeface = SKTypeface.FromStream(stream);
-                }
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono-Bold.ttf"))
-            {
-                if (stream != null)
-                {
-                    DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
-                }
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Regular.ttf"))
-            {
-                if (stream != null)
-                {
-                    LatoRegular = SKTypeface.FromStream(stream);
-                }
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Bold.ttf"))
-            {
-                if (stream != null)
-                {
-                    LatoBold = SKTypeface.FromStream(stream);
-                }
-            }
-
-            _fmodService = DependencyService.Get<IFmodService>();
-            _fmodService.InitializeFmod();
-            _fmodService.LoadBanks();
-
-            _appCloseService = DependencyService.Get<IAppCloseService>();
         }
 
         protected override void OnStart()
@@ -114,6 +42,14 @@ namespace GnollHackClient
 
         protected override void OnResume()
         {
+        }
+
+        public static void LoadServices()
+        {
+            _fmodService = DependencyService.Get<IFmodService>();
+            _fmodService.InitializeFmod();
+            _fmodService.LoadBanks();
+            _appCloseService = DependencyService.Get<IAppCloseService>();
         }
 
         public static Cookie AuthenticationCookie { get; set; }

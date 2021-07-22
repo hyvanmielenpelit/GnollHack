@@ -40,27 +40,6 @@ namespace GnollHackClient
         public MainPage()
         {
             InitializeComponent();
-
-            _mainGnollHackService = DependencyService.Get<IGnollHackService>();
-            _mainGnollHackService.LoadLibrary();
-            int testres = _mainGnollHackService.Test1();
-
-            Assembly assembly = GetType().GetTypeInfo().Assembly;
-
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.window_background.png"))
-            {
-                _background_bitmap = SKBitmap.Decode(stream);
-            }
-
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack-logo-test-2.png"))
-            {
-                _logo_bitmap = SKBitmap.Decode(stream);
-            }
-
-            //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            myImage2.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
         }
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
@@ -149,9 +128,132 @@ namespace GnollHackClient
             await Navigation.PushAsync(_loginNavPage);
         }
 
+        private int starttimercount = 0;
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
+            StartFadeLogoIn();
 
+            Assembly thisassembly = GetType().GetTypeInfo().Assembly;
+            StartLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
+            Device.StartTimer(TimeSpan.FromSeconds(1f / 4), () =>
+            {
+                bool res = false;
+                switch(starttimercount)
+                {
+                    case 0:
+                        _mainGnollHackService = DependencyService.Get<IGnollHackService>();
+                        _mainGnollHackService.LoadLibrary();
+                        int testres = _mainGnollHackService.Test1();
+                        App.LoadServices();
+
+                        Assembly assembly = GetType().GetTypeInfo().Assembly;
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.window_background.png"))
+                        {
+                            _background_bitmap = SKBitmap.Decode(stream);
+                        }
+
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack-logo-test-2.png"))
+                        {
+                            _logo_bitmap = SKBitmap.Decode(stream);
+                        }
+
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.diablo_h.ttf"))
+                        {
+                            if (stream != null)
+                            {
+                                App.DiabloTypeface = SKTypeface.FromStream(stream);
+                            }
+                        }
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.uwch.ttf"))
+                        {
+                            if (stream != null)
+                            {
+                                App.UnderwoodTypeface = SKTypeface.FromStream(stream);
+                            }
+                        }
+
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.endr.ttf"))
+                        {
+                            if (stream != null)
+                            {
+                                App.EndorTypeface = SKTypeface.FromStream(stream);
+                            }
+                        }
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.imrl.ttf"))
+                        {
+                            if (stream != null)
+                            {
+                                App.ImmortalTypeface = SKTypeface.FromStream(stream);
+                            }
+                        }
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.shxi.ttf"))
+                        {
+                            if (stream != null)
+                            {
+                                App.XizorTypeface = SKTypeface.FromStream(stream);
+                            }
+                        }
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono.ttf"))
+                        {
+                            if (stream != null)
+                            {
+                                App.DejaVuSansMonoTypeface = SKTypeface.FromStream(stream);
+                            }
+                        }
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono-Bold.ttf"))
+                        {
+                            if (stream != null)
+                            {
+                                App.DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
+                            }
+                        }
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Regular.ttf"))
+                        {
+                            if (stream != null)
+                            {
+                                App.LatoRegular = SKTypeface.FromStream(stream);
+                            }
+                        }
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Bold.ttf"))
+                        {
+                            if (stream != null)
+                            {
+                                App.LatoBold = SKTypeface.FromStream(stream);
+                            }
+                        }
+
+                        //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                        myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                        myImage2.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                        clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                        res = true;
+                        break;
+                    case 1:
+                        StartFadeIn();
+                        res = true;
+                        break;
+                    default:
+                        StartLogoImage.IsVisible = false;
+                        break;
+                }
+                starttimercount++;
+                return res; 
+            });
+        }
+        private async void StartFadeLogoIn()
+        {
+            await StartLogoImage.FadeTo(1, 250);
+        }
+
+        private async void StartFadeIn()
+        {
+            await StartLogoImage.FadeTo(0, 250);
+            ClearButtonGrid.IsVisible = true;
+            await ClearButtonGrid.FadeTo(1, 250);
+            canvasView.IsVisible = true;
+            await canvasView.FadeTo(1, 250);
+            StartButtonGrid.IsVisible = true;
+            await StartButtonGrid.FadeTo(1, 250);
         }
 
         private void ExitAppButton_Clicked(object sender, EventArgs e)
