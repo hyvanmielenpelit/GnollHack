@@ -58,7 +58,7 @@ namespace GnollHackClient.Pages.Game
 
         private bool _useMapBitmap = false;
 
-        private int _shownMessageRows = 4;
+        private int _shownMessageRows = GHConstants.DefaultMessageRows;
         public int NumDisplayedMessages { get { return _shownMessageRows; } set { _shownMessageRows = value; } }
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
@@ -184,7 +184,7 @@ namespace GnollHackClient.Pages.Game
                 ShowFPS = (fpsparseint == 1);
             }
 
-            string msgnum = Preferences.Get("NumDisplayedMessages", "4");
+            string msgnum = Preferences.Get("NumDisplayedMessages", (GHConstants.DefaultMessageRows).ToString()); 
             int mparseint;
             if (int.TryParse(msgnum, out mparseint))
             {
@@ -312,97 +312,97 @@ namespace GnollHackClient.Pages.Game
             //}
 
             canvasView._gamePage = this;
-            uint timeToAnimate = 2000;
-            Xamarin.Forms.Animation animation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
-            animation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: 25, repeat: ()=> true );
+            //uint timeToAnimate = 2000;
+            //Xamarin.Forms.Animation animation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
+            //animation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: 25, repeat: ()=> true );
 
             Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
             {
-                //canvasView.InvalidateSurface();
-                if(_useMapBitmap)
+                if (_useMapBitmap)
                     UpdateMap();
+                canvasView.InvalidateSurface();
                 pollRequestQueue();
 
-                ///* Increment counters */
-                //lock(AnimationTimerLock)
-                //{
-                //    AnimationTimers.general_animation_counter++;
-                //    if (AnimationTimers.general_animation_counter < 0)
-                //        AnimationTimers.general_animation_counter = 0;
+                /* Increment counters */
+                lock (AnimationTimerLock)
+                {
+                    AnimationTimers.general_animation_counter++;
+                    if (AnimationTimers.general_animation_counter < 0)
+                        AnimationTimers.general_animation_counter = 0;
 
-                //    if (AnimationTimers.u_action_animation_counter_on)
-                //    {
-                //        AnimationTimers.u_action_animation_counter++;
-                //        if (AnimationTimers.u_action_animation_counter < 0)
-                //            AnimationTimers.u_action_animation_counter = 0;
-                //    }
+                    if (AnimationTimers.u_action_animation_counter_on)
+                    {
+                        AnimationTimers.u_action_animation_counter++;
+                        if (AnimationTimers.u_action_animation_counter < 0)
+                            AnimationTimers.u_action_animation_counter = 0;
+                    }
 
-                //    if (AnimationTimers.m_action_animation_counter_on)
-                //    {
-                //        AnimationTimers.m_action_animation_counter++;
-                //        if (AnimationTimers.m_action_animation_counter < 0)
-                //            AnimationTimers.m_action_animation_counter = 0;
-                //    }
+                    if (AnimationTimers.m_action_animation_counter_on)
+                    {
+                        AnimationTimers.m_action_animation_counter++;
+                        if (AnimationTimers.m_action_animation_counter < 0)
+                            AnimationTimers.m_action_animation_counter = 0;
+                    }
 
-                //    if (AnimationTimers.explosion_animation_counter_on)
-                //    {
-                //        AnimationTimers.explosion_animation_counter++;
-                //        if (AnimationTimers.explosion_animation_counter < 0)
-                //            AnimationTimers.explosion_animation_counter = 0;
-                //    }
+                    if (AnimationTimers.explosion_animation_counter_on)
+                    {
+                        AnimationTimers.explosion_animation_counter++;
+                        if (AnimationTimers.explosion_animation_counter < 0)
+                            AnimationTimers.explosion_animation_counter = 0;
+                    }
 
-                //    int i;
-                //    for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
-                //    {
-                //        if (AnimationTimers.zap_animation_counter_on[i])
-                //        {
-                //            AnimationTimers.zap_animation_counter[i]++;
-                //            if (AnimationTimers.zap_animation_counter[i] < 0)
-                //                AnimationTimers.zap_animation_counter[i] = 0;
-                //        }
-                //    }
+                    int i;
+                    for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
+                    {
+                        if (AnimationTimers.zap_animation_counter_on[i])
+                        {
+                            AnimationTimers.zap_animation_counter[i]++;
+                            if (AnimationTimers.zap_animation_counter[i] < 0)
+                                AnimationTimers.zap_animation_counter[i] = 0;
+                        }
+                    }
 
-                //    for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
-                //    {
-                //        if (AnimationTimers.special_effect_animation_counter_on[i])
-                //        {
-                //            AnimationTimers.special_effect_animation_counter[i]++;
-                //            if (AnimationTimers.special_effect_animation_counter[i] < 0)
-                //                AnimationTimers.special_effect_animation_counter[i] = 0;
-                //        }
-                //    }
+                    for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
+                    {
+                        if (AnimationTimers.special_effect_animation_counter_on[i])
+                        {
+                            AnimationTimers.special_effect_animation_counter[i]++;
+                            if (AnimationTimers.special_effect_animation_counter[i] < 0)
+                                AnimationTimers.special_effect_animation_counter[i] = 0;
+                        }
+                    }
 
-                //    lock (_floatingTextLock)
-                //    {
-                //        for(i = _floatingTexts.Count -1; i >= 0; i--)
-                //        {
-                //            if(_floatingTexts[i].IsFinished(AnimationTimers.general_animation_counter))
-                //                _floatingTexts.RemoveAt(i);
-                //        }
-                //    }
+                    lock (_floatingTextLock)
+                    {
+                        for (i = _floatingTexts.Count - 1; i >= 0; i--)
+                        {
+                            if (_floatingTexts[i].IsFinished(AnimationTimers.general_animation_counter))
+                                _floatingTexts.RemoveAt(i);
+                        }
+                    }
 
-                //    lock (_screenTextLock)
-                //    {
-                //        if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))
-                //            _screenText = null;
-                //    }
+                    lock (_screenTextLock)
+                    {
+                        if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))
+                            _screenText = null;
+                    }
 
-                //    lock (TargetClipLock)
-                //    {
-                //        if (AnimationTimers.general_animation_counter < _targetClipStartCounterValue 
-                //            || AnimationTimers.general_animation_counter > _targetClipStartCounterValue + _targetClipPanTime)
-                //            _targetClipOn = false;
+                    lock (TargetClipLock)
+                    {
+                        if (AnimationTimers.general_animation_counter < _targetClipStartCounterValue
+                            || AnimationTimers.general_animation_counter > _targetClipStartCounterValue + _targetClipPanTime)
+                            _targetClipOn = false;
 
-                //        if(_targetClipOn)
-                //        {
-                //            lock(MapOffsetLock)
-                //            {
-                //                _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                //                _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                //            }
-                //        }
-                //    }
-                //}
+                        if (_targetClipOn)
+                        {
+                            lock (MapOffsetLock)
+                            {
+                                _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                                _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                            }
+                        }
+                    }
+                }
 
                 return true;
             });
@@ -460,13 +460,15 @@ namespace GnollHackClient.Pages.Game
                     break;
             }
 
+            double sidesize = Math.Min(Math.Min(80.0, Math.Max(50.0, _currentPageWidth / 7)), Math.Min(80.0, Math.Max(50.0, _currentPageHeight / 7)));
+            double fontsize = 9.5 * sidesize / 50.0;
             if (icon_string != "")
             {
                 CachedImage img = new CachedImage();
                 img.Source = ImageSource.FromResource(icon_string);
                 img.BackgroundColor = Color.Transparent;
-                img.HeightRequest = 50;
-                img.WidthRequest = 50;
+                img.HeightRequest = sidesize;
+                img.WidthRequest = sidesize;
                 img.IsVisible = true;
                 img.InputTransparent = true;
                 img.VerticalOptions = LayoutOptions.Start;
@@ -480,16 +482,16 @@ namespace GnollHackClient.Pages.Game
                 lbl.VerticalTextAlignment = TextAlignment.End;
                 lbl.HorizontalOptions = LayoutOptions.Center;
                 lbl.HorizontalTextAlignment = TextAlignment.Center;
-                lbl.FontSize = 10;
+                lbl.FontSize = fontsize;
                 lbl.BackgroundColor = Color.Transparent;
-                lbl.WidthRequest = 50;
+                lbl.WidthRequest = sidesize;
                 lbl.IsVisible = true;
                 lbl.InputTransparent = true;
 
                 Button contextButton = new Button();
                 contextButton.Text = "";
-                contextButton.HeightRequest = 50;
-                contextButton.WidthRequest = 50;
+                contextButton.HeightRequest = sidesize;
+                contextButton.WidthRequest = sidesize;
                 contextButton.IsVisible = true;
                 contextButton.BackgroundColor = Color.Transparent;
                 contextButton.HorizontalOptions = LayoutOptions.CenterAndExpand;
@@ -497,8 +499,8 @@ namespace GnollHackClient.Pages.Game
                 contextButton.Clicked += ContextButton_Clicked;
 
                 Grid addgrid = new Grid();
-                addgrid.HeightRequest = 60;
-                addgrid.WidthRequest = 50;
+                addgrid.HeightRequest = sidesize + fontsize + 2;
+                addgrid.WidthRequest = sidesize;
                 addgrid.IsVisible = true;
                 addgrid.Children.Add(img);
                 addgrid.Children.Add(lbl);
@@ -530,8 +532,8 @@ namespace GnollHackClient.Pages.Game
                 contextButton.CornerRadius = 10;
                 contextButton.FontSize = 18;
                 contextButton.BackgroundColor = Color.DarkBlue;
-                contextButton.HeightRequest = 50;
-                contextButton.WidthRequest = 75;
+                contextButton.HeightRequest = sidesize;
+                contextButton.WidthRequest = Math.Max(75, sidesize);
                 contextButton.IsVisible = true;
 
                 contextButton.Clicked += ContextButton_Clicked;
@@ -993,12 +995,6 @@ namespace GnollHackClient.Pages.Game
                                             }
                                         }
 
-                                        long currentcountervalue = 0;
-                                        lock (AnimationTimerLock)
-                                        {
-                                            currentcountervalue = AnimationTimers.general_animation_counter;
-                                        }
-
                                         using (SKPaint paint = new SKPaint())
                                         {
                                             paint.FilterQuality = SKFilterQuality.None;
@@ -1023,6 +1019,11 @@ namespace GnollHackClient.Pages.Game
                                                         float scaled_y_height_change = 0;
                                                         sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
                                                         sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
+                                                        long currentcountervalue = 0;
+                                                        lock (AnimationTimerLock)
+                                                        {
+                                                            currentcountervalue = AnimationTimers.general_animation_counter;
+                                                        }
                                                         long glyphprintcountervalue = _mapData[mapx, mapy].GlyphPrintCounterValue;
                                                         float base_move_offset_x = 0, base_move_offset_y = 0;
                                                         int movediffx = (int)monster_origin_x - mapx;
@@ -2134,6 +2135,9 @@ namespace GnollHackClient.Pages.Game
                                                     int movediffx = (int)monster_origin_x - mapx;
                                                     int movediffy = (int)monster_origin_y - mapy;
                                                     long counterdiff = currentcountervalue - glyphprintcountervalue;
+                                                    //if (GHUtils.isok(monster_origin_x, monster_origin_y) && layer_idx == (int)layer_types.LAYER_MONSTER)
+                                                    //    mapx = mapx;
+
                                                     if (GHUtils.isok(monster_origin_x, monster_origin_y)
                                                         && (movediffx != 0 || movediffy != 0)
                                                         && counterdiff >= 0 && counterdiff < GHConstants.MoveIntervals)
@@ -3436,8 +3440,48 @@ namespace GnollHackClient.Pages.Game
                 _currentPageWidth = width;
                 _currentPageHeight = height;
 
+                double sidesize = Math.Min(Math.Min(80.0, Math.Max(45.0, width / 8)), Math.Min(80.0, Math.Max(45.0, height / 8)));
+                ESCButton.WidthRequest = ESCButton.HeightRequest = sidesize;
+                LookModeButton.WidthRequest = LookModeButton.HeightRequest = sidesize;
+                ToggleModeButton.WidthRequest = ToggleModeButton.HeightRequest = sidesize;
+                ToggleZoomMiniButton.WidthRequest = ToggleZoomMiniButton.HeightRequest = sidesize;
+                ToggleZoomAlternateButton.WidthRequest = ToggleZoomAlternateButton.HeightRequest = sidesize;
+
+                sidesize = Math.Min(Math.Min(80.0, Math.Max(60.0, width / 6)), Math.Min(80.0, Math.Max(60.0, height / 6)));
+                ZeroButton.WidthRequest = ZeroButton.HeightRequest = sidesize;
+                FirstButton.WidthRequest = FirstButton.HeightRequest = sidesize;
+                SecondButton.WidthRequest = SecondButton.HeightRequest = sidesize;
+                ThirdButton.WidthRequest = ThirdButton.HeightRequest = sidesize;
+                FourthButton.WidthRequest = FourthButton.HeightRequest = sidesize;
+
+                double imgsidewidth = Math.Min(Math.Min(80.0, Math.Max(50.0, width / 7)), Math.Min(80.0, Math.Max(50.0, height / 7)));
+                double imgsideheight = Math.Min(Math.Min(80.0, Math.Max(60.0, width / 6)), Math.Min(80.0, Math.Max(60.0, height / 6)));
+                double fontsize = 9.0 * sidesize / 50.0;
+                double fontsize_larger = 9.5 * sidesize / 50.0;
+                double gridsidewidth = imgsidewidth;
+                double gridsideheight = imgsideheight + fontsize + 2;
+                double gridsideheight_larger = imgsideheight + fontsize_larger + 2;
+
+                AbilitiesGrid.WidthRequest = SkillGrid.WidthRequest = gridsidewidth;
+                AbilitiesGrid.HeightRequest = SkillGrid.HeightRequest = gridsideheight_larger;
+                AbilitiesImg.WidthRequest = SkillImg.WidthRequest = imgsidewidth;
+                AbilitiesImg.HeightRequest = SkillImg.HeightRequest = imgsideheight;
+                /* AbilitiesLbl */
+                InventoryGrid.WidthRequest = SearchGrid.WidthRequest = WaitGrid.WidthRequest = DropManyGrid.WidthRequest = gridsidewidth;
+                InventoryGrid.HeightRequest = SearchGrid.HeightRequest = WaitGrid.HeightRequest = DropManyGrid.HeightRequest = gridsideheight;
+                InventoryImg.WidthRequest = SearchImg.WidthRequest = WaitImg.WidthRequest = DropManyImg.WidthRequest = imgsidewidth;
+                InventoryImg.HeightRequest = SearchImg.HeightRequest = WaitImg.HeightRequest = DropManyImg.HeightRequest = imgsideheight;
+                SkillLbl.FontSize = fontsize_larger;
+                InventoryLbl.FontSize = SearchLbl.FontSize = WaitLbl.FontSize = DropManyLbl.FontSize = fontsize;
+                UpperCmdGrid.HeightRequest = gridsideheight;
+                LowerCmdGrid.HeightRequest = gridsideheight;
+                ChatButton.HeightRequest = RepeatButton.HeightRequest = MenuButton.HeightRequest = KickButton.HeightRequest = FireButton.HeightRequest =
+                    ThrowQuiveredButton.HeightRequest = ApplyWieldedButton.HeightRequest = CastButton.HeightRequest = ZapButton.HeightRequest =
+                    SwapWeaponButton.HeightRequest = gridsideheight;
+
                 if (width > height)
                 {
+                    /* Landscape */
                     ButtonRowStack.Orientation = StackOrientation.Horizontal;
                     ModeLayout.Orientation = StackOrientation.Horizontal;
                     ZoomLayout.Orientation = StackOrientation.Horizontal;
@@ -3445,6 +3489,7 @@ namespace GnollHackClient.Pages.Game
                 }
                 else
                 {
+                    /* Portrait */
                     ButtonRowStack.Orientation = StackOrientation.Vertical;
                     ModeLayout.Orientation = StackOrientation.Vertical;
                     ZoomLayout.Orientation = StackOrientation.Horizontal;

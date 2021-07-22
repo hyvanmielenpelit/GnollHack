@@ -712,6 +712,7 @@ namespace GnollHackCommon
         public const float MinimumMapFontSize = 4.0f;
         public const float MapFontDefaultSize = 64.0f;
         public const float MapFontDefaultAlternateSize = 30.0f;
+        public const int DefaultMessageRows = 5;
     }
 
 

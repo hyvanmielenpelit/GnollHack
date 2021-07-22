@@ -1565,9 +1565,6 @@ movemon()
 
     for (mtmp = fmon; mtmp; mtmp = nmtmp)
     {
-        /* Reset mx0 and my0 */
-        mtmp->mx0 = mtmp->mx, mtmp->my0 = mtmp->my;
-
         /* end monster movement early if hero is flagged to leave the level */
         if (u.utotype
 #ifdef SAFERHANGUP
@@ -1614,6 +1611,9 @@ movemon()
         mtmp->movement -= NORMAL_SPEED;
         if (mtmp->movement >= NORMAL_SPEED)
             somebody_can_move = TRUE;
+
+        /* Reset mx0 and my0 */
+        mtmp->mx0 = mtmp->mx, mtmp->my0 = mtmp->my;
 
         if (vision_full_recalc)
             vision_recalc(0); /* vision! */

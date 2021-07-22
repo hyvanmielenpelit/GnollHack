@@ -1586,6 +1586,8 @@ doname_specific_object()
     obj = getobj(allowall, "name", 0, "");
     if (obj)
         do_uoname(obj);
+
+    return 0;
 }
 
 int

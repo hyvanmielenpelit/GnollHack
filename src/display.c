@@ -2649,11 +2649,9 @@ boolean exclude_ascii;
         clear_monster_layerinfo(&gbuf[y][x].layers);
         gbuf[y][x].layers.monster_origin_x = x0;
         gbuf[y][x].layers.monster_origin_y = y0;
-
-        /* Clear monster info */
-        gbuf[y][x].layers.monster_hp = 0;
-        gbuf[y][x].layers.monster_maxhp = 0;
-        gbuf[y][x].layers.rider_glyph = NO_GLYPH;
+        gbuf[y][x].layers.m_id = mtmp ? mtmp->m_id : 0;
+        if (!loc_is_you && mtmp && x0 == mtmp->mx && y0 == mtmp->my)
+            x = x;
 
         if (disp_flags & LFLAGS_M_YOU)
         {
@@ -2694,9 +2692,6 @@ boolean exclude_ascii;
         
         if (mtmp)
         {
-            if (!Hallucination)
-                gbuf[y][x].layers.m_id = mtmp->m_id;
-
             if (is_tame(mtmp) && !Hallucination)
                 extra_flags |= LFLAGS_M_PET;
 

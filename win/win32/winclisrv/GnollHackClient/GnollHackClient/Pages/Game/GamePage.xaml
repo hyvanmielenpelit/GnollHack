@@ -15,7 +15,7 @@
     </ContentPage.Resources>
     
     <ContentPage.Content>
-        <AbsoluteLayout x:Name="LoadingLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Black">
+        <AbsoluteLayout x:Name="MainGameLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Black">
             <Label x:Name="LoadingLabel" Text="Loading..." FontFamily="Diablo" TextColor="White" FontSize="36"
                    HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand" VerticalTextAlignment="Center"
                    AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1" />
@@ -115,7 +115,7 @@
             <!-- AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.35"  AbsoluteLayout.LayoutFlags="All"  -->
 
                 <StackLayout Grid.Row="1" x:Name="ButtonRowStack" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Orientation="Vertical" >
-                    <Grid HeightRequest="60" BackgroundColor="Black" HorizontalOptions="CenterAndExpand" >
+                    <Grid x:Name="UpperCmdGrid" HeightRequest="60" BackgroundColor="Black" HorizontalOptions="CenterAndExpand" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
@@ -128,36 +128,36 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Grid Grid.Column="0" HeightRequest="60" WidthRequest="50" >
+                        <Grid x:Name="InventoryGrid" Grid.Column="0" HeightRequest="60" WidthRequest="50" >
                             <Image x:Name="InventoryImg" HeightRequest="50" WidthRequest="50" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
                             <Label x:Name="InventoryLbl" Text="Inventory" TextColor="White" FontFamily="LatoRegular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
                             <Button x:Name="InventoryButton" Clicked="InventoryButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
                         </Grid>
-                        <Grid Grid.Column="1" HeightRequest="60" WidthRequest="50" >
+                        <Grid x:Name="SearchGrid" Grid.Column="1" HeightRequest="60" WidthRequest="50" >
                             <Image x:Name="SearchImg" HeightRequest="50" WidthRequest="50" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
                             <Label x:Name="SearchLbl" Text="Search" TextColor="White" FontFamily="LatoRegular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
                             <Button x:Name="SearchButton" Clicked="SearchButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
                         </Grid>
-                        <Grid Grid.Column="2" HeightRequest="60" WidthRequest="50" >
+                        <Grid x:Name="WaitGrid" Grid.Column="2" HeightRequest="60" WidthRequest="50" >
                             <Image x:Name="WaitImg" HeightRequest="50" WidthRequest="50" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
                             <Label x:Name="WaitLbl" Text="Wait" TextColor="White" FontFamily="LatoRegular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
                             <Button x:Name="WaitButton" Clicked="WaitButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
                         </Grid>
-                        <Grid Grid.Column="3" HeightRequest="60" WidthRequest="50" >
+                        <Grid x:Name="DropManyGrid" Grid.Column="3" HeightRequest="60" WidthRequest="50" >
                             <Image x:Name="DropManyImg" HeightRequest="50" WidthRequest="50" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
                             <Label x:Name="DropManyLbl" Text="Drop Items" TextColor="White" FontFamily="LatoRegular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
                             <Button x:Name="DropManyButton" Clicked="DropManyButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
                         </Grid>
-                        <Button Grid.Column="4" Text="C" x:Name="ChatButton" Clicked="ChatButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                        <Button Grid.Column="5" Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                        <Button Grid.Column="6" Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                        <Button Grid.Column="4" Text="C" x:Name="ChatButton" Clicked="ChatButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
+                        <Button Grid.Column="5" Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
+                        <Button Grid.Column="6" Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
                         <!--
                         <Button Grid.Column="0" Text="i" x:Name="InventoryButton" Clicked="InventoryButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                         <Button Grid.Column="1" Text="s" x:Name="SearchButton" Clicked="SearchButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                         <Button Grid.Column="2" Text="." x:Name="WaitButton" Clicked="WaitButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70"/>
                         -->
                     </Grid>
-                    <Grid HeightRequest="60" BackgroundColor="Black"  HorizontalOptions="CenterAndExpand">
+                    <Grid x:Name="LowerCmdGrid" HeightRequest="60" BackgroundColor="Black"  HorizontalOptions="CenterAndExpand">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
@@ -170,13 +170,13 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Text="k" x:Name="KickButton" Clicked="KickButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                        <Button Grid.Column="1" Text="f" x:Name="FireButton" Clicked="FireButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                        <Button Grid.Column="2" Text="t" x:Name="ThrowQuiveredButton" Clicked="ThrowQuiveredButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                        <Button Grid.Column="3" Text="a" x:Name="ApplyWieldedButton" Clicked="ApplyWieldedButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                        <Button Grid.Column="4" Text="Z" x:Name="CastButton" Clicked="CastButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                        <Button Grid.Column="5" Text="z" x:Name="ZapButton" Clicked="ZapButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                        <Button Grid.Column="6" Text="x" x:Name="SwapWeaponButton" Clicked="SwapWeaponButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                        <Button Grid.Column="0" Text="k" x:Name="KickButton" Clicked="KickButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
+                        <Button Grid.Column="1" Text="f" x:Name="FireButton" Clicked="FireButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
+                        <Button Grid.Column="2" Text="t" x:Name="ThrowQuiveredButton" Clicked="ThrowQuiveredButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
+                        <Button Grid.Column="3" Text="a" x:Name="ApplyWieldedButton" Clicked="ApplyWieldedButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
+                        <Button Grid.Column="4" Text="Z" x:Name="CastButton" Clicked="CastButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
+                        <Button Grid.Column="5" Text="z" x:Name="ZapButton" Clicked="ZapButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
+                        <Button Grid.Column="6" Text="x" x:Name="SwapWeaponButton" Clicked="SwapWeaponButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
                     </Grid>
                 </StackLayout>
             </Grid>
