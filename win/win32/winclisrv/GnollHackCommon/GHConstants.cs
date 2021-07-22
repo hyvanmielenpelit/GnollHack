@@ -709,7 +709,9 @@ namespace GnollHackCommon
         public const int MaxObjectsDrawn = 12;
         public const int OBJECT_PILE_START_HEIGHT = 2;
         public const int OBJECT_PILE_HEIGHT_DIFFERENCE = 2;
-
+        public const float MinimumMapFontSize = 4.0f;
+        public const float MapFontDefaultSize = 64.0f;
+        public const float MapFontDefaultAlternateSize = 30.0f;
     }
 
 

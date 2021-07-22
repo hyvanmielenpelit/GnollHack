@@ -99,8 +99,8 @@ namespace GnollHackClient.Pages.Game
         public bool ZoomAlternateMode { get; set; }
 
 
-        private float _mapFontSize = 60;
-        private float _mapFontAlternateSize = 24;
+        private float _mapFontSize = GHConstants.MapFontDefaultSize;
+        private float _mapFontAlternateSize = GHConstants.MapFontDefaultAlternateSize;
         private object _mapFontSizeLock = new object();
         public float MapFontSize { get { lock (_mapFontSizeLock) { return _mapFontSize; } } set { lock (_mapFontSizeLock) { _mapFontSize = value; } } }
         public float MapFontAlternateSize { get { lock (_mapFontSizeLock) { return _mapFontAlternateSize; } } set { lock (_mapFontSizeLock) { _mapFontAlternateSize = value; } } }
@@ -189,6 +189,18 @@ namespace GnollHackClient.Pages.Game
             if (int.TryParse(msgnum, out mparseint))
             {
                 NumDisplayedMessages = mparseint;
+            }
+
+            string mapfontsiz = Preferences.Get("MapFontSize", ((int)GHConstants.MapFontDefaultSize).ToString());
+            if (int.TryParse(mapfontsiz, out parseint))
+            {
+                MapFontSize = (float)parseint;
+            }
+
+            string mapfontaltsiz = Preferences.Get("MapFontAlternateSize", ((int)GHConstants.MapFontDefaultAlternateSize).ToString());
+            if (int.TryParse(mapfontaltsiz, out parseint))
+            {
+                MapFontAlternateSize = (float)parseint;
             }
 
             ToggleModeButton_Clicked(null, null);
@@ -879,6 +891,10 @@ namespace GnollHackClient.Pages.Game
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             App.BackButtonPressed -= BackButtonPressed;
+
+            Preferences.Set("MapFontSize", (Math.Max((int)GHConstants.MinimumMapFontSize, (int)MapFontSize)).ToString());
+            Preferences.Set("MapFontAlternateSize", (Math.Max((int)GHConstants.MinimumMapFontSize, (int)MapFontAlternateSize)).ToString());
+
         }
 
 
