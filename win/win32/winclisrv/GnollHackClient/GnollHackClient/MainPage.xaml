@@ -5,10 +5,11 @@
              xmlns:local="clr-namespace:GnollHackClient"
              x:Class="GnollHackClient.MainPage"
              NavigationPage.HasNavigationBar="false"
+             BackgroundColor="Black"
              Appearing="ContentPage_Appearing">
 
     <AbsoluteLayout VerticalOptions="FillAndExpand"
-                    HorizontalOptions="FillAndExpand">
+                    HorizontalOptions="FillAndExpand" BackgroundColor="Black">
         <skia:SKCanvasView x:Name="canvasView"
                        PaintSurface="canvasView_PaintSurface" 
                            AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
@@ -18,8 +19,8 @@
             <Image x:Name="clearImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="100" HeightRequest="50"/>
             <Button Text="Clear" x:Name="ClearFilesButton" Clicked="ClearFilesButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
         </Grid>
-        <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.0, 0.90, 1.0, 0.30"
-                           AbsoluteLayout.LayoutFlags="All" WidthRequest="300" HeightRequest="160">
+        <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.5, 0.90, AutoSize, AutoSize"
+                           AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300" HeightRequest="160">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />

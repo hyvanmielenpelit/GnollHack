@@ -77,14 +77,16 @@ namespace GnollHackClient
             SKRect bkdest = new SKRect(0f, 0f, x, y);
             canvas.DrawBitmap(_background_bitmap, bkdest);
 
-            float logo_width = (float)info.Width;
+            float scale = info.Width < info.Height ? 1.0f : (float)info.Height / (float)info.Width;
+            float scalesquared = (float)Math.Pow((double)scale, 2.0);
+            float logo_width = (float)info.Width * scalesquared;
             float logo_height = (float)_logo_bitmap.Height * logo_width / ((float)_logo_bitmap.Width);
             x = (info.Width - logo_width) / 2;
-            y = (float)info.Height * 0.2f;
+            y = (float)info.Height * 0.175f;
             SKRect dest = new SKRect(x, y, x + logo_width, y + logo_height);
             canvas.DrawBitmap(_logo_bitmap, dest);
 
-            string str = "GnollHack 4.1.0";
+            string str = scale == 1.0f ? "GnollHack 4.1.0" : "GnollHack 4.1.0 Android";
 
             // Create an SKPaint object to display the text
             SKPaint textPaint = new SKPaint
@@ -96,23 +98,25 @@ namespace GnollHackClient
 
             // Adjust TextSize property so text is 90% of screen width
             float textWidth = textPaint.MeasureText(str);
-            textPaint.TextSize = 0.65f * info.Width * textPaint.TextSize / textWidth;
+            textPaint.TextSize = 0.65f * scale * info.Width * textPaint.TextSize / textWidth;
 
             // Find the text bounds
             SKRect textBounds = new SKRect();
             textPaint.MeasureText(str, ref textBounds);
-
             float xText = info.Width / 2 - textBounds.MidX;
             float yText = y + logo_height + 30; // info.Height / 2 - textBounds.MidY;
 
-            // And draw the text
             canvas.DrawText(str, xText, yText, textPaint);
 
-            str = "Android Version";
-            yText = yText + textPaint.TextSize + 5;
-            textPaint.MeasureText(str, ref textBounds);
-            xText = info.Width / 2 - textBounds.MidX;
-            canvas.DrawText(str, xText, yText, textPaint);
+
+            if (info.Width < info.Height)
+            {
+                str = "Android Version";
+                yText = yText + textPaint.TextSize + 5;
+                textPaint.MeasureText(str, ref textBounds);
+                xText = info.Width / 2 - textBounds.MidX;
+                canvas.DrawText(str, xText, yText, textPaint);
+            }
         }
 
         public void HideLocalGameButton()
