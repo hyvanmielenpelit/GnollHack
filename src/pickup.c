@@ -1670,6 +1670,7 @@ encumber_msg()
                 newcap == 4 ? "can barely" : "can't even");
             break;
         }
+        refresh_u_tile_gui_info();
         context.botl = context.botlx = TRUE;
     } else if (oldcap > newcap) {
         switch (newcap) {
@@ -1687,6 +1688,7 @@ encumber_msg()
                 stagger(youmonst.data, "stagger"));
             break;
         }
+        refresh_u_tile_gui_info();
         context.botl = context.botlx = TRUE;
     }
 

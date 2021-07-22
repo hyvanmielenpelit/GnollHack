@@ -1034,7 +1034,7 @@ namespace GnollHackClient.Pages.Game
                                                                 /* Draw condition and status marks */
                                                                 float x_scaling_factor = width / (float)(GHConstants.TileWidth);
                                                                 float y_scaling_factor = height / (float)(GHConstants.TileHeight);
-                                                                int max_fitted_rows = (GHConstants.TileWidth - 4) / (GHConstants.StatusMarkWidth + 2);
+                                                                int max_fitted_rows = (GHConstants.TileHeight - 4) / (GHConstants.StatusMarkHeight + 2);
                                                                 int status_count = 0;
 
                                                                 ulong status_bits = _mapData[mapx, mapy].Layers.status_bits;
@@ -1049,6 +1049,9 @@ namespace GnollHackClient.Pages.Game
                                                                     int tile_y = TileSheetY(mtile);
                                                                     foreach (int status_mark in statusmarkorder)
                                                                     {
+                                                                        if (status_count >= max_fitted_rows)
+                                                                            break;
+
                                                                         ulong statusbit = 1UL << status_mark;
                                                                         if ((status_bits & statusbit) != 0)
                                                                         {
@@ -1075,12 +1078,9 @@ namespace GnollHackClient.Pages.Game
                                                                             target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
                                                                             target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
 
-                                                                            status_count++;
-
-                                                                            if (status_count >= max_fitted_rows)
-                                                                                break;
-
                                                                             canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                                                            status_count++;
                                                                         }
                                                                     }
                                                                 }
@@ -1122,24 +1122,30 @@ namespace GnollHackClient.Pages.Game
                                                                             target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
                                                                             target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
 
-                                                                            status_count++;
-
                                                                             if (status_count >= max_fitted_rows)
                                                                                 break;
 
                                                                             canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                                                            status_count++;
                                                                         }
                                                                     }
                                                                 }
 
                                                                 for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
                                                                 {
+                                                                    if (status_count >= max_fitted_rows)
+                                                                        break;
+
                                                                     ulong buff_bits = _mapData[mapx, mapy].Layers.buff_bits[buff_ulong];
                                                                     int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
                                                                     if (buff_bits != 0)
                                                                     {
                                                                         for (int buff_idx = 0; buff_idx < 32; buff_idx++)
                                                                         {
+                                                                            if (status_count >= max_fitted_rows)
+                                                                                break;
+
                                                                             ulong buffbit = 1UL << buff_idx;
                                                                             if ((buff_bits & buffbit) != 0)
                                                                             {
@@ -1176,12 +1182,9 @@ namespace GnollHackClient.Pages.Game
                                                                                 target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
                                                                                 target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
 
-                                                                                status_count++;
-
-                                                                                if (status_count >= max_fitted_rows)
-                                                                                    break;
-
                                                                                 canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                                                                status_count++;
                                                                             }
                                                                         }
                                                                     }
@@ -2137,7 +2140,7 @@ namespace GnollHackClient.Pages.Game
                                                             /* Draw condition and status marks */
                                                             float x_scaling_factor = width / (float)(GHConstants.TileWidth);
                                                             float y_scaling_factor = height / (float)(GHConstants.TileHeight);
-                                                            int max_fitted_rows = (GHConstants.TileWidth - 4) / (GHConstants.StatusMarkWidth + 2);
+                                                            int max_fitted_rows = (GHConstants.TileHeight - 4) / (GHConstants.StatusMarkHeight + 2);
                                                             int status_count = 0;
 
                                                             ulong status_bits = _mapData[mapx, mapy].Layers.status_bits;
@@ -2152,6 +2155,9 @@ namespace GnollHackClient.Pages.Game
                                                                 int tile_y = TileSheetY(mtile);
                                                                 foreach (int status_mark in statusmarkorder)
                                                                 {
+                                                                    if (status_count >= max_fitted_rows)
+                                                                        break;
+
                                                                     ulong statusbit = 1UL << status_mark;
                                                                     if ((status_bits & statusbit) != 0)
                                                                     {
@@ -2178,12 +2184,9 @@ namespace GnollHackClient.Pages.Game
                                                                         target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
                                                                         target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
 
-                                                                        status_count++;
-
-                                                                        if (status_count >= max_fitted_rows)
-                                                                            break;
-
                                                                         canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                                                        status_count++;
                                                                     }
                                                                 }
                                                             }
@@ -2199,6 +2202,9 @@ namespace GnollHackClient.Pages.Game
                                                                 int tile_y = TileSheetY(mtile);
                                                                 for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
                                                                 {
+                                                                    if (status_count >= max_fitted_rows)
+                                                                        break;
+
                                                                     ulong conditionbit = 1UL << condition_mark;
                                                                     if ((condition_bits & conditionbit) != 0)
                                                                     {
@@ -2225,24 +2231,27 @@ namespace GnollHackClient.Pages.Game
                                                                         target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
                                                                         target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
 
-                                                                        status_count++;
-
-                                                                        if (status_count >= max_fitted_rows)
-                                                                            break;
-
                                                                         canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                                                        status_count++;
                                                                     }
                                                                 }
                                                             }
 
                                                             for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
                                                             {
+                                                                if (status_count >= max_fitted_rows)
+                                                                    break;
+
                                                                 ulong buff_bits = _mapData[mapx, mapy].Layers.buff_bits[buff_ulong];
                                                                 int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
                                                                 if (buff_bits != 0)
                                                                 {
                                                                     for (int buff_idx = 0; buff_idx < 32; buff_idx++)
                                                                     {
+                                                                        if (status_count >= max_fitted_rows)
+                                                                            break;
+
                                                                         ulong buffbit = 1UL << buff_idx;
                                                                         if ((buff_bits & buffbit) != 0)
                                                                         {
@@ -2279,12 +2288,9 @@ namespace GnollHackClient.Pages.Game
                                                                             target_rt.Top = ty + (int)(y_scaling_factor * (double)unscaled_top);
                                                                             target_rt.Bottom = ty + (int)(y_scaling_factor * (double)unscaled_bottom);
 
-                                                                            status_count++;
-
-                                                                            if (status_count >= max_fitted_rows)
-                                                                                break;
-
                                                                             canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                                                            status_count++;
                                                                         }
                                                                     }
                                                                 }
