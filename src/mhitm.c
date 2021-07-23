@@ -578,7 +578,7 @@ register struct monst *magr, *mdef;
                         && !is_cancelled(mdef)) 
                     {
                         struct monst* mclone;
-                        if ((mclone = clone_mon(mdef, 0, 0)) != 0) 
+                        if ((mclone = clone_mon(mdef, 0, 0, TRUE)) != 0) 
                         {
                             if (vis && canspotmon(mdef)) 
                             {

@@ -2077,9 +2077,10 @@ register struct monst *mtmp;
 
 /* Note: for long worms, always call cutworm (cutworm calls clone_mon) */
 struct monst *
-clone_mon(mon, x, y)
+clone_mon(mon, x, y, origin_at_mon)
 struct monst *mon;
 xchar x, y; /* clone's preferred location or 0 (near mon) */
+boolean origin_at_mon;
 {
     coord mm;
     struct monst *m2;
@@ -2119,6 +2120,11 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
         m2->m_id = context.ident++; /* ident overflowed */
     m2->mx = mm.x;
     m2->my = mm.y;
+    if (origin_at_mon)
+    {
+        m2->mx0 = mon->mx;
+        m2->my0 = mon->my;
+    }
 
     m2->mundetected = 0;
     m2->mtrapped = 0;
@@ -2353,7 +2359,6 @@ unsigned long mmflags;
     struct permonst *ptr = &mons[mndx];
     boolean use_maxhp = !!(mmflags & MM_MAX_HP);
     boolean use_normalhd = !!(mmflags & MM_NORMAL_HIT_DICE);
-    //boolean no_dif_level_adj = !!(mmflags & MM_NO_DIFFICULTY_HP_CHANGE);
     //boolean adj_existing_hp = !!(mmflags & MM_ADJUST_HP_FROM_EXISTING);
     //int old_maxhp = mon->mhpmax;
     //int old_basemaxhp = mon->mbasehpmax;
@@ -2580,7 +2585,9 @@ int level_limit;
     boolean byyou = (x == u.ux && y == u.uy);
     boolean allow_minvent = ((mmflags & MM_NO_MONSTER_INVENTORY) == 0);
     boolean countbirth = ((mmflags & MM_NOCOUNTBIRTH) == 0);
+    boolean setorigin = ((mmflags & MM_SET_ORIGIN_COORDINATES) == 0);
     unsigned long gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
+    int origin_x = x, origin_y = y;
 
     /* if caller wants random location, do it here */
     if (x == 0 && y == 0) 
@@ -2851,6 +2858,12 @@ int level_limit;
     mtmp->facing_right = (mmflags & MM_FACING_LEFT) ? 0 : (mmflags & MM_FACING_RIGHT) ? 1 : rn2(2);
 
     place_monster(mtmp, x, y);
+    if (setorigin)
+    {
+        mtmp->mx0 = origin_x;
+        mtmp->my0 = origin_y;
+    }
+
     mtmp->mcanmove = mtmp->mwantstomove = mtmp->mwantstodrop = TRUE;
     mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : peace_minded(ptr);
 

@@ -3537,7 +3537,7 @@ struct monst *mon,  /* monster being split */
     } 
     else 
     {
-        mtmp2 = clone_mon(mon, 0, 0);
+        mtmp2 = clone_mon(mon, 0, 0, TRUE);
         if (mtmp2)
         {
             /* Gremlins are half strength */

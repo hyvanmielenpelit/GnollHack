@@ -312,97 +312,97 @@ namespace GnollHackClient.Pages.Game
             //}
 
             canvasView._gamePage = this;
-            //uint timeToAnimate = 2000;
-            //Xamarin.Forms.Animation animation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
-            //animation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: 25, repeat: ()=> true );
+            uint timeToAnimate = 2000;
+            Xamarin.Forms.Animation animation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
+            animation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: 25, repeat: () => true);
 
             Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
             {
                 if (_useMapBitmap)
                     UpdateMap();
-                canvasView.InvalidateSurface();
+                //canvasView.InvalidateSurface();
                 pollRequestQueue();
 
                 /* Increment counters */
-                lock (AnimationTimerLock)
-                {
-                    AnimationTimers.general_animation_counter++;
-                    if (AnimationTimers.general_animation_counter < 0)
-                        AnimationTimers.general_animation_counter = 0;
+                //lock (AnimationTimerLock)
+                //{
+                //    AnimationTimers.general_animation_counter++;
+                //    if (AnimationTimers.general_animation_counter < 0)
+                //        AnimationTimers.general_animation_counter = 0;
 
-                    if (AnimationTimers.u_action_animation_counter_on)
-                    {
-                        AnimationTimers.u_action_animation_counter++;
-                        if (AnimationTimers.u_action_animation_counter < 0)
-                            AnimationTimers.u_action_animation_counter = 0;
-                    }
+                //    if (AnimationTimers.u_action_animation_counter_on)
+                //    {
+                //        AnimationTimers.u_action_animation_counter++;
+                //        if (AnimationTimers.u_action_animation_counter < 0)
+                //            AnimationTimers.u_action_animation_counter = 0;
+                //    }
 
-                    if (AnimationTimers.m_action_animation_counter_on)
-                    {
-                        AnimationTimers.m_action_animation_counter++;
-                        if (AnimationTimers.m_action_animation_counter < 0)
-                            AnimationTimers.m_action_animation_counter = 0;
-                    }
+                //    if (AnimationTimers.m_action_animation_counter_on)
+                //    {
+                //        AnimationTimers.m_action_animation_counter++;
+                //        if (AnimationTimers.m_action_animation_counter < 0)
+                //            AnimationTimers.m_action_animation_counter = 0;
+                //    }
 
-                    if (AnimationTimers.explosion_animation_counter_on)
-                    {
-                        AnimationTimers.explosion_animation_counter++;
-                        if (AnimationTimers.explosion_animation_counter < 0)
-                            AnimationTimers.explosion_animation_counter = 0;
-                    }
+                //    if (AnimationTimers.explosion_animation_counter_on)
+                //    {
+                //        AnimationTimers.explosion_animation_counter++;
+                //        if (AnimationTimers.explosion_animation_counter < 0)
+                //            AnimationTimers.explosion_animation_counter = 0;
+                //    }
 
-                    int i;
-                    for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
-                    {
-                        if (AnimationTimers.zap_animation_counter_on[i])
-                        {
-                            AnimationTimers.zap_animation_counter[i]++;
-                            if (AnimationTimers.zap_animation_counter[i] < 0)
-                                AnimationTimers.zap_animation_counter[i] = 0;
-                        }
-                    }
+                //    int i;
+                //    for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
+                //    {
+                //        if (AnimationTimers.zap_animation_counter_on[i])
+                //        {
+                //            AnimationTimers.zap_animation_counter[i]++;
+                //            if (AnimationTimers.zap_animation_counter[i] < 0)
+                //                AnimationTimers.zap_animation_counter[i] = 0;
+                //        }
+                //    }
 
-                    for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
-                    {
-                        if (AnimationTimers.special_effect_animation_counter_on[i])
-                        {
-                            AnimationTimers.special_effect_animation_counter[i]++;
-                            if (AnimationTimers.special_effect_animation_counter[i] < 0)
-                                AnimationTimers.special_effect_animation_counter[i] = 0;
-                        }
-                    }
+                //    for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
+                //    {
+                //        if (AnimationTimers.special_effect_animation_counter_on[i])
+                //        {
+                //            AnimationTimers.special_effect_animation_counter[i]++;
+                //            if (AnimationTimers.special_effect_animation_counter[i] < 0)
+                //                AnimationTimers.special_effect_animation_counter[i] = 0;
+                //        }
+                //    }
 
-                    lock (_floatingTextLock)
-                    {
-                        for (i = _floatingTexts.Count - 1; i >= 0; i--)
-                        {
-                            if (_floatingTexts[i].IsFinished(AnimationTimers.general_animation_counter))
-                                _floatingTexts.RemoveAt(i);
-                        }
-                    }
+                //    lock (_floatingTextLock)
+                //    {
+                //        for (i = _floatingTexts.Count - 1; i >= 0; i--)
+                //        {
+                //            if (_floatingTexts[i].IsFinished(AnimationTimers.general_animation_counter))
+                //                _floatingTexts.RemoveAt(i);
+                //        }
+                //    }
 
-                    lock (_screenTextLock)
-                    {
-                        if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))
-                            _screenText = null;
-                    }
+                //    lock (_screenTextLock)
+                //    {
+                //        if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))
+                //            _screenText = null;
+                //    }
 
-                    lock (TargetClipLock)
-                    {
-                        if (AnimationTimers.general_animation_counter < _targetClipStartCounterValue
-                            || AnimationTimers.general_animation_counter > _targetClipStartCounterValue + _targetClipPanTime)
-                            _targetClipOn = false;
+                //    lock (TargetClipLock)
+                //    {
+                //        if (AnimationTimers.general_animation_counter < _targetClipStartCounterValue
+                //            || AnimationTimers.general_animation_counter > _targetClipStartCounterValue + _targetClipPanTime)
+                //            _targetClipOn = false;
 
-                        if (_targetClipOn)
-                        {
-                            lock (MapOffsetLock)
-                            {
-                                _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                                _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                            }
-                        }
-                    }
-                }
+                //        if (_targetClipOn)
+                //        {
+                //            lock (MapOffsetLock)
+                //            {
+                //                _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                //                _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                //            }
+                //        }
+                //    }
+                //}
 
                 return true;
             });
@@ -2115,6 +2115,12 @@ namespace GnollHackClient.Pages.Game
                                         paint.FilterQuality = SKFilterQuality.None;
 
                                         float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
+                                        long currentcountervalue = 0;
+                                        lock (AnimationTimerLock)
+                                        {
+                                            currentcountervalue = AnimationTimers.general_animation_counter;
+                                        }
+
                                         for (int layer_idx = 0; layer_idx <= (int)layer_types.MAX_LAYERS; layer_idx++)
                                         {
                                             for (int mapy = startY; mapy <= endY; mapy++)
@@ -2126,11 +2132,6 @@ namespace GnollHackClient.Pages.Game
                                                     sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
                                                     sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
                                                     long glyphprintcountervalue = _mapData[mapx, mapy].GlyphPrintCounterValue;
-                                                    long currentcountervalue = 0;
-                                                    lock (AnimationTimerLock)
-                                                    {
-                                                        currentcountervalue = AnimationTimers.general_animation_counter;
-                                                    }
                                                     float base_move_offset_x = 0, base_move_offset_y = 0;
                                                     int movediffx = (int)monster_origin_x - mapx;
                                                     int movediffy = (int)monster_origin_y - mapy;
@@ -3455,9 +3456,9 @@ namespace GnollHackClient.Pages.Game
                 FourthButton.WidthRequest = FourthButton.HeightRequest = sidesize;
 
                 double imgsidewidth = Math.Min(Math.Min(80.0, Math.Max(50.0, width / 7)), Math.Min(80.0, Math.Max(50.0, height / 7)));
-                double imgsideheight = Math.Min(Math.Min(80.0, Math.Max(60.0, width / 6)), Math.Min(80.0, Math.Max(60.0, height / 6)));
-                double fontsize = 9.0 * sidesize / 50.0;
-                double fontsize_larger = 9.5 * sidesize / 50.0;
+                double imgsideheight = Math.Min(Math.Min(80.0, Math.Max(50.0, width / 7)), Math.Min(80.0, Math.Max(50.0, height / 7)));
+                double fontsize = 9.0 * imgsidewidth / 50.0;
+                double fontsize_larger = 9.5 * imgsidewidth / 50.0;
                 double gridsidewidth = imgsidewidth;
                 double gridsideheight = imgsideheight + fontsize + 2;
                 double gridsideheight_larger = imgsideheight + fontsize_larger + 2;

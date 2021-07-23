@@ -1948,7 +1948,7 @@ boolean* obj_destroyed;
             && !(is_ammo(obj) || is_missile(obj)))
         && hand_to_hand) {
         struct monst* mclone;
-        if ((mclone = clone_mon(mon, 0, 0)) != 0) 
+        if ((mclone = clone_mon(mon, 0, 0, TRUE)) != 0) 
         {
             char withwhat[BUFSZ];
 

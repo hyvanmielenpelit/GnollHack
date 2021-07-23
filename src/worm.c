@@ -381,7 +381,7 @@ boolean cuttier; /* hit is by wielded blade or axe or by thrown axe */
         /* clone_mon() will fail if enough long worms have been
            created to have them be marked as extinct or if the hit
            that cut the current one has dropped it down to 1 HP */
-        new_worm = clone_mon(worm, x, y);
+        new_worm = clone_mon(worm, x, y, FALSE);
     }
 
     /* Sometimes the tail end dies. */

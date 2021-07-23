@@ -2888,10 +2888,10 @@ boolean makecat, givemsg;
             if (givemsg) 
             {
                 if (!canspotmon(livecat))
-                    You("think %s brushed your %s.", something,
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "think %s brushed your %s.", something,
                         body_part(FOOT));
                 else
-                    pline("%s inside the box is still alive!",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s inside the box is still alive!",
                           Monnam(livecat));
             }
             (void) christen_monst(livecat, sc);
@@ -2917,7 +2917,7 @@ boolean makecat, givemsg;
             deadcat = oname(deadcat, sc);
         }
         if (givemsg)
-            pline_The("%s inside the box is dead!",
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s inside the box is dead!",
                       Hallucination ? rndmonnam((char *) 0) : "housecat");
     }
     nhUse(deadcat);

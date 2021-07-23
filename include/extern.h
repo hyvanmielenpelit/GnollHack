@@ -1525,7 +1525,7 @@ E void FDECL(readmail, (struct obj *));
 
 E void FDECL(dealloc_monst, (struct monst *));
 E boolean FDECL(is_home_elemental, (struct permonst *));
-E struct monst *FDECL(clone_mon, (struct monst *, XCHAR_P, XCHAR_P));
+E struct monst* FDECL(clone_mon, (struct monst*, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E double FDECL(monhp_per_lvl, (struct monst *));
 E int FDECL(monbasehp_per_lvl, (struct monst*));
 E double FDECL(monhpadj_per_lvl, (struct monst*));

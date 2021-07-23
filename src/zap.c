@@ -10845,7 +10845,7 @@ unsigned long scflags;
     boolean faithful = !!(scflags & SUMMONCREATURE_FLAGS_FAITHFUL);
     boolean protector = !!(scflags & SUMMONCREATURE_FLAGS_PROTECTOR);
 
-    mon = makemon(&mons[monst_id], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_NO_DIFFICULTY_HP_CHANGE | MM_PLAY_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END | mmflags);
+    mon = makemon(&mons[monst_id], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END | mmflags);
     if (mon)
     {
         mon->issummoned = markassummoned;
@@ -10885,7 +10885,7 @@ int spl_otyp;
     monindex = ndemon(A_NONE);
     
     if(monindex)
-        mon = makemon(&mons[monindex], u.ux, u.uy, MM_NO_MONSTER_INVENTORY | MM_NO_DIFFICULTY_HP_CHANGE | MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+        mon = makemon(&mons[monindex], u.ux, u.uy, MM_NO_MONSTER_INVENTORY | MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
 
     if (mon)
     {

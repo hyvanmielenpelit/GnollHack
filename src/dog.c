@@ -122,7 +122,7 @@ boolean quietly;
             }
         }
 
-        mtmp = makemon(pm, x, y, MM_EDOG | MM_IGNOREWATER | MM_NO_MONSTER_INVENTORY | MM_NO_DIFFICULTY_HP_CHANGE);
+        mtmp = makemon(pm, x, y, MM_EDOG | MM_IGNOREWATER | MM_NO_MONSTER_INVENTORY);
         if (otmp && !mtmp)
         { /* monster was genocided or square occupied */
             if (!quietly)
@@ -247,7 +247,7 @@ makedog()
         }
     }
 
-    mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE | MM_NO_MONSTER_INVENTORY | MM_NO_DIFFICULTY_HP_CHANGE);
+    mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE | MM_NO_MONSTER_INVENTORY);
 
     if (!mtmp)
         return ((struct monst *) 0); /* pets were genocided */

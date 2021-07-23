@@ -4897,7 +4897,7 @@ cloneu()
         return (struct monst *) 0;
     if (mvitals[mndx].mvflags & G_EXTINCT)
         return (struct monst *) 0;
-    mon = makemon(youmonst.data, u.ux, u.uy, MM_NO_MONSTER_INVENTORY | MM_EDOG);
+    mon = makemon(youmonst.data, u.ux, u.uy, MM_NO_MONSTER_INVENTORY | MM_EDOG | MM_SET_ORIGIN_COORDINATES);
     if (!mon)
         return NULL;
     mon->mcloned = 1;
