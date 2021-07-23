@@ -94,7 +94,7 @@ struct window_procs nuklear_procs = {
     sdl_get_nh_event, sdl_exit_nhwindows, sdl_suspend_nhwindows,
     sdl_resume_nhwindows, sdl_create_nhwindow, sdl_clear_nhwindow,
     sdl_display_nhwindow, sdl_destroy_nhwindow, sdl_curs, sdl_putstr_ex,
-    genl_putmixed_ex, sdl_display_file, sdl_start_menu, sdl_add_menu, sdl_add_extended_menu,
+    genl_putmixed_ex, sdl_display_file, sdl_start_menu_ex, sdl_add_menu, sdl_add_extended_menu,
     sdl_end_menu_ex, sdl_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     sdl_update_inventory, sdl_mark_synch, sdl_wait_synch,
@@ -1106,9 +1106,9 @@ sdl_display_file(const char *filename, BOOLEAN_P must_exist)
    be used for menus.
 */
 void
-sdl_start_menu(winid wid)
+sdl_start_menu_ex(winid wid, int style)
 {
-    logDebug("sdl_start_menu(%d)\n", wid);
+    logDebug("sdl_start_menu_ex(%d)\n", wid);
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
             && GetNHApp()->windowlist[wid].type == NHW_MENU) {

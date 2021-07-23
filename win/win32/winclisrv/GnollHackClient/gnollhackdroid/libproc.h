@@ -22,7 +22,7 @@ void lib_destroy_nhwindow(winid wid);
 void lib_curs(winid wid, int x, int y);
 void lib_putstr_ex(winid wid, int attr, const char* text, int app, int color);
 void lib_display_file(const char* filename, BOOLEAN_P must_exist);
-void lib_start_menu(winid wid);
+void lib_start_menu_ex(winid wid, int style);
 void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel);

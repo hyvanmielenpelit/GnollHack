@@ -659,7 +659,7 @@ namespace GnollHackClient
                 ClientCallback_RawPrint(msg);
         }
 
-        public void ClientCallback_StartMenu(int winid)
+        public void ClientCallback_StartMenu(int winid, int style)
         {
             lock(_ghWindowsLock)
             {

@@ -266,7 +266,7 @@
 #define tty_putstr_ex(x, y, z, i, j) tty_putstr_(x, y, z)
 #define tty_putstr(x, y, z) tty_putstr_ex(x, y, z, 0, NO_COLOR)
 #define tty_display_file(x, y) tty_display_file_(x, y)
-#define tty_start_menu(x) tty_start_menu_(x)
+#define tty_start_menu_ex(x, y) tty_start_menu_ex_(x, y)
 #define tty_add_menu(a, b, c, d, e, f, g, h) \
     tty_add_menu_(a, b, c, d, e, f, g, h)
 #define tty_add_extended_menu(a, b, c, d, e, f, g, h, i) \

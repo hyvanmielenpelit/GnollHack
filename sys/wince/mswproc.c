@@ -54,7 +54,7 @@ struct window_procs mswin_procs = {
     mswin_exit_nhwindows, mswin_suspend_nhwindows, mswin_resume_nhwindows,
     mswin_create_nhwindow, mswin_clear_nhwindow, mswin_display_nhwindow,
     mswin_destroy_nhwindow, mswin_curs, mswin_putstr_ex, genl_putmixed_ex,
-    mswin_display_file, mswin_start_menu, mswin_add_menu, mswin_add_extended_menu, mswin_end_menu_ex,
+    mswin_display_file, mswin_start_menu_ex, mswin_add_menu, mswin_add_extended_menu, mswin_end_menu_ex,
     mswin_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     mswin_update_inventory, mswin_mark_synch, mswin_wait_synch,
@@ -1004,9 +1004,9 @@ mswin_display_file(const char *filename, BOOLEAN_P must_exist)
    be used for menus.
 */
 void
-mswin_start_menu(winid wid)
+mswin_start_menu_ex(winid wid, int style)
 {
-    logDebug("mswin_start_menu(%d)\n", wid);
+    logDebug("mswin_start_menu_ex(%d)\n", wid);
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL
             && GetNHApp()->windowlist[wid].type == NHW_MENU) {

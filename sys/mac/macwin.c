@@ -1950,7 +1950,7 @@ mac_nh_poskey(int *a, int *b, int *c)
 }
 
 void
-mac_start_menu(winid win)
+mac_start_menu_ex(winid win, int style)
 {
     HideWindow(theWindows[win].its_window);
     mac_clear_nhwindow(win);
@@ -3285,7 +3285,7 @@ struct window_procs mac_procs = {
     mac_askname, mac_get_nh_event, mac_exit_nhwindows, mac_suspend_nhwindows,
     mac_unimplemented, mac_create_nhwindow, mac_clear_nhwindow,
     mac_display_nhwindow, mac_destroy_nhwindow, mac_curs, mac_putstr_ex,
-    genl_putmixed_ex, mac_display_file, mac_start_menu, mac_add_menu, mac_add_extended_menu,
+    genl_putmixed_ex, mac_display_file, mac_start_menu_ex, mac_add_menu, mac_add_extended_menu,
     mac_end_menu_ex, mac_select_menu, genl_message_menu, mac_unimplemented,
     mac_get_nh_event, mac_get_nh_event,
 #ifdef CLIPPING

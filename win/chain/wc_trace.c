@@ -356,16 +356,17 @@ boolean complain;
 }
 
 void
-trace_start_menu(vp, window)
+trace_start_menu_ex(vp, window, style)
 void *vp;
 winid window;
+int style;
 {
     struct trace_data *tdp = vp;
 
     fprintf(wc_tracelogf, "%sstart_menu(%d)\n", INDENT, window);
 
     PRE;
-    (*tdp->nprocs->win_start_menu)(tdp->ndata, window);
+    (*tdp->nprocs->win_start_menu_ex)(tdp->ndata, window, style);
     POST;
 }
 
@@ -1200,7 +1201,7 @@ struct chain_procs trace_procs = {
     trace_exit_nhwindows, trace_suspend_nhwindows, trace_resume_nhwindows,
     trace_create_nhwindow, trace_clear_nhwindow, trace_display_nhwindow,
     trace_destroy_nhwindow, trace_curs, trace_putstr_ex, trace_putmixed_ex,
-    trace_display_file, trace_start_menu, trace_add_menu, trace_add_extended_menu, trace_end_menu_ex,
+    trace_display_file, trace_start_menu_ex, trace_add_menu, trace_add_extended_menu, trace_end_menu_ex,
     trace_select_menu, trace_message_menu, trace_update_inventory,
     trace_mark_synch, trace_wait_synch,
 #ifdef CLIPPING

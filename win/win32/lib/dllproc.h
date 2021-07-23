@@ -54,7 +54,7 @@ void dll_curs(winid wid, int x, int y);
 void dll_putstr(winid wid, int attr, const char *text);
 void dll_putstr_ex(winid wid, int attr, const char *text, int, int);
 void dll_display_file(const char *filename, BOOLEAN_P must_exist);
-void dll_start_menu(winid wid);
+void dll_start_menu_ex(winid wid, int style);
 void dll_add_menu(winid wid, int glyph, const ANY_P *identifier,
                     CHAR_P accelerator, CHAR_P group_accel, int attr,
                     const char *str, BOOLEAN_P presel);

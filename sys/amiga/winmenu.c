@@ -9,8 +9,9 @@
 
 /* Start building the text for a menu */
 void
-amii_start_menu(window)
+amii_start_menu_ex(window, style)
 register winid window;
+register int style;
 {
     register int i;
     register struct amii_WinDesc *cw;

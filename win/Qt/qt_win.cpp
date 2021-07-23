@@ -4818,7 +4818,7 @@ void NetHackQtBind::qt_display_file(const char *filename, BOOLEAN_P must_exist)
     }
 }
 
-void NetHackQtBind::qt_start_menu(winid wid)
+void NetHackQtBind::qt_start_menu_ex(winid wid, int style)
 {
     NetHackQtWindow* window=id_to_window[wid];
     window->StartMenu();
@@ -5273,7 +5273,7 @@ struct window_procs Qt_procs = {
     NetHackQtBind::qt_putstr_ex,
     genl_putmixed_ex,
     NetHackQtBind::qt_display_file,
-    NetHackQtBind::qt_start_menu,
+    NetHackQtBind::qt_start_menu_ex,
     NetHackQtBind::qt_add_menu,
     NetHackQtBind::qt_add_extended_menu,
     NetHackQtBind::qt_end_menu_ex,

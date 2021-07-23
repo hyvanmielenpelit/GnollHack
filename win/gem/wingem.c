@@ -47,7 +47,7 @@ struct window_procs Gem_procs = {
     Gem_get_nh_event, Gem_exit_nhwindows, Gem_suspend_nhwindows,
     Gem_resume_nhwindows, Gem_create_nhwindow, Gem_clear_nhwindow,
     Gem_display_nhwindow, Gem_destroy_nhwindow, Gem_curs, Gem_putstr_ex,
-    genl_putmixed_ex, Gem_display_file, Gem_start_menu, Gem_add_menu, Gem_add_extended_menu,
+    genl_putmixed_ex, Gem_display_file, Gem_start_menu_ex, Gem_add_menu, Gem_add_extended_menu,
     Gem_end_menu_ex, Gem_select_menu, genl_message_menu, Gem_update_inventory,
     Gem_mark_synch, Gem_wait_synch,
 #ifdef CLIPPING
@@ -1028,7 +1028,7 @@ Gem_get_ext_cmd()
     const char *ptr;
 
     wind = Gem_create_nhwindow(NHW_MENU);
-    Gem_start_menu(wind);
+    Gem_start_menu_ex(wind, 0);
     for (i = 0; (ptr = extcmdlist[i].ef_txt); i++) {
         any.a_int = i;
         accelerator = *ptr;

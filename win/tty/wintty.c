@@ -104,7 +104,7 @@ struct window_procs tty_procs = {
     tty_exit_nhwindows, tty_suspend_nhwindows, tty_resume_nhwindows,
     tty_create_nhwindow, tty_clear_nhwindow, tty_display_nhwindow,
     tty_destroy_nhwindow, tty_curs, tty_putstr_ex, genl_putmixed_ex,
-    tty_display_file, tty_start_menu, tty_add_menu, tty_add_extended_menu, tty_end_menu_ex,
+    tty_display_file, tty_start_menu_ex, tty_add_menu, tty_add_extended_menu, tty_end_menu_ex,
     tty_select_menu, tty_message_menu, tty_update_inventory, tty_mark_synch,
     tty_wait_synch,
 #ifdef CLIPPING
@@ -3000,8 +3000,9 @@ boolean complain;
 }
 
 void
-tty_start_menu(window)
+tty_start_menu_ex(window, style)
 winid window;
+int style UNUSED;
 {
     tty_clear_nhwindow(window);
     return;

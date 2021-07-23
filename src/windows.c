@@ -80,7 +80,7 @@ STATIC_DCL winid FDECL(dump_create_nhwindow, (int));
 STATIC_DCL void FDECL(dump_clear_nhwindow, (winid));
 STATIC_DCL void FDECL(dump_display_nhwindow, (winid, BOOLEAN_P));
 STATIC_DCL void FDECL(dump_destroy_nhwindow, (winid));
-STATIC_DCL void FDECL(dump_start_menu, (winid));
+STATIC_DCL void FDECL(dump_start_menu_ex, (winid, int));
 STATIC_DCL void FDECL(dump_add_menu, (winid, int, const ANY_P *, CHAR_P,
                                       CHAR_P, int, const char *, BOOLEAN_P));
 STATIC_DCL void FDECL(dump_add_extended_menu, (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P,
@@ -695,6 +695,7 @@ static void FDECL(hup_getlin_ex, (int, int, const char *, char *));
 static void FDECL(hup_init_nhwindows, (int *, char **));
 static void FDECL(hup_exit_nhwindows, (const char *));
 static winid FDECL(hup_create_nhwindow, (int));
+static void FDECL(hup_start_menu_ex, (winid, int));
 static int FDECL(hup_select_menu, (winid, int, MENU_ITEM_P **));
 static void FDECL(hup_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P,
                                  int, const char *, BOOLEAN_P));
@@ -737,7 +738,7 @@ static struct window_procs hup_procs = {
     hup_create_nhwindow, hup_void_fdecl_winid,         /* clear_nhwindow */
     hup_display_nhwindow, hup_void_fdecl_winid,        /* destroy_nhwindow */
     hup_curs, hup_putstr_ex, hup_putstr_ex,            /* putmixed */
-    hup_display_file, hup_void_fdecl_winid,            /* start_menu */
+    hup_display_file, hup_start_menu_ex,               /* start_menu */
     hup_add_menu, hup_add_extended_menu, hup_end_menu_ex, hup_select_menu, genl_message_menu,
     hup_void_ndecl,                                    /* update_inventory */
     hup_void_ndecl,                                    /* mark_synch */
@@ -875,6 +876,15 @@ hup_create_nhwindow(type)
 int type UNUSED;
 {
     return WIN_ERR;
+}
+
+/*ARGUSED*/
+static void
+hup_start_menu_ex(window, style)
+winid window UNUSED;
+int style UNUSED;
+{
+    return;
 }
 
 /*ARGSUSED*/
@@ -1566,8 +1576,9 @@ winid win UNUSED;
 
 /*ARGUSED*/
 STATIC_OVL void
-dump_start_menu(win)
+dump_start_menu_ex(win, style)
 winid win UNUSED;
+int style UNUSED;
 {
     return;
 }
@@ -1669,7 +1680,7 @@ boolean onoff_flag;
             windowprocs.win_clear_nhwindow = dump_clear_nhwindow;
             windowprocs.win_display_nhwindow = dump_display_nhwindow;
             windowprocs.win_destroy_nhwindow = dump_destroy_nhwindow;
-            windowprocs.win_start_menu = dump_start_menu;
+            windowprocs.win_start_menu_ex = dump_start_menu_ex;
             windowprocs.win_add_menu = dump_add_menu;
             windowprocs.win_add_extended_menu = dump_add_extended_menu;
             windowprocs.win_end_menu_ex = dump_end_menu_ex;

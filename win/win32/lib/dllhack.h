@@ -60,7 +60,7 @@ DLL int RunGnollHack(
     PutStrExCallback callback_putstr_ex,
     PutMixedCallback callback_putmixed_ex,
     DisplayFileCallback callback_display_file,
-    StartMenuCallback callback_start_menu,
+    StartMenuCallback callback_start_menu_ex,
     AddMenuCallback callback_add_menu,
     AddExtendedMenuCallback callback_add_extended_menu,
     EndMenuCallback callback_end_menu_ex,

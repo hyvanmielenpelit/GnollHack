@@ -23,7 +23,7 @@ static void FDECL(and_curs, (winid,int,int));
 static void FDECL(and_putstr_ex, (winid, int, const char *, int, int));
 static void FDECL(and_putmixed_ex, (winid, int, const char *, int, int));
 static void FDECL(and_display_file, (const char *, BOOLEAN_P));
-static void FDECL(and_start_menu, (winid));
+static void FDECL(and_start_menu_ex, (winid, int));
 static void FDECL(and_add_menu, (winid,int,const ANY_P *, CHAR_P,CHAR_P,int,const char *, BOOLEAN_P));
 static void FDECL(and_add_extended_menu, (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P, CHAR_P, int, const char*, BOOLEAN_P));
 static void FDECL(and_end_menu_ex, (winid, const char *, const char*));
@@ -89,7 +89,7 @@ struct window_procs and_procs = {
 	and_putstr_ex,
 	and_putmixed_ex,
 	and_display_file,
-	and_start_menu,
+	and_start_menu_ex,
 	and_add_menu,
 	and_add_extended_menu,
 	and_end_menu_ex,
@@ -440,7 +440,7 @@ void and_player_selection()
 		{
 			/* Prompt for a role */
 			win = create_nhwindow(NHW_MENU);
-			and_start_menu(win);
+			and_start_menu_ex(win, 0);
 			any.a_void = 0; /* zero out all bits */
 			any.a_int = randrole(TRUE)+1;
 			and_add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "Random", MENU_UNSELECTED);
@@ -482,7 +482,7 @@ void and_player_selection()
 			/* tty_clear_nhwindow(BASE_WINDOW); */
 			/* tty_putstr(BASE_WINDOW, 0, "Choosing Race"); */
 			win = create_nhwindow(NHW_MENU);
-			and_start_menu(win);
+			and_start_menu_ex(win, 0);
 			any.a_void = 0; /* zero out all bits */
 			any.a_int = randrace(flags.initrole)+1;
 			and_add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "random", MENU_UNSELECTED);
@@ -518,7 +518,7 @@ void and_player_selection()
 			/* tty_clear_nhwindow(BASE_WINDOW); */
 			/* tty_putstr(BASE_WINDOW, 0, "Choosing Gender"); */
 			win = create_nhwindow(NHW_MENU);
-			and_start_menu(win);
+			and_start_menu_ex(win, 0);
 			any.a_void = 0; /* zero out all bits */
 			any.a_int = randgend(flags.initrole, flags.initrace)+1;
 			and_add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "random", MENU_UNSELECTED);
@@ -552,7 +552,7 @@ void and_player_selection()
 			/* tty_clear_nhwindow(BASE_WINDOW); */
 			/* tty_putstr(BASE_WINDOW, 0, "Choosing Alignment"); */
 			win = and_create_nhwindow(NHW_MENU);
-			and_start_menu(win);
+			and_start_menu_ex(win, 0);
 			any.a_void = 0; /* zero out all bits */
 			any.a_int = randalign(flags.initrole, flags.initrace)+1;
 			and_add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, "random", MENU_UNSELECTED);
@@ -1163,7 +1163,7 @@ void and_display_file(const char *name, BOOLEAN_P complain)
 //		   before add_menu().  After calling start_menu() you may not
 //		   putstr() to the window.  Only windows of type NHW_MENU may
 //		   be used for menus.
-void and_start_menu(winid wid)
+void and_start_menu_ex(winid wid, int style)
 {
 	JNICallV(jStartMenu, wid);
 }
@@ -1981,7 +1981,7 @@ int do_ext_cmd_menu(BOOLEAN_P complete)
 	const char *ptr;
 
 	wid = and_create_nhwindow(NHW_MENU);
-	and_start_menu(wid);
+	and_start_menu_ex(wid, 0);
 	for(i = 0; (ptr = extcmdlist[i].ef_txt); i++)
 	{
 		flgs = extcmdlist[i].flags;

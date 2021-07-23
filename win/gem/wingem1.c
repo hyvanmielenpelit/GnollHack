@@ -1423,10 +1423,11 @@ mar_more()
     }
 }
 
-/************************* Gem_start_menu *******************************/
+/************************* Gem_start_menu_ex *******************************/
 void
-Gem_start_menu(win)
+Gem_start_menu_ex(win, style)
 winid win;
+int style;
 {
     win = win;
     if (invent_list) {
@@ -2555,7 +2556,7 @@ winid window;
         use_rip = FALSE;
         break;
     case NHW_MENU:
-        Gem_start_menu(window); /* delete invent_list */
+        Gem_start_menu_ex(window, 0); /* delete invent_list */
         test_free(Menu_title);
         break;
     case 0: /* No window available, probably an error message? */

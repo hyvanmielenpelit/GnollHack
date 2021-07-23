@@ -71,7 +71,7 @@ struct window_procs safe_procs = {
     safe_exit_nhwindows, safe_suspend_nhwindows, safe_resume_nhwindows,
     safe_create_nhwindow, safe_clear_nhwindow, safe_display_nhwindow,
     safe_destroy_nhwindow, safe_curs, safe_putstr_ex, genl_putmixed_ex,
-    safe_display_file, safe_start_menu, safe_add_menu, safe_add_extended_menu, safe_end_menu_ex,
+    safe_display_file, safe_start_menu_ex, safe_add_menu, safe_add_extended_menu, safe_end_menu_ex,
     safe_select_menu, safe_message_menu, safe_update_inventory, safe_mark_synch,
     safe_wait_synch,
 #ifdef CLIPPING
@@ -250,8 +250,9 @@ boolean complain;
 }
 
 void
-safe_start_menu(window)
+safe_start_menu_ex(window, style)
 winid window;
+int style;
 {
     return;
 }

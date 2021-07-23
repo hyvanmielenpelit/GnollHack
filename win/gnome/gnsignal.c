@@ -37,7 +37,7 @@ static int s_done = FALSE;
  *	ghack_display     : NONE:BOOL
  *                            BOOL  = blocking flag
  *
- *	ghack_start_menu  : NONE:NONE
+ *	ghack_start_menu_ex  : NONE:NONE
  *
  *	ghack_add_menu    : NONE:POINTER
  *                            POINTER = GHackMenuItem*
@@ -83,7 +83,7 @@ ghack_init_signals(void)
         gtk_marshal_NONE__BOOL, GTK_TYPE_NONE, 1, GTK_TYPE_BOOL);
 
     ghack_signals[GHSIG_START_MENU] = gtk_object_class_user_signal_new(
-        gtk_type_class(gtk_widget_get_type()), "ghack_start_menu",
+        gtk_type_class(gtk_widget_get_type()), "ghack_start_menu_ex",
         GTK_RUN_FIRST, gtk_marshal_NONE__NONE, GTK_TYPE_NONE, 0);
 
     ghack_signals[GHSIG_ADD_MENU] = gtk_object_class_user_signal_new(

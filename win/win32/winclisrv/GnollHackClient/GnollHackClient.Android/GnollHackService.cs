@@ -45,7 +45,7 @@ namespace GnollHackClient.Droid
             PutStrExColorCallback callback_putstr_ex,
             PutStrExColorCallback callback_putmixed_ex,
             VoidConstCharBooleanCallback callback_display_file,
-            VoidIntCallback callback_start_menu,
+            StartMenuCallback callback_start_menu_ex,
             AddMenuCallback callback_add_menu,
             AddExtendedMenuCallback callback_add_extended_menu,
             EndMenuCallback callback_end_menu_ex,

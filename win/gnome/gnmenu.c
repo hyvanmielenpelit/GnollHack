@@ -151,7 +151,7 @@ ghack_menu_hide(GtkWidget *menuWin, GdkEvent *event, gpointer data)
 }
 
 void
-ghack_menu_window_start_menu(GtkWidget *menuWin, gpointer data)
+ghack_menu_window_start_menu_ex(GtkWidget *menuWin, gpointer data)
 {
     GtkWidget *frame1, *swin, *clist;
     MenuWinType isMenu;
@@ -589,8 +589,8 @@ ghack_init_menu_window(void)
     gtk_signal_connect(GTK_OBJECT(menuWin), "ghack_display",
                        GTK_SIGNAL_FUNC(ghack_menu_window_display), NULL);
 
-    gtk_signal_connect(GTK_OBJECT(menuWin), "ghack_start_menu",
-                       GTK_SIGNAL_FUNC(ghack_menu_window_start_menu), NULL);
+    gtk_signal_connect(GTK_OBJECT(menuWin), "ghack_start_menu_ex",
+                       GTK_SIGNAL_FUNC(ghack_menu_window_start_menu_ex), NULL);
 
     gtk_signal_connect(GTK_OBJECT(menuWin), "ghack_add_menu",
                        GTK_SIGNAL_FUNC(ghack_menu_window_add_menu), NULL);

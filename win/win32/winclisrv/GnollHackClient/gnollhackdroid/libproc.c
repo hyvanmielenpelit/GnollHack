@@ -25,7 +25,7 @@ struct window_procs lib_procs = {
     lib_get_nh_event, lib_exit_nhwindows, lib_suspend_nhwindows,
     lib_resume_nhwindows, lib_create_nhwindow, lib_clear_nhwindow,
     lib_display_nhwindow, lib_destroy_nhwindow, lib_curs, lib_putstr_ex,
-    genl_putmixed_ex, lib_display_file, lib_start_menu, lib_add_menu, lib_add_extended_menu,
+    genl_putmixed_ex, lib_display_file, lib_start_menu_ex, lib_add_menu, lib_add_extended_menu,
     lib_end_menu_ex, lib_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     lib_update_inventory, lib_mark_synch, lib_wait_synch,
@@ -211,9 +211,9 @@ void lib_display_file(const char* filename, BOOLEAN_P must_exist)
 
 }
 
-void lib_start_menu(winid wid)
+void lib_start_menu_ex(winid wid, int style)
 {
-    lib_callbacks.callback_start_menu(wid);
+    lib_callbacks.callback_start_menu_ex(wid, style);
 }
 
 void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,

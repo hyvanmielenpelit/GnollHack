@@ -33,7 +33,7 @@ struct window_procs {
     void FDECL((*win_putstr_ex), (winid, int, const char *, int, int));
     void FDECL((*win_putmixed_ex), (winid, int, const char *, int, int));
     void FDECL((*win_display_file), (const char *, BOOLEAN_P));
-    void FDECL((*win_start_menu), (winid));
+    void FDECL((*win_start_menu_ex), (winid, int));
     void FDECL((*win_add_menu), (winid, int, const ANY_P *, CHAR_P, CHAR_P,
                                  int, const char *, BOOLEAN_P));
     void FDECL((*win_add_extended_menu), (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P, CHAR_P,
@@ -159,7 +159,8 @@ extern
 #define putmixed_ex (*windowprocs.win_putmixed_ex)
 #define putmixed(x, y, z) putmixed_ex(x, y, z, 0, NO_COLOR)
 #define display_file (*windowprocs.win_display_file)
-#define start_menu (*windowprocs.win_start_menu)
+#define start_menu_ex (*windowprocs.win_start_menu_ex)
+#define start_menu(x) start_menu_ex(x, 0)
 #define add_menu (*windowprocs.win_add_menu)
 #define add_extended_menu (*windowprocs.win_add_extended_menu)
 #define end_menu_ex (*windowprocs.win_end_menu_ex)
@@ -413,7 +414,7 @@ struct chain_procs {
     void FDECL((*win_putstr_ex), (CARGS, winid, int, const char *, int, int));
     void FDECL((*win_putmixed_ex), (CARGS, winid, int, const char *, int, int));
     void FDECL((*win_display_file), (CARGS, const char *, BOOLEAN_P));
-    void FDECL((*win_start_menu), (CARGS, winid));
+    void FDECL((*win_start_menu_ex), (CARGS, winid, int));
     void FDECL((*win_add_menu), (CARGS, winid, int, const ANY_P *, CHAR_P,
                                  CHAR_P, int, const char *, BOOLEAN_P));
     void FDECL((*win_add_extended_menu), (CARGS, winid, int, const ANY_P*, struct extended_menu_info, CHAR_P,
@@ -514,7 +515,7 @@ extern void FDECL(safe_curs, (winid, int, int));
 extern void FDECL(safe_putstr_ex, (winid, int, const char *, int, int));
 extern void FDECL(safe_putmixed_ex, (winid, int, const char *, int, int));
 extern void FDECL(safe_display_file, (const char *, BOOLEAN_P));
-extern void FDECL(safe_start_menu, (winid));
+extern void FDECL(safe_start_menu_ex, (winid, int));
 extern void FDECL(safe_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P,
                                   int, const char *, BOOLEAN_P));
 extern void FDECL(safe_add_extended_menu, (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P, CHAR_P,

@@ -39,7 +39,7 @@ void amii_get_nh_event(void);
 void amii_getret(void);
 
 /* winmenu.c */
-void amii_start_menu(winid window);
+void amii_start_menu_ex(winid window, int style);
 void FDECL(amii_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P, int,
                            const char *, BOOLEAN_P));
 void FDECL(amii_add_extended_menu, (winid, int, const anything*, struct extended_menu_info, CHAR_P, CHAR_P, int,

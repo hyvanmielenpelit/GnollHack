@@ -175,10 +175,11 @@ boolean complain;
 }
 
 void
-chainin_start_menu(window)
+chainin_start_menu_ex(window, style)
 winid window;
+int style;
 {
-    (*cibase->nprocs->win_start_menu)(cibase->ndata, window);
+    (*cibase->nprocs->win_start_menu_ex)(cibase->ndata, window, style);
 }
 
 void
@@ -564,7 +565,7 @@ struct window_procs chainin_procs = {
     chainin_resume_nhwindows, chainin_create_nhwindow, chainin_clear_nhwindow,
     chainin_display_nhwindow, chainin_destroy_nhwindow, chainin_curs,
     chainin_putstr_ex, chainin_putmixed_ex, chainin_display_file,
-    chainin_start_menu, chainin_add_menu, chainin_add_extended_menu, chainin_end_menu_ex,
+    chainin_start_menu_ex, chainin_add_menu, chainin_add_extended_menu, chainin_end_menu_ex,
     chainin_select_menu, chainin_message_menu, chainin_update_inventory,
     chainin_mark_synch, chainin_wait_synch,
 #ifdef CLIPPING

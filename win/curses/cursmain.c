@@ -41,7 +41,7 @@ struct window_procs curses_procs = {
     curses_putstr_ex,
     genl_putmixed_ex,
     curses_display_file,
-    curses_start_menu,
+    curses_start_menu_ex,
     curses_add_menu,
     curses_add_extended_menu,
     curses_end_menu_ex,
@@ -314,7 +314,7 @@ curses_create_nhwindow(int type)
     winid wid = curses_get_wid(type);
 
     if (curses_is_menu(wid) || curses_is_text(wid)) {
-        curses_start_menu(wid);
+        curses_start_menu_ex(wid, 0);
         curses_add_wid(wid);
     }
 
@@ -461,7 +461,7 @@ curses_display_file(const char *filename, BOOLEAN_P must_exist)
    be used for menus.
 */
 void
-curses_start_menu(winid wid)
+curses_start_menu_ex(winid wid, int style UNUSED)
 {
     if (inv_update)
         return;

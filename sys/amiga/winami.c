@@ -33,7 +33,7 @@ struct window_procs amii_procs = {
     amii_exit_nhwindows, amii_suspend_nhwindows, amii_resume_nhwindows,
     amii_create_nhwindow, amii_clear_nhwindow, amii_display_nhwindow,
     amii_destroy_nhwindow, amii_curs, amii_putstr_ex, genl_putmixed_ex,
-    amii_display_file, amii_start_menu, amii_add_menu, amii_add_extended_menu, amii_end_menu_ex,
+    amii_display_file, amii_start_menu_ex, amii_add_menu, amii_add_extended_menu, amii_end_menu_ex,
     amii_select_menu, genl_message_menu, amii_update_inventory,
     amii_mark_synch, amii_wait_synch,
 #ifdef CLIPPING
@@ -81,7 +81,7 @@ struct window_procs amiv_procs = {
     amii_exit_nhwindows, amii_suspend_nhwindows, amii_resume_nhwindows,
     amii_create_nhwindow, amii_clear_nhwindow, amii_display_nhwindow,
     amii_destroy_nhwindow, amii_curs, amii_putstr_ex, genl_putmixed_ex,
-    amii_display_file, amii_start_menu, amii_add_menu, amii_add_extended_menu, amii_end_menu_ex,
+    amii_display_file, amii_start_menu_ex, amii_add_menu, amii_add_extended_menu, amii_end_menu_ex,
     amii_select_menu, genl_message_menu, amii_update_inventory,
     amii_mark_synch, amii_wait_synch,
 #ifdef CLIPPING
@@ -795,7 +795,7 @@ amii_get_ext_cmd(void)
 #ifdef EXTMENU
     if (iflags.extmenu) {
         win = amii_create_nhwindow(NHW_MENU);
-        amii_start_menu(win);
+        amii_start_menu_ex(win, 0);
         pline("#");
         amii_putstr(WIN_MESSAGE, -1, " ");
 
@@ -858,7 +858,7 @@ amii_get_ext_cmd(void)
             }
 
             win = amii_create_nhwindow(NHW_MENU);
-            amii_start_menu(win);
+            amii_start_menu_ex(win, 0);
 
             for (i = 0; extcmdlist[i].ef_txt != NULL; ++i) {
                 id.a_char = extcmdlist[i].ef_txt[0];

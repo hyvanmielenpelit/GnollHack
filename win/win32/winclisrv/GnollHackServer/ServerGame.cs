@@ -34,7 +34,7 @@ namespace GnollHackServer
             PutStrExColorCallback callback_putstr_ex,
             PutStrExColorCallback callback_putmixed_ex,
             VoidConstCharBooleanCallback callback_display_file,
-            VoidIntCallback callback_start_menu,
+            StartMenuCallback callback_start_menu_ex,
             AddMenuCallback callback_add_menu,
             AddExtendedMenuCallback callback_add_extended_menu,
             EndMenuCallback callback_end_menu_ex,
@@ -187,7 +187,7 @@ namespace GnollHackServer
                 GameCallback_PutStrExColor,
                 GameCallback_PutStrExColor,
                 GameCallback_VoidConstCharBooleanDummy,
-                GameCallback_VoidIntDummy,
+                GameCallback_StartMenu,
                 GameCallback_AddMenu,
                 GameCallback_AddExtendedMenu,
                 GameCallback_EndMenu,
@@ -314,6 +314,10 @@ namespace GnollHackServer
         }
 
         public void GameCallback_UpdateCursor(int style, int force_paint, int show_on_u)
+        {
+
+        }
+        protected void GameCallback_StartMenu(int winid, int style)
         {
 
         }

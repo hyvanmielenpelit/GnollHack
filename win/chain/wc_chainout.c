@@ -213,13 +213,14 @@ boolean complain;
 }
 
 void
-chainout_start_menu(vp, window)
+chainout_start_menu_ex(vp, window, style)
 void *vp;
 winid window;
+int style;
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_start_menu)(window);
+    (*tdp->nprocs->win_start_menu_ex)(window, style);
 }
 
 void
@@ -709,7 +710,7 @@ struct chain_procs chainout_procs = {
     chainout_resume_nhwindows, chainout_create_nhwindow,
     chainout_clear_nhwindow, chainout_display_nhwindow,
     chainout_destroy_nhwindow, chainout_curs, chainout_putstr_ex,
-    chainout_putmixed_ex, chainout_display_file, chainout_start_menu,
+    chainout_putmixed_ex, chainout_display_file, chainout_start_menu_ex,
     chainout_add_menu, chainout_end_menu_ex, chainout_select_menu,
     chainout_message_menu, chainout_update_inventory, chainout_mark_synch,
     chainout_wait_synch,

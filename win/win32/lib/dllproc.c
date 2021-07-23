@@ -74,7 +74,7 @@ struct window_procs dll_procs = {
     dll_get_nh_event, dll_exit_nhwindows, dll_suspend_nhwindows,
     dll_resume_nhwindows, dll_create_nhwindow, dll_clear_nhwindow,
     dll_display_nhwindow, dll_destroy_nhwindow, dll_curs, dll_putstr_ex,
-    genl_putmixed_ex, dll_display_file, dll_start_menu, dll_add_menu, dll_add_extended_menu,
+    genl_putmixed_ex, dll_display_file, dll_start_menu_ex, dll_add_menu, dll_add_extended_menu,
     dll_end_menu_ex, dll_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     dll_update_inventory, dll_mark_synch, dll_wait_synch,
@@ -1117,10 +1117,10 @@ dll_display_file(const char *filename, BOOLEAN_P must_exist)
    be used for menus.
 */
 void
-dll_start_menu(winid wid)
+dll_start_menu_ex(winid wid, int style)
 {
-    dll_logDebug("dll_start_menu(%d)\n", wid);
-    dll_callbacks.callback_start_menu((int)wid);
+    dll_logDebug("dll_start_menu_ex(%d)\n", wid);
+    dll_callbacks.callback_start_menu_ex((int)wid, style);
 #if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         if (GetNHApp()->windowlist[wid].win == NULL

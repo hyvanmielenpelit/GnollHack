@@ -44,7 +44,7 @@ DLL int WINAPI RunGnollHack(
     PutStrExCallback callback_putstr_ex,
     PutMixedCallback callback_putmixed_ex,
     DisplayFileCallback callback_display_file,
-    StartMenuCallback callback_start_menu,
+    StartMenuCallback callback_start_menu_ex,
     AddMenuCallback callback_add_menu,
     AddExtendedMenuCallback callback_add_extended_menu,
     EndMenuCallback callback_end_menu_ex,
@@ -143,7 +143,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_putstr_ex = callback_putstr_ex;
     dll_callbacks.callback_putmixed_ex = callback_putmixed_ex;
     dll_callbacks.callback_display_file = callback_display_file;
-    dll_callbacks.callback_start_menu = callback_start_menu;
+    dll_callbacks.callback_start_menu_ex = callback_start_menu_ex;
     dll_callbacks.callback_add_menu = callback_add_menu;
     dll_callbacks.callback_add_extended_menu = callback_add_extended_menu;
     dll_callbacks.callback_end_menu_ex = callback_end_menu_ex;
