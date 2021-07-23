@@ -1160,6 +1160,8 @@ int hit_tile_id, damage_shown;
     int missile_eroded2 = layers.missile_eroded2;
     unsigned long missile_flags = layers.missile_flags;
     short missile_height = layers.missile_height;
+    xchar missile_origin_x = layers.missile_origin_x;
+    xchar missile_origin_y = layers.missile_origin_y;
 
     int zap_glyph = NO_GLYPH;
     if (layers.layer_glyphs[LAYER_ZAP] != 0 && layers.layer_glyphs[LAYER_ZAP] != NO_GLYPH)
@@ -1410,7 +1412,7 @@ new_sym_end_here:
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH)
     {
         show_glyph_on_layer(x, y, missile_glyph, LAYER_MISSILE);
-        show_missile_info(x, y, missile_poisoned, missile_elemental_enchantment, missile_exceptionality, missile_mythic_prefix, missile_mythic_suffix, missile_eroded, missile_eroded2, missile_flags, missile_height);
+        show_missile_info(x, y, missile_poisoned, missile_elemental_enchantment, missile_exceptionality, missile_mythic_prefix, missile_mythic_suffix, missile_eroded, missile_eroded2, missile_flags, missile_height, missile_origin_x, missile_origin_y);
     }
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH)
     {
@@ -1619,13 +1621,13 @@ struct obj* obj;
                     show_glyph_on_layer_and_ascii(tglyph->saved[i - 1].x,
                                tglyph->saved[i - 1].y, tglyph->glyph, LAYER_MISSILE);
                     if(obj)
-                        show_missile_info(tglyph->saved[i - 1].x, tglyph->saved[i - 1].y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj)); /* Clear missile info out in the previous location */
+                        show_missile_info(tglyph->saved[i - 1].x, tglyph->saved[i - 1].y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
 
                     flush_screen(1);   /* make sure it shows up */
                     adjusted_delay_output();
 
                     if (obj)
-                        show_missile_info(tglyph->saved[i - 1].x, tglyph->saved[i - 1].y, 0, 0, 0, 0, 0, 0, 0, 0UL, 0);
+                        show_missile_info(tglyph->saved[i - 1].x, tglyph->saved[i - 1].y, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0);
                 }
                 tglyph->sidx = 1;
             }
@@ -1666,7 +1668,7 @@ struct obj* obj;
                 py = tglyph->saved[tglyph->sidx-1].y;
                 show_glyph_on_layer_and_ascii(px, py, tether_glyph(px, py), LAYER_MISSILE);
                 if (obj)
-                    show_missile_info(px, py, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj)); /* Clear missile info out in the previous location */
+                    show_missile_info(px, py, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
 
             }
             /* save pos for later use or erasure */
@@ -1695,7 +1697,7 @@ struct obj* obj;
             tglyph->style == DISP_BEAM || tglyph->style == DISP_BEAM_DIG || tglyph->style == DISP_ALL ? LAYER_ZAP : LAYER_MISSILE); /* show it */
 
         if (obj)
-            show_missile_info(x, y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj)); /* Clear missile info out in the previous location */
+            show_missile_info(x, y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, TRUE), get_obj_height(obj), 0, 0);
 
         flush_screen(1);                 /* make sure it shows up */
         break;
@@ -2419,11 +2421,12 @@ int hit_tile_id, damage_displayed;
 }
 
 void
-show_missile_info(x, y, poisoned, elemental_enchantment, exceptionality, mythic_prefix, mythic_suffix, eroded, eroded2, missile_flags, missile_height)
+show_missile_info(x, y, poisoned, elemental_enchantment, exceptionality, mythic_prefix, mythic_suffix, eroded, eroded2, missile_flags, missile_height, missile_origin_x, missile_origin_y)
 int x, y;
 uchar poisoned, elemental_enchantment, exceptionality, mythic_prefix, mythic_suffix, eroded, eroded2;
 unsigned long missile_flags;
 short missile_height;
+xchar missile_origin_x, missile_origin_y;
 {
     if (isok(x, y))
     {
@@ -2436,6 +2439,8 @@ short missile_height;
         gbuf[y][x].layers.missile_eroded2 = eroded2;
         gbuf[y][x].layers.missile_flags = missile_flags;
         gbuf[y][x].layers.missile_height = missile_height;
+        gbuf[y][x].layers.missile_origin_x = missile_origin_x;
+        gbuf[y][x].layers.missile_origin_y = missile_origin_y;
 
         gbuf[y][x].isnew = 1;
         if (gbuf_start[y] > x)

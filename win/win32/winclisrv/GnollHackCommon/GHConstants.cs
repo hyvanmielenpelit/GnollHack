@@ -324,6 +324,8 @@ namespace GnollHackCommon
         public byte missile_eroded2;
         public ulong missile_flags;
         public short missile_height;
+        public sbyte missile_origin_x;
+        public sbyte missile_origin_y;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxLeashed + 1)]
         public sbyte[] leash_mon_x; /* the last coordinate is the other end of the leash, i.e., u.ux at the time */
@@ -539,6 +541,7 @@ namespace GnollHackCommon
         public IntPtr cobj; /* contents list for containers */
         public uint o_id;
         public sbyte ox, oy;
+        public sbyte ox0, oy0;
         public short otyp; /* object class number */
         public uint owt;
         public long quan; /* number of items */

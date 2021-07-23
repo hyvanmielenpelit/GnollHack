@@ -40,6 +40,7 @@ struct obj {
     struct obj *cobj; /* contents list for containers */
     unsigned o_id;
     xchar ox, oy;
+    xchar ox0, oy0;
     short otyp; /* object class number */
     unsigned owt;
     long quan; /* number of items */

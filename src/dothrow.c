@@ -1443,11 +1443,11 @@ struct obj *obj;
             tmp_at(x, y);
             if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->elemental_enchantment || obj->exceptionality || obj->mythic_prefix || obj->mythic_suffix || obj->oeroded || obj->oeroded2))
             {
-                show_missile_info(x, y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, FALSE), get_obj_height(obj));
+                show_missile_info(x, y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->mythic_prefix, obj->mythic_suffix, obj->oeroded, obj->oeroded2, get_missile_flags(obj, FALSE), get_obj_height(obj), 0, 0);
                 flush_screen(1);
             }
             adjusted_delay_output();
-            show_missile_info(x, y, 0, 0, 0, 0, 0, 0, 0, 0UL, 0); /* Clear missile info out */
+            show_missile_info(x, y, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0); /* Clear missile info out */
             x -= u.dx;
             y -= u.dy;
         }

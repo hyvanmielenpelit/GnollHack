@@ -503,7 +503,7 @@ E void FDECL(clear_monster_extra_info, (int, int));
 E void FDECL(clear_monster_layer_at, (int, int));
 E void FDECL(clear_monster_layer_memory_at, (int, int));
 E void FDECL(show_extra_info, (int, int, unsigned long, int, int));
-E void FDECL(show_missile_info, (int, int, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, unsigned long, SHORT_P));
+E void FDECL(show_missile_info, (int, int, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, UCHAR_P, unsigned long, SHORT_P, XCHAR_P, XCHAR_P));
 E unsigned long FDECL(get_missile_flags, (struct obj*, BOOLEAN_P));
 E void FDECL(show_leash_info, (int, int, XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P));
 E void FDECL(clear_layer_info, (struct layer_info*));
