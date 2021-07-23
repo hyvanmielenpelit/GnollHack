@@ -19,9 +19,9 @@ namespace GnollHackClient.Pages.Game
             InitializeComponent();
             _gamePage = gamePage;
             if (_gamePage.EnableWizardMode)
-                WizCmdGrid.IsVisible = true;
+                WizCmdRow.IsVisible = true;
             else
-                WizCmdGrid.IsVisible = false;
+                WizCmdRow.IsVisible = false;
         }
 
         private async void DownButton_Clicked(object sender, EventArgs e)
@@ -262,6 +262,92 @@ namespace GnollHackClient.Pages.Game
         {
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Ctrl('i'));
+        }
+
+        private void ContentPage_SizeChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private double _currentPageWidth = 0;
+        private double _currentPageHeight = 0;
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if (width != _currentPageWidth || height != _currentPageHeight)
+            {
+                _currentPageWidth = width;
+                _currentPageHeight = height;
+                StackLayout firstChild = (StackLayout)MainLayout.Children[0];
+                int numcols = firstChild.Children.Count;
+                int numrows = MainLayout.Children.Count - (WizCmdRow.IsVisible ? 0 : 1);
+                if (width > height)
+                {
+                    /* Landscape */
+                    double btnwidth = ((width - MainLayout.Padding.Left - MainLayout.Padding.Right - MainLayout.Margin.Left - MainLayout.Margin.Right) / numrows) - firstChild.Padding.Left - firstChild.Padding.Right - firstChild.Margin.Left - firstChild.Margin.Right - MainLayout.Spacing;
+                    double btnheight = ((height - MainLayout.Padding.Top - MainLayout.Padding.Bottom - MainLayout.Margin.Top - MainLayout.Margin.Bottom) / numcols) - firstChild.Padding.Top - firstChild.Padding.Bottom - firstChild.Margin.Top - firstChild.Margin.Bottom - firstChild.Spacing;
+                    MainLayout.Orientation = StackOrientation.Horizontal;
+                    foreach (View col in MainLayout.Children)
+                    {
+                        StackLayout collayout = (StackLayout)col;
+                        collayout.Orientation = StackOrientation.Vertical;
+                        foreach (View btn in collayout.Children)
+                        {
+                            btn.WidthRequest = btnwidth;
+                            btn.HeightRequest = btnheight;
+                        }
+                    }
+                }
+                else
+                {
+                    /* Portrait */
+                    double btnwidth = ((width - MainLayout.Padding.Left - MainLayout.Padding.Right - MainLayout.Margin.Left - MainLayout.Margin.Right) / numcols) - firstChild.Padding.Left- firstChild.Padding.Right - firstChild.Margin.Left - firstChild.Margin.Right - firstChild.Spacing;
+                    double btnheight = ((height- MainLayout.Padding.Top - MainLayout.Padding.Bottom - MainLayout.Margin.Top - MainLayout.Margin.Bottom) / numrows) - firstChild.Padding.Top - firstChild.Padding.Bottom - firstChild.Margin.Top - firstChild.Margin.Bottom - MainLayout.Spacing;
+                    MainLayout.Orientation = StackOrientation.Vertical;
+                    foreach (View col in MainLayout.Children)
+                    {
+                        StackLayout collayout = (StackLayout)col;
+                        collayout.Orientation = StackOrientation.Horizontal;
+                        foreach (View btn in collayout.Children)
+                        {
+                            btn.WidthRequest = btnwidth;
+                            btn.HeightRequest = btnheight;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        private async void PopupMenuBackButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.ShowGameMenu(sender, e);
+        }
+
+        private async void WieldButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, 'w');
+        }
+
+        private async void WearButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, 'W');
+        }
+
+        private async void PutOnButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, 'P');
+        }
+
+        private async void TakeOffButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, 'T');
         }
     }
 }

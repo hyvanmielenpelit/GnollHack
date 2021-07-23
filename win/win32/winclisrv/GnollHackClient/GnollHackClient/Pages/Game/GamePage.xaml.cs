@@ -889,6 +889,11 @@ namespace GnollHackClient.Pages.Game
 
             return false;
         }
+        public async void ShowGameMenu(object sender, EventArgs e)
+        {
+            var menu = new GameMenuPage(this);
+            await App.Current.MainPage.Navigation.PushModalAsync(menu);
+        }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
