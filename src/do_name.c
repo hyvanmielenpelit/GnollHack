@@ -689,6 +689,7 @@ enum game_cursor_types cursor_style;
     flags.show_cursor_on_u = TRUE;
     flags.force_paint_at_cursor = TRUE;
     flags.active_cursor_style = cursor_style;
+    update_cursor(flags.active_cursor_style, flags.show_cursor_on_u, flags.show_cursor_on_u);
 
     for (i = 0; i < SIZE(pick_chars_def); i++)
         pick_chars[i] = Cmd.spkeys[pick_chars_def[i].nhkf];
@@ -1086,6 +1087,7 @@ enum game_cursor_types cursor_style;
     flags.show_cursor_on_u = FALSE;
     flags.force_paint_at_cursor = TRUE;
     flags.active_cursor_style = CURSOR_STYLE_GENERIC_CURSOR;
+    update_cursor(flags.active_cursor_style, flags.force_paint_at_cursor, flags.show_cursor_on_u);
 
     return result;
 }

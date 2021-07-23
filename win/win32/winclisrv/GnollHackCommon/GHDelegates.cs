@@ -118,6 +118,8 @@ namespace GnollHackCommon
     public delegate void DisplayFloatingTextCallback(int x, int y, string text, int style, int attr, int color, ulong tflags);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void DisplayScreenTextCallback(string text, string subtext, int style, int attr, int color, ulong tflags);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void UpdateCursorCallback(int style, int force_paint, int show_on_u);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void SendObjectDataCallback(int x, int y, obj otmp, int cmdtype, int where, int tile_height, ulong oflags);

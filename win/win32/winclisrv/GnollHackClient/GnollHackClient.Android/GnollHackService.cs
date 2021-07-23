@@ -110,6 +110,7 @@ namespace GnollHackClient.Droid
             ToggleAnimationTimerCallback callback_toggle_animation_timer,
             DisplayFloatingTextCallback callback_display_floating_text,
             DisplayScreenTextCallback callback_display_screen_text,
+            UpdateCursorCallback callback_update_cursor,
             VoidIntCallback callback_exit_hack,
             CharVoidCallback callback_getcwd,
             IntCharCharUintCallback callback_messagebox,
@@ -158,6 +159,8 @@ namespace GnollHackClient.Droid
         public static extern int LibGetUITileOff();
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibGetBuffTileOff();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetCursorOff();
 
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibGetAnimationArraySize();
@@ -349,7 +352,7 @@ namespace GnollHackClient.Droid
             return LibGetNoGlyph();
         }
 
-        public void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile, out int ui_tile, out int buff_tile)
+        public void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile, out int ui_tile, out int buff_tile, out int cursor_off)
         {
             a = LibGetAnimationOff();
             e = LibGetEnlargementOff();
@@ -358,6 +361,7 @@ namespace GnollHackClient.Droid
             hit_tile = LibGetHitTileOff();
             ui_tile = LibGetUITileOff();
             buff_tile = LibGetBuffTileOff();
+            cursor_off = LibGetCursorOff();
         }
 
         public List<AnimationDefinition> GetAnimationArray()
@@ -530,6 +534,7 @@ namespace GnollHackClient.Droid
                 clientGame.ClientCallback_ToggleAnimationTimer,
                 clientGame.ClientCallback_DisplayFloatingText,
                 clientGame.ClientCallback_DisplayScreenText,
+                clientGame.ClientCallback_UpdateCursor,
                 clientGame.ClientCallback_ExitHack,
                 clientGame.ClientCallback_GetCwd,
                 clientGame.ClientCallback_MessageBox,

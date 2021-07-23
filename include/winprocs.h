@@ -108,6 +108,7 @@ struct window_procs {
     void FDECL((*win_toggle_animation_timer), (int, int, int, int, int, int, unsigned long)); /* timettype, id, state = on/off, x, y, flags */
     void FDECL((*win_display_floating_text), (int, int, const char*, int, int, int, unsigned long));
     void FDECL((*win_display_screen_text), (const char*, const char*, int, int, int, unsigned long));
+    void FDECL((*win_update_cursor), (int, int, int));
 
 #if 0
     void FDECL((*win_clear_object_list_at), (int, int, int));
@@ -238,6 +239,7 @@ extern
 #define toggle_animation_timer (*windowprocs.win_toggle_animation_timer)
 #define display_floating_text (*windowprocs.win_display_floating_text)
 #define display_screen_text (*windowprocs.win_display_screen_text)
+#define update_cursor (*windowprocs.win_update_cursor)
 #define exit_hack (*windowprocs.win_exit_hack)
 
 /*
@@ -487,6 +489,7 @@ struct chain_procs {
     void FDECL((*win_toggle_animation_timer), (CARGS, int, int, int, int, int, int, unsigned long));
     void FDECL((*win_display_floating_text), (CARGS, int, int, const char*, int, int, int, unsigned long));
     void FDECL((*win_display_screen_text), (CARGS, const char*, const char*, int, int, int, unsigned long));
+    void FDECL((*win_update_cursor), (CARGS, int, int, int));
     void FDECL((*win_exit_hack), (CARGS, int));
 };
 #endif /* WINCHAIN */
@@ -583,6 +586,7 @@ extern void FDECL(safe_add_context_menu, (int, int, int, int, const char*, const
 extern void FDECL(safe_toggle_animation_timer, (int, int, int, int, int, int, unsigned long));
 extern void FDECL(safe_display_floating_text, (int, int, const char*, int, int, int, unsigned long));
 extern void FDECL(safe_display_screen_text, (const char*, const char*, int, int, int, unsigned long));
+extern void FDECL(safe_update_cursor, (int, int, int));
 extern void FDECL(safe_exit_hack, (int));
 
 extern void FDECL(stdio_raw_print, (const char *));

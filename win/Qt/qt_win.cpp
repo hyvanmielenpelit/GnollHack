@@ -5343,6 +5343,7 @@ struct window_procs Qt_procs = {
     genl_toggle_animation_timer,
     genl_display_floating_text,
     genl_display_screen_text,
+    genl_update_cursor,
     genl_exit_hack,
 };
 

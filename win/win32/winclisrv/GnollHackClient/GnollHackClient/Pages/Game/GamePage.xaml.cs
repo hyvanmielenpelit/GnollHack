@@ -53,6 +53,10 @@ namespace GnollHackClient.Pages.Game
         private int _mapCursorX;
         private int _mapCursorY;
 
+        private game_cursor_types _cursorType;
+        private bool _force_paint_at_cursor;
+        private bool _show_cursor_on_u;
+
         private ObjectData[,] _objectData = new ObjectData[GHConstants.MapCols, GHConstants.MapRows];
         private object _objectDataLock = new object();
 
@@ -136,6 +140,7 @@ namespace GnollHackClient.Pages.Game
         public int HitTileOff { get; set; }
         public int UITileOff { get; set; }
         public int BuffTileOff { get; set; }
+        public int CursorOff { get; set; }
 
 
         private int[] _tilesPerRow = new int[GHConstants.MaxTileSheets];
@@ -240,8 +245,9 @@ namespace GnollHackClient.Pages.Game
             UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
             NoGlyph = _gnollHackService.GetNoGlyph();
 
-            int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, buff_tile_off;
-            _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out buff_tile_off);
+            int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, buff_tile_off, cursor_off;
+            _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out buff_tile_off,
+                out cursor_off);
             AnimationOff = animoff;
             EnlargementOff = enloff;
             ReplacementOff = reoff;
@@ -249,6 +255,7 @@ namespace GnollHackClient.Pages.Game
             HitTileOff = hit_tile_off;
             UITileOff = ui_tile_off;
             BuffTileOff = buff_tile_off;
+            CursorOff = cursor_off;
 
             _animationDefs = _gnollHackService.GetAnimationArray();
             _enlargementDefs = _gnollHackService.GetEnlargementArray();
@@ -1655,7 +1662,7 @@ namespace GnollHackClient.Pages.Game
                                                                         {
                                                                             move_offset_x = base_move_offset_x;
                                                                             move_offset_y = base_move_offset_y;
-                                                                            if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_SEMI_TRANSPARENT | LayerFlags.LFLAGS_M_RADIAL_TRANSPARENCY)) != 0)
+                                                                            if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
                                                                                 opaqueness = 0.5f;
                                                                         }
                                                                         else if (layer_idx == (int)layer_types.LAYER_COVER_TRAP)
@@ -2132,6 +2139,8 @@ namespace GnollHackClient.Pages.Game
                                             {
                                                 for (int mapx = startX; mapx <= endX; mapx++)
                                                 {
+                                                    bool loc_is_you = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
+                                                    bool canspotself = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
                                                     short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
                                                     float scaled_y_height_change = 0;
                                                     sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
@@ -2156,6 +2165,36 @@ namespace GnollHackClient.Pages.Game
                                                     {
                                                         if (monster_height > 0)
                                                             scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
+
+                                                        /* Cursor */
+                                                        bool cannotseeself = (loc_is_you && !canspotself);
+                                                        if (loc_is_you 
+                                                            && (cannotseeself || _show_cursor_on_u) 
+                                                            && (mapx == _mapCursorX && mapy == _mapCursorY)
+                                                            )
+                                                        {
+                                                            int cidx = (cannotseeself && _cursorType == game_cursor_types.CURSOR_STYLE_GENERIC_CURSOR ? 
+                                                                (int)game_cursor_types.CURSOR_STYLE_INVISIBLE :
+                                                                (int)_cursorType);
+                                                            int cglyph = cidx + CursorOff;
+                                                            int ctile = Glyph2Tile[cglyph];
+                                                            int animation = Tile2Animation[ctile];
+                                                            int autodraw = Tile2Autodraw[ctile];
+                                                            int anim_frame_idx = 0, main_tile_idx = 0;
+                                                            sbyte mapAnimated = 0;
+                                                            int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(cglyph);
+                                                            ctile = _gnollHackService.GetAnimatedTile(ctile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, AnimationTimers.general_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
+                                                            int sheet_idx = TileSheetIdx(ctile);
+                                                            int tile_x = TileSheetX(ctile);
+                                                            int tile_y = TileSheetY(ctile);
+
+                                                            tx = (offsetX + _mapOffsetX + (loc_is_you ? base_move_offset_x : 0) + width * (float)mapx);
+                                                            ty = (offsetY + _mapOffsetY + (loc_is_you ? base_move_offset_y : 0) + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+                                                            SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                            SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                            canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+
+                                                        }
 
                                                         if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_YOU | LayerFlags.LFLAGS_UXUY | LayerFlags.LFLAGS_M_CANSPOTMON)) != 0
                                                             && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_WORM_TAIL)) == 0)
@@ -2762,7 +2801,7 @@ namespace GnollHackClient.Pages.Game
                                                                     {
                                                                         move_offset_x = base_move_offset_x;
                                                                         move_offset_y = base_move_offset_y;
-                                                                        if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_SEMI_TRANSPARENT | LayerFlags.LFLAGS_M_RADIAL_TRANSPARENCY)) != 0)
+                                                                        if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
                                                                             opaqueness = 0.5f;
                                                                     }
                                                                     else if (layer_idx == (int)layer_types.LAYER_COVER_TRAP)
@@ -3905,6 +3944,16 @@ namespace GnollHackClient.Pages.Game
                 _mapCursorY = y;
             }
         }
+        public void UpdateCursor(int style, int force_paint, int show_on_u)
+        {
+            lock (_mapDataLock)
+            {
+                _cursorType = (game_cursor_types)style;
+                _force_paint_at_cursor = (force_paint != 0);
+                _show_cursor_on_u = (show_on_u != 0);
+            }
+        }
+
         public void ClearMap()
         {
             lock (_mapDataLock)

@@ -367,6 +367,12 @@ genl_display_screen_text(const char* text UNUSED, const char* subtext UNUSED, in
 }
 
 void
+genl_update_cursor(int style UNUSED, int force_paint UNUSED, int show_on_u UNUSED)
+{
+    return;
+}
+
+void
 genl_exit_hack(int status)
 {
     gnollhack_exit(status);

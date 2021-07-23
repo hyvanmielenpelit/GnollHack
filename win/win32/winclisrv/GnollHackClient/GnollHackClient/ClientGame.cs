@@ -946,6 +946,14 @@ namespace GnollHackClient
             }
         }
 
+        public void ClientCallback_UpdateCursor(int style, int force_paint, int show_on_u)
+        {
+            lock (_gamePageLock)
+            {
+                _gamePage.UpdateCursor(style, force_paint, show_on_u);
+            }
+        }
+
         public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid)
         {
             if(App.FmodService != null)

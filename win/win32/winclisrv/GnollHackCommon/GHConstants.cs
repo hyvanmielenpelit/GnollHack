@@ -132,7 +132,7 @@ namespace GnollHackCommon
          LFLAGS_M_PET =             0x00000001UL,
          LFLAGS_M_PEACEFUL =        0x00000002UL,
          LFLAGS_M_RIDDEN =          0x00000004UL,
-         LFLAGS_M_DETECTED =        0x00000004UL,
+         LFLAGS_M_DETECTED =        0x00000008UL,
          LFLAGS_M_CANSPOTMON =      0x00000010UL,
          LFLAGS_M_YOU =             0x00000020UL,
          LFLAGS_M_MIMIC_OBJECT =    0x00000040UL,
@@ -144,13 +144,11 @@ namespace GnollHackCommon
          LFLAGS_M_WORM_TAIL =       0x00001000UL,
          LFLAGS_M_WORM_SEEN =       0x00002000UL,
          LFLAGS_M_KILLED =          0x00004000UL,
-         LFLAGS_M_SEMI_TRANSPARENT =    0x00008000UL,
-         LFLAGS_M_RADIAL_TRANSPARENCY = 0x00010000UL,
-         LFLAGS_M_MASK =            0x0001FFFFUL,
-         LFLAGS_O_PILE =            0x00020000UL,
-         LFLAGS_O_IN_PIT =          0x00040000UL,
-         LFLAGS_O_CHAIN =           0x00080000UL,
-         LFLAGS_O_MASK =            0x000E0000UL,
+         LFLAGS_M_MASK =            0x0000FFFFUL,
+         LFLAGS_O_PILE =            0x00010000UL,
+         LFLAGS_O_IN_PIT =          0x00020000UL,
+         LFLAGS_O_CHAIN =           0x00040000UL,
+         LFLAGS_O_MASK =            0x000F0000UL,
          LFLAGS_ZAP_LEADING_EDGE =  0x00100000UL, /* First (leading) tile in a zap */
          LFLAGS_ZAP_TRAILING_EDGE = 0x00200000UL, /* Last (trailing) tile in a zap */
          LFLAGS_ZAP_MASK = (0x00100000UL | 0x00200000UL),
@@ -167,12 +165,16 @@ namespace GnollHackCommon
     [Flags]
     public enum LayerMonsterFlags : ulong
     {
-        None =                        0x00000000UL,
-        LMFLAGS_WORM_HEAD =           0x00000001UL,
-        LMFLAGS_WORM_TAILEND =        0x00000002UL,
+        None =                          0x00000000UL,
+        LMFLAGS_WORM_HEAD =             0x00000001UL,
+        LMFLAGS_WORM_TAILEND =          0x00000002UL,
+        LMFLAGS_INVISIBLE_TRANSPARENT = 0x00000004UL,
+        LMFLAGS_SEMI_TRANSPARENT =      0x00000008UL,
+        LMFLAGS_RADIAL_TRANSPARENCY =   0x00000010UL,
+        LMFLAGS_CAN_SPOT_SELF =         0x00000020UL,
     }
 
-        [Flags]
+    [Flags]
     public enum glyph_tile_flags : byte
     {
         None = 0x00,
@@ -363,6 +365,21 @@ namespace GnollHackCommon
         MAX_SOUND_PLAY_GROUPS
     }
 
+    public enum game_cursor_types
+    {
+        CURSOR_STYLE_GENERIC_CURSOR = 0,
+        CURSOR_STYLE_LOOK_CURSOR,
+        CURSOR_STYLE_TRAVEL_CURSOR,
+        CURSOR_STYLE_NAME_CURSOR,
+        CURSOR_STYLE_TELEPORT_CURSOR,
+        CURSOR_STYLE_JUMP_CURSOR,
+        CURSOR_STYLE_POLEARM_CURSOR,
+        CURSOR_STYLE_GRAPPLE_CURSOR,
+        CURSOR_STYLE_SPELL_CURSOR,
+        CURSOR_STYLE_PAY_CURSOR,
+        CURSOR_STYLE_INVISIBLE,
+        MAX_CURSORS
+    }
 
     public enum hit_tile_types
     {

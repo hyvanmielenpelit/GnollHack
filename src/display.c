@@ -1262,7 +1262,11 @@ int hit_tile_id, damage_shown;
             if (see_self)
                 display_self_with_extra_info_choose_ascii(disp_flags | extra_flags, hit_tile_id, damage_shown, location_has_boulder);
             else
+            {
                 show_extra_info(x, y, disp_flags | extra_flags, hit_tile_id, damage_shown);
+                gbuf[y][x].layers.monster_origin_x = u.ux0;
+                gbuf[y][x].layers.monster_origin_y = u.uy0;
+            }
 
             if (newsym_flags & NEWSYM_FLAGS_SHOW_DROPPING_PIERCER)
             {
@@ -1353,7 +1357,14 @@ int hit_tile_id, damage_shown;
 
             /* Monster layer */
             if (canspotself())
+            {
                 display_self_with_extra_info_choose_ascii(disp_flags, hit_tile_id, damage_shown, FALSE);
+            }
+            else
+            {
+                gbuf[y][x].layers.monster_origin_x = u.ux0;
+                gbuf[y][x].layers.monster_origin_y = u.uy0;
+            }
         }
         else
         {
@@ -2683,18 +2694,40 @@ boolean exclude_ascii;
 
         unsigned long extra_flags = 0UL;
 
+
+        /* Monster info flags; can be set only in this function */
         if (loc_is_you || mtmp)
         {
-            if (loc_is_you && !mtmp)
-                mtmp = &youmonst;
+            struct monst* used_mtmp = mtmp ? mtmp : &youmonst;
 
-            if (is_semi_transparent(mtmp->data) && !Hallucination)
-                extra_flags |= LFLAGS_M_SEMI_TRANSPARENT;
+            if (is_semi_transparent(used_mtmp->data) && !Hallucination)
+                gbuf[y][x].layers.monster_flags |= LMFLAGS_SEMI_TRANSPARENT;
 
-            if (is_radially_transparent(mtmp->data) && !Hallucination)
-                extra_flags |= LFLAGS_M_RADIAL_TRANSPARENCY;
+            if (is_radially_transparent(used_mtmp->data) && !Hallucination)
+                gbuf[y][x].layers.monster_flags |= LMFLAGS_RADIAL_TRANSPARENCY;
+
+            if (loc_is_you)
+            {
+                if (mtmp) /* Steed */
+                {
+                    if (is_invisible(mtmp) && canspotmon(mtmp))
+                        gbuf[y][x].layers.monster_flags |= LMFLAGS_INVISIBLE_TRANSPARENT;
+                }
+                else
+                {
+                    if (Invis)
+                        gbuf[y][x].layers.monster_flags |= LMFLAGS_INVISIBLE_TRANSPARENT;
+                }
+                if (canspotself())
+                    gbuf[y][x].layers.monster_flags |= LMFLAGS_CAN_SPOT_SELF;
+            }
+            else if (mtmp)
+            {
+                if (is_invisible(mtmp) && canspotmon(mtmp))
+                    gbuf[y][x].layers.monster_flags |= LMFLAGS_INVISIBLE_TRANSPARENT;
+            }
         }
-        
+       
         if (mtmp)
         {
             if (is_tame(mtmp) && !Hallucination)

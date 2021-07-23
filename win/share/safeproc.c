@@ -121,6 +121,7 @@ struct window_procs safe_procs = {
     safe_toggle_animation_timer,
     safe_display_floating_text,
     safe_display_screen_text,
+    safe_update_cursor,
     safe_exit_hack,
 };
 
@@ -556,6 +557,12 @@ safe_display_floating_text(int x UNUSED, int y UNUSED, const char* text UNUSED, 
 
 void
 safe_display_screen_text(const char* text UNUSED, const char* subtext UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
+{
+    return;
+}
+
+void
+safe_update_cursor(int style UNUSED, int force_paint UNUSED, int show_on_u UNUSED)
 {
     return;
 }

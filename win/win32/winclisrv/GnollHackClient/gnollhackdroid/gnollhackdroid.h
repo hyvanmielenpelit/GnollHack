@@ -104,6 +104,7 @@ int RunGnollHack(
     ToggleAnimationTimerCallback callback_toggle_animation_timer,
     DisplayFloatingTextCallback callback_display_floating_text,
     DisplayScreenTextCallback callback_display_screen_text,
+    UpdateCursorCallback callback_update_cursor,
     ExitHackCallback callback_exit_hack,
 
     GetCwdCallback callback_getcwd,

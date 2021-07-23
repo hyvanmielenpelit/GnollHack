@@ -99,6 +99,7 @@ namespace GnollHackServer
             ToggleAnimationTimerCallback callback_toggle_animation_timer,
             DisplayFloatingTextCallback callback_display_floating_text,
             DisplayScreenTextCallback callback_display_screen_text,
+            UpdateCursorCallback callback_update_cursor,
             VoidIntCallback callback_exit_hack,
             CharVoidCallback callback_getcwd,
             IntCharCharUintCallback callback_messagebox,
@@ -251,6 +252,7 @@ namespace GnollHackServer
                 GameCallback_ToggleAnimationTimer,
                 GameCallback_DisplayFloatingText,
                 GameCallback_DisplayScreenText,
+                GameCallback_UpdateCursor,
                 GameCallback_ExitHack,
                 GameCallback_GetCwd,
                 GameCallback_MessageBox,
@@ -300,11 +302,18 @@ namespace GnollHackServer
         {
 
         }
+
         public void GameCallback_DisplayFloatingText(int x, int y, string text, int style, int attr, int color, ulong tflags)
         {
 
         }
+
         public void GameCallback_DisplayScreenText(string text, string subtext, int style, int attr, int color, ulong tflags)
+        {
+
+        }
+
+        public void GameCallback_UpdateCursor(int style, int force_paint, int show_on_u)
         {
 
         }

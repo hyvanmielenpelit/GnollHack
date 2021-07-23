@@ -67,6 +67,7 @@ struct window_procs lib_procs = {
     lib_toggle_animation_timer,
     lib_display_floating_text,
     lib_display_screen_text,
+    lib_update_cursor,
     lib_exit_hack,
 };
 
@@ -960,6 +961,12 @@ void
 lib_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags)
 {
     lib_callbacks.callback_display_screen_text(text, subtext, style, attr, color, tflags);
+}
+
+void
+lib_update_cursor(int style, int force_paint, int show_on_u)
+{
+    lib_callbacks.callback_update_cursor(style, force_paint, show_on_u);
 }
 
 /* Helper functions */
