@@ -347,7 +347,7 @@ int x, y;
         case DUST:
             if (!Blind) {
                 sensed = 1;
-                pline("%s is written here in the %s.", Something,
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is written here in the %s.", Something,
                       is_ice(x, y) ? "frost" : "dust");
             }
             break;
@@ -355,27 +355,27 @@ int x, y;
         case ENGR_HEADSTONE:
             if (!Blind || can_reach_floor(TRUE)) {
                 sensed = 1;
-                pline("%s is engraved here on the %s.", Something,
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is engraved here on the %s.", Something,
                       surface(x, y));
             }
             break;
         case ENGR_SIGNPOST:
             if (!Blind || can_reach_floor(TRUE)) {
                 sensed = 1;
-                pline("%s is written here on the signpost.", Something);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is written here on the signpost.", Something);
             }
             break;
         case BURN:
             if (!Blind || can_reach_floor(TRUE)) {
                 sensed = 1;
-                pline("Some text has been %s into the %s here.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Some text has been %s into the %s here.",
                       is_ice(x, y) ? "melted" : "burned", surface(x, y));
             }
             break;
         case MARK:
             if (!Blind) {
                 sensed = 1;
-                pline("There's some graffiti on the %s here.", surface(x, y));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "There's some graffiti on the %s here.", surface(x, y));
             }
             break;
         case ENGR_BLOOD:
@@ -385,7 +385,7 @@ int x, y;
              */
             if (!Blind) {
                 sensed = 1;
-                You_see("a message scrawled in blood here.");
+                You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "a message scrawled in blood here.");
             }
             break;
         default:
@@ -401,7 +401,7 @@ int x, y;
                 et = buf;
             } else
                 et = ep->engr_txt;
-            You("%s: \"%s\".", (Blind) ? "feel the words" : "read", et);
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s: \"%s\".", (Blind) ? "feel the words" : "read", et);
             if (context.run > 1)
                 nomul(0);
         }
@@ -618,7 +618,7 @@ doengrave()
                 surface(u.ux, u.uy));
             return 0;
         } else if (!levl[u.ux][u.uy].disturbed) {
-            You("disturb the undead!");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "disturb the undead!");
             levl[u.ux][u.uy].disturbed = 1;
             (void) makemon(&mons[PM_GHOUL], u.ux, u.uy, NO_MM_FLAGS);
             exercise(A_WIS, FALSE);
@@ -794,7 +794,7 @@ doengrave()
             case WAN_MAKE_INVISIBLE:
                 if (oep && oep->engr_type != ENGR_HEADSTONE && oep->engr_type != ENGR_SIGNPOST) {
                     if (!Blind)
-                        pline_The("engraving on the %s vanishes!",
+                        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "engraving on the %s vanishes!",
                                   surface(u.ux, u.uy));
                     dengr = TRUE;
                 }
@@ -803,7 +803,7 @@ doengrave()
                 if (oep && oep->engr_type != ENGR_HEADSTONE && oep->engr_type != ENGR_SIGNPOST) {
                     play_sfx_sound(SFX_TELEPORT);
                     if (!Blind)
-                        pline_The("engraving on the %s vanishes!",
+                        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "engraving on the %s vanishes!",
                                   surface(u.ux, u.uy));
                     teleengr = TRUE;
                 }
@@ -995,7 +995,7 @@ doengrave()
     }
     if (zapwand && (otmp->charges < 0)) {
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-        pline("%s %sturns to dust.", The(xname(otmp)),
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %sturns to dust.", The(xname(otmp)),
               Blind ? "" : "glows violently, then ");
         if (!IS_GRAVE(levl[u.ux][u.uy].typ))
             You(
@@ -1250,10 +1250,10 @@ doengrave()
     make_engr_at(u.ux, u.uy, buf, moves - multi, type, ENGR_FLAGS_NONE);
 
     if (post_engr_text[0])
-        pline("%s", post_engr_text);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s", post_engr_text);
     if (doblind && !resists_blnd(&youmonst) && !Flash_resistance) {
         play_sfx_sound(SFX_BLINDING_FLASH);
-        You("are blinded by the flash!");
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are blinded by the flash!");
         make_blinded((long) rnd(50), FALSE);
         if (!Blind)
             Your1(vision_clears);
