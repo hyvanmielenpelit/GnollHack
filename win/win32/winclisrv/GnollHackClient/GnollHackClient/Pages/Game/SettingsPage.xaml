@@ -14,6 +14,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -87,7 +88,14 @@
                        HorizontalOptions="Start" />
                 <Switch x:Name="FPSSwitch"  Grid.Column="1" Grid.Row="3" HorizontalOptions="Start" VerticalOptions="Center" />
 
+                <Label Text="Hide Navigation Bar" Grid.Column="0" Grid.Row="4"
+                       FontFamily="Diablo"
+                       VerticalOptions="Center" 
+                       HorizontalOptions="Start" />
+                <Switch x:Name="NavBarSwitch"  Grid.Column="1" Grid.Row="4" HorizontalOptions="Start" VerticalOptions="Center" />
+
             </Grid>
+            <Button Text="Back to Menu" HorizontalOptions="FillAndExpand" FontFamily="Diablo" Clicked="Button_Clicked"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

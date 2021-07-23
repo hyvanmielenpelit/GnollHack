@@ -195,11 +195,11 @@
                     </ListView.ItemTemplate>
                 </ListView>
                 -->
-                <CollectionView x:Name="MenuView" BackgroundColor="Transparent" SelectionChanged="MenuView_SelectionChanged" HorizontalOptions="FillAndExpand">
+                <CollectionView x:Name="MenuView" WidthRequest="440" BackgroundColor="Transparent" SelectionChanged="MenuView_SelectionChanged" HorizontalOptions="Center">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <SwipeView BackgroundColor="Transparent"
-                                HorizontalOptions="FillAndExpand" SwipeStarted="SwipeView_SwipeStarted" SwipeEnded="SwipeView_SwipeEnded" 
+                                HorizontalOptions="Fill" SwipeStarted="SwipeView_SwipeStarted" SwipeEnded="SwipeView_SwipeEnded" 
                                 IsEnabled="{Binding MaxCount, Converter={StaticResource EnableCountConverter}}">
                                 <SwipeView.LeftItems>
                                     <SwipeItems SwipeBehaviorOnInvoked="RemainOpen">
@@ -216,7 +216,7 @@
                                                     <Picker x:Name="CountPicker"
                                                             VerticalOptions="Center"
                                                             VerticalTextAlignment="Center"
-                                                            HorizontalOptions="CenterAndExpand"
+                                                            HorizontalOptions="Center"
                                                             HorizontalTextAlignment="Center"
                                                             FontFamily="Underwood"
                                                             FontSize="10"
@@ -266,7 +266,7 @@
                                     </SwipeItems>                            
                                 </SwipeView.RightItems>
 
-                                <Grid HorizontalOptions="FillAndExpand" 
+                                <Grid HorizontalOptions="Fill" 
                                       VerticalOptions="CenterAndExpand"
                                       Padding="{Binding MenuFlags, Converter={StaticResource PaddingConverter}}">
                                     <Grid.RowDefinitions>
@@ -301,7 +301,7 @@
                                                        BackgroundColor="Transparent">
                                     </Image>
 
-                                    <Grid Grid.Column="2" RowSpacing="0" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
+                                    <Grid Grid.Column="2" RowSpacing="0" VerticalOptions="CenterAndExpand" HorizontalOptions="Fill">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
@@ -351,6 +351,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+
                 <Grid  BackgroundColor="Transparent" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -359,10 +360,14 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Image x:Name="myImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="250" HeightRequest="70" Grid.Column="0" />
-                    <Button Text="OK" x:Name="OKButton" Clicked="OKButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="70" Grid.Column="0" />
-                    <Image x:Name="myImage2" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="250" HeightRequest="70" Grid.Column="1" />
-                    <Button Text="Cancel" x:Name="CancelButton" Clicked="CancelButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="70" Grid.Column="1" />
+                    <Grid HorizontalOptions="End" WidthRequest="250" HeightRequest="70" Grid.Column="0">
+                        <ff:CachedImage x:Name="myImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="250" HeightRequest="70" />
+                        <Button Text="OK" x:Name="OKButton" Clicked="OKButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  />
+                    </Grid>
+                    <Grid HorizontalOptions="Start" WidthRequest="250" HeightRequest="70" Grid.Column="1">
+                        <ff:CachedImage x:Name="myImage2" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="250" HeightRequest="70" />
+                        <Button Text="Cancel" x:Name="CancelButton" Clicked="CancelButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                    </Grid>
                 </Grid>
             </StackLayout>
 

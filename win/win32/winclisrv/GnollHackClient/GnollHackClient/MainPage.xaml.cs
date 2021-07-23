@@ -132,7 +132,6 @@ namespace GnollHackClient
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             StartFadeLogoIn();
-
             Assembly thisassembly = GetType().GetTypeInfo().Assembly;
             StartLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
             Device.StartTimer(TimeSpan.FromSeconds(1f / 4), () =>

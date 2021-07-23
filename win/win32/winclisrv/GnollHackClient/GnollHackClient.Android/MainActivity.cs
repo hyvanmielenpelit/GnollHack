@@ -6,6 +6,7 @@ using Android.Runtime;
 using Android.OS;
 using Android.Content.Res;
 using Android.Views;
+using Xamarin.Forms;
 
 namespace GnollHackClient.Droid
 {
@@ -21,6 +22,19 @@ namespace GnollHackClient.Droid
             base.OnCreate(savedInstanceState);
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
             Rg.Plugins.Popup.Popup.Init(this);
+            MessagingCenter.Subscribe<Object>(this, "HideOsNavigationBar", (sender) =>
+            {
+                int uiOptions = (int)Window.DecorView.SystemUiVisibility;
+                uiOptions |= (int)SystemUiFlags.HideNavigation;
+                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+            });
+
+            MessagingCenter.Subscribe<Object>(this, "ShowOsNavigationBar", (sender) =>
+            {
+                int uiOptions = (int)Window.DecorView.SystemUiVisibility;
+                uiOptions &= ~((int)SystemUiFlags.HideNavigation);
+                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+            });
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);

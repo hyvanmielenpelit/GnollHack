@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -22,14 +23,20 @@ namespace GnollHackClient
 
     public partial class App : Application
     {
-
         public App()
         {
             InitializeComponent();
             var mainPage = new MainPage();
             var navPage = new NavigationPage(mainPage);
-            
             MainPage = navPage;
+
+            string navbarstyle = Preferences.Get("HideAndroidNavigationBar", "0");
+            int parseint;
+            if (int.TryParse(navbarstyle, out parseint))
+            {
+                HideAndroidNavigatioBar = (parseint != 0);
+            }
+
         }
 
         protected override void OnStart()
@@ -51,6 +58,25 @@ namespace GnollHackClient
             _fmodService.LoadBanks();
             _appCloseService = DependencyService.Get<IAppCloseService>();
         }
+
+        private static bool _hideNavBar;
+        public static bool HideAndroidNavigatioBar
+        {
+            get { return _hideNavBar; }
+            set
+            {
+                _hideNavBar = value;
+                if (_hideNavBar)
+                {
+                    MessagingCenter.Send<Object>(new object(), "HideOsNavigationBar");
+                }
+                else
+                {
+                    MessagingCenter.Send<Object>(new object(), "ShowOsNavigationBar");
+                }
+            }
+        }
+
 
         public static Cookie AuthenticationCookie { get; set; }
         public static Server SelectedServer { get; set; }

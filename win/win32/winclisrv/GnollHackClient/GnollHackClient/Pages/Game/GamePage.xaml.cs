@@ -2126,6 +2126,7 @@ namespace GnollHackClient.Pages.Game
                                     {
                                         paint.FilterQuality = SKFilterQuality.None;
 
+                                        bool[,] draw_shadow = new bool[GHConstants.MapCols, GHConstants.MapRows];
                                         float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
                                         long currentcountervalue = 0;
                                         lock (AnimationTimerLock)
@@ -2133,12 +2134,17 @@ namespace GnollHackClient.Pages.Game
                                             currentcountervalue = AnimationTimers.general_animation_counter;
                                         }
 
-                                        for (int layer_idx = 0; layer_idx <= (int)layer_types.MAX_LAYERS; layer_idx++)
+                                        for (int layer_idx = 0; layer_idx <= (int)layer_types.MAX_LAYERS + 1; layer_idx++)
                                         {
                                             for (int mapy = startY; mapy <= endY; mapy++)
                                             {
                                                 for (int mapx = startX; mapx <= endX; mapx++)
                                                 {
+                                                    if (layer_idx == (int)layer_types.MAX_LAYERS 
+                                                        && (!draw_shadow[mapx, mapy] || _mapData[mapx, mapy].Layers.layer_glyphs == null || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_MONSTER] == NoGlyph)
+                                                        )
+                                                        continue;
+
                                                     bool loc_is_you = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
                                                     bool canspotself = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
                                                     short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
@@ -2161,7 +2167,7 @@ namespace GnollHackClient.Pages.Game
                                                         base_move_offset_y = height * (float)movediffy * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
                                                     }
 
-                                                    if (layer_idx == (int)layer_types.MAX_LAYERS)
+                                                    if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
                                                     {
                                                         if (monster_height > 0)
                                                             scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
@@ -2461,7 +2467,10 @@ namespace GnollHackClient.Pages.Game
                                                                 }
                                                                 else
                                                                 {
-                                                                    signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
+                                                                    int used_layer_idx = layer_idx;
+                                                                    if (layer_idx == (int)layer_types.MAX_LAYERS)
+                                                                        used_layer_idx = (int)layer_types.LAYER_MONSTER;
+                                                                    signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[used_layer_idx];
                                                                 }
 
                                                                 if (signed_glyph == NoGlyph)
@@ -2700,6 +2709,8 @@ namespace GnollHackClient.Pages.Game
                                                                     //   )
                                                                     //    darken = false;
 
+                                                                    if (dx != 0 || dy != 0)
+                                                                        draw_shadow[draw_map_x, draw_map_y] = true;
 
                                                                     int sheet_idx = TileSheetIdx(ntile);
                                                                     int tile_x = TileSheetX(ntile);
@@ -2797,11 +2808,13 @@ namespace GnollHackClient.Pages.Game
 
                                                                     float move_offset_x = 0, move_offset_y = 0;
                                                                     float opaqueness = 1.0f;
-                                                                    if ((layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
+                                                                    if ((layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT || layer_idx == (int)layer_types.MAX_LAYERS))
                                                                     {
                                                                         move_offset_x = base_move_offset_x;
                                                                         move_offset_y = base_move_offset_y;
-                                                                        if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
+                                                                        if (layer_idx == (int)layer_types.MAX_LAYERS 
+                                                                            || ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
+                                                                            )
                                                                             opaqueness = 0.5f;
                                                                     }
                                                                     else if (layer_idx == (int)layer_types.LAYER_COVER_TRAP)

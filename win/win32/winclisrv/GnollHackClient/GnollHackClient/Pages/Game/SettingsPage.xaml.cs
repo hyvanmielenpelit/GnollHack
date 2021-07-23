@@ -32,6 +32,9 @@ namespace GnollHackClient.Pages.Game
             _gamePage.ShowFPS = FPSSwitch.IsToggled;
             Preferences.Set("ShowFPS", _gamePage.ShowFPS ? "1" : "0");
 
+            App.HideAndroidNavigatioBar = NavBarSwitch.IsToggled;
+            Preferences.Set("HideAndroidNavigationBar", App.HideAndroidNavigatioBar ? "1" : "0");
+
             int res = 4, tryres = 0;
             string str = MessageLengthPicker.SelectedItem.ToString();
             if (int.TryParse(str, out tryres))
@@ -49,6 +52,7 @@ namespace GnollHackClient.Pages.Game
             CursorPicker.SelectedIndex = (int)_gamePage.CursorStyle;
             GraphicsPicker.SelectedIndex = (int)_gamePage.GraphicsStyle;
             FPSSwitch.IsToggled = _gamePage.ShowFPS;
+            NavBarSwitch.IsToggled = App.HideAndroidNavigatioBar;
             for (int i = 0; i < MessageLengthPicker.Items.Count; i++)
             {
                 int tryint = 0;
@@ -60,5 +64,9 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private async void Button_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+        }
     }
 }

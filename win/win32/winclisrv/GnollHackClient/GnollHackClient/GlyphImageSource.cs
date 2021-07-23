@@ -138,8 +138,8 @@ namespace GnollHackClient
                 canvas.DrawBitmap(GamePage.TileMap[sheet_idx], sourcerect, targetrect);
             }
 
-            var skImage = SKImage.FromBitmap(bitmap);
-            var result = (skImage.Encode(SKEncodedImageFormat.Png, 100)).AsStream();
+            var skImage = SKImage.FromBitmap(bitmap);            
+            var result = skImage.Encode(SKEncodedImageFormat.Png, 100).AsStream();
             return result;
         }
     }
