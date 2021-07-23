@@ -92,7 +92,11 @@ amulet()
         if (DEADMONSTER(mtmp))
             continue;
         if (mtmp->iswiz && mtmp->msleeping && !rn2(40)) {
-            mtmp->msleeping = 0;
+            if (mtmp->msleeping)
+            {
+                mtmp->msleeping = 0;
+                refresh_m_tile_gui_info(mtmp, TRUE);
+            }
             if (distu(mtmp->mx, mtmp->my) > 2)
                 You(
       "get the creepy feeling that somebody noticed your taking the Amulet.");
@@ -493,6 +497,7 @@ aggravate()
 {
     register struct monst *mtmp;
     boolean in_w_tower = In_W_tower(u.ux, u.uy, &u.uz);
+    int cnt = 0;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -500,12 +505,25 @@ aggravate()
         if (in_w_tower != In_W_tower(mtmp->mx, mtmp->my, &u.uz))
             continue;
         mtmp->mstrategy &= ~(STRAT_WAITFORU | STRAT_APPEARMSG);
-        mtmp->msleeping = 0;
+        boolean refresh = FALSE;
+        if (mtmp->msleeping)
+        {
+            mtmp->msleeping = 0;
+            refresh = TRUE;
+        }
         if (!mtmp->mcanmove && !rn2(5)) {
             mtmp->mfrozen = 0;
             mtmp->mcanmove = 1;
+            refresh = TRUE;
+        }
+        if (refresh)
+        {
+            refresh_m_tile_gui_info(mtmp, FALSE);
+            cnt++;
         }
     }
+    if (cnt > 0)
+        flush_screen(1);
 }
 
 void

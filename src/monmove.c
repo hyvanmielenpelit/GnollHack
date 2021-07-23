@@ -537,6 +537,7 @@ register struct monst *mtmp;
             || (!rn2(7) && M_AP_TYPE(mtmp) != M_AP_FURNITURE
                 && M_AP_TYPE(mtmp) != M_AP_OBJECT))) {
         mtmp->msleeping = 0;
+        refresh_m_tile_gui_info(mtmp, TRUE);
         return 1;
     }
     return 0;
@@ -652,6 +653,7 @@ int fleetime;
         increase_mon_property_verbosely(mtmp, FEARFUL, fleetime);
     }
     memset(mtmp->mtrack, 0, sizeof(mtmp->mtrack));
+    refresh_m_tile_gui_info(mtmp, TRUE);
 }
 
 
@@ -916,7 +918,13 @@ register struct monst *mtmp;
                 if (DEADMONSTER(m2))
                     monkilled(m2, "", AD_DRIN);
                 else
-                    m2->msleeping = 0;
+                {
+                    if (m2->msleeping)
+                    {
+                        m2->msleeping = 0;
+                        refresh_m_tile_gui_info(mtmp, TRUE);
+                    }
+                }
             }
         }
     }

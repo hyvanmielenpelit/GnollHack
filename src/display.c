@@ -2913,13 +2913,37 @@ unsigned long layer_flags;
 }
 
 void
-refresh_u_tile_gui_info(VOID_ARGS)
+refresh_u_tile_gui_info(flush)
+boolean flush;
 {
     update_tile_gui_info(TRUE, &youmonst, u.ux, u.uy, gbuf[u.uy][u.ux].layers.layer_flags);
     force_redraw_at(u.ux, u.uy);
-    flush_screen(1);
+    if(flush)
+        flush_screen(1);
 }
 
+void
+refresh_m_tile_gui_info(mtmp, flush)
+struct monst* mtmp;
+boolean flush;
+{
+    if (!mtmp || !isok(mtmp->mx, mtmp->my))
+        return;
+
+    boolean loc_is_you = (u.ux == mtmp->mx && u.uy == mtmp->my);
+
+    if (mtmp == &youmonst)
+    {
+        refresh_u_tile_gui_info(flush);
+    }
+    else
+    {
+        update_tile_gui_info(loc_is_you, mtmp, mtmp->mx, mtmp->my, gbuf[mtmp->my][mtmp->mx].layers.layer_flags);
+        force_redraw_at(mtmp->mx, mtmp->my);
+        if(flush)
+            flush_screen(1);
+    }
+}
 
 void
 remove_current_glyph_from_layer(x, y)

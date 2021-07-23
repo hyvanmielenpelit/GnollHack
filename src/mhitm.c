@@ -350,6 +350,7 @@ register struct monst *magr, *mdef;
     {
         tmp += 4;
         mdef->msleeping = 0;
+        refresh_m_tile_gui_info(mdef, TRUE);
     }
 
     /* undetect monsters become un-hidden if they are attacked */

@@ -358,9 +358,11 @@ int *attk_count, *role_roll_penalty;
         if (is_fleeing(mtmp))
             tmp += 2;
 
+        boolean refresh = FALSE;
         if (mtmp->msleeping)
         {
             mtmp->msleeping = 0;
+            refresh = TRUE;
             tmp += 2;
         }
 
@@ -371,8 +373,12 @@ int *attk_count, *role_roll_penalty;
             {
                 mtmp->mcanmove = 1;
                 mtmp->mfrozen = 0;
+                refresh = TRUE;
             }
         }
+
+        if(refresh)
+            refresh_m_tile_gui_info(mtmp, TRUE);
     }
     /* role/race adjustments */
     if (Role_if(PM_MONK) && !Upolyd)
@@ -4621,6 +4627,7 @@ struct obj *otmp; /* source of flash */
     if (mtmp->msleeping) {
         mtmp->msleeping = 0;
         if (useeit) {
+            refresh_m_tile_gui_info(mtmp, TRUE);
             pline_The("flash awakens %s.", mon_nam(mtmp));
             res = 1;
         }

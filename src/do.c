@@ -6111,6 +6111,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
                 if (DEADMONSTER(mtmp))
                     continue;
                 mtmp->msleeping = 0;
+                refresh_m_tile_gui_info(mtmp, TRUE);
             }
         }
     } 

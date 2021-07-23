@@ -885,6 +885,7 @@ int mclass;                /* monster class, 0 for all */
                 mtmp->mprops[SLEEPING] = 0;
                 mtmp->mprops[PARALYZED] = 0;
                 woken = TRUE;
+                refresh_m_tile_gui_info(mtmp, FALSE);
             }
         }
         show_detection_everywhere();

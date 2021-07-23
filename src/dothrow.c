@@ -1871,7 +1871,10 @@ boolean mon_notices;
         if (mon->msleeping) {
             tmp += 2;
             if (mon_notices)
+            {
                 mon->msleeping = 0;
+                refresh_m_tile_gui_info(mon, TRUE);
+            }
         }
         /* ditto for immobilized target */
         if (!mon->mcanmove || !mon->data->mmove) {
@@ -2067,6 +2070,7 @@ uchar* hitres_ptr;
            than it used to be, but the manual version works just as well */
         mon->msleeping = 0;
         mon->mstrategy &= ~STRAT_WAITMASK;
+        refresh_m_tile_gui_info(mon, TRUE);
 
         if (mon_can_move(mon)) 
         {
@@ -2306,6 +2310,7 @@ uchar* hitres_ptr;
             tmiss(obj, mon, FALSE);
             mon->msleeping = 0;
             mon->mstrategy &= ~STRAT_WAITMASK;
+            refresh_m_tile_gui_info(mon, TRUE);
         }
     } 
     else if (guaranteed_hit) 

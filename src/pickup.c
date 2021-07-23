@@ -1693,7 +1693,7 @@ encumber_msg()
     u.carrying_capacity_level = newcap;
 
     if(newcap != oldcap)
-        refresh_u_tile_gui_info();
+        refresh_u_tile_gui_info(TRUE);
 
     return newcap;
 }

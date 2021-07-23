@@ -5831,6 +5831,7 @@ struct trap *ttmp;
         if (mtmp->msleeping)
         {
             mtmp->msleeping = 0;
+            refresh_m_tile_gui_info(mtmp, TRUE);
             pline("%s awakens.", Monnam(mtmp));
         }
         return 1;
@@ -5842,8 +5843,9 @@ struct trap *ttmp;
     if (mtmp->msleeping) 
     {
         mtmp->msleeping = 0;
+        refresh_m_tile_gui_info(mtmp, TRUE);
         pline("%s awakens.", Monnam(mtmp));
-    } 
+    }
     else if (mtmp->mfrozen && !rn2(mtmp->mfrozen))
     {
         /* After such manhandling, perhaps the effect wears off */

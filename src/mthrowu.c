@@ -500,6 +500,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
         if (ismimic)
             seemimic(mtmp);
         mtmp->msleeping = 0;
+        refresh_m_tile_gui_info(mtmp, TRUE);
         if (vis)
             otmp->dknown = 1;
         /* probably thrown by a monster rather than 'other', but the
@@ -551,7 +552,11 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
         if (ismimic)
             seemimic(mtmp);
 
-        mtmp->msleeping = 0;
+        if (mtmp->msleeping)
+        {
+            mtmp->msleeping = 0;
+            refresh_m_tile_gui_info(mtmp, TRUE);
+        }
 
         damage = adjust_damage(dmg, (struct monst*)0, mtmp, objects[otmp->otyp].oc_damagetype, ADFLAGS_NONE);
 

@@ -983,6 +983,7 @@ register struct monst *priest;
                   mhis(priest));
             priest->mfrozen = priest->msleeping = 0;
             priest->mcanmove = 1;
+            refresh_m_tile_gui_info(priest, TRUE);
         }
         int roll = rn2(3);
         priest->mpeaceful = 0;

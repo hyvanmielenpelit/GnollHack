@@ -529,6 +529,7 @@ uchar* hitres_ptr;
 
         mtmp->msleeping = 0;
         finish_meating(mtmp);
+        refresh_m_tile_gui_info(mtmp, TRUE);
         if (!mtmp->isgd && !rn2(4)) /* not always pleasing */
             setmangry(mtmp, TRUE);
         /* greedy monsters catch gold */

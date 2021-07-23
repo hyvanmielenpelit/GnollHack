@@ -63,6 +63,7 @@ int distance;
 {
     register struct monst *mtmp;
     register int distm;
+    int cnt = 0;
 
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
@@ -81,8 +82,14 @@ int distance;
                      /* some monsters are immune */
                      && onscary(0, 0, mtmp))
                 monflee(mtmp, 0, FALSE, TRUE);
+
+            refresh_m_tile_gui_info(mtmp, FALSE);
+            cnt++;
         }
     }
+
+    if (cnt > 0)
+        flush_screen(1);
 }
 
 /*
@@ -177,7 +184,7 @@ awaken_soldiers(bugler)
 struct monst *bugler; /* monster that played instrument */
 {
     register struct monst *mtmp;
-    int distance, distm;
+    int distance, distm, cnt = 0;
 
     /* distance of affected non-soldier monsters to bugler */
     distance = ((bugler == &youmonst) ? u.ulevel : bugler->data->mlevel) * 30;
@@ -201,6 +208,8 @@ struct monst *bugler; /* monster that played instrument */
             mtmp->msleeping = 0;
             mtmp->mcanmove = 1;
             mtmp->mfrozen = 0;
+            refresh_m_tile_gui_info(mtmp, FALSE);
+            cnt++;
             /* may scare some monsters -- waiting monsters excluded */
             if (!unique_corpstat(mtmp->data)
                 && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
@@ -209,6 +218,8 @@ struct monst *bugler; /* monster that played instrument */
                 monflee(mtmp, 0, FALSE, TRUE);
         }
     }
+    if (cnt > 0)
+        flush_screen(1);
 }
 
 /* Charm monsters in range.  Note that they may resist the spell.

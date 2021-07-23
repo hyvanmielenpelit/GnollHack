@@ -2429,7 +2429,13 @@ do_illness: /* Pestilence's potion of healing effect */
             if (angermon)
                 wakeup(mon, TRUE);
             else
-                mon->msleeping = 0;
+            {
+                if (mon->msleeping)
+                {
+                    mon->msleeping = 0;
+                    refresh_m_tile_gui_info(mon, TRUE);
+                }
+            }
         }
     }
 

@@ -4332,6 +4332,8 @@ boolean via_attack;
     finish_meating(mtmp);
     if (via_attack)
         setmangry(mtmp, TRUE);
+    else
+        refresh_m_tile_gui_info(mtmp, TRUE);
 }
 
 /* Wake up nearby monsters without angering them. */
@@ -4347,7 +4349,7 @@ wake_nearto(x, y, distance)
 int x, y, distance;
 {
     struct monst *mtmp;
-
+    int cnt = 0;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
         if (DEADMONSTER(mtmp))
             continue;
@@ -4355,6 +4357,8 @@ int x, y, distance;
             /* sleep for N turns uses mtmp->mfrozen, but so does paralysis
                so we leave mfrozen monsters alone */
             mtmp->msleeping = 0; /* wake indeterminate sleep */
+            refresh_m_tile_gui_info(mtmp, FALSE);
+            cnt++;
             if (!(mtmp->data->geno & G_UNIQ))
                 mtmp->mstrategy &= ~STRAT_WAITMASK; /* wake 'meditation' */
             if (context.mon_moving)
@@ -4368,6 +4372,8 @@ int x, y, distance;
             }
         }
     }
+    if (cnt > 0)
+        flush_screen(1);
 }
 
 /* NOTE: we must check for mimicry before calling this routine */

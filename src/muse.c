@@ -1437,7 +1437,11 @@ register struct monst* origmonst;
 
     if (mtmp != &youmonst)
     {
-        mtmp->msleeping = 0;
+        if (mtmp->msleeping)
+        {
+            mtmp->msleeping = 0;
+            refresh_m_tile_gui_info(mtmp, TRUE);
+        }
         if (mtmp->m_ap_type)
             seemimic(mtmp);
     }

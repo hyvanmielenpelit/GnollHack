@@ -474,6 +474,8 @@ kick_steed()
                 pline("%s stirs.", He);
             else
                 pline("%s rouses %sself!", He, mhim(u.usteed));
+
+            refresh_m_tile_gui_info(u.usteed, TRUE);
         } else
             pline("%s does not respond.", He);
         return;
@@ -788,7 +790,10 @@ struct monst *steed;
         }
     }
     if (wasimmobile && mon_can_move(steed))
+    {
         pline("%s wakes up.", Monnam(steed));
+        refresh_m_tile_gui_info(steed, TRUE);
+    }
     /* regardless of waking, terminate any meal in progress */
     finish_meating(steed);
 }

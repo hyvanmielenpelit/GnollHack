@@ -547,7 +547,8 @@ E int FDECL(wall_angle, (struct rm*));
 E short FDECL(get_obj_height, (struct obj*));
 E boolean FDECL(generic_has_floor_tile, (struct obj*));
 E void FDECL(update_tile_gui_info, (BOOLEAN_P, struct monst*, int, int, unsigned long));
-E void NDECL(refresh_u_tile_gui_info);
+E void FDECL(refresh_u_tile_gui_info, (BOOLEAN_P));
+E void FDECL(refresh_m_tile_gui_info, (struct monst*, BOOLEAN_P));
 
 
 /* ### do.c ### */

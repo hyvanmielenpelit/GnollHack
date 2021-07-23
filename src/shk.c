@@ -1172,6 +1172,7 @@ boolean verbosely;
         shkp->mcanmove = 1;
         shkp->mprops[SLEEPING] = 0;
         shkp->mprops[PARALYZED] = 0;
+        refresh_m_tile_gui_info(shkp, TRUE);
     }
 }
 

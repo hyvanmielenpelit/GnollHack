@@ -995,6 +995,7 @@ struct obj *obj;
             mtmp->mleashed = 1;
             obj->leashmon = (int) mtmp->m_id;
             mtmp->msleeping = 0;
+            refresh_m_tile_gui_info(mtmp, TRUE);
         }
     }
     else 

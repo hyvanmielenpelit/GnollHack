@@ -2184,6 +2184,7 @@ domove_core()
                 mtmp->mtame = mtmp->mpeaceful = mtmp->msleeping = 0;
                 if (mtmp->mleashed)
                     m_unleash(mtmp, TRUE);
+                refresh_m_tile_gui_info(mtmp, TRUE);
                 growl(mtmp);
             } 
             else 
@@ -3090,7 +3091,10 @@ register boolean newlev;
                     if (DEADMONSTER(mtmp))
                         continue;
                     if (!Stealth && !rn2(3))
+                    {
                         mtmp->msleeping = 0;
+                        refresh_m_tile_gui_info(mtmp, TRUE);
+                    }
                 }
         }
     }

@@ -2060,6 +2060,7 @@ boolean *effect_happened_ptr;
                     mtmp->mflee = mtmp->mfrozen = mtmp->msleeping = 0;
                     mtmp->mcanmove = 1;
                     mtmp->mprops[FEARFUL] = 0;
+                    refresh_m_tile_gui_info(mtmp, TRUE);
                 }
                 else
                 {

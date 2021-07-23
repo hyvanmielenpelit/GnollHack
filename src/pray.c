@@ -3140,6 +3140,7 @@ doturn()
                     break;
                 }
             }
+            refresh_m_tile_gui_info(mtmp, TRUE);
         }
     }
     nomul(-(5 - ((u.ulevel - 1) / 6))); /* -5 .. -1 */
