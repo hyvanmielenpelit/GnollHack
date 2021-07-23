@@ -12,61 +12,70 @@
                 <Button Text="Mm" x:Name="WizGenesisButton" Clicked="WizGenesisButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="Cv" x:Name="WizLevelportButton" Clicked="WizLevelportButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="Ci" x:Name="WizIdentifyButton" Clicked="WizIdentifyButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="Ct" x:Name="WizTeleportButton" Clicked="WizTeleportButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
             </StackLayout>
             <StackLayout x:Name="FirstCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
                 <Button Text="&gt;" x:Name="DownButton" Clicked="DownButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="&lt;" x:Name="UpButton" Clicked="UpButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="x" x:Name="SwapWeapButton" Clicked="SwapWeapButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="o" x:Name="OpenButton" Clicked="OpenButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="c" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="D" x:Name="DropManyButton" Clicked="DropManyButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="Cx" x:Name="TwoWeapButton" Clicked="TwoWeapButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="F" x:Name="ForceFightButton" Clicked="ForceFightButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
             </StackLayout>
             <StackLayout x:Name="SecondCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
                 <Button Text="e" x:Name="EatButton" Clicked="EatButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70"  />
-                <Button Text="l" x:Name="LootButton" Clicked="LootButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="o" x:Name="OpenButton" Clicked="OpenButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="c" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="C" x:Name="ChatButton" Clicked="ChatButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-            </StackLayout>
-            <StackLayout x:Name="ThirdCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-                <Button Text="Cy" x:Name="YellButton" Clicked="YellButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="q" x:Name="QuaffButton" Clicked="QuaffButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="r" x:Name="ReadButton" Clicked="ReadButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="E" x:Name="EngraveButton" Clicked="EngraveButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="D" x:Name="DropManyButton" Clicked="DropManyButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="Cl" x:Name="LightButton" Clicked="LightButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="Mo" x:Name="SacrificeButton" Clicked="SacrificeButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="Mp" x:Name="PrayButton" Clicked="PrayButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
             </StackLayout>
-            <StackLayout x:Name="FourthCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-                <Button Text="Mo" x:Name="SacrificeButton" Clicked="SacrificeButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="N" x:Name="NameButton" Clicked="NameButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="q" x:Name="QuaffButton" Clicked="QuaffButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="p" x:Name="PayButton" Clicked="PayButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+            <StackLayout x:Name="ThirdCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
+                <Button Text="Ms" x:Name="SitButton" Clicked="SitButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="Cy" x:Name="YellButton" Clicked="YellButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="Cg" x:Name="DigButton" Clicked="DigButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="Cl" x:Name="LightButton" Clicked="LightButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="Mj" x:Name="JumpButton" Clicked="JumpButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" />
+                <Button Text="F" x:Name="ForceFightButton" Clicked="ForceFightButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+            </StackLayout>
+            <StackLayout x:Name="FourthCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
+                <Button Text="N" x:Name="NameButton" Clicked="NameButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="p" x:Name="PayButton" Clicked="PayButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="l" x:Name="LootButton" Clicked="LootButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="Cb" x:Name="BreakButton" Clicked="BreakButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" />
+                <Button Text="" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" />
             </StackLayout>
             <StackLayout x:Name="FifthCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
                 <Button Text="A" x:Name="AbilityButton" Clicked="AbilityButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="S" x:Name="SkillButton" Clicked="SkillButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="Mc" x:Name="CmdButton" Clicked="CmdButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="+" x:Name="SpellsButton" Clicked="SpellsButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="X" x:Name="MixButton" Clicked="MixButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="?" x:Name="HelpButton" Clicked="HelpButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
             </StackLayout>
             <StackLayout x:Name="SixthCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
                 <Button Text="n" x:Name="CountButton" Clicked="CountButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="n20s" x:Name="Search20Button" Clicked="Search20Button_Clicked" FontFamily="Immortal" FontSize="14" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="n200s" x:Name="Search200Button" Clicked="Search200Button_Clicked" FontFamily="Immortal" FontSize="14" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="Ct" x:Name="WizTeleportButton" Clicked="WizTeleportButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="Co" x:Name="OverviewButton" Clicked="OverviewButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Button Text="\"  x:Name="DiscoveredButton" Clicked="DiscoveredButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" />
+                <Button Text="" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" />
             </StackLayout>
             <StackLayout x:Name="SeventhCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
                 <Button Text="w" x:Name="WieldButton" Clicked="WieldButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="W" x:Name="WearButton" Clicked="WearButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="P" x:Name="PutOnButton" Clicked="PutOnButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="T" x:Name="TakeOffButton" Clicked="TakeOffButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" />
-                <Button Text="&#x21D0;" x:Name="PopupMenuBackButton" Clicked="PopupMenuBackButton_Clicked" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" />
+                <Button Text="R" x:Name="RemoveButton" Clicked="RemoveButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" />
+                <Button Text="" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" />
             </StackLayout>
             <StackLayout x:Name="LastCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
                 <Button Text="/" x:Name="WhatIsButton" Clicked="WhatIsButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text=";" x:Name="LookFarButton" Clicked="LookFarButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="_" x:Name="TravelButton" Clicked="TravelButton_Clicked" FontFamily="Immortal" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="#" x:Name="ExtendedCommandButton" Clicked="ExtendedCommandButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="DarkBlue" />
+                <Button Text="&#x21D0;" x:Name="PopupMenuBackButton" Clicked="PopupMenuBackButton_Clicked" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" />
                 <Button Text="&#x2261;" x:Name="BackButton" Clicked="BackButton_Clicked" FontFamily="DejaVuSansMono" FontSize="36" TextColor="White" BackgroundColor="DarkBlue" />
             </StackLayout>
         </StackLayout>
