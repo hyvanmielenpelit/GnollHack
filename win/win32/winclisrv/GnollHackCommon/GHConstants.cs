@@ -411,6 +411,33 @@ namespace GnollHackCommon
         MAX_GHMENU_STYLES
     }
 
+    public enum floating_text_types
+    {
+        FLOATING_TEXT_GENERAL = 0,
+        FLOATING_TEXT_HEALING,
+        FLOATING_TEXT_DAMAGE,
+        FLOATING_TEXT_GOLD_ACQUIRED,
+        FLOATING_TEXT_GOLD_STOLEN,
+        FLOATING_TEXT_MANA_GAIN,
+        FLOATING_TEXT_MANA_LOSS,
+        FLOATING_TEXT_NUTRITION_GAIN,
+        FLOATING_TEXT_NUTRITION_LOSS,
+        FLOATING_TEXT_ITEM_ACQUIRED,
+        FLOATING_TEXT_ITEM_STOLEN,
+    }
+
+    public enum screen_text_types
+    {
+        SCREEN_TEXT_GENERAL = 0,
+        SCREEN_TEXT_ENTER_DUNGEON_LEVEL,
+        SCREEN_TEXT_GAIN_LEVEL,
+        SCREEN_TEXT_SAVING,
+        SCREEN_TEXT_DEAD,
+        SCREEN_TEXT_ESCAPED,
+        SCREEN_TEXT_ASCENDED,
+        SCREEN_TEXT_SPECIAL_END,
+    }
+
     public enum game_cursor_types
     {
         CURSOR_STYLE_GENERIC_CURSOR = 0,

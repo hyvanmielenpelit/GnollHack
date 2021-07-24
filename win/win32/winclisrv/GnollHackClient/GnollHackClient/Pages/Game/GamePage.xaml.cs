@@ -3068,9 +3068,10 @@ namespace GnollHackClient.Pages.Game
                             float maxfontsize = 9999.0f;
                             lock (AnimationTimerLock)
                             {
+                                double canvasheightscale = this.Height / canvasView.Height; 
                                 textPaint.Color = _screenText.GetTextColor(AnimationTimers.general_animation_counter);
                                 textPaint.Typeface = _screenText.GetTextTypeface(AnimationTimers.general_animation_counter);
-                                targetwidth = canvaswidth * _screenText.GetMainTextSizeRelativeToScreenWidth(AnimationTimers.general_animation_counter);
+                                targetwidth = Math.Min(canvaswidth, canvasheight * (float)canvasheightscale) * _screenText.GetMainTextSizeRelativeToScreenWidth(AnimationTimers.general_animation_counter);
                                 maxfontsize = _screenText.GetMainTextMaxFontSize(AnimationTimers.general_animation_counter);
                                 yoffsetpct = _screenText.GetYOffsetPctOfScreen(AnimationTimers.general_animation_counter);
                                 relativestrokewidth = _screenText.GetRelativeTextOutlineWidth(AnimationTimers.general_animation_counter);

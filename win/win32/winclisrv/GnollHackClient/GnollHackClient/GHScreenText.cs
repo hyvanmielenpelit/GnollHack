@@ -22,7 +22,7 @@ namespace GnollHackClient
         public float GetFinishTime()
         {
             if (_data.style >= 3)
-                return 20.0f;
+                return 99999.0f;
             else
                 return 2.0f;
         }
@@ -72,7 +72,7 @@ namespace GnollHackClient
             {
                 switch (_data.style)
                 {
-                    case 1:
+                    case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
                     case 2:
                         return true;
                     default:
@@ -96,9 +96,10 @@ namespace GnollHackClient
             switch(_data.style)
             {
                 case 0:
-                case 1:
+                case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
+                    return 0.65f;
                 case 2:
-                    return 0.85f;
+                    return 0.70f;
                 case 3:
                     return 0.60f;
                 default:
@@ -116,7 +117,7 @@ namespace GnollHackClient
                 case 3:
                     return 0.0f;
                 default:
-                    return -0.05f;
+                    return -0.02f;
             }
         }
         public float GetMainTextMaxFontSize(long counter_value)
@@ -126,7 +127,16 @@ namespace GnollHackClient
 
         public float GetSubTextSizeRelativeToMainText(long counter_value)
         {
-            return 0.5f;
+            switch (_data.style)
+            {
+                case 0:
+                case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
+                    return 0.30f;
+                case 2:
+                    return 0.80f;
+                default:
+                    return 0.5f;
+            }
         }
         public SKTypeface GetTextTypeface(long counter_value)
         {
@@ -147,7 +157,7 @@ namespace GnollHackClient
             {
                 case 0:
                     return ClientUtils.NHColor2SKColor((nhcolor)_data.color);
-                case 1:
+                case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
                     return TransparentGold;
                 case 2:
                     return TransparentGold;
