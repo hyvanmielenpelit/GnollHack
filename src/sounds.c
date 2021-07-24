@@ -2092,8 +2092,8 @@ dochat()
     anything any;
 
     any = zeroany;
-    win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_MENU, !canspotmon(mtmp) ? GLYPH_INVISIBLE : mon_to_glyph(mtmp, rn2_on_display_rng));
+    start_menu_ex(win, GHMENU_STYLE_CHAT);
 
 
 #define MAXCHATNUM 50
@@ -4716,8 +4716,8 @@ struct monst* mtmp;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, !canspotmon(mtmp) ? GLYPH_INVISIBLE : mon_to_glyph(mtmp, rn2_on_display_rng));
+    start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
 
     
     static char def_srt_order[MAX_OBJECT_CLASSES] = {
@@ -4948,8 +4948,8 @@ struct monst* mtmp;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, !canspotmon(mtmp) ? GLYPH_INVISIBLE : mon_to_glyph(mtmp, rn2_on_display_rng));
+    start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
 
 
     static char def_srt_order[MAX_OBJECT_CLASSES] = {
@@ -6060,9 +6060,8 @@ struct monst* mtmp;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow(NHW_MENU);
-    start_menu(win);
-
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, !canspotmon(mtmp) ? GLYPH_INVISIBLE : mon_to_glyph(mtmp, rn2_on_display_rng));
+    start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
 
     any = zeroany;
     any.a_char = 1;
@@ -6169,8 +6168,8 @@ struct monst* mtmp;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    win = create_nhwindow_ex(NHW_MENU, 0, !canspotmon(mtmp) ? GLYPH_INVISIBLE : mon_to_glyph(mtmp, rn2_on_display_rng));
+    start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
 
 
     any = zeroany;
@@ -7707,8 +7706,8 @@ int* spell_otyps;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, !canspotmon(mtmp) ? GLYPH_INVISIBLE : mon_to_glyph(mtmp, rn2_on_display_rng));
+    start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
 
     for(spell_otyp_ptr = spell_otyps; spell_otyp_ptr && *spell_otyp_ptr > STRANGE_OBJECT; spell_otyp_ptr++)
     {

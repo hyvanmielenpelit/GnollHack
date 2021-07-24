@@ -900,7 +900,7 @@ int show_weights;
                            (qflags & BY_NEXTHERE) ? TRUE : FALSE, allow);
 
     win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
     any = zeroany;
     /*
      * Run through the list and add the objects to the menu.  If
@@ -1096,7 +1096,7 @@ int how;               /* type of query */
     }
 
     win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    start_menu_ex(win, GHMENU_STYLE_PICK_CATEGORY_LIST);
     pack = flags.inv_order;
 
     if (qflags & CHOOSE_ALL) {
@@ -2018,7 +2018,7 @@ doloot()
 
             any.a_void = 0;
             win = create_nhwindow(NHW_MENU);
-            start_menu(win);
+            start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
 
             for (cobj = level.objects[cc.x][cc.y]; cobj;
                  cobj = cobj->nexthere)
@@ -3697,7 +3697,7 @@ boolean outokay, inokay, alreadyused, more_containers;
 
     any = zeroany;
     win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    start_menu_ex(win, GHMENU_STYLE_ITEM_COMMAND);
 
     any.a_int = 1; /* ':' */
     Sprintf(buf, "Look inside %s", thesimpleoname(obj));
@@ -3832,7 +3832,7 @@ dotip()
 
                 any = zeroany;
                 win = create_nhwindow(NHW_MENU);
-                start_menu(win);
+                start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
 
                 for (cobj = level.objects[cc.x][cc.y], i = 0; cobj;
                      cobj = cobj->nexthere)

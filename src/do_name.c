@@ -604,7 +604,7 @@ int gloc;
     }
 
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu(tmpwin);
+    start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
     any = zeroany;
 
     /* gather_locs returns array[0] == you. skip it. */
@@ -1630,7 +1630,7 @@ docallcmd()
         getobj_autoselect_obj = 0;
 
     win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    start_menu_ex(win, GHMENU_STYLE_CHOOSE_COMMAND);
     any = zeroany;
     if (!getobj_autoselect_obj)
     {

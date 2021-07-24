@@ -1944,7 +1944,7 @@ enhance_weapon_skill()
         }
 
         win = create_nhwindow(NHW_MENU);
-        start_menu(win);
+        start_menu_ex(win, GHMENU_STYLE_SKILLS);
 
         /* start with a legend if any entries will be annotated
            with "*" or "#" below */
@@ -2610,22 +2610,22 @@ boolean nextlevel, limit_by_twoweap;
             impossible(bad_skill, skill); /* fall through */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus -= 2;
+            bonus += -2;
             break;
         case P_BASIC:
-            bonus -= 1;
+            bonus += -1;
             break;
         case P_SKILLED:
-            bonus -= 0;
+            bonus += -1;
             break;
         case P_EXPERT:
-            bonus += 1;
+            bonus += 0;
             break;
         case P_MASTER:
-            bonus += 2;
+            bonus += 0;
             break;
         case P_GRAND_MASTER:
-            bonus += 3;
+            bonus += 1;
             break;
         }
     }
@@ -2757,19 +2757,19 @@ boolean nextlevel, limit_by_twoweap;
         default:
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus += -5;
-            break;
-        case P_BASIC:
-            bonus += -4;
-            break;
-        case P_SKILLED:
-            bonus += -3;
-            break;
-        case P_EXPERT:
             bonus += -2;
             break;
+        case P_BASIC:
+            bonus += -2;
+            break;
+        case P_SKILLED:
+            bonus += -1;
+            break;
+        case P_EXPERT:
+            bonus += -1;
+            break;
         case P_MASTER:
-            bonus -= 1;
+            bonus += 0;
             break;
         case P_GRAND_MASTER:
             bonus += 0;

@@ -415,7 +415,7 @@ doextlist(VOID_ARGS)
     while (redisplay) {
         redisplay = FALSE;
         any = zeroany;
-        start_menu(menuwin);
+        start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_COMMAND);
         add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
                  "Extended Commands List", MENU_UNSELECTED);
         add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
@@ -735,14 +735,14 @@ doability(VOID_ARGS)
     menu_item* pick_list = (menu_item*)0;
     winid win;
     anything any;
-
-    any = zeroany;
-    win = create_nhwindow(NHW_MENU);
-    start_menu(win);
-        
-
     int abilitynum = 0;
     int glyph = 0;
+    glyph = player_to_glyph_index(urole.rolenum, urace.racenum, flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
+    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
+
+    any = zeroany;
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_MENU_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph);
+    start_menu_ex(win, GHMENU_STYLE_CHARACTER);
 
     /* CHARACTER ABILITY INFORMATION */
     any = zeroany;
@@ -755,9 +755,6 @@ doability(VOID_ARGS)
 
     any = zeroany;
     any.a_int = abilitynum + 1;
-    glyph = player_to_glyph_index(urole.rolenum, urace.racenum, flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
-
-    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
 
     add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
         0, 0, ATR_NONE,
@@ -2560,7 +2557,7 @@ doterrain(VOID_ARGS)
      *  a legend for the levl[][].typ codes dump
      */
     men = create_nhwindow(NHW_MENU);
-    start_menu(men);
+    start_menu_ex(men, GHMENU_STYLE_CHOOSE_COMMAND);
     any = zeroany;
     any.a_int = 1;
     add_menu(men, NO_GLYPH, &any, 0, 0, ATR_NONE,
@@ -2810,11 +2807,13 @@ int mode;  /* BASICENLIGHTENMENT | MAGICENLIGHTENMENT (| both) */
 int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
 {
     char buf[BUFSZ], tmpbuf[BUFSZ];
+    int glyph = player_to_glyph_index(urole.rolenum, urace.racenum, flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
+    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
 
-    en_win = create_nhwindow(NHW_MENU);
+    en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph);
     en_via_menu = !final;
     if (en_via_menu)
-        start_menu(en_win);
+        start_menu_ex(en_win, GHMENU_STYLE_ATTRIBUTES);
 
     Strcpy(tmpbuf, plname);
     *tmpbuf = highc(*tmpbuf); /* same adjustment as bottom line */
@@ -4617,7 +4616,7 @@ docommandmenu(VOID_ARGS)
     int n = 0;
 
     menuwin = create_nhwindow(NHW_MENU);
-    start_menu(menuwin);
+    start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_COMMAND);
 
     add_command_menu_items(menuwin, INCMDMENU);
 
@@ -4647,7 +4646,7 @@ dospellmainmenu(VOID_ARGS)
     int n = 0;
 
     menuwin = create_nhwindow(NHW_MENU);
-    start_menu(menuwin);
+    start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_COMMAND);
 
     add_command_menu_items(menuwin, INSPELLMENU);
 
@@ -7144,7 +7143,7 @@ int x, y;
     struct monst *mtmp;
 
     win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    start_menu_ex(win, GHMENU_STYLE_CHOOSE_COMMAND);
 
     if (IS_DOOR(typ)) {
         boolean key_or_pick, card;
@@ -7249,7 +7248,7 @@ boolean doit;
     menu_item *picks = (menu_item *) 0;
 
     win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    start_menu_ex(win, GHMENU_STYLE_CHOOSE_COMMAND);
 
     if (IS_FOUNTAIN(typ) || IS_SINK(typ)) 
     {

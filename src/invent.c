@@ -3958,8 +3958,8 @@ long pickcnt;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_COMMAND_MENU, iflags.using_gui_tiles ? otmp->gui_glyph : otmp->glyph);
+    start_menu_ex(win, GHMENU_STYLE_ITEM_COMMAND);
 
 #define NUM_CMD_SECTIONS 3
 
@@ -4346,7 +4346,7 @@ boolean addinventoryheader;
     sortedinvent = sortloot(&invent, sortflags, FALSE,
                             (boolean FDECL((*), (OBJ_P))) 0);
 
-    start_menu(win);
+    start_menu_ex(win, GHMENU_STYLE_INVENTORY);
     any = zeroany;
     if (wizard && iflags.override_ID) {
         int unid_cnt;
@@ -4791,7 +4791,7 @@ char avoidlet;
 
     if (invent) {
         win = create_nhwindow(NHW_MENU);
-        start_menu(win);
+        start_menu_ex(win, GHMENU_STYLE_INVENTORY);
         while (!invdone) {
             any = zeroany; /* set all bits to zero */
             classcount = 0;
@@ -6579,7 +6579,7 @@ const char *hdr, *txt;
 
     any = zeroany;
     win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
     add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, hdr,
              MENU_UNSELECTED);
     add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);

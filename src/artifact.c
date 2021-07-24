@@ -2980,7 +2980,7 @@ create_portal()
     anything any;
 
     any = zeroany; /* set all bits to zero */
-    start_menu(tmpwin);
+    start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
 
     /* use index+1 (cant use 0) as identifier */
     for (i = num_ok_dungeons = 0; i < n_dgns; i++) 

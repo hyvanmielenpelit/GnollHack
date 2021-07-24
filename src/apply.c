@@ -2010,7 +2010,7 @@ struct obj **optr;
 
             any.a_void = 0;
             win = create_nhwindow(NHW_MENU);
-            start_menu(win);
+            start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
 
             for (struct obj* cobj = level.objects[u.ux][u.ux]; cobj; cobj = cobj->nexthere)
                 if (is_obj_candelabrum(cobj)) 
@@ -4921,7 +4921,7 @@ struct obj *obj;
 
         any = zeroany; /* set all bits to zero */
         any.a_int = 1; /* use index+1 (cant use 0) as identifier */
-        start_menu(tmpwin);
+        start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_COMMAND);
         any.a_int++;
         Sprintf(buf, "an object on the %s", surface(cc.x, cc.y));
         add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
@@ -5717,7 +5717,7 @@ boolean usenexthere;
     winid win;
     
     win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
     int cnt = 0;
 
     for (struct obj* otmp = objchain; otmp; otmp = usenexthere ? otmp->nexthere : otmp->nobj)

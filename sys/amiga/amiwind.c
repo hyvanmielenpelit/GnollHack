@@ -225,7 +225,7 @@ register struct IntuiMessage *message;
 #endif
         else if (WINVERS_AMIV && shift) {
             if (WIN_OVER == WIN_ERR) {
-                WIN_OVER = amii_create_nhwindow_ex(NHW_OVER);
+                WIN_OVER = amii_create_nhwindow_ex(NHW_OVER, 0, NO_GLYPH);
                 BufferQueueChar('R' - 64);
             } else {
                 delayed_key_action = CloseOver;

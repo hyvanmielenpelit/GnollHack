@@ -3246,7 +3246,7 @@ int *spell_no;
     }
 
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu(tmpwin);
+    start_menu_ex(tmpwin, GHMENU_STYLE_SPELLS);
     any = zeroany; /* zero out all bits */
 
     int hotkeys[11] = { 0 };
@@ -3881,7 +3881,7 @@ dospellmanagemenu()
 
     any = zeroany;
     win = create_nhwindow(NHW_MENU);
-    start_menu(win);
+    start_menu_ex(win, GHMENU_STYLE_CHOOSE_COMMAND);
 
 
     struct available_selection_item

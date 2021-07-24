@@ -1967,7 +1967,7 @@ xchar *rdgn;
     winid win = create_nhwindow(NHW_MENU);
 
     if (bymenu) {
-        start_menu(win);
+        start_menu_ex(win, GHMENU_STYLE_DUNGEON_OVERVIEW);
         lchoices.idx = 0;
         lchoices.menuletter = 'a';
     }

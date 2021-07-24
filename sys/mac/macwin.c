@@ -784,7 +784,7 @@ got1:
     if (kind == NHW_BASE || kind == NHW_MAP || kind == NHW_STATUS) {
         short x_sz, x_sz_p, y_sz, y_sz_p;
         if (kind != NHW_BASE) {
-            if (i != tty_create_nhwindow_ex(kind)) {
+            if (i != tty_create_nhwindow_ex(kind, 0, NO_GLYPH)) {
                 dprintf("cre_win: error creating kind %d", kind);
             }
             if (kind == NHW_MAP) {

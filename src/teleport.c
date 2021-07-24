@@ -862,7 +862,7 @@ dotelecmd()
         int i, tmode;
 
         win = create_nhwindow(NHW_MENU);
-        start_menu(win);
+        start_menu_ex(win, GHMENU_STYLE_CHOOSE_COMMAND);
         any = zeroany;
 
         for (i = 0; i < SIZE(tports); ++i)

@@ -1654,7 +1654,7 @@ const char *prompt;
     if (prompt && strstri(prompt, "menu headings"))
         default_attr = iflags.menu_headings;
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu(tmpwin);
+    start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SIMPLE);
     any = zeroany;
     for (i = 0; i < SIZE(attrnames); i++) {
         if (!attrnames[i].name)
@@ -5183,7 +5183,7 @@ doset() /* changing options via menu by Per Liboriussen */
     unsigned longest_name_len;
 
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu(tmpwin);
+    start_menu_ex(tmpwin, GHMENU_STYLE_OPTIONS);
 
 #ifdef notyet /* SYSCF */
     /* XXX I think this is still fragile.  Fixing initial/from_file and/or
