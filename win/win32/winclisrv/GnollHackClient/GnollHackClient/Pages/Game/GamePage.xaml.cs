@@ -666,7 +666,7 @@ namespace GnollHackClient.Pages.Game
                                 ReturnToMainMenu();
                                 break;
                             case GHRequestType.ShowMenuPage:
-                                ShowMenuPage(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(), req.RequestingGHWindow);
+                                ShowMenuPage(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow);
                                 break;
                             case GHRequestType.CreateWindowView:
                                 CreateWindowView(req.RequestInt);
@@ -872,7 +872,7 @@ namespace GnollHackClient.Pages.Game
         private async void ShowMenuPage(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
             ShowWaitIcon = true;
-            var menuPage = new GHMenuPage(this, ghwindow);
+            var menuPage = new GHMenuPage(this, ghwindow, menuinfo.Style);
             menuPage.SelectionHow = menuinfo.SelectionHow;
             if (menuinfo.Header == null)
                 menuPage.HeaderVisible = false;
@@ -3486,6 +3486,10 @@ namespace GnollHackClient.Pages.Game
             canvas.Flush();
 
         }
+
+
+        public double CurrentPageWidth { get { return _currentPageWidth;  } }
+        public double CurrentPageHeight { get { return _currentPageHeight; } }
 
         private double _currentPageWidth = 0;
         private double _currentPageHeight = 0;

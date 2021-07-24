@@ -12,6 +12,7 @@ namespace GnollHackClient
 {
     public class GHMenuItem : IEquatable<GHMenuItem>, INotifyPropertyChanged
     {
+        GHMenuInfo _menuInfo;
         private GamePage _gamePage;
         private int _noGlyph;
         public Int64 Identifier { get; set; }
@@ -45,6 +46,16 @@ namespace GnollHackClient
         public int MaxCount { get; set; }
         public char Accelerator { get; set; }
         public char GroupAccelerator { get; set; }
+        public string FormattedAccelerator
+        { 
+            get
+            { string res = Accelerator.ToString(); 
+                if (res == "" || res == "\0")
+                    return "";
+                else
+                    return "   " + res;
+            }
+        }
         private string _text;
         private string _mainText;
         private string _suffixText;
@@ -120,6 +131,181 @@ namespace GnollHackClient
         public UInt64 Oid { get; set; }
         public UInt64 Mid { get; set; }
 
+        public string FontFamily {
+            get 
+            {
+                if (((int)Attributes & (int)MenuItemAttributes.Bold) != 0)
+                {
+                    string res = "Diablo";
+                    switch (_menuInfo.Style)
+                    {
+                        case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHAT:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                            res = "DejaVuSansMono-Bold";
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                            res = "DejaVuSansMono-Bold";
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_HELP:
+                            break;
+                        case ghmenu_styles.MAX_GHMENU_STYLES:
+                            break;
+                    }
+                    return res;
+                }
+                else 
+                {
+                    string res = "Underwood";
+                    switch (_menuInfo.Style)
+                    {
+                        case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHAT:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                            res = "Immortal";
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                            res = "Immortal";
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                            res = "DejaVuSansMono";
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                            res = "DejaVuSansMono";
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_HELP:
+                            break;
+                        case ghmenu_styles.MAX_GHMENU_STYLES:
+                            break;
+                    }
+                    return res;
+                }
+            }
+        }
+
+        public double FontSize
+        {
+            get
+            {
+                double res = 15;
+                if (((int)Attributes & (int)MenuItemAttributes.Bold) != 0)
+                {
+                    res = 18;
+                }
+                switch (_menuInfo.Style)
+                {
+                    case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                        res = 22;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                        res = 22;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                    case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                        res = Math.Min(18, Math.Max(11.9, 11.9 * _gamePage.CurrentPageWidth / 600));
+                        if (((int)Attributes & (int)MenuItemAttributes.Bold) != 0)
+                        {
+                            //res = res * 0.98;
+                        }
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_HELP:
+                        break;
+                    case ghmenu_styles.MAX_GHMENU_STYLES:
+                        break;
+                }
+                return res; 
+            }
+        }
         public bool Equals(GHMenuItem other)
         {
             if (other == null) 
@@ -130,8 +316,9 @@ namespace GnollHackClient
                 return (this.Text.Equals(other.Text));
         }
 
-        public GHMenuItem(int noGlyph, GamePage gamePage)
+        public GHMenuItem(GHMenuInfo info, int noGlyph, GamePage gamePage)
         {
+            _menuInfo = info;
             _noGlyph = noGlyph;
             _gamePage = gamePage;
             _glyphImageSource.GamePage = gamePage;

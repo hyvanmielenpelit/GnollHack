@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GnollHackCommon;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
@@ -7,6 +8,7 @@ namespace GnollHackClient
 {
     public class GHMenuInfo
     {
+        public ghmenu_styles Style { get; set; }
         public List<GHMenuItem> MenuItems = new List<GHMenuItem>();
         public string Header { get; set; }
         public string Subtitle { get; set; }
@@ -21,9 +23,9 @@ namespace GnollHackClient
             if (_autoAccelerator == 'Z' + 1)
                 _autoAccelerator = 'a';
         }
-        public GHMenuInfo()
+        public GHMenuInfo(ghmenu_styles style)
         {
-
+            Style = style;
         }
     }
 }

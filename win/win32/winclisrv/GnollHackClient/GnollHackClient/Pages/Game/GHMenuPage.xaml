@@ -195,7 +195,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
                 -->
-                <CollectionView x:Name="MenuView" WidthRequest="440" BackgroundColor="Transparent" SelectionChanged="MenuView_SelectionChanged" HorizontalOptions="Center">
+                <CollectionView x:Name="MenuView" BindingContext="" WidthRequest="{Binding MenuViewWidthRequest}" BackgroundColor="Transparent" SelectionChanged="MenuView_SelectionChanged" HorizontalOptions="Center">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <SwipeView BackgroundColor="Transparent"
@@ -279,9 +279,9 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Label Grid.Column="0" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
-                                       Text="{Binding Accelerator}" VerticalTextAlignment="Center" VerticalOptions="Center"
-                                       FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
-                                       FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}">
+                                       Text="{Binding FormattedAccelerator}" VerticalTextAlignment="Center" VerticalOptions="Center"
+                                       FontFamily="{Binding FontFamily}" 
+                                       FontSize="{Binding FontSize}">
                                     </Label>
 
                                     <Label Grid.Column="0" Text=" " HeightRequest="{Binding MinimumRowHeight}" VerticalTextAlignment="Center" VerticalOptions="Center"></Label>
@@ -312,8 +312,8 @@
                                         <Label Grid.Row="0" Padding="0" Margin="0" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
                                            Text="{Binding MainText}" VerticalTextAlignment="{Binding MainTextVerticalTextAlign}" VerticalOptions="{Binding MainTextVerticalOptions}"
                                            HorizontalOptions="Start" HorizontalTextAlignment="Start"
-                                           FontFamily="{Binding Attributes, Converter={StaticResource FontConverter}}" 
-                                           FontSize="{Binding Attributes, Converter={StaticResource FontSizeConverter}}"
+                                           FontFamily="{Binding FontFamily}" 
+                                           FontSize="{Binding FontSize}"
                                            />
                                         <Label Grid.Row="1" Padding="0" Margin="0" TextColor="Gray" 
                                                Text="{Binding SuffixText}" VerticalTextAlignment="Start" VerticalOptions="Start"

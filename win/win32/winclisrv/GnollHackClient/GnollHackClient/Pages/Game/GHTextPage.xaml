@@ -12,7 +12,7 @@
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                 </ff:CachedImage.GestureRecognizers>
             </ff:CachedImage>
-            <CollectionView Margin="5" x:Name="TextView" HorizontalOptions="FillAndExpand" VerticalOptions="Start" BackgroundColor="Transparent">
+            <CollectionView Margin="20,5,5,5" x:Name="TextView" WidthRequest="600" HorizontalOptions="Center" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid>

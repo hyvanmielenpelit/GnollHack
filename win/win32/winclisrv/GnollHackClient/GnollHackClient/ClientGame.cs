@@ -225,7 +225,7 @@ namespace GnollHackClient
                 return 0;
 
             int handle = _lastWindowHandle;
-            GHWindow ghwin = new GHWindow((GHWinType)wintype, ClientGamePage, handle);
+            GHWindow ghwin = new GHWindow((GHWinType)wintype, (ghwindow_styles)style, glyph, ClientGamePage, handle);
             lock(_ghWindowsLock)
             {
                 _ghWindows[handle] = ghwin;
@@ -665,7 +665,7 @@ namespace GnollHackClient
             {
                 if (_ghWindows[winid] != null)
                 {
-                    _ghWindows[winid].MenuInfo = new GHMenuInfo();
+                    _ghWindows[winid].MenuInfo = new GHMenuInfo((ghmenu_styles)style);
                 }
             }
         }
@@ -681,7 +681,7 @@ namespace GnollHackClient
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
-                    GHMenuItem mi = new GHMenuItem(_gamePage.NoGlyph, _gamePage);
+                    GHMenuItem mi = new GHMenuItem(_ghWindows[winid].MenuInfo, _gamePage.NoGlyph, _gamePage);
                     mi.Identifier = identifier;
                     if (accel == 0 && identifier != 0)
                         mi.Accelerator = _ghWindows[winid].MenuInfo.AutoAccelerator;

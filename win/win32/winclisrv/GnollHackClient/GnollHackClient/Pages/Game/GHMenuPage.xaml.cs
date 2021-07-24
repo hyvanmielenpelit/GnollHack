@@ -20,7 +20,8 @@ namespace GnollHackClient.Pages.Game
     {
         private ClientGame _clientGame;
         private GamePage _gamePage;
-        private GHWindow _ghwindow; 
+        private GHWindow _ghwindow;
+        private ghmenu_styles _style;
 
         private List<GHMenuItem> _GHMenuItems = new List<GHMenuItem>();
         public List<GHMenuItem> MenuItems { get { return _GHMenuItems; } }
@@ -36,14 +37,16 @@ namespace GnollHackClient.Pages.Game
         private bool _responseSent = false;
         private bool unselect_on_tap = false;
 
-        public GHMenuPage(GamePage gamepage, GHWindow ghwindow)
+        public GHMenuPage(GamePage gamepage, GHWindow ghwindow, ghmenu_styles style)
         {
             InitializeComponent();
-            //TestView.ItemsSource = MenuItems;
-            MenuView.ItemsSource = MenuItems;
+
             _clientGame = gamepage.ClientGame;
             _gamePage = gamepage;
             _ghwindow = ghwindow;
+            _style = style;
+            MenuView.BindingContext = this;
+            MenuView.ItemsSource = MenuItems;
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
 
@@ -52,6 +55,66 @@ namespace GnollHackClient.Pages.Game
             //BackgroundImage.Source = ImageSource.FromResource("GnollHackClient.Assets.UI.menubackground.png", assembly);
         }
 
+        public double MenuViewWidthRequest
+        {
+            get
+            {
+                double res = 440;
+                switch (_style)
+                {
+                    case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                        res = 880;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                        res = 1024;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                        res = 1024;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                        res = 1024;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                        res = 880;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                        res = 1024;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_HELP:
+                        res = 880;
+                        break;
+                    case ghmenu_styles.MAX_GHMENU_STYLES:
+                        break;
+                }
+                return res;
+            }            
+        }
 
         private async void CancelButton_Clicked(object sender, EventArgs e)
         {
@@ -160,6 +223,11 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
+        }
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
