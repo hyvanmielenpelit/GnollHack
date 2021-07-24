@@ -2499,7 +2499,7 @@ namespace GnollHackClient.Pages.Game
                                                                 bool tileflag_normalobjmissile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0;
                                                                 bool tileflag_fullsizeditem = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
 
-                                                                if ((!tileflag_halfsize || monster_height > 0) && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
+                                                                if ((!tileflag_halfsize || monster_height > 0) && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT || layer_idx == (int)layer_types.MAX_LAYERS))
                                                                     scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
                                                                 else if (tileflag_halfsize && (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
                                                                     scaled_y_height_change = (float)(-(sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT) * height / (float)GHConstants.TileHeight;
@@ -2516,9 +2516,9 @@ namespace GnollHackClient.Pages.Game
                                                                 /* Determine animation tile here */
                                                                 lock (AnimationTimerLock)
                                                                 {
-                                                                    if (AnimationTimers.u_action_animation_counter_on && layer_idx == (int)layer_types.LAYER_MONSTER && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
+                                                                    if (AnimationTimers.u_action_animation_counter_on && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS) && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
                                                                         ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                                    else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MONSTER) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
+                                                                    else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS)) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
                                                                         ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
                                                                     else if (_gnollHackService.GlyphIsExplosion(glyph))
                                                                         ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.explosion_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
@@ -2737,7 +2737,7 @@ namespace GnollHackClient.Pages.Game
                                                                                 scale *= GHConstants.OBJECT_PIT_SCALING_FACTOR;
                                                                         }
 
-                                                                        if (monster_height < 0 && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT))
+                                                                        if (monster_height < 0 && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT) || layer_idx == (int)layer_types.MAX_LAYERS)
                                                                             scale *= Math.Min(1.0f, Math.Max(0.1f, 1.0f - (1.0f - (float)GHConstants.OBJECT_PIT_SCALING_FACTOR) * (float)monster_height / (float)GHConstants.SPECIAL_HEIGHT_IN_PIT));
 
                                                                         if (tileflag_floortile)
