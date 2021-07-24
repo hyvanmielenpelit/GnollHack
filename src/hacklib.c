@@ -1498,7 +1498,7 @@ int* x, * y, * mod;
     int c = nh_poskey(x, y, mod);
 
 #ifdef UNIX
-    if (c == '\033' && !is_stdin_empty())
+    if (c == '\033' && tty_arrow_key_support_enabled())
     {
         c = nhgetch();
         if (c == EOF || c == 0 || c == '\033')
@@ -1563,13 +1563,9 @@ extern int unix_is_stdin_empty(); /* From unixmain.c */
 #endif
 
 int
-is_stdin_empty()
+tty_arrow_key_support_enabled()
 {
-#if 0 // defined(UNIX) && !defined(GNH_ANDROID)
-    unix_is_stdin_empty();
-#else
-    return !iflags.enablettyarrowkeys;
-#endif
+    return iflags.enablettyarrowkeys;
 }
 
 void

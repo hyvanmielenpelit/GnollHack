@@ -81,7 +81,7 @@ getlin_hook_proc hook;
         c = pgetchar();
         if (c == '\033' || c == EOF) {
 #ifdef UNIX
-            if(c != EOF && !is_stdin_empty())
+            if(c != EOF && tty_arrow_key_support_enabled())
                 c = pgetchar(); /* Get another one */
 #endif
             if ((c == '\033' || c == 0) && obufp[0] != '\0') {
@@ -93,7 +93,7 @@ getlin_hook_proc hook;
                 addtopl(" ");
                 addtopl(obufp);
 #ifdef UNIX
-            } else if (c == 91 && !is_stdin_empty()) {
+            } else if (c == 91 && tty_arrow_key_support_enabled()) {
                 c = pgetchar(); /* Get third one */
                 switch (c)
                 {
@@ -262,7 +262,7 @@ register const char *s; /* chars allowed besides return */
             break;
 
 #ifdef UNIX
-        if (c == '\033' && !is_stdin_empty())
+        if (c == '\033' && tty_arrow_key_support_enabled())
         {
             c = tty_nhgetch();
             if (c == 0 || c == '\033')

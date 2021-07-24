@@ -1289,7 +1289,7 @@ E void FDECL(convertUTF8toCP437, (char*, size_t));
 E char FDECL(unicode_to_CP437, (nhsym));
 E boolean NDECL(use_utf8_encoding);
 E int FDECL(converted_nh_poskey, (int*, int*, int*));
-E int NDECL(is_stdin_empty);
+E int NDECL(tty_arrow_key_support_enabled);
 E void FDECL(write_nhsym_utf8, (char**, nhsym, BOOLEAN_P));
 E void FDECL(write_text2buf_utf8, (char*, size_t, const char*));
 E void FDECL(write_CP437_to_buf_unicode, (char*, size_t, const char*));

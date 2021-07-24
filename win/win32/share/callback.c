@@ -199,7 +199,13 @@ common_prompt_for_player_selection()
                         else
                             Strcpy(rolenamebuf, roles[i].name.m);
                     }
-                    add_menu(win, NO_GLYPH, &any, thisch, 0, ATR_NONE,
+                    int player_glyph_index = player_to_glyph_index(i, 
+                        flags.initrace >= 0 ? flags.initrace : RACE_HUMAN,
+                        flags.initgend >= 0 ? flags.initgend : GENDER_MALE,
+                        flags.initalign >= 0 ? aligns[flags.initalign].value : A_NEUTRAL, 
+                        0);
+                    int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
+                    add_menu(win, glyph, &any, thisch, 0, ATR_NONE,
                         an(rolenamebuf), MENU_UNSELECTED);
                     lastch = thisch;
                 }
@@ -283,7 +289,13 @@ common_prompt_for_player_selection()
                         flags.initalign))
                     {
                         any.a_int = i + 1; /* must be non-zero */
-                        add_menu(win, NO_GLYPH, &any, races[i].noun[0], 0,
+                        int player_glyph_index = player_to_glyph_index(flags.initrole,
+                            i,
+                            flags.initgend >= 0 ? flags.initgend : GENDER_MALE,
+                            flags.initalign >= 0 ? aligns[flags.initalign].value : A_NEUTRAL,
+                            0);
+                        int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
+                        add_menu(win, glyph, &any, races[i].noun[0], 0,
                             ATR_NONE, races[i].noun, MENU_UNSELECTED);
                     }
 
@@ -370,7 +382,13 @@ common_prompt_for_player_selection()
                         flags.initalign))
                     {
                         any.a_int = i + 1;
-                        add_menu(win, NO_GLYPH, &any, genders[i].adj[0], 0,
+                        int player_glyph_index = player_to_glyph_index(flags.initrole,
+                            flags.initrace,
+                            i,
+                            flags.initalign >= 0 ? aligns[flags.initalign].value : A_NEUTRAL,
+                            0);
+                        int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
+                        add_menu(win, glyph, &any, genders[i].adj[0], 0,
                             ATR_NONE, genders[i].adj, MENU_UNSELECTED);
                     }
 
@@ -456,7 +474,13 @@ common_prompt_for_player_selection()
                         flags.initgend, i))
                     {
                         any.a_int = i + 1;
-                        add_menu(win, NO_GLYPH, &any, aligns[i].adj[0], 0,
+                        int player_glyph_index = player_to_glyph_index(flags.initrole,
+                            flags.initrace,
+                            flags.initgend,
+                            aligns[i].value,
+                            0);
+                        int glyph = player_glyph_index + GLYPH_PLAYER_OFF;
+                        add_menu(win, glyph, &any, aligns[i].adj[0], 0,
                             ATR_NONE, aligns[i].adj, MENU_UNSELECTED);
                     }
 

@@ -65,8 +65,13 @@ namespace GnollHackClient
             set
             {
                 _text = value;
-                int first_parenthesis_open = value.IndexOf('(');
-                if(first_parenthesis_open < 0)
+                int first_parenthesis_open = -1;
+                if (SuffixParseStyle == 0 || (SuffixParseStyle == 2 && ((int)Attributes & (int)MenuItemAttributes.Bold) == 0))
+                    first_parenthesis_open = -1;
+                else
+                    first_parenthesis_open = value.IndexOf('(');
+
+                if (first_parenthesis_open < 0)
                     _mainText = value;
                 else if (first_parenthesis_open > 0)
                     _mainText = value.Substring(0, first_parenthesis_open);
@@ -77,6 +82,56 @@ namespace GnollHackClient
                     _suffixText = ParseSuffixText(value);
                 else
                     _suffixText = "";
+            }
+        }
+        public int SuffixParseStyle
+        {
+            get
+            {
+                int res = 0;
+                switch (_menuInfo.Style)
+                {
+                    case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                    case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                    case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                        res = 1;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                        res = 1;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                        res = 1;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                    case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                    case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                    case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                    case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                        res = 2;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_HELP:
+                        break;
+                    case ghmenu_styles.MAX_GHMENU_STYLES:
+                        break;
+                }
+                return res;
             }
         }
         public string MainText { get { return _mainText; } }
@@ -152,6 +207,7 @@ namespace GnollHackClient
                         case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                            res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHAT:
                             break;
@@ -166,6 +222,7 @@ namespace GnollHackClient
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                            res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
                             break;
@@ -176,10 +233,13 @@ namespace GnollHackClient
                             res = "DejaVuSansMono-Bold";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                            res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                            res = "DejaVuSansMono-Bold";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_HELP:
+                            res = "DejaVuSansMono-Bold";
                             break;
                         case ghmenu_styles.MAX_GHMENU_STYLES:
                             break;
@@ -230,8 +290,10 @@ namespace GnollHackClient
                         case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                            res = "DejaVuSansMono";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_HELP:
+                            res = "DejaVuSansMono";
                             break;
                         case ghmenu_styles.MAX_GHMENU_STYLES:
                             break;
@@ -275,7 +337,7 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                        res = 20;
+                        res = 18;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                         res = 20;
@@ -287,14 +349,11 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_SPELLS:
                     case ghmenu_styles.GHMENU_STYLE_SKILLS:
                         res = Math.Min(18, Math.Max(11.75, 11.9 * _gamePage.CurrentPageWidth / 600));
-                        if (((int)Attributes & (int)MenuItemAttributes.Bold) != 0)
-                        {
-                            //res = res * 0.98;
-                        }
                         break;
                     case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                        res = Math.Min(18, Math.Max(11.75, 14 * _gamePage.CurrentPageWidth / 600));
                         break;
                     case ghmenu_styles.GHMENU_STYLE_HELP:
                         break;

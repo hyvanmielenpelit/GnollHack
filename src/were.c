@@ -238,6 +238,7 @@ boolean purify;
     else if (is_were(youmonst.data) && !u.mtimedone)
         u.mtimedone = rn1(200, 200); /* 40% of initial were change */
 
+    refresh_u_tile_gui_info(TRUE);
     context.botl = context.botlx = 1;
 }
 

@@ -7799,7 +7799,7 @@ readchar()
         if (sym == EOF || sym == 0)
             sym = '\033';
 #ifdef UNIX
-        else if (sym == 91 && !is_stdin_empty())
+        else if (sym == 91 && tty_arrow_key_support_enabled())
             goto sym91here;
 #endif
         else if (sym != '\033')
@@ -7807,7 +7807,7 @@ readchar()
 #endif /*ALTMETA*/
 
 #ifdef UNIX
-    } else if (sym == '\033' && !is_stdin_empty()) {
+    } else if (sym == '\033' && tty_arrow_key_support_enabled()) {
         sym = *readchar_queue ? *readchar_queue++ : pgetchar();
         if (sym == EOF || sym == 0 || sym == '\033')
             sym = '\033';

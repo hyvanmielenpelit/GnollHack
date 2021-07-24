@@ -1894,6 +1894,8 @@ namespace GnollHackClient.Pages.Game
             //}
         }
 
+        private SKMaskFilter _blur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 3.4f);
+
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             SKImageInfo info = e.Info;
@@ -2136,6 +2138,19 @@ namespace GnollHackClient.Pages.Game
                                         {
                                             currentcountervalue = AnimationTimers.general_animation_counter;
                                         }
+
+                                        float altStartX = -(offsetX + _mapOffsetX) / width - 1;
+                                        float altEndX = (canvaswidth - (offsetX + _mapOffsetX)) / width;
+                                        float altStartY = -(offsetY + _mapOffsetY) / height - 1;
+                                        float altEndY = (canvasheight - (offsetY + _mapOffsetY)) / height;
+                                        altStartX -= 3;
+                                        altEndX += 3;
+                                        altStartY -= 1;
+                                        altEndY += 3;
+                                        startX = Math.Max(startX, (int)(Math.Sign(altStartX) * Math.Floor(Math.Abs(altStartX))));
+                                        endX = Math.Min(endX, (int)Math.Ceiling(altEndX));
+                                        startY = Math.Max(startY, (int)(Math.Sign(altStartY) * Math.Floor(Math.Abs(altStartY))));
+                                        endY = Math.Min(endY, (int)Math.Ceiling(altEndY));
 
                                         for (int layer_idx = 0; layer_idx <= (int)layer_types.MAX_LAYERS + 1; layer_idx++)
                                         {
@@ -3097,7 +3112,21 @@ namespace GnollHackClient.Pages.Game
 
                             tx = (canvaswidth / 2 - textBounds.Width / 2);
                             ty = (canvasheight / 2 - textBounds.Height / 2 - (maintextascent + maintextdescent) / 2) + yoffsetpct * canvasheight;
+
+                            /* Shadow first */
+                            {
+                                SKColor oldcolor = textPaint.Color;
+                                SKMaskFilter oldfilter = textPaint.MaskFilter;
+                                textPaint.Color = SKColors.Black.WithAlpha(oldcolor.Alpha);
+                                textPaint.MaskFilter = _blur;
+                                float offset = textPaint.TextSize / 15;
+                                canvas.DrawText(str, tx + offset, ty + offset, textPaint);
+                                textPaint.Color = oldcolor;
+                                textPaint.MaskFilter = oldfilter;
+                            }
+
                             canvas.DrawText(str, tx, ty, textPaint);
+
                             if (relativestrokewidth > 0)
                             {
                                 textPaint.Style = SKPaintStyle.Stroke;
@@ -3106,6 +3135,7 @@ namespace GnollHackClient.Pages.Game
                                 canvas.DrawText(str, tx, ty, textPaint);
                                 textPaint.Style = SKPaintStyle.Fill;
                             }
+
 
                             float maintextsize = textPaint.TextSize;
                             float maintextspacing = textPaint.FontSpacing;
@@ -3128,6 +3158,18 @@ namespace GnollHackClient.Pages.Game
                                     ty = maintexty + maintextascent - textPaint.FontMetrics.Descent;
                                 else
                                     ty = maintexty + maintextdescent - textPaint.FontMetrics.Ascent;
+
+                                /* Shadow first */
+                                {
+                                    SKColor oldcolor = textPaint.Color;
+                                    SKMaskFilter oldfilter = textPaint.MaskFilter;
+                                    textPaint.Color = SKColors.Black.WithAlpha(oldcolor.Alpha);
+                                    textPaint.MaskFilter = _blur;
+                                    float offset = textPaint.TextSize / 15;
+                                    canvas.DrawText(str, tx + offset, ty + offset, textPaint);
+                                    textPaint.Color = oldcolor;
+                                    textPaint.MaskFilter = oldfilter;
+                                }
 
                                 canvas.DrawText(str, tx, ty, textPaint);
                                 if (relativesubstrokewidth > 0)

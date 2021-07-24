@@ -1311,7 +1311,7 @@ tty_askname()
             if (c == '\033') 
             {
 #ifdef UNIX
-                if (is_stdin_empty())
+                if (!tty_arrow_key_support_enabled())
                 {
                     ct = 0;
                     break;
