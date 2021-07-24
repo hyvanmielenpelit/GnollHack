@@ -286,7 +286,7 @@ namespace GnollHackClient
                         break;
                     case ghmenu_styles.GHMENU_STYLE_SPELLS:
                     case ghmenu_styles.GHMENU_STYLE_SKILLS:
-                        res = Math.Min(18, Math.Max(11.9, 11.9 * _gamePage.CurrentPageWidth / 600));
+                        res = Math.Min(18, Math.Max(11.75, 11.9 * _gamePage.CurrentPageWidth / 600));
                         if (((int)Attributes & (int)MenuItemAttributes.Bold) != 0)
                         {
                             //res = res * 0.98;

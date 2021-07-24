@@ -4,6 +4,7 @@ using SkiaSharp.Views.Forms;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -23,8 +24,8 @@ namespace GnollHackClient.Pages.Game
         private GHWindow _ghwindow;
         private ghmenu_styles _style;
 
-        private List<GHMenuItem> _GHMenuItems = new List<GHMenuItem>();
-        public List<GHMenuItem> MenuItems { get { return _GHMenuItems; } }
+        private ObservableCollection<GHMenuItem> _GHMenuItems = new ObservableCollection<GHMenuItem>();
+        public ObservableCollection<GHMenuItem> MenuItems { get { return _GHMenuItems; } }
 
         public string Header { get { return HeaderLabel.Text; } set { HeaderLabel.Text = value; } }
         public bool HeaderVisible { get { return HeaderLabel.IsVisible; } set { HeaderLabel.IsVisible = value; } }
@@ -225,9 +226,18 @@ namespace GnollHackClient.Pages.Game
 
         }
 
+        private static double _currentPageWidth = 0;
+        private static double _currentPageHeight = 0;
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
+
+            if(width != _currentPageWidth || height != _currentPageHeight)
+            {
+                _currentPageWidth = width;
+                _currentPageHeight = height;
+                //Refresh MenuView here
+            }
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)

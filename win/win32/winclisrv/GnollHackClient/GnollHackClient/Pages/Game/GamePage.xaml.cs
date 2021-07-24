@@ -885,7 +885,10 @@ namespace GnollHackClient.Pages.Game
                 menuPage.Subtitle = menuinfo.Subtitle;
 
             if (menuinfo != null)
-                menuPage.MenuItems.AddRange(menuinfo.MenuItems);
+            {
+                foreach(GHMenuItem mi in menuinfo.MenuItems)
+                    menuPage.MenuItems.Add(mi);
+            }
             menuPage.Process();
             await App.Current.MainPage.Navigation.PushModalAsync(menuPage, false);
         }
