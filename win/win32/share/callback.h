@@ -53,7 +53,7 @@ typedef VoidVoidCallback GetEventCallback;
 typedef VoidConstCharCallback ExitWindowsCallback;
 typedef VoidConstCharCallback SuspendWindowsCallback;
 typedef VoidVoidCallback ResumeWindowsCallback;
-typedef IntIntCallback CreateWindowCallback;
+typedef int(__callconv* CreateWindowCallback)(int, int, int);
 typedef VoidIntCallback ClearWindowCallback;
 typedef VoidIntBooleanCallback DisplayWindowCallback;
 typedef VoidIntCallback DestroyWindowCallback;
@@ -140,7 +140,7 @@ struct callback_procs {
     ExitWindowsCallback callback_exit_nhwindows;
     SuspendWindowsCallback callback_suspend_nhwindows;
     ResumeWindowsCallback callback_resume_nhwindows;
-    CreateWindowCallback callback_create_nhwindow;
+    CreateWindowCallback callback_create_nhwindow_ex;
     ClearWindowCallback callback_clear_nhwindow;
     DisplayWindowCallback callback_display_nhwindow;
     DestroyWindowCallback callback_destroy_nhwindow;

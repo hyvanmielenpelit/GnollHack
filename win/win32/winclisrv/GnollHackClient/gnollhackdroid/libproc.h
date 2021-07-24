@@ -15,7 +15,7 @@ void lib_get_nh_event(void);
 void lib_exit_nhwindows(const char*);
 void lib_suspend_nhwindows(const char*);
 void lib_resume_nhwindows(void);
-winid lib_create_nhwindow(int type);
+winid lib_create_nhwindow_ex(int type, int style, int glyph);
 void lib_clear_nhwindow(winid wid);
 void lib_display_nhwindow(winid wid, BOOLEAN_P block);
 void lib_destroy_nhwindow(winid wid);

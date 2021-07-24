@@ -724,8 +724,8 @@ mac_init_nhwindows(int *argcp, char **argv)
      * even though most
      * messages are handled in mac window.
      */
-    mac_create_nhwindow(NHW_BASE);
-    tty_create_nhwindow(NHW_MESSAGE);
+    mac_create_nhwindow_ex(NHW_BASE, 0, NO_GLYPH);
+    tty_create_nhwindow_ex(NHW_MESSAGE, 0, NO_GLYPH);
 
 #if 1 //!TARGET_API_MAC_CARBON
     /* Resize and reposition the message window */
@@ -738,7 +738,7 @@ mac_init_nhwindows(int *argcp, char **argv)
 }
 
 winid
-mac_create_nhwindow(int kind)
+mac_create_nhwindow_ex(int kind, int style, int glyph)
 {
     int i;
     NhWindow *aWin;
@@ -784,7 +784,7 @@ got1:
     if (kind == NHW_BASE || kind == NHW_MAP || kind == NHW_STATUS) {
         short x_sz, x_sz_p, y_sz, y_sz_p;
         if (kind != NHW_BASE) {
-            if (i != tty_create_nhwindow(kind)) {
+            if (i != tty_create_nhwindow_ex(kind)) {
                 dprintf("cre_win: error creating kind %d", kind);
             }
             if (kind == NHW_MAP) {
@@ -3283,7 +3283,7 @@ struct window_procs mac_procs = {
     0L, mac_init_nhwindows,
     mac_unimplemented, /* see macmenu.c:mac_askname() for player selection */
     mac_askname, mac_get_nh_event, mac_exit_nhwindows, mac_suspend_nhwindows,
-    mac_unimplemented, mac_create_nhwindow, mac_clear_nhwindow,
+    mac_unimplemented, mac_create_nhwindow_ex, mac_clear_nhwindow,
     mac_display_nhwindow, mac_destroy_nhwindow, mac_curs, mac_putstr_ex,
     genl_putmixed_ex, mac_display_file, mac_start_menu_ex, mac_add_menu, mac_add_extended_menu,
     mac_end_menu_ex, mac_select_menu, genl_message_menu, mac_unimplemented,

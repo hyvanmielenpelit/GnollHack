@@ -407,7 +407,7 @@ E void NDECL(X11_get_nh_event);
 E void FDECL(X11_exit_nhwindows, (const char *));
 E void FDECL(X11_suspend_nhwindows, (const char *));
 E void NDECL(X11_resume_nhwindows);
-E winid FDECL(X11_create_nhwindow, (int));
+E winid FDECL(X11_create_nhwindow_ex, (int, int, int));
 E void FDECL(X11_clear_nhwindow, (winid));
 E void FDECL(X11_display_nhwindow, (winid, BOOLEAN_P));
 E void FDECL(X11_destroy_nhwindow, (winid));

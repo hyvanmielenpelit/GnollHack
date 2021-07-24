@@ -122,14 +122,14 @@ void *vp;
 }
 
 winid
-chainout_create_nhwindow(vp, type)
+chainout_create_nhwindow_ex(vp, type, style, glyph)
 void *vp;
-int type;
+int type, style, glyph;
 {
     struct chainout_data *tdp = vp;
     winid rv;
 
-    rv = (*tdp->nprocs->win_create_nhwindow)(type);
+    rv = (*tdp->nprocs->win_create_nhwindow_ex)(type, style, glyph);
 
     return rv;
 }
@@ -707,7 +707,7 @@ struct chain_procs chainout_procs = {
     chainout_init_nhwindows,
     chainout_player_selection, chainout_askname, chainout_get_nh_event,
     chainout_exit_nhwindows, chainout_suspend_nhwindows,
-    chainout_resume_nhwindows, chainout_create_nhwindow,
+    chainout_resume_nhwindows, chainout_create_nhwindow_ex,
     chainout_clear_nhwindow, chainout_display_nhwindow,
     chainout_destroy_nhwindow, chainout_curs, chainout_putstr_ex,
     chainout_putmixed_ex, chainout_display_file, chainout_start_menu_ex,

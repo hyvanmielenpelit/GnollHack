@@ -52,7 +52,7 @@ DLL int RunGnollHack(
     ExitWindowsCallback callback_exit_nhwindows,
     SuspendWindowsCallback callback_suspend_nhwindows,
     ResumeWindowsCallback callback_resume_nhwindows,
-    CreateWindowCallback callback_create_nhwindow,
+    CreateWindowCallback callback_create_nhwindow_ex,
     ClearWindowCallback callback_clear_nhwindow,
     DisplayWindowCallback callback_display_nhwindow,
     DestroyWindowCallback callback_destroy_nhwindow,

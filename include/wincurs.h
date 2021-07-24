@@ -82,7 +82,7 @@ extern void curses_get_nh_event(void);
 extern void curses_exit_nhwindows(const char *str);
 extern void curses_suspend_nhwindows(const char *str);
 extern void curses_resume_nhwindows(void);
-extern winid curses_create_nhwindow(int type);
+extern winid curses_create_nhwindow_ex(int type, int style, int glyph);
 extern void curses_clear_nhwindow(winid wid);
 extern void curses_display_nhwindow(winid wid, BOOLEAN_P block);
 extern void curses_destroy_nhwindow(winid wid);

@@ -772,7 +772,7 @@ menu_item **menu_list;
         /* Core is reusing perm_invent window for picking an item.
            But it could be even on a different screen!
            Create a new temp window for it instead. */
-        winid newwin = X11_create_nhwindow(NHW_MENU);
+        winid newwin = X11_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH);
         struct xwindow *nwp = &window_list[newwin];
 
         X11_start_menu_ex(newwin, 0);

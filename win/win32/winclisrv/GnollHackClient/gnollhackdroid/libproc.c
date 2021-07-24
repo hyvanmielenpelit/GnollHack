@@ -23,7 +23,7 @@ struct window_procs lib_procs = {
     WC2_PREFERRED_SCREEN_SCALE | WC2_STATUSLINES | WC2_AUTOSTATUSLINES | WC2_HEREWINDOW,
     lib_init_nhwindows, lib_player_selection, lib_askname,
     lib_get_nh_event, lib_exit_nhwindows, lib_suspend_nhwindows,
-    lib_resume_nhwindows, lib_create_nhwindow, lib_clear_nhwindow,
+    lib_resume_nhwindows, lib_create_nhwindow_ex, lib_clear_nhwindow,
     lib_display_nhwindow, lib_destroy_nhwindow, lib_curs, lib_putstr_ex,
     genl_putmixed_ex, lib_display_file, lib_start_menu_ex, lib_add_menu, lib_add_extended_menu,
     lib_end_menu_ex, lib_select_menu,
@@ -137,9 +137,9 @@ void lib_resume_nhwindows(void)
     lib_callbacks.callback_resume_nhwindows();
 }
 
-winid lib_create_nhwindow(int type)
+winid lib_create_nhwindow_ex(int type, int style, int glyph)
 {
-    return lib_callbacks.callback_create_nhwindow(type);
+    return lib_callbacks.callback_create_nhwindow_ex(type, style, glyph);
 }
 
 void lib_clear_nhwindow(winid wid)
@@ -193,7 +193,7 @@ void lib_display_file(const char* filename, BOOLEAN_P must_exist)
 #define LLEN 128
         char line[LLEN];
 
-        text = lib_create_nhwindow(NHW_TEXT);
+        text = lib_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
 
         while (dlb_fgets(line, LLEN, f)) 
         {

@@ -258,7 +258,7 @@
 #define tty_exit_nhwindows(x) tty_exit_nhwindows_(x)
 #define tty_suspend_nhwindows(x) tty_suspend_nhwindows_(x)
 #define tty_resume_nhwindows() tty_resume_nhwindows_()
-#define tty_create_nhwindow(x) tty_create_nhwindow_(x)
+#define tty_create_nhwindow_ex(x, y, z) tty_create_nhwindow_ex_(x, y, z)
 #define tty_clear_nhwindow(x) tty_clear_nhwindow_(x)
 #define tty_display_nhwindow(x, y) tty_display_nhwindow_(x, y)
 #define tty_destroy_nhwindow(x) tty_destroy_nhwindow_(x)

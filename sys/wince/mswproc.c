@@ -52,7 +52,7 @@ struct window_procs mswin_procs = {
     WC2_FULLSCREEN | WC2_SOFTKEYBOARD | WC2_WRAPTEXT, mswin_init_nhwindows,
     mswin_player_selection, mswin_askname, mswin_get_nh_event,
     mswin_exit_nhwindows, mswin_suspend_nhwindows, mswin_resume_nhwindows,
-    mswin_create_nhwindow, mswin_clear_nhwindow, mswin_display_nhwindow,
+    mswin_create_nhwindow_ex, mswin_clear_nhwindow, mswin_display_nhwindow,
     mswin_destroy_nhwindow, mswin_curs, mswin_putstr_ex, genl_putmixed_ex,
     mswin_display_file, mswin_start_menu_ex, mswin_add_menu, mswin_add_extended_menu, mswin_end_menu_ex,
     mswin_select_menu,
@@ -702,12 +702,12 @@ mswin_resume_nhwindows()
         NHW_TEXT        (help/text, full screen paged window)
 */
 winid
-mswin_create_nhwindow(int type)
+mswin_create_nhwindow_ex(int type, int style, int glyph)
 {
     winid i = 0;
     MSNHMsgAddWnd data;
 
-    logDebug("mswin_create_nhwindow(%d)\n", type);
+    logDebug("mswin_create_nhwindow_ex(%d)\n", type);
 
     /* Return the next available winid
      */
@@ -982,7 +982,7 @@ mswin_display_file(const char *filename, BOOLEAN_P must_exist)
         winid text;
         char line[LLEN];
 
-        text = mswin_create_nhwindow(NHW_TEXT);
+        text = mswin_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
 
         while (dlb_fgets(line, LLEN, f)) {
             size_t len;

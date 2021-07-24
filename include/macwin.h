@@ -219,7 +219,7 @@ E void FDECL(mac_init_nhwindows, (int *, char **));
 E void NDECL(mac_askname);
 E void NDECL(mac_get_nh_event);
 E void FDECL(mac_exit_nhwindows, (const char *));
-E winid FDECL(mac_create_nhwindow, (int));
+E winid FDECL(mac_create_nhwindow_ex, (int, int, int));
 E void FDECL(mac_clear_nhwindow, (winid));
 E void FDECL(mac_display_nhwindow, (winid, BOOLEAN_P));
 E void FDECL(mac_destroy_nhwindow, (winid));

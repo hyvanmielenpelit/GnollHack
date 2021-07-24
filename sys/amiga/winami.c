@@ -31,7 +31,7 @@ struct window_procs amii_procs = {
     "amii", WC_COLOR | WC_HILITE_PET | WC_INVERSE, 0L, amii_init_nhwindows,
     amii_player_selection, amii_askname, amii_get_nh_event,
     amii_exit_nhwindows, amii_suspend_nhwindows, amii_resume_nhwindows,
-    amii_create_nhwindow, amii_clear_nhwindow, amii_display_nhwindow,
+    amii_create_nhwindow_ex, amii_clear_nhwindow, amii_display_nhwindow,
     amii_destroy_nhwindow, amii_curs, amii_putstr_ex, genl_putmixed_ex,
     amii_display_file, amii_start_menu_ex, amii_add_menu, amii_add_extended_menu, amii_end_menu_ex,
     amii_select_menu, genl_message_menu, amii_update_inventory,
@@ -79,7 +79,7 @@ struct window_procs amiv_procs = {
     "amitile", WC_COLOR | WC_HILITE_PET | WC_INVERSE, 0L, amii_init_nhwindows,
     amii_player_selection, amii_askname, amii_get_nh_event,
     amii_exit_nhwindows, amii_suspend_nhwindows, amii_resume_nhwindows,
-    amii_create_nhwindow, amii_clear_nhwindow, amii_display_nhwindow,
+    amii_create_nhwindow_ex, amii_clear_nhwindow, amii_display_nhwindow,
     amii_destroy_nhwindow, amii_curs, amii_putstr_ex, genl_putmixed_ex,
     amii_display_file, amii_start_menu_ex, amii_add_menu, amii_add_extended_menu, amii_end_menu_ex,
     amii_select_menu, genl_message_menu, amii_update_inventory,
@@ -794,7 +794,7 @@ amii_get_ext_cmd(void)
 
 #ifdef EXTMENU
     if (iflags.extmenu) {
-        win = amii_create_nhwindow(NHW_MENU);
+        win = amii_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH);
         amii_start_menu_ex(win, 0);
         pline("#");
         amii_putstr(WIN_MESSAGE, -1, " ");
@@ -857,7 +857,7 @@ amii_get_ext_cmd(void)
                 }
             }
 
-            win = amii_create_nhwindow(NHW_MENU);
+            win = amii_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH);
             amii_start_menu_ex(win, 0);
 
             for (i = 0; extcmdlist[i].ef_txt != NULL; ++i) {
@@ -1185,7 +1185,7 @@ boolean complain;
         }
         return;
     }
-    win = amii_create_nhwindow(NHW_TEXT);
+    win = amii_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
 
     /* Set window title to file name */
     if (cw = amii_wins[win])

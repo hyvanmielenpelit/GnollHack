@@ -17,7 +17,7 @@ void NDECL(amii_askname );
 void NDECL(amii_player_selection );
 void NDECL(flush_output );
 void FDECL(amii_destroy_nhwindow, (winid ));
-int FDECL(amii_create_nhwindow, (int ));
+int FDECL(amii_create_nhwindow_ex, (int, int, int ));
 void NDECL(amii_init_nhwindows );
 int NDECL(amii_get_ext_cmd);
 char FDECL(amii_yn_function_ex, (int, int, const char * , const char * , char ));

@@ -26,7 +26,7 @@ namespace GnollHackServer
             VoidConstCharCallback callback_exit_nhwindows,
             VoidConstCharCallback callback_suspend_nhwindows,
             VoidVoidCallback callback_resume_nhwindows,
-            IntIntCallback callback_create_nhwindow,
+            CreateGHWindowCallback callback_create_nhwindow_ex,
             VoidIntCallback callback_clear_nhwindow,
             VoidIntBooleanCallback callback_display_nhwindow,
             VoidIntCallback callback_destroy_nhwindow,
@@ -179,7 +179,7 @@ namespace GnollHackServer
                 GameCallback_VoidConstCharDummy,
                 GameCallback_VoidConstCharDummy,
                 GameCallback_VoidVoidDummy,
-                GameCallback_IntIntDummy,
+                GameCallback_CreateGHWindow,
                 GameCallback_VoidIntDummy,
                 GameCallback_VoidIntBooleanDummy,
                 GameCallback_VoidIntDummy,
@@ -361,6 +361,10 @@ namespace GnollHackServer
             return 0;
         }
 
+        protected int GameCallback_CreateGHWindow(int widid, int style, int glyph)
+        {
+            return 0;
+        }
 
         protected void GameCallback_VoidVoidDummy()
         {

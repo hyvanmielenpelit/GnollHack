@@ -33,7 +33,7 @@ struct window_procs curses_procs = {
     curses_exit_nhwindows,
     curses_suspend_nhwindows,
     curses_resume_nhwindows,
-    curses_create_nhwindow,
+    curses_create_nhwindow_ex,
     curses_clear_nhwindow,
     curses_display_nhwindow,
     curses_destroy_nhwindow,
@@ -309,7 +309,7 @@ curses_resume_nhwindows()
         NHW_TEXT        (help/text, full screen paged window)
 */
 winid
-curses_create_nhwindow(int type)
+curses_create_nhwindow_ex(int type, int style UNUSED, int glyph UNUSED)
 {
     winid wid = curses_get_wid(type);
 

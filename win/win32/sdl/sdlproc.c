@@ -92,7 +92,7 @@ struct window_procs nuklear_procs = {
 #endif
     WC2_PREFERRED_SCREEN_SCALE, sdl_init_nhwindows, sdl_player_selection, sdl_askname,
     sdl_get_nh_event, sdl_exit_nhwindows, sdl_suspend_nhwindows,
-    sdl_resume_nhwindows, sdl_create_nhwindow, sdl_clear_nhwindow,
+    sdl_resume_nhwindows, sdl_create_nhwindow_ex, sdl_clear_nhwindow,
     sdl_display_nhwindow, sdl_destroy_nhwindow, sdl_curs, sdl_putstr_ex,
     genl_putmixed_ex, sdl_display_file, sdl_start_menu_ex, sdl_add_menu, sdl_add_extended_menu,
     sdl_end_menu_ex, sdl_select_menu,
@@ -784,12 +784,12 @@ sdl_resume_nhwindows()
         NHW_TEXT        (help/text, full screen paged window)
 */
 winid
-sdl_create_nhwindow(int type)
+sdl_create_nhwindow_ex(int type, int style, int glyph)
 {
     winid i = 0;
     MSNHMsgAddWnd data;
 
-    logDebug("sdl_create_nhwindow(%d)\n", type);
+    logDebug("sdl_create_nhwindow_ex(%d)\n", type);
 
     /* Return the next available winid
      */
@@ -1084,7 +1084,7 @@ sdl_display_file(const char *filename, BOOLEAN_P must_exist)
         winid text;
         char line[LLEN];
 
-        text = sdl_create_nhwindow(NHW_TEXT);
+        text = sdl_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
 
         while (dlb_fgets(line, LLEN, f)) {
             size_t len;

@@ -310,7 +310,7 @@ void
 }
 #endif
 
-amii_create_nhwindow(type) register int type;
+amii_create_nhwindow_ex(type) register int type, style, glyph;
 {
     register struct Window *w = NULL;
     register struct NewWindow *nw = NULL;
@@ -1231,7 +1231,7 @@ char **argv;
     /* Display the copyright etc... */
 
     if (WIN_BASE == WIN_ERR)
-        WIN_BASE = amii_create_nhwindow(NHW_BASE);
+        WIN_BASE = amii_create_nhwindow_ex(NHW_BASE, 0, NO_GLYPH);
     amii_clear_nhwindow(WIN_BASE);
     amii_putstr(WIN_BASE, 0, "");
     amii_putstr(WIN_BASE, 0, "");

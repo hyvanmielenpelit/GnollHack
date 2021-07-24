@@ -69,7 +69,7 @@ struct window_procs safe_procs = {
     "safe-startup", 0L, 0L,
     safe_init_nhwindows, safe_player_selection, safe_askname, safe_get_nh_event,
     safe_exit_nhwindows, safe_suspend_nhwindows, safe_resume_nhwindows,
-    safe_create_nhwindow, safe_clear_nhwindow, safe_display_nhwindow,
+    safe_create_nhwindow_ex, safe_clear_nhwindow, safe_display_nhwindow,
     safe_destroy_nhwindow, safe_curs, safe_putstr_ex, genl_putmixed_ex,
     safe_display_file, safe_start_menu_ex, safe_add_menu, safe_add_extended_menu, safe_end_menu_ex,
     safe_select_menu, safe_message_menu, safe_update_inventory, safe_mark_synch,
@@ -188,8 +188,8 @@ const char *str;
 }
 
 winid
-safe_create_nhwindow(type)
-int type;
+safe_create_nhwindow_ex(type, style, glyph)
+int type, style UNUSED, glyph UNUSED;
 {
     return WIN_ERR;
 }

@@ -109,7 +109,7 @@ struct window_procs X11_procs = {
     0L,
     X11_init_nhwindows,
     X11_player_selection, X11_askname, X11_get_nh_event, X11_exit_nhwindows,
-    X11_suspend_nhwindows, X11_resume_nhwindows, X11_create_nhwindow,
+    X11_suspend_nhwindows, X11_resume_nhwindows, X11_create_nhwindow_ex,
     X11_clear_nhwindow, X11_display_nhwindow, X11_destroy_nhwindow, X11_curs,
     X11_putstr_ex, genl_putmixed_ex, X11_display_file, X11_start_menu_ex, X11_add_menu, X11_add_extended_menu,
     X11_end_menu_ex, X11_select_menu,
@@ -968,7 +968,7 @@ const char *str;
          * Change this menu window into a text window by creating a
          * new text window, then copying it to this winid.
          */
-        new_win = X11_create_nhwindow(NHW_TEXT);
+        new_win = X11_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
         X11_destroy_nhwindow(window);
         *wp = window_list[new_win];
         window_list[new_win].type = NHW_NONE; /* allow re-use */
@@ -1009,8 +1009,8 @@ int *x, *y, *mod;
 }
 
 winid
-X11_create_nhwindow(type)
-int type;
+X11_create_nhwindow_ex(type, style, glyph)
+int type, style, glyph;
 {
     winid window;
     struct xwindow *wp;
@@ -1984,7 +1984,7 @@ boolean complain;
         return; /* it doesn't exist, ignore */
     }
 
-    newwin = X11_create_nhwindow(NHW_MENU);
+    newwin = X11_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH);
     wp = &window_list[newwin];
     X11_start_menu_ex(newwin, 0);
 

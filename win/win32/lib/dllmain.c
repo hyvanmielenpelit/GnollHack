@@ -36,7 +36,7 @@ DLL int WINAPI RunGnollHack(
     ExitWindowsCallback callback_exit_nhwindows,
     SuspendWindowsCallback callback_suspend_nhwindows,
     ResumeWindowsCallback callback_resume_nhwindows,
-    CreateWindowCallback callback_create_nhwindow,
+    CreateWindowCallback callback_create_nhwindow_ex,
     ClearWindowCallback callback_clear_nhwindow,
     DisplayWindowCallback callback_display_nhwindow,
     DestroyWindowCallback callback_destroy_nhwindow,
@@ -134,7 +134,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_exit_nhwindows = callback_exit_nhwindows;
     dll_callbacks.callback_suspend_nhwindows = callback_suspend_nhwindows;
     dll_callbacks.callback_resume_nhwindows = callback_resume_nhwindows;
-    dll_callbacks.callback_create_nhwindow = callback_create_nhwindow;
+    dll_callbacks.callback_create_nhwindow_ex = callback_create_nhwindow_ex;
     dll_callbacks.callback_clear_nhwindow = callback_clear_nhwindow;
     dll_callbacks.callback_display_nhwindow = callback_display_nhwindow;
     dll_callbacks.callback_destroy_nhwindow = callback_destroy_nhwindow;

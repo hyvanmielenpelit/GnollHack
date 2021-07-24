@@ -4679,7 +4679,7 @@ void NetHackQtBind::qt_resume_nhwindows()
 
 static QArray<NetHackQtWindow*> id_to_window;
 
-winid NetHackQtBind::qt_create_nhwindow(int type)
+winid NetHackQtBind::qt_create_nhwindow_ex(int type, int style, int glyph)
 {
     winid id;
     for (id = 0; id < (winid) id_to_window.size(); id++) {
@@ -5265,7 +5265,7 @@ struct window_procs Qt_procs = {
     NetHackQtBind::qt_exit_nhwindows,
     NetHackQtBind::qt_suspend_nhwindows,
     NetHackQtBind::qt_resume_nhwindows,
-    NetHackQtBind::qt_create_nhwindow,
+    NetHackQtBind::qt_create_nhwindow_ex,
     NetHackQtBind::qt_clear_nhwindow,
     NetHackQtBind::qt_display_nhwindow,
     NetHackQtBind::qt_destroy_nhwindow,

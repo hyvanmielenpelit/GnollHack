@@ -26,7 +26,7 @@ const char *str;
     if (window == WIN_ERR) {
         window = WIN_BASE;
         if (window == WIN_ERR)
-            window = WIN_BASE = amii_create_nhwindow(NHW_BASE);
+            window = WIN_BASE = amii_create_nhwindow_ex(NHW_BASE, 0, NO_GLYPH);
     }
 
     if (window == WIN_ERR || (cw = amii_wins[window]) == NULL) {

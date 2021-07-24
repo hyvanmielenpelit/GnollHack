@@ -27,7 +27,7 @@ struct window_procs Gnome_procs = {
     "Gnome", WC_COLOR | WC_HILITE_PET | WC_INVERSE, 0L, gnome_init_nhwindows,
     gnome_player_selection, gnome_askname, gnome_get_nh_event,
     gnome_exit_nhwindows, gnome_suspend_nhwindows, gnome_resume_nhwindows,
-    gnome_create_nhwindow, gnome_clear_nhwindow, gnome_display_nhwindow,
+    gnome_create_nhwindow_ex, gnome_clear_nhwindow, gnome_display_nhwindow,
     gnome_destroy_nhwindow, gnome_curs, gnome_putstr_ex, genl_putmixed_ex,
     gnome_display_file, gnome_start_menu_ex, gnome_add_menu, gnome_add_extended_menu, gnome_end_menu_ex,
     gnome_select_menu,
@@ -111,7 +111,7 @@ gnome_init_nhwindows(int *argc, char **argv)
     iflags.window_inited = TRUE;
 
     /* gnome-specific window creation */
-    WIN_WORN = gnome_create_nhwindow(NHW_WORN);
+    WIN_WORN = gnome_create_nhwindow_ex(NHW_WORN, 0, NO_GLYPH);
 }
 
 /* Do a window-port specific player type selection. If player_selection()
@@ -429,7 +429,7 @@ gnome_resume_nhwindows()
         NHW_TEXT        (help/text, full screen paged window)
 */
 winid
-gnome_create_nhwindow(int type)
+gnome_create_nhwindow_ex(int type, int style, int glyph)
 {
     winid i = 0;
 
@@ -440,12 +440,12 @@ gnome_create_nhwindow(int type)
             break;
     if (i == MAXWINDOWS)
         g_error("ERROR:  No windows available...\n");
-    gnome_create_nhwindow_by_id(type, i);
+    gnome_create_nhwindow_ex_by_id(type, i);
     return i;
 }
 
 void
-gnome_create_nhwindow_by_id(int type, winid i)
+gnome_create_nhwindow_ex_by_id(int type, winid i)
 {
     switch (type) {
     case NHW_MAP: {
@@ -697,7 +697,7 @@ gnome_start_menu_ex(winid wid, int style)
     if (wid != -1) {
         if (gnome_windowlist[wid].win == NULL
             && gnome_windowlist[wid].type != 0) {
-            gnome_create_nhwindow_by_id(gnome_windowlist[wid].type, wid);
+            gnome_create_nhwindow_ex_by_id(gnome_windowlist[wid].type, wid);
         }
         gtk_signal_emit(GTK_OBJECT(gnome_windowlist[wid].win),
                         ghack_signals[GHSIG_START_MENU]);

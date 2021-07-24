@@ -76,7 +76,7 @@ STATIC_DCL void FDECL(def_raw_print, (const char *s));
 STATIC_DCL void NDECL(def_wait_synch);
 
 #ifdef DUMPLOG
-STATIC_DCL winid FDECL(dump_create_nhwindow, (int));
+STATIC_DCL winid FDECL(dump_create_nhwindow_ex, (int, int, int));
 STATIC_DCL void FDECL(dump_clear_nhwindow, (winid));
 STATIC_DCL void FDECL(dump_display_nhwindow, (winid, BOOLEAN_P));
 STATIC_DCL void FDECL(dump_destroy_nhwindow, (winid));
@@ -694,7 +694,7 @@ static int FDECL(hup_nh_poskey, (int *, int *, int *));
 static void FDECL(hup_getlin_ex, (int, int, const char *, char *));
 static void FDECL(hup_init_nhwindows, (int *, char **));
 static void FDECL(hup_exit_nhwindows, (const char *));
-static winid FDECL(hup_create_nhwindow, (int));
+static winid FDECL(hup_create_nhwindow_ex, (int, int, int));
 static void FDECL(hup_start_menu_ex, (winid, int));
 static int FDECL(hup_select_menu, (winid, int, MENU_ITEM_P **));
 static void FDECL(hup_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P,
@@ -735,7 +735,7 @@ static struct window_procs hup_procs = {
     hup_void_ndecl,                                    /* get_nh_event */
     hup_exit_nhwindows, hup_void_fdecl_constchar_p,    /* suspend_nhwindows */
     hup_void_ndecl,                                    /* resume_nhwindows */
-    hup_create_nhwindow, hup_void_fdecl_winid,         /* clear_nhwindow */
+    hup_create_nhwindow_ex, hup_void_fdecl_winid,         /* clear_nhwindow */
     hup_display_nhwindow, hup_void_fdecl_winid,        /* destroy_nhwindow */
     hup_curs, hup_putstr_ex, hup_putstr_ex,            /* putmixed */
     hup_display_file, hup_start_menu_ex,               /* start_menu */
@@ -872,8 +872,10 @@ char **argv UNUSED;
 
 /*ARGUSED*/
 static winid
-hup_create_nhwindow(type)
+hup_create_nhwindow_ex(type, style, glyph)
 int type UNUSED;
+int style UNUSED;
+int glyph UNUSED;
 {
     return WIN_ERR;
 }
@@ -1543,8 +1545,10 @@ const char* str;
 #endif
 
 STATIC_OVL winid
-dump_create_nhwindow(dummy)
+dump_create_nhwindow_ex(dummy, style, glyph)
 int dummy;
+int style UNUSED;
+int glyph UNUSED;
 {
     return dummy;
 }
@@ -1676,7 +1680,7 @@ boolean onoff_flag;
 {
     if (dumplog_file) {
         if (onoff_flag) {
-            windowprocs.win_create_nhwindow = dump_create_nhwindow;
+            windowprocs.win_create_nhwindow_ex = dump_create_nhwindow_ex;
             windowprocs.win_clear_nhwindow = dump_clear_nhwindow;
             windowprocs.win_display_nhwindow = dump_display_nhwindow;
             windowprocs.win_destroy_nhwindow = dump_destroy_nhwindow;

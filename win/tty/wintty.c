@@ -102,7 +102,7 @@ struct window_procs tty_procs = {
      | WC2_DARKGRAY | WC2_SUPPRESS_HIST | WC2_STATUSLINES),
     tty_init_nhwindows, tty_player_selection, tty_askname, tty_get_nh_event,
     tty_exit_nhwindows, tty_suspend_nhwindows, tty_resume_nhwindows,
-    tty_create_nhwindow, tty_clear_nhwindow, tty_display_nhwindow,
+    tty_create_nhwindow_ex, tty_clear_nhwindow, tty_display_nhwindow,
     tty_destroy_nhwindow, tty_curs, tty_putstr_ex, genl_putmixed_ex,
     tty_display_file, tty_start_menu_ex, tty_add_menu, tty_add_extended_menu, tty_end_menu_ex,
     tty_select_menu, tty_message_menu, tty_update_inventory, tty_mark_synch,
@@ -466,7 +466,7 @@ char **argv UNUSED;
     ttyDisplay->attrs = 0;
 
     /* set up the default windows */
-    BASE_WINDOW = tty_create_nhwindow(NHW_BASE);
+    BASE_WINDOW = tty_create_nhwindow_ex(NHW_BASE, 0, NO_GLYPH);
     wins[BASE_WINDOW]->active = 1;
 
     ttyDisplay->lastwin = WIN_ERR;
@@ -1485,8 +1485,8 @@ const char *str;
 }
 
 winid
-tty_create_nhwindow(type)
-int type;
+tty_create_nhwindow_ex(type, style, glyph)
+int type, style UNUSED, glyph UNUSED;
 {
     struct WinDesc *newwin;
     int i, rowoffset;
@@ -2960,7 +2960,7 @@ boolean complain;
             } else if (u.ux)
                 docrt();
         } else {
-            winid datawin = tty_create_nhwindow(NHW_TEXT);
+            winid datawin = tty_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
             boolean empty = TRUE;
 
             if (complain

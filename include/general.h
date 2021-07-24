@@ -328,6 +328,27 @@ enum game_cursor_types
 };
 
 
+/* GHWindow styles */
+enum ghwindow_styles
+{
+    GHWINDOW_STYLE_GENERAL = 0,
+    GHWINDOW_STYLE_PAGER_GENERAL,
+    GHWINDOW_STYLE_PAGER_SPEAKER,
+    GHWINDOW_STYLE_OBJECT_DESCRIPTION_SCREEN,
+    GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN,
+    MAX_GHWINDOW_STYLES
+};
+
+/* GHMenu styles */
+enum ghmenu_styles
+{
+    GHMENU_STYLE_GENERAL = 0,
+    GHMENU_STYLE_INVENTORY,
+    GHMENU_STYLE_SKILLS,
+    GHMENU_STYLE_SPELLS,
+    MAX_GHMENU_STYLES
+};
+
 
 /* Special view */
 enum special_view_types
@@ -338,6 +359,7 @@ enum special_view_types
     SPECIAL_VIEW_FADE_SCREEN_IN,
     MAX_SPECIAL_VIEW_TYPES
 };
+
 
 struct special_view_info {
     enum special_view_types viewtype;

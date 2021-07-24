@@ -210,7 +210,7 @@ namespace GnollHackClient
                 queue.Enqueue(new GHRequest(this, GHRequestType.HideLoadingScreen));
             }
         }
-        public int ClientCallback_CreateGHWindow(int wintype)
+        public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph)
         {
             if (_lastWindowHandle >= GHConstants.MaxGHWindows) /* Should not happen, but paranoid */
                 _lastWindowHandle = GHConstants.MaxGHWindows - 1;

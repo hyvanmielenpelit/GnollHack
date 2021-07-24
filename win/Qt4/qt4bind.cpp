@@ -239,7 +239,7 @@ void NetHackQtBind::qt_resume_nhwindows()
 
 static QVector<NetHackQtWindow*> id_to_window;
 
-winid NetHackQtBind::qt_create_nhwindow(int type)
+winid NetHackQtBind::qt_create_nhwindow_ex(int type, int style, int glyph)
 {
     winid id;
     for (id = 0; id < (winid) id_to_window.size(); id++) {
@@ -773,7 +773,7 @@ struct window_procs Qt_procs = {
     nethack_qt4::NetHackQtBind::qt_exit_nhwindows,
     nethack_qt4::NetHackQtBind::qt_suspend_nhwindows,
     nethack_qt4::NetHackQtBind::qt_resume_nhwindows,
-    nethack_qt4::NetHackQtBind::qt_create_nhwindow,
+    nethack_qt4::NetHackQtBind::qt_create_nhwindow_ex,
     nethack_qt4::NetHackQtBind::qt_clear_nhwindow,
     nethack_qt4::NetHackQtBind::qt_display_nhwindow,
     nethack_qt4::NetHackQtBind::qt_destroy_nhwindow,

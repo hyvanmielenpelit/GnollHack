@@ -213,9 +213,9 @@ int type;
 }
 
 winid
-trace_create_nhwindow(vp, type)
+trace_create_nhwindow_ex(vp, type, style, glyph)
 void *vp;
-int type;
+int type, style, glyph;
 {
     struct trace_data *tdp = vp;
     const char *typestring = NHWname(type);
@@ -224,7 +224,7 @@ int type;
     fprintf(wc_tracelogf, "%screate_nhwindow(%s)\n", INDENT, typestring);
 
     PRE;
-    rv = (*tdp->nprocs->win_create_nhwindow)(tdp->ndata, type);
+    rv = (*tdp->nprocs->win_create_nhwindow_ex)(tdp->ndata, type, style, glyph);
     POST;
 
     fprintf(wc_tracelogf, "%s=> %d\n", INDENT, rv);
@@ -1199,7 +1199,7 @@ struct chain_procs trace_procs = {
     trace_init_nhwindows,
     trace_player_selection, trace_askname, trace_get_nh_event,
     trace_exit_nhwindows, trace_suspend_nhwindows, trace_resume_nhwindows,
-    trace_create_nhwindow, trace_clear_nhwindow, trace_display_nhwindow,
+    trace_create_nhwindow_ex, trace_clear_nhwindow, trace_display_nhwindow,
     trace_destroy_nhwindow, trace_curs, trace_putstr_ex, trace_putmixed_ex,
     trace_display_file, trace_start_menu_ex, trace_add_menu, trace_add_extended_menu, trace_end_menu_ex,
     trace_select_menu, trace_message_menu, trace_update_inventory,

@@ -15,7 +15,7 @@ functions:0 _move _move_bc _in_rooms _map_background _map_invisible _map_locatio
 functions:0 _impossible _in_container _in_fcorridor _In_hell _In_mines _in_or_out_menu _In_quest
 functions:0 _do_positionbar _iswall _iswall_or_stone _itimeout _is_solid _Is_special
 functions:0 _is_swallow_sym _check_here _check_leash _check_map_spot _check_pos 
-functions:0 _monsndx _m_move _lcase _tty_create_nhwindow _tty_delay_output _tty_destroy_nhwindow 
+functions:0 _monsndx _m_move _lcase _tty_create_nhwindow_ex _tty_delay_output _tty_destroy_nhwindow 
 functions:0 _tty_dismiss_nhwindow _gender _genl_outrip _get_cost _get_free_room_loc _get_level 
 functions:0 _get_location _get_map _get_mleash
 ;

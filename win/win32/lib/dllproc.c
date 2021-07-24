@@ -72,7 +72,7 @@ struct window_procs dll_procs = {
 #endif
     WC2_PREFERRED_SCREEN_SCALE, dll_init_nhwindows, dll_player_selection, dll_askname,
     dll_get_nh_event, dll_exit_nhwindows, dll_suspend_nhwindows,
-    dll_resume_nhwindows, dll_create_nhwindow, dll_clear_nhwindow,
+    dll_resume_nhwindows, dll_create_nhwindow_ex, dll_clear_nhwindow,
     dll_display_nhwindow, dll_destroy_nhwindow, dll_curs, dll_putstr_ex,
     genl_putmixed_ex, dll_display_file, dll_start_menu_ex, dll_add_menu, dll_add_extended_menu,
     dll_end_menu_ex, dll_select_menu,
@@ -812,11 +812,11 @@ dll_resume_nhwindows()
         NHW_TEXT        (help/text, full screen paged window)
 */
 winid
-dll_create_nhwindow(int type)
+dll_create_nhwindow_ex(int type, int style, int glyph)
 {
     winid i = 0;
-    dll_logDebug("dll_create_nhwindow(%d)\n", type);
-    i = dll_callbacks.callback_create_nhwindow(type);
+    dll_logDebug("dll_create_nhwindow_ex(%d)\n", type);
+    i = dll_callbacks.callback_create_nhwindow_ex(type, style, glyph);
 
 #if 0
     /* Return the next available winid
@@ -1095,7 +1095,7 @@ dll_display_file(const char *filename, BOOLEAN_P must_exist)
         winid text;
         char line[LLEN];
 
-        text = dll_create_nhwindow(NHW_TEXT);
+        text = dll_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
 
         while (dlb_fgets(line, LLEN, f)) {
             size_t len;

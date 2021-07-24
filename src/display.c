@@ -2666,8 +2666,6 @@ boolean exclude_ascii;
         gbuf[y][x].layers.monster_origin_x = x0;
         gbuf[y][x].layers.monster_origin_y = y0;
         gbuf[y][x].layers.m_id = mtmp ? mtmp->m_id : 0;
-        if (!loc_is_you && mtmp && x0 == mtmp->mx && y0 == mtmp->my)
-            x = x;
 
         if (disp_flags & LFLAGS_M_YOU)
         {

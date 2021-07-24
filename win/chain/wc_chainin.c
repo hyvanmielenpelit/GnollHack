@@ -107,12 +107,12 @@ chainin_resume_nhwindows()
 }
 
 winid
-chainin_create_nhwindow(type)
-int type;
+chainin_create_nhwindow_ex(type, style, glyph)
+int type, style, glyph;
 {
     winid rv;
 
-    rv = (*cibase->nprocs->win_create_nhwindow)(cibase->ndata, type);
+    rv = (*cibase->nprocs->win_create_nhwindow_ex)(cibase->ndata, type, style, glyph);
 
     return rv;
 }
@@ -562,7 +562,7 @@ struct window_procs chainin_procs = {
     chainin_init_nhwindows,
     chainin_player_selection, chainin_askname, chainin_get_nh_event,
     chainin_exit_nhwindows, chainin_suspend_nhwindows,
-    chainin_resume_nhwindows, chainin_create_nhwindow, chainin_clear_nhwindow,
+    chainin_resume_nhwindows, chainin_create_nhwindow_ex, chainin_clear_nhwindow,
     chainin_display_nhwindow, chainin_destroy_nhwindow, chainin_curs,
     chainin_putstr_ex, chainin_putmixed_ex, chainin_display_file,
     chainin_start_menu_ex, chainin_add_menu, chainin_add_extended_menu, chainin_end_menu_ex,

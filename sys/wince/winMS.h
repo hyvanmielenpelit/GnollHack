@@ -116,7 +116,7 @@ void mswin_get_nh_event(void);
 void mswin_exit_nhwindows(const char *);
 void mswin_suspend_nhwindows(const char *);
 void mswin_resume_nhwindows(void);
-winid mswin_create_nhwindow(int type);
+winid mswin_create_nhwindow_ex(int type, int style, int glyph);
 void mswin_clear_nhwindow(winid wid);
 void mswin_display_nhwindow(winid wid, BOOLEAN_P block);
 void mswin_destroy_nhwindow(winid wid);

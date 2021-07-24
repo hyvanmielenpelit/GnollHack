@@ -46,7 +46,7 @@ void dll_get_nh_event(void);
 void dll_exit_nhwindows(const char *);
 void dll_suspend_nhwindows(const char *);
 void dll_resume_nhwindows(void);
-winid dll_create_nhwindow(int type);
+winid dll_create_nhwindow_ex(int type, int style, int glyph);
 void dll_clear_nhwindow(winid wid);
 void dll_display_nhwindow(winid wid, BOOLEAN_P block);
 void dll_destroy_nhwindow(winid wid);

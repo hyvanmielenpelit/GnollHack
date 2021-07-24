@@ -45,7 +45,7 @@ struct window_procs Gem_procs = {
         | WC_TILE_HEIGHT | WC_TILE_FILE | WC_VARY_MSGCOUNT | WC_ASCII_MAP,
     0L, Gem_init_nhwindows, Gem_player_selection, Gem_askname,
     Gem_get_nh_event, Gem_exit_nhwindows, Gem_suspend_nhwindows,
-    Gem_resume_nhwindows, Gem_create_nhwindow, Gem_clear_nhwindow,
+    Gem_resume_nhwindows, Gem_create_nhwindow_ex, Gem_clear_nhwindow,
     Gem_display_nhwindow, Gem_destroy_nhwindow, Gem_curs, Gem_putstr_ex,
     genl_putmixed_ex, Gem_display_file, Gem_start_menu_ex, Gem_add_menu, Gem_add_extended_menu,
     Gem_end_menu_ex, Gem_select_menu, genl_message_menu, Gem_update_inventory,
@@ -547,8 +547,8 @@ const char *str;
 }
 
 winid
-Gem_create_nhwindow(type)
-int type;
+Gem_create_nhwindow_ex(type, style, glyph)
+int type, style, glyph;
 {
     winid newid;
 
@@ -735,7 +735,7 @@ boolean complain;
     } else {
         winid datawin;
 
-        datawin = Gem_create_nhwindow(NHW_TEXT);
+        datawin = Gem_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
         while (dlb_fgets(buf, BUFSZ, f)) {
             if ((cr = index(buf, '\n')) != 0)
                 *cr = 0;
@@ -1027,7 +1027,7 @@ Gem_get_ext_cmd()
     char accelerator = 0, tmp_acc = 0;
     const char *ptr;
 
-    wind = Gem_create_nhwindow(NHW_MENU);
+    wind = Gem_create_nhwindow_ex(NHW_MENU, style, glyph);
     Gem_start_menu_ex(wind, 0);
     for (i = 0; (ptr = extcmdlist[i].ef_txt); i++) {
         any.a_int = i;
