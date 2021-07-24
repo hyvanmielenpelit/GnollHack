@@ -214,10 +214,8 @@ namespace GnollHackClient
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                            res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
-                            res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHARACTER:
                             break;
@@ -277,10 +275,10 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                        res = 22;
+                        res = 20;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
-                        res = 22;
+                        res = 20;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHARACTER:
                         break;

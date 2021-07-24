@@ -163,6 +163,14 @@ namespace GnollHackClient.Droid
         public static extern int LibGetCursorOff();
 
         [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibTest();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern IntPtr LibGetVersionString();
+
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern IntPtr LibGetVersionId();
+
+        [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibGetAnimationArraySize();
         [DllImport(@"libgnollhackdroid.so")]
         public static extern AnimationDefinition LibGetAnimationArrayElement(int idx);
@@ -191,11 +199,6 @@ namespace GnollHackClient.Droid
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int maybe_get_animated_tile(int ntile, int tile_animation_idx, int play_type, long interval_counter, 
             out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, out int autodraw_ptr);
-
-        [DllImport(@"libgnollhackdroid.so")]
-        public static extern int DoSomeCalcDroid();
-        [DllImport(@"libgnollhackdroid.so")]
-        public static extern int DoSomeHackDroid();
 
         private void LoadNativeLibrary(string libName)
         {
@@ -437,13 +440,21 @@ namespace GnollHackClient.Droid
                 out frame_idx_ptr, out main_tile_idx_ptr, out mapAnimated, out autodraw_ptr);
         }
 
-        public int Test1()
+        public int Test()
         {
-            return DoSomeCalcDroid();
+            return LibTest();
         }
-        public int Test2()
+        public string GetVersionString()
         {
-            return DoSomeHackDroid();
+            IntPtr resptr = LibGetVersionString();
+            string ret = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(resptr);
+            return ret;
+        }
+        public string GetVersionId()
+        {
+            IntPtr resptr = LibGetVersionId();
+            string ret = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(resptr);
+            return ret;
         }
 
         public int StartGnollHack(ClientGame clientGame)

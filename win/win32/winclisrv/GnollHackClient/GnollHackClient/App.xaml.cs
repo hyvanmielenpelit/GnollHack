@@ -78,6 +78,8 @@ namespace GnollHackClient
         }
 
 
+        public static string GHVersionId { get; set; }
+        public static string GHVersionString { get; set; }
         public static Cookie AuthenticationCookie { get; set; }
         public static Server SelectedServer { get; set; }
         public static string UserName { get; set; }

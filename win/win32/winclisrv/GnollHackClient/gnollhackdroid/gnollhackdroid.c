@@ -2,6 +2,7 @@
 #include "hack.h"
 #include "libproc.h"
 #include "callback.h"
+#include "date_unix.h"
 
 extern int GnollHackMain(int argc, char** argv);
 
@@ -35,11 +36,6 @@ extern void FDECL(set_wincaps, (unsigned long, unsigned long));
 void gnollhackdroid(void)
 {
 
-}
-
-int DoSomeCalcDroid(void)
-{
-	return 5;
 }
 
 void GetGlyph2Tile(int** gl2ti_ptr, int* size_ptr)
@@ -212,6 +208,22 @@ int LibGetCursorOff()
 {
     return GLYPH_CURSOR_OFF;
 }
+
+int LibTest()
+{
+    return 5;
+}
+
+const char* LibGetVersionString()
+{
+    return VERSION_STRING;
+}
+
+const char* LibGetVersionId()
+{
+    return VERSION_ID;
+}
+
 
 int LibGetAnimationArraySize()
 {

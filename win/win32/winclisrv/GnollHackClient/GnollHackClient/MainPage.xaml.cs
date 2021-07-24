@@ -65,7 +65,7 @@ namespace GnollHackClient
             SKRect dest = new SKRect(x, y, x + logo_width, y + logo_height);
             canvas.DrawBitmap(_logo_bitmap, dest);
 
-            string str = scale == 1.0f ? "GnollHack 4.1.0" : "GnollHack 4.1.0 Android";
+            string str = scale == 1.0f ? "GnollHack " + App.GHVersionString : "GnollHack " + App.GHVersionString + " Android";
 
             // Create an SKPaint object to display the text
             SKPaint textPaint = new SKPaint
@@ -96,6 +96,15 @@ namespace GnollHackClient
                 xText = info.Width / 2 - textBounds.MidX;
                 canvas.DrawText(str, xText, yText, textPaint);
             }
+
+            str = App.GHVersionId;
+            textPaint.Typeface = App.LatoRegular;
+            textPaint.TextSize = 15;
+            textPaint.Color = SKColors.White;
+            yText = 5 - textPaint.FontMetrics.Ascent;
+            xText = 5;
+            canvas.DrawText(str, xText, yText, textPaint);
+
         }
 
         public void HideLocalGameButton()
@@ -142,7 +151,12 @@ namespace GnollHackClient
                     case 0:
                         _mainGnollHackService = DependencyService.Get<IGnollHackService>();
                         _mainGnollHackService.LoadLibrary();
-                        int testres = _mainGnollHackService.Test1();
+                        _mainGnollHackService.Test();
+
+                        string verstr = _mainGnollHackService.GetVersionString();
+                        string verid = _mainGnollHackService.GetVersionId();
+                        App.GHVersionString = verstr;
+                        App.GHVersionId = verid;
                         App.LoadServices();
 
                         Assembly assembly = GetType().GetTypeInfo().Assembly;
