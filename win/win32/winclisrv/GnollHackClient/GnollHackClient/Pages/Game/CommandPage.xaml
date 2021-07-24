@@ -68,7 +68,7 @@
                 <Button Text="P" x:Name="PutOnButton" Clicked="PutOnButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="T" x:Name="TakeOffButton" Clicked="TakeOffButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
                 <Button Text="R" x:Name="RemoveButton" Clicked="RemoveButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
-                <Button Text="" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
+                <Button Text="&#x2205;" x:Name="ESCButton" Clicked="ESCButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
             </StackLayout>
             <StackLayout x:Name="LastCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
                 <Button Text="/" x:Name="WhatIsButton" Clicked="WhatIsButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />

@@ -3503,6 +3503,7 @@ namespace GnollHackClient.Pages.Game
                 _currentPageHeight = height;
 
                 double sidesize = Math.Min(Math.Min(80.0, Math.Max(45.0, width / 8)), Math.Min(80.0, Math.Max(45.0, height / 8)));
+                GameMenuButton.WidthRequest = ESCButton.HeightRequest = sidesize;
                 ESCButton.WidthRequest = ESCButton.HeightRequest = sidesize;
                 LookModeButton.WidthRequest = LookModeButton.HeightRequest = sidesize;
                 ToggleModeButton.WidthRequest = ToggleModeButton.HeightRequest = sidesize;
@@ -3545,15 +3546,19 @@ namespace GnollHackClient.Pages.Game
                 {
                     /* Landscape */
                     ButtonRowStack.Orientation = StackOrientation.Horizontal;
-                    ModeLayout.Orientation = StackOrientation.Horizontal;
+                    ModeLayout.Orientation = StackOrientation.Vertical;
+                    ModeSubLayout1.Orientation = StackOrientation.Horizontal;
+                    ModeSubLayout2.Orientation = StackOrientation.Horizontal;
                     ZoomLayout.Orientation = StackOrientation.Horizontal;
-                    UpperCmdLayout.Orientation = StackOrientation.Horizontal;
+                    UpperCmdLayout.Orientation = StackOrientation.Vertical;
                 }
                 else
                 {
                     /* Portrait */
                     ButtonRowStack.Orientation = StackOrientation.Vertical;
                     ModeLayout.Orientation = StackOrientation.Vertical;
+                    ModeSubLayout1.Orientation = StackOrientation.Vertical;
+                    ModeSubLayout2.Orientation = StackOrientation.Vertical;
                     ZoomLayout.Orientation = StackOrientation.Horizontal;
                     UpperCmdLayout.Orientation = StackOrientation.Horizontal;
                 }
@@ -4366,6 +4371,11 @@ namespace GnollHackClient.Pages.Game
                 ToggleZoomAlternateButton.BackgroundColor = Color.DarkBlue;
             }
 
+        }
+
+        private void GameMenuButton_Clicked(object sender, EventArgs e)
+        {
+            ShowGameMenu(sender, e);
         }
     }
 
