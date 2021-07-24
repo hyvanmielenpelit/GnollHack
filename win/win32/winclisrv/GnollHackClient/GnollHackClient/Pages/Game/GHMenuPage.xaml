@@ -14,6 +14,7 @@
             <local:FontConverter x:Key="FontConverter" />
             <local:FontSizeConverter x:Key="FontSizeConverter" />
             <local:FontColorConverter x:Key="FontColorConverter" />
+            <local:GrayedFontColorConverter x:Key="GrayedFontColorConverter" />
             <local:PaddingConverter x:Key="PaddingConverter" />
             <local:MaxCountConverter x:Key="MaxCountConverter" />
             <local:ItemSourceConverter x:Key="ItemSourceConverter" />
@@ -36,14 +37,14 @@
                             Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>
             <StackLayout x:Name="menuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical"  BackgroundColor="Transparent">
                 <Label x:Name="HeaderLabel"
-                       FontFamily="Diablo" FontSize="22" TextColor="White" FontAttributes="Bold" Margin="2,10,2,2" BackgroundColor="Transparent"
+                       FontFamily="{Binding MenuHeaderFontFamily}" FontSize="{Binding MenuHeaderFontSize}" TextColor="White" FontAttributes="Bold" Margin="2,10,2,2" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                     </Label.GestureRecognizers>
                 </Label>
                 <Label x:Name="SubtitleLabel"
-                       FontFamily="Diablo" FontSize="15" TextColor="White" Margin="1,2,1,6" BackgroundColor="Transparent"
+                       FontFamily="{Binding MenuSubtitleFontFamily}" FontSize="{Binding MenuSubtitleFontSize}" TextColor="White" Margin="1,2,1,6" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
@@ -278,7 +279,7 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Label Grid.Column="0" TextColor="{Binding NHColor, Converter={StaticResource FontColorConverter}}" 
+                                    <Label Grid.Column="0" TextColor="{Binding NHColor, Converter={StaticResource GrayedFontColorConverter}}" 
                                        Text="{Binding FormattedAccelerator}" VerticalTextAlignment="Center" VerticalOptions="Center"
                                        FontFamily="{Binding FontFamily}" 
                                        FontSize="{Binding FontSize}">
@@ -294,12 +295,12 @@
                                                        PaintSurface="menuItemCanvasView_PaintSurface">
                                     </skia:SKCanvasView>
                                     -->
-                                    <Image Grid.Column="1" x:Name="menuItemImage" Source="{Binding GlyphImage}"
+                                    <ff:CachedImage Grid.Column="1" x:Name="menuItemImage" Source="{Binding GlyphImage}"
                                                        IsVisible="{Binding IsGlyphVisible}"
                                                        HorizontalOptions="Center" VerticalOptions="Center"
                                                        WidthRequest="32" HeightRequest="24"
                                                        BackgroundColor="Transparent">
-                                    </Image>
+                                    </ff:CachedImage>
 
                                     <Grid Grid.Column="2" RowSpacing="0" VerticalOptions="CenterAndExpand" HorizontalOptions="Fill">
                                         <Grid.RowDefinitions>

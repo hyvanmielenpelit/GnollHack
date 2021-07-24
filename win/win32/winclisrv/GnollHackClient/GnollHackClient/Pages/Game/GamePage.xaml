@@ -41,7 +41,7 @@
                           HorizontalOptions="Center" VerticalOptions="Center"
                           AbsoluteLayout.LayoutBounds="0.5, 0.70, AutoSize, AutoSize" 
                           AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="#88000000" IsVisible="false">
-                        <Label Text="?" x:Name="QuestionLabel" FontFamily="Diablo" FontSize="16" TextColor="White"
+                        <Label Text="?" x:Name="QuestionLabel" FontFamily="Immortal" FontSize="18" TextColor="White"
                                VerticalTextAlignment="End" HorizontalOptions="Center"  />
                         <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" >
                             <Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />

@@ -48,6 +48,8 @@ namespace GnollHackClient.Pages.Game
             _style = style;
             MenuView.BindingContext = this;
             MenuView.ItemsSource = MenuItems;
+            HeaderLabel.BindingContext = this;
+            SubtitleLabel.BindingContext = this;
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
 
@@ -115,6 +117,223 @@ namespace GnollHackClient.Pages.Game
                 }
                 return res;
             }            
+        }
+
+        public string MenuHeaderFontFamily
+        {
+            get
+            {
+                string res = "Immortal";
+                switch (_style)
+                {
+                    case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                        res = "Diablo";
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_HELP:
+                        break;
+                    case ghmenu_styles.MAX_GHMENU_STYLES:
+                        break;
+                }
+                return res;
+            }
+        }
+
+        public double MenuHeaderFontSize
+        {
+            get
+            {
+                double res = 22;
+                switch (_style)
+                {
+                    case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_HELP:
+                        break;
+                    case ghmenu_styles.MAX_GHMENU_STYLES:
+                        break;
+                }
+                return res;
+            }
+        }
+
+        public string MenuSubtitleFontFamily
+        {
+            get
+            {
+                string res = "Immortal";
+                switch (_style)
+                {
+                    case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_HELP:
+                        break;
+                    case ghmenu_styles.MAX_GHMENU_STYLES:
+                        break;
+                }
+                return res;
+            }
+        }
+
+        public double MenuSubtitleFontSize
+        {
+            get
+            {
+                double res = 15;
+                switch (_style)
+                {
+                    case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_HELP:
+                        break;
+                    case ghmenu_styles.MAX_GHMENU_STYLES:
+                        break;
+                }
+                return res;
+            }
         }
 
         private async void CancelButton_Clicked(object sender, EventArgs e)
@@ -528,12 +747,31 @@ namespace GnollHackClient.Pages.Game
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return GHUtils.NHColor2Color((nhcolor)value);
+            return ClientUtils.NHColor2XColor((nhcolor)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return GHUtils.NHColor2Color((nhcolor)value);
+            return ClientUtils.NHColor2XColor((nhcolor)value);
+        }
+    }
+
+    public class GrayedFontColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Color clr = ClientUtils.NHColor2XColor((nhcolor)value);
+            Color gray = Color.Black;
+            Color res = new Color((clr.R + gray.R) / 2, (clr.G + gray.G) / 2, (clr.B + gray.B) / 2, clr.A);
+            return res;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Color clr = ClientUtils.NHColor2XColor((nhcolor)value);
+            Color gray = Color.Black;
+            Color res = new Color((clr.R + gray.R) / 2, (clr.G + gray.G) / 2, (clr.B + gray.B) / 2, clr.A);
+            return res;
         }
     }
 

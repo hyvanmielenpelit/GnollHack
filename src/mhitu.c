@@ -4060,7 +4060,7 @@ struct attack *mattk;
                 if (lev > rn2(25))
                     destroy_item(SPBOOK_CLASS, AD_FIRE);
                 if (damage > 0)
-                    mdamageu(mtmp, damage, TRUE);
+                    mdamageu_with_hit_tile(mtmp, damage, TRUE, HIT_ON_FIRE);
             }
         }
         break;

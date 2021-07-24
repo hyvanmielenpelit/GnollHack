@@ -4346,7 +4346,7 @@ boolean addinventoryheader;
     sortedinvent = sortloot(&invent, sortflags, FALSE,
                             (boolean FDECL((*), (OBJ_P))) 0);
 
-    start_menu_ex(win, GHMENU_STYLE_INVENTORY);
+    start_menu_ex(win, addinventoryheader ? GHMENU_STYLE_INVENTORY : GHMENU_STYLE_PICK_ITEM_LIST);
     any = zeroany;
     if (wizard && iflags.override_ID) {
         int unid_cnt;
@@ -4791,7 +4791,7 @@ char avoidlet;
 
     if (invent) {
         win = create_nhwindow(NHW_MENU);
-        start_menu_ex(win, GHMENU_STYLE_INVENTORY);
+        start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
         while (!invdone) {
             any = zeroany; /* set all bits to zero */
             classcount = 0;
