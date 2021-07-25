@@ -5,7 +5,7 @@
              Appearing="ContentPage_Appearing" Disappearing="ContentPage_Disappearing"
              xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms" 
              xmlns:local="clr-namespace:GnollHackClient.Pages.Game" 
-             xmlns:gnollhackclient="clr-namespace:GnollHackClient"
+             xmlns:gnollhackclient="clr-namespace:GnollHackClient" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              BackgroundColor="Black"
              >
     <ContentPage.Resources>
@@ -41,7 +41,7 @@
                           HorizontalOptions="Center" VerticalOptions="Center"
                           AbsoluteLayout.LayoutBounds="0.5, 0.70, AutoSize, AutoSize" 
                           AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="#88000000" IsVisible="false">
-                        <Label Text="?" x:Name="QuestionLabel" FontFamily="Immortal" FontSize="18" TextColor="White"
+                        <Label Text="?" x:Name="QuestionLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
                                VerticalTextAlignment="End" HorizontalOptions="Center"  />
                         <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" >
                             <Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
@@ -184,6 +184,19 @@
                         <Button Grid.Column="4" Text="Z" x:Name="CastButton" Clicked="CastButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
                         <Button Grid.Column="5" Text="z" x:Name="ZapButton" Clicked="ZapButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
                         <Button Grid.Column="6" Text="x" x:Name="SwapWeaponButton" Clicked="SwapWeaponButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
+                    </Grid>
+                </StackLayout>
+            </Grid>
+            <Grid x:Name="GetLineGrid" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+                         Padding="10" BackgroundColor="#88000000" IsVisible="False">
+                <StackLayout x:Name="GetLineLayout" HorizontalOptions="Center" VerticalOptions="Start" BackgroundColor="Transparent">
+                    <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" Margin="0,50,0,10" HorizontalOptions="CenterAndExpand" TextColor="White" />
+                    <Entry x:Name="GetLineEntryText" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White"
+                       HorizontalTextAlignment="Center" FontSize="20" />
+                    <Grid WidthRequest="320" HorizontalOptions="Center">
+                        <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                        <Button x:Name="GetLineOkButton" Text="OK" FontSize="20" WidthRequest="320" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                        Clicked="GetLineOkButton_Clicked" />
                     </Grid>
                 </StackLayout>
             </Grid>

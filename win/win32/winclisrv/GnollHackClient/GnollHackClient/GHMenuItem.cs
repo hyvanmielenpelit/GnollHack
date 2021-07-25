@@ -78,7 +78,7 @@ namespace GnollHackClient
                 else
                     _mainText = "";
 
-                if (first_parenthesis_open >=0)
+                if (first_parenthesis_open >=0 && !(_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND))
                     _suffixText = ParseSuffixText(value);
                 else
                     _suffixText = "";

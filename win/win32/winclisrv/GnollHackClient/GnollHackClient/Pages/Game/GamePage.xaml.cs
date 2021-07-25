@@ -858,10 +858,32 @@ namespace GnollHackClient.Pages.Game
             var namePage = new NamePage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(namePage);
         }
-        private async void GetLine(string query)
+        private void GetLine(string query)
         {
-            var getLinePage = new GetLinePage(this, query);
-            await App.Current.MainPage.Navigation.PushModalAsync(getLinePage);
+            GetLineCaption.Text = query;
+            GetLineEntryText.Text = "";
+            GetLineGrid.IsVisible = true;
+            //var getLinePage = new GetLinePage(this, query);
+            //await App.Current.MainPage.Navigation.PushModalAsync(getLinePage);
+        }
+
+        private void GetLineOkButton_Clicked(object sender, EventArgs e)
+        {
+            string res = GetLineEntryText.Text;
+            if (string.IsNullOrWhiteSpace(GetLineEntryText.Text))
+            {
+                res = "";
+            }
+
+            ConcurrentQueue<GHResponse> queue;
+            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetLine, res));
+            }
+
+            GetLineGrid.IsVisible = false;
+            GetLineEntryText.Text = "";
+            GetLineCaption.Text = "";
         }
 
         private void GetChar()
@@ -4433,6 +4455,7 @@ namespace GnollHackClient.Pages.Game
         {
             ShowGameMenu(sender, e);
         }
+
     }
 
     public class ColorConverter : IValueConverter

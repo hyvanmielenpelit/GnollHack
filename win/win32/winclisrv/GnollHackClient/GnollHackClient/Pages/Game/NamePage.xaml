@@ -1,18 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              x:Class="GnollHackClient.Pages.Game.NamePage">
     <ContentPage.Content>
-        <StackLayout Padding="10">
-            <Label Text="What is your name?" FontFamily="Diablo" FontSize="Large" Margin="0,10,0,10"
-                HorizontalOptions="CenterAndExpand" />
-            <Entry x:Name="eName" HorizontalOptions="FillAndExpand" Placeholder="Enter your name here" />
-            <Label Text="Name can contain only letters, numbers, and underscores.&#x0a;Its length must be 1–32 characters." FontSize="Small" FontAttributes="Italic"
-                   HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="DarkGray" />
+        <Grid>
+            <ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
+                            Source ="resource://GnollHackClient.Assets.UI.menubackground.png" />
 
-            <Label x:Name="lblError" HorizontalOptions="CenterAndExpand" Text="" />
-            <Button x:Name="btnOK" Text="OK" FontFamily="Diablo" HorizontalOptions="FillAndExpand"
-                    Clicked="btnOK_Clicked" />
-        </StackLayout>
+            <StackLayout Padding="10">
+                <Label Text="What is your name?" FontFamily="Diablo" FontSize="Large" Margin="0,10,0,30" TextColor="White"
+                    HorizontalOptions="CenterAndExpand" />
+                <Entry x:Name="eName" WidthRequest="360" HorizontalOptions="Center" HorizontalTextAlignment="Center" PlaceholderColor="Gray" Placeholder="Enter your name here" TextColor="White" BackgroundColor="Transparent" />
+                <Label Text="Name can contain only letters, numbers, and underscores.&#x0a;Its length must be 1–32 characters." FontSize="Small" FontAttributes="Italic"
+                       HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="Gray" />
+
+                <Label x:Name="lblError" HorizontalOptions="CenterAndExpand" Text="" />
+                <Grid WidthRequest="320" HorizontalOptions="Center">
+                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                    <Button x:Name="btnOK" Text="OK" WidthRequest="320" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                        Clicked="btnOK_Clicked" />
+                </Grid>
+            </StackLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
