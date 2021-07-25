@@ -12,6 +12,7 @@
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                 </ff:CachedImage.GestureRecognizers>
             </ff:CachedImage>
+            <ff:CachedImage x:Name="WindowGlyphImage" IsVisible="{Binding IsGlyphVisible}" Source="{Binding GlyphImage}" HorizontalOptions="End" VerticalOptions="Start" Margin="4" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
             <CollectionView Margin="20,5,5,5" x:Name="TextView" WidthRequest="600" HorizontalOptions="Center" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -24,9 +25,11 @@
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-
-                            <Label Grid.Column="0" TextColor="{Binding TextWindowTextColor}" 
+                            <Grid WidthRequest="{Binding LeftPaddingWidth}" HorizontalOptions="FillAndExpand" Grid.Column="0" />
+                            <Label Grid.Column="1" TextColor="{Binding TextWindowTextColor}" 
                                    Text="{Binding Text}"
                                    FontFamily="{Binding TextWindowFontFamily}" 
                                    FontSize="{Binding TextWindowFontSize}">
@@ -34,11 +37,11 @@
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
+                            <Grid WidthRequest="{Binding RightPaddingWidth}" HorizontalOptions="FillAndExpand" Grid.Column="2" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            <ff:CachedImage x:Name="WindowGlyphImage" IsVisible="{Binding IsGlyphVisible}" Source="{Binding GlyphImage}" HorizontalOptions="End" VerticalOptions="Start" Margin="4" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
         </Grid>
     </ContentPage.Content>
 </ContentPage>

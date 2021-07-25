@@ -2,6 +2,7 @@
 using GnollHackCommon;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Xamarin.Forms;
 
@@ -12,6 +13,12 @@ namespace GnollHackClient
         private GamePage _gamePage;
         private GHWindow _window;
         private string _text;
+
+        public int PaddingAmount { get; set; }
+
+        public GamePage ReferenceGamePage { get { return _gamePage; } }
+        public GHWindow Window { get { return _window; } }
+
         public string Text { get { return _text; } 
             set 
             { 
@@ -109,6 +116,10 @@ namespace GnollHackClient
                         return "Immortal";
                 }
 
+                if (_window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL
+                    || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER)
+                    return "Immortal";
+
                 return "Underwood";
             }
         }
@@ -120,7 +131,7 @@ namespace GnollHackClient
                 if (InstructionList != null && InstructionList.Count > 0)
                 {
                     if (InstructionList[0].Attributes == (int)MenuItemAttributes.Bold)
-                        return 20;
+                        return 21;
                     if (InstructionList[0].Attributes == (int)MenuItemAttributes.Dim)
                         return 16;
                 }
@@ -129,7 +140,14 @@ namespace GnollHackClient
                     || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN)
                         return 15;
 
-                return 16;
+                if (_window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL
+                    || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER)
+                {
+
+                    return 17;
+                }
+
+                return 15.5;
             }
         }
         public Color TextWindowTextColor
@@ -141,6 +159,38 @@ namespace GnollHackClient
                     return ClientUtils.NHColor2XColor((nhcolor)InstructionList[0].Color);
                 }
                 return Color.White;
+            }
+        }
+
+        public double LeftPaddingWidth
+        {
+            get
+            {
+                return (double)(PaddingAmount * 5);
+            }
+        }
+
+        public double RightPaddingText
+        {
+            get
+            {
+                return (double)(PaddingAmount * 5);
+            }
+        }
+
+        public bool LeftVisible
+        {
+            get
+            {
+                return (PaddingAmount > 0);
+            }
+        }
+
+        public bool RightVisible
+        {
+            get
+            {
+                return (PaddingAmount > 0);
             }
         }
     }
