@@ -128,6 +128,20 @@ namespace GnollHackClient
         {
             get
             {
+                if (_window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL
+                    || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER)
+                {
+                    double basesize = Math.Min(22, Math.Max(17, 17 * _gamePage.CurrentPageWidth * _gamePage.CurrentPageHeight / (600 * 360)));
+                    if (InstructionList != null && InstructionList.Count > 0)
+                    {
+                        if (InstructionList[0].Attributes == (int)MenuItemAttributes.Bold)
+                            return basesize * 1.2;
+                        if (InstructionList[0].Attributes == (int)MenuItemAttributes.Dim)
+                            return basesize / 1.2;
+                    }
+                    return basesize;
+                }
+
                 if (InstructionList != null && InstructionList.Count > 0)
                 {
                     if (InstructionList[0].Attributes == (int)MenuItemAttributes.Bold)
@@ -140,12 +154,6 @@ namespace GnollHackClient
                     || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN)
                         return 15;
 
-                if (_window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL
-                    || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER)
-                {
-
-                    return 17;
-                }
 
                 return 15.5;
             }
