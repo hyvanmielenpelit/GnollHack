@@ -891,7 +891,7 @@ namespace GnollHackClient.Pages.Game
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetLine, 27));
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetLine, '\x1B'.ToString()));
             }
 
             GetLineGrid.IsVisible = false;
