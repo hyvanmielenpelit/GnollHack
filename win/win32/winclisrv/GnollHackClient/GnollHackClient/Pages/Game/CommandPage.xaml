@@ -59,8 +59,8 @@
                 <Button Text="n20s" x:Name="Search20Button" Clicked="Search20Button_Clicked" FontFamily="Immortal" FontSize="13" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="n200s" x:Name="Search200Button" Clicked="Search200Button_Clicked" FontFamily="Immortal" FontSize="13" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <Button Text="Co" x:Name="OverviewButton" Clicked="OverviewButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="\"  x:Name="DiscoveredButton" Clicked="DiscoveredButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
-                <Button Text="" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
+                <Button Text="\" x:Name="DiscoveredButton" Clicked="DiscoveredButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
+                <Button Text="," x:Name="PickupButton" Clicked="PickupButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
             </StackLayout>
             <StackLayout x:Name="SeventhCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
                 <Button Text="w" x:Name="WieldButton" Clicked="WieldButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />

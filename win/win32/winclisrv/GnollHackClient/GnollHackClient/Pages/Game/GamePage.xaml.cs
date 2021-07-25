@@ -886,6 +886,19 @@ namespace GnollHackClient.Pages.Game
             GetLineCaption.Text = "";
         }
 
+        private void GetLineCancelButton_Clicked(object sender, EventArgs e)
+        {
+            ConcurrentQueue<GHResponse> queue;
+            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetLine, 27));
+            }
+
+            GetLineGrid.IsVisible = false;
+            GetLineEntryText.Text = "";
+            GetLineCaption.Text = "";
+        }
+
         private void GetChar()
         {
             // Set focus to GameViewPage

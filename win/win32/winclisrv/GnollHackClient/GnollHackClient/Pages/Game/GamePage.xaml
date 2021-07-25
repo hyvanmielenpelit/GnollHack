@@ -41,7 +41,7 @@
                           HorizontalOptions="Center" VerticalOptions="Center"
                           AbsoluteLayout.LayoutBounds="0.5, 0.70, AutoSize, AutoSize" 
                           AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="#88000000" IsVisible="false">
-                        <Label Text="?" x:Name="QuestionLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
+                        <Label Text="?" x:Name="QuestionLabel" FontFamily="Immortal" FontSize="19" TextColor="White"
                                VerticalTextAlignment="End" HorizontalOptions="Center"  />
                         <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" >
                             <Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
@@ -193,10 +193,25 @@
                     <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" Margin="0,50,0,10" HorizontalOptions="CenterAndExpand" TextColor="White" />
                     <Entry x:Name="GetLineEntryText" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White"
                        HorizontalTextAlignment="Center" FontSize="20" />
-                    <Grid WidthRequest="320" HorizontalOptions="Center">
-                        <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                        <Button x:Name="GetLineOkButton" Text="OK" FontSize="20" WidthRequest="320" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
-                        Clicked="GetLineOkButton_Clicked" />
+                    <Grid WidthRequest="360" HorizontalOptions="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0" HorizontalOptions="End" WidthRequest="170">
+                            <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="170"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                            <Button x:Name="GetLineOkButton" Text="OK" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                                Clicked="GetLineOkButton_Clicked" />
+                        </Grid>
+                        <Grid  Grid.Column="1" HorizontalOptions="Start" WidthRequest="170">
+                            <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="170"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                            <Button x:Name="GetLineCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                                Clicked="GetLineCancelButton_Clicked" />
+                        </Grid>
+
                     </Grid>
                 </StackLayout>
             </Grid>

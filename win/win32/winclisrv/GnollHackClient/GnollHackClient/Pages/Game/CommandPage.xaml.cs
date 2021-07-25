@@ -399,5 +399,11 @@ namespace GnollHackClient.Pages.Game
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, 27);
         }
+
+        private async void PickupButton_Clicked(object sender, EventArgs e)
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, ',');
+        }
     }
 }
