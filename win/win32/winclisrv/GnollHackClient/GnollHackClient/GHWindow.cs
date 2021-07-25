@@ -61,6 +61,8 @@ namespace GnollHackClient
         public int CursY { get; set; }
         public bool CenterHorizontally { get; set; }
         public GHWinType WindowType { get { return _winType; } }
+        public ghwindow_styles WindowStyle { get { return _winStyle; } }
+        public int Glyph { get { return _glyph; } }
         public GamePage ClientGamePage { get { return _gamePage; } }
         public bool AutoPlacement { get; set; }
         public bool AutoCarriageReturn
@@ -362,14 +364,14 @@ namespace GnollHackClient
                 {
                     for (int i = 0; i < CursY - PutStrs.Count + 1; i++)
                     {
-                        PutStrs.Add(new GHPutStrItem(""));
+                        PutStrs.Add(new GHPutStrItem(_gamePage, this, ""));
                     }
                 }
 
                 if (CursY >= 0)
                 {
                     if (PutStrs[CursY] == null)
-                        PutStrs[CursY] = new GHPutStrItem("");
+                        PutStrs[CursY] = new GHPutStrItem(_gamePage, this, "");
                     else if (PutStrs[CursY].Text == null)
                         PutStrs[CursY].Text = "";
 

@@ -378,7 +378,7 @@ namespace GnollHackClient
             _menuInfo = info;
             _noGlyph = noGlyph;
             _gamePage = gamePage;
-            _glyphImageSource.GamePage = gamePage;
+            _glyphImageSource.ReferenceGamePage = gamePage;
             _glyphImageSource.Width = GHConstants.TileWidth;
             _glyphImageSource.Height = GHConstants.TileHeight / 2;
             EntryTextColor = Color.White;

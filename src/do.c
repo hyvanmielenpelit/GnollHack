@@ -951,8 +951,10 @@ register struct obj* obj;
         return 0;
 
     winid datawin = WIN_ERR;
+    int glyph = obj_to_glyph(obj, rn2_on_display_rng);
+    int gui_glyph = maybe_get_replaced_glyph(glyph, obj->ox, obj->oy, data_to_replacement_info(glyph, LAYER_OBJECT, obj, (struct monst*)0, 0UL));
 
-    datawin = create_nhwindow(NHW_MENU);
+    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_DESCRIPTION_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph);
 
     int otyp = obj->otyp;
     if (obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT)
@@ -975,7 +977,7 @@ register struct obj* obj;
     strcpy(buf, cxname(obj));
     *buf = highc(*buf);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_BOLD, txt);
 
     /* Type */
     strcpy(buf3, def_oc_syms[(int)obj->oclass].name);
@@ -1106,7 +1108,7 @@ register struct obj* obj;
         Sprintf(eos(buf), " - Artifact");
     }
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_DIM, txt);
 
     strcpy(buf, "");
     txt = buf;
@@ -3854,7 +3856,10 @@ register struct monst* mon;
         return 0;
 
     winid datawin = WIN_ERR;
-    datawin = create_nhwindow(NHW_MENU);
+    int glyph = mon_to_glyph(mon, rn2_on_display_rng);
+    int gui_glyph = maybe_get_replaced_glyph(glyph, mon->mx, mon->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mon, 0UL));
+
+    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph);
 
     //int mnum = mon->mnum;
     struct permonst* ptr = mon->data;
@@ -3892,7 +3897,7 @@ register struct monst* mon;
         Sprintf(eos(buf), ", %s", ptr->mtitle);
     }
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_BOLD, txt);
 
     /* Description */
     if (ptr->mdescription && strcmp(ptr->mdescription, ""))
@@ -3900,7 +3905,7 @@ register struct monst* mon;
         Sprintf(buf, "Level %d %s", ptr->difficulty, ptr->mdescription);
         //*buf = highc(*buf);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_DIM, txt);
     }
     else
     {
@@ -3908,7 +3913,7 @@ register struct monst* mon;
         Sprintf(buf, "Level %d %s%s", ptr->difficulty, ptr->geno & G_UNIQ ? "unique " : "", def_monsyms[(int)ptr->mlet].explain);
         //*buf = highc(*buf);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_DIM, txt);
     }
 
     strcpy(buf, "");

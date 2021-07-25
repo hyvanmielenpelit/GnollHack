@@ -1,12 +1,16 @@
-﻿using GnollHackCommon;
+﻿using GnollHackClient.Pages.Game;
+using GnollHackCommon;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Xamarin.Forms;
 
 namespace GnollHackClient
 {
     public class GHPutStrItem
     {
+        private GamePage _gamePage;
+        private GHWindow _window;
         private string _text;
         public string Text { get { return _text; } 
             set 
@@ -21,20 +25,26 @@ namespace GnollHackClient
         private List<GHPutStrInstructions> _instructionList;
         public List<GHPutStrInstructions> InstructionList { get { return _instructionList; } set { _instructionList = value; } }
 
-        public GHPutStrItem(string str)
+        public GHPutStrItem(GamePage gamePage, GHWindow window, string str)
         {
             _instructionList = new List<GHPutStrInstructions>();
             Text = str;
+            _gamePage = gamePage;
+            _window = window;
         }
-        public GHPutStrItem(string str, List<GHPutStrInstructions> instrlist)
+        public GHPutStrItem(GamePage gamePage, GHWindow window, string str, List<GHPutStrInstructions> instrlist)
         {
             InstructionList = instrlist;
             Text = str;
+            _gamePage = gamePage;
+            _window = window;
         }
-        public GHPutStrItem(string str, List<int> attrlist, List<int> colorlist)
+        public GHPutStrItem(Pages.Game.GamePage gamePage, GHWindow window, string str, List<int> attrlist, List<int> colorlist)
         {
             InstructionList = ConvertListFromArrays(attrlist, colorlist);
             Text = str;
+            _gamePage = gamePage;
+            _window = window;
         }
         public List<GHPutStrInstructions> ConvertListFromArrays(List<int> attrlist, List<int> colorlist)
         {
@@ -85,6 +95,53 @@ namespace GnollHackClient
         public void ConvertCurrentListFromArrays(List<int> attrlist, List<int> colorlist)
         {
             InstructionList = ConvertListFromArrays(attrlist, colorlist);
+        }
+
+        public string TextWindowFontFamily
+        {
+            get
+            {
+                if (InstructionList != null && InstructionList.Count > 0)
+                {
+                    if (InstructionList[0].Attributes == (int)MenuItemAttributes.Bold)
+                        return "Immortal";
+                    if (InstructionList[0].Attributes == (int)MenuItemAttributes.Dim)
+                        return "Immortal";
+                }
+
+                return "Underwood";
+            }
+        }
+
+        public double TextWindowFontSize
+        {
+            get
+            {
+                if (InstructionList != null && InstructionList.Count > 0)
+                {
+                    if (InstructionList[0].Attributes == (int)MenuItemAttributes.Bold)
+                        return 20;
+                    if (InstructionList[0].Attributes == (int)MenuItemAttributes.Dim)
+                        return 16;
+                }
+
+                if (_window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_OBJECT_DESCRIPTION_SCREEN
+                    || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN)
+                        return 15;
+
+                return 16;
+            }
+        }
+        public Color TextWindowTextColor
+        {
+            get
+            {
+                if (InstructionList != null && InstructionList.Count > 0 && InstructionList[0].Color != (int)nhcolor.NO_COLOR)
+                {
+                    return ClientUtils.NHColor2XColor((nhcolor)InstructionList[0].Color);
+                }
+                return Color.White;
+            }
         }
     }
 }

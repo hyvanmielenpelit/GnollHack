@@ -26,10 +26,10 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <Label Grid.Column="0" TextColor="White" 
+                            <Label Grid.Column="0" TextColor="{Binding TextWindowTextColor}" 
                                    Text="{Binding Text}"
-                                   FontFamily="Underwood" 
-                                   FontSize="16">
+                                   FontFamily="{Binding TextWindowFontFamily}" 
+                                   FontSize="{Binding TextWindowFontSize}">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
@@ -38,6 +38,7 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+            <ff:CachedImage x:Name="WindowGlyphImage" IsVisible="{Binding IsGlyphVisible}" Source="{Binding GlyphImage}" HorizontalOptions="End" VerticalOptions="Start" Margin="4" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
         </Grid>
     </ContentPage.Content>
 </ContentPage>

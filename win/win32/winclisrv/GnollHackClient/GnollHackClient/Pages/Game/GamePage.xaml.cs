@@ -149,7 +149,12 @@ namespace GnollHackClient.Pages.Game
         private List<AnimationDefinition> _animationDefs = null;
         private List<EnlargementDefinition> _enlargementDefs = null;
         private List<ReplacementDefinition> _replacementDefs = null;
-        private List<AutoDrawDefinition> autodraws = null;
+        private List<AutoDrawDefinition> _autodraws = null;
+
+        public List<AnimationDefinition> Animations { get { return _animationDefs; } }
+        public List<EnlargementDefinition> Enlargements { get { return _enlargementDefs; } }
+        public List<ReplacementDefinition> Replacements { get { return _replacementDefs; } }
+        public List<AutoDrawDefinition> Autodraws { get { return _autodraws; } }
 
         public object _floatingTextLock = new object();
         public List<GHFloatingText> _floatingTexts = new List<GHFloatingText>();
@@ -260,7 +265,7 @@ namespace GnollHackClient.Pages.Game
             _animationDefs = _gnollHackService.GetAnimationArray();
             _enlargementDefs = _gnollHackService.GetEnlargementArray();
             _replacementDefs = _gnollHackService.GetReplacementArray();
-            autodraws = _gnollHackService.GetAutoDrawArray();
+            _autodraws = _gnollHackService.GetAutoDrawArray();
 
             for (int i = 0; i < GHConstants.MapCols; i++)
             {
@@ -724,11 +729,16 @@ namespace GnollHackClient.Pages.Game
 
         private void DisplayWindowView(int winid, List<GHPutStrItem> strs)
         {
-            ShowWindowPage(strs);
+            GHWindow window;
+            lock(_clientGame.WindowsLock)
+            {
+                window = _clientGame.Windows[winid];
+            }
+            ShowWindowPage(window, strs);
         }
-        private async void ShowWindowPage(List<GHPutStrItem> strs)
+        private async void ShowWindowPage(GHWindow window, List<GHPutStrItem> strs)
         {
-            var cpage = new GHTextPage(this, strs);
+            var cpage = new GHTextPage(this, window, strs);
             await App.Current.MainPage.Navigation.PushModalAsync(cpage);
         }
 
@@ -1697,15 +1707,15 @@ namespace GnollHackClient.Pages.Game
             //                                                            }
 
             //                                                            /* AUTODRAW */
-            //                                                            if (autodraws != null && autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LONG_WORM)
+            //                                                            if (_autodraws != null && _autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LONG_WORM)
             //                                                            {
             //                                                                /* Long worm here */
 
-            //                                                                int source_glyph_seg_end = autodraws[autodraw].source_glyph;
-            //                                                                int source_glyph_seg_dir_out = autodraws[autodraw].source_glyph2;
-            //                                                                int source_glyph_seg_dir_in = autodraws[autodraw].source_glyph2 + 4;
-            //                                                                int source_glyph_seg_layer = autodraws[autodraw].source_glyph3;
-            //                                                                int drawing_tail = autodraws[autodraw].flags;
+            //                                                                int source_glyph_seg_end = _autodraws[autodraw].source_glyph;
+            //                                                                int source_glyph_seg_dir_out = _autodraws[autodraw].source_glyph2;
+            //                                                                int source_glyph_seg_dir_in = _autodraws[autodraw].source_glyph2 + 4;
+            //                                                                int source_glyph_seg_layer = _autodraws[autodraw].source_glyph3;
+            //                                                                int drawing_tail = _autodraws[autodraw].flags;
             //                                                                float scale = height / (float)GHConstants.TileHeight;
             //                                                                int wdir_out = _mapData[mapx, mapy].Layers.wsegdir;
             //                                                                int wdir_in = _mapData[mapx, mapy].Layers.reverse_prev_wsegdir;
@@ -2864,15 +2874,15 @@ namespace GnollHackClient.Pages.Game
                                                                     }
 
                                                                     /* AUTODRAW */
-                                                                    if (autodraws != null && autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LONG_WORM)
+                                                                    if (_autodraws != null && _autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LONG_WORM)
                                                                     {
                                                                         /* Long worm here */
 
-                                                                        int source_glyph_seg_end = autodraws[autodraw].source_glyph;
-                                                                        int source_glyph_seg_dir_out = autodraws[autodraw].source_glyph2;
-                                                                        int source_glyph_seg_dir_in = autodraws[autodraw].source_glyph2 + 4;
-                                                                        int source_glyph_seg_layer = autodraws[autodraw].source_glyph3;
-                                                                        int drawing_tail = autodraws[autodraw].flags;
+                                                                        int source_glyph_seg_end = _autodraws[autodraw].source_glyph;
+                                                                        int source_glyph_seg_dir_out = _autodraws[autodraw].source_glyph2;
+                                                                        int source_glyph_seg_dir_in = _autodraws[autodraw].source_glyph2 + 4;
+                                                                        int source_glyph_seg_layer = _autodraws[autodraw].source_glyph3;
+                                                                        int drawing_tail = _autodraws[autodraw].flags;
                                                                         float scale = height / (float)GHConstants.TileHeight;
                                                                         int wdir_out = _mapData[mapx, mapy].Layers.wsegdir;
                                                                         int wdir_in = _mapData[mapx, mapy].Layers.reverse_prev_wsegdir;
