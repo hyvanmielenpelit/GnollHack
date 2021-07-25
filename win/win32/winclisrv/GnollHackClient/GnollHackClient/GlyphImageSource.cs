@@ -236,7 +236,7 @@ namespace GnollHackClient
                         if (enl_width == 2 && enl_x == 1 && (idx == 2 || idx == 4))
                             continue;
 
-                        sbyte enltile = ReferenceGamePage.Enlargements[enlargement_idx].position2tile[idx];
+                        int enltile = (int)ReferenceGamePage.Enlargements[enlargement_idx].position2tile[idx];
                         if (enltile >= 0)
                         {
                             int glyph = enltile + ReferenceGamePage.EnlargementOffsets[enlargement_idx] /* enlargements[enlargement_idx].glyph_offset */ + ReferenceGamePage.EnlargementOff;
@@ -283,7 +283,7 @@ namespace GnollHackClient
                                 canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
                                 SKRect sourcerect = new SKRect(etile_x, etile_y, etile_x + GHConstants.TileWidth, etile_y + GHConstants.TileHeight);
                                 SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
-                                canvas.DrawBitmap(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect);
+                                canvas.DrawBitmap(ReferenceGamePage.TileMap[e_sheet_idx], sourcerect, targetrect);
                             }
                         }
                     }
