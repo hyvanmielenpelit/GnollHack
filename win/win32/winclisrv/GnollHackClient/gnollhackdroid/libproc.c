@@ -327,20 +327,50 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, layers);
 
     /* Note: print_glyph clears all object data */
-    struct obj* otmp;
     int i;
     for (i = 0; i <= 1; i++)
     {
         int basewhere = 0;
         boolean use_nexthere = FALSE;
+        struct obj* otmp = 0;
+        struct obj mimic_obj = zeroobj;
+
         switch (i)
         {
         case 0:
+        {
             otmp = level.objects[x][y];
+
+            /* Object mimic handling */
+            boolean has_obj_mimic = FALSE;
+            struct monst* mtmp = m_at(x, y);
+            if (mtmp && (M_AP_TYPE(mtmp) == M_AP_OBJECT))
+            {
+                int sensed = (Protection_from_shape_changers || sensemon(mtmp));
+                if (!sensed)
+                {
+                    has_obj_mimic = TRUE;
+                    mimic_obj.otyp = mtmp->mappearance;
+                    mimic_obj.corpsenm = has_mcorpsenm(mtmp) ? MCORPSENM(mtmp) : PM_TENGU;
+                    mimic_obj.ox = x;
+                    mimic_obj.oy = y;
+                    mimic_obj.glyph = obj_to_glyph(&mimic_obj, newsym_rn2);
+                    mimic_obj.gui_glyph = maybe_get_replaced_glyph(mimic_obj.glyph, x, y, data_to_replacement_info(mimic_obj.glyph,
+                        is_obj_drawn_in_front(&mimic_obj) ? LAYER_COVER_OBJECT : LAYER_OBJECT, &mimic_obj, (struct monst*)0, 0UL));
+                }
+            }
+            if (has_obj_mimic)
+            {
+                mimic_obj.nexthere = otmp;
+                otmp = &mimic_obj;
+            }
+
             use_nexthere = TRUE;
             basewhere = OBJ_FLOOR;
             break;
+        }
         case 1:
+            /* A possible mimic has been added to memory objects */
             otmp = level.locations[x][y].hero_memory_layers.memory_objchn;
             use_nexthere = TRUE;
             basewhere = OBJ_HEROMEMORY;
