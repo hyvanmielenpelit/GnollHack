@@ -904,6 +904,9 @@ struct obj *obj;         /* missile (or stack providing it) */
     
     while (range-- > 0)
     { /* Actually the loop is always exited by break */
+        xchar lastpos_x = bhitpos.x;
+        xchar lastpos_y = bhitpos.y;
+
         bhitpos.x += dx;
         bhitpos.y += dy;
         if ((mtmp = m_at(bhitpos.x, bhitpos.y)) != 0) {
@@ -1143,11 +1146,19 @@ struct obj *obj;         /* missile (or stack providing it) */
         }
 
         tmp_at(bhitpos.x, bhitpos.y);
+        if (singleobj && ((is_poisonable(singleobj) && singleobj->opoisoned) || singleobj->elemental_enchantment || singleobj->exceptionality || singleobj->mythic_prefix || singleobj->mythic_suffix || singleobj->oeroded || singleobj->oeroded2 || get_obj_height(singleobj) > 0))
+        {
+            show_missile_info(bhitpos.x, bhitpos.y, singleobj->opoisoned, singleobj->elemental_enchantment, singleobj->exceptionality, singleobj->mythic_prefix, singleobj->mythic_suffix, singleobj->oeroded, singleobj->oeroded2, get_missile_flags(singleobj, FALSE), get_obj_height(singleobj), 0, 0);
+            flush_screen(1);
+        }
+        if (isok(lastpos_x, lastpos_y))
+            show_missile_info(lastpos_x, lastpos_y, 0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0); /* Clear missile info out in the previous location */
         adjusted_delay_output();
     }
 
-    tmp_at(bhitpos.x, bhitpos.y);
-    adjusted_delay_output();
+    /* Note: singleobj may be a dangling pointer now */
+    //tmp_at(bhitpos.x, bhitpos.y);
+    //adjusted_delay_output();
     
     tmp_at(DISP_END, 0);
     mesg_given = 0; /* reset */

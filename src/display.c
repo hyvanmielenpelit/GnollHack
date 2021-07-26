@@ -732,11 +732,9 @@ boolean dropping_piercer;
             /* might be mimicing a corpse or statue */
             obj.corpsenm = has_mcorpsenm(mon) ? MCORPSENM(mon) : PM_TENGU;
             int glyph = obj_to_glyph(&obj, newsym_rn2);
-
-            /* Replace */
             int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, &obj, mon, 0UL));
-
-            obj.glyph = gui_glyph;
+            obj.glyph = glyph;
+            obj.gui_glyph = gui_glyph;
             //show_monster_glyph_with_extra_info(x, y,
             //    glyph, mon, LFLAGS_M_MIMIC_OBJECT, 0, 0);
             //map_object(&obj, !sensed);
@@ -747,9 +745,10 @@ boolean dropping_piercer;
                 if (Hallucination && obj.otyp == STATUE)
                 {
                     new_glyph = random_obj_to_glyph(newsym_rn2);
-                    new_gui_glyph = maybe_get_replaced_glyph(new_glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, &obj, mon, 0UL));
+                    new_gui_glyph = maybe_get_replaced_glyph(new_glyph, x, y, data_to_replacement_info(new_glyph, LAYER_OBJECT, &obj, mon, 0UL));
                 }
                 obj.glyph = new_glyph;
+                obj.gui_glyph = new_gui_glyph;
                 levl[x][y].hero_memory_layers.glyph = new_glyph;
                 levl[x][y].hero_memory_layers.layer_glyphs[LAYER_OBJECT] = new_gui_glyph;
 
