@@ -3957,8 +3957,13 @@ long pickcnt;
     winid win;
     anything any;
 
+    xchar x = 0, y = 0;
+    get_obj_location(otmp, &x, &y, CONTAINED_TOO | BURIED_TOO);
+    int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
+    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL));
+
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_COMMAND_MENU, iflags.using_gui_tiles ? otmp->gui_glyph : otmp->glyph);
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_OBJECT_COMMAND_MENU, iflags.using_gui_tiles ? gui_glyph : glyph);
     start_menu_ex(win, GHMENU_STYLE_ITEM_COMMAND);
 
 #define NUM_CMD_SECTIONS 3

@@ -83,7 +83,6 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-
         public double MenuViewWidthRequest
         {
             get

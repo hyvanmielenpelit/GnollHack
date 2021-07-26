@@ -4268,9 +4268,7 @@ namespace GnollHackClient.Pages.Game
             }
             var cmdPage = new CommandPage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(cmdPage, false);
-
         }
-
         private void ZeroButton_Clicked(object sender, EventArgs e)
         {
             if (CurrentYnResponses.Length >= 4)
