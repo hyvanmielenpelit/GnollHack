@@ -4164,8 +4164,9 @@ namespace GnollHackClient.Pages.Game
                 if(_objectData[x, y] != null)
                 {
                     bool is_memoryobj = (where == (int)obj_where_types.OBJ_HEROMEMORY);
-                    bool is_drawn_in_front = (oflags & 1UL) != 0UL;
-                    List<ObjectDataItem> ObjectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList); 
+                    bool is_drawn_in_front = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_DRAWN_IN_FRONT) != 0UL;
+                    bool hallucinated = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_HALLUCINATION) != 0UL;
+                    List<ObjectDataItem> ObjectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
 
                     switch(cmdtype)
                     {
@@ -4193,14 +4194,14 @@ namespace GnollHackClient.Pages.Game
 
                                 ObjectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
                             }
-                            ObjectList.Add(new ObjectDataItem(otmp, tile_height));
+                            ObjectList.Add(new ObjectDataItem(otmp, tile_height, hallucinated));
                             break;
                         case 3: /* Add container item to previous item */
                             if (ObjectList == null || ObjectList.Count == 0)
                                 break;
                             if (ObjectList[ObjectList.Count - 1].ContainedObjs == null)
                                 ObjectList[ObjectList.Count - 1].ContainedObjs = new List<ObjectDataItem>();
-                            ObjectList[ObjectList.Count - 1].ContainedObjs.Add(new ObjectDataItem(otmp, tile_height));
+                            ObjectList[ObjectList.Count - 1].ContainedObjs.Add(new ObjectDataItem(otmp, tile_height, hallucinated));
                             break;
                     }                   
                 }

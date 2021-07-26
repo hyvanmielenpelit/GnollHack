@@ -9,16 +9,25 @@ namespace GnollHackClient
     {
         public obj ObjData;
         public List<ObjectDataItem> ContainedObjs;
-        public short TileHeight;
+        private short _tileHeight = 0;
+        public short TileHeight {
+            get
+            {
+                return Hallucinated ? (short)0 : _tileHeight;
+            }
+        }
+
+        public bool Hallucinated { get; set; }
 
         public ObjectDataItem()
         {
 
         }
-        public ObjectDataItem(obj objData, int tile_height)
+        public ObjectDataItem(obj objData, int tile_height, bool hallucinated)
         {
             ObjData = objData;
-            TileHeight = (short)tile_height;
+            _tileHeight = (short)tile_height;
+            Hallucinated = hallucinated;
         }
     }
 }

@@ -586,6 +586,10 @@ enum init_print_glyph_stages {
 #define ARTDMG_350PCT_DAMAGE -50
 #define ARTDMG_QUADRUPLE_DAMAGE -60
 
+/* Object data */
+#define OBJDATA_FLAGS_DRAWN_IN_FRONT    0x00000001UL
+#define OBJDATA_FLAGS_HALLUCINATION     0x00000002UL
+
 /*
  * type nhsym: loadable symbols go into this type
  */

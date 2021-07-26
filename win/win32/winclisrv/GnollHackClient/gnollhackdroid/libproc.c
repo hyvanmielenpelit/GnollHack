@@ -379,7 +379,12 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 
         for (; otmp; otmp = (use_nexthere ? otmp->nexthere : otmp->nobj))
         {
-            unsigned long oflags = !!is_obj_drawn_in_front(otmp);
+            unsigned long oflags = 0UL;
+            if(is_obj_drawn_in_front(otmp))
+                oflags |= OBJDATA_FLAGS_DRAWN_IN_FRONT;
+            if (Hallucination)
+                oflags |= OBJDATA_FLAGS_HALLUCINATION;
+
             lib_callbacks.callback_send_object_data(x, y, *otmp, 2, basewhere, get_obj_height(otmp), oflags);
             if (otmp->cobj)
             {

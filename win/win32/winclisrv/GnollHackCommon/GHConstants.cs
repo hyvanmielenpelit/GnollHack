@@ -753,6 +753,14 @@ namespace GnollHackCommon
         /* 1 free bit to 32-bit integer */
     }
 
+    [Flags]
+    public enum objdata_flags : ulong
+    {
+        None = 0x00000000UL,
+        OBJDATA_FLAGS_DRAWN_IN_FRONT =  0x00000001UL,
+        OBJDATA_FLAGS_HALLUCINATION =   0x00000002UL,
+    }
+
     public enum elemental_enchantment_types
     {
         None = 0,
