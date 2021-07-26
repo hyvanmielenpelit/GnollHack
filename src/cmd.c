@@ -195,7 +195,7 @@ STATIC_PTR int NDECL(doattributes);
 STATIC_PTR int NDECL(dopolyformstatistics);
 STATIC_DCL int FDECL(doviewpetstatistics, (struct monst*));
 
-STATIC_DCL void FDECL(enlght_out, (const char *));
+STATIC_DCL void FDECL(enlght_out, (const char *, int));
 STATIC_DCL void FDECL(enlght_line, (const char *, const char *, const char *,
                                     const char *));
 STATIC_DCL char *FDECL(enlght_combatinc, (const char *, int, int, char *));
@@ -747,7 +747,7 @@ doability(VOID_ARGS)
     /* CHARACTER ABILITY INFORMATION */
     any = zeroany;
     add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
-        0, 0, iflags.menu_headings,
+        0, 0, iflags.menu_headings | ATR_HEADING,
         "View Character Abilities              ", MENU_UNSELECTED);
 
     strcpy(available_ability_list[abilitynum].name, "Statistics [you]");
@@ -796,7 +796,7 @@ doability(VOID_ARGS)
     /* SKILL-BASED ABILITIES */
     any = zeroany;
     add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
-        0, 0, iflags.menu_headings,
+        0, 0, iflags.menu_headings | ATR_HEADING,
         "Use Skill-Based Abilities             ", MENU_UNSELECTED);
 
     /* Ride */
@@ -846,7 +846,7 @@ doability(VOID_ARGS)
     {
         any = zeroany;
         add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
-            0, 0, iflags.menu_headings,
+            0, 0, iflags.menu_headings | ATR_HEADING,
             "Use Monster Abilities                 ", MENU_UNSELECTED);
             
         if (can_breathe(youmonst.data))
@@ -1127,7 +1127,7 @@ doability(VOID_ARGS)
     {
         any = zeroany;
         add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
-            0, 0, iflags.menu_headings,
+            0, 0, iflags.menu_headings | ATR_HEADING,
             "View Companion Abilities            ", MENU_UNSELECTED);
 
         int pet_index = 0;
@@ -2650,16 +2650,17 @@ static const char have_been[] = "have been ", have_never[] = "have never ",
     enl_msg(You_, have, (const char *) "", something, "")
 
 static void
-enlght_out(buf)
+enlght_out(buf, attr)
 const char *buf;
+int attr;
 {
     if (en_via_menu) {
         anything any;
 
         any = zeroany;
-        add_menu(en_win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, FALSE);
+        add_menu(en_win, NO_GLYPH, &any, 0, 0, attr, buf, FALSE);
     } else
-        putstr(en_win, 0, buf);
+        putstr(en_win, attr, buf);
 }
 
 static void
@@ -2669,7 +2670,7 @@ const char *start, *middle, *end, *ps;
     char buf[BUFSZ];
 
     Sprintf(buf, " %s%s%s%s.", start, middle, end, ps);
-    enlght_out(buf);
+    enlght_out(buf, ATR_NONE);
 }
 
 /* format increased chance to hit or damage or defense (Protection) */
@@ -2819,13 +2820,25 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
     *tmpbuf = highc(*tmpbuf); /* same adjustment as bottom line */
     /* as in background_enlightenment, when poly'd we need to use the saved
        gender in u.mfemale rather than the current you-as-monster gender */
+#ifdef GNH_ANDROID
+    Sprintf(buf, "%s the %s", tmpbuf,
+        ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
+        ? urole.name.f
+        : urole.name.m);
+
+    /* title */
+    enlght_out(buf, ATR_TITLE); /* "Conan the Archaeologist" */
+    Sprintf(buf, "Attributes");
+    enlght_out(buf, ATR_SUBTITLE); /* "Attributes" */
+#else
     Sprintf(buf, "%s the %s's attributes:", tmpbuf,
             ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
                 ? urole.name.f
                 : urole.name.m);
 
     /* title */
-    enlght_out(buf); /* "Conan the Archaeologist's attributes:" */
+    enlght_out(buf, ATR_HEADING); /* "Conan the Archaeologist's attributes:" */
+#endif
     /* background and characteristics; ^X or end-of-game disclosure */
     if (mode & BASICENLIGHTENMENT) {
         /* role, race, alignment, deities, dungeon level, time, experience */
@@ -2879,8 +2892,8 @@ int final;
     role_titl = (innategend && urole.name.f) ? urole.name.f : urole.name.m;
     rank_titl = rank_of(u.ulevel, Role_switch, innategend);
 
-    enlght_out(""); /* separator after title */
-    enlght_out("Background:");
+    enlght_out("", ATR_NONE); /* separator after title */
+    enlght_out("Background:", ATR_HEADING);
 
     /* if polymorphed, report current shape before underlying role;
        will be repeated as first status: "you are transformed" and also
@@ -2942,7 +2955,7 @@ int final;
                      /* lastly, normal case */
                      : "",
             u_gname());
-    enlght_out(buf);
+    enlght_out(buf, ATR_NONE);
     /* show the rest of this game's pantheon (finishes previous sentence)
        [appending "also Moloch" at the end would allow for straightforward
        trailing "and" on all three aligned entries but looks too verbose] */
@@ -2958,7 +2971,7 @@ int final;
         Sprintf(eos(buf), " %s (%s)", align_gname(A_CHAOTIC),
                 align_str(A_CHAOTIC));
     Strcat(buf, "."); /* terminate sentence */
-    enlght_out(buf);
+    enlght_out(buf, ATR_NONE);
 
     /* show original alignment,gender,race,role if any have been changed;
        giving separate message for temporary alignment change bypasses need
@@ -2978,7 +2991,7 @@ int final;
                 difgend ? genders[flags.initgend].adj : "",
                 (difgend && difalgn) ? " and " : "",
                 difalgn ? align_str(u.ualignbase[A_ORIGINAL]) : "");
-        enlght_out(buf);
+        enlght_out(buf, ATR_NONE);
     }
 
     /* 3.6.2: dungeon level, so that ^X really has all status info as
@@ -3068,8 +3081,8 @@ int final;
     int pw = u.uen, hp = (Upolyd ? u.mh : u.uhp),
         pwmax = u.uenmax, hpmax = (Upolyd ? u.mhmax : u.uhpmax);
 
-    enlght_out(""); /* separator after background */
-    enlght_out("Basics:");
+    enlght_out("", ATR_NONE); /* separator after background */
+    enlght_out("Basics:", ATR_HEADING);
 
     if (hp < 0)
         hp = 0;
@@ -3168,9 +3181,9 @@ int final;
 {
     char buf[BUFSZ];
 
-    enlght_out("");
+    enlght_out("", ATR_NONE);
     Sprintf(buf, "%s Characteristics:", !final ? "Current" : "Final");
-    enlght_out(buf);
+    enlght_out(buf, ATR_HEADING);
 
     /* bottom line order */
     one_characteristic(mode, final, A_STR); /* strength */
@@ -3322,8 +3335,8 @@ int final;
      * Status (many are abbreviated on bottom line; others are or
      *     should be discernible to the hero hence to the player)
     \*/
-    enlght_out(""); /* separator after title or characteristics */
-    enlght_out(final ? "Final Status:" : "Current Status:");
+    enlght_out("", ATR_NONE); /* separator after title or characteristics */
+    enlght_out(final ? "Final Status:" : "Current Status:", ATR_HEADING);
 
     Strcpy(youtoo, You_);
     /* not a traditional status but inherently obvious to player; more
@@ -3725,8 +3738,8 @@ int final;
     /*\
      *  Attributes
     \*/
-    enlght_out("");
-    enlght_out(final ? "Final Attributes:" : "Current Attributes:");
+    enlght_out("", ATR_NONE);
+    enlght_out(final ? "Final Attributes:" : "Current Attributes:", ATR_HEADING);
 
     if (u.uevent.uhand_of_elbereth) {
         static const char* const hofe_titles[3] = { "the Hand of Elbereth",

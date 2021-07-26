@@ -64,14 +64,14 @@ docharacterstatistics()
     Sprintf(eos(buf), " the %s", buf2);
 
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_TITLE, txt);
 
     /* Level and Role */
     strcpy(buf2, (flags.female && urole.name.f) ? urole.name.f : urole.name.m);
     *buf2 = highc(*buf2);
     Sprintf(buf, "Level %d %s", u.ulevel, buf2);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_SUBTITLE, txt);
 
     /* Empty line */
     strcpy(buf, "");
@@ -161,7 +161,7 @@ docharacterstatistics()
     /* Max attributes */
     Sprintf(buf, "Maximum attribute scores:");
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_HEADING, txt);
 
     Sprintf(buf, "  St:%s Dx:%d Co:%d In:%d Wi:%d Ch:%d", get_strength_string(urace.attrmax[A_STR]),
         urace.attrmax[A_DEX], urace.attrmax[A_CON], urace.attrmax[A_INT], urace.attrmax[A_WIS], urace.attrmax[A_CHA]);
@@ -171,7 +171,7 @@ docharacterstatistics()
     /* Race, role and alignment traits */
     Sprintf(buf, "Character traits:");
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_HEADING, txt);
 
     int trait_count = 0;
     int i;
@@ -241,7 +241,7 @@ docharacterstatistics()
     /* Current intrinsics */
     Sprintf(buf, "Intrinsic abilities:");
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_HEADING, txt);
 
     int intrinsic_count = 0;
     for (i = 1; i <= LAST_PROP; i++)
@@ -308,7 +308,7 @@ docharacterstatistics()
     {
         Sprintf(buf, "Abilities to be acquired from %s:", i == 1 ? "race" : "role");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_HEADING, txt);
 
         const struct innate* intrinsic_ability = (i == 1 ? race_abil(urace.monsternum) : role_abil(urole.monsternum));
         int abil_count = 0;
@@ -977,7 +977,7 @@ register struct obj* obj;
     strcpy(buf, cxname(obj));
     *buf = highc(*buf);
     txt = buf;
-    putstr(datawin, ATR_BOLD, txt);
+    putstr(datawin, ATR_TITLE, txt);
 
     /* Type */
     strcpy(buf3, def_oc_syms[(int)obj->oclass].name);
@@ -1108,7 +1108,7 @@ register struct obj* obj;
         Sprintf(eos(buf), " - Artifact");
     }
     txt = buf;
-    putstr(datawin, ATR_DIM, txt);
+    putstr(datawin, ATR_SUBTITLE, txt);
 
     strcpy(buf, "");
     txt = buf;
@@ -2053,7 +2053,7 @@ register struct obj* obj;
         {
             Sprintf(buf, "Conferred powers:");
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_HEADING, txt);
 
             int powercnt = 0;
             for (int j = 1; j <= 6; j++)
@@ -2522,7 +2522,7 @@ register struct obj* obj;
 
                 Sprintf(buf, "Powers are conferred only to:");
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_HEADING, txt);
 
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHAEOLOGIST)
                 {
@@ -2710,7 +2710,7 @@ register struct obj* obj;
 
             Sprintf(buf, "Permitted targets:");
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_HEADING, txt);
 
             /* Flags here */
             if (objects[otyp].oc_target_permissions != ALL_TARGETS)
@@ -2811,7 +2811,7 @@ register struct obj* obj;
 
             Sprintf(buf, "Mythic powers - %s:", mythicbuf);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_HEADING, txt);
 
             int powercnt = 0;
             if (obj->mythic_prefix)
@@ -2865,7 +2865,7 @@ register struct obj* obj;
 
             Sprintf(buf, "Item properties:");
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_HEADING, txt);
 
             /* Flags here */
             if (objects[otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
@@ -3048,7 +3048,7 @@ register struct obj* obj;
 
             Sprintf(buf, "Corpse properties:");
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_HEADING, txt);
 
             /* Flags here */
             if (mon_to_zombie(obj->corpsenm) > NON_PM)
@@ -3087,7 +3087,7 @@ register struct obj* obj;
         int powercnt = 0;
         Sprintf(buf, "Artifact properties:");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_HEADING, txt);
 
         const char* alingstr = align_str(artilist[obj->oartifact].alignment);
         powercnt++;
@@ -3622,7 +3622,7 @@ register struct obj* obj;
         {
             Sprintf(buf, "Component for the following spell%s:", plur(spellcnt));
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_HEADING, txt);
             int compcnt = 0;
             const char* splname = 0;
             char sbuf[BUFSZ];
@@ -3655,7 +3655,7 @@ register struct obj* obj;
 #endif
         strcpy(buf, "Description:");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_HEADING, txt);
 
         Sprintf(buf, "  %s", OBJ_ITEM_DESC(otyp));
         txt = buf;
@@ -3684,7 +3684,7 @@ register struct obj* obj;
             Sprintf(buf, "Weapon statistics:");
 
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_HEADING, txt);
 
         int attknum = 1, armorpenalty = 0;
         /* we use youmonst as a proxy */
@@ -3897,7 +3897,7 @@ register struct monst* mon;
         Sprintf(eos(buf), ", %s", ptr->mtitle);
     }
     txt = buf;
-    putstr(datawin, ATR_BOLD, txt);
+    putstr(datawin, ATR_TITLE, txt);
 
     /* Description */
     if (ptr->mdescription && strcmp(ptr->mdescription, ""))
@@ -3905,7 +3905,7 @@ register struct monst* mon;
         Sprintf(buf, "Level %d %s", ptr->difficulty, ptr->mdescription);
         //*buf = highc(*buf);
         txt = buf;
-        putstr(datawin, ATR_DIM, txt);
+        putstr(datawin, ATR_SUBTITLE, txt);
     }
     else
     {
@@ -3913,7 +3913,7 @@ register struct monst* mon;
         Sprintf(buf, "Level %d %s%s", ptr->difficulty, ptr->geno & G_UNIQ ? "unique " : "", def_monsyms[(int)ptr->mlet].explain);
         //*buf = highc(*buf);
         txt = buf;
-        putstr(datawin, ATR_DIM, txt);
+        putstr(datawin, ATR_SUBTITLE, txt);
     }
 
     strcpy(buf, "");

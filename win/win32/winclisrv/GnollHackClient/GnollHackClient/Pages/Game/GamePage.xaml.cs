@@ -53,6 +53,14 @@ namespace GnollHackClient.Pages.Game
         private int _mapCursorX;
         private int _mapCursorY;
 
+        public object RefreshScreenLock = new object();
+        private bool _refreshScreen = true;
+        public bool RefreshScreen
+        {
+            get { return _refreshScreen; }
+            set { _refreshScreen = value; }
+        }
+
         private game_cursor_types _cursorType;
         private bool _force_paint_at_cursor;
         private bool _show_cursor_on_u;
@@ -4254,8 +4262,12 @@ namespace GnollHackClient.Pages.Game
 
         private async void MenuButton_Clicked(object sender, EventArgs e)
         {
+            lock (RefreshScreenLock)
+            {
+                RefreshScreen = false;
+            }
             var cmdPage = new CommandPage(this);
-            await App.Current.MainPage.Navigation.PushModalAsync(cmdPage);
+            await App.Current.MainPage.Navigation.PushModalAsync(cmdPage, false);
 
         }
 

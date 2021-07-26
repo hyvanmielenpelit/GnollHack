@@ -95,18 +95,23 @@ typedef struct mi {
 #define NHW_WORN 15    /* from winGnome.h */
 
 /* attribute types for putstr; the same as the ANSI value, for convenience */
-#define ATR_NONE       0
-#define ATR_BOLD       1
-#define ATR_DIM        2
-#define ATR_ULINE      4
-#define ATR_BLINK      5
-#define ATR_INVERSE    7
+#define ATR_NONE            0x0000
+#define ATR_BOLD            0x0001
+#define ATR_DIM             0x0002
+#define ATR_ULINE           0x0004
+#define ATR_BLINK           0x0005
+#define ATR_INVERSE         0x0007
 /* not a display attribute but passed to putstr() as an attribute;
    can be masked with one regular display attribute */
-#define ATR_URGENT    16
-#define ATR_NOHISTORY 32
-#define ATR_STAY_ON_LINE 64
-#define ATR_NOTABS    128
+#define ATR_URGENT          0x0010
+#define ATR_NOHISTORY       0x0020
+#define ATR_STAY_ON_LINE    0x0040
+#define ATR_NOTABS          0x0080
+#define ATR_TITLE           0x0100
+#define ATR_HEADING         0x0200
+#define ATR_SUB             0x0400
+#define ATR_SUBTITLE        (ATR_SUB | ATR_TITLE)
+#define ATR_SUBHEADING      (ATR_SUB | ATR_HEADING)
 
 /* nh_poskey() modifier types */
 #define CLICK_1 1

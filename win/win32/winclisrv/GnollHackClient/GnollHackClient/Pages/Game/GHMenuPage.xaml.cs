@@ -23,6 +23,7 @@ namespace GnollHackClient.Pages.Game
         private GamePage _gamePage;
         private GHWindow _ghwindow;
         private ghmenu_styles _style;
+        private int _glyph;
 
         private ObservableCollection<GHMenuItem> _GHMenuItems = new ObservableCollection<GHMenuItem>();
         public ObservableCollection<GHMenuItem> MenuItems { get { return _GHMenuItems; } }
@@ -38,18 +39,24 @@ namespace GnollHackClient.Pages.Game
         private bool _responseSent = false;
         private bool unselect_on_tap = false;
 
-        public GHMenuPage(GamePage gamepage, GHWindow ghwindow, ghmenu_styles style)
+        public GHMenuPage(GamePage gamePage, GHWindow ghwindow, ghmenu_styles style)
         {
             InitializeComponent();
 
-            _clientGame = gamepage.ClientGame;
-            _gamePage = gamepage;
+            _clientGame = gamePage.ClientGame;
+            _gamePage = gamePage;
             _ghwindow = ghwindow;
             _style = style;
+            _glyph = _ghwindow.Glyph;
             MenuView.BindingContext = this;
             MenuView.ItemsSource = MenuItems;
             HeaderLabel.BindingContext = this;
             SubtitleLabel.BindingContext = this;
+
+            _glyphImageSource.ReferenceGamePage = gamePage;
+            _glyphImageSource.AutoSize = true;
+            _glyphImageSource.Glyph = _ghwindow.Glyph;
+            WindowGlyphImage.BindingContext = this;
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
 
@@ -57,6 +64,25 @@ namespace GnollHackClient.Pages.Game
             myImage2.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             //BackgroundImage.Source = ImageSource.FromResource("GnollHackClient.Assets.UI.menubackground.png", assembly);
         }
+
+        private GlyphImageSource _glyphImageSource = new GlyphImageSource();
+
+        public ImageSource GlyphImage
+        {
+            get
+            {
+                return _glyphImageSource;
+            }
+        }
+
+        private bool IsGlyphVisible
+        {
+            get
+            {
+                return (_glyph > 0 && _glyph < _gamePage.NoGlyph);
+            }
+        }
+
 
         public double MenuViewWidthRequest
         {

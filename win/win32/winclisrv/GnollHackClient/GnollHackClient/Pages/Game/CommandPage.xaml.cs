@@ -405,5 +405,13 @@ namespace GnollHackClient.Pages.Game
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, ',');
         }
+
+        private void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            lock(_gamePage.RefreshScreenLock)
+            {
+                _gamePage.RefreshScreen = true;
+            }
+        }
     }
 }

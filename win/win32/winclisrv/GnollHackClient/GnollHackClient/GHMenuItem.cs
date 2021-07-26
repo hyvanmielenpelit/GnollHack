@@ -73,12 +73,12 @@ namespace GnollHackClient
 
                 if (first_parenthesis_open < 0)
                     _mainText = value;
-                else if (first_parenthesis_open > 0)
+                else if (first_parenthesis_open > 1) /* Ignore cases where the entire row is in parentheses */
                     _mainText = value.Substring(0, first_parenthesis_open);
                 else
                     _mainText = "";
 
-                if (first_parenthesis_open >=0 && !(_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND))
+                if (first_parenthesis_open > 0 && !(_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND))  /* Ignore cases where the entire row is in parentheses */
                     _suffixText = ParseSuffixText(value);
                 else
                     _suffixText = "";
@@ -189,7 +189,7 @@ namespace GnollHackClient
         public string FontFamily {
             get 
             {
-                if (((int)Attributes & (int)MenuItemAttributes.Bold) != 0)
+                if (((int)Attributes & ((int)MenuItemAttributes.Bold | (int)MenuItemAttributes.Heading | (int)MenuItemAttributes.Title)) != 0)
                 {
                     string res = "Diablo";
                     switch (_menuInfo.Style)
@@ -225,6 +225,7 @@ namespace GnollHackClient
                             res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                            res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_SKILLS:
                             res = "DejaVuSansMono-Bold";
@@ -308,7 +309,15 @@ namespace GnollHackClient
             get
             {
                 double res = 15;
-                if (((int)Attributes & (int)MenuItemAttributes.Bold) != 0)
+                if (((int)Attributes & ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Title)) == ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Title))
+                {
+                    res = 18.5;
+                }
+                else if (((int)Attributes & ((int)MenuItemAttributes.Title)) == ((int)MenuItemAttributes.Title))
+                {
+                    res = 20;
+                }
+                else if (((int)Attributes & ((int)MenuItemAttributes.Bold | (int)MenuItemAttributes.Heading)) != 0)
                 {
                     res = 18;
                 }

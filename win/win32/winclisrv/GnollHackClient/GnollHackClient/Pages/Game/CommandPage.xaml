@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GnollHackClient.Pages.Game.CommandPage"
              BackgroundColor="Black"
-             SizeChanged="ContentPage_SizeChanged">
+             SizeChanged="ContentPage_SizeChanged"
+             Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>
         <StackLayout x:Name="MainLayout" Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black" >
             <StackLayout x:Name="WizCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black" IsVisible="false">

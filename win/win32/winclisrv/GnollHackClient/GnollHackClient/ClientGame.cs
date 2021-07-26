@@ -736,6 +736,14 @@ namespace GnollHackClient
                 }
             }
 
+            lock (_gamePageLock)
+            {
+                lock(_gamePage.RefreshScreenLock)
+                {
+                    _gamePage.RefreshScreen = false;
+                }
+            }
+
             bool continuepolling = true;
             while (continuepolling)
             {
@@ -751,6 +759,14 @@ namespace GnollHackClient
 
                 Thread.Sleep(25);
                 pollResponseQueue();
+            }
+
+            lock(_gamePageLock)
+            {
+                lock (_gamePage.RefreshScreenLock)
+                {
+                    _gamePage.RefreshScreen = true;
+                }
             }
 
             /* Handle result */

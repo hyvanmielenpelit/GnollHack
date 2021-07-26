@@ -45,8 +45,6 @@ namespace GnollHackClient.Pages.Game
             _glyphImageSource.ReferenceGamePage = gamePage;
             _glyphImageSource.AutoSize = true;
             _glyphImageSource.Glyph = _window.Glyph;
-            //_glyphImageSource.Width = GHConstants.TileWidth * 3;
-            //_glyphImageSource.Height = GHConstants.TileHeight * 2;
             WindowGlyphImage.BindingContext = this;
 
         }

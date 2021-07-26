@@ -47,6 +47,9 @@ namespace GnollHackCommon
         NoHistory = 0x00000020,
         StayOnLine =0x00000040,
         NoTabs =    0x00000080,
+        Title =     0x00000100,
+        Heading =   0x00000200,
+        Sub =       0x00000400,
     }
 
     [Flags]

@@ -1498,7 +1498,7 @@ struct monst* mtmp;
 
     Sprintf(buf, "%s abilities:", is_you ? "Innate" : "Current"); // , s_suffix(noit_Monnam(mtmp)));
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_HEADING, txt);
 
     int abilcnt = 0;
 
@@ -1594,7 +1594,7 @@ struct monst* mtmp;
 
     Sprintf(buf, "Classifications:");// , noit_mon_nam(mtmp));
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_HEADING, txt);
 
     abilcnt = 0;
 
@@ -1669,7 +1669,7 @@ struct monst* mtmp;
 
     Sprintf(buf, "Notable:");// , noit_mon_nam(mtmp));
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_HEADING, txt);
 
     abilcnt = 0;
 
@@ -1754,7 +1754,6 @@ struct monst* mtmp;
         putstr(datawin, 0, txt);
     }
 
-
 }
 
 void print_monster_statistics(datawin, mtmp)
@@ -1785,7 +1784,7 @@ struct monst* mtmp;
         Sprintf(buf, "Base attribute scores:");
 
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_HEADING, txt);
 
     Sprintf(buf, " St:%s Dx:%d Co:%d In:%d Wi:%d Ch:%d",
         get_strength_string(mtmp->data->str),
@@ -1802,7 +1801,7 @@ struct monst* mtmp;
     {
         Sprintf(buf, "Current attribute scores:");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_HEADING, txt);
 
         Sprintf(buf, " St:%s Dx:%d Co:%d In:%d Wi:%d Ch:%d",
             get_strength_string(M_ACURR(mtmp, A_STR)),

@@ -34,9 +34,16 @@ namespace GnollHackClient
         {
             base.OnPropertyChanged(propertyName);
 
-            InvalidateSurface();
             if(_gamePage != null)
             {
+                bool refresh = true;
+                lock (_gamePage.RefreshScreenLock)
+                {
+                    refresh = _gamePage.RefreshScreen;
+                }
+                if (refresh)
+                    InvalidateSurface();
+
                 /* Increment counters */
                 lock (_gamePage.AnimationTimerLock)
                 {

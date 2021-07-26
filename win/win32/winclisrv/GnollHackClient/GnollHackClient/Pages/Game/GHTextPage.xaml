@@ -32,7 +32,8 @@
                             <Label Grid.Column="1" TextColor="{Binding TextWindowTextColor}" 
                                    Text="{Binding Text}"
                                    FontFamily="{Binding TextWindowFontFamily}" 
-                                   FontSize="{Binding TextWindowFontSize}">
+                                   FontSize="{Binding TextWindowFontSize}"
+                                   Margin="{Binding TextMargin}">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
