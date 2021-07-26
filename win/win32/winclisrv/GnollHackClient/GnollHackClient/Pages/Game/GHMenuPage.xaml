@@ -182,7 +182,7 @@
                                                FontFamily="{Binding FontFamily}" 
                                                FontSize="{Binding FontSize}"
                                                />
-                                                <Label Grid.Row="1" Padding="0" Margin="0" TextColor="Gray" 
+                                                <Label Grid.Row="1" Padding="0" Margin="0" TextColor="#BCBCBC" 
                                                    Text="{Binding SuffixText}" VerticalTextAlignment="Start" VerticalOptions="Start"
                                                    HorizontalOptions="Start" HorizontalTextAlignment="Start"
                                                    FontFamily="Underwood" 

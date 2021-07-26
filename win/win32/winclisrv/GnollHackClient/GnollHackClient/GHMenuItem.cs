@@ -71,9 +71,9 @@ namespace GnollHackClient
                 else
                     first_parenthesis_open = value.IndexOf('(');
 
-                if (first_parenthesis_open < 0)
+                if (first_parenthesis_open <= 0) /* Ignore cases where the entire row is in parentheses */
                     _mainText = value;
-                else if (first_parenthesis_open > 1) /* Ignore cases where the entire row is in parentheses */
+                else if (first_parenthesis_open > 1)
                     _mainText = value.Substring(0, first_parenthesis_open);
                 else
                     _mainText = "";
