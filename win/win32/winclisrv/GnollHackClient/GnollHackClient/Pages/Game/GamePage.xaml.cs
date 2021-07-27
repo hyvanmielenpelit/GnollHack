@@ -181,45 +181,12 @@ namespace GnollHackClient.Pages.Game
             InitializeComponent();
             _mainPage = mainPage;
 
-            string style = Preferences.Get("CursorStyle", "1");
-            int parseint;
-            if (int.TryParse(style, out parseint))
-            {
-                CursorStyle = (TTYCursorStyle)parseint;
-            }
-
-            string gstyle = Preferences.Get("GraphicsStyle", "1");
-            int gparseint;
-            if (int.TryParse(style, out gparseint))
-            {
-                GraphicsStyle = (GHGraphicsStyle)gparseint;
-            }
-
-            string fpsstyle = Preferences.Get("ShowFPS", "0");
-            int fpsparseint;
-            if (int.TryParse(style, out fpsparseint))
-            {
-                ShowFPS = (fpsparseint == 1);
-            }
-
-            string msgnum = Preferences.Get("NumDisplayedMessages", (GHConstants.DefaultMessageRows).ToString()); 
-            int mparseint;
-            if (int.TryParse(msgnum, out mparseint))
-            {
-                NumDisplayedMessages = mparseint;
-            }
-
-            string mapfontsiz = Preferences.Get("MapFontSize", ((int)GHConstants.MapFontDefaultSize).ToString());
-            if (int.TryParse(mapfontsiz, out parseint))
-            {
-                MapFontSize = (float)parseint;
-            }
-
-            string mapfontaltsiz = Preferences.Get("MapFontAlternateSize", ((int)GHConstants.MapFontDefaultAlternateSize).ToString());
-            if (int.TryParse(mapfontaltsiz, out parseint))
-            {
-                MapFontAlternateSize = (float)parseint;
-            }
+            CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
+            GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
+            ShowFPS = Preferences.Get("ShowFPS", false);
+            NumDisplayedMessages = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
+            MapFontSize = Preferences.Get("MapFontSize", GHConstants.MapFontDefaultSize);
+            MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", GHConstants.MapFontDefaultAlternateSize);
 
             ToggleModeButton_Clicked(null, null);
             ZoomMiniMode = true;
@@ -962,9 +929,8 @@ namespace GnollHackClient.Pages.Game
         {
             App.BackButtonPressed -= BackButtonPressed;
 
-            Preferences.Set("MapFontSize", (Math.Max((int)GHConstants.MinimumMapFontSize, (int)MapFontSize)).ToString());
-            Preferences.Set("MapFontAlternateSize", (Math.Max((int)GHConstants.MinimumMapFontSize, (int)MapFontAlternateSize)).ToString());
-
+            Preferences.Set("MapFontSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontSize));
+            Preferences.Set("MapFontAlternateSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontAlternateSize));
         }
 
 

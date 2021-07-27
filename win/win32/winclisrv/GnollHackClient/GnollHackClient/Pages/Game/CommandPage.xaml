@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:gnhcli="clr-namespace:GnollHackClient"
              x:Class="GnollHackClient.Pages.Game.CommandPage"
              BackgroundColor="Black"
              SizeChanged="ContentPage_SizeChanged"
@@ -8,12 +9,12 @@
     <ContentPage.Content>
         <StackLayout x:Name="MainLayout" Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black" >
             <StackLayout x:Name="WizCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black" IsVisible="false">
-                <Button Text="Cw" x:Name="WizWishButton" Clicked="WizWishButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="Cf" x:Name="WizMapButton" Clicked="WizMapButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70"  />
-                <Button Text="Mm" x:Name="WizGenesisButton" Clicked="WizGenesisButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="Cv" x:Name="WizLevelportButton" Clicked="WizLevelportButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="Ci" x:Name="WizIdentifyButton" Clicked="WizIdentifyButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <Button Text="Ct" x:Name="WizTeleportButton" Clicked="WizTeleportButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <gnhcli:GHButton Text="Cw" Letter="w" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <gnhcli:GHButton Text="Cf" Letter="f" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70"  />
+                <gnhcli:GHButton Text="Mm" Letter="m" ApplyMeta="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <gnhcli:GHButton Text="Cv" Letter="v" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <gnhcli:GHButton Text="Ci" Letter="i" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <gnhcli:GHButton Text="Ct" Letter="t" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
             </StackLayout>
             <StackLayout x:Name="FirstCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
                 <Button Text="&gt;" x:Name="DownButton" Clicked="DownButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />

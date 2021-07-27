@@ -30,13 +30,7 @@ namespace GnollHackClient
             var navPage = new NavigationPage(mainPage);
             MainPage = navPage;
 
-            string navbarstyle = Preferences.Get("HideAndroidNavigationBar", "0");
-            int parseint;
-            if (int.TryParse(navbarstyle, out parseint))
-            {
-                HideAndroidNavigatioBar = (parseint != 0);
-            }
-
+            HideAndroidNavigatioBar = Preferences.Get("HideAndroidNavigationBar", false);
         }
 
         protected override void OnStart()

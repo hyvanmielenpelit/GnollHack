@@ -413,5 +413,13 @@ namespace GnollHackClient.Pages.Game
                 _gamePage.RefreshScreen = true;
             }
         }
+
+        private async void GHButton_Clicked(object sender, EventArgs e)
+        {
+            GHButton btn = (GHButton)sender;
+            await App.Current.MainPage.Navigation.PopModalAsync(false);
+            _gamePage.GenericButton_Clicked(sender, e, btn.GHCommand);
+        }
+
     }
 }

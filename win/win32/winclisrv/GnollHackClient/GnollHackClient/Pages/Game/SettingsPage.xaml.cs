@@ -23,17 +23,20 @@ namespace GnollHackClient.Pages.Game
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            _gamePage.CursorStyle = (TTYCursorStyle)CursorPicker.SelectedIndex;
-            Preferences.Set("CursorStyle", ((int)_gamePage.CursorStyle).ToString());
+            if(_gamePage != null)
+                _gamePage.CursorStyle = (TTYCursorStyle)CursorPicker.SelectedIndex;
+            Preferences.Set("CursorStyle", CursorPicker.SelectedIndex);
 
-            _gamePage.GraphicsStyle = (GHGraphicsStyle)GraphicsPicker.SelectedIndex;
-            Preferences.Set("GraphicsStyle", ((int)_gamePage.GraphicsStyle).ToString());
+            if (_gamePage != null)
+                _gamePage.GraphicsStyle = (GHGraphicsStyle)GraphicsPicker.SelectedIndex;
+            Preferences.Set("GraphicsStyle", GraphicsPicker.SelectedIndex);
 
-            _gamePage.ShowFPS = FPSSwitch.IsToggled;
-            Preferences.Set("ShowFPS", _gamePage.ShowFPS ? "1" : "0");
+            if (_gamePage != null)
+                _gamePage.ShowFPS = FPSSwitch.IsToggled;
+            Preferences.Set("ShowFPS", FPSSwitch.IsToggled);
 
             App.HideAndroidNavigatioBar = NavBarSwitch.IsToggled;
-            Preferences.Set("HideAndroidNavigationBar", App.HideAndroidNavigatioBar ? "1" : "0");
+            Preferences.Set("HideAndroidNavigationBar", App.HideAndroidNavigatioBar);
 
             int res = 4, tryres = 0;
             string str = MessageLengthPicker.SelectedItem.ToString();
@@ -42,21 +45,40 @@ namespace GnollHackClient.Pages.Game
 
             if (res > 0)
             {
-                _gamePage.NumDisplayedMessages = res;
-                Preferences.Set("NumDisplayedMessages", res.ToString());
+                if (_gamePage != null)
+                    _gamePage.NumDisplayedMessages = res;
+                Preferences.Set("NumDisplayedMessages", res);
             }
         }
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
-            CursorPicker.SelectedIndex = (int)_gamePage.CursorStyle;
-            GraphicsPicker.SelectedIndex = (int)_gamePage.GraphicsStyle;
-            FPSSwitch.IsToggled = _gamePage.ShowFPS;
-            NavBarSwitch.IsToggled = App.HideAndroidNavigatioBar;
+            int cursor = 0, graphics = 0, msgnum = 0;
+            bool fps = false, navbar = false;
+
+            navbar = App.HideAndroidNavigatioBar;
+            if (_gamePage == null)
+            {
+                cursor = Preferences.Get("CursorStyle", 1);
+                graphics = Preferences.Get("GraphicsStyle", 1);
+                fps = Preferences.Get("ShowFPS", false);
+                msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
+            }
+            else
+            {
+                cursor = (int)_gamePage.CursorStyle;
+                graphics = (int)_gamePage.GraphicsStyle;
+                fps = _gamePage.ShowFPS;
+                msgnum = _gamePage.NumDisplayedMessages;
+            }
+            CursorPicker.SelectedIndex = cursor;
+            GraphicsPicker.SelectedIndex = graphics;
+            FPSSwitch.IsToggled = fps;
+            NavBarSwitch.IsToggled = navbar;
             for (int i = 0; i < MessageLengthPicker.Items.Count; i++)
             {
                 int tryint = 0;
-                if (int.TryParse(MessageLengthPicker.Items[i].ToString(), out tryint) && tryint > 0 && tryint == _gamePage.NumDisplayedMessages)
+                if (int.TryParse(MessageLengthPicker.Items[i].ToString(), out tryint) && tryint > 0 && tryint == msgnum)
                 {
                     MessageLengthPicker.SelectedIndex = i;
                     break;

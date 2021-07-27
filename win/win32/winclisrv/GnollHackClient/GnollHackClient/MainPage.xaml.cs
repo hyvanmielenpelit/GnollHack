@@ -110,11 +110,13 @@ namespace GnollHackClient
         public void HideLocalGameButton()
         {
             StartLocalGameButton.IsVisible = false;
-            ExitAppButton.IsVisible = true;
+            StartLocalGameImage.IsVisible = false;
+            StartLocalGameButton.TextColor = Color.Gray;
         }
         private async void localButton_Clicked(object sender, EventArgs e)
         {
             StartLocalGameButton.IsEnabled = false;
+            StartLocalGameButton.TextColor = Color.Gray;
             var gamePage = new GamePage(this);
             gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
             await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
@@ -236,9 +238,11 @@ namespace GnollHackClient
                         }
 
                         //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                        myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                        myImage2.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                        StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                        StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                         clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                        settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                        exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                         res = true;
                         break;
                     case 1:
@@ -281,6 +285,12 @@ namespace GnollHackClient
             _mainGnollHackService.ClearFiles();
             ClearFilesButton.Text = "Done";
             ClearFilesButton.TextColor = Color.Red;
+        }
+
+        private async void SettingsButton_Clicked(object sender, EventArgs e)
+        {
+            var settingsPage = new SettingsPage(null);
+            await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
         }
     }
 }

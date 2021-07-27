@@ -60,8 +60,8 @@ namespace GnollHackClient.Pages.Game
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
 
-            myImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            myImage2.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            OKButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            CancelButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             //BackgroundImage.Source = ImageSource.FromResource("GnollHackClient.Assets.UI.menubackground.png", assembly);
         }
 
@@ -363,7 +363,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void CancelButton_Clicked(object sender, EventArgs e)
         {
-            await _gamePage.Navigation.PopModalAsync();
+            await _gamePage.Navigation.PopModalAsync(false);
         }
 
         private async void OKButton_Clicked(object sender, EventArgs e)
@@ -397,7 +397,7 @@ namespace GnollHackClient.Pages.Game
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, _ghwindow, resultlist));
             }
             _responseSent = true;
-            await _gamePage.Navigation.PopModalAsync();
+            await _gamePage.Navigation.PopModalAsync(false);
         }
 
         public void Process()

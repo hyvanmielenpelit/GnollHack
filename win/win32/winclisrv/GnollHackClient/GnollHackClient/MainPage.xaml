@@ -21,9 +21,21 @@
                            AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
                            AbsoluteLayout.LayoutFlags="All" />
 
-        <Grid x:Name="ClearButtonGrid" IsVisible="false" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,20,15,10" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional" >
-            <Image x:Name="clearImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="100" HeightRequest="50"/>
-            <Button Text="Clear" x:Name="ClearFilesButton" Clicked="ClearFilesButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+        <Grid x:Name="ClearButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,20,15,10" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
+            <StackLayout>
+                <Grid>
+                    <Image x:Name="clearImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
+                    <Button Text="Clear" x:Name="ClearFilesButton" Clicked="ClearFilesButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+                </Grid>
+                <Grid>
+                    <Image x:Name="settingsImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
+                    <Button Text="Settings" x:Name="SettingsButton" Clicked="SettingsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+                </Grid>
+                <Grid>
+                    <Image x:Name="exitImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
+                    <Button Text="Exit" x:Name="ExitAppButton" Clicked="ExitAppButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+                </Grid>
+            </StackLayout>
         </Grid>
         <Grid x:Name="StartButtonGrid" Opacity="0" IsVisible="false"
               HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.5, 0.90, AutoSize, AutoSize"
@@ -44,10 +56,9 @@
                 <Label Text="Wizard Mode" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center"/>
                 <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" />
             </Grid>
-            <Image x:Name="myImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
+            <Image x:Name="StartLocalGameImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
             <Button Text="Local Game" x:Name="StartLocalGameButton" Clicked="localButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
-            <Button Text="Exit App" x:Name="ExitAppButton" Clicked="ExitAppButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="1" IsVisible="false" />
-            <Image x:Name="myImage2" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="2" />
+            <Image x:Name="StartServerGameImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="2" />
             <Button Text="Server Game" x:Name="StartServerGameButton" Clicked="serverButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="2" />
         </Grid>
 
