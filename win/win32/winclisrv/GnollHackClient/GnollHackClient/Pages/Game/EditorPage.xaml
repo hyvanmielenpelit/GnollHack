@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             x:Class="GnollHackClient.Pages.Game.EditorPage">
+    <ContentPage.Content>
+        <Grid>
+            <ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
+                            Source ="resource://GnollHackClient.Assets.UI.menubackground.png" />
+
+            <Grid Padding="5,10" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label x:Name="HeaderLabel" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="White" FontFamily="Immortal"/>
+                <Label x:Name="ErrorLabel" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Start"  HorizontalTextAlignment="Center" FontSize="Small" TextColor="Red" FontFamily="Lato"/>
+                <Editor x:Name="TextEditor" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Grid.Row="2" Text="" PlaceholderColor="Gray" TextColor="White" BackgroundColor="Transparent"
+                        FontFamily="Lato-Regular" FontSize="16" IsSpellCheckEnabled="false" IsTextPredictionEnabled = "false" >
+                </Editor>
+                <Grid Grid.Row="3" BackgroundColor="Transparent" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid HorizontalOptions="End" WidthRequest="250" HeightRequest="70" Grid.Column="0">
+                        <ff:CachedImage x:Name="OKButtonImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="250" HeightRequest="70" />
+                        <Button Text="OK" x:Name="OKButton" Clicked="OKButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  />
+                    </Grid>
+                    <Grid HorizontalOptions="Start" WidthRequest="250" HeightRequest="70" Grid.Column="1">
+                        <ff:CachedImage x:Name="CancelButtonImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="250" HeightRequest="70" />
+                        <Button Text="Cancel" x:Name="CancelButton" Clicked="CancelButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                    </Grid>
+                </Grid>
+            </Grid>
+
+
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

@@ -817,6 +817,9 @@ namespace GnollHackCommon
         public const float MapFontDefaultSize = 64.0f;
         public const float MapFontDefaultAlternateSize = 30.0f;
         public const int DefaultMessageRows = 5;
+        public const int IntroGHSound = 1;
+        public const string IntroEventPath = "event:/Music/Start/Splash";
+        public const int IntroBankId = 0;
     }
 
 

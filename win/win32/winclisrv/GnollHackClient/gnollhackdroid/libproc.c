@@ -80,7 +80,7 @@ void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int co
 void lib_init_nhwindows(int* argc, char** argv)
 {
     struct ghsound_music_info mi = { 0 };
-    mi.ghsound = GHSOUND_MUSIC_SPLASH;
+    mi.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
     mi.volume = 1.0f;
     play_ghsound_music(mi);
 

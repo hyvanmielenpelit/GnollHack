@@ -154,11 +154,14 @@ namespace GnollHackClient
                         _mainGnollHackService = DependencyService.Get<IGnollHackService>();
                         _mainGnollHackService.LoadLibrary();
                         _mainGnollHackService.Test();
+                        _mainGnollHackService.InitializeGnollHack();
 
                         string verstr = _mainGnollHackService.GetVersionString();
                         string verid = _mainGnollHackService.GetVersionId();
+                        string path = _mainGnollHackService.GetGnollHackPath();
                         App.GHVersionString = verstr;
                         App.GHVersionId = verid;
+                        App.GHPath = path;
                         App.LoadServices();
 
                         Assembly assembly = GetType().GetTypeInfo().Assembly;
@@ -241,11 +244,14 @@ namespace GnollHackClient
                         StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                         StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                         clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                        optionsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                         settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                         exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+
                         res = true;
                         break;
                     case 1:
+                        App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
                         StartFadeIn();
                         res = true;
                         break;
@@ -291,6 +297,22 @@ namespace GnollHackClient
         {
             var settingsPage = new SettingsPage(null);
             await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
+        }
+
+        private async void OptionsButton_Clicked(object sender, EventArgs e)
+        {
+            string fulltargetpath = Path.Combine(App.GHPath, "defaults.gnh");
+            var editorPage = new EditorPage(fulltargetpath, "Default Options File");
+            string errormsg = "";
+            if(!editorPage.ReadFile(out errormsg))
+            {
+                ErrorLabel.Text = errormsg;
+            }
+            else
+            {
+                ErrorLabel.Text = "";
+                await App.Current.MainPage.Navigation.PushModalAsync(editorPage);
+            }
         }
     }
 }

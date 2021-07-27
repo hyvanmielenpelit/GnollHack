@@ -222,15 +222,12 @@ namespace GnollHackClient.Droid
             string filesdir = Android.App.Application.Context.FilesDir.Path;
             _gnollhackfilesdir = filesdir;
 
-            /* For debugging purposes now, delete all existing files in filesdir first */
             System.IO.DirectoryInfo di = new DirectoryInfo(_gnollhackfilesdir);
-
             foreach (FileInfo file in di.GetFiles())
             {
                 file.Delete();
             }
 
-            /* Make relevant directories */
             string[] ghdirlist = { "save" };
             foreach (string ghdir in ghdirlist)
             {
@@ -242,9 +239,19 @@ namespace GnollHackClient.Droid
                     {
                         file.Delete();
                     }
-                    Directory.CreateDirectory(fulldirepath);
                 }
             }
+        }
+
+        public string GetGnollHackPath()
+        {
+            return _gnollhackfilesdir;
+        }
+
+        public void InitializeGame()
+        {
+            string filesdir = Android.App.Application.Context.FilesDir.Path;
+            _gnollhackfilesdir = filesdir;
         }
 
         public void InitializeGnollHack()
@@ -292,9 +299,8 @@ namespace GnollHackClient.Droid
                 string fulltargetpath = Path.Combine(filesdir, txtfile);
                 if (File.Exists(fulltargetpath))
                 {
-                    /* Should check whether the current one is an up-to-date version; assume for now that it is not */
-                    File.Delete(fulltargetpath);
-                    //continue;
+                    continue;
+                    //File.Delete(fulltargetpath);
                 }
 
                 using (StreamWriter sw = new StreamWriter(fulltargetpath))

@@ -221,7 +221,7 @@ namespace GnollHackClient.Pages.Game
             SkillImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.skill.png");
 
             _gnollHackService = DependencyService.Get<IGnollHackService>();
-            _gnollHackService.InitializeGnollHack();
+            _gnollHackService.InitializeGnollHack(); /* In case the game data was factory-reset prior to start, otherwise InitializeGame would suffice */
             UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
             NoGlyph = _gnollHackService.GetNoGlyph();
 
