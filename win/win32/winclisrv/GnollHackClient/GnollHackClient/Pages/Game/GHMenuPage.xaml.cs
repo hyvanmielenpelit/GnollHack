@@ -363,7 +363,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void CancelButton_Clicked(object sender, EventArgs e)
         {
-            await _gamePage.Navigation.PopModalAsync(false);
+            await _gamePage.Navigation.PopModalAsync();
         }
 
         private async void OKButton_Clicked(object sender, EventArgs e)
@@ -397,7 +397,7 @@ namespace GnollHackClient.Pages.Game
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, _ghwindow, resultlist));
             }
             _responseSent = true;
-            await _gamePage.Navigation.PopModalAsync(false);
+            await _gamePage.Navigation.PopModalAsync();
         }
 
         public void Process()

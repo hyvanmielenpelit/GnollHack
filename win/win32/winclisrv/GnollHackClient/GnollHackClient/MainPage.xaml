@@ -23,26 +23,28 @@
                                 Source="ms-appx:///splashvideo.mp4"
                                 />
 
-        <Grid x:Name="LogoGrid" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="0.1, 0.15, AutoSize, AutoSize"
+        <Grid x:Name="LogoGrid" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="0.1, 0.1, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ff:CachedImage Grid.Row="0" x:Name="MainLogoImage" HeightRequest="120" WidthRequest="120"
-               HorizontalOptions="Center" VerticalOptions="Center"
-               Aspect="AspectFit"/>
-            <Label Grid.Row="1" x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" TextColor="White" 
+            <ff:CachedImage Grid.Row="0" x:Name="MainLogoImage" HeightRequest="80" WidthRequest="80" Aspect="AspectFill"
+               HorizontalOptions="Center" VerticalOptions="End"
+               />
+            <Label Grid.Row="1" x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
+                   TextColor="White" 
                    FontFamily="Diablo" FontSize="15" />
-            <Label Grid.Row="2" x:Name="AndroidLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center"  Text="Android Version" TextColor="White"
+            <Label Grid.Row="2" x:Name="AndroidLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"  
+                   Text="Android Version" TextColor="White"
                    FontFamily="Diablo" FontSize="15" />
         </Grid>
 
 
-        <Label x:Name="VersionLabel" TextColor="White" FontSize="5" FontFamily="Lato" AbsoluteLayout.LayoutBounds="3, 3, AutoSize, AutoSize" />
+        <Label x:Name="VersionLabel" TextColor="White" FontSize="6" FontFamily="Lato" AbsoluteLayout.LayoutBounds="3, 3, AutoSize, AutoSize" />
         <Label x:Name="ErrorLabel" TextColor="Red" FontSize="Small" FontFamily="Lato" AbsoluteLayout.LayoutBounds="10, 10, AutoSize, AutoSize" />
-        <Grid x:Name="ClearButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,20,15,10" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
+        <Grid x:Name="UpperButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,20,15,10" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
             <StackLayout>
                 <Grid>
                     <Image x:Name="clearImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>

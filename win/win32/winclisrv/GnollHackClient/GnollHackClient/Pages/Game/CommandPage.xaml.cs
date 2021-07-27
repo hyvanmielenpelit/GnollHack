@@ -133,7 +133,7 @@ namespace GnollHackClient.Pages.Game
         private async void GHButton_Clicked(object sender, EventArgs e)
         {
             GHButton btn = (GHButton)sender;
-            await App.Current.MainPage.Navigation.PopModalAsync(false);
+            await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, btn.GHCommand);
         }
 

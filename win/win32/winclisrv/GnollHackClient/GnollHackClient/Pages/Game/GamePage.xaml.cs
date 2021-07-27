@@ -4237,12 +4237,8 @@ namespace GnollHackClient.Pages.Game
 
         private async void MenuButton_Clicked(object sender, EventArgs e)
         {
-            lock (RefreshScreenLock)
-            {
-                RefreshScreen = false;
-            }
             var cmdPage = new CommandPage(this);
-            await App.Current.MainPage.Navigation.PushModalAsync(cmdPage, false);
+            await App.Current.MainPage.Navigation.PushModalAsync(cmdPage);
         }
         private void ZeroButton_Clicked(object sender, EventArgs e)
         {

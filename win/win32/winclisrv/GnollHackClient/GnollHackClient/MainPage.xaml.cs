@@ -124,7 +124,7 @@ namespace GnollHackClient
 
         private async void serverButton_Clicked(object sender, EventArgs e)
         {
-            if(_canClickButton == false)
+            if (_canClickButton == false)
             {
                 return;
             }
@@ -142,7 +142,7 @@ namespace GnollHackClient
         private int starttimercount = 0;
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
-            if(_firsttime)
+            if (_firsttime)
             {
                 _firsttime = false;
                 StartFadeLogoIn();
@@ -279,8 +279,8 @@ namespace GnollHackClient
         private async void StartFadeIn()
         {
             await StartLogoImage.FadeTo(0, 250);
-            ClearButtonGrid.IsVisible = true;
-            await ClearButtonGrid.FadeTo(1, 250);
+            UpperButtonGrid.IsVisible = true;
+            await UpperButtonGrid.FadeTo(1, 250);
             videoView.IsVisible = true;
             await videoView.FadeTo(1, 250);
             videoView.Play();
@@ -319,7 +319,7 @@ namespace GnollHackClient
             string fulltargetpath = Path.Combine(App.GHPath, "defaults.gnh");
             var editorPage = new EditorPage(fulltargetpath, "Default Options File");
             string errormsg = "";
-            if(!editorPage.ReadFile(out errormsg))
+            if (!editorPage.ReadFile(out errormsg))
             {
                 ErrorLabel.Text = errormsg;
             }
@@ -349,6 +349,27 @@ namespace GnollHackClient
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             videoView.Stop();
+        }
+
+        private double _currentPageWidth = 0;
+        private double _currentPageHeight = 0;
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if (width != _currentPageWidth || height != _currentPageHeight)
+            {
+                _currentPageWidth = width;
+                _currentPageHeight = height;
+                videoView.Stop();
+                videoView.Source = null;
+                if (Device.RuntimePlatform == Device.UWP)
+                    videoView.Source = new Uri($"ms-appx:///Assets/splashvideo.mp4");
+                else
+                    videoView.Source = new Uri($"ms-appx:///splashvideo.mp4");
+                videoView.WidthRequest = width;
+                videoView.HeightRequest = height;
+                videoView.Play();
+            }
         }
     }
 }
