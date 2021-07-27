@@ -35,7 +35,6 @@ namespace GnollHackClient
         private bool _canClickButton = true;
         private bool _serverButtonClicked = false;
         private NavigationPage _loginNavPage = null;
-        private IGnollHackService _mainGnollHackService = null;
 
         public MainPage()
         {
@@ -139,129 +138,138 @@ namespace GnollHackClient
             await Navigation.PushAsync(_loginNavPage);
         }
 
+        private bool _firsttime = true;
         private int starttimercount = 0;
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
-            StartFadeLogoIn();
-            Assembly thisassembly = GetType().GetTypeInfo().Assembly;
-            StartLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
-            Device.StartTimer(TimeSpan.FromSeconds(1f / 4), () =>
+            if(_firsttime)
             {
-                bool res = false;
-                switch(starttimercount)
+                _firsttime = false;
+                StartFadeLogoIn();
+                Assembly thisassembly = GetType().GetTypeInfo().Assembly;
+                StartLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
+                MainLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
+                Device.StartTimer(TimeSpan.FromSeconds(1f / 4), () =>
                 {
-                    case 0:
-                        _mainGnollHackService = DependencyService.Get<IGnollHackService>();
-                        _mainGnollHackService.LoadLibrary();
-                        _mainGnollHackService.Test();
-                        _mainGnollHackService.InitializeGnollHack();
+                    bool res = false;
+                    switch (starttimercount)
+                    {
+                        case 0:
+                            App.LoadServices();
+                            string verstr = App.GnollHackService.GetVersionString();
+                            string verid = App.GnollHackService.GetVersionId();
+                            string path = App.GnollHackService.GetGnollHackPath();
+                            App.GHVersionString = verstr;
+                            App.GHVersionId = verid;
+                            App.GHPath = path;
+                            VersionLabel.Text = verid;
+                            GnollHackLabel.Text = "GnollHack " + verstr;
 
-                        string verstr = _mainGnollHackService.GetVersionString();
-                        string verid = _mainGnollHackService.GetVersionId();
-                        string path = _mainGnollHackService.GetGnollHackPath();
-                        App.GHVersionString = verstr;
-                        App.GHVersionId = verid;
-                        App.GHPath = path;
-                        App.LoadServices();
+                            Assembly assembly = GetType().GetTypeInfo().Assembly;
+                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.window_background.png"))
+                            {
+                                _background_bitmap = SKBitmap.Decode(stream);
+                            }
 
-                        Assembly assembly = GetType().GetTypeInfo().Assembly;
-                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.window_background.png"))
-                        {
-                            _background_bitmap = SKBitmap.Decode(stream);
-                        }
+                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack-logo-test-2.png"))
+                            {
+                                _logo_bitmap = SKBitmap.Decode(stream);
+                            }
 
-                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack-logo-test-2.png"))
-                        {
-                            _logo_bitmap = SKBitmap.Decode(stream);
-                        }
+                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.diablo_h.ttf"))
+                            {
+                                if (stream != null)
+                                {
+                                    App.DiabloTypeface = SKTypeface.FromStream(stream);
+                                }
+                            }
+                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.uwch.ttf"))
+                            {
+                                if (stream != null)
+                                {
+                                    App.UnderwoodTypeface = SKTypeface.FromStream(stream);
+                                }
+                            }
 
-                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.diablo_h.ttf"))
-                        {
-                            if (stream != null)
+                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.endr.ttf"))
                             {
-                                App.DiabloTypeface = SKTypeface.FromStream(stream);
+                                if (stream != null)
+                                {
+                                    App.EndorTypeface = SKTypeface.FromStream(stream);
+                                }
                             }
-                        }
-                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.uwch.ttf"))
-                        {
-                            if (stream != null)
+                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.imrl.ttf"))
                             {
-                                App.UnderwoodTypeface = SKTypeface.FromStream(stream);
+                                if (stream != null)
+                                {
+                                    App.ImmortalTypeface = SKTypeface.FromStream(stream);
+                                }
                             }
-                        }
+                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.shxi.ttf"))
+                            {
+                                if (stream != null)
+                                {
+                                    App.XizorTypeface = SKTypeface.FromStream(stream);
+                                }
+                            }
+                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono.ttf"))
+                            {
+                                if (stream != null)
+                                {
+                                    App.DejaVuSansMonoTypeface = SKTypeface.FromStream(stream);
+                                }
+                            }
+                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono-Bold.ttf"))
+                            {
+                                if (stream != null)
+                                {
+                                    App.DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
+                                }
+                            }
+                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Regular.ttf"))
+                            {
+                                if (stream != null)
+                                {
+                                    App.LatoRegular = SKTypeface.FromStream(stream);
+                                }
+                            }
+                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Bold.ttf"))
+                            {
+                                if (stream != null)
+                                {
+                                    App.LatoBold = SKTypeface.FromStream(stream);
+                                }
+                            }
 
-                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.endr.ttf"))
-                        {
-                            if (stream != null)
-                            {
-                                App.EndorTypeface = SKTypeface.FromStream(stream);
-                            }
-                        }
-                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.imrl.ttf"))
-                        {
-                            if (stream != null)
-                            {
-                                App.ImmortalTypeface = SKTypeface.FromStream(stream);
-                            }
-                        }
-                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.shxi.ttf"))
-                        {
-                            if (stream != null)
-                            {
-                                App.XizorTypeface = SKTypeface.FromStream(stream);
-                            }
-                        }
-                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono.ttf"))
-                        {
-                            if (stream != null)
-                            {
-                                App.DejaVuSansMonoTypeface = SKTypeface.FromStream(stream);
-                            }
-                        }
-                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono-Bold.ttf"))
-                        {
-                            if (stream != null)
-                            {
-                                App.DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
-                            }
-                        }
-                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Regular.ttf"))
-                        {
-                            if (stream != null)
-                            {
-                                App.LatoRegular = SKTypeface.FromStream(stream);
-                            }
-                        }
-                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Bold.ttf"))
-                        {
-                            if (stream != null)
-                            {
-                                App.LatoBold = SKTypeface.FromStream(stream);
-                            }
-                        }
+                            //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                            StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                            StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                            clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                            optionsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                            settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                            creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                            exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
 
-                        //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                        StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                        StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                        clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                        optionsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                        settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                        exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-
-                        res = true;
-                        break;
-                    case 1:
-                        App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
-                        StartFadeIn();
-                        res = true;
-                        break;
-                    default:
-                        StartLogoImage.IsVisible = false;
-                        break;
-                }
-                starttimercount++;
-                return res; 
-            });
+                            res = true;
+                            break;
+                        case 1:
+                            App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                            StartFadeIn();
+                            res = true;
+                            break;
+                        default:
+                            StartLogoImage.IsVisible = false;
+                            break;
+                    }
+                    starttimercount++;
+                    return res;
+                });
+            }
+            else
+            {
+                videoView.Play();
+                App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+            }
         }
         private async void StartFadeLogoIn()
         {
@@ -273,10 +281,13 @@ namespace GnollHackClient
             await StartLogoImage.FadeTo(0, 250);
             ClearButtonGrid.IsVisible = true;
             await ClearButtonGrid.FadeTo(1, 250);
-            canvasView.IsVisible = true;
-            await canvasView.FadeTo(1, 250);
+            videoView.IsVisible = true;
+            await videoView.FadeTo(1, 250);
+            videoView.Play();
             StartButtonGrid.IsVisible = true;
             await StartButtonGrid.FadeTo(1, 250);
+            LogoGrid.IsVisible = true;
+            await LogoGrid.FadeTo(1, 250);
         }
 
         private void ExitAppButton_Clicked(object sender, EventArgs e)
@@ -286,11 +297,15 @@ namespace GnollHackClient
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 
-        private void ClearFilesButton_Clicked(object sender, EventArgs e)
+        private async void ClearFilesButton_Clicked(object sender, EventArgs e)
         {
-            _mainGnollHackService.ClearFiles();
-            ClearFilesButton.Text = "Done";
-            ClearFilesButton.TextColor = Color.Red;
+            bool answer = await DisplayAlert("Reset GnollHack?", "Are you sure to reset GnollHack?", "Yes", "No");
+            if (answer)
+            {
+                App.GnollHackService.ClearFiles();
+                ClearFilesButton.Text = "Done";
+                ClearFilesButton.TextColor = Color.Red;
+            }
         }
 
         private async void SettingsButton_Clicked(object sender, EventArgs e)
@@ -313,6 +328,27 @@ namespace GnollHackClient
                 ErrorLabel.Text = "";
                 await App.Current.MainPage.Navigation.PushModalAsync(editorPage);
             }
+        }
+
+        private async void CreditsButton_Clicked(object sender, EventArgs e)
+        {
+            string fulltargetpath = Path.Combine(App.GHPath, "credits");
+            var displFilePage = new DisplayFilePage(fulltargetpath, "Credits");
+            string errormsg = "";
+            if (!displFilePage.ReadFile(out errormsg))
+            {
+                ErrorLabel.Text = errormsg;
+            }
+            else
+            {
+                ErrorLabel.Text = "";
+                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+            }
+        }
+
+        private void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            videoView.Stop();
         }
     }
 }

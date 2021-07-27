@@ -52,6 +52,7 @@ win/win32/winclisrv/GnollHackClient/gnollhackdroid/date*.h
 *.csv
 *.wav
 *.mp3
+*.mp4
 *.ogg
 *.bank
 *.psd

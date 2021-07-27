@@ -47,6 +47,10 @@ namespace GnollHackClient
 
         public static void LoadServices()
         {
+            _mainGnollHackService = DependencyService.Get<IGnollHackService>();
+            _mainGnollHackService.LoadLibrary();
+            _mainGnollHackService.Test();
+            _mainGnollHackService.InitializeGnollHack();
             _fmodService = DependencyService.Get<IFmodService>();
             _fmodService.InitializeFmod();
             _fmodService.LoadBanks();
@@ -84,6 +88,8 @@ namespace GnollHackClient
 
         public static event BackButtonHandler BackButtonPressed;
 
+        private static IGnollHackService _mainGnollHackService = null;
+        public static IGnollHackService GnollHackService { get { return _mainGnollHackService; } }
         private static IFmodService _fmodService = null;
         public static IFmodService FmodService { get { return _fmodService; } }
         private static IAppCloseService _appCloseService = null;

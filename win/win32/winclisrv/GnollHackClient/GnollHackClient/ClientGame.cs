@@ -736,13 +736,13 @@ namespace GnollHackClient
                 }
             }
 
-            lock (_gamePageLock)
-            {
-                lock(_gamePage.RefreshScreenLock)
-                {
-                    _gamePage.RefreshScreen = false;
-                }
-            }
+            //lock (_gamePageLock)
+            //{
+            //    lock(_gamePage.RefreshScreenLock)
+            //    {
+            //        _gamePage.RefreshScreen = false;
+            //    }
+            //}
 
             bool continuepolling = true;
             while (continuepolling)
@@ -761,13 +761,13 @@ namespace GnollHackClient
                 pollResponseQueue();
             }
 
-            lock(_gamePageLock)
-            {
-                lock (_gamePage.RefreshScreenLock)
-                {
-                    _gamePage.RefreshScreen = true;
-                }
-            }
+            //lock(_gamePageLock)
+            //{
+            //    lock (_gamePage.RefreshScreenLock)
+            //    {
+            //        _gamePage.RefreshScreen = true;
+            //    }
+            //}
 
             /* Handle result */
             int cnt = 0;

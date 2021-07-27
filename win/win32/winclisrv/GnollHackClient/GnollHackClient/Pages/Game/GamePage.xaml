@@ -36,22 +36,24 @@
                             AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
                             AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
                     </gnollhackclient:GHCanvasView>
-                
-                    <StackLayout x:Name="YnGrid" Padding="10" Margin="60,0"
+
+                    <Grid x:Name="YnGrid" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+                         Padding="10" BackgroundColor="#88000000" IsVisible="False">
+                        <StackLayout x:Name="YnLayout" Padding="10" Margin="60,0"
                           HorizontalOptions="Center" VerticalOptions="Center"
                           AbsoluteLayout.LayoutBounds="0.5, 0.70, AutoSize, AutoSize" 
-                          AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="#88000000" IsVisible="false">
-                        <Label Text="?" x:Name="QuestionLabel" FontFamily="Immortal" FontSize="19" TextColor="White"
+                          AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="#88000000" >
+                            <Label Text="?" x:Name="QuestionLabel" FontFamily="Immortal" FontSize="19" TextColor="White"
                                VerticalTextAlignment="End" HorizontalOptions="Center"  />
-                        <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" >
-                            <Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
-                            <Button Text="?" x:Name="FirstButton" Clicked="FirstButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
-                            <Button Text="?" x:Name="SecondButton" Clicked="SecondButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
-                            <Button Text="?" x:Name="ThirdButton" Clicked="ThirdButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
-                            <Button Text="?" x:Name="FourthButton" Clicked="FourthButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                            <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" >
+                                <Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                                <Button Text="?" x:Name="FirstButton" Clicked="FirstButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                                <Button Text="?" x:Name="SecondButton" Clicked="SecondButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                                <Button Text="?" x:Name="ThirdButton" Clicked="ThirdButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                                <Button Text="?" x:Name="FourthButton" Clicked="FourthButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                            </StackLayout>
                         </StackLayout>
-                    </StackLayout>
-                
+                    </Grid>
                     <!--
                     <CollectionView x:Name="MessageHistoryView" BackgroundColor="Transparent" Margin="0"
                                     AbsoluteLayout.LayoutBounds="0,1.0,0.85,0.18" AbsoluteLayout.LayoutFlags="All" 

@@ -2,31 +2,51 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
-             xmlns:local="clr-namespace:GnollHackClient"
+             xmlns:local="clr-namespace:GnollHackClient" 
+             xmlns:xct="clr-namespace:Xamarin.CommunityToolkit.UI.Views;assembly=Xamarin.CommunityToolkit" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              x:Class="GnollHackClient.MainPage"
              NavigationPage.HasNavigationBar="false"
              BackgroundColor="Black"
-             Appearing="ContentPage_Appearing">
+             Appearing="ContentPage_Appearing" Disappearing ="ContentPage_Disappearing" >
 
     <AbsoluteLayout VerticalOptions="FillAndExpand"
                     HorizontalOptions="FillAndExpand" BackgroundColor="Black">
 
-        <Image x:Name="StartLogoImage" Opacity="0" IsVisible="true" HeightRequest="250" WidthRequest="250"
+        <ff:CachedImage x:Name="StartLogoImage" Opacity="0" IsVisible="true" HeightRequest="250" WidthRequest="250"
                HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" Aspect="AspectFit"/>
 
-        <skia:SKCanvasView x:Name="canvasView" Opacity="0" IsVisible="false"
-                       PaintSurface="canvasView_PaintSurface" 
-                           AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
-                           AbsoluteLayout.LayoutFlags="All" />
+        <xct:MediaElement x:Name="videoView" IsVisible="false" IsLooping="true" Aspect="AspectFill" ShowsPlaybackControls="False"
+                                HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+                                AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0" AbsoluteLayout.LayoutFlags="All" 
+                                Source="ms-appx:///splashvideo.mp4"
+                                />
 
+        <Grid x:Name="LogoGrid" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="0.1, 0.15, AutoSize, AutoSize"
+               AbsoluteLayout.LayoutFlags="PositionProportional" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ff:CachedImage Grid.Row="0" x:Name="MainLogoImage" HeightRequest="120" WidthRequest="120"
+               HorizontalOptions="Center" VerticalOptions="Center"
+               Aspect="AspectFit"/>
+            <Label Grid.Row="1" x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" TextColor="White" 
+                   FontFamily="Diablo" FontSize="15" />
+            <Label Grid.Row="2" x:Name="AndroidLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center"  Text="Android Version" TextColor="White"
+                   FontFamily="Diablo" FontSize="15" />
+        </Grid>
+
+
+        <Label x:Name="VersionLabel" TextColor="White" FontSize="5" FontFamily="Lato" AbsoluteLayout.LayoutBounds="3, 3, AutoSize, AutoSize" />
         <Label x:Name="ErrorLabel" TextColor="Red" FontSize="Small" FontFamily="Lato" AbsoluteLayout.LayoutBounds="10, 10, AutoSize, AutoSize" />
         <Grid x:Name="ClearButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,20,15,10" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
             <StackLayout>
                 <Grid>
                     <Image x:Name="clearImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
-                    <Button Text="Clear" x:Name="ClearFilesButton" Clicked="ClearFilesButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+                    <Button Text="Reset" x:Name="ClearFilesButton" Clicked="ClearFilesButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
                 </Grid>
                 <Grid>
                     <Image x:Name="optionsImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
@@ -35,6 +55,10 @@
                 <Grid>
                     <Image x:Name="settingsImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
                     <Button Text="Settings" x:Name="SettingsButton" Clicked="SettingsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+                </Grid>
+                <Grid>
+                    <Image x:Name="creditsImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
+                    <Button Text="Credits" x:Name="CreditsButton" Clicked="CreditsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
                 </Grid>
                 <Grid>
                     <Image x:Name="exitImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
@@ -58,7 +82,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Label Text="Wizard Mode" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center"/>
+                <Label Text="Wizard Mode" TextColor="White" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center"/>
                 <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" />
             </Grid>
             <Image x:Name="StartLocalGameImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="1" />

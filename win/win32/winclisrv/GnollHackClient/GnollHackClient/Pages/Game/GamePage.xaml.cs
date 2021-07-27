@@ -586,6 +586,10 @@ namespace GnollHackClient.Pages.Game
         private /*async*/ void ContentPage_Appearing(object sender, EventArgs e)
         {
             App.BackButtonPressed += BackButtonPressed;
+            lock(RefreshScreenLock)
+            {
+                RefreshScreen = true;
+            }
 
             if(_isFirstAppearance)
             {
@@ -928,6 +932,10 @@ namespace GnollHackClient.Pages.Game
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             App.BackButtonPressed -= BackButtonPressed;
+            lock (RefreshScreenLock)
+            {
+                RefreshScreen = false;
+            }
 
             Preferences.Set("MapFontSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontSize));
             Preferences.Set("MapFontAlternateSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontAlternateSize));

@@ -62,7 +62,6 @@ namespace GnollHackClient.Pages.Game
 
         private double _currentPageWidth = 0;
         private double _currentPageHeight = 0;
-
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
@@ -125,10 +124,10 @@ namespace GnollHackClient.Pages.Game
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            lock(_gamePage.RefreshScreenLock)
-            {
-                _gamePage.RefreshScreen = true;
-            }
+            //lock(_gamePage.RefreshScreenLock)
+            //{
+            //    _gamePage.RefreshScreen = true;
+            //}
         }
 
         private async void GHButton_Clicked(object sender, EventArgs e)

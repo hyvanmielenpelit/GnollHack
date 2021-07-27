@@ -243,6 +243,29 @@ namespace GnollHackClient.Droid
             }
         }
 
+        public void ResetDefaultsFile()
+        {
+            string content;
+            AssetManager assets = MainActivity.StaticAssets;
+
+            string assetsourcedir = "gnh";
+            string txtfile = "defaults.gnh";
+            string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+            using (StreamReader sr = new StreamReader(assets.Open(fullsourcepath)))
+            {
+                content = sr.ReadToEnd();
+            }
+            string fulltargetpath = Path.Combine(_gnollhackfilesdir, txtfile);
+            if (File.Exists(fulltargetpath))
+            {
+                File.Delete(fulltargetpath);
+            }
+            using (StreamWriter sw = new StreamWriter(fulltargetpath))
+            {
+                sw.Write(content);
+            }
+        }
+
         public string GetGnollHackPath()
         {
             return _gnollhackfilesdir;
