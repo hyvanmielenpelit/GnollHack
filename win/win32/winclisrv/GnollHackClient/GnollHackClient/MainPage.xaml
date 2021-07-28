@@ -23,8 +23,8 @@
                                 Source="ms-appx:///splashvideo.mp4"
                                 />
 
-        <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="0.1, 0.1, AutoSize, AutoSize"
-               AbsoluteLayout.LayoutFlags="PositionProportional" >
+        <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="60, 35, AutoSize, AutoSize"
+               AbsoluteLayout.LayoutFlags="None" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
