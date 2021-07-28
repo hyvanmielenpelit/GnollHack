@@ -38,6 +38,9 @@ namespace GnollHackClient.Pages.Game
             App.HideAndroidNavigatioBar = NavBarSwitch.IsToggled;
             Preferences.Set("HideAndroidNavigationBar", App.HideAndroidNavigatioBar);
 
+            App.DeveloperMode = DeveloperSwitch.IsToggled;
+            Preferences.Set("DeveloperMode", App.DeveloperMode);
+
             int res = 4, tryres = 0;
             string str = MessageLengthPicker.SelectedItem.ToString();
             if (int.TryParse(str, out tryres))
@@ -54,9 +57,10 @@ namespace GnollHackClient.Pages.Game
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             int cursor = 0, graphics = 0, msgnum = 0;
-            bool fps = false, navbar = false;
+            bool fps = false, navbar = false, devmode = false;
 
             navbar = App.HideAndroidNavigatioBar;
+            devmode = App.DeveloperMode;
             if (_gamePage == null)
             {
                 cursor = Preferences.Get("CursorStyle", 1);
@@ -75,6 +79,7 @@ namespace GnollHackClient.Pages.Game
             GraphicsPicker.SelectedIndex = graphics;
             FPSSwitch.IsToggled = fps;
             NavBarSwitch.IsToggled = navbar;
+            DeveloperSwitch.IsToggled = devmode;
             for (int i = 0; i < MessageLengthPicker.Items.Count; i++)
             {
                 int tryint = 0;

@@ -1,4 +1,5 @@
 ﻿using GnollHackClient.Data;
+using GnollHackCommon;
 using SkiaSharp;
 using System;
 using System.IO;
@@ -31,6 +32,7 @@ namespace GnollHackClient
             var navPage = new NavigationPage(mainPage);
             MainPage = navPage;
             HideAndroidNavigatioBar = Preferences.Get("HideAndroidNavigationBar", false);
+            DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
         }
 
         protected override void OnStart()
@@ -75,6 +77,7 @@ namespace GnollHackClient
             }
         }
 
+        public static bool DeveloperMode { get; set; }
 
         public static string GHVersionId { get; set; }
         public static string GHVersionString { get; set; }

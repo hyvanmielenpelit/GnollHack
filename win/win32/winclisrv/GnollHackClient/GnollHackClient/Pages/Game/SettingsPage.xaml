@@ -19,6 +19,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -26,16 +27,17 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Label Text="Cursor Style" Grid.Column="0"
-                       FontFamily="Underwood" TextColor="White"
-                       VerticalOptions="Center" 
-                       HorizontalOptions="Start" />
+                            FontFamily="Underwood" TextColor="White"
+                            FontSize="15"
+                            VerticalOptions="Center" 
+                            HorizontalOptions="Start" />
                     <Picker x:Name="CursorPicker"
                             Title="Select a cursor style" Grid.Column="1" 
                             FontFamily="Underwood" 
-                            FontSize="19"
+                            FontSize="17"
                             TextColor="White"
                             TitleColor="White"
-                            WidthRequest="240"
+                            WidthRequest="200"
                             BackgroundColor="Transparent"
                             VerticalOptions="Center"
                             HorizontalOptions="StartAndExpand" >
@@ -47,17 +49,18 @@
                         </Picker.ItemsSource>
                     </Picker>
                     <Label Text="Graphics" Grid.Column="0" Grid.Row="1"
-                       FontFamily="Underwood" TextColor="White"
-                       VerticalOptions="Center" 
-                       HorizontalOptions="Start" />
+                           FontFamily="Underwood" TextColor="White"
+                           FontSize="15"
+                           VerticalOptions="Center" 
+                           HorizontalOptions="Start" />
                     <Picker x:Name="GraphicsPicker"
                             Title="Select a graphics style" Grid.Column="1" Grid.Row="1"
                             FontFamily="Underwood" 
-                            FontSize="19"
+                            FontSize="17"
                             TextColor="White"
                             TitleColor="White"
                             BackgroundColor="Transparent"
-                            WidthRequest="240"
+                            WidthRequest="200"
                             VerticalOptions="Center"
                             HorizontalOptions="StartAndExpand" >
                         <Picker.ItemsSource>
@@ -68,17 +71,18 @@
                         </Picker.ItemsSource>
                     </Picker>
                     <Label Text="Messages" Grid.Column="0" Grid.Row="2"
-                       FontFamily="Underwood" TextColor="White"
-                       VerticalOptions="Center" 
-                       HorizontalOptions="Start" />
+                           FontFamily="Underwood" TextColor="White"
+                           FontSize="15"
+                           VerticalOptions="Center" 
+                           HorizontalOptions="Start" />
                     <Picker x:Name="MessageLengthPicker"
                             Title="Select the number of messages" Grid.Column="1" Grid.Row="2"
                             FontFamily="Underwood" 
-                            FontSize="19"
+                            FontSize="17"
                             TextColor="White"
                             TitleColor="White"
                             BackgroundColor="Transparent"
-                            WidthRequest="240"
+                            WidthRequest="200"
                             VerticalOptions="Center"
                             HorizontalOptions="StartAndExpand" >
                         <Picker.ItemsSource>
@@ -102,21 +106,29 @@
                     </Picker>
 
                     <Label Text="Show FPS" Grid.Column="0" Grid.Row="3"
-                       FontFamily="Underwood" TextColor="White"
-                       VerticalOptions="Center" 
-                       HorizontalOptions="Start" />
+                           FontFamily="Underwood" TextColor="White"
+                           FontSize="15"
+                           VerticalOptions="Center" 
+                           HorizontalOptions="Start" />
                     <Switch x:Name="FPSSwitch"  Grid.Column="1" Grid.Row="3" HorizontalOptions="Start" VerticalOptions="Center" />
 
                     <Label Text="Hide Navigation" Grid.Column="0" Grid.Row="4"
-                       FontFamily="Underwood" TextColor="White"
-                       VerticalOptions="Center" 
-                       HorizontalOptions="Start" />
+                           FontFamily="Underwood" TextColor="White"
+                           FontSize="15"
+                           VerticalOptions="Center" 
+                           HorizontalOptions="Start" />
                     <Switch x:Name="NavBarSwitch"  Grid.Column="1" Grid.Row="4" HorizontalOptions="Start" VerticalOptions="Center" />
 
+                    <Label Text="Developer Mode" Grid.Column="0" Grid.Row="5"
+                           FontFamily="Underwood" TextColor="White"
+                           FontSize="15"
+                           VerticalOptions="Center" 
+                           HorizontalOptions="Start" />
+                    <Switch x:Name="DeveloperSwitch"  Grid.Column="1" Grid.Row="5" HorizontalOptions="Start" VerticalOptions="Center" />
                 </Grid>
-                <Grid WidthRequest="320" HorizontalOptions="Center">
-                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                    <Button Text="Back to Menu" WidthRequest="320" FontFamily="Diablo" FontSize="19" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                <Grid WidthRequest="250" Margin="0,10,0,0" HorizontalOptions="Center">
+                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="250"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                    <Button Text="Back to Menu" WidthRequest="250" FontFamily="Diablo" FontSize="19" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
                 </Grid>
             </StackLayout>

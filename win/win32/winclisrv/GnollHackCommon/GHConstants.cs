@@ -820,6 +820,7 @@ namespace GnollHackCommon
         public const int IntroGHSound = 1;
         public const string IntroEventPath = "event:/Music/Start/Splash";
         public const int IntroBankId = 0;
+        public const bool DefaultDeveloperMode = true;
     }
 
 

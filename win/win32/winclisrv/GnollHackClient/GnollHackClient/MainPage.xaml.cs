@@ -143,6 +143,10 @@ namespace GnollHackClient
         private int starttimercount = 0;
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
+            wizardModeGrid.IsVisible = App.DeveloperMode;
+            if (!App.DeveloperMode)
+                wizardModeSwitch.IsToggled = false;
+
             if (_firsttime)
             {
                 _firsttime = false;

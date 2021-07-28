@@ -228,7 +228,7 @@ namespace GnollHackClient.Droid
                 file.Delete();
             }
 
-            string[] ghdirlist = { "save" };
+            string[] ghdirlist = { "save", "dumplog" };
             foreach (string ghdir in ghdirlist)
             {
                 string fulldirepath = Path.Combine(_gnollhackfilesdir, ghdir);
