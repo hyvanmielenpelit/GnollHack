@@ -3657,9 +3657,28 @@ register struct obj* obj;
         txt = buf;
         putstr(datawin, ATR_HEADING, txt);
 
-        Sprintf(buf, "  %s", OBJ_ITEM_DESC(otyp));
-        txt = buf;
-        putstr(datawin, 0, txt);
+        char descbuf[BUFSIZ];
+        strcpy(descbuf, OBJ_ITEM_DESC(otyp));
+        char* bp = descbuf;
+        char* ebp;
+        while (bp && *bp)
+        {
+            ebp = strstr(bp, "\n");
+            if (ebp)
+                *ebp = 0;
+
+            if (strlen(bp) > 0)
+            {
+                Sprintf(buf, "  %s", bp);
+                txt = buf;
+                putstr(datawin, 0, txt);
+            }
+
+            if (!ebp)
+                break;
+            else
+                bp = ebp + 1;
+        }
     }
 
     /* Weapon statistics */

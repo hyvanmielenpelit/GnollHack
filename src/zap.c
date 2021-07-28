@@ -5067,17 +5067,20 @@ register struct obj *obj;
         break;
     case WAN_TOWN_PORTAL:
     {
+        int number = obj->cursed ? 4 : obj->blessed ? 2 : 3;
         boolean hostilemonfound = FALSE;
         struct monst* hostilemon;
         for (hostilemon = fmon; hostilemon; hostilemon = hostilemon->nmon)
         {
-            if (!is_peaceful(hostilemon) && couldsee(hostilemon->mx, hostilemon->my) && distu(hostilemon->mx, hostilemon->my) < 3 * 3)
+            if (!is_peaceful(hostilemon) && couldsee(hostilemon->mx, hostilemon->my) && distu(hostilemon->mx, hostilemon->my) < number * number)
             {
                 hostilemonfound = TRUE;
                 break;
             }
         }
-        if (hostilemonfound || (context.last_turn_when_took_damage > 0 && moves >= context.last_turn_when_took_damage && moves <= context.last_turn_when_took_damage + 3))
+        if (hostilemonfound 
+            || (context.last_turn_when_took_damage > 0 && moves >= context.last_turn_when_took_damage && moves <= context.last_turn_when_took_damage + number)
+            || (obj->cursed && !rn2(3)))
         {
             pline("The wand sparkles for a while, but nothing else happens.");
             break;
@@ -5085,7 +5088,7 @@ register struct obj *obj;
 
         if (Is_minetown_level(&u.uz))
         {
-            if (context.town_portal_return_level_set)
+            if (context.town_portal_return_level_set && !(obj->cursed && !rn2(3)))
             {
                 level_tele(0, 2, context.town_portal_return_level);
             }
@@ -5096,9 +5099,16 @@ register struct obj *obj;
         }
         else
         {
-            context.town_portal_return_level = u.uz;
-            context.town_portal_return_level_set = TRUE;
-            level_tele(0, 2, minetown_level);
+            if(obj->cursed && !rn2(3))
+            {
+                level_tele(0, 0, zerodlevel);
+            }
+            else
+            {
+                context.town_portal_return_level = u.uz;
+                context.town_portal_return_level_set = TRUE;
+                level_tele(0, 2, minetown_level);
+            }
         }
         break;
     }
