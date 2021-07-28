@@ -31,6 +31,7 @@ namespace GnollHackClient
         DisplayScreenText,
         ShowSkillButton,
         HideSkillButton,
+        ShowOutRipPage,
     }
 
     public struct AddContextMenuData
@@ -72,6 +73,7 @@ namespace GnollHackClient
         public GHRequestType RequestType { get; set; }
         public GHWindow RequestingGHWindow { get; set; }
         public GHMenuInfo RequestMenuInfo { get; set; }
+        public GHOutRipInfo RequestOutRipInfo { get; set; }
         public string RequestString { get; set; }
         public uint RequestStringAttributes { get; set; }
         public int RequestInt { get; set; }
@@ -112,6 +114,13 @@ namespace GnollHackClient
             RequestType = requesttype;
             RequestingGHWindow = requestingGHWindow;
             RequestMenuInfo = menuinfo;
+        }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, GHWindow requestingGHWindow, GHOutRipInfo outripinfo)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            RequestingGHWindow = requestingGHWindow;
+            RequestOutRipInfo = outripinfo;
         }
         public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring)
         {

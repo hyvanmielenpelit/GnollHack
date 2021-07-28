@@ -23,6 +23,8 @@ namespace GnollHackClient
         protected override void OnPropertyChanged(string propertyName)
         {
             if (propertyName == GlyphProperty.PropertyName ||
+                propertyName == GrayedProperty.PropertyName ||
+                propertyName == OpacityProperty.PropertyName ||
                 propertyName == GamePageProperty.PropertyName ||
                 propertyName == WidthProperty.PropertyName ||
                 propertyName == HeightProperty.PropertyName)
@@ -40,6 +42,24 @@ namespace GnollHackClient
         {
             get => (int)GetValue(GlyphProperty);
             set => SetValue(GlyphProperty, value);
+        }
+
+        public static readonly BindableProperty GrayedProperty = BindableProperty.Create(
+            "Grayed", typeof(bool), typeof(GlyphImageSource));
+
+        public bool Grayed
+        {
+            get => (bool)GetValue(GrayedProperty);
+            set => SetValue(GrayedProperty, value);
+        }
+
+        public static readonly BindableProperty OpacityProperty = BindableProperty.Create(
+            "Opacity", typeof(float), typeof(GlyphImageSource), 1.0f);
+
+        public float Opacity
+        {
+            get => (float)GetValue(OpacityProperty);
+            set => SetValue(OpacityProperty, value);
         }
 
         public static readonly BindableProperty AutoSizeProperty = BindableProperty.Create(
@@ -166,124 +186,141 @@ namespace GnollHackClient
                 int tile_x = ReferenceGamePage.TileSheetX(ntile);
                 int tile_y = ReferenceGamePage.TileSheetY(ntile);
 
-                if(enlargement_idx == 0)
+                using (SKPaint paint = new SKPaint())
                 {
-                    SKRect sourcerect;
-                    if (tileflag_halfsize)
+                    if(Grayed)
                     {
-                        sourcerect = new SKRect(tile_x, tile_y + (float)GHConstants.TileHeight / 2, tile_x + (float)GHConstants.TileWidth, tile_y + (float)GHConstants.TileHeight);
-                    }
-                    else
-                    {
-                        sourcerect = new SKRect(tile_x, tile_y, tile_x + (float)GHConstants.TileWidth, tile_y + (float)GHConstants.TileHeight);
-                    }
-
-                    SKRect targetrect;
-                    if (tileflag_halfsize)
-                    {
-                        targetrect = new SKRect(0, 0, Width, Height);
-                    }
-                    else
-                    {
-                        float fullsizewidth = Height / (float)GHConstants.TileHeight * (float)GHConstants.TileWidth;
-                        float fullsizepadding = Math.Max(0, Width - fullsizewidth) / 2;
-                        targetrect = new SKRect(fullsizepadding, 0, fullsizepadding + fullsizewidth, Height);
+                        paint.ColorFilter =
+                            SKColorFilter.CreateColorMatrix(new float[]
+                            {
+                                0.21f, 0.72f, 0.07f, 0, 0,
+                                0.21f, 0.72f, 0.07f, 0, 0,
+                                0.21f, 0.72f, 0.07f, 0, 0,
+                                0,     0,     0,     1, 0
+                            });
                     }
 
-                    canvas.DrawBitmap(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect);
-                }
-                else
-                {
-                    bool flip_tile = (signed_glyph < 0);
-                    sbyte enl_height = ReferenceGamePage.Enlargements[enlargement_idx].height_in_tiles;
-                    sbyte enl_width = ReferenceGamePage.Enlargements[enlargement_idx].width_in_tiles;
-                    sbyte enl_x = enl_width == 3 ? (sbyte)1 : ReferenceGamePage.Enlargements[enlargement_idx].main_tile_x_coordinate;
+                    paint.Color = paint.Color.WithAlpha((byte)(0xFF * Math.Min(1.0f, Math.Max(0.0f, Opacity))));
 
-                    int width = GHConstants.TileWidth * enl_width;
-                    int height = GHConstants.TileHeight * enl_height;
-                    float relsizex = width / Width;
-                    float relsizey = height / Height;
-                    float scale = Math.Min(1 / relsizex, 1 / relsizey);
-                    float targetimagewidth = scale * width;
-                    float targetimageheight = scale * height;
-                    float tileWidth = scale * GHConstants.TileWidth;
-                    float tileHeight = scale * GHConstants.TileHeight;
-                    float xpadding = Math.Max(0, (Width - targetimagewidth) / 2);
-                    float ypadding = Math.Max(0, (Height - targetimageheight) / 2);
-                    float t_x = xpadding + enl_x * tileWidth;
-                    float t_y = ypadding + tileHeight * (enl_height - 1);
-                    int n_sheet_idx = sheet_idx;
-
-                    /* Main tile */
-                    using (new SKAutoCanvasRestore(canvas, true))
+                    if (enlargement_idx == 0)
                     {
-                        canvas.Translate(t_x + (flip_tile ? tileWidth : 0), t_y);
-                        canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
-                        SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                        SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
-                        canvas.DrawBitmap(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect);
-                    }
-
-                    /* Enlargement tiles */
-                    for (int idx = 0; idx < GHConstants.NumPositionsInEnlargement; idx++)
-                    {
-                        if (enl_height == 1 && idx < 3)
-                            continue;
-
-                        if (enl_width == 2 && enl_x == 0 && (idx == 0 || idx == 3))
-                            continue;
-
-                        if (enl_width == 2 && enl_x == 1 && (idx == 2 || idx == 4))
-                            continue;
-
-                        int enltile = (int)ReferenceGamePage.Enlargements[enlargement_idx].position2tile[idx];
-                        if (enltile >= 0)
+                        SKRect sourcerect;
+                        if (tileflag_halfsize)
                         {
-                            int glyph = enltile + ReferenceGamePage.EnlargementOffsets[enlargement_idx] /* enlargements[enlargement_idx].glyph_offset */ + ReferenceGamePage.EnlargementOff;
-                            int etile = ReferenceGamePage.Glyph2Tile[glyph];
-                            int e_sheet_idx = ReferenceGamePage.TileSheetIdx(etile);
-                            int etile_x = ReferenceGamePage.TileSheetX(etile);
-                            int etile_y = ReferenceGamePage.TileSheetY(etile);
-                            float target_x = 0;
-                            float target_y = 0;
+                            sourcerect = new SKRect(tile_x, tile_y + (float)GHConstants.TileHeight / 2, tile_x + (float)GHConstants.TileWidth, tile_y + (float)GHConstants.TileHeight);
+                        }
+                        else
+                        {
+                            sourcerect = new SKRect(tile_x, tile_y, tile_x + (float)GHConstants.TileWidth, tile_y + (float)GHConstants.TileHeight);
+                        }
 
-                            if (enl_height == 2)
-                            {
-                                target_y = idx < 3 ? 0 : tileHeight;
-                            }
+                        SKRect targetrect;
+                        if (tileflag_halfsize)
+                        {
+                            targetrect = new SKRect(0, 0, Width, Height);
+                        }
+                        else
+                        {
+                            float fullsizewidth = Height / (float)GHConstants.TileHeight * (float)GHConstants.TileWidth;
+                            float fullsizepadding = Math.Max(0, Width - fullsizewidth) / 2;
+                            targetrect = new SKRect(fullsizepadding, 0, fullsizepadding + fullsizewidth, Height);
+                        }
 
-                            if (enl_width == 2 && enl_x == 0)
-                            {
-                                if (flip_tile)
-                                    target_x = idx == 1 ? tileWidth : 0;
-                                else
-                                    target_x = idx == 1 ? 0 : tileWidth;
-                            }
-                            else if (enl_width == 2 && enl_x == 1)
-                            {
-                                if(flip_tile)
-                                    target_x = idx == 1 ? 0 : tileWidth;
-                                else
-                                    target_x = idx == 1 ? tileWidth : 0;
-                            }
-                            else if (enl_width == 3)
-                            {
-                                if(flip_tile)
-                                    target_x = idx == 0 || idx == 3 ? 2 * tileWidth : idx == 1 ? tileWidth : 0;
-                                else
-                                    target_x = idx == 0 || idx == 3 ? 0 : idx == 1 ? tileWidth : 2 * tileWidth;
-                            }
+                        canvas.DrawBitmap(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect, paint);
+                    }
+                    else
+                    {
+                        bool flip_tile = (signed_glyph < 0);
+                        sbyte enl_height = ReferenceGamePage.Enlargements[enlargement_idx].height_in_tiles;
+                        sbyte enl_width = ReferenceGamePage.Enlargements[enlargement_idx].width_in_tiles;
+                        sbyte enl_x = enl_width == 3 ? (sbyte)1 : ReferenceGamePage.Enlargements[enlargement_idx].main_tile_x_coordinate;
 
-                            target_x += xpadding;
-                            target_y += ypadding;
+                        int width = GHConstants.TileWidth * enl_width;
+                        int height = GHConstants.TileHeight * enl_height;
+                        float relsizex = width / Width;
+                        float relsizey = height / Height;
+                        float scale = Math.Min(1 / relsizex, 1 / relsizey);
+                        float targetimagewidth = scale * width;
+                        float targetimageheight = scale * height;
+                        float tileWidth = scale * GHConstants.TileWidth;
+                        float tileHeight = scale * GHConstants.TileHeight;
+                        float xpadding = Math.Max(0, (Width - targetimagewidth) / 2);
+                        float ypadding = Math.Max(0, (Height - targetimageheight) / 2);
+                        float t_x = xpadding + enl_x * tileWidth;
+                        float t_y = ypadding + tileHeight * (enl_height - 1);
+                        int n_sheet_idx = sheet_idx;
 
-                            using (new SKAutoCanvasRestore(canvas, true))
+                        /* Main tile */
+                        using (new SKAutoCanvasRestore(canvas, true))
+                        {
+                            canvas.Translate(t_x + (flip_tile ? tileWidth : 0), t_y);
+                            canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
+                            SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                            SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
+                            canvas.DrawBitmap(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect, paint);
+                        }
+
+                        /* Enlargement tiles */
+                        for (int idx = 0; idx < GHConstants.NumPositionsInEnlargement; idx++)
+                        {
+                            if (enl_height == 1 && idx < 3)
+                                continue;
+
+                            if (enl_width == 2 && enl_x == 0 && (idx == 0 || idx == 3))
+                                continue;
+
+                            if (enl_width == 2 && enl_x == 1 && (idx == 2 || idx == 4))
+                                continue;
+
+                            int enltile = (int)ReferenceGamePage.Enlargements[enlargement_idx].position2tile[idx];
+                            if (enltile >= 0)
                             {
-                                canvas.Translate(target_x + (flip_tile ? tileWidth : 0), target_y);
-                                canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
-                                SKRect sourcerect = new SKRect(etile_x, etile_y, etile_x + GHConstants.TileWidth, etile_y + GHConstants.TileHeight);
-                                SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
-                                canvas.DrawBitmap(ReferenceGamePage.TileMap[e_sheet_idx], sourcerect, targetrect);
+                                int glyph = enltile + ReferenceGamePage.EnlargementOffsets[enlargement_idx] /* enlargements[enlargement_idx].glyph_offset */ + ReferenceGamePage.EnlargementOff;
+                                int etile = ReferenceGamePage.Glyph2Tile[glyph];
+                                int e_sheet_idx = ReferenceGamePage.TileSheetIdx(etile);
+                                int etile_x = ReferenceGamePage.TileSheetX(etile);
+                                int etile_y = ReferenceGamePage.TileSheetY(etile);
+                                float target_x = 0;
+                                float target_y = 0;
+
+                                if (enl_height == 2)
+                                {
+                                    target_y = idx < 3 ? 0 : tileHeight;
+                                }
+
+                                if (enl_width == 2 && enl_x == 0)
+                                {
+                                    if (flip_tile)
+                                        target_x = idx == 1 ? tileWidth : 0;
+                                    else
+                                        target_x = idx == 1 ? 0 : tileWidth;
+                                }
+                                else if (enl_width == 2 && enl_x == 1)
+                                {
+                                    if (flip_tile)
+                                        target_x = idx == 1 ? 0 : tileWidth;
+                                    else
+                                        target_x = idx == 1 ? tileWidth : 0;
+                                }
+                                else if (enl_width == 3)
+                                {
+                                    if (flip_tile)
+                                        target_x = idx == 0 || idx == 3 ? 2 * tileWidth : idx == 1 ? tileWidth : 0;
+                                    else
+                                        target_x = idx == 0 || idx == 3 ? 0 : idx == 1 ? tileWidth : 2 * tileWidth;
+                                }
+
+                                target_x += xpadding;
+                                target_y += ypadding;
+
+                                using (new SKAutoCanvasRestore(canvas, true))
+                                {
+                                    canvas.Translate(target_x + (flip_tile ? tileWidth : 0), target_y);
+                                    canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
+                                    SKRect sourcerect = new SKRect(etile_x, etile_y, etile_x + GHConstants.TileWidth, etile_y + GHConstants.TileHeight);
+                                    SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
+                                    canvas.DrawBitmap(ReferenceGamePage.TileMap[e_sheet_idx], sourcerect, targetrect, paint);
+                                }
                             }
                         }
                     }

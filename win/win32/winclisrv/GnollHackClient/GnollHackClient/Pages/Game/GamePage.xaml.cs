@@ -652,6 +652,9 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.ShowMenuPage:
                                 ShowMenuPage(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow);
                                 break;
+                            case GHRequestType.ShowOutRipPage:
+                                ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
+                                break;
                             case GHRequestType.CreateWindowView:
                                 CreateWindowView(req.RequestInt);
                                 break;
@@ -916,6 +919,12 @@ namespace GnollHackClient.Pages.Game
             menuPage.Process();
             await App.Current.MainPage.Navigation.PushModalAsync(menuPage, false);
         }
+        private async void ShowOutRipPage(GHOutRipInfo outripinfo, GHWindow ghwindow)
+        {
+            var outRipPage = new OutRipPage(this, ghwindow, outripinfo);
+            await App.Current.MainPage.Navigation.PushModalAsync(outRipPage);
+        }
+
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
             var menu = new GameMenuPage(this);

@@ -81,7 +81,7 @@ namespace GnollHackClient.Droid
 
             VoidVoidCallback callback_start_screen,
             VoidVoidCallback callback_end_screen,
-            VoidIntCallback callback_outrip,
+            OutRipCallback callback_outrip,
             VoidConstCharCallback callback_preference_update,
             CharPtrBooleanCallback callback_getmsghistory,
             VoidConstCharBooleanCallback callback_putmsghistory,
@@ -545,7 +545,7 @@ namespace GnollHackClient.Droid
 
                 clientGame.ClientCallback_VoidVoidDummy,
                 clientGame.ClientCallback_VoidVoidDummy,
-                clientGame.ClientCallback_VoidIntDummy,
+                clientGame.ClientCallback_OutRip,
                 clientGame.ClientCallback_PreferenceUpdate,
                 clientGame.ClientCallback_GetMsgHistory,
                 clientGame.ClientCallback_PutMsgHistory,

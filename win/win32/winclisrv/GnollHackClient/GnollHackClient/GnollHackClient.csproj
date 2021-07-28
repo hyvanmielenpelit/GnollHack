@@ -44,6 +44,7 @@
     <None Remove="Assets\Master.bank" />
     <None Remove="Assets\Master.strings.bank" />
     <None Remove="Assets\shxi.ttf" />
+    <None Remove="Assets\tombstone.png" />
     <None Remove="Assets\UI\menubackground.png" />
     <None Remove="Assets\uwch.ttf" />
     <None Remove="Assets\window_background.png" />
@@ -81,6 +82,7 @@
     <EmbeddedResource Include="Assets\Master.bank" />
     <EmbeddedResource Include="Assets\Master.strings.bank" />
     <EmbeddedResource Include="Assets\shxi.ttf" />
+    <EmbeddedResource Include="Assets\tombstone.png" />
     <EmbeddedResource Include="Assets\UI\menubackground.png" />
     <EmbeddedResource Include="Assets\uwch.ttf" />
     <EmbeddedResource Include="Assets\window_background.png" />
@@ -131,6 +133,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\Game\NamePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\Game\OutRipPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\Game\RoleSelection.xaml">

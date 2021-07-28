@@ -93,7 +93,7 @@ typedef void(__callconv* SetFontNameCallback)(int);
 typedef CharVoidCallback GetColorStringCallback;
 typedef VoidVoidCallback StartScreenCallback;
 typedef VoidVoidCallback EndScreenCallback;
-typedef void(__callconv* OutRipCallback)(int);
+typedef void(__callconv* OutRipCallback)(int, char*, int, char*, char*);
 typedef VoidConstCharCallback PreferenceUpdateCallback;
 typedef CharPtrBooleanCallback GetMsgHistoryCallback;
 typedef VoidConstCharBooleanCallback PutMsgHistoryCallback;

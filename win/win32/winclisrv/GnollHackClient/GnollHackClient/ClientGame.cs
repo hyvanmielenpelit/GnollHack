@@ -1010,7 +1010,22 @@ namespace GnollHackClient
             }
         }
 
+        public void ClientCallback_OutRip(int winid, string plname, int points, string killer, string time)
+        {
+            ConcurrentQueue<GHRequest> queue;
+            lock (_ghWindowsLock)
+            {
+                if (_ghWindows[winid] != null)
+                {
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowOutRipPage, _ghWindows[winid], new GHOutRipInfo(plname, points, killer, time)));
+                    }
+                }
+            }
 
+            int res = ClientCallback_nhgetch();
+        }
 
         /* Dummies */
         public void ClientCallback_VoidVoidDummy()

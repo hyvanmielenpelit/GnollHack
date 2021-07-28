@@ -70,7 +70,7 @@ namespace GnollHackServer
 
             VoidVoidCallback callback_start_screen,
             VoidVoidCallback callback_end_screen,
-            VoidIntCallback callback_outrip,
+            OutRipCallback callback_outrip,
             VoidConstCharCallback callback_preference_update,
             CharPtrBooleanCallback callback_getmsghistory,
             VoidConstCharBooleanCallback callback_putmsghistory,
@@ -223,7 +223,7 @@ namespace GnollHackServer
 
                 GameCallback_VoidVoidDummy,
                 GameCallback_VoidVoidDummy,
-                GameCallback_VoidIntDummy,
+                GameCallback_OutRip,
                 GameCallback_VoidConstCharDummy,
                 GameCallback_CharPtrBooleanDummy,
                 GameCallback_VoidConstCharBooleanDummy,
@@ -343,6 +343,11 @@ namespace GnollHackServer
 
         }
         public void GameCallback_SendObjectData(int x, int y, obj otmp, int cmdtype, int where, int tile_height, ulong oflags)
+        {
+
+        }
+
+        protected void GameCallback_OutRip(int winid, string plname, int points, string killer, string time)
         {
 
         }

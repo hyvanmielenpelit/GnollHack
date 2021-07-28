@@ -64,6 +64,9 @@ namespace GnollHackCommon
     public delegate void EndMenuCallback(int value1, [MarshalAs(UnmanagedType.LPStr)] string value2, [MarshalAs(UnmanagedType.LPStr)] string value3);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void OutRipCallback(int winid, [MarshalAs(UnmanagedType.LPStr)] string plname, int points, [MarshalAs(UnmanagedType.LPStr)] string killer, [MarshalAs(UnmanagedType.LPStr)] string time);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int PlayImmediateSoundCallback(
         int ghsound, 
         [MarshalAs(UnmanagedType.LPStr)] string eventPath, 
