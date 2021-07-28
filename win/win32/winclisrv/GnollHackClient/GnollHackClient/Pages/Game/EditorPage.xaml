@@ -8,7 +8,7 @@
             <ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
                             Source ="resource://GnollHackClient.Assets.UI.menubackground.png" />
 
-            <Grid Padding="5,10" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+            <Grid Padding="5,10" WidthRequest="1024" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />

@@ -55,7 +55,7 @@ namespace GnollHackClient.Pages.Game
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
-                TextEditor.FontSize = Math.Min(22, 13 * width / 600);
+                TextEditor.FontSize = Math.Min(19.5, 13 * width / 600);
             }
         }
 

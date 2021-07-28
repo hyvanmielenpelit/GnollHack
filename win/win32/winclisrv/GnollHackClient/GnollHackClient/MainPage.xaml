@@ -23,22 +23,22 @@
                                 Source="ms-appx:///splashvideo.mp4"
                                 />
 
-        <Grid x:Name="LogoGrid" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="0.1, 0.1, AutoSize, AutoSize"
+        <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="0.1, 0.1, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ff:CachedImage Grid.Row="0" x:Name="MainLogoImage" HeightRequest="80" WidthRequest="80" Aspect="AspectFill"
+            <ff:CachedImage Grid.Row="0" x:Name="MainLogoImage" HeightRequest="100" WidthRequest="100" Aspect="AspectFill"
                HorizontalOptions="Center" VerticalOptions="End"
                />
             <Label Grid.Row="1" x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
                    TextColor="White" 
-                   FontFamily="Diablo" FontSize="15" />
+                   FontFamily="ARChristy" FontSize="27" />
             <Label Grid.Row="2" x:Name="AndroidLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"  
                    Text="Android Version" TextColor="White"
-                   FontFamily="Diablo" FontSize="15" />
+                   FontFamily="ARChristy" FontSize="18" />
         </Grid>
 
 

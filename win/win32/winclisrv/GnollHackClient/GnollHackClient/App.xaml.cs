@@ -17,6 +17,7 @@ using Xamarin.Forms.Xaml;
 [assembly: ExportFont("Lato-Bold.ttf", Alias = "Lato-Bold")]
 [assembly: ExportFont("DejaVuSansMono.ttf", Alias = "DejaVuSansMono")]
 [assembly: ExportFont("DejaVuSansMono-Bold.ttf", Alias = "DejaVuSansMono-Bold")]
+[assembly: ExportFont("archristy.ttf", Alias = "ARChristy")]
 namespace GnollHackClient
 {
     public delegate Task<bool> BackButtonHandler(object sender, EventArgs e);
@@ -29,7 +30,6 @@ namespace GnollHackClient
             var mainPage = new MainPage();
             var navPage = new NavigationPage(mainPage);
             MainPage = navPage;
-
             HideAndroidNavigatioBar = Preferences.Get("HideAndroidNavigationBar", false);
         }
 
@@ -115,6 +115,7 @@ namespace GnollHackClient
         public static SKTypeface DejaVuSansMonoBoldTypeface { get; set; }
         public static SKTypeface LatoRegular { get; set; }
         public static SKTypeface LatoBold { get; set; }
+        public static SKTypeface ARChristyTypeface { get; set; }
 
     }
 }

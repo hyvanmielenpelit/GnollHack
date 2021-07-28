@@ -25,6 +25,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using GnollHackClient.Pages.Game;
 using FFImageLoading;
+using Xamarin.Essentials;
 
 namespace GnollHackClient
 {
@@ -163,7 +164,7 @@ namespace GnollHackClient
                             App.GHVersionId = verid;
                             App.GHPath = path;
                             VersionLabel.Text = verid;
-                            GnollHackLabel.Text = "GnollHack " + verstr;
+                            GnollHackLabel.Text = "GnollHack"; // + verstr;
 
                             Assembly assembly = GetType().GetTypeInfo().Assembly;
                             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.window_background.png"))
@@ -240,6 +241,13 @@ namespace GnollHackClient
                                     App.LatoBold = SKTypeface.FromStream(stream);
                                 }
                             }
+                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.archristy.ttf"))
+                            {
+                                if (stream != null)
+                                {
+                                    App.ARChristyTypeface = SKTypeface.FromStream(stream);
+                                }
+                            }
 
                             //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
@@ -303,6 +311,8 @@ namespace GnollHackClient
             if (answer)
             {
                 App.GnollHackService.ClearFiles();
+                Preferences.Clear();
+                App.GnollHackService.InitializeGnollHack();
                 ClearFilesButton.Text = "Done";
                 ClearFilesButton.TextColor = Color.Red;
             }
