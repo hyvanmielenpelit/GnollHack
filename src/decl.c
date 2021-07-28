@@ -259,6 +259,8 @@ NEARDATA const struct layer_info zerolayerinfo = DUMMY;
 NEARDATA const struct replacement_info zeroreplacementinfo = DUMMY;
 NEARDATA const struct extended_menu_info zeroextendedmenuinfo = DUMMY;
 
+NEARDATA const struct d_level zerodlevel = DUMMY;
+
 boolean disallow_keyboard_commands_in_wait_loop = FALSE;
 
 NEARDATA struct obj* getobj_autoselect_obj = (struct obj*)0;

@@ -346,6 +346,8 @@ E NEARDATA const struct layer_info zerolayerinfo;
 E NEARDATA const struct replacement_info zeroreplacementinfo;
 E NEARDATA const struct extended_menu_info zeroextendedmenuinfo;
 
+E NEARDATA const struct d_level zerodlevel;
+
 #include "you.h"
 E NEARDATA struct you u;
 E NEARDATA time_t ubirthday;

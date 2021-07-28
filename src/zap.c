@@ -5065,6 +5065,43 @@ register struct obj *obj;
         }
         known = TRUE;
         break;
+    case WAN_TOWN_PORTAL:
+    {
+        boolean hostilemonfound = FALSE;
+        struct monst* hostilemon;
+        for (hostilemon = fmon; hostilemon; hostilemon = hostilemon->nmon)
+        {
+            if (!is_peaceful(hostilemon) && couldsee(hostilemon->mx, hostilemon->my) && distu(hostilemon->mx, hostilemon->my) < 3 * 3)
+            {
+                hostilemonfound = TRUE;
+                break;
+            }
+        }
+        if (hostilemonfound || (context.last_turn_when_took_damage > 0 && moves >= context.last_turn_when_took_damage && moves <= context.last_turn_when_took_damage + 3))
+        {
+            pline("The wand sparkles for a while, but nothing else happens.");
+            break;
+        }
+
+        if (Is_minetown_level(&u.uz))
+        {
+            if (context.town_portal_return_level_set)
+            {
+                level_tele(0, 2, context.town_portal_return_level);
+            }
+            else
+            {
+                level_tele(0, 0, zerodlevel);
+            }
+        }
+        else
+        {
+            context.town_portal_return_level = u.uz;
+            context.town_portal_return_level_set = TRUE;
+            level_tele(0, 2, minetown_level);
+        }
+        break;
+    }
     case WAN_CREATE_MONSTER:
         known = create_critters(rn2(23) ? 1 : rn1(7, 2),
                                 (struct permonst *) 0, TRUE);
@@ -5098,10 +5135,10 @@ register struct obj *obj;
         controlled_teleportation();
         break;
     case SPE_LEVEL_TELEPORT:
-        level_tele(2, FALSE);
+        level_tele(2, FALSE, zerodlevel);
         break;
     case SPE_CONTROLLED_LEVEL_TELEPORT:
-        level_tele(2, TRUE);
+        level_tele(2, TRUE, zerodlevel);
         break;
     case SPE_PORTAL:
         create_portal();

@@ -2603,7 +2603,7 @@ struct obj *obj;
             break;
         }
         case ARTINVOKE_LEVEL_TELEPORT:
-            level_tele(2, FALSE);
+            level_tele(2, FALSE, zerodlevel);
             break;
         case ARTINVOKE_CREATE_PORTAL:
         {

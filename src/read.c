@@ -2632,7 +2632,7 @@ boolean *effect_happened_ptr;
         break;
     case SCR_TELEPORTATION:
         if (confused || scursed) {
-            level_tele(0, FALSE);
+            level_tele(0, FALSE, zerodlevel);
         } else {
             known = scrolltele(sobj, FALSE, FALSE);
         }

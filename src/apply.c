@@ -61,7 +61,7 @@ struct obj* obj;
     }
 
     consume_obj_charge(obj, TRUE);
-    level_tele(0, FALSE);
+    level_tele(0, FALSE, zerodlevel);
     makeknown(obj->otyp);
     return 1;
 }
@@ -5105,6 +5105,7 @@ struct obj *obj;
     case WAN_SECRET_DOOR_DETECTION:
     case WAN_TRAP_DETECTION:
     case WAN_ORE_DETECTION:
+    case WAN_TOWN_PORTAL:
         pline(nothing_else_happens);
         goto discard_broken_wand;
     case WAN_DEATH:

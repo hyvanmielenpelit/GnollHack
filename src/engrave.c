@@ -799,6 +799,7 @@ doengrave()
                     dengr = TRUE;
                 }
                 break;
+            case WAN_TOWN_PORTAL:
             case WAN_TELEPORTATION:
                 if (oep && oep->engr_type != ENGR_HEADSTONE && oep->engr_type != ENGR_SIGNPOST) {
                     play_sfx_sound(SFX_TELEPORT);

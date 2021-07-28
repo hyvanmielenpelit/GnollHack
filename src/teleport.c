@@ -1080,9 +1080,10 @@ boolean break_the_rules; /* True: wizard mode ^T */
 }
 
 void
-level_tele(teletype, iscontrolled)
+level_tele(teletype, controltype, target_level)
 int teletype; /* 0 = scroll or other involuntary, 1 = wizard mode command, 2 = spell */
-boolean iscontrolled;
+int controltype; /* 0 = uncontrolled, 1 = controlled, 2 = town portal / other using target_level */
+d_level target_level;
 {
     register int newlev;
     d_level newlevel;
@@ -1100,7 +1101,13 @@ boolean iscontrolled;
         You_feel("very disoriented for a moment.");
         return;
     }
-    if ((Teleport_control && !Stunned) || iscontrolled || (wizard && (teletype == 1 || yn_query("Enforce teleport control?") == 'y'))) 
+
+    if (controltype == 2)
+    {
+        newlevel = target_level;
+        newlev = target_level.dlevel;
+    }
+    else if ((Teleport_control && !Stunned) || controltype == 1 || (wizard && (teletype == 1 || yn_query("Enforce teleport control?") == 'y')))
     {
         char qbuf[BUFSZ];
         int trycnt = 0;
@@ -1275,102 +1282,111 @@ random_levtport:
 
     level_teleport_effect_out(u.ux, u.uy);
 
-    if (newlev < 0 && !force_dest) 
+    if (controltype != 2)
     {
-        if (*u.ushops0) {
-            /* take unpaid inventory items off of shop bills */
-            in_mklev = TRUE; /* suppress map update */
-            u_left_shop(u.ushops0, TRUE);
-            /* you're now effectively out of the shop */
-            *u.ushops0 = *u.ushops = '\0';
-            in_mklev = FALSE;
-        }
-        if (newlev <= -10) {
-            You("arrive in heaven.");
-            play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THOU_ART_EARLY_BUT_WELL_ADMIT_THEE);
-            verbalize("Thou art early, but we'll admit thee.");
-            killer.format = NO_KILLER_PREFIX;
-            Strcpy(killer.name, "went to heaven prematurely");
-        } else if (newlev == -9) {
-            You_feel("deliriously happy.");
-            pline("(In fact, you're on Cloud 9!)");
-            display_nhwindow(WIN_MESSAGE, FALSE);
-        } else
-            You("are now high above the clouds...");
+        if (newlev < 0 && !force_dest)
+        {
+            if (*u.ushops0) {
+                /* take unpaid inventory items off of shop bills */
+                in_mklev = TRUE; /* suppress map update */
+                u_left_shop(u.ushops0, TRUE);
+                /* you're now effectively out of the shop */
+                *u.ushops0 = *u.ushops = '\0';
+                in_mklev = FALSE;
+            }
+            if (newlev <= -10) {
+                You("arrive in heaven.");
+                play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THOU_ART_EARLY_BUT_WELL_ADMIT_THEE);
+                verbalize("Thou art early, but we'll admit thee.");
+                killer.format = NO_KILLER_PREFIX;
+                Strcpy(killer.name, "went to heaven prematurely");
+            }
+            else if (newlev == -9) {
+                You_feel("deliriously happy.");
+                pline("(In fact, you're on Cloud 9!)");
+                display_nhwindow(WIN_MESSAGE, FALSE);
+            }
+            else
+                You("are now high above the clouds...");
 
-        if (killer.name[0]) {
-            ; /* arrival in heaven is pending */
-        } else if (Levitation) {
-            escape_by_flying = "float gently down to earth";
-        } else if (Flying) {
-            escape_by_flying = "fly down to the ground";
-        } else {
-            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Unfortunately, you don't know how to fly.");
-            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "plummet a few thousand feet to your death.");
-            Sprintf(killer.name,
+            if (killer.name[0]) {
+                ; /* arrival in heaven is pending */
+            }
+            else if (Levitation) {
+                escape_by_flying = "float gently down to earth";
+            }
+            else if (Flying) {
+                escape_by_flying = "fly down to the ground";
+            }
+            else {
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Unfortunately, you don't know how to fly.");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "plummet a few thousand feet to your death.");
+                Sprintf(killer.name,
                     "teleported out of the dungeon and fell to %s death",
                     uhis());
-            killer.format = NO_KILLER_PREFIX;
+                killer.format = NO_KILLER_PREFIX;
+            }
         }
-    }
 
-    if (killer.name[0]) { /* the chosen destination was not survivable */
-        d_level lsav;
+        if (killer.name[0]) { /* the chosen destination was not survivable */
+            d_level lsav;
 
-        /* set specific death location; this also suppresses bones */
-        lsav = u.uz;   /* save current level, see below */
-        u.uz.dnum = 0; /* main dungeon */
-        u.uz.dlevel = (newlev <= -10) ? -10 : 0; /* heaven or surface */
-        done(DIED);
-        /* can only get here via life-saving (or declining to die in
-           explore|debug mode); the hero has now left the dungeon... */
-        escape_by_flying = "find yourself back on the surface";
-        u.uz = lsav; /* restore u.uz so escape code works */
-    }
+            /* set specific death location; this also suppresses bones */
+            lsav = u.uz;   /* save current level, see below */
+            u.uz.dnum = 0; /* main dungeon */
+            u.uz.dlevel = (newlev <= -10) ? -10 : 0; /* heaven or surface */
+            done(DIED);
+            /* can only get here via life-saving (or declining to die in
+               explore|debug mode); the hero has now left the dungeon... */
+            escape_by_flying = "find yourself back on the surface";
+            u.uz = lsav; /* restore u.uz so escape code works */
+        }
 
-    /* calls done(ESCAPED) if newlevel==0 */
-    if (escape_by_flying) {
-        You("%s.", escape_by_flying);
-        newlevel.dnum = 0;   /* specify main dungeon */
-        newlevel.dlevel = 0; /* escape the dungeon */
-        /* [dlevel used to be set to 1, but it doesn't make sense to
-            teleport out of the dungeon and float or fly down to the
-            surface but then actually arrive back inside the dungeon] */
-    } 
-    else if (u.uz.dnum == main_dungeon_dnum
-               && newlev >= dungeons[u.uz.dnum].depth_start
-                                + dunlevs_in_dungeon(&u.uz)) 
-    {
-        if (!(wizard && force_dest))
+        /* calls done(ESCAPED) if newlevel==0 */
+        if (escape_by_flying) {
+            You("%s.", escape_by_flying);
+            newlevel.dnum = 0;   /* specify main dungeon */
+            newlevel.dlevel = 0; /* escape the dungeon */
+            /* [dlevel used to be set to 1, but it doesn't make sense to
+                teleport out of the dungeon and float or fly down to the
+                surface but then actually arrive back inside the dungeon] */
+        }
+        else if (u.uz.dnum == main_dungeon_dnum
+            && newlev >= dungeons[u.uz.dnum].depth_start
+            + dunlevs_in_dungeon(&u.uz))
         {
-            get_level_in_dungeon(&newlevel, newlev, gehennom_dnum);
-            if(!find_mapseen(&newlevel))
-                find_hell(&newlevel);
+            if (!(wizard && force_dest))
+            {
+                get_level_in_dungeon(&newlevel, newlev, gehennom_dnum);
+                if (!find_mapseen(&newlevel))
+                    find_hell(&newlevel);
+            }
         }
-    }
-    else 
-    {
-        /* if invocation did not yet occur, teleporting into
-         * the last level of Gehennom is forbidden.
-         */
-        if (!wizard && Inhell && !u.uevent.invoked
-            && newlev >= (dungeons[u.uz.dnum].depth_start
-                          + dunlevs_in_dungeon(&u.uz) - 1)) 
+        else
         {
-            newlev = dungeons[u.uz.dnum].depth_start
-                     + dunlevs_in_dungeon(&u.uz) - 2;
-            pline("Sorry...");
+            /* if invocation did not yet occur, teleporting into
+             * the last level of Gehennom is forbidden.
+             */
+            if (!wizard && Inhell && !u.uevent.invoked
+                && newlev >= (dungeons[u.uz.dnum].depth_start
+                    + dunlevs_in_dungeon(&u.uz) - 1))
+            {
+                newlev = dungeons[u.uz.dnum].depth_start
+                    + dunlevs_in_dungeon(&u.uz) - 2;
+                pline("Sorry...");
+            }
+            /* no teleporting out of quest dungeon */
+            if (In_quest(&u.uz) && newlev < depth(&qstart_level))
+                newlev = depth(&qstart_level);
+            /* the player thinks of levels purely in logical terms, so
+             * we must translate newlev to a number relative to the
+             * current dungeon.
+             */
+            if (!(wizard && force_dest))
+                get_level(&newlevel, newlev);
         }
-        /* no teleporting out of quest dungeon */
-        if (In_quest(&u.uz) && newlev < depth(&qstart_level))
-            newlev = depth(&qstart_level);
-        /* the player thinks of levels purely in logical terms, so
-         * we must translate newlev to a number relative to the
-         * current dungeon.
-         */
-        if (!(wizard && force_dest))
-            get_level(&newlevel, newlev);
     }
+
     schedule_goto(&newlevel, FALSE, FALSE, TRUE, 0, (char *) 0, (char *) 0);
     /* in case player just read a scroll and is about to be asked to
        call it something, we can't defer until the end of the turn */
@@ -1512,7 +1528,7 @@ unsigned trflags;
         You("are momentarily disoriented.");
     deltrap(trap);
     newsym(u.ux, u.uy); /* get rid of trap symbol */
-    level_tele(0, FALSE);
+    level_tele(0, FALSE, zerodlevel);
 }
 
 /* check whether monster can arrive at location <x,y> via Tport (or fall) */

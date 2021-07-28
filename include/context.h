@@ -233,6 +233,9 @@ struct context_info
     float global_minimum_volume;
     int tether_x;
     int tether_y;
+    boolean town_portal_return_level_set;
+    d_level town_portal_return_level;
+    long last_turn_when_took_damage;
 };
 
 extern NEARDATA struct context_info context;

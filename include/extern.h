@@ -3231,7 +3231,7 @@ E boolean FDECL(scrolltele, (struct obj *, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(modronportaltele, (struct trap*, struct monst*));
 E int NDECL(dotelecmd);
 E int FDECL(dotele, (BOOLEAN_P));
-E void FDECL(level_tele, (int, BOOLEAN_P));
+E void FDECL(level_tele, (int, int, d_level));
 E void FDECL(domagicportal, (struct trap *));
 E void FDECL(level_teleport_effect_out, (int, int));
 E void FDECL(level_teleport_effect_in, (int, int));

@@ -4971,6 +4971,11 @@ double hp_d;
         display_floating_text(u.ux, u.uy, buf, damage_dealt > 0 ? FLOATING_TEXT_DAMAGE : FLOATING_TEXT_HEALING, ATR_NONE, NO_COLOR, 0UL);
     }
 
+    if (damage_dealt > 0)
+    {
+        context.last_turn_when_took_damage = moves;
+    }
+
     if (iflags.using_gui_tiles && flags.show_tile_u_hp_bar)
         newsym(u.ux, u.uy);
 
