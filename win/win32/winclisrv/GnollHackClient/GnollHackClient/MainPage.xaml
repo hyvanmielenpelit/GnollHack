@@ -51,9 +51,13 @@
         <Label x:Name="ErrorLabel" TextColor="Red" FontSize="Small" FontFamily="Lato" AbsoluteLayout.LayoutBounds="10, 10, AutoSize, AutoSize" />
         <Grid x:Name="UpperButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,20,15,10" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
             <StackLayout>
-                <Grid>
+                <Grid x:Name="ResetGrid">
                     <Image x:Name="clearImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
                     <Button Text="Reset" x:Name="ClearFilesButton" Clicked="ClearFilesButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+                </Grid>
+                <Grid>
+                    <Image x:Name="topScoreImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
+                    <Button Text="Scores" x:Name="TopScoreButton" Clicked="TopScoreButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
                 </Grid>
                 <Grid>
                     <Image x:Name="optionsImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
@@ -97,29 +101,6 @@
             <Image x:Name="StartServerGameImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="2" />
             <Button Text="Server Game" x:Name="StartServerGameButton" Clicked="serverButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="2" />
         </Grid>
-
-        <!--
-        <ListView x:Name="myListView" HeightRequest="500" WidthRequest="300" BackgroundColor="Transparent" AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.25"
-                           AbsoluteLayout.LayoutFlags="All" />
-        -->
     </AbsoluteLayout>
     
-    <!--    <StackLayout>
-        <Frame BackgroundColor="#2196F3" Padding="24" CornerRadius="0">
-            <Label Text="Welcome to Xamarin.Forms!" HorizontalTextAlignment="Center" TextColor="White" FontSize="36"/>
-        </Frame>
-        <Label Text="Start developing now" FontSize="Title" Padding="30,10,30,10"/>
-        <Label Text="Make changes to your XAML file and save to see your UI update in the running app with XAML Hot Reload. Give it a try!" FontSize="16" Padding="30,0,30,0"/>
-        <Label FontSize="16" Padding="30,24,30,0">
-            <Label.FormattedText>
-                <FormattedString>
-                    <FormattedString.Spans>
-                        <Span Text="Learn more at "/>
-                        <Span Text="https://aka.ms/xamarin-quickstart" FontAttributes="Bold"/>
-                    </FormattedString.Spans>
-                </FormattedString>
-            </Label.FormattedText>
-        </Label>
-    </StackLayout>
--->
 </ContentPage>

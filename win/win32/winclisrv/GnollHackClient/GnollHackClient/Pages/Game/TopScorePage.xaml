@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             x:Class="GnollHackClient.Pages.Game.TopScorePage">
+    <ContentPage.Content>
+        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <ff:CachedImage x:Name="BackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" InputTransparent="False"
+                            Source="resource://GnollHackClient.Assets.UI.menubackground.png">
+            </ff:CachedImage>
+            <Grid x:Name="MainGrid" WidthRequest="1075" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" x:Name="HeaderLabel" Text="Top Scores" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="White" FontFamily="Immortal"/>
+                <Label Grid.Row="1" x:Name="NoScoresLabel" IsVisible="false" Text="No top scores available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="White" FontFamily="Underwood"/>
+                <CollectionView Grid.Row="1" Margin="0" x:Name="ScoresView" WidthRequest="1075" HorizontalOptions="Center" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
+                    <CollectionView.Header>
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="35" />
+                                <ColumnDefinition Width="170" />
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="75" />
+                                <ColumnDefinition Width="25" />
+                                <ColumnDefinition Width="325" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Text="#" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label Grid.Column="1" Text="Name" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label Grid.Column="2" Text="Points" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label Grid.Column="3" Text="Role" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label Grid.Column="4" Text="Race" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label Grid.Column="5" Text="Gender" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label Grid.Column="6" Text="Align" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label Grid.Column="7" Text="HP" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label Grid.Column="8" Text="MaxHP" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label Grid.Column="9" Text="Turns" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label Grid.Column="10" Text="Birth" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label Grid.Column="11" Text="D" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label Grid.Column="12" Text="Outcome" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                        </Grid>
+                    </CollectionView.Header>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="35" />
+                                    <ColumnDefinition Width="170" />
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="75" />
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="325" />
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding Rank}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label Grid.Column="1" Text="{Binding Name}" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label Grid.Column="2" Text="{Binding Score}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label Grid.Column="3" Text="{Binding Role}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label Grid.Column="4" Text="{Binding Race}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label Grid.Column="5" Text="{Binding Gender}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label Grid.Column="6" Text="{Binding Alignment}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label Grid.Column="7" Text="{Binding HP}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label Grid.Column="8" Text="{Binding HPMax}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label Grid.Column="9" Text="{Binding Turns}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label Grid.Column="10" Text="{Binding BirthDate}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label Grid.Column="11" Text="{Binding DifficultyString}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label Grid.Column="12" Text="{Binding Outcome}" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <Grid Grid.Row="2" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="End" Margin="10,20" WidthRequest="250" HeightRequest="70">
+                    <ff:CachedImage x:Name="CloseButtonImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="250" HeightRequest="70" />
+                    <Button Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                </Grid>
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

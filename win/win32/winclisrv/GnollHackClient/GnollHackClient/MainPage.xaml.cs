@@ -144,6 +144,7 @@ namespace GnollHackClient
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             wizardModeGrid.IsVisible = App.DeveloperMode;
+            ResetGrid.IsVisible = App.DeveloperMode;
             if (!App.DeveloperMode)
                 wizardModeSwitch.IsToggled = false;
 
@@ -258,6 +259,7 @@ namespace GnollHackClient
                             StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                            topScoreImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             optionsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
@@ -389,6 +391,31 @@ namespace GnollHackClient
                 videoView.WidthRequest = width;
                 videoView.HeightRequest = height;
                 videoView.Play();
+            }
+        }
+
+        private async void TopScoreButton_Clicked(object sender, EventArgs e)
+        {
+            string fulltargetpath = Path.Combine(App.GHPath, "xlogfile");
+            if(File.Exists(fulltargetpath))
+            {
+                var topScorePage = new TopScorePage(fulltargetpath);
+                string errormsg = "";
+                if (!topScorePage.ReadFile(out errormsg))
+                {
+                    ErrorLabel.Text = errormsg;
+                }
+                else
+                {
+                    ErrorLabel.Text = "";
+                    await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
+                }
+            }
+            else
+            {
+                /* No top scores */
+                var topScorePage = new TopScorePage();
+                await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
             }
         }
     }

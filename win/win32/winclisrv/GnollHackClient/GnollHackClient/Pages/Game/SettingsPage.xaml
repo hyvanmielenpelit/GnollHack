@@ -126,7 +126,7 @@
                            HorizontalOptions="Start" />
                     <Switch x:Name="DeveloperSwitch"  Grid.Column="1" Grid.Row="5" HorizontalOptions="Start" VerticalOptions="Center" />
                 </Grid>
-                <Grid WidthRequest="250" Margin="0,10,0,0" HorizontalOptions="Center">
+                <Grid WidthRequest="250" Margin="0,20,0,0" HorizontalOptions="Center">
                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="250"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
                     <Button Text="Back to Menu" WidthRequest="250" FontFamily="Diablo" FontSize="19" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
