@@ -396,9 +396,7 @@ doread()
 
     /* Actions required to win the game aren't counted towards conduct */
     /* Novel conduct is handled in read_tribute so exclude it too*/
-    if (scroll->otyp != SPE_BOOK_OF_THE_DEAD && scroll->otyp != SPE_BOOK_OF_MODRON
-        && scroll->otyp != SPE_BLANK_PAPER && scroll->otyp != SCR_BLANK_PAPER
-        && scroll->otyp != SPE_NOVEL)
+    if (!(objects[scroll->otyp].oc_flags5 & O5_OK_FOR_ILLITERATE))
         u.uconduct.literate++;
 
     if (scroll->oclass == SPBOOK_CLASS)

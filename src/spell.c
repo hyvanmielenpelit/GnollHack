@@ -583,10 +583,7 @@ register struct obj *spellbook;
     boolean perusetext = 0;
 
     if (!(context.spbook.delay && spellbook == context.spbook.book)
-        && !(objects[spellbook->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK)
-        && spellbook->otyp != SPE_BLANK_PAPER
-        && spellbook->otyp != SPE_BOOK_OF_THE_DEAD
-        && spellbook->otyp != SPE_NOVEL)
+        && !(objects[spellbook->otyp].oc_flags & O1_NON_SPELL_SPELLBOOK))
     {
         strcpy(namebuf, OBJ_NAME(objects[booktype]));
         strcpy(Namebuf2, OBJ_NAME(objects[booktype]));
@@ -673,8 +670,9 @@ register struct obj *spellbook;
         /* handle the sequence: start reading, get interrupted, have
            context.spbook.book become erased somehow, resume reading it */
         && booktype != SPE_BLANK_PAPER) {
-        You("continue your efforts to %s.",
-            (booktype == SPE_NOVEL) ? "read the novel" : "memorize the spell");
+        You("continue your efforts to %s the %s.",
+            (objects[booktype].oc_subtyp != BOOKTYPE_SPELLBOOK) ? "read" : "memorize",
+            (objects[booktype].oc_subtyp != BOOKTYPE_SPELLBOOK) ? book_type_names[objects[booktype].oc_subtyp] : "spell");
         resume = TRUE;
     } 
     else 
@@ -687,7 +685,7 @@ register struct obj *spellbook;
         }
 
         /* 3.6 tribute */
-        if (booktype == SPE_NOVEL) 
+        if (objects[booktype].oc_subtyp == BOOKTYPE_NOVEL) 
         {
             /* Obtain current Terry Pratchett book title */
             const char *tribtitle = noveltitle(&spellbook->novelidx);

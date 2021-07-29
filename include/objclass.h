@@ -236,6 +236,18 @@ enum obj_tool_types {
 };
 extern const char* tool_type_names[MAX_TOOL_TYPES]; /* in objnam.c */
 
+enum obj_book_types {
+    BOOKTYPE_SPELLBOOK = 0,
+    BOOKTYPE_BOOK,
+    BOOKTYPE_NOVEL,
+    BOOKTYPE_MANUAL,
+    BOOKTYPE_TOME,
+    BOOKTYPE_GRIMOIRE,
+    BOOKTYPE_CODEX,
+    MAX_BOOK_TYPES
+};
+extern const char* book_type_names[MAX_BOOK_TYPES]; /* in objnam.c */
+
 enum charged_init_types {
     CHARGED_NOT_CHARGED = 0,
     CHARGED_GENERAL = 1,
@@ -924,6 +936,9 @@ struct objclass {
 #define O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN 0x00000004UL
 #define O5_NO_MYTHIC_RACIAL_PREFIXES   0x00000008UL
 #define O5_IS_WEAPON_WHEN_WORN         0x00000010UL /* Weapon gloves only */
+#define O5_FULL_NAME                   0x00000020UL /* Do not append or prepend anything to the name */
+#define O5_OK_FOR_ILLITERATE           0x00000040UL /* Does not break illiterate conduct */
+#define O5_NOT_CANCELLABLE             0x00000080UL /* Cannot be cancelled */
 
 #define O6_NONE                        0x00000000UL
 

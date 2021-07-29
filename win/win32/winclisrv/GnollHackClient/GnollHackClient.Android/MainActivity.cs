@@ -24,16 +24,24 @@ namespace GnollHackClient.Droid
             Rg.Plugins.Popup.Popup.Init(this);
             MessagingCenter.Subscribe<Object>(this, "HideOsNavigationBar", (sender) =>
             {
-                int uiOptions = (int)Window.DecorView.SystemUiVisibility;
-                uiOptions |= (int)SystemUiFlags.HideNavigation;
-                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+                Window.SetDecorFitsSystemWindows(false);
+                IWindowInsetsController controller = Window.InsetsController;
+                if (controller != null)
+                {
+                    controller.Hide(WindowInsets.Type.NavigationBars());
+                    controller.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+                }
             });
 
             MessagingCenter.Subscribe<Object>(this, "ShowOsNavigationBar", (sender) =>
             {
-                int uiOptions = (int)Window.DecorView.SystemUiVisibility;
-                uiOptions &= ~((int)SystemUiFlags.HideNavigation);
-                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+                Window.SetDecorFitsSystemWindows(true);
+                IWindowInsetsController controller = Window.InsetsController;
+                if (controller != null)
+                {
+                    controller.Show(WindowInsets.Type.NavigationBars());
+                    controller.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+                }
             });
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);

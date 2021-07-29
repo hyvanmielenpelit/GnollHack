@@ -126,10 +126,9 @@ register struct obj *pen;
         return 0;
     /* can't write on a novel (unless/until it's been converted into a blank
        spellbook), but we want messages saying so to avoid "spellbook" */
-    typeword = (paper->otyp == SPE_NOVEL)
+    typeword = (paper->oclass == SPBOOK_CLASS) ? ((objects[paper->otyp].oc_subtyp != BOOKTYPE_SPELLBOOK)
                   ? "book"
-                  : (paper->oclass == SPBOOK_CLASS)
-                     ? "spellbook"
+                  : "spellbook")
                      : "scroll";
     if (Blind) {
         if (!paper->dknown) {

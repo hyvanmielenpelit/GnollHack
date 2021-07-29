@@ -95,6 +95,10 @@ const char* tool_type_names[MAX_TOOL_TYPES] = {
     "candle", "lamp", "lantern", "whistle", "flute", "harp", "drum", "saw", "jar", "can", "grail"
 };
 
+const char* book_type_names[MAX_BOOK_TYPES] = {
+    "spellbook", "book", "novel", "manual", "tome", "grimoire", "codex"
+};
+
 const char* critical_strike_special_percentage_names[MAX_CRITICAL_STRIKE_SPECIAL_PERCENTAGES] = {
     "100% less 5% per hit die"
 };
@@ -214,12 +218,21 @@ register int otyp;
         Strcpy(buf, "wand");
         break;
     case SPBOOK_CLASS:
+        Strcpy(buf, book_type_names[objects[otyp].oc_subtyp]);
+        if (objects[otyp].oc_subtyp == BOOKTYPE_NOVEL)
+        {
+            if(!nn)
+                Strcpy(buf, "book");
+            nn = 0;
+        }
+#if 0
         if (otyp != SPE_NOVEL) {
             Strcpy(buf, "spellbook");
         } else {
             Strcpy(buf, !nn ? "book" : "novel");
             nn = 0;
         }
+#endif
         break;
     case RING_CLASS:
         Strcpy(buf, "ring");
@@ -878,7 +891,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Sprintf(buf, "%s wand", dn);
         break;
     case SPBOOK_CLASS:
-        if (typ == SPE_NOVEL) { /* 3.6 tribute */
+        if (objects[typ].oc_subtyp == BOOKTYPE_NOVEL) { /* 3.6 tribute */
             if (!dknown)
                 Strcpy(buf, "book");
             else if (nn)
@@ -890,15 +903,15 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             break;
             /* end of tribute */
         } else if (!dknown) {
-            Strcpy(buf, "spellbook");
+            Strcpy(buf, book_type_names[objects[typ].oc_subtyp]);
         } else if (nn) {
-            if (typ != SPE_BOOK_OF_THE_DEAD && typ != SPE_BOOK_OF_MODRON)
-                Strcpy(buf, "spellbook of ");
+            if (!(objects[typ].oc_flags5 & O5_FULL_NAME)) // typ != SPE_BOOK_OF_THE_DEAD && typ != SPE_BOOK_OF_MODRON)
+                Sprintf(buf, "%s of ", book_type_names[objects[typ].oc_subtyp]);
             Strcat(buf, actualn);
         } else if (un) {
-            Sprintf(buf, "spellbook called %s", un);
+            Sprintf(buf, "%s called %s", book_type_names[objects[typ].oc_subtyp], un);
         } else
-            Sprintf(buf, "%s spellbook", dn);
+            Sprintf(buf, "%s %s", dn, book_type_names[objects[typ].oc_subtyp]);
         break;
     case RING_CLASS:
         if (!dknown)
@@ -5240,7 +5253,7 @@ boolean is_wiz_wish;
             name = aname;
 
         /* 3.6 tribute - fix up novel */
-        if (otmp->otyp == SPE_NOVEL) {
+        if (objects[otmp->otyp].oc_subtyp == BOOKTYPE_NOVEL) {
             const char *novelname;
 
             novelname = lookup_novel(name, &otmp->novelidx);

@@ -4645,7 +4645,7 @@ boolean force;
             play_sfx_sound_at_location(SFX_SCROLL_FADES, x, y);
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Your %s %s.", ostr, vtense(ostr, "fade"));
         }
-        if (obj->otyp == SPE_NOVEL) 
+        if (objects[obj->otyp].oc_subtyp == BOOKTYPE_NOVEL) 
         {
             obj->novelidx = 0;
             free_oname(obj);

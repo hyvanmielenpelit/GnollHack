@@ -2744,22 +2744,22 @@ register struct obj *obj;
 {
     int otyp = obj->otyp;
 
-    if (objects[otyp].oc_magic
+    if (!(objects[otyp].oc_flags5 & O5_NOT_CANCELLABLE) && (objects[otyp].oc_magic
         || (obj->charges && objects[otyp].oc_charged)
         || (obj->enchantment && (obj->oclass == ARMOR_CLASS
                          || obj->oclass == WEAPON_CLASS || is_weptool(obj) || objects[otyp].oc_enchantable))
         || otyp == POT_ACID
         || otyp == POT_SICKNESS
         || otyp == POT_POISON
-        || (otyp == POT_WATER && (obj->blessed || obj->cursed))) 
+        || (otyp == POT_WATER && (obj->blessed || obj->cursed))))
     {
         
-        if (otyp != WAN_CANCELLATION && otyp != WAN_DISJUNCTION /* can't cancel cancellation */)
-        {
+//        if (otyp != WAN_CANCELLATION && otyp != WAN_DISJUNCTION /* can't cancel cancellation */)
+//        {
             costly_alteration(obj, COST_CANCEL);
             obj->charges = (obj->oclass == WAND_CLASS) ? -1 : 0;
             obj->enchantment = 0;
-        }
+//        }
         switch (obj->oclass) {
         case SCROLL_CLASS:
             costly_alteration(obj, COST_CANCEL);
@@ -2768,8 +2768,9 @@ register struct obj *obj;
             obj->special_quality = 0;
             break;
         case SPBOOK_CLASS:
-            if (otyp != SPE_CANCELLATION && otyp != SPE_NOVEL
-                && otyp != SPE_BOOK_OF_THE_DEAD && otyp != SPE_BOOK_OF_MODRON) {
+            if (objects[otyp].oc_multigen_type == BOOKTYPE_SPELLBOOK
+                && !objects[otyp].oc_unique && !(objects[otyp].oc_flags & O1_INDESTRUCTIBLE) && obj->oartifact == 0)
+            {
                 costly_alteration(obj, COST_CANCEL);
                 obj->otyp = SPE_BLANK_PAPER;
             }
