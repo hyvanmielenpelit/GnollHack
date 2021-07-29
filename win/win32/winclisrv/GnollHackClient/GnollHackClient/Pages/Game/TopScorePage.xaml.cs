@@ -236,7 +236,7 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private double OutComeWidthRequest
+        private double OutcomeWidthRequest
         {
             get
             {
@@ -254,7 +254,7 @@ namespace GnollHackClient.Pages.Game
                 return 35 + 170 + 80 + 50 + 50 * (IsRaceVisible ? 1 : 0) + 60 * (IsGenderVisible ? 1 : 0)
                     + 50 * (IsAlignmentVisible ? 1 : 0) + 50 * (IsHPVisible ? 1 : 0) + 50 * (IsHPMaxVisible ? 1 : 0)
                     + 75 * (IsTurnsVisible ? 1 : 0) + 85 * (IsBirthDateVisible ? 1 : 0) + 25 
-                    + OutComeWidthRequest * (IsOutcomeVisible ? 1 : 0);
+                    + OutcomeWidthRequest * (IsOutcomeVisible ? 1 : 0);
             }
         }
     }

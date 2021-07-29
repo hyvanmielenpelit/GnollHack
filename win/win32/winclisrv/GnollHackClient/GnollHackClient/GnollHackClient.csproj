@@ -45,6 +45,7 @@
     <None Remove="Assets\Master.bank" />
     <None Remove="Assets\Master.strings.bank" />
     <None Remove="Assets\shxi.ttf" />
+    <None Remove="Assets\splash-snapshot.jpg" />
     <None Remove="Assets\tombstone.png" />
     <None Remove="Assets\UI\menubackground.png" />
     <None Remove="Assets\uwch.ttf" />
@@ -84,6 +85,7 @@
     <EmbeddedResource Include="Assets\Master.bank" />
     <EmbeddedResource Include="Assets\Master.strings.bank" />
     <EmbeddedResource Include="Assets\shxi.ttf" />
+    <EmbeddedResource Include="Assets\splash-snapshot.jpg" />
     <EmbeddedResource Include="Assets\tombstone.png" />
     <EmbeddedResource Include="Assets\UI\menubackground.png" />
     <EmbeddedResource Include="Assets\uwch.ttf" />

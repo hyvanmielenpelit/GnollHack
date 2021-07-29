@@ -163,6 +163,11 @@ namespace GnollHackClient
                     {
                         case 0:
                             App.LoadServices();
+                            App.IsModernAndroid = App.AppCloseService.IsModernAndroid();
+                            if(!App.IsModernAndroid)
+                            {
+                                StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.splash-snapshot.jpg", thisassembly);
+                            }
                             string verstr = App.GnollHackService.GetVersionString();
                             string verid = App.GnollHackService.GetVersionId();
                             string path = App.GnollHackService.GetGnollHackPath();
@@ -285,7 +290,8 @@ namespace GnollHackClient
             }
             else
             {
-                videoView.Play();
+                if (App.IsModernAndroid)
+                    videoView.Play();
                 App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
             }
         }
@@ -301,9 +307,17 @@ namespace GnollHackClient
             await FmodLogoImage.FadeTo(0, 250);
             UpperButtonGrid.IsVisible = true;
             await UpperButtonGrid.FadeTo(1, 250);
-            videoView.IsVisible = true;
-            await videoView.FadeTo(1, 250);
-            videoView.Play();
+            if (App.IsModernAndroid)
+            {
+                videoView.IsVisible = true;
+                await videoView.FadeTo(1, 250);
+                videoView.Play();
+            }
+            else
+            {
+                StillImage.IsVisible = true;
+                await StillImage.FadeTo(1, 250);
+            }
             StartButtonGrid.IsVisible = true;
             await StartButtonGrid.FadeTo(1, 250);
             LogoGrid.IsVisible = true;
@@ -370,7 +384,8 @@ namespace GnollHackClient
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            videoView.Stop();
+            if(App.IsModernAndroid)
+                videoView.Stop();
         }
 
         private double _currentPageWidth = 0;
@@ -382,15 +397,18 @@ namespace GnollHackClient
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
-                videoView.Stop();
-                videoView.Source = null;
-                if (Device.RuntimePlatform == Device.UWP)
-                    videoView.Source = new Uri($"ms-appx:///Assets/splashvideo.mp4");
-                else
-                    videoView.Source = new Uri($"ms-appx:///splashvideo.mp4");
-                videoView.WidthRequest = width;
-                videoView.HeightRequest = height;
-                videoView.Play();
+                if (App.IsModernAndroid)
+                {
+                    videoView.Stop();
+                    videoView.Source = null;
+                    if (Device.RuntimePlatform == Device.UWP)
+                        videoView.Source = new Uri($"ms-appx:///Assets/splashvideo.mp4");
+                    else
+                        videoView.Source = new Uri($"ms-appx:///splashvideo.mp4");
+                    videoView.WidthRequest = width;
+                    videoView.HeightRequest = height;
+                    videoView.Play();
+                }
             }
         }
 

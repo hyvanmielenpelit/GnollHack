@@ -21,5 +21,10 @@ namespace GnollHackClient.Droid
         {
             MainActivity.CurrentMainActivity.Finish();
         }
+        public bool IsModernAndroid()
+        {
+            return Build.VERSION.SdkInt >= BuildVersionCodes.R;
+        }
+
     }
 }

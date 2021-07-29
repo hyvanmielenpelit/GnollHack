@@ -7,5 +7,6 @@ namespace GnollHackClient
     public interface IAppCloseService
     {
         void CloseApplication();
+        bool IsModernAndroid();
     }
 }

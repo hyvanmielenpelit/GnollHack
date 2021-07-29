@@ -77,6 +77,7 @@ namespace GnollHackClient
             }
         }
 
+        public static bool IsModernAndroid { get; set; }
         public static bool DeveloperMode { get; set; }
 
         public static string GHVersionId { get; set; }
