@@ -285,7 +285,7 @@ namespace GnollHackClient
             }
             else
             {
-                videoView.Play();
+                //videoView.Play();
                 App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
             }
         }
@@ -301,9 +301,9 @@ namespace GnollHackClient
             await FmodLogoImage.FadeTo(0, 250);
             UpperButtonGrid.IsVisible = true;
             await UpperButtonGrid.FadeTo(1, 250);
-            videoView.IsVisible = true;
-            await videoView.FadeTo(1, 250);
-            videoView.Play();
+            //videoView.IsVisible = true;
+            //await videoView.FadeTo(1, 250);
+            //videoView.Play();
             StartButtonGrid.IsVisible = true;
             await StartButtonGrid.FadeTo(1, 250);
             LogoGrid.IsVisible = true;
@@ -390,7 +390,7 @@ namespace GnollHackClient
                     videoView.Source = new Uri($"ms-appx:///splashvideo.mp4");
                 videoView.WidthRequest = width;
                 videoView.HeightRequest = height;
-                videoView.Play();
+                //videoView.Play();
             }
         }
 

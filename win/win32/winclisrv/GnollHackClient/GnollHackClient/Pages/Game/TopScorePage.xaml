@@ -8,7 +8,7 @@
             <ff:CachedImage x:Name="BackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" InputTransparent="False"
                             Source="resource://GnollHackClient.Assets.UI.menubackground.png">
             </ff:CachedImage>
-            <Grid x:Name="MainGrid" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+            <Grid x:Name="MainGrid" WidthRequest="{Binding TotalWidthRequest}" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -19,7 +19,7 @@
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" x:Name="HeaderLabel" Text="Top Scores" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="White" FontFamily="Immortal"/>
                 <Label Grid.Row="1" x:Name="NoScoresLabel" IsVisible="false" Text="No top scores available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="White" FontFamily="Underwood"/>
-                <CollectionView Grid.Row="1" Margin="0" x:Name="ScoresView" HorizontalOptions="Center" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
+                <CollectionView Grid.Row="1" WidthRequest="{Binding TotalWidthRequest}" Margin="0" x:Name="ScoresView" HorizontalOptions="Center" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                     <CollectionView.Header>
                         <StackLayout Orientation="Horizontal">
                             <Label WidthRequest="35" Text="#" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
@@ -34,7 +34,7 @@
                             <Label WidthRequest="75" Text="Turns" HorizontalOptions="Start" IsVisible="{Binding IsTurnsVisible}" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
                             <Label WidthRequest="85" Text="Birth" IsVisible="{Binding IsBirthDateVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
                             <Label WidthRequest="25" Text="D" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Text="Outcome" IsVisible="{Binding IsOutcomeVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label WidthRequest="{Binding OutcomeWidthRequest}" Text="Outcome" IsVisible="{Binding IsOutcomeVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
                         </StackLayout>
                         <!--
                         <Grid >

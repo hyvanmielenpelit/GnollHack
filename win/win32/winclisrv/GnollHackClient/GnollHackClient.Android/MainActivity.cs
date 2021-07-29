@@ -20,27 +20,38 @@ namespace GnollHackClient.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            this.Window.AddFlags(WindowManagerFlags.Fullscreen);
+            Window.AddFlags(WindowManagerFlags.Fullscreen);
+            Window.ClearFlags(WindowManagerFlags.ForceNotFullscreen);
             Rg.Plugins.Popup.Popup.Init(this);
             MessagingCenter.Subscribe<Object>(this, "HideOsNavigationBar", (sender) =>
             {
-                Window.SetDecorFitsSystemWindows(false);
-                IWindowInsetsController controller = Window.InsetsController;
-                if (controller != null)
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
                 {
-                    controller.Hide(WindowInsets.Type.NavigationBars());
-                    controller.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+                    Window.SetDecorFitsSystemWindows(false);
+                    Window.InsetsController?.Hide(WindowInsets.Type.NavigationBars());
+                }
+                else
+                {
+                    SystemUiFlags systemUiVisibility = (SystemUiFlags)Window.DecorView.SystemUiVisibility;
+                    systemUiVisibility |= SystemUiFlags.HideNavigation;
+                    systemUiVisibility |= SystemUiFlags.Immersive;
+                    Window.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
                 }
             });
 
             MessagingCenter.Subscribe<Object>(this, "ShowOsNavigationBar", (sender) =>
             {
-                Window.SetDecorFitsSystemWindows(true);
-                IWindowInsetsController controller = Window.InsetsController;
-                if (controller != null)
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
                 {
-                    controller.Show(WindowInsets.Type.NavigationBars());
-                    controller.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+                    Window.SetDecorFitsSystemWindows(true);
+                    Window.InsetsController?.Show(WindowInsets.Type.NavigationBars());
+                }
+                else
+                {
+                    SystemUiFlags systemUiVisibility = (SystemUiFlags)Window.DecorView.SystemUiVisibility;
+                    systemUiVisibility &= ~SystemUiFlags.HideNavigation;
+                    systemUiVisibility &= ~SystemUiFlags.Immersive;
+                    Window.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
                 }
             });
 
