@@ -152,6 +152,7 @@ namespace GnollHackClient
                 _firsttime = false;
                 StartFadeLogoIn();
                 Assembly thisassembly = GetType().GetTypeInfo().Assembly;
+                FmodLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.FMOD-Logo-32-White.png", thisassembly);
                 StartLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
                 MainLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
                 Device.StartTimer(TimeSpan.FromSeconds(1f / 4), () =>
@@ -261,16 +262,19 @@ namespace GnollHackClient
                             settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-
                             res = true;
                             break;
                         case 1:
                             App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                            res = true;
+                            break;
+                        case 2:
                             StartFadeIn();
                             res = true;
                             break;
                         default:
                             StartLogoImage.IsVisible = false;
+                            FmodLogoImage.IsVisible = false;
                             break;
                     }
                     starttimercount++;
@@ -286,11 +290,13 @@ namespace GnollHackClient
         private async void StartFadeLogoIn()
         {
             await StartLogoImage.FadeTo(1, 250);
+            await FmodLogoImage.FadeTo(1, 250);
         }
 
         private async void StartFadeIn()
         {
             await StartLogoImage.FadeTo(0, 250);
+            await FmodLogoImage.FadeTo(0, 250);
             UpperButtonGrid.IsVisible = true;
             await UpperButtonGrid.FadeTo(1, 250);
             videoView.IsVisible = true;

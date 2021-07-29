@@ -12,6 +12,11 @@
     <AbsoluteLayout VerticalOptions="FillAndExpand"
                     HorizontalOptions="FillAndExpand" BackgroundColor="Black">
 
+        <ff:CachedImage x:Name="FmodLogoImage" Opacity="0" IsVisible="true" WidthRequest="121" HeightRequest="32"
+               HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
+               AbsoluteLayout.LayoutBounds="20, 20, AutoSize, AutoSize"
+               AbsoluteLayout.LayoutFlags="None" Aspect="AspectFit"/>
+
         <ff:CachedImage x:Name="StartLogoImage" Opacity="0" IsVisible="true" HeightRequest="250" WidthRequest="250"
                HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
@@ -42,7 +47,7 @@
         </Grid>
 
 
-        <Label x:Name="VersionLabel" TextColor="White" FontSize="6" FontFamily="Lato" AbsoluteLayout.LayoutBounds="3, 3, AutoSize, AutoSize" />
+        <Label x:Name="VersionLabel" TextColor="White" FontSize="6" FontFamily="Lato" AbsoluteLayout.LayoutBounds="0.99, 0.99, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional" />
         <Label x:Name="ErrorLabel" TextColor="Red" FontSize="Small" FontFamily="Lato" AbsoluteLayout.LayoutBounds="10, 10, AutoSize, AutoSize" />
         <Grid x:Name="UpperButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,20,15,10" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
             <StackLayout>
