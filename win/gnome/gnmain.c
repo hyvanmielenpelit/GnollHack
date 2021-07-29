@@ -197,7 +197,7 @@ ghack_accelerator_selected(GtkWidget *widget, gpointer data)
 #endif /* NHSTDC */
 #endif
 #ifndef C
-#define C(c) (0x1f & (c))
+#define C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
 #endif
 
 GnomeUIInfo game_tree[] = {

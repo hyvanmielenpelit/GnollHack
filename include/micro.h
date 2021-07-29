@@ -13,7 +13,7 @@ extern char levels[], bones[], permbones[], hackdir[];
 extern int ramdisk;
 
 #ifndef C
-#define C(c) (0x1f & (c))
+#define C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
 #endif
 #ifndef M
 #define M(c) (((char) 0x80) | (c))

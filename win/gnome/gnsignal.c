@@ -190,7 +190,7 @@ ghack_handle_button_press(GtkWidget *widget, GdkEventButton *event,
 #endif /* NHSTDC */
 #endif
 #ifndef C
-#define C(c) (0x1f & (c))
+#define C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
 #endif
 
 void

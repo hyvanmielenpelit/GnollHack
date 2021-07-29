@@ -7,7 +7,7 @@
 #include "func_tab.h"
 
 #ifndef C /* same as cmd.c */
-#define C(c) (0x1f & (c))
+#define C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
 #endif
 
 #define NOINVSYM '#'

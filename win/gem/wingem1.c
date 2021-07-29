@@ -60,7 +60,7 @@ extern winid WIN_MESSAGE, WIN_MAP, WIN_STATUS, WIN_INVEN;
 /*
  *  Keyboard translation tables.
  */
-#define C(c) (0x1f & (c))
+#define C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
 #define M(c) (0x80 | (c))
 
 #define KEYPADLO 0x61
