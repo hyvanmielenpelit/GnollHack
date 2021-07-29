@@ -54,7 +54,7 @@
 
         <Label x:Name="VersionLabel" TextColor="White" FontSize="6" FontFamily="Lato" AbsoluteLayout.LayoutBounds="0.99, 0.99, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional" />
         <Label x:Name="ErrorLabel" TextColor="Red" FontSize="Small" FontFamily="Lato" AbsoluteLayout.LayoutBounds="10, 10, AutoSize, AutoSize" />
-        <Grid x:Name="UpperButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,20,15,10" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
+        <Grid x:Name="UpperButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,10,10,5" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
             <StackLayout>
                 <Grid x:Name="ResetGrid">
                     <Image x:Name="clearImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>

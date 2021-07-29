@@ -317,6 +317,7 @@ namespace GnollHackClient
             {
                 StillImage.IsVisible = true;
                 await StillImage.FadeTo(1, 250);
+                videoView.Stop();
             }
             StartButtonGrid.IsVisible = true;
             await StartButtonGrid.FadeTo(1, 250);

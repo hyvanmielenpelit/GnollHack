@@ -121,7 +121,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 750);
+                bool newvalue = (Width >= 630);
                 if (_raceVisible != newvalue)
                 {
                     _raceVisible = newvalue;
@@ -136,7 +136,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 810);
+                bool newvalue = (Width >= 690);
                 if (_genderVisible != newvalue)
                 {
                     _genderVisible = newvalue;
@@ -151,7 +151,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 860);
+                bool newvalue = (Width >= 740);
                 if (_alignmentVisible != newvalue)
                 {
                     _alignmentVisible = newvalue;
@@ -166,7 +166,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 960);
+                bool newvalue = (Width >= 840);
                 if (_hpVisible != newvalue)
                 {
                     _hpVisible = newvalue;
@@ -181,7 +181,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 910);
+                bool newvalue = (Width >= 790);
                 if (_hpMaxVisible != newvalue)
                 {
                     _hpMaxVisible = newvalue;
@@ -196,7 +196,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 710);
+                bool newvalue = (Width >= 915);
                 if (_turnsVisible != newvalue)
                 {
                     _turnsVisible = newvalue;
@@ -211,7 +211,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 1045);
+                bool newvalue = (Width >= 1000);
                 if (_birthDateVisible != newvalue)
                 {
                     _birthDateVisible = newvalue;
@@ -226,35 +226,13 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 550);
+                bool newvalue = (Width >= 580);
                 if (_outcomeVisible != newvalue)
                 {
                     _outcomeVisible = newvalue;
                     OnPropertyChanged("IsOutcomeVisible");
                 }
                 return _outcomeVisible;
-            }
-        }
-
-        private double OutcomeWidthRequest
-        {
-            get
-            {
-                return Math.Max(150, Math.Min(400, Width - 5 - (35 + 170 + 80 + 50 
-                    + 50 * (IsRaceVisible ? 1 : 0) + 60 * (IsGenderVisible ? 1 : 0)
-                    + 50 * (IsAlignmentVisible ? 1 : 0) + 50 * (IsHPVisible ? 1 : 0) + 50 * (IsHPMaxVisible ? 1 : 0) 
-                    + 75 * (IsTurnsVisible ? 1 : 0) + 85 * (IsBirthDateVisible ? 1 : 0) + 25)));
-            }
-        }
-
-        private double TotalWidthRequest
-        {
-            get
-            {
-                return 35 + 170 + 80 + 50 + 50 * (IsRaceVisible ? 1 : 0) + 60 * (IsGenderVisible ? 1 : 0)
-                    + 50 * (IsAlignmentVisible ? 1 : 0) + 50 * (IsHPVisible ? 1 : 0) + 50 * (IsHPMaxVisible ? 1 : 0)
-                    + 75 * (IsTurnsVisible ? 1 : 0) + 85 * (IsBirthDateVisible ? 1 : 0) + 25 
-                    + OutcomeWidthRequest * (IsOutcomeVisible ? 1 : 0);
             }
         }
     }
