@@ -154,7 +154,7 @@ struct monst* mon;
                 /* Normal peaceful monster talk */
                 if(is_peaceful(mon) && (special_talk || (!is_undead(mon->data) && !is_demon(mon->data) && !In_endgame(&u.uz) && !Is_sanctum(&u.uz)
                     && !mon->isshk && !mon->isgd && !mon->ispriest && !mon->issmith && !mon->isnpc && !is_watch(mon->data) && !is_mercenary(mon->data)
-                    && !is_lord(mon->data) && !is_prince(mon->data) && !mon->m_lev >= 10
+                    && !is_lord(mon->data) && !is_prince(mon->data) && mon->m_lev < 10
                     && !(mon->iswiz || mon->data == &mons[PM_MEDUSA] || (mon->data->geno & G_UNIQ) != 0
                         || mon->data->msound == MS_NEMESIS || mon->data->msound == MS_LEADER || mon->data->msound == MS_ORACLE
                         || mon->data->msound == MS_GUARDIAN || mon->data->msound == MS_BRIBE
