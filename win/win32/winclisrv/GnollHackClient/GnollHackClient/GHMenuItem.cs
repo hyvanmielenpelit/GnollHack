@@ -304,6 +304,7 @@ namespace GnollHackClient
             }
         }
 
+        private double _fontSize = 0;
         public double FontSize
         {
             get
@@ -369,7 +370,13 @@ namespace GnollHackClient
                     case ghmenu_styles.MAX_GHMENU_STYLES:
                         break;
                 }
-                return res; 
+
+                if(res != _fontSize)
+                {
+                    _fontSize = res;
+                    OnPropertyChanged("FontSize");
+                }
+                return _fontSize; 
             }
         }
         public bool Equals(GHMenuItem other)
@@ -403,5 +410,11 @@ namespace GnollHackClient
                 return _glyphImageSource;
             }
         }
+
+        private void OnPropertyChanged(string propertyname)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+        }
+
     }
 }

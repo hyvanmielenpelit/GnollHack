@@ -1,10 +1,12 @@
-﻿using System;
+﻿using GnollHackClient.Pages.Game;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace GnollHackClient
 {
-    public class GHTopScoreItem
+    public class GHTopScoreItem : INotifyPropertyChanged
     {
         public int Rank { get; set; }
         public string Name { get; set; }
@@ -63,9 +65,13 @@ namespace GnollHackClient
         public string Mode { get; set; }
         public int BirthDate { get; set; }
 
-        public GHTopScoreItem()
-        {
+        TopScorePage _page = null;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public GHTopScoreItem(TopScorePage topScorePage)
+        {
+            _page = topScorePage;
         }
 
         public void AddXlogLineItemData(string xloglineitem)
@@ -146,6 +152,132 @@ namespace GnollHackClient
                 if (int.TryParse(elements[1], out parseint))
                     BirthDate = parseint;
             }
+        }
+
+        private bool _raceVisible;
+        public bool IsRaceVisible
+        {
+            get
+            {
+                bool newvalue = _page.IsRaceVisible;
+                if (newvalue != _raceVisible)
+                {
+                    _raceVisible = newvalue;
+                    OnPropertyChanged("IsRaceVisible");
+                }
+                return _raceVisible;
+            }
+        }
+
+        private bool _genderVisible;
+        public bool IsGenderVisible
+        {
+            get
+            {
+                bool newvalue = _page.IsGenderVisible;
+                if (newvalue != _genderVisible)
+                {
+                    _genderVisible = newvalue;
+                    OnPropertyChanged("IsGenderVisible");
+                }
+                return _genderVisible;
+            }
+        }
+
+        private bool _alignmentVisible;
+        public bool IsAlignmentVisible
+        {
+            get
+            {
+                bool newvalue = _page.IsAlignmentVisible;
+                if (newvalue != _alignmentVisible)
+                {
+                    _alignmentVisible = newvalue;
+                    OnPropertyChanged("IsAlignmentVisible");
+                }
+                return _alignmentVisible;
+            }
+        }
+
+        private bool _hpVisible;
+        public bool IsHPVisible
+        {
+            get
+            {
+                bool newvalue = _page.IsHPVisible;
+                if (newvalue != _hpVisible)
+                {
+                    _hpVisible = newvalue;
+                    OnPropertyChanged("IsHPVisible");
+                }
+                return _hpVisible;
+            }
+        }
+
+        private bool _hpMaxVisible;
+        public bool IsHPMaxVisible
+        {
+            get
+            {
+                bool newvalue = _page.IsHPMaxVisible;
+                if (newvalue != _hpMaxVisible)
+                {
+                    _hpMaxVisible = newvalue;
+                    OnPropertyChanged("IsHPMaxVisible");
+                }
+                return _hpMaxVisible;
+            }
+        }
+
+
+        private bool _turnsVisible;
+        public bool IsTurnsVisible
+        {
+            get
+            {
+                bool newvalue = _page.IsTurnsVisible;
+                if (newvalue != _turnsVisible)
+                {
+                    _turnsVisible = newvalue;
+                    OnPropertyChanged("IsTurnsVisible");
+                }
+                return _turnsVisible;
+            }
+        }
+
+        private bool _birthDateVisible;
+        public bool IsBirthDateVisible
+        {
+            get
+            {
+                bool newvalue = _page.IsBirthDateVisible;
+                if (newvalue != _birthDateVisible)
+                {
+                    _birthDateVisible = newvalue;
+                    OnPropertyChanged("IsBirthDateVisible");
+                }
+                return _birthDateVisible;
+            }
+        }
+
+        private bool _outcomeVisible;
+        public bool IsOutcomeVisible
+        {
+            get
+            {
+                bool newvalue = _page.IsOutcomeVisible;
+                if (newvalue != _outcomeVisible)
+                {
+                    _outcomeVisible = newvalue;
+                    OnPropertyChanged("IsOutcomeVisible");
+                }
+                return _outcomeVisible;
+            }
+        }
+
+        private void OnPropertyChanged(string propertyname)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
         }
     }
 }

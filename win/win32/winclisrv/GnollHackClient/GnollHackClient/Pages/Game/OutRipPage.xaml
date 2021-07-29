@@ -12,7 +12,7 @@
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                 </Grid.GestureRecognizers>
                 <ff:CachedImage HeightRequest="350" WidthRequest="350" Source="resource://GnollHackClient.Assets.tombstone.png"/>
-                <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Margin="20,00,0,0" WidthRequest="180" >
+                <Grid HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Margin="20,0,0,0" WidthRequest="180" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height ="Auto"/>
                         <RowDefinition Height ="Auto"/>
