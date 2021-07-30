@@ -31,8 +31,6 @@ namespace GnollHackClient
 {
     public partial class MainPage : ContentPage
     {
-        SKBitmap _background_bitmap;
-        SKBitmap _logo_bitmap;
         private bool _canClickButton = true;
         private bool _serverButtonClicked = false;
         private NavigationPage _loginNavPage = null;
@@ -40,71 +38,6 @@ namespace GnollHackClient
         public MainPage()
         {
             InitializeComponent();
-        }
-
-        private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
-        {
-            SKImageInfo info = e.Info;
-            SKSurface surface = e.Surface;
-            SKCanvas canvas = surface.Canvas;
-
-            canvas.Clear(SKColors.DarkGray);
-
-            float x = info.Width;
-            float y = info.Height;
-
-            SKRect bkdest = new SKRect(0f, 0f, x, y);
-            canvas.DrawBitmap(_background_bitmap, bkdest);
-
-            float scale = info.Width < info.Height ? 1.0f : (float)info.Height / (float)info.Width;
-            float scalesquared = (float)Math.Pow((double)scale, 2.0);
-            float logo_width = (float)info.Width * scalesquared;
-            float logo_height = (float)_logo_bitmap.Height * logo_width / ((float)_logo_bitmap.Width);
-            x = (info.Width - logo_width) / 2;
-            y = (float)info.Height * 0.175f;
-            SKRect dest = new SKRect(x, y, x + logo_width, y + logo_height);
-            canvas.DrawBitmap(_logo_bitmap, dest);
-
-            string str = scale == 1.0f ? "GnollHack " + App.GHVersionString : "GnollHack " + App.GHVersionString + " Android";
-
-            // Create an SKPaint object to display the text
-            SKPaint textPaint = new SKPaint
-            {
-                Color = SKColors.Black
-            };
-
-            textPaint.Typeface = App.DiabloTypeface;
-
-            // Adjust TextSize property so text is 90% of screen width
-            float textWidth = textPaint.MeasureText(str);
-            textPaint.TextSize = 0.65f * scale * info.Width * textPaint.TextSize / textWidth;
-
-            // Find the text bounds
-            SKRect textBounds = new SKRect();
-            textPaint.MeasureText(str, ref textBounds);
-            float xText = info.Width / 2 - textBounds.MidX;
-            float yText = y + logo_height + 30; // info.Height / 2 - textBounds.MidY;
-
-            canvas.DrawText(str, xText, yText, textPaint);
-
-
-            if (info.Width < info.Height)
-            {
-                str = "Android Version";
-                yText = yText + textPaint.TextSize + 5;
-                textPaint.MeasureText(str, ref textBounds);
-                xText = info.Width / 2 - textBounds.MidX;
-                canvas.DrawText(str, xText, yText, textPaint);
-            }
-
-            str = App.GHVersionId;
-            textPaint.Typeface = App.LatoRegular;
-            textPaint.TextSize = 15;
-            textPaint.Color = SKColors.White;
-            yText = 5 - textPaint.FontMetrics.Ascent;
-            xText = 5;
-            canvas.DrawText(str, xText, yText, textPaint);
-
         }
 
         public void HideLocalGameButton()
@@ -164,10 +97,6 @@ namespace GnollHackClient
                         case 0:
                             App.LoadServices();
                             App.IsModernAndroid = App.AppCloseService.IsModernAndroid();
-                            if(!App.IsModernAndroid)
-                            {
-                                StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.splash-snapshot.jpg", thisassembly);
-                            }
                             string verstr = App.GnollHackService.GetVersionString();
                             string verid = App.GnollHackService.GetVersionId();
                             string path = App.GnollHackService.GetGnollHackPath();
@@ -178,16 +107,6 @@ namespace GnollHackClient
                             GnollHackLabel.Text = "GnollHack"; // + verstr;
 
                             Assembly assembly = GetType().GetTypeInfo().Assembly;
-                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.window_background.png"))
-                            {
-                                _background_bitmap = SKBitmap.Decode(stream);
-                            }
-
-                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack-logo-test-2.png"))
-                            {
-                                _logo_bitmap = SKBitmap.Decode(stream);
-                            }
-
                             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.diablo_h.ttf"))
                             {
                                 if (stream != null)
@@ -269,6 +188,7 @@ namespace GnollHackClient
                             settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                            StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.splash-snapshot.jpg", assembly);
                             res = true;
                             break;
                         case 1:
@@ -307,6 +227,7 @@ namespace GnollHackClient
             await FmodLogoImage.FadeTo(0, 250);
             UpperButtonGrid.IsVisible = true;
             await UpperButtonGrid.FadeTo(1, 250);
+
             if (App.IsModernAndroid)
             {
                 videoView.IsVisible = true;
@@ -319,6 +240,7 @@ namespace GnollHackClient
                 await StillImage.FadeTo(1, 250);
                 videoView.Stop();
             }
+
             StartButtonGrid.IsVisible = true;
             await StartButtonGrid.FadeTo(1, 250);
             LogoGrid.IsVisible = true;
@@ -385,7 +307,7 @@ namespace GnollHackClient
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            if(App.IsModernAndroid)
+            if (App.IsModernAndroid)
                 videoView.Stop();
         }
 

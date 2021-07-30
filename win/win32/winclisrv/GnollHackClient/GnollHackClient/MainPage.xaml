@@ -22,7 +22,7 @@
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" Aspect="AspectFit"/>
 
-        <ff:CachedImage x:Name="StillImage" Opacity="0" IsVisible="false"
+        <ff:CachedImage x:Name="StillImage" Opacity="1" IsVisible="false"
                HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                AbsoluteLayout.LayoutFlags="All" Aspect="AspectFill"/>

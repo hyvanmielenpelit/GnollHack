@@ -18,117 +18,46 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" x:Name="HeaderLabel" Text="Top Scores" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="White" FontFamily="Immortal"/>
-                <Label Grid.Row="1" x:Name="NoScoresLabel" IsVisible="false" Text="No top scores available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="White" FontFamily="Underwood"/>
+                <Label Grid.Row="1" x:Name="NoScoresLabel" IsVisible="false" Text="No top scores available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
                 <CollectionView Grid.Row="1" Margin="0" x:Name="ScoresView" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand">
                     <CollectionView.Header>
                         <StackLayout Orientation="Horizontal" Spacing="0" Padding="0" Margin="0">
-                            <Label WidthRequest="35" Text="#" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label WidthRequest="165" Text="Name" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label WidthRequest="80" Text="Points" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label WidthRequest="50" Text="Role" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label WidthRequest="50" Text="Race" IsVisible="{Binding IsRaceVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label WidthRequest="60" Text="Gender" IsVisible="{Binding IsGenderVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label WidthRequest="50" Text="Align" IsVisible="{Binding IsAlignmentVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label WidthRequest="50" Text="HP" IsVisible="{Binding IsHPVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label WidthRequest="50" Text="MaxHP" IsVisible="{Binding IsHPMaxVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label WidthRequest="75" Text="Turns" HorizontalOptions="Start" IsVisible="{Binding IsTurnsVisible}" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label WidthRequest="85" Text="Birth" IsVisible="{Binding IsBirthDateVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label WidthRequest="25" Text="D" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Text="Outcome" IsVisible="{Binding IsOutcomeVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                            <Label WidthRequest="35" Text="#" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="165" Text="Name" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="80" Text="Points" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="50" Text="Role" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="50" Text="Race" IsVisible="{Binding IsRaceVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="60" Text="Gender" IsVisible="{Binding IsGenderVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="50" Text="Align" IsVisible="{Binding IsAlignmentVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="50" Text="HP" IsVisible="{Binding IsHPVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="50" Text="MaxHP" IsVisible="{Binding IsHPMaxVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="75" Text="Turns" HorizontalOptions="Start" IsVisible="{Binding IsTurnsVisible}" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="85" Text="Started" IsVisible="{Binding IsBirthDateVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="25" Text="D" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label Text="Outcome" IsVisible="{Binding IsOutcomeVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono-Bold"/>
                         </StackLayout>
-                        <!--
-                    <Grid >
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="35" />
-                            <ColumnDefinition Width="170" />
-                            <ColumnDefinition Width="80" />
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="75" />
-                            <ColumnDefinition Width="25" />
-                            <ColumnDefinition Width="325" />
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Text="#" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        <Label Grid.Column="1" Text="Name" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        <Label Grid.Column="2" Text="Points" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        <Label Grid.Column="3" Text="Role" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        <Label Grid.Column="4" Text="Race" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        <Label Grid.Column="5" Text="Gender" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        <Label Grid.Column="6" Text="Align" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        <Label Grid.Column="7" Text="HP" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        <Label Grid.Column="8" Text="MaxHP" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        <Label Grid.Column="9" Text="Turns" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        <Label Grid.Column="10" Text="Birth" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        <Label Grid.Column="11" Text="D" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        <Label Grid.Column="12" Text="Outcome" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                    </Grid>
-                    -->
                     </CollectionView.Header>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <StackLayout Orientation="Horizontal" Spacing="0" Padding="0" Margin="0" >
-                                <Label WidthRequest="35" Text="{Binding Rank}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label WidthRequest="35" Text="{Binding Rank}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
                                 <Grid WidthRequest="165" Padding="0" RowSpacing="0" ColumnSpacing="0" Margin="0" VerticalOptions="FillAndExpand">
-                                    <Label WidthRequest="165" Text="{Binding Name}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                    <Label WidthRequest="165" Text="{Binding Name}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
                                 </Grid>
-                                <Label WidthRequest="80" Text="{Binding Score}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                                <Label WidthRequest="50" Text="{Binding Role}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                                <Label WidthRequest="50" Text="{Binding Race}" IsVisible="{Binding IsRaceVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                                <Label WidthRequest="60" Text="{Binding Gender}" IsVisible="{Binding IsGenderVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                                <Label WidthRequest="50" Text="{Binding Alignment}" IsVisible="{Binding IsAlignmentVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                                <Label WidthRequest="50" Text="{Binding HP}" IsVisible="{Binding IsHPVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                                <Label WidthRequest="50" Text="{Binding HPMax}" IsVisible="{Binding IsHPMaxVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                                <Label WidthRequest="75" Text="{Binding Turns}" IsVisible="{Binding IsTurnsVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                                <Label WidthRequest="85" Text="{Binding BirthDate}" IsVisible="{Binding IsBirthDateVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                                <Label WidthRequest="25" Text="{Binding DifficultyString}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                <Label WidthRequest="80" Text="{Binding Score}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                <Label WidthRequest="50" Text="{Binding Role}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                <Label WidthRequest="50" Text="{Binding Race}" IsVisible="{Binding IsRaceVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                <Label WidthRequest="60" Text="{Binding Gender}" IsVisible="{Binding IsGenderVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                <Label WidthRequest="50" Text="{Binding Alignment}" IsVisible="{Binding IsAlignmentVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                <Label WidthRequest="50" Text="{Binding HP}" IsVisible="{Binding IsHPVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                <Label WidthRequest="50" Text="{Binding HPMax}" IsVisible="{Binding IsHPMaxVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                <Label WidthRequest="75" Text="{Binding Turns}" IsVisible="{Binding IsTurnsVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                <Label WidthRequest="85" Text="{Binding BirthDate}" IsVisible="{Binding IsBirthDateVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                <Label WidthRequest="25" Text="{Binding DifficultyString}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
                                 <Grid WidthRequest="220" IsVisible="{Binding IsOutcomeVisible}" VerticalOptions="FillAndExpand" Padding="0" RowSpacing="0" ColumnSpacing="0" Margin="0" >
-                                    <Label Text="{Binding Outcome}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
+                                    <Label Text="{Binding Outcome}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
                                 </Grid>
                             </StackLayout>
-
-                            <!--
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="35" />
-                                <ColumnDefinition Width="170" />
-                                <ColumnDefinition Width="80" />
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="75" />
-                                <ColumnDefinition Width="25" />
-                                <ColumnDefinition Width="325" />
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Text="{Binding Rank}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Grid.Column="1" Text="{Binding Name}" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Grid.Column="2" Text="{Binding Score}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Grid.Column="3" Text="{Binding Role}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Grid.Column="4" Text="{Binding Race}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Grid.Column="5" Text="{Binding Gender}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Grid.Column="6" Text="{Binding Alignment}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Grid.Column="7" Text="{Binding HP}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Grid.Column="8" Text="{Binding HPMax}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Grid.Column="9" Text="{Binding Turns}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Grid.Column="10" Text="{Binding BirthDate}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Grid.Column="11" Text="{Binding DifficultyString}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                            <Label Grid.Column="12" Text="{Binding Outcome}" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="Underwood"/>
-                        </Grid>
-                        -->
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
