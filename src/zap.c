@@ -5109,6 +5109,7 @@ register struct obj *obj;
                 context.town_portal_return_level = u.uz;
                 context.town_portal_return_level_set = TRUE;
                 level_tele(0, 2, minetown_level);
+                makeknown(obj->otyp);
             }
         }
         break;

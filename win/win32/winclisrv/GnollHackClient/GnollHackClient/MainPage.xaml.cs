@@ -86,7 +86,7 @@ namespace GnollHackClient
                 _firsttime = false;
                 StartFadeLogoIn();
                 Assembly thisassembly = GetType().GetTypeInfo().Assembly;
-                FmodLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.FMOD-Logo-32-White.png", thisassembly);
+                FmodLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.FMOD-Logo-192-White.png", thisassembly);
                 StartLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
                 MainLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
                 Device.StartTimer(TimeSpan.FromSeconds(1f / 4), () =>
