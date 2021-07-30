@@ -3306,6 +3306,77 @@ namespace GnollHackClient.Pages.Game
                                                                                     }
                                                                                 }
                                                                             }
+                                                                            else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_WEAPON_RACK_CONTENTS && otmp_round != null && otmp_round.ContainedObjs != null)
+                                                                            {
+                                                                                int y_to_rack_top = 31;
+                                                                                int rack_start = 0; /* Assume weapons are drawn reasonably well in the center */
+                                                                                int rack_width = 48;
+                                                                                int rack_height = GHConstants.TileHeight - y_to_rack_top;
+                                                                                int rack_item_spacing = 6;
+
+                                                                                int cnt = 0;
+
+                                                                                foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjs)
+                                                                                {
+                                                                                    int source_glyph = Math.Abs(contained_obj.ObjData.gui_glyph);
+                                                                                    if (source_glyph <= 0 || source_glyph == NoGlyph)
+                                                                                        continue;
+                                                                                    bool has_floor_tile = (GlyphTileFlags[source_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0; // artidx > 0 ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(contained_obj);
+                                                                                    bool fullsizeditem = (GlyphTileFlags[source_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
+                                                                                    int cobj_height = contained_obj.OtypData.tile_height; // artidx ? artilist[artidx].tile_floor_height : OBJ_TILE_HEIGHT(contained_obj->otyp);
+                                                                                    int artidx = contained_obj.ObjData.oartifact;
+                                                                                    float dest_x = 0, dest_y = 0;
+                                                                                    int src_x = 0, src_y = fullsizeditem || has_floor_tile ? 0 : GHConstants.TileHeight / 2;
+                                                                                    int item_width = has_floor_tile ? GHConstants.TileHeight / 2 : cobj_height > 0 ? cobj_height : GHConstants.TileHeight / 2;
+                                                                                    int item_height = has_floor_tile ? GHConstants.TileWidth : (item_width * GHConstants.TileWidth) / (GHConstants.TileHeight / 2);
+                                                                                    int padding = (GHConstants.TileHeight / 2 - item_width) / 2;
+                                                                                    int vertical_padding = (GHConstants.TileWidth - item_height) / 2;
+                                                                                    if (contained_obj.ObjData.oclass != (int)obj_class_types.WEAPON_CLASS)
+                                                                                        continue;
+
+                                                                                    int item_xpos = cnt / 2 * rack_item_spacing;
+                                                                                    if (item_xpos >= rack_width / 2)
+                                                                                        break;
+
+                                                                                    dest_y = (y_to_rack_top + vertical_padding) * scale * targetscale;
+                                                                                    dest_x = (cnt % 2 == 0 ? rack_start + item_xpos + padding : GHConstants.TileWidth - item_width - rack_start - item_xpos - padding) * scale * targetscale;
+
+                                                                                    int atile = Glyph2Tile[source_glyph];
+                                                                                    int a_sheet_idx = TileSheetIdx(atile);
+                                                                                    int at_x = TileSheetX(atile);
+                                                                                    int at_y = TileSheetY(atile);
+
+                                                                                    SKRect source_rt = new SKRect();
+                                                                                    source_rt.Left = at_x + src_x;
+                                                                                    source_rt.Right = source_rt.Left + GHConstants.TileWidth;
+                                                                                    source_rt.Top = at_y + src_y;
+                                                                                    source_rt.Bottom = source_rt.Top + (fullsizeditem ? GHConstants.TileHeight : GHConstants.TileHeight / 2);
+
+                                                                                    float original_width = source_rt.Right - source_rt.Left;
+                                                                                    float original_height = source_rt.Bottom - source_rt.Top;
+                                                                                    float rotated_width = original_height;
+                                                                                    float rotated_height = original_width;
+
+                                                                                    float target_x = tx + dest_x;
+                                                                                    float target_y = ty + dest_y;
+                                                                                    float target_width = targetscale * scale * original_width; //(float)item_width;
+                                                                                    float target_height = targetscale * scale * original_height; //((float)item_width * rotated_height) / rotated_width;
+                                                                                    SKRect target_rt;
+                                                                                    target_rt = new SKRect(0, 0, target_width, target_height);
+
+                                                                                    using (new SKAutoCanvasRestore(canvas, true))
+                                                                                    {
+                                                                                        canvas.Translate(target_x, target_y);
+                                                                                        canvas.Scale(1, 1, 0, 0);
+                                                                                        canvas.RotateDegrees(-90);
+                                                                                        canvas.Translate(-target_width, 0);
+                                                                                        paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                                                                                        canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                                                                                    }
+
+                                                                                    cnt++;
+                                                                                }
+                                                                            }
                                                                             else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CANDELABRUM_CANDLES && otmp_round != null)
                                                                             {
                                                                                 float y_start = scaled_y_padding;

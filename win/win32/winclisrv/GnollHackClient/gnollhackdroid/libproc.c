@@ -334,6 +334,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
         boolean use_nexthere = FALSE;
         struct obj* otmp = 0;
         struct obj mimic_obj = zeroobj;
+        int glyph, gui_glyph;
 
         switch (i)
         {
@@ -389,13 +390,33 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
             if (uball && otmp == uball)
                 oflags |= OBJDATA_FLAGS_UBALL;
 
+            glyph = obj_to_glyph(otmp, rn2_on_display_rng);
+            gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, is_obj_drawn_in_front(otmp) ? LAYER_COVER_OBJECT : LAYER_OBJECT, otmp, (struct monst*)0, 0UL));
+            otmp->glyph = glyph;
+            otmp->gui_glyph = gui_glyph;
+
             lib_callbacks.callback_send_object_data(x, y, *otmp, 2, basewhere, get_objclassdata(otmp), oflags);
             if (otmp->cobj)
             {
                 struct obj* cotmp;
                 for (cotmp = otmp->cobj; cotmp; cotmp = cotmp->nobj)
                 {
-                    lib_callbacks.callback_send_object_data(x, y, *cotmp, 3, basewhere, get_objclassdata(cotmp), oflags); /* Use main object oflags to find the correct list */
+                    unsigned long coflags = 0UL;
+                    if (is_obj_drawn_in_front(otmp)) /* otmp to find the right object chain */
+                        oflags |= OBJDATA_FLAGS_DRAWN_IN_FRONT;
+                    if (Hallucination)
+                        oflags |= OBJDATA_FLAGS_HALLUCINATION;
+                    if (uchain && cotmp == uchain)
+                        oflags |= OBJDATA_FLAGS_UCHAIN;
+                    if (uball && cotmp == uball)
+                        oflags |= OBJDATA_FLAGS_UBALL;
+
+                    glyph = obj_to_glyph(cotmp, rn2_on_display_rng);
+                    gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, is_obj_drawn_in_front(cotmp) ? LAYER_COVER_OBJECT : LAYER_OBJECT, cotmp, (struct monst*)0, 0UL));
+                    cotmp->glyph = glyph;
+                    cotmp->gui_glyph = gui_glyph;
+
+                    lib_callbacks.callback_send_object_data(x, y, *cotmp, 3, basewhere, get_objclassdata(cotmp), coflags);
                 }
             }
         }

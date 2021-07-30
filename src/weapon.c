@@ -2399,7 +2399,7 @@ update_can_advance_any_skill()
     return;
 }
 /*
- * Change from restricted to unrestricted, allowing P_BASIC as max.  This
+ * Change from restricted to unrestricted, allowing P_EXPERT as max.  This
  * function may be called with with P_NONE.  Used in pray.c as well as below.
  */
 void
@@ -2408,7 +2408,7 @@ enum p_skills skill;
 {
     if (skill < P_NUM_SKILLS && P_RESTRICTED(skill)) {
         P_SKILL_LEVEL(skill) = P_UNSKILLED;
-        P_MAX_SKILL_LEVEL(skill) = P_BASIC;
+        P_MAX_SKILL_LEVEL(skill) = P_EXPERT;
         P_ADVANCE(skill) = 0;
     }
 }
