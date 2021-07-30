@@ -210,8 +210,10 @@ namespace GnollHackClient
             }
             else
             {
-                if (App.IsModernAndroid)
-                    videoView.Play();
+                videoView.IsVisible = true;
+                videoView.Play();
+                StillImage.IsVisible = false;
+
                 App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
             }
         }
@@ -228,18 +230,9 @@ namespace GnollHackClient
             UpperButtonGrid.IsVisible = true;
             await UpperButtonGrid.FadeTo(1, 250);
 
-            if (App.IsModernAndroid)
-            {
-                videoView.IsVisible = true;
-                await videoView.FadeTo(1, 250);
-                videoView.Play();
-            }
-            else
-            {
-                StillImage.IsVisible = true;
-                await StillImage.FadeTo(1, 250);
-                videoView.Stop();
-            }
+            videoView.IsVisible = true;
+            await videoView.FadeTo(1, 250);
+            videoView.Play();
 
             StartButtonGrid.IsVisible = true;
             await StartButtonGrid.FadeTo(1, 250);
@@ -307,8 +300,9 @@ namespace GnollHackClient
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            if (App.IsModernAndroid)
-                videoView.Stop();
+            StillImage.IsVisible = true;
+            videoView.Stop();
+            videoView.IsVisible = false;
         }
 
         private double _currentPageWidth = 0;
@@ -320,18 +314,15 @@ namespace GnollHackClient
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
-                if (App.IsModernAndroid)
-                {
-                    videoView.Stop();
-                    videoView.Source = null;
-                    if (Device.RuntimePlatform == Device.UWP)
-                        videoView.Source = new Uri($"ms-appx:///Assets/splashvideo.mp4");
-                    else
-                        videoView.Source = new Uri($"ms-appx:///splashvideo.mp4");
-                    videoView.WidthRequest = width;
-                    videoView.HeightRequest = height;
-                    videoView.Play();
-                }
+                videoView.Stop();
+                videoView.Source = null;
+                if (Device.RuntimePlatform == Device.UWP)
+                    videoView.Source = new Uri($"ms-appx:///Assets/splashvideo.mp4");
+                else
+                    videoView.Source = new Uri($"ms-appx:///splashvideo.mp4");
+                videoView.WidthRequest = width;
+                videoView.HeightRequest = height;
+                videoView.Play();
             }
         }
 
