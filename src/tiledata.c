@@ -2585,6 +2585,21 @@ uchar* tilemapflags;
             }
         }
 
+        /*
+         * Set tile2autodraw for enlargement tiles
+         */
+        for (i = 0; i < MAX_ENLARGEMENTS; i++)
+        {
+            for (j = 0; j < NUM_POSITIONS_IN_ENLARGEMENT; j++)
+            {
+                if (enlargements[i].position2tile[j] >= 0)
+                {
+                    int glyph = enlargements[i].position2tile[j] + enlargement_offsets[i] + GLYPH_ENLARGEMENT_OFF;
+                    int tile = tilemaparray[glyph];
+                    tile2autodraw[tile] = enlargements[i].position_autodraw[j];
+                }
+            }
+        }
 
         /*
          * Set tile2animation 

@@ -684,6 +684,32 @@ namespace GnollHackCommon
         public byte lamplit;
     }
 
+    public enum obj_class_types
+    {
+        RANDOM_CLASS = 0, /* used for generating random objects */
+        ILLOBJ_CLASS = 1,
+        WEAPON_CLASS = 2,
+        ARMOR_CLASS = 3,
+        RING_CLASS = 4,
+        AMULET_CLASS = 5,
+        TOOL_CLASS = 6,
+        FOOD_CLASS = 7,
+        POTION_CLASS = 8,
+        SCROLL_CLASS = 9,
+        SPBOOK_CLASS = 10, /* actually SPELL-book */
+        WAND_CLASS = 11,
+        COIN_CLASS = 12,
+        GEM_CLASS = 13,
+        ROCK_CLASS = 14,
+        BALL_CLASS = 15,
+        CHAIN_CLASS = 16,
+        VENOM_CLASS = 17,
+        REAGENT_CLASS = 18,
+        MISCELLANEOUS_CLASS = 19,
+
+        MAX_OBJECT_CLASSES = 20
+    }
+
     public enum obj_where_types
     {
         OBJ_FREE = 0,      /* object not attached to anything */

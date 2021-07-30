@@ -2721,6 +2721,7 @@ namespace GnollHackClient.Pages.Game
                                                                             }
                                                                             int enl_glyph = enl_tile_idx + addedindex + EnlargementOffsets[enlargement] + EnlargementOff;
                                                                             ntile = Glyph2Tile[enl_glyph]; /* replace */
+                                                                            autodraw = Tile2Autodraw[ntile];
                                                                         }
                                                                         else
                                                                             continue;
@@ -3020,6 +3021,81 @@ namespace GnollHackClient.Pages.Game
                                                                                         paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
                                                                                         canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
                                                                                     }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_BOOKSHELF_CONTENTS && otmp_round != null && otmp_round.ContainedObjs != null)
+                                                                        {
+                                                                            int num_shelves = 4;
+                                                                            int y_to_first_shelf = 49;
+                                                                            int shelf_start = 8;
+                                                                            int shelf_width = 50;
+                                                                            int shelf_height = 10;
+                                                                            int shelf_border_height = 2;
+                                                                            int shelf_item_width = 5;
+                                                                            int src_book_x = 0;
+                                                                            int src_book_y = 0;
+                                                                            int src_scroll_x = 5;
+                                                                            int src_scroll_y = 0;
+                                                                            int cnt = 0;
+                                                                            int items_per_row = shelf_width / shelf_item_width;
+                                
+                                                                            foreach(ObjectDataItem contained_obj in otmp_round.ContainedObjs)
+                                                                            {
+                                                                                int src_x = 0, src_y = 0;
+                                                                                float dest_x = 0, dest_y = 0;
+                                                                                if (contained_obj.ObjData.oclass == (int)obj_class_types.SPBOOK_CLASS)
+                                                                                {
+                                                                                    src_x = src_book_x;
+                                                                                    src_y = src_book_y;
+                                                                                }
+                                                                                else if (contained_obj.ObjData.oclass == (int)obj_class_types.SCROLL_CLASS)
+                                                                                {
+                                                                                    src_x = src_scroll_x;
+                                                                                    src_y = src_scroll_y;
+                                                                                }
+                                                                                else
+                                                                                    continue;
+
+                                                                                for (int item_idx = 0; item_idx < contained_obj.ObjData.quan; item_idx++)
+                                                                                {
+                                                                                    int item_row = cnt / items_per_row;
+                                                                                    int item_xpos = cnt % items_per_row;
+
+                                                                                    if (item_row >= num_shelves)
+                                                                                        break;
+
+                                                                                    dest_y = (y_to_first_shelf + item_row * (shelf_height + shelf_border_height)) * scale * targetscale;
+                                                                                    dest_x = (shelf_start + item_xpos * shelf_item_width) * scale * targetscale;
+
+                                                                                    int source_glyph = _autodraws[autodraw].source_glyph;
+                                                                                    int atile = Glyph2Tile[source_glyph];
+                                                                                    int a_sheet_idx = TileSheetIdx(atile);
+                                                                                    int at_x = TileSheetX(atile);
+                                                                                    int at_y = TileSheetY(atile);
+
+                                                                                    SKRect source_rt = new SKRect();
+                                                                                    source_rt.Left = at_x + src_x;
+                                                                                    source_rt.Right = source_rt.Left + shelf_item_width;
+                                                                                    source_rt.Top = at_y + src_y;
+                                                                                    source_rt.Bottom = source_rt.Top + shelf_height;
+
+                                                                                    float target_x = tx + dest_x;
+                                                                                    float target_y = ty + dest_y;
+                                                                                    float target_width = targetscale * scale * source_rt.Width;
+                                                                                    float target_height = targetscale * scale * source_rt.Height;
+                                                                                    SKRect target_rt;
+                                                                                    target_rt = new SKRect(0, 0, target_width, target_height);
+
+                                                                                    using (new SKAutoCanvasRestore(canvas, true))
+                                                                                    {
+                                                                                        canvas.Translate(target_x, target_y);
+                                                                                        canvas.Scale(1, 1, 0, 0);
+                                                                                        paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                                                                                        canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                                                                                    }
+
+                                                                                    cnt++;
                                                                                 }
                                                                             }
                                                                         }
