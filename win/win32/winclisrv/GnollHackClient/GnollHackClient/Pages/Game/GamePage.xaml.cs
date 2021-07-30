@@ -2524,7 +2524,7 @@ namespace GnollHackClient.Pages.Game
                                                                         switch ((source_dir_idx - 1) % GHConstants.NUM_ZAP_SOURCE_BASE_DIRS + 1)
                                                                         {
                                                                             case 1:
-                                                                                adj_x = mapx - 1;
+                                                                                adj_x = mapx + 1;
                                                                                 adj_y = mapy + 1;
                                                                                 break;
                                                                             case 2:
@@ -2563,7 +2563,6 @@ namespace GnollHackClient.Pages.Game
                                                                         {
                                                                             if (layer_idx == (int)layer_types.LAYER_ZAP)
                                                                             {
-                                                                                continue;
                                                                                 int adjacent_zap_glyph = _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_ZAP];
                                                                                 ulong adjacent_layer_flags = (ulong)_mapData[mapx, mapy].Layers.layer_flags;
 
