@@ -1415,6 +1415,9 @@ new_sym_end_here:
     if (cansee(x, y))
         add_glyph_buffer_layer_flags(x, y, LFLAGS_CAN_SEE);
 
+    if(NO_WALL_END_AUTODRAW(x, y))
+        add_glyph_buffer_layer_flags(x, y, LFLAGS_NO_WALL_END_AUTODRAW);
+
     boolean is_lit_unknown_wall = (levl[x][y].waslit && IS_NON_STONE_WALL(levl[x][y].typ) && wall_angle(&levl[x][y]) == S_stone);
     if (!levl[x][y].waslit || is_lit_unknown_wall)
         add_glyph_buffer_layer_flags(x, y, LFLAGS_APPEARS_UNLIT);

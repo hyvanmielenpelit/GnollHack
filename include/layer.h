@@ -123,6 +123,7 @@ struct layer_info {
 #define LFLAGS_CAN_SEE                  0x08000000UL /* cansee(x, y) is true (if not, then darken etc.) */
 #define LFLAGS_UXUY                     0x10000000UL /* x == u.ux && y == u.uy is true */
 #define LFLAGS_APPEARS_UNLIT            0x20000000UL
+#define LFLAGS_NO_WALL_END_AUTODRAW     0x40000000UL /* NO_WALL_END_AUTODRAW(x, y) is true */
 
 #define LMFLAGS_WORM_HEAD               0x00000001UL
 #define LMFLAGS_WORM_TAILEND            0x00000002UL

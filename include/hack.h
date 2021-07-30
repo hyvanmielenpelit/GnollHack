@@ -717,6 +717,8 @@ static const char empty_string[] = "";
 #define DEFAULT_CRAWL_INTERVAL (ANIMATION_FRAME_INTERVAL * 5) /* in milliseconds */
 #define ITEM_PICKUP_DROP_DELAY 75 /* in milliseconds */
 
+#define NO_WALL_END_AUTODRAW(x,y) (!isok(x, y) || glyph_is_specific_cmap_or_its_variation(levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR], S_unexplored) || (IS_DOORJOIN(levl[x][y].typ) && !IS_TREE(levl[x][y].typ)) || levl[x][y].typ == DOOR || levl[x][y].typ == UNDEFINED_LOCATION /*|| (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0 */)
+
 /* Some general definitions for graphics and sounds */
 #include "layer.h"
 #include "soundset.h"
