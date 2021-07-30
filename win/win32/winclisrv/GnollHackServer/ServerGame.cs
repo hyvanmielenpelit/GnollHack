@@ -342,7 +342,7 @@ namespace GnollHackServer
         {
 
         }
-        public void GameCallback_SendObjectData(int x, int y, obj otmp, int cmdtype, int where, int tile_height, ulong oflags)
+        public void GameCallback_SendObjectData(int x, int y, obj otmp, int cmdtype, int where, objclassdata otypdata, ulong oflags)
         {
 
         }

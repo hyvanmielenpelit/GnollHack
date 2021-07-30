@@ -590,6 +590,8 @@ enum init_print_glyph_stages {
 /* Object data */
 #define OBJDATA_FLAGS_DRAWN_IN_FRONT    0x00000001UL
 #define OBJDATA_FLAGS_HALLUCINATION     0x00000002UL
+#define OBJDATA_FLAGS_UCHAIN            0x00000004UL
+#define OBJDATA_FLAGS_UBALL             0x00000008UL
 
 /*
  * type nhsym: loadable symbols go into this type

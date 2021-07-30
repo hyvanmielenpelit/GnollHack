@@ -384,14 +384,18 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
                 oflags |= OBJDATA_FLAGS_DRAWN_IN_FRONT;
             if (Hallucination)
                 oflags |= OBJDATA_FLAGS_HALLUCINATION;
+            if (uchain && otmp == uchain)
+                oflags |= OBJDATA_FLAGS_UCHAIN;
+            if (uball && otmp == uball)
+                oflags |= OBJDATA_FLAGS_UBALL;
 
-            lib_callbacks.callback_send_object_data(x, y, *otmp, 2, basewhere, get_obj_height(otmp), oflags);
+            lib_callbacks.callback_send_object_data(x, y, *otmp, 2, basewhere, get_objclassdata(otmp), oflags);
             if (otmp->cobj)
             {
                 struct obj* cotmp;
                 for (cotmp = otmp->cobj; cotmp; cotmp = cotmp->nobj)
                 {
-                    lib_callbacks.callback_send_object_data(x, y, *cotmp, 3, basewhere, get_obj_height(cotmp), oflags); /* Use main object oflags to find the correct list */
+                    lib_callbacks.callback_send_object_data(x, y, *cotmp, 3, basewhere, get_objclassdata(cotmp), oflags); /* Use main object oflags to find the correct list */
                 }
             }
         }

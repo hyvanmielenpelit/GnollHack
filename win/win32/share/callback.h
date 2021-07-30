@@ -19,6 +19,15 @@
 #define OSAPI
 #endif
 
+struct objclassdata
+{
+    int tile_height;
+    int special_quality;
+
+    /* Temporary extra data */
+    uchar lamplit;
+};
+
  /* General callback types */
 typedef void(__callconv* VoidVoidCallback)();
 typedef void(__callconv* VoidCharCallback)(char*);
@@ -130,7 +139,7 @@ typedef int (__callconv* MessageBoxCallback)(char*, char*, unsigned int);
 typedef VoidIntCallback OutRipBeginCallback;
 typedef VoidIntCallback OutRipEndCallback;
 typedef void(__callconv* FreeMemoryCallback)(long long**);
-typedef void(__callconv* SendObjectDataCallback)(int, int, struct obj, int, int, int, unsigned long);
+typedef void(__callconv* SendObjectDataCallback)(int, int, struct obj, int, int, struct objclassdata, unsigned long);
 
 struct callback_procs {
     InitWindowsCallback callback_init_nhwindows;
@@ -227,5 +236,6 @@ struct callback_procs {
 
 
 extern int common_player_selection();
+extern struct objclassdata get_objclassdata(struct obj* otmp);
 
 #endif /* CALLBACK_H */

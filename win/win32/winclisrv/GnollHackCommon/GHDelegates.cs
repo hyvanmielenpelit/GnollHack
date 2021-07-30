@@ -131,5 +131,5 @@ namespace GnollHackCommon
     public delegate void UpdateCursorCallback(int style, int force_paint, int show_on_u);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void SendObjectDataCallback(int x, int y, obj otmp, int cmdtype, int where, int tile_height, ulong oflags);
+    public delegate void SendObjectDataCallback(int x, int y, obj otmp, int cmdtype, int where, objclassdata otypdata, ulong oflags);
 }

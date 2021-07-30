@@ -3,6 +3,7 @@
  * Copyright (c) Janne Gustafsson, 2021
  */
 #include "hack.h"
+#include "callback.h"
 
 STATIC_DCL int NDECL(common_prompt_for_player_selection);
 
@@ -510,4 +511,17 @@ common_prompt_for_player_selection()
     /* tty_display_nhwindow(BASE_WINDOW, FALSE); */
 
     return 0;
+}
+
+struct objclassdata
+get_objclassdata(struct obj* otmp)
+{
+    struct objclassdata otypdata = { 0 };
+    if (!otmp)
+        return otypdata;
+
+    otypdata.tile_height = get_obj_height(otmp);
+    otypdata.special_quality = objects[otmp->otyp].oc_special_quality;
+    otypdata.lamplit = otmp->lamplit;
+    return otypdata;
 }

@@ -676,6 +676,14 @@ namespace GnollHackCommon
         public IntPtr oextra; /* pointer to oextra struct */
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct objclassdata
+    {
+        public int tile_height;
+        public int special_quality;
+        public byte lamplit;
+    }
+
     public enum obj_where_types
     {
         OBJ_FREE = 0,      /* object not attached to anything */
@@ -720,37 +728,37 @@ namespace GnollHackCommon
     }
 
     [Flags]
-    public enum obj_bitfield_types : ulong
+    public enum obj_bitfield_types : uint
     {
-        cursed = 0x00000001UL,
-        blessed = 0x00000002UL,
-        unpaid = 0x00000004UL,
-        no_charge = 0x00000008UL,
-        known = 0x00000010UL,
-        dknown = 0x00000020UL,
-        bknown = 0x00000040UL,
-        rknown = 0x00000080UL,
-        oeroded = 0x00000100UL | 0x00000200UL,
-        oeroded2 = 0x00000400UL | 0x00000800UL,
-        oerodeproof = 0x00001000UL,
-        olocked = 0x00002000UL,
-        degraded_horn = 0x00004000UL,
-        otrapped = 0x00008000UL,  /* Monsters will not pick up this item */
-        lamplit = 0x00010000UL,
-        makingsound = 0x00020000UL,
-        globby = 0x00040000UL,
-        greased = 0x00080000UL,
-        nomerge = 0x00100000UL,
-        was_thrown = 0x00200000UL,
-        has_special_tileset = 0x00400000UL,
-        in_use = 0x00800000UL,
-        bypass = 0x01000000UL,
-        cknown = 0x02000000UL,
-        lknown = 0x04000000UL,
-        tknown = 0x08000000UL,
-        nknown = 0x10000000UL,
-        aknown = 0x20000000UL,
-        mknown = 0x40000000UL
+        cursed =        0x00000001,
+        blessed =       0x00000002,
+        unpaid =        0x00000004,
+        no_charge =     0x00000008,
+        known =         0x00000010,
+        dknown =        0x00000020,
+        bknown =        0x00000040,
+        rknown =        0x00000080,
+        oeroded =       0x00000100 | 0x00000200,
+        oeroded2 =      0x00000400 | 0x00000800,
+        oerodeproof =   0x00001000,
+        olocked =       0x00002000,
+        degraded_horn = 0x00004000,
+        otrapped =      0x00008000,  /* Monsters will not pick up this item */
+        lamplit =       0x00010000,
+        makingsound =   0x00020000,
+        globby =        0x00040000,
+        greased =       0x00080000,
+        nomerge =       0x00100000,
+        was_thrown =    0x00200000,
+        has_special_tileset = 0x00400000,
+        in_use =        0x00800000,
+        bypass =        0x01000000,
+        cknown =        0x02000000,
+        lknown =        0x04000000,
+        tknown =        0x08000000,
+        nknown =        0x10000000,
+        aknown =        0x20000000,
+        mknown =        0x40000000
         /* 1 free bit to 32-bit integer */
     }
 
@@ -760,6 +768,8 @@ namespace GnollHackCommon
         None = 0x00000000UL,
         OBJDATA_FLAGS_DRAWN_IN_FRONT =  0x00000001UL,
         OBJDATA_FLAGS_HALLUCINATION =   0x00000002UL,
+        OBJDATA_FLAGS_UCHAIN =          0x00000004UL,
+        OBJDATA_FLAGS_UBALL =           0x00000008UL,
     }
 
     public enum elemental_enchantment_types

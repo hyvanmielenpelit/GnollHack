@@ -820,11 +820,11 @@ namespace GnollHackClient
             Marshal.FreeHGlobal(issame ? ptr : _outGoingIntPtr);
         }
 
-        public void ClientCallback_SendObjectData(int x, int y, obj otmp, int cmdtype, int where, int tile_height, ulong oflags)
+        public void ClientCallback_SendObjectData(int x, int y, obj otmp, int cmdtype, int where, objclassdata otypdata, ulong oflags)
         {
             lock(_gamePageLock)
             {
-                _gamePage.AddObjectData(x, y, otmp, cmdtype, where, tile_height, oflags);
+                _gamePage.AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
             }
         }
 
