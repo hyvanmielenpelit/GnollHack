@@ -286,7 +286,10 @@ boolean LibGlyphIsAnyDying(int glyph)
     return glyph_is_dying_monster(glyph) || glyph_is_female_dying_monster(glyph) || glyph_is_dying_player(glyph);
 }
 
-
+int LibZapGlyphToCornerGlyph(int adjglyph, unsigned long adjflags, int source_dir)
+{
+    return zap_glyph_to_corner_glyph(adjglyph, adjflags, source_dir);
+}
 
 
 int GnollHackStart(cmdlineargs)

@@ -112,6 +112,7 @@
 #define is_unicorn(ptr) ((ptr)->mlet == S_UNICORN && likes_gems(ptr))
 #define is_long_worm(ptr) (((ptr)->mflags6 & M6_LONG_WORM))
 #define is_long_worm_with_tail(ptr) (((ptr)->mflags6 & M6_TAILED_LONG_WORM))
+#define is_long_worm_tail(ptr) (((ptr)->mflags6 & M6_LONG_WORM_TAIL))
 #define is_purple_worm(ptr) (((ptr)->mflags6 & M6_PURPLE_WORM))
 #define is_covetous(ptr) (((ptr)->mflags3 & M3_COVETOUS))
 #define wants_bell(ptr) (((ptr)->mflags3 & M3_WANTSBELL))

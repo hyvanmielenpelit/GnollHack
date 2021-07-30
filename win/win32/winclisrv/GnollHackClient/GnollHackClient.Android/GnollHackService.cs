@@ -199,6 +199,8 @@ namespace GnollHackClient.Droid
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int maybe_get_animated_tile(int ntile, int tile_animation_idx, int play_type, long interval_counter, 
             out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, out int autodraw_ptr);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir);
 
         private void LoadNativeLibrary(string libName)
         {
@@ -467,6 +469,11 @@ namespace GnollHackClient.Droid
         {
             return maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter,
                 out frame_idx_ptr, out main_tile_idx_ptr, out mapAnimated, out autodraw_ptr);
+        }
+
+        public int ZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir)
+        {
+            return LibZapGlyphToCornerGlyph(adjglyph, adjflags, source_dir);
         }
 
         public int Test()

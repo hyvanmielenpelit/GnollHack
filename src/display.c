@@ -2706,6 +2706,12 @@ boolean exclude_ascii;
             if (is_radially_transparent(used_mtmp->data) && !Hallucination)
                 gbuf[y][x].layers.monster_flags |= LMFLAGS_RADIAL_TRANSPARENCY;
 
+            if (is_long_worm_with_tail(used_mtmp->data))
+                gbuf[y][x].layers.monster_flags |= LMFLAGS_LONG_WORM_WITH_TAIL;
+
+            if (is_long_worm_tail(used_mtmp->data))
+                gbuf[y][x].layers.monster_flags |= LMFLAGS_LONG_WORM_TAIL;
+
             if (loc_is_you)
             {
                 if (mtmp) /* Steed */

@@ -163,6 +163,7 @@ namespace GnollHackCommon
          LFLAGS_CAN_SEE =           0x08000000UL, /* cansee(x, y) is true (if not, then darken etc.) */
          LFLAGS_UXUY =              0x10000000UL, /* x == u.ux && y == u.uy is true */
          LFLAGS_APPEARS_UNLIT =     0x20000000UL, /* looks unlit */
+         LFLAGS_NO_WALL_END_AUTODRAW=0x40000000UL,/* NO_WALL_END_AUTODRAW(x, y) is true */
     }
 
     [Flags]
@@ -175,6 +176,8 @@ namespace GnollHackCommon
         LMFLAGS_SEMI_TRANSPARENT =      0x00000008UL,
         LMFLAGS_RADIAL_TRANSPARENCY =   0x00000010UL,
         LMFLAGS_CAN_SPOT_SELF =         0x00000020UL,
+        LMFLAGS_LONG_WORM_WITH_TAIL =   0x00000040UL,
+        LMFLAGS_LONG_WORM_TAIL =        0x00000080UL,
     }
 
     [Flags]
@@ -858,6 +861,10 @@ namespace GnollHackCommon
         public const string IntroEventPath = "event:/Music/Start/Splash";
         public const int IntroBankId = 0;
         public const bool DefaultDeveloperMode = true;
+        public const int NUM_ZAP_SOURCE_BASE_DIRS = 8;
+        public const int NUM_ZAP_SOURCE_DIRS = (GHConstants.NUM_ZAP_SOURCE_BASE_DIRS * 2);
+        public const int NUM_CHAIN_SOURCE_DIRS = 4;
+        public const int NUM_WORM_SOURCE_DIRS = 4;
     }
 
 
