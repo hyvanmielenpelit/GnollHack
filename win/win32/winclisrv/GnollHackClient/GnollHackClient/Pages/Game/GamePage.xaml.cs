@@ -2559,142 +2559,140 @@ namespace GnollHackClient.Pages.Game
                                                                                 break;
 
                                                                         }
-              
+
+                                                                        if (layer_idx == (int)layer_types.LAYER_ZAP)
                                                                         {
-                                                                            if (layer_idx == (int)layer_types.LAYER_ZAP)
-                                                                            {
-                                                                                int adjacent_zap_glyph = _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_ZAP];
-                                                                                ulong adjacent_layer_flags = (ulong)_mapData[mapx, mapy].Layers.layer_flags;
+                                                                            int adjacent_zap_glyph = _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_ZAP];
+                                                                            ulong adjacent_layer_flags = (ulong)_mapData[mapx, mapy].Layers.layer_flags;
 
-                                                                                if (adjacent_zap_glyph == NoGlyph) // || !glyph_is_zap(adjacent_zap_glyph))
-                                                                                    signed_glyph = NoGlyph;
-                                                                                else
-                                                                                    signed_glyph = _gnollHackService.ZapGlyphToCornerGlyph(adjacent_zap_glyph, adjacent_layer_flags, source_dir_idx);
-                                                                            }
-                                                                            else if (layer_idx == (int)layer_types.LAYER_MONSTER)
-                                                                            {
-                                                                                /* Worm */
-                                                                                uint worm_id_stored = _mapData[mapx, mapy].Layers.m_id;
-                                                                                if (worm_id_stored == 0)
-                                                                                    continue;
-
-                                                                                bool is_long_worm_with_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_WITH_TAIL) != 0;
-                                                                                bool is_long_worm_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_TAIL) != 0;
-                                                                                bool is_adj_worm_tail = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_TAIL) != 0;
-                                                                                bool is_adj_worm_seen = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0;
-                                                                                bool worm = !is_adj_worm_tail ? false : is_adj_worm_seen ? (worm_id_stored > 0 ? true : false) : true;
+                                                                            if (adjacent_zap_glyph == NoGlyph) // || !glyph_is_zap(adjacent_zap_glyph))
                                                                                 signed_glyph = NoGlyph;
+                                                                            else
+                                                                                signed_glyph = _gnollHackService.ZapGlyphToCornerGlyph(adjacent_zap_glyph, adjacent_layer_flags, source_dir_idx);
+                                                                        }
+                                                                        else if (layer_idx == (int)layer_types.LAYER_MONSTER)
+                                                                        {
+                                                                            /* Worm */
+                                                                            uint worm_id_stored = _mapData[mapx, mapy].Layers.m_id;
+                                                                            if (worm_id_stored == 0)
+                                                                                continue;
 
-                                                                                if (worm && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0 
-                                                                                    && ((
-                                                                                    _mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0 
-                                                                                    || is_adj_worm_seen || (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0))
-                                                                                {
-                                                                                    if (is_long_worm_with_tail && !is_adj_worm_tail)
-                                                                                    {
-                                                                                        signed_glyph = NoGlyph;
-                                                                                    }
-                                                                                    else if (is_long_worm_tail || (is_long_worm_with_tail && is_adj_worm_tail))
-                                                                                    {
-                                                                                        int signed_main_glyph = _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
-                                                                                        int main_glyph = Math.Abs(signed_main_glyph);
-                                                                                        int tile_animation_index = _gnollHackService.GetTileAnimationIndexFromGlyph(main_glyph);
-                                                                                        int main_tile = Glyph2Tile[main_glyph];
-                                                                                        int wormautodraw = Tile2Autodraw[main_tile];
-                                                                                        int base_source_glyph = NoGlyph;
-                                                                                        if (wormautodraw > 0)
-                                                                                        {
-                                                                                            base_source_glyph = _autodraws[wormautodraw].source_glyph4;
-                                                                                        }
+                                                                            bool is_long_worm_with_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_WITH_TAIL) != 0;
+                                                                            bool is_long_worm_tail = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_LONG_WORM_TAIL) != 0;
+                                                                            bool is_adj_worm_tail = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_TAIL) != 0;
+                                                                            bool is_adj_worm_seen = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0;
+                                                                            bool worm = !is_adj_worm_tail ? false : is_adj_worm_seen ? (worm_id_stored > 0 ? true : false) : true;
+                                                                            signed_glyph = NoGlyph;
 
-                                                                                        int wdir = _mapData[mapx, mapy].Layers.wsegdir;
-                                                                                        int tilenum = -1;
-                                                                                        if (wdir % 2 == 1)
-                                                                                        {
-                                                                                            switch (source_dir_idx)
-                                                                                            {
-                                                                                                case 2:
-                                                                                                    if (wdir == 7)
-                                                                                                    {
-                                                                                                        //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_LEFT;
-                                                                                                        tilenum = 1; //GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
-                                                                                                        manual_vflip = true;
-                                                                                                    }
-                                                                                                    else if (wdir == 5)
-                                                                                                    {
-                                                                                                        //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
-                                                                                                        tilenum = 3; // GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
-                                                                                                        manual_hflip = false;
-                                                                                                        manual_vflip = false;
-                                                                                                    }
-                                                                                                    break;
-                                                                                                case 4:
-                                                                                                    if (wdir == 1)
-                                                                                                    {
-                                                                                                        //tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
-                                                                                                        tilenum = 0;  //GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
-                                                                                                        manual_hflip = false;
-                                                                                                        manual_vflip = false;
-                                                                                                    }
-                                                                                                    else if (wdir == 7)
-                                                                                                    {
-                                                                                                        //tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_DOWN_LEFT;
-                                                                                                        tilenum = 0; // GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
-                                                                                                        manual_hflip = false;
-                                                                                                        manual_vflip = true;
-                                                                                                    }
-                                                                                                    break;
-                                                                                                case 6:
-                                                                                                    if (wdir == 1)
-                                                                                                    {
-                                                                                                        //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
-                                                                                                        tilenum = 1; // GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
-                                                                                                        manual_hflip = false;
-                                                                                                        manual_vflip = false;
-                                                                                                    }
-                                                                                                    else if (wdir == 3)
-                                                                                                    {
-                                                                                                        //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_RIGHT;
-                                                                                                        tilenum = 3; // GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
-                                                                                                        manual_hflip = false;
-                                                                                                        manual_vflip = true;
-                                                                                                    }
-                                                                                                    break;
-                                                                                                case 8:
-                                                                                                    if (wdir == 3)
-                                                                                                    {
-                                                                                                        //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_UP_RIGHT;
-                                                                                                        tilenum = 2; // GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
-                                                                                                        manual_hflip = false;
-                                                                                                        manual_vflip = true;
-                                                                                                    }
-                                                                                                    else if (wdir == 5)
-                                                                                                    {
-                                                                                                        //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
-                                                                                                        tilenum = 2; // GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
-                                                                                                        manual_hflip = false;
-                                                                                                        manual_vflip = false;
-                                                                                                    }
-                                                                                                    break;
-                                                                                                default:
-                                                                                                    break;
-                                                                                            }
-                                                                                            if (tilenum > -1)
-                                                                                                signed_glyph = tilenum + base_source_glyph;
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                            else if (layer_idx == (int)layer_types.LAYER_CHAIN)
+                                                                            if (worm && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0
+                                                                                && ((
+                                                                                _mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0
+                                                                                || is_adj_worm_seen || (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_WORM_SEEN) != 0))
                                                                             {
-                                                                                /* Chain */
-                                                                                if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_CHAIN) != 0)
+                                                                                if (is_long_worm_with_tail && !is_adj_worm_tail)
                                                                                 {
-                                                                                    signed_glyph = (source_dir_idx / 2 - 1) + (int)general_tile_types.GENERAL_TILE_CHAIN_IS_UP + GeneralTileOff;
-                                                                                }
-                                                                                else
                                                                                     signed_glyph = NoGlyph;
+                                                                                }
+                                                                                else if (is_long_worm_tail || (is_long_worm_with_tail && is_adj_worm_tail))
+                                                                                {
+                                                                                    int signed_main_glyph = _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
+                                                                                    int main_glyph = Math.Abs(signed_main_glyph);
+                                                                                    int tile_animation_index = _gnollHackService.GetTileAnimationIndexFromGlyph(main_glyph);
+                                                                                    int main_tile = Glyph2Tile[main_glyph];
+                                                                                    int wormautodraw = Tile2Autodraw[main_tile];
+                                                                                    int base_source_glyph = NoGlyph;
+                                                                                    if (wormautodraw > 0)
+                                                                                    {
+                                                                                        base_source_glyph = _autodraws[wormautodraw].source_glyph4;
+                                                                                    }
+
+                                                                                    int wdir = _mapData[mapx, mapy].Layers.wsegdir;
+                                                                                    int tilenum = -1;
+                                                                                    if (wdir % 2 == 1)
+                                                                                    {
+                                                                                        switch (source_dir_idx)
+                                                                                        {
+                                                                                            case 2:
+                                                                                                if (wdir == 7)
+                                                                                                {
+                                                                                                    //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_LEFT;
+                                                                                                    tilenum = 1; //GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                                                                    manual_vflip = true;
+                                                                                                }
+                                                                                                else if (wdir == 5)
+                                                                                                {
+                                                                                                    //tilenum = GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                                                                    tilenum = 3; // GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                                                                    manual_hflip = false;
+                                                                                                    manual_vflip = false;
+                                                                                                }
+                                                                                                break;
+                                                                                            case 4:
+                                                                                                if (wdir == 1)
+                                                                                                {
+                                                                                                    //tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                                                                    tilenum = 0;  //GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                                                                    manual_hflip = false;
+                                                                                                    manual_vflip = false;
+                                                                                                }
+                                                                                                else if (wdir == 7)
+                                                                                                {
+                                                                                                    //tilenum = GENERAL_TILE_WORM_IS_RIGHT_GOING_DOWN_LEFT;
+                                                                                                    tilenum = 0; // GENERAL_TILE_WORM_IS_RIGHT_GOING_UP_LEFT;
+                                                                                                    manual_hflip = false;
+                                                                                                    manual_vflip = true;
+                                                                                                }
+                                                                                                break;
+                                                                                            case 6:
+                                                                                                if (wdir == 1)
+                                                                                                {
+                                                                                                    //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                                                                    tilenum = 1; // GENERAL_TILE_WORM_IS_DOWN_GOING_UP_LEFT;
+                                                                                                    manual_hflip = false;
+                                                                                                    manual_vflip = false;
+                                                                                                }
+                                                                                                else if (wdir == 3)
+                                                                                                {
+                                                                                                    //tilenum = GENERAL_TILE_WORM_IS_DOWN_GOING_UP_RIGHT;
+                                                                                                    tilenum = 3; // GENERAL_TILE_WORM_IS_UP_GOING_DOWN_RIGHT;
+                                                                                                    manual_hflip = false;
+                                                                                                    manual_vflip = true;
+                                                                                                }
+                                                                                                break;
+                                                                                            case 8:
+                                                                                                if (wdir == 3)
+                                                                                                {
+                                                                                                    //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_UP_RIGHT;
+                                                                                                    tilenum = 2; // GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                                                                    manual_hflip = false;
+                                                                                                    manual_vflip = true;
+                                                                                                }
+                                                                                                else if (wdir == 5)
+                                                                                                {
+                                                                                                    //tilenum = GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                                                                    tilenum = 2; // GENERAL_TILE_WORM_IS_LEFT_GOING_DOWN_RIGHT;
+                                                                                                    manual_hflip = false;
+                                                                                                    manual_vflip = false;
+                                                                                                }
+                                                                                                break;
+                                                                                            default:
+                                                                                                break;
+                                                                                        }
+                                                                                        if (tilenum > -1)
+                                                                                            signed_glyph = tilenum + base_source_glyph;
+                                                                                    }
+                                                                                }
                                                                             }
+                                                                        }
+                                                                        else if (layer_idx == (int)layer_types.LAYER_CHAIN)
+                                                                        {
+                                                                            /* Chain */
+                                                                            if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_CHAIN) != 0)
+                                                                            {
+                                                                                signed_glyph = (source_dir_idx / 2 - 1) + (int)general_tile_types.GENERAL_TILE_CHAIN_IS_UP + GeneralTileOff;
+                                                                            }
+                                                                            else
+                                                                                signed_glyph = NoGlyph;
                                                                         }
                                                                     }
                                                                     else if (layer_idx == (int)layer_types.LAYER_OBJECT)
