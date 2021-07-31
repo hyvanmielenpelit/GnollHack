@@ -2194,6 +2194,8 @@ namespace GnollHackClient.Pages.Game
 
                                         for (int layer_idx = 0; layer_idx <= (int)layer_types.MAX_LAYERS + 1; layer_idx++)
                                         {
+                                            bool is_monster_or_shadow_layer = (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS);
+                                            bool is_monster_like_layer = (is_monster_or_shadow_layer || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT);
                                             for (int mapy = startY; mapy <= endY; mapy++)
                                             {
                                                 for (int mapx = startX; mapx <= endX; mapx++)
@@ -2793,10 +2795,14 @@ namespace GnollHackClient.Pages.Game
                                                                     bool tileflag_normalobjmissile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0;
                                                                     bool tileflag_fullsizeditem = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
 
-                                                                    if ((!tileflag_halfsize || monster_height > 0) && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT || layer_idx == (int)layer_types.MAX_LAYERS))
+                                                                    if ((!tileflag_halfsize || monster_height > 0) && is_monster_like_layer)
+                                                                    {
                                                                         scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
+                                                                        if (monster_height < 0)
+                                                                            scaled_y_height_change -= GHConstants.PIT_BOTTOM_BORDER * targetscale;
+                                                                    }
                                                                     else if (tileflag_halfsize && (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT))
-                                                                        scaled_y_height_change = (float)(-(sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT) * height / (float)GHConstants.TileHeight;
+                                                                        scaled_y_height_change = (float)(-(sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT) * targetscale;
 
                                                                     int ntile = Glyph2Tile[glyph];
                                                                     /* Replace tile here */
@@ -2810,9 +2816,9 @@ namespace GnollHackClient.Pages.Game
                                                                     /* Determine animation tile here */
                                                                     lock (AnimationTimerLock)
                                                                     {
-                                                                        if (AnimationTimers.u_action_animation_counter_on && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS) && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
+                                                                        if (AnimationTimers.u_action_animation_counter_on && is_monster_or_shadow_layer && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
                                                                             ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
-                                                                        else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS)) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
+                                                                        else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && is_monster_or_shadow_layer) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
                                                                             ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
                                                                         else if (_gnollHackService.GlyphIsExplosion(glyph))
                                                                             ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.explosion_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, out autodraw);
@@ -3032,8 +3038,10 @@ namespace GnollHackClient.Pages.Game
                                                                                     scale *= GHConstants.OBJECT_PIT_SCALING_FACTOR;
                                                                             }
 
-                                                                            if (monster_height < 0 && (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT) || layer_idx == (int)layer_types.MAX_LAYERS)
+                                                                            if (monster_height < 0 && is_monster_like_layer)
+                                                                            {
                                                                                 scale *= Math.Min(1.0f, Math.Max(0.1f, 1.0f - (1.0f - (float)GHConstants.OBJECT_PIT_SCALING_FACTOR) * (float)monster_height / (float)GHConstants.SPECIAL_HEIGHT_IN_PIT));
+                                                                            }
 
                                                                             if (tileflag_floortile)
                                                                             {
@@ -3089,7 +3097,7 @@ namespace GnollHackClient.Pages.Game
                                                                             }
                                                                             else
                                                                             {
-                                                                                if (monster_height < 0 && dy == 0)
+                                                                                if (monster_height < 0 && dy == 0 && is_monster_like_layer)
                                                                                 {
                                                                                     sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight + monster_height);
                                                                                     source_height_deducted = -monster_height;
@@ -3105,7 +3113,7 @@ namespace GnollHackClient.Pages.Game
 
                                                                         float move_offset_x = 0, move_offset_y = 0;
                                                                         float opaqueness = 1.0f;
-                                                                        if ((layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT || layer_idx == (int)layer_types.MAX_LAYERS))
+                                                                        if (is_monster_like_layer)
                                                                         {
                                                                             move_offset_x = base_move_offset_x;
                                                                             move_offset_y = base_move_offset_y;
@@ -3142,9 +3150,9 @@ namespace GnollHackClient.Pages.Game
                                                                             canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
                                                                         }
 
-                                                                        /************/
-                                                                        /* AUTODRAW */
-                                                                        /************/
+                                                                        /******************/
+                                                                        /* AUTODRAW START */
+                                                                        /******************/
                                                                         if (_autodraws != null)
                                                                         {
                                                                             if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_REPLACE_WALL_ENDS)
