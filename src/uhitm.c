@@ -4976,8 +4976,14 @@ double hp_d;
         context.last_turn_when_took_damage = moves;
     }
 
-    if (iflags.using_gui_tiles && flags.show_tile_u_hp_bar)
-        newsym(u.ux, u.uy);
+    if (iflags.using_gui_tiles)
+    {
+        if (flags.show_tile_u_hp_bar)
+            newsym(u.ux, u.uy);
+        else
+            refresh_u_tile_gui_info(TRUE);
+    }
+
 
     return *target_integer_part_ptr;
 }
@@ -5023,10 +5029,12 @@ double hp_d;
     int hp_after = mtmp->mhp;
     int damage_dealt = hp_before - hp_after;
 
-    if (iflags.using_gui_tiles)
+    if (iflags.using_gui_tiles && canspotmon(mtmp))
     {
         if ((!is_tame(mtmp) && flags.show_tile_mon_hp_bar) || (is_tame(mtmp) && flags.show_tile_pet_hp_bar))
             newsym(mtmp->mx, mtmp->my);
+        else
+            refresh_m_tile_gui_info(mtmp, TRUE);
     }
 
     if (iflags.wc2_statuslines > 3 && is_tame(mtmp))

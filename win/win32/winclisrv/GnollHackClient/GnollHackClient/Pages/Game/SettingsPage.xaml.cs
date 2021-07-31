@@ -35,6 +35,10 @@ namespace GnollHackClient.Pages.Game
                 _gamePage.ShowFPS = FPSSwitch.IsToggled;
             Preferences.Set("ShowFPS", FPSSwitch.IsToggled);
 
+            if (_gamePage != null)
+                _gamePage.HitPointBars = HitPointBarSwitch.IsToggled;
+            Preferences.Set("HitPointBars", HitPointBarSwitch.IsToggled);
+
             App.HideAndroidNavigatioBar = NavBarSwitch.IsToggled;
             Preferences.Set("HideAndroidNavigationBar", App.HideAndroidNavigatioBar);
 
@@ -57,7 +61,7 @@ namespace GnollHackClient.Pages.Game
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             int cursor = 0, graphics = 0, msgnum = 0;
-            bool fps = false, navbar = false, devmode = false;
+            bool fps = false, navbar = false, devmode = false, hpbars = false;
 
             navbar = App.HideAndroidNavigatioBar;
             devmode = App.DeveloperMode;
@@ -65,6 +69,7 @@ namespace GnollHackClient.Pages.Game
             {
                 cursor = Preferences.Get("CursorStyle", 1);
                 graphics = Preferences.Get("GraphicsStyle", 1);
+                hpbars = Preferences.Get("HitPointBars", false);
                 fps = Preferences.Get("ShowFPS", false);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
             }
@@ -72,11 +77,13 @@ namespace GnollHackClient.Pages.Game
             {
                 cursor = (int)_gamePage.CursorStyle;
                 graphics = (int)_gamePage.GraphicsStyle;
+                hpbars = _gamePage.HitPointBars;
                 fps = _gamePage.ShowFPS;
                 msgnum = _gamePage.NumDisplayedMessages;
             }
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
+            HitPointBarSwitch.IsToggled = hpbars;
             FPSSwitch.IsToggled = fps;
             NavBarSwitch.IsToggled = navbar;
             DeveloperSwitch.IsToggled = devmode;

@@ -80,6 +80,8 @@ namespace GnollHackClient.Pages.Game
         private object _fpslock = new object();
         private Stopwatch _stopWatch = new Stopwatch();
 
+        public bool HitPointBars { get; set; }
+
         private bool _cursorIsOn;
         private bool _showDirections = false;
         private bool _showNumberPad = false;
@@ -184,6 +186,7 @@ namespace GnollHackClient.Pages.Game
             CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
             GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
             ShowFPS = Preferences.Get("ShowFPS", false);
+            HitPointBars = Preferences.Get("HitPointBars", false);
             NumDisplayedMessages = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
             MapFontSize = Preferences.Get("MapFontSize", GHConstants.MapFontDefaultSize);
             MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", GHConstants.MapFontDefaultAlternateSize);
@@ -2058,6 +2061,7 @@ namespace GnollHackClient.Pages.Game
                 _mapWidth = mapwidth;
                 _mapHeight = mapheight;
                 _mapFontAscent = textPaint.FontMetrics.Ascent;
+                float targetscale = height / (float)GHConstants.TileHeight;
 
                 int startX = 1;
                 int endX = GHConstants.MapCols - 1;
@@ -2259,12 +2263,45 @@ namespace GnollHackClient.Pages.Game
 
                                                         }
 
+                                                        /* General tx, ty for all others, except cursors */
+                                                        tx = (offsetX + _mapOffsetX + base_move_offset_x + width * (float)mapx);
+                                                        ty = (offsetY + _mapOffsetY + base_move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+
+                                                        if (HitPointBars)
+                                                        {
+                                                            /* Draw hit point bars */
+                                                            if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_YOU | LayerFlags.LFLAGS_UXUY | LayerFlags.LFLAGS_M_CANSPOTMON)) != 0
+                                                            && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_WORM_TAIL)) == 0
+                                                            && _mapData[mapx, mapy].Layers.monster_maxhp > 0)
+                                                            {
+                                                                int hp = _mapData[mapx, mapy].Layers.monster_hp;
+                                                                int hpmax = _mapData[mapx, mapy].Layers.monster_maxhp;
+                                                                float fraction = (hpmax == 0 ? 0 : Math.Max(0, Math.Min(1, (float)hp / (float)hpmax)));
+                                                                float r_mult = fraction <= 0.25f ? fraction * 2.0f + 0.5f : fraction <= 0.5f ? 1.0f : (1.0f - fraction) * 2.0f;
+                                                                float g_mult = fraction <= 0.25f ? 0 : fraction <= 0.5f ? (fraction - 0.25f) * 4.0f : 1.0f;
+                                                                SKColor clr = new SKColor((byte)(255.0f * r_mult), (byte)(255.0f * g_mult), 0);
+                                                                SKRect smaller_rect = new SKRect();
+                                                                SKRect even_smaller_rect = new SKRect();
+                                                                smaller_rect.Bottom = ty + height;
+                                                                smaller_rect.Top = ty + height - Math.Max(1, (height) / 12);
+                                                                smaller_rect.Left = tx;
+                                                                smaller_rect.Right = tx + width;
+                                                                even_smaller_rect.Bottom = smaller_rect.Bottom - 1 * targetscale;
+                                                                even_smaller_rect.Top = smaller_rect.Top + 1 * targetscale;
+                                                                even_smaller_rect.Left = smaller_rect.Left + 1 * targetscale;
+                                                                even_smaller_rect.Right = even_smaller_rect.Left + (fraction * (smaller_rect.Right - 1 * targetscale - even_smaller_rect.Left));
+
+                                                                paint.Style = SKPaintStyle.Fill;
+                                                                paint.Color = SKColors.Black;
+                                                                canvas.DrawRect(smaller_rect, paint);
+                                                                paint.Color = clr;
+                                                                canvas.DrawRect(even_smaller_rect, paint);
+                                                            }
+                                                        }
+
                                                         if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_YOU | LayerFlags.LFLAGS_UXUY | LayerFlags.LFLAGS_M_CANSPOTMON)) != 0
                                                             && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_WORM_TAIL)) == 0)
                                                         {
-                                                            tx = (offsetX + _mapOffsetX + base_move_offset_x + width * (float)mapx);
-                                                            ty = (offsetY + _mapOffsetY + base_move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
-
                                                             /* Draw condition and status marks */
                                                             float x_scaling_factor = width / (float)(GHConstants.TileWidth);
                                                             float y_scaling_factor = height / (float)(GHConstants.TileHeight);
@@ -2435,10 +2472,7 @@ namespace GnollHackClient.Pages.Game
                                                             int tile_x = TileSheetX(mtile);
                                                             int tile_y = TileSheetY(mtile);
 
-                                                            tx = (offsetX + _mapOffsetX + base_move_offset_x + width * (float)mapx);
-                                                            ty = (offsetY + _mapOffsetY + base_move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
                                                             SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
-
                                                             SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                                                             canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
                                                         }
@@ -2451,10 +2485,7 @@ namespace GnollHackClient.Pages.Game
                                                             int tile_x = TileSheetX(mtile);
                                                             int tile_y = TileSheetY(mtile);
 
-                                                            tx = (offsetX + _mapOffsetX + base_move_offset_x + width * (float)mapx);
-                                                            ty = (offsetY + _mapOffsetY + base_move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
                                                             SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
-
                                                             SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                                                             canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
                                                         }
@@ -3116,7 +3147,6 @@ namespace GnollHackClient.Pages.Game
                                                                         /************/
                                                                         if (_autodraws != null)
                                                                         {
-                                                                            float targetscale = height / (float)GHConstants.TileHeight;
                                                                             if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LONG_WORM)
                                                                             {
                                                                                 /* Long worm here */
