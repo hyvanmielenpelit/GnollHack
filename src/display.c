@@ -1410,18 +1410,10 @@ int hit_tile_id, damage_shown;
 new_sym_end_here:
 
     if (x == u.ux && y == u.uy)
+    {
         add_glyph_buffer_layer_flags(x, y, LFLAGS_UXUY); /* Mark player location */
-
-    if (cansee(x, y))
-        add_glyph_buffer_layer_flags(x, y, LFLAGS_CAN_SEE);
-
-    if(NO_WALL_END_AUTODRAW(x, y))
-        add_glyph_buffer_layer_flags(x, y, LFLAGS_NO_WALL_END_AUTODRAW);
-
-    boolean is_lit_unknown_wall = (levl[x][y].waslit && IS_NON_STONE_WALL(levl[x][y].typ) && wall_angle(&levl[x][y]) == S_stone);
-    if (!levl[x][y].waslit || is_lit_unknown_wall)
-        add_glyph_buffer_layer_flags(x, y, LFLAGS_APPEARS_UNLIT);
-
+    }
+    
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH)
     {
         show_glyph_on_layer(x, y, missile_glyph, LAYER_MISSILE);
@@ -3361,7 +3353,7 @@ int cursor_on_u;
                     default:
                         break;
                     }
-                    
+
                     if (isok(rx, ry))
                     {
                         gptr_adj = &gbuf[ry][rx];
@@ -3376,11 +3368,63 @@ int cursor_on_u;
                                     if (replacements[repl].replacement_events & dir_bit)
                                     {
                                         newsym_with_flags(rx, ry, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS_AND_FLAGS);
+                                        break;
                                     }
                                 }
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    for (y = 0; y < ROWNO; y++)
+    {
+        for (x = gbuf_start[y]; x <= gbuf_stop[y]; x++)
+        {
+            if (cansee(x, y))
+            {
+                add_glyph_buffer_layer_flags(x, y, LFLAGS_CAN_SEE);
+            }
+
+            boolean is_lit_unknown_wall = (levl[x][y].waslit && IS_NON_STONE_WALL(levl[x][y].typ) && wall_angle(&levl[x][y]) == S_stone);
+            if (!levl[x][y].waslit || is_lit_unknown_wall)
+            {
+                add_glyph_buffer_layer_flags(x, y, LFLAGS_APPEARS_UNLIT);
+            }
+        }
+    }
+
+    for (y = 0; y < ROWNO; y++)
+    {
+        int x_start = gbuf_start[y];
+        if (y > 0 && gbuf_start[y - 1] < x_start)
+            x_start = gbuf_start[y - 1];
+        if (y < ROWNO - 1 && gbuf_start[y + 1] < x_start)
+            x_start = gbuf_start[y + 1];
+
+        int x_stop = gbuf_stop[y];
+        if (y > 0 && gbuf_stop[y - 1] > x_stop)
+            x_stop = gbuf_stop[y - 1];
+        if (y < ROWNO - 1 && gbuf_stop[y + 1] > x_stop)
+            x_stop = gbuf_stop[y + 1];
+
+        if (x_start > x_stop)
+            continue;
+
+        for (x = x_start - 1; x <= x_stop + 1; x++)
+        {
+            if (isok(x, y))
+            {
+                boolean nwead = NO_WALL_END_AUTODRAW(x, y);
+                boolean cur = (gbuf[y][x].layers.layer_flags & LFLAGS_NO_WALL_END_AUTODRAW) != 0;
+                if (nwead != cur)
+                {
+                    gbuf[y][x].isnew = 1;
+                    gbuf[y][x].layers.layer_flags &= ~LFLAGS_NO_WALL_END_AUTODRAW;
+                    if(nwead)
+                        gbuf[y][x].layers.layer_flags |= LFLAGS_NO_WALL_END_AUTODRAW;
                 }
             }
         }

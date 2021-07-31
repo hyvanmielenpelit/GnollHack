@@ -1,17 +1,12 @@
-# GnollHack 4.0  defaults.gnh       $NHDT-Date: 1524689357 2018/04/25 20:49:17 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.32 $
-# Copyright (c) 2006 by Michael Allison
-# GnollHack may be freely redistributed.  See license for details.
-
-# Sample config file for win32 NetHack
+# Default Config File for GnollHack
+#
 # A '#' at the beginning of a line means the rest of the line is a comment.
 #
 # Some options MUST be set in this file, other options can be toggled while
-# playing.  For a list of options available see the <opthelp.> file.
+# playing.
 #
 # To change the configuration, comment out the unwanted lines, and
 # uncomment the configuration you want.
-#
-# $NHDT-Date: 1524689357 2018/04/25 20:49:17 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.32 $
 
 # *** OPTIONS ***
 #

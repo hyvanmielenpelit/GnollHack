@@ -42,6 +42,7 @@
     <None Remove="Assets\imrl.ttf" />
     <None Remove="Assets\Lato-Bold.ttf" />
     <None Remove="Assets\Lato-Regular.ttf" />
+    <None Remove="Assets\main-menu-portrait-snapshot.jpg" />
     <None Remove="Assets\Master.bank" />
     <None Remove="Assets\Master.strings.bank" />
     <None Remove="Assets\shxi.ttf" />
@@ -82,10 +83,10 @@
     <EmbeddedResource Include="Assets\imrl.ttf" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />
+    <EmbeddedResource Include="Assets\main-menu-portrait-snapshot.jpg" />
     <EmbeddedResource Include="Assets\Master.bank" />
     <EmbeddedResource Include="Assets\Master.strings.bank" />
     <EmbeddedResource Include="Assets\shxi.ttf" />
-    <EmbeddedResource Include="Assets\splash-snapshot.jpg" />
     <EmbeddedResource Include="Assets\tombstone.png" />
     <EmbeddedResource Include="Assets\UI\menubackground.png" />
     <EmbeddedResource Include="Assets\uwch.ttf" />

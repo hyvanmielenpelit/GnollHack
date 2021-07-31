@@ -3147,7 +3147,179 @@ namespace GnollHackClient.Pages.Game
                                                                         /************/
                                                                         if (_autodraws != null)
                                                                         {
-                                                                            if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LONG_WORM)
+                                                                            if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_REPLACE_WALL_ENDS)
+                                                                            {
+                                                                                for (byte dir = 0; dir < 4; dir++)
+                                                                                {
+                                                                                    byte dir_bit = (byte)(1 << dir);
+                                                                                    if ((_autodraws[autodraw].flags & dir_bit) != 0)
+                                                                                    {
+                                                                                        int rx = 0;
+                                                                                        int ry = 0;
+                                                                                        int[] corner_x = new int[2];
+                                                                                        int[] corner_y = new int[2];
+                                                                                        switch (dir)
+                                                                                        {
+                                                                                            case 0:
+                                                                                                rx = mapx - 1;
+                                                                                                ry = mapy;
+                                                                                                corner_x[0] = mapx;
+                                                                                                corner_y[0] = mapy - 1;
+                                                                                                corner_x[1] = mapx;
+                                                                                                corner_y[1] = mapy + 1;
+                                                                                                break;
+                                                                                            case 1:
+                                                                                                rx = mapx + 1;
+                                                                                                ry = mapy;
+                                                                                                corner_x[0] = mapx;
+                                                                                                corner_y[0] = mapy - 1;
+                                                                                                corner_x[1] = mapx;
+                                                                                                corner_y[1] = mapy + 1;
+                                                                                                break;
+                                                                                            case 2:
+                                                                                                rx = mapx;
+                                                                                                ry = mapy - 1;
+                                                                                                corner_x[0] = mapx - 1;
+                                                                                                corner_y[0] = mapy;
+                                                                                                corner_x[1] = mapx + 1;
+                                                                                                corner_y[1] = mapy;
+                                                                                                break;
+                                                                                            case 3:
+                                                                                                rx = mapx;
+                                                                                                ry = mapy + 1;
+                                                                                                corner_x[0] = mapx - 1;
+                                                                                                corner_y[0] = mapy;
+                                                                                                corner_x[1] = mapx + 1;
+                                                                                                corner_y[1] = mapy;
+                                                                                                break;
+                                                                                            default:
+                                                                                                break;
+                                                                                        }
+
+                                                                                        if (!GHUtils.isok(rx, ry) || (_mapData[rx, ry].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0) // NO_WALL_END_AUTODRAW(rx, ry))
+                                                                                        {
+                                                                                            /* No action */
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            for (int corner = 0; corner <= 1; corner++)
+                                                                                            {
+                                                                                                int source_glyph = _autodraws[autodraw].source_glyph;
+                                                                                                int atile = Glyph2Tile[source_glyph];
+                                                                                                int a_sheet_idx = TileSheetIdx(atile);
+                                                                                                int at_x = TileSheetX(atile);
+                                                                                                int at_y = TileSheetY(atile);
+
+                                                                                                SKRect source_rt = new SKRect();
+                                                                                                switch (dir)
+                                                                                                {
+                                                                                                    case 0: /* left */
+                                                                                                        if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0) // NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                                                                                        {
+                                                                                                            source_glyph = _autodraws[autodraw].source_glyph2; /* S_vwall */
+                                                                                                            atile = Glyph2Tile[source_glyph];
+                                                                                                            a_sheet_idx = TileSheetIdx(atile);
+                                                                                                            at_x = TileSheetX(atile);
+                                                                                                            at_y = TileSheetY(atile);
+                                                                                                        }
+                                                                                                        source_rt.Left = at_x;
+                                                                                                        source_rt.Right = source_rt.Left + 12;
+                                                                                                        if (corner == 0)
+                                                                                                        {
+                                                                                                            source_rt.Top = at_y;
+                                                                                                            source_rt.Bottom = at_y + 18;
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            source_rt.Top = at_y + 18;
+                                                                                                            source_rt.Bottom = at_y + GHConstants.TileHeight;
+                                                                                                        }
+                                                                                                        break;
+                                                                                                    case 1: /* right */
+                                                                                                        //if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                                                                                        if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
+                                                                                                        {
+                                                                                                            source_glyph = _autodraws[autodraw].source_glyph2; /* S_vwall */
+                                                                                                            atile = Glyph2Tile[source_glyph];
+                                                                                                            a_sheet_idx = TileSheetIdx(atile);
+                                                                                                            at_x = TileSheetX(atile);
+                                                                                                            at_y = TileSheetY(atile);
+                                                                                                        }
+                                                                                                        source_rt.Right = at_x + GHConstants.TileWidth;
+                                                                                                        source_rt.Left = source_rt.Right - 12;
+                                                                                                        if (corner == 0)
+                                                                                                        {
+                                                                                                            source_rt.Top = at_y;
+                                                                                                            source_rt.Bottom = at_y + 18;
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            source_rt.Top = at_y + 18;
+                                                                                                            source_rt.Bottom = at_y + GHConstants.TileHeight;
+                                                                                                        }
+                                                                                                        break;
+                                                                                                    case 2: /* up */
+                                                                                                        //if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                                                                                        if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
+                                                                                                        {
+                                                                                                            source_glyph = _autodraws[autodraw].source_glyph3; /* S_hwall */
+                                                                                                            atile = Glyph2Tile[source_glyph];
+                                                                                                            a_sheet_idx = TileSheetIdx(atile);
+                                                                                                            at_x = TileSheetX(atile);
+                                                                                                            at_y = TileSheetY(atile);
+                                                                                                        }
+                                                                                                        if (corner == 0)
+                                                                                                        {
+                                                                                                            source_rt.Left = at_x;
+                                                                                                            source_rt.Right = at_x + GHConstants.TileWidth / 2;
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            source_rt.Left = at_x + GHConstants.TileWidth / 2;
+                                                                                                            source_rt.Right = at_x + GHConstants.TileWidth;
+                                                                                                        }
+                                                                                                        source_rt.Top = at_y;
+                                                                                                        source_rt.Bottom = source_rt.Top + 12;
+                                                                                                        break;
+                                                                                                    case 3: /* down */
+                                                                                                        //if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                                                                                        if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
+                                                                                                        {
+                                                                                                            source_glyph = _autodraws[autodraw].source_glyph3; /* S_hwall */
+                                                                                                            atile = Glyph2Tile[source_glyph];
+                                                                                                            a_sheet_idx = TileSheetIdx(atile);
+                                                                                                            at_x = TileSheetX(atile);
+                                                                                                            at_y = TileSheetY(atile);
+                                                                                                        }
+                                                                                                        if (corner == 0)
+                                                                                                        {
+                                                                                                            source_rt.Left = at_x;
+                                                                                                            source_rt.Right = at_x + GHConstants.TileWidth / 2;
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            source_rt.Left = at_x + GHConstants.TileWidth / 2;
+                                                                                                            source_rt.Right = at_x + GHConstants.TileWidth;
+                                                                                                        }
+                                                                                                        source_rt.Top = at_y + 12;
+                                                                                                        source_rt.Bottom = at_y + GHConstants.TileHeight;
+                                                                                                        break;
+                                                                                                    default:
+                                                                                                        break;
+                                                                                                }
+
+                                                                                                SKRect target_rt = new SKRect();
+                                                                                                target_rt.Left = tx + (targetscale * (float)(source_rt.Left - at_x));
+                                                                                                target_rt.Right = tx + (targetscale * (float)(source_rt.Right - at_x));
+                                                                                                target_rt.Top = ty + (targetscale * (float)(source_rt.Top - at_y));
+                                                                                                target_rt.Bottom = ty + (targetscale * (float)(source_rt.Bottom - at_y));
+                                                                                                canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LONG_WORM)
                                                                             {
                                                                                 /* Long worm here */
 
@@ -4229,14 +4401,8 @@ namespace GnollHackClient.Pages.Game
                 if (ShowWaitIcon)
                 {
                     SKRect targetrect;
-                    float[] sizearray = { 10.0f, 10.1f, 10.2f, 10.3f, 10.4f, 10.3f, 10.2f, 10.1f, 10.0f, 9.9f };
-                    long sizeidx = 0;
-                    lock (AnimationTimerLock)
-                    {
-                        sizeidx = AnimationTimers.general_animation_counter % 10;
-                    }
-                    float size = sizearray[sizeidx];
-                    targetrect = new SKRect(canvaswidth / 2 - canvaswidth / size, canvasheight / 2 - canvaswidth / size, canvaswidth / 2 + canvaswidth / size, canvasheight / 2 + canvaswidth / size);
+                    float size = canvaswidth / 5.0f;
+                    targetrect = new SKRect(canvaswidth / 2 - size / 2, canvasheight / 2 - size / 2, canvaswidth / 2 + size / 2, canvasheight / 2 + size / 2);
                     canvas.DrawBitmap(_logoBitmap, targetrect);
                 }
 

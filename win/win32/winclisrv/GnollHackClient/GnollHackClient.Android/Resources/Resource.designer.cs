@@ -21875,7 +21875,7 @@ namespace GnollHackClient.Droid
 		{
 			
 			// aapt resource value: 0x7F0E0000
-			public const int splashvideo = 2131623936;
+			public const int mainmenuportrait = 2131623936;
 			
 			static Raw()
 			{

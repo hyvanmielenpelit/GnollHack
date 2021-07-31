@@ -188,7 +188,7 @@ namespace GnollHackClient
                             settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                            StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.splash-snapshot.jpg", assembly);
+                            StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
                             res = true;
                             break;
                         case 1:
@@ -317,9 +317,9 @@ namespace GnollHackClient
                 videoView.Stop();
                 videoView.Source = null;
                 if (Device.RuntimePlatform == Device.UWP)
-                    videoView.Source = new Uri($"ms-appx:///Assets/splashvideo.mp4");
+                    videoView.Source = new Uri($"ms-appx:///Assets/mainmenuportrait.mp4");
                 else
-                    videoView.Source = new Uri($"ms-appx:///splashvideo.mp4");
+                    videoView.Source = new Uri($"ms-appx:///mainmenuportrait.mp4");
                 videoView.WidthRequest = width;
                 videoView.HeightRequest = height;
                 videoView.Play();

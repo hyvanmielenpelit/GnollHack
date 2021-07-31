@@ -30,7 +30,7 @@
         <xct:MediaElement x:Name="videoView" IsVisible="false" IsLooping="true" Aspect="AspectFill" ShowsPlaybackControls="False"
                                 HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                                 AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0" AbsoluteLayout.LayoutFlags="All" 
-                                Source="ms-appx:///splashvideo.mp4"
+                                Source="ms-appx:///mainmenuportrait.mp4"
                                 />
 
         <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="60, 35, AutoSize, AutoSize"
