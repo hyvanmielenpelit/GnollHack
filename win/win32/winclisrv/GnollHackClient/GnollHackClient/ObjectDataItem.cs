@@ -24,6 +24,55 @@ namespace GnollHackClient
                 return OtypData.lamplit != 0;
             }
         }
+        public bool Poisoned
+        {
+            get
+            {
+                return OtypData.poisoned != 0;
+            }
+        }
+        public byte Eroded
+        {
+            get
+            {
+                return OtypData.eroded;
+            }
+        }
+        public byte Eroded2
+        {
+            get
+            {
+                return OtypData.eroded2;
+            }
+        }
+        public byte ElementalEnchantment
+        {
+            get
+            {
+                return ObjData.elemental_enchantment;
+            }
+        }
+        public byte MythicPrefix
+        {
+            get
+            {
+                return ObjData.mythic_prefix;
+            }
+        }
+        public byte MythicSuffix
+        {
+            get
+            {
+                return ObjData.mythic_suffix;
+            }
+        }
+        public byte Exceptionality
+        {
+            get
+            {
+                return ObjData.exceptionality;
+            }
+        }
         public int OtypSpecialQuality
         {
             get

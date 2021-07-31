@@ -522,6 +522,17 @@ get_objclassdata(struct obj* otmp)
 
     otypdata.tile_height = get_obj_height(otmp);
     otypdata.special_quality = objects[otmp->otyp].oc_special_quality;
+    
     otypdata.lamplit = otmp->lamplit;
+    otypdata.poisoned = otmp->opoisoned;
+    otypdata.eroded = otmp->oeroded;
+    otypdata.eroded2 = otmp->oeroded2;
+
+    otypdata.corrodeable = is_corrodeable(otmp);
+    otypdata.rottable = is_rottable(otmp);
+    otypdata.flammable = is_flammable(otmp);
+    otypdata.rustprone = is_rustprone(otmp);
+    otypdata.poisonable = is_poisonable(otmp);
+
     return otypdata;
 }

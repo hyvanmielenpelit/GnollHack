@@ -26,6 +26,16 @@ struct objclassdata
 
     /* Temporary extra data */
     uchar lamplit;
+    uchar poisoned;
+    uchar eroded;
+    uchar eroded2;
+
+    /* Calculated values */
+    uchar corrodeable;
+    uchar rottable;
+    uchar flammable;
+    uchar rustprone;
+    uchar poisonable;
 };
 
  /* General callback types */

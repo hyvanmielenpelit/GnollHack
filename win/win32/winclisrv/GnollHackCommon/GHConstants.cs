@@ -181,6 +181,19 @@ namespace GnollHackCommon
     }
 
     [Flags]
+    public enum LayerMissileFlags : ulong
+    {
+        MISSILE_FLAGS_CORRODEABLE =  0x00000001UL,
+        MISSILE_FLAGS_ROTTABLE =     0x00000002UL,
+        MISSILE_FLAGS_FLAMMABLE =    0x00000004UL,
+        MISSILE_FLAGS_RUSTPRONE =    0x00000008UL,
+        MISSILE_FLAGS_ERODEPROOF =   0x00000010UL,
+        MISSILE_FLAGS_POISONABLE =   0x00000020UL,
+        MISSILE_FLAGS_TETHERED =     0x00000040UL, /* Missile is tethered */
+    }
+
+ 
+    [Flags]
     public enum glyph_tile_flags : byte
     {
         None = 0x00,
@@ -684,7 +697,17 @@ namespace GnollHackCommon
     {
         public int tile_height;
         public int special_quality;
+
         public byte lamplit;
+        public byte poisoned;
+        public byte eroded;
+        public byte eroded2;
+
+        public byte corrodeable;
+        public byte rottable;
+        public byte flammable;
+        public byte rustprone;
+        public byte poisonable;
     }
 
     public enum obj_class_types
@@ -808,6 +831,17 @@ namespace GnollHackCommon
         FIRE_ENCHANTMENT = 2,
         LIGHTNING_ENCHANTMENT = 3,
         DEATH_ENCHANTMENT = 4
+    }
+
+    public enum exceptionality_types
+    {
+        EXCEPTIONALITY_NORMAL = 0,
+        EXCEPTIONALITY_EXCEPTIONAL,
+        EXCEPTIONALITY_ELITE,
+        EXCEPTIONALITY_CELESTIAL,
+        EXCEPTIONALITY_PRIMORDIAL,
+        EXCEPTIONALITY_INFERNAL,
+        MAX_EXCEPTIONALITY_TYPES
     }
 
 

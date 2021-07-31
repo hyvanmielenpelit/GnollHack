@@ -3552,6 +3552,197 @@ namespace GnollHackClient.Pages.Game
                                                                                     cnt++;
                                                                                 }
                                                                             }
+
+                                                                            /*
+                                                                             * AUTODRAW END
+                                                                             */
+
+                                                                            /* Item property marks */
+                                                                            if (((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT) && otmp_round != null &&
+                                                                                (otmp_round.Poisoned || otmp_round.ElementalEnchantment > 0 || otmp_round.MythicPrefix > 0 || otmp_round.MythicSuffix > 0 || otmp_round.Eroded != 0 || otmp_round.Eroded2 != 0 || otmp_round.Exceptionality > 0))
+                                                                                ||
+                                                                                ((layer_idx == (int)layer_types.LAYER_MISSILE) &&
+                                                                                    (_mapData[mapx, mapy].Layers.missile_poisoned != 0 || _mapData[mapx, mapy].Layers.missile_elemental_enchantment > 0
+                                                                                        || _mapData[mapx, mapy].Layers.missile_eroded != 0|| _mapData[mapx, mapy].Layers.missile_eroded2 != 0 ||
+                                                                                        _mapData[mapx, mapy].Layers.missile_exceptionality > 0 || _mapData[mapx, mapy].Layers.missile_mythic_prefix > 0 || _mapData[mapx, mapy].Layers.missile_mythic_suffix > 0))
+                                                                                )
+                                                                            {
+                                                                                float y_start = scaled_y_padding;
+                                                                                if (tileflag_halfsize)
+                                                                                {
+                                                                                    y_start += height / 2;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                                                                                        y_start += height / 4;
+                                                                                    else
+                                                                                        y_start += 0;
+                                                                                }
+                                                                                float x_start = scaled_x_padding;
+                                                                                int mark_width = 8;
+                                                                                int marks_per_row = GHConstants.TileHeight / mark_width;
+                                                                                int mark_height = 24;
+                                                                                int src_x = 0;
+                                                                                int src_y = 0;
+                                                                                int cnt = 0;
+                                                                                bool poisoned = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_poisoned != 0 : otmp_round.Poisoned);
+                                                                                byte elemental_enchantment = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_elemental_enchantment : otmp_round.ElementalEnchantment);
+                                                                                byte exceptionality = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_exceptionality : otmp_round.Exceptionality);
+                                                                                byte mythic_prefix = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_mythic_prefix : otmp_round.MythicPrefix);
+                                                                                byte mythic_suffix = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_mythic_suffix : otmp_round.MythicSuffix);
+                                                                                byte eroded = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_eroded : otmp_round.Eroded);
+                                                                                byte eroded2 = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_eroded2 : otmp_round.Eroded2);
+                                                                                bool corrodeable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_CORRODEABLE) != 0 : otmp_round.OtypData.corrodeable != 0);
+                                                                                bool rottable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_ROTTABLE) != 0 : otmp_round.OtypData.rottable != 0);
+                                                                                bool flammable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_FLAMMABLE) != 0 : otmp_round.OtypData.flammable != 0);
+                                                                                bool rustprone = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_RUSTPRONE) != 0 : otmp_round.OtypData.rustprone != 0);
+                                                                                bool poisonable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_POISONABLE) != 0 : otmp_round.OtypData.poisonable != 0);
+                                                                                float dest_x = 0, dest_y = 0;
+
+                                                                                for (item_property_mark_types ipm_idx = 0; ipm_idx < item_property_mark_types.MAX_ITEM_PROPERTY_MARKS; ipm_idx++)
+                                                                                {
+                                                                                    if (cnt >= 8)
+                                                                                        break;
+
+                                                                                    src_x = ((int)ipm_idx % marks_per_row) * mark_width;
+                                                                                    src_y = ((int)ipm_idx / marks_per_row) * mark_height;
+                                                                                    dest_x = 0;
+                                                                                    dest_y = 0;
+
+                                                                                    switch (ipm_idx)
+                                                                                    {
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_POISONED:
+                                                                                        if (!(poisoned && poisonable))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_DEATH_MAGICAL:
+                                                                                        if (elemental_enchantment != (byte)elemental_enchantment_types.DEATH_ENCHANTMENT)
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_FLAMING:
+                                                                                        if (elemental_enchantment != (byte)elemental_enchantment_types.FIRE_ENCHANTMENT)
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_FREEZING:
+                                                                                        if (elemental_enchantment != (byte)elemental_enchantment_types.COLD_ENCHANTMENT)
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_ELECTRIFIED:
+                                                                                        if (elemental_enchantment != (byte)elemental_enchantment_types.LIGHTNING_ENCHANTMENT)
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_EXCEPTIONAL:
+                                                                                        if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_EXCEPTIONAL)
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_ELITE:
+                                                                                        if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_ELITE)
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_CELESTIAL:
+                                                                                        if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_CELESTIAL)
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_PRIMORDIAL:
+                                                                                        if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_PRIMORDIAL)
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_INFERNAL:
+                                                                                        if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_INFERNAL)
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_MYTHIC:
+                                                                                        if ((mythic_prefix == 0 && mythic_suffix == 0) || (mythic_prefix > 0 && mythic_suffix > 0))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_LEGENDARY:
+                                                                                        if (mythic_prefix == 0 || mythic_suffix == 0)
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_CORRODED:
+                                                                                        if (!(eroded2 == 1 && corrodeable))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_ROTTED:
+                                                                                        if (!(eroded2 == 1 && rottable))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_BURNT:
+                                                                                        if (!(eroded == 1  && flammable))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_RUSTY:
+                                                                                        if (!(eroded == 1 && rustprone))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_CORRODED:
+                                                                                        if (!(eroded2 == 2 && corrodeable))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_ROTTED:
+                                                                                        if (!(eroded2 == 2 && rottable))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_BURNT:
+                                                                                        if (!(eroded == 2 && flammable))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_RUSTY:
+                                                                                        if (!(eroded == 2 && rustprone))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_CORRODED:
+                                                                                        if (!(eroded2 == 3 && corrodeable))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_ROTTED:
+                                                                                        if (!(eroded2 == 3 && rottable))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_BURNT:
+                                                                                        if (!(eroded == 3 && flammable))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_RUSTY:
+                                                                                        if (!(eroded == 3 && rustprone))
+                                                                                            continue;
+                                                                                        break;
+                                                                                    case item_property_mark_types.MAX_ITEM_PROPERTY_MARKS:
+                                                                                    default:
+                                                                                        continue;
+                                                                                    }
+
+                                                                                    int item_xpos = ((int)GHConstants.TileWidth) / 2 - mark_width + (cnt % 2 != 0 ? 1 : -1) * ((cnt + 1) / 2) * mark_width;
+
+                                                                                    dest_y = y_start + scaled_tile_height / 2 - (targetscale * scale * (float) (mark_height / 2));
+                                                                                    dest_x = x_start + (targetscale * scale * (float) item_xpos);
+
+                                                                                    int source_glyph = (int)game_ui_tile_types.ITEM_PROPERTY_MARKS + UITileOff;
+                                                                                    int atile = Glyph2Tile[source_glyph];
+                                                                                    int a_sheet_idx = TileSheetIdx(atile);
+                                                                                    int at_x = TileSheetX(atile);
+                                                                                    int at_y = TileSheetY(atile);
+
+                                                                                    SKRect source_rt = new SKRect();
+                                                                                    source_rt.Left = at_x + src_x;
+                                                                                    source_rt.Right = source_rt.Left + mark_width;
+                                                                                    source_rt.Top = at_y + src_y;
+                                                                                    source_rt.Bottom = source_rt.Top + mark_height;
+
+                                                                                    SKRect target_rt = new SKRect();
+
+                                                                                    target_rt.Left = tx + dest_x;
+                                                                                    target_rt.Right = target_rt.Left + targetscale * scale * source_rt.Width;
+                                                                                    target_rt.Top = ty + dest_y;
+                                                                                    target_rt.Bottom = target_rt.Top + targetscale * scale * source_rt.Height;
+
+                                                                                    canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt);
+
+                                                                                    cnt++;
+                                                                                }                        
+                                                                            }
+
                                                                         }
                                                                     }
                                                                 }

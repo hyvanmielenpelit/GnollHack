@@ -17,7 +17,7 @@
                AbsoluteLayout.LayoutBounds="20, 20, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" Aspect="AspectFit"/>
 
-        <ff:CachedImage x:Name="StartLogoImage" Opacity="0" IsVisible="true" HeightRequest="250" WidthRequest="250"
+        <ff:CachedImage x:Name="StartLogoImage" Opacity="0" IsVisible="true" HeightRequest="300" WidthRequest="300"
                HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" Aspect="AspectFit"/>
