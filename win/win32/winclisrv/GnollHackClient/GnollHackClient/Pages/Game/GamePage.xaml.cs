@@ -725,7 +725,7 @@ namespace GnollHackClient.Pages.Game
         private async void ShowWindowPage(GHWindow window, List<GHPutStrItem> strs)
         {
             var cpage = new GHTextPage(this, window, strs);
-            await App.Current.MainPage.Navigation.PushModalAsync(cpage);
+            await App.Current.MainPage.Navigation.PushModalAsync(cpage, false);
         }
 
         private void PrintTopLine(string str, uint attributes)
@@ -3740,8 +3740,8 @@ namespace GnollHackClient.Pages.Game
                 float opaqueness = 1;
                 int sheet_idx = 0;
 
-                if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_REPLACE_WALL_ENDS)
-                {
+                if (false && _autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_REPLACE_WALL_ENDS)
+                { /* Deactivated for the time being */
                     for (byte dir = 0; dir < 4; dir++)
                     {
                         byte dir_bit = (byte)(1 << dir);
