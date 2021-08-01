@@ -70,8 +70,8 @@ namespace GnollHackCommon
     public delegate int PlayImmediateSoundCallback(
         int ghsound, 
         [MarshalAs(UnmanagedType.LPStr)] string eventPath, 
-        int bankid, float eventVolume, 
-        float soundVolume,
+        int bankid, double eventVolume,
+        double soundVolume,
         [MarshalAs(UnmanagedType.LPArray, SizeConst = GHConstants.MaxSoundParameters)][In] string[] parameterNames, 
         [MarshalAs(UnmanagedType.LPArray, SizeConst = GHConstants.MaxSoundParameters)][In] float[] parameterValues, 
         int arraysize, 
@@ -83,27 +83,40 @@ namespace GnollHackCommon
     public delegate int PlayMusicCallback(
         int ghsound,
         [MarshalAs(UnmanagedType.LPStr)] string eventPath,
-        int bankid, float eventVolume,
-        float soundVolume);
+        int bankid, double eventVolume,
+        double soundVolume);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int PlayLevelAmbientCallback(
         int ghsound,
         [MarshalAs(UnmanagedType.LPStr)] string eventPath,
-        int bankid, float eventVolume,
-        float soundVolume);
+        int bankid, double eventVolume,
+        double soundVolume);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int PlayEnvironmentAmbientCallback(
         int ghsound,
         [MarshalAs(UnmanagedType.LPStr)] string eventPath,
-        int bankid, float eventVolume,
-        float soundVolume);
+        int bankid, double eventVolume,
+        double soundVolume);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int StopAllSoundsCallback(
         uint flags,
         uint dialogue_mid);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate int AddAmbientSoundCallback(
+        int ghsound,
+        [MarshalAs(UnmanagedType.LPStr)] string eventPath,
+        int bankid, double eventVolume,
+        double soundVolume, out UInt64 soundSourceId);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate int DeleteAmbientSoundCallback(UInt64 soundSourceId);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate int SetAmbientSoundVolumeCallback(UInt64 soundSourceId, double soundVolume);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [return: MarshalAs(UnmanagedType.LPStr)]

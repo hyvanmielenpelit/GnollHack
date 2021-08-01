@@ -979,40 +979,67 @@ namespace GnollHackClient
             }
         }
 
-        public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid)
+        public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid)
         {
             if(App.FmodService != null)
             {
-                return App.FmodService.PlayImmediateSound(ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues, arraysize, sound_type, play_group, dialogue_mid);
+                return App.FmodService.PlayImmediateSound(ghsound, eventPath, bankid, (float)eventVolume, (float)soundVolume, parameterNames, parameterValues, arraysize, sound_type, play_group, dialogue_mid);
             }
 
             return 1;
         }
 
-        public int ClientCallback_PlayMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        public int ClientCallback_PlayMusic(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
             if (App.FmodService != null)
             {
-                return App.FmodService.PlayMusic(ghsound, eventPath, bankid, eventVolume, soundVolume);
+                return App.FmodService.PlayMusic(ghsound, eventPath, bankid, (float)eventVolume, (float)soundVolume);
             }
 
             return 1;
         }
-        public int ClientCallback_PlayLevelAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        public int ClientCallback_PlayLevelAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
             if (App.FmodService != null)
             {
-                return App.FmodService.PlayLevelAmbient(ghsound, eventPath, bankid, eventVolume, soundVolume);
+                return App.FmodService.PlayLevelAmbient(ghsound, eventPath, bankid, (float)eventVolume, (float)soundVolume);
             }
 
             return 1;
         }
 
-        public int ClientCallback_PlayEnvironmentAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        public int ClientCallback_PlayEnvironmentAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
             if (App.FmodService != null)
             {
-                return App.FmodService.PlayEnvironmentAmbient(ghsound, eventPath, bankid, eventVolume, soundVolume);
+                return App.FmodService.PlayEnvironmentAmbient(ghsound, eventPath, bankid, (float)eventVolume, (float)soundVolume);
+            }
+
+            return 1;
+        }
+        public int ClientCallback_AddAmbientSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, out UInt64 soundSourceId)
+        {
+            if (App.FmodService != null)
+            {
+                return App.FmodService.AddAmbientSound(ghsound, eventPath, bankid, (float)eventVolume, (float)soundVolume, out soundSourceId);
+            }
+            soundSourceId = 0;
+            return 1;
+        }
+        public int ClientCallback_DeleteAmbientSound(UInt64 soundSourceId)
+        {
+            if (App.FmodService != null)
+            {
+                return App.FmodService.DeleteAmbientSound(soundSourceId);
+            }
+
+            return 1;
+        }
+        public int ClientCallback_SetAmbientSoundVolume(UInt64 soundSourceId, double soundVolume)
+        {
+            if (App.FmodService != null)
+            {
+                return App.FmodService.SetAmbientSoundVolume(soundSourceId, (float)soundVolume);
             }
 
             return 1;

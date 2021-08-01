@@ -91,9 +91,9 @@ namespace GnollHackServer
             PlayLevelAmbientCallback callback_play_ghsound_level_ambient,
             PlayEnvironmentAmbientCallback callback_play_ghsound_environment_ambient,
             BooleanDoubleDoubleDoubleDoubleDoubleCallback callback_adjust_ghsound_general_volumes,
-            BooleanIntDoubleVoidPtrCallback callback_add_ambient_ghsound,
-            BooleanVoidPtrCallback callback_delete_ambient_ghsound,
-            BooleanDoubleVoidPtrCallback callback_set_ambient_ghsound_volume,
+            AddAmbientSoundCallback callback_add_ambient_ghsound,
+            DeleteAmbientSoundCallback callback_delete_ambient_ghsound,
+            SetAmbientSoundVolumeCallback callback_set_ambient_ghsound_volume,
             VoidVoidCallback callback_clear_context_menu,
             AddContextMenuCallback callback_add_context_menu,
             ToggleAnimationTimerCallback callback_toggle_animation_timer,
@@ -244,9 +244,9 @@ namespace GnollHackServer
                 GameCallback_PlayLevelAmbient,
                 GameCallback_PlayEnvironmentAmbient,
                 GameCallback_BooleanDoubleDoubleDoubleDoubleDoubleDummy,
-                GameCallback_BooleanIntDoubleVoidPtrDummy,
-                GameCallback_BooleanVoidPtrDummy,
-                GameCallback_BooleanDoubleVoidPtrDummy,
+                GameCallback_AddAmbientSound,
+                GameCallback_DeleteAmbientSound,
+                GameCallback_SetAmbientSoundVolume,
                 GameCallback_ClearContextMenu,
                 GameCallback_AddContextMenu,
                 GameCallback_ToggleAnimationTimer,
@@ -352,19 +352,32 @@ namespace GnollHackServer
 
         }
 
-        public int GameCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid)
+        public int GameCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid)
         {
             return 0;
         }
-        public int GameCallback_PlayMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        public int GameCallback_PlayMusic(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
             return 0;
         }
-        public int GameCallback_PlayLevelAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        public int GameCallback_AddAmbientSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, out UInt64 soundSourceId)
+        {
+            soundSourceId = 0;
+            return 0;
+        }
+        public int GameCallback_DeleteAmbientSound(UInt64 soundSourceId)
         {
             return 0;
         }
-        public int GameCallback_PlayEnvironmentAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        public int GameCallback_SetAmbientSoundVolume(UInt64 soundSourceId, double soundVolume)
+        {
+            return 0;
+        }
+        public int GameCallback_PlayLevelAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
+        {
+            return 0;
+        }
+        public int GameCallback_PlayEnvironmentAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
             return 0;
         }

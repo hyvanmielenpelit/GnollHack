@@ -14,6 +14,9 @@ namespace GnollHackClient
         int PlayMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume);
         int PlayLevelAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume);
         int PlayEnvironmentAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume);
+        int AddAmbientSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, out UInt64 soundSourceId);
+        int DeleteAmbientSound(UInt64 soundSourceId);
+        int SetAmbientSoundVolume(UInt64 soundSourceId, float soundVolume);
         int StopAllSounds(ulong flags, uint dialogue_mid);
     }
 }

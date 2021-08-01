@@ -2827,28 +2827,28 @@ dll_adjust_ghsound_general_volumes(VOID_ARGS)
 void
 dll_add_ambient_ghsound(struct soundsource_t* soundsource)
 {
-    if (!dll_callbacks.callback_add_ambient_ghsound(soundsource->ghsound, soundsource->heard_volume, soundsource->ambient_ghsound_ptr))
-    {
-        impossible("Cannot add ambient sound!");
-    }
+    //if (!dll_callbacks.callback_add_ambient_ghsound(soundsource->ghsound, soundsource->heard_volume, soundsource->ambient_ghsound_ptr))
+    //{
+    //    impossible("Cannot add ambient sound!");
+    //}
 }
 
 void
 dll_delete_ambient_ghsound(struct soundsource_t* soundsource)
 {
-    if (!dll_callbacks.callback_delete_ambient_ghsound(soundsource->ambient_ghsound_ptr))
-    {
-        impossible("Cannot delete ambient sound!");
-    }
+    //if (!dll_callbacks.callback_delete_ambient_ghsound(soundsource->ambient_ghsound_ptr))
+    //{
+    //    impossible("Cannot delete ambient sound!");
+    //}
 }
 
 void
 dll_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 {
-    if (!dll_callbacks.callback_set_ambient_ghsound_volume(soundsource->ambient_ghsound_ptr, soundsource->heard_volume))
-    {
-        impossible("Cannot set ambient sound volume!");
-    }
+    //if (!dll_callbacks.callback_set_ambient_ghsound_volume((unsigned long long)soundsource->ambient_ghsound_ptr, (double)soundsource->heard_volume))
+    //{
+    //    impossible("Cannot set ambient sound volume!");
+    //}
 }
 
 void

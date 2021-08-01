@@ -419,10 +419,9 @@ namespace GnollHackClient.Droid
             if (levelAmbientInstances.Count > 0 && levelAmbientInstances[0].ghsound == ghsound && levelAmbientInstances[0].stopped == false)
             {
                 /* Check if the volume is different */
-                if (levelAmbientInstances[0].normalEventVolume != eventVolume || levelAmbientInstances[0].normalSoundVolume != soundVolume)
+                if (levelAmbientInstances[0].normalSoundVolume != soundVolume)
                 {
                     res = levelAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
-                    levelAmbientInstances[0].normalEventVolume = eventVolume;
                     levelAmbientInstances[0].normalSoundVolume = soundVolume;
                     res = _system.update();
                     return (int)res;
@@ -497,10 +496,9 @@ namespace GnollHackClient.Droid
             if (environmentAmbientInstances.Count > 0 && environmentAmbientInstances[0].ghsound == ghsound && environmentAmbientInstances[0].stopped == false)
             {
                 /* Check if the volume is different */
-                if (environmentAmbientInstances[0].normalEventVolume != eventVolume || environmentAmbientInstances[0].normalSoundVolume != soundVolume)
+                if (environmentAmbientInstances[0].normalSoundVolume != soundVolume)
                 {
                     res = environmentAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
-                    environmentAmbientInstances[0].normalEventVolume = eventVolume;
                     environmentAmbientInstances[0].normalSoundVolume = soundVolume;
                     res = _system.update();
                     return (int)res;
@@ -549,5 +547,20 @@ namespace GnollHackClient.Droid
             res = _system.update();
             return (int)res;
         }
+
+        public int AddAmbientSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, out UInt64 soundSourceId)
+        {
+            soundSourceId = 0;
+            return 0;
+        }
+        public int DeleteAmbientSound(UInt64 soundSourceId)
+        {
+            return 0;
+        }
+        public int SetAmbientSoundVolume(UInt64 soundSourceId, float soundVolume)
+        {
+            return 0;
+        }
+
     }
 }

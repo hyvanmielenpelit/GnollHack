@@ -920,8 +920,8 @@ void lib_play_immediate_ghsound(struct ghsound_immediate_info info)
     int ghsound = info.ghsound;
     const char* eventPath = ghsound2event[info.ghsound].eventPath;
     int eventBank = ghsound2event[info.ghsound].bank_id;
-    float eventVolume = ghsound2event[info.ghsound].volume;
-    float soundVolume = info.volume;
+    double eventVolume = (double)ghsound2event[info.ghsound].volume;
+    double soundVolume = (double)info.volume;
     const char** parameter_names = info.parameter_names;
     float* parameter_values = info.parameter_values;
     int parameterarraysize = MAX_SOUND_PARAMETERS;
@@ -957,8 +957,8 @@ void lib_play_ghsound_music(struct ghsound_music_info info)
     int ghsound = info.ghsound;
     const char* eventPath = ghsound2event[info.ghsound].eventPath;
     int eventBank = ghsound2event[info.ghsound].bank_id;
-    float eventVolume = ghsound2event[info.ghsound].volume;
-    float soundVolume = info.volume;
+    double eventVolume = (double)ghsound2event[info.ghsound].volume;
+    double soundVolume = (double)info.volume;
 
     if (lib_callbacks.callback_play_ghsound_music(ghsound, eventPath, eventBank, eventVolume, soundVolume) != 0)
     {
@@ -971,8 +971,8 @@ void lib_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
     int ghsound = info.ghsound;
     const char* eventPath = ghsound2event[info.ghsound].eventPath;
     int eventBank = ghsound2event[info.ghsound].bank_id;
-    float eventVolume = ghsound2event[info.ghsound].volume;
-    float soundVolume = info.volume;
+    double eventVolume = (double)ghsound2event[info.ghsound].volume;
+    double soundVolume = (double)info.volume;
 
     if (lib_callbacks.callback_play_ghsound_level_ambient(ghsound, eventPath, eventBank, eventVolume, soundVolume) != 0)
     {
@@ -985,8 +985,8 @@ void lib_play_ghsound_environment_ambient(struct ghsound_environment_ambient_inf
     int ghsound = info.ghsound;
     const char* eventPath = ghsound2event[info.ghsound].eventPath;
     int eventBank = ghsound2event[info.ghsound].bank_id;
-    float eventVolume = ghsound2event[info.ghsound].volume;
-    float soundVolume = info.volume;
+    double eventVolume = (double)ghsound2event[info.ghsound].volume;
+    double soundVolume = (double)info.volume;
 
     if (lib_callbacks.callback_play_ghsound_environment_ambient(ghsound, eventPath, eventBank, eventVolume, soundVolume))
     {
@@ -1001,16 +1001,39 @@ void lib_adjust_ghsound_general_volumes(VOID_ARGS)
 
 void lib_add_ambient_ghsound(struct soundsource_t* soundsource)
 {
-    return;
+    if (!soundsource)
+        return;
+
+    int ghsound = soundsource->ghsound;
+    const char* eventPath = ghsound2event[ghsound].eventPath;
+    int eventBank = ghsound2event[ghsound].bank_id;
+    double eventVolume = (double)ghsound2event[ghsound].volume;
+    double soundVolume = (double)soundsource->heard_volume;
+    unsigned long long idptr = 0;
+
+    if (lib_callbacks.callback_add_ambient_ghsound(ghsound, eventPath, eventBank, eventVolume, (double)soundVolume, &idptr))
+    {
+        /* Error */
+    }
+
+    soundsource->ambient_ghsound_ptr = (void*)idptr;
 }
 
 void lib_delete_ambient_ghsound(struct soundsource_t* soundsource)
 {
-    return;
+    if (!soundsource)
+        return;
+
+    lib_callbacks.callback_delete_ambient_ghsound((unsigned long long)soundsource->ambient_ghsound_ptr);
+
 }
 
 void lib_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 {
+    if (!soundsource)
+        return;
+    lib_callbacks.callback_set_ambient_ghsound_volume((unsigned long long)soundsource->ambient_ghsound_ptr, (double)soundsource->heard_volume);
+
     return;
 }
 
