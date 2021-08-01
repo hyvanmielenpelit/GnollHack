@@ -23,6 +23,7 @@ namespace GnollHackClient
         protected override void OnPropertyChanged(string propertyName)
         {
             if (propertyName == GlyphProperty.PropertyName ||
+                propertyName == ObjDataProperty.PropertyName ||
                 propertyName == GrayedProperty.PropertyName ||
                 propertyName == OpacityProperty.PropertyName ||
                 propertyName == GamePageProperty.PropertyName ||
@@ -108,12 +109,21 @@ namespace GnollHackClient
         }
 
         public static readonly BindableProperty GamePageProperty = BindableProperty.Create(
-            "GamePage", typeof(GamePage), typeof(GlyphImageSource));
+            "ReferenceGamePage", typeof(GamePage), typeof(GlyphImageSource));
 
         public GamePage ReferenceGamePage
         {
             get => (GamePage)GetValue(GamePageProperty);
             set => SetValue(GamePageProperty, value);
+        }
+
+        public static readonly BindableProperty ObjDataProperty = BindableProperty.Create(
+            "ObjData", typeof(ObjectDataItem), typeof(GlyphImageSource));
+
+        public ObjectDataItem ObjData
+        {
+            get => (ObjectDataItem)GetValue(ObjDataProperty);
+            set => SetValue(ObjDataProperty, value);
         }
 
         public Task<Stream> GetStreamAsync(CancellationToken userToken = new CancellationToken())
@@ -180,7 +190,9 @@ namespace GnollHackClient
             if (ReferenceGamePage != null && abs_glyph > 0 && Width > 0 && Height > 0 && abs_glyph < ReferenceGamePage.Glyph2Tile.Length)
             {
                 bool tileflag_halfsize = (ReferenceGamePage.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
+                bool tileflag_fullsizeditem = (ReferenceGamePage.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
                 int ntile = ReferenceGamePage.Glyph2Tile[abs_glyph];
+                int autodraw = ReferenceGamePage.Tile2Autodraw[ntile];
                 int enlargement_idx = ReferenceGamePage.Tile2Enlargement[ntile];
                 int sheet_idx = ReferenceGamePage.TileSheetIdx(ntile);
                 int tile_x = ReferenceGamePage.TileSheetX(ntile);
@@ -204,6 +216,12 @@ namespace GnollHackClient
 
                     if (enlargement_idx == 0)
                     {
+                        float scale = Width / (float)GHConstants.TileWidth;
+                        float tileWidth = Width;
+                        float tileHeight = Height;
+                        float xpadding = 0;
+                        float ypadding = 0;
+                        float scaled_tile_height = Height;
                         SKRect sourcerect;
                         if (tileflag_halfsize)
                         {
@@ -224,9 +242,17 @@ namespace GnollHackClient
                             float fullsizewidth = Height / (float)GHConstants.TileHeight * (float)GHConstants.TileWidth;
                             float fullsizepadding = Math.Max(0, Width - fullsizewidth) / 2;
                             targetrect = new SKRect(fullsizepadding, 0, fullsizepadding + fullsizewidth, Height);
+                            xpadding = fullsizepadding;
+                            tileWidth = fullsizewidth;
+                            scale = tileWidth / GHConstants.TileWidth;
                         }
 
                         canvas.DrawBitmap(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect, paint);
+                        ReferenceGamePage.DrawAutoDraw(autodraw, canvas, paint, ObjData,
+                            (int)layer_types.LAYER_OBJECT, 0, 0,
+                            tileflag_halfsize, false, tileflag_fullsizeditem,
+                            0, 0, tileWidth, tileHeight,
+                            1, scale, xpadding, ypadding, scaled_tile_height, true);
                     }
                     else
                     {
@@ -258,6 +284,12 @@ namespace GnollHackClient
                             SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                             SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
                             canvas.DrawBitmap(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect, paint);
+                            ReferenceGamePage.DrawAutoDraw(autodraw, canvas, paint, ObjData,
+                                (int)layer_types.LAYER_OBJECT, 0, 0,
+                                tileflag_halfsize, false, true,
+                                0, 0, tileWidth, tileHeight,
+                                1, scale, 0, 0, tileHeight, true);
+
                         }
 
                         /* Enlargement tiles */
@@ -282,6 +314,7 @@ namespace GnollHackClient
                                 int etile_y = ReferenceGamePage.TileSheetY(etile);
                                 float target_x = 0;
                                 float target_y = 0;
+                                autodraw = ReferenceGamePage.Tile2Autodraw[etile];
 
                                 if (enl_height == 2)
                                 {
@@ -320,6 +353,11 @@ namespace GnollHackClient
                                     SKRect sourcerect = new SKRect(etile_x, etile_y, etile_x + GHConstants.TileWidth, etile_y + GHConstants.TileHeight);
                                     SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
                                     canvas.DrawBitmap(ReferenceGamePage.TileMap[e_sheet_idx], sourcerect, targetrect, paint);
+                                    ReferenceGamePage.DrawAutoDraw(autodraw, canvas, paint, ObjData,
+                                        (int)layer_types.LAYER_OBJECT, 0, 0,
+                                        tileflag_halfsize, false, true,
+                                        0, 0, tileWidth, tileHeight,
+                                        1, scale, 0, 0, tileHeight, true);
                                 }
                             }
                         }

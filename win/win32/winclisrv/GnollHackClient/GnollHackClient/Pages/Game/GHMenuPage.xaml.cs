@@ -25,8 +25,8 @@ namespace GnollHackClient.Pages.Game
         private ghmenu_styles _style;
         private int _glyph;
 
-        private ObservableCollection<GHMenuItem> _GHMenuItems = new ObservableCollection<GHMenuItem>();
-        public ObservableCollection<GHMenuItem> MenuItems { get { return _GHMenuItems; } }
+        private ObservableCollection<GHMenuItem> _GHMenuItems = null;
+        public ObservableCollection<GHMenuItem> MenuItems { get { return _GHMenuItems; } set { _GHMenuItems = value;  }  }
 
         public string Header { get { return HeaderLabel.Text; } set { HeaderLabel.Text = value; } }
         public bool HeaderVisible { get { return HeaderLabel.IsVisible; } set { HeaderLabel.IsVisible = value; } }
@@ -49,13 +49,13 @@ namespace GnollHackClient.Pages.Game
             _style = style;
             _glyph = _ghwindow.Glyph;
             MenuView.BindingContext = this;
-            MenuView.ItemsSource = MenuItems;
             HeaderLabel.BindingContext = this;
             SubtitleLabel.BindingContext = this;
 
             _glyphImageSource.ReferenceGamePage = gamePage;
             _glyphImageSource.AutoSize = true;
             _glyphImageSource.Glyph = _ghwindow.Glyph;
+            _glyphImageSource.ObjData = _ghwindow.ObjData;
             WindowGlyphImage.BindingContext = this;
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
@@ -402,7 +402,8 @@ namespace GnollHackClient.Pages.Game
 
         public void Process()
         {
-            foreach(GHMenuItem mi in MenuItems)
+            MenuView.ItemsSource = MenuItems;
+            foreach (GHMenuItem mi in MenuItems)
             {
                 if (mi.Count != 0)
                     MenuView.SelectedItems.Add(mi);

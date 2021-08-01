@@ -248,8 +248,12 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct
 #ifdef TEXTCOLOR
     get_menu_coloring(str, &color, &attr);
 #endif
+    if (info.object)
+        set_obj_glyph(info.object);
+
     lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str ? buf : 0, presel, color, (info.object && !(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? info.object->quan : 0),
-        (unsigned long long)(info.object ? info.object->o_id : 0), (unsigned long long)(info.monster ? info.monster->m_id : 0), info.heading_for_group_accelerator, info.menu_flags);
+        (unsigned long long)(info.object ? info.object->o_id : 0), (unsigned long long)(info.monster ? info.monster->m_id : 0), info.heading_for_group_accelerator, info.menu_flags,
+        (info.object ? 1 : 0) | (Hallucination ? 4 : 0), info.object ? *(info.object) : zeroobj, get_objclassdata(info.object));
 }
 
 void lib_end_menu_ex(winid wid, const char* prompt, const char* subtitle)
@@ -390,10 +394,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
             if (uball && otmp == uball)
                 oflags |= OBJDATA_FLAGS_UBALL;
 
-            glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-            gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, is_obj_drawn_in_front(otmp) ? LAYER_COVER_OBJECT : LAYER_OBJECT, otmp, (struct monst*)0, 0UL));
-            otmp->glyph = glyph;
-            otmp->gui_glyph = gui_glyph;
+            set_obj_glyph(otmp);
 
             lib_callbacks.callback_send_object_data(x, y, *otmp, 2, basewhere, get_objclassdata(otmp), oflags);
             if (otmp->cobj)
@@ -411,10 +412,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
                     if (uball && cotmp == uball)
                         oflags |= OBJDATA_FLAGS_UBALL;
 
-                    glyph = obj_to_glyph(cotmp, rn2_on_display_rng);
-                    gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, is_obj_drawn_in_front(cotmp) ? LAYER_COVER_OBJECT : LAYER_OBJECT, cotmp, (struct monst*)0, 0UL));
-                    cotmp->glyph = glyph;
-                    cotmp->gui_glyph = gui_glyph;
+                    set_obj_glyph(cotmp);
 
                     lib_callbacks.callback_send_object_data(x, y, *cotmp, 3, basewhere, get_objclassdata(cotmp), coflags);
                 }

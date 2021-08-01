@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GnollHackClient
 {
-    class ObjectDataItem
+    public class ObjectDataItem
     {
         public obj ObjData;
         public objclassdata OtypData;

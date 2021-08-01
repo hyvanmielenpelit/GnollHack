@@ -5137,6 +5137,19 @@ struct monst* mon;
     //update_m_action_revert(mon, action_before);
 }
 
+void
+set_obj_glyph(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return;
 
+    xchar x = 0, y = 0;
+    get_obj_location(otmp, &x, &y, CONTAINED_TOO | BURIED_TOO);
+    int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
+    int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, is_obj_drawn_in_front(otmp) ? LAYER_COVER_OBJECT : LAYER_OBJECT, otmp, (struct monst*)0, 0UL));
+    otmp->glyph = glyph;
+    otmp->gui_glyph = gui_glyph;
+}
 
 /*display.c*/

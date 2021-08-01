@@ -48,6 +48,8 @@ namespace GnollHackClient
         private GHWinType _winType = 0;
         private ghwindow_styles _winStyle = 0;
         private int _glyph;
+        private ObjectDataItem _objdata = null;
+        public ObjectDataItem ObjData { get { return _objdata; } set { _objdata = value; } }
         private GamePage _gamePage;
         private ClientGame _clientGame;
         private int _winId;
@@ -186,11 +188,12 @@ namespace GnollHackClient
             set { lock (_selectedMenuItemsLock) { _selectedMenuItems = value; } }
         }
 
-        public GHWindow(GHWinType winType, ghwindow_styles winStyle, int glyph, GamePage gamePage, int winid)
+        public GHWindow(GHWinType winType, ghwindow_styles winStyle, int glyph, ObjectDataItem objdata, GamePage gamePage, int winid)
         {
             _winType = winType;
             _winStyle = winStyle;
             _glyph = glyph;
+            ObjData = objdata;
             _gamePage = gamePage;
             _clientGame = gamePage.ClientGame;
             _winId = winid;

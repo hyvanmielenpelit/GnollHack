@@ -19,6 +19,7 @@ using System.Reflection;
 using System.IO;
 using FFImageLoading.Forms;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -914,11 +915,15 @@ namespace GnollHackClient.Pages.Game
             else
                 menuPage.Subtitle = menuinfo.Subtitle;
 
+            ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
             if (menuinfo != null)
             {
                 foreach(GHMenuItem mi in menuinfo.MenuItems)
-                    menuPage.MenuItems.Add(mi);
+                {
+                    newmis.Add(mi);
+                }
             }
+            menuPage.MenuItems = newmis;
             menuPage.Process();
             await App.Current.MainPage.Navigation.PushModalAsync(menuPage, false);
         }
@@ -3150,780 +3155,13 @@ namespace GnollHackClient.Pages.Game
                                                                             canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
                                                                         }
 
-                                                                        /******************/
-                                                                        /* AUTODRAW START */
-                                                                        /******************/
-                                                                        if (_autodraws != null)
-                                                                        {
-                                                                            if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_REPLACE_WALL_ENDS)
-                                                                            {
-                                                                                for (byte dir = 0; dir < 4; dir++)
-                                                                                {
-                                                                                    byte dir_bit = (byte)(1 << dir);
-                                                                                    if ((_autodraws[autodraw].flags & dir_bit) != 0)
-                                                                                    {
-                                                                                        int rx = 0;
-                                                                                        int ry = 0;
-                                                                                        int[] corner_x = new int[2];
-                                                                                        int[] corner_y = new int[2];
-                                                                                        switch (dir)
-                                                                                        {
-                                                                                            case 0:
-                                                                                                rx = mapx - 1;
-                                                                                                ry = mapy;
-                                                                                                corner_x[0] = mapx;
-                                                                                                corner_y[0] = mapy - 1;
-                                                                                                corner_x[1] = mapx;
-                                                                                                corner_y[1] = mapy + 1;
-                                                                                                break;
-                                                                                            case 1:
-                                                                                                rx = mapx + 1;
-                                                                                                ry = mapy;
-                                                                                                corner_x[0] = mapx;
-                                                                                                corner_y[0] = mapy - 1;
-                                                                                                corner_x[1] = mapx;
-                                                                                                corner_y[1] = mapy + 1;
-                                                                                                break;
-                                                                                            case 2:
-                                                                                                rx = mapx;
-                                                                                                ry = mapy - 1;
-                                                                                                corner_x[0] = mapx - 1;
-                                                                                                corner_y[0] = mapy;
-                                                                                                corner_x[1] = mapx + 1;
-                                                                                                corner_y[1] = mapy;
-                                                                                                break;
-                                                                                            case 3:
-                                                                                                rx = mapx;
-                                                                                                ry = mapy + 1;
-                                                                                                corner_x[0] = mapx - 1;
-                                                                                                corner_y[0] = mapy;
-                                                                                                corner_x[1] = mapx + 1;
-                                                                                                corner_y[1] = mapy;
-                                                                                                break;
-                                                                                            default:
-                                                                                                break;
-                                                                                        }
+                                                                        DrawAutoDraw(autodraw, canvas, paint, otmp_round,
+                                                                            layer_idx, mapx, mapy,
+                                                                            tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
+                                                                            tx, ty, width, height,
+                                                                            scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
+                                                                            false);
 
-                                                                                        if (!GHUtils.isok(rx, ry) || (_mapData[rx, ry].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0) // NO_WALL_END_AUTODRAW(rx, ry))
-                                                                                        {
-                                                                                            /* No action */
-                                                                                        }
-                                                                                        else
-                                                                                        {
-                                                                                            for (int corner = 0; corner <= 1; corner++)
-                                                                                            {
-                                                                                                int source_glyph = _autodraws[autodraw].source_glyph;
-                                                                                                int atile = Glyph2Tile[source_glyph];
-                                                                                                int a_sheet_idx = TileSheetIdx(atile);
-                                                                                                int at_x = TileSheetX(atile);
-                                                                                                int at_y = TileSheetY(atile);
-
-                                                                                                SKRect source_rt = new SKRect();
-                                                                                                switch (dir)
-                                                                                                {
-                                                                                                    case 0: /* left */
-                                                                                                        if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0) // NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
-                                                                                                        {
-                                                                                                            source_glyph = _autodraws[autodraw].source_glyph2; /* S_vwall */
-                                                                                                            atile = Glyph2Tile[source_glyph];
-                                                                                                            a_sheet_idx = TileSheetIdx(atile);
-                                                                                                            at_x = TileSheetX(atile);
-                                                                                                            at_y = TileSheetY(atile);
-                                                                                                        }
-                                                                                                        source_rt.Left = at_x;
-                                                                                                        source_rt.Right = source_rt.Left + 12;
-                                                                                                        if (corner == 0)
-                                                                                                        {
-                                                                                                            source_rt.Top = at_y;
-                                                                                                            source_rt.Bottom = at_y + 18;
-                                                                                                        }
-                                                                                                        else
-                                                                                                        {
-                                                                                                            source_rt.Top = at_y + 18;
-                                                                                                            source_rt.Bottom = at_y + GHConstants.TileHeight;
-                                                                                                        }
-                                                                                                        break;
-                                                                                                    case 1: /* right */
-                                                                                                        //if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
-                                                                                                        if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
-                                                                                                        {
-                                                                                                            source_glyph = _autodraws[autodraw].source_glyph2; /* S_vwall */
-                                                                                                            atile = Glyph2Tile[source_glyph];
-                                                                                                            a_sheet_idx = TileSheetIdx(atile);
-                                                                                                            at_x = TileSheetX(atile);
-                                                                                                            at_y = TileSheetY(atile);
-                                                                                                        }
-                                                                                                        source_rt.Right = at_x + GHConstants.TileWidth;
-                                                                                                        source_rt.Left = source_rt.Right - 12;
-                                                                                                        if (corner == 0)
-                                                                                                        {
-                                                                                                            source_rt.Top = at_y;
-                                                                                                            source_rt.Bottom = at_y + 18;
-                                                                                                        }
-                                                                                                        else
-                                                                                                        {
-                                                                                                            source_rt.Top = at_y + 18;
-                                                                                                            source_rt.Bottom = at_y + GHConstants.TileHeight;
-                                                                                                        }
-                                                                                                        break;
-                                                                                                    case 2: /* up */
-                                                                                                        //if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
-                                                                                                        if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
-                                                                                                        {
-                                                                                                            source_glyph = _autodraws[autodraw].source_glyph3; /* S_hwall */
-                                                                                                            atile = Glyph2Tile[source_glyph];
-                                                                                                            a_sheet_idx = TileSheetIdx(atile);
-                                                                                                            at_x = TileSheetX(atile);
-                                                                                                            at_y = TileSheetY(atile);
-                                                                                                        }
-                                                                                                        if (corner == 0)
-                                                                                                        {
-                                                                                                            source_rt.Left = at_x;
-                                                                                                            source_rt.Right = at_x + GHConstants.TileWidth / 2;
-                                                                                                        }
-                                                                                                        else
-                                                                                                        {
-                                                                                                            source_rt.Left = at_x + GHConstants.TileWidth / 2;
-                                                                                                            source_rt.Right = at_x + GHConstants.TileWidth;
-                                                                                                        }
-                                                                                                        source_rt.Top = at_y;
-                                                                                                        source_rt.Bottom = source_rt.Top + 12;
-                                                                                                        break;
-                                                                                                    case 3: /* down */
-                                                                                                        //if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
-                                                                                                        if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
-                                                                                                        {
-                                                                                                            source_glyph = _autodraws[autodraw].source_glyph3; /* S_hwall */
-                                                                                                            atile = Glyph2Tile[source_glyph];
-                                                                                                            a_sheet_idx = TileSheetIdx(atile);
-                                                                                                            at_x = TileSheetX(atile);
-                                                                                                            at_y = TileSheetY(atile);
-                                                                                                        }
-                                                                                                        if (corner == 0)
-                                                                                                        {
-                                                                                                            source_rt.Left = at_x;
-                                                                                                            source_rt.Right = at_x + GHConstants.TileWidth / 2;
-                                                                                                        }
-                                                                                                        else
-                                                                                                        {
-                                                                                                            source_rt.Left = at_x + GHConstants.TileWidth / 2;
-                                                                                                            source_rt.Right = at_x + GHConstants.TileWidth;
-                                                                                                        }
-                                                                                                        source_rt.Top = at_y + 12;
-                                                                                                        source_rt.Bottom = at_y + GHConstants.TileHeight;
-                                                                                                        break;
-                                                                                                    default:
-                                                                                                        break;
-                                                                                                }
-
-                                                                                                SKRect target_rt = new SKRect();
-                                                                                                target_rt.Left = tx + (targetscale * (float)(source_rt.Left - at_x));
-                                                                                                target_rt.Right = tx + (targetscale * (float)(source_rt.Right - at_x));
-                                                                                                target_rt.Top = ty + (targetscale * (float)(source_rt.Top - at_y));
-                                                                                                target_rt.Bottom = ty + (targetscale * (float)(source_rt.Bottom - at_y));
-                                                                                                canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                            else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LONG_WORM)
-                                                                            {
-                                                                                /* Long worm here */
-
-                                                                                int source_glyph_seg_end = _autodraws[autodraw].source_glyph;
-                                                                                int source_glyph_seg_dir_out = _autodraws[autodraw].source_glyph2;
-                                                                                int source_glyph_seg_dir_in = _autodraws[autodraw].source_glyph2 + 4;
-                                                                                int source_glyph_seg_layer = _autodraws[autodraw].source_glyph3;
-                                                                                int drawing_tail = _autodraws[autodraw].flags;
-                                                                                int wdir_out = _mapData[mapx, mapy].Layers.wsegdir;
-                                                                                int wdir_in = _mapData[mapx, mapy].Layers.reverse_prev_wsegdir;
-                                                                                bool is_head = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_HEAD) != 0;
-                                                                                bool is_tailend = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_TAILEND) != 0;
-                                                                                for (int wlayer = 0; wlayer < 5; wlayer++)
-                                                                                {
-                                                                                    int source_glyph = NoGlyph;
-                                                                                    bool hflip_seg = false;
-                                                                                    bool vflip_seg = false;
-                                                                                    switch (wlayer)
-                                                                                    {
-                                                                                        case 0:
-                                                                                        case 2:
-                                                                                        case 4:
-                                                                                            if (is_head || is_tailend)
-                                                                                                continue;
-                                                                                            source_glyph = source_glyph_seg_layer + wlayer / 2;
-                                                                                            break;
-                                                                                        case 1:
-                                                                                            source_glyph = is_tailend ? NoGlyph : is_head ? source_glyph_seg_end : source_glyph_seg_dir_in;
-                                                                                            break;
-                                                                                        case 3:
-                                                                                            source_glyph = is_tailend ? source_glyph_seg_end : is_head ? NoGlyph : source_glyph_seg_dir_out;
-                                                                                            break;
-                                                                                        default:
-                                                                                            break;
-                                                                                    }
-
-                                                                                    if (source_glyph != NoGlyph)
-                                                                                    {
-                                                                                        int wdir = (wlayer == 1 ? wdir_in : wlayer == 3 ? wdir_out : 0);
-                                                                                        switch (wdir)
-                                                                                        {
-                                                                                            case 1:
-                                                                                                source_glyph += 2;
-                                                                                                hflip_seg = false;
-                                                                                                vflip_seg = false;
-                                                                                                break;
-                                                                                            case 2:
-                                                                                                source_glyph += 0;
-                                                                                                hflip_seg = false;
-                                                                                                vflip_seg = false;
-                                                                                                break;
-                                                                                            case 3:
-                                                                                                source_glyph += 3;
-                                                                                                hflip_seg = false;
-                                                                                                vflip_seg = true;
-                                                                                                break;
-                                                                                            case 4:
-                                                                                                source_glyph += 1;
-                                                                                                hflip_seg = true;
-                                                                                                vflip_seg = false;
-                                                                                                break;
-                                                                                            case 5:
-                                                                                                source_glyph += 3;
-                                                                                                hflip_seg = false;
-                                                                                                vflip_seg = false;
-                                                                                                break;
-                                                                                            case 6:
-                                                                                                source_glyph += 0;
-                                                                                                hflip_seg = false;
-                                                                                                vflip_seg = true;
-                                                                                                break;
-                                                                                            case 7:
-                                                                                                source_glyph += 2;
-                                                                                                hflip_seg = false;
-                                                                                                vflip_seg = true;
-                                                                                                break;
-                                                                                            case 8:
-                                                                                                source_glyph += 1;
-                                                                                                hflip_seg = false;
-                                                                                                vflip_seg = false;
-                                                                                                break;
-                                                                                            default:
-                                                                                                break;
-                                                                                        }
-
-                                                                                        int atile = Glyph2Tile[source_glyph];
-                                                                                        int a_sheet_idx = TileSheetIdx(atile);
-                                                                                        int at_x = TileSheetX(atile);
-                                                                                        int at_y = TileSheetY(atile);
-
-                                                                                        int worm_source_x = at_x;
-                                                                                        int worm_source_y = at_y;
-                                                                                        int worm_source_width = GHConstants.TileWidth;
-                                                                                        int worm_source_height = GHConstants.TileHeight;
-                                                                                        sourcerect = new SKRect(worm_source_x, worm_source_y, worm_source_x + worm_source_width, worm_source_y + worm_source_height);
-
-                                                                                        float target_x = tx;
-                                                                                        float target_y = ty;
-                                                                                        float target_width = ((float)worm_source_width * targetscale);
-                                                                                        float target_height = ((float)worm_source_height * targetscale);
-                                                                                        SKRect targetrect;
-                                                                                        targetrect = new SKRect(0, 0, target_width, target_height);
-
-                                                                                        using (new SKAutoCanvasRestore(canvas, true))
-                                                                                        {
-                                                                                            canvas.Translate(target_x + (hflip_seg ? width : 0), target_y + (vflip_seg ? height : 0));
-                                                                                            canvas.Scale(hflip_seg ? -1 : 1, vflip_seg ? -1 : 1, 0, 0);
-                                                                                            paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                                                                                            canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                            else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_BOOKSHELF_CONTENTS && otmp_round != null && otmp_round.ContainedObjs != null)
-                                                                            {
-                                                                                int num_shelves = 4;
-                                                                                int y_to_first_shelf = 49;
-                                                                                int shelf_start = 8;
-                                                                                int shelf_width = 50;
-                                                                                int shelf_height = 10;
-                                                                                int shelf_border_height = 2;
-                                                                                int shelf_item_width = 5;
-                                                                                int src_book_x = 0;
-                                                                                int src_book_y = 0;
-                                                                                int src_scroll_x = 5;
-                                                                                int src_scroll_y = 0;
-                                                                                int cnt = 0;
-                                                                                int items_per_row = shelf_width / shelf_item_width;
-                                
-                                                                                foreach(ObjectDataItem contained_obj in otmp_round.ContainedObjs)
-                                                                                {
-                                                                                    int src_x = 0, src_y = 0;
-                                                                                    float dest_x = 0, dest_y = 0;
-                                                                                    if (contained_obj.ObjData.oclass == (int)obj_class_types.SPBOOK_CLASS)
-                                                                                    {
-                                                                                        src_x = src_book_x;
-                                                                                        src_y = src_book_y;
-                                                                                    }
-                                                                                    else if (contained_obj.ObjData.oclass == (int)obj_class_types.SCROLL_CLASS)
-                                                                                    {
-                                                                                        src_x = src_scroll_x;
-                                                                                        src_y = src_scroll_y;
-                                                                                    }
-                                                                                    else
-                                                                                        continue;
-
-                                                                                    for (int item_idx = 0; item_idx < contained_obj.ObjData.quan; item_idx++)
-                                                                                    {
-                                                                                        int item_row = cnt / items_per_row;
-                                                                                        int item_xpos = cnt % items_per_row;
-
-                                                                                        if (item_row >= num_shelves)
-                                                                                            break;
-
-                                                                                        dest_y = (y_to_first_shelf + item_row * (shelf_height + shelf_border_height)) * scale * targetscale;
-                                                                                        dest_x = (shelf_start + item_xpos * shelf_item_width) * scale * targetscale;
-
-                                                                                        int source_glyph = _autodraws[autodraw].source_glyph;
-                                                                                        int atile = Glyph2Tile[source_glyph];
-                                                                                        int a_sheet_idx = TileSheetIdx(atile);
-                                                                                        int at_x = TileSheetX(atile);
-                                                                                        int at_y = TileSheetY(atile);
-
-                                                                                        SKRect source_rt = new SKRect();
-                                                                                        source_rt.Left = at_x + src_x;
-                                                                                        source_rt.Right = source_rt.Left + shelf_item_width;
-                                                                                        source_rt.Top = at_y + src_y;
-                                                                                        source_rt.Bottom = source_rt.Top + shelf_height;
-
-                                                                                        float target_x = tx + dest_x;
-                                                                                        float target_y = ty + dest_y;
-                                                                                        float target_width = targetscale * scale * source_rt.Width;
-                                                                                        float target_height = targetscale * scale * source_rt.Height;
-                                                                                        SKRect target_rt;
-                                                                                        target_rt = new SKRect(0, 0, target_width, target_height);
-
-                                                                                        using (new SKAutoCanvasRestore(canvas, true))
-                                                                                        {
-                                                                                            canvas.Translate(target_x, target_y);
-                                                                                            canvas.Scale(1, 1, 0, 0);
-                                                                                            paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                                                                                            canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
-                                                                                        }
-
-                                                                                        cnt++;
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                            else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_WEAPON_RACK_CONTENTS && otmp_round != null && otmp_round.ContainedObjs != null)
-                                                                            {
-                                                                                int y_to_rack_top = 31;
-                                                                                int rack_start = 0; /* Assume weapons are drawn reasonably well in the center */
-                                                                                int rack_width = 48;
-                                                                                int rack_height = GHConstants.TileHeight - y_to_rack_top;
-                                                                                int rack_item_spacing = 6;
-
-                                                                                int cnt = 0;
-
-                                                                                foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjs)
-                                                                                {
-                                                                                    int source_glyph = Math.Abs(contained_obj.ObjData.gui_glyph);
-                                                                                    if (source_glyph <= 0 || source_glyph == NoGlyph)
-                                                                                        continue;
-                                                                                    bool has_floor_tile = (GlyphTileFlags[source_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0; // artidx > 0 ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(contained_obj);
-                                                                                    bool fullsizeditem = (GlyphTileFlags[source_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
-                                                                                    int cobj_height = contained_obj.OtypData.tile_height; // artidx ? artilist[artidx].tile_floor_height : OBJ_TILE_HEIGHT(contained_obj->otyp);
-                                                                                    int artidx = contained_obj.ObjData.oartifact;
-                                                                                    float dest_x = 0, dest_y = 0;
-                                                                                    int src_x = 0, src_y = fullsizeditem || has_floor_tile ? 0 : GHConstants.TileHeight / 2;
-                                                                                    int item_width = has_floor_tile ? GHConstants.TileHeight / 2 : cobj_height > 0 ? cobj_height : GHConstants.TileHeight / 2;
-                                                                                    int item_height = has_floor_tile ? GHConstants.TileWidth : (item_width * GHConstants.TileWidth) / (GHConstants.TileHeight / 2);
-                                                                                    int padding = (GHConstants.TileHeight / 2 - item_width) / 2;
-                                                                                    int vertical_padding = (GHConstants.TileWidth - item_height) / 2;
-                                                                                    if (contained_obj.ObjData.oclass != (int)obj_class_types.WEAPON_CLASS)
-                                                                                        continue;
-
-                                                                                    int item_xpos = cnt / 2 * rack_item_spacing;
-                                                                                    if (item_xpos >= rack_width / 2)
-                                                                                        break;
-
-                                                                                    dest_y = (y_to_rack_top + vertical_padding) * scale * targetscale;
-                                                                                    dest_x = (cnt % 2 == 0 ? rack_start + item_xpos + padding : GHConstants.TileWidth - item_width - rack_start - item_xpos - padding) * scale * targetscale;
-
-                                                                                    int atile = Glyph2Tile[source_glyph];
-                                                                                    int a_sheet_idx = TileSheetIdx(atile);
-                                                                                    int at_x = TileSheetX(atile);
-                                                                                    int at_y = TileSheetY(atile);
-
-                                                                                    SKRect source_rt = new SKRect();
-                                                                                    source_rt.Left = at_x + src_x;
-                                                                                    source_rt.Right = source_rt.Left + GHConstants.TileWidth;
-                                                                                    source_rt.Top = at_y + src_y;
-                                                                                    source_rt.Bottom = source_rt.Top + (fullsizeditem ? GHConstants.TileHeight : GHConstants.TileHeight / 2);
-
-                                                                                    float original_width = source_rt.Right - source_rt.Left;
-                                                                                    float original_height = source_rt.Bottom - source_rt.Top;
-                                                                                    float rotated_width = original_height;
-                                                                                    float rotated_height = original_width;
-
-                                                                                    float target_x = tx + dest_x;
-                                                                                    float target_y = ty + dest_y;
-                                                                                    float target_width = targetscale * scale * original_width; //(float)item_width;
-                                                                                    float target_height = targetscale * scale * original_height; //((float)item_width * rotated_height) / rotated_width;
-                                                                                    SKRect target_rt;
-                                                                                    target_rt = new SKRect(0, 0, target_width, target_height);
-
-                                                                                    using (new SKAutoCanvasRestore(canvas, true))
-                                                                                    {
-                                                                                        canvas.Translate(target_x, target_y);
-                                                                                        canvas.Scale(1, 1, 0, 0);
-                                                                                        canvas.RotateDegrees(-90);
-                                                                                        canvas.Translate(-target_width, 0);
-                                                                                        paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                                                                                        canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
-                                                                                    }
-
-                                                                                    cnt++;
-                                                                                }
-                                                                            }
-                                                                            else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CANDELABRUM_CANDLES && otmp_round != null)
-                                                                            {
-                                                                                float y_start = scaled_y_padding;
-                                                                                float x_start = scaled_x_padding;
-                                                                                int x_padding = 13;
-                                                                                int item_width = 6;
-                                                                                int item_height = 13;
-                                                                                int src_unlit_x = 0;
-                                                                                int src_unlit_y = 10;
-                                                                                int src_lit_x = 6 * (1 + (int)_autodraws[autodraw].flags);
-                                                                                int src_lit_y = 10;
-                                                                                int cnt = 0;
-
-                                                                                for (int cidx = 0; cidx < Math.Min((short)7, otmp_round.ObjData.special_quality); cidx++)
-                                                                                {
-                                                                                    int src_x = 0, src_y = 0;
-                                                                                    float dest_x = 0, dest_y = 0;
-                                                                                    if (otmp_round.LampLit)
-                                                                                    {
-                                                                                        src_x = src_lit_x;
-                                                                                        src_y = src_lit_y;
-                                                                                    }
-                                                                                    else
-                                                                                    {
-                                                                                        src_x = src_unlit_x;
-                                                                                        src_y = src_unlit_y;
-                                                                                    }
-
-                                                                                    int item_xpos = cnt;
-
-                                                                                    dest_y = y_start;
-                                                                                    dest_x = x_start + ((float)(x_padding + item_xpos * item_width) * scale * targetscale);
-
-                                                                                    int source_glyph = _autodraws[autodraw].source_glyph;
-                                                                                    int atile = Glyph2Tile[source_glyph];
-                                                                                    int a_sheet_idx = TileSheetIdx(atile);
-                                                                                    int at_x = TileSheetX(atile);
-                                                                                    int at_y = TileSheetY(atile);
-
-                                                                                    SKRect source_rt = new SKRect();
-                                                                                    source_rt.Left = at_x + src_x;
-                                                                                    source_rt.Right = source_rt.Left + item_width;
-                                                                                    source_rt.Top = at_y + src_y;
-                                                                                    source_rt.Bottom = source_rt.Top + item_height;
-
-                                                                                    float target_x = tx + dest_x;
-                                                                                    float target_y = ty + dest_y;
-                                                                                    float target_width = targetscale * scale * source_rt.Width;
-                                                                                    float target_height = targetscale * scale * source_rt.Height;
-                                                                                    SKRect target_rt;
-                                                                                    target_rt = new SKRect(0, 0, target_width, target_height);
-
-                                                                                    using (new SKAutoCanvasRestore(canvas, true))
-                                                                                    {
-                                                                                        canvas.Translate(target_x, target_y);
-                                                                                        canvas.Scale(1, 1, 0, 0);
-                                                                                        paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                                                                                        canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
-                                                                                    }
-
-                                                                                    cnt++;
-                                                                                }
-                                                                            }
-                                                                            else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES && otmp_round != null)
-                                                                            {
-                                                                                float y_start = scaled_y_padding;
-                                                                                float x_start = scaled_x_padding;
-                                                                                int item_width = 9;
-                                                                                int item_height = 31;
-                                                                                int src_unlit_x = 0;
-                                                                                int src_unlit_y = 0;
-                                                                                int src_lit_x = 9 * (1 + (int)_autodraws[autodraw].flags);
-                                                                                int src_lit_y = 0;
-                                                                                int cnt = 0;
-
-                                                                                for (int cidx = 0; cidx < Math.Min((short)otmp_round.OtypData.special_quality, otmp_round.ObjData.special_quality); cidx++)
-                                                                                {
-                                                                                    int src_x = 0, src_y = 0;
-                                                                                    float dest_x = 0, dest_y = 0;
-                                                                                    if (otmp_round.LampLit)
-                                                                                    {
-                                                                                        src_x = src_lit_x;
-                                                                                        src_y = src_lit_y;
-                                                                                    }
-                                                                                    else
-                                                                                    {
-                                                                                        src_x = src_unlit_x;
-                                                                                        src_y = src_unlit_y;
-                                                                                    }
-
-                                                                                    switch (cidx)
-                                                                                    {
-                                                                                        case 0:
-                                                                                            dest_x = x_start + ((float)(29) * scale * targetscale);
-                                                                                            dest_y = y_start + ((float)(0) * scale * targetscale);
-                                                                                            break;
-                                                                                        case 1:
-                                                                                            dest_x = x_start + ((float)(18) * scale * targetscale);
-                                                                                            dest_y = y_start + ((float)(4) * scale * targetscale);
-                                                                                            break;
-                                                                                        case 2:
-                                                                                            dest_x = x_start + ((float)(40) * scale * targetscale);
-                                                                                            dest_y = y_start + ((float)(3) * scale * targetscale);
-                                                                                            break;
-                                                                                        case 3:
-                                                                                            dest_x = x_start + ((float)(8) * scale * targetscale);
-                                                                                            dest_y = y_start + ((float)(14) * scale * targetscale);
-                                                                                            break;
-                                                                                        case 4:
-                                                                                            dest_x = x_start + ((float)(50) * scale * targetscale);
-                                                                                            dest_y = y_start + ((float)(15) * scale * targetscale);
-                                                                                            break;
-                                                                                        default:
-                                                                                            break;
-                                                                                    }
-
-                                                                                    int source_glyph = _autodraws[autodraw].source_glyph;
-                                                                                    int atile = Glyph2Tile[source_glyph];
-                                                                                    int a_sheet_idx = TileSheetIdx(atile);
-                                                                                    int at_x = TileSheetX(atile);
-                                                                                    int at_y = TileSheetY(atile);
-
-                                                                                    SKRect source_rt = new SKRect();
-                                                                                    source_rt.Left = at_x + src_x;
-                                                                                    source_rt.Right = source_rt.Left + item_width;
-                                                                                    source_rt.Top = at_y + src_y;
-                                                                                    source_rt.Bottom = source_rt.Top + item_height;
-
-                                                                                    float target_x = tx + dest_x;
-                                                                                    float target_y = ty + dest_y;
-                                                                                    float target_width = targetscale * scale * source_rt.Width;
-                                                                                    float target_height = targetscale * scale * source_rt.Height;
-                                                                                    SKRect target_rt;
-                                                                                    target_rt = new SKRect(0, 0, target_width, target_height);
-
-                                                                                    using (new SKAutoCanvasRestore(canvas, true))
-                                                                                    {
-                                                                                        canvas.Translate(target_x, target_y);
-                                                                                        canvas.Scale(1, 1, 0, 0);
-                                                                                        paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                                                                                        canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
-                                                                                    }
-                                                                                    cnt++;
-                                                                                }
-                                                                            }
-
-                                                                            /*
-                                                                             * AUTODRAW END
-                                                                             */
-
-                                                                            /* Item property marks */
-                                                                            if (((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT) && otmp_round != null &&
-                                                                                (otmp_round.Poisoned || otmp_round.ElementalEnchantment > 0 || otmp_round.MythicPrefix > 0 || otmp_round.MythicSuffix > 0 || otmp_round.Eroded != 0 || otmp_round.Eroded2 != 0 || otmp_round.Exceptionality > 0))
-                                                                                ||
-                                                                                ((layer_idx == (int)layer_types.LAYER_MISSILE) &&
-                                                                                    (_mapData[mapx, mapy].Layers.missile_poisoned != 0 || _mapData[mapx, mapy].Layers.missile_elemental_enchantment > 0
-                                                                                        || _mapData[mapx, mapy].Layers.missile_eroded != 0|| _mapData[mapx, mapy].Layers.missile_eroded2 != 0 ||
-                                                                                        _mapData[mapx, mapy].Layers.missile_exceptionality > 0 || _mapData[mapx, mapy].Layers.missile_mythic_prefix > 0 || _mapData[mapx, mapy].Layers.missile_mythic_suffix > 0))
-                                                                                )
-                                                                            {
-                                                                                float y_start = scaled_y_padding;
-                                                                                if (tileflag_halfsize)
-                                                                                {
-                                                                                    y_start += height / 2;
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
-                                                                                        y_start += height / 4;
-                                                                                    else
-                                                                                        y_start += 0;
-                                                                                }
-                                                                                float x_start = scaled_x_padding;
-                                                                                int mark_width = 8;
-                                                                                int marks_per_row = GHConstants.TileHeight / mark_width;
-                                                                                int mark_height = 24;
-                                                                                int src_x = 0;
-                                                                                int src_y = 0;
-                                                                                int cnt = 0;
-                                                                                bool poisoned = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_poisoned != 0 : otmp_round.Poisoned);
-                                                                                byte elemental_enchantment = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_elemental_enchantment : otmp_round.ElementalEnchantment);
-                                                                                byte exceptionality = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_exceptionality : otmp_round.Exceptionality);
-                                                                                byte mythic_prefix = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_mythic_prefix : otmp_round.MythicPrefix);
-                                                                                byte mythic_suffix = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_mythic_suffix : otmp_round.MythicSuffix);
-                                                                                byte eroded = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_eroded : otmp_round.Eroded);
-                                                                                byte eroded2 = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_eroded2 : otmp_round.Eroded2);
-                                                                                bool corrodeable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_CORRODEABLE) != 0 : otmp_round.OtypData.corrodeable != 0);
-                                                                                bool rottable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_ROTTABLE) != 0 : otmp_round.OtypData.rottable != 0);
-                                                                                bool flammable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_FLAMMABLE) != 0 : otmp_round.OtypData.flammable != 0);
-                                                                                bool rustprone = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_RUSTPRONE) != 0 : otmp_round.OtypData.rustprone != 0);
-                                                                                bool poisonable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_POISONABLE) != 0 : otmp_round.OtypData.poisonable != 0);
-                                                                                float dest_x = 0, dest_y = 0;
-
-                                                                                for (item_property_mark_types ipm_idx = 0; ipm_idx < item_property_mark_types.MAX_ITEM_PROPERTY_MARKS; ipm_idx++)
-                                                                                {
-                                                                                    if (cnt >= 8)
-                                                                                        break;
-
-                                                                                    src_x = ((int)ipm_idx % marks_per_row) * mark_width;
-                                                                                    src_y = ((int)ipm_idx / marks_per_row) * mark_height;
-                                                                                    dest_x = 0;
-                                                                                    dest_y = 0;
-
-                                                                                    switch (ipm_idx)
-                                                                                    {
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_POISONED:
-                                                                                        if (!(poisoned && poisonable))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_DEATH_MAGICAL:
-                                                                                        if (elemental_enchantment != (byte)elemental_enchantment_types.DEATH_ENCHANTMENT)
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_FLAMING:
-                                                                                        if (elemental_enchantment != (byte)elemental_enchantment_types.FIRE_ENCHANTMENT)
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_FREEZING:
-                                                                                        if (elemental_enchantment != (byte)elemental_enchantment_types.COLD_ENCHANTMENT)
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_ELECTRIFIED:
-                                                                                        if (elemental_enchantment != (byte)elemental_enchantment_types.LIGHTNING_ENCHANTMENT)
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_EXCEPTIONAL:
-                                                                                        if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_EXCEPTIONAL)
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_ELITE:
-                                                                                        if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_ELITE)
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_CELESTIAL:
-                                                                                        if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_CELESTIAL)
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_PRIMORDIAL:
-                                                                                        if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_PRIMORDIAL)
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_INFERNAL:
-                                                                                        if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_INFERNAL)
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_MYTHIC:
-                                                                                        if ((mythic_prefix == 0 && mythic_suffix == 0) || (mythic_prefix > 0 && mythic_suffix > 0))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_LEGENDARY:
-                                                                                        if (mythic_prefix == 0 || mythic_suffix == 0)
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_CORRODED:
-                                                                                        if (!(eroded2 == 1 && corrodeable))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_ROTTED:
-                                                                                        if (!(eroded2 == 1 && rottable))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_BURNT:
-                                                                                        if (!(eroded == 1  && flammable))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_RUSTY:
-                                                                                        if (!(eroded == 1 && rustprone))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_CORRODED:
-                                                                                        if (!(eroded2 == 2 && corrodeable))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_ROTTED:
-                                                                                        if (!(eroded2 == 2 && rottable))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_BURNT:
-                                                                                        if (!(eroded == 2 && flammable))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_RUSTY:
-                                                                                        if (!(eroded == 2 && rustprone))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_CORRODED:
-                                                                                        if (!(eroded2 == 3 && corrodeable))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_ROTTED:
-                                                                                        if (!(eroded2 == 3 && rottable))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_BURNT:
-                                                                                        if (!(eroded == 3 && flammable))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_RUSTY:
-                                                                                        if (!(eroded == 3 && rustprone))
-                                                                                            continue;
-                                                                                        break;
-                                                                                    case item_property_mark_types.MAX_ITEM_PROPERTY_MARKS:
-                                                                                    default:
-                                                                                        continue;
-                                                                                    }
-
-                                                                                    int item_xpos = ((int)GHConstants.TileWidth) / 2 - mark_width + (cnt % 2 != 0 ? 1 : -1) * ((cnt + 1) / 2) * mark_width;
-
-                                                                                    dest_y = y_start + scaled_tile_height / 2 - (targetscale * scale * (float) (mark_height / 2));
-                                                                                    dest_x = x_start + (targetscale * scale * (float) item_xpos);
-
-                                                                                    int source_glyph = (int)game_ui_tile_types.ITEM_PROPERTY_MARKS + UITileOff;
-                                                                                    int atile = Glyph2Tile[source_glyph];
-                                                                                    int a_sheet_idx = TileSheetIdx(atile);
-                                                                                    int at_x = TileSheetX(atile);
-                                                                                    int at_y = TileSheetY(atile);
-
-                                                                                    SKRect source_rt = new SKRect();
-                                                                                    source_rt.Left = at_x + src_x;
-                                                                                    source_rt.Right = source_rt.Left + mark_width;
-                                                                                    source_rt.Top = at_y + src_y;
-                                                                                    source_rt.Bottom = source_rt.Top + mark_height;
-
-                                                                                    SKRect target_rt = new SKRect();
-
-                                                                                    target_rt.Left = tx + dest_x;
-                                                                                    target_rt.Right = target_rt.Left + targetscale * scale * source_rt.Width;
-                                                                                    target_rt.Top = ty + dest_y;
-                                                                                    target_rt.Bottom = target_rt.Top + targetscale * scale * source_rt.Height;
-
-                                                                                    canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt);
-
-                                                                                    cnt++;
-                                                                                }                        
-                                                                            }
-
-                                                                        }
                                                                     }
                                                                 }
                                                             }
@@ -4470,6 +3708,794 @@ namespace GnollHackClient.Pages.Game
 
             canvas.Flush();
 
+        }
+
+        public void DrawAutoDraw(int autodraw, SKCanvas canvas, SKPaint paint, ObjectDataItem otmp_round,
+            int layer_idx, int mapx, int mapy, 
+            bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem,
+            float tx, float ty, float width, float height, 
+            float scale, float targetscale, float scaled_x_padding, float scaled_y_padding, float scaled_tile_height,
+            bool is_inventory)
+        {
+            /******************/
+            /* AUTODRAW START */
+            /******************/
+            if (_autodraws != null)
+            {
+                float opaqueness = 1;
+                int sheet_idx = 0;
+
+                if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_REPLACE_WALL_ENDS)
+                {
+                    for (byte dir = 0; dir < 4; dir++)
+                    {
+                        byte dir_bit = (byte)(1 << dir);
+                        if ((_autodraws[autodraw].flags & dir_bit) != 0)
+                        {
+                            int rx = 0;
+                            int ry = 0;
+                            int[] corner_x = new int[2];
+                            int[] corner_y = new int[2];
+                            switch (dir)
+                            {
+                                case 0:
+                                    rx = mapx - 1;
+                                    ry = mapy;
+                                    corner_x[0] = mapx;
+                                    corner_y[0] = mapy - 1;
+                                    corner_x[1] = mapx;
+                                    corner_y[1] = mapy + 1;
+                                    break;
+                                case 1:
+                                    rx = mapx + 1;
+                                    ry = mapy;
+                                    corner_x[0] = mapx;
+                                    corner_y[0] = mapy - 1;
+                                    corner_x[1] = mapx;
+                                    corner_y[1] = mapy + 1;
+                                    break;
+                                case 2:
+                                    rx = mapx;
+                                    ry = mapy - 1;
+                                    corner_x[0] = mapx - 1;
+                                    corner_y[0] = mapy;
+                                    corner_x[1] = mapx + 1;
+                                    corner_y[1] = mapy;
+                                    break;
+                                case 3:
+                                    rx = mapx;
+                                    ry = mapy + 1;
+                                    corner_x[0] = mapx - 1;
+                                    corner_y[0] = mapy;
+                                    corner_x[1] = mapx + 1;
+                                    corner_y[1] = mapy;
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            if (!GHUtils.isok(rx, ry) || (_mapData[rx, ry].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0) // NO_WALL_END_AUTODRAW(rx, ry))
+                            {
+                                /* No action */
+                            }
+                            else
+                            {
+                                for (int corner = 0; corner <= 1; corner++)
+                                {
+                                    int source_glyph = _autodraws[autodraw].source_glyph;
+                                    int atile = Glyph2Tile[source_glyph];
+                                    int a_sheet_idx = TileSheetIdx(atile);
+                                    int at_x = TileSheetX(atile);
+                                    int at_y = TileSheetY(atile);
+
+                                    SKRect source_rt = new SKRect();
+                                    switch (dir)
+                                    {
+                                        case 0: /* left */
+                                            if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0) // NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                            {
+                                                source_glyph = _autodraws[autodraw].source_glyph2; /* S_vwall */
+                                                atile = Glyph2Tile[source_glyph];
+                                                a_sheet_idx = TileSheetIdx(atile);
+                                                at_x = TileSheetX(atile);
+                                                at_y = TileSheetY(atile);
+                                            }
+                                            source_rt.Left = at_x;
+                                            source_rt.Right = source_rt.Left + 12;
+                                            if (corner == 0)
+                                            {
+                                                source_rt.Top = at_y;
+                                                source_rt.Bottom = at_y + 18;
+                                            }
+                                            else
+                                            {
+                                                source_rt.Top = at_y + 18;
+                                                source_rt.Bottom = at_y + GHConstants.TileHeight;
+                                            }
+                                            break;
+                                        case 1: /* right */
+                                            //if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                            if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
+                                            {
+                                                source_glyph = _autodraws[autodraw].source_glyph2; /* S_vwall */
+                                                atile = Glyph2Tile[source_glyph];
+                                                a_sheet_idx = TileSheetIdx(atile);
+                                                at_x = TileSheetX(atile);
+                                                at_y = TileSheetY(atile);
+                                            }
+                                            source_rt.Right = at_x + GHConstants.TileWidth;
+                                            source_rt.Left = source_rt.Right - 12;
+                                            if (corner == 0)
+                                            {
+                                                source_rt.Top = at_y;
+                                                source_rt.Bottom = at_y + 18;
+                                            }
+                                            else
+                                            {
+                                                source_rt.Top = at_y + 18;
+                                                source_rt.Bottom = at_y + GHConstants.TileHeight;
+                                            }
+                                            break;
+                                        case 2: /* up */
+                                            //if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                            if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
+                                            {
+                                                source_glyph = _autodraws[autodraw].source_glyph3; /* S_hwall */
+                                                atile = Glyph2Tile[source_glyph];
+                                                a_sheet_idx = TileSheetIdx(atile);
+                                                at_x = TileSheetX(atile);
+                                                at_y = TileSheetY(atile);
+                                            }
+                                            if (corner == 0)
+                                            {
+                                                source_rt.Left = at_x;
+                                                source_rt.Right = at_x + GHConstants.TileWidth / 2;
+                                            }
+                                            else
+                                            {
+                                                source_rt.Left = at_x + GHConstants.TileWidth / 2;
+                                                source_rt.Right = at_x + GHConstants.TileWidth;
+                                            }
+                                            source_rt.Top = at_y;
+                                            source_rt.Bottom = source_rt.Top + 12;
+                                            break;
+                                        case 3: /* down */
+                                            //if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                            if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
+                                            {
+                                                source_glyph = _autodraws[autodraw].source_glyph3; /* S_hwall */
+                                                atile = Glyph2Tile[source_glyph];
+                                                a_sheet_idx = TileSheetIdx(atile);
+                                                at_x = TileSheetX(atile);
+                                                at_y = TileSheetY(atile);
+                                            }
+                                            if (corner == 0)
+                                            {
+                                                source_rt.Left = at_x;
+                                                source_rt.Right = at_x + GHConstants.TileWidth / 2;
+                                            }
+                                            else
+                                            {
+                                                source_rt.Left = at_x + GHConstants.TileWidth / 2;
+                                                source_rt.Right = at_x + GHConstants.TileWidth;
+                                            }
+                                            source_rt.Top = at_y + 12;
+                                            source_rt.Bottom = at_y + GHConstants.TileHeight;
+                                            break;
+                                        default:
+                                            break;
+                                    }
+
+                                    SKRect target_rt = new SKRect();
+                                    target_rt.Left = tx + (targetscale * (float)(source_rt.Left - at_x));
+                                    target_rt.Right = tx + (targetscale * (float)(source_rt.Right - at_x));
+                                    target_rt.Top = ty + (targetscale * (float)(source_rt.Top - at_y));
+                                    target_rt.Bottom = ty + (targetscale * (float)(source_rt.Bottom - at_y));
+                                    canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LONG_WORM)
+                {
+                    /* Long worm here */
+
+                    int source_glyph_seg_end = _autodraws[autodraw].source_glyph;
+                    int source_glyph_seg_dir_out = _autodraws[autodraw].source_glyph2;
+                    int source_glyph_seg_dir_in = _autodraws[autodraw].source_glyph2 + 4;
+                    int source_glyph_seg_layer = _autodraws[autodraw].source_glyph3;
+                    int drawing_tail = _autodraws[autodraw].flags;
+                    int wdir_out = _mapData[mapx, mapy].Layers.wsegdir;
+                    int wdir_in = _mapData[mapx, mapy].Layers.reverse_prev_wsegdir;
+                    bool is_head = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_HEAD) != 0;
+                    bool is_tailend = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_WORM_TAILEND) != 0;
+                    for (int wlayer = 0; wlayer < 5; wlayer++)
+                    {
+                        int source_glyph = NoGlyph;
+                        bool hflip_seg = false;
+                        bool vflip_seg = false;
+                        switch (wlayer)
+                        {
+                            case 0:
+                            case 2:
+                            case 4:
+                                if (is_head || is_tailend)
+                                    continue;
+                                source_glyph = source_glyph_seg_layer + wlayer / 2;
+                                break;
+                            case 1:
+                                source_glyph = is_tailend ? NoGlyph : is_head ? source_glyph_seg_end : source_glyph_seg_dir_in;
+                                break;
+                            case 3:
+                                source_glyph = is_tailend ? source_glyph_seg_end : is_head ? NoGlyph : source_glyph_seg_dir_out;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        if (source_glyph != NoGlyph)
+                        {
+                            int wdir = (wlayer == 1 ? wdir_in : wlayer == 3 ? wdir_out : 0);
+                            switch (wdir)
+                            {
+                                case 1:
+                                    source_glyph += 2;
+                                    hflip_seg = false;
+                                    vflip_seg = false;
+                                    break;
+                                case 2:
+                                    source_glyph += 0;
+                                    hflip_seg = false;
+                                    vflip_seg = false;
+                                    break;
+                                case 3:
+                                    source_glyph += 3;
+                                    hflip_seg = false;
+                                    vflip_seg = true;
+                                    break;
+                                case 4:
+                                    source_glyph += 1;
+                                    hflip_seg = true;
+                                    vflip_seg = false;
+                                    break;
+                                case 5:
+                                    source_glyph += 3;
+                                    hflip_seg = false;
+                                    vflip_seg = false;
+                                    break;
+                                case 6:
+                                    source_glyph += 0;
+                                    hflip_seg = false;
+                                    vflip_seg = true;
+                                    break;
+                                case 7:
+                                    source_glyph += 2;
+                                    hflip_seg = false;
+                                    vflip_seg = true;
+                                    break;
+                                case 8:
+                                    source_glyph += 1;
+                                    hflip_seg = false;
+                                    vflip_seg = false;
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            int atile = Glyph2Tile[source_glyph];
+                            int a_sheet_idx = TileSheetIdx(atile);
+                            int at_x = TileSheetX(atile);
+                            int at_y = TileSheetY(atile);
+
+                            int worm_source_x = at_x;
+                            int worm_source_y = at_y;
+                            int worm_source_width = GHConstants.TileWidth;
+                            int worm_source_height = GHConstants.TileHeight;
+                            SKRect sourcerect = new SKRect(worm_source_x, worm_source_y, worm_source_x + worm_source_width, worm_source_y + worm_source_height);
+
+                            float target_x = tx;
+                            float target_y = ty;
+                            float target_width = ((float)worm_source_width * targetscale);
+                            float target_height = ((float)worm_source_height * targetscale);
+                            SKRect targetrect;
+                            targetrect = new SKRect(0, 0, target_width, target_height);
+
+                            using (new SKAutoCanvasRestore(canvas, true))
+                            {
+                                canvas.Translate(target_x + (hflip_seg ? width : 0), target_y + (vflip_seg ? height : 0));
+                                canvas.Scale(hflip_seg ? -1 : 1, vflip_seg ? -1 : 1, 0, 0);
+                                paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
+                            }
+                        }
+                    }
+                }
+                else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_BOOKSHELF_CONTENTS && otmp_round != null && otmp_round.ContainedObjs != null)
+                {
+                    int num_shelves = 4;
+                    int y_to_first_shelf = 49;
+                    int shelf_start = 8;
+                    int shelf_width = 50;
+                    int shelf_height = 10;
+                    int shelf_border_height = 2;
+                    int shelf_item_width = 5;
+                    int src_book_x = 0;
+                    int src_book_y = 0;
+                    int src_scroll_x = 5;
+                    int src_scroll_y = 0;
+                    int cnt = 0;
+                    int items_per_row = shelf_width / shelf_item_width;
+
+                    foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjs)
+                    {
+                        int src_x = 0, src_y = 0;
+                        float dest_x = 0, dest_y = 0;
+                        if (contained_obj.ObjData.oclass == (int)obj_class_types.SPBOOK_CLASS)
+                        {
+                            src_x = src_book_x;
+                            src_y = src_book_y;
+                        }
+                        else if (contained_obj.ObjData.oclass == (int)obj_class_types.SCROLL_CLASS)
+                        {
+                            src_x = src_scroll_x;
+                            src_y = src_scroll_y;
+                        }
+                        else
+                            continue;
+
+                        for (int item_idx = 0; item_idx < contained_obj.ObjData.quan; item_idx++)
+                        {
+                            int item_row = cnt / items_per_row;
+                            int item_xpos = cnt % items_per_row;
+
+                            if (item_row >= num_shelves)
+                                break;
+
+                            dest_y = (y_to_first_shelf + item_row * (shelf_height + shelf_border_height)) * scale * targetscale;
+                            dest_x = (shelf_start + item_xpos * shelf_item_width) * scale * targetscale;
+
+                            int source_glyph = _autodraws[autodraw].source_glyph;
+                            int atile = Glyph2Tile[source_glyph];
+                            int a_sheet_idx = TileSheetIdx(atile);
+                            int at_x = TileSheetX(atile);
+                            int at_y = TileSheetY(atile);
+
+                            SKRect source_rt = new SKRect();
+                            source_rt.Left = at_x + src_x;
+                            source_rt.Right = source_rt.Left + shelf_item_width;
+                            source_rt.Top = at_y + src_y;
+                            source_rt.Bottom = source_rt.Top + shelf_height;
+
+                            float target_x = tx + dest_x;
+                            float target_y = ty + dest_y;
+                            float target_width = targetscale * scale * source_rt.Width;
+                            float target_height = targetscale * scale * source_rt.Height;
+                            SKRect target_rt;
+                            target_rt = new SKRect(0, 0, target_width, target_height);
+
+                            using (new SKAutoCanvasRestore(canvas, true))
+                            {
+                                canvas.Translate(target_x, target_y);
+                                canvas.Scale(1, 1, 0, 0);
+                                paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                                canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                            }
+
+                            cnt++;
+                        }
+                    }
+                }
+                else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_WEAPON_RACK_CONTENTS && otmp_round != null && otmp_round.ContainedObjs != null)
+                {
+                    int y_to_rack_top = 31;
+                    int rack_start = 0; /* Assume weapons are drawn reasonably well in the center */
+                    int rack_width = 48;
+                    int rack_height = GHConstants.TileHeight - y_to_rack_top;
+                    int rack_item_spacing = 6;
+
+                    int cnt = 0;
+
+                    foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjs)
+                    {
+                        int source_glyph = Math.Abs(contained_obj.ObjData.gui_glyph);
+                        if (source_glyph <= 0 || source_glyph == NoGlyph)
+                            continue;
+                        bool has_floor_tile = (GlyphTileFlags[source_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0; // artidx > 0 ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(contained_obj);
+                        bool fullsizeditem = (GlyphTileFlags[source_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
+                        int cobj_height = contained_obj.OtypData.tile_height; // artidx ? artilist[artidx].tile_floor_height : OBJ_TILE_HEIGHT(contained_obj->otyp);
+                        int artidx = contained_obj.ObjData.oartifact;
+                        float dest_x = 0, dest_y = 0;
+                        int src_x = 0, src_y = fullsizeditem || has_floor_tile ? 0 : GHConstants.TileHeight / 2;
+                        int item_width = has_floor_tile ? GHConstants.TileHeight / 2 : cobj_height > 0 ? cobj_height : GHConstants.TileHeight / 2;
+                        int item_height = has_floor_tile ? GHConstants.TileWidth : (item_width * GHConstants.TileWidth) / (GHConstants.TileHeight / 2);
+                        int padding = (GHConstants.TileHeight / 2 - item_width) / 2;
+                        int vertical_padding = (GHConstants.TileWidth - item_height) / 2;
+                        if (contained_obj.ObjData.oclass != (int)obj_class_types.WEAPON_CLASS)
+                            continue;
+
+                        int item_xpos = cnt / 2 * rack_item_spacing;
+                        if (item_xpos >= rack_width / 2)
+                            break;
+
+                        dest_y = (y_to_rack_top + vertical_padding) * scale * targetscale;
+                        dest_x = (cnt % 2 == 0 ? rack_start + item_xpos + padding : GHConstants.TileWidth - item_width - rack_start - item_xpos - padding) * scale * targetscale;
+
+                        int atile = Glyph2Tile[source_glyph];
+                        int a_sheet_idx = TileSheetIdx(atile);
+                        int at_x = TileSheetX(atile);
+                        int at_y = TileSheetY(atile);
+
+                        SKRect source_rt = new SKRect();
+                        source_rt.Left = at_x + src_x;
+                        source_rt.Right = source_rt.Left + GHConstants.TileWidth;
+                        source_rt.Top = at_y + src_y;
+                        source_rt.Bottom = source_rt.Top + (fullsizeditem ? GHConstants.TileHeight : GHConstants.TileHeight / 2);
+
+                        float original_width = source_rt.Right - source_rt.Left;
+                        float original_height = source_rt.Bottom - source_rt.Top;
+                        float rotated_width = original_height;
+                        float rotated_height = original_width;
+
+                        float target_x = tx + dest_x;
+                        float target_y = ty + dest_y;
+                        float target_width = targetscale * scale * original_width; //(float)item_width;
+                        float target_height = targetscale * scale * original_height; //((float)item_width * rotated_height) / rotated_width;
+                        SKRect target_rt;
+                        target_rt = new SKRect(0, 0, target_width, target_height);
+
+                        using (new SKAutoCanvasRestore(canvas, true))
+                        {
+                            canvas.Translate(target_x, target_y);
+                            canvas.Scale(1, 1, 0, 0);
+                            canvas.RotateDegrees(-90);
+                            canvas.Translate(-target_width, 0);
+                            paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                            canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                        }
+
+                        cnt++;
+                    }
+                }
+                else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_CANDELABRUM_CANDLES && otmp_round != null)
+                {
+                    float y_start = scaled_y_padding;
+                    float x_start = scaled_x_padding;
+                    int x_padding = 13;
+                    int item_width = 6;
+                    int item_height = 13;
+                    int src_unlit_x = 0;
+                    int src_unlit_y = 10;
+                    int src_lit_x = 6 * (1 + (int)_autodraws[autodraw].flags);
+                    int src_lit_y = 10;
+                    int cnt = 0;
+
+                    for (int cidx = 0; cidx < Math.Min((short)7, otmp_round.ObjData.special_quality); cidx++)
+                    {
+                        int src_x = 0, src_y = 0;
+                        float dest_x = 0, dest_y = 0;
+                        if (otmp_round.LampLit)
+                        {
+                            src_x = src_lit_x;
+                            src_y = src_lit_y;
+                        }
+                        else
+                        {
+                            src_x = src_unlit_x;
+                            src_y = src_unlit_y;
+                        }
+
+                        int item_xpos = cnt;
+
+                        dest_y = y_start;
+                        dest_x = x_start + ((float)(x_padding + item_xpos * item_width) * scale * targetscale);
+
+                        int source_glyph = _autodraws[autodraw].source_glyph;
+                        int atile = Glyph2Tile[source_glyph];
+                        int a_sheet_idx = TileSheetIdx(atile);
+                        int at_x = TileSheetX(atile);
+                        int at_y = TileSheetY(atile);
+
+                        SKRect source_rt = new SKRect();
+                        source_rt.Left = at_x + src_x;
+                        source_rt.Right = source_rt.Left + item_width;
+                        source_rt.Top = at_y + src_y;
+                        source_rt.Bottom = source_rt.Top + item_height;
+
+                        float target_x = tx + dest_x;
+                        float target_y = ty + dest_y;
+                        float target_width = targetscale * scale * source_rt.Width;
+                        float target_height = targetscale * scale * source_rt.Height;
+                        SKRect target_rt;
+                        target_rt = new SKRect(0, 0, target_width, target_height);
+
+                        using (new SKAutoCanvasRestore(canvas, true))
+                        {
+                            canvas.Translate(target_x, target_y);
+                            canvas.Scale(1, 1, 0, 0);
+                            paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                            canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                        }
+
+                        cnt++;
+                    }
+                }
+                else if (_autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_LARGE_FIVE_BRANCHED_CANDELABRUM_CANDLES && otmp_round != null)
+                {
+                    float y_start = scaled_y_padding;
+                    float x_start = scaled_x_padding;
+                    int item_width = 9;
+                    int item_height = 31;
+                    int src_unlit_x = 0;
+                    int src_unlit_y = 0;
+                    int src_lit_x = 9 * (1 + (int)_autodraws[autodraw].flags);
+                    int src_lit_y = 0;
+                    int cnt = 0;
+
+                    for (int cidx = 0; cidx < Math.Min((short)otmp_round.OtypData.special_quality, otmp_round.ObjData.special_quality); cidx++)
+                    {
+                        int src_x = 0, src_y = 0;
+                        float dest_x = 0, dest_y = 0;
+                        if (otmp_round.LampLit)
+                        {
+                            src_x = src_lit_x;
+                            src_y = src_lit_y;
+                        }
+                        else
+                        {
+                            src_x = src_unlit_x;
+                            src_y = src_unlit_y;
+                        }
+
+                        switch (cidx)
+                        {
+                            case 0:
+                                dest_x = x_start + ((float)(29) * scale * targetscale);
+                                dest_y = y_start + ((float)(0) * scale * targetscale);
+                                break;
+                            case 1:
+                                dest_x = x_start + ((float)(18) * scale * targetscale);
+                                dest_y = y_start + ((float)(4) * scale * targetscale);
+                                break;
+                            case 2:
+                                dest_x = x_start + ((float)(40) * scale * targetscale);
+                                dest_y = y_start + ((float)(3) * scale * targetscale);
+                                break;
+                            case 3:
+                                dest_x = x_start + ((float)(8) * scale * targetscale);
+                                dest_y = y_start + ((float)(14) * scale * targetscale);
+                                break;
+                            case 4:
+                                dest_x = x_start + ((float)(50) * scale * targetscale);
+                                dest_y = y_start + ((float)(15) * scale * targetscale);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        int source_glyph = _autodraws[autodraw].source_glyph;
+                        int atile = Glyph2Tile[source_glyph];
+                        int a_sheet_idx = TileSheetIdx(atile);
+                        int at_x = TileSheetX(atile);
+                        int at_y = TileSheetY(atile);
+
+                        SKRect source_rt = new SKRect();
+                        source_rt.Left = at_x + src_x;
+                        source_rt.Right = source_rt.Left + item_width;
+                        source_rt.Top = at_y + src_y;
+                        source_rt.Bottom = source_rt.Top + item_height;
+
+                        float target_x = tx + dest_x;
+                        float target_y = ty + dest_y;
+                        float target_width = targetscale * scale * source_rt.Width;
+                        float target_height = targetscale * scale * source_rt.Height;
+                        SKRect target_rt;
+                        target_rt = new SKRect(0, 0, target_width, target_height);
+
+                        using (new SKAutoCanvasRestore(canvas, true))
+                        {
+                            canvas.Translate(target_x, target_y);
+                            canvas.Scale(1, 1, 0, 0);
+                            paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                            canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                        }
+                        cnt++;
+                    }
+                }
+
+                /*
+                 * AUTODRAW END
+                 */
+
+                /* Item property marks */
+                if (((layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT) && otmp_round != null &&
+                    (otmp_round.Poisoned || otmp_round.ElementalEnchantment > 0 || otmp_round.MythicPrefix > 0 || otmp_round.MythicSuffix > 0 || otmp_round.Eroded != 0 || otmp_round.Eroded2 != 0 || otmp_round.Exceptionality > 0))
+                    ||
+                    ((layer_idx == (int)layer_types.LAYER_MISSILE) &&
+                        (_mapData[mapx, mapy].Layers.missile_poisoned != 0 || _mapData[mapx, mapy].Layers.missile_elemental_enchantment > 0
+                            || _mapData[mapx, mapy].Layers.missile_eroded != 0 || _mapData[mapx, mapy].Layers.missile_eroded2 != 0 ||
+                            _mapData[mapx, mapy].Layers.missile_exceptionality > 0 || _mapData[mapx, mapy].Layers.missile_mythic_prefix > 0 || _mapData[mapx, mapy].Layers.missile_mythic_suffix > 0))
+                    )
+                {
+                    float y_start = scaled_y_padding;
+                    if(!is_inventory)
+                    {
+                        if (tileflag_halfsize)
+                        {
+                            y_start += height / 2;
+                        }
+                        else
+                        {
+                            if (tileflag_normalobjmissile && !tileflag_fullsizeditem)
+                                y_start += height / 4;
+                            else
+                                y_start += 0;
+                        }
+                    }
+                    float x_start = scaled_x_padding;
+                    int mark_width = 8;
+                    int marks_per_row = GHConstants.TileWidth / mark_width;
+                    int mark_height = 24;
+                    int src_x = 0;
+                    int src_y = 0;
+                    int cnt = 0;
+                    bool poisoned = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_poisoned != 0 : otmp_round.Poisoned);
+                    byte elemental_enchantment = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_elemental_enchantment : otmp_round.ElementalEnchantment);
+                    byte exceptionality = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_exceptionality : otmp_round.Exceptionality);
+                    byte mythic_prefix = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_mythic_prefix : otmp_round.MythicPrefix);
+                    byte mythic_suffix = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_mythic_suffix : otmp_round.MythicSuffix);
+                    byte eroded = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_eroded : otmp_round.Eroded);
+                    byte eroded2 = (layer_idx == (int)layer_types.LAYER_MISSILE ? _mapData[mapx, mapy].Layers.missile_eroded2 : otmp_round.Eroded2);
+                    bool corrodeable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_CORRODEABLE) != 0 : otmp_round.OtypData.corrodeable != 0);
+                    bool rottable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_ROTTABLE) != 0 : otmp_round.OtypData.rottable != 0);
+                    bool flammable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_FLAMMABLE) != 0 : otmp_round.OtypData.flammable != 0);
+                    bool rustprone = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_RUSTPRONE) != 0 : otmp_round.OtypData.rustprone != 0);
+                    bool poisonable = (layer_idx == (int)layer_types.LAYER_MISSILE ? (_mapData[mapx, mapy].Layers.missile_flags & (ulong)LayerMissileFlags.MISSILE_FLAGS_POISONABLE) != 0 : otmp_round.OtypData.poisonable != 0);
+                    float dest_x = 0, dest_y = 0;
+
+                    for (item_property_mark_types ipm_idx = 0; ipm_idx < item_property_mark_types.MAX_ITEM_PROPERTY_MARKS; ipm_idx++)
+                    {
+                        if (cnt >= 8)
+                            break;
+
+                        src_x = ((int)ipm_idx % marks_per_row) * mark_width;
+                        src_y = ((int)ipm_idx / marks_per_row) * mark_height;
+                        dest_x = 0;
+                        dest_y = 0;
+
+                        switch (ipm_idx)
+                        {
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_POISONED:
+                                if (!(poisoned && poisonable))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_DEATH_MAGICAL:
+                                if (elemental_enchantment != (byte)elemental_enchantment_types.DEATH_ENCHANTMENT)
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_FLAMING:
+                                if (elemental_enchantment != (byte)elemental_enchantment_types.FIRE_ENCHANTMENT)
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_FREEZING:
+                                if (elemental_enchantment != (byte)elemental_enchantment_types.COLD_ENCHANTMENT)
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_ELECTRIFIED:
+                                if (elemental_enchantment != (byte)elemental_enchantment_types.LIGHTNING_ENCHANTMENT)
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_EXCEPTIONAL:
+                                if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_EXCEPTIONAL)
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_ELITE:
+                                if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_ELITE)
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_CELESTIAL:
+                                if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_CELESTIAL)
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_PRIMORDIAL:
+                                if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_PRIMORDIAL)
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_INFERNAL:
+                                if (exceptionality != (byte)exceptionality_types.EXCEPTIONALITY_INFERNAL)
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_MYTHIC:
+                                if ((mythic_prefix == 0 && mythic_suffix == 0) || (mythic_prefix > 0 && mythic_suffix > 0))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_LEGENDARY:
+                                if (mythic_prefix == 0 || mythic_suffix == 0)
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_CORRODED:
+                                if (!(eroded2 == 1 && corrodeable))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_ROTTED:
+                                if (!(eroded2 == 1 && rottable))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_BURNT:
+                                if (!(eroded == 1 && flammable))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_RUSTY:
+                                if (!(eroded == 1 && rustprone))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_CORRODED:
+                                if (!(eroded2 == 2 && corrodeable))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_ROTTED:
+                                if (!(eroded2 == 2 && rottable))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_BURNT:
+                                if (!(eroded == 2 && flammable))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_VERY_RUSTY:
+                                if (!(eroded == 2 && rustprone))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_CORRODED:
+                                if (!(eroded2 == 3 && corrodeable))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_ROTTED:
+                                if (!(eroded2 == 3 && rottable))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_BURNT:
+                                if (!(eroded == 3 && flammable))
+                                    continue;
+                                break;
+                            case item_property_mark_types.ITEM_PROPERTY_MARK_THOROUGHLY_RUSTY:
+                                if (!(eroded == 3 && rustprone))
+                                    continue;
+                                break;
+                            case item_property_mark_types.MAX_ITEM_PROPERTY_MARKS:
+                            default:
+                                continue;
+                        }
+
+                        int item_xpos = ((int)GHConstants.TileWidth) / 2 - mark_width + (cnt % 2 != 0 ? 1 : -1) * ((cnt + 1) / 2) * mark_width;
+
+                        dest_y = y_start + scaled_tile_height / 2 - (targetscale * scale * (float)(mark_height / 2));
+                        dest_x = x_start + (targetscale * scale * (float)item_xpos);
+
+                        int source_glyph = (int)game_ui_tile_types.ITEM_PROPERTY_MARKS + UITileOff;
+                        int atile = Glyph2Tile[source_glyph];
+                        int a_sheet_idx = TileSheetIdx(atile);
+                        int at_x = TileSheetX(atile);
+                        int at_y = TileSheetY(atile);
+
+                        SKRect source_rt = new SKRect();
+                        source_rt.Left = at_x + src_x;
+                        source_rt.Right = source_rt.Left + mark_width;
+                        source_rt.Top = at_y + src_y;
+                        source_rt.Bottom = source_rt.Top + mark_height;
+
+                        SKRect target_rt = new SKRect();
+
+                        target_rt.Left = tx + dest_x;
+                        target_rt.Right = target_rt.Left + targetscale * scale * source_rt.Width;
+                        target_rt.Top = ty + dest_y;
+                        target_rt.Bottom = target_rt.Top + targetscale * scale * source_rt.Height;
+
+                        canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt);
+
+                        cnt++;
+                    }
+                }
+            }
         }
 
 
