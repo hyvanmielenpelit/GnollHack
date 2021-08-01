@@ -54,8 +54,8 @@ namespace GnollHackClient.Pages.Game
 
             _glyphImageSource.ReferenceGamePage = gamePage;
             _glyphImageSource.AutoSize = true;
-            _glyphImageSource.Glyph = _ghwindow.Glyph;
             _glyphImageSource.ObjData = _ghwindow.ObjData;
+            _glyphImageSource.Glyph = _ghwindow.Glyph;
             WindowGlyphImage.BindingContext = this;
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
