@@ -1511,7 +1511,7 @@ already_wearing(cc)
 const char *cc;
 {
     play_sfx_sound(SFX_GENERAL_CANNOT);
-    You("are already wearing %s%c", cc, (cc == c_that_) ? '!' : '.');
+    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are already wearing %s%c", cc, (cc == c_that_) ? '!' : '.');
 }
 
 #if 0
@@ -1545,7 +1545,10 @@ boolean noisy;
     if (!can_operate_objects(youmonst.data))
     {
         if (noisy)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "can't wear any armor in your current form.");
+        }
         return 0;
     }
 
@@ -1563,7 +1566,10 @@ boolean noisy;
         && (which != c_cloak || youmonst.data->msize != MZ_SMALL)
         && (racial_exception(&youmonst, otmp) < 1)) {
         if (noisy)
-            pline_The("%s will not fit on your body.", which);
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "%s will not fit on your body.", which);
+        }
         return 0;
     } else if (otmp->owornmask & W_ARMOR) {
         if (noisy)
@@ -1584,20 +1590,28 @@ boolean noisy;
     if (is_helmet(otmp)) {
         if (uarmh) {
             if (noisy)
+            {
                 already_wearing(an(helm_simple_name(uarmh)));
+            }
             err++;
         } else if (Upolyd && has_horns(youmonst.data) && !is_flimsy(otmp)) {
             /* (flimsy exception matches polyself handling) */
             if (noisy)
-                pline_The("%s won't fit over your horn%s.",
-                          helm_simple_name(otmp),
-                          plur(num_horns(youmonst.data)));
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
+                pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "%s won't fit over your horn%s.",
+                    helm_simple_name(otmp),
+                    plur(num_horns(youmonst.data)));
+            }
             err++;
         }
         else if (Upolyd && !has_place_to_put_helmet_on(youmonst.data)) {
             if (noisy)
-                You("have no place to put your %s on.",
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "have no place to put your %s on.",
                     helm_simple_name(otmp));
+            }
             err++;
         } else
             *mask = W_ARMH;
@@ -1608,14 +1622,17 @@ boolean noisy;
                 if (is_shield(uarms))
                     already_wearing(an(c_shield));
                 else
-                    You("are already holding something else in your left %s.", body_part(HAND));
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are already holding something else in your left %s.", body_part(HAND));
+                }
             }
             err++;
         } else if (uwep && bimanual(uwep)) {
             if (noisy)
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You("cannot wear a shield while wielding a two-handed %s.",
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot wear a shield while wielding a two-handed %s.",
                     is_sword(uwep) ? c_sword : (uwep->otyp == BATTLE_AXE)
                     ? c_axe
                     : c_weapon);
@@ -1630,15 +1647,21 @@ boolean noisy;
             err++;
         } else if (Upolyd && slithy(youmonst.data)) {
             if (noisy)
-                You("have no feet..."); /* not body_part(FOOT) */
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "have no feet..."); /* not body_part(FOOT) */
+            }
             err++;
         } else if (Upolyd && youmonst.data->mlet == S_CENTAUR) {
             /* break_armor() pushes boots off for centaurs,
                so don't let dowear() put them back on... */
             if (noisy)
-                pline("You have too many hooves to wear %s.",
-                      c_boots); /* makeplural(body_part(FOOT)) yields
-                                   "rear hooves" which sounds odd */
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "You have too many hooves to wear %s.",
+                    c_boots); /* makeplural(body_part(FOOT)) yields
+                                 "rear hooves" which sounds odd */
+            }
             err++;
         } else if (u.utrap
                    && (u.utraptype == TT_BEARTRAP || u.utraptype == TT_INFLOOR
@@ -1646,15 +1669,24 @@ boolean noisy;
                        || u.utraptype == TT_BURIEDBALL)) {
             if (u.utraptype == TT_BEARTRAP) {
                 if (noisy)
-                    Your("%s is trapped!", body_part(FOOT));
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s is trapped!", body_part(FOOT));
+                }
             } else if (u.utraptype == TT_INFLOOR || u.utraptype == TT_LAVA) {
                 if (noisy)
-                    Your("%s are stuck in the %s!",
-                         makeplural(body_part(FOOT)), surface(u.ux, u.uy));
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s are stuck in the %s!",
+                        makeplural(body_part(FOOT)), surface(u.ux, u.uy));
+                }
             } else { /*TT_BURIEDBALL*/
                 if (noisy)
-                    Your("%s is attached to the buried ball!",
-                         body_part(LEG));
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s is attached to the buried ball!",
+                        body_part(LEG));
+                }
             }
             err++;
         } else
@@ -1668,7 +1700,7 @@ boolean noisy;
             if (noisy)
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot wear gloves over your %s.",
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot wear gloves over your %s.",
                     is_sword(uwep) ? c_sword : c_weapon);
             }
             err++;
@@ -1690,9 +1722,12 @@ boolean noisy;
                     already_wearing(an(c_shirt));
             } else {
                 if (noisy)
-                    You_cant("wear that over your %s.", 
-                             (uarmc) ? cloak_simple_name(uarmc)
-                                              : (uarmo) ? robe_simple_name(uarmo) : c_armor);
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "wear that over your %s.",
+                        (uarmc) ? cloak_simple_name(uarmc)
+                        : (uarmo) ? robe_simple_name(uarmo) : c_armor);
+                }
             }
             err++;
         } else
@@ -1706,7 +1741,10 @@ boolean noisy;
             }
             else {
                 if (noisy)
-                    You_cant("wear that over your %s.", cloak_simple_name(uarmc));
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "wear that over your %s.", cloak_simple_name(uarmc));
+                }
             }
             err++;
         }
@@ -1724,20 +1762,19 @@ boolean noisy;
             if (noisy)
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You("cannot wear armor over a %s.", cloak_simple_name(uarmc));
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot wear armor over a %s.", cloak_simple_name(uarmc));
             }
             err++;
         } else if (uarmo) {
             if (noisy)
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You("cannot wear armor over a %s.", robe_simple_name(uarmo));
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot wear armor over a %s.", robe_simple_name(uarmo));
             }
             err++;
         } else if (uarm) {
             if (noisy)
             {
-                play_sfx_sound(SFX_GENERAL_CANNOT);
                 already_wearing("some armor");
             }
             err++;
