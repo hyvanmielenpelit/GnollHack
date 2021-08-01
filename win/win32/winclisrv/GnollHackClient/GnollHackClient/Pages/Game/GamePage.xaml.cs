@@ -3710,6 +3710,21 @@ namespace GnollHackClient.Pages.Game
 
         }
 
+        bool IsNoWallEndAutoDraw(int x, int y)
+        {
+            if (!GHUtils.isok(x, y))
+                return true;
+
+            if(_mapData[x, y].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph 
+                || _mapData[x, y].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
+                return true;
+
+            if((_mapData[x, y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
+                return true;
+
+            return false;
+        }
+
         public void DrawAutoDraw(int autodraw, SKCanvas canvas, SKPaint paint, ObjectDataItem otmp_round,
             int layer_idx, int mapx, int mapy, 
             bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem,
@@ -3774,7 +3789,7 @@ namespace GnollHackClient.Pages.Game
                                     break;
                             }
 
-                            if (!GHUtils.isok(rx, ry) || (_mapData[rx, ry].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0) // NO_WALL_END_AUTODRAW(rx, ry))
+                            if (IsNoWallEndAutoDraw(rx, ry)) // NO_WALL_END_AUTODRAW(rx, ry))
                             {
                                 /* No action */
                             }
@@ -3792,7 +3807,7 @@ namespace GnollHackClient.Pages.Game
                                     switch (dir)
                                     {
                                         case 0: /* left */
-                                            if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0) // NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                            if (IsNoWallEndAutoDraw(corner_x[corner], corner_y[corner])) // NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
                                             {
                                                 source_glyph = _autodraws[autodraw].source_glyph2; /* S_vwall */
                                                 atile = Glyph2Tile[source_glyph];
@@ -3815,7 +3830,7 @@ namespace GnollHackClient.Pages.Game
                                             break;
                                         case 1: /* right */
                                             //if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
-                                            if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
+                                            if (IsNoWallEndAutoDraw(corner_x[corner], corner_y[corner]))
                                             {
                                                 source_glyph = _autodraws[autodraw].source_glyph2; /* S_vwall */
                                                 atile = Glyph2Tile[source_glyph];
@@ -3838,7 +3853,7 @@ namespace GnollHackClient.Pages.Game
                                             break;
                                         case 2: /* up */
                                             //if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
-                                            if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
+                                            if (IsNoWallEndAutoDraw(corner_x[corner], corner_y[corner]))
                                             {
                                                 source_glyph = _autodraws[autodraw].source_glyph3; /* S_hwall */
                                                 atile = Glyph2Tile[source_glyph];
@@ -3861,7 +3876,7 @@ namespace GnollHackClient.Pages.Game
                                             break;
                                         case 3: /* down */
                                             //if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
-                                            if (!GHUtils.isok(corner_x[corner], corner_y[corner]) || (_mapData[corner_x[corner], corner_y[corner]].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
+                                            if (IsNoWallEndAutoDraw(corner_x[corner], corner_y[corner]))
                                             {
                                                 source_glyph = _autodraws[autodraw].source_glyph3; /* S_hwall */
                                                 atile = Glyph2Tile[source_glyph];
