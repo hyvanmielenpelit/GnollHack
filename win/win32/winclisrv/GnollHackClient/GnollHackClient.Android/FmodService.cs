@@ -21,6 +21,7 @@ namespace GnollHackClient.Droid
     public class GHSoundInstance
     {
         public FMOD.Studio.EventInstance instance;
+        public UInt64 guid;
         public int ghsound;
         public float normalEventVolume;
         public float normalSoundVolume;
@@ -122,6 +123,7 @@ namespace GnollHackClient.Droid
         public List<GHSoundInstance> longImmediateInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> levelAmbientInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> environmentAmbientInstances = new List<GHSoundInstance>();
+        public List<GHSoundInstance> ambientList = new List<GHSoundInstance>();
 
 
         public static RESULT GNHEventCallback(EVENT_CALLBACK_TYPE type, EventInstance _event, IntPtr parameters)
@@ -548,17 +550,126 @@ namespace GnollHackClient.Droid
             return (int)res;
         }
 
+        private UInt64 _lastAmbientId = 0;
+
+        private UInt64 GetNewAmbientId()
+        {
+            _lastAmbientId++;
+            if(_lastAmbientId == 0)
+                _lastAmbientId++;
+
+            return _lastAmbientId;
+        }
+
         public int AddAmbientSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, out UInt64 soundSourceId)
         {
-            soundSourceId = 0;
-            return 0;
+            RESULT res = RESULT.OK;
+
+            if (eventPath == null || eventPath == "")
+            {
+                soundSourceId = 0;
+                return 1;
+            }
+
+            EventDescription eventDescription;
+            res = _system.getEvent(eventPath, out eventDescription);
+            EventInstance eventInstance;
+            res = eventDescription.createInstance(out eventInstance);
+
+            /* Set volume */
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
+            //ambientInstance->setVolume(fmod_volume* event_volume * general_ambient_volume* general_volume);
+
+            /* Create new GHSoundInstance */
+            GHSoundInstance ghinstance = new GHSoundInstance();
+            ghinstance.instance = eventInstance;
+            ghinstance.ghsound = ghsound;
+            ghinstance.normalEventVolume = eventVolume;
+            ghinstance.normalSoundVolume = soundVolume;
+            ghinstance.sound_type = 0;
+            ghinstance.dialogue_mid = 0;
+            ghinstance.guid = GetNewAmbientId();
+
+            ambientList.Insert(0, ghinstance);
+
+            /* Play sound */
+            res = eventInstance.start();
+            res = _system.update();
+
+            soundSourceId = ghinstance.guid;
+
+            return (int)res;
+
         }
         public int DeleteAmbientSound(UInt64 soundSourceId)
         {
+            if (soundSourceId == 0)
+                return 1;
+
+            RESULT res;
+            bool found = false;
+            GHSoundInstance ghinstance = null;
+            int listidx = -1;
+            for (int i = 0; i < ambientList.Count; i++)
+            {
+                if (ambientList[i].guid == soundSourceId)
+                {
+                    found = true;
+                    listidx = i;
+                    ghinstance = ambientList[i];
+                    break;
+                }
+            }
+
+            if (!found || ghinstance == null || listidx == -1)
+                return 1;
+
+            if (ghinstance.stopped == false)
+            {
+                ghinstance.stopped = true;
+                ghinstance.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            }
+            res = _system.update();
+            res = ghinstance.instance.release();
+            ambientList.RemoveAt(listidx);
             return 0;
         }
         public int SetAmbientSoundVolume(UInt64 soundSourceId, float soundVolume)
         {
+            if (soundSourceId == 0)
+                return 1;
+
+            if (soundVolume < 0.0f || soundVolume > 1.0f)
+                return 1;
+
+            RESULT res;
+            GHSoundInstance ghinstance = null;
+            for (int i = 0; i < ambientList.Count; i++)
+            {
+                if (ambientList[i].guid == soundSourceId)
+                {
+                    ghinstance = ambientList[i];
+                    break;
+                }
+            }
+
+            if (ghinstance == null)
+                return 1;
+
+            float old_volume;
+            res = ghinstance.instance.getVolume(out old_volume);
+
+            float event_volume = ghinstance.normalEventVolume;
+            res = ghinstance.instance.setVolume(event_volume * soundVolume);
+
+            if (old_volume == 0.0f && soundVolume > 0.0f)
+                res = ghinstance.instance.start();
+            else if (old_volume > 0.0f && soundVolume == 0.0f)
+                res = ghinstance.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+
+            res = _system.update();
+            ghinstance.normalSoundVolume = soundVolume;
+
             return 0;
         }
 
