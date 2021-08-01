@@ -960,17 +960,38 @@ void lib_play_ghsound_music(struct ghsound_music_info info)
     float eventVolume = ghsound2event[info.ghsound].volume;
     float soundVolume = info.volume;
 
-    (void)lib_callbacks.callback_play_ghsound_music(ghsound, eventPath, eventBank, eventVolume, soundVolume);
+    if (lib_callbacks.callback_play_ghsound_music(ghsound, eventPath, eventBank, eventVolume, soundVolume) != 0)
+    {
+        /* Error */
+    }
 }
 
 void lib_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
 {
-    return;
+    int ghsound = info.ghsound;
+    const char* eventPath = ghsound2event[info.ghsound].eventPath;
+    int eventBank = ghsound2event[info.ghsound].bank_id;
+    float eventVolume = ghsound2event[info.ghsound].volume;
+    float soundVolume = info.volume;
+
+    if (lib_callbacks.callback_play_ghsound_level_ambient(ghsound, eventPath, eventBank, eventVolume, soundVolume) != 0)
+    {
+        /* Error */
+    }
 }
 
 void lib_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info)
 {
-    return;
+    int ghsound = info.ghsound;
+    const char* eventPath = ghsound2event[info.ghsound].eventPath;
+    int eventBank = ghsound2event[info.ghsound].bank_id;
+    float eventVolume = ghsound2event[info.ghsound].volume;
+    float soundVolume = info.volume;
+
+    if (lib_callbacks.callback_play_ghsound_environment_ambient(ghsound, eventPath, eventBank, eventVolume, soundVolume))
+    {
+        /* Error */
+    }
 }
 
 void lib_adjust_ghsound_general_volumes(VOID_ARGS)

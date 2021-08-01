@@ -88,8 +88,8 @@ namespace GnollHackServer
             BooleanIntDoubleCallback callback_play_ghsound_effect_ambient,
             BooleanDoubleCallback callback_set_effect_ambient_volume,
             PlayMusicCallback callback_play_ghsound_music,
-            BooleanDoubleCallback callback_play_ghsound_level_ambient,
-            BooleanDoubleCallback callback_play_ghsound_environment_ambient,
+            PlayLevelAmbientCallback callback_play_ghsound_level_ambient,
+            PlayEnvironmentAmbientCallback callback_play_ghsound_environment_ambient,
             BooleanDoubleDoubleDoubleDoubleDoubleCallback callback_adjust_ghsound_general_volumes,
             BooleanIntDoubleVoidPtrCallback callback_add_ambient_ghsound,
             BooleanVoidPtrCallback callback_delete_ambient_ghsound,
@@ -241,8 +241,8 @@ namespace GnollHackServer
                 GameCallback_BooleanIntDoubleDummy,
                 GameCallback_BooleanDoubleDummy,
                 GameCallback_PlayMusic,
-                GameCallback_BooleanDoubleDummy,
-                GameCallback_BooleanDoubleDummy,
+                GameCallback_PlayLevelAmbient,
+                GameCallback_PlayEnvironmentAmbient,
                 GameCallback_BooleanDoubleDoubleDoubleDoubleDoubleDummy,
                 GameCallback_BooleanIntDoubleVoidPtrDummy,
                 GameCallback_BooleanVoidPtrDummy,
@@ -357,6 +357,14 @@ namespace GnollHackServer
             return 0;
         }
         public int GameCallback_PlayMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        {
+            return 0;
+        }
+        public int GameCallback_PlayLevelAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        {
+            return 0;
+        }
+        public int GameCallback_PlayEnvironmentAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             return 0;
         }

@@ -120,6 +120,8 @@ namespace GnollHackClient.Droid
         public List<GHSoundInstance> musicInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> immediateInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> longImmediateInstances = new List<GHSoundInstance>();
+        public List<GHSoundInstance> levelAmbientInstances = new List<GHSoundInstance>();
+        public List<GHSoundInstance> environmentAmbientInstances = new List<GHSoundInstance>();
 
 
         public static RESULT GNHEventCallback(EVENT_CALLBACK_TYPE type, EventInstance _event, IntPtr parameters)
@@ -349,7 +351,7 @@ namespace GnollHackClient.Droid
             //{
 
                 if (musicInstances.Count > 0 && musicInstances[0].ghsound == ghsound && musicInstances[0].stopped == false)
-                    return 0;
+                    return (int)RESULT.OK;
 
                 if (musicInstances.Count > 0)
                 {
@@ -392,6 +394,160 @@ namespace GnollHackClient.Droid
             return (int)res;
         }
 
+        public int PlayLevelAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        {
+            RESULT res;
 
+            if (ghsound <= 0)
+            {
+                if (levelAmbientInstances.Count > 0 && levelAmbientInstances[0].stopped == false)
+                {
+                    /* Stop ambient sound */
+                    levelAmbientInstances[0].stopped = true;
+                    res = levelAmbientInstances[0].instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                    if (res != RESULT.OK)
+                        return (int)res;
+                    res = _system.update();
+                    return (int)res;
+                }
+
+                /* Nothing to do */
+                return (int)RESULT.OK;
+            }
+
+            /* Check if the ambient is the same as before */
+            if (levelAmbientInstances.Count > 0 && levelAmbientInstances[0].ghsound == ghsound && levelAmbientInstances[0].stopped == false)
+            {
+                /* Check if the volume is different */
+                if (levelAmbientInstances[0].normalEventVolume != eventVolume || levelAmbientInstances[0].normalSoundVolume != soundVolume)
+                {
+                    res = levelAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
+                    levelAmbientInstances[0].normalEventVolume = eventVolume;
+                    levelAmbientInstances[0].normalSoundVolume = soundVolume;
+                    res = _system.update();
+                    return (int)res;
+                }
+                return (int)RESULT.OK;
+            }
+
+            /* Different ambient; stop the previous one */
+            if (levelAmbientInstances.Count > 0)
+            {
+                if (levelAmbientInstances[0].stopped == false)
+                {
+                    levelAmbientInstances[0].stopped = true;
+                    levelAmbientInstances[0].instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                }
+            }
+
+            EventDescription eventDescription;
+            res = _system.getEvent(eventPath, out eventDescription);
+            EventInstance eventInstance;
+            res = eventDescription.createInstance(out eventInstance);
+
+            GHSoundInstance ghinstance = new GHSoundInstance();
+            ghinstance.instance = eventInstance;
+            ghinstance.ghsound = ghsound;
+            ghinstance.normalEventVolume = eventVolume;
+            ghinstance.normalSoundVolume = soundVolume;
+            ghinstance.sound_type = 0;
+            ghinstance.dialogue_mid = 0;
+
+            levelAmbientInstances.Insert(0, ghinstance);
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
+
+            if (levelAmbientInstances.Count >= 2)
+            {
+                GHSoundInstance ghsi = levelAmbientInstances[levelAmbientInstances.Count - 1];
+                if (ghsi.stopped == false)
+                {
+                    ghsi.stopped = true;
+                    ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                }
+                levelAmbientInstances.RemoveAt(levelAmbientInstances.Count - 1);
+            }
+            res = eventInstance.start();
+
+            res = _system.update();
+            return (int)res;
+        }
+
+        public int PlayEnvironmentAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        {
+            RESULT res;
+
+            if (ghsound <= 0)
+            {
+                if (environmentAmbientInstances.Count > 0 && environmentAmbientInstances[0].stopped == false)
+                {
+                    /* Stop ambient sound */
+                    environmentAmbientInstances[0].stopped = true;
+                    res = environmentAmbientInstances[0].instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                    if (res != RESULT.OK)
+                        return (int)res;
+                    res = _system.update();
+                    return (int)res;
+                }
+
+                /* Nothing to do */
+                return (int)RESULT.OK;
+            }
+
+            /* Check if the ambient is the same as before */
+            if (environmentAmbientInstances.Count > 0 && environmentAmbientInstances[0].ghsound == ghsound && environmentAmbientInstances[0].stopped == false)
+            {
+                /* Check if the volume is different */
+                if (environmentAmbientInstances[0].normalEventVolume != eventVolume || environmentAmbientInstances[0].normalSoundVolume != soundVolume)
+                {
+                    res = environmentAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
+                    environmentAmbientInstances[0].normalEventVolume = eventVolume;
+                    environmentAmbientInstances[0].normalSoundVolume = soundVolume;
+                    res = _system.update();
+                    return (int)res;
+                }
+                return (int)RESULT.OK;
+            }
+
+            /* Different ambient; stop the previous one */
+            if (environmentAmbientInstances.Count > 0)
+            {
+                if (environmentAmbientInstances[0].stopped == false)
+                {
+                    environmentAmbientInstances[0].stopped = true;
+                    environmentAmbientInstances[0].instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                }
+            }
+
+            EventDescription eventDescription;
+            res = _system.getEvent(eventPath, out eventDescription);
+            EventInstance eventInstance;
+            res = eventDescription.createInstance(out eventInstance);
+
+            GHSoundInstance ghinstance = new GHSoundInstance();
+            ghinstance.instance = eventInstance;
+            ghinstance.ghsound = ghsound;
+            ghinstance.normalEventVolume = eventVolume;
+            ghinstance.normalSoundVolume = soundVolume;
+            ghinstance.sound_type = 0;
+            ghinstance.dialogue_mid = 0;
+
+            environmentAmbientInstances.Insert(0, ghinstance);
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
+
+            if (environmentAmbientInstances.Count >= 2)
+            {
+                GHSoundInstance ghsi = environmentAmbientInstances[environmentAmbientInstances.Count - 1];
+                if (ghsi.stopped == false)
+                {
+                    ghsi.stopped = true;
+                    ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                }
+                environmentAmbientInstances.RemoveAt(environmentAmbientInstances.Count - 1);
+            }
+            res = eventInstance.start();
+
+            res = _system.update();
+            return (int)res;
+        }
     }
 }

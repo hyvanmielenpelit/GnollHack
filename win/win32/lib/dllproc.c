@@ -2794,19 +2794,19 @@ dll_play_ghsound_music(struct ghsound_music_info info)
 void
 dll_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
 {
-    if (!dll_callbacks.callback_play_ghsound_level_ambient(info.ghsound, (double)info.volume))
-    {
-        impossible("Cannot play level ambient sound!");
-    }
+    //if (!dll_callbacks.callback_play_ghsound_level_ambient(info.ghsound, (double)info.volume))
+    //{
+    //    impossible("Cannot play level ambient sound!");
+    //}
 }
 
 void
 dll_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info)
 {
-    if (!dll_callbacks.callback_play_ghsound_environment_ambient(info.ghsound, (double)info.volume))
-    {
-        impossible("Cannot play environment ambient sound!");
-    }
+    //if (!dll_callbacks.callback_play_ghsound_environment_ambient(info.ghsound, (double)info.volume))
+    //{
+    //    impossible("Cannot play environment ambient sound!");
+    //}
 }
 
 void
