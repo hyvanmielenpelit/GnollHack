@@ -894,7 +894,11 @@ namespace GnollHackCommon
         public const int IntroGHSound = 1;
         public const string IntroEventPath = "event:/Music/Start/Splash";
         public const int IntroBankId = 0;
+#if DEBUG
         public const bool DefaultDeveloperMode = true;
+#else
+        public const bool DefaultDeveloperMode = false;
+#endif
         public const int NUM_ZAP_SOURCE_BASE_DIRS = 8;
         public const int NUM_ZAP_SOURCE_DIRS = (GHConstants.NUM_ZAP_SOURCE_BASE_DIRS * 2);
         public const int NUM_CHAIN_SOURCE_DIRS = 4;
