@@ -1946,8 +1946,11 @@ struct obj *obj;
             if (ublindf) 
             {
                 if (ublindf->otyp == TOWEL)
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
                     Your("%s is already covered by a towel.",
-                         body_part(FACE));
+                        body_part(FACE));
+                }
                 else if (ublindf->otyp == BLINDFOLD) 
                 {
                     already_wearing("a blindfold");
@@ -2098,6 +2101,7 @@ dowear()
        verysmall() or nohands() checks for shields, gloves, etc... */
     if (!can_operate_objects(youmonst.data))
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("Don't even bother.");
         return 0;
     }
@@ -2105,6 +2109,7 @@ dowear()
         && uleft && uright && uamul && ublindf) 
     {
         /* 'W' message doesn't mention accessories */
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("are already wearing a full complement of armor.");
         return 0;
     }
@@ -2121,6 +2126,7 @@ doputon()
     if (uleft && uright && uamul && ublindf && umisc && umisc2 && umisc3 && umisc4 && umisc5
         && uarm && uarmu && uarmc && uarmh && uarms && uarmg && uarmf && uarmo && uarmb) {
         /* 'P' message doesn't mention armor */
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         Your("%s%s are full, and you're already wearing an amulet and %s.",
              humanoid(youmonst.data) ? "ring-" : "",
              makeplural(body_part(FINGER)),
