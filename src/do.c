@@ -3875,7 +3875,7 @@ register struct monst* mon;
         return 0;
 
     winid datawin = WIN_ERR;
-    int glyph = mon_to_glyph(mon, rn2_on_display_rng);
+    int glyph = any_mon_to_glyph(mon, rn2_on_display_rng);
     int gui_glyph = maybe_get_replaced_glyph(glyph, mon->mx, mon->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mon, 0UL));
 
     datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon(mon));
@@ -7070,8 +7070,6 @@ struct obj* obj;
 {
     struct extended_create_window_info info = { 0 };
     info.object = obj;
-    if (Hallucination)
-        info.create_flags |= 0x4;
     return info;
 }
 
@@ -7081,8 +7079,6 @@ struct monst* mon;
 {
     struct extended_create_window_info info = { 0 };
     info.monster = mon;
-    if (Hallucination)
-        info.create_flags |= 0x4;
     return info;
 }
 /*do.c*/

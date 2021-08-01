@@ -816,7 +816,7 @@ dll_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_wi
 {
     winid i = 0;
     dll_logDebug("dll_create_nhwindow_ex(%d)\n", type);
-    i = dll_callbacks.callback_create_nhwindow_ex(type, style, glyph, info.object ? 1 : 0 |  (uchar)info.create_flags, info.object ? *(info.object) : zeroobj, get_objclassdata(info.object));
+    i = dll_callbacks.callback_create_nhwindow_ex(type, style, glyph, (info.object ? 1 : 0) | (info.monster ? 2 : 0) | (Hallucination ? 4 : 0), info.object ? *(info.object) : zeroobj, get_objclassdata(info.object));
 
 #if 0
     /* Return the next available winid

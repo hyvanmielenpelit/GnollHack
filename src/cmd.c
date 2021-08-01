@@ -1083,7 +1083,7 @@ doability(VOID_ARGS)
         )
     {
         any = zeroany;
-        glyph = abs(mon_to_glyph(u.usteed, rn2_on_display_rng));
+        glyph = abs(any_mon_to_glyph(u.usteed, rn2_on_display_rng));
         gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, u.usteed, 0UL));
         add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, menu_heading_info(),
             0, 0, iflags.menu_headings,
@@ -1167,7 +1167,7 @@ doability(VOID_ARGS)
                 any = zeroany;
                 any.a_int = abilitynum + 1;
 
-                glyph = abs(mon_to_glyph(mtmp, rn2_on_display_rng));
+                glyph = abs(any_mon_to_glyph(mtmp, rn2_on_display_rng));
                 gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL));
 
                 add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
@@ -8298,7 +8298,7 @@ create_context_menu(VOID_ARGS)
         struct eshk* eshkp = ESHK(shkp);
         if (eshkp->robbed || eshkp->debit || eshkp->billct)
         {
-            add_context_menu('p', cmd_from_func(dopay), 0, mon_to_glyph(shkp, rn2_on_display_rng), "Pay", 0, 0, NO_COLOR);
+            add_context_menu('p', cmd_from_func(dopay), 0, any_mon_to_glyph(shkp, rn2_on_display_rng), "Pay", 0, 0, NO_COLOR);
         }
     }
 
