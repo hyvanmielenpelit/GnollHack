@@ -14,7 +14,7 @@ static void NDECL(and_get_nh_event) ;
 static void FDECL(and_exit_nhwindows, (const char *));
 static void FDECL(and_suspend_nhwindows, (const char *));
 static void NDECL(and_resume_nhwindows);
-static winid FDECL(and_create_nhwindow_ex, (int, int, int));
+static winid FDECL(and_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
 static void FDECL(and_clear_nhwindow, (winid));
 static void FDECL(and_display_nhwindow, (winid, BOOLEAN_P));
 static void FDECL(and_dismiss_nhwindow, (winid));
@@ -551,7 +551,7 @@ void and_player_selection()
 		{
 			/* tty_clear_nhwindow(BASE_WINDOW); */
 			/* tty_putstr(BASE_WINDOW, 0, "Choosing Alignment"); */
-			win = and_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH);
+			win = and_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH, zerocreatewindowinfo);
 			and_start_menu_ex(win, 0);
 			any.a_void = 0; /* zero out all bits */
 			any.a_int = randalign(flags.initrole, flags.initrace)+1;
@@ -608,7 +608,7 @@ void and_resume_nhwindows()
 //____________________________________________________________________________________
 //window = create_nhwindow(type)
 //		-- Create a window of type "type."
-winid and_create_nhwindow_ex(int type, int style, int glyph)
+winid and_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info)
 {
 	return JNICallI(jCreateWindow, type);
 }
@@ -1139,7 +1139,7 @@ void and_display_file(const char *name, BOOLEAN_P complain)
 	f = dlb_fopen(name, "r");
 	if(f)
 	{
-		winid datawin = and_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
+		winid datawin = and_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH, zerocreatewindowinfo);
 		boolean empty = TRUE;
 		while(dlb_fgets(buf, BUFSZ, f))
 		{
@@ -1980,7 +1980,7 @@ int do_ext_cmd_menu(BOOLEAN_P complete)
 	char accelerator = 'a', tmp_acc = 0;
 	const char *ptr;
 
-	wid = and_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH);
+	wid = and_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH, zerocreatewindowinfo);
 	and_start_menu_ex(wid, 0);
 	for(i = 0; (ptr = extcmdlist[i].ef_txt); i++)
 	{

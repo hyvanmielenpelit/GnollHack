@@ -309,7 +309,7 @@ curses_resume_nhwindows()
         NHW_TEXT        (help/text, full screen paged window)
 */
 winid
-curses_create_nhwindow_ex(int type, int style UNUSED, int glyph UNUSED)
+curses_create_nhwindow_ex(int type, int style UNUSED, int glyph UNUSED, struct extended_create_window_info info UNUSED)
 {
     winid wid = curses_get_wid(type);
 

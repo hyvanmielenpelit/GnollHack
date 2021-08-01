@@ -239,7 +239,7 @@ void NetHackQtBind::qt_resume_nhwindows()
 
 static QVector<NetHackQtWindow*> id_to_window;
 
-winid NetHackQtBind::qt_create_nhwindow_ex(int type, int style, int glyph)
+winid NetHackQtBind::qt_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info)
 {
     winid id;
     for (id = 0; id < (winid) id_to_window.size(); id++) {

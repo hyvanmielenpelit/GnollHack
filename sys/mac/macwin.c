@@ -724,8 +724,8 @@ mac_init_nhwindows(int *argcp, char **argv)
      * even though most
      * messages are handled in mac window.
      */
-    mac_create_nhwindow_ex(NHW_BASE, 0, NO_GLYPH);
-    tty_create_nhwindow_ex(NHW_MESSAGE, 0, NO_GLYPH);
+    mac_create_nhwindow_ex(NHW_BASE, 0, NO_GLYPH, zerocreatewindowinfo);
+    tty_create_nhwindow_ex(NHW_MESSAGE, 0, NO_GLYPH, zerocreatewindowinfo);
 
 #if 1 //!TARGET_API_MAC_CARBON
     /* Resize and reposition the message window */
@@ -738,7 +738,7 @@ mac_init_nhwindows(int *argcp, char **argv)
 }
 
 winid
-mac_create_nhwindow_ex(int kind, int style, int glyph)
+mac_create_nhwindow_ex(int kind, int style, int glyph, struct extended_create_window_info info)
 {
     int i;
     NhWindow *aWin;
@@ -784,7 +784,7 @@ got1:
     if (kind == NHW_BASE || kind == NHW_MAP || kind == NHW_STATUS) {
         short x_sz, x_sz_p, y_sz, y_sz_p;
         if (kind != NHW_BASE) {
-            if (i != tty_create_nhwindow_ex(kind, 0, NO_GLYPH)) {
+            if (i != tty_create_nhwindow_ex(kind, 0, NO_GLYPH, zerocreatewindowinfo)) {
                 dprintf("cre_win: error creating kind %d", kind);
             }
             if (kind == NHW_MAP) {

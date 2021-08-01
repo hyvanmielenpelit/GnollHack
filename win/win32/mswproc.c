@@ -865,7 +865,7 @@ mswin_resume_nhwindows()
         NHW_TEXT        (help/text, full screen paged window)
 */
 winid
-mswin_create_nhwindow_ex(int type, int style, int glyph)
+mswin_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info)
 {
     winid i = 0;
     MSNHMsgAddWnd data;
@@ -1170,7 +1170,7 @@ mswin_display_file(const char *filename, BOOLEAN_P must_exist)
         winid text;
         char line[LLEN];
 
-        text = mswin_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
+        text = mswin_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH, zerocreatewindowinfo);
 
         while (dlb_fgets(line, LLEN, f)) {
             size_t len;

@@ -784,7 +784,7 @@ sdl_resume_nhwindows()
         NHW_TEXT        (help/text, full screen paged window)
 */
 winid
-sdl_create_nhwindow_ex(int type, int style, int glyph)
+sdl_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info)
 {
     winid i = 0;
     MSNHMsgAddWnd data;
@@ -1084,7 +1084,7 @@ sdl_display_file(const char *filename, BOOLEAN_P must_exist)
         winid text;
         char line[LLEN];
 
-        text = sdl_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
+        text = sdl_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH, zerocreatewindowinfo);
 
         while (dlb_fgets(line, LLEN, f)) {
             size_t len;

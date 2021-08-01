@@ -45,7 +45,7 @@ void gnome_get_nh_event(void);
 void gnome_exit_nhwindows(const char *);
 void gnome_suspend_nhwindows(const char *);
 void gnome_resume_nhwindows(void);
-winid gnome_create_nhwindow_ex(int type, int style, int glyph);
+winid gnome_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info);
 void gnome_create_nhwindow_ex_by_id(int type, winid i);
 void gnome_clear_nhwindow(winid wid);
 void gnome_display_nhwindow(winid wid, BOOLEAN_P block);

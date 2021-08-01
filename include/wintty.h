@@ -181,7 +181,7 @@ E void NDECL(tty_get_nh_event);
 E void FDECL(tty_exit_nhwindows, (const char *));
 E void FDECL(tty_suspend_nhwindows, (const char *));
 E void NDECL(tty_resume_nhwindows);
-E winid FDECL(tty_create_nhwindow_ex, (int, int, int));
+E winid FDECL(tty_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
 E void FDECL(tty_clear_nhwindow, (winid));
 E void FDECL(tty_display_nhwindow, (winid, BOOLEAN_P));
 E void FDECL(tty_dismiss_nhwindow, (winid));

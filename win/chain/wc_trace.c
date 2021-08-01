@@ -213,9 +213,10 @@ int type;
 }
 
 winid
-trace_create_nhwindow_ex(vp, type, style, glyph)
+trace_create_nhwindow_ex(vp, type, style, glyph, info)
 void *vp;
 int type, style, glyph;
+struct extended_create_window_info info;
 {
     struct trace_data *tdp = vp;
     const char *typestring = NHWname(type);
@@ -224,7 +225,7 @@ int type, style, glyph;
     fprintf(wc_tracelogf, "%screate_nhwindow(%s)\n", INDENT, typestring);
 
     PRE;
-    rv = (*tdp->nprocs->win_create_nhwindow_ex)(tdp->ndata, type, style, glyph);
+    rv = (*tdp->nprocs->win_create_nhwindow_ex)(tdp->ndata, type, style, glyph, info);
     POST;
 
     fprintf(wc_tracelogf, "%s=> %d\n", INDENT, rv);

@@ -87,7 +87,7 @@ void clear_icon(void);
 
 /* winfuncs.c */
 void amii_destroy_nhwindow(winid win);
-int amii_create_nhwindow_ex(int type, int style, int glyph);
+int amii_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info);
 void amii_init_nhwindows(int *, char **);
 void amii_setdrawpens(struct Window *, int type);
 void amii_sethipens(struct Window *, int type, int attr);

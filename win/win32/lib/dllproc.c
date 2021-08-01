@@ -812,11 +812,11 @@ dll_resume_nhwindows()
         NHW_TEXT        (help/text, full screen paged window)
 */
 winid
-dll_create_nhwindow_ex(int type, int style, int glyph)
+dll_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info)
 {
     winid i = 0;
     dll_logDebug("dll_create_nhwindow_ex(%d)\n", type);
-    i = dll_callbacks.callback_create_nhwindow_ex(type, style, glyph);
+    i = dll_callbacks.callback_create_nhwindow_ex(type, style, glyph, info.object ? 1 : 0 |  (uchar)info.create_flags, info.object ? *(info.object) : zeroobj, get_objclassdata(info.object));
 
 #if 0
     /* Return the next available winid
@@ -1095,7 +1095,7 @@ dll_display_file(const char *filename, BOOLEAN_P must_exist)
         winid text;
         char line[LLEN];
 
-        text = dll_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
+        text = dll_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH, zerocreatewindowinfo);
 
         while (dlb_fgets(line, LLEN, f)) {
             size_t len;

@@ -111,7 +111,7 @@ gnome_init_nhwindows(int *argc, char **argv)
     iflags.window_inited = TRUE;
 
     /* gnome-specific window creation */
-    WIN_WORN = gnome_create_nhwindow_ex(NHW_WORN, 0, NO_GLYPH);
+    WIN_WORN = gnome_create_nhwindow_ex(NHW_WORN, 0, NO_GLYPH, zerocreatewindowinfo);
 }
 
 /* Do a window-port specific player type selection. If player_selection()
@@ -429,7 +429,7 @@ gnome_resume_nhwindows()
         NHW_TEXT        (help/text, full screen paged window)
 */
 winid
-gnome_create_nhwindow_ex(int type, int style, int glyph)
+gnome_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info)
 {
     winid i = 0;
 

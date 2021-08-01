@@ -122,14 +122,15 @@ void *vp;
 }
 
 winid
-chainout_create_nhwindow_ex(vp, type, style, glyph)
+chainout_create_nhwindow_ex(vp, type, style, glyph, info)
 void *vp;
 int type, style, glyph;
+struct extended_create_window_info;
 {
     struct chainout_data *tdp = vp;
     winid rv;
 
-    rv = (*tdp->nprocs->win_create_nhwindow_ex)(type, style, glyph);
+    rv = (*tdp->nprocs->win_create_nhwindow_ex)(type, style, glyph, info);
 
     return rv;
 }

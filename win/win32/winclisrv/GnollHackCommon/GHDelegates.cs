@@ -48,7 +48,7 @@ namespace GnollHackCommon
     public delegate byte BooleanVoidPtrCallback(IntPtr value1);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate int CreateGHWindowCallback(int winid, int style, int glyph);
+    public delegate int CreateGHWindowCallback(int winid, int style, int glyph, byte dataflags, obj objdata, objclassdata otypdata);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void PrintGlyphCallback(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8, LayerInfo layers);

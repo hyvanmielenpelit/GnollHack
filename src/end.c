@@ -1627,7 +1627,7 @@ int how;
 
         if (!done_stopprint || flags.tombstone)
         {
-            endwin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_OUTRIP, u_to_glyph());
+            endwin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_OUTRIP, u_to_glyph(), extended_create_window_info_from_mon(&youmonst));
         }
         if (how < GENOCIDED && flags.tombstone && endwin != WIN_ERR)
             outrip(endwin, how, endtime);

@@ -577,7 +577,7 @@ int how;
     long size;
     char in_line[BUFSZ], out_line[BUFSZ];
     boolean qtdump = (how == NHW_MAP);
-    winid datawin = create_nhwindow_ex(qtdump ? NHW_TEXT : how, GHWINDOW_STYLE_PAGER_GENERAL, NO_GLYPH);
+    winid datawin = create_nhwindow_ex(qtdump ? NHW_TEXT : how, GHWINDOW_STYLE_PAGER_GENERAL, NO_GLYPH, zerocreatewindowinfo);
 
 #ifdef DEBUG
     if (qtdump) 

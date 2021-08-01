@@ -968,7 +968,7 @@ const char *str;
          * Change this menu window into a text window by creating a
          * new text window, then copying it to this winid.
          */
-        new_win = X11_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
+        new_win = X11_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH, zerocreatewindowinfo);
         X11_destroy_nhwindow(window);
         *wp = window_list[new_win];
         window_list[new_win].type = NHW_NONE; /* allow re-use */
@@ -1009,8 +1009,9 @@ int *x, *y, *mod;
 }
 
 winid
-X11_create_nhwindow_ex(type, style, glyph)
+X11_create_nhwindow_ex(type, style, glyph, info)
 int type, style, glyph;
+struct extended_create_window_info info;
 {
     winid window;
     struct xwindow *wp;
@@ -1984,7 +1985,7 @@ boolean complain;
         return; /* it doesn't exist, ignore */
     }
 
-    newwin = X11_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH);
+    newwin = X11_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH, zerocreatewindowinfo);
     wp = &window_list[newwin];
     X11_start_menu_ex(newwin, 0);
 

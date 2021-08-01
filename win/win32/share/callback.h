@@ -72,7 +72,7 @@ typedef VoidVoidCallback GetEventCallback;
 typedef VoidConstCharCallback ExitWindowsCallback;
 typedef VoidConstCharCallback SuspendWindowsCallback;
 typedef VoidVoidCallback ResumeWindowsCallback;
-typedef int(__callconv* CreateWindowCallback)(int, int, int);
+typedef int(__callconv* CreateWindowCallback)(int, int, int, UCHAR_P, struct obj, struct objclassdata);
 typedef VoidIntCallback ClearWindowCallback;
 typedef VoidIntBooleanCallback DisplayWindowCallback;
 typedef VoidIntCallback DestroyWindowCallback;

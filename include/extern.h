@@ -616,7 +616,8 @@ E void FDECL(transform_location_type_and_flags, (XCHAR_P, XCHAR_P, int, int, UNS
 E void FDECL(transform_location_type_and_flags_and_set_broken, (XCHAR_P, XCHAR_P, int, int, UNSIGNED_SHORT_P, int));
 E const char* FDECL(get_obj_subtype_name, (struct obj*));
 E const char* FDECL(get_otyp_subtype_name, (int));
-
+E struct extended_create_window_info FDECL(extended_create_window_info_from_obj, (struct obj*));
+E struct extended_create_window_info FDECL(extended_create_window_info_from_mon, (struct monst*));
 
 /* ### do_name.c ### */
 

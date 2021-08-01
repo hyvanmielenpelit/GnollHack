@@ -76,7 +76,7 @@ STATIC_DCL void FDECL(def_raw_print, (const char *s));
 STATIC_DCL void NDECL(def_wait_synch);
 
 #ifdef DUMPLOG
-STATIC_DCL winid FDECL(dump_create_nhwindow_ex, (int, int, int));
+STATIC_DCL winid FDECL(dump_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
 STATIC_DCL void FDECL(dump_clear_nhwindow, (winid));
 STATIC_DCL void FDECL(dump_display_nhwindow, (winid, BOOLEAN_P));
 STATIC_DCL void FDECL(dump_destroy_nhwindow, (winid));
@@ -694,7 +694,7 @@ static int FDECL(hup_nh_poskey, (int *, int *, int *));
 static void FDECL(hup_getlin_ex, (int, int, const char *, char *));
 static void FDECL(hup_init_nhwindows, (int *, char **));
 static void FDECL(hup_exit_nhwindows, (const char *));
-static winid FDECL(hup_create_nhwindow_ex, (int, int, int));
+static winid FDECL(hup_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
 static void FDECL(hup_start_menu_ex, (winid, int));
 static int FDECL(hup_select_menu, (winid, int, MENU_ITEM_P **));
 static void FDECL(hup_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P,
@@ -872,10 +872,11 @@ char **argv UNUSED;
 
 /*ARGUSED*/
 static winid
-hup_create_nhwindow_ex(type, style, glyph)
+hup_create_nhwindow_ex(type, style, glyph, info)
 int type UNUSED;
 int style UNUSED;
 int glyph UNUSED;
+struct extended_create_window_info info UNUSED;
 {
     return WIN_ERR;
 }
@@ -1545,10 +1546,11 @@ const char* str;
 #endif
 
 STATIC_OVL winid
-dump_create_nhwindow_ex(dummy, style, glyph)
+dump_create_nhwindow_ex(dummy, style, glyph, info)
 int dummy;
 int style UNUSED;
 int glyph UNUSED;
+struct extended_create_window_info info UNUSED;
 {
     return dummy;
 }

@@ -107,12 +107,13 @@ chainin_resume_nhwindows()
 }
 
 winid
-chainin_create_nhwindow_ex(type, style, glyph)
+chainin_create_nhwindow_ex(type, style, glyph, info)
 int type, style, glyph;
+struct extended_create_window_info info;
 {
     winid rv;
 
-    rv = (*cibase->nprocs->win_create_nhwindow_ex)(cibase->ndata, type, style, glyph);
+    rv = (*cibase->nprocs->win_create_nhwindow_ex)(cibase->ndata, type, style, glyph, info);
 
     return rv;
 }

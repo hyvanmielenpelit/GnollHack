@@ -62,7 +62,7 @@ E void NDECL(Gem_get_nh_event);
 E void FDECL(Gem_exit_nhwindows, (const char *));
 E void FDECL(Gem_suspend_nhwindows, (const char *));
 E void NDECL(Gem_resume_nhwindows);
-E winid FDECL(Gem_create_nhwindow_ex, (int, int, int));
+E winid FDECL(Gem_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
 E void FDECL(Gem_clear_nhwindow, (winid));
 E void FDECL(Gem_display_nhwindow, (winid, BOOLEAN_P));
 E void FDECL(Gem_dismiss_nhwindow, (winid));

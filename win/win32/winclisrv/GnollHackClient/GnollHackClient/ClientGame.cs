@@ -210,7 +210,7 @@ namespace GnollHackClient
                 queue.Enqueue(new GHRequest(this, GHRequestType.HideLoadingScreen));
             }
         }
-        public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph)
+        public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph, byte dataflags, obj objdata, objclassdata otypdata)
         {
             if (_lastWindowHandle >= GHConstants.MaxGHWindows) /* Should not happen, but paranoid */
                 _lastWindowHandle = GHConstants.MaxGHWindows - 1;
@@ -225,7 +225,9 @@ namespace GnollHackClient
                 return 0;
 
             int handle = _lastWindowHandle;
-            GHWindow ghwin = new GHWindow((GHWinType)wintype, (ghwindow_styles)style, glyph, null, ClientGamePage, handle);
+            GHWindow ghwin = new GHWindow((GHWinType)wintype, (ghwindow_styles)style, glyph,
+                (dataflags & 1) == 0 ? null : new ObjectDataItem(objdata, otypdata, (dataflags & 4) != 0), ClientGamePage, handle);
+
             lock(_ghWindowsLock)
             {
                 _ghWindows[handle] = ghwin;

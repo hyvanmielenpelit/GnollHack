@@ -137,9 +137,10 @@ void lib_resume_nhwindows(void)
     lib_callbacks.callback_resume_nhwindows();
 }
 
-winid lib_create_nhwindow_ex(int type, int style, int glyph)
+winid lib_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info)
 {
-    return lib_callbacks.callback_create_nhwindow_ex(type, style, glyph);
+    return lib_callbacks.callback_create_nhwindow_ex(type, style, glyph, 
+        info.object ? 1 : 0 | (uchar)info.create_flags, info.object ? *(info.object) : zeroobj, get_objclassdata(info.object));
 }
 
 void lib_clear_nhwindow(winid wid)
@@ -193,7 +194,7 @@ void lib_display_file(const char* filename, BOOLEAN_P must_exist)
 #define LLEN 128
         char line[LLEN];
 
-        text = lib_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
+        text = lib_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH, zerocreatewindowinfo);
 
         while (dlb_fgets(line, LLEN, f)) 
         {
@@ -338,7 +339,6 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
         boolean use_nexthere = FALSE;
         struct obj* otmp = 0;
         struct obj mimic_obj = zeroobj;
-        int glyph, gui_glyph;
 
         switch (i)
         {

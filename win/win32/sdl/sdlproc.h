@@ -90,7 +90,7 @@ void sdl_get_nh_event(void);
 void sdl_exit_nhwindows(const char *);
 void sdl_suspend_nhwindows(const char *);
 void sdl_resume_nhwindows(void);
-winid sdl_create_nhwindow_ex(int type, int style, int glyph);
+winid sdl_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info);
 void sdl_clear_nhwindow(winid wid);
 void sdl_display_nhwindow(winid wid, BOOLEAN_P block);
 void sdl_destroy_nhwindow(winid wid);

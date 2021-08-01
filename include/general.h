@@ -145,6 +145,12 @@ struct extended_menu_info {
     unsigned long menu_flags;
 };
 
+struct extended_create_window_info {
+    struct obj* object;
+    struct monst* monster;
+    unsigned long create_flags;
+};
+
 #define MENU_FLAGS_NONE                         0x00000000
 #define MENU_FLAGS_IS_HEADING                   0x00000001
 #define MENU_FLAGS_IS_GROUP_HEADING             0x00000002

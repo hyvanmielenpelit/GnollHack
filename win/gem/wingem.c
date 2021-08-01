@@ -547,8 +547,9 @@ const char *str;
 }
 
 winid
-Gem_create_nhwindow_ex(type, style, glyph)
+Gem_create_nhwindow_ex(type, style, glyph, info)
 int type, style, glyph;
+struct extended_create_window_info info;
 {
     winid newid;
 
@@ -735,7 +736,7 @@ boolean complain;
     } else {
         winid datawin;
 
-        datawin = Gem_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
+        datawin = Gem_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH, zerocreatewindowinfo);
         while (dlb_fgets(buf, BUFSZ, f)) {
             if ((cr = index(buf, '\n')) != 0)
                 *cr = 0;
@@ -1027,7 +1028,7 @@ Gem_get_ext_cmd()
     char accelerator = 0, tmp_acc = 0;
     const char *ptr;
 
-    wind = Gem_create_nhwindow_ex(NHW_MENU, style, glyph);
+    wind = Gem_create_nhwindow_ex(NHW_MENU, style, NO_GLYPH, zerocreatewindowinfo);
     Gem_start_menu_ex(wind, 0);
     for (i = 0; (ptr = extcmdlist[i].ef_txt); i++) {
         any.a_int = i;

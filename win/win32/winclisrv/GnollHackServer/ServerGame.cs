@@ -374,7 +374,7 @@ namespace GnollHackServer
             return 0;
         }
 
-        protected int GameCallback_CreateGHWindow(int widid, int style, int glyph)
+        protected int GameCallback_CreateGHWindow(int widid, int style, int glyph, byte dataflags, obj objdata, objclassdata otypdata)
         {
             return 0;
         }

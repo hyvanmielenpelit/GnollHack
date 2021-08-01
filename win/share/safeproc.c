@@ -188,8 +188,9 @@ const char *str;
 }
 
 winid
-safe_create_nhwindow_ex(type, style, glyph)
+safe_create_nhwindow_ex(type, style, glyph, info)
 int type, style UNUSED, glyph UNUSED;
+struct extended_create_window_info info UNUSED;
 {
     return WIN_ERR;
 }

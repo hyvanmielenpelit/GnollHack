@@ -42,7 +42,7 @@ public:
 	static void qt_exit_nhwindows(const char *);
 	static void qt_suspend_nhwindows(const char *);
 	static void qt_resume_nhwindows();
-	static winid qt_create_nhwindow_ex(int type, int style, int glyph);
+	static winid qt_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info);
 	static void qt_clear_nhwindow(winid wid);
 	static void qt_display_nhwindow(winid wid, BOOLEAN_P block);
 	static void qt_destroy_nhwindow(winid wid);

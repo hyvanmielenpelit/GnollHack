@@ -10,6 +10,7 @@
 #include "obj.h"
 #include "lev.h"
 #include "general.h"
+#include "decl.h"
 
 /* NB: this MUST match chain_procs below */
 struct window_procs {
@@ -25,7 +26,7 @@ struct window_procs {
     void FDECL((*win_exit_nhwindows), (const char *));
     void FDECL((*win_suspend_nhwindows), (const char *));
     void NDECL((*win_resume_nhwindows));
-    winid FDECL((*win_create_nhwindow_ex), (int, int, int));
+    winid FDECL((*win_create_nhwindow_ex), (int, int, int, struct extended_create_window_info));
     void FDECL((*win_clear_nhwindow), (winid));
     void FDECL((*win_display_nhwindow), (winid, BOOLEAN_P));
     void FDECL((*win_destroy_nhwindow), (winid));
@@ -150,7 +151,7 @@ extern
 #define suspend_nhwindows (*windowprocs.win_suspend_nhwindows)
 #define resume_nhwindows (*windowprocs.win_resume_nhwindows)
 #define create_nhwindow_ex (*windowprocs.win_create_nhwindow_ex)
-#define create_nhwindow(x) create_nhwindow_ex(x, 0, NO_GLYPH)
+#define create_nhwindow(x) create_nhwindow_ex(x, 0, NO_GLYPH, zerocreatewindowinfo)
 #define clear_nhwindow (*windowprocs.win_clear_nhwindow)
 #define display_nhwindow (*windowprocs.win_display_nhwindow)
 #define destroy_nhwindow (*windowprocs.win_destroy_nhwindow)
@@ -407,7 +408,7 @@ struct chain_procs {
     void FDECL((*win_exit_nhwindows), (CARGS, const char *));
     void FDECL((*win_suspend_nhwindows), (CARGS, const char *));
     void FDECL((*win_resume_nhwindows), (CARGS));
-    winid FDECL((*win_create_nhwindow_ex), (CARGS, int, int, int));
+    winid FDECL((*win_create_nhwindow_ex), (CARGS, int, int, int, struct extended_create_window_info));
     void FDECL((*win_clear_nhwindow), (CARGS, winid));
     void FDECL((*win_display_nhwindow), (CARGS, winid, BOOLEAN_P));
     void FDECL((*win_destroy_nhwindow), (CARGS, winid));
@@ -508,7 +509,7 @@ extern void NDECL(safe_get_nh_event);
 extern void FDECL(safe_exit_nhwindows, (const char *));
 extern void FDECL(safe_suspend_nhwindows, (const char *));
 extern void NDECL(safe_resume_nhwindows);
-extern winid FDECL(safe_create_nhwindow_ex, (int, int, int));
+extern winid FDECL(safe_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
 extern void FDECL(safe_clear_nhwindow, (winid));
 extern void FDECL(safe_display_nhwindow, (winid, BOOLEAN_P));
 extern void FDECL(safe_destroy_nhwindow, (winid));

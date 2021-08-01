@@ -466,7 +466,7 @@ char **argv UNUSED;
     ttyDisplay->attrs = 0;
 
     /* set up the default windows */
-    BASE_WINDOW = tty_create_nhwindow_ex(NHW_BASE, 0, NO_GLYPH);
+    BASE_WINDOW = tty_create_nhwindow_ex(NHW_BASE, 0, NO_GLYPH, zerocreatewindowinfo);
     wins[BASE_WINDOW]->active = 1;
 
     ttyDisplay->lastwin = WIN_ERR;
@@ -1485,8 +1485,9 @@ const char *str;
 }
 
 winid
-tty_create_nhwindow_ex(type, style, glyph)
+tty_create_nhwindow_ex(type, style, glyph, info)
 int type, style UNUSED, glyph UNUSED;
+struct extended_create_window_info info UNUSED;
 {
     struct WinDesc *newwin;
     int i, rowoffset;
@@ -2960,7 +2961,7 @@ boolean complain;
             } else if (u.ux)
                 docrt();
         } else {
-            winid datawin = tty_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
+            winid datawin = tty_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH, zerocreatewindowinfo);
             boolean empty = TRUE;
 
             if (complain

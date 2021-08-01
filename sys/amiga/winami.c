@@ -794,7 +794,7 @@ amii_get_ext_cmd(void)
 
 #ifdef EXTMENU
     if (iflags.extmenu) {
-        win = amii_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH);
+        win = amii_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH, zerocreatewindowinfo);
         amii_start_menu_ex(win, 0);
         pline("#");
         amii_putstr(WIN_MESSAGE, -1, " ");
@@ -857,7 +857,7 @@ amii_get_ext_cmd(void)
                 }
             }
 
-            win = amii_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH);
+            win = amii_create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH, zerocreatewindowinfo);
             amii_start_menu_ex(win, 0);
 
             for (i = 0; extcmdlist[i].ef_txt != NULL; ++i) {
@@ -1185,7 +1185,7 @@ boolean complain;
         }
         return;
     }
-    win = amii_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH);
+    win = amii_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH, zerocreatewindowinfo);
 
     /* Set window title to file name */
     if (cw = amii_wins[win])

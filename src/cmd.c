@@ -741,7 +741,7 @@ doability(VOID_ARGS)
     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_MENU_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph);
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_MENU_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon(&youmonst));
     start_menu_ex(win, GHMENU_STYLE_CHARACTER);
 
     /* CHARACTER ABILITY INFORMATION */
@@ -2811,7 +2811,7 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
     int glyph = player_to_glyph_index(urole.rolenum, urace.racenum, flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
 
-    en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph);
+    en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon(&youmonst));
     en_via_menu = !final;
     if (en_via_menu)
         start_menu_ex(en_win, GHMENU_STYLE_ATTRIBUTES);
