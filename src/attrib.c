@@ -202,12 +202,12 @@ int msgflg; /* positive => no message, zero => message, and */
     if (ACURR(ndx) == old_acurr) {
         if (msgflg == 0 && flags.verbose) {
             if (ABASE(ndx) == old_abase && AMAX(ndx) == old_amax) {
-                pline("You're %s as %s as you can get.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You're %s as %s as you can get.",
                       abonflg ? "currently" : "already", attrstr);
             } else {
                 /* current stayed the same but base value changed, or
                    base is at minimum and reduction caused max to drop */
-                Your("innate %s has %s.", attrname[ndx],
+                Your_ex(ATR_NONE, (incr > 0) ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "innate %s has %s.", attrname[ndx],
                      (incr > 0) ? "improved" : "declined");
             }
         }
@@ -219,7 +219,7 @@ int msgflg; /* positive => no message, zero => message, and */
     updatemaxen();
 
     if (msgflg <= 0)
-        You_feel("%s%s!", (incr > 1 || incr < -1) ? "very " : "", attrstr);
+        You_feel_ex(ATR_NONE, (incr > 0) ? CLR_MSG_POSITIVE : (incr < 0) ? CLR_MSG_NEGATIVE : NO_COLOR, "%s%s!", (incr > 1 || incr < -1) ? "very " : "", attrstr);
     context.botl = TRUE;
     /* Check if AC and MC need to be updated */
     find_ac();

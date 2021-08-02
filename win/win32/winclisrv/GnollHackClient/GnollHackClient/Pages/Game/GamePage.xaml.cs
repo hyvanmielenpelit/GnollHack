@@ -203,7 +203,7 @@ namespace GnollHackClient.Pages.Game
         {
             //Authenticated
             //App.FmodService.PlayTestSound();
-
+            _mainPage.GameStarted = true;
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack_64x96_transparent_32bits.png"))
             {
@@ -651,6 +651,7 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.ReturnToMainMenu:
                                 ClearMap();
                                 _clientGame = null;
+                                _mainPage.GameStarted = false;
                                 ReturnToMainMenu();
                                 break;
                             case GHRequestType.ShowMenuPage:
@@ -893,7 +894,9 @@ namespace GnollHackClient.Pages.Game
         {
             if(!App.IsServerGame)
                 _mainPage.HideLocalGameButton();
-    
+
+            _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
+
             await App.Current.MainPage.Navigation.PopModalAsync();
             if (App.IsServerGame)
             {

@@ -34,6 +34,7 @@ namespace GnollHackClient
         private bool _canClickButton = true;
         private bool _serverButtonClicked = false;
         private NavigationPage _loginNavPage = null;
+        public bool GameStarted { get; set; }
 
         public MainPage()
         {
@@ -208,15 +209,22 @@ namespace GnollHackClient
                     return res;
                 });
             }
-            else
+            else if(!GameStarted && videoView.IsVisible == false)
             {
-                videoView.IsVisible = true;
-                videoView.Play();
-                StillImage.IsVisible = false;
-
-                App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                PlayMainScreenVideoAndMusic();
             }
         }
+
+        public void PlayMainScreenVideoAndMusic()
+        {
+            videoView.IsVisible = true;
+            videoView.Play();
+            StillImage.IsVisible = false;
+
+            App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+
+        }
+
         private async void StartFadeLogoIn()
         {
             await StartLogoImage.FadeTo(1, 250);

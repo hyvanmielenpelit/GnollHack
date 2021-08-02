@@ -1050,35 +1050,35 @@ register struct permonst *ptr;
     case FIRE_RESISTANCE:
         debugpline0("Trying to give fire resistance");
         if (!(HFire_resistance & FROM_ACQUIRED)) {
-            You(Hallucination ? "be chillin'." : "feel cold for a moment.");
+            You_ex(ATR_NONE, Hallucination ? CLR_MSG_ATTENTION : CLR_MSG_POSITIVE, Hallucination ? "be chillin'." : "feel cold for a moment.");
             HFire_resistance |= FROM_ACQUIRED;
         }
         break;
     case SLEEP_RESISTANCE:
         debugpline0("Trying to give sleep resistance");
         if (!(HSleep_resistance & FROM_ACQUIRED)) {
-            You_feel("wide awake.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "wide awake.");
             HSleep_resistance |= FROM_ACQUIRED;
         }
         break;
     case COLD_RESISTANCE:
         debugpline0("Trying to give cold resistance");
         if (!(HCold_resistance & FROM_ACQUIRED)) {
-            You_feel("hot inside.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "hot inside.");
             HCold_resistance |= FROM_ACQUIRED;
         }
         break;
     case ACID_RESISTANCE:
         debugpline0("Trying to give acid resistance");
         if (!(HAcid_resistance & FROM_ACQUIRED)) {
-            You_feel("less soluble.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "less soluble.");
             HAcid_resistance |= FROM_ACQUIRED;
         }
         break;
     case DISINTEGRATION_RESISTANCE:
         debugpline0("Trying to give disintegration resistance");
         if (!(HDisint_resistance & FROM_ACQUIRED)) {
-            You_feel(Hallucination ? "totally together, man." : "very firm.");
+            You_feel_ex(ATR_NONE, Hallucination ? CLR_MSG_ATTENTION : CLR_MSG_POSITIVE, Hallucination ? "totally together, man." : "very firm.");
             HDisint_resistance |= FROM_ACQUIRED;
         }
         break;
@@ -1086,9 +1086,9 @@ register struct permonst *ptr;
         debugpline0("Trying to give shock resistance");
         if (!(HShock_resistance & FROM_ACQUIRED)) {
             if (Hallucination)
-                You_feel("more grounded in reality.");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "more grounded in reality.");
             else
-                Your("health currently feels a bit more amplified!");
+                Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "health currently feels a bit more amplified!");
             HShock_resistance |= FROM_ACQUIRED;
         }
         break;
@@ -1096,9 +1096,9 @@ register struct permonst *ptr;
         debugpline0("Trying to give death resistance");
         if (!(HDeath_resistance & FROM_ACQUIRED)) {
             if (Hallucination)
-                You_feel("immortal!");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "immortal!");
             else
-                Your("life force feels firmer!");
+                Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "life force feels firmer!");
             HDeath_resistance |= FROM_ACQUIRED;
         }
         break;
@@ -1106,9 +1106,9 @@ register struct permonst *ptr;
         debugpline0("Trying to give charm resistance");
         if (!(HCharm_resistance & FROM_ACQUIRED)) {
             if (Hallucination)
-                pline("The machinations of the world suddenly make more sense to you!");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The machinations of the world suddenly make more sense to you!");
             else
-                You_feel("more firm about your own motivations!");
+                You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "more firm about your own motivations!");
             HCharm_resistance |= FROM_ACQUIRED;
         }
         break;
@@ -1116,9 +1116,9 @@ register struct permonst *ptr;
         debugpline0("Trying to give fear resistance");
         if (!(HFear_resistance & FROM_ACQUIRED)) {
             if (Hallucination)
-                You_feel("like Thelma and Louise!");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "like Thelma and Louise!");
             else
-                You_feel("courageous!");
+                You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "courageous!");
             HFear_resistance |= FROM_ACQUIRED;
         }
         break;
@@ -1126,9 +1126,9 @@ register struct permonst *ptr;
         debugpline0("Trying to give mind shielding");
         if (!(HMind_shielding & FROM_ACQUIRED)) {
             if (Hallucination)
-                pline("You finally feel secure from those tentacled monstrosities!");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You finally feel secure from those tentacled monstrosities!");
             else
-                You_feel("shielded against mental detection!");
+                You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "shielded against mental detection!");
             HMind_shielding |= FROM_ACQUIRED;
         }
         break;
@@ -1136,9 +1136,9 @@ register struct permonst *ptr;
         debugpline0("Trying to give immunity to lycanthropy");
         if (!(HLycanthropy_resistance & FROM_ACQUIRED)) {
             if (Hallucination)
-                You_feel("bugs do not bother you!");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "bugs do not bother you!");
             else
-                You("are protected against lycathropy!");
+                You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are protected against lycathropy!");
             HLycanthropy_resistance |= FROM_ACQUIRED;
         }
         break;
@@ -1146,30 +1146,30 @@ register struct permonst *ptr;
         debugpline0("Trying to give protection from curses");
         if (!(HCurse_resistance & FROM_ACQUIRED)) {
             if (Hallucination)
-                You_feel("auras are suddenly a bit less bothersome to you!");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "auras are suddenly a bit less bothersome to you!");
             else
-                You("are protected against curses!");
+                You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are protected against curses!");
             HCurse_resistance |= FROM_ACQUIRED;
         }
         break;
     case POISON_RESISTANCE:
         debugpline0("Trying to give poison resistance");
         if (!(HPoison_resistance & FROM_ACQUIRED)) {
-            You_feel(Poison_resistance ? "especially healthy." : "healthy.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, Poison_resistance ? "especially healthy." : "healthy.");
             HPoison_resistance |= FROM_ACQUIRED;
         }
         break;
     case TELEPORT:
         debugpline0("Trying to give teleport");
         if (!(HTeleportation & FROM_ACQUIRED)) {
-            You_feel(Hallucination ? "diffuse." : "very jumpy.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "diffuse." : "very jumpy.");
             HTeleportation |= FROM_ACQUIRED;
         }
         break;
     case TELEPORT_CONTROL:
         debugpline0("Trying to give teleport control");
         if (!(HTeleport_control & FROM_ACQUIRED)) {
-            You_feel(Hallucination ? "centered in your personal space."
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "centered in your personal space."
                                    : "in control of yourself.");
             HTeleport_control |= FROM_ACQUIRED;
         }
@@ -1177,7 +1177,7 @@ register struct permonst *ptr;
     case BLIND_TELEPATHY:
         debugpline0("Trying to give blind-telepathy");
         if (!(HBlind_telepat & FROM_ACQUIRED)) {
-            You_feel(Hallucination ? "in touch with the cosmos."
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "in touch with the cosmos."
                                    : "a strange mental acuity.");
             HBlind_telepat |= FROM_ACQUIRED;
             /* If blind, make sure monsters show up. */
@@ -1188,7 +1188,7 @@ register struct permonst *ptr;
     case TELEPAT:
         debugpline0("Trying to give telepathy");
         if (!(HTelepat & FROM_ACQUIRED)) {
-            You_feel(Hallucination ? "in touch with the cosmos."
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "in touch with the cosmos."
                 : "a peculiar mental acuity.");
             HTelepat |= FROM_ACQUIRED;
             see_monsters();
