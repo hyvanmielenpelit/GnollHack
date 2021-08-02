@@ -207,7 +207,6 @@
                                     <Button x:Name="GetLineCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="GetLineCancelButton_Clicked" />
                                 </Grid>
-
                             </Grid>
                         </StackLayout>
                     </Frame>
@@ -217,10 +216,10 @@
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="600" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                     <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
-                        <StackLayout x:Name="YnLayout" Padding="10"
+                        <StackLayout x:Name="YnLayout" Padding="5"
                           HorizontalOptions="Center" VerticalOptions="Center" >
                             <Label Text="?" x:Name="QuestionLabel" FontFamily="Immortal" FontSize="19" TextColor="White"
-                               VerticalTextAlignment="End" HorizontalOptions="Center"  />
+                               VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" Margin="0,10,0,0" >
                                 <Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
                                 <Button Text="?" x:Name="FirstButton" Clicked="FirstButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
@@ -236,7 +235,7 @@
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="600" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                     <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
-                        <StackLayout x:Name="PopupLayout" Padding="10"
+                        <StackLayout x:Name="PopupLayout" Padding="5"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <Label Text="" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
                                        VerticalTextAlignment="End" HorizontalOptions="Center"  />

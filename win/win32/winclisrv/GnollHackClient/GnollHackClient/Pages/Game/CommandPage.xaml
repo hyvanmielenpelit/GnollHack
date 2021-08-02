@@ -46,7 +46,7 @@
                 <gnhcli:GHButton Text="l" Letter="l" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <gnhcli:GHButton Text="Cb" Letter="b" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                 <gnhcli:GHButton Text="Co" Letter="o" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
+                <gnhcli:GHButton Text="Q" Letter="Q" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
             </StackLayout>
             <StackLayout x:Name="FifthCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
                 <gnhcli:GHButton Text="A" Letter="A" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
@@ -73,10 +73,10 @@
                 <gnhcli:GHButton Text="&#x2205;" x:Name="ESCButton" Clicked="ESCButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
             </StackLayout>
             <StackLayout x:Name="LastCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-                <gnhcli:GHButton Text="/" Letter="/" x:Name="WhatIsButton" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text=";" Letter=";" x:Name="LookFarButton" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="_" Letter="_" x:Name="TravelButton" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="#" Letter="#" x:Name="ExtendedCommandButton" Clicked="GHButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
+                <gnhcli:GHButton Text="/" Letter="/" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <gnhcli:GHButton Text=";" Letter=";" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <gnhcli:GHButton Text="_" Letter="_" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <gnhcli:GHButton Text="#" Letter="#" Clicked="GHButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
                 <gnhcli:GHButton Text="&#x21D0;" x:Name="PopupMenuBackButton" Clicked="PopupMenuBackButton_Clicked" FontFamily="DejaVuSansMono" FontSize="32" TextColor="White" BackgroundColor="DarkBlue" />
                 <gnhcli:GHButton Text="&#x2261;" x:Name="BackButton" Clicked="BackButton_Clicked" FontFamily="DejaVuSansMono" FontSize="32" TextColor="White" BackgroundColor="DarkBlue" />
             </StackLayout>
