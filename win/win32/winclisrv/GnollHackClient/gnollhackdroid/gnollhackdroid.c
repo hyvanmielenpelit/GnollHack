@@ -396,6 +396,7 @@ int RunGnollHack(
     ToggleAnimationTimerCallback callback_toggle_animation_timer,
     DisplayFloatingTextCallback callback_display_floating_text,
     DisplayScreenTextCallback callback_display_screen_text,
+    DisplayPopupTextCallback callback_display_popup_text,
     UpdateCursorCallback callback_update_cursor,
     ExitHackCallback callback_exit_hack,
 
@@ -498,6 +499,7 @@ int RunGnollHack(
     lib_callbacks.callback_toggle_animation_timer = callback_toggle_animation_timer;
     lib_callbacks.callback_display_floating_text = callback_display_floating_text;
     lib_callbacks.callback_display_screen_text = callback_display_screen_text;
+    lib_callbacks.callback_display_popup_text = callback_display_popup_text;
     lib_callbacks.callback_update_cursor = callback_update_cursor;
     lib_callbacks.callback_exit_hack = callback_exit_hack;
     lib_callbacks.callback_getcwd = callback_getcwd;

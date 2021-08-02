@@ -140,6 +140,7 @@ struct window_procs mswin_procs = {
     mswin_toggle_animation_timer,
     mswin_display_floating_text,
     mswin_display_screen_text,
+    mswin_display_popup_text,
     mswin_update_cursor,
     mswin_exit_hack,
 };
@@ -3794,6 +3795,12 @@ mswin_display_floating_text(int x, int y, const char* text, int style, int attr,
 
 void
 mswin_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags)
+{
+
+}
+
+void
+mswin_display_popup_text(const char* text, const char* title, int style, int attr, int color, unsigned long tflags)
 {
 
 }

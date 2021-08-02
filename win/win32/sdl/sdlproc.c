@@ -136,6 +136,7 @@ struct window_procs nuklear_procs = {
     sdl_toggle_animation_timer,
     sdl_display_floating_text,
     sdl_display_screen_text,
+    sdl_display_popup_text,
     sdl_update_cursor,
     sdl_exit_hack,
 };
@@ -3664,6 +3665,12 @@ sdl_display_floating_text(int x, int y, const char* text, int style, int attr, i
 
 void
 sdl_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags)
+{
+
+}
+
+void
+sdl_display_popup_text(const char* text, const char* title, int style, int attr, int color, unsigned long tflags)
 {
 
 }

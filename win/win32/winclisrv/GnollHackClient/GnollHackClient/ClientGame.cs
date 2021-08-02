@@ -971,6 +971,24 @@ namespace GnollHackClient
             }
         }
 
+        public void ClientCallback_DisplayPopupText(string text, string title, int style, int attr, int color, ulong tflags)
+        {
+            ConcurrentQueue<GHRequest> queue;
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                DisplayScreenTextData data = new DisplayScreenTextData();
+                data.text = text;
+                data.subtext = title;
+                data.style = style;
+                data.attr = attr;
+                data.color = color;
+                data.tflags = tflags;
+                queue.Enqueue(new GHRequest(this, GHRequestType.DisplayPopupText, data));
+            }
+
+            int val = ClientCallback_nhgetch();
+        }
+
         public void ClientCallback_UpdateCursor(int style, int force_paint, int show_on_u)
         {
             lock (_gamePageLock)

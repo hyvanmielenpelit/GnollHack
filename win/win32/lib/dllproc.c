@@ -116,6 +116,7 @@ struct window_procs dll_procs = {
     dll_toggle_animation_timer,    
     dll_display_floating_text,
     dll_display_screen_text,
+    dll_display_popup_text,
     dll_update_cursor,
     dll_exit_hack,
 };
@@ -2896,6 +2897,12 @@ dll_display_floating_text(int x, int y, const char* text, int style, int attr, i
 
 void
 dll_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags)
+{
+
+}
+
+void
+dll_display_popup_text(const char* text, const char* title, int style, int attr, int color, unsigned long tflags)
 {
 
 }

@@ -469,6 +469,11 @@ enum screen_text_types {
     SCREEN_TEXT_SPECIAL_END,
 };
 
+enum popup_text_types {
+    POPUP_TEXT_GENERAL = 0,
+    POPUP_TEXT_IDENTIFY,
+};
+
 #define PICKLOCK_LEARNED_SOMETHING (-1) /* time passes */
 #define PICKLOCK_DID_NOTHING 0          /* no time passes */
 #define PICKLOCK_DID_SOMETHING 1

@@ -29,6 +29,7 @@ namespace GnollHackClient
         AddContextMenu,
         DisplayFloatingText,
         DisplayScreenText,
+        DisplayPopupText,
         ShowSkillButton,
         HideSkillButton,
         ShowOutRipPage,

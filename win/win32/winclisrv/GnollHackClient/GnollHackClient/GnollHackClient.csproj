@@ -19,6 +19,7 @@
     <None Remove="Assets\DejaVuSansMono-BoldOblique.ttf" />
     <None Remove="Assets\DejaVuSansMono-Oblique.ttf" />
     <None Remove="Assets\DejaVuSansMono.ttf" />
+    <None Remove="Assets\dgn_entrance.jpg" />
     <None Remove="Assets\diablo_h.ttf" />
     <None Remove="Assets\endor.ttf" />
     <None Remove="Assets\endr.ttf" />
@@ -61,6 +62,7 @@
     <EmbeddedResource Include="Assets\DejaVuSansMono-BoldOblique.ttf" />
     <EmbeddedResource Include="Assets\DejaVuSansMono-Oblique.ttf" />
     <EmbeddedResource Include="Assets\DejaVuSansMono.ttf" />
+    <EmbeddedResource Include="Assets\dgn_entrance.jpg" />
     <EmbeddedResource Include="Assets\diablo_h.ttf" />
     <EmbeddedResource Include="Assets\endr.ttf" />
     <EmbeddedResource Include="Assets\FMOD-Logo-192-White.png" />

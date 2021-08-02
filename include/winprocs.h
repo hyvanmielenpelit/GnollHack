@@ -109,26 +109,8 @@ struct window_procs {
     void FDECL((*win_toggle_animation_timer), (int, int, int, int, int, int, unsigned long)); /* timettype, id, state = on/off, x, y, flags */
     void FDECL((*win_display_floating_text), (int, int, const char*, int, int, int, unsigned long));
     void FDECL((*win_display_screen_text), (const char*, const char*, int, int, int, unsigned long));
+    void FDECL((*win_display_popup_text), (const char*, const char*, int, int, int, unsigned long));
     void FDECL((*win_update_cursor), (int, int, int));
-
-#if 0
-    void FDECL((*win_clear_object_list_at), (int, int, int));
-    void FDECL((*win_add_object_to_list_at), (int, int, int, struct obj));
-    void FDECL((*win_add_object_to_container_at), (int, int, int, unsigned, struct obj));
-    void FDECL((*win_set_monster_data_at), (int, int, struct monst, unsigned long, unsigned long));
-        /* x, y, mondata, conditionbits,
-           flags: has_unworn_items, is_watch(mtmp->data) */
-    void FDECL((*win_set_game_data), (int, int, int, int, int, int, int, int,
-        struct monst, struct prop*, unsigned, unsigned, unsigned, int, unsigned,
-        unsigned long));
-        /* u.ux, u.uy, uhp, uhpmax, umh, umhmax, u.en, u.enmax,
-          youmonst, u.uprops[], ustuck (mid), uball (oid), uchain (oid), u.carrying_capacity_level, u.uhs,
-          flags: Upolyd, u.uswallow, u.utrap, u.canadvanceskill, u.twoweap monster data set or not */
-    void FDECL((*win_move_glyph_on_layer), (int, int, int, int, int, int, double, unsigned long));
-    /* glyph, layer, x1, y1, x2, y2, time, flags */
-#endif
-
-
     void FDECL((*win_exit_hack), (int));
 };
 
@@ -242,6 +224,7 @@ extern
 #define toggle_animation_timer (*windowprocs.win_toggle_animation_timer)
 #define display_floating_text (*windowprocs.win_display_floating_text)
 #define display_screen_text (*windowprocs.win_display_screen_text)
+#define display_popup_text (*windowprocs.win_display_popup_text)
 #define update_cursor (*windowprocs.win_update_cursor)
 #define exit_hack (*windowprocs.win_exit_hack)
 
@@ -492,6 +475,7 @@ struct chain_procs {
     void FDECL((*win_toggle_animation_timer), (CARGS, int, int, int, int, int, int, unsigned long));
     void FDECL((*win_display_floating_text), (CARGS, int, int, const char*, int, int, int, unsigned long));
     void FDECL((*win_display_screen_text), (CARGS, const char*, const char*, int, int, int, unsigned long));
+    void FDECL((*win_display_popup_text), (CARGS, const char*, const char*, int, int, int, unsigned long));
     void FDECL((*win_update_cursor), (CARGS, int, int, int));
     void FDECL((*win_exit_hack), (CARGS, int));
 };
@@ -589,6 +573,7 @@ extern void FDECL(safe_add_context_menu, (int, int, int, int, const char*, const
 extern void FDECL(safe_toggle_animation_timer, (int, int, int, int, int, int, unsigned long));
 extern void FDECL(safe_display_floating_text, (int, int, const char*, int, int, int, unsigned long));
 extern void FDECL(safe_display_screen_text, (const char*, const char*, int, int, int, unsigned long));
+extern void FDECL(safe_display_popup_text, (const char*, const char*, int, int, int, unsigned long));
 extern void FDECL(safe_update_cursor, (int, int, int));
 extern void FDECL(safe_exit_hack, (int));
 

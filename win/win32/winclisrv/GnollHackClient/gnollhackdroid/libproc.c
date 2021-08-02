@@ -67,6 +67,7 @@ struct window_procs lib_procs = {
     lib_toggle_animation_timer,
     lib_display_floating_text,
     lib_display_screen_text,
+    lib_display_popup_text,
     lib_update_cursor,
     lib_exit_hack,
 };
@@ -1072,6 +1073,12 @@ void
 lib_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags)
 {
     lib_callbacks.callback_display_screen_text(text, subtext, style, attr, color, tflags);
+}
+
+void
+lib_display_popup_text(const char* text, const char* title, int style, int attr, int color, unsigned long tflags)
+{
+    lib_callbacks.callback_display_popup_text(text, title, style, attr, color, tflags);
 }
 
 void

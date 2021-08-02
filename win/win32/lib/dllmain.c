@@ -111,6 +111,7 @@ DLL int WINAPI RunGnollHack(
     ToggleAnimationTimerCallback callback_toggle_animation_timer,
     DisplayFloatingTextCallback callback_display_floating_text,
     DisplayScreenTextCallback callback_display_screen_text,
+    DisplayPopupTextCallback callback_display_popup_text,
     UpdateCursorCallback callback_update_cursor,
     ExitHackCallback callback_exit_hack,
 
@@ -206,6 +207,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_toggle_animation_timer = callback_toggle_animation_timer;
     dll_callbacks.callback_display_floating_text = callback_display_floating_text;
     dll_callbacks.callback_display_screen_text = callback_display_screen_text;
+    dll_callbacks.callback_display_popup_text = callback_display_popup_text;
     dll_callbacks.callback_update_cursor = callback_update_cursor;
     dll_callbacks.callback_exit_hack = callback_exit_hack;
     dll_callbacks.callback_getcwd = callback_getcwd;

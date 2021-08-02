@@ -220,6 +220,7 @@ void mswin_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int gly
 void mswin_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, unsigned long tflags);
 void mswin_display_floating_text(int x, int y, const char* text, int style, int attr, int color, unsigned long tflags);
 void mswin_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags);
+void mswin_display_popup_text(const char* text, const char* title, int style, int attr, int color, unsigned long tflags);
 void mswin_update_cursor(int style, int force_paint, int show_on_u);
 void mswin_exit_hack(int status);
 

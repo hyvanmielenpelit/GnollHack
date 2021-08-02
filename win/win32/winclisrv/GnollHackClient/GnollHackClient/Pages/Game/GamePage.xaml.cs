@@ -205,27 +205,27 @@ namespace GnollHackClient.Pages.Game
             //App.FmodService.PlayTestSound();
             _mainPage.GameStarted = true;
             Assembly assembly = GetType().GetTypeInfo().Assembly;
+            await LoadingProgressBar.ProgressTo(0.3f, 600, Easing.Linear);
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack_64x96_transparent_32bits.png"))
             {
                 _tileMap[0] = SKBitmap.Decode(stream);
             }
-            await LoadingProgressBar.ProgressTo(0.2f, 50, Easing.Linear);
+            await LoadingProgressBar.ProgressTo(0.4f, 100, Easing.Linear);
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack_64x96_transparent_32bits-2.png"))
             {
                 _tileMap[1] = SKBitmap.Decode(stream);
             }
-            await LoadingProgressBar.ProgressTo(0.4f, 50, Easing.Linear);
+            await LoadingProgressBar.ProgressTo(0.5f, 100, Easing.Linear);
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack-logo-test-2.png"))
             {
                 _logoBitmap = SKBitmap.Decode(stream);
             }
-            await LoadingProgressBar.ProgressTo(0.5f, 50, Easing.Linear);
             InventoryImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.inventory.png");
             SearchImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.search.png");
             WaitImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.wait.png");
             DropManyImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.dropmany.png");
             SkillImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.skill.png");
-            await LoadingProgressBar.ProgressTo(0.6f, 50, Easing.Linear);
+            await LoadingProgressBar.ProgressTo(0.6f, 100, Easing.Linear);
 
             _gnollHackService = DependencyService.Get<IGnollHackService>();
             _gnollHackService.InitializeGnollHack(); /* In case the game data was factory-reset prior to start, otherwise InitializeGame would suffice */
@@ -243,14 +243,14 @@ namespace GnollHackClient.Pages.Game
             UITileOff = ui_tile_off;
             BuffTileOff = buff_tile_off;
             CursorOff = cursor_off;
-            await LoadingProgressBar.ProgressTo(0.7f, 50, Easing.Linear);
+            await LoadingProgressBar.ProgressTo(0.7f, 100, Easing.Linear);
 
             _animationDefs = _gnollHackService.GetAnimationArray();
             _enlargementDefs = _gnollHackService.GetEnlargementArray();
-            await LoadingProgressBar.ProgressTo(0.80f, 50, Easing.Linear);
+            await LoadingProgressBar.ProgressTo(0.80f, 100, Easing.Linear);
             _replacementDefs = _gnollHackService.GetReplacementArray();
             _autodraws = _gnollHackService.GetAutoDrawArray();
-            await LoadingProgressBar.ProgressTo(0.90f, 50, Easing.Linear);
+            await LoadingProgressBar.ProgressTo(0.90f, 100, Easing.Linear);
 
             for (int i = 0; i < GHConstants.MapCols; i++)
             {
@@ -264,7 +264,7 @@ namespace GnollHackClient.Pages.Game
                     _objectData[i, j] = new ObjectData();
                 }
             }
-            await LoadingProgressBar.ProgressTo(0.95f, 30, Easing.Linear);
+            await LoadingProgressBar.ProgressTo(0.95f, 50, Easing.Linear);
 
             if (App.IsServerGame)
             {
@@ -308,7 +308,7 @@ namespace GnollHackClient.Pages.Game
             //{
             //    _mapBitmap = new SKBitmap(GHConstants.MapCols * GHConstants.TileWidth, GHConstants.MapRows * GHConstants.TileHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
             //}
-            await LoadingProgressBar.ProgressTo(0.99f, 30, Easing.Linear);
+            await LoadingProgressBar.ProgressTo(0.99f, 40, Easing.Linear);
 
             canvasView._gamePage = this;
             uint timeToAnimate = 2000;
@@ -416,7 +416,7 @@ namespace GnollHackClient.Pages.Game
                 return true;
             });
 
-            await LoadingProgressBar.ProgressTo(1.0f, 30, Easing.Linear);
+            await LoadingProgressBar.ProgressTo(1.0f, 20, Easing.Linear);
 
         }
 
@@ -568,6 +568,13 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        public void DisplayPopupText(DisplayScreenTextData data)
+        {
+            PopupTitleLabel.Text = data.subtext;
+            PopupLabel.Text = data.text;
+            PopupGrid.IsVisible = true;
+        }
+
         private void ContextButton_Clicked(object sender, EventArgs e)
         {
             int idx = 0;
@@ -695,6 +702,9 @@ namespace GnollHackClient.Pages.Game
                                 break;
                             case GHRequestType.DisplayScreenText:
                                 DisplayScreenText(req.ScreenTextData);
+                                break;
+                            case GHRequestType.DisplayPopupText:
+                                DisplayPopupText(req.ScreenTextData);
                                 break;
                             case GHRequestType.ShowSkillButton:
                                 SkillGrid.IsVisible = true;
@@ -4164,10 +4174,12 @@ namespace GnollHackClient.Pages.Game
                         float rotated_width = original_height;
                         float rotated_height = original_width;
 
+                        float content_scale = fullsizeditem || has_floor_tile ? 1.0f : item_width / 48.0f;
+
                         float target_x = tx + dest_x;
                         float target_y = ty + dest_y;
-                        float target_width = targetscale * scale * original_width; //(float)item_width;
-                        float target_height = targetscale * scale * original_height; //((float)item_width * rotated_height) / rotated_width;
+                        float target_width = targetscale * scale * content_scale * original_width; //(float)item_width;
+                        float target_height = targetscale * scale * content_scale * original_height; //((float)item_width * rotated_height) / rotated_width;
                         SKRect target_rt;
                         target_rt = new SKRect(0, 0, target_width, target_height);
 
@@ -5413,6 +5425,17 @@ namespace GnollHackClient.Pages.Game
         private void GameMenuButton_Clicked(object sender, EventArgs e)
         {
             ShowGameMenu(sender, e);
+        }
+
+        private void PopupOkButton_Clicked(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 27);
+            HidePopupGrid();
+        }
+
+        private void HidePopupGrid()
+        {
+            PopupGrid.IsVisible = false;
         }
 
     }

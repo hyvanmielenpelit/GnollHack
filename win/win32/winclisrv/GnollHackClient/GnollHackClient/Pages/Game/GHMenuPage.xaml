@@ -153,14 +153,14 @@
 
                                             <Label Grid.Column="0" Text=" " HeightRequest="{Binding MinimumRowHeight}" VerticalTextAlignment="Center" VerticalOptions="Center"></Label>
                                             <!--
-                                        <skia:SKCanvasView Grid.Column="1" x:Name="menuItemCanvasView" SizeChanged="menuItemCanvasView_SizeChanged"
-                                                           IsVisible="{Binding IsGlyphVisible}"
-                                                           HorizontalOptions="Center" VerticalOptions="Center"
-                                                           WidthRequest="32" HeightRequest="24"
-                                                           BackgroundColor="Transparent"
-                                                           PaintSurface="menuItemCanvasView_PaintSurface">
-                                        </skia:SKCanvasView>
-                                        -->
+                                            <skia:SKCanvasView Grid.Column="1" x:Name="menuItemCanvasView" SizeChanged="menuItemCanvasView_SizeChanged"
+                                                               IsVisible="{Binding IsGlyphVisible}"
+                                                               HorizontalOptions="Center" VerticalOptions="Center"
+                                                               WidthRequest="32" HeightRequest="24"
+                                                               BackgroundColor="Transparent"
+                                                               PaintSurface="menuItemCanvasView_PaintSurface">
+                                            </skia:SKCanvasView>
+                                            -->
                                             <ff:CachedImage Grid.Column="1" x:Name="menuItemImage" Source="{Binding GlyphImage}"
                                                            IsVisible="{Binding IsGlyphVisible}"
                                                            HorizontalOptions="Center" VerticalOptions="Center"
