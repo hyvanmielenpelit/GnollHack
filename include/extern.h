@@ -3438,6 +3438,8 @@ E void NDECL(u_wait_until_action);
 E void NDECL(m_wait_until_action);
 E void NDECL(u_wait_until_end);
 E void NDECL(m_wait_until_end);
+E void FDECL(remove_monster_and_nearby_waitforu, (struct monst*));
+
 
 /* ### unixmain.c ### */
 

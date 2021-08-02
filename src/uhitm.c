@@ -1913,6 +1913,7 @@ boolean* obj_destroyed;
         }
 
         deduct_monster_hp(mon, damage); //    mon->mhp -= tmp;
+        remove_monster_and_nearby_waitforu(mon);
     }
     int mon_hp_after = mon->mhp;
 
@@ -3242,13 +3243,12 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         }
     }
 
-
-    mdef->mstrategy &= ~STRAT_WAITFORU; /* in case player is very fast */
     int hp_before = mdef->mhp;
     deduct_monster_hp(mdef, damage);
     int hp_after = mdef->mhp;
     int damagedealt = hp_before - hp_after;
     play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mdef), get_pm_attack_index(youmonst.data, mattk), mweapon, damage, HMON_MELEE);
+    remove_monster_and_nearby_waitforu(mdef);
 
     if (DEADMONSTER(mdef)) 
     {
@@ -3285,6 +3285,24 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         display_m_being_hit(mdef, hit_tile, damagedealt, 0UL, FALSE);
     }
     return 1;
+}
+
+void
+remove_monster_and_nearby_waitforu(mdef)
+struct monst* mdef;
+{
+    if (!mdef)
+        return;
+
+    mdef->mstrategy &= ~STRAT_WAITFORU; /* in case player is very fast */
+    struct monst* mtmp;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    {
+        if ((mtmp->mstrategy & STRAT_WAITFORU) && m_cansee(mtmp, mdef->mx, mdef->my))
+        {
+            mtmp->mstrategy &= ~STRAT_WAITFORU;
+        }
+    }
 }
 
 STATIC_OVL int
@@ -3669,6 +3687,7 @@ register struct attack *mattk;
             }
             end_engulf();
             deduct_monster_hp(mdef, damage);
+            remove_monster_and_nearby_waitforu(mdef);
             if (DEADMONSTER(mdef))
             {
                 killed(mdef);
@@ -4670,6 +4689,7 @@ int dmg;
           (dmg > mon->mhp / 2) ? "wails in agony" : "cries out in pain");
     deduct_monster_hp(mon, adjust_damage(dmg, (struct monst*)0, mon, AD_PHYS, ADFLAGS_NONE));
     wake_nearto(mon->mx, mon->my, 30);
+    remove_monster_and_nearby_waitforu(mon);
     if (DEADMONSTER(mon)) {
         if (context.mon_moving)
             monkilled(mon, (char *) 0, AD_BLND);
