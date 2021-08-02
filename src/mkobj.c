@@ -1972,6 +1972,7 @@ unsigned long mkflags;
     case SPE_NOVEL:
         otmp->novelidx = -1; /* "none of the above"; will be changed */
         otmp = oname(otmp, noveltitle(&otmp->novelidx));
+        otmp->nknown = TRUE;
         break;
     }
 
