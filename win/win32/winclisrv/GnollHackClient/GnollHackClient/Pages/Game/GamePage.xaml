@@ -16,9 +16,16 @@
     
     <ContentPage.Content>
         <AbsoluteLayout x:Name="MainGameLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Black">
-            <Label x:Name="LoadingLabel" Text="Loading..." FontFamily="Diablo" TextColor="White" FontSize="36"
-                   HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand" VerticalTextAlignment="Center"
-                   AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1" />
+            <Grid x:Name="LoadingGrid" AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1" 
+                  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+                <StackLayout HeightRequest="150" WidthRequest="250" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label x:Name="LoadingLabel" Text="Loading..." FontFamily="Diablo" TextColor="White" FontSize="36"
+                       HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" 
+                       VerticalOptions="End" VerticalTextAlignment="Center"/>
+                    <ProgressBar x:Name="LoadingProgressBar" HorizontalOptions="Fill" VerticalOptions="Start" 
+                                 ProgressColor="LightBlue" Progress="0" />
+                </StackLayout>
+            </Grid>
             <Grid x:Name="MainGrid" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" 
                   AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1" IsVisible="false" >
                 <Grid.RowDefinitions>
