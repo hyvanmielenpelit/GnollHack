@@ -1263,6 +1263,7 @@ int hit_tile_id, damage_shown;
             else
             {
                 show_extra_info(x, y, disp_flags | extra_flags, hit_tile_id, damage_shown);
+                refresh_u_tile_gui_info(FALSE);
                 gbuf[y][x].layers.monster_origin_x = u.ux0;
                 gbuf[y][x].layers.monster_origin_y = u.uy0;
             }

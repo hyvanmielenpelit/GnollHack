@@ -41,10 +41,9 @@ namespace GnollHackClient
                 {
                     refresh = _gamePage.RefreshScreen;
                 }
-                if (!refresh)
-                    return;
 
-                InvalidateSurface();
+                if (refresh)
+                    InvalidateSurface();
 
                 /* Increment counters */
                 lock (_gamePage.AnimationTimerLock)
