@@ -2275,7 +2275,7 @@ namespace GnollHackClient.Pages.Game
                                         lock (_drawOrderLock)
                                         {
                                             int draw_cnt = _draw_order.Count;
-                                            for (int layer_idx = 0; layer_idx < (int)layer_types.MAX_LAYERS + 1; layer_idx++)
+                                            for (int layer_idx = 0; layer_idx < (int)layer_types.MAX_LAYERS + 2; layer_idx++)
                                             //for (int draw_idx = 0; draw_idx < draw_cnt; draw_idx++)
                                             {
                                                 //int layer_idx = _draw_order[draw_idx].layer;
