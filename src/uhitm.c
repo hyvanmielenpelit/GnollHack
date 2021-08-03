@@ -3298,7 +3298,7 @@ struct monst* mdef;
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
-        if ((mtmp->mstrategy & STRAT_WAITFORU) && m_cansee(mtmp, mdef->mx, mdef->my))
+        if ((mtmp->mstrategy & STRAT_WAITFORU) != 0 && !mtmp->iswiz && m_cansee(mtmp, mdef->mx, mdef->my))
         {
             mtmp->mstrategy &= ~STRAT_WAITFORU;
         }
