@@ -460,6 +460,9 @@ namespace GnollHackClient.Pages.Game
                 case ',':
                     icon_string = "GnollHackClient.Assets.Icons.pickup.png";
                     break;
+                case ':':
+                    icon_string = "GnollHackClient.Assets.Icons.search.png";
+                    break;
                 default:
                     if (data.cmd_def_char == LastPicked)
                         icon_string = "GnollHackClient.Assets.Icons.inventory.png";

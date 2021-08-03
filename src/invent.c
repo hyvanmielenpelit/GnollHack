@@ -5689,9 +5689,7 @@ print_things_here_to_window(VOID_ARGS)
     struct rm* lev = &levl[u.ux][u.uy];
 
     otmp = level.objects[u.ux][u.uy];
-    dfeature = dfeature_at(u.ux, u.uy);
-    if (dfeature && !strcmp(dfeature, "pool of water") && Underwater)
-        dfeature = 0;
+    dfeature = adjusted_dfeature_at(u.ux, u.uy);
 
     if (IS_BRAZIER(lev->typ))
     {
@@ -5704,15 +5702,10 @@ print_things_here_to_window(VOID_ARGS)
     char buf[BUFSZ];
     char buf2[BUFSZ];
     int count = 0;
-
-    int total_count = 0;
-    for (struct obj* otmp_cnt = otmp; otmp_cnt; otmp_cnt = otmp_cnt->nexthere)
-        total_count++;
-
-    if (total_count == 0 && !dfeature)
+    int displ_style = here_window_display_style(dfeature, otmp);
+    if (displ_style == 0)
         return;
-
-    if (total_count + (dfeature ? 1 : 0) > iflags.wc2_here_window_size)
+    else if (displ_style == 2)
     {
         putstr_ex(tmpwin, attr, Blind ? "[You feel there are many objects here.]" : "[There are many objects here.]", 0, textcolor);
     }
@@ -6754,6 +6747,38 @@ boolean as_if_seen;
         only.x = only.y = 0;
     }
     return n;
+}
+
+const char*
+adjusted_dfeature_at(x, y)
+int x, y;
+{
+    if (!isok(x, y))
+        return 0;
+
+    const char* dfeature = dfeature_at(x, y);
+    if (dfeature && !strcmp(dfeature, "pool of water") && Underwater)
+        dfeature = 0;
+
+    return dfeature;
+}
+
+int
+here_window_display_style(dfeature, first_obj_here)
+const char* dfeature;
+struct obj* first_obj_here;
+{
+    int total_count = 0;
+    for (struct obj* otmp_cnt = first_obj_here; otmp_cnt; otmp_cnt = otmp_cnt->nexthere)
+        total_count++;
+
+    if (total_count == 0 && !dfeature)
+        return 0;
+
+    if (total_count + (dfeature ? 1 : 0) > iflags.wc2_here_window_size)
+        return 2; /* Many things */
+
+    return 1;
 }
 
 /*invent.c*/

@@ -8324,7 +8324,10 @@ create_context_menu(VOID_ARGS)
         }
     }
 
-    if (Blind)
+    const char* dfeature = adjusted_dfeature_at(u.ux, u.uy);
+    int displ_style = here_window_display_style(dfeature, otmp);
+
+    if (Blind || displ_style == 2)
     {
         add_context_menu(':', cmd_from_func(dolook), 0, NO_GLYPH, "Look Here", "", 0, NO_COLOR);
     }
