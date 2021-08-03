@@ -81,6 +81,10 @@ namespace GnollHackClient.Pages.Game
         private object _fpslock = new object();
         private Stopwatch _stopWatch = new Stopwatch();
 
+        public object ProfilingStopwatchLock = new object(); 
+        private Stopwatch _profilingStopwatch = new Stopwatch();
+        public Stopwatch ProfilingStopwatch { get { return _profilingStopwatch; } }
+
         public bool HitPointBars { get; set; }
 
         private bool _cursorIsOn;
@@ -926,6 +930,14 @@ namespace GnollHackClient.Pages.Game
         }
         private async void ShowMenuPage(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
+            lock(ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Stop();
+                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: ShowMenuPage Start: " + elapsed.TotalMilliseconds + " msec");
+                ProfilingStopwatch.Start();
+            }
+
             ShowWaitIcon = true;
             var menuPage = new GHMenuPage(this, ghwindow, menuinfo.Style);
             menuPage.SelectionHow = menuinfo.SelectionHow;
@@ -939,6 +951,14 @@ namespace GnollHackClient.Pages.Game
             else
                 menuPage.Subtitle = menuinfo.Subtitle;
 
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Stop();
+                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: ShowMenuPage Before Add Menu Items: " + elapsed.TotalMilliseconds + " msec");
+                ProfilingStopwatch.Start();
+            }
+
             ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
             if (menuinfo != null)
             {
@@ -947,8 +967,26 @@ namespace GnollHackClient.Pages.Game
                     newmis.Add(mi);
                 }
             }
+
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Stop();
+                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: ShowMenuPage Before Process: " + elapsed.TotalMilliseconds + " msec");
+                ProfilingStopwatch.Start();
+            }
+
             menuPage.MenuItems = newmis;
             menuPage.Process();
+
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Stop();
+                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: ShowMenuPage Before Push Modal: " + elapsed.TotalMilliseconds + " msec");
+                ProfilingStopwatch.Start();
+            }
+
             await App.Current.MainPage.Navigation.PushModalAsync(menuPage, false);
         }
         private async void ShowOutRipPage(GHOutRipInfo outripinfo, GHWindow ghwindow)
@@ -5260,6 +5298,11 @@ namespace GnollHackClient.Pages.Game
 
         private void InventoryButton_Clicked(object sender, EventArgs e)
         {
+            lock(ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Restart();
+            }
+            Debug.WriteLine("ProfilingStopwatch.Restart");
             GenericButton_Clicked(sender, e, 'i');
         }
         private void LookHereButton_Clicked(object sender, EventArgs e)

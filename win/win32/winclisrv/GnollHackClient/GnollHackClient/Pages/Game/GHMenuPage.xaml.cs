@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -75,7 +76,7 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private bool IsGlyphVisible
+        public bool IsGlyphVisible
         {
             get
             {
@@ -629,6 +630,17 @@ namespace GnollHackClient.Pages.Game
         {
             if (sender == null)
                 return;
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            lock (_gamePage.ProfilingStopwatchLock)
+            {
+                _gamePage.ProfilingStopwatch.Stop();
+                TimeSpan elapsed = _gamePage.ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: ShowMenuPage Appearing: " + elapsed.TotalMilliseconds + " msec");
+            }
+
         }
     }
 

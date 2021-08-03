@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -154,6 +155,14 @@ namespace GnollHackClient
                 var skImagetmp = SKImage.FromBitmap(bitmaptmp);
                 var resulttmp = skImagetmp.Encode(SKEncodedImageFormat.Png, 100).AsStream();
                 return resulttmp;
+            }
+
+            lock (ReferenceGamePage.ProfilingStopwatchLock)
+            {
+                ReferenceGamePage.ProfilingStopwatch.Stop();
+                TimeSpan elapsed = ReferenceGamePage.ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: GlyphSource: Start: " + elapsed.TotalMilliseconds + " msec");
+                ReferenceGamePage.ProfilingStopwatch.Start();
             }
 
             if (AutoSize)
@@ -367,6 +376,15 @@ namespace GnollHackClient
 
             var skImage = SKImage.FromBitmap(bitmap);            
             var result = skImage.Encode(SKEncodedImageFormat.Png, 100).AsStream();
+
+            lock (ReferenceGamePage.ProfilingStopwatchLock)
+            {
+                ReferenceGamePage.ProfilingStopwatch.Stop();
+                TimeSpan elapsed = ReferenceGamePage.ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: GlyphSource: End: " + elapsed.TotalMilliseconds + " msec");
+                ReferenceGamePage.ProfilingStopwatch.Start();
+            }
+
             return result;
         }
     }

@@ -182,7 +182,7 @@ namespace GnollHackClient
             }
         }
 
-        public double RightPaddingText
+        public double RightPaddingWidth
         {
             get
             {

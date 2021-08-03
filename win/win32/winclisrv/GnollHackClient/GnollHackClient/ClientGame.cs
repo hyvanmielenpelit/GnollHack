@@ -664,7 +664,17 @@ namespace GnollHackClient
 
         public void ClientCallback_StartMenu(int winid, int style)
         {
-            lock(_ghWindowsLock)
+            lock(_gamePageLock)
+            {
+                lock (_gamePage.ProfilingStopwatchLock)
+                {
+                    _gamePage.ProfilingStopwatch.Stop();
+                    TimeSpan elapsed = _gamePage.ProfilingStopwatch.Elapsed;
+                    Debug.WriteLine("ProfilingStopwatch: StartMenu: " + elapsed.TotalMilliseconds + " msec");
+                    _gamePage.ProfilingStopwatch.Start();
+                }
+            }
+            lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null)
                 {
@@ -682,6 +692,16 @@ namespace GnollHackClient
         public void ClientCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color, 
             int maxcount, UInt64 oid, UInt64 mid, char headingaccel, ulong menuflags, byte dataflags, obj otmpdata, objclassdata otypdata)
         {
+            lock (_gamePageLock)
+            {
+                lock (_gamePage.ProfilingStopwatchLock)
+                {
+                    _gamePage.ProfilingStopwatch.Stop();
+                    TimeSpan elapsed = _gamePage.ProfilingStopwatch.Elapsed;
+                    Debug.WriteLine("ProfilingStopwatch: AddExtendedMenu: " + elapsed.TotalMilliseconds + " msec");
+                    _gamePage.ProfilingStopwatch.Start();
+                }
+            }
             lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
@@ -717,6 +737,16 @@ namespace GnollHackClient
 
         public void ClientCallback_EndMenu(int winid, string prompt, string subtitle)
         {
+            lock (_gamePageLock)
+            {
+                lock (_gamePage.ProfilingStopwatchLock)
+                {
+                    _gamePage.ProfilingStopwatch.Stop();
+                    TimeSpan elapsed = _gamePage.ProfilingStopwatch.Elapsed;
+                    Debug.WriteLine("ProfilingStopwatch: EndMenu: " + elapsed.TotalMilliseconds + " msec");
+                    _gamePage.ProfilingStopwatch.Start();
+                }
+            }
             lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
@@ -728,6 +758,22 @@ namespace GnollHackClient
         }
         public int ClientCallback_SelectMenu(int winid, int how, out IntPtr picklistptr, out int listsize)
         {
+            lock (_gamePageLock)
+            {
+                lock (_gamePage.RefreshScreenLock)
+                {
+                    _gamePage.RefreshScreen = false;
+                }
+
+                lock (_gamePage.ProfilingStopwatchLock)
+                {
+                    _gamePage.ProfilingStopwatch.Stop();
+                    TimeSpan elapsed = _gamePage.ProfilingStopwatch.Elapsed;
+                    Debug.WriteLine("ProfilingStopwatch: SelectMenu: " + elapsed.TotalMilliseconds + " msec");
+                    _gamePage.ProfilingStopwatch.Start();
+                }
+            }
+
             Debug.WriteLine("ClientCallback_SelectMenu");
             ConcurrentQueue<GHRequest> queue;
 
@@ -815,6 +861,15 @@ namespace GnollHackClient
             picklistptr = arrayptr;
             _outGoingIntPtr = arrayptr;
             listsize = cnt * 2;
+
+            lock (_gamePageLock)
+            {
+                lock (_gamePage.RefreshScreenLock)
+                {
+                    _gamePage.RefreshScreen = true;
+                }
+            }
+
             return cnt;
         }
 

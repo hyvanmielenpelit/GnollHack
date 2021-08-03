@@ -48,7 +48,7 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private bool IsGlyphVisible
+        public bool IsGlyphVisible
         {
             get
             {
