@@ -1201,6 +1201,10 @@ newgame()
                        * any artifacts */
     u_init();
 
+    encounter_init();        /* initialize encounters and force linkage */
+
+    init_print_glyph(INIT_GLYPH_LOAD_GLYPHS);
+
 #ifndef NO_SIGNAL
     (void) signal(SIGINT, (SIG_RET_TYPE) done1);
 #endif
@@ -1210,8 +1214,6 @@ newgame()
 #endif
     load_qtlist();          /* load up the quest text info */
     /* quest_init();  --  Now part of role_init() */
-
-    encounter_init();        /* initialize encounters and force linkage */
 
     mklev();
     u_on_upstairs();

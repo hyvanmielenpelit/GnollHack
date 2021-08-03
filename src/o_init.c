@@ -277,20 +277,37 @@ shuffle_tiles()
 {
     int i;
     int tmp_tilemap[NUM_OBJECTS];
+    int tmp_tileflags[NUM_OBJECTS];
+    int tmp_replacementmap[NUM_OBJECTS];
 
     for (i = 0; i < NUM_OBJECTS; i++)
+    {
         tmp_tilemap[i] = glyph2tile[objects[i].oc_descr_idx + GLYPH_OBJ_OFF];
+        tmp_tileflags[i] = glyphtileflags[objects[i].oc_descr_idx + GLYPH_OBJ_OFF];
+        tmp_replacementmap[i] = glyph2replacement[objects[i].oc_descr_idx + GLYPH_OBJ_OFF];
+    }
 
     for (i = 0; i < NUM_OBJECTS; i++)
+    {
         glyph2tile[i + GLYPH_OBJ_OFF] = tmp_tilemap[i];
+        glyphtileflags[i + GLYPH_OBJ_OFF] = tmp_tileflags[i];
+        glyph2replacement[i + GLYPH_OBJ_OFF] = tmp_replacementmap[i];
+    }
 
     for (int j = 0; j < NUM_MISSILE_DIRS; j++)
     {
         for (i = 0; i < NUM_OBJECTS; i++)
+        {
             tmp_tilemap[i] = glyph2tile[objects[i].oc_descr_idx * NUM_MISSILE_DIRS + j + GLYPH_OBJ_MISSILE_OFF];
-
+            tmp_tileflags[i] = glyphtileflags[objects[i].oc_descr_idx * NUM_MISSILE_DIRS + j + GLYPH_OBJ_MISSILE_OFF];
+            tmp_replacementmap[i] = glyph2replacement[objects[i].oc_descr_idx * NUM_MISSILE_DIRS + j + GLYPH_OBJ_MISSILE_OFF];
+        }
         for (i = 0; i < NUM_OBJECTS; i++)
+        {
             glyph2tile[i * NUM_MISSILE_DIRS + j + GLYPH_OBJ_MISSILE_OFF] = tmp_tilemap[i];
+            glyphtileflags[i * NUM_MISSILE_DIRS + j + GLYPH_OBJ_MISSILE_OFF] = tmp_tileflags[i];
+            glyph2replacement[i * NUM_MISSILE_DIRS + j + GLYPH_OBJ_MISSILE_OFF] = tmp_replacementmap[i];
+        }
     }
 }
 #endif /* USE_TILES */

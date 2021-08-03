@@ -844,6 +844,15 @@ namespace GnollHackCommon
         MAX_EXCEPTIONALITY_TYPES
     }
 
+    public enum init_print_glyph_stages
+    {
+        INIT_GLYPH_PROGRAM_START = 0,
+        INIT_GLYPH_PREFERENCE_SET,
+        INIT_GLYPH_LOAD_GLYPHS,
+        INIT_GLYPH_START_FLUSH,
+        INIT_GLYPH_FINISH_FLUSH,
+        INIT_GLYPH_PROGRAM_FINISH,
+    }
 
     public class GHConstants
     {

@@ -145,7 +145,8 @@ namespace GnollHackClient
             int enoff_size;
             IntPtr reoff_ptr;
             int reoff_size;
-            _gamePage.GnollHackService.GetTileArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size, out ti2an_ptr, out ti2an_size, out ti2en_ptr, out ti2en_size, out ti2ad_ptr, out ti2ad_size,
+            _gamePage.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
+            _gamePage.GnollHackService.GetTileArrays(out ti2an_ptr, out ti2an_size, out ti2en_ptr, out ti2en_size, out ti2ad_ptr, out ti2ad_size,
                 out anoff_ptr, out anoff_size, out enoff_ptr, out enoff_size, out reoff_ptr, out reoff_size);
             lock (_gamePage.Glyph2TileLock)
             {
@@ -1078,7 +1079,31 @@ namespace GnollHackClient
         {
             switch(cmdtype)
             {
-                case 2:
+                case (int)init_print_glyph_stages.INIT_GLYPH_LOAD_GLYPHS:
+                    /* Reinitialize  glyph2tile after object shuffling */
+                    IntPtr gl2ti_ptr;
+                    int gl2ti_size;
+                    IntPtr gltifl_ptr;
+                    int gltifl_size;
+
+                    _gamePage.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
+                    lock (_gamePage.Glyph2TileLock)
+                    {
+                        if (gl2ti_ptr != null && gl2ti_size > 0)
+                        {
+                            if(_gamePage.Glyph2Tile == null || gl2ti_size != _gamePage.Glyph2Tile.Length)
+                                _gamePage.Glyph2Tile = new int[gl2ti_size];
+                            Marshal.Copy(gl2ti_ptr, _gamePage.Glyph2Tile, 0, gl2ti_size);
+                        }
+                        if (gltifl_ptr != null && gltifl_size > 0)
+                        {
+                            if (_gamePage.GlyphTileFlags == null || gltifl_size != _gamePage.GlyphTileFlags.Length)
+                                _gamePage.GlyphTileFlags = new byte[gltifl_size];
+                            Marshal.Copy(gltifl_ptr, _gamePage.GlyphTileFlags, 0, gltifl_size);
+                        }
+                    }
+                    break;
+                default:
                     break;
             }
         }
