@@ -211,6 +211,7 @@ E const char ciqchars[];
 E const char bcqchars[];
 E const char fnqchars[];
 E const char dnqchars[];
+E const char idqchars[];
 E NEARDATA long yn_number;
 
 E const char disclosure_options[];

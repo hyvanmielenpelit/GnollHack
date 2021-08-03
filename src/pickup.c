@@ -713,7 +713,47 @@ int what; /* should be a long */
  pickupdone:
     add_valid_menu_class(0); /* reset */
     update_here_window();
-    return (n_tried > 0);
+
+    int more_action = 0;
+    if (res == -2)
+    {
+        struct obj* last_container = 0;
+        int cnt = count_other_containers(invent, (struct obj*)0, &last_container, FALSE);
+        if (cnt > 0)
+        {
+            /* Ask for putting things in a bag or drop items */
+            char ans = idq("Do you want to put items into a container or drop them?");
+            if (ans == 'i')
+            {
+                struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
+                if (container)
+                {
+                    current_container = container;
+                    add_valid_menu_class(0); /* reset */
+                    if (flags.menu_style == MENU_TRADITIONAL)
+                        more_action |= traditional_loot(1, (struct obj*)0, (struct obj*)0);
+                    else
+                        more_action |= (menu_loot(0, 1, (struct obj*)0, (struct obj*)0) > 0);
+                    add_valid_menu_class(0);
+                    if (more_action)
+                        update_inventory();
+                }
+            }
+            else if (ans == 'd')
+            {
+                more_action = doddrop();
+            }
+        }
+        else
+        {
+            char ans = yn_query("Do you want to drop items?");
+            if (ans == 'y')
+            {
+                more_action = doddrop();
+            }
+        }
+    }
+    return (n_tried > 0 || more_action > 0);
 }
 
 boolean
@@ -1457,7 +1497,7 @@ boolean telekinesis;
             /* floor follows by nexthere, otherwise container so by nobj */
             nxtobj(obj, GOLD_PIECE, (boolean)(obj->where == OBJ_FLOOR))
             ? " (except gold)" : "");        
-        result = -1; /* nothing lifted */
+        result = -2; /* nothing lifted; request for putting things into a bag */
     } else {
         result = 1;
         prev_encumbr = near_capacity();
@@ -2392,10 +2432,6 @@ STATIC_PTR int
 in_container(obj)
 register struct obj *obj;
 {
-    boolean floor_container = !carried(current_container);
-    boolean was_unpaid = FALSE;
-    char buf[BUFSZ];
-
     if (!current_container) 
     {
         impossible("<in> no current_container?");
@@ -2502,6 +2538,10 @@ register struct obj *obj;
 
     if (fatal_corpse_mistake(obj, FALSE))
         return -1;
+
+    boolean floor_container = !carried(current_container);
+    boolean was_unpaid = FALSE;
+    char buf[BUFSZ];
 
     /* boxes, boulders, and big statues can't fit into any container */
     if (obj->otyp == ICE_BOX || obj->otyp == BOOKSHELF || Is_box(obj) || obj->otyp == BOULDER

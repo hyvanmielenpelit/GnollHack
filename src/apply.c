@@ -5749,7 +5749,10 @@ boolean usenexthere;
         }
     }
 
-    end_menu(win, "Choose another container:");
+    char cbuf[BUFSZ];
+    Sprintf(cbuf, "Choose %s container:", this_container ? "another" : "a");
+
+    end_menu(win, cbuf);
     menu_item* selected = (menu_item*)0;
     n = select_menu(win, PICK_ONE, &selected);
     destroy_nhwindow(win);

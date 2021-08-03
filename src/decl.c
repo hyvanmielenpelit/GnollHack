@@ -74,6 +74,7 @@ const char ciqchars[] = "ciq";
 const char bcqchars[] = "bcq";
 const char fnqchars[] = "fnq";
 const char dnqchars[] = "dnq";
+const char idqchars[] = "idq";
 NEARDATA long yn_number = 0L;
 
 const char disclosure_options[] = "iavgco";
