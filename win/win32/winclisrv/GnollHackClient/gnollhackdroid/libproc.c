@@ -345,7 +345,8 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
         {
         case 0:
         {
-            otmp = level.objects[x][y];
+            if(!covers_objects(x, y))
+                otmp = level.objects[x][y];
 
             /* Object mimic handling */
             boolean has_obj_mimic = FALSE;
