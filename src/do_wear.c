@@ -1559,7 +1559,6 @@ exchange_worn_item(obj, curobj, mask)
 struct obj* obj, *curobj;
 long mask;
 {
-    int result = 0;
     if (!obj)
         return 0;
 
