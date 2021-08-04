@@ -52,7 +52,19 @@ namespace GnollHackClient.Pages.Game
 
         private void GHTextPage_Disappearing(object sender, EventArgs e)
         {
+            App.BackButtonPressed -= BackButtonPressed;
             _gamePage.GenericButton_Clicked(sender, e, 27);
+        }
+
+        private bool _backPressed = false;
+        private async Task<bool> BackButtonPressed(object sender, EventArgs e)
+        {
+            if (!_backPressed)
+            {
+                _backPressed = true;
+                await App.Current.MainPage.Navigation.PopModalAsync();
+            }
+            return false;
         }
 
         private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
@@ -74,7 +86,7 @@ namespace GnollHackClient.Pages.Game
         public bool IsGlyphVisible 
         { get 
             { 
-                return (_glyph > 0 && _glyph < _gamePage.NoGlyph); 
+                return (Math.Abs(_glyph) > 0 && _glyph != _gamePage.NoGlyph); 
             } 
         }
 
@@ -143,6 +155,11 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
             }
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            App.BackButtonPressed += BackButtonPressed;
         }
     }
 }

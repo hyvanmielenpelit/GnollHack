@@ -716,44 +716,53 @@ int what; /* should be a long */
 
     int more_action = 0;
     if (res == -2 && flags.knapsack_prompt)
+        more_action = handle_knapsack_full();
+
+    return (n_tried > 0 || more_action > 0);
+}
+
+
+int
+handle_knapsack_full(VOID_ARGS)
+{
+    int more_action = 0;
+    struct obj* last_container = 0;
+    int cnt = count_other_containers(invent, (struct obj*)0, &last_container, FALSE);
+    if (cnt > 0)
     {
-        struct obj* last_container = 0;
-        int cnt = count_other_containers(invent, (struct obj*)0, &last_container, FALSE);
-        if (cnt > 0)
+        /* Ask for putting things in a bag or drop items */
+        char ans = yn_function_ex(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", "Do you want to put items Into a container or Drop them?", idqchars, 'q');
+        if (ans == 'i')
         {
-            /* Ask for putting things in a bag or drop items */
-            char ans = yn_function_ex(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", "Do you want to put items Into a container or Drop them?", idqchars, 'q');
-            if (ans == 'i')
+            struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
+            if (container)
             {
-                struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
-                if (container)
-                {
-                    current_container = container;
-                    add_valid_menu_class(0); /* reset */
-                    if (flags.menu_style == MENU_TRADITIONAL)
-                        more_action |= traditional_loot(1, (struct obj*)0, (struct obj*)0);
-                    else
-                        more_action |= (menu_loot(0, 1, (struct obj*)0, (struct obj*)0) > 0);
-                    add_valid_menu_class(0);
-                    if (more_action)
-                        update_inventory();
-                }
-            }
-            else if (ans == 'd')
-            {
-                more_action = doddrop();
+                current_container = container;
+                add_valid_menu_class(0); /* reset */
+                if (flags.menu_style == MENU_TRADITIONAL)
+                    more_action |= traditional_loot(1, (struct obj*)0, (struct obj*)0);
+                else
+                    more_action |= (menu_loot(0, 1, (struct obj*)0, (struct obj*)0) > 0);
+                add_valid_menu_class(0);
+                if (more_action)
+                    update_inventory();
             }
         }
-        else
+        else if (ans == 'd')
         {
-            char ans = yn_query("Do you want to drop items?");
-            if (ans == 'y')
-            {
-                more_action = doddrop();
-            }
+            more_action = doddrop();
         }
     }
-    return (n_tried > 0 || more_action > 0);
+    else
+    {
+        char ans = yn_query("Do you want to drop items?");
+        if (ans == 'y')
+        {
+            more_action = doddrop();
+        }
+    }
+
+    return more_action;
 }
 
 boolean
@@ -3475,8 +3484,9 @@ struct obj* other_container;
     char buf[BUFSZ];
     struct obj* otmp, * otmp2;
     menu_item *pick_list;
-    int mflags, res;
+    int mflags, res = 0;
     long count;
+    int more_action = 0;
 
     const char* action = "";
     switch (command_id)
@@ -3574,6 +3584,8 @@ struct obj* other_container;
                     break;
                 n_looted += res;
             }
+            if (res == -2 && flags.knapsack_prompt)
+                more_action = handle_knapsack_full();
             break;
         case 1:
             for (otmp = invent; otmp && current_container; otmp = otmp2)
@@ -3669,6 +3681,8 @@ struct obj* other_container;
                 {
                 case 0:
                     res = out_container(otmp);
+                    if (res == -2 && flags.knapsack_prompt)
+                        more_action = handle_knapsack_full();
                     break;
                 case 1:
                     res = in_container(otmp);

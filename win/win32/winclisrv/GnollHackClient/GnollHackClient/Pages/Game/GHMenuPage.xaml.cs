@@ -80,7 +80,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                return (_glyph > 0 && _glyph < _gamePage.NoGlyph);
+                return (Math.Abs(_glyph) > 0 && _glyph != _gamePage.NoGlyph);
             }
         }
 
@@ -488,6 +488,7 @@ namespace GnollHackClient.Pages.Game
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
+            App.BackButtonPressed -= BackButtonPressed;
             _gamePage.ShowWaitIcon = false;
             if (!_responseSent)
             {
@@ -634,6 +635,7 @@ namespace GnollHackClient.Pages.Game
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
+            App.BackButtonPressed += BackButtonPressed;
             lock (_gamePage.ProfilingStopwatchLock)
             {
                 _gamePage.ProfilingStopwatch.Stop();
@@ -642,6 +644,18 @@ namespace GnollHackClient.Pages.Game
             }
 
         }
+
+        private bool _backPressed = false;
+        private async Task<bool> BackButtonPressed(object sender, EventArgs e)
+        {
+            if (!_backPressed)
+            {
+                _backPressed = true;
+                await App.Current.MainPage.Navigation.PopModalAsync();
+            }
+            return false;
+        }
+
     }
 
     public class ColumnSpanConverter : IValueConverter

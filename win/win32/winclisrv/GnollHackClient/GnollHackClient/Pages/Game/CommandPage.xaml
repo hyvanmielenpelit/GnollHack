@@ -5,6 +5,7 @@
              x:Class="GnollHackClient.Pages.Game.CommandPage"
              BackgroundColor="Black"
              SizeChanged="ContentPage_SizeChanged"
+             Appearing="ContentPage_Appearing"
              Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>
         <StackLayout x:Name="MainLayout" Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black" >

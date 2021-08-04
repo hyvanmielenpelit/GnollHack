@@ -26,11 +26,13 @@ namespace GnollHackClient.Pages.Game
 
         private async void BackButton_Clicked(object sender, EventArgs e)
         {
+            MainLayout.IsEnabled = false;
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
         private async void CountButton_Clicked(object sender, EventArgs e)
         {
+            MainLayout.IsEnabled = false;
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, 'n');
             _gamePage.ShowNumberPad();
@@ -38,6 +40,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void Search20Button_Clicked(object sender, EventArgs e)
         {
+            MainLayout.IsEnabled = false;
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, 'n');
             _gamePage.GenericButton_Clicked(sender, e, -12);
@@ -47,6 +50,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void Search200Button_Clicked(object sender, EventArgs e)
         {
+            MainLayout.IsEnabled = false;
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, 'n');
             _gamePage.GenericButton_Clicked(sender, e, -12);
@@ -112,29 +116,47 @@ namespace GnollHackClient.Pages.Game
 
         private async void PopupMenuBackButton_Clicked(object sender, EventArgs e)
         {
+            MainLayout.IsEnabled = false;
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.ShowGameMenu(sender, e);
         }
 
         private async void ESCButton_Clicked(object sender, EventArgs e)
         {
+            MainLayout.IsEnabled = false;
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, 27);
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            //lock(_gamePage.RefreshScreenLock)
-            //{
-            //    _gamePage.RefreshScreen = true;
-            //}
+            App.BackButtonPressed -= BackButtonPressed;
         }
 
         private async void GHButton_Clicked(object sender, EventArgs e)
         {
+            MainLayout.IsEnabled = false;
             GHButton btn = (GHButton)sender;
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, btn.GHCommand);
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            MainLayout.IsEnabled = true;
+            App.BackButtonPressed += BackButtonPressed;
+
+        }
+
+        private bool _backPressed = false;
+        private async Task<bool> BackButtonPressed(object sender, EventArgs e)
+        {
+            if (!_backPressed)
+            {
+                _backPressed = true;
+                await App.Current.MainPage.Navigation.PopModalAsync();
+            }
+            return false;
         }
 
     }

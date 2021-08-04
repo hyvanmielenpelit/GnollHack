@@ -2,6 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             Appearing="ContentPage_Appearing"
+             Disappearing="ContentPage_Disappearing"
              x:Class="GnollHackClient.Pages.Game.NamePage">
     <ContentPage.Content>
         <Grid>

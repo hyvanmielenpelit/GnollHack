@@ -23,7 +23,9 @@ namespace GnollHackClient.Pages.Game
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            if(_gamePage != null)
+            App.BackButtonPressed -= BackButtonPressed;
+
+            if (_gamePage != null)
                 _gamePage.CursorStyle = (TTYCursorStyle)CursorPicker.SelectedIndex;
             Preferences.Set("CursorStyle", CursorPicker.SelectedIndex);
 
@@ -60,6 +62,8 @@ namespace GnollHackClient.Pages.Game
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
+            App.BackButtonPressed += BackButtonPressed;
+
             int cursor = 0, graphics = 0, msgnum = 0;
             bool fps = false, navbar = false, devmode = false, hpbars = false;
 
@@ -101,6 +105,17 @@ namespace GnollHackClient.Pages.Game
         private async void Button_Clicked(object sender, EventArgs e)
         {
             await App.Current.MainPage.Navigation.PopModalAsync();
+        }
+
+        private bool _backPressed = false;
+        private async Task<bool> BackButtonPressed(object sender, EventArgs e)
+        {
+            if (!_backPressed)
+            {
+                _backPressed = true;
+                await App.Current.MainPage.Navigation.PopModalAsync();
+            }
+            return false;
         }
 
     }

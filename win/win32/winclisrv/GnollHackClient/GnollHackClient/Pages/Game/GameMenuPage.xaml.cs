@@ -24,23 +24,27 @@ namespace GnollHackClient.Pages.Game
 
         private async void btnSave_Clicked(object sender, EventArgs e)
         {
+            MainLayout.IsEnabled = false;
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('s'));
         }
 
         private async void btnQuit_Clicked(object sender, EventArgs e)
         {
+            MainLayout.IsEnabled = false;
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('q'));
         }
 
         private async void btnBackToGame_Clicked(object sender, EventArgs e)
         {
+            MainLayout.IsEnabled = false;
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
         private async void DoQuit()
         {
+            MainLayout.IsEnabled = false;
             //App.FmodService.StopTestSound();
             await App.Current.MainPage.Navigation.PopModalAsync(); // Game Menu
             await App.Current.MainPage.Navigation.PopModalAsync(); // Game
@@ -52,6 +56,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void btnOptions_Clicked(object sender, EventArgs e)
         {
+            MainLayout.IsEnabled = false;
             _gamePage.GenericButton_Clicked(sender, e, 'O');
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
@@ -60,6 +65,28 @@ namespace GnollHackClient.Pages.Game
         {
             var settingsPage = new SettingsPage(this._gamePage);
             await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            App.BackButtonPressed += BackButtonPressed;
+            MainLayout.IsEnabled = true;
+        }
+
+        private bool _backPressed = false;
+        private async Task<bool> BackButtonPressed(object sender, EventArgs e)
+        {
+            if(!_backPressed)
+            {
+                _backPressed = true;
+                await App.Current.MainPage.Navigation.PopModalAsync();
+            }
+            return false;
+        }
+
+        private void ContentPage_Disappearing(object sender, EventArgs e)
+        {
+            App.BackButtonPressed -= BackButtonPressed;
         }
     }
 }

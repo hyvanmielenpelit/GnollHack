@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              x:Class="GnollHackClient.Pages.Game.GHTextPage"
+             Appearing="ContentPage_Appearing"
              Disappearing="GHTextPage_Disappearing">
     <ContentPage.Content>
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">

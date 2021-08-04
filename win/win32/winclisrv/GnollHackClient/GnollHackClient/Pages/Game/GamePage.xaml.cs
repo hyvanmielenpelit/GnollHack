@@ -49,10 +49,13 @@ namespace GnollHackClient.Pages.Game
         private Thread _gnhthread;
         private ClientGame _clientGame;
         public ClientGame ClientGame { get { return _clientGame; } }
+        
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
         private object _mapDataLock = new object();
         private int _mapCursorX;
         private int _mapCursorY;
+
+        private CommandPage _cmdPage = null;
 
         public object RefreshScreenLock = new object();
         private bool _refreshScreen = true;
@@ -271,6 +274,7 @@ namespace GnollHackClient.Pages.Game
                 }
             }
             await LoadingProgressBar.ProgressTo(0.95f, 50, Easing.Linear);
+            _cmdPage = new CommandPage(this);
 
             if (App.IsServerGame)
             {
@@ -620,7 +624,10 @@ namespace GnollHackClient.Pages.Game
                 RefreshScreen = true;
             }
 
-            if(_isFirstAppearance)
+            GameMenuButton.IsEnabled = true;
+            MenuButton.IsEnabled = true;
+
+            if (_isFirstAppearance)
             {
                 _isFirstAppearance = false;
 
@@ -5344,8 +5351,10 @@ namespace GnollHackClient.Pages.Game
 
         private async void MenuButton_Clicked(object sender, EventArgs e)
         {
-            var cmdPage = new CommandPage(this);
-            await App.Current.MainPage.Navigation.PushModalAsync(cmdPage);
+            MenuButton.IsEnabled = false;
+            if(_cmdPage == null)
+                _cmdPage = new CommandPage(this);
+            await App.Current.MainPage.Navigation.PushModalAsync(_cmdPage);
         }
         private void ZeroButton_Clicked(object sender, EventArgs e)
         {
@@ -5554,6 +5563,7 @@ namespace GnollHackClient.Pages.Game
 
         private void GameMenuButton_Clicked(object sender, EventArgs e)
         {
+            GameMenuButton.IsEnabled = false;
             ShowGameMenu(sender, e);
         }
 
