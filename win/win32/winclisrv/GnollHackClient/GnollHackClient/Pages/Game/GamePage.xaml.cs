@@ -782,10 +782,10 @@ namespace GnollHackClient.Pages.Game
                 YnTitleLabel.IsVisible = false;
                 YnTitleLabel.Text = "";
                 YnTitleLabel.TextColor = Color.White;
-                if (style <= 2)
-                {
-                    YnQuestionLabel.TextColor = ClientUtils.NHColor2XColor((nhcolor)color);
-                }
+                //if (style <= 2)
+                //{
+                //    YnQuestionLabel.TextColor = ClientUtils.NHColor2XColor((nhcolor)color);
+                //}
             }
             else
             {
