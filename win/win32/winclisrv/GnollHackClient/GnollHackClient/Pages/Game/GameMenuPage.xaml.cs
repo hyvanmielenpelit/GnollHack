@@ -63,6 +63,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void btnSettings_Clicked(object sender, EventArgs e)
         {
+            MainLayout.IsEnabled = false;
             var settingsPage = new SettingsPage(this._gamePage);
             await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
         }
