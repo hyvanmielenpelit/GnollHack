@@ -715,7 +715,7 @@ int what; /* should be a long */
     update_here_window();
 
     int more_action = 0;
-    if (res == -2)
+    if (res == -2 && flags.knapsack_prompt)
     {
         struct obj* last_container = 0;
         int cnt = count_other_containers(invent, (struct obj*)0, &last_container, FALSE);
