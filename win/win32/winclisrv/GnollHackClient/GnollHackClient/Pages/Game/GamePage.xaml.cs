@@ -653,7 +653,7 @@ namespace GnollHackClient.Pages.Game
                                 PrintTopLine(req.RequestString, req.RequestStringAttributes);
                                 break;
                             case GHRequestType.ShowYnResponses:
-                                ShowYnResponses(req.RequestString, req.Responses);
+                                ShowYnResponses(req.RequestInt, req.RequestAttr, req.RequestNhColor, req.TitleString, req.RequestString, req.Responses);
                                 break;
                             case GHRequestType.HideYnResponses:
                                 HideYnResponses();
@@ -774,10 +774,31 @@ namespace GnollHackClient.Pages.Game
         }
 
         private string CurrentYnResponses;
-        private void ShowYnResponses(string question, string responses)
+        private void ShowYnResponses(int style, int attr, int color, string title, string question, string responses)
         {
             CurrentYnResponses = responses;
-            QuestionLabel.Text = question;
+            if (title == null)
+            {
+                YnTitleLabel.IsVisible = false;
+                YnTitleLabel.Text = "";
+                YnTitleLabel.TextColor = Color.White;
+                if (style <= 2)
+                {
+                    YnQuestionLabel.TextColor = ClientUtils.NHColor2XColor((nhcolor)color);
+                }
+            }
+            else
+            {
+                YnTitleLabel.Text = title;
+                YnTitleLabel.IsVisible = true;
+                YnQuestionLabel.TextColor = Color.White;
+                if (style <= 2)
+                {
+                    YnTitleLabel.TextColor = ClientUtils.NHColor2XColor((nhcolor)color);
+                }
+            }
+
+            YnQuestionLabel.Text = question;
             if (responses.Length == 0)
                 return;
             else if(responses.Length == 1)

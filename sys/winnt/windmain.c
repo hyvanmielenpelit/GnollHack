@@ -43,7 +43,7 @@ int NDECL(windows_nhgetch);
 void NDECL(windows_nhbell);
 int FDECL(windows_nh_poskey, (int *, int *, int *));
 void FDECL(windows_raw_print, (const char *));
-char FDECL(windows_yn_function_ex, (int, int, const char *, const char *, CHAR_P));
+char FDECL(windows_yn_function_ex, (int, int, int, const char *, const char *, const char *, CHAR_P));
 static void FDECL(windows_getlin_ex, (int, int, const char *, char *));
 extern int NDECL(windows_console_custom_nhgetch);
 void NDECL(safe_routines);
@@ -809,8 +809,9 @@ int *x, *y, *mod;
 
 /*ARGSUSED*/
 char
-windows_yn_function_ex(attr, color, query, resp, def)
-int attr, color;
+windows_yn_function_ex(style, attr, color, title, query, resp, def)
+int style, attr, color;
+const char *title;
 const char *query;
 const char *resp;
 char def;

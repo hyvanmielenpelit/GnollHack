@@ -1005,9 +1005,9 @@ struct amii_WinDesc *cw;
 
 /* Ask a question and get a response */
 char
-amii_yn_function_ex(attr, color, query, resp, def)
-int attr, color;
-const char* query, * resp;
+amii_yn_function_ex(style, attr, color, title, query, resp, def)
+int style, attr, color;
+const char *title, * query, * resp;
 char def;
 {
     /*

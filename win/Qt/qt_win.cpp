@@ -4963,7 +4963,7 @@ int NetHackQtBind::qt_doprev_message()
     return 0;
 }
 
-char NetHackQtBind::qt_yn_function_ex(int attr, int color, const char *question, const char *choices, CHAR_P def)
+char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, const char* title, const char *question, const char *choices, CHAR_P def)
 {
     if (qt_settings->ynInMessages() && WIN_MESSAGE!=WIN_ERR) {
 	// Similar to X11 windowport `slow' feature.

@@ -842,7 +842,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-curses_yn_function_ex(int attr, int color, const char *question, const char *choices, CHAR_P def)
+curses_yn_function_ex(int style UNUSED, int attr, int color, const char* title UNUSED, const char *question, const char *choices, CHAR_P def)
 {
     return (char) curses_character_input_dialog(attr, color, question, choices, def);
 }

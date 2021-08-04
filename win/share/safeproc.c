@@ -597,8 +597,9 @@ safe_doprev_message()
 }
 
 char
-safe_yn_function_ex(attr, color, query, resp, def)
-int attr, color;
+safe_yn_function_ex(style, attr, color, title, query, resp, def)
+int style, attr, color;
+const char *title;
 const char *query;
 const char *resp;
 char def;

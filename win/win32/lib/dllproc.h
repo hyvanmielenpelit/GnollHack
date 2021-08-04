@@ -76,7 +76,7 @@ int dll_nhgetch(void);
 int dll_nh_poskey(int *x, int *y, int *mod);
 void dll_nhbell(void);
 int dll_doprev_message(void);
-char dll_yn_function_ex(int attr, int color, const char *question, const char *choices, CHAR_P def);
+char dll_yn_function_ex(int style, int attr, int color, const char* title, const char *question, const char *choices, CHAR_P def);
 void dll_getlin_ex(int attr, int color, const char *question, char *input);
 int dll_get_ext_cmd(void);
 void dll_number_pad(int state);

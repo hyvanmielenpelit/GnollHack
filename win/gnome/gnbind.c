@@ -1071,7 +1071,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-gnome_yn_function_ex(int attr, int color, const char *question, const char *choices, CHAR_P def)
+gnome_yn_function_ex(int style, int attr, int color, const char* title, const char *question, const char *choices, CHAR_P def)
 {
     int ch;
     int result = -1;

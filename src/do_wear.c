@@ -1532,9 +1532,16 @@ struct obj* obj, *curobj;
 {
     if (flags.exchange_prompt && obj && curobj && curobj->owornmask && !(obj->owornmask & W_ARMOR))
     {
+        char abuf[BUFSZ] = "";
+        Sprintf(abuf, "%s", curobj->oclass == ARMOR_CLASS ? armor_class_simple_name(curobj) : "item");
+        *abuf = highc(*abuf);
+
+        char tbuf[BUFSZ] = "";
+        Sprintf(tbuf, "Already Wearing %s", abuf);
+
         char qbuf[BUFSIZ] = "";
         Sprintf(qbuf, "You are currently wearing %s. Exchange it for %s?", an(cxname(curobj)), the(cxname(obj)));
-        char ans = yn_query(qbuf);
+        char ans = yn_function_ex(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n');
         if (ans == 'y')
             return exchange_worn_item(obj, curobj, curobj->owornmask);
     }
@@ -1970,9 +1977,13 @@ boolean noisy;
                         else if (uarmc)
                             Sprintf(cbuf, "%s", yname(uarmc));
                         
+                        char tbuf[BUFSZ];
+                        Sprintf(tbuf, "Cannot Wear Shirt Over %s", many ? "Covering Armor" : uarm ? "Suit" : uarmo ? "Robe" : "Cloak");
+
                         char qbuf[BUFSIZ];
                         Sprintf(qbuf, "You cannot wear %s over %s. Take %s off and then wear the shirt?", an(cxname(otmp)), cbuf, many ? "them" : "it");
-                        char ans = yn_query(qbuf);
+                        char ans = yn_function_ex(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n');
+
                         if (ans == 'y')
                         {
                             (void)take_off_covering_and_wear(otmp, W_ARMU);
@@ -2009,9 +2020,12 @@ boolean noisy;
                         char cbuf[BUFSZ];
                         Sprintf(cbuf, "%s", yname(uarmc));
 
+                        char tbuf[BUFSZ];
+                        Sprintf(tbuf, "%s", "Cannot Wear Robe Over Cloak");
+
                         char qbuf[BUFSIZ];
                         Sprintf(qbuf, "You cannot wear %s over %s. Take it off and then wear the robe?", an(cxname(otmp)), cbuf);
-                        char ans = yn_query(qbuf);
+                        char ans = yn_function_ex(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n');
                         if (ans == 'y')
                         {
                             (void)take_off_covering_and_wear(otmp, W_ARMO);
@@ -2068,9 +2082,12 @@ boolean noisy;
                     else if (uarmc)
                         Sprintf(cbuf, "%s", yname(uarmc));
 
+                    char tbuf[BUFSZ];
+                    Sprintf(tbuf, "Cannot Wear Suit Over %s", many ? "Robe and Cloak" : uarmo ? "Robe" : "Cloak");
+
                     char qbuf[BUFSIZ];
                     Sprintf(qbuf, "You cannot wear %s over %s. Take %s off and then wear the armor?", an(cxname(otmp)), cbuf, many ? "them" : "it");
-                    char ans = yn_query(qbuf);
+                    char ans = yn_function_ex(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n');
                     if (ans == 'y')
                     {
                         (void)take_off_covering_and_wear(otmp, W_ARM);
@@ -2173,10 +2190,15 @@ boolean in_takeoff_wear;
                 if (flags.exchange_prompt && !(!cursed_items_are_positive_mon(&youmonst) && uleft->cursed && uleft->bknown && uright->cursed && uright->bknown))
                 {
                     struct obj* remove_obj = 0;
+                    char tbuf[BUFSZ] = "";
+                    Sprintf(tbuf, "No More %s%s to Fill",
+                        humanoid(youmonst.data) ? "Ring-" : "",
+                        makeplural(body_part(FINGER)));
+
                     You("have %s on the right %s and %s on the left.", an(cxname(uright)), body_part(FINGER), an(cxname(uleft)));
 
                     Sprintf(qbuf, "Remove Right or Left ring?");
-                    answer = yn_function(qbuf, "rlq", '\0');
+                    answer = yn_function_ex(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, "rlq", '\0');
                     switch (answer)
                     {
                     case '\0':

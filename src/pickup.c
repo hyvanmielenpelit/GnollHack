@@ -722,7 +722,7 @@ int what; /* should be a long */
         if (cnt > 0)
         {
             /* Ask for putting things in a bag or drop items */
-            char ans = idq("Do you want to put items Into a container or Drop them?");
+            char ans = yn_function_ex(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", "Do you want to put items Into a container or Drop them?", idqchars, 'q');
             if (ans == 'i')
             {
                 struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
@@ -2564,7 +2564,7 @@ register struct obj *obj;
     {
         char qbuf[BUFSZ], c;
         Sprintf(qbuf, "You are putting %s into %s. Continue?", the(xname(obj)), the(xname(current_container)));
-        if ((c = yn_function_ex(ATR_NONE, CLR_MSG_ATTENTION, qbuf, ynqchars, 'n')) != 'y')
+        if ((c = yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, (const char*)0, qbuf, ynqchars, 'n')) != 'y')
             return 0;
     }
 

@@ -7921,9 +7921,9 @@ dotravel(VOID_ARGS)
  *   window port causing a buffer overflow there.
  */
 char
-yn_function_ex(attr, color, query, resp, def)
-int attr, color;
-const char *query, *resp;
+yn_function_ex(style, attr, color, title, query, resp, def)
+int style, attr, color;
+const char *title, *query, *resp;
 char def;
 {
     char res, qbuf[QBUFSZ];
@@ -7944,7 +7944,7 @@ char def;
         Strcpy(&qbuf[QBUFSZ - 1 - 3], "...");
         query = qbuf;
     }
-    res = (*windowprocs.win_yn_function_ex)(attr, color, query, resp, def);
+    res = (*windowprocs.win_yn_function_ex)(style, attr, color, title, query, resp, def);
 #ifdef DUMPLOG
     if (idx == saved_pline_index) {
         /* when idx is still the same as saved_pline_index, the interface
@@ -7963,7 +7963,7 @@ yn_function(query, resp, def)
 const char* query, * resp;
 char def;
 {
-    return yn_function_ex(ATR_NONE, NO_COLOR, query, resp, def);
+    return yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, (const char*)0, query, resp, def);
 }
 
 

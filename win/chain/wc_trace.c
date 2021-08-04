@@ -747,10 +747,10 @@ void *vp;
 }
 
 char
-trace_yn_function_ex(vp, attr, color, query, resp, def)
+trace_yn_function_ex(vp, style, attr, color, title, query, resp, def)
 void *vp;
-int attr, color;
-const char* query, * resp;
+int style, attr, color;
+const char *title, * query, * resp;
 char def;
 {
     struct trace_data *tdp = vp;
@@ -779,7 +779,7 @@ char def;
     fprintf(wc_tracelogf, "%s)\n", buf);
 
     PRE;
-    rv = (*tdp->nprocs->win_yn_function)(tdp->ndata, query, resp, def);
+    rv = (*tdp->nprocs->win_yn_function)(tdp->ndata, style, attr, color, title, query, resp, def);
     POST;
 
     if (isprint(rv)) {

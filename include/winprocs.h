@@ -59,7 +59,7 @@ struct window_procs {
     int FDECL((*win_nh_poskey), (int *, int *, int *));
     void NDECL((*win_nhbell));
     int NDECL((*win_doprev_message));
-    char FDECL((*win_yn_function_ex), (int, int, const char *, const char *, CHAR_P));
+    char FDECL((*win_yn_function_ex), (int, int, int, const char*, const char *, const char *, CHAR_P));
     void FDECL((*win_getlin_ex), (int, int, const char *, char *));
     int NDECL((*win_get_ext_cmd));
     void FDECL((*win_number_pad), (int));
@@ -526,7 +526,7 @@ extern int NDECL(safe_nhgetch);
 extern int FDECL(safe_nh_poskey, (int *, int *, int *));
 extern void NDECL(safe_nhbell);
 extern int NDECL(safe_doprev_message);
-extern char FDECL(safe_yn_function_ex, (int, int, const char *, const char *, CHAR_P));
+extern char FDECL(safe_yn_function_ex, (int, int, int, const char *, const char *, const char *, CHAR_P));
 extern void FDECL(safe_getlin_ex, (int, int, const char *, char *));
 extern int NDECL(safe_get_ext_cmd);
 extern void FDECL(safe_number_pad, (int));

@@ -589,6 +589,11 @@ enum takeoff_wear_commands {
     TAKEOFF_WEAR_CMD_EXCHANGE,
 };
 
+enum yn_function_styles {
+    YN_STYLE_GENERAL = 0,
+    YN_STYLE_ITEM_EXCHANGE,
+    YN_STYLE_KNAPSACK_FULL
+};
 
 /* Other */
 #define DISREGARD_HEALTH_LEVEL_MULTIPLIER 2
