@@ -492,7 +492,7 @@ int
 pickup(what)
 int what; /* should be a long */
 {
-    int i, n, res, count, n_tried = 0, n_picked = 0;
+    int i, n, res = 0, count, n_tried = 0, n_picked = 0;
     menu_item *pick_list = (menu_item *) 0;
     boolean autopickup = what > 0;
     struct obj **objchain_p;
@@ -722,7 +722,7 @@ int what; /* should be a long */
         if (cnt > 0)
         {
             /* Ask for putting things in a bag or drop items */
-            char ans = idq("Do you want to put items into a container or drop them?");
+            char ans = idq("Do you want to put items Into a container or Drop them?");
             if (ans == 'i')
             {
                 struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);

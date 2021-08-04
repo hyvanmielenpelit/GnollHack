@@ -3058,7 +3058,7 @@ struct obj* otmp_only;
             else if (
                 /* ugly check for unworn armor that can't be worn */
                 (putting_on(word) && *let == ARMOR_CLASS
-                    && !canwearobj(otmp, &dummymask, FALSE))
+                    && (!flags.exchange_prompt && !canwearobj(otmp, &dummymask, FALSE)))
                 /* or armor with 'P' or 'R' or accessory with 'W' or 'T' */
                 || ((putting_on(word) || taking_off(word))
                     && ((*let == ARMOR_CLASS) ^ (otmp->oclass == ARMOR_CLASS)))

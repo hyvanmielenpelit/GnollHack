@@ -31,10 +31,8 @@ struct flag {
     boolean dark_room; /* show shadows in lit rooms */
     boolean debug;     /* in debugging mode */
 #define wizard flags.debug
-    int animation_frame_interval_in_milliseconds; /* custom animation frame interval in milliseconds. If 0, then the default at 25 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
-    int move_interval_in_milliseconds; /* custom move step interval in milliseconds. If 0, then the default at 50 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
-    int crawl_interval_in_milliseconds; /* custom crawl step interval in milliseconds. If 0, then the default at 250 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
     boolean end_own; /* list all own scores */
+    boolean exchange_prompt; /* automatic prompt for exchanging armors */
     boolean explore; /* in exploration mode */
     boolean female;  /* initial selection */
 #define discover flags.explore
@@ -84,11 +82,6 @@ struct flag {
     boolean show_tile_u_hp_bar; /* show your hp bar on tiles */
     boolean show_weight_summary; /* show weight summary */
     boolean show_grid; /* show grid on tiles */
-    double screen_scale_adjustment; /* scale = 1.0 + screen_scale_adjustment */
-    int preferred_screen_scale; /* user set preference for screen scale MIN_PREF_SCREEN_SCALE...MAX_PREF_SCREEN_SCALE */
-    int shield_effect_length;
-    int talk_effect_length;
-    int last_item_show_duration;
     boolean showscore;       /* show score */
     boolean silent;          /* whether the bell rings or not */
     /* The story so far:
@@ -128,11 +121,6 @@ struct flag {
     char    sortloot; /* 'n'=none, 'l'=loot (pickup), 'f'=full ('l'+invent) */
 #endif
     boolean sortpack;        /* sorted inventory */
-    int sound_volume_general;   /* user set preference for general game volume 1...100 */
-    int sound_volume_music;     /* user set preference for music volume 1...100 */
-    int sound_volume_ambient;   /* user set preference for ambient volume 1...100 */
-    int sound_volume_effects;   /* user set preference for sound effect volume 1...100 */
-    int sound_volume_ui;        /* user set preference for user interface sound volume 1...100 */
     boolean sparkle;         /* show "resisting" special FX (Scott Bigham) */
     boolean standout;        /* use standout for --More-- */
     boolean    swap_rhand_only; /* swap only right hand */
@@ -141,6 +129,21 @@ struct flag {
     boolean verbose;         /* max battle info */
     boolean wiz_mstatusline; /* extra information on monsters */
     boolean wiz_alwaysenc;   /* creates always an encounter */
+
+    int animation_frame_interval_in_milliseconds; /* custom animation frame interval in milliseconds. If 0, then the default at 25 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
+    int move_interval_in_milliseconds; /* custom move step interval in milliseconds. If 0, then the default at 50 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
+    int crawl_interval_in_milliseconds; /* custom crawl step interval in milliseconds. If 0, then the default at 250 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
+    double screen_scale_adjustment; /* scale = 1.0 + screen_scale_adjustment */
+    int preferred_screen_scale; /* user set preference for screen scale MIN_PREF_SCREEN_SCALE...MAX_PREF_SCREEN_SCALE */
+    int shield_effect_length;
+    int talk_effect_length;
+    int last_item_show_duration;
+    int sound_volume_general;   /* user set preference for general game volume 1...100 */
+    int sound_volume_music;     /* user set preference for music volume 1...100 */
+    int sound_volume_ambient;   /* user set preference for ambient volume 1...100 */
+    int sound_volume_effects;   /* user set preference for sound effect volume 1...100 */
+    int sound_volume_ui;        /* user set preference for user interface sound volume 1...100 */
+
     int end_top, end_around; /* describe desired score list */
     unsigned moonphase;
     unsigned long suppress_alert;

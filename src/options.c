@@ -134,6 +134,7 @@ static struct Bool_Opt {
 #if defined(UNIX) && !defined(GNH_ANDROID) 
     { "enablettyarrowkeys", &iflags.enablettyarrowkeys, FALSE, SET_IN_GAME }, 
 #endif
+    { "exchange_prompt", &flags.exchange_prompt, TRUE, SET_IN_GAME },
 #if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS) || defined(X11_GRAPHICS)
     { "extmenu", &iflags.extmenu, FALSE, SET_IN_GAME },
 #elif defined(ANDROID)

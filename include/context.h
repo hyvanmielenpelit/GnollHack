@@ -68,6 +68,15 @@ struct takeoff_info {
     char disrobing[CONTEXTVERBSZ + 1];
 };
 
+#define WEAR_OID_BITS 32
+struct wear_info {
+    long mask;
+    unsigned oid[WEAR_OID_BITS]; /* oid of the item intended to be worn */
+    long what;
+    int delay;
+};
+
+
 struct victual_info {
     struct obj *piece; /* the thing being eaten, or last thing that
                         * was partially eaten, unless that thing was
@@ -190,6 +199,7 @@ struct context_info
     struct tin_info tin;
     struct book_info spbook;
     struct takeoff_info takeoff;
+    struct wear_info wear;
     struct warntype_info warntype;
     struct polearm_info polearm;
     struct obj_split objsplit; /* track most recently split object stack */
