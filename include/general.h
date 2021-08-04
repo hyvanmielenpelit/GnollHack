@@ -582,6 +582,13 @@ enum init_print_glyph_stages {
     INIT_GLYPH_PROGRAM_FINISH,
 };
 
+/* init_print_glyph_stages */
+enum takeoff_wear_commands {
+    TAKEOFF_WEAR_CMD_TAKEOFF = 0,
+    TAKEOFF_WEAR_CMD_TAKEOFF_AND_WEAR,
+    TAKEOFF_WEAR_CMD_EXCHANGE,
+};
+
 
 /* Other */
 #define DISREGARD_HEALTH_LEVEL_MULTIPLIER 2

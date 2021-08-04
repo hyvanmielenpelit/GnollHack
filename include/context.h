@@ -66,6 +66,7 @@ struct takeoff_info {
     int delay;
     boolean cancelled_don;
     char disrobing[CONTEXTVERBSZ + 1];
+    uchar command;
 };
 
 #define WEAR_OID_BITS 32

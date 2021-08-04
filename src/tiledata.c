@@ -204,7 +204,11 @@ uchar* tilemapflags;
 
                 if (process_style == 0)
                 {
-                    Sprintf(buf, "%s,%s,%s,%s", tile_section_name, gender_name, set_name, mons[i].mname);
+                    char monnamebuf[BUFSIZ];
+                    boolean is_human_were = (mons[i].mlet == S_HUMAN && !strncmp(mons[i].mname, "were", 4));
+                    Sprintf(monnamebuf, "%s%s", is_human_were ? "human-" : "", mons[i].mname);
+
+                    Sprintf(buf, "%s,%s,%s,%s", tile_section_name, gender_name, set_name, monnamebuf);
                     if(enlargement > 0)
                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[enlargement].width_in_tiles, enlargements[enlargement].height_in_tiles, enlargements[enlargement].main_tile_x_coordinate);
                     else

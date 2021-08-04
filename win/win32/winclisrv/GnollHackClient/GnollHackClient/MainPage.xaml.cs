@@ -324,10 +324,20 @@ namespace GnollHackClient
                 _currentPageHeight = height;
                 videoView.Stop();
                 videoView.Source = null;
-                if (Device.RuntimePlatform == Device.UWP)
-                    videoView.Source = new Uri($"ms-appx:///Assets/mainmenuportrait.mp4");
+                if(width > height && false)
+                {
+                    if (Device.RuntimePlatform == Device.UWP)
+                        videoView.Source = new Uri($"ms-appx:///Assets/mainmenulandscape.mp4");
+                    else
+                        videoView.Source = new Uri($"ms-appx:///mainmenulandscape.mp4");
+                }
                 else
-                    videoView.Source = new Uri($"ms-appx:///mainmenuportrait.mp4");
+                {
+                    if (Device.RuntimePlatform == Device.UWP)
+                        videoView.Source = new Uri($"ms-appx:///Assets/mainmenuportrait.mp4");
+                    else
+                        videoView.Source = new Uri($"ms-appx:///mainmenuportrait.mp4");
+                }
                 videoView.WidthRequest = width;
                 videoView.HeightRequest = height;
                 videoView.Play();

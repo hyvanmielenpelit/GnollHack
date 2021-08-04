@@ -1559,8 +1559,9 @@ long mask;
     if (curobj)
         mask = curobj->owornmask; /* Override */
 
+    int takeoffcmd = curobj ? TAKEOFF_WEAR_CMD_EXCHANGE : TAKEOFF_WEAR_CMD_TAKEOFF_AND_WEAR;
     boolean contoccupation = FALSE;
-    if (context.wear.what || context.wear.mask)
+    if (context.takeoff.command == takeoffcmd && (context.wear.what || context.wear.mask))
     {
         long combinedmask = context.wear.what | context.wear.mask;
         if (combinedmask & mask) /* Some object is being worn in the same slot */
@@ -1608,11 +1609,13 @@ long mask;
         if (context.takeoff.mask == 0L)
             return 0;
 
+        context.takeoff.command = TAKEOFF_WEAR_CMD_EXCHANGE;
         context.wear.mask = context.takeoff.mask;
         (void)add_wear_oid(obj, context.wear.mask);
     }
     else
     {
+        context.takeoff.command = TAKEOFF_WEAR_CMD_TAKEOFF_AND_WEAR;
         context.wear.mask = mask;
         (void)add_wear_oid(obj, mask);
     }
@@ -1640,7 +1643,7 @@ long mask;
     if (context.takeoff.mask && context.wear.mask) {
         /* default activity for armor and/or accessories,
            possibly combined with weapons */
-        (void)strncpy(context.takeoff.disrobing, "rerobing", CONTEXTVERBSZ);
+        (void)strncpy(context.takeoff.disrobing, "adjusting your equipment", CONTEXTVERBSZ);
         /* specific activity when handling weapons only */
         if (!(context.takeoff.mask & ~W_WEAPON))
             (void)strncpy(context.takeoff.disrobing, "rearming",
@@ -3311,7 +3314,7 @@ int
 doddoremarm()
 {
     int result = 0;
-    if (context.wear.what || context.wear.mask)
+    if (context.takeoff.command != TAKEOFF_WEAR_CMD_TAKEOFF)
         reset_remarm(); /* Cancel exchange */
 
     if (context.takeoff.what || context.takeoff.mask) {
@@ -3330,7 +3333,10 @@ doddoremarm()
                              (unsigned *) 0, 0)) < -1)
         result = menu_remarm(result);
 
-    if (context.takeoff.mask) {
+    if (context.takeoff.mask) 
+    {
+        context.takeoff.command = TAKEOFF_WEAR_CMD_TAKEOFF;
+
         /* default activity for armor and/or accessories,
            possibly combined with weapons */
         (void) strncpy(context.takeoff.disrobing, "disrobing", CONTEXTVERBSZ);
