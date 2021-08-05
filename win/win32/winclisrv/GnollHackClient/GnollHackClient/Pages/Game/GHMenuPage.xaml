@@ -153,8 +153,9 @@
                                         </Label>
 
                                         <Label Grid.Column="0" Text=" " HeightRequest="{Binding MinimumRowHeight}" VerticalTextAlignment="Center" VerticalOptions="Center"></Label>
-                                        <!--
-                                        <skia:SKCanvasView Grid.Column="2" x:Name="menuItemCanvasView" SizeChanged="menuItemCanvasView_SizeChanged"
+
+<!--
+                                        <skia:SKCanvasView Grid.Column="1" x:Name="menuItemCanvasView" SizeChanged="menuItemCanvasView_SizeChanged"
                                                             IsVisible="{Binding IsGlyphVisible}"
                                                             HorizontalOptions="Center" VerticalOptions="Center"
                                                             WidthRequest="32" HeightRequest="24"
@@ -168,7 +169,6 @@
                                                         WidthRequest="32" HeightRequest="24"
                                                         BackgroundColor="Transparent">
                                         </ff:CachedImage>
-
                                         <Grid Grid.Column="2" RowSpacing="0" VerticalOptions="CenterAndExpand" HorizontalOptions="Fill">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />

@@ -21,6 +21,7 @@ namespace GnollHackClient.Pages.Game
             InitializeComponent();
 
             _gamePage = gamePage;
+            GCCollectGrid.IsVisible = App.DeveloperMode;
         }
 
         private async void btnSave_Clicked(object sender, EventArgs e)
@@ -99,6 +100,35 @@ namespace GnollHackClient.Pages.Game
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             App.BackButtonPressed -= BackButtonPressed;
+        }
+
+        private void btnGC_Clicked(object sender, EventArgs e)
+        {
+            MainLayout.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            btnGC.Text = "Collecting...";
+            btnGC.TextColor = Color.Yellow;
+
+            lock (_gamePage.ProfilingStopwatchLock)
+            {
+                _gamePage.ProfilingStopwatch.Restart();
+            }
+            Debug.WriteLine("ProfilingStopwatch.Restart: Garbage Collection Start"); 
+            
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            lock (_gamePage.ProfilingStopwatchLock)
+            {
+                _gamePage.ProfilingStopwatch.Stop();
+                TimeSpan elapsed = _gamePage.ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: Garbage Collection End: " + elapsed.TotalMilliseconds + " msec");
+            }
+
+            btnGC.Text = "Done";
+            btnGC.TextColor = Color.Red;
+            MainLayout.IsEnabled = true;
         }
     }
 }

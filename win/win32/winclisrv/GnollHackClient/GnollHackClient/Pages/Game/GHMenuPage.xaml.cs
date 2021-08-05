@@ -612,8 +612,10 @@ namespace GnollHackClient.Pages.Game
 
                 int signed_glyph = menuitem.Glyph;
                 int glyph = Math.Abs(signed_glyph);
-                bool hflip = (signed_glyph < 0);
-
+                //bool hflip = (signed_glyph < 0);
+                //menuitem.GlyphImageSource.Width = (int)canvaswidth;
+                //menuitem.GlyphImageSource.Height = (int)canvasheight;
+                //menuitem.GlyphImageSource.DrawOnCanvas(canvas);
                 if (glyph < _gamePage.Glyph2Tile.Length)
                 {
                     int ntile = _gamePage.Glyph2Tile[glyph];
@@ -627,7 +629,6 @@ namespace GnollHackClient.Pages.Game
 
                     canvas.DrawBitmap(_gamePage.TileMap[sheet_idx], sourcerect, targetrect);
                 }
-
             }
         }
 

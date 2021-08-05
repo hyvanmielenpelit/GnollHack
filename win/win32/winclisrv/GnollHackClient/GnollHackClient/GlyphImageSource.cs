@@ -12,7 +12,7 @@ using Xamarin.Forms;
 
 namespace GnollHackClient
 {
-    class GlyphImageSource : StreamImageSource
+    public class GlyphImageSource : StreamImageSource
     {
         public GlyphImageSource()
         {
@@ -165,36 +165,63 @@ namespace GnollHackClient
                 ReferenceGamePage.ProfilingStopwatch.Start();
             }
 
+            DoAutoSize();
+
+            var bitmap = new SKBitmap(Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+            var canvas = new SKCanvas(bitmap);
+            canvas.Clear(SKColors.Transparent);
+
+            DrawOnCanvas(canvas);
+
+            var skImage = SKImage.FromBitmap(bitmap);            
+            var result = skImage.Encode(SKEncodedImageFormat.Png, 100).AsStream();
+
+            lock (ReferenceGamePage.ProfilingStopwatchLock)
+            {
+                ReferenceGamePage.ProfilingStopwatch.Stop();
+                TimeSpan elapsed = ReferenceGamePage.ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: GlyphSource: End: " + elapsed.TotalMilliseconds + " msec");
+                ReferenceGamePage.ProfilingStopwatch.Start();
+            }
+
+            return result;
+        }
+        public void DoAutoSize()
+        {
             if (AutoSize)
             {
+                int signed_glyph = Glyph;
+                int abs_glyph = Math.Abs(signed_glyph);
+
                 bool tileflag_halfsize = (ReferenceGamePage.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
-                if(tileflag_halfsize)
+                if (tileflag_halfsize)
                 {
                     Width = GHConstants.TileWidth;
                     Height = GHConstants.TileHeight / 2;
                 }
-                else 
+                else
                 {
                     int ntile = ReferenceGamePage.Glyph2Tile[abs_glyph];
                     int enlargement = ReferenceGamePage.Tile2Enlargement[ntile];
 
-                    if(enlargement == 0)
+                    if (enlargement == 0)
                     {
                         Width = GHConstants.TileWidth;
                         Height = GHConstants.TileHeight;
                     }
-                    else 
+                    else
                     {
                         Width = GHConstants.TileWidth * ReferenceGamePage.Enlargements[enlargement].width_in_tiles;
                         Height = GHConstants.TileHeight * ReferenceGamePage.Enlargements[enlargement].height_in_tiles;
                     }
                 }
             }
+        }
 
-            var bitmap = new SKBitmap(Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-            var canvas = new SKCanvas(bitmap);
-            canvas.Clear(SKColors.Transparent);
-
+        public void DrawOnCanvas(SKCanvas canvas)
+        {
+            int signed_glyph = Glyph;
+            int abs_glyph = Math.Abs(signed_glyph);
 
             if (ReferenceGamePage != null && abs_glyph > 0 && Width > 0 && Height > 0 && abs_glyph < ReferenceGamePage.Glyph2Tile.Length)
             {
@@ -209,7 +236,7 @@ namespace GnollHackClient
 
                 using (SKPaint paint = new SKPaint())
                 {
-                    if(Grayed)
+                    if (Grayed)
                     {
                         paint.ColorFilter =
                             SKColorFilter.CreateColorMatrix(new float[]
@@ -374,18 +401,6 @@ namespace GnollHackClient
                 }
             }
 
-            var skImage = SKImage.FromBitmap(bitmap);            
-            var result = skImage.Encode(SKEncodedImageFormat.Png, 100).AsStream();
-
-            lock (ReferenceGamePage.ProfilingStopwatchLock)
-            {
-                ReferenceGamePage.ProfilingStopwatch.Stop();
-                TimeSpan elapsed = ReferenceGamePage.ProfilingStopwatch.Elapsed;
-                Debug.WriteLine("ProfilingStopwatch: GlyphSource: End: " + elapsed.TotalMilliseconds + " msec");
-                ReferenceGamePage.ProfilingStopwatch.Start();
-            }
-
-            return result;
         }
     }
 }

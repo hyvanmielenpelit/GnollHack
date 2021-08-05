@@ -406,6 +406,14 @@ namespace GnollHackClient
 
         private GlyphImageSource _glyphImageSource = new GlyphImageSource();
 
+        public GlyphImageSource GlyphImageSource
+        {
+            get
+            {
+                return _glyphImageSource;
+            }
+        }
+
         public ImageSource GlyphImage
         {
             get {
