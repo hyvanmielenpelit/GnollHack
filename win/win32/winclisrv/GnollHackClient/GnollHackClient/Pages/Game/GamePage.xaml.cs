@@ -3277,10 +3277,15 @@ namespace GnollHackClient.Pages.Game
                                                                             {
                                                                                 move_offset_x = base_move_offset_x;
                                                                                 move_offset_y = base_move_offset_y;
-                                                                                if (layer_idx == (int)layer_types.MAX_LAYERS
-                                                                                    || ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
-                                                                                    )
+                                                                                if (layer_idx == (int)layer_types.MAX_LAYERS)
+                                                                                {
                                                                                     opaqueness = 0.5f;
+                                                                                }
+                                                                                else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
+                                                                                {
+                                                                                    draw_shadow[mapx, mapy] = true;
+                                                                                    continue; /* Draw only the transparent shadow in the max_layers shadow layer; otherwise, if drawn twice, the result will be nontransparent */
+                                                                                }
                                                                             }
                                                                             else if (layer_idx == (int)layer_types.LAYER_COVER_TRAP)
                                                                             {
