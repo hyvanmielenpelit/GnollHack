@@ -84,6 +84,7 @@ namespace GnollHackClient.Pages.Game
         {
             App.BackButtonPressed += BackButtonPressed;
             MainLayout.IsEnabled = true;
+            GCCollectGrid.IsVisible = App.DeveloperMode;
         }
 
         private bool _backPressed = false;
