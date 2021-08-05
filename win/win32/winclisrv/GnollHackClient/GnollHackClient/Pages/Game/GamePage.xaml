@@ -183,13 +183,13 @@
             </Grid>
             <Grid x:Name="GetLineGrid" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
-                <Grid WidthRequest="440" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" Margin="0,50,0,10" >
-                    <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
-                        <StackLayout x:Name="GetLineLayout" HorizontalOptions="Center" VerticalOptions="Center">
+                <Grid WidthRequest="440" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Margin="0,50,0,10" >
+                    <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                        <StackLayout x:Name="GetLineLayout" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                             <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <Entry x:Name="GetLineEntryText" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White"
                                HorizontalTextAlignment="Center" FontSize="20" />
-                            <Grid WidthRequest="360" HorizontalOptions="Center">
+                            <Grid WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
@@ -197,12 +197,12 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Grid Grid.Column="0" HorizontalOptions="Center" WidthRequest="170">
+                                <Grid Grid.Column="0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="170" HeightRequest="70">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="170"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
                                     <Button x:Name="GetLineOkButton" Text="OK" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="GetLineOkButton_Clicked" />
                                 </Grid>
-                                <Grid  Grid.Column="1" HorizontalOptions="Center" WidthRequest="170">
+                                <Grid  Grid.Column="1" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="170" HeightRequest="70">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="170"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
                                     <Button x:Name="GetLineCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="GetLineCancelButton_Clicked" />
@@ -217,7 +217,7 @@
                 <Grid WidthRequest="600" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                     <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="YnLayout" Padding="5"
-                          HorizontalOptions="Center" VerticalOptions="Center" >
+                          HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
                             <Label Text="?" x:Name="YnTitleLabel" FontFamily="Immortal" FontSize="22" TextColor="White"
                                VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <Label Text="?" x:Name="YnQuestionLabel" FontFamily="Immortal" FontSize="19" TextColor="White"

@@ -920,6 +920,8 @@ namespace GnollHackCommon
         public const int NUM_ZAP_SOURCE_DIRS = (GHConstants.NUM_ZAP_SOURCE_BASE_DIRS * 2);
         public const int NUM_CHAIN_SOURCE_DIRS = 4;
         public const int NUM_WORM_SOURCE_DIRS = 4;
+        public const float ArrowButtonSize = 0.2f;
+        public const float NumberButtonSize = 0.3f;
     }
 
 
