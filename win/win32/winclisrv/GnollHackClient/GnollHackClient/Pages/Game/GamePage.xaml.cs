@@ -5333,7 +5333,7 @@ namespace GnollHackClient.Pages.Game
             {
                 ProfilingStopwatch.Restart();
             }
-            Debug.WriteLine("ProfilingStopwatch.Restart");
+            Debug.WriteLine("ProfilingStopwatch.Restart: Inventory");
             GenericButton_Clicked(sender, e, 'i');
         }
         private void LookHereButton_Clicked(object sender, EventArgs e)
@@ -5425,11 +5425,13 @@ namespace GnollHackClient.Pages.Game
 
         private void ESCButton_Clicked(object sender, EventArgs e)
         {
+            App.PlayButtonClickedSound();
             GenericButton_Clicked(sender, e, 27);
         }
 
         private void ToggleModeButton_Clicked(object sender, EventArgs e)
         {
+            App.PlayMenuSelectSound();
             MapTravelMode = !MapTravelMode;
             if(MapTravelMode)
             {
@@ -5446,6 +5448,7 @@ namespace GnollHackClient.Pages.Game
         }
         private void LookModeButton_Clicked(object sender, EventArgs e)
         {
+            App.PlayMenuSelectSound();
             MapLookMode = !MapLookMode;
             if(MapLookMode)
             {
@@ -5462,6 +5465,7 @@ namespace GnollHackClient.Pages.Game
         }
         private void NoClipButton_Clicked(object sender, EventArgs e)
         {
+            App.PlayMenuSelectSound();
             MapNoClipMode = !MapNoClipMode;
             if (MapNoClipMode)
             {
@@ -5486,6 +5490,11 @@ namespace GnollHackClient.Pages.Game
 
         private void ApplyWieldedButton_Clicked(object sender, EventArgs e)
         {
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Restart();
+            }
+            Debug.WriteLine("ProfilingStopwatch.Restart: Apply");
             GenericButton_Clicked(sender, e, 'a');
         }
 
@@ -5521,21 +5530,37 @@ namespace GnollHackClient.Pages.Game
 
         private void SkillButton_Clicked(object sender, EventArgs e)
         {
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Restart();
+            }
+            Debug.WriteLine("ProfilingStopwatch.Restart: Skill");
             GenericButton_Clicked(sender, e, 'S');
         }
 
         private void AbilitiesButton_Clicked(object sender, EventArgs e)
         {
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Restart();
+            }
+            Debug.WriteLine("ProfilingStopwatch.Restart: Abilities");
             GenericButton_Clicked(sender, e, 'A');
         }
 
         private void DropManyButton_Clicked(object sender, EventArgs e)
         {
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Restart();
+            }
+            Debug.WriteLine("ProfilingStopwatch.Restart: Drop Many");
             GenericButton_Clicked(sender, e, '%');
         }
 
         private void ToggleZoomMiniButton_Clicked(object sender, EventArgs e)
         {
+            App.PlayMenuSelectSound();
             ZoomMiniMode = !ZoomMiniMode;
             if (ZoomMiniMode)
             {
@@ -5549,6 +5574,7 @@ namespace GnollHackClient.Pages.Game
 
         private void ToggleZoomAlternateButton_Clicked(object sender, EventArgs e)
         {
+            App.PlayMenuSelectSound();
             ZoomAlternateMode = !ZoomAlternateMode;
             if (ZoomAlternateMode)
             {
@@ -5564,6 +5590,7 @@ namespace GnollHackClient.Pages.Game
         private void GameMenuButton_Clicked(object sender, EventArgs e)
         {
             GameMenuButton.IsEnabled = false;
+            App.PlayButtonClickedSound();
             ShowGameMenu(sender, e);
         }
 

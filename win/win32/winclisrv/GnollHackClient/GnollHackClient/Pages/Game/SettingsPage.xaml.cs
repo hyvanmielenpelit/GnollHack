@@ -104,6 +104,8 @@ namespace GnollHackClient.Pages.Game
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
+            CloseGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 

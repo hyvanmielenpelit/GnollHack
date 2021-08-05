@@ -364,11 +364,15 @@ namespace GnollHackClient.Pages.Game
 
         private async void CancelButton_Clicked(object sender, EventArgs e)
         {
+            CancelGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             await _gamePage.Navigation.PopModalAsync();
         }
 
         private async void OKButton_Clicked(object sender, EventArgs e)
         {
+            OKGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             List<GHMenuItem> resultlist = new List<GHMenuItem>();
             if(MenuView.SelectionMode == SelectionMode.Multiple)
             {

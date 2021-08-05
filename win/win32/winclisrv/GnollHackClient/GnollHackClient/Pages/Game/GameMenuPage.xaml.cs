@@ -1,6 +1,7 @@
 ﻿using GnollHackCommon;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace GnollHackClient.Pages.Game
         private async void btnSave_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
+            App.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('s'));
         }
@@ -32,6 +34,7 @@ namespace GnollHackClient.Pages.Game
         private async void btnQuit_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
+            App.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('q'));
         }
@@ -39,6 +42,7 @@ namespace GnollHackClient.Pages.Game
         private async void btnBackToGame_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
+            App.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
@@ -57,6 +61,12 @@ namespace GnollHackClient.Pages.Game
         private async void btnOptions_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            lock (_gamePage.ProfilingStopwatchLock)
+            {
+                _gamePage.ProfilingStopwatch.Restart();
+            }
+            Debug.WriteLine("ProfilingStopwatch.Restart: Options");
             _gamePage.GenericButton_Clicked(sender, e, 'O');
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
@@ -64,6 +74,7 @@ namespace GnollHackClient.Pages.Game
         private async void btnSettings_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
+            App.PlayButtonClickedSound();
             var settingsPage = new SettingsPage(this._gamePage);
             await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
         }

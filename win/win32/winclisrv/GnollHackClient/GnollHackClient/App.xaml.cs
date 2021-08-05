@@ -121,5 +121,28 @@ namespace GnollHackClient
         public static SKTypeface LatoBold { get; set; }
         public static SKTypeface ARChristyTypeface { get; set; }
 
+        public static void PlayButtonClickedSound()
+        {
+            if(_fmodService != null)
+            {
+                string[] parameterNames = new string[1];
+                float[] parameterValues = new float[1];
+
+                _fmodService.PlayImmediateSound(GHConstants.ButtonClickGHSound, GHConstants.ButtonClickEventPath, GHConstants.ButtonClickBankId, GHConstants.ButtonClickVolume,
+                    1.0f, parameterNames, parameterValues, 0, 0, 0, 0);
+            }
+        }
+
+        public static void PlayMenuSelectSound()
+        {
+            if (_fmodService != null)
+            {
+                string[] parameterNames = new string[1];
+                float[] parameterValues = new float[1];
+
+                _fmodService.PlayImmediateSound(GHConstants.MenuSelectGHSound, GHConstants.MenuSelectEventPath, GHConstants.MenuSelectBankId, GHConstants.MenuSelectVolume,
+                    1.0f, parameterNames, parameterValues, 0, 0, 0, 0);
+            }
+        }
     }
 }

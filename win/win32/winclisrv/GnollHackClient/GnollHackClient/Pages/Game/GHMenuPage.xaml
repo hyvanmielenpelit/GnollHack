@@ -225,11 +225,11 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Grid HorizontalOptions="End" WidthRequest="250" HeightRequest="70" Grid.Column="0">
+                    <Grid x:Name="OKGrid" HorizontalOptions="End" WidthRequest="250" HeightRequest="70" Grid.Column="0">
                         <ff:CachedImage x:Name="OKButtonImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="250" HeightRequest="70" />
                         <Button Text="OK" x:Name="OKButton" Clicked="OKButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"  />
                     </Grid>
-                    <Grid HorizontalOptions="Start" WidthRequest="250" HeightRequest="70" Grid.Column="1">
+                    <Grid x:Name="CancelGrid" HorizontalOptions="Start" WidthRequest="250" HeightRequest="70" Grid.Column="1">
                         <ff:CachedImage x:Name="CancelButtonImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="250" HeightRequest="70" />
                         <Button Text="Cancel" x:Name="CancelButton" Clicked="CancelButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
                     </Grid>

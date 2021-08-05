@@ -903,6 +903,14 @@ namespace GnollHackCommon
         public const int IntroGHSound = 1;
         public const string IntroEventPath = "event:/Music/Start/Splash";
         public const int IntroBankId = 0;
+        public const int ButtonClickGHSound = 28;
+        public const string ButtonClickEventPath = "event:/UI/Button Down";
+        public const int ButtonClickBankId = 0;
+        public const float ButtonClickVolume = 0.15f;
+        public const int MenuSelectGHSound = 29;
+        public const string MenuSelectEventPath = "event:/UI/Menu Select";
+        public const int MenuSelectBankId = 0;
+        public const float MenuSelectVolume = 0.15f;
 #if DEBUG
         public const bool DefaultDeveloperMode = true;
 #else

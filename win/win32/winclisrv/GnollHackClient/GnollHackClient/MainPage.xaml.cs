@@ -49,8 +49,9 @@ namespace GnollHackClient
         }
         private async void localButton_Clicked(object sender, EventArgs e)
         {
-            StartServerGameButton.IsEnabled = false;
-            StartLocalGameButton.IsEnabled = false;
+            StartServerGrid.IsEnabled = false;
+            StartLocalGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             StartLocalGameButton.TextColor = Color.Gray;
             var gamePage = new GamePage(this);
             gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
@@ -65,6 +66,7 @@ namespace GnollHackClient
                 return;
             }
 
+            App.PlayButtonClickedSound();
             _serverButtonClicked = true;
             _canClickButton = false;
 
@@ -215,7 +217,7 @@ namespace GnollHackClient
                 PlayMainScreenVideoAndMusic();
             }
 
-            StartServerGameButton.IsEnabled = true;
+            StartServerGrid.IsEnabled = true;
             UpperButtonGrid.IsEnabled = true;
         }
 
@@ -255,6 +257,7 @@ namespace GnollHackClient
         private void ExitAppButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             App.AppCloseService.CloseApplication();
             Thread.Sleep(50);
             System.Diagnostics.Process.GetCurrentProcess().Kill();
@@ -262,6 +265,7 @@ namespace GnollHackClient
 
         private async void ClearFilesButton_Clicked(object sender, EventArgs e)
         {
+            App.PlayButtonClickedSound();
             bool answer = await DisplayAlert("Reset GnollHack?", "Are you sure to reset GnollHack?", "Yes", "No");
             if (answer)
             {
@@ -276,6 +280,7 @@ namespace GnollHackClient
         private async void SettingsButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             var settingsPage = new SettingsPage(null);
             await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
         }
@@ -283,6 +288,7 @@ namespace GnollHackClient
         private async void OptionsButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(App.GHPath, "defaults.gnh");
             var editorPage = new EditorPage(fulltargetpath, "Default Options File");
             string errormsg = "";
@@ -301,6 +307,7 @@ namespace GnollHackClient
         private async void CreditsButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(App.GHPath, "credits");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Credits");
             string errormsg = "";
@@ -357,6 +364,7 @@ namespace GnollHackClient
         private async void TopScoreButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(App.GHPath, "xlogfile");
             if(File.Exists(fulltargetpath))
             {

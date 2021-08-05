@@ -101,10 +101,18 @@
                 <Label x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="White" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center"/>
                 <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" />
             </Grid>
-            <Image x:Name="StartLocalGameImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
-            <Button Text="Play Game" x:Name="StartLocalGameButton" Clicked="localButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="1" />
-            <Image x:Name="StartServerGameImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="70" Grid.Row="2" />
-            <Button Text="Online Game" x:Name="StartServerGameButton" Clicked="serverButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" WidthRequest="300" HeightRequest="70" Grid.Row="2" />
+            <Grid Grid.Row="1" x:Name="StartLocalGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <Image x:Name="StartLocalGameImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                <Button Text="Play Game" x:Name="StartLocalGameButton" Clicked="localButton_Clicked" 
+                        FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent"  
+                        HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+            </Grid>
+            <Grid Grid.Row="2" x:Name="StartServerGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <Image x:Name="StartServerGameImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+                <Button Text="Online Game" x:Name="StartServerGameButton" Clicked="serverButton_Clicked" 
+                        FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" 
+                        HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+            </Grid>
         </Grid>
     </AbsoluteLayout>
     
