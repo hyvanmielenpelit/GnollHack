@@ -54,6 +54,8 @@ namespace GnollHackClient.Pages.Game
         private object _mapDataLock = new object();
         private int _mapCursorX;
         private int _mapCursorY;
+        private int _ux = 0;
+        private int _uy = 0;
 
         private CommandPage _cmdPage = null;
 
@@ -5034,38 +5036,38 @@ namespace GnollHackClient.Pages.Game
 
         public void IssueNHCommandViaTouch(object sender, SKTouchEventArgs e)
         {
-            if (!_showDirections && !_showNumberPad)
-            {
-                int x = 0, y = 0, mod = 0;
-                float canvaswidth = canvasView.CanvasSize.Width;
-                float canvasheight = canvasView.CanvasSize.Height;
-                float offsetX = (canvaswidth - _mapWidth) / 2;
-                float offsetY = (canvasheight - _mapHeight) / 2;
+            int x = 0, y = 0, mod = 0;
+            float canvaswidth = canvasView.CanvasSize.Width;
+            float canvasheight = canvasView.CanvasSize.Height;
+            float offsetX = (canvaswidth - _mapWidth) / 2;
+            float offsetY = (canvasheight - _mapHeight) / 2;
 
-                if (ZoomMiniMode)
+            if (ZoomMiniMode)
+            {
+                offsetX -= _mapOffsetX;
+                offsetY -= _mapOffsetY;
+            }
+            else
+            {
+                lock (ClipLock)
                 {
-                    offsetX -= _mapOffsetX;
-                    offsetY -= _mapOffsetY;
-                }
-                else
-                {
-                    lock (ClipLock)
+                    if (ClipX > 0 && (_mapWidth > canvaswidth || _mapHeight > canvasheight))
                     {
-                        if (ClipX > 0 && (_mapWidth > canvaswidth || _mapHeight > canvasheight))
-                        {
-                            offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * _tileWidth;
-                            offsetY -= (ClipY - GHConstants.MapRows / 2) * _tileHeight;
-                        }
+                        offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * _tileWidth;
+                        offsetY -= (ClipY - GHConstants.MapRows / 2) * _tileHeight;
                     }
                 }
-                offsetX += _mapOffsetX;
-                offsetY += _mapOffsetY + _mapFontAscent;
+            }
+            offsetX += _mapOffsetX;
+            offsetY += _mapOffsetY + _mapFontAscent;
 
-                if (_tileWidth > 0)
-                    x = (int)((e.Location.X - offsetX) / _tileWidth);
-                if (_tileHeight > 0)
-                    y = (int)((e.Location.Y - offsetY) / _tileHeight);
+            if (_tileWidth > 0)
+                x = (int)((e.Location.X - offsetX) / _tileWidth);
+            if (_tileHeight > 0)
+                y = (int)((e.Location.Y - offsetY) / _tileHeight);
 
+            if (!_showDirections && !_showNumberPad)
+            {
                 if (x > 0 && x < GHConstants.MapCols && y >= 0 && y < GHConstants.MapRows)
                 {
                     if (MapMode == GHMapMode.Look)
@@ -5106,7 +5108,24 @@ namespace GnollHackClient.Pages.Game
                     else if (RectLoc.X > canvasButtonRect.Width * 0.7)
                         resp = -6; // ch = "l";
                     else
-                        resp = showNumberPad ? -5 : 46; /* '.', or self */
+                    {
+                        if(_showDirections && GHUtils.isok(_ux, _uy) && GHUtils.isok(x, y))
+                        {
+                            int dx = x - _ux;
+                            int dy = y - _uy;
+                            
+                            if(Math.Abs(x - _ux) <= 1 && Math.Abs(y - _uy) <= 1)
+                            {
+                                resp = -1 *(5 + dx - 3 * dy);
+                                if (resp == 5)
+                                    resp = 46; /* '.', or self */
+                            }
+                            else
+                                return;
+                        }
+                        else
+                            resp = showNumberPad ? -5 : 46; /* '.', or self */
+                    }
 
                     if (showNumberPad)
                         resp -= 10;
@@ -5144,6 +5163,11 @@ namespace GnollHackClient.Pages.Game
                     {
                         _mapData[x, y].GlyphPrintCounterValue = AnimationTimers.general_animation_counter;
                     }
+                }
+                if((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
+                {
+                    _ux = x;
+                    _uy = y;
                 }
                 _mapData[x, y].Glyph = glyph;
                 _mapData[x, y].BkGlyph = bkglyph;
