@@ -78,6 +78,7 @@ namespace GnollHackClient.Pages.Game
         public int NumDisplayedMessages { get { return _shownMessageRows; } set { _shownMessageRows = value; } }
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
+        public bool ShowMemoryUsage { get; set; }
         public bool ShowFPS { get; set; }
         private double _fps;
         private long _previousGeneralCounterValue;
@@ -194,6 +195,7 @@ namespace GnollHackClient.Pages.Game
             CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
             GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
             ShowFPS = Preferences.Get("ShowFPS", false);
+            ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
             HitPointBars = Preferences.Get("HitPointBars", false);
             NumDisplayedMessages = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
             MapFontSize = Preferences.Get("MapFontSize", GHConstants.MapFontDefaultSize);
@@ -3806,7 +3808,20 @@ namespace GnollHackClient.Pages.Game
                     canvas.DrawBitmap(_logoBitmap, targetrect);
                 }
 
-                if(ShowFPS)
+                if(ShowMemoryUsage)
+                {
+                    long memusage = GC.GetTotalMemory(false);
+                    str = "Memory: " + memusage / 1024 + " kB";
+                    textPaint.Typeface = App.LatoBold;
+                    textPaint.TextSize = 26;
+                    textPaint.Color = SKColors.Yellow;
+                    textWidth = textPaint.MeasureText(str, ref textBounds);
+                    yText = -textPaint.FontMetrics.Ascent + 5 + (ShowFPS ? textPaint.FontSpacing : 0);
+                    xText = canvaswidth - textWidth - 5;
+                    canvas.DrawText(str, xText, yText, textPaint);
+                }
+
+                if (ShowFPS)
                 {
                     if (!_stopWatch.IsRunning)
                     {
@@ -3829,7 +3844,7 @@ namespace GnollHackClient.Pages.Game
                             str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + diff;
                         }
                         textPaint.Typeface = App.LatoBold;
-                        textPaint.TextSize = 30;
+                        textPaint.TextSize = 26;
                         textPaint.Color = SKColors.Yellow;
                         textWidth = textPaint.MeasureText(str, ref textBounds);
                         yText = -textPaint.FontMetrics.Ascent + 5;
