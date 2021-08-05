@@ -71,7 +71,10 @@ boolean talk;
             You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "less %s now.", Hallucination ? "trippy" : "confused");
     }
     if ((xtime && !old) || (!xtime && old))
+    {
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
+    }
 
     set_itimeout(&HConfusion, xtime);
 }
@@ -104,8 +107,10 @@ boolean talk;
         }
     }
     if ((!xtime && old) || (xtime && !old))
+    {
         context.botl = context.botlx = TRUE;
-
+        refresh_u_tile_gui_info(TRUE);
+    }
     set_itimeout(&HStun, xtime);
 }
 
@@ -145,6 +150,8 @@ boolean talk;
         }
         set_itimeout(&Sick, xtime);
         context.botl = context.botlx = TRUE;
+        if (!old)
+            refresh_u_tile_gui_info(TRUE);
     }
     else if (old)
     {
@@ -158,6 +165,7 @@ boolean talk;
         }
         Sick = 0L; /* set_itimeout(&Sick, 0L) */
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
     }
 
     kptr = find_delayed_killer(SICK);
@@ -215,6 +223,8 @@ boolean talk;
         }
         set_itimeout(&FoodPoisoned, xtime);
         context.botl = context.botlx = TRUE;
+        if(!old)
+            refresh_u_tile_gui_info(TRUE);
     }
     else if (old)
     {
@@ -228,6 +238,7 @@ boolean talk;
         }
         FoodPoisoned = 0L;
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
     }
 
     kptr = find_delayed_killer(FOOD_POISONED);
@@ -289,6 +300,8 @@ boolean talk;
             MummyRot |= FROM_ACQUIRED;
 
         context.botl = context.botlx = TRUE;
+        if (!old)
+            refresh_u_tile_gui_info(TRUE);
     }
     else if (old)
     {
@@ -303,6 +316,7 @@ boolean talk;
         MummyRot = 0L;
         context.mummyrot_advancement = 0;
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
     }
 
     kptr = find_delayed_killer(MUMMY_ROT);
@@ -340,6 +354,7 @@ const char *msg;
     set_itimeout(&Slimed, xtime);
     if ((xtime != 0L) ^ (old != 0L)) {
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
         if (msg)
             pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "%s", msg);
     }
@@ -364,6 +379,7 @@ const char *killername;
     set_itimeout(&Stoned, xtime);
     if ((xtime != 0L) ^ (old != 0L)) {
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
         if (msg)
             pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "%s", msg);
     }
@@ -593,6 +609,7 @@ long mask; /* nonzero if resistance status should change by mask */
         update_inventory();
 
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
         if (talk)
             pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, message, verb);
     }
@@ -617,6 +634,7 @@ boolean talk;
         context.botl = context.botlx = TRUE;
         update_hearing_array_and_ambient_sounds();
         play_environment_ambient_sounds();
+        refresh_u_tile_gui_info(TRUE);
         if (talk)
             You_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_WARNING, old ? "can hear again." : "are unable to hear anything.");
     }

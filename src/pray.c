@@ -462,6 +462,7 @@ int trouble;
         updatemaxhp();
         u.uhp = u.uhpmax;
         context.botl = 1;
+        refresh_u_tile_gui_info(TRUE);
         break;
     case TROUBLE_COLLAPSING:
         play_sfx_sound(SFX_GAIN_ABILITY);
@@ -1793,6 +1794,7 @@ aligntyp g_align;
             u.ucreamed = 0;
             make_blinded(0L, TRUE);
             context.botl = context.botlx = 1;
+            refresh_u_tile_gui_info(TRUE);
             break;
         case 4: {
             register struct obj *otmp;
