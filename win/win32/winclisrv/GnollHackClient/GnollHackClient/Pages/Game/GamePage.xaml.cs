@@ -3794,7 +3794,8 @@ namespace GnollHackClient.Pages.Game
                                 else
                                     str = "0";
                                 tx = 0 + canvasButtonRect.Left / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                                ty = canvasButtonRect.Top + canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                //ty = canvasButtonRect.Top + canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
                                 textPaint.TextSize = Math.Max(10.0f, textPaint.TextSize * Math.Min(1.0f, canvasButtonRect.Left / (canvasButtonRect.Width * buttonsize)));
                                 break;
                         }
@@ -5087,10 +5088,10 @@ namespace GnollHackClient.Pages.Game
             }
             else
             {
+                float buttonsize = ShowNumberPad ? GHConstants.NumberButtonSize : GHConstants.ArrowButtonSize;
                 if (e.Location.X >= canvasButtonRect.Left && e.Location.X <= canvasButtonRect.Right && e.Location.Y >= canvasButtonRect.Top && e.Location.Y <= canvasButtonRect.Bottom)
                 {
                     int resp = 0;
-                    float buttonsize = ShowNumberPad ? GHConstants.NumberButtonSize : GHConstants.ArrowButtonSize;
                     SKPoint RectLoc = new SKPoint(e.Location.X - canvasButtonRect.Left, e.Location.Y - canvasButtonRect.Top);
 
                     if (RectLoc.Y < canvasButtonRect.Height * buttonsize && RectLoc.X < canvasButtonRect.Width * buttonsize)
@@ -5138,7 +5139,9 @@ namespace GnollHackClient.Pages.Game
                         queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, resp));
                     }
                 }
-                else if (ShowNumberPad && e.Location.X < canvasButtonRect.Left && e.Location.Y >= canvasButtonRect.Top && e.Location.Y <= canvasButtonRect.Top + canvasButtonRect.Height / 3)
+                else if (ShowNumberPad && e.Location.X < canvasButtonRect.Left 
+                    && e.Location.Y >= canvasButtonRect.Top + canvasButtonRect.Height * (1.0f - buttonsize)
+                    && e.Location.Y <= canvasButtonRect.Top + canvasButtonRect.Height)
                 {
                     int resp = -10;
                     ConcurrentQueue<GHResponse> queue;
