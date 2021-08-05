@@ -1363,8 +1363,8 @@ struct obj *otmp;
             int prev_ability = -1;
             int abilities_to_increase = (otmp->blessed ? 2 : 1);
             i = -1;   /* increment to 0 */
-
-            for (int cnt = 0; cnt < 10; cnt++)
+            int cnt;
+            for (cnt = 0; cnt < 10; cnt++)
             {
                 do
                 {
@@ -2528,7 +2528,8 @@ struct obj *obj;
             if (obj->blessed && !Fixed_abil)
             {
                 boolean restored = FALSE;
-                for (int trycnt = 0; trycnt < 10; trycnt++)
+                int trycnt;
+                for (trycnt = 0; trycnt < 10; trycnt++)
                 {
                     i = rn2(A_MAX); /* start at a random point */
                     if (ABASE(i) < AMAX(i))

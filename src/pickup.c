@@ -3727,7 +3727,7 @@ struct obj* other_container;
     if (command_id == 4 && *u.ushops)
         sellobj_state(SELL_NORMAL);
 
-    return n_looted;
+    return n_looted + more_action;
 }
 
 STATIC_OVL char
