@@ -35,7 +35,7 @@ namespace GnollHackClient.Pages.Game
             MainLayout.IsEnabled = false;
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, 'n');
-            _gamePage.ShowNumberPad();
+            _gamePage.DoShowNumberPad();
         }
 
         private async void Search20Button_Clicked(object sender, EventArgs e)

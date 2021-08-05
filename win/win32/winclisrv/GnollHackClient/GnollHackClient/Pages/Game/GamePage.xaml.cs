@@ -96,7 +96,7 @@ namespace GnollHackClient.Pages.Game
         private bool _cursorIsOn;
         private bool _showDirections = false;
         private bool _showNumberPad = false;
-        private bool showNumberPad { get { return _showNumberPad; } set { _showNumberPad = value; } }
+        private bool ShowNumberPad { get { return _showNumberPad; } set { _showNumberPad = value; } }
         private bool _showWaitIcon = false;
         public bool ShowWaitIcon { get { return _showWaitIcon; } set { _showWaitIcon = value; } }
 
@@ -872,17 +872,17 @@ namespace GnollHackClient.Pages.Game
         private void ShowDirections()
         {
             _showDirections = true;
-            showNumberPad = false;
+            ShowNumberPad = false;
         }
         private void HideDirections()
         {
             _showDirections = false;
-            showNumberPad = false;
+            ShowNumberPad = false;
         }
-        public void ShowNumberPad()
+        public void DoShowNumberPad()
         {
             if(!_showDirections)
-                showNumberPad = true;
+                ShowNumberPad = true;
         }
 
         private object msgHistoryLock = new object();
@@ -3706,12 +3706,12 @@ namespace GnollHackClient.Pages.Game
                 canvasButtonRect.Right = canvaswidth * (float)(0.8);
                 canvasButtonRect.Left = canvaswidth * (float)(0.2);
 
-                if (_showDirections || showNumberPad)
+                if (_showDirections || ShowNumberPad)
                 {
-                    float buttonsize = showNumberPad ? GHConstants.NumberButtonSize : GHConstants.ArrowButtonSize;
+                    float buttonsize = ShowNumberPad ? GHConstants.NumberButtonSize : GHConstants.ArrowButtonSize;
                     textPaint.Color = new SKColor(255, 255, 255, 128);
                     textPaint.Typeface = App.DejaVuSansMonoTypeface;
-                    textPaint.TextSize = showNumberPad ? 250 : 400;
+                    textPaint.TextSize = ShowNumberPad ? 225 : 275;
                     for (int i = 0; i <= 9; i++)
                     {
                         switch (i)
@@ -5090,7 +5090,7 @@ namespace GnollHackClient.Pages.Game
                 if (e.Location.X >= canvasButtonRect.Left && e.Location.X <= canvasButtonRect.Right && e.Location.Y >= canvasButtonRect.Top && e.Location.Y <= canvasButtonRect.Bottom)
                 {
                     int resp = 0;
-                    float buttonsize = showNumberPad ? GHConstants.NumberButtonSize : GHConstants.ArrowButtonSize;
+                    float buttonsize = ShowNumberPad ? GHConstants.NumberButtonSize : GHConstants.ArrowButtonSize;
                     SKPoint RectLoc = new SKPoint(e.Location.X - canvasButtonRect.Left, e.Location.Y - canvasButtonRect.Top);
 
                     if (RectLoc.Y < canvasButtonRect.Height * buttonsize && RectLoc.X < canvasButtonRect.Width * buttonsize)
@@ -5126,10 +5126,10 @@ namespace GnollHackClient.Pages.Game
                                 return;
                         }
                         else
-                            resp = showNumberPad ? -5 : 46; /* '.', or self */
+                            resp = ShowNumberPad ? -5 : 46; /* '.', or self */
                     }
 
-                    if (showNumberPad)
+                    if (ShowNumberPad)
                         resp -= 10;
 
                     ConcurrentQueue<GHResponse> queue;
@@ -5138,7 +5138,7 @@ namespace GnollHackClient.Pages.Game
                         queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, resp));
                     }
                 }
-                else if (showNumberPad && e.Location.X < canvasButtonRect.Left && e.Location.Y >= canvasButtonRect.Top && e.Location.Y <= canvasButtonRect.Top + canvasButtonRect.Height / 3)
+                else if (ShowNumberPad && e.Location.X < canvasButtonRect.Left && e.Location.Y >= canvasButtonRect.Top && e.Location.Y <= canvasButtonRect.Top + canvasButtonRect.Height / 3)
                 {
                     int resp = -10;
                     ConcurrentQueue<GHResponse> queue;
@@ -5356,7 +5356,7 @@ namespace GnollHackClient.Pages.Game
         public void GenericButton_Clicked(object sender, EventArgs e, int resp)
         {
             if (!((resp >= '0' && resp <= '9') || (resp <= -1 && resp >= -19)))
-                showNumberPad = false;
+                ShowNumberPad = false;
 
             if (_clientGame != null)
             {
