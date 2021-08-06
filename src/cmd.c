@@ -750,21 +750,33 @@ doability(VOID_ARGS)
         0, 0, iflags.menu_headings | ATR_HEADING,
         "View Character Abilities              ", MENU_UNSELECTED);
 
-    strcpy(available_ability_list[abilitynum].name, "Statistics [you]");
+    strcpy(available_ability_list[abilitynum].name, "Statistics");
     available_ability_list[abilitynum].function_ptr = &docharacterstatistics;
 
     any = zeroany;
     any.a_int = abilitynum + 1;
 
-    add_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any,
+    add_menu(win, NO_GLYPH, &any,
         0, 0, ATR_NONE,
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
     abilitynum++;
 
 
-    strcpy(available_ability_list[abilitynum].name, "Attributes [attributes]");
+    strcpy(available_ability_list[abilitynum].name, "Attributes");
     available_ability_list[abilitynum].function_ptr = &doattributes;
+
+    any = zeroany;
+    any.a_int = abilitynum + 1;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+    abilitynum++;
+
+    strcpy(available_ability_list[abilitynum].name, "Skills");
+    available_ability_list[abilitynum].function_ptr = &enhance_weapon_skill;
 
     any = zeroany;
     any.a_int = abilitynum + 1;
