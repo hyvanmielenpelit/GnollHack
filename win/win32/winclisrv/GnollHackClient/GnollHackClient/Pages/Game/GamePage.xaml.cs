@@ -732,6 +732,12 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.HideSkillButton:
                                 SkillGrid.IsVisible = false;
                                 break;
+                            case GHRequestType.FadeToBlack:
+                                FadeToBlack((uint)req.RequestInt);
+                                break;
+                            case GHRequestType.FadeFromBlack:
+                                FadeFromBlack((uint)req.RequestInt);
+                                break;
                         }
                     }
                 }
@@ -5343,6 +5349,22 @@ namespace GnollHackClient.Pages.Game
                     }                   
                 }
             }
+        }
+
+        public void FadeToBlack(uint milliseconds)
+        {
+            MainGrid.IsEnabled = false;
+            uint timeToAnimate = milliseconds;
+            Animation animation = new Animation(v => canvasView.Opacity = v, 1.0, 0.0);
+            animation.Commit(canvasView, "Opacity", length: timeToAnimate, rate: 25, repeat: () => false);
+        }
+
+        public void FadeFromBlack(uint milliseconds)
+        {
+            MainGrid.IsEnabled = true;
+            uint timeToAnimate = milliseconds;
+            Animation animation = new Animation(v => canvasView.Opacity = v, 0.0, 1.0);
+            animation.Commit(canvasView, "Opacity", length: timeToAnimate, rate: 25, repeat: () => false);
         }
 
         private void PickupButton_Clicked(object sender, EventArgs e)

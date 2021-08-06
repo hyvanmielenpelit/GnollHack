@@ -33,6 +33,8 @@ namespace GnollHackClient
         ShowSkillButton,
         HideSkillButton,
         ShowOutRipPage,
+        FadeToBlack,
+        FadeFromBlack,
     }
 
     public struct AddContextMenuData

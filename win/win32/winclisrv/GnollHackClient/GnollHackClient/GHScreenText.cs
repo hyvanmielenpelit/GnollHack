@@ -127,16 +127,23 @@ namespace GnollHackClient
 
         public float GetSubTextSizeRelativeToMainText(long counter_value)
         {
-            switch (_data.style)
-            {
-                case 0:
-                case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
-                    return 0.30f;
-                case 2:
-                    return 0.80f;
-                default:
-                    return 0.5f;
-            }
+            int maintextlen = _data.text != null ? _data.text.Length : 0;
+            int subtextlen = _data.subtext != null ? _data.subtext.Length : 0;
+            if (subtextlen == 0 || maintextlen == 0)
+                return 1.0f;
+
+            float relsize = Math.Min(0.75f, 0.75f * (float)maintextlen / (float)subtextlen);
+            return relsize;
+            //switch (_data.style)
+            //{
+            //    case 0:
+            //    case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
+            //        return 0.30f;
+            //    case 2:
+            //        return 0.80f;
+            //    default:
+            //        return 0.5f;
+            //}
         }
         public SKTypeface GetTextTypeface(long counter_value)
         {
@@ -148,8 +155,8 @@ namespace GnollHackClient
             return App.ImmortalTypeface;
         }
 
-        public static SKColor TransparentGold = new SKColor(255, 255, 0xD7, 192);
-        public static SKColor TransparentWhite = new SKColor(255, 255, 255, 192);
+        public static SKColor TransparentGold = new SKColor(255, 255, 0xD7, 180);
+        public static SKColor TransparentWhite = new SKColor(255, 255, 255, 180);
 
         public SKColor GetTextBaseColor(long counter_value)
         {
@@ -187,7 +194,7 @@ namespace GnollHackClient
             float vsecs = GetVSecs(counter_value);
             if (vsecs < GetFadeInTime())
             {
-                byte val = (byte)(baseclr.Alpha * Math.Max(0.0f, Math.Min(1.0f, (vsecs) / GetFadeInLength())));
+                byte val = (byte)((float)baseclr.Alpha * Math.Max(0.0f, Math.Min(1.0f, (vsecs) / GetFadeInLength())));
                 SKColor clr = new SKColor(baseclr.Red, baseclr.Green, baseclr.Blue, val);
                 return clr;
             }
@@ -195,7 +202,7 @@ namespace GnollHackClient
                 return SKColors.Transparent;
             else if (vsecs >= GetFadeOutTime())
             {
-                byte val = (byte)(baseclr.Alpha * Math.Max(0.0f, Math.Min(1.0f, (GetFinishTime() - vsecs) / GetFadeOutLength())));
+                byte val = (byte)((float)baseclr.Alpha * Math.Max(0.0f, Math.Min(1.0f, (GetFinishTime() - vsecs) / GetFadeOutLength())));
                 SKColor clr = new SKColor(baseclr.Red, baseclr.Green, baseclr.Blue, val);
                 return clr;
             }

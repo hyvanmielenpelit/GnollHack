@@ -1132,7 +1132,8 @@ namespace GnollHackClient
 
         public void ClientCallback_InitPrintGlyph(int cmdtype)
         {
-            switch(cmdtype)
+            ConcurrentQueue<GHRequest> queue;
+            switch (cmdtype)
             {
                 case (int)init_print_glyph_stages.INIT_GLYPH_LOAD_GLYPHS:
                     /* Reinitialize  glyph2tile after object shuffling */
@@ -1156,6 +1157,24 @@ namespace GnollHackClient
                                 _gamePage.GlyphTileFlags = new byte[gltifl_size];
                             Marshal.Copy(gltifl_ptr, _gamePage.GlyphTileFlags, 0, gltifl_size);
                         }
+                    }
+                    break;
+                case (int)init_print_glyph_stages.INIT_GLYPH_BEFORE_COLLECT:
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.FadeToBlack, 200));
+                        Thread.Sleep(275);
+                    }
+                    break;
+                case (int)init_print_glyph_stages.INIT_GLYPH_COLLECT_GARBAGE:
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                    break;
+                case (int)init_print_glyph_stages.INIT_GLYPH_AFTER_COLLECT:
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.FadeFromBlack, 200));
                     }
                     break;
                 default:
