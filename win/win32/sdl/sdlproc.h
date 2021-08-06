@@ -120,7 +120,7 @@ int sdl_nhgetch(void);
 int sdl_nh_poskey(int *x, int *y, int *mod);
 void sdl_nhbell(void);
 int sdl_doprev_message(void);
-char sdl_yn_function_ex(int style, int attr, int color, const char* title, const char *question, const char *choices, CHAR_P def);
+char sdl_yn_function_ex(int style, int attr, int color, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc);
 void sdl_getlin_ex(int attr, int color, const char *question, char *input);
 int sdl_get_ext_cmd(void);
 void sdl_number_pad(int state);

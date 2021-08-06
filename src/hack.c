@@ -1847,8 +1847,10 @@ domove_core()
 
                     char ynqbuf[BUFSZ] = "";
                     Sprintf(ynqbuf, "Are you sure you want to enter the %s?", is_pool(x, y) ? "pool" : is_lava(x, y) ? "lava" : "location");
+                    char tbuf[BUFSZ] = "";
+                    Sprintf(tbuf, "Entering %s?", is_pool(x, y) ? "Pool" : is_lava(x, y) ? "Lava" : "Location");
 
-                    if (!paranoid_query(ParanoidWater, ynqbuf))
+                    if (!paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidWater, tbuf, ynqbuf))
                     {
                         nomul(0);
                         return;
@@ -1863,7 +1865,7 @@ domove_core()
                 char ynqbuf[BUFSZ] = "";
                 Sprintf(ynqbuf, "There is %s. Step into it?", an(get_trap_explanation(trap)));
 
-                if (!paranoid_query(ParanoidTrap, ynqbuf))
+                if (!paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidTrap, "Stepping into Trap", ynqbuf))
                 {
                     nomul(0);
                     context.move = FALSE;

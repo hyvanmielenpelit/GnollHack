@@ -24,7 +24,7 @@ queued_resp(char *resp)
 }
 
 char
-topl_yn_function_ex(int style, int attr, int color, const char* title, const char *query, const char *resp, char def)
+topl_yn_function_ex(int style, int attr, int color, const char* title, const char *query, const char *resp, char def, const char* resp_desc)
 {
     char buf[30];
     char c = queued_resp((char *) resp);
@@ -49,9 +49,9 @@ topl_yn_function_ex(int style, int attr, int color, const char* title, const cha
 }
 
 char
-mac_yn_function_ex(style, attr, color, title, query, resp, def)
+mac_yn_function_ex(style, attr, color, title, query, resp, def, resp_desc)
 int style, attr, color;
-const char *title, *query, *resp;
+const char *title, *query, *resp, *resp_desc;
 char def;
 /*
  *   Generic yes/no function. 'def' is the default (returned by space or
@@ -61,7 +61,7 @@ char def;
  *   If resp is NULL, any single character is accepted and returned.
  */
 {
-    return topl_yn_function_ex(style, attr, color, title, query, resp, def);
+    return topl_yn_function_ex(style, attr, color, title, query, resp, def, resp_desc);
 }
 
 /* mactopl.c */

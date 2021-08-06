@@ -664,7 +664,7 @@ namespace GnollHackClient.Pages.Game
                                 PrintTopLine(req.RequestString, req.RequestStringAttributes);
                                 break;
                             case GHRequestType.ShowYnResponses:
-                                ShowYnResponses(req.RequestInt, req.RequestAttr, req.RequestNhColor, req.TitleString, req.RequestString, req.Responses);
+                                ShowYnResponses(req.RequestInt, req.RequestAttr, req.RequestNhColor, req.TitleString, req.RequestString, req.Responses, req.ResponseDescriptions);
                                 break;
                             case GHRequestType.HideYnResponses:
                                 HideYnResponses();
@@ -785,8 +785,13 @@ namespace GnollHackClient.Pages.Game
         }
 
         private string CurrentYnResponses;
-        private void ShowYnResponses(int style, int attr, int color, string title, string question, string responses)
+        private void ShowYnResponses(int style, int attr, int color, string title, string question, string responses, string descriptions)
         {
+            string[] descr_list = null;
+            if(descriptions != null)
+            {
+                descr_list = descriptions.Split('\n');
+            }
             CurrentYnResponses = responses;
             if (title == null)
             {

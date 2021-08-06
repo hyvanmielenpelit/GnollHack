@@ -17,7 +17,7 @@ extern char *viz_rmax;            /* max could see indices */
 #define TEMP_MAGICAL_DARKNESS 0x08  /* location is darkened by magic darkness source (overrides TEMP_LIT and lit) */
 #define IN_XRAY_SIGHT 0x10  /* location can be seen by xray vision */
 #define IN_NV_SIGHT 0x20  /* location can be seen by infrared vision */
-
+#define IN_ANY_SIGHT (IN_SIGHT | IN_XRAY_SIGHT | IN_NV_SIGHT)
 /*
  * Light source sources
  */

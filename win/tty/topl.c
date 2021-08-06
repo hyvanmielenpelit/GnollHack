@@ -364,9 +364,9 @@ extern char erase_char; /* from xxxtty.c; don't need kill_char */
 
 /* returns a single keystroke; also sets 'yn_number' */
 char
-tty_yn_function_ex(style, attr, color, title, query, resp, def)
+tty_yn_function_ex(style, attr, color, title, query, resp, def, resp_desc)
 int style UNUSED, attr UNUSED, color UNUSED;
-const char *title UNUSED, *query, *resp;
+const char *title UNUSED, *query, *resp, *resp_desc UNUSED;
 char def;
 /*
  *   Generic yes/no function. 'def' is the default (returned by space or

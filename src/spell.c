@@ -975,7 +975,7 @@ int spell_list_type;
         for (;;) {
             Sprintf(qbuf, "%s which spell? [%s *?]", 
                 (spell_list_type == 5 ? "Forget" : spell_list_type == 4 ? "Set a hotkey for" : spell_list_type == 3 ? "Manage" : spell_list_type == 2 ? "View" : spell_list_type == 1 ? "Prepare" : "Cast"), lets);
-            ilet = yn_function(qbuf, (char *) 0, '\0');
+            ilet = yn_function(qbuf, (char *)0, '\0', (char *)0);
             if (ilet == '*' || ilet == '?')
                 break; /* use menu mode */
             if (index(quitchars, ilet))
@@ -4000,7 +4000,7 @@ int spell;
 
     Sprintf(promptbuf, "Which hotkey do you want to use for \'%s\'? %s", spellname(spell), hotbuf);
     //getlin(promptbuf, answerbuf);
-    answerchar = yn_function(promptbuf, letters, '-');
+    answerchar = yn_function(promptbuf, letters, '-', (char*)0);
     //(void)mungspaces(answerbuf);
     if (answerchar == '\033' || answerchar == 'q')
     {
@@ -4052,7 +4052,7 @@ int spell;
     strcpy(spellnamebuf, spellname(spell));
 
     Sprintf(qbuf, "Are you sure you want to forget \'%s\' permanently?", spellnamebuf);
-    if (ynq_ex(ATR_NONE, CLR_MSG_WARNING, qbuf) == 'y')
+    if (ynq_ex(ATR_NONE, CLR_MSG_WARNING, (char*)0, qbuf) == 'y')
     {
         struct spell empty_spell = { 0 };
         for (int n = spell + 1; n <= MAXSPELL; n++)

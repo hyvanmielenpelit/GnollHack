@@ -467,20 +467,17 @@ extern short tile2enlargement[MAX_TILES];
 #define ADFLAGS_MELEE_DAMAGE    0x00000002UL
 
 /*** some utility macros ***/
-#define yn_query(query) yn_function(query, ynchars, 'n')
-#define ynq(query) yn_function(query, ynqchars, 'q')
-#define ynaq(query) yn_function(query, ynaqchars, 'y')
-#define nyaq(query) yn_function(query, ynaqchars, 'n')
-#define nyNaq(query) yn_function(query, ynNaqchars, 'n')
-#define ynNaq(query) yn_function(query, ynNaqchars, 'y')
-#define ciq(query) yn_function(query, ciqchars, 'q')
-#define bcq(query) yn_function(query, bcqchars, 'q')
-#define fnq(query) yn_function(query, fnqchars, 'q')
-#define dnq(query) yn_function(query, dnqchars, 'q')
-#define idq(query) yn_function(query, idqchars, 'q')
+#define yn_query(query) yn_function(query, ynchars, 'n', yndescs)
+#define ynq(query) yn_function(query, ynqchars, 'q', ynqdescs)
+#define ynaq(query) yn_function(query, ynaqchars, 'y', ynaqdescs)
+#define nyaq(query) yn_function(query, ynaqchars, 'n', ynaqdescs)
+#define nyNaq(query) yn_function(query, ynNaqchars, 'n', ynNaqdescs)
+#define ynNaq(query) yn_function(query, ynNaqchars, 'y', ynNaqdescs)
+#define dnq(query) yn_function(query, dnqchars, 'q', dnqdescs)
+#define idq(query) yn_function(query, idqchars, 'q', idqdescs)
 
-#define yn_query_ex(a, c, query) yn_function_ex(YN_STYLE_GENERAL, a, c, (const char*)0, query, ynchars, 'n')
-#define ynq_ex(a, c, query) yn_function_ex(YN_STYLE_GENERAL, a, c, (const char*)0, query, ynqchars, 'q')
+#define yn_query_ex(a, c, title, query) yn_function_ex(YN_STYLE_GENERAL, a, c, title, query, ynchars, 'n', yndescs)
+#define ynq_ex(a, c, title, query) yn_function_ex(YN_STYLE_GENERAL, a, c, title, query, ynqchars, 'q', ynqdescs)
 
 /* Macros for scatter */
 #define VIS_EFFECTS 0x01 /* display visual effects */

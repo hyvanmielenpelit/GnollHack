@@ -1290,7 +1290,7 @@ enter_explore_mode(VOID_ARGS)
 #endif
         pline_ex(ATR_NONE, CLR_MSG_WARNING,
         "Beware!  From explore mode there will be no return to normal game.");
-        if (paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidQuit,
+        if (paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidQuit, (char*)0,
                            "Do you want to enter explore mode?")) {
             clear_nhwindow(WIN_MESSAGE);
             You("are now in non-scoring explore mode.");
@@ -6848,7 +6848,7 @@ retry:
         dirsym = readchar();
     else
         dirsym = yn_function((s && *s != '^') ? s : "In what direction?",
-                             (char *) 0, '\0');
+                             (char *) 0, '\0', (char*)0);
     
     escape_sequence_key_start_allowed = 0;
     /* remove the prompt string so caller won't have to */
@@ -7933,9 +7933,9 @@ dotravel(VOID_ARGS)
  *   window port causing a buffer overflow there.
  */
 char
-yn_function_ex(style, attr, color, title, query, resp, def)
+yn_function_ex(style, attr, color, title, query, resp, def, resp_desc)
 int style, attr, color;
-const char *title, *query, *resp;
+const char *title, *query, *resp, *resp_desc;
 char def;
 {
     char res, qbuf[QBUFSZ];
@@ -7956,7 +7956,7 @@ char def;
         Strcpy(&qbuf[QBUFSZ - 1 - 3], "...");
         query = qbuf;
     }
-    res = (*windowprocs.win_yn_function_ex)(style, attr, color, title, query, resp, def);
+    res = (*windowprocs.win_yn_function_ex)(style, attr, color, title, query, resp, def, resp_desc);
 #ifdef DUMPLOG
     if (idx == saved_pline_index) {
         /* when idx is still the same as saved_pline_index, the interface
@@ -7971,11 +7971,11 @@ char def;
 }
 
 char
-yn_function(query, resp, def)
-const char* query, * resp;
+yn_function(query, resp, def, resp_desc)
+const char* query, *resp, *resp_desc;
 char def;
 {
-    return yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, (const char*)0, query, resp, def);
+    return yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, (const char*)0, query, resp, def, resp_desc);
 }
 
 
@@ -7985,15 +7985,15 @@ paranoid_query(be_paranoid, prompt)
 boolean be_paranoid;
 const char* prompt;
 {
-    return paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, be_paranoid, prompt);
+    return paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, be_paranoid, (char*)0, prompt);
 }
 
 /* for paranoid_confirm:quit,die,attack prompting */
 boolean
-paranoid_query_ex(attr, color, be_paranoid, prompt)
+paranoid_query_ex(attr, color, be_paranoid, title, prompt)
 int attr, color;
 boolean be_paranoid;
-const char *prompt;
+const char *prompt, *title;
 {
     boolean confirmed_ok;
 
@@ -8022,7 +8022,7 @@ const char *prompt;
             promptprefix = "\"Yes\" or \"No\": ";
         } while (ParanoidConfirm && strcmpi(ans, "no") && --trylimit);
     } else
-        confirmed_ok = (yn_query_ex(attr, color, prompt) == 'y');
+        confirmed_ok = (yn_query_ex(attr, color, title, prompt) == 'y');
 
     return confirmed_ok;
 }
@@ -8181,7 +8181,7 @@ dolight(VOID_ARGS)
             if (cnt > 1)
             {
                 Sprintf(qbuf, "There are several ignitable objects here. Do you want to light them up or snuff them out?");
-                c = yn_function(qbuf, ynqchars, 'n');
+                c = yn_function(qbuf, ynqchars, 'n', ynqdescs);
             }
 
             if (c == 'q')
@@ -8205,7 +8205,7 @@ dolight(VOID_ARGS)
                         (void)safe_qbuf(qbuf, qbuf, qsfx, otmp, doname_in_text, ansimpleoname,
                             one ? something : (const char*)"things");
 
-                        if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y')
+                        if ((c = yn_function(qbuf, ynqchars, 'n', ynqdescs)) == 'y')
                         {
                             if (is_candle(otmp))
                                 return use_candle(&otmp);

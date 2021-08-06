@@ -2896,7 +2896,7 @@ int
 dopray()
 {
     /* Confirm accidental slips of Alt-P */
-    if (!context.spellpray && ParanoidPray && yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Are you sure you want to pray?") != 'y')
+    if (!context.spellpray && ParanoidPray && yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Confirm Prayer", "Are you sure you want to pray?") != 'y')
         return 0;
 
     u.uconduct.gnostic++;

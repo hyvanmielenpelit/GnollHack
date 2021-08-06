@@ -207,11 +207,19 @@ E const char ynchars[];
 E const char ynqchars[];
 E const char ynaqchars[];
 E const char ynNaqchars[];
-E const char ciqchars[];
-E const char bcqchars[];
-E const char fnqchars[];
 E const char dnqchars[];
 E const char idqchars[];
+
+E const char yndescs[];
+E const char ynqdescs[];
+E const char ynaqdescs[];
+E const char ynNaqdescs[];
+E const char ciqdescs[];
+E const char bcqdescs[];
+E const char fnqdescs[];
+E const char dnqdescs[];
+E const char idqdescs[];
+
 E NEARDATA long yn_number;
 
 E const char disclosure_options[];

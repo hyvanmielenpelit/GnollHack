@@ -731,7 +731,7 @@ handle_knapsack_full(VOID_ARGS)
     if (cnt > 0)
     {
         /* Ask for putting things in a bag or drop items */
-        char ans = yn_function_ex(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", "Do you want to put items Into a container or Drop them?", idqchars, 'q');
+        char ans = yn_function_ex(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", "Do you want to put items Into a container or Drop them?", idqchars, 'q', idqdescs);
         if (ans == 'i')
         {
             struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
@@ -1532,7 +1532,7 @@ boolean telekinesis;
                 (void) safe_qbuf(qbuf, qbuf, ".  Continue?", obj, doname,
                                  ansimpleoname, something);
                 obj->quan = savequan;
-                switch (ynq_ex(ATR_NONE, CLR_MSG_ATTENTION, qbuf)) {
+                switch (ynq_ex(ATR_NONE, CLR_MSG_ATTENTION, (char*)0, qbuf)) {
                 case 'q':
                     result = -1;
                     break;
@@ -2321,7 +2321,7 @@ boolean *prev_loot;
                 x_monnam(mtmp, ARTICLE_THE, (char *) 0,
                          SUPPRESS_SADDLE, FALSE));
 
-        if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y')
+        if ((c = yn_function(qbuf, ynqchars, 'n', ynqdescs)) == 'y')
         {
             if (nolimbs(youmonst.data)) 
             {
@@ -2573,7 +2573,7 @@ register struct obj *obj;
     {
         char qbuf[BUFSZ], c;
         Sprintf(qbuf, "You are putting %s into %s. Continue?", the(xname(obj)), the(xname(current_container)));
-        if ((c = yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, (const char*)0, qbuf, ynqchars, 'n')) != 'y')
+        if ((c = yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, (const char*)0, qbuf, ynqchars, 'n', ynqdescs)) != 'y')
             return 0;
     }
 
@@ -3206,7 +3206,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
                 Strcat(xbuf, "?");
             if (*xbuf)
                 Strcat(strcat(pbuf, "\033"), xbuf);
-            c = yn_function(qbuf, pbuf, more_containers ? 'n' : 'q');
+            c = yn_function(qbuf, pbuf, more_containers ? 'n' : 'q', (char*)0);
         } /* PARTIAL|FULL vs other modes */
 
         if (c == '?') 

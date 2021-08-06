@@ -407,7 +407,7 @@ dowield()
                 do {
                     Sprintf(qbuf, "Which %s, Right or Left?",
                         body_part(HAND));
-                    answer = yn_function(qbuf, "rl", '\0');
+                    answer = yn_function(qbuf, "rl", '\0', "Right\nLeft");
                     switch (answer) {
                     case '\0':
                         return 0;
@@ -459,7 +459,7 @@ dowield()
             {
                 Sprintf(qbuf, "Which %s, Right or Left?",
                     body_part(HAND));
-                answer = yn_function(qbuf, "rl", '\0');
+                answer = yn_function(qbuf, "rl", '\0', "Right\nLeft");
                 switch (answer) 
                 {
                 case '\0':

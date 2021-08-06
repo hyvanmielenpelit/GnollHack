@@ -6144,7 +6144,7 @@ boolean force;
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find a trap on the door!");
         exercise(A_WIS, TRUE);
 
-        if (ynq_ex(ATR_NONE, CLR_MSG_ATTENTION, "Disarm it?") != 'y')
+        if (ynq_ex(ATR_NONE, CLR_MSG_ATTENTION, "Trap Found", "Disarm it?") != 'y')
             return 1;
 
         if (levl[x][y].doormask & D_TRAPPED) 

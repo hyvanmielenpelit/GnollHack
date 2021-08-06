@@ -1383,7 +1383,7 @@ struct obj **optr;
     }
     else
     {
-        ch = yn_function("What do you look for?", (char*)0, '\0');
+        ch = yn_function("What do you look for?", (char*)0, '\0', (char*)0);
     }
 
     /* Don't filter out ' ' here; it has a use */

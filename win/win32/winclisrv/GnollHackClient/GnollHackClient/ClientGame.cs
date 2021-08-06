@@ -445,7 +445,7 @@ namespace GnollHackClient
                 return 0;
 
         }
-        public int ClientCallback_YnQuestion(int style, int attr, int color, string title, string question, string responses, string def)
+        public int ClientCallback_YnQuestion(int style, int attr, int color, string title, string question, string responses, string def, string descriptions)
         {
             if(question != null)
                 RawPrintEx(question, attr, color);
@@ -468,7 +468,7 @@ namespace GnollHackClient
             {
                 if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                 {
-                    queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, style, attr, color, title, question, responses));
+                    queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, style, attr, color, title, question, responses, descriptions));
                 }
 
                 int cnt = 0;

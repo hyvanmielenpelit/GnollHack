@@ -2667,7 +2667,7 @@ boolean (*validitemfunc)(struct obj*);
             else
                 Sprintf(eos(qbuf), " [%s or ?*]", buf);
 
-            ilet = yn_function(qbuf, (char *) 0, '\0');
+            ilet = yn_function(qbuf, (char *)0, '\0', (char *)0);
         }
         if (digit(ilet)) {
             long tmpcnt = 0;
@@ -5195,7 +5195,7 @@ dotypeinv()
             }
 
         if (class_count > 1) {
-            c = yn_function(prompt, types, '\0');
+            c = yn_function(prompt, types, '\0', (char*)0);
             savech(c);
             if (c == '\0') {
                 clear_nhwindow(WIN_MESSAGE);
@@ -6432,7 +6432,7 @@ doorganize() /* inventory organizer by Del Lamb */
     Sprintf(qbuf, "Adjust letter to what [%s]%s?", lets,
             invent ? " (? see used letters)" : "");
     for (trycnt = 1; ; ++trycnt) {
-        let = yn_function(qbuf, (char *) 0, '\0');
+        let = yn_function(qbuf, (char *)0, '\0', (char *)0);
         if (let == '?' || let == '*') {
             let = display_used_invlets(splitting ? obj->invlet : 0);
             if (!let)

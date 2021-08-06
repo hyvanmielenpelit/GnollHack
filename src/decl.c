@@ -70,11 +70,16 @@ const char ynchars[] = "yn";
 const char ynqchars[] = "ynq";
 const char ynaqchars[] = "ynaq";
 const char ynNaqchars[] = "yn#aq";
-const char ciqchars[] = "ciq";
-const char bcqchars[] = "bcq";
-const char fnqchars[] = "fnq";
 const char dnqchars[] = "dnq";
 const char idqchars[] = "idq";
+
+const char yndescs[] = "Yes\nNo";
+const char ynqdescs[] = "Yes\nNo\nCancel";
+const char ynaqdescs[] = "Yes\nNo\nAll\nCancel";
+const char ynNaqdescs[] = "Yes\nNo\nCount\nAll\nCancel";
+const char dnqdescs[] = "Disarm\nNeglect\nCancel";
+const char idqdescs[] = "Put Into\nDrop\nDo Nothing";
+
 NEARDATA long yn_number = 0L;
 
 const char disclosure_options[] = "iavgco";

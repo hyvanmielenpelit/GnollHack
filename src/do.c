@@ -389,7 +389,7 @@ floorexamine()
     if (cnt > 1)
     {
         Sprintf(qbuf, "There are several objects here. Do you want to examine them?");
-        if ((c = yn_function(qbuf, ynqchars, 'n')) != 'y')
+        if ((c = yn_function(qbuf, ynchars, 'n', yndescs)) != 'y')
             return  TRUE;
     }
 
@@ -404,7 +404,7 @@ floorexamine()
         Sprintf(qsfx, " here; %s %s?", "examine", one ? "it" : "them");
         (void)safe_qbuf(qbuf, qbuf, qsfx, otmp, doname, ansimpleoname,
             one ? something : (const char*) "things");
-        if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y')
+        if ((c = yn_function(qbuf, ynqchars, 'n', ynqdescs)) == 'y')
         {
             (void)itemdescription(otmp);
             res = FALSE;
@@ -5404,7 +5404,7 @@ dodown()
     {
         You("are standing at the gate to Gehennom.");
         pline("Unspeakable cruelty and harm lurk down there.");
-        if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Are you sure you want to enter?") != 'y')
+        if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Gate to Gehennom", "Are you sure you want to enter?") != 'y')
             return 0;
         else
             pline("So be it.");
@@ -5507,7 +5507,7 @@ doup()
     if (ledger_no(&u.uz) == 1) {
         if (iflags.debug_fuzzer)
             return 0;
-        if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Beware, there will be no return!  Still climb?") != 'y')
+        if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Exiting Dungeon", "Beware, there will be no return!  Still climb?") != 'y')
             return 0;
     }
     if (!next_to_u()) {
