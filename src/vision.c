@@ -587,7 +587,7 @@ int control;
     }
     else 
     {
-        int has_night_vision = 1; /* hero has night vision */
+        int has_night_vision = 1; /* hero has night vision, range 1 */
 
         if (Underwater && !Is_waterlevel(&u.uz)) 
         {

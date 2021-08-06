@@ -3569,6 +3569,9 @@ xchar x, y;
         {
             idx = wall_angle(ptr);
 
+            if (idx == S_stone)
+                break;
+
             if (idx == S_hwall)
                 goto hwall_here;
 
@@ -4402,7 +4405,7 @@ int x, y, which;
     if (!isok(x, y))
         return which;
     type = levl[x][y].typ;
-    if (IS_ROCK(type) || type == CORR || type == SCORR)
+    if ((IS_ROCK(type) && !IS_TREE(type)) || type == CORR || type == SCORR)
         return which;
     return 0;
 }
