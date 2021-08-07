@@ -45,6 +45,7 @@ struct layer_info {
     unsigned long layer_flags;
 
     unsigned m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
+    unsigned o_id;  /* this is the o_id of the possibly moving boulder */
 
     struct obj* memory_objchn;     /* Pointer to the location's first memory object*/
 

@@ -34,8 +34,9 @@ E const char* FDECL(get_game_difficulty_symbol, (int));
 E void FDECL(welcome, (BOOLEAN_P));
 E time_t NDECL(get_realtime);
 E int FDECL(argcheck, (int, char **, enum earlyarg));
-E void FDECL(reset_origin_coordinates, (struct monst*));
+E void FDECL(reset_monster_origin_coordinates, (struct monst*));
 E void NDECL(reset_all_monster_origin_coordinates);
+E void FDECL(reset_object_origin_coordinates, (struct obj*));
 
 /* ### animation.c ### */
 
@@ -515,6 +516,7 @@ E void FDECL(change_layer_hit_tile, (int, int, int));
 E void FDECL(add_glyph_buffer_layer_flags, (int, int, unsigned long));
 E void FDECL(remove_glyph_buffer_layer_flags, (int, int, unsigned long));
 E void FDECL(set_glyph_buffer_object_height, (int, int, SHORT_P));
+E void FDECL(set_glyph_buffer_oid, (int, int, int));
 E void FDECL(add_or_remove_glyph_to_layer, (int, int, int, BOOLEAN_P));
 E void FDECL(add_glyph_to_layer, (int, int, int));
 E void FDECL(remove_current_glyph_from_layer, (int, int));

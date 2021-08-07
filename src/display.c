@@ -424,6 +424,8 @@ boolean exclude_ascii;
             levl[x][y].hero_memory_layers.object_height = obj_height;
         }
 
+        levl[x][y].hero_memory_layers.o_id = 0; /* No moving objects in memory */
+
         if (in_pit)
             levl[x][y].hero_memory_layers.layer_flags |= LFLAGS_O_IN_PIT;
 
@@ -448,6 +450,9 @@ boolean exclude_ascii;
             show_glyph_on_layer(x, y, gui_glyph, layer); /* Object layer glyph should be aligned with ascii glyph */
             set_glyph_buffer_object_height(x, y, obj_height);
         }
+
+        if(obj->ox0 > 0 && obj->oy0 >= 0 && (obj->ox0 != obj->ox || obj->oy0 != obj->oy))
+            set_glyph_buffer_oid(x, y, obj->o_id); /* Moving object */
 
         if(in_pit)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_O_IN_PIT);
@@ -2578,6 +2583,17 @@ short height;
     if (isok(x, y))
     {
         gbuf[y][x].layers.object_height = height;
+    }
+}
+
+void
+set_glyph_buffer_oid(x, y, oid)
+int x, y;
+int oid;
+{
+    if (isok(x, y))
+    {
+        gbuf[y][x].layers.o_id = oid;
     }
 }
 

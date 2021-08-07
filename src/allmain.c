@@ -416,7 +416,8 @@ boolean resuming;
             curs_on_u();
         }
 
-        reset_origin_coordinates(&youmonst);
+        reset_monster_origin_coordinates(&youmonst);
+        reset_object_origin_coordinates(fobj);
 
         context.move = 1;
 
@@ -536,7 +537,7 @@ boolean resuming;
 }
 
 void 
-reset_origin_coordinates(mtmp)
+reset_monster_origin_coordinates(mtmp)
 struct monst* mtmp;
 {
     if (!mtmp)
@@ -546,10 +547,13 @@ struct monst* mtmp;
     {
         /* Reset u.ux0 and u.uy0 */
         u.ux0 = u.ux, u.uy0 = u.uy;
+        //reset_object_origin_coordinates(invent);
     }
     
     mtmp->mx0 = mtmp->mx;
     mtmp->my0 = mtmp->my;
+
+    //reset_object_origin_coordinates(mtmp->minvent);
 }
 
 void
@@ -558,8 +562,21 @@ reset_all_monster_origin_coordinates()
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
-        reset_origin_coordinates(mtmp);
+        reset_monster_origin_coordinates(mtmp);
     }
+}
+
+void
+reset_object_origin_coordinates(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return;
+
+    obj->ox0 = obj->ox;
+    obj->oy0 = obj->oy;
+
+    reset_object_origin_coordinates(obj->cobj);
 }
 
 void

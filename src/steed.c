@@ -562,7 +562,7 @@ int reason; /* Player was thrown off etc. */
     unsigned save_utrap = u.utrap;
     boolean have_spot = landing_spot(&cc, reason, 0);
 
-    reset_origin_coordinates(&youmonst);
+    reset_monster_origin_coordinates(&youmonst);
 
     mtmp = u.usteed; /* make a copy of steed pointer */
     /* Sanity check */

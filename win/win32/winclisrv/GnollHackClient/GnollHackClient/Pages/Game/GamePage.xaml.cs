@@ -2365,6 +2365,7 @@ namespace GnollHackClient.Pages.Game
                                                 //int layer_idx = _draw_order[draw_idx].layer;
                                                 bool is_monster_or_shadow_layer = (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS);
                                                 bool is_monster_like_layer = (is_monster_or_shadow_layer || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT);
+                                                bool is_object_like_layer = (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT);
                                                 for (int mapy = startY; mapy <= endY; mapy++)
                                                 {
                                                     for (int mapx = startX; mapx <= endX; mapx++)
@@ -2691,6 +2692,12 @@ namespace GnollHackClient.Pages.Game
 
                                                                     int signed_glyph = NoGlyph;
                                                                     short obj_height = _mapData[mapx, mapy].Layers.object_height;
+
+                                                                    long glyphobjectprintcountervalue = _mapData[mapx, mapy].GlyphObjectPrintCounterValue;
+                                                                    long objectcounterdiff = currentcountervalue - glyphobjectprintcountervalue;
+                                                                    sbyte object_origin_x = 0;
+                                                                    sbyte object_origin_y = 0;
+
                                                                     ObjectDataItem otmp_round = null;
 
                                                                     int source_main_dir_num = 1;
@@ -2905,12 +2912,16 @@ namespace GnollHackClient.Pages.Game
                                                                                 otmp_round = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx];
                                                                                 signed_glyph = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
                                                                                 obj_height = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].TileHeight;
+                                                                                object_origin_x = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.ox0;
+                                                                                object_origin_y = _objectData[mapx, mapy].MemoryObjectList[sub_layer_idx].ObjData.oy0;
                                                                             }
                                                                             else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
                                                                             {
                                                                                 otmp_round = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx];
                                                                                 signed_glyph = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.gui_glyph;
                                                                                 obj_height = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].TileHeight;
+                                                                                object_origin_x = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.ox0;
+                                                                                object_origin_y = _objectData[mapx, mapy].FloorObjectList[sub_layer_idx].ObjData.oy0;
                                                                             }
                                                                             else
                                                                             {
@@ -2924,12 +2935,16 @@ namespace GnollHackClient.Pages.Game
                                                                                 otmp_round = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx];
                                                                                 signed_glyph = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.gui_glyph;
                                                                                 obj_height = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].TileHeight;
+                                                                                object_origin_x = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.ox0;
+                                                                                object_origin_y = _objectData[mapx, mapy].CoverMemoryObjectList[sub_layer_idx].ObjData.oy0;
                                                                             }
                                                                             else if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0)
                                                                             {
                                                                                 otmp_round = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx];
                                                                                 signed_glyph = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.gui_glyph;
                                                                                 obj_height = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].TileHeight;
+                                                                                object_origin_x = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.ox0;
+                                                                                object_origin_y = _objectData[mapx, mapy].CoverFloorObjectList[sub_layer_idx].ObjData.oy0;
                                                                             }
                                                                             else
                                                                             {
@@ -2950,6 +2965,20 @@ namespace GnollHackClient.Pages.Game
                                                                         int glyph = Math.Abs(signed_glyph);
                                                                         if (glyph == 0 || glyph >= Glyph2Tile.Length)
                                                                             continue;
+
+                                                                        float object_move_offset_x = 0, object_move_offset_y = 0;
+                                                                        int objectmovediffx = (int)object_origin_x - mapx;
+                                                                        int objectmovediffy = (int)object_origin_y - mapy;
+
+                                                                        if (GHUtils.isok(object_origin_x, object_origin_y)
+                                                                            && (objectmovediffx != 0 || objectmovediffy != 0)
+                                                                            && objectcounterdiff >= 0 && objectcounterdiff < GHConstants.MoveIntervals)
+                                                                        {
+                                                                            object_move_offset_x = width * (float)objectmovediffx * (float)(GHConstants.MoveIntervals - objectcounterdiff) / (float)GHConstants.MoveIntervals;
+                                                                            object_move_offset_y = height * (float)objectmovediffy * (float)(GHConstants.MoveIntervals - objectcounterdiff) / (float)GHConstants.MoveIntervals;
+                                                                        }
+
+
 
                                                                         short missile_height = _mapData[mapx, mapy].Layers.missile_height;
                                                                         bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
@@ -3305,6 +3334,11 @@ namespace GnollHackClient.Pages.Game
                                                                                     draw_shadow[mapx, mapy] = true;
                                                                                     continue; /* Draw only the transparent shadow in the max_layers shadow layer; otherwise, if drawn twice, the result will be nontransparent */
                                                                                 }
+                                                                            }
+                                                                            else if(is_object_like_layer && otmp_round != null)
+                                                                            {
+                                                                                move_offset_x = object_move_offset_x;
+                                                                                move_offset_y = object_move_offset_y;
                                                                             }
                                                                             else if (layer_idx == (int)layer_types.LAYER_COVER_TRAP)
                                                                             {
@@ -5199,6 +5233,16 @@ namespace GnollHackClient.Pages.Game
                     _ux = x;
                     _uy = y;
                 }
+                if (layers.o_id != 0 && layers.o_id != _mapData[x, y].Layers.o_id)
+                {
+                    /* Update counter value only if the monster just moved here, not, e.g. if it changes action in the same square,
+                     * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
+                     */
+                    lock (AnimationTimerLock)
+                    {
+                        _mapData[x, y].GlyphObjectPrintCounterValue = AnimationTimers.general_animation_counter;
+                    }
+                }
                 _mapData[x, y].Glyph = glyph;
                 _mapData[x, y].BkGlyph = bkglyph;
                 _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);
@@ -5241,6 +5285,8 @@ namespace GnollHackClient.Pages.Game
                         _mapData[x, y].Color = SKColors.Black;// default(MapData);
                         _mapData[x, y].Special = 0;
                         _mapData[x, y].NeedsUpdate = true;
+                        _mapData[x, y].GlyphPrintCounterValue = 0;
+                        _mapData[x, y].GlyphObjectPrintCounterValue = 0;
 
                         _mapData[x, y].Layers = new LayerInfo();
                         _mapData[x, y].Layers.layer_glyphs = new int[(int)layer_types.MAX_LAYERS];

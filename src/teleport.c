@@ -399,7 +399,7 @@ boolean allow_drag, keep_effect_glyphs;
     spoteffects(TRUE);
     invocation_message();
 
-    reset_origin_coordinates(&youmonst);
+    reset_monster_origin_coordinates(&youmonst);
 
     if (keep_effect_glyphs)
     {

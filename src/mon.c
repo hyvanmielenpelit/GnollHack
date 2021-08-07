@@ -1613,7 +1613,7 @@ movemon()
             somebody_can_move = TRUE;
 
         /* Reset mx0 and my0 */
-        mtmp->mx0 = mtmp->mx, mtmp->my0 = mtmp->my;
+        reset_monster_origin_coordinates(mtmp);
 
         if (vision_full_recalc)
             vision_recalc(0); /* vision! */
@@ -3075,7 +3075,7 @@ unsigned long mdiedflags;
     struct permonst *mptr;
     int tmp;
 
-    reset_origin_coordinates(mtmp);
+    reset_monster_origin_coordinates(mtmp);
     mtmp->mhp = 0; /* in case caller hasn't done this */
     if (iflags.wc2_statuslines > 3 && is_tame(mtmp))
         context.botl = 1;
@@ -3427,7 +3427,7 @@ struct monst *mdef;
     xchar x = mdef->mx, y = mdef->my;
     boolean wasinside = FALSE;
 
-    reset_origin_coordinates(mdef);
+    reset_monster_origin_coordinates(mdef);
 
     if (!vamp_stone(mdef)) /* vampshifter reverts to vampire */
         return;

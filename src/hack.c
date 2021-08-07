@@ -669,9 +669,14 @@ register struct obj *obj;
 register xchar ox, oy;
 {
     /* optimize by leaving on the fobj chain? */
+    xchar ox0 = obj->ox;
+    xchar oy0 = obj->oy;
     remove_object(obj);
     newsym(obj->ox, obj->oy);
     place_object(obj, ox, oy);
+    /* place_object resets ox0, oy0, so let's set them afterwards */
+    obj->ox0 = ox0;
+    obj->oy0 = oy0;
     newsym(ox, oy);
 }
 

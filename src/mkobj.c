@@ -1000,6 +1000,7 @@ register struct obj* otmp;
 
     dummy = newobj();
     *dummy = *otmp;
+    dummy->ox0 = dummy->oy0 = 0;  /* No moving objects in memory */
     dummy->nobj = (struct obj*)0; /* set nobj to zero; this is just a copy */
     dummy->cobj = (struct obj*)0;
     add_memory_object_contents(dummy, otmp);
@@ -1134,6 +1135,7 @@ int x, y;
         /* Just in case */
         level.locations[x][y].hero_memory_layers.layer_glyphs[LAYER_OBJECT] = NO_GLYPH;
         level.locations[x][y].hero_memory_layers.layer_glyphs[LAYER_COVER_OBJECT] = NO_GLYPH;
+        level.locations[x][y].hero_memory_layers.o_id = 0;
 
         /* Clear actual memory objects */
         struct obj* obj, * contained_obj;
@@ -3422,8 +3424,8 @@ int x, y;
     }
 
     /* set the new object's location */
-    otmp->ox = x;
-    otmp->oy = y;
+    otmp->ox = otmp->ox0 = x;
+    otmp->oy = otmp->oy0 = y;
 
     otmp->where = OBJ_FLOOR;
 

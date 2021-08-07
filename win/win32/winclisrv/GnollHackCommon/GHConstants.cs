@@ -314,6 +314,7 @@ namespace GnollHackCommon
 
         public ulong layer_flags;
         public uint m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
+        public uint o_id;  /* this is the o_id of the possibly moving boulder */
 
         public IntPtr memory_objchn;     /* Pointer to the location's first memory object*/
 

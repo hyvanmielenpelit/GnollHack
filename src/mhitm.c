@@ -339,7 +339,7 @@ register struct monst *magr, *mdef;
         && magr->my != mdef->my)
         return MM_MISS;
 
-    reset_origin_coordinates(&youmonst);
+    reset_monster_origin_coordinates(&youmonst);
 
     /* Update facing */
     update_m_facing(magr, mdef->mx - magr->mx, TRUE);
@@ -2171,7 +2171,7 @@ register struct obj* omonwep;
             remove_monster(mdef->mx, mdef->my);
             mdef->mhp = 1; /* otherwise place_monster will complain */
             place_monster(mdef, mdef->mx, mdef->my);
-            reset_origin_coordinates(mdef);
+            reset_monster_origin_coordinates(mdef);
             mdef->mhp = 0;
         }
 
