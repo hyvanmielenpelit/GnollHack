@@ -1079,6 +1079,7 @@ MINERALIZE
 MAZE:"sanctum", ' '
 FLAGS: noteleport,hardfloor,nommap
 TILESET: undead_tileset
+NAMING:"A sanctum of evil", name_revealed_on_arrival
 # This is outside the main map, below, so we must do it before adding
 # that map and anchoring coordinates to it. This extends the invisible
 # barrier up to the top row, which falls outside the drawn map.

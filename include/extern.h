@@ -1238,6 +1238,7 @@ E char *FDECL(strkitten, (char *, CHAR_P));
 E void FDECL(copynchars, (char *, const char *, int));
 E char FDECL(chrcasecpy, (int, int));
 E char *FDECL(strcasecpy, (char *, const char *));
+E char* FDECL(strcpy_capitalized_for_title, (char*, const char*));
 E char *FDECL(s_suffix, (const char *));
 E char *FDECL(ing_suffix, (const char *));
 E char *FDECL(xcrypt, (const char *, char *));

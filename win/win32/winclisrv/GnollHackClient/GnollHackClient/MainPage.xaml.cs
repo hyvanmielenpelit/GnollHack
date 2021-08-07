@@ -341,7 +341,7 @@ namespace GnollHackClient
                 _currentPageHeight = height;
                 videoView.Stop();
                 videoView.Source = null;
-                if(width > height && false)
+                if(width > height)
                 {
                     if (Device.RuntimePlatform == Device.UWP)
                         videoView.Source = new Uri($"ms-appx:///Assets/mainmenulandscape.mp4");

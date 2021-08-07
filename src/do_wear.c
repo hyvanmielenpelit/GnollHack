@@ -1533,7 +1533,10 @@ struct obj* obj, *curobj;
     if (flags.exchange_prompt && obj && curobj && curobj->owornmask && !(obj->owornmask & W_ARMOR))
     {
         char abuf[BUFSZ] = "";
-        Sprintf(abuf, "%s", curobj->oclass == ARMOR_CLASS ? armor_class_simple_name(curobj) : "item");
+        char classbuf[BUFSZ] = "";
+        if(curobj->oclass == MISCELLANEOUS_CLASS)
+            (void)strcpy_capitalized_for_title(classbuf, misc_type_names[objects[obj->otyp].oc_subtyp]);
+        Sprintf(abuf, "%s", curobj->oclass == MISCELLANEOUS_CLASS ? classbuf : curobj->oclass == AMULET_CLASS ? "amulet" : curobj->oclass == ARMOR_CLASS ? armor_class_simple_name(curobj) : "item");
         *abuf = highc(*abuf);
 
         char tbuf[BUFSZ] = "";
@@ -3238,7 +3241,11 @@ take_off(VOID_ARGS)
         {
             don->delay = 1;
         }
-        else if (doff->what == RIGHT_RING)
+        else if (don->what == RIGHT_RING)
+        {
+            don->delay = 1;
+        }
+        else if (don->what & W_MISCITEMS)
         {
             don->delay = 1;
         }
@@ -3347,7 +3354,11 @@ take_off(VOID_ARGS)
     {
         doff->delay = 1;
     }
-    else if (doff->what == WORN_BLINDF) 
+    else if (doff->what & W_MISCITEMS)
+    {
+        doff->delay = 1;
+    }
+    else if (doff->what == WORN_BLINDF)
     {
         /* [this used to be 2, but 'R' (and 'T') only require 1 turn to
            remove a blindfold, so 'A' shouldn't have been requiring 2] */

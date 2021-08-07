@@ -29,7 +29,7 @@ STATIC_DCL coord* FDECL(anvil_pos, (int));
 STATIC_DCL struct permonst *NDECL(morguemon);
 STATIC_DCL struct permonst *FDECL(librarymon, (int));
 STATIC_DCL struct permonst *NDECL(squadmon);
-STATIC_DCL struct permonst* NDECL(armorymon);
+STATIC_DCL struct permonst* FDECL(armorymon, (BOOLEAN_P));
 STATIC_DCL void FDECL(save_room, (int, struct mkroom *));
 STATIC_DCL void FDECL(rest_room, (int, struct mkroom *));
 
@@ -450,8 +450,7 @@ struct mkroom *sroom;
 
     register int roll = rn2(4);
     int hd = level_difficulty();
-    struct permonst* mainlibrarymonst = 0;
-    boolean special_item_created = FALSE;
+    struct permonst* main_monster = 0;
     int special_item_chance = 0;
     struct obj* firstbox = 0;;
     struct obj* middlebox = 0;
@@ -461,6 +460,7 @@ struct mkroom *sroom;
     int mon_one_in_chance = 1;
     int box_count = 0;
     int box_threshold = 5;
+    boolean make_special_item = FALSE;
 
     sh = sroom->fdoor;
     switch (type)
@@ -530,37 +530,37 @@ struct mkroom *sroom;
 
         if (librarytype == 0) // Gnomes
         {
-            mainlibrarymonst = &mons[PM_GNOMISH_WIZARD];
+            main_monster = &mons[PM_GNOMISH_WIZARD];
         }
         else if (librarytype == 1) // Gnolls
         {
-            mainlibrarymonst = &mons[PM_GNOLL_SUPREME_WARDEN];
+            main_monster = &mons[PM_GNOLL_SUPREME_WARDEN];
         }
         else if (librarytype == 2) // Liches
         {
             if (Inhell || In_endgame(&u.uz)) {
-                mainlibrarymonst = !rn2(4) ? &mons[PM_ARCH_LICH] : &mons[PM_MASTER_LICH];
+                main_monster = !rn2(4) ? &mons[PM_ARCH_LICH] : &mons[PM_MASTER_LICH];
             }
             else
             {
                 if (hd >= 25)
-                    mainlibrarymonst = &mons[PM_MASTER_LICH];
+                    main_monster = &mons[PM_MASTER_LICH];
                 if (hd >= 13)
-                    mainlibrarymonst = &mons[PM_DEMILICH];
+                    main_monster = &mons[PM_DEMILICH];
                 else
-                    mainlibrarymonst = &mons[PM_LICH];
+                    main_monster = &mons[PM_LICH];
             }
         }
         else if (librarytype == 3) // Tentacled ones
         {
-            if ((hd >= 25 || Inhell || In_endgame(&u.uz)) && !rn2(3)) {
-                mainlibrarymonst = &mons[PM_ELDER_TENTACLED_ONE];
+            if ((hd >= 25 || Inhell || In_endgame(&u.uz))) {
+                main_monster = &mons[PM_ELDER_TENTACLED_ONE];
             }
             else
-                mainlibrarymonst = &mons[PM_TENTACLED_ONE];
+                main_monster = &mons[PM_TENTACLED_ONE];
         }
         else
-            mainlibrarymonst = &mons[PM_GNOMISH_WIZARD];
+            main_monster = &mons[PM_GNOMISH_WIZARD];
         //Note in library we place only a monster in one in every 2 squares
         goto place_main_monst_here; /* Prevent fall thru warning */
     case COCKNEST:
@@ -582,8 +582,8 @@ place_main_monst_here:
         goldlim = 500 * level_difficulty();
         break;
     case ARMORY:
-        special_item_created = FALSE;
-        special_item_chance = depth(&u.uz) * 2;
+        special_item_chance = (depth(&u.uz) * 3) / 2;
+        make_special_item = (rn2(100) < special_item_chance);
         box_threshold = min(5, (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly) / 2);
         box_one_in_chance = max(3, (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly) / 4);
         if (depth(&u.uz) < depth(&oracle_level))
@@ -593,6 +593,11 @@ place_main_monst_here:
         else
             mon_one_in_chance = 2;
 
+        if (make_special_item)
+            goto place_main_monst_here;
+        else
+            tx = 0, ty = 0;
+        
         break;
     }
 
@@ -630,12 +635,12 @@ place_main_monst_here:
                            : (type == BARRACKS)
                               ? squadmon()
                            : (type == ARMORY)
-                              ? armorymon()
+                              ? armorymon(sx == tx && sy == ty ? TRUE : FALSE)
                               : (type == MORGUE)
                                  ? morguemon()
                               : (type == LIBRARY)
                                 ? (sx == tx && sy == ty
-                                    ? mainlibrarymonst
+                                    ? main_monster
                                     : librarymon(librarytype))
                                  : (type == BEEHIVE)
                                      ? (sx == tx && sy == ty
@@ -912,7 +917,7 @@ place_main_monst_here:
                 }
             }
         }
-        if (!special_item_created && lastbox && firstbox && rn2(100) < special_item_chance)
+        if (lastbox && firstbox && rn2(100) < special_item_chance)
         {
             struct obj* box = !middlebox || rn2(3) ? (!rn2(2) ? firstbox : lastbox) : middlebox;
             if (box)
@@ -2228,11 +2233,13 @@ gotone:
 
 /* return armory monster types. */
 STATIC_OVL struct permonst*
-armorymon()
+armorymon(doboss)
+boolean doboss;
 {
-    int ldif = depth(&u.uz);
+    int u_depth = depth(&u.uz);
+    int ldif = u_depth + (doboss ? u_depth / 2: 0);
     int mndx = 0;
-    if (depth(&u.uz) >= depth(&medusa_level))
+    if (u_depth >= depth(&medusa_level))
     {
         return squadmon();
     }
@@ -2240,12 +2247,12 @@ armorymon()
     {
         /* Soldiers */
         mndx = PM_SOLDIER;
-        if (!rn2(3))
+        if (!rn2(3) || doboss)
         {
             mndx = PM_SERGEANT;
-            if(ldif >= 13 && !rn2(2))
+            if(ldif >= 13 && (!rn2(2) || doboss))
                 mndx = PM_LIEUTENANT;
-            else if (ldif >= 16 && !rn2(2))
+            else if (ldif >= 16 && (!rn2(2) || doboss))
                 mndx = PM_CAPTAIN;
         }
     }
@@ -2255,44 +2262,44 @@ armorymon()
         {
             /* Dwarfs and gnomes for chaotic */
             mndx = ldif >= 11 ? PM_DWARF_LORD : ldif >= 7 ? PM_DWARF : ldif >= 5 ? (!rn2(2) ? PM_DWARF : PM_GNOME) : (!rn2(2) ? PM_GNOME : PM_HALFLING);
-            if (ldif <= 3 && !rn2(6))
+            if (ldif <= 3 && (!rn2(6) || doboss))
                 mndx = PM_DWARF;
-            else if (ldif < 11 && ldif >= 6 && !rn2(5))
+            else if (ldif < 11 && ldif >= 6 && (!rn2(5) || doboss))
                 mndx = PM_DWARF_LORD;
-            else if (ldif >= 9 && !rn2(4))
+            else if (ldif >= 9 && (!rn2(4) || doboss))
                 mndx = PM_DWARF_KING;
         }
         else
         {
             /* Goblins or gnolls for non-chaotic */
-            if (!Race_if(PM_GNOLL) && (ldif >= 11 || !rn2(2)))
+            if (!Race_if(PM_GNOLL) && (ldif >= 11 || (!rn2(2) || doboss)))
             {
                 mndx = ldif >= 12 ? PM_GNOLL_LORD : ldif >= 7 ? PM_GNOLL : ldif >= 5 ? (rn2(2) ? PM_GNOLL : PM_GOBLIN) : (rn2(3) ? PM_GOBLIN : PM_GIANT_RAT);
-                if (ldif <= 3 && !rn2(6))
+                if (ldif <= 3 && (!rn2(6) || doboss))
                     mndx = PM_GNOLL;
-                else if (ldif < 12 && ldif >= 6 && !rn2(6))
+                else if (ldif < 12 && ldif >= 6 && (!rn2(6) || doboss))
                     mndx = PM_GNOLL_LORD;
-                else if (ldif >= 12 && !rn2(6))
+                else if (ldif >= 12 && (!rn2(6) || doboss))
                     mndx = PM_GNOLL_KING;
-                else if (ldif >= 14 && !rn2(6))
+                else if (ldif >= 14 && (!rn2(6) || doboss))
                     mndx = PM_FLIND;
-                else if (ldif >= 20 && !rn2(6))
+                else if (ldif >= 20 && (!rn2(6) || doboss))
                     mndx = PM_FLIND_LORD;
             }
             else
             {
                 mndx = ldif >= 13 ? PM_OGRE : ldif >= 9 ? PM_BUGBEAR : ldif >= 7 ? PM_HOBGOBLIN : ldif >= 5 ? (rn2(2) ? PM_HOBGOBLIN : PM_GOBLIN) : (rn2(3) ? PM_GOBLIN : PM_GIANT_RAT);
-                if (ldif <= 3 && !rn2(6))
+                if (ldif <= 3 && (!rn2(6) || doboss))
                     mndx = PM_HOBGOBLIN;
-                else if (ldif < 9 && ldif >= 5 && !rn2(6))
+                else if (ldif < 9 && ldif >= 5 && (!rn2(6) || doboss))
                     mndx = PM_BUGBEAR;
-                else if (ldif < 13 && ldif >= 7 && !rn2(6))
+                else if (ldif < 13 && ldif >= 7 && (!rn2(6) || doboss))
                     mndx = PM_OGRE;
-                else if (ldif >= 10 && !rn2(6))
+                else if (ldif >= 10 && (!rn2(6) || doboss))
                     mndx = PM_OGRE_LORD;
-                else if (ldif >= 13 && !rn2(6))
+                else if (ldif >= 13 && (!rn2(6) || doboss))
                     mndx = PM_OGRE_OVERLORD;
-                else if (ldif >= 23 && !rn2(6))
+                else if (ldif >= 23 && (!rn2(6) || doboss))
                     mndx = PM_OGRE_KING;
             }
         }

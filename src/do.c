@@ -6040,7 +6040,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     }
 
     /* Set naming if known on arrival */
-    if (level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_ARRIVAL)
+    if (level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_ARRIVAL 
+        || In_sokoban(&u.uz) || In_endgame(&u.uz) || In_V_tower(&u.uz) || In_mines(&u.uz))
     {
         set_special_level_seen(&u.uz, TRUE);
     }

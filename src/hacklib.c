@@ -275,6 +275,27 @@ char c;
     return s;
 }
 
+
+char*
+strcpy_capitalized_for_title(dest_buffer, source)
+char* dest_buffer;
+const char* source;
+{
+    if (!dest_buffer || !source)
+        return dest_buffer;
+
+    strcpy(dest_buffer, source);
+
+    char* bp;
+    for (bp = dest_buffer; *bp; bp++)
+    {
+        if (bp == dest_buffer || *(bp - 1) == ' ')
+            *bp = highc(*bp);
+    }
+
+    return dest_buffer;
+}
+
 /* truncating string copy */
 void
 copynchars(dst, src, n)

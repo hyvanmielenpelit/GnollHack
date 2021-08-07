@@ -1072,6 +1072,7 @@ boolean fromspell;
              * call tamedog().
              */
             mtmp->mtame = 10;
+            mtmp->isprotector = TRUE;
             newsym(mtmp->mx, mtmp->my);
             /* make him strong enough vs. endgame foes */
             mtmp->m_lev = rn1(8, 15);
