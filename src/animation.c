@@ -2222,6 +2222,7 @@ struct replacement_info info;
         }
         case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_UCHAIN:
         {
+#if 0 /* Temporarily disabled */
             if (!otmp)
                 return glyph;
 
@@ -2230,6 +2231,7 @@ struct replacement_info info;
                 /* Return the first tile with index 0 */
                 return sign * (0 + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             }
+#endif
             break;
         }
         case REPLACEMENT_ACTION_AUTODRAW_AND_LONG_WORM:
