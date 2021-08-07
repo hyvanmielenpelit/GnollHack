@@ -20,7 +20,7 @@ struct window_procs lib_procs = {
 #ifdef STATUS_HILITES
     WC2_HITPOINTBAR | WC2_FLUSH_STATUS | WC2_RESET_STATUS | WC2_HILITE_STATUS |
 #endif
-    WC2_PREFERRED_SCREEN_SCALE | WC2_STATUSLINES | WC2_AUTOSTATUSLINES | WC2_HEREWINDOW,
+    WC2_SELECTSAVED | WC2_PREFERRED_SCREEN_SCALE | WC2_STATUSLINES | WC2_AUTOSTATUSLINES | WC2_HEREWINDOW,
     lib_init_nhwindows, lib_player_selection, lib_askname,
     lib_get_nh_event, lib_exit_nhwindows, lib_suspend_nhwindows,
     lib_resume_nhwindows, lib_create_nhwindow_ex, lib_clear_nhwindow,
@@ -113,6 +113,23 @@ void lib_player_selection(void)
 
 void lib_askname(void)
 {
+#ifdef SELECTSAVED
+    if (iflags.wc2_selectsaved && !iflags.renameinprogress)
+    {
+        switch (restore_menu(WIN_ERR))
+        {
+        case -1:
+            lib_bail("Until next time then..."); /* quit */
+            /*NOTREACHED*/
+            return;
+        case 0:
+            break; /* no game chosen; start new game */
+        case 1:
+            return; /* plname[] has been set */
+        }
+    }
+#endif /* SELECTSAVED */
+
     char* name = lib_callbacks.callback_askname();
     strncpy(plname, name, PL_NSIZ - 1);
     plname[PL_NSIZ - 1] = '\0';

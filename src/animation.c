@@ -731,7 +731,7 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
         0,
-        0,
+        IRON_CHAIN + GLYPH_OBJ_OFF, /* Backup data for unimplemented autodraw to avoid invisible chain */
         0UL
     },
     {
@@ -741,7 +741,7 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
         0,
-        0,
+        HEAVY_IRON_BALL + GLYPH_OBJ_OFF, /* Backup data for unimplemented autodraw */
         0UL
     },
     {

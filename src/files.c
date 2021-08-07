@@ -41,7 +41,7 @@ const
 #endif
 #endif
 
-#if defined(UNIX) && defined(QT_GRAPHICS) || defined(ANDROID)
+#if defined(UNIX) && (defined(QT_GRAPHICS) || defined(ANDROID) || defined(GNH_ANDROID))
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdlib.h>
@@ -1137,7 +1137,7 @@ const char *filename;
 /* --------- end of obsolete code ----*/
 #endif /* 0 - WAS STORE_PLNAME_IN_FILE*/
 }
-#ifdef ANDROID
+#if defined(ANDROID) || defined(GNH_ANDROID)
 int filter_running(entry)
 const struct dirent* entry;
 {
@@ -1262,7 +1262,7 @@ get_saved_games()
         }
     }
 #endif
-#ifdef ANDROID
+#if defined(ANDROID) || defined(GNH_ANDROID)
     int myuid = getuid();
     struct dirent** namelist;
     struct dirent** namelist2;
@@ -3175,7 +3175,7 @@ fopen_wizkit_file()
 #endif
     }
 
-#if defined(MICRO) || defined(MAC) || defined(__BEOS__) || defined(WIN32) || defined(ANDROID)
+#if defined(MICRO) || defined(MAC) || defined(__BEOS__) || defined(WIN32) || defined(ANDROID) || defined(GNH_ANDROID)
     if ((fp = fopenp(fqname(wizkit, CONFIGPREFIX, 0), "r")) != (FILE *) 0)
         return fp;
 #else

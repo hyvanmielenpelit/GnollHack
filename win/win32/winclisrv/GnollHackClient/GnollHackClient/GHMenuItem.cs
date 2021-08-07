@@ -112,6 +112,8 @@ namespace GnollHackClient
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                         break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                        break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -219,6 +221,8 @@ namespace GnollHackClient
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                             break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                            break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -275,6 +279,8 @@ namespace GnollHackClient
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                            break;
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                             break;
@@ -347,6 +353,9 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                        res = 17;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                         res = 18;

@@ -1460,11 +1460,15 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
 
     *plname = '\0';
     saved = get_saved_games(); /* array of character names */
-    if (saved && *saved) {
+    
+    if (saved && *saved) 
+    {
         tmpwin = create_nhwindow(NHW_MENU);
-        start_menu(tmpwin);
+        start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SAVED_GAME);
         any = zeroany; /* no selection */
-        if (bannerwin != WIN_ERR) {
+
+        if (bannerwin != WIN_ERR)
+        {
             /* for tty; erase copyright notice and redo it in the menu */
             clear_nhwindow(bannerwin);
             /* COPYRIGHT_BANNER_[ABCD] */
@@ -1474,13 +1478,19 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
             add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
                      MENU_UNSELECTED);
         }
+
+#ifndef GNH_ANDROID
         add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
                  "Select one of your saved games", MENU_UNSELECTED);
-        for (k = 0; saved[k]; ++k) {
+#endif
+
+        for (k = 0; saved[k]; ++k) 
+        {
             any.a_int = k + 1;
             add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, saved[k],
                      MENU_UNSELECTED);
         }
+
         clet = (k <= 'n' - 'a') ? 'n' : 0; /* new game */
         any.a_int = -1;                    /* not >= 0 */
         add_menu(tmpwin, NO_GLYPH, &any, clet, 0, ATR_NONE,
@@ -1489,20 +1499,31 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
         any.a_int = -2;
         add_menu(tmpwin, NO_GLYPH, &any, clet, 0, ATR_NONE,
                  "Never mind (quit)", MENU_SELECTED);
+
+#ifdef GNH_ANDROID
+        end_menu(tmpwin, "Select one of your saved games");
+#else
         /* no prompt on end_menu, as we've done our own at the top */
         end_menu(tmpwin, (char *) 0);
-        if (select_menu(tmpwin, PICK_ONE, &chosen_game) > 0) {
+#endif
+
+        if (select_menu(tmpwin, PICK_ONE, &chosen_game) > 0) 
+        {
             ch = chosen_game->item.a_int;
             if (ch > 0 && saved[ch - 1] > 0)
                 Strcpy(plname, saved[ch - 1]);
             else if (ch < 0)
                 ++ch; /* -1 -> 0 (new game), -2 -> -1 (quit) */
             free((genericptr_t) chosen_game);
-        } else {
+        } 
+        else 
+        {
             ch = -1; /* quit menu without making a selection => quit */
         }
+
         destroy_nhwindow(tmpwin);
-        if (bannerwin != WIN_ERR) {
+        if (bannerwin != WIN_ERR) 
+        {
             /* for tty; clear the menu away and put subset of copyright back
              */
             clear_nhwindow(bannerwin);
