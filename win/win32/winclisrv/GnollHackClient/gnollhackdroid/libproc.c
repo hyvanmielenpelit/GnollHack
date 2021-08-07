@@ -332,7 +332,10 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (long)cp437toUnicode[sym] : (long)sym;
     lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, layers);
 
+    /* Now send all object data */
     /* Note: print_glyph clears all object data */
+    boolean showing_detection = !!(layers.layer_flags & LFLAGS_SHOWING_DETECTION);
+
     int i;
     for (i = 0; i <= 1; i++)
     {
@@ -386,6 +389,9 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 
         for (; otmp; otmp = (use_nexthere ? otmp->nexthere : otmp->nobj))
         {
+            if (showing_detection && !(otmp->speflags & SPEFLAGS_DETECTED))
+                continue;
+
             unsigned long oflags = 0UL;
             if(is_obj_drawn_in_front(otmp))
                 oflags |= OBJDATA_FLAGS_DRAWN_IN_FRONT;

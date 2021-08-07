@@ -2378,6 +2378,7 @@ namespace GnollHackClient.Pages.Game
                                                             continue;
 
                                                         bool loc_is_you = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
+                                                        bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
                                                         bool canspotself = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
                                                         short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
                                                         float scaled_y_height_change = 0;
@@ -2964,6 +2965,13 @@ namespace GnollHackClient.Pages.Game
                                                                         bool tileflag_normalobjmissile = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0;
                                                                         bool tileflag_fullsizeditem = (GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
 
+                                                                        /* All items are big when showing detection */
+                                                                        if (showing_detection)
+                                                                        {
+                                                                            obj_height = 0;
+                                                                            tileflag_floortile = false;
+                                                                        }
+
                                                                         if ((!tileflag_halfsize || monster_height > 0) && is_monster_like_layer)
                                                                         {
                                                                             scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
@@ -3349,7 +3357,8 @@ namespace GnollHackClient.Pages.Game
                                                     {
                                                         for (int mapy = startY; mapy <= endY; mapy++)
                                                         {
-                                                            bool darken = ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
+                                                            bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
+                                                            bool darken = (!showing_detection && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
 
                                                             if (_mapData[mapx, mapy].Layers.layer_glyphs != null
                                                                 && (_mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
