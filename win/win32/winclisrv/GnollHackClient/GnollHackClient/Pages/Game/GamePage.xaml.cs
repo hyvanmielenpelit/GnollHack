@@ -4790,12 +4790,12 @@ namespace GnollHackClient.Pages.Game
                 AbilitiesImg.WidthRequest = SkillImg.WidthRequest = imgsidewidth;
                 AbilitiesImg.HeightRequest = SkillImg.HeightRequest = imgsideheight;
                 /* AbilitiesLbl */
-                InventoryGrid.WidthRequest = SearchGrid.WidthRequest = WaitGrid.WidthRequest = DropManyGrid.WidthRequest = gridsidewidth;
-                InventoryGrid.HeightRequest = SearchGrid.HeightRequest = WaitGrid.HeightRequest = DropManyGrid.HeightRequest = gridsideheight;
-                InventoryImg.WidthRequest = SearchImg.WidthRequest = WaitImg.WidthRequest = DropManyImg.WidthRequest = imgsidewidth;
-                InventoryImg.HeightRequest = SearchImg.HeightRequest = WaitImg.HeightRequest = DropManyImg.HeightRequest = imgsideheight;
+                InventoryGrid.WidthRequest = SearchGrid.WidthRequest = WaitGrid.WidthRequest = DropManyGrid.WidthRequest = ChatGrid.WidthRequest = gridsidewidth;
+                InventoryGrid.HeightRequest = SearchGrid.HeightRequest = WaitGrid.HeightRequest = DropManyGrid.HeightRequest = ChatGrid.HeightRequest = gridsideheight;
+                InventoryImg.WidthRequest = SearchImg.WidthRequest = WaitImg.WidthRequest = DropManyImg.WidthRequest = ChatImg.WidthRequest = imgsidewidth;
+                InventoryImg.HeightRequest = SearchImg.HeightRequest = WaitImg.HeightRequest = DropManyImg.HeightRequest = ChatImg.HeightRequest = imgsideheight;
                 SkillLbl.FontSize = fontsize_larger;
-                InventoryLbl.FontSize = SearchLbl.FontSize = WaitLbl.FontSize = DropManyLbl.FontSize = fontsize;
+                InventoryLbl.FontSize = SearchLbl.FontSize = WaitLbl.FontSize = DropManyLbl.FontSize = ChatLbl.FontSize = fontsize;
                 UpperCmdGrid.HeightRequest = gridsideheight;
                 LowerCmdGrid.HeightRequest = gridsideheight;
                 ChatButton.HeightRequest = RepeatButton.HeightRequest = MenuButton.HeightRequest = KickButton.HeightRequest = FireButton.HeightRequest =
@@ -5736,6 +5736,17 @@ namespace GnollHackClient.Pages.Game
             PopupGrid.IsVisible = false;
         }
 
+        private void GHButton_Clicked(object sender, EventArgs e)
+        {
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Restart();
+            }
+            GHButton ghbutton = (GHButton)sender;
+            Debug.WriteLine("ProfilingStopwatch.Restart: " + ghbutton.Letter);
+            GenericButton_Clicked(sender, e, (int)ghbutton.Letter);
+
+        }
     }
 
     public class ColorConverter : IValueConverter

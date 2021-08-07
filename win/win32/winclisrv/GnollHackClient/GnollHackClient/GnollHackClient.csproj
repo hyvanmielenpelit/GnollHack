@@ -33,6 +33,7 @@
     <None Remove="Assets\Icons\inventory.png" />
     <None Remove="Assets\Icons\light.png" />
     <None Remove="Assets\Icons\loot.png" />
+    <None Remove="Assets\Icons\missing_icon.png" />
     <None Remove="Assets\Icons\pay.png" />
     <None Remove="Assets\Icons\pickup.png" />
     <None Remove="Assets\Icons\quaff.png" />
@@ -75,6 +76,7 @@
     <EmbeddedResource Include="Assets\Icons\inventory.png" />
     <EmbeddedResource Include="Assets\Icons\light.png" />
     <EmbeddedResource Include="Assets\Icons\loot.png" />
+    <EmbeddedResource Include="Assets\Icons\missing_icon.png" />
     <EmbeddedResource Include="Assets\Icons\pay.png" />
     <EmbeddedResource Include="Assets\Icons\pickup.png" />
     <EmbeddedResource Include="Assets\Icons\quaff.png" />
@@ -163,6 +165,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controls\" />
     <Folder Include="Views\" />
   </ItemGroup>
 

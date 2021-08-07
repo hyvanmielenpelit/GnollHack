@@ -149,7 +149,11 @@
                             <Label x:Name="DropManyLbl" Text="Drop Items" TextColor="White" FontFamily="LatoRegular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
                             <Button x:Name="DropManyButton" Clicked="DropManyButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
                         </Grid>
-                        <Button Grid.Column="4" Text="C" x:Name="ChatButton" Clicked="ChatButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
+                        <Grid Grid.Column="4" x:Name="ChatGrid" HeightRequest="60" WidthRequest="50" >
+                            <ff:CachedImage x:Name="ChatImg" Source="resource://GnollHackClient.Assets.Icons.missing_icon.png" HeightRequest="50" WidthRequest="50" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
+                            <Label x:Name="ChatLbl" Text="Chat" TextColor="White" FontFamily="LatoRegular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
+                            <gnollhackclient:GHButton x:Name="ChatButton" Letter="C" Clicked="GHButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
+                        </Grid>
                         <Button Grid.Column="5" Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
                         <Button Grid.Column="6" Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
                         <!--
