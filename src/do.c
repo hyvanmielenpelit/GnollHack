@@ -6039,6 +6039,13 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         level_teleport_effect_in(u.ux, u.uy);
     }
 
+    /* Set naming if known on arrival */
+    if (level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_ARRIVAL)
+    {
+        set_special_level_seen(&u.uz, TRUE);
+    }
+
+    /* Screen text for entering the level */
     char dngbuf[BUFSZ];
     char lvlbuf[BUFSZ];
     const char* dname = dungeons[u.uz.dnum].dname;
@@ -6046,7 +6053,20 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         dname += 4;
 
     Sprintf(dngbuf, "%s", dname ? dname : "Dungeon");
-    Sprintf(lvlbuf, "Level %d", u.uz.dlevel);
+
+    s_level* slev = Is_special(&u.uz);
+    mapseen* mptr = 0;
+    if(slev)
+        mptr = find_mapseen(&u.uz);
+
+    if (slev && mptr && mptr->flags.special_level_true_nature_known)
+    {
+        Sprintf(lvlbuf, "%s", slev->name);
+    }
+    else
+    {
+        Sprintf(lvlbuf, "Level %d", u.uz.dlevel);
+    }
     display_screen_text(lvlbuf, dngbuf, SCREEN_TEXT_ENTER_DUNGEON_LEVEL, 0, 0, 0UL);
 
     /* special levels can have a custom arrival message */
@@ -6186,11 +6206,6 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             u.uevent.bovine_portal_hint = 1;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you think you hear distant grunting and bellowing, but then the noises are gone.");
         }
-    }
-
-    if (level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_ARRIVAL)
-    {
-        set_special_level_seen(&u.uz0, TRUE);
     }
 
     assign_level(&u.uz0, &u.uz); /* reset u.uz0 */

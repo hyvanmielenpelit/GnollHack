@@ -74,7 +74,7 @@ STATIC_DCL int FDECL(do_chat_npc_sell_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_dilithium_crystals, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_spellbooks, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_branch_portal, (struct monst*));
-STATIC_DCL int FDECL(sell_to_npc, (struct obj*, struct monst*));
+STATIC_DCL int FDECL(sell_to_npc, (struct obj*, struct monst*, int, BOOLEAN_P));
 STATIC_DCL int FDECL(sell_many_to_npc, (struct monst*, boolean FDECL((*), (OBJ_P))));
 STATIC_DCL int FDECL(do_chat_npc_enchant_accessory, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_recharge, (struct monst*));
@@ -6311,6 +6311,8 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
     int n, n_sold = 0, i, cnt;
     struct obj* otmp, * otmp2;
     menu_item* pick_list = (menu_item*)0;
+    boolean all_pressed = FALSE;
+    boolean quit_pressed = FALSE;
 
     /* should coordinate with perm invent, maybe not show worn items */
     n = query_objlist("What would you like to sell?", &invent,
@@ -6357,7 +6359,13 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
                     otmp = splitobj(otmp, cnt);
                 }
             }
-            n_sold += sell_to_npc(otmp, mtmp);
+            int sell_res = sell_to_npc(otmp, mtmp, n - i, all_pressed);
+            if(sell_res > 0 || sell_res == -1)
+                n_sold += 1;
+            if (sell_res == -1 || sell_res == -2)
+                all_pressed = TRUE;
+            if (sell_res == -3)
+                break;
         }
         bypass_objlist(invent, FALSE); /* reset invent to normal */
         free((genericptr_t)pick_list);
@@ -6865,9 +6873,11 @@ int id_idx, minor_id_cost, spdialogue1, spdialogue2;
 
 
 STATIC_OVL int
-sell_to_npc(obj, mtmp)
+sell_to_npc(obj, mtmp, items_left_in_list, auto_yes)
 struct obj* obj;
 struct monst* mtmp;
+int items_left_in_list;
+boolean auto_yes;
 {
     if (!obj)
         return 0;
@@ -6992,11 +7002,17 @@ struct monst* mtmp;
         (void)safe_qbuf(qbuf, qbuf, qsfx, obj, xname, simpleonames,
             one ? "that" : "those");
 
-        switch (yn_query(qbuf))
+        char ans = auto_yes ? 'y' : items_left_in_list > 1 ? ynq(qbuf) : yn_query(qbuf);
+
+        switch (ans)
         {
+        case 'q':
         case 'n':
             pline1(Never_mind);
+            if (ans == 'q')
+                res = -3;
             break;
+        case 'a':
         case 'y':
             if (release_item_from_hero_inventory(obj))
             {
@@ -7008,7 +7024,12 @@ struct monst* mtmp;
 
                 (void)mpickobj(mtmp, obj);
                 money2u(mtmp, offer);
-                return 1;
+                return ans == 'a' ? -1 : 1;
+            }
+            else
+            {
+                if (ans == 'a')
+                    res = -2;
             }
             break;
         default:

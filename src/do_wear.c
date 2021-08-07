@@ -2281,27 +2281,52 @@ boolean in_takeoff_wear;
         {
             if (uamul) 
             {
-                already_wearing("an amulet");
+                already_wearing_with_exchange_prompt("an amulet", obj, uamul);
                 return 0;
             }
         }
-        else if (obj->oclass == MISCELLANEOUS_CLASS) {
-            if (objects[obj->otyp].oc_subtyp != MISC_MULTIPLE_PERMITTED &&
-                ((umisc && objects[umisc->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
-                || (umisc2 && objects[umisc2->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
-                || (umisc3 && objects[umisc3->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
-                || (umisc4 && objects[umisc4->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
-                || (umisc5 && objects[umisc5->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp)
-                )
-               )
+        else if (obj->oclass == MISCELLANEOUS_CLASS) 
+{
+            if (objects[obj->otyp].oc_subtyp != MISC_MULTIPLE_PERMITTED)
             {
-                already_wearing(an(misc_type_names[objects[obj->otyp].oc_subtyp]));
-                return 0;
+                if ((umisc && objects[umisc->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp))
+                {
+                    already_wearing_with_exchange_prompt(an(misc_type_names[objects[obj->otyp].oc_subtyp]), obj, umisc);
+                    return 0;
+                }
+                if ((umisc2 && objects[umisc2->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp))
+                {
+                    already_wearing_with_exchange_prompt(an(misc_type_names[objects[obj->otyp].oc_subtyp]), obj, umisc2);
+                    return 0;
+                }
+                if ((umisc3 && objects[umisc3->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp))
+                {
+                    already_wearing_with_exchange_prompt(an(misc_type_names[objects[obj->otyp].oc_subtyp]), obj, umisc3);
+                    return 0;
+                }
+                if ((umisc4 && objects[umisc4->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp))
+                {
+                    already_wearing_with_exchange_prompt(an(misc_type_names[objects[obj->otyp].oc_subtyp]), obj, umisc4);
+                    return 0;
+                }
+                if ((umisc5 && objects[umisc5->otyp].oc_subtyp == objects[obj->otyp].oc_subtyp))
+                {
+                    already_wearing_with_exchange_prompt(an(misc_type_names[objects[obj->otyp].oc_subtyp]), obj, umisc5);
+                    return 0;
+                }
             }
             if (umisc && umisc2 && umisc3 && umisc4 && umisc5) 
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You("cannot wear more than five miscellanous items.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot wear more than five miscellanous items.");
+                if (flags.exchange_prompt)
+                {
+                    char ans = yn_function_ex(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, "Already Wearing 5 Miscellaneous Items", "Do you want to remove some of them?", ynchars, 'n', yndescs);
+                    if (ans == 'y')
+                    {
+                        return doremring();
+                    }
+                }
                 return 0;
             }
         }
@@ -2317,7 +2342,7 @@ boolean in_takeoff_wear;
                 }
                 else if (ublindf->otyp == BLINDFOLD) 
                 {
-                    already_wearing("a blindfold");
+                    already_wearing_with_exchange_prompt("a blindfold", obj, ublindf);
                 }
                 else
                 {

@@ -1163,7 +1163,7 @@ namespace GnollHackClient
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.FadeToBlack, 200));
-                        Thread.Sleep(275);
+                        Thread.Sleep(325);
                     }
                     break;
                 case (int)init_print_glyph_stages.INIT_GLYPH_COLLECT_GARBAGE:
