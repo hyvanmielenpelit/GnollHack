@@ -826,11 +826,16 @@ namespace GnollHackClient.Pages.Game
             }
 
             YnQuestionLabel.Text = question;
+            LabeledImageButton[] btnList = { ZeroButton, FirstButton, SecondButton, ThirdButton, FourthButton };
             if (responses.Length == 0)
                 return;
-            else if(responses.Length == 1)
+            else if (responses.Length == 1)
             {
-                SecondButton.Text = responses;
+                SecondButton.BtnLetter = responses[0];
+                if(descriptions != null && descr_list.Length > 0)
+                    SecondButton.LblText = descr_list[0];
+                else
+                    SecondButton.LblText = SecondButton.BtnLetter.ToString();
                 ZeroButton.IsVisible = false;
                 FirstButton.IsVisible = false;
                 SecondButton.IsVisible = true;
@@ -844,8 +849,16 @@ namespace GnollHackClient.Pages.Game
                 SecondButton.IsVisible = true;
                 ThirdButton.IsVisible = false;
                 FourthButton.IsVisible = false;
-                FirstButton.Text = responses.Substring(0, 1);
-                SecondButton.Text = responses.Substring(1, 1);
+                FirstButton.BtnLetter = responses[0];
+                if (descriptions != null && descr_list.Length > 0)
+                    FirstButton.LblText = descr_list[0];
+                else
+                    FirstButton.LblText = FirstButton.BtnLetter.ToString();
+                SecondButton.BtnLetter = responses[1];
+                if (descriptions != null && descr_list.Length > 1)
+                    SecondButton.LblText = descr_list[1];
+                else
+                    SecondButton.LblText = SecondButton.BtnLetter.ToString();
             }
             else if (responses.Length == 3)
             {
@@ -854,30 +867,48 @@ namespace GnollHackClient.Pages.Game
                 SecondButton.IsVisible = true;
                 ThirdButton.IsVisible = true;
                 FourthButton.IsVisible = false;
-                FirstButton.Text = responses.Substring(0, 1);
-                SecondButton.Text = responses.Substring(1, 1);
-                ThirdButton.Text = responses.Substring(2, 1);
+                FirstButton.BtnLetter = responses[0];
+                if (descriptions != null && descr_list.Length > 1)
+                    FirstButton.LblText = descr_list[0];
+                else
+                    FirstButton.LblText = FirstButton.BtnLetter.ToString();
+                SecondButton.BtnLetter = responses[1];
+                if (descriptions != null && descr_list.Length > 1)
+                    SecondButton.LblText = descr_list[1];
+                else
+                    SecondButton.LblText = SecondButton.BtnLetter.ToString();
+                ThirdButton.BtnLetter = responses[2];
+                if (descriptions != null && descr_list.Length > 2)
+                    ThirdButton.LblText = descr_list[2];
+                else
+                    ThirdButton.LblText = ThirdButton.BtnLetter.ToString();
             }
             else
             {
-                Button[] btnList = { ZeroButton, FirstButton, SecondButton, ThirdButton, FourthButton };
-
-
                 for (int i = 0; i < 4; i++)
                 {
                     if (i < responses.Length)
                     {
-                        btnList[i].Text = responses.Substring(i, 1);
+                        btnList[i].BtnLetter = responses[i];
+                        if (descriptions != null && descr_list.Length > i)
+                            btnList[i].LblText = descr_list[i];
+                        else
+                            btnList[i].LblText = btnList[i].BtnLetter.ToString();
                         btnList[i].IsVisible = true;
                     }
                     else
                     {
-                        btnList[i].Text = "?";
+                        btnList[i].BtnLetter = '?';
+                        btnList[i].LblText = "?";
                         btnList[i].IsVisible = false;
                     }
                 }
             }
 
+            for (int i = 0; i < 4; i++)
+                btnList[i].SetSideSize(_currentPageWidth, _currentPageHeight);
+
+            YnButtonStack.HeightRequest = btnList[0].GridHeight;
             YnGrid.IsVisible = true;
         }
 
@@ -5515,6 +5546,11 @@ namespace GnollHackClient.Pages.Game
             if(_cmdPage == null)
                 _cmdPage = new CommandPage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(_cmdPage);
+        }
+        private void YnButton_Clicked(object sender, EventArgs e)
+        {
+            GHButton ghb = (GHButton)sender;
+            GenericButton_Clicked(sender, e, ghb.GHCommand);
         }
         private void ZeroButton_Clicked(object sender, EventArgs e)
         {

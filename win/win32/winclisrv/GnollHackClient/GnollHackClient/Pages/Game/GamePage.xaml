@@ -241,19 +241,26 @@
             <Grid x:Name="YnGrid" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="600" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                    <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                         <StackLayout x:Name="YnLayout" Padding="5"
                           HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
                             <Label Text="?" x:Name="YnTitleLabel" FontFamily="Immortal" FontSize="22" TextColor="White"
                                VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <Label Text="?" x:Name="YnQuestionLabel" FontFamily="Immortal" FontSize="19" TextColor="White"
                                VerticalTextAlignment="Center" HorizontalOptions="Center"  />
-                            <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" Margin="0,10,0,0" >
-                                <Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                            <StackLayout x:Name="YnButtonStack" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" Margin="0,10,0,0" >
+                                <controls:LabeledImageButton x:Name="ZeroButton" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True"  />
+                                <controls:LabeledImageButton x:Name="FirstButton" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True"  />
+                                <controls:LabeledImageButton x:Name="SecondButton" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True" />
+                                <controls:LabeledImageButton x:Name="ThirdButton" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5"  LargerFont="True" />
+                                <controls:LabeledImageButton x:Name="FourthButton" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True" />
+
+                                <!--<Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
                                 <Button Text="?" x:Name="FirstButton" Clicked="FirstButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
                                 <Button Text="?" x:Name="SecondButton" Clicked="SecondButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
                                 <Button Text="?" x:Name="ThirdButton" Clicked="ThirdButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
                                 <Button Text="?" x:Name="FourthButton" Clicked="FourthButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
+                                 -->
                             </StackLayout>
                         </StackLayout>
                     </Frame>
