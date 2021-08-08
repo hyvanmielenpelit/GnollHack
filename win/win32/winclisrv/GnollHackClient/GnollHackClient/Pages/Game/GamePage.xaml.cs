@@ -4829,7 +4829,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     /* Landscape */
                     ButtonRowStack.Orientation = StackOrientation.Horizontal;
-                    ButtonRowStack.HeightRequest = gridsideheight;
+                    //ButtonRowStack.HeightRequest = gridsideheight;
                     ModeLayout.Orientation = StackOrientation.Vertical;
                     ModeSubLayout1.Orientation = StackOrientation.Horizontal;
                     ModeSubLayout2.Orientation = StackOrientation.Horizontal;
@@ -4840,7 +4840,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     /* Portrait */
                     ButtonRowStack.Orientation = StackOrientation.Vertical;
-                    ButtonRowStack.HeightRequest = 2 * gridsideheight;
+                    //ButtonRowStack.HeightRequest = 2 * gridsideheight;
                     ModeLayout.Orientation = StackOrientation.Vertical;
                     ModeSubLayout1.Orientation = StackOrientation.Vertical;
                     ModeSubLayout2.Orientation = StackOrientation.Vertical;
