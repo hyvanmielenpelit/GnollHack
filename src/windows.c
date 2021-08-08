@@ -378,6 +378,12 @@ genl_update_cursor(int style UNUSED, int force_paint UNUSED, int show_on_u UNUSE
     return;
 }
 
+int
+genl_ui_has_input(VOID_ARGS)
+{
+    return FALSE;
+}
+
 void
 genl_exit_hack(int status)
 {

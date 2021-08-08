@@ -106,6 +106,7 @@ int RunGnollHack(
     DisplayScreenTextCallback callback_display_screen_text,
     DisplayPopupTextCallback callback_display_popup_text,
     UpdateCursorCallback callback_update_cursor,
+    UIHasInputCallback callback_ui_has_input,
     ExitHackCallback callback_exit_hack,
 
     GetCwdCallback callback_getcwd,

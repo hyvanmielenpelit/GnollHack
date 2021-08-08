@@ -142,6 +142,7 @@ struct window_procs mswin_procs = {
     mswin_display_screen_text,
     mswin_display_popup_text,
     mswin_update_cursor,
+    mswin_ui_has_input,
     mswin_exit_hack,
 };
 
@@ -3810,6 +3811,13 @@ mswin_update_cursor(int style, int force_paint, int show_on_you)
 {
 
 }
+
+int
+mswin_ui_has_input(VOID_ARGS)
+{
+    return FALSE;
+}
+
 
 void
 convertUTF8toTCHAR(buf, bufsize)

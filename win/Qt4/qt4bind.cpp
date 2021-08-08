@@ -859,6 +859,7 @@ struct window_procs Qt_procs = {
     genl_display_screen_text,
     genl_display_popup_text,
     genl_update_cursor,
+    genl_ui_has_input,
     genl_exit_hack,
 };
 

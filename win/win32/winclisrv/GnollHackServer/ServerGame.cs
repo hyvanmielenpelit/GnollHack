@@ -101,6 +101,7 @@ namespace GnollHackServer
             DisplayScreenTextCallback callback_display_screen_text,
             DisplayPopupTextCallback callback_display_popup_text,
             UpdateCursorCallback callback_update_cursor,
+            UIHasInputCallback callback_ui_has_input,
             VoidIntCallback callback_exit_hack,
             CharVoidCallback callback_getcwd,
             IntCharCharUintCallback callback_messagebox,
@@ -255,6 +256,7 @@ namespace GnollHackServer
                 GameCallback_DisplayScreenText,
                 GameCallback_DisplayPopupText,
                 GameCallback_UpdateCursor,
+                GameCallback_UIHasInput,
                 GameCallback_ExitHack,
                 GameCallback_GetCwd,
                 GameCallback_MessageBox,
@@ -395,6 +397,11 @@ namespace GnollHackServer
         }
 
         protected int GameCallback_CreateGHWindow(int widid, int style, int glyph, byte dataflags, obj objdata, objclassdata otypdata)
+        {
+            return 0;
+        }
+
+        public int GameCallback_UIHasInput()
         {
             return 0;
         }

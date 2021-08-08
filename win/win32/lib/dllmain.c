@@ -113,6 +113,7 @@ DLL int WINAPI RunGnollHack(
     DisplayScreenTextCallback callback_display_screen_text,
     DisplayPopupTextCallback callback_display_popup_text,
     UpdateCursorCallback callback_update_cursor,
+    UIHasInputCallback callback_ui_has_input,
     ExitHackCallback callback_exit_hack,
 
     GetCwdCallback callback_getcwd,
@@ -209,6 +210,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_display_screen_text = callback_display_screen_text;
     dll_callbacks.callback_display_popup_text = callback_display_popup_text;
     dll_callbacks.callback_update_cursor = callback_update_cursor;
+    dll_callbacks.callback_ui_has_input = callback_ui_has_input;
     dll_callbacks.callback_exit_hack = callback_exit_hack;
     dll_callbacks.callback_getcwd = callback_getcwd;
     dll_callbacks.callback_messagebox = callback_messagebox;

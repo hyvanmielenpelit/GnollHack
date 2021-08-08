@@ -377,6 +377,8 @@ boolean resuming;
 
         /* Clear context-dependent UI */
         clear_context_menu();
+        if (ui_has_input())
+            context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
 
         /* Redraw screen */
         if (!context.mv || Blind)

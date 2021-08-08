@@ -1211,8 +1211,18 @@ namespace GnollHackClient
             int res = ClientCallback_nhgetch();
         }
 
-        /* Dummies */
-        public void ClientCallback_VoidVoidDummy()
+        public int ClientCallback_UIHasInput()
+        {
+            ConcurrentQueue<GHResponse> queue;
+            if (ClientGame.ResponseDictionary.TryGetValue(this, out queue))
+            {
+                return queue.Count;
+            }
+            return 0;
+        }
+
+            /* Dummies */
+            public void ClientCallback_VoidVoidDummy()
         {
 
         }

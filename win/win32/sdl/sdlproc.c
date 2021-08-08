@@ -138,6 +138,7 @@ struct window_procs nuklear_procs = {
     sdl_display_screen_text,
     sdl_display_popup_text,
     sdl_update_cursor,
+    sdl_ui_has_input,
     sdl_exit_hack,
 };
 
@@ -3679,4 +3680,10 @@ void
 sdl_update_cursor(int style, int force_paint, int show_on_you)
 {
 
+}
+
+int
+sdl_ui_has_input(VOID_ARGS)
+{
+    return FALSE;
 }

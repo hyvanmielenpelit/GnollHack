@@ -3802,6 +3802,7 @@ E void FDECL(genl_display_floating_text, (int, int, const char*, int, int, int, 
 E void FDECL(genl_display_screen_text, (const char*, const char*, int, int, int, unsigned long));
 E void FDECL(genl_display_popup_text, (const char*, const char*, int, int, int, unsigned long));
 E void FDECL(genl_update_cursor, (int, int, int));
+E int NDECL(genl_ui_has_input);
 E void FDECL(genl_exit_hack, (int));
 
 

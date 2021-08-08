@@ -123,6 +123,7 @@ struct window_procs safe_procs = {
     safe_display_screen_text,
     safe_display_popup_text,
     safe_update_cursor,
+    safe_ui_has_input,
     safe_exit_hack,
 };
 
@@ -538,6 +539,12 @@ void
 safe_clear_context_menu(VOID_ARGS)
 {
     return;
+}
+
+int
+safe_ui_has_input(VOID_ARGS)
+{
+    return FALSE;
 }
 
 void

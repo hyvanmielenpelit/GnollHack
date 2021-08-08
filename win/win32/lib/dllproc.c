@@ -118,6 +118,7 @@ struct window_procs dll_procs = {
     dll_display_screen_text,
     dll_display_popup_text,
     dll_update_cursor,
+    dll_ui_has_input,
     dll_exit_hack,
 };
 
@@ -2911,6 +2912,12 @@ void
 dll_update_cursor(int style, int force_paint, int show_on_u)
 {
     return;
+}
+
+int
+dll_ui_has_input(VOID_ARGS)
+{
+    return FALSE;
 }
 
 void

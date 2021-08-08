@@ -142,6 +142,7 @@ typedef void(__callconv* DisplayFloatingTextCallback)(int, int, const char*, int
 typedef void(__callconv* DisplayScreenTextCallback)(const char*, const char*, int, int, int, unsigned long);
 typedef void(__callconv* DisplayPopupTextCallback)(const char*, const char*, int, int, int, unsigned long);
 typedef void(__callconv* UpdateCursorCallback)(int, int, int);
+typedef int(__callconv* UIHasInputCallback)(void);
 typedef void(__callconv* ExitHackCallback)(int);
 
 typedef char*(__callconv* GetCwdCallback)();
@@ -234,6 +235,7 @@ struct callback_procs {
     DisplayScreenTextCallback callback_display_screen_text;
     DisplayPopupTextCallback callback_display_popup_text;
     UpdateCursorCallback callback_update_cursor;
+    UIHasInputCallback callback_ui_has_input;
     ExitHackCallback callback_exit_hack;
 
     GetCwdCallback callback_getcwd;
