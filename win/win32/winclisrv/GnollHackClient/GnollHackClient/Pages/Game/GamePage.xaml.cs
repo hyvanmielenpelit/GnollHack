@@ -2199,7 +2199,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     float tmpwidth = textPaint.FontMetrics.AverageCharacterWidth;
                     float tmpheight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-                    if(GraphicsStyle == GHGraphicsStyle.Tiles)
+                    if(GraphicsStyle == GHGraphicsStyle.Tiles && !ForceAscii)
                     {
                         tmpwidth = GHConstants.TileWidth * UsedFontSize / 48;
                         tmpheight = GHConstants.TileHeight * UsedFontSize / 48;
@@ -2215,7 +2215,7 @@ namespace GnollHackClient.Pages.Game
                 float width = textPaint.FontMetrics.AverageCharacterWidth;
                 float height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
 
-                if (GraphicsStyle == GHGraphicsStyle.Tiles)
+                if (GraphicsStyle == GHGraphicsStyle.Tiles && !ForceAscii)
                 {
                     width = GHConstants.TileWidth * UsedFontSize / 48;
                     height = GHConstants.TileHeight * UsedFontSize / 48;
@@ -3435,7 +3435,7 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         /* Cursor */
-                        if (GraphicsStyle == GHGraphicsStyle.ASCII && CursorStyle == TTYCursorStyle.BlinkingUnderline && _cursorIsOn && _mapCursorX >= 1 && _mapCursorY >= 0)
+                        if ((GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii) && CursorStyle == TTYCursorStyle.BlinkingUnderline && _cursorIsOn && _mapCursorX >= 1 && _mapCursorY >= 0)
                         {
                             int cx = _mapCursorX, cy = _mapCursorY;
                             str = "_";
@@ -3448,7 +3448,7 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 /* Floating Texts */
-                if (GraphicsStyle != GHGraphicsStyle.ASCII)
+                if (GraphicsStyle != GHGraphicsStyle.ASCII && !ForceAscii)
                 {
                     lock (_floatingTextLock)
                     {
@@ -4800,9 +4800,10 @@ namespace GnollHackClient.Pages.Game
                 InventoryImg.HeightRequest = SearchImg.HeightRequest = WaitImg.HeightRequest = DropManyImg.HeightRequest = ChatImg.HeightRequest = imgsideheight;
                 SkillLbl.FontSize = fontsize_larger;
                 InventoryLbl.FontSize = SearchLbl.FontSize = WaitLbl.FontSize = DropManyLbl.FontSize = ChatLbl.FontSize = fontsize;
+                lRepeatButton.SetSideSize(width, height);
                 UpperCmdGrid.HeightRequest = gridsideheight;
                 LowerCmdGrid.HeightRequest = gridsideheight;
-                ChatButton.HeightRequest = RepeatButton.HeightRequest = MenuButton.HeightRequest = KickButton.HeightRequest = FireButton.HeightRequest =
+                ChatButton.HeightRequest = /*RepeatButton.HeightRequest =*/ MenuButton.HeightRequest = KickButton.HeightRequest = FireButton.HeightRequest =
                     ThrowQuiveredButton.HeightRequest = ApplyWieldedButton.HeightRequest = CastButton.HeightRequest = ZapButton.HeightRequest =
                     SwapWeaponButton.HeightRequest = gridsideheight;
 
@@ -5747,8 +5748,8 @@ namespace GnollHackClient.Pages.Game
                 ProfilingStopwatch.Restart();
             }
             GHButton ghbutton = (GHButton)sender;
-            Debug.WriteLine("ProfilingStopwatch.Restart: " + ghbutton.Letter);
-            GenericButton_Clicked(sender, e, (int)ghbutton.Letter);
+            Debug.WriteLine("ProfilingStopwatch.Restart: " + ghbutton.Letter + ", Ctrl:" + ghbutton.ApplyCtrl + ", Meta:" + ghbutton.ApplyMeta);
+            GenericButton_Clicked(sender, e, (int)ghbutton.GHCommand);
 
         }
     }

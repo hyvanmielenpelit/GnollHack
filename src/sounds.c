@@ -6312,7 +6312,6 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
     struct obj* otmp, * otmp2;
     menu_item* pick_list = (menu_item*)0;
     boolean all_pressed = FALSE;
-    boolean quit_pressed = FALSE;
 
     /* should coordinate with perm invent, maybe not show worn items */
     n = query_objlist("What would you like to sell?", &invent,

@@ -8,32 +8,43 @@ namespace GnollHackClient
 {
     public class GHButton : Button
     {
-        private int _ghcommand;
-        
         public int GHCommand 
         { 
             get 
             { 
                 if(ApplyMeta) 
-                    return GHUtils.Meta(_ghcommand);
+                    return GHUtils.Meta((int)Letter);
                 if (ApplyCtrl)
-                    return GHUtils.Ctrl(_ghcommand);
+                    return GHUtils.Ctrl((int)Letter);
                 else
-                    return _ghcommand;
+                    return (int)Letter;
             }
         }
-        public char Letter { get { return (char)_ghcommand; } set { _ghcommand = (int)value; } }
-        public bool ApplyMeta { get; set; }
-        public bool ApplyCtrl { get; set; }
+
+        public static readonly BindableProperty LetterProperty = BindableProperty.Create(nameof(Letter), typeof(char), typeof(GHButton), (char)0);
+        public static readonly BindableProperty ApplyMetaProperty = BindableProperty.Create(nameof(ApplyMeta), typeof(bool), typeof(GHButton), false);
+        public static readonly BindableProperty ApplyCtrlProperty = BindableProperty.Create(nameof(ApplyCtrl), typeof(bool), typeof(GHButton), false);
+
+        public char Letter
+        {
+            get => (char)GetValue(GHButton.LetterProperty);
+            set => SetValue(GHButton.LetterProperty, value);
+        }
+        public bool ApplyMeta
+        {
+            get => (bool)GetValue(GHButton.ApplyMetaProperty);
+            set => SetValue(GHButton.ApplyMetaProperty, value);
+        }
+        public bool ApplyCtrl
+        {
+            get => (bool)GetValue(GHButton.ApplyCtrlProperty);
+            set => SetValue(GHButton.ApplyCtrlProperty, value);
+        }
 
         public GHButton()
         {
 
         }
 
-        public GHButton(int ghcommand)
-        {
-            _ghcommand = ghcommand;
-        }
     }
 }
