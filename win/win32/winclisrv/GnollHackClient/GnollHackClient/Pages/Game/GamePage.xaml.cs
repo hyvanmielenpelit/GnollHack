@@ -240,7 +240,7 @@ namespace GnollHackClient.Pages.Game
             //SearchImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.search.png");
             //WaitImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.wait.png");
             //DropManyImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.dropmany.png");
-            SkillImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.skill.png");
+            //SkillImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.skill.png");
             await LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear);
 
             _gnollHackService = DependencyService.Get<IGnollHackService>();
@@ -732,10 +732,10 @@ namespace GnollHackClient.Pages.Game
                                 DisplayPopupText(req.ScreenTextData);
                                 break;
                             case GHRequestType.ShowSkillButton:
-                                SkillGrid.IsVisible = true;
+                                lSkillButton.IsVisible = true;
                                 break;
                             case GHRequestType.HideSkillButton:
-                                SkillGrid.IsVisible = false;
+                                lSkillButton.IsVisible = false;
                                 break;
                             case GHRequestType.FadeToBlack:
                                 FadeToBlack((uint)req.RequestInt);
@@ -4762,7 +4762,7 @@ namespace GnollHackClient.Pages.Game
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
-            if(width != _currentPageWidth || height != _currentPageHeight)
+            if (width != _currentPageWidth || height != _currentPageHeight)
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
@@ -4782,26 +4782,29 @@ namespace GnollHackClient.Pages.Game
                 ThirdButton.WidthRequest = ThirdButton.HeightRequest = sidesize;
                 FourthButton.WidthRequest = FourthButton.HeightRequest = sidesize;
 
-                double imgsidewidth = 0;
-                if (width > height)
-                    imgsidewidth = Math.Min(80.0, Math.Max(40.0, width / 14));
-                else
-                    imgsidewidth = Math.Min(Math.Min(80.0, Math.Max(40.0, width / 7)), Math.Min(80.0, Math.Max(40.0, height / 7)));
+                //double imgsidewidth = 0;
+                //if (width > height)
+                //    imgsidewidth = Math.Min(80.0, Math.Max(40.0, width / 14));
+                //else
+                //    imgsidewidth = Math.Min(Math.Min(80.0, Math.Max(40.0, width / 7)), Math.Min(80.0, Math.Max(40.0, height / 7)));
 
-                double imgsideheight = imgsidewidth;
-                double fontsize = 9.0 * imgsidewidth / 50.0;
-                double fontsize_larger = 9.5 * imgsidewidth / 50.0;
-                double gridsidewidth = imgsidewidth;
-                double gridsideheight = imgsideheight + fontsize + 2;
-                double gridsideheight_larger = imgsideheight + fontsize_larger + 2;
+                //double imgsideheight = imgsidewidth;
+                //double fontsize = 9.0 * imgsidewidth / 50.0;
+                //double fontsize_larger = 9.5 * imgsidewidth / 50.0;
+                //double gridsidewidth = imgsidewidth;
+                //double gridsideheight = imgsideheight + fontsize + 2;
+                //double gridsideheight_larger = imgsideheight + fontsize_larger + 2;
 
-                AbilitiesGrid.WidthRequest = SkillGrid.WidthRequest = gridsidewidth;
-                AbilitiesGrid.HeightRequest = SkillGrid.HeightRequest = gridsideheight_larger;
-                AbilitiesImg.WidthRequest = SkillImg.WidthRequest = imgsidewidth;
-                AbilitiesImg.HeightRequest = SkillImg.HeightRequest = imgsideheight;
+                //AbilitiesGrid.WidthRequest = SkillGrid.WidthRequest = gridsidewidth;
+                //AbilitiesGrid.HeightRequest = SkillGrid.HeightRequest = gridsideheight_larger;
+                //AbilitiesImg.WidthRequest = SkillImg.WidthRequest = imgsidewidth;
+                //AbilitiesImg.HeightRequest = SkillImg.HeightRequest = imgsideheight;
                 /* AbilitiesLbl */
-                SkillLbl.FontSize = fontsize_larger;
-                foreach(View v in UpperCmdGrid.Children)
+                //SkillLbl.FontSize = fontsize_larger;
+                lAbilitiesButton.SetSideSize(width, height);
+                lSkillButton.SetSideSize(width, height);
+
+                foreach (View v in UpperCmdGrid.Children)
                 {
                     LabeledImageButton lib = (LabeledImageButton)v;
                     lib.SetSideSize(width, height);
@@ -4812,8 +4815,9 @@ namespace GnollHackClient.Pages.Game
                     lib.SetSideSize(width, height);
                 }
 
-                UpperCmdGrid.HeightRequest = gridsideheight;
-                LowerCmdGrid.HeightRequest = gridsideheight;
+                LabeledImageButton firstchild = (LabeledImageButton)UpperCmdGrid.Children[0];
+                UpperCmdGrid.HeightRequest = firstchild.GridHeight;
+                LowerCmdGrid.HeightRequest = firstchild.GridHeight;
 
 #if false
                 InventoryGrid.WidthRequest = SearchGrid.WidthRequest = WaitGrid.WidthRequest = DropManyGrid.WidthRequest = ChatGrid.WidthRequest = gridsidewidth;
