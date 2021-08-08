@@ -424,7 +424,8 @@ boolean exclude_ascii;
             levl[x][y].hero_memory_layers.object_height = obj_height;
         }
 
-        levl[x][y].hero_memory_layers.o_id = 0; /* No moving objects in memory */
+        if (obj->ox0 > 0 && obj->oy0 >= 0 && (obj->ox0 != obj->ox || obj->oy0 != obj->oy))
+            levl[x][y].hero_memory_layers.o_id = obj->o_id;
 
         if (in_pit)
             levl[x][y].hero_memory_layers.layer_flags |= LFLAGS_O_IN_PIT;
@@ -1386,6 +1387,7 @@ int hit_tile_id, damage_shown;
             /* Add layer flags and object height from memory */
             add_glyph_buffer_layer_flags(x, y, lev->hero_memory_layers.layer_flags);
             set_glyph_buffer_object_height(x, y, lev->hero_memory_layers.object_height);
+            set_glyph_buffer_oid(x, y, lev->hero_memory_layers.o_id);
 
             /* Monster layer */
             mon = m_at(x, y);
@@ -3448,6 +3450,7 @@ int cursor_on_u;
     }
 #endif
 
+    init_print_glyph(Is_rogue_level(&u.uz) ? INIT_GLYPH_FORCE_ASCII : INIT_GLYPH_UNFORCE_ASCII);
     init_print_glyph(INIT_GLYPH_START_FLUSH);
     for (y = 0; y < ROWNO; y++) {
         register gbuf_entry *gptr = &gbuf[y][x = gbuf_start[y]];

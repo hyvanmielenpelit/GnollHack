@@ -1000,7 +1000,6 @@ register struct obj* otmp;
 
     dummy = newobj();
     *dummy = *otmp;
-    dummy->ox0 = dummy->oy0 = 0;  /* No moving objects in memory */
     dummy->nobj = (struct obj*)0; /* set nobj to zero; this is just a copy */
     dummy->cobj = (struct obj*)0;
     add_memory_object_contents(dummy, otmp);

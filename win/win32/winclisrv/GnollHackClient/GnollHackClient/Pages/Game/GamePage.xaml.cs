@@ -57,6 +57,10 @@ namespace GnollHackClient.Pages.Game
         private int _ux = 0;
         private int _uy = 0;
 
+        private object _forceAsciiLock = new object();
+        private bool _forceAscii = false;
+        public bool ForceAscii { get { lock (_forceAsciiLock) { return _forceAscii; } } set { lock (_forceAsciiLock) { _forceAscii = value; } } }
+
         private CommandPage _cmdPage = null;
 
         public object RefreshScreenLock = new object();
@@ -2289,7 +2293,7 @@ namespace GnollHackClient.Pages.Game
                     {
                         lock (_mapDataLock)
                         {
-                            if (GraphicsStyle == GHGraphicsStyle.ASCII)
+                            if (GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii)
                             {
                                 for (int mapx = startX; mapx <= endX; mapx++)
                                 {

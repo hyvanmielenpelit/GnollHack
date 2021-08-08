@@ -1177,6 +1177,18 @@ namespace GnollHackClient
                         queue.Enqueue(new GHRequest(this, GHRequestType.FadeFromBlack, 200));
                     }
                     break;
+                case (int)init_print_glyph_stages.INIT_GLYPH_FORCE_ASCII:
+                    lock(_gamePageLock)
+                    {
+                        _gamePage.ForceAscii = true;
+                    }
+                    break;
+                case (int)init_print_glyph_stages.INIT_GLYPH_UNFORCE_ASCII:
+                    lock (_gamePageLock)
+                    {
+                        _gamePage.ForceAscii = false;
+                    }
+                    break;
                 default:
                     break;
             }

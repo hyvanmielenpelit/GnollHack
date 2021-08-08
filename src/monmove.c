@@ -871,9 +871,11 @@ register struct monst *mtmp;
             pline("%s concentrates.", Monnam(mtmp));
         if (distu(mtmp->mx, mtmp->my) > TELEPATHY_RANGE * TELEPATHY_RANGE)
         {
+            play_sfx_sound(SFX_FAINT_WAVE_OF_PSYCHIC_ENERGY);
             You("sense a faint wave of psychic energy.");
             goto toofar;
         }
+        play_sfx_sound(SFX_WAVE_OF_PSYCHIC_ENERGY);
         pline("A wave of psychic energy pours over you!");
         if (is_peaceful(mtmp)
             && !(is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0))))

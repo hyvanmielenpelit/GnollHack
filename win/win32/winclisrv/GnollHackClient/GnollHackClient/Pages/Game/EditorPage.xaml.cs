@@ -66,6 +66,10 @@ namespace GnollHackClient.Pages.Game
                     ErrorLabel.Text = "";
                     await App.Current.MainPage.Navigation.PopModalAsync();
                 }
+                else
+                {
+                    OKGrid.IsEnabled = true;
+                }
             }
             else
             {
