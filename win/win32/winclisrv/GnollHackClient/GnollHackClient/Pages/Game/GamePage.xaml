@@ -115,7 +115,7 @@
                 </AbsoluteLayout>
             <!-- AbsoluteLayout.LayoutBounds="0.0, 1.0, 1.0, 0.35"  AbsoluteLayout.LayoutFlags="All"  -->
 
-                <StackLayout Grid.Row="1" x:Name="ButtonRowStack" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Orientation="Vertical" >
+                <StackLayout Grid.Row="1" x:Name="ButtonRowStack" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical" >
                     <Grid x:Name="UpperCmdGrid" HeightRequest="60" BackgroundColor="Black" HorizontalOptions="CenterAndExpand" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />

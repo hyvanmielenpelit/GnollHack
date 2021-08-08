@@ -4775,15 +4775,20 @@ namespace GnollHackClient.Pages.Game
                 ToggleZoomMiniButton.WidthRequest = ToggleZoomMiniButton.HeightRequest = sidesize;
                 ToggleZoomAlternateButton.WidthRequest = ToggleZoomAlternateButton.HeightRequest = sidesize;
 
-                sidesize = Math.Min(Math.Min(80.0, Math.Max(60.0, width / 6)), Math.Min(80.0, Math.Max(60.0, height / 6)));
+                sidesize = Math.Min(Math.Min(80.0, Math.Max(40.0, width / 6)), Math.Min(80.0, Math.Max(40.0, height / 6)));
                 ZeroButton.WidthRequest = ZeroButton.HeightRequest = sidesize;
                 FirstButton.WidthRequest = FirstButton.HeightRequest = sidesize;
                 SecondButton.WidthRequest = SecondButton.HeightRequest = sidesize;
                 ThirdButton.WidthRequest = ThirdButton.HeightRequest = sidesize;
                 FourthButton.WidthRequest = FourthButton.HeightRequest = sidesize;
 
-                double imgsidewidth = Math.Min(Math.Min(80.0, Math.Max(50.0, width / 7)), Math.Min(80.0, Math.Max(50.0, height / 7)));
-                double imgsideheight = Math.Min(Math.Min(80.0, Math.Max(50.0, width / 7)), Math.Min(80.0, Math.Max(50.0, height / 7)));
+                double imgsidewidth = 0;
+                if (width > height)
+                    imgsidewidth = Math.Min(80.0, Math.Max(40.0, width / 14));
+                else
+                    imgsidewidth = Math.Min(Math.Min(80.0, Math.Max(40.0, width / 7)), Math.Min(80.0, Math.Max(40.0, height / 7)));
+
+                double imgsideheight = imgsidewidth;
                 double fontsize = 9.0 * imgsidewidth / 50.0;
                 double fontsize_larger = 9.5 * imgsidewidth / 50.0;
                 double gridsidewidth = imgsidewidth;
@@ -4824,6 +4829,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     /* Landscape */
                     ButtonRowStack.Orientation = StackOrientation.Horizontal;
+                    ButtonRowStack.HeightRequest = gridsideheight;
                     ModeLayout.Orientation = StackOrientation.Vertical;
                     ModeSubLayout1.Orientation = StackOrientation.Horizontal;
                     ModeSubLayout2.Orientation = StackOrientation.Horizontal;
@@ -4834,6 +4840,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     /* Portrait */
                     ButtonRowStack.Orientation = StackOrientation.Vertical;
+                    ButtonRowStack.HeightRequest = 2 * gridsideheight;
                     ModeLayout.Orientation = StackOrientation.Vertical;
                     ModeSubLayout1.Orientation = StackOrientation.Vertical;
                     ModeSubLayout2.Orientation = StackOrientation.Vertical;
