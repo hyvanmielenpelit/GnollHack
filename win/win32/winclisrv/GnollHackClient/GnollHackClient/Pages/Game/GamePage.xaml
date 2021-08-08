@@ -129,6 +129,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
+                        <!--
                         <Grid x:Name="InventoryGrid" Grid.Column="0" HeightRequest="60" WidthRequest="50" >
                             <Image x:Name="InventoryImg" HeightRequest="50" WidthRequest="50" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
                             <Label x:Name="InventoryLbl" Text="Inventory" TextColor="White" FontFamily="LatoRegular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
@@ -154,9 +155,16 @@
                             <Label x:Name="ChatLbl" Text="Chat" TextColor="White" FontFamily="LatoRegular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
                             <gnollhackclient:GHButton x:Name="ChatButton" Letter="C" Clicked="GHButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
                         </Grid>
+                        -->
+                        <controls:LabeledImageButton Grid.Column="0" x:Name="lInventoryButton" LblText="Inventory" BtnLetter="i" ImgSourcePath="resource://GnollHackClient.Assets.Icons.inventory.png" BtnClicked="GHButton_Clicked" />
+                        <controls:LabeledImageButton Grid.Column="1" x:Name="lSearchButton" LblText="Search" BtnLetter="s" ImgSourcePath="resource://GnollHackClient.Assets.Icons.search.png" BtnClicked="GHButton_Clicked" />
+                        <controls:LabeledImageButton Grid.Column="2" x:Name="lWaitButton" LblText="Wait" BtnLetter="." ImgSourcePath="resource://GnollHackClient.Assets.Icons.wait.png" BtnClicked="GHButton_Clicked" />
+                        <controls:LabeledImageButton Grid.Column="3" x:Name="lDropManyButton" LblText="Drop Items" BtnLetter="%" ImgSourcePath="resource://GnollHackClient.Assets.Icons.dropmany.png" BtnClicked="GHButton_Clicked" />
+                        <controls:LabeledImageButton Grid.Column="4" x:Name="lChatButton" LblText="Chat" BtnLetter="C" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
                         <controls:LabeledImageButton Grid.Column="5" x:Name="lRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
+                        <controls:LabeledImageButton Grid.Column="6" x:Name="lMenuButton" LblText="Menu" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="MenuButton_Clicked" />
                         <!--<Button Grid.Column="5" Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />-->
-                        <Button Grid.Column="6" Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
+                        <!--<Button Grid.Column="6" Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />-->
                         <!--
                         <Button Grid.Column="0" Text="i" x:Name="InventoryButton" Clicked="InventoryButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
                         <Button Grid.Column="1" Text="s" x:Name="SearchButton" Clicked="SearchButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
@@ -176,6 +184,14 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
+                        <controls:LabeledImageButton Grid.Column="0" x:Name="lKickButton" LblText="Kick" BtnLetter="k" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
+                        <controls:LabeledImageButton Grid.Column="1" x:Name="lFireButton" LblText="Fire" BtnLetter="f" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
+                        <controls:LabeledImageButton Grid.Column="2" x:Name="lThrowButton" LblText="Throw" BtnLetter="t" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
+                        <controls:LabeledImageButton Grid.Column="3" x:Name="lApplyButton" LblText="Apply" BtnLetter="a" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
+                        <controls:LabeledImageButton Grid.Column="4" x:Name="lCastButton" LblText="Cast" BtnLetter="Z" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
+                        <controls:LabeledImageButton Grid.Column="5" x:Name="lZapButton" LblText="Zap" BtnLetter="z" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
+                        <controls:LabeledImageButton Grid.Column="6" x:Name="lSwapWeaponButton" LblText="Swap" BtnLetter="x" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
+                        <!--
                         <Button Grid.Column="0" Text="k" x:Name="KickButton" Clicked="KickButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
                         <Button Grid.Column="1" Text="f" x:Name="FireButton" Clicked="FireButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
                         <Button Grid.Column="2" Text="t" x:Name="ThrowQuiveredButton" Clicked="ThrowQuiveredButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
@@ -183,6 +199,7 @@
                         <Button Grid.Column="4" Text="Z" x:Name="CastButton" Clicked="CastButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
                         <Button Grid.Column="5" Text="z" x:Name="ZapButton" Clicked="ZapButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
                         <Button Grid.Column="6" Text="x" x:Name="SwapWeaponButton" Clicked="SwapWeaponButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
+                        -->
                     </Grid>
                 </StackLayout>
             </Grid>

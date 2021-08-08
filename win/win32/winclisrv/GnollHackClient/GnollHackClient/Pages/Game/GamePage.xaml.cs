@@ -20,6 +20,7 @@ using System.IO;
 using FFImageLoading.Forms;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using GnollHackClient.Controls;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -235,10 +236,10 @@ namespace GnollHackClient.Pages.Game
             {
                 _logoBitmap = SKBitmap.Decode(stream);
             }
-            InventoryImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.inventory.png");
-            SearchImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.search.png");
-            WaitImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.wait.png");
-            DropManyImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.dropmany.png");
+            //InventoryImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.inventory.png");
+            //SearchImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.search.png");
+            //WaitImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.wait.png");
+            //DropManyImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.dropmany.png");
             SkillImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.skill.png");
             await LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear);
 
@@ -633,7 +634,7 @@ namespace GnollHackClient.Pages.Game
             }
 
             GameMenuButton.IsEnabled = true;
-            MenuButton.IsEnabled = true;
+            lMenuButton.IsEnabled = true;
 
             if (_isFirstAppearance)
             {
@@ -4794,19 +4795,31 @@ namespace GnollHackClient.Pages.Game
                 AbilitiesImg.WidthRequest = SkillImg.WidthRequest = imgsidewidth;
                 AbilitiesImg.HeightRequest = SkillImg.HeightRequest = imgsideheight;
                 /* AbilitiesLbl */
+                SkillLbl.FontSize = fontsize_larger;
+                foreach(View v in UpperCmdGrid.Children)
+                {
+                    LabeledImageButton lib = (LabeledImageButton)v;
+                    lib.SetSideSize(width, height);
+                }
+                foreach (View v in LowerCmdGrid.Children)
+                {
+                    LabeledImageButton lib = (LabeledImageButton)v;
+                    lib.SetSideSize(width, height);
+                }
+
+                UpperCmdGrid.HeightRequest = gridsideheight;
+                LowerCmdGrid.HeightRequest = gridsideheight;
+
+#if false
                 InventoryGrid.WidthRequest = SearchGrid.WidthRequest = WaitGrid.WidthRequest = DropManyGrid.WidthRequest = ChatGrid.WidthRequest = gridsidewidth;
                 InventoryGrid.HeightRequest = SearchGrid.HeightRequest = WaitGrid.HeightRequest = DropManyGrid.HeightRequest = ChatGrid.HeightRequest = gridsideheight;
                 InventoryImg.WidthRequest = SearchImg.WidthRequest = WaitImg.WidthRequest = DropManyImg.WidthRequest = ChatImg.WidthRequest = imgsidewidth;
                 InventoryImg.HeightRequest = SearchImg.HeightRequest = WaitImg.HeightRequest = DropManyImg.HeightRequest = ChatImg.HeightRequest = imgsideheight;
-                SkillLbl.FontSize = fontsize_larger;
                 InventoryLbl.FontSize = SearchLbl.FontSize = WaitLbl.FontSize = DropManyLbl.FontSize = ChatLbl.FontSize = fontsize;
-                lRepeatButton.SetSideSize(width, height);
-                UpperCmdGrid.HeightRequest = gridsideheight;
-                LowerCmdGrid.HeightRequest = gridsideheight;
                 ChatButton.HeightRequest = /*RepeatButton.HeightRequest =*/ MenuButton.HeightRequest = KickButton.HeightRequest = FireButton.HeightRequest =
                     ThrowQuiveredButton.HeightRequest = ApplyWieldedButton.HeightRequest = CastButton.HeightRequest = ZapButton.HeightRequest =
                     SwapWeaponButton.HeightRequest = gridsideheight;
-
+#endif
                 if (width > height)
                 {
                     /* Landscape */
@@ -5487,7 +5500,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void MenuButton_Clicked(object sender, EventArgs e)
         {
-            MenuButton.IsEnabled = false;
+            lMenuButton.IsEnabled = false;
             if(_cmdPage == null)
                 _cmdPage = new CommandPage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(_cmdPage);
