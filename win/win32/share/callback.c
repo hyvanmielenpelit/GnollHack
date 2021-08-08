@@ -105,7 +105,7 @@ common_prompt_for_player_selection()
         /* tty_putstr(BASE_WINDOW, 0, ""); */
         /* echoline = wins[BASE_WINDOW]->cury; */
 
-        pick4u = ynq(prompt);
+        pick4u = ynq2(prompt);
         if (pick4u == 'q')
             pick4u = '\033';
 

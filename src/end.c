@@ -354,12 +354,12 @@ done2()
 #ifdef VMS
         extern int debuggable; /* sys/vms/vmsmisc.c, vmsunix.c */
 
-        c = !debuggable ? 'n' : ynq("Enter debugger?");
+        c = !debuggable ? 'n' : ynq2("Enter debugger?");
 #else
 #ifdef LATTICE
-        c = ynq("Create SnapShot?");
+        c = ynq2("Create SnapShot?");
 #else
-        c = ynq("Dump core?");
+        c = ynq2("Dump core?");
 #endif
 #endif
         if (c == 'y') {
@@ -859,7 +859,7 @@ boolean taken;
             Strcpy(qbuf, "Do you want your possessions identified?");
 
         ask = should_query_disclose_option('i', &defquery);
-        c = ask ? yn_function(qbuf, ynqchars, defquery, ynqdescs) : defquery;
+        c = ask ? yn_function(qbuf, ynqchars, defquery, ynq2descs) : defquery;
         if (c == 'y') {
             /* caller has already ID'd everything */
             (void) display_inventory((char *) 0, TRUE, 0);
@@ -872,7 +872,7 @@ boolean taken;
     if (!done_stopprint) {
         ask = should_query_disclose_option('a', &defquery);
         c = ask ? yn_function("Do you want to see your attributes?", ynqchars,
-                              defquery, ynqdescs)
+                              defquery, ynq2descs)
                 : defquery;
         if (c == 'y')
             enlightenment((BASICENLIGHTENMENT | MAGICENLIGHTENMENT),
@@ -895,7 +895,7 @@ boolean taken;
     if (!done_stopprint) {
         ask = should_query_disclose_option('c', &defquery);
         c = ask ? yn_function("Do you want to see your conduct?", ynqchars,
-                              defquery, ynqdescs)
+                              defquery, ynq2descs)
                 : defquery;
         if (c == 'y')
             show_conduct((how >= PANICKED) ? 1 : 2);
@@ -906,7 +906,7 @@ boolean taken;
     if (!done_stopprint) {
         ask = should_query_disclose_option('o', &defquery);
         c = ask ? yn_function("Do you want to see the dungeon overview?",
-                              ynqchars, defquery, ynqdescs)
+                              ynqchars, defquery, ynq2descs)
                 : defquery;
         if (c == 'y')
             show_overview((how >= PANICKED) ? 1 : 2, how);
@@ -2188,7 +2188,7 @@ boolean ask;
 
         c = ask ? yn_function(
                             "Do you want an account of creatures vanquished?",
-                              ynaqchars, defquery, ynqdescs)
+                              ynaqchars, defquery, ynaq2descs)
                 : defquery;
         if (c == 'q')
             done_stopprint++;
@@ -2341,7 +2341,7 @@ boolean ask;
             (ngenocided) ? " genocided" : "",
             (nextinct && ngenocided) ? " and extinct" : "");
         
-        c = ask ? yn_function(buf, ynqchars, defquery, ynqdescs) : defquery;
+        c = ask ? yn_function(buf, ynqchars, defquery, ynq2descs) : defquery;
         
         if (c == 'q')
             done_stopprint++;

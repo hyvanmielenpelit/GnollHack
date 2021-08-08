@@ -469,6 +469,7 @@ extern short tile2enlargement[MAX_TILES];
 /*** some utility macros ***/
 #define yn_query(query) yn_function(query, ynchars, 'n', yndescs)
 #define ynq(query) yn_function(query, ynqchars, 'q', ynqdescs)
+#define ynq2(query) yn_function(query, ynqchars, 'q', ynq2descs)
 #define ynaq(query) yn_function(query, ynaqchars, 'y', ynaqdescs)
 #define nyaq(query) yn_function(query, ynaqchars, 'n', ynaqdescs)
 #define nyNaq(query) yn_function(query, ynNaqchars, 'n', ynNaqdescs)

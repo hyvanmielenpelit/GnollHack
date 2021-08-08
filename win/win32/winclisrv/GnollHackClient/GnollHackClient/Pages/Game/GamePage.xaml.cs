@@ -479,9 +479,22 @@ namespace GnollHackClient.Pages.Game
                 default:
                     if (data.cmd_def_char == LastPicked)
                         icon_string = "GnollHackClient.Assets.Icons.inventory.png";
+                    else
+                        icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
                     break;
             }
 
+            LabeledImageButton lib = new LabeledImageButton();
+            lib.ImgSourcePath = "resource://" + icon_string;
+            lib.LargerFont = true;
+            lib.LblText = data.cmd_text;
+            lib.SetSideSize(_currentPageWidth, _currentPageHeight);
+            lib.BtnCommand = data.cmd_cur_char;
+            lib.BtnClicked += GHButton_Clicked;
+            ContextGrid.IsVisible = true;
+            ContextGrid.Children.Add(lib);
+
+#if false
             double sidesize = Math.Min(Math.Min(80.0, Math.Max(50.0, _currentPageWidth / 7)), Math.Min(80.0, Math.Max(50.0, _currentPageHeight / 7)));
             double fontsize = 9.5 * sidesize / 50.0;
             if (icon_string != "")
@@ -566,6 +579,7 @@ namespace GnollHackClient.Pages.Game
                 ContextGrid.IsVisible = true;
                 ContextGrid.Children.Add(contextButton);
             }
+#endif
         }
 
         public void DisplayFloatingText(DisplayFloatingTextData data)
@@ -5808,7 +5822,7 @@ namespace GnollHackClient.Pages.Game
                 ProfilingStopwatch.Restart();
             }
             GHButton ghbutton = (GHButton)sender;
-            Debug.WriteLine("ProfilingStopwatch.Restart: " + ghbutton.Letter + ", Ctrl:" + ghbutton.ApplyCtrl + ", Meta:" + ghbutton.ApplyMeta);
+            Debug.WriteLine("ProfilingStopwatch.Restart: " + ghbutton.RawCommand + ", Letter:" + ghbutton.Letter + ", Ctrl:" + ghbutton.ApplyCtrl + ", Meta:" + ghbutton.ApplyMeta);
             GenericButton_Clicked(sender, e, (int)ghbutton.GHCommand);
 
         }

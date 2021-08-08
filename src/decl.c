@@ -75,7 +75,9 @@ const char idqchars[] = "idq";
 
 const char yndescs[] = "Yes\nNo";
 const char ynqdescs[] = "Yes\nNo\nCancel";
+const char ynq2descs[] = "Yes\nNo\nQuit";
 const char ynaqdescs[] = "Yes\nNo\nAll\nCancel";
+const char ynaq2descs[] = "Yes\nNo\nAll\nQuit";
 const char ynNaqdescs[] = "Yes\nNo\nCount\nAll\nCancel";
 const char dnqdescs[] = "Disarm\nNeglect\nCancel";
 const char idqdescs[] = "Put Into\nDrop\nDo Nothing";

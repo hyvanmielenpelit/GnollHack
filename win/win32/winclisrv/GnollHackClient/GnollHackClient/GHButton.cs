@@ -11,7 +11,9 @@ namespace GnollHackClient
         public int GHCommand 
         { 
             get 
-            { 
+            {
+                if (RawCommand != 0)
+                    return RawCommand;
                 if(ApplyMeta) 
                     return GHUtils.Meta((int)Letter);
                 if (ApplyCtrl)
@@ -24,6 +26,7 @@ namespace GnollHackClient
         public static readonly BindableProperty LetterProperty = BindableProperty.Create(nameof(Letter), typeof(char), typeof(GHButton), (char)0);
         public static readonly BindableProperty ApplyMetaProperty = BindableProperty.Create(nameof(ApplyMeta), typeof(bool), typeof(GHButton), false);
         public static readonly BindableProperty ApplyCtrlProperty = BindableProperty.Create(nameof(ApplyCtrl), typeof(bool), typeof(GHButton), false);
+        public static readonly BindableProperty RawCommandProperty = BindableProperty.Create(nameof(RawCommand), typeof(int), typeof(GHButton), 0);
 
         public char Letter
         {
@@ -39,6 +42,11 @@ namespace GnollHackClient
         {
             get => (bool)GetValue(GHButton.ApplyCtrlProperty);
             set => SetValue(GHButton.ApplyCtrlProperty, value);
+        }
+        public int RawCommand
+        {
+            get => (int)GetValue(GHButton.RawCommandProperty);
+            set => SetValue(GHButton.RawCommandProperty, value);
         }
 
         public GHButton()

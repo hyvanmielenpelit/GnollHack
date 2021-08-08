@@ -21,7 +21,7 @@
                    BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" 
                    InputTransparent="True" />
             <gnhcli:GHButton x:Name="ViewButton" Text="" 
-                             Letter="{Binding BtnLetter}" ApplyMeta="{Binding BtnMeta}" ApplyCtrl="{Binding BtnCtrl}" 
+                             Letter="{Binding BtnLetter}" ApplyMeta="{Binding BtnMeta}" ApplyCtrl="{Binding BtnCtrl}" RawCommand="{Binding BtnCommand}" 
                              BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
         </Grid>
     </ContentView.Content>

@@ -212,7 +212,9 @@ E const char idqchars[];
 
 E const char yndescs[];
 E const char ynqdescs[];
+E const char ynq2descs[];
 E const char ynaqdescs[];
+E const char ynaq2descs[];
 E const char ynNaqdescs[];
 E const char ciqdescs[];
 E const char bcqdescs[];

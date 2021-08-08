@@ -24,6 +24,7 @@ namespace GnollHackClient.Controls
         public static readonly BindableProperty BtnLetterProperty = BindableProperty.Create(nameof(BtnLetter), typeof(char), typeof(LabeledImageButton), (char)0);
         public static readonly BindableProperty BtnMetaProperty = BindableProperty.Create(nameof(BtnMeta), typeof(bool), typeof(LabeledImageButton), false);
         public static readonly BindableProperty BtnCtrlProperty = BindableProperty.Create(nameof(BtnCtrl), typeof(bool), typeof(LabeledImageButton), false);
+        public static readonly BindableProperty BtnCommandProperty = BindableProperty.Create(nameof(BtnCommand), typeof(int), typeof(LabeledImageButton), 0);
 
         public event EventHandler<EventArgs> BtnClicked;
         public char BtnLetter
@@ -40,6 +41,11 @@ namespace GnollHackClient.Controls
         {
             get => (bool)GetValue(LabeledImageButton.BtnCtrlProperty);
             set => SetValue(LabeledImageButton.BtnCtrlProperty, value);
+        }
+        public int BtnCommand
+        {
+            get => (int)GetValue(LabeledImageButton.BtnCommandProperty);
+            set => SetValue(LabeledImageButton.BtnCommandProperty, value);
         }
 
         public string LblText

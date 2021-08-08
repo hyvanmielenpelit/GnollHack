@@ -560,10 +560,14 @@ namespace GnollHackClient
         }
         public void ClientCallback_DelayOutput()
         {
+            if (ClientCallback_UIHasInput() > 0)
+                return;
             Thread.Sleep(2 * GHConstants.DefaultAnimationInterval);
         }
         public void ClientCallback_DelayOutputMilliseconds(int milliseconds)
         {
+            if (ClientCallback_UIHasInput() > 0)
+                return;
             Thread.Sleep(milliseconds);
         }
         public void ClientCallback_DelayOutputIntervals(int intervals)
@@ -580,6 +584,9 @@ namespace GnollHackClient
 
             do
             {
+                if (ClientCallback_UIHasInput() > 0)
+                    break;
+
                 Thread.Sleep(5);
                 lock (_gamePageLock)
                 {
