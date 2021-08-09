@@ -1642,10 +1642,12 @@ struct obj* obj;
     if ((ptr->mflags4 & M4_LOVES_BANANAS) && (obj)->otyp == BANANA)
         return TRUE;
 
-    if (is_hell_hound(ptr) &&
-        ((obj)->oclass == FOOD_CLASS && (obj)->cursed && !((obj)->otyp == CORPSE && (obj)->corpsenm >= LOW_PM && vegetarian(&mons[(obj)->corpsenm])))
-        )
-        return TRUE;
+    if (is_hell_hound(ptr) && (obj)->oclass == FOOD_CLASS && (obj)->cursed)
+    {
+        if (!(objects[(obj)->otyp].oc_material == MAT_VEGGY
+            || ((obj)->otyp == CORPSE && (obj)->corpsenm >= LOW_PM && vegetarian(&mons[(obj)->corpsenm]))))
+            return TRUE;
+    }
 
     if (is_domestic(ptr) && (obj)->oclass == FOOD_CLASS)
     {

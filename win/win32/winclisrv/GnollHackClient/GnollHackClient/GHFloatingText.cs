@@ -123,6 +123,10 @@ namespace GnollHackClient
                     return SKColors.Cyan;
                 case 10:
                     return SKColors.Crimson;
+                case 11:
+                    return SKColors.GreenYellow;
+                case 12:
+                    return SKColors.OrangeRed;
                 default:
                     break;
             }

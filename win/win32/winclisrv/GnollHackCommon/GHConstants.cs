@@ -448,6 +448,8 @@ namespace GnollHackCommon
         FLOATING_TEXT_NUTRITION_LOSS,
         FLOATING_TEXT_ITEM_ACQUIRED,
         FLOATING_TEXT_ITEM_STOLEN,
+        FLOATING_TEXT_ATTRIBUTE_GAIN,
+        FLOATING_TEXT_ATTRIBUTE_LOSS,
     }
 
     public enum screen_text_types

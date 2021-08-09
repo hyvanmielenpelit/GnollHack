@@ -219,7 +219,18 @@ int msgflg; /* positive => no message, zero => message, and */
     updatemaxen();
 
     if (msgflg <= 0)
+    {
         You_feel_ex(ATR_NONE, (incr > 0) ? CLR_MSG_POSITIVE : (incr < 0) ? CLR_MSG_NEGATIVE : NO_COLOR, "%s%s!", (incr > 1 || incr < -1) ? "very " : "", attrstr);
+        
+        int change = ACURR(ndx) - old_acurr;
+        if (change != 0)
+        {
+            char ftbuf[BUFSZ];
+            Sprintf(ftbuf, "%s%d %s", change >= 0 ? "+" : "", change, attrname[ndx]);
+            display_floating_text(u.ux, u.uy, ftbuf, change >= 0 ? FLOATING_TEXT_ATTRIBUTE_GAIN : FLOATING_TEXT_ATTRIBUTE_LOSS, ATR_NONE, NO_COLOR, 0UL);
+        }
+    }
+
     context.botl = TRUE;
     /* Check if AC and MC need to be updated */
     find_ac();
