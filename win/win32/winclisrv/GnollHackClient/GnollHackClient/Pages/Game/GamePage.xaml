@@ -140,7 +140,7 @@
                             <controls:LabeledImageButton Grid.Column="3" x:Name="lDropManyButton" LblText="Drop Items" BtnLetter="%" ImgSourcePath="resource://GnollHackClient.Assets.Icons.dropmany.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="4" x:Name="lChatButton" LblText="Chat" BtnLetter="C" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="5" x:Name="lRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
-                            <controls:LabeledImageButton Grid.Column="6" x:Name="lMenuButton" LblText="Menu" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="MenuButton_Clicked" />
+                            <controls:LabeledImageButton Grid.Column="6" x:Name="lMenuButton" LblText="More" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="MenuButton_Clicked" />
                             <!--<Button Grid.Column="5" Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />-->
                             <!--<Button Grid.Column="6" Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />-->
                             <!--

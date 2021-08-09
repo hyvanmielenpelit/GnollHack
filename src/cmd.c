@@ -8287,21 +8287,21 @@ create_context_menu(VOID_ARGS)
     }
     else if (IS_THRONE(lev->typ))
     {
-        add_context_menu(C('s'), cmd_from_func(dosit), 0, back_to_glyph(u.ux, u.uy), "Sit", "on throne", 0, NO_COLOR);
+        add_context_menu(C('s'), cmd_from_func(dosit), 0, back_to_glyph(u.ux, u.uy), "Sit", "on Throne", 0, NO_COLOR);
     }
     else if ((u.ux == xupstair && u.uy == yupstair)
         || (u.ux == sstairs.sx && u.uy == sstairs.sy && sstairs.up)
         || (u.ux == xupladder && u.uy == yupladder)) 
     {
-        add_context_menu('<', cmd_from_func(doup), 0, back_to_glyph(u.ux, u.uy), "Go up", 
-            (u.ux == xupladder && u.uy == yupladder) ? "ladder" : "stairs", 0, NO_COLOR);
+        add_context_menu('<', cmd_from_func(doup), 0, back_to_glyph(u.ux, u.uy), "Go Up", 
+            (u.ux == xupladder && u.uy == yupladder) ? "Ladder" : "Stairs", 0, NO_COLOR);
     }
     else if ((u.ux == xdnstair && u.uy == ydnstair)
         || (u.ux == sstairs.sx && u.uy == sstairs.sy && !sstairs.up)
         || (u.ux == xdnladder && u.uy == ydnladder)) 
     {
-        add_context_menu('>', cmd_from_func(dodown), 0, back_to_glyph(u.ux, u.uy), "Go down",
-            (u.ux == xdnladder && u.uy == ydnladder) ? "ladder" : "stairs", 0, NO_COLOR);
+        add_context_menu('>', cmd_from_func(dodown), 0, back_to_glyph(u.ux, u.uy), "Go Down",
+            (u.ux == xdnladder && u.uy == ydnladder) ? "Ladder" : "Stairs", 0, NO_COLOR);
     }
 
     struct monst* shkp = can_pay_to_shkp();
@@ -8316,7 +8316,7 @@ create_context_menu(VOID_ARGS)
 
     if (otmp)
     {
-        add_context_menu(',', cmd_from_func(dopickup), 0, iflags.using_gui_tiles ? otmp->gui_glyph : otmp->glyph, "Pick up", cxname(otmp), 0, NO_COLOR);
+        add_context_menu(',', cmd_from_func(dopickup), 0, iflags.using_gui_tiles ? otmp->gui_glyph : otmp->glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
         struct obj* otmp_here;
         boolean eat_added = FALSE;
         boolean loot_added = FALSE;

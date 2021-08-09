@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:gnhcli="clr-namespace:GnollHackClient"
+             xmlns:gnhcli="clr-namespace:GnollHackClient" 
+             xmlns:controls="clr-namespace:GnollHackClient.Controls"
              x:Class="GnollHackClient.Pages.Game.CommandPage"
              BackgroundColor="Black"
              SizeChanged="ContentPage_SizeChanged"
@@ -10,76 +11,184 @@
     <ContentPage.Content>
         <StackLayout x:Name="MainLayout" Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black" >
             <StackLayout x:Name="WizCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black" IsVisible="false">
-                <gnhcli:GHButton Text="Cw" Letter="w" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Cf" Letter="f" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70"  />
-                <gnhcli:GHButton Text="Mm" Letter="m" ApplyMeta="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Cv" Letter="v" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Ci" Letter="i" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Ct" Letter="t" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Grid>
+                    <controls:LabeledImageButton LblText="Wish" BtnLetter="w" BtnCtrl="true"  ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Reveal" BtnLetter="f" BtnCtrl="true"  ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Genesis" BtnLetter="m" BtnMeta="true"  ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Levelport" BtnLetter="v" BtnCtrl="true"  ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Identify" BtnLetter="i" BtnCtrl="true"  ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Teleport" BtnLetter="t" BtnCtrl="true"  ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
             </StackLayout>
             <StackLayout x:Name="FirstCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-                <gnhcli:GHButton  Text="&gt;" Letter="&gt;" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton  Text="&lt;" Letter="&lt;" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton  Text="o" Letter="o" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton  Text="c" Letter="c" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton  Text="D" Letter="D" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton  Text="Cx" Letter="x" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Grid>
+                    <controls:LabeledImageButton LblText="Go Down" BtnLetter="&gt;" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Go Up" BtnLetter="&lt;" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Open" BtnLetter="o" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Close" BtnLetter="c" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Drop Types" BtnLetter="D" ImgSourcePath="resource://GnollHackClient.Assets.Icons.dropmany.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="2-Weapon" BtnLetter="x" BtnCtrl="true" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
             </StackLayout>
             <StackLayout x:Name="SecondCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-                <gnhcli:GHButton Text="e" Letter="e" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70"  />
-                <gnhcli:GHButton Text="q" Letter="q" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="r" Letter="r" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="E" Letter="E" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Mo" Letter="o" ApplyMeta="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Mp" Letter="p" ApplyMeta="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Grid>
+                    <controls:LabeledImageButton LblText="Eat" BtnLetter="e" ImgSourcePath="resource://GnollHackClient.Assets.Icons.eat.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Quaff" BtnLetter="q" ImgSourcePath="resource://GnollHackClient.Assets.Icons.quaff.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Read" BtnLetter="r" ImgSourcePath="resource://GnollHackClient.Assets.Icons.read.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Engrave" BtnLetter="E" ImgSourcePath="resource://GnollHackClient.Assets.Icons.engrave.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Offer" BtnLetter="o" BtnMeta="true" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Pray" BtnLetter="p" BtnMeta="true" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
             </StackLayout>
             <StackLayout x:Name="ThirdCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-                <gnhcli:GHButton Text="Ms" Letter="s" ApplyMeta="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Cy" Letter="y" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Cg" Letter="g" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Cl" Letter="l" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Mj" Letter="j" ApplyMeta="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
-                <gnhcli:GHButton Text="F" Letter="F"  Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Grid>
+                    <controls:LabeledImageButton LblText="Sit" BtnLetter="s" BtnMeta="true" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Yell" BtnLetter="y" BtnCtrl="true" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Dig" BtnLetter="g" BtnCtrl="true" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Light" BtnLetter="l" BtnCtrl="true" ImgSourcePath="resource://GnollHackClient.Assets.Icons.light.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Jump" BtnLetter="j" BtnMeta="true" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Fight" BtnLetter="F" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
             </StackLayout>
             <StackLayout x:Name="FourthCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-                <gnhcli:GHButton Text="N" Letter="N" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="p" Letter="p" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="l" Letter="l" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Cb" Letter="b" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Co" Letter="o" ApplyCtrl="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Q" Letter="Q" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Grid>
+                    <controls:LabeledImageButton LblText="Name" BtnLetter="N" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Pay" BtnLetter="p" ImgSourcePath="resource://GnollHackClient.Assets.Icons.pay.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Loot" BtnLetter="l" ImgSourcePath="resource://GnollHackClient.Assets.Icons.loot.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Break" BtnLetter="b" BtnCtrl="true" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Overview" BtnLetter="o" BtnCtrl="true" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Quiver" BtnLetter="Q" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
             </StackLayout>
             <StackLayout x:Name="FifthCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-                <gnhcli:GHButton Text="A" Letter="A" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="S" Letter="S" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="Mc" Letter="c" ApplyMeta="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="+" Letter="+" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="X" Letter="X" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="?" Letter="?" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
+                <Grid>
+                    <controls:LabeledImageButton LblText="Abilities" BtnLetter="A" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Skills" BtnLetter="S" ImgSourcePath="resource://GnollHackClient.Assets.Icons.skill.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Commands" BtnLetter="c" BtnMeta="True" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Spells" BtnLetter="+" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Mix" BtnLetter="X" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Help" BtnLetter="?" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
             </StackLayout>
             <StackLayout x:Name="SixthCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-                <gnhcli:GHButton Text="w" Letter="w" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="W" Letter="W" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="P" Letter="P" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="T" Letter="T" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
-                <gnhcli:GHButton Text="R" Letter="R" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
-                <gnhcli:GHButton Text="Mt" Letter="t" ApplyMeta="true" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
+                <Grid>
+                    <controls:LabeledImageButton LblText="Wield" BtnLetter="w" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Wear" BtnLetter="W" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Put On" BtnLetter="P" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Take Off" BtnLetter="T" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Remove" BtnLetter="R" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Remove Many" BtnLetter="t" BtnMeta="true" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
             </StackLayout>
             <StackLayout x:Name="SeventhCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-                <gnhcli:GHButton Text="n" x:Name="CountButton" Clicked="CountButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="n20s" x:Name="Search20Button" Clicked="Search20Button_Clicked" FontFamily="Immortal" FontSize="13" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="n200s" x:Name="Search200Button" Clicked="Search200Button_Clicked" FontFamily="Immortal" FontSize="13" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="\" Letter="\" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
-                <gnhcli:GHButton Text="," Letter="," Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
-                <gnhcli:GHButton Text="&#x2205;" x:Name="ESCButton" Clicked="ESCButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
+                <Grid>
+                    <controls:LabeledImageButton LblText="Count" BtnLetter="n" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="CountButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Count 20" BtnLetter="n" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="Search20Button_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Count 200" BtnLetter="n" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="Search200Button_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Discoveries" BtnLetter="\" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Pick Up" BtnLetter="," ImgSourcePath="resource://GnollHackClient.Assets.Icons.pickup.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Cancel" BtnCommand="27" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
             </StackLayout>
             <StackLayout x:Name="LastCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
-                <gnhcli:GHButton Text="/" Letter="/" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text=";" Letter=";" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="_" Letter="_" Clicked="GHButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                <gnhcli:GHButton Text="#" Letter="#" Clicked="GHButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" />
-                <gnhcli:GHButton Text="&#x21D0;" x:Name="PopupMenuBackButton" Clicked="PopupMenuBackButton_Clicked" FontFamily="DejaVuSansMono" FontSize="32" TextColor="White" BackgroundColor="DarkBlue" />
-                <gnhcli:GHButton Text="&#x2261;" x:Name="BackButton" Clicked="BackButton_Clicked" FontFamily="DejaVuSansMono" FontSize="32" TextColor="White" BackgroundColor="DarkBlue" />
+                <Grid>
+                    <controls:LabeledImageButton LblText="What Is" BtnLetter="/" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Look Far" BtnLetter=";" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Travel" BtnLetter="_" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Extended" BtnLetter="#" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Menu" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="PopupMenuBackButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
+                <Grid>
+                    <controls:LabeledImageButton LblText="Back to Game" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="BackButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Grid>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

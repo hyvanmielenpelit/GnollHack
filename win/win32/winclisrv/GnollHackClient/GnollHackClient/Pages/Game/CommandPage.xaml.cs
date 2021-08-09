@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GnollHackClient.Controls;
 using GnollHackCommon;
 
 using Xamarin.Forms;
@@ -76,6 +77,25 @@ namespace GnollHackClient.Pages.Game
                 StackLayout firstChild = (StackLayout)MainLayout.Children[0];
                 int numcols = firstChild.Children.Count;
                 int numrows = MainLayout.Children.Count - (WizCmdRow.IsVisible ? 0 : 1);
+                foreach(View s in MainLayout.Children)
+                {
+                    StackLayout sl = s as StackLayout;
+                    if(sl != null)
+                    {
+                        foreach (View v in sl.Children)
+                        {
+                            Grid g = v as Grid;
+                            if (g != null && g.Children.Count > 0)
+                            {
+                                LabeledImageButton lib = g.Children[0] as LabeledImageButton;
+                                if (lib != null)
+                                {
+                                    lib.SetSideSize(width, height);
+                                }
+                            }
+                        }
+                    }
+                }
                 if (width > height)
                 {
                     /* Landscape */
