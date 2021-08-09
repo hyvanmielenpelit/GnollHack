@@ -2218,7 +2218,7 @@ boolean origin_at_mon;
             m2->mtame = 0;
             if (tamedog(m2, (struct obj*) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE))
             {
-                if(m2->mextra && mon->mextra)
+                if(has_edog(m2) && has_edog(mon))
                     *(EDOG(m2)) = *(EDOG(mon));
             }
         }

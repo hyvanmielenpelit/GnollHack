@@ -188,9 +188,9 @@ struct monst {
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */
-    /* 21 free bits to 32-bit integer */
-
 #define MAX_NUM_WORMS 32    /* should be 2^(wormno bitfield size) */
+    Bitfield(heads_tamed, 2); /* How many Cerberos's heads have been tamed; anything else for other monsters */
+    /* 19 free bits to 32-bit integer */
 
     unsigned long mon_flags; /* General easy-to-add flags for monsters for things not covered by the above bitfields */
 #define MON_FLAGS_NONE              0x00000000

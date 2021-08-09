@@ -927,11 +927,14 @@ struct permonst *pm1, *pm2;
     if (is_long_worm(pm1))
         return is_long_worm(pm2); /* handles tail */
 
-    if (is_purple_worm(pm1))
-        return is_purple_worm(pm2);
+    if (is_long_worm(pm1))
+        return is_long_worm(pm2); /* handles tail */
 
     if (is_cockatrice(pm1))
         return is_cockatrice(pm2);
+
+    if (is_hell_hound(pm1))
+        return is_hell_hound(pm2);
 
     /* [currently there's no reason to bother matching up
         assorted bugs and blobs with their closest variants] */
@@ -1627,4 +1630,38 @@ struct permonst* ptr;
         return 0; /* Should not get here */
 }
 
+
+boolean
+befriend_with_obj(ptr, obj)
+struct permonst* ptr;
+struct obj* obj;
+{
+    if (!ptr || !obj)
+        return FALSE;
+
+    if ((ptr->mflags4 & M4_LOVES_BANANAS) && (obj)->otyp == BANANA)
+        return TRUE;
+
+    if (is_hell_hound(ptr) &&
+        ((obj)->oclass == FOOD_CLASS && (obj)->cursed && !((obj)->otyp == CORPSE && (obj)->corpsenm >= LOW_PM && vegetarian(&mons[(obj)->corpsenm])))
+        )
+        return TRUE;
+
+    if (is_domestic(ptr) && (obj)->oclass == FOOD_CLASS)
+    {
+        if ((ptr)->mlet == S_UNICORN)
+        {
+            if (objects[(obj)->otyp].oc_material == MAT_VEGGY
+                || ((obj)->otyp == CORPSE && (obj)->corpsenm >= LOW_PM && vegetarian(&mons[(obj)->corpsenm])))
+                return TRUE;
+        }
+        else
+        {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+
+}
 /*mondata.c*/

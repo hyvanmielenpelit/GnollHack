@@ -4285,7 +4285,10 @@ struct monst* mtmp;
                     {
                         /* dog_eat expects a floor object */
                         if (foodmakesfriendly)
-                            tamedog(mtmp, otmp, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, FALSE);
+                        {
+                            if (tamedog(mtmp, otmp, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, FALSE))
+                                otmp = 0; /* It is gone */
+                        }
                         else if (is_tame(mtmp) && mtmp->mextra && EDOG(mtmp))
                         {
                             place_object(otmp, mtmp->mx, mtmp->my);

@@ -1965,6 +1965,8 @@ E int FDECL(innate2_to_prop, (unsigned long));
 E int FDECL(conveyed_to_prop, (unsigned long));
 E const char* FDECL(get_mflag_description, (unsigned long, BOOLEAN_P, UCHAR_P));
 E int FDECL(get_worm_tail_mnum, (struct permonst*));
+boolean FDECL(befriend_with_obj, (struct permonst*, struct obj*));
+
 
 /* ### monmove.c ### */
 

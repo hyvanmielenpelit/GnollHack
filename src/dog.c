@@ -1206,7 +1206,7 @@ boolean thrown;
             return FALSE;
     }
 
-    if ((mtmp->mtame) ||  (!forcetaming && (mtmp->data->geno & G_UNIQ)) /* Unique monsters cannot be tamed -- JG */
+    if ((mtmp->mtame) ||  (!forcetaming && (mtmp->data->geno & G_UNIQ) && mtmp->data->mlet != S_DOG) /* Unique monsters cannot be tamed, except Cerberos -- JG */
         /* monsters with conflicting structures cannot be tamed */
         || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc /* shopkeepers, guards, and priests cannot be forced to be tame for now -- JG */
         || (!forcetaming && 
@@ -1224,7 +1224,11 @@ boolean thrown;
         return FALSE;
 
     /* add the pet extension */
-    if(!has_edog)
+    if (obj && mtmp->data == &mons[PM_CERBERUS] && mtmp->heads_tamed < mtmp->heads_left)
+    {
+        mtmp->heads_tamed++;
+    }
+    else if(!has_edog)
     {
         newedog(mtmp);
         initedog(mtmp, !charm_type);
@@ -1251,7 +1255,14 @@ boolean thrown;
 
     if (obj) 
     { /* thrown food */
-        if (!thrown)
+        int headnum = (int)min(mtmp->heads_left, mtmp->heads_tamed);
+        if (mtmp->data == &mons[PM_CERBERUS] && (headnum > 0 && headnum <= 3))
+        {
+            const char* headstr[3] = { "first", "second", "third" };
+            pline("%s %s head %s %s and seems to appreciate it a lot.", s_suffix(Monnam(mtmp)), headstr[headnum - 1],
+                thrown ? "catches" : "takes", yname(obj));
+        }
+        else if (!thrown)
         {
             pline("%s takes %s and seems to appreciate it a lot.", Monnam(mtmp), yname(obj));
         }

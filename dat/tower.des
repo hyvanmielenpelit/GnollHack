@@ -114,7 +114,6 @@ CONTAINER:('(',"coffin"),$place[9],montype:"vampire mage" {
   OBJECT:('+',"invisibility")
 }
 
-MONSTER:('d',"Cerberus"),(04,05)
 # Walls in the tower are non diggable
 NON_DIGGABLE:(00,00,14,10)
 

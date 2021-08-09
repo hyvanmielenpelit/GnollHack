@@ -1734,6 +1734,14 @@ struct monst* mtmp;
         putstr(datawin, 0, txt);
     }
 
+    if (is_hell_hound(mtmp->data))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Loves cursed food");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
     int zombietype = mon_to_zombie(mtmp->mnum);
     int mummytype = mon_to_mummy(mtmp->mnum);
 

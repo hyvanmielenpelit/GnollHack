@@ -188,6 +188,7 @@
 #define has_mflag_is_non_eater(ptr) (((ptr)->mflags6 & M6_NON_EATER) != 0L)
 #define is_corpse_eater(ptr) (((ptr)->mflags6 & M6_CORPSE_EATER) != 0L)
 #define is_quantum_mechanic(ptr) (((ptr)->mflags6 & M6_QUANTUM_MECHANIC) != 0)
+#define is_hell_hound(ptr) (((ptr)->mflags6 & M6_HELL_HOUND) != 0L)
 
 /* combinations */
 #define is_not_living(ptr) \
@@ -850,12 +851,6 @@
    pacified by any other food;
    horses can be tamed by always-veggy food or lichen corpses but
    not tamed or pacified by other corpses or tins of veggy critters */
-#define befriend_with_obj(ptr, obj) \
-    (((ptr) == &mons[PM_MONKEY] || (ptr) == &mons[PM_APE])               \
-     ? (obj)->otyp == BANANA                                             \
-     : (is_domestic(ptr) && (obj)->oclass == FOOD_CLASS                  \
-        && ((ptr)->mlet != S_UNICORN                                     \
-            || objects[(obj)->otyp].oc_material == MAT_VEGGY                 \
-            || ((obj)->otyp == CORPSE && (((obj)->corpsenm == PM_LICHEN) || ((obj)->corpsenm == PM_WHITE_LICHEN)  || ((obj)->corpsenm == PM_BLACK_LICHEN))   ))))
+
 
 #endif /* MONDATA_H */

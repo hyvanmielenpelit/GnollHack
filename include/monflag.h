@@ -349,6 +349,7 @@
 #define M6_ELDER                    0x00000100UL /* Elder version of the base monster; for eggs do big_to_little */
 #define M6_QUANTUM_MECHANIC         0x00000200UL /* Is a quantum mechanic */
 #define M6_LONG_WORM_TAIL           0x00000400UL /* Tail of a long worm */
+#define M6_HELL_HOUND               0x00000800UL /* Is a hell hound */
 
 #define M7_NONE                        0x00000000UL
 #define M8_NONE                        0x00000000UL
