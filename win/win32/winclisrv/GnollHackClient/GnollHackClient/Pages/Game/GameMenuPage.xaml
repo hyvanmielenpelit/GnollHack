@@ -13,10 +13,10 @@
             <StackLayout x:Name="MainLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
                 <Label x:Name="lblHeader" Text="Menu" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="White"
                 HorizontalOptions="CenterAndExpand" Margin="0,10,0,20" />
-                <TableView HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent"
+                <TableView x:Name="GameTableView" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent"
                            Intent="Menu">
                     <TableRoot>
-                        <TableSection>
+                        <TableSection x:Name="BaseSection">
                             <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center" >
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
@@ -38,13 +38,17 @@
                                     HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnSettings_Clicked" />
                                 </Grid>
                             </ViewCell>
-                            <ViewCell>
+                        </TableSection>
+                        <TableSection x:Name="DeveloperSection">
+                            <ViewCell x:Name="GCViewCell">
                                 <Grid x:Name="GCCollectGrid" WidthRequest="320" HorizontalOptions="Center">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
                                     <Button x:Name="btnGC" WidthRequest="320" FontFamily="Diablo" Text="Collect Garbage" BackgroundColor="Transparent" TextColor="White"
                                     HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnGC_Clicked" />
                                 </Grid>
                             </ViewCell>
+                        </TableSection>
+                        <TableSection x:Name="SaveQuitSection">
                             <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />

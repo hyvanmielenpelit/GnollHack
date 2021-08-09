@@ -5288,7 +5288,7 @@ unsigned long additional_newsym_flags;
             context.m_action_animation_y = mtmp->my;
             //context.m_action_animation_counter = 0L;
             context.m_action_animation_counter_on = TRUE;
-            toggle_animation_timer(ANIMATION_TIMER_YOU, 0, TRUE, mtmp->mx, mtmp->my, 0, 0UL);
+            toggle_animation_timer(ANIMATION_TIMER_MONSTER, 0, TRUE, mtmp->mx, mtmp->my, 0, 0UL);
             newsym_with_flags(mtmp->mx, mtmp->my, additional_newsym_flags);
             force_redraw_at(mtmp->mx, mtmp->my);
             flush_screen(1);

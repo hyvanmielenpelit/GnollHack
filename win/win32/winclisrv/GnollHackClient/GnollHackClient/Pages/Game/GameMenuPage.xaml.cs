@@ -15,13 +15,16 @@ namespace GnollHackClient.Pages.Game
     public partial class GameMenuPage : ContentPage
     {
         private GamePage _gamePage;
+        private TableSection _developerSection;
 
         public GameMenuPage(GamePage gamePage)
         {
             InitializeComponent();
 
             _gamePage = gamePage;
-            GCCollectGrid.IsVisible = App.DeveloperMode;
+            _developerSection = DeveloperSection;
+            if (!App.DeveloperMode)
+                GameTableView.Root.Remove(_developerSection);
         }
 
         private async void btnSave_Clicked(object sender, EventArgs e)
@@ -84,7 +87,10 @@ namespace GnollHackClient.Pages.Game
         {
             App.BackButtonPressed += BackButtonPressed;
             MainLayout.IsEnabled = true;
-            GCCollectGrid.IsVisible = App.DeveloperMode;
+            if (App.DeveloperMode && !GameTableView.Root.Contains(_developerSection))
+                GameTableView.Root.Insert(1, _developerSection);
+            if (!App.DeveloperMode && GameTableView.Root.Contains(_developerSection))
+                GameTableView.Root.Remove(_developerSection);
         }
 
         private bool _backPressed = false;

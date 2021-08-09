@@ -3061,13 +3061,12 @@ namespace GnollHackClient.Pages.Game
                                                                             scaled_y_height_change = (float)(-(sub_layer_cnt - 1 - sub_layer_idx) * GHConstants.OBJECT_PILE_HEIGHT_DIFFERENCE - GHConstants.OBJECT_PILE_START_HEIGHT) * targetscale;
 
                                                                         int ntile = Glyph2Tile[glyph];
-                                                                        /* Replace tile here */
                                                                         int animation = Tile2Animation[ntile];
                                                                         int autodraw = Tile2Autodraw[ntile];
                                                                         int anim_frame_idx = 0, main_tile_idx = 0;
                                                                         sbyte mapAnimated = 0;
                                                                         int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
-                                                                        bool is_dropping_piercer = false;
+                                                                        bool is_dropping_piercer = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_M_DROPPING_PIERCER) != 0;
 
                                                                         /* Determine animation tile here */
                                                                         lock (AnimationTimerLock)
@@ -4820,12 +4819,17 @@ namespace GnollHackClient.Pages.Game
                 ToggleZoomMiniButton.WidthRequest = ToggleZoomMiniButton.HeightRequest = sidesize;
                 ToggleZoomAlternateButton.WidthRequest = ToggleZoomAlternateButton.HeightRequest = sidesize;
 
-                sidesize = Math.Min(Math.Min(80.0, Math.Max(40.0, width / 6)), Math.Min(80.0, Math.Max(40.0, height / 6)));
-                ZeroButton.WidthRequest = ZeroButton.HeightRequest = sidesize;
-                FirstButton.WidthRequest = FirstButton.HeightRequest = sidesize;
-                SecondButton.WidthRequest = SecondButton.HeightRequest = sidesize;
-                ThirdButton.WidthRequest = ThirdButton.HeightRequest = sidesize;
-                FourthButton.WidthRequest = FourthButton.HeightRequest = sidesize;
+                //sidesize = Math.Min(Math.Min(80.0, Math.Max(40.0, width / 6)), Math.Min(80.0, Math.Max(40.0, height / 6)));
+                //ZeroButton.WidthRequest = ZeroButton.HeightRequest = sidesize;
+                //FirstButton.WidthRequest = FirstButton.HeightRequest = sidesize;
+                //SecondButton.WidthRequest = SecondButton.HeightRequest = sidesize;
+                //ThirdButton.WidthRequest = ThirdButton.HeightRequest = sidesize;
+                //FourthButton.WidthRequest = FourthButton.HeightRequest = sidesize;
+                ZeroButton.SetSideSize(width, height);
+                FirstButton.SetSideSize(width, height);
+                SecondButton.SetSideSize(width, height);
+                ThirdButton.SetSideSize(width, height);
+                FourthButton.SetSideSize(width, height);
 
                 //double imgsidewidth = 0;
                 //if (width > height)
