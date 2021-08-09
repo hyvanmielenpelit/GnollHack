@@ -3659,7 +3659,7 @@ namespace GnollHackClient.Pages.Game
                                     if (_clientGame.Windows[i].WindowType == GHWinType.Message)
                                     {
                                         float newleft = 0;
-                                        float newtop = canvasheight - height * _shownMessageRows - 30;
+                                        float newtop = canvasheight - height * _shownMessageRows - canvasheight * (float)ButtonRowStack.Height / Math.Max(1.0f, (float)canvasView.Height) - 30;
                                         _clientGame.Windows[i].Left = newleft;
                                         _clientGame.Windows[i].Top = newtop;
                                     }
