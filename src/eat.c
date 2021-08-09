@@ -639,7 +639,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
             /* life-saving needed to reach here */
             exercise(A_WIS, FALSE);
 
-            if (m_adjattrib(mdef, A_INT, -int_loss) >= 2)
+            if (m_adjattrib(mdef, A_INT, -int_loss, TRUE) >= 2)
                 *dmg_p += mdef->mhp;
 
             if (!has_fixed_ability(mdef))
@@ -659,7 +659,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 
             exercise(A_WIS, TRUE);
 
-            if (m_adjattrib(mdef, A_INT, -int_loss) >= 2)
+            if (m_adjattrib(mdef, A_INT, -int_loss, TRUE) >= 2)
                 *dmg_p += mdef->mhp;
 
             if (!has_fixed_ability(mdef))
@@ -749,7 +749,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         } 
         else 
         {
-            if (m_adjattrib(mdef, A_INT, -int_loss) >= 2)
+            if (m_adjattrib(mdef, A_INT, -int_loss, TRUE) >= 2)
                 *dmg_p += mdef->mhp;
 
             give_nutrit = TRUE;

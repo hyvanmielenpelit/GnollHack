@@ -3897,17 +3897,17 @@ int oldtype, newtype;
         int chadiff = mons[newtype].cha - mons[oldtype].cha;
 
         if (strdiff)
-            m_gainstr(mtmp, (struct obj*)0, strdiff);
+            m_gainstr(mtmp, (struct obj*)0, strdiff, FALSE);
         if (dexdiff)
-            (void)m_adjattrib(mtmp, A_DEX, dexdiff);
+            (void)m_adjattrib(mtmp, A_DEX, dexdiff, FALSE);
         if (condiff)
-            (void)m_adjattrib(mtmp, A_CON, condiff);
+            (void)m_adjattrib(mtmp, A_CON, condiff, FALSE);
         if (intdiff)
-            (void)m_adjattrib(mtmp, A_INT, intdiff);
+            (void)m_adjattrib(mtmp, A_INT, intdiff, FALSE);
         if (wisdiff)
-            (void)m_adjattrib(mtmp, A_WIS, wisdiff);
+            (void)m_adjattrib(mtmp, A_WIS, wisdiff, FALSE);
         if (chadiff)
-            (void)m_adjattrib(mtmp, A_CHA, chadiff);
+            (void)m_adjattrib(mtmp, A_CHA, chadiff, FALSE);
     }
 
 

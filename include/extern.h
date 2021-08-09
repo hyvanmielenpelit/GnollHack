@@ -176,7 +176,7 @@ E int FDECL(artifact_to_obj, (int));
 /* ### attrib.c ### */
 
 E uchar FDECL(adjattrib, (int, int, int));
-E uchar FDECL(m_adjattrib, (struct monst*, int, int));
+E uchar FDECL(m_adjattrib, (struct monst*, int, int, BOOLEAN_P));
 E void FDECL(gainstr, (struct obj *, int, BOOLEAN_P));
 E void FDECL(losestr, (int));
 E void FDECL(poisontell, (int, BOOLEAN_P));
@@ -779,7 +779,7 @@ E void FDECL(wantdoor, (int, int, genericptr_t));
 #endif
 E void FDECL(finish_meating, (struct monst *));
 E boolean FDECL(could_reach_item, (struct monst*, XCHAR_P, XCHAR_P));
-E void FDECL(m_gainstr, (struct monst*, struct obj*, int));
+E void FDECL(m_gainstr, (struct monst*, struct obj*, int, BOOLEAN_P));
 E void FDECL(dog_food_after_effect, (struct monst*, struct obj*, BOOLEAN_P));
 E boolean FDECL(dog_wants_to_eat, (struct monst*));
 

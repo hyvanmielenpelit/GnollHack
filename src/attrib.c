@@ -243,9 +243,10 @@ int msgflg; /* positive => no message, zero => message, and */
 
 /* adjust monster's attribute; return TRUE if change is made, FALSE otherwise, +2 to previous if lower limit was exceeded */
 uchar
-m_adjattrib(mon, ndx, incr)
+m_adjattrib(mon, ndx, incr, verbose)
 struct monst* mon;
 int ndx, incr;
+boolean verbose;
 {           
     int old_acurr, /*old_abase, old_amin, old_amax,*/ decr;
     boolean limitexceeded = FALSE;
@@ -287,7 +288,7 @@ int ndx, incr;
             M_AMIN(mon, ndx) = M_ABASE(mon, ndx);
 
             if (M_AMIN(mon, ndx) < M_ATTRMIN(mon, ndx))
-                M_ABASE(mon, ndx) = M_AMIN(mon, ndx) = M_ATTRMAX(mon, ndx);
+                M_ABASE(mon, ndx) = M_AMIN(mon, ndx) = M_ATTRMIN(mon, ndx);
 
             if (M_AMAX(mon, ndx) < M_AMIN(mon, ndx))
                 M_AMAX(mon, ndx) = M_AMIN(mon, ndx);
@@ -297,6 +298,17 @@ int ndx, incr;
     if (M_ACURR(mon, ndx) == old_acurr) 
     {
         return limitexceeded ? 2 : FALSE;
+    }
+
+    if (verbose && canspotmon(mon))
+    {
+        int change = M_ACURR(mon, ndx) - old_acurr;
+        if (change != 0)
+        {
+            char ftbuf[BUFSZ];
+            Sprintf(ftbuf, "%s%d %s", change >= 0 ? "+" : "", change, attrname[ndx]);
+            display_floating_text(mon->mx, mon->my, ftbuf, change >= 0 ? FLOATING_TEXT_ATTRIBUTE_GAIN : FLOATING_TEXT_ATTRIBUTE_LOSS, ATR_NONE, NO_COLOR, 0UL);
+        }
     }
 
     //m_updatemaxhp(); //Not implemented

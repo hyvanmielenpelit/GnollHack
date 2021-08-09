@@ -512,7 +512,7 @@ boolean verbose;
     case EDIBLEFX_ROYAL_JELLY:
     {
         /* This stuff seems to be VERY healthy! */
-        m_gainstr(mtmp, otmp, 1);
+        m_gainstr(mtmp, otmp, 1, TRUE);
         mtmp->mhp += otmp->cursed ? -rnd(20) : rnd(20);
         if (mtmp->mhp > mtmp->mhpmax)
         {
@@ -533,22 +533,22 @@ boolean verbose;
         break;
     }
     case EDIBLEFX_GAIN_STRENGTH:
-        m_gainstr(mtmp, otmp, 1);
+        m_gainstr(mtmp, otmp, 1, TRUE);
         break;
     case EDIBLEFX_GAIN_DEXTERITY:
-        (void)m_adjattrib(mtmp, A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
+        (void)m_adjattrib(mtmp, A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, TRUE);
         break;
     case EDIBLEFX_GAIN_CONSTITUTION:
-        (void)m_adjattrib(mtmp, A_CON, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
+        (void)m_adjattrib(mtmp, A_CON, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, TRUE);
         break;
     case EDIBLEFX_GAIN_INTELLIGENCE:
-        (void)m_adjattrib(mtmp, A_INT, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
+        (void)m_adjattrib(mtmp, A_INT, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, TRUE);
         break;
     case EDIBLEFX_GAIN_WISDOM:
-        (void)m_adjattrib(mtmp, A_WIS, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
+        (void)m_adjattrib(mtmp, A_WIS, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, TRUE);
         break;
     case EDIBLEFX_GAIN_CHARISMA:
-        (void)m_adjattrib(mtmp, A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1);
+        (void)m_adjattrib(mtmp, A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1, TRUE);
         break;
     case EDIBLEFX_RESTORE_ABILITY:
     {
@@ -642,10 +642,11 @@ boolean verbose;
 }
 
 void
-m_gainstr(mtmp, otmp, num)
+m_gainstr(mtmp, otmp, num, verbose)
 struct monst* mtmp;
 struct obj* otmp;
 int num;
+boolean verbose;
 {
     if (!num)
     {
@@ -656,7 +657,7 @@ int num;
         else
             num = 1;
     }
-    (void)m_adjattrib(mtmp, A_STR, (otmp && otmp->cursed) ? -num : (otmp && otmp->blessed) ? num + rn2(2) : num);
+    (void)m_adjattrib(mtmp, A_STR, (otmp && otmp->cursed) ? -num : (otmp && otmp->blessed) ? num + rn2(2) : num, verbose);
 
 }
 

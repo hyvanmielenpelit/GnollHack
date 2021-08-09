@@ -43,7 +43,7 @@ enum attrib_types {
 #define M_AEXE(mon, x) (mon->aexe.a[x])
 #define M_ACURR(mon, x) (m_acurr(mon, x))
 #define M_ACURRSTR(mon) (m_acurrstr(mon))
-#define M_AMIN(mon, x) (mon->amax.a[x])
+#define M_AMIN(mon, x) (mon->amin.a[x])
 #define M_AMAX(mon, x) (mon->amax.a[x])
 #define M_ATEMP(mon, x) (mon->atemp.a[x])
 #define M_ATIME(mon, x) (mon->atime.a[x])
