@@ -1039,9 +1039,12 @@ register int humidity;
     {
         typ = levl[x][y].typ;
         if (typ == ROOM || typ == GRASS || typ == GROUND 
-            || typ == AIR || typ == CLOUD || typ == ICE || typ == CORR)
+            || typ == AIR || typ == CLOUD /* || typ == ICE */ || typ == CORR)
             return TRUE;
     }
+
+    if ((humidity & ICELOC) && levl[x][y].typ == ICE)
+        return TRUE;
     if ((humidity & SPACELOC) && SPACE_POS(levl[x][y].typ))
         return TRUE;
     if ((humidity & WET) && is_pool(x, y))
@@ -1672,7 +1675,7 @@ STATIC_OVL int
 pm_to_humidity(pm)
 struct permonst *pm;
 {
-    int loc = DRY;
+    int loc = DRY | ICELOC;
     if (!pm || is_mimic(pm))
         return loc;
     if (pm->mlet == S_EEL || amphibious(pm) || is_swimmer(pm))
@@ -1681,7 +1684,7 @@ struct permonst *pm;
         loc |= (HOT | WET);
     if (passes_walls(pm) || is_incorporeal(pm))
         loc |= SOLID;
-    if (flaming(pm))
+    if (likes_lava(pm))
         loc |= HOT;
     return loc;
 }
@@ -1744,13 +1747,13 @@ struct mkroom *croom;
         get_location_coord(&x, &y, loc | NO_LOC_WARN, croom, m->coord);
         if (x == -1 && y == -1)
         {
-            loc |= DRY;
+            loc |= DRY | ICELOC;
             get_location_coord(&x, &y, loc, croom, m->coord);
         }
     }
     else 
     {
-        get_location_coord(&x, &y, DRY, croom, m->coord);
+        get_location_coord(&x, &y, DRY | ICELOC, croom, m->coord);
     }
 
     /* try to find a close place if someone else is already there */
@@ -1837,7 +1840,7 @@ struct mkroom *croom;
                         {
                             x = m->x;
                             y = m->y;
-                            get_location(&x, &y, DRY, croom);
+                            get_location(&x, &y, DRY | ICELOC, croom);
                             if (MON_AT(x, y) && enexto(&cc, x, y, pm))
                                 x = cc.x, y = cc.y;
                         }
@@ -2015,7 +2018,7 @@ struct mkroom *croom;
 
     named = o->name.str ? TRUE : FALSE;
 
-    get_location_coord(&x, &y, DRY, croom, o->coord);
+    get_location_coord(&x, &y, DRY | ICELOC, croom, o->coord);
 
     if (o->class >= 0)
         c = o->class;
@@ -4683,7 +4686,7 @@ struct sp_coder* coder;
     if (!OV_pop_i(subtyp) || !OV_pop_i(typ) || !OV_pop_s(txt) || !OV_pop_c(gcoord))
         return;
 
-    get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
+    get_location_coord(&x, &y, DRY | ICELOC, coder->croom, OV_i(gcoord));
 
     if (isok(x, y) && !t_at(x, y))
     {
@@ -4735,7 +4738,7 @@ struct sp_coder* coder;
     if (!OV_pop_i(subtyp) || !OV_pop_i(lamplit) || !OV_pop_c(gcoord))
         return;
 
-    get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
+    get_location_coord(&x, &y, DRY | ICELOC, coder->croom, OV_i(gcoord));
 
     if (isok(x, y) && !t_at(x, y))
     {
@@ -4892,7 +4895,7 @@ struct sp_coder *coder;
     if (!OV_pop_c(gcoord) || !OV_pop_i(amt))
         return;
     amount = OV_i(amt);
-    get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
+    get_location_coord(&x, &y, DRY | ICELOC, coder->croom, OV_i(gcoord));
     if (amount == -1)
         amount = rnd(200);
     mkgold(amount, x, y);
@@ -6657,7 +6660,7 @@ struct sp_coder *coder;
     if (!OV_pop_i(dir) || !OV_pop_i(db_open) || !OV_pop_c(dcoord))
         return;
 
-    get_location_coord(&x, &y, DRY | WET | HOT, coder->croom, OV_i(dcoord));
+    get_location_coord(&x, &y, DRY | ICELOC | WET | HOT, coder->croom, OV_i(dcoord));
     if ((dopen = OV_i(db_open)) == -1)
         dopen = !rn2(2);
     if (!create_drawbridge(x, y, OV_i(dir), dopen ? TRUE : FALSE))

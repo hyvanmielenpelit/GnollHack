@@ -243,6 +243,7 @@ wet		{ savetoken(yytext); yylval.i=WET;  return HUMIDITY_TYPE; }
 hot		{ savetoken(yytext); yylval.i=HOT;  return HUMIDITY_TYPE; }
 solid		{ savetoken(yytext); yylval.i=SOLID;  return HUMIDITY_TYPE; }
 any		{ savetoken(yytext); yylval.i=ANY_LOC;  return HUMIDITY_TYPE; }
+ice		{ savetoken(yytext); yylval.i=ICELOC;  return HUMIDITY_TYPE; }
 levregion	ST_RET(LEV);
 quantity	ST_RET(QUANTITY_ID);
 elemental_enchantment	ST_RET(ELEMENTAL_ENCHANTMENT_ID);
