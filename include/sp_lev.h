@@ -297,7 +297,7 @@ enum sp_door_var_flags {
 #define SP_COORD_IS_RANDOM 0x01000000L
 /* Humidity flags for get_location() and friends, used with
  * SP_COORD_PACK_RANDOM() */
-#define FLOORLOC    0x0001 /* any firm proper floor */
+#define FLOORLOC    0x0001 /* any normal solid floor is ok */
 #define WET         0x0002 /* pool */
 #define HOT         0x0004 /* lava */
 #define SOLID       0x0008 /* solid stone */
@@ -305,7 +305,7 @@ enum sp_door_var_flags {
 #define NO_LOC_WARN 0x0020 /* no complaints and set x & y to -1, if no loc */
 #define SPACELOC    0x0040 /* like DRY, but accepts furniture too */
 #define ICELOC      0x0080 /* ice is ok */
-#define AIRLOC      0x0100 /* air and ground are ok */
+#define AIRLOC      0x0100 /* air is ok */
 #define DRY         (FLOORLOC | AIRLOC | ICELOC)
 #define DRY_NO_ICE  (FLOORLOC | AIRLOC)
 
