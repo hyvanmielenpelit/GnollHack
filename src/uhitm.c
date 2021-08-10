@@ -3884,6 +3884,8 @@ register struct monst *mon;
         case AT_BITE:
         case AT_RAMS:
         case AT_STNG:
+        case AT_TUSK:
+        case AT_HORN:
         case AT_BUTT:
         case AT_TAIL:
         case AT_TENT:
@@ -3953,6 +3955,12 @@ register struct monst *mon;
                        wearing a blessed (or silver) one */
                     specialdmg = special_dmgval(&youmonst, mon, W_ARMH,
                                                 &silverhit);
+                    break;
+                case AT_TUSK:
+                case AT_HORN:
+                    verb = "gore";
+                    specialdmg = special_dmgval(&youmonst, mon, W_ARMH,
+                        &silverhit);
                     break;
                 case AT_BITE:
                     verb = "bite";
@@ -4342,7 +4350,7 @@ boolean wep_was_destroyed;
             if (aatyp == AT_KICK) {
                 if (!weapon)
                     break;
-            } else if (aatyp == AT_BITE || aatyp == AT_RAMS || aatyp == AT_BUTT || aatyp == AT_TAIL
+            } else if (aatyp == AT_BITE || aatyp == AT_RAMS || aatyp == AT_BUTT || aatyp == AT_HORN || aatyp == AT_TUSK || aatyp == AT_TAIL
                        || (aatyp >= AT_STNG && aatyp < AT_WEAP)) {
                 break; /* no object involved */
             }

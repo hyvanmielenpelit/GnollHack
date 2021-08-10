@@ -790,6 +790,8 @@ register struct monst *mdef, *magr;
         switch (magr->data->mattk[i].aatyp) {
         case AT_CLAW:
         case AT_BITE:
+        case AT_TUSK:
+        case AT_HORN:
         case AT_RAMS:
         case AT_KICK:
         case AT_BUTT:
@@ -1092,7 +1094,8 @@ int* fem_ptr;
             { "watchwomen", PM_WATCHMAN, 2 },
             { "watchpersons", PM_WATCHMAN, 0 },
             { "djinn", PM_DJINNI, 0 },
-            { "mumakil", PM_MUMAK, 0 },
+            { "mumak", PM_OLIPHANT, 0 },
+            { "mumakil", PM_OLIPHANT, 0 },
             { "erinyes", PM_ERINYS, 0 },
             { "mummy pharaoh", PM_GREATER_MUMMY_PHARAOH, 0 },
             { "mummy king", PM_GREATER_MUMMY_PHARAOH, 0 },

@@ -27,6 +27,8 @@
 #define AT_GAZE 15  /* gaze - ranged */
 #define AT_TENT 16  /* tentacles */
 #define AT_EYES 17  /* gazer eye stalk - ranged */
+#define AT_HORN 18  /* horn */
+#define AT_TUSK 19  /* tusk */
 
 #define AT_PASV 252 /* passive defense */
 #define AT_SMMN 253 /* uses demon special abilities */

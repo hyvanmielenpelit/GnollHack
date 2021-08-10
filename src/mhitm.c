@@ -454,6 +454,8 @@ register struct monst *magr, *mdef;
 
             /*FALLTHRU*/
         case AT_CLAW:
+        case AT_HORN:
+        case AT_TUSK:
         case AT_KICK:
         case AT_BITE:
         case AT_RAMS:
@@ -861,6 +863,10 @@ struct obj* omonwep;
                 break;
             case AT_BUTT:
                 Sprintf(buf, "%s butts", magr_name);
+                break;
+            case AT_TUSK:
+            case AT_HORN:
+                Sprintf(buf, "%s gores", magr_name);
                 break;
             case AT_TUCH:
                 Sprintf(buf, "%s touches", magr_name);
@@ -2687,6 +2693,8 @@ int aatyp;
         w_mask = W_ARMF;
         break;
     case AT_BUTT:
+    case AT_HORN:
+    case AT_TUSK:
         w_mask = W_ARMH;
         break;
     case AT_HUGS:

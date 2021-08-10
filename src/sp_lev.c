@@ -1023,8 +1023,6 @@ is_ok_location(x, y, humidity)
 register schar x, y;
 register int humidity;
 {
-    register int typ;
-
     if (Is_waterlevel(&u.uz))
         return TRUE; /* accept any spot */
 
@@ -1034,15 +1032,10 @@ register int humidity;
 
     if ((humidity & SOLID) && IS_ROCK(levl[x][y].typ))
         return TRUE;
-
-    if (humidity & DRY)
-    {
-        typ = levl[x][y].typ;
-        if (typ == ROOM || typ == GRASS || typ == GROUND 
-            || typ == AIR || typ == CLOUD /* || typ == ICE */ || typ == CORR)
-            return TRUE;
-    }
-
+    if ((humidity & FLOORLOC) && IS_SOLID_FLOOR(levl[x][y].typ))
+        return TRUE;
+    if ((humidity & AIRLOC) && IS_AIR(levl[x][y].typ))
+        return TRUE;
     if ((humidity & ICELOC) && levl[x][y].typ == ICE)
         return TRUE;
     if ((humidity & SPACELOC) && SPACE_POS(levl[x][y].typ))
@@ -1143,7 +1136,7 @@ packed_coord pos;
     schar try_x, try_y;
     register int trycnt = 0;
 
-    get_location_coord(&try_x, &try_y, DRY, croom, pos);
+    get_location_coord(&try_x, &try_y, DRY_NO_ICE, croom, pos);
     if (levl[try_x][try_y].typ != ROOM && levl[try_x][try_y].typ != GRASS && levl[try_x][try_y].typ != GROUND) {
         do {
             try_x = *x, try_y = *y;
@@ -1621,7 +1614,7 @@ struct mkroom *croom;
     else {
         int trycnt = 0;
         do {
-            get_location_coord(&x, &y, DRY, croom, t->coord);
+            get_location_coord(&x, &y, DRY_NO_ICE, croom, t->coord);
         } while ((levl[x][y].typ == STAIRS || levl[x][y].typ == LADDER)
                  && ++trycnt <= 100);
         if (trycnt > 100)
@@ -1675,7 +1668,7 @@ STATIC_OVL int
 pm_to_humidity(pm)
 struct permonst *pm;
 {
-    int loc = DRY | ICELOC;
+    int loc = DRY;
     if (!pm || is_mimic(pm))
         return loc;
     if (pm->mlet == S_EEL || amphibious(pm) || is_swimmer(pm))
@@ -1747,13 +1740,13 @@ struct mkroom *croom;
         get_location_coord(&x, &y, loc | NO_LOC_WARN, croom, m->coord);
         if (x == -1 && y == -1)
         {
-            loc |= DRY | ICELOC;
+            loc |= DRY;
             get_location_coord(&x, &y, loc, croom, m->coord);
         }
     }
     else 
     {
-        get_location_coord(&x, &y, DRY | ICELOC, croom, m->coord);
+        get_location_coord(&x, &y, DRY, croom, m->coord);
     }
 
     /* try to find a close place if someone else is already there */
@@ -1840,7 +1833,7 @@ struct mkroom *croom;
                         {
                             x = m->x;
                             y = m->y;
-                            get_location(&x, &y, DRY | ICELOC, croom);
+                            get_location(&x, &y, DRY, croom);
                             if (MON_AT(x, y) && enexto(&cc, x, y, pm))
                                 x = cc.x, y = cc.y;
                         }
@@ -2018,7 +2011,7 @@ struct mkroom *croom;
 
     named = o->name.str ? TRUE : FALSE;
 
-    get_location_coord(&x, &y, DRY | ICELOC, croom, o->coord);
+    get_location_coord(&x, &y, DRY, croom, o->coord);
 
     if (o->class >= 0)
         c = o->class;
@@ -2417,7 +2410,7 @@ struct mkroom* croom;
     else {
         int trycnt = 0;
         do {
-            get_location_coord(&x, &y, DRY, croom, lever->coord);
+            get_location_coord(&x, &y, DRY_NO_ICE, croom, lever->coord);
         } while ((levl[x][y].typ == STAIRS || levl[x][y].typ == LADDER)
             && ++trycnt <= 100);
         if (trycnt > 100)
@@ -2500,7 +2493,7 @@ struct mkroom *croom;
         if (croom->rtype != TEMPLE)
             croom_is_temple = FALSE;
     } else {
-        get_location_coord(&x, &y, DRY, croom, a->coord);
+        get_location_coord(&x, &y, DRY_NO_ICE, croom, a->coord);
         if ((sproom = (schar) *in_rooms(x, y, TEMPLE)) != 0)
             croom = &rooms[sproom - ROOMOFFSET];
         else
@@ -2576,7 +2569,7 @@ struct mkroom* croom;
             croom_is_smithy = FALSE;
     }
     else {
-        get_location_coord(&x, &y, DRY, croom, a->coord);
+        get_location_coord(&x, &y, DRY_NO_ICE, croom, a->coord);
         if ((sproom = (schar)*in_rooms(x, y, SMITHY)) != 0)
             croom = &rooms[sproom - ROOMOFFSET];
         else
@@ -2630,7 +2623,7 @@ struct mkroom* croom;
             croom_is_npc_room = FALSE;
     }
     else {
-        get_location_coord(&x, &y, DRY, croom, a->coord);
+        get_location_coord(&x, &y, DRY_NO_ICE, croom, a->coord);
         if ((sproom = (schar)*in_rooms(x, y, NPCROOM)) != 0)
             croom = &rooms[sproom - ROOMOFFSET];
         else
@@ -2676,7 +2669,7 @@ struct mkroom* croom;
         int trycnt = 0;
         do 
         {
-            get_location_coord(&x, &y, DRY, croom, a->coord);
+            get_location_coord(&x, &y, DRY_NO_ICE, croom, a->coord);
         } while ((levl[x][y].typ == STAIRS || levl[x][y].typ == LADDER)
             && ++trycnt <= 100);
 
@@ -3283,7 +3276,7 @@ fill_empty_maze()
         for (x = rn2((int) (15 * mapfact) / 100); x; x--) {
             int trytrap;
 
-            maze1xy(&mm, DRY);
+            maze1xy(&mm, DRY_NO_ICE); /* Probably should not create on air, but this might exclude a big part of air levels */
             trytrap = rndtrap();
             if (sobj_at(BOULDER, mm.x, mm.y))
                 while (is_pit(trytrap) || is_hole(trytrap))
@@ -4424,7 +4417,7 @@ struct sp_coder *coder;
     if (!OV_pop_i(etyp) || !OV_pop_s(txt) || !OV_pop_c(ecoord))
         return;
 
-    get_location_coord(&x, &y, DRY, coder->croom, OV_i(ecoord));
+    get_location_coord(&x, &y, FLOORLOC, coder->croom, OV_i(ecoord));
     make_engr_at(x, y, OV_s(txt), 0L, OV_i(etyp), ENGR_FLAGS_NONE);
 
     opvar_free(etyp);
@@ -4569,7 +4562,7 @@ struct sp_coder *coder;
     if (!OV_pop_i(up) || !OV_pop_c(scoord))
         return;
 
-    get_location_coord(&x, &y, DRY, coder->croom, OV_i(scoord));
+    get_location_coord(&x, &y, DRY_NO_ICE, coder->croom, OV_i(scoord));
     if ((badtrap = t_at(x, y)) != 0)
         deltrap(badtrap);
     mkstairs(x, y, (char) OV_i(up), coder->croom, STAIRCASE_NORMAL);
@@ -4590,7 +4583,7 @@ struct sp_coder *coder;
     if (!OV_pop_i(up) || !OV_pop_c(lcoord))
         return;
 
-    get_location_coord(&x, &y, DRY, coder->croom, OV_i(lcoord));
+    get_location_coord(&x, &y, DRY_NO_ICE, coder->croom, OV_i(lcoord));
 
     if (IS_FLOOR(levl[x][y].typ))
     {
@@ -4635,7 +4628,7 @@ struct sp_coder *coder;
     if (!OV_pop_i(typ) || !OV_pop_s(txt) || !OV_pop_c(gcoord))
         return;
 
-    get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
+    get_location_coord(&x, &y, FLOORLOC, coder->croom, OV_i(gcoord));
 
     if (isok(x, y) && !t_at(x, y))
     {
@@ -4686,7 +4679,7 @@ struct sp_coder* coder;
     if (!OV_pop_i(subtyp) || !OV_pop_i(typ) || !OV_pop_s(txt) || !OV_pop_c(gcoord))
         return;
 
-    get_location_coord(&x, &y, DRY | ICELOC, coder->croom, OV_i(gcoord));
+    get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
 
     if (isok(x, y) && !t_at(x, y))
     {
@@ -4738,7 +4731,7 @@ struct sp_coder* coder;
     if (!OV_pop_i(subtyp) || !OV_pop_i(lamplit) || !OV_pop_c(gcoord))
         return;
 
-    get_location_coord(&x, &y, DRY | ICELOC, coder->croom, OV_i(gcoord));
+    get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
 
     if (isok(x, y) && !t_at(x, y))
     {
@@ -4789,7 +4782,7 @@ struct sp_coder* coder;
     if (!OV_pop_i(subtyp) || !OV_pop_i(foresttyp) || !OV_pop_c(gcoord))
         return;
 
-    get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
+    get_location_coord(&x, &y, DRY_NO_ICE, coder->croom, OV_i(gcoord));
 
     if (isok(x, y) && !t_at(x, y))
     {
@@ -4895,7 +4888,7 @@ struct sp_coder *coder;
     if (!OV_pop_c(gcoord) || !OV_pop_i(amt))
         return;
     amount = OV_i(amt);
-    get_location_coord(&x, &y, DRY | ICELOC, coder->croom, OV_i(gcoord));
+    get_location_coord(&x, &y, DRY, coder->croom, OV_i(gcoord));
     if (amount == -1)
         amount = rnd(200);
     mkgold(amount, x, y);
@@ -6660,7 +6653,7 @@ struct sp_coder *coder;
     if (!OV_pop_i(dir) || !OV_pop_i(db_open) || !OV_pop_c(dcoord))
         return;
 
-    get_location_coord(&x, &y, DRY | ICELOC | WET | HOT, coder->croom, OV_i(dcoord));
+    get_location_coord(&x, &y, DRY | WET | HOT, coder->croom, OV_i(dcoord));
     if ((dopen = OV_i(db_open)) == -1)
         dopen = !rn2(2);
     if (!create_drawbridge(x, y, OV_i(dir), dopen ? TRUE : FALSE))

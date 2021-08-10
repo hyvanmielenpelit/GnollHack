@@ -65,6 +65,10 @@ boolean display_hit_tile;
             case AT_BUTT:
                 pfmt = "%s butts!";
                 break;
+            case AT_TUSK:
+            case AT_HORN:
+                pfmt = "%s gores!";
+                break;
             case AT_TUCH:
                 pfmt = "%s touches you!";
                 break;
@@ -111,6 +115,10 @@ boolean display_hit_tile;
                 break;
             case AT_BUTT:
                 pfmt = "%s butts for %d damage!";
+                break;
+            case AT_TUSK:
+            case AT_HORN:
+                pfmt = "%s gores for %d damage!";
                 break;
             case AT_TUCH:
                 pfmt = "%s touches you for %d damage!";
@@ -239,7 +247,9 @@ struct attack *mattk;
                              : (mattk->aatyp == AT_TAIL) ? "lashes tail"
                                : (mattk->aatyp == AT_STNG
                                   || mattk->aatyp == AT_BUTT
-                                  || nolimbs(mtmp->data)) ? "lunges"
+                                   || mattk->aatyp == AT_HORN
+                                   || mattk->aatyp == AT_TUSK
+                                   || nolimbs(mtmp->data)) ? "lunges"
                                  : "swings";
 
         if (compat)
@@ -727,6 +737,8 @@ register struct monst *mtmp;
         case AT_RAMS:
         case AT_STNG:
         case AT_TUCH:
+        case AT_TUSK:
+        case AT_HORN:
         case AT_BUTT:
         case AT_TAIL:
         case AT_TENT:

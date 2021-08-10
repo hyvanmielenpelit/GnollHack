@@ -2439,7 +2439,8 @@ int part;
         default:
             break; /* for other parts, use animal_parts[] below */
         }
-    } else if (mptr->mlet == S_YETI) 
+    } 
+    else if (mptr->mlet == S_YETI) 
     { /* excl. owlbear due to 'if' above and M4_PAWED */
         /* opposable thumbs, hence "hands", "arms", "legs", &c */
         return humanoid_parts[part]; /* yeti/sasquatch, monkey/ape */
@@ -2449,7 +2450,7 @@ int part;
             && !index(not_claws, mptr->mlet) && mptr != &mons[PM_STONE_GOLEM]
             && mptr != &mons[PM_INCUBUS]))
         return (part == HAND) ? "claw" : "clawed";
-    if ((mptr == &mons[PM_MUMAK] || mptr == &mons[PM_MASTODON])
+    if ((mptr == &mons[PM_OLIPHANT] || mptr == &mons[PM_MASTODON])
         && part == NOSE)
         return "trunk";
     if (mptr == &mons[PM_SHARK] && part == HAIR)

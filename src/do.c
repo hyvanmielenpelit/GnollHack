@@ -4120,7 +4120,7 @@ static const char* attack_type_names[] = {
     "none", "claw", "bite", "kick", "ram",
     "tail", "butt", "touch", "sting", "grab", "spit",
     "engulf", "breath weapon", "explosion", "explosion",
-    "gaze", "tentacle", "eys stalk",
+    "gaze", "tentacle", "eys stalk", "horn", "tusk"
 };
 
 const char* get_attack_type_text(aatyp)
