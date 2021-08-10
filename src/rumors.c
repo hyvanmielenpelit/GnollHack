@@ -528,6 +528,12 @@ struct monst *oracl;
         return 0;
     }
 
+    if (Deaf)
+    {
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", Monnam(oracl));
+        return 1;
+    }
+
     play_monster_special_dialogue_line(oracl, ORACLE_LINE_WILT_THOU_SETTLE_FOR_A_MINOR_CONSULTATION);
     Sprintf(qbuf, "\"Wilt thou settle for a minor consultation?\" (%d %s)",
         minor_cost, currency((long)minor_cost));

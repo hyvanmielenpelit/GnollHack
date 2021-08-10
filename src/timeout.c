@@ -1321,18 +1321,18 @@ nh_timeout()
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is starting to work more properly.");
                 break;
             case PARALYZED:
-                if(!(Undead_immobility && is_undead(youmonst.data)))
-                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "limbs are starting move a bit.");
+                //if(!(Undead_immobility && is_undead(youmonst.data)))
+                //    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "limbs are starting move a bit.");
                 break;
             case UNDEAD_IMMOBILITY:
-                if (!(Undead_immobility && is_undead(youmonst.data)))
-                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "limbs are starting move a bit.");
+                //if (!(Undead_immobility && is_undead(youmonst.data)))
+                //    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "limbs are starting move a bit.");
                 break;
             case FEARFUL:
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to regain your composure.");
                 break;
             case SLEEPING:
-                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to wake up.");
+                //You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to wake up.");
                 break;
             case SUMMON_FORBIDDEN:
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel summoning is starting to work a bit more properly again.");

@@ -3367,6 +3367,12 @@ struct monst* mtmp;
     if (!m_general_talk_check(mtmp, "chatting") || !m_speak_check(mtmp))
         return 0;
 
+    if (Deaf)
+    {
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", Monnam(mtmp));
+        return 1;
+    }
+
     char ansbuf[BUFSZ];
     int msound = mtmp->data->msound;
 
@@ -3386,6 +3392,12 @@ struct monst* mtmp;
 
         if (eshkp)
         {
+            if (muteshk(mtmp))
+            {
+                pline("%s does not respond.", Monnam(mtmp));
+                return 1;
+            }
+
             char shopbuf[BUFSZ] = "";
             Sprintf(shopbuf, "this %s", shoptypename(eshkp->shoptype));
             Sprintf(eos(ansbuf), " I run %s.", shopbuf);
@@ -3682,6 +3694,12 @@ struct monst* mtmp;
     if (mtmp->data->msound == MS_LEADER)
     {
         return do_chat_quest_chat(mtmp);
+    }
+
+    if (Deaf)
+    {
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", Monnam(mtmp));
+        return 1;
     }
 
     if (mtmp->data->msound == MS_ORACLE || mtmp->data == &mons[PM_ORACLE])
@@ -4585,6 +4603,12 @@ struct monst* mtmp;
         return 0;
     }
 
+    if (Deaf)
+    {
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", Monnam(mtmp));
+        return 1;
+    }
+
     /*
     else if (!umoney) {
         You("have no money.");
@@ -4669,6 +4693,12 @@ struct monst* mtmp;
     {
         monsterdescription(mtmp);
         return 0;
+    }
+
+    if (Deaf)
+    {
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", Monnam(mtmp));
+        return 1;
     }
 
     if (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10))
@@ -7698,6 +7728,12 @@ int* spell_otyps;
 {
     if(!mtmp || !spell_otyps)
         return 0;
+
+    if (Deaf)
+    {
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", Monnam(mtmp));
+        return 1;
+    }
 
     int cnt = 0, not_known_cnt = 0;
     int* spell_otyp_ptr;
