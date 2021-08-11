@@ -5095,15 +5095,120 @@ register struct obj *obj;
             break;
         }
 
-        if (Is_minetown_level(&u.uz))
+        if (u.uhave.amulet)
         {
-            if (context.town_portal_return_level_set && !(obj->cursed && !rn2(3)))
+            /* Amulet of Yendor prevents any town portal */
+            play_sfx_sound(SFX_MYSTERIOUS_FORCE_PREVENTS);
+            pline("A mysterious force prevents you from teleporting!");
+            break;
+        }
+
+#define NUM_WAYPOINTS 4
+        d_level* waypointlist[NUM_WAYPOINTS] = { &minetown_level, &sokoend_level, &stronghold_level, &orcus_level };
+
+        boolean onwaypointlevel = FALSE;
+        int wpidx;
+        for (wpidx = 0; wpidx < NUM_WAYPOINTS; wpidx++)
+        {
+            if (on_level(&u.uz, waypointlist[wpidx]))
             {
-                level_tele(0, 2, context.town_portal_return_level);
+                onwaypointlevel = TRUE;
+                break;
+            }
+        }
+
+        int wpcnt = 0;
+        d_level* last_wp = 0;
+        for (wpidx = 0; wpidx < NUM_WAYPOINTS; wpidx++)
+        {
+            mapseen* wpmapseen = find_mapseen(waypointlist[wpidx]);
+            if (wpidx == 0 || wpmapseen != 0)
+            {
+                wpcnt++;
+                if (wpmapseen != 0)
+                    last_wp = waypointlist[wpidx];
+            }
+        }
+
+        if (onwaypointlevel)
+        {
+            int wpcnt_others = wpcnt - 1;
+
+            if (wpcnt_others == 0)
+            {
+                if (context.town_portal_return_level_set && !(obj->cursed && !rn2(3)))
+                {
+                    level_tele(0, 2, context.town_portal_return_level);
+                }
+                else
+                {
+                    level_tele(0, 0, zerodlevel);
+                }
             }
             else
             {
-                level_tele(0, 0, zerodlevel);
+                winid menuwin;
+                menu_item* selected = (menu_item*)0;
+                int n = 0;
+
+                menuwin = create_nhwindow(NHW_MENU);
+                start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_SIMPLE);
+                anything any = zeroany;
+
+                for (wpidx = 0; wpidx < NUM_WAYPOINTS; wpidx++)
+                {
+                    if ((wpidx == 0 || find_mapseen(waypointlist[wpidx]) != 0) && !on_level(&u.uz, waypointlist[wpidx]))
+                    {
+                        any = zeroany;
+                        any.a_int = wpidx + 1;
+                        char buf[BUFSZ] = "";
+                        s_level* slev = Is_special(waypointlist[wpidx]);
+                        if (slev)
+                        {
+                            const char* dname = dungeons[waypointlist[wpidx]->dnum].dname;
+                            if (dname && !strncmp(dname, "The ", 4))
+                                dname += 4;
+                            if (dname)
+                                Sprintf(buf, "%s - %s", dname, slev->name);
+                            else
+                                Sprintf(buf, "%s", slev->name);
+                            add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                                buf, MENU_UNSELECTED);
+                        }
+                    }
+                }
+
+                any = zeroany;
+                any.a_int = NUM_WAYPOINTS + 1;
+                add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                    "Last town portal level", MENU_UNSELECTED);
+
+                end_menu(menuwin, "Pick a level to teleport to");
+                n = select_menu(menuwin, PICK_ONE, &selected);
+                if (n > 0)
+                {
+                    int selidx = selected->item.a_int;
+                    if (selidx > 0 && selidx <= NUM_WAYPOINTS)
+                        level_tele(0, 2, *waypointlist[selidx - 1]);
+                    else if (selidx > NUM_WAYPOINTS)
+                    {
+                        if (context.town_portal_return_level_set && !(obj->cursed && !rn2(3)))
+                        {
+                            level_tele(0, 2, context.town_portal_return_level);
+                        }
+                        else
+                        {
+                            level_tele(0, 0, zerodlevel);
+                        }
+                    }
+                    free((genericptr_t)selected);
+                }
+                else
+                {
+                    pline("The wand sparkles for a while, but nothing else happens.");
+                }
+
+                destroy_nhwindow(menuwin);
             }
         }
         else
@@ -5116,7 +5221,61 @@ register struct obj *obj;
             {
                 context.town_portal_return_level = u.uz;
                 context.town_portal_return_level_set = TRUE;
-                level_tele(0, 2, minetown_level);
+
+                if (wpcnt <= 1)
+                {
+                    level_tele(0, 2, last_wp ? *last_wp : minetown_level);
+                }
+                else
+                {
+                    winid menuwin;
+                    menu_item* selected = (menu_item*)0;
+                    int n = 0;
+
+                    menuwin = create_nhwindow(NHW_MENU);
+                    start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_SIMPLE);
+                    anything any = zeroany;
+
+                    for (wpidx = 0; wpidx < NUM_WAYPOINTS; wpidx++)
+                    {
+                        if (wpidx == 0 || find_mapseen(waypointlist[wpidx]) != 0)
+                        {
+                            any = zeroany;
+                            any.a_int = wpidx + 1;
+                            char buf[BUFSZ] = "";
+                            s_level* slev = Is_special(waypointlist[wpidx]);
+                            if (slev)
+                            {
+                                const char* dname = dungeons[waypointlist[wpidx]->dnum].dname;
+                                if (dname && !strncmp(dname, "The ", 4))
+                                    dname += 4;
+                                if(dname)
+                                    Sprintf(buf, "%s - %s", dname, slev->name);
+                                else
+                                    Sprintf(buf, "%s", slev->name);
+
+                                add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                                    buf, MENU_UNSELECTED);
+                            }
+                        }
+                    }
+
+                    end_menu(menuwin, "Pick a waypoint to teleport to");
+                    n = select_menu(menuwin, PICK_ONE, &selected);
+                    if (n > 0)
+                    {
+                        int selidx = selected->item.a_int;
+                        if(selidx > 0)
+                            level_tele(0, 2, *waypointlist[selidx - 1]);
+                        free((genericptr_t)selected);
+                    }
+                    else
+                    {
+                        pline("The wand sparkles for a while, but nothing else happens.");
+                    }
+
+                    destroy_nhwindow(menuwin);
+                }
                 makeknown(obj->otyp);
             }
         }
