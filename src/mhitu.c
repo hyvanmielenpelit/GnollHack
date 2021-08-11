@@ -2665,7 +2665,7 @@ register struct obj* omonwep;
         if (uncancelled) 
         {
             if (flags.verbose)
-                Your("position suddenly seems %suncertain!",
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "position suddenly seems %suncertain!",
                      (Teleport_control && !Stunned && !unconscious()) ? ""
                      : "very ");
             tele();

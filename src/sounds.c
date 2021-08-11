@@ -65,8 +65,10 @@ STATIC_DCL int FDECL(do_chat_smith_forge_standard_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_forge_special_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_sell_ore, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_mechanic_reconciliation, (struct monst*));
+STATIC_DCL int FDECL(do_chat_quantum_observe_position, (struct monst*));
+STATIC_DCL int FDECL(do_chat_quantum_observe_speed, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_stones_and_charged_items, (struct monst*));
@@ -1937,7 +1939,7 @@ const char* nomoodstr;
         There("is no one here to talk to.");
         return 0;
     }
-    else if (!is_peaceful(mtmp)) 
+    else if (!is_peaceful(mtmp) && !is_quantum_mechanic(mtmp->data)) 
     {
         pline("%s is in no mood for %s.", Monnam(mtmp), nomoodstr);
         return 0;
@@ -3139,6 +3141,34 @@ dochat()
 
             chatnum++;
         }
+        else
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask to observe your position");
+            available_chat_list[chatnum].function_ptr = &do_chat_quantum_observe_position;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+
+            strcpy(available_chat_list[chatnum].name, "Ask to observe your speed");
+            available_chat_list[chatnum].function_ptr = &do_chat_quantum_observe_speed;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
     }
 
     /* NPCs */
@@ -3728,10 +3758,13 @@ struct monst* mtmp;
     else if (msound == MS_QUANTUM)
     {
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
-        if(has_mname(mtmp))
-            Sprintf(ansbuf, "I am %s, %s at the University of Yendor.", MNAME(mtmp), an(mtmp->data->mname));
+        if (has_mname(mtmp))
+        {
+            Sprintf(ansbuf, "I am %s, %s at the University of Yendor%s.", MNAME(mtmp), an(mtmp->data->mname), !is_peaceful(mtmp) ? ", scum" : "");
+            mtmp->u_know_mname = 1;
+        }
         else
-            Sprintf(ansbuf, "I am %s at the University of Yendor.", an(mtmp->data->mname));
+            Sprintf(ansbuf, "I am %s at the University of Yendor%s.", an(mtmp->data->mname), !is_peaceful(mtmp) ? ", scum" : "");
         verbalize("%s", ansbuf);
     }
     else if (has_mname(mtmp))
@@ -6643,6 +6676,148 @@ struct monst* mtmp;
     else
     {
         pline("%s seems mysteriously disappointed.", Monnam(mtmp));
+    }
+
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_quantum_observe_position(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return 0;
+
+    long umoney;
+    long u_pay;
+    long observe_cost = max(1, (int)((20 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    char qbuf[QBUFSZ];
+
+    multi = 0;
+    umoney = money_cnt(invent);
+
+
+    if (!mtmp) {
+        There("is no one here to talk to.");
+        return 0;
+    }
+    else if (!m_speak_check(mtmp))
+        return 0;
+
+    if (mtmp->mspec_used)
+    {
+        pline("%s explains something about your wave function having already collapsed.  Sounds pretty serious!", Monnam(mtmp));
+        return 0;
+    }
+
+    if (!is_tame(mtmp))
+    {
+        Sprintf(qbuf, "%s asks for %ld %s to observe your exact position.  Agree?", Monnam(mtmp), observe_cost, currency(observe_cost));
+
+        switch (ynq(qbuf)) {
+        default:
+        case 'q':
+            return 0;
+        case 'y':
+            if (umoney < (long)observe_cost) {
+                play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+                You("don't have enough money for that!");
+                return 0;
+            }
+            u_pay = observe_cost;
+            break;
+        }
+
+        money2mon(mtmp, u_pay);
+        context.botl = 1;
+    }
+
+    mtmp->mspec_used = 100;
+    refresh_m_tile_gui_info(mtmp, TRUE);
+    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "velocity suddenly seems very uncertain!");
+    if (rn2(2)) 
+    {
+        incr_itimeout(&HSlowed, 50 + d(1, 50));
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "seem slower.");
+    }
+    else 
+    {
+        incr_itimeout(!rn2(3) ? &HUltra_fast : !rn2(2) ? &HVery_fast  : &HFast, 50 + d(1, 50));
+        You_ex(ATR_NONE, CLR_MSG_POSITIVE, "seem faster.");
+    }
+    newsym(u.ux, u.uy);
+
+    if (!is_tame(mtmp))
+    {
+        play_sfx_sound(SFX_BUY_FROM_NPC);
+        pline("%s tells that your position has been observed to be exactly where you are.", Monnam(mtmp));
+    }
+
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_quantum_observe_speed(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return 0;
+
+    long umoney;
+    long u_pay;
+    long observe_cost = max(1, (int)((20 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    char qbuf[QBUFSZ];
+
+    multi = 0;
+    umoney = money_cnt(invent);
+
+
+    if (!mtmp) {
+        There("is no one here to talk to.");
+        return 0;
+    }
+    else if (!m_speak_check(mtmp))
+        return 0;
+
+    if (mtmp->mspec_used)
+    {
+        pline("%s explains something about your wave function having already collapsed.  Sounds pretty serious!", Monnam(mtmp));
+        return 0;
+    }
+
+    if (!is_tame(mtmp))
+    {
+        Sprintf(qbuf, "%s asks for %ld %s to observe your exact speed.  Agree?", Monnam(mtmp), observe_cost, currency(observe_cost));
+
+        switch (ynq(qbuf)) {
+        default:
+        case 'q':
+            return 0;
+        case 'y':
+            if (umoney < (long)observe_cost) {
+                play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+                You("don't have enough money for that!");
+                return 0;
+            }
+            u_pay = observe_cost;
+            break;
+        }
+
+        money2mon(mtmp, u_pay);
+        context.botl = 1;
+    }
+
+    mtmp->mspec_used = 100;
+    refresh_m_tile_gui_info(mtmp, TRUE);
+
+    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "position suddenly seems %suncertain!",
+        (Teleport_control && !Stunned && !unconscious()) ? ""
+        : "very ");
+    tele();
+
+    if (!is_tame(mtmp))
+    {
+        play_sfx_sound(SFX_BUY_FROM_NPC);
     }
 
     return 1;

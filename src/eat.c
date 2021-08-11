@@ -1323,13 +1323,13 @@ int pm;
         break;
     case PM_QUANTUM_MECHANIC:
     case PM_ELDER_QUANTUM_MECHANIC:
-        Your("velocity suddenly seems very uncertain!");
+        Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "velocity suddenly seems very uncertain!");
         if (HFast & INTRINSIC) {
             HFast &= ~INTRINSIC;
-            You("seem slower.");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "seem slower.");
         } else {
             HFast |= FROM_ACQUIRED;
-            You("seem faster.");
+            You_ex(ATR_NONE, CLR_MSG_POSITIVE, "seem faster.");
         }
         break;
     case PM_LIZARD:
