@@ -351,6 +351,7 @@
 #define M6_QUANTUM_MECHANIC         0x00000200UL /* Is a quantum mechanic */
 #define M6_LONG_WORM_TAIL           0x00000400UL /* Tail of a long worm */
 #define M6_HELL_HOUND               0x00000800UL /* Is a hell hound */
+#define M6_BOSS_MONSTER             0x00001000UL /* Seeing the monster triggers a boss fight */
 
 #define M7_NONE                        0x00000000UL
 #define M8_NONE                        0x00000000UL

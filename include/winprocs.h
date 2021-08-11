@@ -299,6 +299,7 @@ extern
 #define WC2_AUTOSTATUSLINES         0x10000UL /* 17 automatically adjust number of status lines */
 #define WC2_PREFERRED_SCREEN_SCALE  0x20000UL /* 18 preferred screen scale */
 #define WC2_HEREWINDOW              0x40000UL /* 19 show the here window */
+#define WC2_SCREEN_TEXT             0x80000UL /* 20 windowing system can show screen texts */
 
 /* 13 free bits */
 

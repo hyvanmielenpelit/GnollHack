@@ -844,6 +844,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/General/Boulder/Fills Pit", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Boulder/Plugs Hole", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Tentacled One/Wave of Psychic Energy", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Boss Fight", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Com Pager", 1.0f },
@@ -8509,6 +8510,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_WAVE_OF_PSYCHIC_ENERGY",
         {GHSOUND_WAVE_OF_PSYCHIC_ENERGY, 0.25f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_BOSS_FIGHT",
+        {GHSOUND_BOSS_FIGHT, 1.0f},
         FALSE, SOUND_PLAY_GROUP_LONG
     },
 };

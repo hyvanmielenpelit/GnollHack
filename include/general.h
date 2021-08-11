@@ -472,6 +472,7 @@ enum screen_text_types {
     SCREEN_TEXT_ESCAPED,
     SCREEN_TEXT_ASCENDED,
     SCREEN_TEXT_SPECIAL_END,
+    SCREEN_TEXT_BOSS_FIGHT,
 };
 
 enum popup_text_types {

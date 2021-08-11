@@ -602,6 +602,15 @@ namespace GnollHackClient.Pages.Game
                     _screenText = new GHScreenText(data, AnimationTimers.general_animation_counter);
                 }
             }
+
+            if (_clientGame != null)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_clientGame, GHRequestType.DisplayScreenText));
+                }
+            }
         }
 
         public void DisplayPopupText(DisplayScreenTextData data)
@@ -5383,11 +5392,11 @@ namespace GnollHackClient.Pages.Game
         }
 
 
-        public void SetTargetClip(int x, int y, bool force)
+        public void SetTargetClip(int x, int y, bool immediate_pan)
         {
             lock (TargetClipLock)
             {
-                if (force)
+                if (immediate_pan)
                 {
                     _targetClipOn = false;
                     _originMapOffsetWithNewClipX = 0;

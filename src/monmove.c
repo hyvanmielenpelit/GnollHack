@@ -273,8 +273,11 @@ register struct monst *mtmp;
 {
     int x = mtmp->mx, y = mtmp->my;
 
-    boolean already_saw_mon = !occupation ? 0 : canspotmon(mtmp);
+    boolean couldspotmon = canspotmon(mtmp);
+    boolean already_saw_mon = !occupation ? 0 : couldspotmon;
     int rd = dochug(mtmp);
+
+    check_boss_fight(mtmp);
 
     int x2 = mtmp->mx, y2 = mtmp->my;
     /* a similar check is in monster_nearby() in hack.c */
@@ -741,6 +744,8 @@ register struct monst *mtmp;
         && (m_canseeu(mtmp) || mtmp->mhp < mtmp->mhpmax))
         mtmp->mstrategy &= ~STRAT_WAITFORU;
 
+    check_boss_fight(mtmp);
+
     /* update quest status flags */
     quest_stat_check(mtmp);
 
@@ -1075,6 +1080,24 @@ register struct monst *mtmp;
 
     return (tmp == 2);
 }
+
+
+void
+check_boss_fight(mtmp)
+struct monst* mtmp;
+{
+    /* Trigger a boss fight if you can see the monster */
+    if ((windowprocs.wincap2 & WC2_SCREEN_TEXT) && (mtmp->data->mflags6 & M6_BOSS_MONSTER) && !mtmp->boss_fight_started && !DEADMONSTER(mtmp) && !is_peaceful(mtmp) && canspotmon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !(mtmp->mstrategy & STRAT_WAITFORU) && !mtmp->msleeping && mon_can_move(mtmp))
+    {
+        mtmp->boss_fight_started = 1;
+        flush_screen(1);
+        cliparound(mtmp->mx, mtmp->my, 2);
+        play_sfx_sound(SFX_BOSS_FIGHT);
+        display_screen_text(Monnam(mtmp), (char*)0, SCREEN_TEXT_BOSS_FIGHT, ATR_NONE, NO_COLOR, 1UL);
+        cliparound(u.ux, u.uy, 2);
+    }
+}
+
 
 static NEARDATA const char practical[] = { WEAPON_CLASS, ARMOR_CLASS,
                                            GEM_CLASS, FOOD_CLASS, MISCELLANEOUS_CLASS, 0 };

@@ -462,6 +462,7 @@ namespace GnollHackCommon
         SCREEN_TEXT_ESCAPED,
         SCREEN_TEXT_ASCENDED,
         SCREEN_TEXT_SPECIAL_END,
+        SCREEN_TEXT_BOSS_FIGHT,
     }
 
     public enum game_cursor_types

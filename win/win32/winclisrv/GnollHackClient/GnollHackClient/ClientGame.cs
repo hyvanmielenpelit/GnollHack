@@ -21,6 +21,7 @@ namespace GnollHackClient
         private int[] _inputBuffer = new int[GHConstants.InputBufferLength];
         private int _inputBufferLocation = -1;
         private string _getLineString = null;
+        private bool _screenTextSet = false;
         private string _characterName = "";
         private object _characterNameLock = new object();
         private GamePage _gamePage;
@@ -115,6 +116,9 @@ namespace GnollHackClient
                             {
                                 //Throw an error or stop waiting
                             }
+                            break;
+                        case GHRequestType.DisplayScreenText:
+                            _screenTextSet = true;
                             break;
                         default:
                             break;
@@ -512,7 +516,7 @@ namespace GnollHackClient
             if (force == 0 && (_gamePage.MapNoClipMode || _gamePage.MapLookMode))
                 return; /* No clip mode ignores cliparound commands */
 
-            _gamePage.SetTargetClip(x, y, force != 0);
+            _gamePage.SetTargetClip(x, y, force == 1);
 
             //lock (_gamePage.ClipLock)
             //{
@@ -1020,6 +1024,7 @@ namespace GnollHackClient
 
         public void ClientCallback_DisplayScreenText(string text, string subtext, int style, int attr, int color, ulong tflags)
         {
+            _screenTextSet = false;
             ConcurrentQueue<GHRequest> queue;
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
@@ -1031,6 +1036,39 @@ namespace GnollHackClient
                 data.color = color;
                 data.tflags = tflags;
                 queue.Enqueue(new GHRequest(this, GHRequestType.DisplayScreenText, data));
+            }
+
+            if((tflags & 1UL) != 0)
+            {
+                /* Blocking call */
+                while (!_screenTextSet)
+                {
+                    Thread.Sleep(25);
+                    pollResponseQueue();
+                }
+
+                int cnt = 0;
+                do
+                {
+                    lock (_gamePageLock)
+                    {
+                        lock (_gamePage._screenTextLock)
+                        {
+                            if (_gamePage._screenText != null)
+                            {
+                                lock (_gamePage.AnimationTimerLock)
+                                {
+                                    if (_gamePage._screenText.IsFinished(_gamePage.AnimationTimers.general_animation_counter))
+                                        break;
+                                }
+                            }
+                            else
+                                break;
+                        }
+                    }
+                    Thread.Sleep(25);
+                    cnt++;
+                } while (cnt < 2000);
             }
         }
 

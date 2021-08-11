@@ -1995,6 +1995,7 @@ E boolean FDECL(should_displace,
 E boolean FDECL(undesirable_disp, (struct monst *, XCHAR_P, XCHAR_P));
 E boolean FDECL(m_findtravelpath, (struct monst*, int, xchar*, xchar*, long));
 E boolean FDECL(m_test_move, (struct monst*, XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int, long));
+E void FDECL(check_boss_fight, (struct monst*));
 
 /* ### monst.c ### */
 

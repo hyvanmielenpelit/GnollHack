@@ -190,7 +190,8 @@ struct monst {
     Bitfield(wormno, 5);    /* at most 31 worms on any level */
 #define MAX_NUM_WORMS 32    /* should be 2^(wormno bitfield size) */
     Bitfield(heads_tamed, 2); /* How many Cerberos's heads have been tamed; anything else for other monsters */
-    /* 19 free bits to 32-bit integer */
+    Bitfield(boss_fight_started, 1); /* boss fight has already been announced */
+    /* 18 free bits to 32-bit integer */
 
     unsigned long mon_flags; /* General easy-to-add flags for monsters for things not covered by the above bitfields */
 #define MON_FLAGS_NONE              0x00000000

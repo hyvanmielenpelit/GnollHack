@@ -21,15 +21,19 @@ namespace GnollHackClient
 
         public float GetFinishTime()
         {
-            if (_data.style >= 3)
+            if (_data.style >= 3 &&_data.style < (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT)
                 return 99999.0f;
+            else if (_data.style == (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT)
+                return 1.50f;
             else
                 return 2.0f;
         }
         public float GetFadeOutTime()
         {
-            if (_data.style >= 3)
+            if (_data.style >= 3 && _data.style < (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT)
                 return 19.0f;
+            else if (_data.style == (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT)
+                return 0.5f;
             else
                 return 1.5f;
         }
@@ -74,6 +78,7 @@ namespace GnollHackClient
                 {
                     case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
                     case 2:
+                    case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
                         return true;
                     default:
                         break;
@@ -97,6 +102,7 @@ namespace GnollHackClient
             {
                 case 0:
                 case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
+                case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
                     return 0.65f;
                 case 2:
                     return 0.70f;
@@ -116,6 +122,8 @@ namespace GnollHackClient
                     return 0.0f;
                 case 3:
                     return 0.0f;
+                case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
+                    return -0.10f;
                 default:
                     return -0.02f;
             }
@@ -178,6 +186,8 @@ namespace GnollHackClient
                     return SKColors.LightBlue;
                 case 7:
                     return SKColors.Pink;
+                case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
+                    return SKColors.Yellow;
                 default:
                     break;
             }
