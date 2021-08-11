@@ -5161,7 +5161,7 @@ register struct obj *obj;
                     {
                         any = zeroany;
                         any.a_int = wpidx + 1;
-                        char buf[BUFSZ] = "";
+                        char wpbuf[BUFSZ] = "";
                         s_level* slev = Is_special(waypointlist[wpidx]);
                         if (slev)
                         {
@@ -5169,11 +5169,11 @@ register struct obj *obj;
                             if (dname && !strncmp(dname, "The ", 4))
                                 dname += 4;
                             if (dname)
-                                Sprintf(buf, "%s - %s", dname, slev->name);
+                                Sprintf(wpbuf, "%s - %s", dname, slev->name);
                             else
-                                Sprintf(buf, "%s", slev->name);
+                                Sprintf(wpbuf, "%s", slev->name);
                             add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
-                                buf, MENU_UNSELECTED);
+                                wpbuf, MENU_UNSELECTED);
                         }
                     }
                 }
@@ -5242,7 +5242,7 @@ register struct obj *obj;
                         {
                             any = zeroany;
                             any.a_int = wpidx + 1;
-                            char buf[BUFSZ] = "";
+                            char wpbuf[BUFSZ] = "";
                             s_level* slev = Is_special(waypointlist[wpidx]);
                             if (slev)
                             {
@@ -5250,12 +5250,12 @@ register struct obj *obj;
                                 if (dname && !strncmp(dname, "The ", 4))
                                     dname += 4;
                                 if(dname)
-                                    Sprintf(buf, "%s - %s", dname, slev->name);
+                                    Sprintf(wpbuf, "%s - %s", dname, slev->name);
                                 else
-                                    Sprintf(buf, "%s", slev->name);
+                                    Sprintf(wpbuf, "%s", slev->name);
 
                                 add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
-                                    buf, MENU_UNSELECTED);
+                                    wpbuf, MENU_UNSELECTED);
                             }
                         }
                     }
