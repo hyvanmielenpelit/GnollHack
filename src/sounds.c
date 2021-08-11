@@ -66,6 +66,7 @@ STATIC_DCL int FDECL(do_chat_smith_forge_special_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_sell_ore, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
+STATIC_DCL int FDECL(do_chat_quantum_mechanic_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_stones_and_charged_items, (struct monst*));
@@ -1557,6 +1558,51 @@ register struct monst *mtmp;
                 break;
             }
         break;
+    case MS_QUANTUM:
+        if (!is_peaceful(mtmp)) 
+        {
+            pline("%s is furious about you ruining %s delicate experiment.", Monnam(mtmp), mhis(mtmp));
+            pline_msg = 0;
+            chat_line = 0;
+            break;
+        }
+        /* Generic peaceful quantum mechanic behaviour. */
+        if (is_fleeing(mtmp))
+        {
+            pline_msg = "talks something about quantum tunneling.";
+            chat_line = 1;
+        }
+        else if (is_confused(mtmp) || is_stunned(mtmp))
+        {
+            pline_msg = "babbles something about interpretations of quantum mechanics.";
+            chat_line = 2;
+        }
+        else if (mtmp->mtrapped)
+        {
+            pline_msg = "curses something about bad luck with quantum tunneling.";
+            chat_line = 3;
+        }
+        else if (mtmp->mtame && !mtmp->isminion
+            && moves > EDOG(mtmp)->hungrytime)
+        {
+            verbl_msg = "I'm so hungry I cannot think straight.";
+            chat_line = 4;
+        }
+        else
+        {
+            const char* normal_msg[6] = { "discusses the Schroedinger equation.", 
+                "explains the benefits of Feynman diagrams.", 
+                "talks about the Heisenberg uncertainty principle.",
+                "tells how they achieved a quantum superposition on a cat.",
+                "explains that God does play dice with the universe after all.",
+                "wonders if the universe is just one big roguelike simulation."};
+
+            int roll = rn2(6);
+            pline_msg = normal_msg[roll];
+            chat_line = 5 + roll;
+            break;
+        }
+        break;
     case MS_SEDUCE: {
         int swval;
 
@@ -2123,7 +2169,7 @@ dochat()
 
     chatnum++;
 
-    if(is_speaking_monster(mtmp->data) && is_peaceful(mtmp))
+    if (is_speaking_monster(mtmp->data) && (is_peaceful(mtmp) || is_quantum_mechanic(mtmp->data)))
     {
         /* Who are you? */
         strcpy(available_chat_list[chatnum].name, "\"Who are you?\"");
@@ -2138,8 +2184,10 @@ dochat()
             available_chat_list[chatnum].name, MENU_UNSELECTED);
 
         chatnum++;
+    }
 
-
+    if(is_speaking_monster(mtmp->data) && is_peaceful(mtmp))
+    {
         if (!mtmp->isgd && (is_izchak(mtmp, TRUE) || mtmp->rumorsleft >= 0))
         {
             if(is_izchak(mtmp, TRUE))
@@ -2367,7 +2415,10 @@ dochat()
     if ((is_domestic(mtmp->data) || mtmp->data->mlet == S_DOG || mtmp->data->mlet == S_FELINE || mtmp->data->mlet == S_YETI || mtmp->data->mlet == S_UNICORN || is_tame(mtmp)) && (carnivorous(mtmp->data) || herbivorous(mtmp->data)))
     {
         /* Feeding */
-        Sprintf(available_chat_list[chatnum].name, "Feed %s", mon_nam(mtmp));
+        if(humanoid(mtmp->data))
+            Sprintf(available_chat_list[chatnum].name, "Give food to %s", mon_nam(mtmp));
+        else
+            Sprintf(available_chat_list[chatnum].name, "Feed %s", mon_nam(mtmp));
         available_chat_list[chatnum].function_ptr = &do_chat_feed;
         available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3071,6 +3122,25 @@ dochat()
 
     }
 
+    if (msound == MS_QUANTUM)
+    {
+        if (!is_peaceful(mtmp))
+        {
+            strcpy(available_chat_list[chatnum].name, "Offer research support");
+            available_chat_list[chatnum].function_ptr = &do_chat_quantum_mechanic_reconciliation;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+    }
+
     /* NPCs */
     if (msound == MS_NPC || mtmp->isnpc)
     {
@@ -3653,6 +3723,15 @@ struct monst* mtmp;
     {
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
         Sprintf(ansbuf, "I am a genie from the Elemental Plane of Air.");
+        verbalize("%s", ansbuf);
+    }
+    else if (msound == MS_QUANTUM)
+    {
+        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
+        if(has_mname(mtmp))
+            Sprintf(ansbuf, "I am %s, %s at the University of Yendor.", MNAME(mtmp), an(mtmp->data->mname));
+        else
+            Sprintf(ansbuf, "I am %s at the University of Yendor.", an(mtmp->data->mname));
         verbalize("%s", ansbuf);
     }
     else if (has_mname(mtmp))
@@ -6508,6 +6587,65 @@ int npc_identification_type_index;
     }
 
     return TRUE;
+}
+
+STATIC_OVL int
+do_chat_quantum_mechanic_reconciliation(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return 0;
+
+    long umoney;
+    long u_pay;
+    long reconcile_cost = max(1, (int)((mtmp->m_lev * 5 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    char qbuf[QBUFSZ];
+
+    multi = 0;
+    umoney = money_cnt(invent);
+
+
+    if (!mtmp) {
+        There("is no one here to talk to.");
+        return 0;
+    }
+    else if (!m_speak_check(mtmp))
+        return 0;
+
+    Sprintf(qbuf, "%s asks for a research support of %ld %s.  Agree?", Monnam(mtmp), reconcile_cost, currency(reconcile_cost));
+
+    switch (ynq(qbuf)) {
+    default:
+    case 'q':
+        return 0;
+    case 'y':
+        if (umoney < (long)reconcile_cost) {
+            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+            You("don't have enough money for that!");
+            return 0;
+        }
+        u_pay = reconcile_cost;
+        break;
+    }
+
+    money2mon(mtmp, u_pay);
+    context.botl = 1;
+
+    mtmp->mpeaceful = 1;
+    newsym(mtmp->mx, mtmp->my);
+
+    play_sfx_sound(SFX_BUY_FROM_NPC);
+    if (is_peaceful(mtmp))
+    {
+        pline("%s thanks you for your support.", Monnam(mtmp));
+
+    }
+    else
+    {
+        pline("%s seems mysteriously disappointed.", Monnam(mtmp));
+    }
+
+    return 1;
 }
 
 

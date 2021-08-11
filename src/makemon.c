@@ -230,7 +230,7 @@ register struct monst* mtmp;
     if (is_demon(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_demon_name(mnamebuf)));
 
-    if (is_human(mtmp->data) && !has_mname(mtmp))
+    if ((is_human(mtmp->data) || is_quantum_mechanic(mtmp->data)) && !has_mname(mtmp))
     {
         if(mtmp->female)
             christen_monst(mtmp, upstart(randomize_female_human_name(mnamebuf)));

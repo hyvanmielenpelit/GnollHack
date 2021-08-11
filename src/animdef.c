@@ -7418,6 +7418,20 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "warrior-enlargement", 0, 0,
+        1,
+        2, 1, 0,
+        { -1, -1, -1, -1, 0 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "warrior-statue-enlargement", 0, 0,
+        1,
+        2, 1, 0,
+        { -1, -1, -1, -1, 0 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
 
 };
 
