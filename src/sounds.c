@@ -6750,8 +6750,8 @@ struct monst* mtmp;
     if (!is_tame(mtmp))
     {
         play_sfx_sound(SFX_BUY_FROM_NPC);
-        pline("%s tells that your position was observed to be exactly where you are.", Monnam(mtmp));
     }
+    pline("%s tells that your position was observed to be exactly where you are.", Monnam(mtmp));
 
     return 1;
 }
@@ -6818,9 +6818,9 @@ struct monst* mtmp;
     if (!is_tame(mtmp))
     {
         play_sfx_sound(SFX_BUY_FROM_NPC);
-        if(canspotmon(mtmp) && m_canseeu(mtmp))
-            pline("%s tells that your speed was observed to be zero.", Monnam(mtmp));
     }
+    if(canspotmon(mtmp) && m_canseeu(mtmp))
+            pline("%s tells that your speed was observed to be zero.", Monnam(mtmp));
 
     return 1;
 }
