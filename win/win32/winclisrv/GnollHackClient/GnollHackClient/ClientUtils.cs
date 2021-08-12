@@ -7,6 +7,14 @@ using GnollHackCommon;
 
 namespace GnollHackClient
 {
+    public enum canvas_page_types
+    {
+        MainGamePage = 0,
+        Menu,
+        MoreCommands
+    }
+
+
     class ClientUtils
     {
         private static SKColor GHDarkGray = new SKColor(96, 96, 96);

@@ -744,8 +744,6 @@ register struct monst *mtmp;
         && (m_canseeu(mtmp) || mtmp->mhp < mtmp->mhpmax))
         mtmp->mstrategy &= ~STRAT_WAITFORU;
 
-    check_boss_fight(mtmp);
-
     /* update quest status flags */
     quest_stat_check(mtmp);
 
@@ -764,6 +762,8 @@ register struct monst *mtmp;
     {
         if (Hallucination)
             newsym(mtmp->mx, mtmp->my);
+
+        check_boss_fight(mtmp);
         return 0;
     }
 
@@ -777,6 +777,7 @@ register struct monst *mtmp;
         && !level.flags.noteleport)
     {
         (void) rloc2(mtmp, TRUE, TRUE);
+        check_boss_fight(mtmp);
         return 0;
     }
     if (mdat->msound == MS_SHRIEK && !um_dist(mtmp->mx, mtmp->my, 1))
@@ -810,6 +811,8 @@ register struct monst *mtmp;
     /* may teleport, so do it before inrange is set */
     if (is_teleport_heal_caster(mtmp->data) && !is_peaceful(mtmp))
         (void) tactics(mtmp);
+
+    check_boss_fight(mtmp);
 
     /* check distance and scariness of attacks */
     distfleeck(mtmp, &inrange, &nearby, &scared);
@@ -1087,7 +1090,7 @@ check_boss_fight(mtmp)
 struct monst* mtmp;
 {
     /* Trigger a boss fight if you can see the monster */
-    if ((windowprocs.wincap2 & WC2_SCREEN_TEXT) && (mtmp->data->mflags6 & M6_BOSS_MONSTER) && !mtmp->boss_fight_started && !DEADMONSTER(mtmp) && !is_peaceful(mtmp) && canspotmon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !(mtmp->mstrategy & STRAT_WAITFORU) && !mtmp->msleeping && mon_can_move(mtmp))
+    if ((windowprocs.wincap2 & WC2_SCREEN_TEXT) && (mtmp->data->mflags6 & M6_BOSS_MONSTER) && !mtmp->boss_fight_started && !DEADMONSTER(mtmp) && !is_peaceful(mtmp) && canspotmon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !(mtmp->mstrategy & STRAT_WAITFORU) && !mtmp->msleeping)
     {
         mtmp->boss_fight_started = 1;
         flush_screen(1);
@@ -2102,6 +2105,7 @@ register int after;
             after_shk_move(mtmp);
         }
     }
+    check_boss_fight(mtmp);
     return mmoved;
 }
 

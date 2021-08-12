@@ -2161,8 +2161,104 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private object _canvasPageLock = new object();
+        private canvas_page_types _canvasPage = 0;
+
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            canvas_page_types page = 0;
+            lock (_canvasPageLock)
+            {
+                page = _canvasPage;
+            }
+
+            switch (page)
+            {
+                case canvas_page_types.MainGamePage:
+                    PaintMainGamePage(sender, e);
+                    break;
+                case canvas_page_types.Menu:
+                    break;
+                case canvas_page_types.MoreCommands:
+                    break;
+            }
+
+
+            /* General stuff */
+            SKImageInfo info = e.Info;
+            SKSurface surface = e.Surface;
+            SKCanvas canvas = surface.Canvas;
+            string str = "";
+            float textWidth = 0;
+            SKRect textBounds = new SKRect();
+            float xText = 0;
+            float yText = 0;
+            float canvaswidth = canvasView.CanvasSize.Width;
+            float canvasheight = canvasView.CanvasSize.Height;
+
+            using (SKPaint textPaint = new SKPaint())
+            {
+
+                if (ShowMemoryUsage)
+                {
+                    long memusage = GC.GetTotalMemory(false);
+                    str = "Memory: " + memusage / 1024 + " kB";
+                    textPaint.Typeface = App.LatoBold;
+                    textPaint.TextSize = 26;
+                    textPaint.Color = SKColors.Yellow;
+                    textWidth = textPaint.MeasureText(str, ref textBounds);
+                    yText = -textPaint.FontMetrics.Ascent + 5 + (ShowFPS ? textPaint.FontSpacing : 0);
+                    xText = canvaswidth - textWidth - 5;
+                    canvas.DrawText(str, xText, yText, textPaint);
+                }
+
+                if (ShowFPS)
+                {
+                    if (!_stopWatch.IsRunning)
+                    {
+                        _stopWatch.Restart();
+                    }
+                    else
+                    {
+                        _stopWatch.Stop();
+                        TimeSpan ts = _stopWatch.Elapsed;
+                        long _currentGeneralCounterValue = 0L;
+                        lock (AnimationTimerLock)
+                        {
+                            _currentGeneralCounterValue = AnimationTimers.general_animation_counter;
+                        }
+                        long diff = _currentGeneralCounterValue - _previousGeneralCounterValue;
+                        _previousGeneralCounterValue = _currentGeneralCounterValue;
+                        lock (_fpslock)
+                        {
+                            _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : 1000.0 / ts.TotalMilliseconds;
+                            str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + diff;
+                        }
+                        textPaint.Typeface = App.LatoBold;
+                        textPaint.TextSize = 26;
+                        textPaint.Color = SKColors.Yellow;
+                        textWidth = textPaint.MeasureText(str, ref textBounds);
+                        yText = -textPaint.FontMetrics.Ascent + 5;
+                        xText = canvaswidth - textWidth - 5;
+                        canvas.DrawText(str, xText, yText, textPaint);
+
+                        _stopWatch.Restart();
+                    }
+                }
+                else
+                {
+                    if (_stopWatch.IsRunning)
+                        _stopWatch.Stop();
+                }
+            }
+
+            /* Finally, flush */
+            canvas.Flush();
+        }
+
+        private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
+        {
+
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
@@ -3929,58 +4025,6 @@ namespace GnollHackClient.Pages.Game
                     canvas.DrawBitmap(_logoBitmap, targetrect);
                 }
 
-                if(ShowMemoryUsage)
-                {
-                    long memusage = GC.GetTotalMemory(false);
-                    str = "Memory: " + memusage / 1024 + " kB";
-                    textPaint.Typeface = App.LatoBold;
-                    textPaint.TextSize = 26;
-                    textPaint.Color = SKColors.Yellow;
-                    textWidth = textPaint.MeasureText(str, ref textBounds);
-                    yText = -textPaint.FontMetrics.Ascent + 5 + (ShowFPS ? textPaint.FontSpacing : 0);
-                    xText = canvaswidth - textWidth - 5;
-                    canvas.DrawText(str, xText, yText, textPaint);
-                }
-
-                if (ShowFPS)
-                {
-                    if (!_stopWatch.IsRunning)
-                    {
-                        _stopWatch.Restart();
-                    }
-                    else 
-                    {
-                        _stopWatch.Stop();
-                        TimeSpan ts = _stopWatch.Elapsed;
-                        long _currentGeneralCounterValue = 0L;
-                        lock (AnimationTimerLock)
-                        {
-                            _currentGeneralCounterValue = AnimationTimers.general_animation_counter;
-                        }
-                        long diff = _currentGeneralCounterValue - _previousGeneralCounterValue;
-                        _previousGeneralCounterValue = _currentGeneralCounterValue;
-                        lock (_fpslock)
-                        {
-                            _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : 1000.0 / ts.TotalMilliseconds;
-                            str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + diff;
-                        }
-                        textPaint.Typeface = App.LatoBold;
-                        textPaint.TextSize = 26;
-                        textPaint.Color = SKColors.Yellow;
-                        textWidth = textPaint.MeasureText(str, ref textBounds);
-                        yText = -textPaint.FontMetrics.Ascent + 5;
-                        xText = canvaswidth - textWidth - 5;
-                        canvas.DrawText(str, xText, yText, textPaint);
-
-                        _stopWatch.Restart();
-                    }
-                }
-                else
-                {
-                    if(_stopWatch.IsRunning)
-                        _stopWatch.Stop();
-                }
-
                 /* RawPrint */
                 /*
                 lock(MessageLock)
@@ -3995,8 +4039,6 @@ namespace GnollHackClient.Pages.Game
                 canvas.DrawText(str, xText, yText, textPaint);
                 */
             }
-
-            canvas.Flush();
 
         }
 
