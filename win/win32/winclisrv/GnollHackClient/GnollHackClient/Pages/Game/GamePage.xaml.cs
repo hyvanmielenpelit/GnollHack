@@ -2177,10 +2177,6 @@ namespace GnollHackClient.Pages.Game
                 case canvas_page_types.MainGamePage:
                     PaintMainGamePage(sender, e);
                     break;
-                case canvas_page_types.Menu:
-                    break;
-                case canvas_page_types.MoreCommands:
-                    break;
             }
 
 

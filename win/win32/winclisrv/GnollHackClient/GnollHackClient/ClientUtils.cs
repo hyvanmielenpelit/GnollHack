@@ -10,8 +10,6 @@ namespace GnollHackClient
     public enum canvas_page_types
     {
         MainGamePage = 0,
-        Menu,
-        MoreCommands
     }
 
 

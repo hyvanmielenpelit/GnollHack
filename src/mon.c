@@ -1604,6 +1604,8 @@ movemon()
         if (DEADMONSTER(mtmp))
             continue;
 
+        check_boss_fight(mtmp);
+
         /* Find a monster that we have not treated yet. */
         if (mtmp->movement < NORMAL_SPEED)
             continue;

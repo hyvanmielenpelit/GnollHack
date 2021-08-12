@@ -275,6 +275,7 @@ register struct monst *mtmp;
 
     boolean couldspotmon = canspotmon(mtmp);
     boolean already_saw_mon = !occupation ? 0 : couldspotmon;
+
     int rd = dochug(mtmp);
 
     check_boss_fight(mtmp);
