@@ -341,6 +341,9 @@ namespace GnollHackClient.Pages.Game
                 //canvasView.InvalidateSurface();
                 pollRequestQueue();
 
+                if (MenuCanvas.IsVisible)
+                    MenuCanvas.InvalidateSurface();
+
                 /* Increment counters */
                 //lock (AnimationTimerLock)
                 //{
@@ -1094,6 +1097,54 @@ namespace GnollHackClient.Pages.Game
 
             await App.Current.MainPage.Navigation.PushModalAsync(menuPage, false);
         }
+
+        private void ShowMenuCanvas(GHMenuInfo menuinfo, GHWindow ghwindow)
+        {
+            lock (RefreshScreenLock)
+            {
+                RefreshScreen = false;
+            }
+
+            MenuCanvas.GHWindow = ghwindow;
+            MenuCanvas.MenuStyle = menuinfo.Style;
+
+            MenuCanvas.SelectionHow = menuinfo.SelectionHow;
+            if (menuinfo.Header == null)
+            {
+                MenuHeaderLabel.IsVisible = false;
+                MenuHeaderLabel.Text = "";
+
+            }
+            else
+            {
+                MenuHeaderLabel.IsVisible = true;
+                MenuHeaderLabel.Text = menuinfo.Header;
+            }
+
+            if (menuinfo.Subtitle == null)
+            {
+                MenuSubtitleLabel.IsVisible = false;
+                MenuSubtitleLabel.Text = "";
+            }
+            else
+            {
+                MenuSubtitleLabel.IsVisible = true;
+                MenuSubtitleLabel.Text = menuinfo.Subtitle;
+            }
+
+            ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
+            if (menuinfo != null)
+            {
+                foreach (GHMenuItem mi in menuinfo.MenuItems)
+                {
+                    newmis.Add(mi);
+                }
+            }
+
+            MenuCanvas.MenuItems = newmis;
+            MenuGrid.IsVisible = true;
+        }
+
         private async void ShowOutRipPage(GHOutRipInfo outripinfo, GHWindow ghwindow)
         {
             var outRipPage = new OutRipPage(this, ghwindow, outripinfo);
@@ -5875,6 +5926,70 @@ namespace GnollHackClient.Pages.Game
             GHButton ghbutton = (GHButton)sender;
             Debug.WriteLine("ProfilingStopwatch.Restart: " + ghbutton.RawCommand + ", Letter:" + ghbutton.Letter + ", Ctrl:" + ghbutton.ApplyCtrl + ", Meta:" + ghbutton.ApplyMeta);
             GenericButton_Clicked(sender, e, (int)ghbutton.GHCommand);
+
+        }
+
+        private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        {
+            SKImageInfo info = e.Info;
+            SKSurface surface = e.Surface;
+            SKCanvas canvas = surface.Canvas;
+            float canvaswidth = canvasView.CanvasSize.Width;
+            float canvasheight = canvasView.CanvasSize.Height;
+            float x = 0, y = 0;
+
+            canvas.Clear();
+            if (MenuCanvas.MenuItems == null)
+                return;
+
+            using (SKPaint textPaint = new SKPaint())
+            {
+                textPaint.Typeface = App.UnderwoodTypeface;
+                textPaint.TextSize = 24;
+                textPaint.Color = SKColors.White;
+                y -= textPaint.FontMetrics.Ascent;
+                y += 5;
+                foreach (GHMenuItem mi in MenuCanvas.MenuItems)
+                {
+                    canvas.DrawText(mi.Text, x, y, textPaint);
+                    y += textPaint.FontSpacing;
+                }
+            }
+        }
+
+        private void MenuOKButton_Clicked(object sender, EventArgs e)
+        {
+            MenuGrid.IsVisible = false;
+            ConcurrentQueue<GHResponse> queue;
+            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>()));
+            }
+
+            lock (RefreshScreenLock)
+            {
+                RefreshScreen = true;
+            }
+        }
+
+        private void MenuCancelButton_Clicked(object sender, EventArgs e)
+        {
+            MenuGrid.IsVisible = false;
+
+            ConcurrentQueue<GHResponse> queue;
+            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>()));
+            }
+
+            lock (RefreshScreenLock)
+            {
+                RefreshScreen = true;
+            }
+        }
+
+        private void MenuCanvas_Touch(object sender, SKTouchEventArgs e)
+        {
 
         }
     }

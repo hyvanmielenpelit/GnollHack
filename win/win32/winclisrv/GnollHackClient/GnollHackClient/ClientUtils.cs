@@ -12,6 +12,10 @@ namespace GnollHackClient
         MainGamePage = 0,
     }
 
+    public enum menu_page_types
+    {
+        NormalMenu = 0,
+    }
 
     class ClientUtils
     {

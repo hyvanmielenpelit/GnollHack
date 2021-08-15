@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using GnollHackClient.Pages.Game;
 using GnollHackCommon;
@@ -12,13 +13,28 @@ namespace GnollHackClient
 
     class GHCanvasView : SKCanvasView
     {
+        public ClientGame _clientGame;
+        public GamePage _gamePage;
+        public int _glyph;
+
+        public GHWindow GHWindow {get; set;}
+        public ghmenu_styles MenuStyle { get; set; }
+
+        private ObservableCollection<GHMenuItem> _GHMenuItems = null;
+        public ObservableCollection<GHMenuItem> MenuItems { get { return _GHMenuItems; } set { _GHMenuItems = value; } }
+
+        public SelectionMode SelectionHow { get; set; }
+
+        private bool _responseSent = false;
+        private bool unselect_on_tap = false;
+
 
         public GHCanvasView() : base()
         {
 
         }
 
-        public GamePage _gamePage = null;
+
 
         public BindableProperty GeneralAnimationCounterProperty =
             BindableProperty.Create(nameof(GeneralAnimationCounter), typeof(long), typeof(GHCanvasView), 0L);
