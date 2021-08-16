@@ -132,7 +132,6 @@
     (((ptr)->mflags3 & M3_KNOWS_PITS_AND_HOLES) != 0)
 #define knows_traps(ptr) \
     (((ptr)->mflags3 & M3_KNOWS_TRAPS) != 0)
-#define is_priest(ptr) (((ptr)->mflags3 & M3_PRIEST) != 0L)
 
 #define is_brave(ptr) (((ptr)->mflags4 & M4_BRAVE) != 0L)
 #define is_fearless(ptr) (((ptr)->mflags4 & M4_FEARLESS) != 0L)
@@ -172,7 +171,6 @@
 #define is_iron(ptr) (((ptr)->mflags4 & M4_IRON) != 0)
 #define is_noniron_metal(ptr) (((ptr)->mflags4 & M4_METAL) != 0)
 #define is_metal(ptr) (is_iron(ptr) || is_noniron_metal(ptr))
-#define is_mon_wizard(ptr) (((ptr)->mflags3 & M3_WIZARD) != 0L)
 
 #define innate_eschew_cursed(ptr) (((ptr)->mflags5 & M5_ESCHEWS_CURSED_ITEMS) != 0)
 #define innate_eschew_blessed(ptr) (((ptr)->mflags5 & M5_ESCHEWS_BLESSED_ITEMS) != 0)
@@ -189,6 +187,20 @@
 #define is_corpse_eater(ptr) (((ptr)->mflags6 & M6_CORPSE_EATER) != 0L)
 #define is_quantum_mechanic(ptr) (((ptr)->mflags6 & M6_QUANTUM_MECHANIC) != 0)
 #define is_hell_hound(ptr) (((ptr)->mflags6 & M6_HELL_HOUND) != 0L)
+
+#define is_archaeologist(ptr) (((ptr)->mflags7 & M7_ARCHAEOLOGIST) != 0L)
+#define is_barbarian(ptr) (((ptr)->mflags7 & M7_BARBARIAN) != 0L)
+#define is_caveman(ptr) (((ptr)->mflags7 & M7_CAVEMAN) != 0L)
+#define is_healer(ptr) (((ptr)->mflags7 & M7_HEALER) != 0L)
+#define is_knight(ptr) (((ptr)->mflags7 & M7_KNIGHT) != 0L)
+#define is_monk(ptr) (((ptr)->mflags7 & M7_MONK) != 0L)
+#define is_priest(ptr) (((ptr)->mflags7 & M7_PRIEST) != 0L)
+#define is_rogue(ptr) (((ptr)->mflags7 & M7_ROGUE) != 0L)
+#define is_ranger(ptr) (((ptr)->mflags7 & M7_RANGER) != 0L)
+#define is_samurai(ptr) (((ptr)->mflags7 & M7_SAMURAI) != 0L)
+#define is_tourist(ptr) (((ptr)->mflags7 & M7_TOURIST) != 0L)
+#define is_valkyrie(ptr) (((ptr)->mflags7 & M7_VALKYRIE) != 0L)
+#define is_wizard(ptr) (((ptr)->mflags7 & M7_WIZARD) != 0L)
 
 /* combinations */
 #define is_not_living(ptr) \

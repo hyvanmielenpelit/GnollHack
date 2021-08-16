@@ -240,11 +240,10 @@
 #define M3_CONSTRICTOR                                 0x00004000UL    /* grabbing / sticking itself causes constriction */
 #define M3_STRANGLES_NECK_BY_HAND                      0x00008000UL    /* rope golem's strangulation attack */
 
-#define M3_WIZARD                                      0x00010000UL            /* monster can use wizard items */
-#define M3_PRIEST                                      0x00020000UL            /* monster can use priest items */
-#define M3_KNIGHT                                      0x00040000UL            /* monster can use knight items */
-#define M3_HEALER                                      0x00080000UL            /* monster can use healer items */
-
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
 /* free bit */
 /* free bit */
 #define M3_REGENERATES_LOST_BODY_PARTS                 0x00400000UL        /* does not lose max hitpoint because of sharpness or bisection */
@@ -353,8 +352,22 @@
 #define M6_HELL_HOUND               0x00000800UL /* Is a hell hound */
 #define M6_BOSS_MONSTER             0x00001000UL /* Seeing the monster triggers a boss fight */
 
-#define M7_NONE                        0x00000000UL
-#define M8_NONE                        0x00000000UL
+#define M7_NONE                     0x00000000UL
+#define M7_ARCHAEOLOGIST            0x00000001UL            /* monster can use archaeologist items */
+#define M7_BARBARIAN                0x00000002UL            /* monster can use barbarian items */
+#define M7_CAVEMAN                  0x00000004UL            /* monster can use caveman items */
+#define M7_HEALER                   0x00000008UL            /* monster can use healer items */
+#define M7_KNIGHT                   0x00000010UL            /* monster can use knight items */
+#define M7_MONK                     0x00000020UL            /* monster can use monk items */
+#define M7_PRIEST                   0x00000040UL            /* monster can use priest items */
+#define M7_ROGUE                    0x00000080UL            /* monster can use rogue items */
+#define M7_RANGER                   0x00000100UL            /* monster can use ranger items */
+#define M7_SAMURAI                  0x00000200UL            /* monster can use samurai items */
+#define M7_TOURIST                  0x00000400UL            /* monster can use tourist items */
+#define M7_VALKYRIE                 0x00000800UL            /* monster can use valkyrie items */
+#define M7_WIZARD                   0x00001000UL            /* monster can use wizard items */
+
+#define M8_NONE                     0x00000000UL
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */

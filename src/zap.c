@@ -118,7 +118,7 @@ struct monst* targetmonst;
         else if (origmonst == &youmonst)
             skill_level = P_SKILL_LEVEL(P_WAND);
         else
-            skill_level = is_prince(origmonst->data) ? P_SKILLED : is_lord(origmonst->data) || is_mon_wizard(origmonst->data) ? P_BASIC : P_UNSKILLED; /* No increase in wand damage for monsters to avoid unnecessary instadeaths */
+            skill_level = is_prince(origmonst->data) ? P_SKILLED : is_lord(origmonst->data) || is_wizard(origmonst->data) ? P_BASIC : P_UNSKILLED; /* No increase in wand damage for monsters to avoid unnecessary instadeaths */
 
         dicemult = get_wand_damage_multiplier(skill_level);
     }

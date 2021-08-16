@@ -125,11 +125,8 @@ static NEARDATA struct mflag_description m2flag_descriptions[] = {
 static NEARDATA struct mflag_description m3flag_descriptions[] = {
     { M3_CONSTRICTOR, "constrictor", "constrictors" },
     { M3_INFRAVISION, "infravision", "monsters with infravision" },
-    { M3_KNIGHT, "knight", "knights" },
-    { M3_HEALER, "healer", "healers" },
     { M3_INCORPOREAL, "incorporeal", "incorporeal monsters" },
     { M3_NONLIVING, "nonliving", "nonliving monster" },
-    { M3_PRIEST, "priest", "priests" },
     { M3_REGENERATES_LOST_BODY_PARTS, "regenerates lost body parts", "monsters that regenerate lost body parts" },
     { M3_REVIVES_FROM_DEAD, "revives from dead", "monsters that revive from dead" },
     { M3_SPEAKING, "speaking", "speaking monsters" },
@@ -168,6 +165,19 @@ static NEARDATA struct mflag_description m6flag_descriptions[] = {
 };
 
 static NEARDATA struct mflag_description m7flag_descriptions[] = {
+    { M7_ARCHAEOLOGIST, "archaeologist", "archaeologists" },
+    { M7_BARBARIAN, "barbarian", "barbarians" },
+    { M7_CAVEMAN, "cavaman", "cavamen" },
+    { M7_HEALER, "healer", "healers" },
+    { M7_KNIGHT, "knight", "knights" },
+    { M7_MONK, "monk", "monks" },
+    { M7_PRIEST, "priest", "priests" },
+    { M7_ROGUE, "rogue", "rogues" },
+    { M7_RANGER, "ranger", "rangers" },
+    { M7_SAMURAI, "samurai", "samurai" },
+    { M7_TOURIST, "tourist", "tourists" },
+    { M7_VALKYRIE, "valkyrie", "valkyries" },
+    { M7_WIZARD, "wizard", "wizards" },
     { 0 , "", "" }
 };
 
