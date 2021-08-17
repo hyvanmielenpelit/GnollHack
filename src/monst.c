@@ -5923,7 +5923,7 @@ struct permonst _mons2[] = {
         20, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
         ACTION_INFO(LORD_SURTUR_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, LORD_SURTUR_STATUE_ENLARGEMENT, 0, 0),
         ACTION_INFO(LORD_SURTUR_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, LORD_SURTUR_STATUE_ENLARGEMENT, 0, 0)),
-    MON("Dark One", "ancient wizard", "powerful evil sorcerer capable of casting spells", None, None, S_HUMAN, LVL(15, 20, 0, 15, 80, -10),
+    ENLARGED_MON("Dark One", "ancient wizard", "powerful evil sorcerer capable of casting spells", None, None, S_HUMAN, LVL(15, 20, 0, 15, 80, -10),
         (G_NOGEN | G_UNIQ | G_NOCORPSE),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0),
           ATTK(AT_CLAW, AD_SAMU, 1, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
@@ -5935,7 +5935,9 @@ struct permonst _mons2[] = {
         M2_NOPOLY | M2_HUMAN | M2_HOSTILE | M2_STALK | M2_NASTY | M2_COLLECT | M2_MAGIC | M2_MALE,
         M3_WANTSARTI | M3_WAITFORU | M3_INFRAVISIBLE | M3_SPEAKING, 
         M4_NONE, M5_NONE, M6_BOSS_MONSTER, M7_WIZARD, M8_NONE,
-        25, CLR_BLACK, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        25, CLR_BLACK, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(DARK_ONE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DARK_ONE_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(DARK_ONE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DARK_ONE_STATUE_ENLARGEMENT, 0, 0)),
     /*
      * quest "guardians"
      */
