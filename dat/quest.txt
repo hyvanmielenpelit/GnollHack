@@ -2987,7 +2987,7 @@ Once again, you stand in sight of %ns lair.
 %s.  Once I defeat you, I can at last begin the final battle with %d."
 %E ["%oC has shown me that I must kill you."]
 %Cp Val 00051
-"Again you challenge me, %r.  Good.  I will kill you now."
+"Again you challenge me, %c.  Good.  I will kill you now."
 %E
 %Cp Val 00052
 "Have you not learned yet?  You cannot defeat %n!"
@@ -2999,7 +2999,7 @@ Once again, you stand in sight of %ns lair.
 "I am your death, %c."
 %E
 %Cp Val 00061
-"You cannot prevail, %r.  I have foreseen your every move."
+"You cannot prevail, %c.  I have foreseen your every move."
 %E
 %Cp Val 00062
 "With you out of the way, Valhalla will be mine for the taking."
@@ -3009,7 +3009,7 @@ Once again, you stand in sight of %ns lair.
 Do you really think that one %c can stand against me?"
 %E
 %Cp Val 00064
-"Who bears the souls of %cP to Valhalla, %r?"
+"Who bears the souls of %cP to Valhalla, weakling?"
 %E
 %Cp Val 00065
 "No, %d cannot help you here."
