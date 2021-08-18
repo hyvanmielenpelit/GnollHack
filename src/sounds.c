@@ -2270,7 +2270,7 @@ dochat()
 
         chatnum++;
 
-        strcpy(available_chat_list[chatnum].name, "Ask about quests");
+        strcpy(available_chat_list[chatnum].name, "Ask about the Amulet of Yendor");
         available_chat_list[chatnum].function_ptr = &do_chat_hermit_quests;
         available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -7762,7 +7762,7 @@ struct monst* mtmp;
 
     verbalize("The Dungeons of Doom are an ancient complex of dungeons, some thirty levels deep.");
     verbalize("A few levels below the surface, the Dungeons branch into Gnomish Mines, home to the mysterious Gnomes of Yendor.");
-    verbalize("The Dungeon also features Sokoban, a maze-like underground tower erected by one of the local mad wizards.");
+    verbalize("The Dungeons also feature Sokoban, a maze-like underground tower erected by one of the local mad wizards.");
     mtmp->hermit_told_dungeon = 1;
     return 1;
 }
@@ -7774,8 +7774,7 @@ struct monst* mtmp;
     if (!m_speak_check(mtmp))
         return 0;
 
-    verbalize("I see that you seek the Amulet of Yendor, which was stolen by Moloch.");
-    verbalize("The Amulet has been taken to Gehennom, the Under World, where his minions are hiding.");
+    verbalize("The Amulet has been taken to Gehennom, the Under World, where Moloch's minions are hiding.");
     verbalize("To get there, you will need to descend to the bottom of this dungeon and find an underground castle there.");
     verbalize("From there, you can access the Under World, just as the Wizard of Yendor himself once did.");
     mtmp->hermit_told_quests = 1;
