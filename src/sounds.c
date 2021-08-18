@@ -2254,7 +2254,7 @@ dochat()
         }
     }
 
-    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_STARTING_QUESTS) != 0)
+    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_STARTING_QUESTS) != 0)
     {
         /* Hermit - Starting Quests */
         strcpy(available_chat_list[chatnum].name, "Ask about the Dungeons of Doom");
@@ -2296,7 +2296,7 @@ dochat()
 
         chatnum++;
 
-        if (mtmp->hermit_told_dungeon || mtmp->hermit_told_quests)
+        if (mtmp->hermit_told_dungeon)
         {
             strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
             available_chat_list[chatnum].function_ptr = &do_chat_hermit_gnomish_mines;
@@ -2323,22 +2323,12 @@ dochat()
                 available_chat_list[chatnum].name, MENU_UNSELECTED);
 
             chatnum++;
+        }
 
+        if(mtmp->hermit_told_quests || mtmp->hermit_told_castle)
+        {
             strcpy(available_chat_list[chatnum].name, "Ask about the Wizard of Yendor");
             available_chat_list[chatnum].function_ptr = &do_chat_hermit_wizard_of_yendor;
-            available_chat_list[chatnum].charnum = 'a' + chatnum;
-
-            any = zeroany;
-            any.a_char = available_chat_list[chatnum].charnum;
-
-            add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
-                available_chat_list[chatnum].name, MENU_UNSELECTED);
-
-            chatnum++;
-
-            strcpy(available_chat_list[chatnum].name, "Ask about the Underground Castle");
-            available_chat_list[chatnum].function_ptr = &do_chat_hermit_castle;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
             any = zeroany;
@@ -2353,6 +2343,19 @@ dochat()
 
         if (mtmp->hermit_told_quests)
         {
+            strcpy(available_chat_list[chatnum].name, "Ask about the Underground Castle");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit_castle;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+
             strcpy(available_chat_list[chatnum].name, "Ask about Under World");
             available_chat_list[chatnum].function_ptr = &do_chat_hermit_gehennom;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -2401,7 +2404,7 @@ dochat()
 
     }
 
-    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ADVANCED_QUESTS) != 0)
+    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ADVANCED_QUESTS) != 0)
     {
         /* Hermit - Advanced Quests */
         strcpy(available_chat_list[chatnum].name, "Ask about the Castle");
@@ -7760,7 +7763,6 @@ struct monst* mtmp;
     verbalize("The Dungeons of Doom are an ancient complex of dungeons, some thirty levels deep.");
     verbalize("A few levels below the surface, the Dungeons branch into Gnomish Mines, home to the mysterious Gnomes of Yendor.");
     verbalize("The Dungeon also features Sokoban, a maze-like underground tower erected by one of the local mad wizards.");
-    verbalize("Another, the great Wizard of Yendor, has long since stepped into the Under World to study the secrets of life and death.");
     mtmp->hermit_told_dungeon = 1;
     return 1;
 }
@@ -7776,7 +7778,6 @@ struct monst* mtmp;
     verbalize("The Amulet has been taken to Gehennom, the Under World, where his minions are hiding.");
     verbalize("To get there, you will need to descend to the bottom of this dungeon and find an underground castle there.");
     verbalize("From there, you can access the Under World, just as the Wizard of Yendor himself once did.");
-    verbalize("Additional quests will wait for you in the Gnomish Mines and Sokoban.");
     mtmp->hermit_told_quests = 1;
     return 1;
 }
@@ -7851,7 +7852,8 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("The Wizard of Yendor is a great magician who left this world for Gehennom to study the secrets of life and death.");
+    verbalize("The Wizard of Yendor is a great magician who stepped into the Under World to study the secrets of life and death.");
+    verbalize("He is said to possess unrivalled power and be nearly immortal.");
     mtmp->hermit_told_wizard_of_yendor = 1;
     return 1;
 }
