@@ -1794,7 +1794,7 @@ int propidx; /* OBSOLETE: special cases can have negative values */
                 Sprintf(buf, because_of, ustuckbuf);
             }
             else if (
-                ((obj = what_gives(propidx)) != 0 && (wizard || objects[obj->otyp].oc_name_known))
+                ((obj = what_gives(propidx)) != 0 && (wizard || object_stats_known(obj)))
                 )
                 Sprintf(buf, because_of, yname(obj));
             /*obj->oartifact

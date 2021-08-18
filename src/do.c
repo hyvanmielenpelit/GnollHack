@@ -158,6 +158,16 @@ docharacterstatistics()
     putstr(datawin, 0, txt);
 
 
+    /* Current attributes */
+    Sprintf(buf, "Current attribute scores:");
+    txt = buf;
+    putstr(datawin, ATR_HEADING, txt);
+
+    Sprintf(buf, "  St:%s Dx:%d Co:%d In:%d Wi:%d Ch:%d", get_strength_string(ACURR(A_STR)),
+        ACURR(A_DEX), ACURR(A_CON), ACURR(A_INT), ACURR(A_WIS), ACURR(A_CHA));
+    txt = buf;
+    putstr(datawin, 0, txt);
+
     /* Max attributes */
     Sprintf(buf, "Maximum attribute scores:");
     txt = buf;
@@ -239,15 +249,24 @@ docharacterstatistics()
 
 
     /* Current intrinsics */
-    Sprintf(buf, "Intrinsic abilities:");
+    Sprintf(buf, "Intrinsic and extrinsic abilities:");
     txt = buf;
     putstr(datawin, ATR_HEADING, txt);
 
     int intrinsic_count = 0;
     for (i = 1; i <= LAST_PROP; i++)
     {
+        struct obj* obj = 0;
         long innate_intrinsic = u.uprops[i].intrinsic & (INTRINSIC | FROM_FORM);
-        if (innate_intrinsic)
+        long extrinsic = u.uprops[i].extrinsic;
+        boolean o_stats_known = FALSE;
+        if (extrinsic)
+        {
+            obj = what_gives(i);
+            if (obj)
+                o_stats_known = object_stats_known(obj);
+        }
+        if (innate_intrinsic || o_stats_known)
         {
             intrinsic_count++;
 
@@ -282,6 +301,13 @@ docharacterstatistics()
                     Sprintf(eos(dbuf3), ", ");
 
                 Sprintf(eos(dbuf3), "polymorphed form");
+            }
+            else if (o_stats_known)
+            {
+                if (strcmp(dbuf3, ""))
+                    Sprintf(eos(dbuf3), ", ");
+
+                Sprintf(eos(dbuf3), cxname(obj));
             }
 
             if (strcmp(dbuf3, ""))
