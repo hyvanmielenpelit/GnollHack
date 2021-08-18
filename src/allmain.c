@@ -1239,7 +1239,9 @@ newgame()
     if (wizard)
         obj_delivery(FALSE); /* finish wizkit */
     vision_reset();          /* set up internals for level (after mklev) */
-    check_special_room(FALSE);
+    
+    /* Change to intro music */
+    update_game_music();
 
     /* Mark game as started; check special room plays intro here */
     context.game_started = TRUE;
@@ -1268,6 +1270,10 @@ newgame()
 
     /* Success! */
     welcome(TRUE);
+
+    /* Check special room */
+    check_special_room(FALSE);
+
     return;
 }
 

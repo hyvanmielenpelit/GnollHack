@@ -1758,7 +1758,7 @@ mknpcroom()
         return 0;
 
     sroom->rtype = NPCROOM;
-    
+
     schar u_depth = depth(&u.uz);
     uchar npctype = NPC_ARTIFICER;
 
@@ -1793,6 +1793,7 @@ mknpcroom()
         }
     }
 
+    sroom->rsubtype = npctype;
 
     if (sroom->doorct > 0 && sroom->fdoor >= 0 && (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_DOORS_CLOSED))
     {

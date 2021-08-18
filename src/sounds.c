@@ -1066,8 +1066,9 @@ register struct monst *mtmp;
         {
             if (mtmp->isnpc && has_enpc(mtmp))
             {
+                int npctype = ENPC(mtmp)->npc_typ;
                 play_monster_special_dialogue_line(mtmp, NPC_LINE_WELCOME_TO_MY_RESIDENCE_ADVENTURER);
-                Sprintf(verbuf, "Welcome to my %s, adventurer!", npc_subtype_definitions[ENPC(mtmp)->npc_typ].room_name);
+                Sprintf(verbuf, "Welcome to %s %s, adventurer!", (npc_subtype_definitions[npctype].general_flags& NPC_FLAGS_NO_MY) ? "the" : "my", npc_subtype_definitions[ENPC(mtmp)->npc_typ].room_name);
                 chat_line = 0;
             }
             else

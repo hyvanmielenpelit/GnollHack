@@ -23,6 +23,7 @@ enum npc_subtypes {
     NPC_ARTIFICER = 0,
     NPC_GEOLOGIST,
     NPC_WARP_ENGINEER,
+    NPC_HERMIT,
     MAX_NPC_SUBTYPES
 };
 
@@ -53,6 +54,8 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_SERVICE_BUY_DILITHIUM_CRYSTALS   0x00000080UL
 #define NPC_SERVICE_IDENTIFY_GEMS_STONES_AND_CHARGED_ITEMS  0x00000100UL
 #define NPC_SERVICE_BRANCH_PORTAL            0x00000200UL
+#define NPC_SERVICE_GIVE_QUESTS              0x00000400UL
+/*free bit */
 #define NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT              0x00001000UL
 #define NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD                0x00002000UL
 #define NPC_SERVICE_TEACH_SPELL_FORCE_BOLT                  0x00004000UL
@@ -70,6 +73,7 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_FLAGS_DOUBLE_MONEY_IN_HELL      0x00000010UL
 #define NPC_FLAGS_NO_GENERATION             0x00000020UL
 #define NPC_FLAGS_GEOLOGIST_ITEMS           0x00000040UL
+#define NPC_FLAGS_NO_MY                     0x00000080UL
 
 
 

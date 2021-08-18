@@ -41,6 +41,16 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         NPC_SERVICE_BUY_DILITHIUM_CRYSTALS | NPC_SERVICE_IDENTIFY_GEMS_STONES_AND_CHARGED_ITEMS | NPC_SERVICE_RECHARGING | NPC_SERVICE_BLESSED_RECHARGING | NPC_SERVICE_BRANCH_PORTAL,
         NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON
     },
+    {
+        PM_HERMIT,
+        NPC_GEHENNOM_STANDARD,
+        "hermit",
+        "entrance to the Dungeons of Doom",
+        0, 0,
+        1, 100, 5,
+        NPC_SERVICE_GIVE_QUESTS,
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_MY
+    },
 };
 
 schar
@@ -196,6 +206,7 @@ int roomno;
     struct enpc* enpc_p;
     boolean has_room, can_speak;
     char buf[BUFSZ];
+    int npctype = 0;
 
     /* don't do anything if hero is already in the room */
     if (npc_room_occupied(u.urooms0))
@@ -210,6 +221,8 @@ int roomno;
         enpc_p = ENPC(npc);
         has_room = has_npc_room(npc);
         can_speak = (mon_can_move(npc));
+        npctype = enpc_p->npc_typ;
+
         if (can_speak && !Deaf)
         {
             if (moves >= enpc_p->intone_time && moves >= enpc_p->enter_time)
@@ -228,7 +241,7 @@ int roomno;
                 context.global_minimum_volume = 0.0;
 
                 if (has_room)
-                    Sprintf(buf, "Adventurer, %s %s!", "welcome to my", npc_subtype_definitions[enpc_p->npc_typ].room_name);
+                    Sprintf(buf, "Adventurer, %s %s %s!", "welcome to", (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_NO_MY) ? "the" : "my", npc_subtype_definitions[enpc_p->npc_typ].room_name);
                 else
                     Sprintf(buf, "Adventurer, welcome!");
 

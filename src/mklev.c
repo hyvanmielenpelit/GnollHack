@@ -150,6 +150,7 @@ int floortyp, floorsubtyp, mtype;
     croom->ly = lowy;
     croom->hy = hiy;
     croom->rtype = rtype;
+    croom->rsubtype = 0;
     croom->doorct = 0;
     /* if we're not making a vault, doorindex will still be 0
      * if we are, we'll have problems adding niches to the previous room
@@ -1146,6 +1147,7 @@ makelevel()
             do {
                 x = somex(croom);
                 y = somey(croom);
+                tryct++;
             } while (tryct <= 20 && (occupied(x, y) || !(IS_ROOM(levl[x][y].typ) || IS_POOL(levl[x][y].typ))
                 || IS_FURNITURE(levl[x][y].typ) || IS_ALTAR(levl[x][y].typ) || (x == sstairs.sx && y == sstairs.sy)
                 ));
@@ -1198,6 +1200,26 @@ makelevel()
             (void)add_to_container(stash, otmp);
 #endif
 
+            /* Add hermit */
+            int stash_x = x;
+            int stash_y = y;
+            tryct = 0;
+            do {
+                x = somex(croom);
+                y = somey(croom);
+                tryct++;
+            } while (tryct <= 30 && ((tryct <= 20 && occupied(x, y)) || !(IS_ROOM(levl[x][y].typ) || IS_POOL(levl[x][y].typ))
+                || levl[x][y].typ == STAIRS || (x == sstairs.sx && y == sstairs.sy) || (tryct <= 10 && x == stash_x && y == stash_y)
+                ));
+
+            struct monst* mtmp = m_at(x, y);
+            if (mtmp)
+                rloc(mtmp, TRUE);
+
+            croom->rtype = NPCROOM;
+            croom->rsubtype = NPC_HERMIT;
+            npcini(&u.uz, croom, x, y, NPC_HERMIT, NON_PM);
+            level.flags.has_npc_room = 1;
         }
 
         x = 80 - (depth(&u.uz) * 2);
@@ -1401,6 +1423,7 @@ mklev()
     for (ridx = 0; ridx < SIZE(rooms); ridx++)
     {
         rooms[ridx].orig_rtype = rooms[ridx].rtype;
+        rooms[ridx].orig_rsubtype = rooms[ridx].rsubtype;
     }
 
     reseed_random(rn2);

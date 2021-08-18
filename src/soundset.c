@@ -12129,8 +12129,8 @@ struct obj* obj;
 }
 
 enum ghsound_types
-    get_location_ambient_sound_type(x, y, volume_ptr, subtype_ptr)
-    xchar x, y;
+get_location_ambient_sound_type(x, y, volume_ptr, subtype_ptr)
+xchar x, y;
 double* volume_ptr;
 enum soundsource_ambient_subtypes* subtype_ptr;
 {
@@ -12158,8 +12158,8 @@ enum soundsource_ambient_subtypes* subtype_ptr;
 }
 
 enum ghsound_types
-    get_dungeon_music(dnum)
-    int dnum;
+get_dungeon_music(dnum)
+int dnum;
 {
     enum ghsound_types res = GHSOUND_NONE;
 
@@ -12186,8 +12186,8 @@ enum ghsound_types
 }
 
 enum ghsound_types
-    get_level_music(dlvl)
-    struct d_level* dlvl;
+get_level_music(dlvl)
+struct d_level* dlvl;
 {
     if (!dlvl)
         return GHSOUND_NONE;
@@ -12229,8 +12229,8 @@ enum ghsound_types
 }
 
 enum ghsound_types
-    get_room_music(room)
-    struct mkroom* room;
+get_room_music(room)
+struct mkroom* room;
 {
     enum roomtype_types rtype = room->orig_rtype;
     enum ghsound_types res = get_level_music(&u.uz);
@@ -12337,7 +12337,10 @@ enum ghsound_types
             res = GHSOUND_DUNGEON_NORMAL_MUSIC_SMITH_NORMAL;
             break;
         case NPCROOM:
-            res = GHSOUND_DUNGEON_NORMAL_MUSIC_SMITH_NORMAL;
+            if (room->rtype == NPC_HERMIT)
+                break;
+            else
+                res = GHSOUND_DUNGEON_NORMAL_MUSIC_SMITH_NORMAL;
             break;
         case LEPREHALL:
             break;
