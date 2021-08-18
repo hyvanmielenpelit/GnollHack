@@ -2343,7 +2343,7 @@ dochat()
 
         if (mtmp->hermit_told_quests)
         {
-            strcpy(available_chat_list[chatnum].name, "Ask about the Underground Castle");
+            strcpy(available_chat_list[chatnum].name, "Ask about the Castle");
             available_chat_list[chatnum].function_ptr = &do_chat_hermit_castle;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
