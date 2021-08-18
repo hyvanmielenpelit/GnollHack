@@ -196,7 +196,13 @@ STATIC_OVL void
 m_init_background(mtmp)
 register struct monst* mtmp;
 {
+    if (!mtmp)
+        return;
+
     char mnamebuf[BUFSZ];
+
+    if (has_enpc(mtmp) && npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_name != 0)
+        christen_monst(mtmp, npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_name);
 
     if (is_dwarf(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_dwarf_name(mnamebuf)));
@@ -213,10 +219,10 @@ register struct monst* mtmp;
     if (is_undead(mtmp->data) && (mtmp->data->mlet == S_LICH || mtmp->data == &mons[PM_DEATH_FLAYER] || mtmp->data == &mons[PM_VAMPIRE_MAGE]) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_undead_spellcaster_name(mnamebuf)));
 
-    if (mtmp->data == &mons[PM_ANGEL] || mtmp->data == &mons[PM_ARCHON])
+    if ((mtmp->data == &mons[PM_ANGEL] || mtmp->data == &mons[PM_ARCHON]) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_angel_name(mnamebuf)));
 
-    if (is_modron(mtmp->data))
+    if (is_modron(mtmp->data) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_modron_name(mnamebuf)));
 
     if (is_gnoll(mtmp->data) && !has_mname(mtmp))
@@ -232,7 +238,7 @@ register struct monst* mtmp;
 
     if ((is_human(mtmp->data) || is_quantum_mechanic(mtmp->data)) && !has_mname(mtmp))
     {
-        if(mtmp->female)
+        if (mtmp->female)
             christen_monst(mtmp, upstart(randomize_female_human_name(mnamebuf)));
         else
             christen_monst(mtmp, upstart(randomize_male_human_name(mnamebuf)));
@@ -316,6 +322,10 @@ register struct monst *mtmp;
 
     if (Is_rogue_level(&u.uz))
         return;
+
+    if (has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_NO_ITEMS) != 0)
+        return;
+
     /*
      *  First a few special cases:
      *          giants get a boulder to throw sometimes
@@ -1156,6 +1166,10 @@ register struct monst *mtmp;
 
     if (Is_rogue_level(&u.uz))
         return;
+
+    if (has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_NO_ITEMS) != 0)
+        return;
+
     /*
      *  Soldiers get armour & rations - armour approximates their ac.
      *  Nymphs may get mirror or potion of object detection.
@@ -2562,7 +2576,17 @@ register struct permonst* ptr;
 register int x, y;
 unsigned long mmflags;
 {
-    return makemon_limited(ptr, x, y, mmflags, 0);
+    return makemon_limited(ptr, x, y, mmflags, 0, 0);
+}
+
+struct monst*
+makemon_ex(ptr, x, y, mmflags, subtype)
+register struct permonst* ptr;
+register int x, y;
+unsigned long mmflags;
+int subtype;
+{
+    return makemon_limited(ptr, x, y, mmflags, subtype, 0);
 }
 
 /*
@@ -2573,10 +2597,11 @@ unsigned long mmflags;
  *      In case we make a monster group, only return the one at [x,y].
  */
 struct monst *
-makemon_limited(ptr, x, y, mmflags, level_limit)
+makemon_limited(ptr, x, y, mmflags, subtype, level_limit)
 register struct permonst *ptr;
 register int x, y;
 unsigned long mmflags;
+int subtype;
 int level_limit;
 {
     register struct monst *mtmp;
@@ -2749,7 +2774,11 @@ int level_limit;
     if (mmflags & MM_ESMI)
         newesmi(mtmp);
     if (mmflags & MM_ENPC)
+    {
         newenpc(mtmp);
+        if (has_enpc(mtmp))
+            ENPC(mtmp)->npc_typ = subtype;
+    }
     if (mmflags & MM_ESHK)
         neweshk(mtmp);
     if (mmflags & MM_EMIN)

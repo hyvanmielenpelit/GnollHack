@@ -48,8 +48,8 @@ SHUFFLE: $object
 $objectmore = object: { '*','%' }
 SHUFFLE: $objectmore
 
-$place = { (58,02),(04,14) }
-SHUFFLE: $place
+$place = { (04,14) }
+#SHUFFLE: $place
 
 $monster = monster: { 'L','N','E','H','z','O','R','T','X','Z' }
 SHUFFLE: $monster
@@ -57,6 +57,10 @@ SHUFFLE: $monster
 # Smithy
 REGION:(56,13,60,14),lit,"smithy"
 ANVIL:(58,14)
+
+# Hermit
+REGION:(56,02,60,03),lit,"npcroom"
+NPC:npc_hermit2, (58,03)
 
 # Artificer
 REGION:(02,02,06,03),lit,"npcroom"

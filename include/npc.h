@@ -24,6 +24,7 @@ enum npc_subtypes {
     NPC_GEOLOGIST,
     NPC_WARP_ENGINEER,
     NPC_HERMIT,
+    NPC_HERMIT2,
     MAX_NPC_SUBTYPES
 };
 
@@ -35,6 +36,8 @@ struct npc_subtype_definition {
     enum npc_gehennom_types npc_gehennom_type;
     const char* npc_role_name;
     const char* room_name;
+    const char* npc_fixed_name;
+    const char* npc_fixed_explanation;
     schar min_appearance_depth;
     schar max_appearance_depth;
     int start_money_d, start_money_n, start_money_p;
@@ -54,7 +57,8 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_SERVICE_BUY_DILITHIUM_CRYSTALS   0x00000080UL
 #define NPC_SERVICE_IDENTIFY_GEMS_STONES_AND_CHARGED_ITEMS  0x00000100UL
 #define NPC_SERVICE_BRANCH_PORTAL            0x00000200UL
-#define NPC_SERVICE_GIVE_QUESTS              0x00000400UL
+#define NPC_SERVICE_GIVE_STARTING_QUESTS     0x00000400UL
+#define NPC_SERVICE_GIVE_ADVANCED_QUESTS     0x00000800UL
 /*free bit */
 #define NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT              0x00001000UL
 #define NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD                0x00002000UL
@@ -74,6 +78,8 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_FLAGS_NO_GENERATION             0x00000020UL
 #define NPC_FLAGS_GEOLOGIST_ITEMS           0x00000040UL
 #define NPC_FLAGS_NO_MY                     0x00000080UL
+#define NPC_FLAGS_NO_ADVICE                 0x00000100UL
+#define NPC_FLAGS_NO_ITEMS                  0x00000200UL
 
 
 

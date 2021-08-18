@@ -191,7 +191,15 @@ struct monst {
 #define MAX_NUM_WORMS 32    /* should be 2^(wormno bitfield size) */
     Bitfield(heads_tamed, 2); /* How many Cerberos's heads have been tamed; anything else for other monsters */
     Bitfield(boss_fight_started, 1); /* boss fight has already been announced */
-    /* 18 free bits to 32-bit integer */
+    Bitfield(special_talk_flag1, 1); /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag2, 1); /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag3, 1); /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag4, 1); /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag5, 1); /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag6, 1); /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag7, 1); /* general purpose flag NPC talk */
+    Bitfield(special_talk_flag8, 1); /* general purpose flag NPC talk */
+    /* 10 free bits to 32-bit integer */
 
     unsigned long mon_flags; /* General easy-to-add flags for monsters for things not covered by the above bitfields */
 #define MON_FLAGS_NONE              0x00000000

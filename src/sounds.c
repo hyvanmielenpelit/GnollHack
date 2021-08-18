@@ -14,6 +14,46 @@ STATIC_DCL boolean FDECL(m_general_talk_check, (struct monst*, const char*));
 STATIC_DCL int NDECL(dochat);
 STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
+
+STATIC_DCL int FDECL(do_chat_hermit_dungeons, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit_quests, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit_gnomish_mines, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit_luckstone, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit_sokoban, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit_sokoprizes, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit_further_advice, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit_castle, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit_gehennom, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit_wizard_of_yendor, (struct monst*));
+
+STATIC_DCL int FDECL(do_chat_hermit2_castle, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit2_gehennom, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit2_wizard_of_yendor, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit2_vampire_lord, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit2_silver_bell, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit2_candelabrum, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit2_book_of_the_dead, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit2_ritual, (struct monst*));
+
+#define hermit_told_dungeon special_talk_flag1
+#define hermit_told_quests special_talk_flag2
+#define hermit_told_gnomish_mines special_talk_flag3
+#define hermit_told_sokoban special_talk_flag4
+#define hermit_told_further_advice special_talk_flag5
+#define hermit_told_wizard_of_yendor special_talk_flag6
+#define hermit_told_castle special_talk_flag7
+#define hermit_told_gehennom special_talk_flag8
+
+#define hermit2_told_castle special_talk_flag1
+#define hermit2_told_gehennom special_talk_flag2
+#define hermit2_told_wizard_of_yendor special_talk_flag3
+#define hermit2_told_vampire_lord special_talk_flag4
+#define hermit2_told_candelabrum special_talk_flag5
+#define hermit2_told_book_of_the_dead special_talk_flag6
+#define hermit2_told_silver_bell special_talk_flag7
+#define hermit2_told_ritual special_talk_flag8
+
+
 STATIC_DCL int FDECL(do_chat_pet_sit, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_givepaw, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_pet, (struct monst*));
@@ -2189,7 +2229,9 @@ dochat()
         chatnum++;
     }
 
-    if(is_speaking_monster(mtmp->data) && is_peaceful(mtmp))
+    boolean non_advicing_npc = has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_NO_ADVICE) != 0;
+
+    if(is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && !non_advicing_npc)
     {
         if (!mtmp->isgd && (is_izchak(mtmp, TRUE) || mtmp->rumorsleft >= 0))
         {
@@ -2212,7 +2254,279 @@ dochat()
         }
     }
 
-    /* Tame dog and cat commands */
+    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_STARTING_QUESTS) != 0)
+    {
+        /* Hermit - Starting Quests */
+        strcpy(available_chat_list[chatnum].name, "Ask about the Dungeons of Doom");
+        available_chat_list[chatnum].function_ptr = &do_chat_hermit_dungeons;
+        available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+        any = zeroany;
+        any.a_char = available_chat_list[chatnum].charnum;
+
+        add_menu(win, NO_GLYPH, &any,
+            any.a_char, 0, ATR_NONE,
+            available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+        chatnum++;
+
+        strcpy(available_chat_list[chatnum].name, "Ask about quests");
+        available_chat_list[chatnum].function_ptr = &do_chat_hermit_quests;
+        available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+        any = zeroany;
+        any.a_char = available_chat_list[chatnum].charnum;
+
+        add_menu(win, NO_GLYPH, &any,
+            any.a_char, 0, ATR_NONE,
+            available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+        chatnum++;
+
+        strcpy(available_chat_list[chatnum].name, "Ask about further advice");
+        available_chat_list[chatnum].function_ptr = &do_chat_hermit_further_advice;
+        available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+        any = zeroany;
+        any.a_char = available_chat_list[chatnum].charnum;
+
+        add_menu(win, NO_GLYPH, &any,
+            any.a_char, 0, ATR_NONE,
+            available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+        chatnum++;
+
+        if (mtmp->hermit_told_dungeon || mtmp->hermit_told_quests)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit_gnomish_mines;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+
+            strcpy(available_chat_list[chatnum].name, "Ask about the Sokoban");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit_sokoban;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+
+            strcpy(available_chat_list[chatnum].name, "Ask about the Wizard of Yendor");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit_wizard_of_yendor;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+
+            strcpy(available_chat_list[chatnum].name, "Ask about the Underground Castle");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit_castle;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
+        if (mtmp->hermit_told_quests)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about Under World");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit_gehennom;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
+        if (mtmp->hermit_told_gnomish_mines)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about the Luckstone");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit_luckstone;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
+        if (mtmp->hermit_told_sokoban)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about the prizes in Sokoban");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit_sokoprizes;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
+    }
+
+    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ADVANCED_QUESTS) != 0)
+    {
+        /* Hermit - Advanced Quests */
+        strcpy(available_chat_list[chatnum].name, "Ask about the Castle");
+        available_chat_list[chatnum].function_ptr = &do_chat_hermit2_castle;
+        available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+        any = zeroany;
+        any.a_char = available_chat_list[chatnum].charnum;
+
+        add_menu(win, NO_GLYPH, &any,
+            any.a_char, 0, ATR_NONE,
+            available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+        chatnum++;
+
+        strcpy(available_chat_list[chatnum].name, "Ask about Gehennom");
+        available_chat_list[chatnum].function_ptr = &do_chat_hermit2_gehennom;
+        available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+        any = zeroany;
+        any.a_char = available_chat_list[chatnum].charnum;
+
+        add_menu(win, NO_GLYPH, &any,
+            any.a_char, 0, ATR_NONE,
+            available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+        chatnum++;
+
+        strcpy(available_chat_list[chatnum].name, "Ask about the Wizard of Yendor");
+        available_chat_list[chatnum].function_ptr = &do_chat_hermit2_wizard_of_yendor;
+        available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+        any = zeroany;
+        any.a_char = available_chat_list[chatnum].charnum;
+
+        add_menu(win, NO_GLYPH, &any,
+            any.a_char, 0, ATR_NONE,
+            available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+        chatnum++;
+
+        if (mtmp->hermit2_told_gehennom)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about the Vampire Lord");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit2_vampire_lord;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
+        if (mtmp->hermit2_told_vampire_lord || mtmp->hermit2_told_ritual)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about the Candelabrum of Invocation");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit2_candelabrum;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
+        if (mtmp->hermit2_told_wizard_of_yendor || mtmp->hermit2_told_ritual)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about the Book of the Dead");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit2_book_of_the_dead;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
+        if (mtmp->hermit2_told_ritual)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about the Silver Bell");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit2_silver_bell;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
+        if (mtmp->hermit2_told_wizard_of_yendor || mtmp->hermit2_told_vampire_lord || mtmp->hermit2_told_candelabrum || mtmp->hermit2_told_silver_bell || mtmp->hermit2_told_book_of_the_dead)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about the Passage to Amulet");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit2_ritual;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
+    }
+
+
+        /* Tame dog and cat commands */
     if (has_edog(mtmp) && is_tame(mtmp) && is_peaceful(mtmp))
     {
         if (mtmp->data->mlet == S_DOG)
@@ -3686,8 +4000,11 @@ struct monst* mtmp;
             play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
             if (has_mname(mtmp))
             {
-                Sprintf(ansbuf, "I am a local %s. (The name tag indicates that %s name is %s.)", 
-                    npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name, mhis(mtmp), MNAME(mtmp));
+                if(npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_name != 0)
+                    Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), an(npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name));
+                else
+                    Sprintf(ansbuf, "I am a local %s. (The name tag indicates that %s name is %s.)", 
+                        npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name, mhis(mtmp), MNAME(mtmp));
 
                 mtmp->u_know_mname = 1;
             }
@@ -3707,6 +4024,10 @@ struct monst* mtmp;
                 Sprintf(ansbuf, "I am a local %s.", npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name);
 
         }
+
+        if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_explanation != 0)
+            Sprintf(eos(ansbuf), "  %s", npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_explanation);
+
         verbalize("%s", ansbuf);
     }
     else if (msound == MS_GUARDIAN)
@@ -7426,6 +7747,224 @@ int cha;
         return 1.0;
 
     return pow(2.0, (11.0 - (double)cha) / 14.0);
+}
+
+
+STATIC_OVL int 
+do_chat_hermit_dungeons(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+
+    verbalize("The Dungeons of Doom are an ancient complex of dungeons, some thirty levels deep.");
+    verbalize("A few levels below the surface, the Dungeons branch into Gnomish Mines, home to the mysterious Gnomes of Yendor.");
+    verbalize("The Dungeon also features Sokoban, a maze-like underground tower erected by one of the local mad wizards.");
+    verbalize("Another, the great Wizard of Yendor, has long since stepped into the Under World to study the secrets of life and death.");
+    mtmp->hermit_told_dungeon = 1;
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_hermit_quests(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+
+    verbalize("I see that you seek the Amulet of Yendor, which was stolen by Moloch.");
+    verbalize("The Amulet has been taken to Gehennom, the Under World, where his minions are hiding.");
+    verbalize("To get there, you will need to descend to the bottom of this dungeon and find an underground castle there.");
+    verbalize("From there, you can access the Under World, just as the Wizard of Yendor himself once did.");
+    verbalize("Additional quests will wait for you in the Gnomish Mines and Sokoban.");
+    mtmp->hermit_told_quests = 1;
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit_gnomish_mines(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("The Gnomish Mines are a complex of ancient mines, some eight levels deep, inhabited by Gnomes of Yendor.");
+    verbalize("There, on its bottom level, they worship a magical stone, the Luckstone, through strange ceremonies.");
+    verbalize("There is also a trading outpost, called Mine Town, which is located somewhere in the middle of the complex.");
+    verbalize("Seek out Izchak who runs a lighting store there. He knows more about the gnomes and their mysterious artifact.");
+    mtmp->hermit_told_gnomish_mines = 1;
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit_luckstone(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("The Luckstone is a magnificient magical stone that bestows good luck on the wearer.");
+    verbalize("It can greatly help you in your quest.");
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit_sokoban(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("Sokoban is a tower inlaid with puzzles devised by a mad wizard, who resides on the tower's topmost level.");
+    verbalize("Great treasures have been promised to the one who can solve the wizard's puzzles.");
+    mtmp->hermit_told_sokoban = 1;
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit_sokoprizes(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("They say that the wizard will gift either an amulet of reflection or a bag of holding to whomever passes the tests.");
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit_castle(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("A great castle resides at the bottom of the Dungeons of Doom.");
+    verbalize("It was once a memorial place for the dead kings of Yendor and the last stop before the Under World.");
+    verbalize("However, it has been overrun by monstrous forces loyal to the Wizard of Yendor.");
+    verbalize("Only from there, and with the right tune they say, you can track down the Wizard and the Amulet you seek.");
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit_gehennom(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("Gehennom, the Under World, can be accessed through the castle at the bottom of the dungeon.");
+    verbalize("Seek out a hermit, Eduard, at the castle. He knows more about the Under World and what you must do.");
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit_wizard_of_yendor(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("The Wizard of Yendor is a great magician who left this world for Gehennom to study the secrets of life and death.");
+    mtmp->hermit_told_wizard_of_yendor = 1;
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_hermit2_castle(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("This castle was built to honor the dead kings of Yendor.");
+    verbalize("Their remains are held in the Tomb of the Kings, just behind this castle.");
+    mtmp->hermit2_told_castle = 1;
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_hermit2_gehennom(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("Gehennom, the Under World, can be accessed through this castle.");
+    verbalize("Trap doors in the castle will lead you straight there, as does the blocked entrance at the Tomb of the Kings.");
+    verbalize("There, you must track down the Wizard of Yendor and find the Vlad the Impaler, the Lord of the Vampires.");
+    mtmp->hermit2_told_gehennom = 1;
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_hermit2_vampire_lord(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("Vlad the Impaler, the Lord of the Vampires, resides in a tower in Gehennom.");
+    verbalize("You must defeat him and take the Candelabrum of Invocation from him.");
+    verbalize("The Candelabrum will light your way to Moloch's Sanctum, where the Amulet is hidden.");
+    mtmp->hermit2_told_vampire_lord = 1;
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit2_wizard_of_yendor(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("The Wizard of Yendor is studying a tome of ancient evil, the Book of the Dead, in his tower in Gehennom.");
+    verbalize("You must kill him and obtain his grimoire.");
+    verbalize("Only its words are powerful enough to crack open the passage to Moloch's hiding place.");
+    mtmp->hermit2_told_wizard_of_yendor = 1;
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit2_silver_bell(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("The Silver Bell is an artifact necessary for gaining access Moloch's Sanctum.");
+    if (!u.uachieve.bell)
+    {
+        verbalize("I believe it is held by an enemy of yours near your home.");
+        verbalize("Your friends have called for your assistance. Heed that call.");
+    }
+    mtmp->hermit2_told_silver_bell = 1;
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit2_candelabrum(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("The Candelabrum of Invocation is a powerful artifact that can light your way to Moloch's Sanctum.");
+    verbalize("It is held by Vlad the Impaler, the Lord of the Vampires, at his tower in Gehennom.");
+    mtmp->hermit2_told_candelabrum = 1;
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit2_book_of_the_dead(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("The Book of the Dead is a terrible tome of great power that can even raise the dead.");
+    verbalize("The Wizard of Yendor has been studying it to learn the secrets of life and death.");
+    mtmp->hermit2_told_book_of_the_dead = 1;
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit2_ritual(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("To open the passage to Moloch's Sanctum, where the Amulet is hidden, you must have three artifacts.");
+    verbalize("These are the Candelabrum of Invocation, the Silver Bell, and the Book of the Dead.");
+    verbalize("How and where these must be used, you must find out. Perhaps the Oracle of Delphi can see what must be done.");
+    mtmp->hermit2_told_ritual = 1;
+    return 1;
+}
+STATIC_OVL int
+do_chat_hermit_further_advice(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+    verbalize("Please consult with the Oracle of Delphi a few levels down from here.");
+    verbalize("Also, Izchak at the Mine Town may be able to help you.");
+    verbalize("Finally, if you reach the bottom of this dungeon, speak with Eduard, who is confined at the castle there.");
+    mtmp->hermit_told_further_advice = 1;
+    return 1;
 }
 
 

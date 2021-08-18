@@ -16,6 +16,8 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         NPC_GEHENNOM_UNDEAD_SPELLCASTER,
         "artificer",
         "laboratory",
+        (char*)0,
+        (char*)0,
         8, 0,
         5, 1000, 7500,
         NPC_SERVICE_ENCHANT_ACCESSORY | NPC_SERVICE_RECHARGING | NPC_SERVICE_BLESSED_RECHARGING | NPC_SERVICE_IDENTIFY_ACCESSORIES_AND_CHARGED_ITEMS | NPC_SERVICE_BUY_SPELLBOOKS | NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD | NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT | NPC_SERVICE_TEACH_SPELL_FORCE_BOLT | NPC_SERVICE_TEACH_SPECIAL_SPELLS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
@@ -26,6 +28,8 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         NPC_GEHENNOM_DWARF_MUMMY,
         "geologist",
         "workshop",
+        (char*)0,
+        (char*)0,
         6, 0,
         10, 1000, 15000,
         NPC_SERVICE_BUY_GEMS_AND_STONES | NPC_SERVICE_IDENTIFY_GEMS_AND_STONES,
@@ -36,6 +40,8 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         NPC_GEHENNOM_STANDARD,
         "warp engineer",
         "engineering bay",
+        (char*)0,
+        (char*)0,
         0, 0,
         10, 1000, 30000,
         NPC_SERVICE_BUY_DILITHIUM_CRYSTALS | NPC_SERVICE_IDENTIFY_GEMS_STONES_AND_CHARGED_ITEMS | NPC_SERVICE_RECHARGING | NPC_SERVICE_BLESSED_RECHARGING | NPC_SERVICE_BRANCH_PORTAL,
@@ -46,11 +52,25 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         NPC_GEHENNOM_STANDARD,
         "hermit",
         "entrance to the Dungeons of Doom",
+        "Durward Cos",
+        "I have watched over this entrance to the Dungeons of Doom for many decades now.",
         0, 0,
         1, 100, 5,
-        NPC_SERVICE_GIVE_QUESTS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_MY
+        NPC_SERVICE_GIVE_STARTING_QUESTS,
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_MY | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS
     },
+    {
+        PM_HERMIT,
+        NPC_GEHENNOM_STANDARD,
+        "hermit",
+        "simple abode",
+        "Eduard Dunley",
+        "Long ago, before this place was overrun by evil, I looked after the remains of the dead kings of Yendor.",
+        0, 0,
+        1, 100, 5,
+        NPC_SERVICE_GIVE_ADVANCED_QUESTS,
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS
+    }, 
 };
 
 schar
@@ -360,9 +380,9 @@ int mtype;
 
     unsigned long extraflags = Inhell ? MM_MALE : 0UL; /* Since there is only one soundset for unusual creature types */
 
-    npc = makemon(&mons[npc_montype], npc_loc_x, npc_loc_y, MM_ENPC | extraflags);
+    npc = makemon_ex(&mons[npc_montype], npc_loc_x, npc_loc_y, MM_ENPC | extraflags, npctype);
     if(!npc)
-        npc = makemon(&mons[npc_subtype_definitions[npctype].mnum], npc_loc_x, npc_loc_y, MM_ENPC | extraflags); /* Fallback */
+        npc = makemon_ex(&mons[npc_subtype_definitions[npctype].mnum], npc_loc_x, npc_loc_y, MM_ENPC | extraflags, npctype); /* Fallback */
     
     if (npc)
     {

@@ -12337,7 +12337,7 @@ struct mkroom* room;
             res = GHSOUND_DUNGEON_NORMAL_MUSIC_SMITH_NORMAL;
             break;
         case NPCROOM:
-            if (room->rtype == NPC_HERMIT)
+            if (room->rsubtype == NPC_HERMIT)
                 break;
             else
                 res = GHSOUND_DUNGEON_NORMAL_MUSIC_SMITH_NORMAL;
