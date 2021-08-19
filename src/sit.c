@@ -274,6 +274,7 @@ dosit()
                 /* Magical voice not affected by deafness */
                 play_sfx_sound(SFX_SUMMON_MONSTER);
                 pline("A voice echoes:");
+                play_sfx_sound(flags.female ? SFX_VOICE_THRONE_ROOM_AUDIENCE_SUMMONED_DAME : SFX_VOICE_THRONE_ROOM_AUDIENCE_SUMMONED_SIRE);
                 verbalize("Thy audience hath been summoned, %s!",
                           flags.female ? "Dame" : "Sire");
                 context.makemon_spef_idx = 0;
@@ -290,6 +291,7 @@ dosit()
             case 8:
                 /* Magical voice not affected by deafness */
                 pline("A voice echoes:");
+                play_sfx_sound(flags.female ? SFX_VOICE_THRONE_ROOM_BY_THINE_IMPERIOUS_ORDER_DAME : SFX_VOICE_THRONE_ROOM_BY_THINE_IMPERIOUS_ORDER_SIRE);
                 verbalize("By thine Imperious order, %s...",
                           flags.female ? "Dame" : "Sire");
                 do_genocide(5); /* REALLY|ONTHRONE, see do_genocide() */
@@ -297,6 +299,7 @@ dosit()
             case 9:
                 /* Magical voice not affected by deafness */
                 pline("A voice echoes:");
+                play_sfx_sound(SFX_VOICE_THRONE_ROOM_CURSE_UPON_THEE);
                 verbalize(
                  "A curse upon thee for sitting upon this most holy throne!");
                 if (Luck > 0) {

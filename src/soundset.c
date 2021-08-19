@@ -1413,6 +1413,12 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Neutral/Vault Guard/Female/Mollified", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Neutral/Vault Guard/Female/Death", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Throne Room/Audience Summoned Dame", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Throne Room/Audience Summoned Sire", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Throne Room/By Thine Imperious Order Dame", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Throne Room/By Thine Imperious Order Sire", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Throne Room/Curse Upon Thee", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Throne Room/Thank You for Your Contribution", 1.0f },
 };
 
 
@@ -8637,8 +8643,37 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_BOSS_FIGHT, 1.0f},
         FALSE, SOUND_PLAY_GROUP_LONG
     },
+    {
+        "GHSOUND_VOICE_THRONE_ROOM_AUDIENCE_SUMMONED_DAME",
+        {GHSOUND_VOICE_THRONE_ROOM_AUDIENCE_SUMMONED_DAME, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_VOICE_THRONE_ROOM_AUDIENCE_SUMMONED_SIRE",
+        {GHSOUND_VOICE_THRONE_ROOM_AUDIENCE_SUMMONED_SIRE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_VOICE_THRONE_ROOM_BY_THINE_IMPERIOUS_ORDER_DAME",
+        {GHSOUND_VOICE_THRONE_ROOM_BY_THINE_IMPERIOUS_ORDER_DAME, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_VOICE_THRONE_ROOM_BY_THINE_IMPERIOUS_ORDER_SIRE",
+        {GHSOUND_VOICE_THRONE_ROOM_BY_THINE_IMPERIOUS_ORDER_SIRE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_VOICE_THRONE_ROOM_CURSE_UPON_THEE",
+        {GHSOUND_VOICE_THRONE_ROOM_CURSE_UPON_THEE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_VOICE_THRONE_ROOM_THANK_YOU_FOR_YOUR_CONTRIBUTION",
+        {GHSOUND_VOICE_THRONE_ROOM_THANK_YOU_FOR_YOUR_CONTRIBUTION, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
 };
-
 
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
