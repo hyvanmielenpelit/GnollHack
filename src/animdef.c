@@ -7937,7 +7937,7 @@ NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
       REPLACEMENT_EVENT_UPDATE_FROM_TOP,
       REPLACEMENT_ACTION_SHORE_TILE,
       AUTODRAW_NONE,
-      { "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-air", "shore-water2", "shore-water2", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-water2", "shore-air", "shore-water2", "shore-water2", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },

@@ -145,6 +145,8 @@ TRAP:random,random
 MAZE: "Tou-loca",' '
 FLAGS: hardfloor
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         8
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 ----------------------------------------------------------------------------
 |....|......|..........|......|......|...|....|.....|......|...............|
@@ -167,6 +169,39 @@ MAP
 |...........|........|.|.....|........................|.....|..............|
 ----------------------------------------------------------------------------
 ENDMAP
+# Cobblestone walkways
+SUBTYPE:fillrect(06,03,13,07),location_floor,floor_cobblestone
+SUBTYPE:fillrect(01,07,28,07),location_floor,floor_cobblestone
+SUBTYPE:fillrect(06,08,10,13),location_floor,floor_cobblestone
+SUBTYPE:fillrect(09,14,22,15),location_floor,floor_cobblestone
+SUBTYPE:fillrect(09,14,30,14),location_floor,floor_cobblestone
+SUBTYPE:fillrect(30,15,30,17),location_floor,floor_cobblestone
+SUBTYPE:fillrect(30,18,53,18),location_floor,floor_cobblestone
+SUBTYPE:fillrect(53,16,53,17),location_floor,floor_cobblestone
+SUBTYPE:fillrect(42,14,42,17),location_floor,floor_cobblestone
+SUBTYPE:fillrect(43,14,51,14),location_floor,floor_cobblestone
+SUBTYPE:fillrect(51,06,51,13),location_floor,floor_cobblestone
+SUBTYPE:fillrect(43,10,50,10),location_floor,floor_cobblestone
+SUBTYPE:fillrect(52,09,74,09),location_floor,floor_cobblestone
+SUBTYPE:fillrect(74,10,74,18),location_floor,floor_cobblestone
+SUBTYPE:fillrect(61,18,73,18),location_floor,floor_cobblestone
+SUBTYPE:fillrect(61,10,61,17),location_floor,floor_cobblestone
+SUBTYPE:fillrect(73,07,74,08),location_floor,floor_cobblestone
+SUBTYPE:fillrect(73,02,74,03),location_floor,floor_cobblestone
+SUBTYPE:fillrect(60,01,74,01),location_floor,floor_cobblestone
+SUBTYPE:fillrect(60,02,60,03),location_floor,floor_cobblestone
+SUBTYPE:fillrect(52,04,60,04),location_floor,floor_cobblestone
+SUBTYPE:fillrect(47,01,51,05),location_floor,floor_cobblestone
+SUBTYPE:fillrect(37,05,51,06),location_floor,floor_cobblestone
+SUBTYPE:fillrect(38,01,40,04),location_floor,floor_cobblestone
+SUBTYPE:fillrect(36,04,36,09),location_floor,floor_cobblestone
+SUBTYPE:fillrect(27,04,28,09),location_floor,floor_cobblestone
+SUBTYPE:fillrect(29,04,35,04),location_floor,floor_cobblestone
+SUBTYPE:fillrect(29,09,35,09),location_floor,floor_cobblestone
+SUBTYPE:fillrect(26,07,26,13),location_floor,floor_cobblestone
+SUBTYPE:fillrect(13,01,22,02),location_floor,floor_cobblestone
+SUBTYPE:fillrect(22,02,22,06),location_floor,floor_cobblestone
+
 # Dungeon Description
 REGION:(00,00,75,19),lit,"ordinary"
 NON_DIGGABLE:(00,00,75,19)

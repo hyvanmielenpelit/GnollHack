@@ -35,6 +35,42 @@ MAP
 |..........S.....|......|.|..........S............|.....||...|.....|....|..|
 -------------------------.--------------------------------------------------
 ENDMAP
+# Cobblestone walkways
+SUBTYPE:fillrect(51,04,75,05),location_floor,floor_cobblestone
+SUBTYPE:fillrect(58,06,59,12),location_floor,floor_cobblestone
+SUBTYPE:fillrect(52,13,65,14),location_floor,floor_cobblestone
+SUBTYPE:fillrect(65,16,71,17),location_floor,floor_cobblestone
+SUBTYPE:fillrect(69,12,74,14),location_floor,floor_cobblestone
+SUBTYPE:fillrect(65,15,65,15),location_floor,floor_cobblestone
+SUBTYPE:fillrect(71,15,71,15),location_floor,floor_cobblestone
+SUBTYPE:fillrect(68,05,69,12),location_floor,floor_cobblestone
+SUBTYPE:fillrect(66,02,66,03),location_floor,floor_cobblestone
+SUBTYPE:fillrect(57,14,59,19),location_floor,floor_cobblestone
+SUBTYPE:fillrect(60,19,60,19),location_floor,floor_cobblestone
+SUBTYPE:fillrect(36,15,52,16),location_floor,floor_cobblestone
+SUBTYPE:fillrect(51,17,51,17),location_floor,floor_cobblestone
+SUBTYPE:fillrect(38,09,41,16),location_floor,floor_cobblestone
+SUBTYPE:fillrect(33,04,38,08),location_floor,floor_cobblestone
+SUBTYPE:fillrect(33,00,33,04),location_floor,floor_cobblestone
+SUBTYPE:fillrect(07,05,33,06),location_floor,floor_cobblestone
+SUBTYPE:fillrect(19,07,19,09),location_floor,floor_cobblestone
+SUBTYPE:fillrect(28,07,28,08),location_floor,floor_cobblestone
+SUBTYPE:fillrect(06,07,07,08),location_floor,floor_cobblestone
+SUBTYPE:fillrect(04,08,05,12),location_floor,floor_cobblestone
+SUBTYPE:fillrect(00,12,10,13),location_floor,floor_cobblestone
+SUBTYPE:fillrect(10,14,18,15),location_floor,floor_cobblestone
+SUBTYPE:fillrect(10,16,10,17),location_floor,floor_cobblestone
+SUBTYPE:fillrect(18,16,36,17),location_floor,floor_cobblestone
+SUBTYPE:fillrect(25,18,25,20),location_floor,floor_cobblestone
+SUBTYPE:fillrect(24,14,24,15),location_floor,floor_cobblestone
+SUBTYPE:fillrect(24,13,29,13),location_floor,floor_cobblestone
+SUBTYPE:fillrect(26,10,26,12),location_floor,floor_cobblestone
+SUBTYPE:fillrect(46,04,47,14),location_floor,floor_cobblestone
+SUBTYPE:fillrect(45,01,46,05),location_floor,floor_cobblestone
+SUBTYPE:fillrect(46,01,51,02),location_floor,floor_cobblestone
+SUBTYPE:fillrect(51,03,51,03),location_floor,floor_cobblestone
+SUBTYPE:fillrect(07,01,08,04),location_floor,floor_cobblestone
+
 # Dungeon Description
 #REGION:(00,00,75,20),lit,"ordinary"
 
