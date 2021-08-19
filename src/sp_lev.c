@@ -5722,7 +5722,7 @@ genericptr_t arg1, arg2;
     if (typ < 0 || levl[x][y].typ == typ)
     {
         levl[x][y].subtyp = (*(int*)arg2);
-        levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].vartyp, levl[x][y].subtyp);
+        levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
     }
 }
 
@@ -5973,18 +5973,18 @@ struct sp_coder* coder;
 {
     static const char nhFunc[] = "spo_floor";
     struct opvar* sel;
-    struct opvar* category_opvar, *typ_opvar;
-    int typ, category;
+    struct opvar* typ_opvar, *subtyp_opvar;
+    int typ, subtyp;
 
-    if (!OV_pop_i(typ_opvar) || !OV_pop_i(category_opvar) || !OV_pop_typ(sel, SPOVAR_SEL))
+    if (!OV_pop_i(typ_opvar) || !OV_pop_i(subtyp_opvar) || !OV_pop_typ(sel, SPOVAR_SEL))
         return;
 
     typ = OV_i(typ_opvar);
-    category = OV_i(category_opvar);
-    selection_iterate2(sel, sel_set_floor, (genericptr_t)&typ, (genericptr_t)&category);
+    subtyp = OV_i(subtyp_opvar);
+    selection_iterate2(sel, sel_set_floor, (genericptr_t)&typ, (genericptr_t)&subtyp);
 
     opvar_free(typ_opvar);
-    opvar_free(category_opvar);
+    opvar_free(subtyp_opvar);
     opvar_free(sel);
 }
 

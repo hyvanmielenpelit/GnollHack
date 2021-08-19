@@ -884,17 +884,17 @@ register struct monst *mtmp;
             You("sense a faint wave of psychic energy.");
             goto toofar;
         }
-        play_sfx_sound(SFX_WAVE_OF_PSYCHIC_ENERGY);
         pline("A wave of psychic energy pours over you!");
         if (is_peaceful(mtmp)
             && !(is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0))))
         {
+            play_sfx_sound(SFX_FAINT_WAVE_OF_PSYCHIC_ENERGY);
             pline("It feels quite soothing.");
         } 
         else if (!u.uinvulnerable && !Invulnerable && !Mind_shielding) 
         {
+            play_sfx_sound(SFX_WAVE_OF_PSYCHIC_ENERGY);
             register boolean m_sen = sensemon(mtmp);
-
             if (m_sen || ((Blind_telepat || Unblind_telepat) && rn2(2)) || !rn2(10)) 
             {
                 pline("It locks on to your %s!",

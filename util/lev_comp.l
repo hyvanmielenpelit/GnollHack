@@ -383,6 +383,7 @@ gehennom_cavernous_tileset { savetoken(yytext); yylval.i=CMAP_GEHENNOM_CAVERNOUS
 floor_normal { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_NORMAL; return FLOOR_SUBTYPE; }
 floor_marble { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_MARBLE; return FLOOR_SUBTYPE; }
 floor_parquet { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_PARQUET; return FLOOR_SUBTYPE; }
+floor_cobblestone { savetoken(yytext); yylval.i=FLOOR_SUBTYPE_COBBLESTONE; return FLOOR_SUBTYPE; }
 grass_normal { savetoken(yytext); yylval.i=GRASS_SUBTYPE_NORMAL; return FLOOR_SUBTYPE; }
 grass_swampy { savetoken(yytext); yylval.i=GRASS_SUBTYPE_SWAMPY; return FLOOR_SUBTYPE; }
 ground_normal { savetoken(yytext); yylval.i=GROUND_SUBTYPE_NORMAL; return FLOOR_SUBTYPE; }
