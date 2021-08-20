@@ -862,6 +862,7 @@ namespace GnollHackClient.Pages.Game
                     SecondButton.LblText = descr_list[0];
                 else
                     SecondButton.LblText = SecondButton.BtnLetter.ToString();
+                SecondButton.ImgSourcePath = GetYnImgSourcePath(SecondButton.BtnLetter, SecondButton.LblText);
                 ZeroButton.IsVisible = false;
                 FirstButton.IsVisible = false;
                 SecondButton.IsVisible = true;
@@ -880,11 +881,13 @@ namespace GnollHackClient.Pages.Game
                     FirstButton.LblText = descr_list[0];
                 else
                     FirstButton.LblText = FirstButton.BtnLetter.ToString();
+                FirstButton.ImgSourcePath = GetYnImgSourcePath(FirstButton.BtnLetter, FirstButton.LblText);
                 SecondButton.BtnLetter = responses[1];
                 if (descriptions != null && descr_list.Length > 1)
                     SecondButton.LblText = descr_list[1];
                 else
                     SecondButton.LblText = SecondButton.BtnLetter.ToString();
+                SecondButton.ImgSourcePath = GetYnImgSourcePath(SecondButton.BtnLetter, SecondButton.LblText);
             }
             else if (responses.Length == 3)
             {
@@ -898,16 +901,19 @@ namespace GnollHackClient.Pages.Game
                     FirstButton.LblText = descr_list[0];
                 else
                     FirstButton.LblText = FirstButton.BtnLetter.ToString();
+                FirstButton.ImgSourcePath = GetYnImgSourcePath(FirstButton.BtnLetter, FirstButton.LblText);
                 SecondButton.BtnLetter = responses[1];
                 if (descriptions != null && descr_list.Length > 1)
                     SecondButton.LblText = descr_list[1];
                 else
                     SecondButton.LblText = SecondButton.BtnLetter.ToString();
+                SecondButton.ImgSourcePath = GetYnImgSourcePath(SecondButton.BtnLetter, SecondButton.LblText);
                 ThirdButton.BtnLetter = responses[2];
                 if (descriptions != null && descr_list.Length > 2)
                     ThirdButton.LblText = descr_list[2];
                 else
                     ThirdButton.LblText = ThirdButton.BtnLetter.ToString();
+                ThirdButton.ImgSourcePath = GetYnImgSourcePath(ThirdButton.BtnLetter, ThirdButton.LblText);
             }
             else
             {
@@ -928,6 +934,7 @@ namespace GnollHackClient.Pages.Game
                         btnList[i].LblText = "?";
                         btnList[i].IsVisible = false;
                     }
+                    btnList[i].ImgSourcePath = GetYnImgSourcePath(btnList[i].BtnLetter, btnList[i].LblText);
                 }
             }
 
@@ -936,6 +943,23 @@ namespace GnollHackClient.Pages.Game
 
             YnButtonStack.HeightRequest = btnList[0].GridHeight;
             YnGrid.IsVisible = true;
+        }
+
+        private string GetYnImgSourcePath(char ch, string desc)
+        {
+            string res = "resource://GnollHackClient.Assets.Icons.missing_icon.png";
+            switch (ch)
+            {
+                case 'y':
+                    res = "resource://GnollHackClient.Assets.UI.yes.png";
+                    break;
+                case 'n':
+                    res = "resource://GnollHackClient.Assets.UI.no.png";
+                    break;
+                default:
+                    break;
+            }
+            return res;
         }
 
         private void HideYnResponses()

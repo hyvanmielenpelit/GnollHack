@@ -50,7 +50,12 @@
     <None Remove="Assets\shxi.ttf" />
     <None Remove="Assets\splash-snapshot.jpg" />
     <None Remove="Assets\tombstone.png" />
+    <None Remove="Assets\UI\cast.png" />
     <None Remove="Assets\UI\menubackground.png" />
+    <None Remove="Assets\UI\no.png" />
+    <None Remove="Assets\UI\search.png" />
+    <None Remove="Assets\UI\yes.png" />
+    <None Remove="Assets\UI\zap.png" />
     <None Remove="Assets\uwch.ttf" />
     <None Remove="Assets\window_background.png" />
   </ItemGroup>
@@ -92,7 +97,12 @@
     <EmbeddedResource Include="Assets\Master.strings.bank" />
     <EmbeddedResource Include="Assets\shxi.ttf" />
     <EmbeddedResource Include="Assets\tombstone.png" />
+    <EmbeddedResource Include="Assets\UI\cast.png" />
     <EmbeddedResource Include="Assets\UI\menubackground.png" />
+    <EmbeddedResource Include="Assets\UI\no.png" />
+    <EmbeddedResource Include="Assets\UI\search.png" />
+    <EmbeddedResource Include="Assets\UI\yes.png" />
+    <EmbeddedResource Include="Assets\UI\zap.png" />
     <EmbeddedResource Include="Assets\uwch.ttf" />
     <EmbeddedResource Include="Assets\window_background.png" />
   </ItemGroup>
