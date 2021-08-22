@@ -855,69 +855,9 @@ namespace GnollHackClient.Pages.Game
             LabeledImageButton[] btnList = { ZeroButton, FirstButton, SecondButton, ThirdButton, FourthButton };
             if (responses.Length == 0)
                 return;
-            else if (responses.Length == 1)
-            {
-                SecondButton.BtnLetter = responses[0];
-                if(descriptions != null && descr_list.Length > 0)
-                    SecondButton.LblText = descr_list[0];
-                else
-                    SecondButton.LblText = SecondButton.BtnLetter.ToString();
-                SecondButton.ImgSourcePath = GetYnImgSourcePath(SecondButton.BtnLetter, SecondButton.LblText);
-                ZeroButton.IsVisible = false;
-                FirstButton.IsVisible = false;
-                SecondButton.IsVisible = true;
-                ThirdButton.IsVisible = false;
-                FourthButton.IsVisible = false;
-            }
-            else if(responses.Length == 2)
-            {
-                ZeroButton.IsVisible = false;
-                FirstButton.IsVisible = true;
-                SecondButton.IsVisible = true;
-                ThirdButton.IsVisible = false;
-                FourthButton.IsVisible = false;
-                FirstButton.BtnLetter = responses[0];
-                if (descriptions != null && descr_list.Length > 0)
-                    FirstButton.LblText = descr_list[0];
-                else
-                    FirstButton.LblText = FirstButton.BtnLetter.ToString();
-                FirstButton.ImgSourcePath = GetYnImgSourcePath(FirstButton.BtnLetter, FirstButton.LblText);
-                SecondButton.BtnLetter = responses[1];
-                if (descriptions != null && descr_list.Length > 1)
-                    SecondButton.LblText = descr_list[1];
-                else
-                    SecondButton.LblText = SecondButton.BtnLetter.ToString();
-                SecondButton.ImgSourcePath = GetYnImgSourcePath(SecondButton.BtnLetter, SecondButton.LblText);
-            }
-            else if (responses.Length == 3)
-            {
-                ZeroButton.IsVisible = false;
-                FirstButton.IsVisible = true;
-                SecondButton.IsVisible = true;
-                ThirdButton.IsVisible = true;
-                FourthButton.IsVisible = false;
-                FirstButton.BtnLetter = responses[0];
-                if (descriptions != null && descr_list.Length > 1)
-                    FirstButton.LblText = descr_list[0];
-                else
-                    FirstButton.LblText = FirstButton.BtnLetter.ToString();
-                FirstButton.ImgSourcePath = GetYnImgSourcePath(FirstButton.BtnLetter, FirstButton.LblText);
-                SecondButton.BtnLetter = responses[1];
-                if (descriptions != null && descr_list.Length > 1)
-                    SecondButton.LblText = descr_list[1];
-                else
-                    SecondButton.LblText = SecondButton.BtnLetter.ToString();
-                SecondButton.ImgSourcePath = GetYnImgSourcePath(SecondButton.BtnLetter, SecondButton.LblText);
-                ThirdButton.BtnLetter = responses[2];
-                if (descriptions != null && descr_list.Length > 2)
-                    ThirdButton.LblText = descr_list[2];
-                else
-                    ThirdButton.LblText = ThirdButton.BtnLetter.ToString();
-                ThirdButton.ImgSourcePath = GetYnImgSourcePath(ThirdButton.BtnLetter, ThirdButton.LblText);
-            }
             else
             {
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     if (i < responses.Length)
                     {
@@ -938,7 +878,7 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 5; i++)
                 btnList[i].SetSideSize(_currentPageWidth, _currentPageHeight);
 
             YnButtonStack.HeightRequest = btnList[0].GridHeight;
