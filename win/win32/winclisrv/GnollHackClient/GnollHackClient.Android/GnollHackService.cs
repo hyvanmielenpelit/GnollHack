@@ -200,7 +200,7 @@ namespace GnollHackClient.Droid
         public static extern byte LibGlyphIsAnyDying(int glyph);
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int maybe_get_animated_tile(int ntile, int tile_animation_idx, int play_type, long interval_counter, 
-            out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, out int autodraw_ptr);
+            out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, ref int autodraw_ptr);
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir);
 
@@ -470,10 +470,10 @@ namespace GnollHackClient.Droid
         }
 
         public int GetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter,
-                    out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, out int autodraw_ptr)
+                    out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, ref int autodraw_ptr)
         {
             return maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter,
-                out frame_idx_ptr, out main_tile_idx_ptr, out mapAnimated, out autodraw_ptr);
+                out frame_idx_ptr, out main_tile_idx_ptr, out mapAnimated, ref autodraw_ptr);
         }
 
         public int ZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir)

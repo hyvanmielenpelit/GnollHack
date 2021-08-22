@@ -229,6 +229,16 @@ namespace GnollHackClient
                 bool tileflag_fullsizeditem = (ReferenceGamePage.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
                 int ntile = ReferenceGamePage.Glyph2Tile[abs_glyph];
                 int autodraw = ReferenceGamePage.Tile2Autodraw[ntile];
+                int anim_frame_idx = 0, main_tile_idx = 0;
+                sbyte mapAnimated = 0;
+                long counter_value = 0;
+                int tile_animation_idx = ReferenceGamePage.GnollHackService.GetTileAnimationIndexFromGlyph(abs_glyph);
+                lock (ReferenceGamePage.AnimationTimerLock)
+                {
+                    counter_value = ReferenceGamePage.AnimationTimers.general_animation_counter;
+                }
+                ntile = ReferenceGamePage.GnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, counter_value, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+
                 int enlargement_idx = ReferenceGamePage.Tile2Enlargement[ntile];
                 int sheet_idx = ReferenceGamePage.TileSheetIdx(ntile);
                 int tile_x = ReferenceGamePage.TileSheetX(ntile);
