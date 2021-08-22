@@ -19,11 +19,13 @@ namespace GnollHackClient
 
         public GHWindow GHWindow {get; set;}
         public ghmenu_styles MenuStyle { get; set; }
+        public object MenuItemLock = new object();
 
         private ObservableCollection<GHMenuItem> _GHMenuItems = null;
         public ObservableCollection<GHMenuItem> MenuItems { get { return _GHMenuItems; } set { _GHMenuItems = value; } }
 
         public SelectionMode SelectionHow { get; set; }
+        public int SelectionIndex { get; set; }
 
         private bool _responseSent = false;
         private bool unselect_on_tap = false;

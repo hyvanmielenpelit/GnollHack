@@ -733,6 +733,7 @@ namespace GnollHackClient
                     }
                     mi.Text = text;
                     mi.Count = (presel != 0) ? -1 : 0;
+                    mi.Selected = (presel != 0);
                     mi.MaxCount = maxcount;
 //                    mi.SelectedSliderValue = maxcount + 1;
 //                    mi.SelectedPickerIndex = maxcount + 1;

@@ -1098,6 +1098,20 @@ namespace GnollHackClient.Pages.Game
             MenuCanvas.GHWindow = ghwindow;
             MenuCanvas.MenuStyle = menuinfo.Style;
             MenuCanvas.SelectionHow = menuinfo.SelectionHow;
+            MenuCanvas.SelectionIndex = -1;
+            if (MenuCanvas.SelectionHow == SelectionMode.Single)
+            {
+                int idx = -1;
+                foreach (GHMenuItem mi in menuinfo.MenuItems)
+                {
+                    idx++;
+                    if(mi.Selected)
+                    {
+                        mi.Selected = false; /* Clear out, with single selection we are using SelectionIndex */
+                        MenuCanvas.SelectionIndex = idx;
+                    }
+                }
+            }
 
             if (menuinfo.Header == null)
             {
@@ -1136,7 +1150,10 @@ namespace GnollHackClient.Pages.Game
             }
 
             //canvasView.MenuItems = newmis;
-            MenuCanvas.MenuItems = newmis;
+            lock(MenuCanvas.MenuItemLock)
+            {
+                MenuCanvas.MenuItems = newmis;
+            }
             MenuGrid.IsVisible = true;
             //lock (_canvasPageLock)
             //{
@@ -5993,6 +6010,8 @@ namespace GnollHackClient.Pages.Game
 
 
         private SKColor _suffixTextColor = new SKColor(220, 220, 220);
+        private int _firstDrawnItemIdx = -1;
+        private int _lastDrawnItemIdx = -1;
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             //DebugWriteProfilingStopwatchTime("Draw Menu Canvas Start");
@@ -6010,11 +6029,17 @@ namespace GnollHackClient.Pages.Game
             float scale = canvaswidth / (float)referenceCanvasView.Width;
 
             canvas.Clear();
-            if (referenceCanvasView.MenuItems == null)
-                return;
+            lock (MenuCanvas.MenuItemLock)
+            {
+                if (referenceCanvasView.MenuItems == null)
+                    return;
+            }
 
             using (SKPaint textPaint = new SKPaint())
             {
+                textPaint.Typeface = App.UnderwoodTypeface;
+                textPaint.TextSize = 30;
+                float minrowheight = textPaint.FontSpacing * scale;
                 lock (MenuScrollLock)
                 {
                     y += _menuScrollOffset;
@@ -6022,64 +6047,116 @@ namespace GnollHackClient.Pages.Game
                 double menuwidth = ClientUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle);
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
+                float rightmenupadding = leftmenupadding;
                 float accel_fixed_width = 10;
                 bool first = true;
-                foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
+                int idx = -1;
+                float bottomPadding = 0;
+                float topPadding = 0;
+                lock (MenuCanvas.MenuItemLock)
                 {
-                    x = leftmenupadding;
-                    textPaint.Typeface = App.GetTypefaceByName(mi.FontFamily);
-                    textPaint.TextSize = (float)mi.FontSize * scale;
-                    textPaint.Color = SKColors.Gray;
-                    str = mi.FormattedAccelerator;
-                    textWidth = textPaint.MeasureText(str, ref textBounds);
-
-                    if (first)
+                    _firstDrawnItemIdx = -1;
+                    _lastDrawnItemIdx = -1;
+                    foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
                     {
-                        y += 5;
-                        accel_fixed_width = textPaint.FontMetrics.AverageCharacterWidth;
-                        first = false;
-                    }
-                    x += 5;
+                        idx++;
+                        bool invisible = false;
+                        x = leftmenupadding;
+                        mi.DrawBounds.Left = x;
+                        textPaint.Typeface = App.GetTypefaceByName(mi.FontFamily);
+                        textPaint.TextSize = (float)mi.FontSize * scale;
+                        str = mi.FormattedAccelerator;
+                        textWidth = textPaint.MeasureText(str, ref textBounds);
+                        float singlelinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) * scale * (mi.IsSuffixTextVisible ? 1.8f : 1.0f)) / 2);
 
-                    /* Top Padding */
-                    if (((ulong)mi.MenuFlags & (ulong)MenuFlags.IsHeading) != 0)
-                    {
-                        y += 12 * scale;
-                    }
-                    else
-                    {
-                        y += 3 * scale;
-                    }
+                        /* Bottom Padding */
+                        if (((ulong)mi.MenuFlags & (ulong)MenuFlags.IsHeading) != 0)
+                        {
+                            bottomPadding = 3 * scale;
+                        }
+                        else
+                        {
+                            bottomPadding = 3 * scale;
+                        }
 
-                    y -= textPaint.FontMetrics.Ascent;
-                    canvas.DrawText(str, x, y, textPaint);
-                    x += accel_fixed_width;
+                        /* Top Padding */
+                        if (((ulong)mi.MenuFlags & (ulong)MenuFlags.IsHeading) != 0)
+                        {
+                            topPadding = 12 * scale;
+                        }
+                        else
+                        {
+                            topPadding = 3 * scale;
+                        }
 
-                    /* Icon */
-                    x += 64;
 
-                    /* Main text */
-                    textPaint.Color = ClientUtils.NHColor2SKColor((nhcolor)mi.NHColor);
-                    canvas.DrawText(mi.MainText, x, y, textPaint);
-                    y += textPaint.FontMetrics.Descent;
-                    if(mi.IsSuffixTextVisible)
-                    {
+                        mi.DrawBounds.Top = y;
+                        if (mi.DrawBounds.Top >= canvasheight)
+                            break;
+
+                        if (mi.DrawBounds.Top + (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) * scale * 1.8f + topPadding + bottomPadding <= 0)
+                        {
+                            invisible = true;
+                        }
+
+                        if (first)
+                        {
+                            y += 5;
+                            accel_fixed_width = textPaint.FontMetrics.AverageCharacterWidth;
+                            _firstDrawnItemIdx = idx;
+                            first = false;
+                        }
+
+                        bool isselected = referenceCanvasView.SelectionHow == SelectionMode.Multiple ? mi.Selected :
+                            referenceCanvasView.SelectionHow == SelectionMode.Single ? idx == referenceCanvasView.SelectionIndex : false;
+
+                        if (isselected && !invisible)
+                        {
+                            float totalRowHeight = topPadding + bottomPadding + (mi.IsSuffixTextVisible ? 1.8f : 1.0f) * (-textPaint.FontMetrics.Ascent + textPaint.FontMetrics.Descent) + (!mi.IsSuffixTextVisible ? 2 * singlelinepadding : 0);
+                            float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
+                            SKRect fillrect = new SKRect(x, y, x + totalRowWidth, y + totalRowHeight);
+                            textPaint.Color = SKColors.Orange;
+                            textPaint.Style = SKPaintStyle.Fill;
+                            canvas.DrawRect(fillrect, textPaint);
+                        }
+
+                        y += topPadding;
                         y -= textPaint.FontMetrics.Ascent;
-                        textPaint.Color = _suffixTextColor;
-                        textPaint.TextSize = 0.8f * textPaint.TextSize;
-                        canvas.DrawText(mi.SuffixText, x, y, textPaint);
+                        x += 5;
+                        //float singlelinepadding = 0.8f * (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2;
+                        textPaint.Color = SKColors.Gray;
+                        if(!invisible)
+                            canvas.DrawText(str, x, y + singlelinepadding, textPaint);
+                        x += accel_fixed_width;
+
+                        /* Icon */
+                        x += 64;
+
+                        /* Main text */
+                        textPaint.Color = ClientUtils.NHColor2SKColor((nhcolor)mi.NHColor);
+                        if (!mi.IsSuffixTextVisible)
+                            y += singlelinepadding;
+                        if (!invisible)
+                            canvas.DrawText(mi.MainText, x, y, textPaint);
                         y += textPaint.FontMetrics.Descent;
+                        if (mi.IsSuffixTextVisible)
+                        {
+                            y -= textPaint.FontMetrics.Ascent;
+                            textPaint.Color = _suffixTextColor;
+                            textPaint.TextSize = 0.8f * textPaint.TextSize;
+                            if (!invisible)
+                                canvas.DrawText(mi.SuffixText, x, y, textPaint);
+                            y += textPaint.FontMetrics.Descent;
+                        }
+                        else
+                            y += singlelinepadding;
+
+                        y += bottomPadding;
+                        mi.DrawBounds.Bottom = y;
+                        mi.DrawBounds.Right = canvaswidth - rightmenupadding;
+                        _lastDrawnItemIdx = idx;
                     }
 
-                    /* Bottom Padding */
-                    if (((ulong)mi.MenuFlags & (ulong)MenuFlags.IsHeading) != 0)
-                    {
-                        y += 3 * scale;
-                    }
-                    else
-                    {
-                        y += 3 * scale;
-                    }
                 }
             }
 
@@ -6173,8 +6250,42 @@ namespace GnollHackClient.Pages.Game
                         bool res = MenuTouchDictionary.TryGetValue(e.Id, out entry);
                         long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
 
-                        if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved)
+                        if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && MenuCanvas.SelectionHow != SelectionMode.None)
                         {
+                            lock(MenuCanvas.MenuItemLock)
+                            {
+                                if (MenuCanvas.MenuItems == null)
+                                    break;
+
+                                for (int idx = _firstDrawnItemIdx; idx >= 0 && idx <= _lastDrawnItemIdx; idx++)
+                                {
+                                    if (idx >= MenuCanvas.MenuItems.Count)
+                                        break;
+                                    if (e.Location.Y >= MenuCanvas.MenuItems[idx].DrawBounds.Top && e.Location.Y <= MenuCanvas.MenuItems[idx].DrawBounds.Bottom)
+                                    {
+                                        if(MenuCanvas.MenuItems[idx].Identifier != 0)
+                                        {
+                                            if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
+                                            {
+                                                MenuCanvas.MenuItems[idx].Selected = !MenuCanvas.MenuItems[idx].Selected;
+                                                if (MenuCanvas.MenuItems[idx].Selected)
+                                                    MenuCanvas.MenuItems[idx].Count = -1;
+                                                else
+                                                    MenuCanvas.MenuItems[idx].Count = 0;
+                                            }
+                                            else
+                                            {
+                                                if (MenuCanvas.SelectionIndex >= 0 && MenuCanvas.SelectionIndex < MenuCanvas.MenuItems.Count)
+                                                    MenuCanvas.MenuItems[MenuCanvas.SelectionIndex].Count = 0;
+
+                                                MenuCanvas.SelectionIndex = idx;
+                                                MenuCanvas.MenuItems[idx].Count = -1;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
                             //IssueNHCommandViaTouch(sender, e);
                         }
                         if (MenuTouchDictionary.ContainsKey(e.Id))
@@ -6198,10 +6309,37 @@ namespace GnollHackClient.Pages.Game
         private void MenuOKButton_Clicked(object sender, EventArgs e)
         {
             MenuGrid.IsVisible = false;
+            _menuScrollOffset = 0;
             ConcurrentQueue<GHResponse> queue;
+            List<GHMenuItem> resultlist = new List<GHMenuItem>();
+            lock(MenuCanvas.MenuItemLock)
+            {
+                if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
+                {
+                    foreach (GHMenuItem mi in MenuCanvas.MenuItems)
+                    {
+                        if (mi.Selected && mi.Count != 0)
+                        {
+                            resultlist.Add(mi);
+                        }
+                    }
+                }
+                else if (MenuCanvas.SelectionHow == SelectionMode.Single)
+                {
+                    if (MenuCanvas.SelectionIndex > -1 && MenuCanvas.SelectionIndex < MenuCanvas.MenuItems.Count)
+                    {
+                        GHMenuItem mi = MenuCanvas.MenuItems[MenuCanvas.SelectionIndex];
+                        if (mi.Count != 0)
+                        {
+                            resultlist.Add(mi);
+                        }
+                    }
+                }
+            }
+
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>()));
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist));
             }
 
             lock(_canvasPageLock)
@@ -6219,6 +6357,7 @@ namespace GnollHackClient.Pages.Game
         private void MenuCancelButton_Clicked(object sender, EventArgs e)
         {
             MenuGrid.IsVisible = false;
+            _menuScrollOffset = 0;
 
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))

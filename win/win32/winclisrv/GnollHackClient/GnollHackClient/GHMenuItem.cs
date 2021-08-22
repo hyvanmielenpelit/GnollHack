@@ -435,5 +435,16 @@ namespace GnollHackClient
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
         }
 
+        public SKRect DrawBounds = new SKRect();
+
+        public bool IsVisibleOnCanvas(float canvaswidth, float canvasheight)
+        {
+            if (DrawBounds.Bottom <= 0 || DrawBounds.Top >= canvasheight)
+                return false;
+
+            return true;
+        }
+
+        public bool Selected { get; set; }
     }
 }
