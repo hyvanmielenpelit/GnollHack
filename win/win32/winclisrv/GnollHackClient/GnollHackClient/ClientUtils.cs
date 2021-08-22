@@ -10,6 +10,7 @@ namespace GnollHackClient
     public enum canvas_page_types
     {
         MainGamePage = 0,
+        MenuPage,
     }
 
     public enum menu_page_types
@@ -154,5 +155,280 @@ namespace GnollHackClient
 
             return grayedcolor;
         }
+
+
+        public static double MenuViewWidthRequest(ghmenu_styles style)
+        {
+            double res = 440;
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHAT:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                    res = 880;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                    res = 1024;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                    res = 1024;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                    res = 1024;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                    res = 880;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                    res = 1024;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_HELP:
+                    res = 880;
+                    break;
+                case ghmenu_styles.MAX_GHMENU_STYLES:
+                    break;
+            }
+            return res;
+        }
+
+        public static string MenuHeaderFontFamily(ghmenu_styles style)
+        {
+            string res = "Immortal";
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                    res = "Diablo";
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHAT:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_HELP:
+                    break;
+                case ghmenu_styles.MAX_GHMENU_STYLES:
+                    break;
+            }
+            return res;
+        }
+
+        public static double MenuHeaderFontSize(ghmenu_styles style)
+        {
+            double res = 22;
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHAT:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_HELP:
+                    break;
+                case ghmenu_styles.MAX_GHMENU_STYLES:
+                    break;
+            }
+            return res;
+        }
+
+        public static string MenuSubtitleFontFamily(ghmenu_styles style)
+        {
+            string res = "Immortal";
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHAT:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_HELP:
+                    break;
+                case ghmenu_styles.MAX_GHMENU_STYLES:
+                    break;
+            }
+            return res;
+        }
+
+        public static double MenuSubtitleFontSize(ghmenu_styles style)
+        {
+            double res = 15;
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHAT:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_HELP:
+                    break;
+                case ghmenu_styles.MAX_GHMENU_STYLES:
+                    break;
+            }
+            return res;
+        }
+
     }
 }

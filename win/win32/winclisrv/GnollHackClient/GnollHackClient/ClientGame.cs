@@ -771,18 +771,12 @@ namespace GnollHackClient
         {
             lock (_gamePageLock)
             {
-                lock (_gamePage.RefreshScreenLock)
-                {
-                    _gamePage.RefreshScreen = false;
-                }
+                //lock (_gamePage.RefreshScreenLock)
+                //{
+                //    _gamePage.RefreshScreen = false;
+                //}
 
-                lock (_gamePage.ProfilingStopwatchLock)
-                {
-                    _gamePage.ProfilingStopwatch.Stop();
-                    TimeSpan elapsed = _gamePage.ProfilingStopwatch.Elapsed;
-                    Debug.WriteLine("ProfilingStopwatch: SelectMenu: " + elapsed.TotalMilliseconds + " msec");
-                    _gamePage.ProfilingStopwatch.Start();
-                }
+                _gamePage.DebugWriteProfilingStopwatchTime("SelectMenu");
             }
 
             Debug.WriteLine("ClientCallback_SelectMenu");
@@ -873,13 +867,13 @@ namespace GnollHackClient
             _outGoingIntPtr = arrayptr;
             listsize = cnt * 2;
 
-            lock (_gamePageLock)
-            {
-                lock (_gamePage.RefreshScreenLock)
-                {
-                    _gamePage.RefreshScreen = true;
-                }
-            }
+            //lock (_gamePageLock)
+            //{
+            //    lock (_gamePage.RefreshScreenLock)
+            //    {
+            //        _gamePage.RefreshScreen = true;
+            //    }
+            //}
 
             return cnt;
         }

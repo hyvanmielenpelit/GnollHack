@@ -88,62 +88,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                double res = 440;
-                switch (_style)
-                {
-                    case ghmenu_styles.GHMENU_STYLE_GENERAL:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHAT:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHARACTER:
-                        res = 880;
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
-                        res = 1024;
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_SKILLS:
-                        res = 1024;
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_SPELLS:
-                        res = 1024;
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
-                        res = 880;
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_OPTIONS:
-                        res = 1024;
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_HELP:
-                        res = 880;
-                        break;
-                    case ghmenu_styles.MAX_GHMENU_STYLES:
-                        break;
-                }
-                return res;
+                return ClientUtils.MenuViewWidthRequest(_style);
             }            
         }
 
@@ -151,56 +96,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                string res = "Immortal";
-                switch (_style)
-                {
-                    case ghmenu_styles.GHMENU_STYLE_GENERAL:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_INVENTORY:
-                        res = "Diablo";
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHAT:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHARACTER:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_SKILLS:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_SPELLS:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_OPTIONS:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_HELP:
-                        break;
-                    case ghmenu_styles.MAX_GHMENU_STYLES:
-                        break;
-                }
-                return res;
+                return ClientUtils.MenuHeaderFontFamily(_style);
             }
         }
 
@@ -208,55 +104,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                double res = 22;
-                switch (_style)
-                {
-                    case ghmenu_styles.GHMENU_STYLE_GENERAL:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHAT:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHARACTER:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_SKILLS:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_SPELLS:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_OPTIONS:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_HELP:
-                        break;
-                    case ghmenu_styles.MAX_GHMENU_STYLES:
-                        break;
-                }
-                return res;
+                return ClientUtils.MenuHeaderFontSize(_style);
             }
         }
 
@@ -264,55 +112,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                string res = "Immortal";
-                switch (_style)
-                {
-                    case ghmenu_styles.GHMENU_STYLE_GENERAL:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHAT:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHARACTER:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_SKILLS:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_SPELLS:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_OPTIONS:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_HELP:
-                        break;
-                    case ghmenu_styles.MAX_GHMENU_STYLES:
-                        break;
-                }
-                return res;
+                return ClientUtils.MenuSubtitleFontFamily(_style);
             }
         }
 
@@ -320,55 +120,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                double res = 15;
-                switch (_style)
-                {
-                    case ghmenu_styles.GHMENU_STYLE_GENERAL:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHAT:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_CHARACTER:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_SKILLS:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_SPELLS:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_OPTIONS:
-                        break;
-                    case ghmenu_styles.GHMENU_STYLE_HELP:
-                        break;
-                    case ghmenu_styles.MAX_GHMENU_STYLES:
-                        break;
-                }
-                return res;
+                return ClientUtils.MenuSubtitleFontSize(_style);
             }
         }
 

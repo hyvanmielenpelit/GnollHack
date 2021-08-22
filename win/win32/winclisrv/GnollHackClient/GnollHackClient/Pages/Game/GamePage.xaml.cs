@@ -96,6 +96,9 @@ namespace GnollHackClient.Pages.Game
         private Stopwatch _profilingStopwatch = new Stopwatch();
         public Stopwatch ProfilingStopwatch { get { return _profilingStopwatch; } }
 
+        private Stopwatch _animationStopwatch = new Stopwatch();
+        private TimeSpan _previousTimeSpan;
+
         public bool HitPointBars { get; set; }
 
         private bool _cursorIsOn;
@@ -329,6 +332,10 @@ namespace GnollHackClient.Pages.Game
             //}
             await LoadingProgressBar.ProgressTo(0.99, 40, Easing.Linear);
 
+            _animationStopwatch.Reset();
+            _previousTimeSpan = _animationStopwatch.Elapsed;
+            _animationStopwatch.Start();
+
             canvasView._gamePage = this;
             uint timeToAnimate = 2000;
             Xamarin.Forms.Animation animation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
@@ -338,92 +345,24 @@ namespace GnollHackClient.Pages.Game
             {
                 if (_useMapBitmap)
                     UpdateMap();
-                //canvasView.InvalidateSurface();
-                pollRequestQueue();
 
-                if (MenuCanvas.IsVisible)
+                bool refresh = false;
+
+                lock(RefreshScreenLock)
+                {
+                    refresh = RefreshScreen;
+                }
+
+                //IncrementCounters();
+
+                //if (refresh)
+                //    canvasView.InvalidateSurface();
+
+                if (MenuGrid.IsVisible)
                     MenuCanvas.InvalidateSurface();
 
-                /* Increment counters */
-                //lock (AnimationTimerLock)
-                //{
-                //    AnimationTimers.general_animation_counter++;
-                //    if (AnimationTimers.general_animation_counter < 0)
-                //        AnimationTimers.general_animation_counter = 0;
+                pollRequestQueue();
 
-                //    if (AnimationTimers.u_action_animation_counter_on)
-                //    {
-                //        AnimationTimers.u_action_animation_counter++;
-                //        if (AnimationTimers.u_action_animation_counter < 0)
-                //            AnimationTimers.u_action_animation_counter = 0;
-                //    }
-
-                //    if (AnimationTimers.m_action_animation_counter_on)
-                //    {
-                //        AnimationTimers.m_action_animation_counter++;
-                //        if (AnimationTimers.m_action_animation_counter < 0)
-                //            AnimationTimers.m_action_animation_counter = 0;
-                //    }
-
-                //    if (AnimationTimers.explosion_animation_counter_on)
-                //    {
-                //        AnimationTimers.explosion_animation_counter++;
-                //        if (AnimationTimers.explosion_animation_counter < 0)
-                //            AnimationTimers.explosion_animation_counter = 0;
-                //    }
-
-                //    int i;
-                //    for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
-                //    {
-                //        if (AnimationTimers.zap_animation_counter_on[i])
-                //        {
-                //            AnimationTimers.zap_animation_counter[i]++;
-                //            if (AnimationTimers.zap_animation_counter[i] < 0)
-                //                AnimationTimers.zap_animation_counter[i] = 0;
-                //        }
-                //    }
-
-                //    for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
-                //    {
-                //        if (AnimationTimers.special_effect_animation_counter_on[i])
-                //        {
-                //            AnimationTimers.special_effect_animation_counter[i]++;
-                //            if (AnimationTimers.special_effect_animation_counter[i] < 0)
-                //                AnimationTimers.special_effect_animation_counter[i] = 0;
-                //        }
-                //    }
-
-                //    lock (_floatingTextLock)
-                //    {
-                //        for (i = _floatingTexts.Count - 1; i >= 0; i--)
-                //        {
-                //            if (_floatingTexts[i].IsFinished(AnimationTimers.general_animation_counter))
-                //                _floatingTexts.RemoveAt(i);
-                //        }
-                //    }
-
-                //    lock (_screenTextLock)
-                //    {
-                //        if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))
-                //            _screenText = null;
-                //    }
-
-                //    lock (TargetClipLock)
-                //    {
-                //        if (AnimationTimers.general_animation_counter < _targetClipStartCounterValue
-                //            || AnimationTimers.general_animation_counter > _targetClipStartCounterValue + _targetClipPanTime)
-                //            _targetClipOn = false;
-
-                //        if (_targetClipOn)
-                //        {
-                //            lock (MapOffsetLock)
-                //            {
-                //                _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                //                _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                //            }
-                //        }
-                //    }
-                //}
 
                 return true;
             });
@@ -440,6 +379,112 @@ namespace GnollHackClient.Pages.Game
 
             await LoadingProgressBar.ProgressTo(1.0, 20, Easing.Linear);
 
+        }
+
+        private bool _useUnifromAnimationInterval = false;
+        public long GetAnimationCounterIncrement()
+        {
+            long counter_increment = 1;
+            if (_useUnifromAnimationInterval)
+            {
+                _animationStopwatch.Stop();
+                TimeSpan elapsed = _animationStopwatch.Elapsed;
+                long intervals_elapsed = (long)(elapsed.TotalMilliseconds / (double)GHConstants.DefaultAnimationInterval);
+                long prev_intervals_elapsed = (long)(_previousTimeSpan.TotalMilliseconds / (double)GHConstants.DefaultAnimationInterval);
+                
+                counter_increment = Math.Max(1, intervals_elapsed - prev_intervals_elapsed);
+                if (intervals_elapsed >= 100000000)
+                {
+                    _animationStopwatch.Reset();
+                }
+                _previousTimeSpan = elapsed;
+                _animationStopwatch.Start();
+            }
+            return counter_increment;
+        }
+
+        public void IncrementCounters()
+        {
+            long counter_increment = GetAnimationCounterIncrement();
+            lock (AnimationTimerLock)
+            {
+                AnimationTimers.general_animation_counter += counter_increment;
+                if (AnimationTimers.general_animation_counter < 0)
+                    AnimationTimers.general_animation_counter = 0;
+
+                if (AnimationTimers.u_action_animation_counter_on)
+                {
+                    AnimationTimers.u_action_animation_counter += counter_increment;
+                    if (AnimationTimers.u_action_animation_counter < 0)
+                        AnimationTimers.u_action_animation_counter = 0;
+                }
+
+                if (AnimationTimers.m_action_animation_counter_on)
+                {
+                    AnimationTimers.m_action_animation_counter += counter_increment;
+                    if (AnimationTimers.m_action_animation_counter < 0)
+                        AnimationTimers.m_action_animation_counter = 0;
+                }
+
+                if (AnimationTimers.explosion_animation_counter_on)
+                {
+                    AnimationTimers.explosion_animation_counter += counter_increment;
+                    if (AnimationTimers.explosion_animation_counter < 0)
+                        AnimationTimers.explosion_animation_counter = 0;
+                }
+
+                int i;
+                for (i = 0; i < GHConstants.MaxPlayedZapAnimations; i++)
+                {
+                    if (AnimationTimers.zap_animation_counter_on[i])
+                    {
+                        AnimationTimers.zap_animation_counter[i] += counter_increment;
+                        if (AnimationTimers.zap_animation_counter[i] < 0)
+                            AnimationTimers.zap_animation_counter[i] = 0;
+                    }
+                }
+
+                for (i = 0; i < GHConstants.MaxPlayedSpecialEffects; i++)
+                {
+                    if (AnimationTimers.special_effect_animation_counter_on[i])
+                    {
+                        AnimationTimers.special_effect_animation_counter[i] += counter_increment;
+                        if (AnimationTimers.special_effect_animation_counter[i] < 0)
+                            AnimationTimers.special_effect_animation_counter[i] = 0;
+                    }
+                }
+
+                lock (_floatingTextLock)
+                {
+                    for (i = _floatingTexts.Count - 1; i >= 0; i--)
+                    {
+                        if (_floatingTexts[i].IsFinished(AnimationTimers.general_animation_counter))
+                            _floatingTexts.RemoveAt(i);
+                    }
+                }
+
+                lock (_screenTextLock)
+                {
+                    if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))
+                        _screenText = null;
+                }
+
+                lock (TargetClipLock)
+                {
+                    if (AnimationTimers.general_animation_counter < _targetClipStartCounterValue
+                        || AnimationTimers.general_animation_counter > _targetClipStartCounterValue + _targetClipPanTime)
+                        _targetClipOn = false;
+
+                    if (_targetClipOn)
+                    {
+                        lock (MapOffsetLock)
+                        {
+                            _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                            _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(AnimationTimers.general_animation_counter - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                        }
+                    }
+                }
+            }
         }
 
         public void HideLoadingScreen()
@@ -722,7 +767,7 @@ namespace GnollHackClient.Pages.Game
                                 ReturnToMainMenu();
                                 break;
                             case GHRequestType.ShowMenuPage:
-                                ShowMenuPage(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow);
+                                ShowMenuCanvas(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow);
                                 break;
                             case GHRequestType.ShowOutRipPage:
                                 ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
@@ -1002,13 +1047,7 @@ namespace GnollHackClient.Pages.Game
         }
         private async void ShowMenuPage(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
-            lock(ProfilingStopwatchLock)
-            {
-                ProfilingStopwatch.Stop();
-                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
-                Debug.WriteLine("ProfilingStopwatch: ShowMenuPage Start: " + elapsed.TotalMilliseconds + " msec");
-                ProfilingStopwatch.Start();
-            }
+            DebugWriteProfilingStopwatchTime("ShowMenuPage Start");
 
             ShowWaitIcon = true;
             var menuPage = new GHMenuPage(this, ghwindow, menuinfo.Style);
@@ -1023,13 +1062,7 @@ namespace GnollHackClient.Pages.Game
             else
                 menuPage.Subtitle = menuinfo.Subtitle;
 
-            lock (ProfilingStopwatchLock)
-            {
-                ProfilingStopwatch.Stop();
-                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
-                Debug.WriteLine("ProfilingStopwatch: ShowMenuPage Before Add Menu Items: " + elapsed.TotalMilliseconds + " msec");
-                ProfilingStopwatch.Start();
-            }
+            DebugWriteProfilingStopwatchTime("ShowMenuPage Before Add Menu Items");
 
             ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
             if (menuinfo != null)
@@ -1040,39 +1073,32 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
-            lock (ProfilingStopwatchLock)
-            {
-                ProfilingStopwatch.Stop();
-                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
-                Debug.WriteLine("ProfilingStopwatch: ShowMenuPage Before Process: " + elapsed.TotalMilliseconds + " msec");
-                ProfilingStopwatch.Start();
-            }
+            DebugWriteProfilingStopwatchTime("ShowMenuPage Before Process");
 
             menuPage.MenuItems = newmis;
             menuPage.Process();
 
-            lock (ProfilingStopwatchLock)
-            {
-                ProfilingStopwatch.Stop();
-                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
-                Debug.WriteLine("ProfilingStopwatch: ShowMenuPage Before Push Modal: " + elapsed.TotalMilliseconds + " msec");
-                ProfilingStopwatch.Start();
-            }
+            DebugWriteProfilingStopwatchTime("ShowMenuPage Before Push Modal");
 
             await App.Current.MainPage.Navigation.PushModalAsync(menuPage, false);
         }
 
         private void ShowMenuCanvas(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
+            DebugWriteProfilingStopwatchTime("ShowMenuCanvas Start");
+
             lock (RefreshScreenLock)
             {
                 RefreshScreen = false;
             }
 
+            //canvasView.GHWindow = ghwindow;
+            //canvasView.MenuStyle = menuinfo.Style;
+            //canvasView.SelectionHow = menuinfo.SelectionHow;
             MenuCanvas.GHWindow = ghwindow;
             MenuCanvas.MenuStyle = menuinfo.Style;
-
             MenuCanvas.SelectionHow = menuinfo.SelectionHow;
+
             if (menuinfo.Header == null)
             {
                 MenuHeaderLabel.IsVisible = false;
@@ -1083,6 +1109,8 @@ namespace GnollHackClient.Pages.Game
             {
                 MenuHeaderLabel.IsVisible = true;
                 MenuHeaderLabel.Text = menuinfo.Header;
+                MenuHeaderLabel.FontFamily = ClientUtils.MenuHeaderFontFamily(MenuCanvas.MenuStyle);
+                MenuHeaderLabel.FontSize = ClientUtils.MenuHeaderFontSize(MenuCanvas.MenuStyle);
             }
 
             if (menuinfo.Subtitle == null)
@@ -1094,6 +1122,8 @@ namespace GnollHackClient.Pages.Game
             {
                 MenuSubtitleLabel.IsVisible = true;
                 MenuSubtitleLabel.Text = menuinfo.Subtitle;
+                MenuSubtitleLabel.FontFamily = ClientUtils.MenuSubtitleFontFamily(MenuCanvas.MenuStyle);
+                MenuSubtitleLabel.FontSize = ClientUtils.MenuSubtitleFontSize(MenuCanvas.MenuStyle);
             }
 
             ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
@@ -1105,8 +1135,54 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
+            //canvasView.MenuItems = newmis;
             MenuCanvas.MenuItems = newmis;
             MenuGrid.IsVisible = true;
+            //lock (_canvasPageLock)
+            //{
+            //    _canvasPage = canvas_page_types.MenuPage;
+            //}
+
+            DebugWriteProfilingStopwatchTime("ShowMenuCanvas End");
+
+            //Device.StartTimer(TimeSpan.FromSeconds(1.0), () =>
+            //{
+            //    MenuCancelButton_Clicked(new object(), new EventArgs());
+            //    DebugWriteProfilingStopwatchTime("ShowMenuCanvas AutoCancel");
+            //    return false;
+            //});
+        }
+
+        public void DebugWriteProfilingStopwatchTime(string label)
+        {
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Stop();
+                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: " + label + ": " + elapsed.TotalMilliseconds + " msec");
+                ProfilingStopwatch.Start();
+            }
+
+        }
+
+        void DebugWriteRestart(string label)
+        {
+            lock (ProfilingStopwatchLock)
+            {
+                Debug.WriteLine("ProfilingStopwatch: " + label + ": " + "Restart");
+                ProfilingStopwatch.Restart();
+            }
+        }
+
+        void DebugWriteProfilingStopwatchTimeAndRestart(string label)
+        {
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Stop();
+                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: " + label + ": " + elapsed.TotalMilliseconds + " msec");
+                ProfilingStopwatch.Restart();
+            }
         }
 
         private async void ShowOutRipPage(GHOutRipInfo outripinfo, GHWindow ghwindow)
@@ -2191,6 +2267,9 @@ namespace GnollHackClient.Pages.Game
             {
                 case canvas_page_types.MainGamePage:
                     PaintMainGamePage(sender, e);
+                    break;
+                case canvas_page_types.MenuPage:
+                    MenuCanvas_PaintSurface(sender, e);
                     break;
             }
 
@@ -5070,6 +5149,25 @@ namespace GnollHackClient.Pages.Game
 
         private void canvasView_Touch(object sender, SKTouchEventArgs e)
         {
+            canvas_page_types page = 0;
+            lock (_canvasPageLock)
+            {
+                page = _canvasPage;
+            }
+
+            switch (page)
+            {
+                case canvas_page_types.MainGamePage:
+                    canvasView_Touch_MainPage(sender, e);
+                    break;
+                case canvas_page_types.MenuPage:
+                    MenuCanvas_Touch(sender, e);
+                    break;
+            }
+        }
+
+        private void canvasView_Touch_MainPage(object sender, SKTouchEventArgs e)
+        {
             if (_clientGame != null)
             {
                 lock(TargetClipLock)
@@ -5893,17 +5991,21 @@ namespace GnollHackClient.Pages.Game
 
         }
 
+
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            //DebugWriteProfilingStopwatchTime("Draw Menu Canvas Start");
+
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-            float canvaswidth = canvasView.CanvasSize.Width;
-            float canvasheight = canvasView.CanvasSize.Height;
+            GHCanvasView referenceCanvasView = MenuCanvas;
+            float canvaswidth = referenceCanvasView.CanvasSize.Width;
+            float canvasheight = referenceCanvasView.CanvasSize.Height;
             float x = 0, y = 0;
 
             canvas.Clear();
-            if (MenuCanvas.MenuItems == null)
+            if (referenceCanvasView.MenuItems == null)
                 return;
 
             using (SKPaint textPaint = new SKPaint())
@@ -5912,12 +6014,126 @@ namespace GnollHackClient.Pages.Game
                 textPaint.TextSize = 24;
                 textPaint.Color = SKColors.White;
                 y -= textPaint.FontMetrics.Ascent;
-                y += 5;
-                foreach (GHMenuItem mi in MenuCanvas.MenuItems)
+                lock(MenuScrollLock)
+                {
+                    y += 5 + _menuScrollOffset;
+                }
+                foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
                 {
                     canvas.DrawText(mi.Text, x, y, textPaint);
                     y += textPaint.FontSpacing;
                 }
+            }
+
+            //DebugWriteProfilingStopwatchTime("Draw Menu Canvas End");
+        }
+
+        private object MenuScrollLock = new object();
+        private float _menuScrollOffset = 0;
+
+        private Dictionary<long, TouchEntry> MenuTouchDictionary = new Dictionary<long, TouchEntry>();
+        private object _savedMenuSender = null;
+        private SKTouchEventArgs _savedMenuEventArgs = null;
+        private Boolean _menuTouchMoved = false;
+        private void MenuCanvas_Touch(object sender, SKTouchEventArgs e)
+        {
+            switch (e?.ActionType)
+            {
+                case SKTouchAction.Entered:
+                    break;
+                case SKTouchAction.Pressed:
+                    _savedMenuSender = null;
+                    _savedMenuEventArgs = null;
+
+                    if (MenuTouchDictionary.ContainsKey(e.Id))
+                        MenuTouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
+                    else
+                        MenuTouchDictionary.Add(e.Id, new TouchEntry(e.Location, DateTime.Now));
+
+                    if (MenuTouchDictionary.Count > 1)
+                        _menuTouchMoved = true;
+                    else
+                    {
+                        _savedMenuSender = sender;
+                        _savedMenuEventArgs = e;
+                        //Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MoveByHoldingDownThreshold), () =>
+                        //{
+                        //    if (_savedMenuSender == null || _savedMenuEventArgs == null)
+                        //        return false;
+
+                        //    //IssueNHCommandViaTouch(_savedSender, _savedEventArgs);
+                        //    return true; /* Continue until cancelled */
+                        //});
+                    }
+
+                    e.Handled = true;
+                    break;
+                case SKTouchAction.Moved:
+                    {
+                        TouchEntry entry;
+                        bool res = MenuTouchDictionary.TryGetValue(e.Id, out entry);
+                        if (res)
+                        {
+                            SKPoint anchor = entry.Location;
+
+                            float diffX = e.Location.X - anchor.X;
+                            float diffY = e.Location.Y - anchor.Y;
+                            float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
+
+                            if (MenuTouchDictionary.Count == 1)
+                            {
+                                if ((dist > 25 ||
+                                    (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond > GHConstants.MoveOrPressTimeThreshold
+                                       ))
+                                {
+                                    /* Just one finger => Move the map */
+                                    if (diffX != 0 || diffY != 0)
+                                    {
+                                        lock (MenuScrollLock)
+                                        {
+                                            _menuScrollOffset += diffY;
+                                            if (_menuScrollOffset > 0)
+                                                _menuScrollOffset = 0;
+
+                                            /*Add limits to scroll*/
+                                        }
+                                        MenuTouchDictionary[e.Id].Location = e.Location;
+                                        _menuTouchMoved = true;
+                                    }
+                                }
+                            }
+                        }
+                        e.Handled = true;
+                    }
+                    break;
+                case SKTouchAction.Released:
+                    {
+                        _savedMenuSender = null;
+                        _savedMenuEventArgs = null;
+
+                        TouchEntry entry;
+                        bool res = MenuTouchDictionary.TryGetValue(e.Id, out entry);
+                        long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+
+                        if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved)
+                        {
+                            //IssueNHCommandViaTouch(sender, e);
+                        }
+                        if (MenuTouchDictionary.ContainsKey(e.Id))
+                            MenuTouchDictionary.Remove(e.Id);
+                        if (MenuTouchDictionary.Count == 0)
+                            _menuTouchMoved = false;
+                        e.Handled = true;
+                    }
+                    break;
+                case SKTouchAction.Cancelled:
+                    break;
+                case SKTouchAction.Exited:
+                    break;
+                case SKTouchAction.WheelChanged:
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -5930,10 +6146,16 @@ namespace GnollHackClient.Pages.Game
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>()));
             }
 
+            lock(_canvasPageLock)
+            {
+                _canvasPage = canvas_page_types.MainGamePage;
+            }
+
             lock (RefreshScreenLock)
             {
                 RefreshScreen = true;
             }
+
         }
 
         private void MenuCancelButton_Clicked(object sender, EventArgs e)
@@ -5946,16 +6168,17 @@ namespace GnollHackClient.Pages.Game
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>()));
             }
 
+            lock (_canvasPageLock)
+            {
+                _canvasPage = canvas_page_types.MainGamePage;
+            }
+
             lock (RefreshScreenLock)
             {
                 RefreshScreen = true;
             }
         }
 
-        private void MenuCanvas_Touch(object sender, SKTouchEventArgs e)
-        {
-
-        }
     }
 
     public class ColorConverter : IValueConverter
