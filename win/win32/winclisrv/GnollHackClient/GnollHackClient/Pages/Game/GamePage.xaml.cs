@@ -5992,6 +5992,7 @@ namespace GnollHackClient.Pages.Game
         }
 
 
+        private SKColor _suffixTextColor = new SKColor(220, 220, 220);
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             //DebugWriteProfilingStopwatchTime("Draw Menu Canvas Start");
@@ -6003,6 +6004,10 @@ namespace GnollHackClient.Pages.Game
             float canvaswidth = referenceCanvasView.CanvasSize.Width;
             float canvasheight = referenceCanvasView.CanvasSize.Height;
             float x = 0, y = 0;
+            string str;
+            float textWidth;
+            SKRect textBounds = new SKRect();
+            float scale = canvaswidth / (float)referenceCanvasView.Width;
 
             canvas.Clear();
             if (referenceCanvasView.MenuItems == null)
@@ -6010,18 +6015,71 @@ namespace GnollHackClient.Pages.Game
 
             using (SKPaint textPaint = new SKPaint())
             {
-                textPaint.Typeface = App.UnderwoodTypeface;
-                textPaint.TextSize = 24;
-                textPaint.Color = SKColors.White;
-                y -= textPaint.FontMetrics.Ascent;
-                lock(MenuScrollLock)
+                lock (MenuScrollLock)
                 {
-                    y += 5 + _menuScrollOffset;
+                    y += _menuScrollOffset;
                 }
+                double menuwidth = ClientUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle);
+                float menuwidthoncanvas = (float)(menuwidth * scale);
+                float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
+                float accel_fixed_width = 10;
+                bool first = true;
                 foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
                 {
-                    canvas.DrawText(mi.Text, x, y, textPaint);
-                    y += textPaint.FontSpacing;
+                    x = leftmenupadding;
+                    textPaint.Typeface = App.GetTypefaceByName(mi.FontFamily);
+                    textPaint.TextSize = (float)mi.FontSize * scale;
+                    textPaint.Color = SKColors.Gray;
+                    str = mi.FormattedAccelerator;
+                    textWidth = textPaint.MeasureText(str, ref textBounds);
+
+                    if (first)
+                    {
+                        y += 5;
+                        accel_fixed_width = textPaint.FontMetrics.AverageCharacterWidth;
+                        first = false;
+                    }
+                    x += 5;
+
+                    /* Top Padding */
+                    if (((ulong)mi.MenuFlags & (ulong)MenuFlags.IsHeading) != 0)
+                    {
+                        y += 12 * scale;
+                    }
+                    else
+                    {
+                        y += 3 * scale;
+                    }
+
+                    y -= textPaint.FontMetrics.Ascent;
+                    canvas.DrawText(str, x, y, textPaint);
+                    x += accel_fixed_width;
+
+                    /* Icon */
+                    x += 64;
+
+                    /* Main text */
+                    textPaint.Color = ClientUtils.NHColor2SKColor((nhcolor)mi.NHColor);
+                    canvas.DrawText(mi.MainText, x, y, textPaint);
+                    y += textPaint.FontMetrics.Descent;
+                    if(mi.IsSuffixTextVisible)
+                    {
+                        y -= textPaint.FontMetrics.Ascent;
+                        textPaint.Color = _suffixTextColor;
+                        textPaint.TextSize = 0.8f * textPaint.TextSize;
+                        canvas.DrawText(mi.SuffixText, x, y, textPaint);
+                        y += textPaint.FontMetrics.Descent;
+                    }
+
+                    /* Bottom Padding */
+                    if (((ulong)mi.MenuFlags & (ulong)MenuFlags.IsHeading) != 0)
+                    {
+                        y += 3 * scale;
+                    }
+                    else
+                    {
+                        y += 3 * scale;
+                    }
                 }
             }
 

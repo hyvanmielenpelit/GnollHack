@@ -111,77 +111,7 @@ namespace GnollHackClient
                             GnollHackLabel.Text = "GnollHack"; // + verstr;
 
                             Assembly assembly = GetType().GetTypeInfo().Assembly;
-                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.diablo_h.ttf"))
-                            {
-                                if (stream != null)
-                                {
-                                    App.DiabloTypeface = SKTypeface.FromStream(stream);
-                                }
-                            }
-                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.uwch.ttf"))
-                            {
-                                if (stream != null)
-                                {
-                                    App.UnderwoodTypeface = SKTypeface.FromStream(stream);
-                                }
-                            }
-
-                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.endr.ttf"))
-                            {
-                                if (stream != null)
-                                {
-                                    App.EndorTypeface = SKTypeface.FromStream(stream);
-                                }
-                            }
-                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.imrl.ttf"))
-                            {
-                                if (stream != null)
-                                {
-                                    App.ImmortalTypeface = SKTypeface.FromStream(stream);
-                                }
-                            }
-                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.shxi.ttf"))
-                            {
-                                if (stream != null)
-                                {
-                                    App.XizorTypeface = SKTypeface.FromStream(stream);
-                                }
-                            }
-                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono.ttf"))
-                            {
-                                if (stream != null)
-                                {
-                                    App.DejaVuSansMonoTypeface = SKTypeface.FromStream(stream);
-                                }
-                            }
-                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono-Bold.ttf"))
-                            {
-                                if (stream != null)
-                                {
-                                    App.DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
-                                }
-                            }
-                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Regular.ttf"))
-                            {
-                                if (stream != null)
-                                {
-                                    App.LatoRegular = SKTypeface.FromStream(stream);
-                                }
-                            }
-                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Bold.ttf"))
-                            {
-                                if (stream != null)
-                                {
-                                    App.LatoBold = SKTypeface.FromStream(stream);
-                                }
-                            }
-                            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.archristy.ttf"))
-                            {
-                                if (stream != null)
-                                {
-                                    App.ARChristyTypeface = SKTypeface.FromStream(stream);
-                                }
-                            }
+                            App.InitTypefaces(assembly);
 
                             //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);

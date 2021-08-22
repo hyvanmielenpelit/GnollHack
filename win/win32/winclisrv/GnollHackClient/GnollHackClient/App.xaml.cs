@@ -2,6 +2,7 @@
 using GnollHackCommon;
 using SkiaSharp;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -120,6 +121,106 @@ namespace GnollHackClient
         public static SKTypeface LatoRegular { get; set; }
         public static SKTypeface LatoBold { get; set; }
         public static SKTypeface ARChristyTypeface { get; set; }
+
+        private static Dictionary<string, SKTypeface> TypefaceDictionary = new Dictionary<string, SKTypeface>();
+        public static SKTypeface GetTypefaceByName(string fontname)
+        {
+            SKTypeface res = null;
+            if (TypefaceDictionary.TryGetValue(fontname, out res))
+            {
+                if (res != null)
+                    return res;
+                else
+                    return LatoRegular;
+            }
+            else
+                return LatoRegular;
+        }
+
+        public static void InitTypefaces(Assembly assembly)
+        {
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.diablo_h.ttf"))
+            {
+                if (stream != null)
+                {
+                    App.DiabloTypeface = SKTypeface.FromStream(stream);
+                    App.TypefaceDictionary.Add("Diablo", App.DiabloTypeface);
+                }
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.uwch.ttf"))
+            {
+                if (stream != null)
+                {
+                    App.UnderwoodTypeface = SKTypeface.FromStream(stream);
+                    App.TypefaceDictionary.Add("Underwood", App.UnderwoodTypeface);
+                }
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.endr.ttf"))
+            {
+                if (stream != null)
+                {
+                    App.EndorTypeface = SKTypeface.FromStream(stream);
+                    App.TypefaceDictionary.Add("Endor", App.EndorTypeface);
+                }
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.imrl.ttf"))
+            {
+                if (stream != null)
+                {
+                    App.ImmortalTypeface = SKTypeface.FromStream(stream);
+                    App.TypefaceDictionary.Add("Immortal", App.ImmortalTypeface);
+                }
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.shxi.ttf"))
+            {
+                if (stream != null)
+                {
+                    App.XizorTypeface = SKTypeface.FromStream(stream);
+                    App.TypefaceDictionary.Add("Xizor", App.XizorTypeface);
+                }
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono.ttf"))
+            {
+                if (stream != null)
+                {
+                    App.DejaVuSansMonoTypeface = SKTypeface.FromStream(stream);
+                    App.TypefaceDictionary.Add("DejaVuSansMono", App.DejaVuSansMonoTypeface);
+                }
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono-Bold.ttf"))
+            {
+                if (stream != null)
+                {
+                    App.DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
+                    App.TypefaceDictionary.Add("DejaVuSansMonoBold", App.DejaVuSansMonoBoldTypeface);
+                }
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Regular.ttf"))
+            {
+                if (stream != null)
+                {
+                    App.LatoRegular = SKTypeface.FromStream(stream);
+                    App.TypefaceDictionary.Add("LatoRegular", App.LatoRegular);
+                }
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Bold.ttf"))
+            {
+                if (stream != null)
+                {
+                    App.LatoBold = SKTypeface.FromStream(stream);
+                    App.TypefaceDictionary.Add("LatoBold", App.LatoBold);
+                }
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.archristy.ttf"))
+            {
+                if (stream != null)
+                {
+                    App.ARChristyTypeface = SKTypeface.FromStream(stream);
+                    App.TypefaceDictionary.Add("ARChristy", App.ARChristyTypeface);
+                }
+            }
+        }
 
         public static void PlayButtonClickedSound()
         {
