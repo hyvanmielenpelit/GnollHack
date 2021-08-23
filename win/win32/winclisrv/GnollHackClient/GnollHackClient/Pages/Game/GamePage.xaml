@@ -185,8 +185,8 @@
             <Grid x:Name="GetLineGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="440" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Margin="0,50,0,10" >
-                    <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
-                        <StackLayout x:Name="GetLineLayout" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                    <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                        <StackLayout x:Name="GetLineLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                             <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <Entry x:Name="GetLineEntryText" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White"
                                HorizontalTextAlignment="Center" FontSize="20" />
@@ -301,6 +301,53 @@
                         </Grid>
                     </Grid>
                 </StackLayout>
+                <Grid x:Name="MenuCountBackgroundGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+                         BackgroundColor="#66000000" IsVisible="False">
+                    <Grid x:Name="MenuCountForegroundGrid" WidthRequest="360" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                        <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                            <StackLayout x:Name="MenuCountLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                                <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
+
+                                <Picker x:Name="CountPicker"
+                                        VerticalOptions="Center"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        FontFamily="Underwood"
+                                        FontSize="15"
+                                        WidthRequest="180"
+                                        Margin="1"
+                                        TextColor="White"
+                                        BackgroundColor="#303030"
+                                        TitleColor="Gray"
+                                        Title="Count"
+                                        />
+
+                                <Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="65" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="170" HeightRequest="60">
+                                        <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="170" HeightRequest="60"  HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Aspect="Fill" />
+                                        <Button x:Name="MenuCountOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="MenuCountOkButton_Clicked" />
+                                    </Grid>
+                                    <Grid  Grid.Column="1" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="170" HeightRequest="60">
+                                        <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="170" HeightRequest="60" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Aspect="Fill" />
+                                        <Button x:Name="MenuCountCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="MenuCountCancelButton_Clicked" />
+                                    </Grid>
+                                </Grid>
+                            </StackLayout>
+                        </Frame>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     </ContentPage.Content>
