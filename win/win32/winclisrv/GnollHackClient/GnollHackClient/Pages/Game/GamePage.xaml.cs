@@ -1083,14 +1083,26 @@ namespace GnollHackClient.Pages.Game
             await App.Current.MainPage.Navigation.PushModalAsync(menuPage, false);
         }
 
+        private object _menuDrawOnlyLock = new object();
+        private bool _menuDrawOnlyClear = false;
         private void ShowMenuCanvas(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
-            DebugWriteProfilingStopwatchTime("ShowMenuCanvas Start");
+            lock (_menuHideCancelledLock)
+            {
+                _menuHideCancelled = true;
+            }
 
             lock (RefreshScreenLock)
             {
                 RefreshScreen = false;
             }
+
+            lock (_menuDrawOnlyLock)
+            {
+                _menuDrawOnlyClear = true;
+            }
+
+            DebugWriteProfilingStopwatchTime("ShowMenuCanvas Start");
 
             //canvasView.GHWindow = ghwindow;
             //canvasView.MenuStyle = menuinfo.Style;
@@ -1154,6 +1166,12 @@ namespace GnollHackClient.Pages.Game
             {
                 MenuCanvas.MenuItems = newmis;
             }
+
+            lock (_menuDrawOnlyLock)
+            {
+                _menuDrawOnlyClear = false;
+            }
+
             MenuGrid.IsVisible = true;
             //lock (_canvasPageLock)
             //{
@@ -6031,6 +6049,12 @@ namespace GnollHackClient.Pages.Game
             float scale = canvaswidth / (float)referenceCanvasView.Width;
 
             canvas.Clear();
+            lock (_menuDrawOnlyLock)
+            {
+                if (_menuDrawOnlyClear)
+                    return;
+            }
+
             lock (MenuCanvas.MenuItemLock)
             {
                 if (referenceCanvasView.MenuItems == null)
@@ -6143,6 +6167,8 @@ namespace GnollHackClient.Pages.Game
 
                         float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + (mi.IsSuffixTextVisible ? 0.8f : 0.0f)) * (-textPaint.FontMetrics.Ascent + textPaint.FontMetrics.Descent) + 2 * generallinepadding;
                         float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
+
+                        /* Selection rectangle */
                         if (isselected && !(y + totalRowHeight <= 0 || y >= canvasheight))
                         {
                             SKRect fillrect = new SKRect(x, y, x + totalRowWidth, y + totalRowHeight);
@@ -6207,6 +6233,8 @@ namespace GnollHackClient.Pages.Game
                         }
                         y += textPaint.FontMetrics.Descent;
                         x = start_x;
+
+                        /* Suffix text */
                         if (mi.IsSuffixTextVisible)
                         {
                             textPaint.Color = _suffixTextColor;
@@ -6224,7 +6252,8 @@ namespace GnollHackClient.Pages.Game
                         mi.DrawBounds.Right = canvaswidth - rightmenupadding;
                         _lastDrawnItemIdx = idx;
 
-                        if(mi.Count > 0 && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
+                        /* Count circle */
+                        if (mi.Count > 0 && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
                         {
                             float circleradius = mi.DrawBounds.Height * 0.90f / 2;
                             float circlex = mi.DrawBounds.Right - circleradius - 5;
@@ -6505,11 +6534,14 @@ namespace GnollHackClient.Pages.Game
                 }
             }
         }
-
+        
+        private object _menuHideCancelledLock = new object();
+        private bool _menuHideCancelled = false;
         private void MenuOKButton_Clicked(object sender, EventArgs e)
         {
-            MenuGrid.IsVisible = false;
             _menuScrollOffset = 0;
+            _menuHideCancelled = false;
+
             ConcurrentQueue<GHResponse> queue;
             List<GHMenuItem> resultlist = new List<GHMenuItem>();
             lock(MenuCanvas.MenuItemLock)
@@ -6542,22 +6574,13 @@ namespace GnollHackClient.Pages.Game
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist));
             }
 
-            lock(_canvasPageLock)
-            {
-                _canvasPage = canvas_page_types.MainGamePage;
-            }
-
-            lock (RefreshScreenLock)
-            {
-                RefreshScreen = true;
-            }
-
+            DelayedMenuHide();
         }
 
         private void MenuCancelButton_Clicked(object sender, EventArgs e)
         {
-            MenuGrid.IsVisible = false;
             _menuScrollOffset = 0;
+            _menuHideCancelled = false;
 
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
@@ -6565,17 +6588,32 @@ namespace GnollHackClient.Pages.Game
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>()));
             }
 
-            lock (_canvasPageLock)
-            {
-                _canvasPage = canvas_page_types.MainGamePage;
-            }
-
-            lock (RefreshScreenLock)
-            {
-                RefreshScreen = true;
-            }
+            DelayedMenuHide();
         }
 
+        private void DelayedMenuHide()
+        {
+            Device.StartTimer(TimeSpan.FromSeconds(3f / 40), () =>
+            {
+                lock (_menuHideCancelledLock)
+                {
+                    if (_menuHideCancelled)
+                        return false;
+                }
+
+                MenuGrid.IsVisible = false;
+                lock (_canvasPageLock)
+                {
+                    _canvasPage = canvas_page_types.MainGamePage;
+                }
+                lock (RefreshScreenLock)
+                {
+                    RefreshScreen = true;
+                }
+
+                return false;
+            });
+        }
 
         private bool unselect_on_tap = false;
         private void MenuTapGestureRecognizer_Tapped(object sender, EventArgs e)
