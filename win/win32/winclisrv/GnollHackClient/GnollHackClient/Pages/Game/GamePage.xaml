@@ -269,9 +269,9 @@
                     <Label x:Name="MenuHeaderLabel"
                        FontFamily="{Binding MenuHeaderFontFamily}" FontSize="{Binding MenuHeaderFontSize}" TextColor="White" FontAttributes="Bold" Margin="2,10,2,2" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
-                        <!--<Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-                        </Label.GestureRecognizers>-->
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
+                        </Label.GestureRecognizers>
                     </Label>
                     <Label x:Name="MenuSubtitleLabel"
                        FontFamily="{Binding MenuSubtitleFontFamily}" FontSize="{Binding MenuSubtitleFontSize}" TextColor="White" Margin="1,2,1,6" BackgroundColor="Transparent"

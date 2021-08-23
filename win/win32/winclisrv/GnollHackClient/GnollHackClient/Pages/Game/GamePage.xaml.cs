@@ -6013,6 +6013,7 @@ namespace GnollHackClient.Pages.Game
         private SKColor _menuHighlightColor = new SKColor(0xFF, 0x88, 0x00, 0x88);
         private int _firstDrawnItemIdx = -1;
         private int _lastDrawnItemIdx = -1;
+        private float _totalMenuHeight = 0;
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             //DebugWriteProfilingStopwatchTime("Draw Menu Canvas Start");
@@ -6041,10 +6042,15 @@ namespace GnollHackClient.Pages.Game
                 textPaint.Typeface = App.UnderwoodTypeface;
                 textPaint.TextSize = 30 * scale;
                 float minrowheight = textPaint.FontSpacing;
+                float picturewidth = 64.0f * minrowheight / 48.0f;
+                float picturepadding = 9 * scale;
+                float leftinnerpadding = 5;
+                float curmenuoffset = 0;
                 lock (MenuScrollLock)
                 {
-                    y += _menuScrollOffset;
+                    curmenuoffset = _menuScrollOffset;
                 }
+                y += curmenuoffset;
                 double menuwidth = ClientUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle);
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
@@ -6054,7 +6060,8 @@ namespace GnollHackClient.Pages.Game
                 int idx = -1;
                 float bottomPadding = 0;
                 float topPadding = 0;
-                float firstTotalRowHeight = 1;
+                float maintext_x_start = 0;
+
                 lock (MenuCanvas.MenuItemLock)
                 {
                     _firstDrawnItemIdx = -1;
@@ -6062,7 +6069,6 @@ namespace GnollHackClient.Pages.Game
                     foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
                     {
                         idx++;
-                        bool invisible = false;
                         x = leftmenupadding;
                         mi.DrawBounds.Left = x;
                         textPaint.Typeface = App.GetTypefaceByName(mi.FontFamily);
@@ -6070,17 +6076,15 @@ namespace GnollHackClient.Pages.Game
                         textPaint.TextAlign = SKTextAlign.Left;
                         str = mi.FormattedAccelerator;
                         textWidth = textPaint.MeasureText(str, ref textBounds);
-                        float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) * scale * (mi.IsSuffixTextVisible ? 1.8f : 1.0f)) / 2);
-                        float singlelinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) * scale ) / 2);
 
                         /* Bottom Padding */
                         if (((ulong)mi.MenuFlags & (ulong)MenuFlags.IsHeading) != 0)
                         {
-                            bottomPadding = 6 * scale;
+                            bottomPadding = 3 * scale;
                         }
                         else
                         {
-                            bottomPadding = 6 * scale;
+                            bottomPadding = 3 * scale;
                         }
 
                         /* Top Padding */
@@ -6090,33 +6094,56 @@ namespace GnollHackClient.Pages.Game
                         }
                         else
                         {
-                            topPadding = 6 * scale;
+                            topPadding = 3 * scale;
                         }
 
 
                         mi.DrawBounds.Top = y;
-                        if (mi.DrawBounds.Top >= canvasheight)
-                            break;
-
-                        if (mi.DrawBounds.Top + (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) * scale * 1.8f + topPadding + bottomPadding <= 0)
-                        {
-                            invisible = true;
-                        }
+                        //if (mi.DrawBounds.Top >= canvasheight)
+                        //    break;
 
                         if (first)
                         {
                             accel_fixed_width = textPaint.FontMetrics.AverageCharacterWidth + 3 * textPaint.MeasureText(" ");
-                            firstTotalRowHeight = topPadding + bottomPadding + (-textPaint.FontMetrics.Ascent + textPaint.FontMetrics.Descent) + 2 * singlelinepadding;
                             _firstDrawnItemIdx = idx;
+                            maintext_x_start = leftmenupadding + leftinnerpadding + accel_fixed_width + picturepadding + picturewidth + picturepadding;
                             first = false;
                         }
+
+                        int maintextrows = 1;
+                        string[] split = mi.MainText.Split(' ');
+                        float maintextspace = canvaswidth - rightmenupadding - maintext_x_start;
+                        float calc_x_start = maintext_x_start;
+                        int rowidx = -1;
+                        foreach (string s in split)
+                        {
+                            if (string.IsNullOrWhiteSpace(s))
+                                continue;
+                            rowidx++;
+                            string added_split_str = s + " ";
+                            float printlength = textPaint.MeasureText(added_split_str);
+                            float endposition = calc_x_start + printlength;
+                            bool pastend = endposition > canvaswidth - rightmenupadding;
+                            if (pastend && rowidx > 0)
+                            {
+                                maintextrows++;
+                                calc_x_start = maintext_x_start;
+                                rowidx = -1;
+                            }
+                            else
+                            {
+                                calc_x_start = endposition;
+                            }
+                        }
+
+                        float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) * ((float)maintextrows + (mi.IsSuffixTextVisible ? 0.8f : 0.0f))) / 2);
 
                         bool isselected = referenceCanvasView.SelectionHow == SelectionMode.Multiple ? mi.Selected :
                             referenceCanvasView.SelectionHow == SelectionMode.Single ? idx == referenceCanvasView.SelectionIndex : false;
 
-                        float totalRowHeight = topPadding + bottomPadding + (mi.IsSuffixTextVisible ? 1.8f : 1.0f) * (-textPaint.FontMetrics.Ascent + textPaint.FontMetrics.Descent) + (!mi.IsSuffixTextVisible ? 2 * singlelinepadding : 0);
+                        float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + (mi.IsSuffixTextVisible ? 0.8f : 0.0f)) * (-textPaint.FontMetrics.Ascent + textPaint.FontMetrics.Descent) + (!mi.IsSuffixTextVisible ? 2 * generallinepadding : 0);
                         float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
-                        if (isselected && !invisible)
+                        if (isselected && !(y + totalRowHeight <= 0 || y >= canvasheight))
                         {
                             SKRect fillrect = new SKRect(x, y, x + totalRowWidth, y + totalRowHeight);
                             textPaint.Color = _menuHighlightColor;
@@ -6124,22 +6151,23 @@ namespace GnollHackClient.Pages.Game
                             canvas.DrawRect(fillrect, textPaint);
                         }
 
+                        float singlelinepadding = Math.Max(0.0f, ((float)(maintextrows - 1) * (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2);
                         y += topPadding;
                         y -= textPaint.FontMetrics.Ascent;
-                        x += 5;
-                        //float singlelinepadding = 0.8f * (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2;
+                        x += leftinnerpadding;
                         textPaint.Color = SKColors.Gray;
-                        if(!invisible)
+                        if(!(y + singlelinepadding + textPaint.FontMetrics.Descent <= 0 || y + singlelinepadding + textPaint.FontMetrics.Ascent >= canvasheight))
                             canvas.DrawText(str, x, y + singlelinepadding, textPaint);
                         x += accel_fixed_width;
 
                         /* Icon */
-                        x += 9 * scale;
-                        if (mi.IsGlyphVisible)
+                        x += picturepadding;
+                        float glyph_start_y = mi.DrawBounds.Top + Math.Max(0, (totalRowHeight - minrowheight) / 2);
+                        if (mi.IsGlyphVisible && !(glyph_start_y + minrowheight <= 0 || glyph_start_y >= canvasheight))
                         {
                             using (new SKAutoCanvasRestore(canvas, true))
                             {
-                                canvas.Translate(x, mi.DrawBounds.Top + Math.Max(0, (totalRowHeight - minrowheight) / 2));
+                                canvas.Translate(x, glyph_start_y);
                                 mi.GlyphImageSource.AutoSize = true;
                                 mi.GlyphImageSource.DoAutoSize();
                                 if(mi.GlyphImageSource.Height > 0)
@@ -6147,20 +6175,44 @@ namespace GnollHackClient.Pages.Game
                                 mi.GlyphImageSource.DrawOnCanvas(canvas);
                             }
                         }
-                        x += 64.0f * minrowheight / 48.0f + 9 * scale;
+                        x += picturewidth + picturepadding;
 
                         /* Main text */
                         textPaint.Color = ClientUtils.NHColor2SKColor((nhcolor)mi.NHColor);
                         y += generallinepadding;
-                        if (!invisible)
-                            canvas.DrawText(mi.MainText, x, y, textPaint);
+                        int split_idx_on_row = -1;
+                        float start_x = x;
+                        foreach (string split_str in split)
+                        {
+                            if (string.IsNullOrWhiteSpace(split_str))
+                                continue;
+                            split_idx_on_row++;
+                            string added_split_str = split_str + " ";
+                            float printlength = textPaint.MeasureText(added_split_str);
+                            float endposition = x + printlength;
+                            bool pastend = endposition > canvaswidth - rightmenupadding;
+                            if (pastend && split_idx_on_row > 0)
+                            {
+                                x = start_x;
+                                y += textPaint.FontMetrics.Descent;
+                                y -= textPaint.FontMetrics.Ascent;
+                                split_idx_on_row = 0;
+                                endposition = x + printlength;
+                            }
+
+                            if (!(y + textPaint.FontMetrics.Descent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                                canvas.DrawText(added_split_str, x, y, textPaint);
+
+                            x = endposition;
+                        }
                         y += textPaint.FontMetrics.Descent;
+                        x = start_x;
                         if (mi.IsSuffixTextVisible)
                         {
-                            y -= textPaint.FontMetrics.Ascent;
                             textPaint.Color = _suffixTextColor;
                             textPaint.TextSize = 0.8f * textPaint.TextSize;
-                            if (!invisible)
+                            y -= textPaint.FontMetrics.Ascent;
+                            if (!(y + textPaint.FontMetrics.Descent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
                                 canvas.DrawText(mi.SuffixText, x, y, textPaint);
                             y += textPaint.FontMetrics.Descent;
                         }
@@ -6172,7 +6224,7 @@ namespace GnollHackClient.Pages.Game
                         mi.DrawBounds.Right = canvaswidth - rightmenupadding;
                         _lastDrawnItemIdx = idx;
                     }
-
+                    _totalMenuHeight = y - curmenuoffset;
                 }
             }
 
@@ -6245,6 +6297,8 @@ namespace GnollHackClient.Pages.Game
                                             _menuScrollOffset += diffY;
                                             if (_menuScrollOffset > 0)
                                                 _menuScrollOffset = 0;
+                                            else if (_menuScrollOffset < MenuCanvas.CanvasSize.Height -_totalMenuHeight)
+                                                _menuScrollOffset = MenuCanvas.CanvasSize.Height - _totalMenuHeight;
 
                                             /*Add limits to scroll*/
                                         }
@@ -6279,7 +6333,31 @@ namespace GnollHackClient.Pages.Game
                                         break;
                                     if (e.Location.Y >= MenuCanvas.MenuItems[idx].DrawBounds.Top && e.Location.Y <= MenuCanvas.MenuItems[idx].DrawBounds.Bottom)
                                     {
-                                        if(MenuCanvas.MenuItems[idx].Identifier != 0)
+                                        GHMenuItem mi = MenuCanvas.MenuItems[idx];
+                                        if (mi.Identifier == 0)
+                                        {
+                                            if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.MenuFlags & (ulong)MenuFlags.IsGroupHeading) != 0)
+                                            {
+                                                foreach (GHMenuItem o in MenuCanvas.MenuItems)
+                                                {
+                                                    if (o.GroupAccelerator == mi.HeadingGroupAccelerator)
+                                                    {
+                                                        if (!mi.HeadingUnselectGroup)
+                                                        {
+                                                            o.Selected = true;
+                                                            o.Count = -1;
+                                                        }
+                                                        else
+                                                        {
+                                                            o.Selected = false;
+                                                            o.Count = 0;
+                                                        }
+                                                    }
+                                                }
+                                                mi.HeadingUnselectGroup = !mi.HeadingUnselectGroup;
+                                            }
+                                        }
+                                        else
                                         {
                                             if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
                                             {
@@ -6392,6 +6470,34 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+
+        private bool unselect_on_tap = false;
+        private void MenuTapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
+            {
+                lock(MenuCanvas.MenuItemLock)
+                {
+                    foreach (GHMenuItem o in MenuCanvas.MenuItems)
+                    {
+                        if (o.Identifier != 0)
+                        {
+                            if (!unselect_on_tap)
+                            {
+                                o.Selected = true;
+                                o.Count = -1;
+                            }
+                            else
+                            {
+                                o.Selected = false;
+                                o.Count = 0;
+                            }
+                        }
+                    }
+                    unselect_on_tap = !unselect_on_tap;
+                }
+            }
+        }
     }
 
     public class ColorConverter : IValueConverter
