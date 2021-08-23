@@ -4046,6 +4046,12 @@ struct monst* mtmp;
         case PM_CHIEFTAIN:
             titlestr = "a local chieftain";
             break;
+        case PM_WARRIOR:
+            titlestr = "a local warrior";
+            break;
+        case PM_APPRENTICE:
+            titlestr = "a local apprentice";
+            break;
         default:
             if (mtmp->mnum == urole.guardnum)
                 titlestr = "your quest guardian";
