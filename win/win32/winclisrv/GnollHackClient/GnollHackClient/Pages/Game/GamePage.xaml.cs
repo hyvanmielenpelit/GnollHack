@@ -6327,12 +6327,13 @@ namespace GnollHackClient.Pages.Game
                                             if (_menuScrollOffset > 0)
                                                 _menuScrollOffset = 0;
                                             else if (_menuScrollOffset < MenuCanvas.CanvasSize.Height - _totalMenuHeight)
-                                                _menuScrollOffset = MenuCanvas.CanvasSize.Height - _totalMenuHeight;
+                                                _menuScrollOffset = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
 
                                             /*Add limits to scroll*/
                                         }
                                         MenuTouchDictionary[e.Id].Location = e.Location;
                                         _menuTouchMoved = true;
+                                        _savedTimeStamp = DateTime.Now;
                                     }
                                 }
                             }
