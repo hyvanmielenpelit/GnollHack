@@ -6398,24 +6398,45 @@ namespace GnollHackClient.Pages.Game
                 return;
 
             _countMenuItem = MenuCanvas.MenuItems[selectedidx];
-            _countPickList.Clear();
-            _countPickList.Add(new GHNumberPickItem(-1, "All"));
-            int countselindex = -1;
-            if (_countMenuItem.Count == -1)
-                countselindex = 0;
-            for (int i = 0; i <= (int)MenuCanvas.MenuItems[selectedidx].MaxCount; i++)
-            {
-                _countPickList.Add(new GHNumberPickItem(i));
-                if (_countMenuItem.Count == i)
-                    countselindex = i + 1;
-            }
-            CountPicker.ItemsSource = _countPickList;
-            CountPicker.ItemDisplayBinding = new Binding("Name");
-            CountPicker.SelectedIndex = countselindex;
 
-            MenuCountCaption.Text = "Select Count for " + MenuCanvas.MenuItems[selectedidx].MainText;
-            MenuCanvas_NormalClickRelease(sender, e); /* Normal click selection first */
             _menuTouchMoved = true; /* No further action upon release */
+            if (!MenuCanvas.MenuItems[selectedidx].Selected)
+                MenuCanvas_NormalClickRelease(sender, e); /* Normal click selection first */
+
+            if (_countMenuItem.MaxCount > 100)
+            {
+                MenuCountForegroundGrid.VerticalOptions = LayoutOptions.StartAndExpand;
+                MenuCountForegroundGrid.Margin = new Thickness(0, 50, 0, 0);
+                CountPicker.IsVisible = false;
+                MenuCountEntry.IsVisible = true;
+                if(_countMenuItem.Count == -1)
+                    MenuCountEntry.Text = _countMenuItem.MaxCount.ToString();
+                else
+                    MenuCountEntry.Text = _countMenuItem.Count.ToString();
+            }
+            else
+            {
+                MenuCountForegroundGrid.VerticalOptions = LayoutOptions.CenterAndExpand;
+                MenuCountForegroundGrid.Margin = new Thickness(0, 0, 0, 0);
+                CountPicker.IsVisible = true;
+                MenuCountEntry.IsVisible = false;
+                _countPickList.Clear();
+                _countPickList.Add(new GHNumberPickItem(-1, "All"));
+                int countselindex = -1;
+                if (_countMenuItem.Count == -1)
+                    countselindex = 0;
+                for (int i = 0; i <= (int)MenuCanvas.MenuItems[selectedidx].MaxCount; i++)
+                {
+                    _countPickList.Add(new GHNumberPickItem(i));
+                    if (_countMenuItem.Count == i)
+                        countselindex = i + 1;
+                }
+                CountPicker.ItemsSource = _countPickList;
+                CountPicker.ItemDisplayBinding = new Binding("Name");
+                CountPicker.SelectedIndex = countselindex;
+            }
+
+            MenuCountCaption.Text = (MenuCountEntry.IsVisible ? "Type" : "Select") + " Count for " + MenuCanvas.MenuItems[selectedidx].MainText;
             MenuCountBackgroundGrid.IsVisible = true;
         }
 
@@ -6468,7 +6489,7 @@ namespace GnollHackClient.Pages.Game
                             }
                             else
                             {
-                                if (MenuCanvas.SelectionIndex >= 0 && MenuCanvas.SelectionIndex < MenuCanvas.MenuItems.Count)
+                                if (idx != MenuCanvas.SelectionIndex && MenuCanvas.SelectionIndex >= 0 && MenuCanvas.SelectionIndex < MenuCanvas.MenuItems.Count)
                                     MenuCanvas.MenuItems[MenuCanvas.SelectionIndex].Count = 0;
 
                                 MenuCanvas.SelectionIndex = idx;
@@ -6585,23 +6606,71 @@ namespace GnollHackClient.Pages.Game
 
         private void MenuCountOkButton_Clicked(object sender, EventArgs e)
         {
-            MenuCountBackgroundGrid.IsVisible = false;
             if(_countMenuItem != null)
             {
-                if(CountPicker.SelectedIndex >= 0 && CountPicker.SelectedIndex < _countPickList.Count)
+                if(MenuCountEntry.IsVisible)
                 {
-                    lock(MenuCanvas.MenuItemLock)
+                    string str = MenuCountEntry.Text;
+                    int value;
+                    bool res = int.TryParse(str, out value);
+                    if(res)
                     {
-                        _countMenuItem.Count = _countPickList[CountPicker.SelectedIndex].Number;
-                        _countMenuItem.Selected = _countMenuItem.Count != 0;
+                        if (value < 0 || value > _countMenuItem.MaxCount)
+                            _countMenuItem.Count = -1;
+                        else
+                            _countMenuItem.Count = value;
+                    }
+                    else
+                    {
+                        MenuCountEntry.TextColor = Color.Red;
+                        MenuCountEntry.Focus();
+                        return;
+                    }
+                }
+                else
+                {
+                    if (CountPicker.SelectedIndex >= 0 && CountPicker.SelectedIndex < _countPickList.Count)
+                    {
+                        lock (MenuCanvas.MenuItemLock)
+                        {
+                            _countMenuItem.Count = _countPickList[CountPicker.SelectedIndex].Number;
+                            _countMenuItem.Selected = _countMenuItem.Count != 0;
+                        }
                     }
                 }
             }
+            MenuCountBackgroundGrid.IsVisible = false;
         }
 
         private void MenuCountCancelButton_Clicked(object sender, EventArgs e)
         {
             MenuCountBackgroundGrid.IsVisible = false;
+        }
+
+        private void MenuEntry_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (_countMenuItem != null)
+            {
+                MenuCountEntry.TextColor = Color.White;
+            }
+        }
+
+        private void MenuEntry_Completed(object sender, EventArgs e)
+        {
+            if (_countMenuItem != null)
+            {
+                string str = MenuCountEntry.Text;
+                int value;
+                bool res = int.TryParse(str, out value);
+                if (res)
+                {
+                    MenuCountEntry.TextColor = Color.Green;
+                }
+                else
+                {
+                    MenuCountEntry.TextColor = Color.Red;
+                }
+            }
         }
     }
 

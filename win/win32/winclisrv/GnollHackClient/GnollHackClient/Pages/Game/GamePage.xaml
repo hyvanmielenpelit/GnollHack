@@ -323,6 +323,20 @@
                                         Title="Count"
                                         />
 
+                                <Entry x:Name="MenuCountEntry" IsVisible="False"
+                                    HorizontalTextAlignment="Center"
+                                    VerticalTextAlignment="Center"
+                                    FontFamily="Underwood"
+                                    FontSize="15" 
+                                    BackgroundColor="#303030"
+                                    PropertyChanged="MenuEntry_PropertyChanged"
+                                    Margin="1"
+                                    PlaceholderColor="Gray" Placeholder="Count" 
+                                    Keyboard="Numeric" 
+                                    WidthRequest="180"
+                                    Completed="MenuEntry_Completed"
+                                    />
+
                                 <Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="65" />
