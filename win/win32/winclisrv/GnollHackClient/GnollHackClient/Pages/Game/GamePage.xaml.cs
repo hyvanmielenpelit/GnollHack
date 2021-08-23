@@ -6430,7 +6430,8 @@ namespace GnollHackClient.Pages.Game
             _countMenuItem = MenuCanvas.MenuItems[selectedidx];
 
             _menuTouchMoved = true; /* No further action upon release */
-            if (!MenuCanvas.MenuItems[selectedidx].Selected)
+            if ((MenuCanvas.SelectionHow == SelectionMode.Multiple && !MenuCanvas.MenuItems[selectedidx].Selected)
+                || (MenuCanvas.SelectionHow == SelectionMode.Single && selectedidx != MenuCanvas.SelectionIndex))
                 MenuCanvas_NormalClickRelease(sender, e); /* Normal click selection first */
 
             if (_countMenuItem.MaxCount > 100)
