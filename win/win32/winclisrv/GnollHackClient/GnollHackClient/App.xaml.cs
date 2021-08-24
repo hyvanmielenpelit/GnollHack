@@ -193,7 +193,7 @@ namespace GnollHackClient
                 if (stream != null)
                 {
                     App.DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("DejaVuSansMonoBold", App.DejaVuSansMonoBoldTypeface);
+                    App.TypefaceDictionary.Add("DejaVuSansMono-Bold", App.DejaVuSansMonoBoldTypeface);
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Regular.ttf"))
@@ -201,7 +201,7 @@ namespace GnollHackClient
                 if (stream != null)
                 {
                     App.LatoRegular = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("LatoRegular", App.LatoRegular);
+                    App.TypefaceDictionary.Add("Lato-Regular", App.LatoRegular);
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Bold.ttf"))
@@ -209,7 +209,7 @@ namespace GnollHackClient
                 if (stream != null)
                 {
                     App.LatoBold = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("LatoBold", App.LatoBold);
+                    App.TypefaceDictionary.Add("Lato-Bold", App.LatoBold);
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.archristy.ttf"))

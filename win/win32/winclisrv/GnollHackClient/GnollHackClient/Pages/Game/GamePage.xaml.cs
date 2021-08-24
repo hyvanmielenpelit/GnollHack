@@ -560,7 +560,7 @@ namespace GnollHackClient.Pages.Game
                 Label lbl = new Label();
                 lbl.Text = data.cmd_text;
                 lbl.TextColor = Color.White;
-                lbl.FontFamily = "LatoRegular";
+                lbl.FontFamily = "Lato-Regular";
                 lbl.VerticalOptions = LayoutOptions.End;
                 lbl.VerticalTextAlignment = TextAlignment.End;
                 lbl.HorizontalOptions = LayoutOptions.Center;
@@ -6141,14 +6141,15 @@ namespace GnollHackClient.Pages.Game
                         int rowidx = -1;
                         foreach (string s in split)
                         {
+                            bool nowrap = false;
                             if (string.IsNullOrWhiteSpace(s))
-                                continue;
+                                nowrap = true;
                             rowidx++;
                             string added_split_str = s + " ";
                             float printlength = textPaint.MeasureText(added_split_str);
                             float endposition = calc_x_start + printlength;
                             bool pastend = endposition > canvaswidth - rightmenupadding;
-                            if (pastend && rowidx > 0)
+                            if (pastend && rowidx > 0 & !nowrap)
                             {
                                 maintextrows++;
                                 calc_x_start = maintext_x_start;
@@ -6210,14 +6211,15 @@ namespace GnollHackClient.Pages.Game
                         float start_x = x;
                         foreach (string split_str in split)
                         {
+                            bool nowrap = false;
                             if (string.IsNullOrWhiteSpace(split_str))
-                                continue;
+                                nowrap = true;
                             split_idx_on_row++;
                             string added_split_str = split_str + " ";
                             float printlength = textPaint.MeasureText(added_split_str);
                             float endposition = x + printlength;
                             bool pastend = endposition > canvaswidth - rightmenupadding;
-                            if (pastend && split_idx_on_row > 0)
+                            if (pastend && split_idx_on_row > 0 && !nowrap)
                             {
                                 x = start_x;
                                 y += textPaint.FontMetrics.Descent;

@@ -17,7 +17,7 @@
             <ff:CachedImage x:Name="ViewImage" Source="{Binding ImgSourcePath, Converter={StaticResource imageSource}}"
                             WidthRequest="{Binding ImgWidth, FallbackValue='50'}" HeightRequest="{Binding ImgHeight, FallbackValue='50'}" 
                             BackgroundColor="Transparent" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" InputTransparent="True" />
-            <Label x:Name="ViewLabel" Text="{Binding LblText}" TextColor="White" FontFamily="LatoRegular" FontSize="{Binding LblFontSize, FallbackValue='9'}" 
+            <Label x:Name="ViewLabel" Text="{Binding LblText}" TextColor="White" FontFamily="Lato-Regular" FontSize="{Binding LblFontSize, FallbackValue='9'}" 
                    BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" 
                    InputTransparent="True" />
             <gnhcli:GHButton x:Name="ViewButton" Text="" 
