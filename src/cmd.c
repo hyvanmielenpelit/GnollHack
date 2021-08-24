@@ -748,7 +748,7 @@ doability(VOID_ARGS)
     any = zeroany;
     add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
         0, 0, iflags.menu_headings | ATR_HEADING,
-        "View Character Abilities              ", MENU_UNSELECTED);
+        "Character Abilities                   ", MENU_UNSELECTED);
 
     strcpy(available_ability_list[abilitynum].name, "Statistics");
     available_ability_list[abilitynum].function_ptr = &docharacterstatistics;
@@ -804,6 +804,7 @@ doability(VOID_ARGS)
 
         abilitynum++;
     }
+
 
     /* SKILL-BASED ABILITIES */
     any = zeroany;
@@ -1124,6 +1125,89 @@ doability(VOID_ARGS)
     }
 
 
+    /* Game Status */
+    any = zeroany;
+    add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
+        0, 0, iflags.menu_headings | ATR_HEADING,
+        "Game Status                           ", MENU_UNSELECTED);
+
+    /*
+    strcpy(available_ability_list[abilitynum].name, "Quests");
+    available_ability_list[abilitynum].function_ptr = &doquests;
+
+    any = zeroany;
+    any.a_int = abilitynum + 1;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+    abilitynum++;
+    */
+
+    strcpy(available_ability_list[abilitynum].name, "Dungeon overview");
+    available_ability_list[abilitynum].function_ptr = &dooverview;
+
+    any = zeroany;
+    any.a_int = abilitynum + 1;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+    abilitynum++;
+
+    strcpy(available_ability_list[abilitynum].name, "Conduct");
+    available_ability_list[abilitynum].function_ptr = &doconduct;
+
+    any = zeroany;
+    any.a_int = abilitynum + 1;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+    abilitynum++;
+
+
+    strcpy(available_ability_list[abilitynum].name, "Killed monsters");
+    available_ability_list[abilitynum].function_ptr = &dokilledmonsters;
+
+    any = zeroany;
+    any.a_int = abilitynum + 1;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+    abilitynum++;
+
+    strcpy(available_ability_list[abilitynum].name, "Genocided monsters");
+    available_ability_list[abilitynum].function_ptr = &dogenocidedmonsters;
+
+    any = zeroany;
+    any.a_int = abilitynum + 1;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+    abilitynum++;
+
+    strcpy(available_ability_list[abilitynum].name, "Discovered Items");
+    available_ability_list[abilitynum].function_ptr = &dodiscovered;
+
+    any = zeroany;
+    any.a_int = abilitynum + 1;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+    abilitynum++;
+
+
+
     /* Your pets' statistics */
     int petcount = 0;
 
@@ -1140,7 +1224,7 @@ doability(VOID_ARGS)
         any = zeroany;
         add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
             0, 0, iflags.menu_headings | ATR_HEADING,
-            "View Companion Abilities            ", MENU_UNSELECTED);
+            "Companion Abilities                 ", MENU_UNSELECTED);
 
         int pet_index = 0;
         for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
@@ -1194,7 +1278,7 @@ doability(VOID_ARGS)
         }
     }
 
-    end_menu(win, "What do you want to do?");
+    end_menu(win, "Character and Game Status");
 
 
     if (abilitynum <= 0)
@@ -4980,7 +5064,7 @@ struct ext_func_tab extcmdlist[] = {
     { M('c'), "commands", "list of additional actions",
             docommandmenu, IFBURIED | GENERALCMD | AUTOCOMPLETE },
     { '\0' /*M('c')*/, "conduct", "list voluntary challenges you have maintained",
-            doconduct, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+            doconduct, IFBURIED | AUTOCOMPLETE },
     { C('g'), "dig", "dig the ground", dodig, INCMDMENU },
     { M('d'), "dip", "dip an object into something", dodip, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_GENERAL, 0, getobj_allowall, "dip" },
     { '>', "down", "go down a staircase", dodown },
@@ -4998,7 +5082,7 @@ struct ext_func_tab extcmdlist[] = {
     { ';', "glance", "show what type of thing a map symbol corresponds to",
             doquickwhatis, IFBURIED | GENERALCMD },
     { M('g'), "genocided", "list genocided monsters",
-            dogenocidedmonsters, IFBURIED | INCMDMENU },
+            dogenocidedmonsters, IFBURIED },
 #ifdef USE_TILES
     { M('_'), "grid", "toggle tile grid on/off",
             dotogglegrid, IFBURIED | AUTOCOMPLETE },
@@ -5016,7 +5100,7 @@ struct ext_func_tab extcmdlist[] = {
     { M('j'), "jump", "jump to another location", dojump, AUTOCOMPLETE | INCMDMENU },
     { C('d'), "kick", "kick something", dokick, AUTOCOMPLETE | INCMDMENU },
     { M('k'), "killed", "list killed monsters",
-            dokilledmonsters, IFBURIED | INCMDMENU },
+            dokilledmonsters, IFBURIED },
     { '\\', "known", "show what object types have been discovered",
             dodiscovered, IFBURIED | GENERALCMD },
     { '`', "knownclass", "show discovered types for one class of objects",
@@ -5046,7 +5130,7 @@ struct ext_func_tab extcmdlist[] = {
     { 'O', "options", "show option settings, possibly change them",
             doset, IFBURIED | GENERALCMD },
     { C('o'), "overview", "show a summary of the explored dungeon",
-            dooverview, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+            dooverview, IFBURIED | AUTOCOMPLETE },
     { '\0', "panic", "test panic routine (fatal to game)",
             wiz_panic, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { 'p', "pay", "pay your shopping bill", dopay },

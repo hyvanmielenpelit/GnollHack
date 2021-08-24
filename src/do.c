@@ -6072,30 +6072,6 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         set_special_level_seen(&u.uz, TRUE);
     }
 
-    /* Screen text for entering the level */
-    char dngbuf[BUFSZ];
-    char lvlbuf[BUFSZ];
-    const char* dname = dungeons[u.uz.dnum].dname;
-    if (dname && !strncmp(dname, "The ", 4))
-        dname += 4;
-
-    Sprintf(dngbuf, "%s", dname ? dname : "Dungeon");
-
-    s_level* slev = Is_special(&u.uz);
-    mapseen* mptr = 0;
-    if(slev)
-        mptr = find_mapseen(&u.uz);
-
-    if (slev && mptr && mptr->flags.special_level_true_nature_known)
-    {
-        Sprintf(lvlbuf, "%s", slev->name);
-    }
-    else
-    {
-        Sprintf(lvlbuf, "Level %d", u.uz.dlevel);
-    }
-    display_screen_text(lvlbuf, dngbuf, SCREEN_TEXT_ENTER_DUNGEON_LEVEL, 0, 0, 0UL);
-
     /* special levels can have a custom arrival message */
     deliver_splev_message();
 
@@ -6233,6 +6209,33 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             u.uevent.bovine_portal_hint = 1;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you think you hear distant grunting and bellowing, but then the noises are gone.");
         }
+    }
+
+    if (windowprocs.wincap2 & WC2_SCREEN_TEXT)
+    {
+        /* Screen text for entering the level */
+        char dngbuf[BUFSZ];
+        char lvlbuf[BUFSZ];
+        const char* dname = dungeons[u.uz.dnum].dname;
+        if (dname && !strncmp(dname, "The ", 4))
+            dname += 4;
+
+        Sprintf(dngbuf, "%s", dname ? dname : "Dungeon");
+
+        s_level* slev = Is_special(&u.uz);
+        mapseen* mptr = 0;
+        if (slev)
+            mptr = find_mapseen(&u.uz);
+
+        if (slev && mptr && mptr->flags.special_level_true_nature_known)
+        {
+            Sprintf(lvlbuf, "%s", slev->name);
+        }
+        else
+        {
+            Sprintf(lvlbuf, "Level %d", u.uz.dlevel);
+        }
+        display_screen_text(lvlbuf, dngbuf, SCREEN_TEXT_ENTER_DUNGEON_LEVEL, 0, 0, 0UL);
     }
 
     assign_level(&u.uz0, &u.uz); /* reset u.uz0 */

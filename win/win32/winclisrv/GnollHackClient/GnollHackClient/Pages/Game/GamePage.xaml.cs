@@ -6044,7 +6044,6 @@ namespace GnollHackClient.Pages.Game
             float canvasheight = referenceCanvasView.CanvasSize.Height;
             float x = 0, y = 0;
             string str;
-            float textWidth;
             SKRect textBounds = new SKRect();
             float scale = canvaswidth / (float)referenceCanvasView.Width;
 
@@ -6088,8 +6087,22 @@ namespace GnollHackClient.Pages.Game
 
                 lock (MenuCanvas.MenuItemLock)
                 {
+                    bool has_pictures = false;
+                    bool has_identifiers = false;
                     _firstDrawnItemIdx = -1;
                     _lastDrawnItemIdx = -1;
+                    foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
+                    {
+                        if (mi.Identifier != 0)
+                            has_identifiers = true;
+
+                        if (mi.IsGlyphVisible)
+                            has_pictures = true;
+
+                        if (has_identifiers && has_pictures)
+                            break;
+                    }
+
                     foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
                     {
                         idx++;
@@ -6098,8 +6111,6 @@ namespace GnollHackClient.Pages.Game
                         textPaint.Typeface = App.GetTypefaceByName(mi.FontFamily);
                         textPaint.TextSize = (float)mi.FontSize * scale;
                         textPaint.TextAlign = SKTextAlign.Left;
-                        str = mi.FormattedAccelerator;
-                        textWidth = textPaint.MeasureText(str, ref textBounds);
 
                         /* Bottom Padding */
                         if (((ulong)mi.MenuFlags & (ulong)MenuFlags.IsHeading) != 0)
@@ -6130,7 +6141,7 @@ namespace GnollHackClient.Pages.Game
                         {
                             accel_fixed_width = textPaint.FontMetrics.AverageCharacterWidth + 3 * textPaint.MeasureText(" ");
                             _firstDrawnItemIdx = idx;
-                            maintext_x_start = leftmenupadding + leftinnerpadding + accel_fixed_width + picturepadding + picturewidth + picturepadding;
+                            maintext_x_start = leftmenupadding + leftinnerpadding + (has_identifiers ? accel_fixed_width : 0) + (has_pictures ? picturepadding + picturewidth + picturepadding : textPaint.FontMetrics.AverageCharacterWidth);
                             first = false;
                         }
 
@@ -6183,27 +6194,40 @@ namespace GnollHackClient.Pages.Game
                         y += generallinepadding;
                         y -= textPaint.FontMetrics.Ascent;
                         x += leftinnerpadding;
-                        textPaint.Color = SKColors.Gray;
-                        if (!(y + singlelinepadding + textPaint.FontMetrics.Descent <= 0 || y + singlelinepadding + textPaint.FontMetrics.Ascent >= canvasheight))
-                            canvas.DrawText(str, x, y + singlelinepadding, textPaint);
-                        x += accel_fixed_width;
 
-                        /* Icon */
-                        x += picturepadding;
-                        float glyph_start_y = mi.DrawBounds.Top + Math.Max(0, (totalRowHeight - minrowheight) / 2);
-                        if (mi.IsGlyphVisible && !(glyph_start_y + minrowheight <= 0 || glyph_start_y >= canvasheight))
+                        if(has_identifiers)
                         {
-                            using (new SKAutoCanvasRestore(canvas, true))
-                            {
-                                canvas.Translate(x, glyph_start_y);
-                                mi.GlyphImageSource.AutoSize = true;
-                                mi.GlyphImageSource.DoAutoSize();
-                                if (mi.GlyphImageSource.Height > 0)
-                                    canvas.Scale(minrowheight / mi.GlyphImageSource.Height);
-                                mi.GlyphImageSource.DrawOnCanvas(canvas);
-                            }
+                            str = mi.FormattedAccelerator;
+                            textPaint.Color = SKColors.Gray;
+                            if (!(y + singlelinepadding + textPaint.FontMetrics.Descent <= 0 || y + singlelinepadding + textPaint.FontMetrics.Ascent >= canvasheight))
+                                canvas.DrawText(str, x, y + singlelinepadding, textPaint);
+                            x += accel_fixed_width;
                         }
-                        x += picturewidth + picturepadding;
+
+                        if (has_pictures)
+                        {
+                            x += picturepadding;
+
+                            /* Icon */
+                            float glyph_start_y = mi.DrawBounds.Top + Math.Max(0, (totalRowHeight - minrowheight) / 2);
+                            if (mi.IsGlyphVisible && !(glyph_start_y + minrowheight <= 0 || glyph_start_y >= canvasheight))
+                            {
+                                using (new SKAutoCanvasRestore(canvas, true))
+                                {
+                                    canvas.Translate(x, glyph_start_y);
+                                    mi.GlyphImageSource.AutoSize = true;
+                                    mi.GlyphImageSource.DoAutoSize();
+                                    if (mi.GlyphImageSource.Height > 0)
+                                        canvas.Scale(minrowheight / mi.GlyphImageSource.Height);
+                                    mi.GlyphImageSource.DrawOnCanvas(canvas);
+                                }
+                            }
+                            x += picturewidth + picturepadding;
+                        }
+                        else
+                        {
+                            x += textPaint.FontMetrics.AverageCharacterWidth;
+                        }
 
                         /* Main text */
                         textPaint.Color = ClientUtils.NHColor2SKColor((nhcolor)mi.NHColor);

@@ -877,7 +877,7 @@ namespace GnollHackCommon
         public const int MaxMessageHistoryLength = 256;
         public const long MoveOrPressTimeThreshold = 200; /* Milliseconds */
         public const double MoveByHoldingDownThreshold = 0.20; /* Seconds */
-        public const double LongMenuTapThreshold = 1.00; /* Seconds */
+        public const double LongMenuTapThreshold = 0.75; /* Seconds */
         public const int BlCondMaskBits = 23;
         public const int MaxStatusLines = 8;
         public const int MaxStatusFieldsPerLine = 24;
