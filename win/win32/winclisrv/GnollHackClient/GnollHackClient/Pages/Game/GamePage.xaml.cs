@@ -6236,7 +6236,7 @@ namespace GnollHackClient.Pages.Game
                 float bottomPadding = 0;
                 float topPadding = 0;
                 float maintext_x_start = 0;
-
+                float fontspacingpadding = 0;
                 lock (MenuCanvas.MenuItemLock)
                 {
                     bool has_pictures = false;
@@ -6324,6 +6324,7 @@ namespace GnollHackClient.Pages.Game
                             }
                         }
 
+                        fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                         float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontSpacing) * ((float)maintextrows + (mi.IsSuffixTextVisible ? 0.8f : 0.0f))) / 2);
 
                         bool isselected = referenceCanvasView.SelectionHow == SelectionMode.Multiple ? mi.Selected :
@@ -6344,6 +6345,7 @@ namespace GnollHackClient.Pages.Game
                         float singlelinepadding = Math.Max(0.0f, ((float)(maintextrows - 1) * (textPaint.FontSpacing)) / 2);
                         y += topPadding;
                         y += generallinepadding;
+                        y += fontspacingpadding;
                         y -= textPaint.FontMetrics.Ascent;
                         x += leftinnerpadding;
 
@@ -6408,7 +6410,7 @@ namespace GnollHackClient.Pages.Game
 
                             x = endposition;
                         }
-                        y += textPaint.FontSpacing + textPaint.FontMetrics.Ascent;
+                        y += textPaint.FontMetrics.Descent + fontspacingpadding;
                         x = start_x;
 
                         /* Suffix text */
@@ -6416,10 +6418,12 @@ namespace GnollHackClient.Pages.Game
                         {
                             textPaint.Color = _suffixTextColor;
                             textPaint.TextSize = 0.8f * textPaint.TextSize;
+                            fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                            y += fontspacingpadding;
                             y -= textPaint.FontMetrics.Ascent;
                             if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
                                 canvas.DrawText(mi.SuffixText, x, y, textPaint);
-                            y += textPaint.FontSpacing + textPaint.FontMetrics.Ascent;
+                            y += textPaint.FontMetrics.Descent + fontspacingpadding;
                         }
 
                         y += generallinepadding;
@@ -6989,6 +6993,8 @@ namespace GnollHackClient.Pages.Game
                         x += (float)putstritem.LeftPaddingWidth * scale;
                         textPaint.Typeface = App.GetTypefaceByName(putstritem.TextWindowFontFamily);
                         textPaint.TextSize = (float)putstritem.TextWindowFontSize * scale;
+                        float fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                        y += fontspacingpadding;
                         y -= textPaint.FontMetrics.Ascent;
                         float start_x = x;
                         foreach (GHPutStrInstructions instr in putstritem.InstructionList)
@@ -7034,7 +7040,7 @@ namespace GnollHackClient.Pages.Game
                             }
                         }
                         j++;
-                        y += textPaint.FontSpacing + textPaint.FontMetrics.Ascent;
+                        y += textPaint.FontMetrics.Descent + fontspacingpadding;
                     }
                     _totalTextHeight = y - curmenuoffset;
                 }

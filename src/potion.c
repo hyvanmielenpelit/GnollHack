@@ -1198,6 +1198,7 @@ struct obj *otmp;
                      surface(u.ux, u.uy));
             incr_itimeout(&HParalyzed, duration);
             context.botl = context.botlx = 1;
+            refresh_u_tile_gui_info(TRUE);
 #if 0
             nomul(-d(5 - 2 * bcsign(otmp), 4)); // (rn1(9 - 6 * bcsign(otmp), 8 - 4 * bcsign(otmp))));
             multi_reason = "frozen by a potion";
@@ -1422,6 +1423,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         incr_itimeout(otmp->otyp == POT_LIGHTNING_SPEED ? &HLightning_fast : otmp->otyp == POT_GREATER_SPEED ? &HSuper_fast : &HUltra_fast, duration);
         special_effect_wait_until_end(0);
+        refresh_u_tile_gui_info(TRUE);
         break;
     case POT_MAGIC_RESISTANCE:
         if (!Antimagic)
@@ -1438,6 +1440,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         incr_itimeout(&HAntimagic, duration);
         special_effect_wait_until_end(0);
+        refresh_u_tile_gui_info(TRUE);
         break;
     case POT_TITAN_STRENGTH:
         if (!Titan_strength)
@@ -1454,6 +1457,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         incr_itimeout(&HTitan_strength, duration);
         special_effect_wait_until_end(0);
+        refresh_u_tile_gui_info(TRUE);
         break;
     case POT_FIRE_IMMUNITY:
         if (!Fire_immunity)
@@ -1470,6 +1474,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         incr_itimeout(&HFire_immunity, duration);
         special_effect_wait_until_end(0);
+        refresh_u_tile_gui_info(TRUE);
         break;
     case POT_COLD_IMMUNITY:
         if (!Cold_immunity)
@@ -1486,6 +1491,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         incr_itimeout(&HCold_immunity, duration);
         special_effect_wait_until_end(0);
+        refresh_u_tile_gui_info(TRUE);
         break;
     case POT_SHOCK_IMMUNITY:
         if (!Shock_immunity)
@@ -1502,6 +1508,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         incr_itimeout(&HShock_immunity, duration);
         special_effect_wait_until_end(0);
+        refresh_u_tile_gui_info(TRUE);
         break;
     case POT_HEROISM:
     case POT_SUPER_HEROISM:
@@ -1519,6 +1526,7 @@ struct obj *otmp;
         exercise(A_WIS, TRUE);
         incr_itimeout(otmp->otyp == POT_HEROISM ? &HHeroism : &HSuper_heroism, duration);
         special_effect_wait_until_end(0);
+        refresh_u_tile_gui_info(TRUE);
         break;
     case POT_LESSER_REGENERATION:
     case POT_REGENERATION:
@@ -1537,6 +1545,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         incr_itimeout(otmp->otyp == POT_GREATER_REGENERATION ? &HDivine_regeneration : otmp->otyp == POT_REGENERATION ? &HRapidest_regeneration : &HRapider_regeneration, duration);
         special_effect_wait_until_end(0);
+        refresh_u_tile_gui_info(TRUE);
         break;
     case POT_LESSER_REJUVENATION:
     case POT_REJUVENATION:
@@ -1548,6 +1557,7 @@ struct obj *otmp;
         incr_itimeout(otmp->otyp == POT_GREATER_REJUVENATION ? &HRapidest_regeneration : otmp->otyp == POT_REJUVENATION ? &HRapider_regeneration : &HRapid_regeneration, duration);
         incr_itimeout(otmp->otyp == POT_GREATER_REJUVENATION ? &HRapidest_energy_regeneration : otmp->otyp == POT_REJUVENATION ? &HRapider_energy_regeneration : &HRapid_energy_regeneration, duration);
         special_effect_wait_until_end(0);
+        refresh_u_tile_gui_info(TRUE);
         break;
     case POT_BLINDNESS:
         if (Blind)

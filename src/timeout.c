@@ -1497,6 +1497,7 @@ boolean wakeup_msg;
     stop_occupation();
     incr_itimeout(&HSleeping, abs(how_long));
     context.botl = context.botlx = 1;
+    refresh_u_tile_gui_info(TRUE);
 
     if (wakeup_msg)
     {
