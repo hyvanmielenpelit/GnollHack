@@ -935,6 +935,8 @@ namespace GnollHackCommon
         public const int NUM_WORM_SOURCE_DIRS = 4;
         public const float ArrowButtonSize = 0.2f;
         public const float NumberButtonSize = 0.3f;
+        public const int MoreButtonsPerRow = 6;
+        public const int MoreButtonsPerColumn = 9;
     }
 
 

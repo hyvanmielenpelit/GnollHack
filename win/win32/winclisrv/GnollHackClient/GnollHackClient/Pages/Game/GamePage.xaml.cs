@@ -62,7 +62,7 @@ namespace GnollHackClient.Pages.Game
         private bool _forceAscii = false;
         public bool ForceAscii { get { lock (_forceAsciiLock) { return _forceAscii; } } set { lock (_forceAsciiLock) { _forceAscii = value; } } }
 
-        private CommandPage _cmdPage = null;
+        private CommandCanvasPage _cmdPage = null;
 
         public object RefreshScreenLock = new object();
         private bool _refreshScreen = true;
@@ -239,6 +239,8 @@ namespace GnollHackClient.Pages.Game
             {
                 _logoBitmap = SKBitmap.Decode(stream);
             }
+            InitializeMoreCommandButtons();
+
             //InventoryImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.inventory.png");
             //SearchImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.search.png");
             //WaitImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.wait.png");
@@ -286,7 +288,7 @@ namespace GnollHackClient.Pages.Game
                 }
             }
             await LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear);
-            _cmdPage = new CommandPage(this);
+            _cmdPage = new CommandCanvasPage(this);
 
             if (App.IsServerGame)
             {
@@ -366,7 +368,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     TextCanvas.InvalidateSurface();
                 }
-                else if (MenuGrid.IsVisible)
+                else  if (MenuGrid.IsVisible)
                 {
                     lock(_menuDrawOnlyLock)
                     {
@@ -860,18 +862,21 @@ namespace GnollHackClient.Pages.Game
         }
         private async void ShowWindowPage(GHWindow window, List<GHPutStrItem> strs)
         {
-            var cpage = new GHTextPage(this, window, strs);
+            //var cpage = new GHTextPage(this, window, strs);
+            //await App.Current.MainPage.Navigation.PushModalAsync(cpage, false);
+            var cpage = new GHTextCanvasPage(this, window, strs);
             await App.Current.MainPage.Navigation.PushModalAsync(cpage, false);
         }
 
         private void ShowWindowCanvas(GHWindow window, List<GHPutStrItem> strs)
         {
+
             lock (RefreshScreenLock)
             {
                 RefreshScreen = false;
             }
 
-            lock(TextScrollLock)
+            lock (TextScrollLock)
             {
                 _textScrollOffset = 0;
             }
@@ -906,23 +911,6 @@ namespace GnollHackClient.Pages.Game
             TextGrid.IsVisible = true;
         }
 
-        private GlyphImageSource _textGlyphImageSource = new GlyphImageSource();
-
-        public ImageSource TextGlyphImage
-        {
-            get
-            {
-                return _textGlyphImageSource;
-            }
-        }
-
-        public bool IsTextGlyphVisible
-        {
-            get
-            {
-                return (Math.Abs(_textGlyphImageSource.Glyph) > 0 && _textGlyphImageSource.Glyph != NoGlyph);
-            }
-        }
 
         private GlyphImageSource _menuGlyphImageSource = new GlyphImageSource();
 
@@ -1179,6 +1167,12 @@ namespace GnollHackClient.Pages.Game
         private object _menuDrawOnlyLock = new object();
         private bool _menuDrawOnlyClear = false;
         private bool _menuRefresh = true;
+
+        private async void ShowMenuCanvasPage(GHMenuInfo menuinfo, GHWindow ghwindow)
+        {
+            var cpage = new GHMenuCanvasPage(this, menuinfo, ghwindow);
+            await App.Current.MainPage.Navigation.PushModalAsync(cpage, false);
+        }
 
         private void ShowMenuCanvas(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
@@ -2413,7 +2407,7 @@ namespace GnollHackClient.Pages.Game
                     PaintMainGamePage(sender, e);
                     break;
                 case canvas_page_types.MenuPage:
-                    MenuCanvas_PaintSurface(sender, e);
+                    //MenuCanvas_PaintSurface(sender, e);
                     break;
             }
 
@@ -5305,7 +5299,7 @@ namespace GnollHackClient.Pages.Game
                     canvasView_Touch_MainPage(sender, e);
                     break;
                 case canvas_page_types.MenuPage:
-                    MenuCanvas_Touch(sender, e);
+                    //MenuCanvas_Touch(sender, e);
                     break;
             }
         }
@@ -5864,23 +5858,28 @@ namespace GnollHackClient.Pages.Game
 
         private void MoreButton_Clicked(object sender, EventArgs e)
         {
-            lMoreButton.IsEnabled = false;
-            ShowMorePage(sender, e);
+            //lMoreButton.IsEnabled = false;
+            ShowMoreCanvas(sender, e);
         }
 
         private async void ShowMorePage(object sender, EventArgs e)
         {
             if (_cmdPage == null)
-                _cmdPage = new CommandPage(this);
+                _cmdPage = new CommandCanvasPage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(_cmdPage);
         }
 
         private void ShowMoreCanvas(object sender, EventArgs e)
         {
+            lock (RefreshScreenLock)
+            {
+                RefreshScreen = false;
+            }
 
+            MoreCommandsGrid.IsVisible = true;
         }
 
-            private void YnButton_Clicked(object sender, EventArgs e)
+        private void YnButton_Clicked(object sender, EventArgs e)
         {
             GHButton ghb = (GHButton)sender;
             GenericButton_Clicked(sender, e, ghb.GHCommand);
@@ -6315,7 +6314,7 @@ namespace GnollHackClient.Pages.Game
                         y -= textPaint.FontMetrics.Ascent;
                         x += leftinnerpadding;
 
-                        if(has_identifiers)
+                        if (has_identifiers)
                         {
                             str = mi.FormattedAccelerator;
                             textPaint.Color = SKColors.Gray;
@@ -6437,7 +6436,7 @@ namespace GnollHackClient.Pages.Game
         {
             lock (_menuDrawOnlyLock)
             {
-                if(_menuDrawOnlyClear)
+                if (_menuDrawOnlyClear)
                     return;
             }
 
@@ -6470,7 +6469,7 @@ namespace GnollHackClient.Pages.Game
                             if (_savedMenuSender == null || _savedMenuEventArgs == null)
                                 return false;
                             DateTime curtime = DateTime.Now;
-                            if(curtime - _savedMenuTimeStamp < TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold * 0.8))
+                            if (curtime - _savedMenuTimeStamp < TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold * 0.8))
                                 return false; /* Changed touch position */
 
                             MenuCanvas_LongTap(_savedMenuSender, _savedMenuEventArgs);
@@ -6566,7 +6565,7 @@ namespace GnollHackClient.Pages.Game
                     break;
                 }
             }
-            
+
             if (selectedidx < 0)
                 return;
 
@@ -6589,7 +6588,7 @@ namespace GnollHackClient.Pages.Game
                 MenuCountForegroundGrid.Margin = new Thickness(0, 50, 0, 0);
                 CountPicker.IsVisible = false;
                 MenuCountEntry.IsVisible = true;
-                if(_countMenuItem.Count == -1)
+                if (_countMenuItem.Count == -1)
                     MenuCountEntry.Text = _countMenuItem.MaxCount.ToString();
                 else
                     MenuCountEntry.Text = _countMenuItem.Count.ToString();
@@ -6673,7 +6672,7 @@ namespace GnollHackClient.Pages.Game
                                     MenuCanvas.MenuItems[MenuCanvas.SelectionIndex].Count = 0;
 
                                 MenuCanvas.SelectionIndex = idx;
-                                if(MenuCanvas.MenuItems[idx].Count == 0)
+                                if (MenuCanvas.MenuItems[idx].Count == 0)
                                     MenuCanvas.MenuItems[idx].Count = -1;
 
                                 /* Else keep the current selection number */
@@ -6684,7 +6683,7 @@ namespace GnollHackClient.Pages.Game
                 }
             }
         }
-        
+
         private object _menuHideCancelledLock = new object();
         private bool _menuHideCancelled = false;
         private void MenuOKButton_Clicked(object sender, EventArgs e)
@@ -6700,7 +6699,7 @@ namespace GnollHackClient.Pages.Game
 
             ConcurrentQueue<GHResponse> queue;
             List<GHMenuItem> resultlist = new List<GHMenuItem>();
-            lock(MenuCanvas.MenuItemLock)
+            lock (MenuCanvas.MenuItemLock)
             {
                 if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
                 {
@@ -6764,6 +6763,7 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 MenuGrid.IsVisible = false;
+
                 lock (_canvasPageLock)
                 {
                     _canvasPage = canvas_page_types.MainGamePage;
@@ -6782,7 +6782,7 @@ namespace GnollHackClient.Pages.Game
         {
             if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
             {
-                lock(MenuCanvas.MenuItemLock)
+                lock (MenuCanvas.MenuItemLock)
                 {
                     foreach (GHMenuItem o in MenuCanvas.MenuItems)
                     {
@@ -6807,14 +6807,14 @@ namespace GnollHackClient.Pages.Game
 
         private void MenuCountOkButton_Clicked(object sender, EventArgs e)
         {
-            if(_countMenuItem != null)
+            if (_countMenuItem != null)
             {
-                if(MenuCountEntry.IsVisible)
+                if (MenuCountEntry.IsVisible)
                 {
                     string str = MenuCountEntry.Text;
                     int value;
                     bool res = int.TryParse(str, out value);
-                    if(res)
+                    if (res)
                     {
                         if (value < 0 || value > _countMenuItem.MaxCount)
                             _countMenuItem.Count = -1;
@@ -6874,6 +6874,26 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+
+        private GlyphImageSource _textGlyphImageSource = new GlyphImageSource();
+
+        public ImageSource TextGlyphImage
+        {
+            get
+            {
+                return _textGlyphImageSource;
+            }
+        }
+
+        public bool IsTextGlyphVisible
+        {
+            get
+            {
+                return (Math.Abs(_textGlyphImageSource.Glyph) > 0 && _textGlyphImageSource.Glyph != NoGlyph);
+            }
+        }
+
+
         private int _firstDrawnTextItemIdx = -1;
         private int _lastDrawnTextItemIdx = -1;
         private float _totalTextHeight = 0;
@@ -6896,7 +6916,6 @@ namespace GnollHackClient.Pages.Game
             float canvasheight = TextCanvas.CanvasSize.Height;
             float x = 0, y = 0;
             string str;
-            SKRect textBounds = new SKRect();
             float scale = canvaswidth / (float)TextCanvas.Width;
 
             canvas.Clear();
@@ -6934,7 +6953,6 @@ namespace GnollHackClient.Pages.Game
                     {
                         int pos = 0;
                         x = leftmenupadding + leftinnerpadding;
-                        float totwidth = 0;
                         textPaint.Typeface = App.GetTypefaceByName(putstritem.TextWindowFontFamily);
                         textPaint.TextSize = (float)putstritem.TextWindowFontSize * scale;
                         y -= textPaint.FontMetrics.Ascent;
@@ -7093,14 +7111,209 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+
+        public GHCommandButtonItem[,] _moreBtnMatrix = new GHCommandButtonItem[GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
+        public SKBitmap[,] _moreBtnBitmaps = new SKBitmap[GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
+
+        private void InitializeMoreCommandButtons()
+        {
+            _moreBtnMatrix[0, 0] = new GHCommandButtonItem("Go Down", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'>');
+            _moreBtnMatrix[1, 0] = new GHCommandButtonItem("Go Up", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'<');
+            _moreBtnMatrix[2, 0] = new GHCommandButtonItem("Open", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'o');
+            _moreBtnMatrix[3, 0] = new GHCommandButtonItem("Close", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'c');
+            _moreBtnMatrix[4, 0] = new GHCommandButtonItem("Drop Types", "GnollHackClient.Assets.Icons.dropmany.png", (int)'D');
+            _moreBtnMatrix[5, 0] = new GHCommandButtonItem("2-Weapon", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'x'));
+            _moreBtnMatrix[5, 8] = new GHCommandButtonItem("Back to Game", "GnollHackClient.Assets.Icons.missing_icon.png", -1);
+
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
+            for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
+            {
+                for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
+                {
+                    if (_moreBtnMatrix[i, j] != null && !string.IsNullOrEmpty(_moreBtnMatrix[i, j].ImageSourcePath))
+                    {
+                        using (Stream stream = assembly.GetManifestResourceStream(_moreBtnMatrix[i, j].ImageSourcePath))
+                        {
+                            if (stream != null)
+                                _moreBtnBitmaps[i, j] = SKBitmap.Decode(stream);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        public object CommandButtonLock = new object();
+        private Dictionary<long, TouchEntry> CommandTouchDictionary = new Dictionary<long, TouchEntry>();
+        private object _savedCommandSender = null;
+        private SKTouchEventArgs _savedCommandEventArgs = null;
+        private DateTime _savedCommandTimeStamp;
+        private bool _commandTouchMoved = false;
         private void CommandCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            SKImageInfo info = e.Info;
+            SKSurface surface = e.Surface;
+            SKCanvas canvas = surface.Canvas;
+            float canvaswidth = CommandCanvas.CanvasSize.Width;
+            float canvasheight = CommandCanvas.CanvasSize.Height;
+            float x = 0, y = 0;
+            float scale = canvaswidth / (float)CommandCanvas.Width;
+            float btnAreaWidth = canvaswidth / GHConstants.MoreButtonsPerRow;
+            float btnAreaHeight = canvasheight / GHConstants.MoreButtonsPerColumn;
 
+            canvas.Clear();
+
+            using (SKPaint textPaint = new SKPaint())
+            {
+                textPaint.Color = SKColors.White;
+                textPaint.Typeface = App.LatoRegular;
+                textPaint.TextSize = 9.0f * scale;
+                textPaint.TextAlign = SKTextAlign.Center;
+
+                float btnImgRawWidth = Math.Min(btnAreaWidth, 80 * scale);
+                float btnImgRawHeight = Math.Min(btnAreaHeight - textPaint.FontSpacing, 80 * scale);
+
+                float btnImgWidth = Math.Min(btnImgRawWidth, btnImgRawHeight);
+                float btnImgHeight = btnImgWidth;
+
+                for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
+                {
+                    for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
+                    {
+                        if (_moreBtnMatrix[i, j] != null && _moreBtnBitmaps[i, j] != null)
+                        {
+                            SKRect targetrect = new SKRect();
+                            targetrect.Left = i * btnAreaWidth + Math.Max(0, (btnAreaWidth - btnImgWidth) / 2);
+                            targetrect.Top = j * btnAreaHeight + Math.Max(0, (btnAreaHeight - btnImgHeight - textPaint.FontSpacing) / 2);
+                            targetrect.Right = targetrect.Left + btnImgWidth;
+                            targetrect.Bottom = targetrect.Top + btnImgHeight;
+                            float text_x = (targetrect.Left + targetrect.Right) / 2;
+                            float text_y = targetrect.Bottom - textPaint.FontMetrics.Ascent;
+
+                            canvas.DrawBitmap(_moreBtnBitmaps[i, j], targetrect);
+                            canvas.DrawText(_moreBtnMatrix[i, j].Text, text_x, text_y, textPaint);
+                        }
+                    }
+                }
+            }
         }
 
         private void CommandCanvas_Touch(object sender, SKTouchEventArgs e)
         {
+            lock (CommandButtonLock)
+            {
+                switch (e?.ActionType)
+                {
+                    case SKTouchAction.Entered:
+                        break;
+                    case SKTouchAction.Pressed:
+                        _savedCommandSender = null;
+                        _savedCommandEventArgs = null;
+                        _savedCommandTimeStamp = DateTime.Now;
 
+                        if (CommandTouchDictionary.ContainsKey(e.Id))
+                            CommandTouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
+                        else
+                            CommandTouchDictionary.Add(e.Id, new TouchEntry(e.Location, DateTime.Now));
+
+                        if (CommandTouchDictionary.Count > 1)
+                            _commandTouchMoved = true;
+                        else
+                        {
+                            _savedCommandSender = sender;
+                            _savedCommandEventArgs = e;
+                        }
+
+                        e.Handled = true;
+                        break;
+                    case SKTouchAction.Moved:
+                        {
+                            TouchEntry entry;
+                            bool res = CommandTouchDictionary.TryGetValue(e.Id, out entry);
+                            if (res)
+                            {
+                                SKPoint anchor = entry.Location;
+
+                                float diffX = e.Location.X - anchor.X;
+                                float diffY = e.Location.Y - anchor.Y;
+                                float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
+
+                                if (CommandTouchDictionary.Count == 1)
+                                {
+                                    if ((dist > 25 ||
+                                        (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond > GHConstants.MoveOrPressTimeThreshold
+                                           ))
+                                    {
+                                        /* Just one finger */
+                                        if (diffX != 0 || diffY != 0)
+                                        {
+                                            /* Do something here on swipe */
+
+                                            CommandTouchDictionary[e.Id].Location = e.Location;
+                                            _commandTouchMoved = true;
+                                            _savedCommandTimeStamp = DateTime.Now;
+                                        }
+                                    }
+                                }
+                            }
+                            e.Handled = true;
+                        }
+                        break;
+                    case SKTouchAction.Released:
+                        {
+                            _savedCommandSender = null;
+                            _savedCommandEventArgs = null;
+                            _savedCommandTimeStamp = DateTime.Now;
+
+                            TouchEntry entry;
+                            bool res = CommandTouchDictionary.TryGetValue(e.Id, out entry);
+                            long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+
+                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_commandTouchMoved)
+                            {
+                                /* Normal click */
+                                /* Select command here*/
+                                float canvaswidth = CommandCanvas.CanvasSize.Width;
+                                float canvasheight = CommandCanvas.CanvasSize.Height;
+                                float btnAreaWidth = canvaswidth / GHConstants.MoreButtonsPerRow;
+                                float btnAreaHeight = canvasheight / GHConstants.MoreButtonsPerColumn;
+                                int btnX = (int)(e.Location.X / btnAreaWidth);
+                                int btnY = (int)(e.Location.Y / btnAreaHeight);
+
+                                if (btnX >= 0 && btnX < GHConstants.MoreButtonsPerRow && btnY >= 0 && btnY < GHConstants.MoreButtonsPerColumn)
+                                {
+                                    GHCommandButtonItem cbi = _moreBtnMatrix[btnX, btnY];
+                                    if (cbi != null)
+                                    {
+                                        if (cbi.Command >= 0)
+                                            GenericButton_Clicked(CommandCanvas, e, cbi.Command);
+                                    }
+                                }
+
+                                /* Hide the canvas */
+                                MoreCommandsGrid.IsVisible = false;
+                                lock (RefreshScreenLock)
+                                {
+                                    RefreshScreen = true;
+                                }
+                            }
+                            if (CommandTouchDictionary.ContainsKey(e.Id))
+                                CommandTouchDictionary.Remove(e.Id);
+                            if (CommandTouchDictionary.Count == 0)
+                                _commandTouchMoved = false;
+                            e.Handled = true;
+                        }
+                        break;
+                    case SKTouchAction.Cancelled:
+                        break;
+                    case SKTouchAction.Exited:
+                        break;
+                    case SKTouchAction.WheelChanged:
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 

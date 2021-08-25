@@ -15,7 +15,7 @@
     </ContentPage.Resources>
     
     <ContentPage.Content>
-        <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Black">
+        <Grid x:Name="RootGrid" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Black">
             <Grid x:Name="LoadingGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
                 <ff:CachedImage Source="resource://GnollHackClient.Assets.dgn_entrance.jpg" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                                 Aspect="AspectFill" />
@@ -262,6 +262,7 @@
                     </Frame>
                 </Grid>
             </Grid>
+
             <Grid x:Name="MenuGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
                 <ff:CachedImage x:Name="MenuBackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                             Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>

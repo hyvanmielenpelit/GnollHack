@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:gnollhackclient="clr-namespace:GnollHackClient"
+             x:Class="GnollHackClient.Pages.Game.GHTextCanvasPage">
+    <ContentPage.Content>
+        <Grid x:Name="TextGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000">
+            <ff:CachedImage x:Name="TextBackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+                            Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>
+            <ff:CachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="4" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
+            <gnollhackclient:GHCanvasView x:Name="TextCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:gnollhackclient="clr-namespace:GnollHackClient"
+             x:Class="GnollHackClient.Pages.Game.CommandCanvasPage">
+    <ContentPage.Content>
+        <Grid x:Name="MoreCommandsGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000">
+            <gnollhackclient:GHCanvasView x:Name="CommandCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" EnableTouchEvents="True" />
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
