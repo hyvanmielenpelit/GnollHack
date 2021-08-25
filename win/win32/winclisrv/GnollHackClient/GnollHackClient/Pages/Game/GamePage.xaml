@@ -140,7 +140,7 @@
                             <controls:LabeledImageButton Grid.Column="3" x:Name="lDropManyButton" LblText="Drop Items" BtnLetter="%" ImgSourcePath="resource://GnollHackClient.Assets.Icons.dropmany.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="4" x:Name="lChatButton" LblText="Chat" BtnLetter="C" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="5" x:Name="lRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" />
-                            <controls:LabeledImageButton Grid.Column="6" x:Name="lMenuButton" LblText="More" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="MenuButton_Clicked" />
+                            <controls:LabeledImageButton Grid.Column="6" x:Name="lMoreButton" LblText="More" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="MoreButton_Clicked" />
                             <!--<Button Grid.Column="5" Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />-->
                             <!--<Button Grid.Column="6" Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />-->
                             <!--
@@ -276,12 +276,15 @@
                     <Label x:Name="MenuSubtitleLabel"
                        FontFamily="{Binding MenuSubtitleFontFamily}" FontSize="{Binding MenuSubtitleFontSize}" TextColor="White" Margin="1,2,1,6" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
-                        <!--<Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-                        </Label.GestureRecognizers>-->
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
+                        </Label.GestureRecognizers>
                     </Label>
 
-                    <gnollhackclient:GHCanvasView x:Name="MenuCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
+                    <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                        <ff:CachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="4" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
+                        <gnollhackclient:GHCanvasView x:Name="MenuCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
+                    </Grid>
 
                     <Grid  BackgroundColor="Transparent" >
                         <Grid.RowDefinitions>
@@ -362,6 +365,15 @@
                         </Frame>
                     </Grid>
                 </Grid>
+            </Grid>
+            <Grid x:Name="TextGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
+                <ff:CachedImage x:Name="TextBackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+                            Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>
+                <ff:CachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="4" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
+                <gnollhackclient:GHCanvasView x:Name="TextCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
+            </Grid>
+            <Grid x:Name="MoreCommandsGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
+                <gnollhackclient:GHCanvasView x:Name="CommandCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" EnableTouchEvents="True" />
             </Grid>
         </Grid>
     </ContentPage.Content>

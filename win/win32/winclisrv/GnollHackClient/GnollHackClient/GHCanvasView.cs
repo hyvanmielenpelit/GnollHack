@@ -24,6 +24,10 @@ namespace GnollHackClient
         private ObservableCollection<GHMenuItem> _GHMenuItems = null;
         public ObservableCollection<GHMenuItem> MenuItems { get { return _GHMenuItems; } set { _GHMenuItems = value; } }
 
+        public object TextItemLock = new object();
+        private List<GHPutStrItem> _GHPutStrItems = null;
+        public List<GHPutStrItem> PutStrItems { get { return _GHPutStrItems; } set { _GHPutStrItems = value; } }
+
         public SelectionMode SelectionHow { get; set; }
         public int SelectionIndex { get; set; }
 

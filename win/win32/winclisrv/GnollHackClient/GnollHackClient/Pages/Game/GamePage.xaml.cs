@@ -358,11 +358,25 @@ namespace GnollHackClient.Pages.Game
                 //if (refresh)
                 //    canvasView.InvalidateSurface();
 
-                if (MenuGrid.IsVisible)
-                    MenuCanvas.InvalidateSurface();
+                if (MoreCommandsGrid.IsVisible)
+                {
+                    CommandCanvas.InvalidateSurface();
+                }
+                else if (TextGrid.IsVisible)
+                {
+                    TextCanvas.InvalidateSurface();
+                }
+                else if (MenuGrid.IsVisible)
+                {
+                    lock(_menuDrawOnlyLock)
+                    {
+                        refresh = _menuRefresh;
+                    }
+                    if(refresh)
+                        MenuCanvas.InvalidateSurface();
+                }
 
                 pollRequestQueue();
-
 
                 return true;
             });
@@ -705,7 +719,7 @@ namespace GnollHackClient.Pages.Game
             }
 
             GameMenuButton.IsEnabled = true;
-            lMenuButton.IsEnabled = true;
+            lMoreButton.IsEnabled = true;
 
             if (_isFirstAppearance)
             {
@@ -842,13 +856,82 @@ namespace GnollHackClient.Pages.Game
             {
                 window = _clientGame.Windows[winid];
             }
-            ShowWindowPage(window, strs);
+            ShowWindowCanvas(window, strs);
         }
         private async void ShowWindowPage(GHWindow window, List<GHPutStrItem> strs)
         {
             var cpage = new GHTextPage(this, window, strs);
             await App.Current.MainPage.Navigation.PushModalAsync(cpage, false);
         }
+
+        private void ShowWindowCanvas(GHWindow window, List<GHPutStrItem> strs)
+        {
+            TextWindowGlyphImage.Source = null;
+
+            _textGlyphImageSource.ReferenceGamePage = this;
+            _textGlyphImageSource.AutoSize = true;
+            _textGlyphImageSource.ObjData = window.ObjData;
+            _textGlyphImageSource.Glyph = window.Glyph;
+
+            TextWindowGlyphImage.Source = TextGlyphImage;
+            TextWindowGlyphImage.IsVisible = IsTextGlyphVisible;
+
+            List<GHPutStrItem> items = null;
+            if (window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER)
+            {
+                items = new List<GHPutStrItem>();
+                ClientUtils.ProcessAdjustedItems(items, strs);
+            }
+            else
+                items = strs;
+
+            lock (TextCanvas.TextItemLock)
+            {
+                TextTouchDictionary.Clear();
+                TextCanvas.GHWindow = window;
+
+                TextCanvas.PutStrItems = items;
+            }
+
+            TextGrid.IsVisible = true;
+        }
+
+        private GlyphImageSource _textGlyphImageSource = new GlyphImageSource();
+
+        public ImageSource TextGlyphImage
+        {
+            get
+            {
+                return _textGlyphImageSource;
+            }
+        }
+
+        public bool IsTextGlyphVisible
+        {
+            get
+            {
+                return (Math.Abs(_textGlyphImageSource.Glyph) > 0 && _textGlyphImageSource.Glyph != NoGlyph);
+            }
+        }
+
+        private GlyphImageSource _menuGlyphImageSource = new GlyphImageSource();
+
+        public ImageSource MenuGlyphImage
+        {
+            get
+            {
+                return _menuGlyphImageSource;
+            }
+        }
+
+        public bool IsMenuGlyphVisible
+        {
+            get
+            {
+                return (Math.Abs(_menuGlyphImageSource.Glyph) > 0 && _menuGlyphImageSource.Glyph != NoGlyph);
+            }
+        }
+
 
         private void PrintTopLine(string str, uint attributes)
         {
@@ -1085,6 +1168,8 @@ namespace GnollHackClient.Pages.Game
 
         private object _menuDrawOnlyLock = new object();
         private bool _menuDrawOnlyClear = false;
+        private bool _menuRefresh = true;
+
         private void ShowMenuCanvas(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
             lock (_menuHideCancelledLock)
@@ -1100,9 +1185,22 @@ namespace GnollHackClient.Pages.Game
             lock (_menuDrawOnlyLock)
             {
                 _menuDrawOnlyClear = true;
+                _menuRefresh = false;
             }
 
             DebugWriteProfilingStopwatchTime("ShowMenuCanvas Start");
+
+            MenuTouchDictionary.Clear();
+
+            MenuWindowGlyphImage.Source = null;
+
+            _menuGlyphImageSource.ReferenceGamePage = this;
+            _menuGlyphImageSource.AutoSize = true;
+            _menuGlyphImageSource.ObjData = ghwindow.ObjData;
+            _menuGlyphImageSource.Glyph = ghwindow.Glyph;
+
+            MenuWindowGlyphImage.Source = MenuGlyphImage;
+            MenuWindowGlyphImage.IsVisible = IsMenuGlyphVisible;
 
             //canvasView.GHWindow = ghwindow;
             //canvasView.MenuStyle = menuinfo.Style;
@@ -1170,6 +1268,7 @@ namespace GnollHackClient.Pages.Game
             lock (_menuDrawOnlyLock)
             {
                 _menuDrawOnlyClear = false;
+                _menuRefresh = true;
             }
 
             MenuGrid.IsVisible = true;
@@ -5753,14 +5852,25 @@ namespace GnollHackClient.Pages.Game
             GenericButton_Clicked(sender, e, 'f');
         }
 
-        private async void MenuButton_Clicked(object sender, EventArgs e)
+        private void MoreButton_Clicked(object sender, EventArgs e)
         {
-            lMenuButton.IsEnabled = false;
+            lMoreButton.IsEnabled = false;
+            ShowMorePage(sender, e);
+        }
+
+        private async void ShowMorePage(object sender, EventArgs e)
+        {
             if (_cmdPage == null)
                 _cmdPage = new CommandPage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(_cmdPage);
         }
-        private void YnButton_Clicked(object sender, EventArgs e)
+
+        private void ShowMoreCanvas(object sender, EventArgs e)
+        {
+
+        }
+
+            private void YnButton_Clicked(object sender, EventArgs e)
         {
             GHButton ghb = (GHButton)sender;
             GenericButton_Clicked(sender, e, ghb.GHCommand);
@@ -6029,8 +6139,8 @@ namespace GnollHackClient.Pages.Game
 
         private SKColor _suffixTextColor = new SKColor(220, 220, 220);
         private SKColor _menuHighlightColor = new SKColor(0xFF, 0x88, 0x00, 0x88);
-        private int _firstDrawnItemIdx = -1;
-        private int _lastDrawnItemIdx = -1;
+        private int _firstDrawnMenuItemIdx = -1;
+        private int _lastDrawnMenuItemIdx = -1;
         private float _totalMenuHeight = 0;
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -6074,7 +6184,7 @@ namespace GnollHackClient.Pages.Game
                     curmenuoffset = _menuScrollOffset;
                 }
                 y += curmenuoffset;
-                double menuwidth = ClientUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle);
+                double menuwidth = Math.Max(1, Math.Min(MenuCanvas.Width, ClientUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle)));
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
@@ -6089,8 +6199,8 @@ namespace GnollHackClient.Pages.Game
                 {
                     bool has_pictures = false;
                     bool has_identifiers = false;
-                    _firstDrawnItemIdx = -1;
-                    _lastDrawnItemIdx = -1;
+                    _firstDrawnMenuItemIdx = -1;
+                    _lastDrawnMenuItemIdx = -1;
                     foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
                     {
                         if (mi.Identifier != 0)
@@ -6140,7 +6250,7 @@ namespace GnollHackClient.Pages.Game
                         if (first)
                         {
                             accel_fixed_width = textPaint.FontMetrics.AverageCharacterWidth + 3 * textPaint.MeasureText(" ");
-                            _firstDrawnItemIdx = idx;
+                            _firstDrawnMenuItemIdx = idx;
                             maintext_x_start = leftmenupadding + leftinnerpadding + (has_identifiers ? accel_fixed_width : 0) + (has_pictures ? picturepadding + picturewidth + picturepadding : textPaint.FontMetrics.AverageCharacterWidth);
                             first = false;
                         }
@@ -6172,12 +6282,12 @@ namespace GnollHackClient.Pages.Game
                             }
                         }
 
-                        float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) * ((float)maintextrows + (mi.IsSuffixTextVisible ? 0.8f : 0.0f))) / 2);
+                        float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontSpacing) * ((float)maintextrows + (mi.IsSuffixTextVisible ? 0.8f : 0.0f))) / 2);
 
                         bool isselected = referenceCanvasView.SelectionHow == SelectionMode.Multiple ? mi.Selected :
                             referenceCanvasView.SelectionHow == SelectionMode.Single ? idx == referenceCanvasView.SelectionIndex : false;
 
-                        float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + (mi.IsSuffixTextVisible ? 0.8f : 0.0f)) * (-textPaint.FontMetrics.Ascent + textPaint.FontMetrics.Descent) + 2 * generallinepadding;
+                        float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + (mi.IsSuffixTextVisible ? 0.8f : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
                         float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
 
                         /* Selection rectangle */
@@ -6189,7 +6299,7 @@ namespace GnollHackClient.Pages.Game
                             canvas.DrawRect(fillrect, textPaint);
                         }
 
-                        float singlelinepadding = Math.Max(0.0f, ((float)(maintextrows - 1) * (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2);
+                        float singlelinepadding = Math.Max(0.0f, ((float)(maintextrows - 1) * (textPaint.FontSpacing)) / 2);
                         y += topPadding;
                         y += generallinepadding;
                         y -= textPaint.FontMetrics.Ascent;
@@ -6199,7 +6309,7 @@ namespace GnollHackClient.Pages.Game
                         {
                             str = mi.FormattedAccelerator;
                             textPaint.Color = SKColors.Gray;
-                            if (!(y + singlelinepadding + textPaint.FontMetrics.Descent <= 0 || y + singlelinepadding + textPaint.FontMetrics.Ascent >= canvasheight))
+                            if (!(y + singlelinepadding + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + singlelinepadding + textPaint.FontMetrics.Ascent >= canvasheight))
                                 canvas.DrawText(str, x, y + singlelinepadding, textPaint);
                             x += accel_fixed_width;
                         }
@@ -6246,18 +6356,17 @@ namespace GnollHackClient.Pages.Game
                             if (pastend && split_idx_on_row > 0 && !nowrap)
                             {
                                 x = start_x;
-                                y += textPaint.FontMetrics.Descent;
-                                y -= textPaint.FontMetrics.Ascent;
+                                y += textPaint.FontSpacing;
                                 split_idx_on_row = 0;
                                 endposition = x + printlength;
                             }
 
-                            if (!(y + textPaint.FontMetrics.Descent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                            if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
                                 canvas.DrawText(added_split_str, x, y, textPaint);
 
                             x = endposition;
                         }
-                        y += textPaint.FontMetrics.Descent;
+                        y += textPaint.FontSpacing + textPaint.FontMetrics.Ascent;
                         x = start_x;
 
                         /* Suffix text */
@@ -6266,9 +6375,9 @@ namespace GnollHackClient.Pages.Game
                             textPaint.Color = _suffixTextColor;
                             textPaint.TextSize = 0.8f * textPaint.TextSize;
                             y -= textPaint.FontMetrics.Ascent;
-                            if (!(y + textPaint.FontMetrics.Descent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                            if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
                                 canvas.DrawText(mi.SuffixText, x, y, textPaint);
-                            y += textPaint.FontMetrics.Descent;
+                            y += textPaint.FontSpacing + textPaint.FontMetrics.Ascent;
                         }
 
                         y += generallinepadding;
@@ -6276,7 +6385,7 @@ namespace GnollHackClient.Pages.Game
                         y += bottomPadding;
                         mi.DrawBounds.Bottom = y;
                         mi.DrawBounds.Right = canvaswidth - rightmenupadding;
-                        _lastDrawnItemIdx = idx;
+                        _lastDrawnMenuItemIdx = idx;
 
                         /* Count circle */
                         if (mi.Count > 0 && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
@@ -6296,7 +6405,7 @@ namespace GnollHackClient.Pages.Game
                             float scaley = textBounds.Height / maxsize;
                             float totscale = Math.Max(scalex, scaley);
                             textPaint.TextSize = textPaint.TextSize / Math.Max(1.0f, totscale);
-                            canvas.DrawText(str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                            canvas.DrawText(str, circlex, circley - (textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
                         }
                     }
                     _totalMenuHeight = y - curmenuoffset;
@@ -6312,10 +6421,16 @@ namespace GnollHackClient.Pages.Game
         private Dictionary<long, TouchEntry> MenuTouchDictionary = new Dictionary<long, TouchEntry>();
         private object _savedMenuSender = null;
         private SKTouchEventArgs _savedMenuEventArgs = null;
-        private DateTime _savedTimeStamp;
-        private Boolean _menuTouchMoved = false;
+        private DateTime _savedMenuTimeStamp;
+        private bool _menuTouchMoved = false;
         private void MenuCanvas_Touch(object sender, SKTouchEventArgs e)
         {
+            lock (_menuDrawOnlyLock)
+            {
+                if(_menuDrawOnlyClear)
+                    return;
+            }
+
             switch (e?.ActionType)
             {
                 case SKTouchAction.Entered:
@@ -6323,7 +6438,7 @@ namespace GnollHackClient.Pages.Game
                 case SKTouchAction.Pressed:
                     _savedMenuSender = null;
                     _savedMenuEventArgs = null;
-                    _savedTimeStamp = DateTime.Now;
+                    _savedMenuTimeStamp = DateTime.Now;
 
                     if (MenuTouchDictionary.ContainsKey(e.Id))
                         MenuTouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
@@ -6345,7 +6460,7 @@ namespace GnollHackClient.Pages.Game
                             if (_savedMenuSender == null || _savedMenuEventArgs == null)
                                 return false;
                             DateTime curtime = DateTime.Now;
-                            if(curtime - _savedTimeStamp < TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold * 0.8))
+                            if(curtime - _savedMenuTimeStamp < TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold * 0.8))
                                 return false; /* Changed touch position */
 
                             MenuCanvas_LongTap(_savedMenuSender, _savedMenuEventArgs);
@@ -6383,12 +6498,10 @@ namespace GnollHackClient.Pages.Game
                                                 _menuScrollOffset = 0;
                                             else if (_menuScrollOffset < MenuCanvas.CanvasSize.Height - _totalMenuHeight)
                                                 _menuScrollOffset = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
-
-                                            /*Add limits to scroll*/
                                         }
                                         MenuTouchDictionary[e.Id].Location = e.Location;
                                         _menuTouchMoved = true;
-                                        _savedTimeStamp = DateTime.Now;
+                                        _savedMenuTimeStamp = DateTime.Now;
                                     }
                                 }
                             }
@@ -6400,7 +6513,7 @@ namespace GnollHackClient.Pages.Game
                     {
                         _savedMenuSender = null;
                         _savedMenuEventArgs = null;
-                        _savedTimeStamp = DateTime.Now;
+                        _savedMenuTimeStamp = DateTime.Now;
 
                         TouchEntry entry;
                         bool res = MenuTouchDictionary.TryGetValue(e.Id, out entry);
@@ -6433,7 +6546,7 @@ namespace GnollHackClient.Pages.Game
         private void MenuCanvas_LongTap(object sender, SKTouchEventArgs e)
         {
             int selectedidx = -1;
-            for (int idx = _firstDrawnItemIdx; idx >= 0 && idx <= _lastDrawnItemIdx; idx++)
+            for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
             {
                 if (idx >= MenuCanvas.MenuItems.Count)
                     return;
@@ -6504,7 +6617,7 @@ namespace GnollHackClient.Pages.Game
                 if (MenuCanvas.MenuItems == null)
                     return;
 
-                for (int idx = _firstDrawnItemIdx; idx >= 0 && idx <= _lastDrawnItemIdx; idx++)
+                for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
                 {
                     if (idx >= MenuCanvas.MenuItems.Count)
                         break;
@@ -6566,6 +6679,12 @@ namespace GnollHackClient.Pages.Game
         private bool _menuHideCancelled = false;
         private void MenuOKButton_Clicked(object sender, EventArgs e)
         {
+            lock (_menuDrawOnlyLock)
+            {
+                _menuRefresh = false;
+                _menuDrawOnlyClear = true;
+            }
+
             _menuScrollOffset = 0;
             _menuHideCancelled = false;
 
@@ -6606,6 +6725,12 @@ namespace GnollHackClient.Pages.Game
 
         private void MenuCancelButton_Clicked(object sender, EventArgs e)
         {
+            lock (_menuDrawOnlyLock)
+            {
+                _menuRefresh = false;
+                _menuDrawOnlyClear = true;
+            }
+
             _menuScrollOffset = 0;
             _menuHideCancelled = false;
 
@@ -6737,6 +6862,206 @@ namespace GnollHackClient.Pages.Game
                     MenuCountEntry.TextColor = Color.Red;
                 }
             }
+        }
+
+        private int _firstDrawnTextItemIdx = -1;
+        private int _lastDrawnTextItemIdx = -1;
+        private float _totalTextHeight = 0;
+
+        private object TextScrollLock = new object();
+        private float _textScrollOffset = 0;
+
+        private Dictionary<long, TouchEntry> TextTouchDictionary = new Dictionary<long, TouchEntry>();
+        private object _savedTextSender = null;
+        private SKTouchEventArgs _savedTextEventArgs = null;
+        private DateTime _savedTextTimeStamp;
+        private bool _textTouchMoved = false;
+
+        private void TextCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        {
+            SKImageInfo info = e.Info;
+            SKSurface surface = e.Surface;
+            SKCanvas canvas = surface.Canvas;
+            float canvaswidth = TextCanvas.CanvasSize.Width;
+            float canvasheight = TextCanvas.CanvasSize.Height;
+            float x = 0, y = 0;
+            string str;
+            SKRect textBounds = new SKRect();
+            float scale = canvaswidth / (float)TextCanvas.Width;
+
+            canvas.Clear();
+
+            lock (TextCanvas.MenuItemLock)
+            {
+                if (TextCanvas.PutStrItems == null || TextCanvas.PutStrItems.Count == 0)
+                    return;
+            }
+
+            using (SKPaint textPaint = new SKPaint())
+            {
+                textPaint.Typeface = App.UnderwoodTypeface;
+                textPaint.TextSize = 30 * scale;
+                textPaint.Style = SKPaintStyle.Fill;
+                float minrowheight = textPaint.FontSpacing;
+                float leftinnerpadding = 5;
+                float curmenuoffset = 0;
+                lock (TextScrollLock)
+                {
+                    curmenuoffset = _textScrollOffset;
+                }
+                y += curmenuoffset;
+                double menuwidth = Math.Max(1, Math.Min(TextCanvas.Width, 600));
+                float menuwidthoncanvas = (float)(menuwidth * scale);
+                float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
+                float rightmenupadding = leftmenupadding;
+                float topPadding = 0;
+
+                lock (TextCanvas.TextItemLock)
+                {
+                    int j = 0;
+                    y += topPadding;
+                    foreach (GHPutStrItem putstritem in TextCanvas.PutStrItems)
+                    {
+                        int pos = 0;
+                        x = leftmenupadding + leftinnerpadding;
+                        float totwidth = 0;
+                        textPaint.Typeface = App.GetTypefaceByName(putstritem.TextWindowFontFamily);
+                        textPaint.TextSize = (float)putstritem.TextWindowFontSize * scale;
+                        y -= textPaint.FontMetrics.Ascent;
+                        foreach (GHPutStrInstructions instr in putstritem.InstructionList)
+                        {
+                            if (putstritem.Text == null)
+                                str = "";
+                            else if (pos + instr.PrintLength <= putstritem.Text.Length)
+                                str = putstritem.Text.Substring(pos, instr.PrintLength);
+                            else if (putstritem.Text.Length - pos > 0)
+                                str = putstritem.Text.Substring(pos, putstritem.Text.Length - pos);
+                            else
+                                str = "";
+                            pos += str.Length;
+                            textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? (nhcolor)instr.Color : nhcolor.CLR_WHITE);
+                            totwidth = textPaint.MeasureText(str, ref textBounds);
+
+                            canvas.DrawText(str, x, y, textPaint);
+                            x += totwidth;
+                        }
+                        j++;
+                        y += textPaint.FontSpacing + textPaint.FontMetrics.Ascent;
+                    }
+                    _totalTextHeight = y - curmenuoffset;
+                }
+            }
+        }
+
+        private void TextCanvas_Touch(object sender, SKTouchEventArgs e)
+        {
+            lock (TextCanvas.TextItemLock)
+            {
+                switch (e?.ActionType)
+                {
+                    case SKTouchAction.Entered:
+                        break;
+                    case SKTouchAction.Pressed:
+                        _savedTextSender = null;
+                        _savedTextEventArgs = null;
+                        _savedTextTimeStamp = DateTime.Now;
+
+                        if (TextTouchDictionary.ContainsKey(e.Id))
+                            TextTouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
+                        else
+                            TextTouchDictionary.Add(e.Id, new TouchEntry(e.Location, DateTime.Now));
+
+                        if (TextTouchDictionary.Count > 1)
+                            _textTouchMoved = true;
+                        else
+                        {
+                            _savedTextSender = sender;
+                            _savedTextEventArgs = e;
+                        }
+
+                        e.Handled = true;
+                        break;
+                    case SKTouchAction.Moved:
+                        {
+                            TouchEntry entry;
+                            bool res = TextTouchDictionary.TryGetValue(e.Id, out entry);
+                            if (res)
+                            {
+                                SKPoint anchor = entry.Location;
+
+                                float diffX = e.Location.X - anchor.X;
+                                float diffY = e.Location.Y - anchor.Y;
+                                float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
+
+                                if (TextTouchDictionary.Count == 1)
+                                {
+                                    if ((dist > 25 ||
+                                        (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond > GHConstants.MoveOrPressTimeThreshold
+                                           ))
+                                    {
+                                        /* Just one finger => Move the map */
+                                        if (diffX != 0 || diffY != 0)
+                                        {
+                                            lock (TextScrollLock)
+                                            {
+                                                _textScrollOffset += diffY;
+                                                if (_textScrollOffset > 0)
+                                                    _textScrollOffset = 0;
+                                                else if (_textScrollOffset < TextCanvas.CanvasSize.Height - _totalTextHeight)
+                                                    _textScrollOffset = Math.Min(0, TextCanvas.CanvasSize.Height - _totalTextHeight);
+                                            }
+                                            TextTouchDictionary[e.Id].Location = e.Location;
+                                            _textTouchMoved = true;
+                                            _savedTextTimeStamp = DateTime.Now;
+                                        }
+                                    }
+                                }
+                            }
+                            e.Handled = true;
+                        }
+                        break;
+                    case SKTouchAction.Released:
+                        {
+                            _savedTextSender = null;
+                            _savedTextEventArgs = null;
+                            _savedTextTimeStamp = DateTime.Now;
+
+                            TouchEntry entry;
+                            bool res = TextTouchDictionary.TryGetValue(e.Id, out entry);
+                            long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+
+                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_textTouchMoved)
+                            {
+                                /* Normal click -- Hide the canvas */
+                                TextGrid.IsVisible = false;
+                            }
+                            if (TextTouchDictionary.ContainsKey(e.Id))
+                                TextTouchDictionary.Remove(e.Id);
+                            if (TextTouchDictionary.Count == 0)
+                                _textTouchMoved = false;
+                            e.Handled = true;
+                        }
+                        break;
+                    case SKTouchAction.Cancelled:
+                        break;
+                    case SKTouchAction.Exited:
+                        break;
+                    case SKTouchAction.WheelChanged:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void CommandCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        {
+
+        }
+
+        private void CommandCanvas_Touch(object sender, SKTouchEventArgs e)
+        {
+
         }
     }
 

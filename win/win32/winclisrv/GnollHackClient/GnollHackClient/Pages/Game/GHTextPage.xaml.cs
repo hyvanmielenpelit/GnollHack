@@ -36,7 +36,7 @@ namespace GnollHackClient.Pages.Game
             if (window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER)
             {
                 _adjustedPutStrItems = new List<GHPutStrItem>();
-                ProcessAdjustedItems(_adjustedPutStrItems, _putStrItems);
+                ClientUtils.ProcessAdjustedItems(_adjustedPutStrItems, _putStrItems);
                 TextView.ItemsSource = _adjustedPutStrItems;
             }
             else
@@ -90,72 +90,6 @@ namespace GnollHackClient.Pages.Game
             } 
         }
 
-        private void ProcessAdjustedItems(List<GHPutStrItem> adjusted_list, List<GHPutStrItem> normal_list)
-        {
-            adjusted_list.Clear();
-            GHPutStrItem newpsi = null;
-            
-            for (int cnt = 0; cnt < normal_list.Count; cnt++)
-            {
-                GHPutStrItem psi = normal_list[cnt];
-                if (newpsi != null && (psi.Text == ""))
-                {
-                    adjusted_list.Add(newpsi);
-                    newpsi = null;
-                }
-
-                if (psi.Text == "")
-                {
-                    adjusted_list.Add(psi);
-                }
-                else
-                {
-                    bool isnewpsi = false;
-                    if(newpsi == null)
-                    {
-                        newpsi = new GHPutStrItem(psi.ReferenceGamePage, psi.Window, "");
-                        isnewpsi = true;
-                    }
-
-                    if (newpsi.Text != "")
-                    {
-                        newpsi.Text += " ";
-                        newpsi.InstructionList.Add(new GHPutStrInstructions((int)MenuItemAttributes.None, (int)nhcolor.NO_COLOR, 1));
-                    }
-
-                    int spacecnt = 0;
-                    foreach(char ch in psi.Text)
-                    {
-                        if (ch == ' ')
-                            spacecnt++;
-                        else
-                            break;
-                    }
-                    newpsi.Text += psi.Text.TrimStart(' ');
-                    if(spacecnt > 0) 
-                    {
-                        if(isnewpsi)
-                            newpsi.PaddingAmount = spacecnt;
-
-                        if (psi.InstructionList.Count > 0)
-                        {
-                            if (psi.InstructionList[0].PrintLength > spacecnt)
-                                newpsi.InstructionList.Add(new GHPutStrInstructions(psi.InstructionList[0].Attributes, psi.InstructionList[0].Color, psi.InstructionList[0].PrintLength - spacecnt));
-                            for (int i = 1; i < psi.InstructionList.Count; i++)
-                                newpsi.InstructionList.Add(psi.InstructionList[i]);
-                        }
-                    }
-                    else
-                        newpsi.InstructionList.AddRange(psi.InstructionList);
-
-                    if (newpsi != null && (cnt == normal_list.Count - 1))
-                    {
-                        adjusted_list.Add(newpsi);
-                        break;
-                    }
-                }
-            }
-        }
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
