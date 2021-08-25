@@ -1512,20 +1512,20 @@ unsigned trflags;
                            : locomotion(youmonst.data, "step"));
 
     play_sfx_sound(SFX_LEVEL_TELEPORT_TRAP_ACTIVATE);
-    You("%s a level teleport trap!", verbbuf);
+    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s a level teleport trap!", verbbuf);
 
     if (Antimagic) {
         u_shieldeff();
     }
     if (Antimagic || In_endgame(&u.uz)) {
         play_sfx_sound(SFX_WRENCHING_SENSATION);
-        You_feel("a wrenching sensation.");
+        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a wrenching sensation.");
         return;
     }
     if (!Blind && !Flash_resistance)
-        You("are momentarily blinded by a flash of light.");
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are momentarily blinded by a flash of light.");
     else
-        You("are momentarily disoriented.");
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are momentarily disoriented.");
     deltrap(trap);
     newsym(u.ux, u.uy); /* get rid of trap symbol */
     level_tele(0, FALSE, zerodlevel);
