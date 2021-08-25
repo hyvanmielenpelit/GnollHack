@@ -7259,12 +7259,13 @@ namespace GnollHackClient.Pages.Game
 
             using (SKPaint textPaint = new SKPaint())
             {
+                float btnImgRawWidth = Math.Min(btnAreaWidth, 80 * scale);
+
                 textPaint.Color = SKColors.White;
                 textPaint.Typeface = App.LatoRegular;
-                textPaint.TextSize = 12.0f * scale;
+                textPaint.TextSize = 9.5f * 3.0f * btnImgRawWidth / 180.0f;
                 textPaint.TextAlign = SKTextAlign.Center;
 
-                float btnImgRawWidth = Math.Min(btnAreaWidth, 80 * scale);
                 float btnImgRawHeight = Math.Min(btnAreaHeight - textPaint.FontSpacing, 80 * scale);
 
                 float btnImgWidth = Math.Min(btnImgRawWidth, btnImgRawHeight);
