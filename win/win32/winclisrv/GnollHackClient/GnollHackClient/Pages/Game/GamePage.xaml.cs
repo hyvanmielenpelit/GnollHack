@@ -1331,8 +1331,41 @@ namespace GnollHackClient.Pages.Game
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
-            var menu = new GameMenuPage(this);
-            await App.Current.MainPage.Navigation.PushModalAsync(menu);
+            if(MoreCommandsGrid.IsVisible)
+            {
+                MoreCommandsGrid.IsVisible = false;
+                lock (RefreshScreenLock)
+                {
+                    RefreshScreen = true;
+                }
+            }
+            else if (TextGrid.IsVisible)
+            {
+                GenericButton_Clicked(sender, e, 27);
+                TextGrid.IsVisible = false;
+                lock (RefreshScreenLock)
+                {
+                    RefreshScreen = true;
+                }
+            }
+            else if (MenuGrid.IsVisible)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>()));
+                }
+                MenuGrid.IsVisible = false;
+                lock (RefreshScreenLock)
+                {
+                    RefreshScreen = true;
+                }
+            }
+            else
+            {
+                var menu = new GameMenuPage(this);
+                await App.Current.MainPage.Navigation.PushModalAsync(menu);
+            }
 
             return false;
         }
@@ -6953,9 +6986,11 @@ namespace GnollHackClient.Pages.Game
                     {
                         int pos = 0;
                         x = leftmenupadding + leftinnerpadding;
+                        x += (float)putstritem.LeftPaddingWidth * scale;
                         textPaint.Typeface = App.GetTypefaceByName(putstritem.TextWindowFontFamily);
                         textPaint.TextSize = (float)putstritem.TextWindowFontSize * scale;
                         y -= textPaint.FontMetrics.Ascent;
+                        float start_x = x;
                         foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                         {
                             if (putstritem.Text == null)
@@ -6972,17 +7007,17 @@ namespace GnollHackClient.Pages.Game
 
                             string[] split = str.Split(' ');
                             int split_idx_on_row = -1;
-                            float start_x = x;
+                            int idx = 0;
                             foreach (string split_str in split)
                             {
                                 bool nowrap = false;
                                 if (string.IsNullOrWhiteSpace(split_str))
                                     nowrap = true;
                                 split_idx_on_row++;
-                                string added_split_str = split_str + " ";
+                                string added_split_str = split_str + (idx == split.Length - 1 ? "" : " ");
                                 float printlength = textPaint.MeasureText(added_split_str);
                                 float endposition = x + printlength;
-                                bool pastend = endposition > canvaswidth - rightmenupadding;
+                                bool pastend = endposition > canvaswidth - rightmenupadding - (float)putstritem.RightPaddingWidth * scale;
                                 if (pastend && split_idx_on_row > 0 && !nowrap)
                                 {
                                     x = start_x;
@@ -6995,6 +7030,7 @@ namespace GnollHackClient.Pages.Game
                                     canvas.DrawText(added_split_str, x, y, textPaint);
 
                                 x = endposition;
+                                idx++;
                             }
                         }
                         j++;
@@ -7117,12 +7153,67 @@ namespace GnollHackClient.Pages.Game
 
         private void InitializeMoreCommandButtons()
         {
-            _moreBtnMatrix[0, 0] = new GHCommandButtonItem("Go Down", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'>');
-            _moreBtnMatrix[1, 0] = new GHCommandButtonItem("Go Up", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'<');
-            _moreBtnMatrix[2, 0] = new GHCommandButtonItem("Open", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'o');
-            _moreBtnMatrix[3, 0] = new GHCommandButtonItem("Close", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'c');
-            _moreBtnMatrix[4, 0] = new GHCommandButtonItem("Drop Types", "GnollHackClient.Assets.Icons.dropmany.png", (int)'D');
-            _moreBtnMatrix[5, 0] = new GHCommandButtonItem("2-Weapon", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'x'));
+            _moreBtnMatrix[0, 0] = new GHCommandButtonItem("Wish", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'w'));
+            _moreBtnMatrix[1, 0] = new GHCommandButtonItem("Reveal", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'f'));
+            _moreBtnMatrix[2, 0] = new GHCommandButtonItem("Genesis", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Meta((int)'m'));
+            _moreBtnMatrix[3, 0] = new GHCommandButtonItem("Levelport", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'v'));
+            _moreBtnMatrix[4, 0] = new GHCommandButtonItem("Identify", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'i'));
+            _moreBtnMatrix[5, 0] = new GHCommandButtonItem("Teleport", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'t'));
+
+            _moreBtnMatrix[0, 1] = new GHCommandButtonItem("Go Down", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'>');
+            _moreBtnMatrix[1, 1] = new GHCommandButtonItem("Go Up", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'<');
+            _moreBtnMatrix[2, 1] = new GHCommandButtonItem("Open", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'o');
+            _moreBtnMatrix[3, 1] = new GHCommandButtonItem("Close", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'c');
+            _moreBtnMatrix[4, 1] = new GHCommandButtonItem("Drop Types", "GnollHackClient.Assets.Icons.dropmany.png", (int)'D');
+            _moreBtnMatrix[5, 1] = new GHCommandButtonItem("2-Weapon", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'x'));
+
+            _moreBtnMatrix[0, 2] = new GHCommandButtonItem("Eat", "GnollHackClient.Assets.Icons.eat.png", (int)'e');
+            _moreBtnMatrix[1, 2] = new GHCommandButtonItem("Quaff", "GnollHackClient.Assets.Icons.quaff.png", (int)'q');
+            _moreBtnMatrix[2, 2] = new GHCommandButtonItem("Read", "GnollHackClient.Assets.Icons.read.png", (int)'r');
+            _moreBtnMatrix[3, 2] = new GHCommandButtonItem("Engrave", "GnollHackClient.Assets.Icons.engrave.png", (int)'E');
+            _moreBtnMatrix[4, 2] = new GHCommandButtonItem("Offer", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Meta((int)'o'));
+            _moreBtnMatrix[5, 2] = new GHCommandButtonItem("Pray", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Meta((int)'p'));
+
+            _moreBtnMatrix[0, 3] = new GHCommandButtonItem("Sit", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'s'));
+            _moreBtnMatrix[1, 3] = new GHCommandButtonItem("Yell", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'y'));
+            _moreBtnMatrix[2, 3] = new GHCommandButtonItem("Dig", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'g'));
+            _moreBtnMatrix[3, 3] = new GHCommandButtonItem("Light", "GnollHackClient.Assets.Icons.light.png", GHUtils.Ctrl((int)'l'));
+            _moreBtnMatrix[4, 3] = new GHCommandButtonItem("Jump", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'j');
+            _moreBtnMatrix[5, 3] = new GHCommandButtonItem("Fight", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'F');
+
+            _moreBtnMatrix[0, 4] = new GHCommandButtonItem("Name", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'N');
+            _moreBtnMatrix[1, 4] = new GHCommandButtonItem("Pay", "GnollHackClient.Assets.Icons.pay.png", (int)'p');
+            _moreBtnMatrix[2, 4] = new GHCommandButtonItem("Loot", "GnollHackClient.Assets.Icons.loot.png", (int)'l');
+            _moreBtnMatrix[3, 4] = new GHCommandButtonItem("Break", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'b'));
+            _moreBtnMatrix[4, 4] = new GHCommandButtonItem("Overview", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'o'));
+            _moreBtnMatrix[5, 4] = new GHCommandButtonItem("Quiver", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'Q');
+
+            _moreBtnMatrix[0, 5] = new GHCommandButtonItem("Abilities", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'A');
+            _moreBtnMatrix[1, 5] = new GHCommandButtonItem("Skills", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'S');
+            _moreBtnMatrix[2, 5] = new GHCommandButtonItem("Commands", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'c'));
+            _moreBtnMatrix[3, 5] = new GHCommandButtonItem("Spells", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'+');
+            _moreBtnMatrix[4, 5] = new GHCommandButtonItem("Mix", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'X');
+            _moreBtnMatrix[5, 5] = new GHCommandButtonItem("Help", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'?');
+
+            _moreBtnMatrix[0, 6] = new GHCommandButtonItem("Wield", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'w');
+            _moreBtnMatrix[1, 6] = new GHCommandButtonItem("Wear", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'W');
+            _moreBtnMatrix[2, 6] = new GHCommandButtonItem("Put On", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'P');
+            _moreBtnMatrix[3, 6] = new GHCommandButtonItem("Take Off", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'T');
+            _moreBtnMatrix[4, 6] = new GHCommandButtonItem("Remove", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'R');
+            _moreBtnMatrix[5, 6] = new GHCommandButtonItem("Remove Many", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Meta((int)'t'));
+
+            _moreBtnMatrix[0, 7] = new GHCommandButtonItem("Count", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'n');
+            _moreBtnMatrix[1, 7] = new GHCommandButtonItem("Search 20", "GnollHackClient.Assets.Icons.missing_icon.png", -2);
+            _moreBtnMatrix[2, 7] = new GHCommandButtonItem("Search 200", "GnollHackClient.Assets.Icons.missing_icon.png", -3);
+            _moreBtnMatrix[3, 7] = new GHCommandButtonItem("Discoveries", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'\\');
+            _moreBtnMatrix[4, 7] = new GHCommandButtonItem("Pick Up", "GnollHackClient.Assets.Icons.missing_icon.png", (int)',');
+            _moreBtnMatrix[5, 7] = new GHCommandButtonItem("Cancel", "GnollHackClient.Assets.Icons.missing_icon.png", 27);
+
+            _moreBtnMatrix[0, 8] = new GHCommandButtonItem("What Is", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'/');
+            _moreBtnMatrix[1, 8] = new GHCommandButtonItem("Look Far", "GnollHackClient.Assets.Icons.missing_icon.png", (int)';');
+            _moreBtnMatrix[2, 8] = new GHCommandButtonItem("Travel", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'_');
+            _moreBtnMatrix[3, 8] = new GHCommandButtonItem("Extended", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'#');
+            _moreBtnMatrix[4, 8] = new GHCommandButtonItem("Menu", "GnollHackClient.Assets.Icons.missing_icon.png", -4);
             _moreBtnMatrix[5, 8] = new GHCommandButtonItem("Back to Game", "GnollHackClient.Assets.Icons.missing_icon.png", -1);
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
@@ -7156,10 +7247,13 @@ namespace GnollHackClient.Pages.Game
             SKCanvas canvas = surface.Canvas;
             float canvaswidth = CommandCanvas.CanvasSize.Width;
             float canvasheight = CommandCanvas.CanvasSize.Height;
-            float x = 0, y = 0;
             float scale = canvaswidth / (float)CommandCanvas.Width;
-            float btnAreaWidth = canvaswidth / GHConstants.MoreButtonsPerRow;
-            float btnAreaHeight = canvasheight / GHConstants.MoreButtonsPerColumn;
+            bool isLandscape = canvaswidth > canvasheight;
+            int used_btnHeight = GHConstants.MoreButtonsPerColumn - (EnableWizardMode ? 0 : 1);
+            int usedButtonsPerRow = isLandscape ? used_btnHeight : GHConstants.MoreButtonsPerRow;
+            int usedButtonsPerColumn = isLandscape ? GHConstants.MoreButtonsPerRow : used_btnHeight;
+            float btnAreaWidth = canvaswidth / usedButtonsPerRow;
+            float btnAreaHeight = canvasheight / usedButtonsPerColumn;
 
             canvas.Clear();
 
@@ -7167,7 +7261,7 @@ namespace GnollHackClient.Pages.Game
             {
                 textPaint.Color = SKColors.White;
                 textPaint.Typeface = App.LatoRegular;
-                textPaint.TextSize = 9.0f * scale;
+                textPaint.TextSize = 12.0f * scale;
                 textPaint.TextAlign = SKTextAlign.Center;
 
                 float btnImgRawWidth = Math.Min(btnAreaWidth, 80 * scale);
@@ -7178,13 +7272,16 @@ namespace GnollHackClient.Pages.Game
 
                 for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
                 {
-                    for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
+                    int pos_j = 0;
+                    for (int j = (EnableWizardMode ? 0 : 1); j < GHConstants.MoreButtonsPerColumn; j++)
                     {
                         if (_moreBtnMatrix[i, j] != null && _moreBtnBitmaps[i, j] != null)
                         {
                             SKRect targetrect = new SKRect();
-                            targetrect.Left = i * btnAreaWidth + Math.Max(0, (btnAreaWidth - btnImgWidth) / 2);
-                            targetrect.Top = j * btnAreaHeight + Math.Max(0, (btnAreaHeight - btnImgHeight - textPaint.FontSpacing) / 2);
+                            int x = isLandscape ? pos_j : i;
+                            int y = isLandscape ? i : pos_j;
+                            targetrect.Left = x * btnAreaWidth + Math.Max(0, (btnAreaWidth - btnImgWidth) / 2);
+                            targetrect.Top = y * btnAreaHeight + Math.Max(0, (btnAreaHeight - btnImgHeight - textPaint.FontSpacing) / 2);
                             targetrect.Right = targetrect.Left + btnImgWidth;
                             targetrect.Bottom = targetrect.Top + btnImgHeight;
                             float text_x = (targetrect.Left + targetrect.Right) / 2;
@@ -7193,6 +7290,7 @@ namespace GnollHackClient.Pages.Game
                             canvas.DrawBitmap(_moreBtnBitmaps[i, j], targetrect);
                             canvas.DrawText(_moreBtnMatrix[i, j].Text, text_x, text_y, textPaint);
                         }
+                        pos_j++;
                     }
                 }
             }
@@ -7275,18 +7373,59 @@ namespace GnollHackClient.Pages.Game
                                 /* Select command here*/
                                 float canvaswidth = CommandCanvas.CanvasSize.Width;
                                 float canvasheight = CommandCanvas.CanvasSize.Height;
-                                float btnAreaWidth = canvaswidth / GHConstants.MoreButtonsPerRow;
-                                float btnAreaHeight = canvasheight / GHConstants.MoreButtonsPerColumn;
+                                bool isLandscape = canvaswidth > canvasheight;
+                                int used_btnHeight = GHConstants.MoreButtonsPerColumn - (EnableWizardMode ? 0 : 1);
+                                int usedButtonsPerRow = isLandscape ? used_btnHeight : GHConstants.MoreButtonsPerRow;
+                                int usedButtonsPerColumn = isLandscape ? GHConstants.MoreButtonsPerRow : used_btnHeight;
+                                float btnAreaWidth = canvaswidth / usedButtonsPerRow;
+                                float btnAreaHeight = canvasheight / usedButtonsPerColumn;
                                 int btnX = (int)(e.Location.X / btnAreaWidth);
                                 int btnY = (int)(e.Location.Y / btnAreaHeight);
 
-                                if (btnX >= 0 && btnX < GHConstants.MoreButtonsPerRow && btnY >= 0 && btnY < GHConstants.MoreButtonsPerColumn)
+                                if (btnX >= 0 && btnX < usedButtonsPerRow && btnY >= 0 && btnY < usedButtonsPerColumn)
                                 {
-                                    GHCommandButtonItem cbi = _moreBtnMatrix[btnX, btnY];
+                                    int i, j;
+                                    if(isLandscape)
+                                    {
+                                        i = btnY;
+                                        j = btnX;
+                                    }
+                                    else
+                                    {
+                                        i = btnX;
+                                        j = btnY;
+                                    }
+                                    if (!EnableWizardMode)
+                                        j++;
+                                    GHCommandButtonItem cbi = _moreBtnMatrix[i, j];
                                     if (cbi != null)
                                     {
                                         if (cbi.Command >= 0)
                                             GenericButton_Clicked(CommandCanvas, e, cbi.Command);
+                                        else
+                                        {
+                                            switch(cbi.Command)
+                                            {
+                                                case -2:
+                                                    GenericButton_Clicked(sender, e, 'n');
+                                                    GenericButton_Clicked(sender, e, -12);
+                                                    GenericButton_Clicked(sender, e, -10);
+                                                    GenericButton_Clicked(sender, e, 's');
+                                                    break;
+                                                case -3:
+                                                    GenericButton_Clicked(sender, e, 'n');
+                                                    GenericButton_Clicked(sender, e, -12);
+                                                    GenericButton_Clicked(sender, e, -10);
+                                                    GenericButton_Clicked(sender, e, -10);
+                                                    GenericButton_Clicked(sender, e, 's');
+                                                    break;
+                                                case -4:
+                                                    GameMenuButton_Clicked(sender, e);
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        }
                                     }
                                 }
 

@@ -4118,7 +4118,10 @@ long pickcnt;
     }
 
     char obuf[BUFSZ];
-    Strcpy(obuf, short_oname(otmp, doname, thesimpleoname, BUFSZ));
+    struct obj otmp_cnt = *otmp;
+    if (pickcnt > 0 && pickcnt < otmp->quan)
+        otmp_cnt.quan = pickcnt;
+    Strcpy(obuf, short_oname(&otmp_cnt, doname, thesimpleoname, BUFSZ));
     Sprintf(headerbuf, "What do you want to do with %s?", obuf);
 
     end_menu(win, headerbuf);
