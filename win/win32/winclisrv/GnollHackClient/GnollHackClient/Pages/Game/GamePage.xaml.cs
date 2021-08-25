@@ -866,6 +866,11 @@ namespace GnollHackClient.Pages.Game
 
         private void ShowWindowCanvas(GHWindow window, List<GHPutStrItem> strs)
         {
+            lock (RefreshScreenLock)
+            {
+                RefreshScreen = false;
+            }
+
             TextWindowGlyphImage.Source = null;
 
             _textGlyphImageSource.ReferenceGamePage = this;
@@ -6939,11 +6944,35 @@ namespace GnollHackClient.Pages.Game
                             else
                                 str = "";
                             pos += str.Length;
-                            textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? (nhcolor)instr.Color : nhcolor.CLR_WHITE);
-                            totwidth = textPaint.MeasureText(str, ref textBounds);
 
-                            canvas.DrawText(str, x, y, textPaint);
-                            x += totwidth;
+                            textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? (nhcolor)instr.Color : nhcolor.CLR_WHITE);
+
+                            string[] split = str.Split(' ');
+                            int split_idx_on_row = -1;
+                            float start_x = x;
+                            foreach (string split_str in split)
+                            {
+                                bool nowrap = false;
+                                if (string.IsNullOrWhiteSpace(split_str))
+                                    nowrap = true;
+                                split_idx_on_row++;
+                                string added_split_str = split_str + " ";
+                                float printlength = textPaint.MeasureText(added_split_str);
+                                float endposition = x + printlength;
+                                bool pastend = endposition > canvaswidth - rightmenupadding;
+                                if (pastend && split_idx_on_row > 0 && !nowrap)
+                                {
+                                    x = start_x;
+                                    y += textPaint.FontSpacing;
+                                    split_idx_on_row = 0;
+                                    endposition = x + printlength;
+                                }
+
+                                if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                                    canvas.DrawText(added_split_str, x, y, textPaint);
+
+                                x = endposition;
+                            }
                         }
                         j++;
                         y += textPaint.FontSpacing + textPaint.FontMetrics.Ascent;
@@ -7033,7 +7062,12 @@ namespace GnollHackClient.Pages.Game
                             if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_textTouchMoved)
                             {
                                 /* Normal click -- Hide the canvas */
+                                GenericButton_Clicked(sender, e, 27);
                                 TextGrid.IsVisible = false;
+                                lock (RefreshScreenLock)
+                                {
+                                    RefreshScreen = true;
+                                }
                             }
                             if (TextTouchDictionary.ContainsKey(e.Id))
                                 TextTouchDictionary.Remove(e.Id);
