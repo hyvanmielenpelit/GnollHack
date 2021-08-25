@@ -1418,14 +1418,14 @@ register struct trap *ttmp;
         return;
 
     play_sfx_sound(SFX_MAGIC_PORTAL_ACTIVATE);
-    You("activated a magic portal!");
+    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "activated a magic portal!");
 
     /* prevent the poor shnook, whose amulet was stolen while in
      * the endgame, from accidently triggering the portal to the
      * next level, and thus losing the game
      */
     if (In_endgame(&u.uz) && !u.uhave.amulet) {
-        You_feel("dizzy for a moment, but nothing happens...");
+        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "dizzy for a moment, but nothing happens...");
         return;
     }
 
@@ -1485,7 +1485,7 @@ struct trap *trap;
         play_sfx_sound(SFX_WRENCHING_SENSATION);
         if (Antimagic)
             u_shieldeff();
-        You_feel("a wrenching sensation.");
+        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a wrenching sensation.");
     } else if (!next_to_u()) {
         play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
         You1(shudder_for_moment);
