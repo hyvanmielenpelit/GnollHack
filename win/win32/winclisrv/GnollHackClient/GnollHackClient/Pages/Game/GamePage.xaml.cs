@@ -871,6 +871,11 @@ namespace GnollHackClient.Pages.Game
                 RefreshScreen = false;
             }
 
+            lock(TextScrollLock)
+            {
+                _textScrollOffset = 0;
+            }
+
             TextWindowGlyphImage.Source = null;
 
             _textGlyphImageSource.ReferenceGamePage = this;
