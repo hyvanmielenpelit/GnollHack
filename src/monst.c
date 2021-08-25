@@ -2681,7 +2681,7 @@ NEARDATA struct permonst mons[] = {
         25, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC, 
         ACTION_INFO(0, DRACOLICH_ATTACK_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ACTION_INFO(0, DRACOLICH_ATTACK_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
         ACTION_INFO(DRACOLICH_ENLARGEMENT, DRACOLICH_ENLARGEMENT,0,0,0,0,0,0,0,0,0,0,0,0,DRACOLICH_STATUE_ENLARGEMENT,0, 0), ACTION_INFO(DRACOLICH_ENLARGEMENT, DRACOLICH_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DRACOLICH_STATUE_ENLARGEMENT, 0, 0)),
-    MON("elder dracolich", None, "undead skeletal dragon that has a death ray breath weapon and can cast spells", None, None, S_DRAGON, LVL(27, 12, -14, 19, 100, -17),
+    ENLARGED_MON("elder dracolich", None, "undead skeletal dragon that has a death ray breath weapon and can cast spells", None, None, S_DRAGON, LVL(27, 12, -14, 19, 100, -17),
         (G_HELL | G_GENO | G_NOCORPSE | 1), 
         A(ATTK(AT_BREA, AD_DRAY, 1, 255, 0, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 23, 0, 0UL, 0),
             ATTK(AT_BITE, AD_PHYS, 6, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0, 0, 0, 0UL, 0),
@@ -2693,7 +2693,9 @@ NEARDATA struct permonst mons[] = {
         M2_UNDEAD | M2_HOSTILE | M2_MAGIC,
         M3_WAITFORU | M3_INFRAVISION | M3_SPEAKING | M3_CORPSE_CRUMBLES_TO_DUST, 
         M4_BRAVE, M5_NONE, M6_ELDER, M7_WIZARD, M8_NONE,
-        44, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        44, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(ELDER_DRACOLICH_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ELDER_DRACOLICH_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(ELDER_DRACOLICH_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ELDER_DRACOLICH_STATUE_ENLARGEMENT, 0, 0)),
 
     /* angelic dragons */
     MON("gold dragon", None, "spell-casting dragon with fiery and poison gas breath weapons", None, None, S_DRAGON, LVL(15, 12, -2, 10, 20, 10), (G_NOGEN),
@@ -3850,7 +3852,7 @@ struct permonst _mons2[] = {
     /*
      * Underworld hulk and otyugh
      */
-    MON("umbral hulk", None, "large tunneling humanoid with confusing gaze", None, None, S_UNDER, LVL(9, 6, 2, 12, 0, -9), (G_GENO | 2),
+    ENLARGED_MON("umbral hulk", None, "large tunneling humanoid with confusing gaze", None, None, S_UNDER, LVL(9, 6, 2, 12, 0, -9), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0, 0, 0, 0UL, 0),
           ATTK(AT_BITE, AD_PHYS, 2, 5, 0, 0, 0, 0, 0UL, 0), ATTK(AT_GAZE, AD_CONF, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -3861,7 +3863,9 @@ struct permonst _mons2[] = {
         M2_NONE, 
         M3_INFRAVISIBLE | M3_INFRAVISION, 
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-        10, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        10, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(UMBRAL_HULK_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, UMBRAL_HULK_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(UMBRAL_HULK_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, UMBRAL_HULK_STATUE_ENLARGEMENT, 0, 0)),
     ENLARGED_MON("otyugh", None, "large tentancled abomination whose bite contracts deadly disease", None, None, S_UNDER, LVL(8, 6, 3, 4, 0, 0), (G_GENO | 2),
         A(ATTK(AT_TENT, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_TENT, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0),
           ATTK(AT_BITE, AD_DISE, 1, 4, 1, 1, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK,

@@ -3463,6 +3463,20 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "elder-dracolich-enlargement", 0, 0,
+      DRACOLICH_ENLARGEMENT_TILES,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "elder-dracolich-statue-enlargement", 0, 0,
+      DRACOLICH_STATUE_ENLARGEMENT_TILES,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
     { "balor-enlargement", 0, 0,
       BALOR_ENLARGEMENT_TILES,
       3, 2, 0,
@@ -7482,6 +7496,20 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 }
       },
       { "norn-statue-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "umbral-hulk-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "umbral-hulk-statue-enlargement", 0, 0,
         5,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },
