@@ -86,6 +86,14 @@ namespace GnollHackClient.Controls
             set => SetValue(LabeledImageButton.GridHeightProperty, value);
         }
 
+        public int GHCommand
+        {
+            get
+            {
+                return ViewButton.GHCommand;
+            }
+        }
+
         public bool LargerFont { get; set; }
         public int LandscapeButtonsInRow { get; set; } = 14;
         public int PortraitButtonsInRow { get; set; } = 7;
@@ -122,7 +130,7 @@ namespace GnollHackClient.Controls
 
         private void ViewButton_Clicked(object sender, EventArgs e)
         {
-            BtnClicked?.Invoke(sender, e);
+            BtnClicked?.Invoke(this, e);
         }
     }
 

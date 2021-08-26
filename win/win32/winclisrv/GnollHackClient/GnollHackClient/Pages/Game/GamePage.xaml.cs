@@ -1339,6 +1339,29 @@ namespace GnollHackClient.Pages.Game
                     RefreshScreen = true;
                 }
             }
+            else if(GetLineGrid.IsVisible)
+            {
+                GetLineCancelButton_Clicked(sender, e);
+            }
+            else if(PopupGrid.IsVisible)
+            {
+                PopupOkButton_Clicked(sender, e);
+            }
+            else if (YnGrid.IsVisible)
+            {
+                LabeledImageButton btn;
+                if (FourthButton.IsVisible)
+                    btn = FourthButton;
+                else if (ThirdButton.IsVisible)
+                    btn = ThirdButton;
+                else if (SecondButton.IsVisible)
+                    btn = SecondButton;
+                else if (FirstButton.IsVisible)
+                    btn = FirstButton;
+                else
+                    btn = ZeroButton;
+                YnButton_Clicked(btn, e);
+            }
             else if (TextGrid.IsVisible)
             {
                 GenericButton_Clicked(sender, e, 27);
@@ -5914,7 +5937,7 @@ namespace GnollHackClient.Pages.Game
 
         private void YnButton_Clicked(object sender, EventArgs e)
         {
-            GHButton ghb = (GHButton)sender;
+            LabeledImageButton ghb = (LabeledImageButton)sender;
             GenericButton_Clicked(sender, e, ghb.GHCommand);
         }
         private void ZeroButton_Clicked(object sender, EventArgs e)
@@ -6172,8 +6195,8 @@ namespace GnollHackClient.Pages.Game
             {
                 ProfilingStopwatch.Restart();
             }
-            GHButton ghbutton = (GHButton)sender;
-            Debug.WriteLine("ProfilingStopwatch.Restart: " + ghbutton.RawCommand + ", Letter:" + ghbutton.Letter + ", Ctrl:" + ghbutton.ApplyCtrl + ", Meta:" + ghbutton.ApplyMeta);
+            LabeledImageButton ghbutton = (LabeledImageButton)sender;
+            Debug.WriteLine("ProfilingStopwatch.Restart: " + ghbutton.BtnCommand + ", Letter:" + ghbutton.BtnLetter + ", Ctrl:" + ghbutton.BtnCtrl + ", Meta:" + ghbutton.BtnMeta);
             GenericButton_Clicked(sender, e, (int)ghbutton.GHCommand);
 
         }

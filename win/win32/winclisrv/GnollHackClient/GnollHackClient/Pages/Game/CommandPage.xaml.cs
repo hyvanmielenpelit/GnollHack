@@ -156,7 +156,7 @@ namespace GnollHackClient.Pages.Game
         private async void GHButton_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
-            GHButton btn = (GHButton)sender;
+            LabeledImageButton btn = (LabeledImageButton)sender;
             await App.Current.MainPage.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, btn.GHCommand);
         }
