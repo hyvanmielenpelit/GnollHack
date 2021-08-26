@@ -3268,7 +3268,7 @@ your living flesh to my minions."
 "Your faith in %d is for naught!  Come, submit to me now!"
 %E
 %Cp Wiz 00067
-"A mere %r is nothing compared to my skill!"
+"A mere %c is nothing compared to my skill!"
 %E
 %Cp Wiz 00068
 "So, you are the best hope of %l?  How droll."

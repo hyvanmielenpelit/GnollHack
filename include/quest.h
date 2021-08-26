@@ -45,4 +45,24 @@ struct q_score {              /* Quest "scorecard" */
 #define MIN_QUEST_LEVEL 14 /* at least this u.ulevel to start */
 /* note: exp.lev. 14 is threshold level for 5th rank (class title, role.c) */
 
+
+/* General Quest Tracking System */
+#define QUEST_TITLE_SZ 64
+#define QUEST_DESCRIPTION_SZ 256
+#define QUEST_INSTRUCTION_SZ 128
+#define MAX_QUEST_INSTRUCTIONS 4
+struct gh_quest_item {
+    char title[QUEST_TITLE_SZ];
+    char description[QUEST_DESCRIPTION_SZ];
+    char instructions[QUEST_INSTRUCTION_SZ][MAX_QUEST_INSTRUCTIONS];
+    unsigned long quest_flags;
+};
+
+#define QUEST_FLAGS_VISIBLE      0x00000001UL
+#define QUEST_FLAGS_OPTIONAL     0x00000002UL
+#define QUEST_FLAGS_DISCOVERED   0x00000004UL
+#define QUEST_FLAGS_COMPLETED    0x00000008UL
+
+
+
 #endif /* QUEST_H */
