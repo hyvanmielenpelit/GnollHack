@@ -6474,7 +6474,7 @@ namespace GnollHackClient.Pages.Game
                             float scaley = textBounds.Height / maxsize;
                             float totscale = Math.Max(scalex, scaley);
                             textPaint.TextSize = textPaint.TextSize / Math.Max(1.0f, totscale);
-                            canvas.DrawText(str, circlex, circley - (textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                            canvas.DrawText(str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, textPaint);
                         }
                     }
                     _totalMenuHeight = y - curmenuoffset;
@@ -6553,22 +6553,20 @@ namespace GnollHackClient.Pages.Game
 
                             if (MenuTouchDictionary.Count == 1)
                             {
-                                if ((dist > 25 ||
-                                    (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond > GHConstants.MoveOrPressTimeThreshold
-                                       ))
+                                /* Just one finger => Scroll the menu */
+                                if (diffX != 0 || diffY != 0)
                                 {
-                                    /* Just one finger => Move the map */
-                                    if (diffX != 0 || diffY != 0)
+                                    lock (MenuScrollLock)
                                     {
-                                        lock (MenuScrollLock)
-                                        {
-                                            _menuScrollOffset += diffY;
-                                            if (_menuScrollOffset > 0)
-                                                _menuScrollOffset = 0;
-                                            else if (_menuScrollOffset < MenuCanvas.CanvasSize.Height - _totalMenuHeight)
-                                                _menuScrollOffset = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
-                                        }
-                                        MenuTouchDictionary[e.Id].Location = e.Location;
+                                        _menuScrollOffset += diffY;
+                                        if (_menuScrollOffset > 0)
+                                            _menuScrollOffset = 0;
+                                        else if (_menuScrollOffset < MenuCanvas.CanvasSize.Height - _totalMenuHeight)
+                                            _menuScrollOffset = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
+                                    }
+                                    MenuTouchDictionary[e.Id].Location = e.Location;
+                                    if (dist > 25) /* Cancel any press */
+                                    {
                                         _menuTouchMoved = true;
                                         _savedMenuTimeStamp = DateTime.Now;
                                     }
