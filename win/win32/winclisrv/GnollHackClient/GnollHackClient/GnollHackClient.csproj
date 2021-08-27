@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <None Remove="Assets\archristy.ttf" />
+    <None Remove="Assets\Auxiliary.bank" />
     <None Remove="Assets\buttons.png" />
     <None Remove="Assets\button_normal.png" />
     <None Remove="Assets\consola.ttf" />
@@ -62,6 +63,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\archristy.ttf" />
+    <EmbeddedResource Include="Assets\Auxiliary.bank" />
     <EmbeddedResource Include="Assets\buttons.png" />
     <EmbeddedResource Include="Assets\button_normal.png" />
     <EmbeddedResource Include="Assets\DejaVuSansMono-Bold.ttf" />

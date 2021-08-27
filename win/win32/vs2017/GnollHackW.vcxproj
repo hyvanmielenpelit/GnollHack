@@ -316,13 +316,14 @@
   <ItemGroup>
     <None Include="$(WinWin32Dir)Master.bank" />
     <None Include="$(WinWin32Dir)Master.strings.bank" />
+    <None Include="..\Auxiliary.bank" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="BeforeBuild">
-    <MSBuild Projects="beforegnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)"  />
+    <MSBuild Projects="beforegnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="BeforeRebuild">
-    <MSBuild Projects="beforegnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)"  />
+    <MSBuild Projects="beforegnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterBuild">
     <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />

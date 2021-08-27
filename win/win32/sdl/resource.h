@@ -40,6 +40,8 @@
 #define IDB_PNG_SDL_WINDOW              178
 #define IDB_PNG_SDL_CURSORS             179
 #define IDB_PNG_TILES_2                 180
+#define IDR_RCDATA2                     181
+#define IDR_RCDATA_AUXILIARY            181
 #define IDC_TEXT_VIEW                   1000
 #define IDC_TEXT_CONTROL                1000
 #define IDC_CMD_MOVE_NW                 1001
@@ -162,7 +164,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        181
+#define _APS_NEXT_RESOURCE_VALUE        182
 #define _APS_NEXT_COMMAND_VALUE         32804
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110

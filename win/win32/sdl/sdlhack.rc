@@ -395,6 +395,8 @@ IDR_RCDATA_STRINGS      RCDATA                  "..\\Master.strings.bank"
 
 IDR_RCDATA_FONT_DIABLO  RCDATA                  "diablo_h.ttf"
 
+IDR_RCDATA_AUXILIARY    RCDATA                  "..\\Auxiliary.bank"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

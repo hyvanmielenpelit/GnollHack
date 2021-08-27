@@ -70,12 +70,12 @@ extern "C"
     load_fmod_banks()
     {
         FMOD_RESULT       result;
-        FMOD::Studio::Bank* bank[2] = { 0 };
+        FMOD::Studio::Bank* bank[3] = { 0 };
         HINSTANCE hResInstance = (HINSTANCE)GetModuleHandle(NULL);
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 3; i++)
         {
-            int rid[2] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS };
+            int rid[3] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS, IDR_RCDATA_AUXILIARY };
             HRSRC res = FindResource(hResInstance, MAKEINTRESOURCE(rid[i]), RT_RCDATA);
 
             if (res)

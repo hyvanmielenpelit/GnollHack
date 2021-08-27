@@ -3855,6 +3855,20 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
+    fullname = "auxiliary_bank_file";
+    if (match_optname(opts, fullname, sizeof "auxiliary_bank_file" - 1, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if ((op = string_for_opt(opts, FALSE)) != 0) {
+            if (iflags.wc2_auxiliary_bank_file)
+                free(iflags.wc2_auxiliary_bank_file);
+            iflags.wc2_auxiliary_bank_file = dupstr(op);
+        }
+        else
+            return FALSE;
+        return retval;
+    }
+
     /*
      * windowtype:  option to choose the interface for binaries built
      * with support for more than one interface (tty + X11, for instance).

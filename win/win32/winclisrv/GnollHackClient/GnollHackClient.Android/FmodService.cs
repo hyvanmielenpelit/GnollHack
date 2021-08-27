@@ -48,6 +48,7 @@ namespace GnollHackClient.Droid
 
         FMOD.Studio.Bank _bank1;
         FMOD.Studio.Bank _bank2;
+        FMOD.Studio.Bank _bank3;
 
         FMOD.Studio.EventInstance? _testEventInstance;
 
@@ -118,6 +119,19 @@ namespace GnollHackClient.Droid
                 }
             }
             res = _system.loadBankFile(bank_path, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank2);
+
+            bank_path = Path.Combine(filesdir, "Auxiliary.bank");
+            if (!File.Exists(bank_path))
+            {
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Auxiliary.bank"))
+                {
+                    using (var fileStream = File.Create(bank_path))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+                }
+            }
+            res = _system.loadBankFile(bank_path, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank3);
         }
 
         public void PlayTestSound()

@@ -486,6 +486,7 @@ struct instance_flags {
     int wc2_petattr;            /* text attributes for pet */
     char* wc2_master_bank_file; /* name of custom master bank file, overrides default */
     char* wc2_master_strings_bank_file; /* name of custom master strings bank file, overrides default */
+    char* wc2_auxiliary_bank_file; /* name of custom auxiliary bank file, overrides default */
     struct autopickup_exception *autopickup_exceptions[2];
 #define AP_LEAVE 0
 #define AP_GRAB 1

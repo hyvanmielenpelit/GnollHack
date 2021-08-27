@@ -290,6 +290,7 @@
   <ItemGroup>
     <None Include="$(WinWin32Dir)Master.bank" />
     <None Include="$(WinWin32Dir)Master.strings.bank" />
+    <None Include="..\Auxiliary.bank" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\sdl\sdlhack.rc" />
