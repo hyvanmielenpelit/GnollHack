@@ -96,12 +96,12 @@ namespace GnollHackClient.Droid
                     {
                         stream.CopyTo(fileStream);
                     }
-                    res = _system.loadBankFile(bank_path, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank1);
                     //_bankBuffer1 = new byte[stream.Length];
                     //stream.Read(_bankBuffer1, 0, (int)stream.Length);
                     //res = _system.loadBankMemory(_bankBuffer1, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank1);
                 }
             }
+            res = _system.loadBankFile(bank_path, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank1);
 
             bank_path = Path.Combine(filesdir, "Master.strings.bank");
             if (!File.Exists(bank_path))
@@ -112,12 +112,12 @@ namespace GnollHackClient.Droid
                     {
                         stream.CopyTo(fileStream);
                     }
-                    res = _system.loadBankFile(bank_path, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank2);
                     //_bankBuffer2 = new byte[stream.Length];
                     //stream.Read(_bankBuffer2, 0, (int)stream.Length);
                     //res = _system.loadBankMemory(_bankBuffer2, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank2);
                 }
             }
+            res = _system.loadBankFile(bank_path, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank2);
         }
 
         public void PlayTestSound()
