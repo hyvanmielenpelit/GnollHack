@@ -213,7 +213,7 @@
     <ClCompile Include="$(SrcDir)prop.c" />
     <ClCompile Include="$(SrcDir)npc.c" />
     <ClCompile Include="..\..\..\sys\winnt\windmain.c" />
-    <ClCompile Include="..\mswproc.c" />
+    <ClCompile Include="$(WinWin32Dir)mswproc.c" />
     <ClCompile Include="..\sdl\sdlmisc.cpp" />
     <ClCompile Include="..\sdl\sdlhack.c" />
     <ClCompile Include="..\sdl\sdlnuklear.c" />
@@ -270,7 +270,7 @@
     <Image Include="$(WinWin32Dir)splash.bmp" />
     <Image Include="$(WinWin32Dir)gnollhack-logo-test-2.png" />
     <Image Include="$(WinWin32Dir)FMOD-Logo-32.png" />
-    <Image Include="..\gnollhack_64x96_transparent_32bits-2.png" />
+    <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" />
     <Image Include="..\png1.png" />
     <Image Include="..\sdl\buttons.png" />
     <Image Include="..\sdl\cursor_final.png" />
@@ -290,7 +290,7 @@
   <ItemGroup>
     <None Include="$(WinWin32Dir)Master.bank" />
     <None Include="$(WinWin32Dir)Master.strings.bank" />
-    <None Include="..\Auxiliary.bank" />
+    <None Include="$(WinWin32Dir)Auxiliary.bank" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\sdl\sdlhack.rc" />
