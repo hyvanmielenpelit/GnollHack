@@ -274,32 +274,34 @@ extern
 #endif
                                      /* no free bits */
 
-#define WC2_FULLSCREEN    0x0001UL /* 01 display full screen             */
-#define WC2_SOFTKEYBOARD  0x0002UL /* 02 software keyboard               */
-#define WC2_WRAPTEXT      0x0004UL /* 03 wrap long lines of text         */
-#define WC2_HILITE_STATUS 0x0008UL /* 04 hilite fields in status         */
-#define WC2_SELECTSAVED   0x0010UL /* 05 saved game selection menu       */
-#define WC2_DARKGRAY      0x0020UL /* 06 use bold black for black glyphs */
-#define WC2_HITPOINTBAR   0x0040UL /* 07 show bar representing hit points */
-#define WC2_FLUSH_STATUS  0x0080UL /* 08 call status_update(BL_FLUSH)
-                                   *    after updating status window fields */
-#define WC2_RESET_STATUS  0x0100UL /* 09 call status_update(BL_RESET) to
+#define WC2_FULLSCREEN              0x00000001UL /* 01 display full screen             */
+#define WC2_SOFTKEYBOARD            0x00000002UL /* 02 software keyboard               */
+#define WC2_WRAPTEXT                0x00000004UL /* 03 wrap long lines of text         */
+#define WC2_HILITE_STATUS           0x00000008UL /* 04 hilite fields in status         */
+#define WC2_SELECTSAVED             0x00000010UL /* 05 saved game selection menu       */
+#define WC2_DARKGRAY                0x00000020UL /* 06 use bold black for black glyphs */
+#define WC2_HITPOINTBAR             0x00000040UL /* 07 show bar representing hit points */
+#define WC2_FLUSH_STATUS            0x00000080UL /* 08 call status_update(BL_FLUSH)
+                                                  *    after updating status window fields */
+#define WC2_RESET_STATUS            0x00000100UL /* 09 call status_update(BL_RESET) to
                                    *    indicate 'draw everything'      */
-#define WC2_TERM_SIZE     0x0200UL /* 10 support setting terminal size   */
-#define WC2_STATUSLINES   0x0400UL /* 11 switch between 2 and 8 lines of status */
-#define WC2_WINDOWBORDERS 0x0800UL /* 12 display borders on nh windows   */
-#define WC2_PETATTR       0x1000UL /* 13 attributes for hilite_pet       */
-#define WC2_GUICOLOR      0x2000UL /* 14 display colours outside map win */
+#define WC2_TERM_SIZE               0x00000200UL /* 10 support setting terminal size   */
+#define WC2_STATUSLINES             0x00000400UL /* 11 switch between 2 and 8 lines of status */
+#define WC2_WINDOWBORDERS           0x00000800UL /* 12 display borders on nh windows   */
+#define WC2_PETATTR                 0x00001000UL /* 13 attributes for hilite_pet       */
+#define WC2_GUICOLOR                0x00002000UL /* 14 display colours outside map win */
 /* pline() can overload the display attributes argument passed to putstr()
    with one or more flags and at most one of bold/blink/inverse/&c */
-#define WC2_URGENT_MESG   0x4000UL /* 15 putstr(WIN_MESSAGE) supports urgency
-                                   *    via non-display attribute flag  */
-#define WC2_SUPPRESS_HIST 0x8000UL /* 16 putstr(WIN_MESSAGE) supports history
-                                   *    suppression via non-disp attr   */
-#define WC2_AUTOSTATUSLINES         0x10000UL /* 17 automatically adjust number of status lines */
-#define WC2_PREFERRED_SCREEN_SCALE  0x20000UL /* 18 preferred screen scale */
-#define WC2_HEREWINDOW              0x40000UL /* 19 show the here window */
-#define WC2_SCREEN_TEXT             0x80000UL /* 20 windowing system can show screen texts */
+#define WC2_URGENT_MESG             0x00004000UL /* 15 putstr(WIN_MESSAGE) supports urgency
+                                                  *    via non-display attribute flag  */
+#define WC2_SUPPRESS_HIST           0x00008000UL /* 16 putstr(WIN_MESSAGE) supports history
+                                                  *    suppression via non-disp attr   */
+#define WC2_AUTOSTATUSLINES         0x00010000UL /* 17 automatically adjust number of status lines */
+#define WC2_PREFERRED_SCREEN_SCALE  0x00020000UL /* 18 preferred screen scale */
+#define WC2_HEREWINDOW              0x00040000UL /* 19 show the here window */
+#define WC2_SCREEN_TEXT             0x00080000UL /* 20 windowing system can show screen texts */
+#define WC2_PLAY_GHSOUNDS           0x00100000UL /* 21 windowing system can play ghsounds */
+#define WC2_VOLUME_CONTROLS         0x00200000UL /* 22 volume controls are shown in options */
 
 /* 13 free bits */
 

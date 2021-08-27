@@ -41,6 +41,7 @@ static GNHSoundInstance* ambient_base = NULL; /* for sound source ambients */
 static float general_volume = 1.0f;
 static float general_music_volume = 1.0f;
 static float general_ambient_volume = 1.0f;
+static float general_dialogue_volume = 1.0f;
 static float general_sfx_volume = 1.0f;
 static float general_ui_volume = 1.0f;
 
@@ -887,7 +888,7 @@ extern "C"
         float event_volume = eventmap.volume;
         if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
             return FALSE;
-        float relevant_general_volume = (info.sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : general_sfx_volume);
+        float relevant_general_volume = (info.sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : info.sound_type == IMMEDIATE_SOUND_DIALOGUE ? general_dialogue_volume : general_sfx_volume);
 
         Studio::EventDescription* immediateSoundDescription = NULL;
         result = fmod_studio_system->getEvent(eventmap.eventPath, &immediateSoundDescription);
@@ -1057,11 +1058,12 @@ extern "C"
     }
 
     int
-    fmod_adjust_ghsound_general_volumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_sfx_volume, float new_general_ui_volume)
+    fmod_adjust_ghsound_general_volumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_dialogue_volume, float new_general_sfx_volume, float new_general_ui_volume)
     {
         general_volume = new_general_volume;
         general_music_volume = new_general_music_volume;
         general_ambient_volume = new_general_ambient_volume;
+        general_dialogue_volume = new_general_dialogue_volume;
         general_sfx_volume = new_general_sfx_volume;
         general_ui_volume = new_general_ui_volume;
 
@@ -1123,7 +1125,7 @@ extern "C"
                 enum ghsound_types soundid = immediateSoundInstances[i].ghsound;
                 struct ghsound_eventmapping eventmap = ghsound2event[soundid];
                 float event_volume = eventmap.volume;
-                float relevant_general_volume = (immediateSoundInstances[i].sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : general_sfx_volume);
+                float relevant_general_volume = (immediateSoundInstances[i].sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : immediateSoundInstances[i].sound_type == IMMEDIATE_SOUND_DIALOGUE ? general_dialogue_volume : general_sfx_volume);
                 result = immediateSoundInstances[i].eventInstance->setVolume(min(1.0f, immediateSoundInstances[i].normalVolume * event_volume * relevant_general_volume * general_volume));
             }
         }
@@ -1134,7 +1136,7 @@ extern "C"
                 enum ghsound_types soundid = longImmediateSoundInstances[i].ghsound;
                 struct ghsound_eventmapping eventmap = ghsound2event[soundid];
                 float event_volume = eventmap.volume;
-                float relevant_general_volume = (longImmediateSoundInstances[i].sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : general_sfx_volume);
+                float relevant_general_volume = (longImmediateSoundInstances[i].sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : longImmediateSoundInstances[i].sound_type == IMMEDIATE_SOUND_DIALOGUE ? general_dialogue_volume : general_sfx_volume);
                 result = longImmediateSoundInstances[i].eventInstance->setVolume(min(1.0f, longImmediateSoundInstances[i].normalVolume * event_volume * relevant_general_volume * general_volume));
             }
         }

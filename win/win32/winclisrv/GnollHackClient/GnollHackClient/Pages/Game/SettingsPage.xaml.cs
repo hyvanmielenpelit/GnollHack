@@ -15,6 +15,7 @@ namespace GnollHackClient.Pages.Game
     public partial class SettingsPage : ContentPage
     {
         private GamePage _gamePage;
+        private bool _doChangeVolume = false;
         public SettingsPage(GamePage gamePage)
         {
             InitializeComponent();
@@ -24,6 +25,7 @@ namespace GnollHackClient.Pages.Game
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             App.BackButtonPressed -= BackButtonPressed;
+            _doChangeVolume = false;
 
             if (_gamePage != null)
                 _gamePage.CursorStyle = (TTYCursorStyle)CursorPicker.SelectedIndex;
@@ -51,6 +53,14 @@ namespace GnollHackClient.Pages.Game
             App.DeveloperMode = DeveloperSwitch.IsToggled;
             Preferences.Set("DeveloperMode", App.DeveloperMode);
 
+            Preferences.Set("GeneralVolume", (float)GeneralVolumeSlider.Value);
+            Preferences.Set("MusicVolume", (float)MusicVolumeSlider.Value);
+            Preferences.Set("AmbientVolume", (float)AmbientVolumeSlider.Value);
+            Preferences.Set("DialogueVolume", (float)DialogueVolumeSlider.Value);
+            Preferences.Set("EffectsVolume", (float)EffectsVolumeSlider.Value);
+            Preferences.Set("UIVolume", (float)UIVolumeSlider.Value);
+            App.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
+
             int res = 4, tryres = 0;
             string str = MessageLengthPicker.SelectedItem.ToString();
             if (int.TryParse(str, out tryres))
@@ -70,7 +80,13 @@ namespace GnollHackClient.Pages.Game
 
             int cursor = 0, graphics = 0, msgnum = 0;
             bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false;
-
+            float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
+            generalVolume = Preferences.Get("GeneralVolume", 1.0f);
+            musicVolume = Preferences.Get("MusicVolume", 1.0f);
+            ambientVolume = Preferences.Get("AmbientVolume", 1.0f);
+            dialogueVolume = Preferences.Get("DialogueVolume", 1.0f);
+            effectsVolume = Preferences.Get("EffectsVolume", 1.0f);
+            UIVolume = Preferences.Get("UIVolume", 1.0f);
             navbar = App.HideAndroidNavigatioBar;
             devmode = App.DeveloperMode;
             if (_gamePage == null)
@@ -98,6 +114,12 @@ namespace GnollHackClient.Pages.Game
             FPSSwitch.IsToggled = fps;
             NavBarSwitch.IsToggled = navbar;
             DeveloperSwitch.IsToggled = devmode;
+            GeneralVolumeSlider.Value = (double)generalVolume;
+            MusicVolumeSlider.Value = (double)musicVolume;
+            AmbientVolumeSlider.Value = (double)ambientVolume;
+            DialogueVolumeSlider.Value = (double)dialogueVolume;
+            EffectsVolumeSlider.Value = (double)effectsVolume;
+            UIVolumeSlider.Value = (double)UIVolume;
             for (int i = 0; i < MessageLengthPicker.Items.Count; i++)
             {
                 int tryint = 0;
@@ -107,6 +129,8 @@ namespace GnollHackClient.Pages.Game
                     break;
                 }
             }
+
+            _doChangeVolume = true;
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -127,5 +151,10 @@ namespace GnollHackClient.Pages.Game
             return false;
         }
 
+        private void VolumeSlider_ValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            if(_doChangeVolume)
+                App.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
+        }
     }
 }

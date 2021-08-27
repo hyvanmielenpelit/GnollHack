@@ -5420,7 +5420,7 @@ namespace GnollHackClient.Pages.Game
                                         _savedSender = sender;
                                         _savedEventArgs = e;
                                     }
-                                    else if (!ZoomMiniMode && (dist > 25 ||
+                                    else if (!ZoomMiniMode && (dist > GHConstants.MoveDistanceThreshold ||
                                         (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond > GHConstants.MoveOrPressTimeThreshold
                                            ))
                                     {
@@ -6556,19 +6556,23 @@ namespace GnollHackClient.Pages.Game
                                 /* Just one finger => Scroll the menu */
                                 if (diffX != 0 || diffY != 0)
                                 {
-                                    lock (MenuScrollLock)
+                                    /* Do not scroll within button press time threshold, unless large move */
+                                    if (dist > GHConstants.MoveDistanceThreshold || (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond > GHConstants.MoveOrPressTimeThreshold)
                                     {
-                                        _menuScrollOffset += diffY;
-                                        if (_menuScrollOffset > 0)
-                                            _menuScrollOffset = 0;
-                                        else if (_menuScrollOffset < MenuCanvas.CanvasSize.Height - _totalMenuHeight)
-                                            _menuScrollOffset = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
-                                    }
-                                    MenuTouchDictionary[e.Id].Location = e.Location;
-                                    if (dist > 25) /* Cancel any press */
-                                    {
-                                        _menuTouchMoved = true;
-                                        _savedMenuTimeStamp = DateTime.Now;
+                                        lock (MenuScrollLock)
+                                        {
+                                            _menuScrollOffset += diffY;
+                                            if (_menuScrollOffset > 0)
+                                                _menuScrollOffset = 0;
+                                            else if (_menuScrollOffset < MenuCanvas.CanvasSize.Height - _totalMenuHeight)
+                                                _menuScrollOffset = Math.Min(0, MenuCanvas.CanvasSize.Height - _totalMenuHeight);
+                                        }
+                                        MenuTouchDictionary[e.Id].Location = e.Location;
+                                        if (dist > GHConstants.MoveDistanceThreshold)
+                                        {  /* Cancel any press, if long move */
+                                            _menuTouchMoved = true;
+                                            _savedMenuTimeStamp = DateTime.Now;
+                                        }
                                     }
                                 }
                             }

@@ -94,7 +94,8 @@ struct window_procs mswin_procs = {
 #ifdef STATUS_HILITES
     WC2_HITPOINTBAR | WC2_FLUSH_STATUS | WC2_RESET_STATUS | WC2_HILITE_STATUS |
 #endif
-    WC2_STATUSLINES | WC2_PREFERRED_SCREEN_SCALE, mswin_init_nhwindows, mswin_player_selection, mswin_askname,
+    WC2_STATUSLINES | WC2_PREFERRED_SCREEN_SCALE | WC2_PLAY_GHSOUNDS | WC2_VOLUME_CONTROLS, 
+    mswin_init_nhwindows, mswin_player_selection, mswin_askname,
     mswin_get_nh_event, mswin_exit_nhwindows, mswin_suspend_nhwindows,
     mswin_resume_nhwindows, mswin_create_nhwindow_ex, mswin_clear_nhwindow,
     mswin_display_nhwindow, mswin_destroy_nhwindow, mswin_curs, mswin_putstr_ex,
@@ -3636,10 +3637,11 @@ mswin_adjust_ghsound_general_volumes(VOID_ARGS)
     float new_general_volume = ((float)flags.sound_volume_general) / 100.0f;
     float new_music_volume = ((float)flags.sound_volume_music) / 100.0f;
     float new_ambient_volume = ((float)flags.sound_volume_ambient) / 100.0f;
+    float new_dialogue_volume = ((float)flags.sound_volume_dialogue) / 100.0f;
     float new_effects_volume = ((float)flags.sound_volume_effects) / 100.0f;
     float new_ui_volume = ((float)flags.sound_volume_ui) / 100.0f;
 
-    if (!fmod_adjust_ghsound_general_volumes(new_general_volume, new_music_volume, new_ambient_volume, new_effects_volume, new_ui_volume))
+    if (!fmod_adjust_ghsound_general_volumes(new_general_volume, new_music_volume, new_ambient_volume, new_dialogue_volume, new_effects_volume, new_ui_volume))
     {
         impossible("Cannot adjust volume!");
     }

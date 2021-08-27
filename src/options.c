@@ -458,6 +458,8 @@ static struct Comp_Opt {
       SET_IN_GAME },
     { "sound_volume_ambient", "ambient volume", 3,
       SET_IN_GAME },
+    { "sound_volume_dialogue", "dialogue volume", 3,
+      SET_IN_GAME },
     { "sound_volume_effects", "sound effect volume", 3,
       SET_IN_GAME },
     { "sound_volume_general", "general game volume", 3,
@@ -920,6 +922,7 @@ initoptions_init()
     flags.pile_limit = PILE_LIMIT_DFLT;  /* 5 */
 
     flags.sound_volume_ambient = 100;
+    flags.sound_volume_dialogue = 100;
     flags.sound_volume_effects = 100;
     flags.sound_volume_general = 100;
     flags.sound_volume_music = 100;
@@ -3772,7 +3775,8 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
-    for(int tile_sheet_idx = 1; tile_sheet_idx < MAX_TILE_SHEETS; tile_sheet_idx++)
+    int tile_sheet_idx;
+    for(tile_sheet_idx = 1; tile_sheet_idx < MAX_TILE_SHEETS; tile_sheet_idx++)
     {
         char fullnamebuf[BUFSZ] = "";
         fullname = "tile_file";
@@ -4364,6 +4368,36 @@ boolean tinitial, tfrom_file;
         else
         {
             flags.sound_volume_ambient = itmp;
+            need_set_sound_volume = TRUE;
+        }
+        return retval;
+    }
+
+    fullname = "sound_volume_dialogue";
+    if (match_optname(opts, fullname, 21, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = 100;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < 0 || itmp > 100)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, 0, 100);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.sound_volume_dialogue = itmp;
             need_set_sound_volume = TRUE;
         }
         return retval;
@@ -6678,6 +6712,10 @@ char *buf;
     {
         Sprintf(buf, "%d", flags.sound_volume_ambient);
     }
+    else if (!strcmp(optname, "sound_volume_dialogue"))
+    {
+    Sprintf(buf, "%d", (int)flags.sound_volume_dialogue);
+    }
     else if (!strcmp(optname, "sound_volume_effects"))
     {
         Sprintf(buf, "%d", (int)flags.sound_volume_effects);
@@ -6718,7 +6756,8 @@ char *buf;
     } 
     else if (!strncmp(optname, "tile_file", 9)) 
     {
-        for (int tile_sheet_idx = 0; tile_sheet_idx < MAX_TILE_SHEETS; tile_sheet_idx++)
+        int tile_sheet_idx;
+        for (tile_sheet_idx = 0; tile_sheet_idx < MAX_TILE_SHEETS; tile_sheet_idx++)
         {
             char optbuf[BUFSZ] = "";
             Sprintf(optbuf, "%s_%d", optname, tile_sheet_idx + 1);
@@ -7488,6 +7527,12 @@ static struct wc_Opt wc2_options[] = {
     { "windowborders", WC2_WINDOWBORDERS },
     { "autostatuslines", WC2_AUTOSTATUSLINES },
     { "preferred_screen_scale", WC2_PREFERRED_SCREEN_SCALE },
+    { "sound_volume_ambient", WC2_VOLUME_CONTROLS },
+    { "sound_volume_dialogue", WC2_VOLUME_CONTROLS },
+    { "sound_volume_effects", WC2_VOLUME_CONTROLS },
+    { "sound_volume_general", WC2_VOLUME_CONTROLS },
+    { "sound_volume_music", WC2_VOLUME_CONTROLS },
+    { "sound_volume_ui", WC2_VOLUME_CONTROLS },
     { (char *) 0, 0L }
 };
 

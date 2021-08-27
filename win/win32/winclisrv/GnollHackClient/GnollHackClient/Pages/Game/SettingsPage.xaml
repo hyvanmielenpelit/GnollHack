@@ -111,6 +111,8 @@
                                     </Picker>
                                 </StackLayout>
                             </ViewCell>
+                        </TableSection>
+                        <TableSection>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Hit point bars"
@@ -131,6 +133,74 @@
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
                                     <Switch x:Name="NavBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                        </TableSection>
+                        <TableSection>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Master Volume"
+                                           FontFamily="Underwood" TextColor="White"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Slider x:Name="GeneralVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                            WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Music Volume"
+                                           FontFamily="Underwood" TextColor="White"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Slider x:Name="MusicVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                            WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Ambient Volume"
+                                           FontFamily="Underwood" TextColor="White"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Slider x:Name="AmbientVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                            WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Dialogue Volume"
+                                           FontFamily="Underwood" TextColor="White"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Slider x:Name="DialogueVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                            WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Effects Volume"
+                                           FontFamily="Underwood" TextColor="White"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Slider x:Name="EffectsVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                            WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Interface Volume"
+                                           FontFamily="Underwood" TextColor="White"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Slider x:Name="UIVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                            WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                                 </StackLayout>
                             </ViewCell>
                         </TableSection>

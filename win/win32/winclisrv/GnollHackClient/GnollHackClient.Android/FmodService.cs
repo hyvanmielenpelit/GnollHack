@@ -51,6 +51,13 @@ namespace GnollHackClient.Droid
 
         FMOD.Studio.EventInstance? _testEventInstance;
 
+        private float _generalVolume = 1.0f;
+        private float _musicVolume = 1.0f;
+        private float _ambientVolume = 1.0f;
+        private float _dialogueVolume = 1.0f;
+        private float _effectsVolume = 1.0f;
+        private float _uiVolume = 1.0f;
+
         public FmodService()
         {
             _latestService = this;
@@ -202,10 +209,11 @@ namespace GnollHackClient.Droid
             ghinstance.stopped = false;
 
             bool queue_sound = false;
+            float relevant_volume = sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_UI ? _uiVolume : sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE ? _dialogueVolume : _effectsVolume;
 
             //lock (eventInstanceLock)
             //{
-                if (play_group == (int)sound_play_groups.SOUND_PLAY_GROUP_LONG)
+            if (play_group == (int)sound_play_groups.SOUND_PLAY_GROUP_LONG)
                 {
                     queue_sound = (longImmediateInstances.Count > 0 && sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && longImmediateInstances[0].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && !longImmediateInstances[0].stopped);
                     longImmediateInstances.Insert(0, ghinstance);
@@ -239,7 +247,7 @@ namespace GnollHackClient.Droid
 
                 ghinstance.queued = queue_sound;
 
-                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
+                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * relevant_volume)));
                 for (int i = 0; i < arraysize; i++)
                 {
                     if (i < parameterNames.Length && i < parameterValues.Length)
@@ -378,7 +386,7 @@ namespace GnollHackClient.Droid
                 ghinstance.dialogue_mid = 0;
 
                 musicInstances.Insert(0, ghinstance);
-                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
+                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _musicVolume)));
 
                 if (musicInstances.Count >= 2)
                 {
@@ -423,7 +431,7 @@ namespace GnollHackClient.Droid
                 /* Check if the volume is different */
                 if (levelAmbientInstances[0].normalSoundVolume != soundVolume)
                 {
-                    res = levelAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
+                    res = levelAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
                     levelAmbientInstances[0].normalSoundVolume = soundVolume;
                     res = _system.update();
                     return (int)res;
@@ -455,7 +463,7 @@ namespace GnollHackClient.Droid
             ghinstance.dialogue_mid = 0;
 
             levelAmbientInstances.Insert(0, ghinstance);
-            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
 
             if (levelAmbientInstances.Count >= 2)
             {
@@ -500,7 +508,7 @@ namespace GnollHackClient.Droid
                 /* Check if the volume is different */
                 if (environmentAmbientInstances[0].normalSoundVolume != soundVolume)
                 {
-                    res = environmentAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
+                    res = environmentAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
                     environmentAmbientInstances[0].normalSoundVolume = soundVolume;
                     res = _system.update();
                     return (int)res;
@@ -532,7 +540,7 @@ namespace GnollHackClient.Droid
             ghinstance.dialogue_mid = 0;
 
             environmentAmbientInstances.Insert(0, ghinstance);
-            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
 
             if (environmentAmbientInstances.Count >= 2)
             {
@@ -577,7 +585,7 @@ namespace GnollHackClient.Droid
             res = eventDescription.createInstance(out eventInstance);
 
             /* Set volume */
-            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume)));
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
             //ambientInstance->setVolume(fmod_volume* event_volume * general_ambient_volume* general_volume);
 
             /* Create new GHSoundInstance */
@@ -660,7 +668,7 @@ namespace GnollHackClient.Droid
             res = ghinstance.instance.getVolume(out old_volume);
 
             float event_volume = ghinstance.normalEventVolume;
-            res = ghinstance.instance.setVolume(event_volume * soundVolume);
+            res = ghinstance.instance.setVolume(event_volume * soundVolume * _generalVolume * _ambientVolume);
 
             if (old_volume == 0.0f && soundVolume > 0.0f)
                 res = ghinstance.instance.start();
@@ -673,5 +681,73 @@ namespace GnollHackClient.Droid
             return 0;
         }
 
+        public int AdjustVolumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_dialogue_volume, float new_general_sfx_volume, float new_general_ui_volume)
+        {
+            _generalVolume = new_general_volume;
+            _musicVolume = new_general_music_volume;
+            _ambientVolume = new_general_ambient_volume;
+            _dialogueVolume = new_general_dialogue_volume;
+            _effectsVolume = new_general_sfx_volume;
+            _uiVolume = new_general_ui_volume;
+
+            RESULT result;
+            foreach (GHSoundInstance si in musicInstances)
+            {
+                if (!si.stopped)
+                {
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _musicVolume * _generalVolume));
+                }
+            }
+            foreach (GHSoundInstance si in levelAmbientInstances)
+            {
+                if (!si.stopped)
+                {
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume));
+                }
+            }
+            foreach (GHSoundInstance si in environmentAmbientInstances)
+            {
+                if (!si.stopped)
+                {
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume));
+                }
+            }
+            foreach (GHSoundInstance si in environmentAmbientInstances)
+            {
+                if (!si.stopped)
+                {
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume));
+                }
+            }
+            /* Add occupation ambients */
+            /* Add effect ambients */
+            foreach (GHSoundInstance si in immediateInstances)
+            {
+                if (!si.stopped)
+                {
+                    float relevant_volume = si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_UI ? _uiVolume : si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE ? _dialogueVolume : _effectsVolume;
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * relevant_volume * _generalVolume));
+                }
+            }
+            foreach (GHSoundInstance si in longImmediateInstances)
+            {
+                if (!si.stopped)
+                {
+                    float relevant_volume = si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_UI ? _uiVolume : si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE ? _dialogueVolume : _effectsVolume;
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * relevant_volume * _generalVolume));
+                }
+            }
+
+            foreach (GHSoundInstance si in ambientList)
+            {
+                if (!si.stopped)
+                {
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume));
+                }
+            }
+
+            result = _system.update();
+            return (int)result;
+        }
     }
 }

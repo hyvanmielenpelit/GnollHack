@@ -142,6 +142,7 @@ struct flag {
     int sound_volume_music;     /* user set preference for music volume 1...100 */
     int sound_volume_ambient;   /* user set preference for ambient volume 1...100 */
     int sound_volume_effects;   /* user set preference for sound effect volume 1...100 */
+    int sound_volume_dialogue;   /* user set preference for dialogue volume 1...100 */
     int sound_volume_ui;        /* user set preference for user interface sound volume 1...100 */
 
     int end_top, end_around; /* describe desired score list */
