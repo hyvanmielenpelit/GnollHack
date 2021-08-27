@@ -43,8 +43,8 @@ namespace GnollHackClient.Droid
         private static FMOD.Studio.System _system;
         private static FMOD.System _coresystem;
 
-        private byte[] _bankBuffer1;
-        private byte[] _bankBuffer2;
+        //private byte[] _bankBuffer1;
+        //private byte[] _bankBuffer2;
 
         FMOD.Studio.Bank _bank1;
         FMOD.Studio.Bank _bank2;
@@ -85,19 +85,38 @@ namespace GnollHackClient.Droid
             //result = fmod_studio_system->loadBankMemory((const char*)data, (int)len, FMOD_STUDIO_LOAD_MEMORY, FMOD_STUDIO_LOAD_BANK_NORMAL, &bank[i]);
             Assembly assembly = typeof(GnollHackClient.IFmodService).Assembly;
             RESULT res;
+            string filesdir = Android.App.Application.Context.FilesDir.Path;
 
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Master.bank"))
+            string bank_path = Path.Combine(filesdir, "Master.bank");
+            if (!File.Exists(bank_path))
             {
-                _bankBuffer1 = new byte[stream.Length];
-                stream.Read(_bankBuffer1, 0, (int)stream.Length);
-                res = _system.loadBankMemory(_bankBuffer1, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank1);
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Master.bank"))
+                {
+                    using (var fileStream = File.Create(bank_path))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+                    res = _system.loadBankFile(bank_path, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank1);
+                    //_bankBuffer1 = new byte[stream.Length];
+                    //stream.Read(_bankBuffer1, 0, (int)stream.Length);
+                    //res = _system.loadBankMemory(_bankBuffer1, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank1);
+                }
             }
 
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Master.strings.bank"))
+            bank_path = Path.Combine(filesdir, "Master.strings.bank");
+            if (!File.Exists(bank_path))
             {
-                _bankBuffer2 = new byte[stream.Length];
-                stream.Read(_bankBuffer2, 0, (int)stream.Length);
-                res = _system.loadBankMemory(_bankBuffer2, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank2);
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Master.strings.bank"))
+                {
+                    using (var fileStream = File.Create(bank_path))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+                    res = _system.loadBankFile(bank_path, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank2);
+                    //_bankBuffer2 = new byte[stream.Length];
+                    //stream.Read(_bankBuffer2, 0, (int)stream.Length);
+                    //res = _system.loadBankMemory(_bankBuffer2, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank2);
+                }
             }
         }
 
