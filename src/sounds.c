@@ -1852,6 +1852,14 @@ register struct monst *mtmp;
         {
             verbalize1(verbl_msg);
         }
+
+        if (ptr == &mons[PM_DEATH] || (mtmp->isnpc && has_enpc(mtmp) && npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_explanation != 0))
+        {
+            char namebuf[BUFSZ];
+            strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
+            int glyph = mon_to_glyph(mtmp, rn2_on_display_rng);
+            display_popup_text(verbl_msg, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, 1UL);
+        }
     }
     return 1;
 }

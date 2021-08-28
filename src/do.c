@@ -307,7 +307,7 @@ docharacterstatistics()
                 if (strcmp(dbuf3, ""))
                     Sprintf(eos(dbuf3), ", ");
 
-                Sprintf(eos(dbuf3), cxname(obj));
+                Sprintf(eos(dbuf3), "%s", cxname(obj));
             }
 
             if (strcmp(dbuf3, ""))
