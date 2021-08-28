@@ -46,11 +46,9 @@ namespace GnollHackClient.Droid
         //private byte[] _bankBuffer1;
         //private byte[] _bankBuffer2;
 
-        FMOD.Studio.Bank _bank1;
-        FMOD.Studio.Bank _bank2;
-        FMOD.Studio.Bank _bank3;
+        Bank[] _bank = new Bank[GHConstants.NumBanks];
 
-        FMOD.Studio.EventInstance? _testEventInstance;
+        EventInstance? _testEventInstance;
 
         private float _generalVolume = 1.0f;
         private float _musicVolume = 1.0f;
@@ -81,57 +79,42 @@ namespace GnollHackClient.Droid
             res = _system.initialize(1024, FMOD.Studio.INITFLAGS.NORMAL, FMOD.INITFLAGS.NORMAL, IntPtr.Zero);
         }
 
+        public string GetBankDir()
+        {
+            string filesdir = Android.App.Application.Context.FilesDir.Path;
+            string bankdir = Path.Combine(filesdir, "bank");
+            return bankdir;
+        }
+
         public void LoadBanks()
         {
-            //result = fmod_studio_system->loadBankMemory((const char*)data, (int)len, FMOD_STUDIO_LOAD_MEMORY, FMOD_STUDIO_LOAD_BANK_NORMAL, &bank[i]);
-            Assembly assembly = typeof(GnollHackClient.IFmodService).Assembly;
             RESULT res;
-            string filesdir = Android.App.Application.Context.FilesDir.Path;
-
-            string bank_path = Path.Combine(filesdir, "Master.bank");
-            if (!File.Exists(bank_path))
+            string bankdir = GetBankDir();
+            string[] banklist = { "Master.bank", "Master.strings.bank", "Auxiliary.bank" };
+            string bank_path;
+            int idx = -1;
+            foreach (string bankname in banklist)
             {
-                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Master.bank"))
+                idx++;
+                bank_path = Path.Combine(bankdir, bankname);
+                if (!File.Exists(bank_path))
                 {
-                    using (var fileStream = File.Create(bank_path))
-                    {
-                        stream.CopyTo(fileStream);
-                    }
-                    //_bankBuffer1 = new byte[stream.Length];
-                    //stream.Read(_bankBuffer1, 0, (int)stream.Length);
-                    //res = _system.loadBankMemory(_bankBuffer1, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank1);
-                }
-            }
-            res = _system.loadBankFile(bank_path, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank1);
+                    /* Error; should already be here */
+                    continue;
 
-            bank_path = Path.Combine(filesdir, "Master.strings.bank");
-            if (!File.Exists(bank_path))
-            {
-                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Master.strings.bank"))
-                {
-                    using (var fileStream = File.Create(bank_path))
-                    {
-                        stream.CopyTo(fileStream);
-                    }
-                    //_bankBuffer2 = new byte[stream.Length];
-                    //stream.Read(_bankBuffer2, 0, (int)stream.Length);
-                    //res = _system.loadBankMemory(_bankBuffer2, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank2);
+                    //using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Master.bank"))
+                    //{
+                    //    using (var fileStream = File.Create(bank_path))
+                    //    {
+                    //        stream.CopyTo(fileStream);
+                    //    }
+                    //    //_bankBuffer1 = new byte[stream.Length];
+                    //    //stream.Read(_bankBuffer1, 0, (int)stream.Length);
+                    //    //res = _system.loadBankMemory(_bankBuffer1, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank1);
+                    //}
                 }
+                res = _system.loadBankFile(bank_path, LOAD_BANK_FLAGS.NORMAL, out _bank[idx]);
             }
-            res = _system.loadBankFile(bank_path, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank2);
-
-            bank_path = Path.Combine(filesdir, "Auxiliary.bank");
-            if (!File.Exists(bank_path))
-            {
-                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Auxiliary.bank"))
-                {
-                    using (var fileStream = File.Create(bank_path))
-                    {
-                        stream.CopyTo(fileStream);
-                    }
-                }
-            }
-            res = _system.loadBankFile(bank_path, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank3);
         }
 
         public void PlayTestSound()

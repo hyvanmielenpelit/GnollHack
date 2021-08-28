@@ -22,6 +22,29 @@
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" Aspect="AspectFit"/>
 
+        <Grid x:Name="DownloadGrid" IsVisible="False"
+              HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
+              AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All" >
+            <Frame BackgroundColor="#66000000"  WidthRequest="340" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                <StackLayout x:Name="DownloadLayout" Padding="5"
+                                     HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="Downloading..." x:Name="DownloadTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
+                                       VerticalTextAlignment="End" HorizontalOptions="Center"  />
+                    <Label Text="" x:Name="DownloadFileNameLabel" FontFamily="Lato-Regular" FontSize="14" TextColor="White"
+                                       VerticalTextAlignment="Start" HorizontalOptions="Center"  />
+                    <ProgressBar x:Name="DownloadProgressBar" HorizontalOptions="Fill" VerticalOptions="Start" 
+                                 ProgressColor="LightBlue" Progress="0" />
+                    <Label Text="" x:Name="DownloadBytesLabel" FontFamily="Lato-Regular" FontSize="14" TextColor="White"
+                                       VerticalTextAlignment="Start" HorizontalOptions="Center"  />
+                    <Grid Grid.Column="0" HorizontalOptions="Center" WidthRequest="170" Margin="0,10,0,0">
+                        <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="170"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                        <Button x:Name="CancelDownloadButton" Text="Cancel" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="CancelDownloadButton_Clicked" />
+                    </Grid>
+                </StackLayout>
+            </Frame>
+        </Grid>
+
         <ff:CachedImage x:Name="StillImage" Opacity="1" IsVisible="false"
                HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                AbsoluteLayout.LayoutBounds="0, 0, 1, 1"

@@ -244,7 +244,7 @@
                 </Grid>
             </Grid>
             <Grid x:Name="PopupGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
-                         Padding="10" BackgroundColor="#66000000" IsVisible="False">
+                         BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="600" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                     <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="PopupLayout" Padding="5"

@@ -938,6 +938,7 @@ namespace GnollHackCommon
         public const float NumberButtonSize = 0.3f;
         public const int MoreButtonsPerRow = 6;
         public const int MoreButtonsPerColumn = 9;
+        public const int NumBanks = 3;
     }
 
 

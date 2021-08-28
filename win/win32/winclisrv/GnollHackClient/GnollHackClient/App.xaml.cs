@@ -11,6 +11,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Net.Http;
+using Newtonsoft.Json;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 [assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
@@ -246,32 +247,5 @@ namespace GnollHackClient
                     1.0f, parameterNames, parameterValues, 0, 0, 0, 0);
             }
         }
-
-        HttpClient _httpClient = new HttpClient();
-
-        public async void DownloadBankFromWebServer()
-        {
-            var response = await _httpClient.GetAsync(@"https://download.gnollhack.com/abcde/Auxiliary.bank");
-            using (var stream = await response.Content.ReadAsStreamAsync())
-            {
-                var fileInfo = new FileInfo("Auxiliary.bank");
-                using (var fileStream = fileInfo.OpenWrite())
-                {
-                    await stream.CopyToAsync(fileStream);
-                }
-            }
-
-            var str_response = await _httpClient.GetAsync(@"https://download.gnollhack.com/abcde/Auxiliary.strings.bank");
-            using (var stream = await str_response.Content.ReadAsStreamAsync())
-            {
-                var fileInfo = new FileInfo("Auxiliary.strings.bank");
-                using (var fileStream = fileInfo.OpenWrite())
-                {
-                    await stream.CopyToAsync(fileStream);
-                }
-            }
-        }
-
-
     }
 }

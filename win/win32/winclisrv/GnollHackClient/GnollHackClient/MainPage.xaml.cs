@@ -88,6 +88,8 @@ namespace GnollHackClient
             if (_firsttime)
             {
                 _firsttime = false;
+                _banksAcquired = 0;
+                _downloadresult = -1;
                 StartFadeLogoIn();
                 Assembly thisassembly = GetType().GetTypeInfo().Assembly;
                 FmodLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.FMOD-Logo-192-White.png", thisassembly);
@@ -123,30 +125,50 @@ namespace GnollHackClient
                             creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
                             StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
+                            starttimercount++;
                             res = true;
                             break;
                         case 1:
-                            float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
-                            generalVolume = Preferences.Get("GeneralVolume", 1.0f);
-                            musicVolume = Preferences.Get("MusicVolume", 1.0f);
-                            ambientVolume = Preferences.Get("AmbientVolume", 1.0f);
-                            dialogueVolume = Preferences.Get("DialogueVolume", 1.0f);
-                            effectsVolume = Preferences.Get("EffectsVolume", 1.0f);
-                            UIVolume = Preferences.Get("UIVolume", 1.0f);
-                            App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
-                            App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                            AcquireBanks();
+                            starttimercount++;
                             res = true;
                             break;
                         case 2:
+                            if(_banksAcquired >= GHConstants.NumBanks || _downloadresult > 0)
+                            {
+                                Preferences.Set("ResetBanks", false);
+                                App.FmodService.LoadBanks();
+                                float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
+                                generalVolume = Preferences.Get("GeneralVolume", 1.0f);
+                                musicVolume = Preferences.Get("MusicVolume", 1.0f);
+                                ambientVolume = Preferences.Get("AmbientVolume", 1.0f);
+                                dialogueVolume = Preferences.Get("DialogueVolume", 1.0f);
+                                effectsVolume = Preferences.Get("EffectsVolume", 1.0f);
+                                UIVolume = Preferences.Get("UIVolume", 1.0f);
+                                App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
+                                App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                                starttimercount++;
+                            }
+                            else
+                            {
+                                if(DownloadGrid.IsVisible)
+                                {
+                                    UpdateDownloadProgress();
+                                }
+                            }
+                            res = true;
+                            break;
+                        case 3:
                             StartFadeIn();
                             res = true;
+                            starttimercount++;
                             break;
                         default:
                             StartLogoImage.IsVisible = false;
                             FmodLogoImage.IsVisible = false;
+                            starttimercount++;
                             break;
                     }
-                    starttimercount++;
                     return res;
                 });
             }
@@ -157,6 +179,57 @@ namespace GnollHackClient
 
             StartServerGrid.IsEnabled = true;
             UpperButtonGrid.IsEnabled = true;
+        }
+
+        private async void UpdateDownloadProgress()
+        {
+            float percentage;
+            long bytesDownloaded;
+            long? totalFileSize;
+            string fileDescription;
+            lock (_downloadProgressLock)
+            {
+                percentage = _downloadProgressPercentage;
+                bytesDownloaded = _downloadProgressTotalBytesDownloaded;
+                totalFileSize = _downloadProgressTotalFileSize;
+                fileDescription = _downloadProgressFileDescription;
+            }
+
+            if (totalFileSize != null)
+            {
+                await DownloadProgressBar.ProgressTo((float)percentage / 100, 100, Easing.Linear);
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    DownloadFileNameLabel.Text = fileDescription;
+                    if (totalFileSize <= 0)
+                        DownloadBytesLabel.Text = "Calculating file size...";
+                    else
+                        DownloadBytesLabel.Text = bytesDownloaded + " / " + totalFileSize + " bytes";
+                });
+            }
+
+            if ((((totalFileSize > 0 && bytesDownloaded >= totalFileSize) || totalFileSize == null || (_cancellationToken.CanBeCanceled && _cancellationToken.IsCancellationRequested)) && DownloadGrid.IsVisible))
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    DownloadGrid.IsVisible = false;
+                });
+                _banksAcquired++;
+                if(_cancellationToken.IsCancellationRequested)
+                {
+                    /* Delete cancelled files */
+                    if(File.Exists(_downloadProgressFilePath))
+                    {
+                        FileInfo file = new FileInfo(_downloadProgressFilePath);
+                        file.Delete();
+                    }
+                }
+                if(_cancellationTokenSource != null)
+                {
+                    _cancellationTokenSource.Dispose();
+                    _cancellationTokenSource = null;
+                }
+            }
         }
 
         public void PlayMainScreenVideoAndMusic()
@@ -209,6 +282,7 @@ namespace GnollHackClient
             {
                 App.GnollHackService.ClearFiles();
                 Preferences.Clear();
+                Preferences.Set("ResetBanks", true);
                 App.GnollHackService.InitializeGnollHack();
                 ClearFilesButton.Text = "Done";
                 ClearFilesButton.TextColor = Color.Red;
@@ -326,5 +400,178 @@ namespace GnollHackClient
                 await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
             }
         }
+
+        private int _banksAcquired = 0;
+        private object _downloadProgressLock = new object();
+        private float _downloadProgressPercentage = 0.0f;
+        private long _downloadProgressTotalBytesDownloaded = 0;
+        private long? _downloadProgressTotalFileSize = 0;
+        private string _downloadProgressFileDescription = "";
+        private string _downloadProgressFilePath = "";
+
+        private void AcquireBanks()
+        {
+            string bank_dir = App.FmodService.GetBankDir();
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
+
+            /* Make the relevant directory */
+            if (!Directory.Exists(bank_dir))
+            {
+                Directory.CreateDirectory(bank_dir);
+            }
+
+            bool reset = Preferences.Get("ResetBanks", true);
+            if (reset)
+            {
+                DirectoryInfo di = new DirectoryInfo(bank_dir);
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    file.Delete();
+                }
+            }
+
+            string[] banknamelist = { "Master.bank", "Master.strings.bank", "Auxiliary.bank" };
+            string[] bankresourcelist = { "GnollHackClient.Assets.Master.bank", "GnollHackClient.Assets.Master.strings.bank", "GnollHackClient.Assets.Auxiliary.bank" };
+            bool[] bankwebdownloadlist = { false, false, true };
+
+            for(int idx = 0; idx < banknamelist.Length; idx++)
+            {
+                string bank_path = Path.Combine(bank_dir, banknamelist[idx]);
+                if (bankwebdownloadlist[idx])
+                {
+                    DownloadFileFromWebServer(assembly, banknamelist[idx], bank_dir);
+                }
+                else
+                {
+                    if (!File.Exists(bank_path))
+                    {
+                        using (Stream stream = assembly.GetManifestResourceStream(bankresourcelist[idx]))
+                        {
+                            using (var fileStream = File.Create(bank_path))
+                            {
+                                stream.CopyTo(fileStream);
+                            }
+                        }
+                    }
+                    _banksAcquired++;
+                }
+            }
+        }
+
+
+        private void CancelDownloadButton_Clicked(object sender, EventArgs e)
+        {
+            _cancellationTokenSource?.Cancel();
+        }
+
+        //private static HttpClient _httpClient = new HttpClient();
+        public static int _downloadresult = -1;
+        CancellationTokenSource _cancellationTokenSource= null;
+        CancellationToken _cancellationToken;
+
+        public async void DownloadFileFromWebServer(Assembly assembly, string filename, string target_directory)
+        {
+            string json = "";
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.secrets.jsons"))
+            {
+                if (stream != null)
+                {
+                    using (StreamReader sr = new StreamReader(stream))
+                    {
+                        json = sr.ReadToEnd();
+                    }
+                }
+                else
+                {
+                    _downloadresult = 1; /* cannot find secrets.json */
+                    _banksAcquired++;
+                    return;
+                }
+            }
+
+            string target_path = Path.Combine(target_directory, filename);
+
+            DownloadableFileList dflist = JsonConvert.DeserializeObject<DownloadableFileList>(json);
+            DownloadableFile f = null;
+            if(dflist != null && dflist.files != null)
+            {
+                foreach (DownloadableFile df in dflist.files)
+                {
+                    if (df.name == filename)
+                    {
+                        f = df;
+                        break;
+                    }
+                }
+            }
+
+            if (f == null)
+            {
+                _downloadresult = 2;
+                _banksAcquired++;
+                return;
+            }
+
+            /* Check if ok */
+            if(File.Exists(target_path))
+            {
+                FileInfo file = new FileInfo(target_path);
+                string checksum = ChecksumUtil.GetChecksum(HashingAlgoTypes.SHA256, target_path);
+                if(file.Length == f.length && checksum == f.sha256)
+                {
+                    /* Ok, no need to download */
+                    _banksAcquired++;
+                    _downloadresult = 0;
+                    return;
+                }
+                else
+                {
+                    /* Wrong, delete and download */
+                    file.Delete();
+                }
+            }
+
+            /* Download */
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                DownloadGrid.IsVisible = true;
+            });
+
+            string url = f.download_url;
+            lock (_downloadProgressLock)
+            {
+                _downloadProgressFileDescription = f.description;
+                _downloadProgressFilePath = target_path;
+            }
+            _cancellationTokenSource = new CancellationTokenSource();
+            _cancellationToken = _cancellationTokenSource.Token;
+
+            using (var client = new HttpClientDownloadWithProgress(url, target_path, _cancellationToken))
+            {
+                client.ProgressChanged += (totalFileSize, totalBytesDownloaded, progressPercentage) => {
+                    lock(_downloadProgressLock)
+                    {
+                        _downloadProgressPercentage = (float)progressPercentage;
+                        _downloadProgressTotalBytesDownloaded = totalBytesDownloaded;
+                        _downloadProgressTotalFileSize = totalFileSize;
+                    }
+                };
+
+                await client.StartDownload();
+            }
+
+            //var response = await _httpClient.GetAsync(url);
+            //using (var stream = await response.Content.ReadAsStreamAsync())
+            //{
+            //    var fileInfo = new FileInfo(target_path);
+            //    using (var fileStream = fileInfo.OpenWrite())
+            //    {
+            //        await stream.CopyToAsync(fileStream);
+            //    }
+            //}
+
+            _downloadresult = 0;
+        }
+
     }
 }
