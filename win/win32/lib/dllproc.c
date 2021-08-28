@@ -2904,7 +2904,7 @@ dll_display_screen_text(const char* text, const char* subtext, int style, int at
 }
 
 void
-dll_display_popup_text(const char* text, const char* title, int style, int attr, int color, unsigned long tflags)
+dll_display_popup_text(const char* text, const char* title, int style, int attr, int color, int glyph, unsigned long tflags)
 {
 
 }

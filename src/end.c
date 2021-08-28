@@ -2402,7 +2402,7 @@ boolean ask;
     {
         const char* nomsg = "No species have been genocided or become extinct.";
         pline1(nomsg); /* Game is still ongoing, so pline is ok */
-        display_popup_text(nomsg, "No Genocided Monsters", POPUP_TEXT_NO_LIST, 0, 0, 0UL);
+        display_popup_text(nomsg, "No Genocided Monsters", POPUP_TEXT_NO_GENOCIDED_LIST, 0, 0, NO_GLYPH, 0UL);
 #ifdef DUMPLOG
     } 
     else if (dumping) 

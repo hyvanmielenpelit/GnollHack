@@ -157,13 +157,7 @@ namespace GnollHackClient
                 return resulttmp;
             }
 
-            lock (ReferenceGamePage.ProfilingStopwatchLock)
-            {
-                ReferenceGamePage.ProfilingStopwatch.Stop();
-                TimeSpan elapsed = ReferenceGamePage.ProfilingStopwatch.Elapsed;
-                Debug.WriteLine("ProfilingStopwatch: GlyphSource: Start: " + elapsed.TotalMilliseconds + " msec");
-                ReferenceGamePage.ProfilingStopwatch.Start();
-            }
+            App.DebugWriteProfilingStopwatchTimeAndStart("GlyphSource Start");
 
             DoAutoSize();
 
@@ -176,13 +170,7 @@ namespace GnollHackClient
             var skImage = SKImage.FromBitmap(bitmap);            
             var result = skImage.Encode(SKEncodedImageFormat.Png, 100).AsStream();
 
-            lock (ReferenceGamePage.ProfilingStopwatchLock)
-            {
-                ReferenceGamePage.ProfilingStopwatch.Stop();
-                TimeSpan elapsed = ReferenceGamePage.ProfilingStopwatch.Elapsed;
-                Debug.WriteLine("ProfilingStopwatch: GlyphSource: End: " + elapsed.TotalMilliseconds + " msec");
-                ReferenceGamePage.ProfilingStopwatch.Start();
-            }
+            App.DebugWriteProfilingStopwatchTimeAndStop("GlyphSource Stop");
 
             return result;
         }

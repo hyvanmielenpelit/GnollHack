@@ -66,11 +66,7 @@ namespace GnollHackClient.Pages.Game
         {
             MainLayout.IsEnabled = false;
             App.PlayButtonClickedSound();
-            lock (_gamePage.ProfilingStopwatchLock)
-            {
-                _gamePage.ProfilingStopwatch.Restart();
-            }
-            Debug.WriteLine("ProfilingStopwatch.Restart: Options");
+            App.DebugWriteRestart("ProfilingStopwatch.Restart: Options");
             _gamePage.GenericButton_Clicked(sender, e, 'O');
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
@@ -116,22 +112,13 @@ namespace GnollHackClient.Pages.Game
             btnGC.Text = "Collecting...";
             btnGC.TextColor = Color.Yellow;
 
-            lock (_gamePage.ProfilingStopwatchLock)
-            {
-                _gamePage.ProfilingStopwatch.Restart();
-            }
-            Debug.WriteLine("ProfilingStopwatch.Restart: Garbage Collection Start"); 
+            App.DebugWriteRestart("Garbage Collection Start");
             
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            lock (_gamePage.ProfilingStopwatchLock)
-            {
-                _gamePage.ProfilingStopwatch.Stop();
-                TimeSpan elapsed = _gamePage.ProfilingStopwatch.Elapsed;
-                Debug.WriteLine("ProfilingStopwatch: Garbage Collection End: " + elapsed.TotalMilliseconds + " msec");
-            }
+            App.DebugWriteProfilingStopwatchTimeAndStop("Garbage Collection End");
 
             btnGC.Text = "Done";
             btnGC.TextColor = Color.Red;

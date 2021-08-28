@@ -39,8 +39,6 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate byte BooleanDoubleCallback(double value1);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate byte BooleanDoubleDoubleDoubleDoubleDoubleCallback(double value1, double value2, double value3, double value4, double value5);
-    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate byte BooleanIntDoubleVoidPtrCallback(int value1, double value2, IntPtr value3);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate byte BooleanDoubleVoidPtrCallback(double value1, IntPtr value2);
@@ -122,6 +120,9 @@ namespace GnollHackCommon
     public delegate int SetAmbientSoundVolumeCallback(UInt64 soundSourceId, double soundVolume);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate byte AdjustGeneralVolumesCallback(double value1, double value2, double value3, double value4, double value5, double value6);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [return: MarshalAs(UnmanagedType.LPStr)]
     public delegate string CharVoidCallback();
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -158,7 +159,7 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void DisplayScreenTextCallback(string text, string subtext, int style, int attr, int color, ulong tflags);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void DisplayPopupTextCallback(string text, string title, int style, int attr, int color, ulong tflags);
+    public delegate void DisplayPopupTextCallback(string text, string title, int style, int attr, int color, int glyph, ulong tflags);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void UpdateCursorCallback(int style, int force_paint, int show_on_u);
 

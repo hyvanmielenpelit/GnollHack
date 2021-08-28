@@ -7,6 +7,7 @@ using Android.OS;
 using Android.Content.Res;
 using Android.Views;
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
 namespace GnollHackClient.Droid
 {
@@ -55,8 +56,9 @@ namespace GnollHackClient.Droid
                 }
             });
 
-            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+            Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            VersionTracking.Track();
 
             MainActivity.StaticAssets = this.Assets;
             CurrentMainActivity = this;

@@ -64,7 +64,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\archristy.ttf" />
-    <EmbeddedResource Include="Assets\Auxiliary.bank" />
+    <EmbeddedResource Include="Assets\Auxiliary.bank" Condition="'$(Configuration)'=='Debug'"/>
     <EmbeddedResource Include="Assets\buttons.png" />
     <EmbeddedResource Include="Assets\button_normal.png" />
     <EmbeddedResource Include="Assets\DejaVuSansMono-Bold.ttf" />

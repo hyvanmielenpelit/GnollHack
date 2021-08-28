@@ -866,6 +866,14 @@ namespace GnollHackCommon
         INIT_GLYPH_PROGRAM_FINISH,
     }
 
+    public enum popup_text_types
+    {
+        POPUP_TEXT_GENERAL = 0,
+        POPUP_TEXT_IDENTIFY,
+        POPUP_TEXT_NO_GENOCIDED_LIST,
+        POPUP_TEXT_DIALOGUE,
+    }
+
     public class GHConstants
     {
         public const int InputBufferLength = 32;
@@ -939,6 +947,7 @@ namespace GnollHackCommon
         public const int MoreButtonsPerRow = 6;
         public const int MoreButtonsPerColumn = 9;
         public const int NumBanks = 3;
+        public const bool DownloadFromWebInDebugMode = false;
     }
 
 

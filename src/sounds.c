@@ -15,6 +15,8 @@ STATIC_DCL int NDECL(dochat);
 STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
 
+STATIC_DCL void FDECL(hermit_talk, (struct monst*, const char**));
+
 STATIC_DCL int FDECL(do_chat_hermit_dungeons, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_quests, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_gnomish_mines, (struct monst*));
@@ -4032,6 +4034,13 @@ struct monst* mtmp;
             Sprintf(eos(ansbuf), "  %s", npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_explanation);
 
         verbalize("%s", ansbuf);
+        if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_explanation != 0)
+        {
+            int glyph = mon_to_glyph(mtmp, rn2_on_display_rng);
+            char namebuf[BUFSZ];
+            strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
+            display_popup_text(ansbuf, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, 1UL);
+        }
     }
     else if (msound == MS_GUARDIAN)
     {
@@ -7758,17 +7767,48 @@ int cha;
     return pow(2.0, (11.0 - (double)cha) / 14.0);
 }
 
+STATIC_OVL void
+hermit_talk(mtmp, linearray)
+struct monst* mtmp;
+const char** linearray;
+{
+    if (!mtmp || !linearray)
+        return;
+
+    int glyph = mon_to_glyph(mtmp, rn2_on_display_rng);
+    const char* hermit_txt = 0;
+    char namebuf[BUFSZ];
+    strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
+
+    int idx = 0;
+    while(linearray[idx] != 0)
+    {
+        if (linearray[idx])
+        {
+            hermit_txt = linearray[idx];
+            verbalize1(hermit_txt);
+            display_popup_text(hermit_txt, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, 1UL);
+        }
+        idx++;
+    }
+
+}
+
 
 STATIC_OVL int 
 do_chat_hermit_dungeons(mtmp)
 struct monst* mtmp;
 {
-    if (!m_speak_check(mtmp))
+    if (!mtmp || !m_speak_check(mtmp))
         return 0;
 
-    verbalize("The Dungeons of Doom are an ancient complex of dungeons, some thirty levels deep.");
-    verbalize("A few levels below the surface, the Dungeons branch into Gnomish Mines, home to the mysterious Gnomes of Yendor.");
-    verbalize("The Dungeons also feature Sokoban, a maze-like underground tower erected by one of the local mad wizards.");
+    const char* linearray[4] = { 
+        "The Dungeons of Doom are an ancient complex of dungeons, some thirty levels deep.",
+        "A few levels below the surface, the Dungeons branch into Gnomish Mines, home to the mysterious Gnomes of Yendor.",
+        "The Dungeons also feature Sokoban, a maze-like underground tower erected by one of the local mad wizards.",
+        0 };
+
+    hermit_talk(mtmp, linearray);
     mtmp->hermit_told_dungeon = 1;
     return 1;
 }
@@ -7780,9 +7820,13 @@ struct monst* mtmp;
     if (!m_speak_check(mtmp))
         return 0;
 
-    verbalize("The Amulet has been taken to Gehennom, the Under World, where Moloch's minions are hiding.");
-    verbalize("To get there, you will need to descend to the bottom of this dungeon and find an underground castle there.");
-    verbalize("From there, you can access the Under World, just as the Wizard of Yendor himself once did.");
+    const char* linearray[4] = {
+        "The Amulet has been taken to Gehennom, the Under World, where Moloch's minions are hiding.",
+        "To get there, you will need to descend to the bottom of this dungeon and find an underground castle there.",
+        "From there, you can access the Under World, just as the Wizard of Yendor himself once did.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit_told_quests = 1;
     return 1;
 }
@@ -7792,10 +7836,15 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("The Gnomish Mines are a complex of ancient mines, some eight levels deep, inhabited by Gnomes of Yendor.");
-    verbalize("There, on its bottom level, they worship a magical stone, the Luckstone, through strange ceremonies.");
-    verbalize("There is also a trading outpost, called Mine Town, which is located somewhere in the middle of the complex.");
-    verbalize("Seek out Izchak who runs a lighting store there. He knows more about the gnomes and their mysterious artifact.");
+
+    const char* linearray[5] = {
+        "The Gnomish Mines are a complex of ancient mines, some eight levels deep, inhabited by Gnomes of Yendor.",
+        "There, on its bottom level, they worship a magical stone, the Luckstone, through strange ceremonies.",
+        "There is also a trading outpost, called Mine Town, which is located somewhere in the middle of the complex.",
+        "Seek out Izchak who runs a lighting store there. He knows more about the gnomes and their mysterious artifact.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit_told_gnomish_mines = 1;
     return 1;
 }
@@ -7805,8 +7854,13 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("The Luckstone is a magnificient magical stone that bestows good luck on the wearer.");
-    verbalize("It can greatly help you in your quest.");
+
+    const char* linearray[3] = {
+        "The Luckstone is a magnificient magical stone that bestows good luck on the wearer.",
+        "It can greatly help you in your quest.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
     return 1;
 }
 STATIC_OVL int
@@ -7815,8 +7869,13 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("Sokoban is a tower inlaid with puzzles devised by a mad wizard, who resides on the tower's topmost level.");
-    verbalize("Great treasures have been promised to the one who can solve the wizard's puzzles.");
+
+    const char* linearray[3] = {
+        "Sokoban is a tower inlaid with puzzles devised by a mad wizard, who resides on the tower's topmost level.",
+        "Great treasures have been promised to the one who can solve the wizard's puzzles.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit_told_sokoban = 1;
     return 1;
 }
@@ -7826,7 +7885,12 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("They say that the wizard will gift either an amulet of reflection or a bag of holding to whomever passes the tests.");
+
+    const char* linearray[2] = {
+        "They say that the wizard will gift either an amulet of reflection or a bag of holding to whomever passes the tests.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
     return 1;
 }
 STATIC_OVL int
@@ -7835,10 +7899,15 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("A great castle resides at the bottom of the Dungeons of Doom.");
-    verbalize("It was once a memorial place for the dead kings of Yendor and the last stop before the Under World.");
-    verbalize("However, it has been overrun by monstrous forces loyal to the Wizard of Yendor.");
-    verbalize("Only from there, and with the right tune they say, you can track down the Wizard and the Amulet you seek.");
+
+    const char* linearray[5] = {
+    "A great castle resides at the bottom of the Dungeons of Doom.",
+    "It was once a memorial place for the dead kings of Yendor and the last stop before the Under World.",
+    "However, it has been overrun by monstrous forces loyal to the Wizard of Yendor.",
+    "Only from there, and with the right tune they say, you can track down the Wizard and the Amulet you seek.",
+    0 };
+    hermit_talk(mtmp, linearray);
+
     return 1;
 }
 STATIC_OVL int
@@ -7847,8 +7916,13 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("Gehennom, the Under World, can be accessed through the castle at the bottom of the dungeon.");
-    verbalize("Seek out a hermit, Eduard, at the castle. He knows more about the Under World and what you must do.");
+
+    const char* linearray[3] = {
+    "Gehennom, the Under World, can be accessed through the castle at the bottom of the dungeon.",
+    "Seek out a hermit, Eduard, at the castle. He knows more about the Under World and what you must do.",
+    0 };
+    hermit_talk(mtmp, linearray);
+
     return 1;
 }
 STATIC_OVL int
@@ -7857,8 +7931,13 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("The Wizard of Yendor is a great magician who stepped into the Under World to study the secrets of life and death.");
-    verbalize("He is said to possess unrivalled power and be nearly immortal.");
+
+    const char* linearray[3] = {
+        "The Wizard of Yendor is a great magician who stepped into the Under World to study the secrets of life and death.",
+        "He is said to possess unrivalled power and be nearly immortal.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit_told_wizard_of_yendor = 1;
     return 1;
 }
@@ -7869,8 +7948,13 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("This castle was built to honor the dead kings of Yendor.");
-    verbalize("Their remains are held in the Tomb of the Kings, just behind this castle.");
+
+    const char* linearray[3] = {
+        "This castle was built to honor the dead kings of Yendor.",
+        "Their remains are held in the Tomb of the Kings, just behind this castle.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit2_told_castle = 1;
     return 1;
 }
@@ -7881,9 +7965,14 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("Gehennom, the Under World, can be accessed through this castle.");
-    verbalize("Trap doors in the castle will lead you straight there, as does the blocked entrance at the Tomb of the Kings.");
-    verbalize("There, you must track down the Wizard of Yendor and find the Vlad the Impaler, the Lord of the Vampires.");
+
+    const char* linearray[4] = {
+    "Gehennom, the Under World, can be accessed through this castle.",
+    "Trap doors in the castle will lead you straight there, as does the blocked entrance at the Tomb of the Kings.",
+    "There, you must track down the Wizard of Yendor and find the Vlad the Impaler, the Lord of the Vampires.",
+    0 };
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit2_told_gehennom = 1;
     return 1;
 }
@@ -7894,9 +7983,14 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("Vlad the Impaler, the Lord of the Vampires, resides in a tower in Gehennom.");
-    verbalize("You must defeat him and take the Candelabrum of Invocation from him.");
-    verbalize("The Candelabrum will light your way to Moloch's Sanctum, where the Amulet is hidden.");
+
+    const char* linearray[4] = {
+    "Vlad the Impaler, the Lord of the Vampires, resides in a tower in Gehennom.",
+    "You must defeat him and take the Candelabrum of Invocation from him.",
+    "The Candelabrum will light your way to Moloch's Sanctum, where the Amulet is hidden.",
+    0 };
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit2_told_vampire_lord = 1;
     return 1;
 }
@@ -7906,9 +8000,14 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("The Wizard of Yendor is studying a tome of ancient evil, the Book of the Dead, in his tower in Gehennom.");
-    verbalize("You must kill him and obtain his grimoire.");
-    verbalize("Only its words are powerful enough to crack open the passage to Moloch's hiding place.");
+
+    const char* linearray[4] = {
+        "The Wizard of Yendor is studying a tome of ancient evil, the Book of the Dead, in his tower in Gehennom.",
+        "You must kill him and obtain his grimoire.",
+        "Only its words are powerful enough to crack open the passage to Moloch's hiding place.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit2_told_wizard_of_yendor = 1;
     return 1;
 }
@@ -7918,12 +8017,20 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("The Silver Bell is an artifact necessary for gaining access Moloch's Sanctum.");
-    if (!u.uachieve.bell)
+
+    const char* linearray[4] = {
+        "The Silver Bell is an artifact necessary for gaining access Moloch's Sanctum.",
+        "I believe it is held by an enemy of yours near your home.",
+        "Your friends have called for your assistance. Heed that call.",
+        0 };
+
+    if (u.uachieve.bell)
     {
-        verbalize("I believe it is held by an enemy of yours near your home.");
-        verbalize("Your friends have called for your assistance. Heed that call.");
+        linearray[1] = 0;
     }
+
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit2_told_silver_bell = 1;
     return 1;
 }
@@ -7933,8 +8040,13 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("The Candelabrum of Invocation is a powerful artifact that can light your way to Moloch's Sanctum.");
-    verbalize("It is held by Vlad the Impaler, the Lord of the Vampires, at his tower in Gehennom.");
+
+    const char* linearray[3] = {
+    "The Candelabrum of Invocation is a powerful artifact that can light your way to Moloch's Sanctum.",
+    "It is held by Vlad the Impaler, the Lord of the Vampires, at his tower in Gehennom.",
+    0 };
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit2_told_candelabrum = 1;
     return 1;
 }
@@ -7944,8 +8056,13 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("The Book of the Dead is a terrible tome of great power that can even raise the dead.");
-    verbalize("The Wizard of Yendor has been studying it to learn the secrets of life and death.");
+
+    const char* linearray[3] = {
+        "The Book of the Dead is a terrible tome of great power that can even raise the dead.",
+        "The Wizard of Yendor has been studying it to learn the secrets of life and death.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit2_told_book_of_the_dead = 1;
     return 1;
 }
@@ -7955,9 +8072,14 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("To open the passage to Moloch's Sanctum, where the Amulet is hidden, you must have three artifacts.");
-    verbalize("These are the Candelabrum of Invocation, the Silver Bell, and the Book of the Dead.");
-    verbalize("How and where these must be used, you must find out. Perhaps the Oracle of Delphi can see what must be done.");
+
+    const char* linearray[4] = {
+        "To open the passage to Moloch's Sanctum, where the Amulet is hidden, you must have three artifacts.",
+        "These are the Candelabrum of Invocation, the Silver Bell, and the Book of the Dead.",
+        "How and where these must be used, you must find out. Perhaps the Oracle of Delphi can see what must be done.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit2_told_ritual = 1;
     return 1;
 }
@@ -7967,9 +8089,14 @@ struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
-    verbalize("Please consult with the Oracle of Delphi a few levels down from here.");
-    verbalize("Also, Izchak at the Mine Town may be able to help you.");
-    verbalize("Finally, if you reach the bottom of this dungeon, speak with Eduard, who is confined at the castle there.");
+
+    const char* linearray[4] = {
+        "Please consult with the Oracle of Delphi a few levels down from here.",
+        "Also, Izchak at the Mine Town may be able to help you.",
+        "Finally, if you reach the bottom of this dungeon, speak with Eduard, who is confined at the castle there.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
     mtmp->hermit_told_further_advice = 1;
     return 1;
 }

@@ -478,7 +478,8 @@ enum screen_text_types {
 enum popup_text_types {
     POPUP_TEXT_GENERAL = 0,
     POPUP_TEXT_IDENTIFY,
-    POPUP_TEXT_NO_LIST,
+    POPUP_TEXT_NO_GENOCIDED_LIST,
+    POPUP_TEXT_DIALOGUE,
 };
 
 #define PICKLOCK_LEARNED_SOMETHING (-1) /* time passes */

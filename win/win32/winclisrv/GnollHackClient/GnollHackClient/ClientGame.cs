@@ -675,16 +675,7 @@ namespace GnollHackClient
 
         public void ClientCallback_StartMenu(int winid, int style)
         {
-            lock(_gamePageLock)
-            {
-                lock (_gamePage.ProfilingStopwatchLock)
-                {
-                    _gamePage.ProfilingStopwatch.Stop();
-                    TimeSpan elapsed = _gamePage.ProfilingStopwatch.Elapsed;
-                    Debug.WriteLine("ProfilingStopwatch: StartMenu: " + elapsed.TotalMilliseconds + " msec");
-                    _gamePage.ProfilingStopwatch.Start();
-                }
-            }
+            App.DebugWriteProfilingStopwatchTimeAndStart("StartMenu");
             lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null)
@@ -703,16 +694,7 @@ namespace GnollHackClient
         public void ClientCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color, 
             int maxcount, UInt64 oid, UInt64 mid, char headingaccel, ulong menuflags, byte dataflags, obj otmpdata, objclassdata otypdata)
         {
-            lock (_gamePageLock)
-            {
-                lock (_gamePage.ProfilingStopwatchLock)
-                {
-                    _gamePage.ProfilingStopwatch.Stop();
-                    TimeSpan elapsed = _gamePage.ProfilingStopwatch.Elapsed;
-                    Debug.WriteLine("ProfilingStopwatch: AddExtendedMenu: " + elapsed.TotalMilliseconds + " msec");
-                    _gamePage.ProfilingStopwatch.Start();
-                }
-            }
+            App.DebugWriteProfilingStopwatchTimeAndStart("AddExtendedMenu");
             lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
@@ -749,16 +731,7 @@ namespace GnollHackClient
 
         public void ClientCallback_EndMenu(int winid, string prompt, string subtitle)
         {
-            lock (_gamePageLock)
-            {
-                lock (_gamePage.ProfilingStopwatchLock)
-                {
-                    _gamePage.ProfilingStopwatch.Stop();
-                    TimeSpan elapsed = _gamePage.ProfilingStopwatch.Elapsed;
-                    Debug.WriteLine("ProfilingStopwatch: EndMenu: " + elapsed.TotalMilliseconds + " msec");
-                    _gamePage.ProfilingStopwatch.Start();
-                }
-            }
+            App.DebugWriteProfilingStopwatchTimeAndStart("EndMenu");
             lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
@@ -777,7 +750,7 @@ namespace GnollHackClient
                 //    _gamePage.RefreshScreen = false;
                 //}
 
-                _gamePage.DebugWriteProfilingStopwatchTime("SelectMenu");
+                App.DebugWriteProfilingStopwatchTimeAndStart("SelectMenu");
             }
 
             Debug.WriteLine("ClientCallback_SelectMenu");
@@ -1067,7 +1040,7 @@ namespace GnollHackClient
             }
         }
 
-        public void ClientCallback_DisplayPopupText(string text, string title, int style, int attr, int color, ulong tflags)
+        public void ClientCallback_DisplayPopupText(string text, string title, int style, int attr, int color, int glyph, ulong tflags)
         {
             ConcurrentQueue<GHRequest> queue;
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
@@ -1078,6 +1051,7 @@ namespace GnollHackClient
                 data.style = style;
                 data.attr = attr;
                 data.color = color;
+                data.glyph = glyph;
                 data.tflags = tflags;
                 queue.Enqueue(new GHRequest(this, GHRequestType.DisplayPopupText, data));
             }
@@ -1261,8 +1235,16 @@ namespace GnollHackClient
             return 0;
         }
 
-            /* Dummies */
-            public void ClientCallback_VoidVoidDummy()
+        public byte ClientCallback_AdjustGeneralVolumes(double value1, double value2, double value3, double value4, double value5, double value6)
+        {
+            /* Unused; handled on the GUI side completely */
+            return 0;
+        }
+
+
+
+        /* Dummies */
+        public void ClientCallback_VoidVoidDummy()
         {
 
         }
@@ -1352,10 +1334,6 @@ namespace GnollHackClient
             return 0;
         }
         public byte ClientCallback_BooleanDoubleDummy(double value1)
-        {
-            return 0;
-        }
-        public byte ClientCallback_BooleanDoubleDoubleDoubleDoubleDoubleDummy(double value1, double value2, double value3, double value4, double value5)
         {
             return 0;
         }

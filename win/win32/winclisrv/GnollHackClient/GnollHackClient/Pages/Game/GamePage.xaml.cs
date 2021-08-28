@@ -92,10 +92,6 @@ namespace GnollHackClient.Pages.Game
         private object _fpslock = new object();
         private Stopwatch _stopWatch = new Stopwatch();
 
-        public object ProfilingStopwatchLock = new object();
-        private Stopwatch _profilingStopwatch = new Stopwatch();
-        public Stopwatch ProfilingStopwatch { get { return _profilingStopwatch; } }
-
         private Stopwatch _animationStopwatch = new Stopwatch();
         private TimeSpan _previousTimeSpan;
 
@@ -677,10 +673,47 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private Color _titleGoldColor = new Color((double)0xD4 / 255, (double)0xA0 / 255, (double)0x17 / 255);
+        private Color _popupTransparentBlackColor = new Color(0, 0, 0, (double)0x66 / 255);
+        private Color _popupDarkerTransparentBlackColor = new Color(0, 0, 0, (double)0xAA / 255);
+
+        private GlyphImageSource _popupImageSource = new GlyphImageSource();
         public void DisplayPopupText(DisplayScreenTextData data)
         {
             PopupTitleLabel.Text = data.subtext;
-            PopupLabel.Text = data.text;
+            if((data.tflags & 1UL) != 0)
+                PopupLabel.Text = "\"" + data.text + "\"";
+            else
+                PopupLabel.Text = data.text;
+
+            if(data.style == (int)popup_text_types.POPUP_TEXT_DIALOGUE)
+            {
+                PopupTitleLabel.TextColor = _titleGoldColor;
+                PopupGrid.BackgroundColor = Color.Transparent;
+                PopupFrame.BackgroundColor = _popupDarkerTransparentBlackColor;
+                PopupTitleLayout.HorizontalOptions = LayoutOptions.StartAndExpand;
+            }
+            else
+            {
+                PopupTitleLabel.TextColor = Color.White;
+                PopupGrid.BackgroundColor = _popupTransparentBlackColor;
+                PopupFrame.BackgroundColor = _popupTransparentBlackColor;
+                PopupTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
+            }
+
+            if (data.glyph != 0 && data.glyph != NoGlyph)
+            {
+                _popupImageSource.ReferenceGamePage = this;
+                _popupImageSource.Glyph = data.glyph;
+                _popupImageSource.AutoSize = true;
+                PopupImage.Source = _popupImageSource;
+                PopupImage.IsVisible = true;
+            }
+            else
+            {
+                PopupImage.IsVisible = false;
+                PopupImage.Source = null;
+            }
             PopupGrid.IsVisible = true;
         }
 
@@ -1128,7 +1161,7 @@ namespace GnollHackClient.Pages.Game
         }
         private async void ShowMenuPage(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
-            DebugWriteProfilingStopwatchTime("ShowMenuPage Start");
+            App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuPage Start");
 
             ShowWaitIcon = true;
             var menuPage = new GHMenuPage(this, ghwindow, menuinfo.Style);
@@ -1143,7 +1176,7 @@ namespace GnollHackClient.Pages.Game
             else
                 menuPage.Subtitle = menuinfo.Subtitle;
 
-            DebugWriteProfilingStopwatchTime("ShowMenuPage Before Add Menu Items");
+            App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuPage Before Add Menu Items");
 
             ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
             if (menuinfo != null)
@@ -1154,12 +1187,12 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
-            DebugWriteProfilingStopwatchTime("ShowMenuPage Before Process");
+            App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuPage Before Process");
 
             menuPage.MenuItems = newmis;
             menuPage.Process();
 
-            DebugWriteProfilingStopwatchTime("ShowMenuPage Before Push Modal");
+            App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuPage Before Push Modal");
 
             await App.Current.MainPage.Navigation.PushModalAsync(menuPage, false);
         }
@@ -1192,7 +1225,7 @@ namespace GnollHackClient.Pages.Game
                 _menuRefresh = false;
             }
 
-            DebugWriteProfilingStopwatchTime("ShowMenuCanvas Start");
+            App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas Start");
 
             MenuTouchDictionary.Clear();
 
@@ -1281,7 +1314,7 @@ namespace GnollHackClient.Pages.Game
             //    _canvasPage = canvas_page_types.MenuPage;
             //}
 
-            DebugWriteProfilingStopwatchTime("ShowMenuCanvas End");
+            App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas End");
 
             //Device.StartTimer(TimeSpan.FromSeconds(1.0), () =>
             //{
@@ -1289,38 +1322,6 @@ namespace GnollHackClient.Pages.Game
             //    DebugWriteProfilingStopwatchTime("ShowMenuCanvas AutoCancel");
             //    return false;
             //});
-        }
-
-        public void DebugWriteProfilingStopwatchTime(string label)
-        {
-            lock (ProfilingStopwatchLock)
-            {
-                ProfilingStopwatch.Stop();
-                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
-                Debug.WriteLine("ProfilingStopwatch: " + label + ": " + elapsed.TotalMilliseconds + " msec");
-                ProfilingStopwatch.Start();
-            }
-
-        }
-
-        void DebugWriteRestart(string label)
-        {
-            lock (ProfilingStopwatchLock)
-            {
-                Debug.WriteLine("ProfilingStopwatch: " + label + ": " + "Restart");
-                ProfilingStopwatch.Restart();
-            }
-        }
-
-        void DebugWriteProfilingStopwatchTimeAndRestart(string label)
-        {
-            lock (ProfilingStopwatchLock)
-            {
-                ProfilingStopwatch.Stop();
-                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
-                Debug.WriteLine("ProfilingStopwatch: " + label + ": " + elapsed.TotalMilliseconds + " msec");
-                ProfilingStopwatch.Restart();
-            }
         }
 
         private async void ShowOutRipPage(GHOutRipInfo outripinfo, GHWindow ghwindow)
@@ -5892,11 +5893,7 @@ namespace GnollHackClient.Pages.Game
 
         private void InventoryButton_Clicked(object sender, EventArgs e)
         {
-            lock (ProfilingStopwatchLock)
-            {
-                ProfilingStopwatch.Restart();
-            }
-            Debug.WriteLine("ProfilingStopwatch.Restart: Inventory");
+            App.DebugWriteRestart("Inventory");
             GenericButton_Clicked(sender, e, 'i');
         }
         private void LookHereButton_Clicked(object sender, EventArgs e)
@@ -6074,11 +6071,7 @@ namespace GnollHackClient.Pages.Game
 
         private void ApplyWieldedButton_Clicked(object sender, EventArgs e)
         {
-            lock (ProfilingStopwatchLock)
-            {
-                ProfilingStopwatch.Restart();
-            }
-            Debug.WriteLine("ProfilingStopwatch.Restart: Apply");
+            App.DebugWriteRestart("Apply");
             GenericButton_Clicked(sender, e, 'a');
         }
 
@@ -6114,31 +6107,19 @@ namespace GnollHackClient.Pages.Game
 
         private void SkillButton_Clicked(object sender, EventArgs e)
         {
-            lock (ProfilingStopwatchLock)
-            {
-                ProfilingStopwatch.Restart();
-            }
-            Debug.WriteLine("ProfilingStopwatch.Restart: Skill");
+            App.DebugWriteRestart("Skill");
             GenericButton_Clicked(sender, e, 'S');
         }
 
         private void AbilitiesButton_Clicked(object sender, EventArgs e)
         {
-            lock (ProfilingStopwatchLock)
-            {
-                ProfilingStopwatch.Restart();
-            }
-            Debug.WriteLine("ProfilingStopwatch.Restart: Abilities");
+            App.DebugWriteRestart("Abilities");
             GenericButton_Clicked(sender, e, 'A');
         }
 
         private void DropManyButton_Clicked(object sender, EventArgs e)
         {
-            lock (ProfilingStopwatchLock)
-            {
-                ProfilingStopwatch.Restart();
-            }
-            Debug.WriteLine("ProfilingStopwatch.Restart: Drop Many");
+            App.DebugWriteRestart("Drop Many");
             GenericButton_Clicked(sender, e, '%');
         }
 
@@ -6191,12 +6172,8 @@ namespace GnollHackClient.Pages.Game
 
         private void GHButton_Clicked(object sender, EventArgs e)
         {
-            lock (ProfilingStopwatchLock)
-            {
-                ProfilingStopwatch.Restart();
-            }
+            App.DebugWriteRestart("GHButton_Clicked");
             LabeledImageButton ghbutton = (LabeledImageButton)sender;
-            Debug.WriteLine("ProfilingStopwatch.Restart: " + ghbutton.BtnCommand + ", Letter:" + ghbutton.BtnLetter + ", Ctrl:" + ghbutton.BtnCtrl + ", Meta:" + ghbutton.BtnMeta);
             GenericButton_Clicked(sender, e, (int)ghbutton.GHCommand);
 
         }

@@ -90,7 +90,7 @@ namespace GnollHackServer
             PlayMusicCallback callback_play_ghsound_music,
             PlayLevelAmbientCallback callback_play_ghsound_level_ambient,
             PlayEnvironmentAmbientCallback callback_play_ghsound_environment_ambient,
-            BooleanDoubleDoubleDoubleDoubleDoubleCallback callback_adjust_ghsound_general_volumes,
+            AdjustGeneralVolumesCallback callback_adjust_ghsound_general_volumes,
             AddAmbientSoundCallback callback_add_ambient_ghsound,
             DeleteAmbientSoundCallback callback_delete_ambient_ghsound,
             SetAmbientSoundVolumeCallback callback_set_ambient_ghsound_volume,
@@ -245,7 +245,7 @@ namespace GnollHackServer
                 GameCallback_PlayMusic,
                 GameCallback_PlayLevelAmbient,
                 GameCallback_PlayEnvironmentAmbient,
-                GameCallback_BooleanDoubleDoubleDoubleDoubleDoubleDummy,
+                GameCallback_AdjustGeneralVolumes,
                 GameCallback_AddAmbientSound,
                 GameCallback_DeleteAmbientSound,
                 GameCallback_SetAmbientSoundVolume,
@@ -317,7 +317,7 @@ namespace GnollHackServer
 
         }
 
-        public void GameCallback_DisplayPopupText(string text, string title, int style, int attr, int color, ulong tflags)
+        public void GameCallback_DisplayPopupText(string text, string title, int style, int attr, int color, int glyph, ulong tflags)
         {
 
         }
@@ -492,6 +492,15 @@ namespace GnollHackServer
         {
             return;
         }
+
+        protected byte GameCallback_AdjustGeneralVolumes(double value1, double value2, double value3, double value4, double value5, double value6)
+        {
+            /* Unused */
+            return 0;
+        }
+
+
+        /* Dummies */
         protected void GameCallback_VoidUlongDummy(ulong value1)
         {
 
@@ -501,10 +510,6 @@ namespace GnollHackServer
             return 0;
         }
         protected byte GameCallback_BooleanDoubleDummy(double value1)
-        {
-            return 0;
-        }
-        protected byte GameCallback_BooleanDoubleDoubleDoubleDoubleDoubleDummy(double value1, double value2, double value3, double value4, double value5)
         {
             return 0;
         }

@@ -87,6 +87,7 @@ namespace GnollHackClient
 
             if (_firsttime)
             {
+                App.DebugWriteProfilingStopwatchTimeAndStart("MainPage First Time");
                 _firsttime = false;
                 _banksAcquired = 0;
                 _downloadresult = -1;
@@ -95,12 +96,14 @@ namespace GnollHackClient
                 FmodLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.FMOD-Logo-192-White.png", thisassembly);
                 StartLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
                 MainLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
+                App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Start Timer");
                 Device.StartTimer(TimeSpan.FromSeconds(1f / 4), () =>
                 {
                     bool res = false;
                     switch (starttimercount)
                     {
                         case 0:
+                            App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer "+ starttimercount);
                             App.LoadServices();
                             App.IsModernAndroid = App.AppCloseService.IsModernAndroid();
                             string verstr = App.GnollHackService.GetVersionString();
@@ -111,6 +114,19 @@ namespace GnollHackClient
                             App.GHPath = path;
                             VersionLabel.Text = verid;
                             GnollHackLabel.Text = "GnollHack"; // + verstr;
+
+                            if (VersionTracking.IsFirstLaunchEver)
+                            {
+                                // Do something
+                            }
+                            else if (VersionTracking.IsFirstLaunchForCurrentVersion)
+                            {
+                                // Do something
+                            }
+                            else if (VersionTracking.IsFirstLaunchForCurrentBuild)
+                            {
+                                // Do something
+                            }
 
                             Assembly assembly = GetType().GetTypeInfo().Assembly;
                             App.InitTypefaces(assembly);
@@ -129,12 +145,14 @@ namespace GnollHackClient
                             res = true;
                             break;
                         case 1:
+                            App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer " + starttimercount);
                             AcquireBanks();
                             starttimercount++;
                             res = true;
                             break;
                         case 2:
-                            if(_banksAcquired >= GHConstants.NumBanks || _downloadresult > 0)
+                            App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer " + starttimercount);
+                            if (_banksAcquired >= GHConstants.NumBanks || _downloadresult > 0)
                             {
                                 Preferences.Set("ResetBanks", false);
                                 App.FmodService.LoadBanks();
@@ -147,23 +165,31 @@ namespace GnollHackClient
                                 UIVolume = Preferences.Get("UIVolume", 1.0f);
                                 App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
                                 App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                                App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer Done Banks Ok" + starttimercount);
                                 starttimercount++;
                             }
                             else
                             {
-                                if(DownloadGrid.IsVisible)
+                                if (DownloadGrid.IsVisible)
                                 {
                                     UpdateDownloadProgress();
+                                    App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer Done Update Progress" + starttimercount);
+                                }
+                                else
+                                {
+                                    App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer Done Update Nothing" + starttimercount);
                                 }
                             }
                             res = true;
                             break;
                         case 3:
+                            App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer " + starttimercount);
                             StartFadeIn();
                             res = true;
                             starttimercount++;
                             break;
                         default:
+                            App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer " + starttimercount);
                             StartLogoImage.IsVisible = false;
                             FmodLogoImage.IsVisible = false;
                             starttimercount++;
@@ -432,9 +458,12 @@ namespace GnollHackClient
 
             string[] banknamelist = { "Master.bank", "Master.strings.bank", "Auxiliary.bank" };
             string[] bankresourcelist = { "GnollHackClient.Assets.Master.bank", "GnollHackClient.Assets.Master.strings.bank", "GnollHackClient.Assets.Auxiliary.bank" };
+#if DEBUG
+            bool[] bankwebdownloadlist = { false, false, GHConstants.DownloadFromWebInDebugMode };
+#else
             bool[] bankwebdownloadlist = { false, false, true };
-
-            for(int idx = 0; idx < banknamelist.Length; idx++)
+#endif
+            for (int idx = 0; idx < banknamelist.Length; idx++)
             {
                 string bank_path = Path.Combine(bank_dir, banknamelist[idx]);
                 if (bankwebdownloadlist[idx])

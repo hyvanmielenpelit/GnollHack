@@ -1101,9 +1101,9 @@ lib_display_screen_text(const char* text, const char* subtext, int style, int at
 }
 
 void
-lib_display_popup_text(const char* text, const char* title, int style, int attr, int color, unsigned long tflags)
+lib_display_popup_text(const char* text, const char* title, int style, int attr, int color, int glyph, unsigned long tflags)
 {
-    lib_callbacks.callback_display_popup_text(text, title, style, attr, color, tflags);
+    lib_callbacks.callback_display_popup_text(text, title, style, attr, color, glyph, tflags);
 }
 
 void

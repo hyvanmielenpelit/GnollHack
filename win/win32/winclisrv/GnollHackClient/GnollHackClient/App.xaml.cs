@@ -12,6 +12,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Net.Http;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 [assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
@@ -55,6 +56,13 @@ namespace GnollHackClient
             _mainGnollHackService = DependencyService.Get<IGnollHackService>();
             _mainGnollHackService.LoadLibrary();
             _mainGnollHackService.Test();
+            bool resetFiles = Preferences.Get("ResetFiles", true);
+            if (resetFiles)
+            {
+                _mainGnollHackService.ClearFiles();
+                Preferences.Set("ResetFiles", false);
+                Preferences.Set("ResetBanks", true);
+            }
             _mainGnollHackService.InitializeGnollHack();
             _fmodService = DependencyService.Get<IFmodService>();
             _fmodService.InitializeFmod();
@@ -223,6 +231,52 @@ namespace GnollHackClient
                 }
             }
         }
+
+        public static object ProfilingStopwatchLock = new object();
+        private static Stopwatch _profilingStopwatch = new Stopwatch();
+        public static Stopwatch ProfilingStopwatch { get { return _profilingStopwatch; } }
+
+        public static void DebugWriteProfilingStopwatchTimeAndStop(string label)
+        {
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Stop();
+                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: " + label + ": " + elapsed.TotalMilliseconds + " msec");
+            }
+        }
+
+        public static void DebugWriteProfilingStopwatchTimeAndStart(string label)
+        {
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Stop();
+                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: " + label + ": " + elapsed.TotalMilliseconds + " msec");
+                ProfilingStopwatch.Start();
+            }
+        }
+
+        public static void DebugWriteRestart(string label)
+        {
+            lock (ProfilingStopwatchLock)
+            {
+                Debug.WriteLine("ProfilingStopwatch: " + label + ": " + "Restart");
+                ProfilingStopwatch.Restart();
+            }
+        }
+
+        public static void DebugWriteProfilingStopwatchTimeAndRestart(string label)
+        {
+            lock (ProfilingStopwatchLock)
+            {
+                ProfilingStopwatch.Stop();
+                TimeSpan elapsed = ProfilingStopwatch.Elapsed;
+                Debug.WriteLine("ProfilingStopwatch: " + label + ": " + elapsed.TotalMilliseconds + " msec");
+                ProfilingStopwatch.Restart();
+            }
+        }
+
 
         public static void PlayButtonClickedSound()
         {

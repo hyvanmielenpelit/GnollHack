@@ -67,6 +67,7 @@ namespace GnollHackClient
         public int style;
         public int attr;
         public int color;
+        public int glyph;
         public ulong tflags;
     }
 

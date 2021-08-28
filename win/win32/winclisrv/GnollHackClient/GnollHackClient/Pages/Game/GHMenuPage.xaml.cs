@@ -403,13 +403,7 @@ namespace GnollHackClient.Pages.Game
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             App.BackButtonPressed += BackButtonPressed;
-            lock (_gamePage.ProfilingStopwatchLock)
-            {
-                _gamePage.ProfilingStopwatch.Stop();
-                TimeSpan elapsed = _gamePage.ProfilingStopwatch.Elapsed;
-                Debug.WriteLine("ProfilingStopwatch: ShowMenuPage Appearing: " + elapsed.TotalMilliseconds + " msec");
-            }
-
+            App.DebugWriteProfilingStopwatchTimeAndStop("ShowMenuPage Appearing");
         }
 
         private bool _backPressed = false;

@@ -572,7 +572,7 @@ safe_display_screen_text(const char* text UNUSED, const char* subtext UNUSED, in
 }
 
 void
-safe_display_popup_text(const char* text UNUSED, const char* title UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
+safe_display_popup_text(const char* text UNUSED, const char* title UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, int glyph UNUSED, unsigned long tflags UNUSED)
 {
     return;
 }
