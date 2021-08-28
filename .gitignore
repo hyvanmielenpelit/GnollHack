@@ -35,6 +35,7 @@ include/animoff.h
 include/animtotals.h
 win/win32/gnollhack_64x96_transparent_32bits*.png
 win/win32/winclisrv/GnollHackClient/GnollHackClient/Assets/gnollhack_64x96_transparent_32bits*.png
+win/win32/winclisrv/GnollHackClient/GnollHackClient/Assets/secrets.json
 win/win32/vs2017/*.lev
 win/win32/vs2017/default.nh
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/libs/x86/libgnollhackdroid.so*

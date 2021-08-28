@@ -48,6 +48,7 @@
     <None Remove="Assets\main-menu-portrait-snapshot.jpg" />
     <None Remove="Assets\Master.bank" />
     <None Remove="Assets\Master.strings.bank" />
+    <None Remove="Assets\secrets.json" />
     <None Remove="Assets\shxi.ttf" />
     <None Remove="Assets\splash-snapshot.jpg" />
     <None Remove="Assets\tombstone.png" />
@@ -97,6 +98,7 @@
     <EmbeddedResource Include="Assets\main-menu-portrait-snapshot.jpg" />
     <EmbeddedResource Include="Assets\Master.bank" />
     <EmbeddedResource Include="Assets\Master.strings.bank" />
+    <EmbeddedResource Include="Assets\secrets.json" />
     <EmbeddedResource Include="Assets\shxi.ttf" />
     <EmbeddedResource Include="Assets\tombstone.png" />
     <EmbeddedResource Include="Assets\UI\cast.png" />
