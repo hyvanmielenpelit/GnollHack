@@ -4000,6 +4000,8 @@ struct monst* mtmp;
     }
     else if (mtmp->isnpc && has_enpc(mtmp))
     {
+        char namebuf[BUFSZ];
+        strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
         if (iflags.using_gui_sounds)
         {
             play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
@@ -4037,8 +4039,6 @@ struct monst* mtmp;
         if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_explanation != 0)
         {
             int glyph = mon_to_glyph(mtmp, rn2_on_display_rng);
-            char namebuf[BUFSZ];
-            strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
             display_popup_text(ansbuf, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, 1UL);
         }
     }

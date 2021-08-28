@@ -87,7 +87,7 @@ namespace GnollHackClient
 
             if (_firsttime)
             {
-                App.DebugWriteProfilingStopwatchTimeAndStart("MainPage First Time");
+                App.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
                 _firsttime = false;
                 _banksAcquired = 0;
                 _downloadresult = -1;
@@ -463,6 +463,7 @@ namespace GnollHackClient
 #else
             bool[] bankwebdownloadlist = { false, false, true };
 #endif
+            App.DebugWriteProfilingStopwatchTimeAndStart("Start Acquiring Banks");
             for (int idx = 0; idx < banknamelist.Length; idx++)
             {
                 string bank_path = Path.Combine(bank_dir, banknamelist[idx]);
@@ -484,6 +485,7 @@ namespace GnollHackClient
                     }
                     _banksAcquired++;
                 }
+                App.DebugWriteProfilingStopwatchTimeAndStart("Acquired Bank "+ idx);
             }
         }
 
@@ -501,6 +503,7 @@ namespace GnollHackClient
         public async void DownloadFileFromWebServer(Assembly assembly, string filename, string target_directory)
         {
             string json = "";
+            App.DebugWriteProfilingStopwatchTimeAndStart("Start Downloading Bank " + filename);
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.secrets.jsons"))
             {
                 if (stream != null)
@@ -545,12 +548,15 @@ namespace GnollHackClient
             if(File.Exists(target_path))
             {
                 FileInfo file = new FileInfo(target_path);
+                App.DebugWriteProfilingStopwatchTimeAndStart("Begin Checksum");
                 string checksum = ChecksumUtil.GetChecksum(HashingAlgoTypes.SHA256, target_path);
-                if(file.Length == f.length && checksum == f.sha256)
+                App.DebugWriteProfilingStopwatchTimeAndStart("Finish Checksum");
+                if (file.Length == f.length && checksum == f.sha256)
                 {
                     /* Ok, no need to download */
                     _banksAcquired++;
                     _downloadresult = 0;
+                    App.DebugWriteProfilingStopwatchTimeAndStart("Checksum ok, exiting");
                     return;
                 }
                 else
@@ -575,6 +581,7 @@ namespace GnollHackClient
             _cancellationTokenSource = new CancellationTokenSource();
             _cancellationToken = _cancellationTokenSource.Token;
 
+            App.DebugWriteProfilingStopwatchTimeAndStart("Begin Http Download " + filename);
             using (var client = new HttpClientDownloadWithProgress(url, target_path, _cancellationToken))
             {
                 client.ProgressChanged += (totalFileSize, totalBytesDownloaded, progressPercentage) => {

@@ -2082,7 +2082,8 @@ boolean called;
         {
             char tmpbuf[BUFSIZ];
             strcpy(tmpbuf, buf);
-            if (!is_tame(mtmp))
+            boolean npc_with_name_only = has_enpc(mtmp) && mtmp->isnpc && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_DISPLAY_NAME_ONLY) != 0;
+            if (!is_tame(mtmp) && !npc_with_name_only)
             {
                 if ((bp = strstri(name, " the ")) != 0)
                     Sprintf(buf, "%s%s %s", tmpbuf, pm_name, name);

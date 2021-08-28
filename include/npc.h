@@ -80,6 +80,7 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_FLAGS_NO_MY                     0x00000080UL
 #define NPC_FLAGS_NO_ADVICE                 0x00000100UL
 #define NPC_FLAGS_NO_ITEMS                  0x00000200UL
+#define NPC_FLAGS_DISPLAY_NAME_ONLY         0x00000400UL /* When name is known */
 
 
 

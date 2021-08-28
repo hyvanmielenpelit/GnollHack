@@ -289,7 +289,7 @@ const char* source;
     char* bp;
     for (bp = dest_buffer; *bp; bp++)
     {
-        if (bp == dest_buffer || *(bp - 1) == ' ')
+        if ((bp == dest_buffer || (*(bp - 1) == ' ' && strncmp(bp, "the ", 4) && strncmp(bp, "an ", 3) && strncmp(bp, "a ", 2))))
             *bp = highc(*bp);
     }
 
