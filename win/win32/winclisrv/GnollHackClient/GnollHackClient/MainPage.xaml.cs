@@ -548,10 +548,18 @@ namespace GnollHackClient
             if(File.Exists(target_path))
             {
                 FileInfo file = new FileInfo(target_path);
-                App.DebugWriteProfilingStopwatchTimeAndStart("Begin Checksum");
-                string checksum = ChecksumUtil.GetChecksum(HashingAlgoTypes.SHA256, target_path);
-                App.DebugWriteProfilingStopwatchTimeAndStart("Finish Checksum");
-                if (file.Length == f.length && checksum == f.sha256)
+                bool isfileok = true;
+                if (file.Length != f.length)
+                    isfileok = false;
+                if(isfileok)
+                {
+                    App.DebugWriteProfilingStopwatchTimeAndStart("Begin Checksum");
+                    string checksum = ChecksumUtil.GetChecksum(HashingAlgoTypes.SHA256, target_path);
+                    App.DebugWriteProfilingStopwatchTimeAndStart("Finish Checksum");
+                    if(checksum != f.sha256)
+                        isfileok = false;
+                }
+                if (isfileok)
                 {
                     /* Ok, no need to download */
                     _banksAcquired++;

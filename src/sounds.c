@@ -1850,15 +1850,7 @@ register struct monst *mtmp;
         }
         else 
         {
-            verbalize1(verbl_msg);
-        }
-
-        if (ptr == &mons[PM_DEATH] || (mtmp->isnpc && has_enpc(mtmp) && npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_explanation != 0))
-        {
-            char namebuf[BUFSZ];
-            strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
-            int glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
-            display_popup_text(verbl_msg, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, POPUP_FLAGS_ADD_QUOTES);
+            popup_talk_line(mtmp, verbl_msg);
         }
     }
     return 1;
@@ -3831,7 +3823,7 @@ struct monst* mtmp;
             Sprintf(eos(ansbuf), " I run %s.", shopbuf);
             play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_I_RUN_THIS_STORE);
         }
-        verbalize("%s", ansbuf);
+        popup_talk_line(mtmp, ansbuf);
         if (iflags.using_gui_sounds && !mtmp->u_know_mname)
             pline("The name tag shows that %s name is %s.", mhis(mtmp), shkname(mtmp));
 
@@ -3839,6 +3831,7 @@ struct monst* mtmp;
     }
     else if (mtmp->ispriest || msound == MS_PRIEST)
     {
+        boolean saved_know_mname = mtmp->u_know_mname;
         if (iflags.using_gui_sounds)
         {
             play_monster_standard_dialogue_line(mtmp, mtmp->mnum == PM_HIGH_PRIEST ? MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU_SECONDARY : MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
@@ -3868,13 +3861,13 @@ struct monst* mtmp;
                 Sprintf(ansbuf, "I am %s.", mon_nam(mtmp));
             }
         }
-        verbalize("%s", ansbuf);
+        popup_talk_line_with_know_mname(mtmp, ansbuf, saved_know_mname);
     }
     else if (mtmp->mnum == PM_ORACLE || msound == MS_ORACLE)
     {
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
         Sprintf(ansbuf, "I am the Oracle of Delphi.");
-        verbalize("%s", ansbuf);
+        popup_talk_line(mtmp, ansbuf);
 
         if (iflags.using_gui_sounds)
         {
@@ -3885,7 +3878,7 @@ struct monst* mtmp;
         else
         {
             Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
-            verbalize("%s", ansbuf);
+            popup_talk_line(mtmp, ansbuf);
             mtmp->u_know_mname = 1;
         }
     }
@@ -3895,13 +3888,13 @@ struct monst* mtmp;
         {
             play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
             Sprintf(ansbuf, "Hah, I'm the DDPD officer who is going to arrest you, scum!");
-            verbalize("%s", ansbuf);
+            popup_talk_line(mtmp, ansbuf);
         }
         else
         {
             play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU_SECONDARY);
             Sprintf(ansbuf, "I work for the DDPD.");
-            verbalize("%s", ansbuf);
+            popup_talk_line(mtmp, ansbuf);
 
             if (iflags.using_gui_sounds)
             {
@@ -3912,7 +3905,7 @@ struct monst* mtmp;
             else
             {
                 Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
-                verbalize("%s", ansbuf);
+                popup_talk_line(mtmp, ansbuf);
                 mtmp->u_know_mname = 1;
             }
         }
@@ -3931,8 +3924,7 @@ struct monst* mtmp;
                 play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_THE_QUESTION_IS_WHO_ARE_YOU_SCUM);
                 Sprintf(ansbuf, "The question is who are you, scum?");
             }
-
-            verbalize("%s", ansbuf);
+            popup_talk_line(mtmp, ansbuf);
         }
         else
         {
@@ -3951,8 +3943,8 @@ struct monst* mtmp;
                 else
                     Sprintf(ansbuf, "I am a local %s.", mon_monster_name(mtmp));
             }
+            popup_talk_line(mtmp, ansbuf);
             mtmp->u_know_mname = 1;
-            verbalize("%s", ansbuf);
         }
     }
     else if (mtmp->m_id == quest_status.leader_m_id && msound > MS_ANIMAL)
@@ -3968,11 +3960,11 @@ struct monst* mtmp;
             break;
         }
         play_voice_quest_leader_whoareyou(mtmp);
-        verbalize("%s", ansbuf);
-
+        popup_talk_line(mtmp, ansbuf);
     }
     else if (mtmp->issmith)
     {
+        boolean saved_know_mname = mtmp->u_know_mname;
         if (iflags.using_gui_sounds)
         {
             play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
@@ -3998,18 +3990,17 @@ struct monst* mtmp;
                 Sprintf(ansbuf, "I am a local smith.");
             }
         }
-        verbalize("%s", ansbuf);
+        popup_talk_line_with_know_mname(mtmp, ansbuf, saved_know_mname);
     }
     else if (mtmp->isgd)
     {
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
         Sprintf(ansbuf, "I am the vault guard.");
-        verbalize("%s", ansbuf);
+        popup_talk_line(mtmp, ansbuf);
     }
     else if (mtmp->isnpc && has_enpc(mtmp))
     {
-        char namebuf[BUFSZ];
-        strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
+        boolean saved_know_mname = mtmp->u_know_mname;
         if (iflags.using_gui_sounds)
         {
             play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
@@ -4043,12 +4034,7 @@ struct monst* mtmp;
         if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_explanation != 0)
             Sprintf(eos(ansbuf), "  %s", npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_explanation);
 
-        verbalize("%s", ansbuf);
-        if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_explanation != 0)
-        {
-            int glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
-            display_popup_text(ansbuf, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, POPUP_FLAGS_ADD_QUOTES);
-        }
+        popup_talk_line_with_know_mname(mtmp, ansbuf, saved_know_mname);
     }
     else if (msound == MS_GUARDIAN)
     {
@@ -4090,18 +4076,18 @@ struct monst* mtmp;
 
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
         Sprintf(ansbuf, "I am %s%s.%s", namebuf, titlestr, endbuf);
-        verbalize("%s", ansbuf);
+        popup_talk_line(mtmp, ansbuf);
     }
     else if (msound == MS_NEMESIS)
     {
         Sprintf(ansbuf, "I am %s, your quest nemesis. Tremble before me!", mon_nam(mtmp));
-        verbalize("%s", ansbuf);
+        popup_talk_line(mtmp, ansbuf);
     }
     else if (msound == MS_DJINNI)
     {
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
         Sprintf(ansbuf, "I am a genie from the Elemental Plane of Air.");
-        verbalize("%s", ansbuf);
+        popup_talk_line(mtmp, ansbuf);
     }
     else if (msound == MS_QUANTUM)
     {
@@ -4109,16 +4095,19 @@ struct monst* mtmp;
         if (has_mname(mtmp))
         {
             Sprintf(ansbuf, "I am %s, %s at the University of Yendor%s.", MNAME(mtmp), an(mtmp->data->mname), !is_peaceful(mtmp) ? ", scum" : "");
+            popup_talk_line(mtmp, ansbuf);
             mtmp->u_know_mname = 1;
         }
         else
+        {
             Sprintf(ansbuf, "I am %s at the University of Yendor%s.", an(mtmp->data->mname), !is_peaceful(mtmp) ? ", scum" : "");
-        verbalize("%s", ansbuf);
+            popup_talk_line(mtmp, ansbuf);
+        }
     }
     else if (has_mname(mtmp))
     {
         Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
-        verbalize("%s", ansbuf);
+        popup_talk_line(mtmp, ansbuf);
         mtmp->u_know_mname = 1;
     }
     else if (is_mname_proper_name(mtmp->data))
@@ -4129,12 +4118,12 @@ struct monst* mtmp;
             Sprintf(titlebuf, ", %s", mtmp->data->mtitle);
 
         Sprintf(ansbuf, "I am %s%s.", mon_monster_name(mtmp), titlebuf);
-        verbalize("%s", ansbuf);
+        popup_talk_line(mtmp, ansbuf);
     }
     else
     {
         Sprintf(ansbuf, "My name is none of your business.");
-        verbalize("%s", ansbuf);
+        popup_talk_line(mtmp, ansbuf);
     }
 
     return 1;
@@ -4164,8 +4153,11 @@ struct monst* mtmp;
 
     if (mtmp->data->msound == MS_ORACLE || mtmp->data == &mons[PM_ORACLE])
     {
+        char ansbuf[BUFSZ];
         play_monster_special_dialogue_line(mtmp, ORACLE_LINE_THE_WISDOM_OF_DELPHI_SHALL_BE_CONVEYED_TO_THEE_BY_CONSULTATION);
-        pline("%s answers: \"The wisdom of Delphi shall be conveyed to thee by consultation.\"", Monnam(mtmp));
+        pline("%s answers:", Monnam(mtmp));
+        Sprintf(ansbuf, "The wisdom of Delphi shall be conveyed to thee by consultation.");
+        popup_talk_line(mtmp, ansbuf);
         mtmp->rumorsleft = -1;
         mtmp->told_rumor = TRUE;
         return 1;
@@ -4178,21 +4170,26 @@ struct monst* mtmp;
     }
 
     char ansbuf[BUFSZ];
-    char* rumor = getrumor(0, ansbuf, TRUE);
+    char rumorbuf[BUFSZ];
+    char* rumor = getrumor(0, rumorbuf, TRUE);
         
     if (mtmp->rumorsleft == 0 || !rumor)
     {
         play_voice_monster_advice(mtmp, FALSE);
-        pline("%s answers: \"Unfortunately, I don't have any %s advice for you.\"", Monnam(mtmp), mtmp->told_rumor ? "further" : "useful");
+        pline("%s answers:", Monnam(mtmp));
+        Sprintf(ansbuf, "Unfortunately, I don't have any %s advice for you.", mtmp->told_rumor ? "further" : "useful");
+        popup_talk_line(mtmp, ansbuf);
         mtmp->rumorsleft = 0;
     }
     else
     {
         play_voice_monster_advice(mtmp, TRUE);
+        pline("%s answers:", Monnam(mtmp));
         if (mtmp->told_rumor)
-            pline("%s answers: \"Let me think. Maybe keep this in mind%s\"", Monnam(mtmp), iflags.using_gui_sounds || Deaf ? "." : ":");
+            Sprintf(ansbuf, "Let me think. Maybe keep this in mind%s", iflags.using_gui_sounds || Deaf ? "." : ":");
         else
-            pline("%s answers: \"Yes, here's a piece of advice for you%s\"", Monnam(mtmp), iflags.using_gui_sounds || Deaf ? "." : ":");
+            Sprintf(ansbuf, "Yes, here's a piece of advice for you%s", iflags.using_gui_sounds || Deaf ? "." : ":");
+        popup_talk_line(mtmp, ansbuf);
 
         /* Tell a rumor */
         if (iflags.using_gui_sounds || Deaf)
@@ -7792,6 +7789,18 @@ const char* line;
     const char* linearray[2] = { 0, 0 };
     linearray[0] = line;
     hermit_talk(mtmp, linearray);
+}
+
+void
+popup_talk_line_with_know_mname(mtmp, line, know_mname)
+struct monst* mtmp;
+const char* line;
+boolean know_mname;
+{
+    boolean saved_know_mname = mtmp->u_know_mname;
+    mtmp->u_know_mname = know_mname;
+    popup_talk_line(mtmp, line);
+    mtmp->u_know_mname = saved_know_mname;
 }
 
 STATIC_OVL void
