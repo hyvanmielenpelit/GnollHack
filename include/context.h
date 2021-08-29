@@ -9,21 +9,11 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
-#ifndef PROP_H
 #include "prop.h"
-#endif
-
-#ifndef ANIMATION_H
 #include "animation.h"
-#endif 
-
-#ifndef LAYER_H
 #include "layer.h"
-#endif 
-
-#ifndef GENERAL_H
 #include "general.h"
-#endif 
+#include "quest.h"
 
 #define CONTEXTVERBSZ 30
 
@@ -247,6 +237,7 @@ struct context_info
     boolean town_portal_return_level_set;
     d_level town_portal_return_level;
     long last_turn_when_took_damage;
+    struct gh_quest_status_data quest_status_info[NUM_QUESTS];
 };
 
 extern NEARDATA struct context_info context;

@@ -171,7 +171,7 @@ namespace GnollHackClient
             switch(_data.style)
             {
                 case 0:
-                    return ClientUtils.NHColor2SKColor((nhcolor)_data.color);
+                    return ClientUtils.NHColor2SKColor(_data.color);
                 case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
                     return TransparentGold;
                 case 2:

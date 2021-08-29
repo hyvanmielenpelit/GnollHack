@@ -560,12 +560,12 @@ namespace GnollHackClient.Pages.Game
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ClientUtils.NHColor2XColor((nhcolor)value);
+            return ClientUtils.NHColor2XColor((int)value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ClientUtils.NHColor2XColor((nhcolor)value);
+            return ClientUtils.NHColor2XColor((int)value);
         }
     }
 
@@ -573,7 +573,7 @@ namespace GnollHackClient.Pages.Game
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Color clr = ClientUtils.NHColor2XColor((nhcolor)value);
+            Color clr = ClientUtils.NHColor2XColor((int)value);
             Color gray = Color.Black;
             Color res = new Color((clr.R + gray.R) / 2, (clr.G + gray.G) / 2, (clr.B + gray.B) / 2, clr.A);
             return res;
@@ -581,7 +581,7 @@ namespace GnollHackClient.Pages.Game
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Color clr = ClientUtils.NHColor2XColor((nhcolor)value);
+            Color clr = ClientUtils.NHColor2XColor((int)value);
             Color gray = Color.Black;
             Color res = new Color((clr.R + gray.R) / 2, (clr.G + gray.G) / 2, (clr.B + gray.B) / 2, clr.A);
             return res;

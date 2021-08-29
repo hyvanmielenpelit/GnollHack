@@ -1011,7 +1011,7 @@ namespace GnollHackClient.Pages.Game
                 YnQuestionLabel.TextColor = Color.White;
                 if (style <= 2)
                 {
-                    YnTitleLabel.TextColor = ClientUtils.NHColor2XColor((nhcolor)color);
+                    YnTitleLabel.TextColor = ClientUtils.NHColor2XColor(color);
                 }
             }
 
@@ -4117,7 +4117,7 @@ namespace GnollHackClient.Pages.Game
                                                 else
                                                     str = "";
                                                 pos += str.Length;
-                                                textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? (nhcolor)instr.Color : nhcolor.CLR_WHITE);
+                                                textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? instr.Color : (int)nhcolor.CLR_WHITE);
                                                 totwidth = textPaint.MeasureText(str, ref textBounds);
 
                                                 /* attributes */
@@ -4149,7 +4149,7 @@ namespace GnollHackClient.Pages.Game
                                             {
                                                 GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
                                                 longLine = msgHistoryItem.Text;
-                                                SKColor printColor = ClientUtils.NHColor2SKColor(msgHistoryItem.NHColor < nhcolor.CLR_MAX ? msgHistoryItem.NHColor : nhcolor.CLR_WHITE);
+                                                SKColor printColor = ClientUtils.NHColor2SKColor(msgHistoryItem.NHColor < (int)nhcolor.CLR_MAX ? msgHistoryItem.NHColor : (int)nhcolor.CLR_WHITE);
 
                                                 textPaint.Style = SKPaintStyle.Fill;
                                                 textPaint.StrokeWidth = 0;
@@ -5684,7 +5684,7 @@ namespace GnollHackClient.Pages.Game
                 _mapData[x, y].Glyph = glyph;
                 _mapData[x, y].BkGlyph = bkglyph;
                 _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);
-                _mapData[x, y].Color = ClientUtils.NHColor2SKColor((nhcolor)color);
+                _mapData[x, y].Color = ClientUtils.NHColor2SKColor(color);
                 _mapData[x, y].Special = special;
                 _mapData[x, y].Layers = layers;
 
@@ -6389,7 +6389,7 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         /* Main text */
-                        textPaint.Color = ClientUtils.NHColor2SKColor((nhcolor)mi.NHColor);
+                        textPaint.Color = ClientUtils.NHColor2SKColor(mi.NHColor);
                         int split_idx_on_row = -1;
                         float start_x = x;
                         foreach (string split_str in split)
@@ -7016,7 +7016,7 @@ namespace GnollHackClient.Pages.Game
                                 str = "";
                             pos += str.Length;
 
-                            textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? (nhcolor)instr.Color : nhcolor.CLR_WHITE);
+                            textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? instr.Color : (int)nhcolor.CLR_WHITE);
 
                             string[] split = str.Split(' ');
                             int split_idx_on_row = -1;

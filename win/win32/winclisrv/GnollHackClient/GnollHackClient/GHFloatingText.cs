@@ -102,7 +102,7 @@ namespace GnollHackClient
             switch(_data.style)
             {
                 case 0:
-                    return ClientUtils.NHColor2SKColor((nhcolor)_data.color);
+                    return ClientUtils.NHColor2SKColor(_data.color);
                 case 1:
                     return SKColors.Green;
                 case 2:

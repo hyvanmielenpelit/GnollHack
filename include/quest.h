@@ -45,24 +45,19 @@ struct q_score {              /* Quest "scorecard" */
 #define MIN_QUEST_LEVEL 14 /* at least this u.ulevel to start */
 /* note: exp.lev. 14 is threshold level for 5th rank (class title, role.c) */
 
-
-/* General Quest Tracking System */
-#define QUEST_TITLE_SZ 64
-#define QUEST_DESCRIPTION_SZ 256
-#define QUEST_INSTRUCTION_SZ 128
-#define MAX_QUEST_INSTRUCTIONS 4
-struct gh_quest_item {
-    char title[QUEST_TITLE_SZ];
-    char description[QUEST_DESCRIPTION_SZ];
-    char instructions[QUEST_INSTRUCTION_SZ][MAX_QUEST_INSTRUCTIONS];
-    unsigned long quest_flags;
+/* GnollHack general quests */
+enum quest_types {
+    QUEST_AMULET_OF_YENDOR = 0,
+    NUM_QUESTS
 };
 
-#define QUEST_FLAGS_VISIBLE      0x00000001UL
-#define QUEST_FLAGS_OPTIONAL     0x00000002UL
-#define QUEST_FLAGS_DISCOVERED   0x00000004UL
-#define QUEST_FLAGS_COMPLETED    0x00000008UL
+struct gh_quest_base_data {
+    const char* title;
+    const char* description;
+    const char* requirements[MAX_QUEST_REQUIREMENTS];
+    uchar quest_type; /* 0 = Main, 1 = Optional */
+};
 
-
+extern struct gh_quest_base_data quest_definitions[NUM_QUESTS];
 
 #endif /* QUEST_H */

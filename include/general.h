@@ -642,6 +642,19 @@ typedef long nhsym;
 
 #define DEF_HERE_WINDOW_MAX_SIZE 10
 
+#define MAX_QUEST_REQUIREMENTS 12
+struct gh_quest_status_data {
+    unsigned char quest_state;
+    unsigned char requirement_state[MAX_QUEST_REQUIREMENTS];
+};
+
+enum quest_states {
+    QUEST_STATE_UNDISCOVERED = 0,
+    QUEST_STATE_DISCOVERED,
+    QUEST_STATE_COMPLETED,
+    QUEST_STATE_FAILED,
+};
+
 
 #endif /* GENERAL_H */
 

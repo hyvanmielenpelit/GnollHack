@@ -11,7 +11,7 @@ namespace GnollHackClient
     {
         public string Text { get; set; }
         public int Attributes { get; set; }
-        public nhcolor NHColor { get; set; }
+        public int NHColor { get; set; }
         public Color Color 
         { get 
             { 
@@ -36,7 +36,7 @@ namespace GnollHackClient
         {
             Text = text;
             Attributes = attr;
-            NHColor = (nhcolor)color;
+            NHColor = color;
             IsLast = false;
         }
     }

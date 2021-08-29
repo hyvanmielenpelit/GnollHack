@@ -355,7 +355,7 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         /* Main text */
-                        textPaint.Color = ClientUtils.NHColor2SKColor((nhcolor)mi.NHColor);
+                        textPaint.Color = ClientUtils.NHColor2SKColor(mi.NHColor);
                         int split_idx_on_row = -1;
                         float start_x = x;
                         foreach (string split_str in split)

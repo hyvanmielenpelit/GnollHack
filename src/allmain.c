@@ -1271,6 +1271,8 @@ newgame()
     /* Success! */
     welcome(TRUE);
 
+    quest_discovered(QUEST_AMULET_OF_YENDOR);
+
     /* Check special room */
     check_special_room(FALSE);
 

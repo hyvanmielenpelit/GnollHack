@@ -168,7 +168,7 @@ namespace GnollHackClient
             {
                 if (InstructionList != null && InstructionList.Count > 0 && InstructionList[0].Color != (int)nhcolor.NO_COLOR)
                 {
-                    return ClientUtils.NHColor2XColor((nhcolor)InstructionList[0].Color);
+                    return ClientUtils.NHColor2XColor(InstructionList[0].Color);
                 }
                 return Color.White;
             }

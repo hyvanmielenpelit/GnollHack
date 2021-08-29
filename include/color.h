@@ -53,6 +53,7 @@
 #define CLR_MSG_NEGATIVE   CLR_RED
 #define CLR_MSG_WARNING    CLR_ORANGE
 #define CLR_MSG_ATTENTION  CLR_YELLOW
+#define CLR_QUEST_TITLE    -1 /* Special color handled by GUI */
 
 struct menucoloring {
     struct nhregex *match;

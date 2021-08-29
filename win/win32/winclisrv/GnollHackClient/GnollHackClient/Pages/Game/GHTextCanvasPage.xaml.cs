@@ -160,7 +160,7 @@ namespace GnollHackClient.Pages.Game
                                 str = "";
                             pos += str.Length;
 
-                            textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? (nhcolor)instr.Color : nhcolor.CLR_WHITE);
+                            textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? instr.Color : (int)nhcolor.CLR_WHITE);
 
                             string[] split = str.Split(' ');
                             int split_idx_on_row = -1;

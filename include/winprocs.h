@@ -302,8 +302,9 @@ extern
 #define WC2_SCREEN_TEXT             0x00080000UL /* 20 windowing system can show screen texts */
 #define WC2_PLAY_GHSOUNDS           0x00100000UL /* 21 windowing system can play ghsounds */
 #define WC2_VOLUME_CONTROLS         0x00200000UL /* 22 volume controls are shown in options */
+#define WC2_SPECIAL_GUI_COLORS      0x00400000UL /* 23 handles special negative color values */
 
-/* 13 free bits */
+/* 8 free bits */
 
 #define ALIGN_LEFT   1
 #define ALIGN_RIGHT  2
