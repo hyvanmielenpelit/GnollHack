@@ -328,15 +328,16 @@ int FDECL((*rng), (int));
 
 void
 outrumor(mtmp, otmp, truth, mechanism)
-struct monst* mtmp UNUSED;
-struct obj* otmp UNUSED;
+struct monst* mtmp;
+struct obj* otmp;
 int truth; /* 1=true, -1=false, 0=either */
 int mechanism;
 {
     static const char fortune_msg[] =
         "This cookie has a scrap of paper inside.";
-    const char *line;
+    const char *line, *title = 0;
     char buf[BUFSZ];
+    char titlebuf[BUFSZ] = "Rumor";
     boolean reading = (mechanism == BY_COOKIE || mechanism == BY_PAPER);
 
     if (reading) {
@@ -353,6 +354,8 @@ int mechanism;
     line = getrumor(truth, buf, reading ? FALSE : TRUE);
     if (!*line)
         line = "GnollHack rumors file closed for renovation.";
+
+    boolean use_otmp = FALSE;
     switch (mechanism) {
     case BY_ORACLE:
         /* Oracle delivers the rumor */
@@ -366,20 +369,34 @@ int mechanism;
                   (!rn2(4) ? "offhandedly "
                            : (!rn2(3) ? "casually "
                                       : (rn2(2) ? "nonchalantly " : ""))));
-        verbalize1(line);
+        //verbalize1(line);
+        popup_talk_line(mtmp, line);
         /* [WIS exercized by getrumor()] */
         return;
     case BY_COOKIE:
         pline(fortune_msg);
-    /* FALLTHRU */
+        pline("It reads:");
+        title = "Fortune Cookie";
+        break;
     case BY_PAPER:
         pline("It reads:");
+        title = "Paper";
+        use_otmp = TRUE;
         break;
     case BY_SPELL:
         pline("You sense a magical message in your mind:");
+        title = "Magical Message";
         break;
     }
+
+    if (use_otmp && otmp)
+        strcpy_capitalized_for_title(titlebuf, cxname(otmp));
+    else if(title)
+        strcpy(titlebuf, title);
+
     pline1(line);
+    display_popup_text(line, titlebuf, POPUP_TEXT_MESSAGE, 0, 0, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
+
 }
 
 STATIC_OVL void
@@ -468,7 +485,10 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
         if (!special) /* move offset of very last one into this slot */
             oracle_loc[oracle_idx] = oracle_loc[--oracle_cnt];
 
-        tmpwin = create_nhwindow(NHW_TEXT);
+        int glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
+        int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL));
+        tmpwin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_SPEAKER, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon(mtmp));
+        //tmpwin = create_nhwindow(NHW_TEXT);
         if (oraclesstyle == 1)
             putstr(tmpwin, 0,
                    special

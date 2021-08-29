@@ -2999,6 +2999,8 @@ E int FDECL(release_item_from_hero_inventory, (struct obj*));
 E int FDECL(ask_shk_reconciliation, (struct monst*));
 E double FDECL(service_cost_charisma_adjustment, (int));
 E void NDECL(genl_chat_message);
+E void FDECL(popup_talk_lines, (struct monst*, const char**));
+E void FDECL(popup_talk_line, (struct monst*, const char*));
 
 /* ### soundset.c ### */
 

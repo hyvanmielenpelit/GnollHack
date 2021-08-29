@@ -686,12 +686,17 @@ namespace GnollHackClient.Pages.Game
             else
                 PopupLabel.Text = data.text;
 
-            if(data.style == (int)popup_text_types.POPUP_TEXT_DIALOGUE)
+            if(data.style == (int)popup_text_types.POPUP_TEXT_DIALOGUE || 
+                data.style == (int)popup_text_types.POPUP_TEXT_ADVICE || 
+                data.style == (int)popup_text_types.POPUP_TEXT_MESSAGE)
             {
                 PopupTitleLabel.TextColor = _titleGoldColor;
                 PopupGrid.BackgroundColor = Color.Transparent;
                 PopupFrame.BackgroundColor = _popupDarkerTransparentBlackColor;
-                PopupTitleLayout.HorizontalOptions = LayoutOptions.StartAndExpand;
+                if (data.glyph != 0 && data.glyph != NoGlyph)
+                    PopupTitleLayout.HorizontalOptions = LayoutOptions.StartAndExpand;
+                else
+                    PopupTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
             }
             else
             {

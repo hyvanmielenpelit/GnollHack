@@ -1857,8 +1857,8 @@ register struct monst *mtmp;
         {
             char namebuf[BUFSZ];
             strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
-            int glyph = mon_to_glyph(mtmp, rn2_on_display_rng);
-            display_popup_text(verbl_msg, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, 1UL);
+            int glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
+            display_popup_text(verbl_msg, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, POPUP_FLAGS_ADD_QUOTES);
         }
     }
     return 1;
@@ -4046,8 +4046,8 @@ struct monst* mtmp;
         verbalize("%s", ansbuf);
         if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_explanation != 0)
         {
-            int glyph = mon_to_glyph(mtmp, rn2_on_display_rng);
-            display_popup_text(ansbuf, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, 1UL);
+            int glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
+            display_popup_text(ansbuf, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, POPUP_FLAGS_ADD_QUOTES);
         }
     }
     else if (msound == MS_GUARDIAN)
@@ -4201,6 +4201,7 @@ struct monst* mtmp;
             u.uconduct.literate++;
         }
         verbalize("%s", rumor);
+        display_popup_text(rumor, "Advice", POPUP_TEXT_ADVICE, 0, 0, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
 
         mtmp->told_rumor = TRUE;
     }
@@ -7775,6 +7776,24 @@ int cha;
     return pow(2.0, (11.0 - (double)cha) / 14.0);
 }
 
+void
+popup_talk_lines(mtmp, linearray)
+struct monst* mtmp;
+const char** linearray;
+{
+    hermit_talk(mtmp, linearray);
+}
+
+void
+popup_talk_line(mtmp, line)
+struct monst* mtmp;
+const char* line;
+{
+    const char* linearray[2] = { 0, 0 };
+    linearray[0] = line;
+    hermit_talk(mtmp, linearray);
+}
+
 STATIC_OVL void
 hermit_talk(mtmp, linearray)
 struct monst* mtmp;
@@ -7783,7 +7802,7 @@ const char** linearray;
     if (!mtmp || !linearray)
         return;
 
-    int glyph = mon_to_glyph(mtmp, rn2_on_display_rng);
+    int glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
     const char* hermit_txt = 0;
     char namebuf[BUFSZ];
     strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
@@ -7795,7 +7814,7 @@ const char** linearray;
         {
             hermit_txt = linearray[idx];
             verbalize1(hermit_txt);
-            display_popup_text(hermit_txt, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, 1UL);
+            display_popup_text(hermit_txt, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, POPUP_FLAGS_ADD_QUOTES);
         }
         idx++;
     }

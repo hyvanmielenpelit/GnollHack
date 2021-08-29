@@ -480,7 +480,12 @@ enum popup_text_types {
     POPUP_TEXT_IDENTIFY,
     POPUP_TEXT_NO_GENOCIDED_LIST,
     POPUP_TEXT_DIALOGUE,
+    POPUP_TEXT_ADVICE,
+    POPUP_TEXT_MESSAGE,
 };
+
+#define POPUP_FLAGS_NONE        0x00000000UL
+#define POPUP_FLAGS_ADD_QUOTES  0x00000001UL
 
 #define PICKLOCK_LEARNED_SOMETHING (-1) /* time passes */
 #define PICKLOCK_DID_NOTHING 0          /* no time passes */

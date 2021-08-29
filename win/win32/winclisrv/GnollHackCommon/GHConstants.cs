@@ -872,6 +872,8 @@ namespace GnollHackCommon
         POPUP_TEXT_IDENTIFY,
         POPUP_TEXT_NO_GENOCIDED_LIST,
         POPUP_TEXT_DIALOGUE,
+        POPUP_TEXT_ADVICE,
+        POPUP_TEXT_MESSAGE,
     }
 
     public class GHConstants

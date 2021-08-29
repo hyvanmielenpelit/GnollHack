@@ -3666,7 +3666,7 @@ struct obj *otmp;
 {
     fully_identify_obj(otmp);
     prinv((char *) 0, otmp, 0L);
-    display_popup_text(xprname(otmp, (char*)0, obj_to_let(otmp), TRUE, 0L, 0UL), "Item Identified", POPUP_TEXT_IDENTIFY, 0, 0, NO_GLYPH, 0UL);
+    display_popup_text(xprname(otmp, (char*)0, obj_to_let(otmp), TRUE, 0L, 0UL), "Item Identified", POPUP_TEXT_IDENTIFY, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
 
     return 1;
 }
