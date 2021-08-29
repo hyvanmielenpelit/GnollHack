@@ -701,7 +701,7 @@ boolean is_restoring;
  */
 
 static int NDECL(hup_nhgetch);
-static char FDECL(hup_yn_function_ex, (int, int, int, const char *, const char *, const char *, CHAR_P, const char*));
+static char FDECL(hup_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, unsigned long));
 static int FDECL(hup_nh_poskey, (int *, int *, int *));
 static void FDECL(hup_getlin_ex, (int, int, const char *, char *));
 static void FDECL(hup_init_nhwindows, (int *, char **));
@@ -845,10 +845,11 @@ hup_nhgetch(VOID_ARGS)
 
 /*ARGSUSED*/
 static char
-hup_yn_function_ex(style, attr, color, title, prompt, resp, deflt, resp_desc)
-int style UNUSED, attr UNUSED, color UNUSED;
+hup_yn_function_ex(style, attr, color, glyph, title, prompt, resp, deflt, resp_desc, ynflags)
+int style UNUSED, attr UNUSED, color UNUSED, glyph UNUSED;
 const char *title UNUSED, *prompt UNUSED, *resp UNUSED, *resp_desc UNUSED;
 char deflt;
+unsigned long ynflags UNUSED;
 {
     if (!deflt)
         deflt = '\033';

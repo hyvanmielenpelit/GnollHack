@@ -1589,7 +1589,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-sdl_yn_function_ex(int style, int attr, int color, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc)
+sdl_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, unsigned long ynflags)
 {
     char ch;
     char yn_esc_map = '\033';

@@ -1224,7 +1224,7 @@ doability(VOID_ARGS)
         any = zeroany;
         add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
             0, 0, iflags.menu_headings | ATR_HEADING,
-            "Companion Abilities                 ", MENU_UNSELECTED);
+            "Companion Statistics                ", MENU_UNSELECTED);
 
         int pet_index = 0;
         for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
@@ -8017,10 +8017,11 @@ dotravel(VOID_ARGS)
  *   window port causing a buffer overflow there.
  */
 char
-yn_function_ex(style, attr, color, title, query, resp, def, resp_desc)
-int style, attr, color;
+yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags)
+int style, attr, color, glyph;
 const char *title, *query, *resp, *resp_desc;
 char def;
+unsigned long ynflags;
 {
     char res, qbuf[QBUFSZ];
 #ifdef DUMPLOG
@@ -8040,7 +8041,7 @@ char def;
         Strcpy(&qbuf[QBUFSZ - 1 - 3], "...");
         query = qbuf;
     }
-    res = (*windowprocs.win_yn_function_ex)(style, attr, color, title, query, resp, def, resp_desc);
+    res = (*windowprocs.win_yn_function_ex)(style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags);
 #ifdef DUMPLOG
     if (idx == saved_pline_index) {
         /* when idx is still the same as saved_pline_index, the interface
@@ -8059,9 +8060,49 @@ yn_function(query, resp, def, resp_desc)
 const char* query, *resp, *resp_desc;
 char def;
 {
-    return yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, (const char*)0, query, resp, def, resp_desc);
+    return yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, query, resp, def, resp_desc, 0UL);
 }
 
+char
+yn_function_mon(mtmp, query, chars, def, descs)
+struct monst* mtmp;
+const char* query;
+const char* chars, *descs;
+char def;
+{
+    if (!mtmp)
+        return yn_query(query);
+
+    int glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
+    char namebuf[BUFSZ];
+    strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
+
+    return yn_function_ex(YN_STYLE_MONSTER_QUESTION, ATR_NONE, NO_COLOR, glyph, namebuf, query, chars, def, descs, 0UL);
+}
+
+char
+yn_query_mon(mtmp, query)
+struct monst* mtmp;
+const char* query;
+{
+    return yn_function_mon(mtmp, query, ynchars, 'n', yndescs);
+}
+
+char
+ynq_mon(mtmp, query)
+struct monst* mtmp;
+const char* query;
+{
+    return yn_function_mon(mtmp, query, ynqchars, 'q', ynqdescs);
+}
+
+char
+ynaq_mon(mtmp, query)
+struct monst* mtmp;
+const char* query;
+{
+    return yn_function_mon(mtmp, query, ynaqchars, 'q', ynaqdescs);
+}
 
 /* for paranoid_confirm:quit,die,attack prompting */
 boolean

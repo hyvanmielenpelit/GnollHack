@@ -5087,7 +5087,7 @@ struct monst* mtmp;
         pline("%s looks at you and replies:", Monnam(mtmp));
         Sprintf(qbuf, "\"I can join you for a fee of %ld %s. Acceptable?\"", join_cost, currency(join_cost));
     }
-    switch (ynq(qbuf)) {
+    switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
         return 0;
@@ -5169,7 +5169,7 @@ struct monst* mtmp;
         pline("%s looks at you and then says:", Monnam(mtmp));
         Sprintf(qbuf, "\"I can explain my statistics to you for a fee of %ld %s. Do you accept?\"", explain_cost, currency(explain_cost));
     }
-    switch (ynq(qbuf))
+    switch (ynq_mon(mtmp, qbuf))
     {
     default:
     case 'q':
@@ -5724,7 +5724,7 @@ struct monst* mtmp;
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_BLESS_AN_ITEM);
     Sprintf(qbuf, "Would you like to bless an item? (%d %s)", bless_cost, currency((long)bless_cost));
-    switch (ynq(qbuf)) {
+    switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
         return 0;
@@ -5742,7 +5742,7 @@ struct monst* mtmp;
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_CURSE_AN_ITEM);
         Sprintf(qbuf, "Then would you like to curse one? (%d %s)",
             curse_cost, currency((long)curse_cost));
-        if (yn_query(qbuf) != 'y')
+        if (yn_query_mon(mtmp, qbuf) != 'y')
             return 0;
         if (umoney < (long)curse_cost)
         {
@@ -5809,7 +5809,7 @@ struct monst* mtmp;
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_STANDARD_HEALING);
     Sprintf(qbuf, "Would you like to have a standard healing? (%d %s)", extrahealing_cost, currency((long)extrahealing_cost));
-    switch (ynq(qbuf)) {
+    switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'n':
     case 'q':
@@ -5859,7 +5859,7 @@ struct monst* mtmp;
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FULL_HEALING);
     Sprintf(qbuf, "Would you like to have a full healing? (%d %s)", fullhealing_cost, currency((long)fullhealing_cost));
-    switch (ynq(qbuf)) {
+    switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'n':
     case 'q':
@@ -5909,7 +5909,7 @@ struct monst* mtmp;
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_SICKNESS_CURED);
     Sprintf(qbuf, "Would you like to have your sickness cured? (%d %s)", cure_sickness_cost, currency((long)cure_sickness_cost));
-    switch (ynq(qbuf)) {
+    switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'n':
     case 'q':
@@ -5966,7 +5966,7 @@ struct monst* mtmp;
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_MAJOR_CONTRIBUTION);
     Sprintf(qbuf, "Would you like to make a major contribution for the temple? (%d %s)", major_cost, currency((long)major_cost));
-    switch (ynq(qbuf)) {
+    switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
         return 0;
@@ -5984,7 +5984,7 @@ struct monst* mtmp;
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_MINOR_DONATION);
         Sprintf(qbuf, "Then would you like to make a minor donation instead? (%d %s)",
             minor_cost, currency((long)minor_cost));
-        if (yn_query(qbuf) != 'y')
+        if (yn_query_mon(mtmp, qbuf) != 'y')
             return 0;
         if (umoney < (long)minor_cost)
         {
@@ -6080,7 +6080,7 @@ struct monst* mtmp;
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_WOULD_YOU_LIKE_TO_SEE_YOUR_FORTUNE);
     Sprintf(qbuf, "Would you like to see your fortune? (%d %s)", divination_cost, currency((long)divination_cost));
-    switch (ynq(qbuf)) {
+    switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'n':
     case 'q':
@@ -6265,7 +6265,7 @@ struct monst* mtmp;
         else
             Sprintf(qbuf, "Would you like to identify one more %s? (%d %s)", shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description, minor_id_cost, currency((long)minor_id_cost));
 
-        switch (ynq(qbuf)) {
+        switch (ynq_mon(mtmp, qbuf)) {
         default:
         case 'q':
             return 0;
@@ -6364,7 +6364,7 @@ struct monst* mtmp;
     else
         Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
 
-    switch (ynq(qbuf)) {
+    switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
         return 0;
@@ -6429,7 +6429,7 @@ struct monst* mtmp;
     else
         Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
 
-    switch (ynq(qbuf)) {
+    switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
         return 0;
@@ -6902,7 +6902,7 @@ struct monst* mtmp;
     }
 
     Sprintf(qbuf, "Would you like to %s? (%d %s)", "open a branch portal", service_cost, currency((long)service_cost));
-    switch (ynq(qbuf))
+    switch (ynq_mon(mtmp, qbuf))
     {
     default:
     case 'n':
@@ -7205,7 +7205,7 @@ struct monst* mtmp;
         Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
     }
 
-    switch (ynq(qbuf)) {
+    switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
         return 0;
@@ -7365,7 +7365,7 @@ struct monst* mtmp;
     {
         Sprintf(qbuf, "\"We can drop the case for %ld %s. Agree?\"", reconcile_cost, currency(reconcile_cost));
     }
-    switch (ynq(qbuf)) {
+    switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
         return 0;
@@ -7531,7 +7531,7 @@ int id_idx, minor_id_cost, spdialogue1, spdialogue2;
             Sprintf(qbuf, "Would you like to identify one more %s? (%d %s)", identify_item_str, minor_id_cost, currency((long)minor_id_cost));
         }
 
-        switch (ynq(qbuf)) {
+        switch (ynq_mon(mtmp, qbuf)) {
         default:
         case 'q':
             return 0;
@@ -8257,7 +8257,7 @@ int special_dialogue_sound_id;
         play_monster_special_dialogue_line(mtmp, special_dialogue_sound_id);
 
     Sprintf(qbuf, "Would you like to %s? (%d %s)", service_verb, service_cost, currency((long)service_cost));
-    switch (ynq(qbuf)) 
+    switch (ynq_mon(mtmp, qbuf)) 
     {
     default:
     case 'n':
@@ -8354,7 +8354,7 @@ int special_dialogue_sound_id;
     else
         Sprintf(qbuf, "Would you like to %s? (%ld %s)", service_verb, service_cost, currency(service_cost));
 
-    switch (ynq(qbuf))
+    switch (ynq_mon(mtmp, qbuf))
     {
     default:
     case 'n':

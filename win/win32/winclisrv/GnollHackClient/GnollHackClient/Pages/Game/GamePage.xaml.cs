@@ -794,7 +794,7 @@ namespace GnollHackClient.Pages.Game
                                 PrintTopLine(req.RequestString, req.RequestStringAttributes);
                                 break;
                             case GHRequestType.ShowYnResponses:
-                                ShowYnResponses(req.RequestInt, req.RequestAttr, req.RequestNhColor, req.TitleString, req.RequestString, req.Responses, req.ResponseDescriptions);
+                                ShowYnResponses(req.RequestInt, req.RequestAttr, req.RequestNhColor, req.RequestGlyph, req.TitleString, req.RequestString, req.Responses, req.ResponseDescriptions, req.RequestFlags);
                                 break;
                             case GHRequestType.HideYnResponses:
                                 HideYnResponses();
@@ -985,37 +985,64 @@ namespace GnollHackClient.Pages.Game
             */
         }
 
-        private string CurrentYnResponses;
-        private void ShowYnResponses(int style, int attr, int color, string title, string question, string responses, string descriptions)
+
+        private GlyphImageSource _ynImageSource = new GlyphImageSource();
+        private void ShowYnResponses(int style, int attr, int color, int glyph, string title, string question, string responses, string descriptions, ulong ynflags)
         {
             string[] descr_list = null;
             if (descriptions != null)
             {
                 descr_list = descriptions.Split('\n');
             }
-            CurrentYnResponses = responses;
+
+            /* Title Label */
             if (title == null)
             {
                 YnTitleLabel.IsVisible = false;
                 YnTitleLabel.Text = "";
                 YnTitleLabel.TextColor = Color.White;
-                //if (style <= 2)
-                //{
-                //    YnQuestionLabel.TextColor = ClientUtils.NHColor2XColor((nhcolor)color);
-                //}
             }
             else
             {
                 YnTitleLabel.Text = title;
                 YnTitleLabel.IsVisible = true;
                 YnQuestionLabel.TextColor = Color.White;
-                if (style <= 2)
+                if (style == (int)yn_function_styles.YN_STYLE_MONSTER_QUESTION)
+                {
+                    YnTitleLabel.TextColor = _titleGoldColor;
+                }
+                else
                 {
                     YnTitleLabel.TextColor = ClientUtils.NHColor2XColor(color);
                 }
             }
 
+            /* Title Glyph */
+            if (glyph != 0 && glyph != NoGlyph)
+            {
+                YnTitleLayout.HorizontalOptions = LayoutOptions.StartAndExpand;
+                _ynImageSource.ReferenceGamePage = this;
+                _ynImageSource.Glyph = glyph;
+                _ynImageSource.AutoSize = true;
+                YnImage.Source = _ynImageSource;
+                YnImage.IsVisible = true;
+            }
+            else
+            {
+                YnTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
+                YnImage.IsVisible = false;
+                YnImage.Source = null;
+            }
+
+            if (!YnImage.IsVisible && !YnTitleLabel.IsVisible)
+                YnTitleLayout.IsVisible = false;
+            else
+                YnTitleLayout.IsVisible = true;
+
+            /* Question */
             YnQuestionLabel.Text = question;
+
+            /* Buttons */
             LabeledImageButton[] btnList = { ZeroButton, FirstButton, SecondButton, ThirdButton, FourthButton };
             if (responses.Length == 0)
                 return;
@@ -5941,42 +5968,6 @@ namespace GnollHackClient.Pages.Game
         {
             LabeledImageButton ghb = (LabeledImageButton)sender;
             GenericButton_Clicked(sender, e, ghb.GHCommand);
-        }
-        private void ZeroButton_Clicked(object sender, EventArgs e)
-        {
-            if (CurrentYnResponses.Length >= 4)
-                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(0, 1).ToCharArray()[0]);
-        }
-        private void FirstButton_Clicked(object sender, EventArgs e)
-        {
-            if (CurrentYnResponses.Length >= 4)
-                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(1, 1).ToCharArray()[0]);
-            else if (CurrentYnResponses.Length >= 2)
-                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(0, 1).ToCharArray()[0]);
-        }
-
-        private void SecondButton_Clicked(object sender, EventArgs e)
-        {
-            if (CurrentYnResponses.Length == 1)
-                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(0, 1).ToCharArray()[0]);
-            else if (CurrentYnResponses.Length >= 4)
-                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(2, 1).ToCharArray()[0]);
-            else if (CurrentYnResponses.Length >= 2)
-                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(1, 1).ToCharArray()[0]);
-        }
-
-        private void ThirdButton_Clicked(object sender, EventArgs e)
-        {
-            if (CurrentYnResponses.Length == 3)
-                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(2, 1).ToCharArray()[0]);
-            else if (CurrentYnResponses.Length >= 4)
-                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(3, 1).ToCharArray()[0]);
-        }
-
-        private void FourthButton_Clicked(object sender, EventArgs e)
-        {
-            if (CurrentYnResponses.Length >= 5)
-                GenericButton_Clicked(sender, e, (int)CurrentYnResponses.Substring(4, 1).ToCharArray()[0]);
         }
 
         private void RepeatButton_Clicked(object sender, EventArgs e)

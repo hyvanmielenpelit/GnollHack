@@ -4634,7 +4634,7 @@ boolean cant_mollify;
             currency(cost_of_damage), !animal ? "\"" : "");
     }
 
-    if (yn_query(qbuf) != 'n')
+    if (yn_query_mon(shkp, qbuf) != 'n')
     {
         cost_of_damage = check_credit(cost_of_damage, shkp);
         if (cost_of_damage > 0L) 

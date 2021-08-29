@@ -876,6 +876,15 @@ namespace GnollHackCommon
         POPUP_TEXT_MESSAGE,
     }
 
+    public enum yn_function_styles
+    {
+        YN_STYLE_GENERAL = 0,
+        YN_STYLE_ITEM_EXCHANGE,
+        YN_STYLE_KNAPSACK_FULL,
+        YN_STYLE_MONSTER_QUESTION,
+    }
+
+
     public class GHConstants
     {
         public const int InputBufferLength = 32;

@@ -130,7 +130,7 @@ void amii_askname(void);
 void amii_player_selection(void);
 void RandomWindow(char *name);
 int amii_get_ext_cmd(void);
-char amii_yn_function_ex(int style, int attr, int color, const char* title, const char *prompt, const char *resp, char def, const char*);
+char amii_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *prompt, const char *resp, char def, const char*, unsigned long);
 void amii_display_file(const char *fn, boolean complain);
 void SetBorder(struct Gadget *gd);
 void *malloc(register unsigned size);

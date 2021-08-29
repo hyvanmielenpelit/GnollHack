@@ -84,6 +84,8 @@ namespace GnollHackClient
         public int RequestInt { get; set; }
         public int RequestAttr { get; set; }
         public int RequestNhColor { get; set; }
+        public int RequestGlyph { get; set; }
+        public ulong RequestFlags { get; set; }
         public List<GHMsgHistoryItem> MessageHistory { get; set; }
         public string Responses { get; set; }
         public string ResponseDescriptions { get; set; }
@@ -149,17 +151,19 @@ namespace GnollHackClient
             RequestType = requesttype;
             MessageHistory = msgHistory;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int style, int attr, int color, string titlestring, string requeststring, string responses, string descriptions)
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int style, int attr, int color, int glyph, string titlestring, string requeststring, string responses, string descriptions, ulong ynflags)
         {
             RequestingClientGame = clientgame;
             RequestInt = style;
             RequestAttr = attr;
             RequestNhColor = color;
+            RequestGlyph = glyph;
             TitleString = titlestring;
             RequestType = requesttype;
             RequestString = requeststring;
             Responses = responses;
             ResponseDescriptions = descriptions;
+            RequestFlags = ynflags;
         }
         public GHRequest(ClientGame clientgame, GHRequestType requesttype, AddContextMenuData data)
         {

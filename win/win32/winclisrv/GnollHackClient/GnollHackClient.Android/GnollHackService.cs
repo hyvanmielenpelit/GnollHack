@@ -66,7 +66,7 @@ namespace GnollHackClient.Droid
             NhPosKeyCallback callback_nh_poskey,
             VoidVoidCallback callback_nhbell,
             IntVoidCallback callback_doprev_message,
-            YnQuestionCallback callback_yn_function_ex,
+            YnFunctionCallback callback_yn_function_ex,
             GetLineCallback callback_getlin_ex,
             IntVoidCallback callback_get_ext_cmd,
             VoidIntCallback callback_number_pad,

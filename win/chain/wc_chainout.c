@@ -445,16 +445,17 @@ void *vp;
 }
 
 char
-chainout_yn_function_ex(vp, style, attr, color, title, query, resp, def, resp_desc)
+chainout_yn_function_ex(vp, style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags)
 void *vp;
-int style, attr, color;
+int style, attr, color, glyph;
 const char *title, * query, * resp, * resp_desc;
 char def;
+unsigned long ynflags;
 {
     struct chainout_data *tdp = vp;
     int rv;
 
-    rv = (*tdp->nprocs->win_yn_function)(style, attr, color, title, query, resp, def, resp_desc);
+    rv = (*tdp->nprocs->win_yn_function)(style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags);
 
     return rv;
 }

@@ -358,14 +358,15 @@ chainin_doprev_message()
 }
 
 char
-chainin_yn_function_ex(style, attr, color, title, query, resp, def, resp_desc)
-int style, attr, color;
+chainin_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags)
+int style, attr, color, glyph;
 const char *title, * query, * resp, *resp_desc;
 char def;
+unsigned long ynflags;
 {
     int rv;
 
-    rv = (*cibase->nprocs->win_yn_function)(cibase->ndata, query, resp, def, resp_desc);
+    rv = (*cibase->nprocs->win_yn_function)(cibase->ndata, style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags);
 
     return rv;
 }

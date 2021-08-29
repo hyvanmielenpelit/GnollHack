@@ -604,13 +604,14 @@ safe_doprev_message()
 }
 
 char
-safe_yn_function_ex(style, attr, color, title, query, resp, def, resp_desc)
-int style, attr, color;
+safe_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags)
+int style, attr, color, glyph;
 const char *title;
 const char *query;
 const char *resp;
 const char* resp_desc;
 char def;
+unsigned long ynflags;
 {
     return '\033';
 }

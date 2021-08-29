@@ -3180,10 +3180,11 @@ XEVENT *xev;
 }
 
 char
-Gem_yn_function_ex(style, attr, color, title, query, resp, def, resp_desc)
-int style, attr, color;
+Gem_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags)
+int style, attr, color, glyph;
 const char *title, * query, * resp, * resp_desc;
 char def;
+unsigned long ynflags;
 {
     OBJECT *z_ob = zz_oblist[YNCHOICE];
     int d_exit, i, len;
