@@ -706,6 +706,7 @@ namespace GnollHackClient.Pages.Game
                 PopupTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
             }
 
+            PopupImage.Source = null;
             if (data.glyph != 0 && data.glyph != NoGlyph)
             {
                 _popupImageSource.ReferenceGamePage = this;
@@ -717,7 +718,6 @@ namespace GnollHackClient.Pages.Game
             else
             {
                 PopupImage.IsVisible = false;
-                PopupImage.Source = null;
             }
             PopupGrid.IsVisible = true;
         }
@@ -1018,6 +1018,7 @@ namespace GnollHackClient.Pages.Game
             }
 
             /* Title Glyph */
+            YnImage.Source = null;
             if (glyph != 0 && glyph != NoGlyph)
             {
                 YnTitleLayout.HorizontalOptions = LayoutOptions.StartAndExpand;
@@ -1031,7 +1032,6 @@ namespace GnollHackClient.Pages.Game
             {
                 YnTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
                 YnImage.IsVisible = false;
-                YnImage.Source = null;
             }
 
             if (!YnImage.IsVisible && !YnTitleLabel.IsVisible)
