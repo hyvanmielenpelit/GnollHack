@@ -1078,7 +1078,7 @@ int x, y;
                 context.click_kick_query = 0;
 
                 Sprintf(qbuf, "Do you want to start kicking this door?");
-                ans = ynq(qbuf);
+                ans = yn_query(qbuf);
 
                 if (ans == 'y')
                 {

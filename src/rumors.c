@@ -557,7 +557,7 @@ struct monst *oracl;
     play_monster_special_dialogue_line(oracl, ORACLE_LINE_WILT_THOU_SETTLE_FOR_A_MINOR_CONSULTATION);
     Sprintf(qbuf, "\"Wilt thou settle for a minor consultation?\" (%d %s)",
         minor_cost, currency((long)minor_cost));
-    switch (ynq(qbuf)) 
+    switch (ynq_mon(oracl, qbuf)) 
     {
     default:
     case 'q':
@@ -678,7 +678,7 @@ struct monst* oracl;
                 minor_id_cost, currency((long)minor_id_cost));
         }
 
-        switch (ynq(qbuf))
+        switch (ynq_mon(oracl, qbuf))
         {
         default:
         case 'n':

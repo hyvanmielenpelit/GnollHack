@@ -1242,7 +1242,7 @@ OBJECT:('*',"ruby"),(70,05)
 OBJECT:('*',"amethyst"),(70,05)
 OBJECT:'*',(70,05)
 OBJECT:('*',"amethyst"),(70,05)
-OBJECT:('*',"luckstone"),(70,05)
+OBJECT:('*',"luckstone"),(70,05),name:"The Gladstone"
 # Scattered gems...
 OBJECT:'*',random
 OBJECT:'*',random
@@ -1361,7 +1361,7 @@ OBJECT:('*',"ruby"),random
 OBJECT:('*',"amethyst"),random
 OBJECT:'*',random
 OBJECT:('*',"amethyst"),random
-OBJECT:('*',"luckstone"),$place[0]
+OBJECT:('*',"luckstone"),$place[0],name:"The Gladstone"
 OBJECT:('*',"flint"),$place[1]
 OBJECT:'?',random
 OBJECT:'?',random
