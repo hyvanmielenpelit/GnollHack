@@ -503,6 +503,7 @@ struct instance_flags {
     /* item types used to acomplish "special achievements"; find the target
        object and you'll be flagged as having achieved something... */
     short mines_prize_type;     /* luckstone */
+    short mines_prize_oartifact; /* The Gladstone */
     short soko_prize_type1;     /* bag of holding or    */
     short soko_prize_type2;     /* amulet of reflection */
 #ifdef ANDROID

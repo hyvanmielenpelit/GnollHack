@@ -1223,7 +1223,7 @@ E long FDECL(money_cnt, (struct obj *));
 E struct extended_menu_info FDECL(obj_to_extended_menu_info, (struct obj*));
 E struct extended_menu_info NDECL(menu_heading_info);
 E struct extended_menu_info FDECL(menu_group_heading_info, (CHAR_P));
-E struct extended_menu_info FDECL(menu_special_mark_info, (char));
+E struct extended_menu_info FDECL(menu_special_mark_info, (char, int));
 E const char* FDECL(get_cmap_or_cmap_variation_glyph_explanation, (int));
 
 /* ### hacklib.c ### */
@@ -2604,6 +2604,7 @@ E boolean FDECL(quest_talk, (struct monst *, BOOLEAN_P));
 E void FDECL(quest_stat_check, (struct monst *));
 E void FDECL(finish_quest, (struct obj *));
 E void FDECL(quest_discovered, (int));
+E void FDECL(achievement_gained, (const char*));
 
 /* ### questpgr.c ### */
 

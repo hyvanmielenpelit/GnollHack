@@ -839,6 +839,8 @@ struct obj *obj;
         if (flags.showscore && !u.uachieve.amulet)
             context.botl = 1;
 #endif
+        if (!u.uachieve.amulet)
+            achievement_gained("Amulet of Yendor");
         u.uachieve.amulet = 1;
     }
     else if (obj->otyp == CANDELABRUM_OF_INVOCATION) 
@@ -850,6 +852,8 @@ struct obj *obj;
         if (flags.showscore && !u.uachieve.menorah)
             context.botl = 1;
 #endif
+        if (!u.uachieve.menorah)
+            achievement_gained("Candelabrum of Invocation");
         u.uachieve.menorah = 1;
     }
     else if (obj->otyp == BELL_OF_OPENING)
@@ -861,6 +865,8 @@ struct obj *obj;
         if (flags.showscore && !u.uachieve.bell)
             context.botl = 1;
 #endif
+        if (!u.uachieve.bell)
+            achievement_gained("Bell of Opening");
         u.uachieve.bell = 1;
     }
     else if (obj->otyp == SPE_BOOK_OF_THE_DEAD)
@@ -872,6 +878,8 @@ struct obj *obj;
         if (flags.showscore && !u.uachieve.book)
             context.botl = 1;
 #endif
+        if (!u.uachieve.bell)
+            achievement_gained("Book of the Dead");
         u.uachieve.book = 1;
     } 
     else if (obj->oartifact) 
@@ -892,6 +900,8 @@ struct obj *obj;
             if (flags.showscore && !u.uachieve.prime_codex)
                 context.botl = 1;
 #endif
+            if (!u.uachieve.prime_codex)
+                achievement_gained("Prime Codex");
             u.uachieve.prime_codex = 1;
         }
     }
@@ -902,6 +912,8 @@ struct obj *obj;
         if (flags.showscore && !u.uachieve.mines_luckstone)
             context.botl = 1;
 #endif
+        if (!u.uachieve.mines_luckstone)
+            achievement_gained("Gladstone");
         u.uachieve.mines_luckstone = 1;
         obj->speflags &= ~(SPEFLAGS_MINES_PRIZE);
         obj->nomerge = 0;
@@ -912,6 +924,8 @@ struct obj *obj;
         if (flags.showscore && !u.uachieve.finish_sokoban)
             context.botl = 1;
 #endif
+        if (!u.uachieve.finish_sokoban)
+            achievement_gained("Sokoban Solved");
         u.uachieve.finish_sokoban = 1;
         obj->speflags &= ~(SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2);
         obj->nomerge = 0;

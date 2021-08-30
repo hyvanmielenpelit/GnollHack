@@ -1917,6 +1917,7 @@ enhance_weapon_skill()
     char buf[BUFSZ], sklnambuf[BUFSZ];
     const char* prefix;
     char special_mark = '\0';
+    int color = CLR_WHITE;
     menu_item *selected;
     anything any;
     winid win;
@@ -2130,6 +2131,7 @@ enhance_weapon_skill()
                  * The 12 is the longest skill level name.
                  * The "    " is room for a selection letter and dash, "a - ".
                  */
+                color = CLR_WHITE;
                 special_mark = '\0';
                 if (can_advance(i, speedy))
                 {
@@ -2144,6 +2146,7 @@ enhance_weapon_skill()
 #if defined (GNH_ANDROID)
                     prefix = "";
                     special_mark = '*';
+                    color = CLR_GRAY;
 #elif defined (ANDROID)
                     prefix = "  * ";
 #else
@@ -2155,6 +2158,7 @@ enhance_weapon_skill()
 #if defined (GNH_ANDROID)
                     prefix = "";
                     special_mark = '#';
+                    color = CLR_GRAY;
 #elif defined (ANDROID)
                     prefix = "  # ";
 #else
@@ -2162,13 +2166,17 @@ enhance_weapon_skill()
 #endif
                 }
                 else
+                {
 #if defined (GNH_ANDROID)
                     prefix = "";
+                    color = CLR_GRAY;
 #elif defined (ANDROID)
                     prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? "  " : "";
 #else
                     prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? (iflags.menu_tab_sep ? "" : "    ") : "";
 #endif
+                }
+
                 (void)skill_level_name(i, sklnambuf, FALSE);
                 char skillmaxbuf[BUFSZ];
                 (void)skill_level_name(i, skillmaxbuf, TRUE);
@@ -2368,7 +2376,7 @@ enhance_weapon_skill()
                             sklnambuf, skillslotbuf, skillmaxbuf, bonusbuf, nextbonusbuf);
                 }
                 any.a_int = can_advance(i, speedy) ? i + 1 : 0;
-                add_extended_menu(win, NO_GLYPH, &any, menu_special_mark_info(special_mark), 0, 0, ATR_NONE, buf,
+                add_extended_menu(win, NO_GLYPH, &any, menu_special_mark_info(special_mark, color), 0, 0, ATR_NONE, buf,
                     MENU_UNSELECTED);
             }
         }

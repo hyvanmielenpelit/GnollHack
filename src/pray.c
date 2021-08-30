@@ -1587,7 +1587,8 @@ aligntyp g_align;
     
     if (on_altar() && p_aligntyp == u.ualign.type)
     {
-        for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+        struct obj* otmp;
+        for (otmp = invent; otmp; otmp = otmp->nobj)
         {
             if (is_obj_special_praying_item(otmp) && !otmp->blessed)
             {
@@ -2416,13 +2417,17 @@ dosacrifice()
                 if (flags.showscore && !u.uachieve.ascended)
                     context.botl = 1;
 #endif
+                if (!u.uachieve.ascended)
+                    achievement_gained("Ascended");
                 u.uachieve.ascended = 1;
+
                 play_sfx_sound(SFX_INVISIBLE_CHOIR_SINGS);
                 pline("An invisible choir sings, and you are bathed in radiance...");
                 
                 /* Radiance */
-                for (int x = 1; x < COLNO; x++)
-                    for (int y = 0; y < ROWNO; y++)
+                int x, y;
+                for (x = 1; x < COLNO; x++)
+                    for (y = 0; y < ROWNO; y++)
                         if(cansee(x, y))
                             newsym(x, y);
 
@@ -2804,7 +2809,8 @@ dosacrifice()
 
         if (bless_savestone)
         {
-            for (struct obj* otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
+            struct obj* otmp2;
+            for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
             {
                 if (is_obj_special_praying_item(otmp2) && !otmp2->blessed)
                 {

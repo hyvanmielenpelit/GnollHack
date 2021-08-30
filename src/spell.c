@@ -226,6 +226,8 @@ struct obj *book2;
             
             /* successful invocation */
             mkinvokearea();
+            if (!u.uevent.invoked)
+                achievement_gained("Performed the Invocation Ritual");
             u.uevent.invoked = 1;
             /* in case you haven't killed the Wizard yet, behave as if
                you just did */

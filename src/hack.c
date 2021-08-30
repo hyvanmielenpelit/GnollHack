@@ -3840,11 +3840,12 @@ char groupaccel;
 }
 
 struct extended_menu_info
-menu_special_mark_info(special_mark)
+menu_special_mark_info(special_mark, color)
 char special_mark;
+int color;
 {
     struct extended_menu_info info = { 0 };
-    info.color = CLR_WHITE;
+    info.color = color;
     info.special_mark = special_mark;
 
     return info;

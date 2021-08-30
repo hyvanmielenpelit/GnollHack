@@ -851,6 +851,7 @@ initoptions_init()
     /* for "special achievement" tracking (see obj.h,
        create_object(sp_lev.c), addinv_core1(invent.c) */
     iflags.mines_prize_type = LUCKSTONE;
+    iflags.mines_prize_oartifact = ART_GLADSTONE;
     iflags.soko_prize_type1 = BAG_OF_HOLDING;
     iflags.soko_prize_type2 = AMULET_OF_REFLECTION;
 

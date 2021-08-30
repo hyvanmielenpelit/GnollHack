@@ -581,4 +581,12 @@ int quest_id;
     }
 }
 
+void
+achievement_gained(achievement_name)
+const char* achievement_name;
+{
+    play_sfx_sound(SFX_GAIN_ABILITY);
+    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "Achievement Earned - %s", achievement_name);
+}
+
 /*quest.c*/

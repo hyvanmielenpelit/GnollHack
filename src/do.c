@@ -6100,6 +6100,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         if (flags.showscore && !u.uachieve.enter_gehennom)
             context.botl = 1;
 #endif
+        if (!u.uachieve.enter_gehennom)
+            achievement_gained("Entered Gehennom");
         u.uachieve.enter_gehennom = 1;
     }
 

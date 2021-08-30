@@ -71,6 +71,30 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         NPC_SERVICE_GIVE_ADVANCED_QUESTS,
         NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS
     }, 
+    {
+        PM_HERMIT,
+        NPC_GEHENNOM_STANDARD,
+        "hermit",
+        "home",
+        "Herbert Reed",
+        "I study the local gnomes and their ways.",
+        0, 0,
+        1, 100, 5,
+        NPC_SERVICE_GIVE_GNOMISH_QUESTS,
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS
+    },
+    {
+        PM_ORC_SHAMAN,
+        NPC_GEHENNOM_STANDARD,
+        "orcish hermit",
+        "domain",
+        "Grummash",
+        "I'm the seer that led our clan to this place.",
+        0, 0,
+        1, 100, 5,
+        NPC_SERVICE_GIVE_ORCISH_QUESTS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS
+    },
 };
 
 schar

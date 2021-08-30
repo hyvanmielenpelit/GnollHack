@@ -158,11 +158,11 @@ namespace GnollHackClient
                                 App.FmodService.LoadBanks();
                                 float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
                                 generalVolume = Preferences.Get("GeneralVolume", 1.0f);
-                                musicVolume = Preferences.Get("MusicVolume", 1.0f);
-                                ambientVolume = Preferences.Get("AmbientVolume", 1.0f);
-                                dialogueVolume = Preferences.Get("DialogueVolume", 1.0f);
-                                effectsVolume = Preferences.Get("EffectsVolume", 1.0f);
-                                UIVolume = Preferences.Get("UIVolume", 1.0f);
+                                musicVolume = Preferences.Get("MusicVolume", 0.5f);
+                                ambientVolume = Preferences.Get("AmbientVolume", 0.5f);
+                                dialogueVolume = Preferences.Get("DialogueVolume", 0.5f);
+                                effectsVolume = Preferences.Get("EffectsVolume", 0.5f);
+                                UIVolume = Preferences.Get("UIVolume", 0.5f);
                                 App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
                                 App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
                                 App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer Done Banks Ok" + starttimercount);

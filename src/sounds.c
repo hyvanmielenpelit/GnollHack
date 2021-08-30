@@ -20,7 +20,6 @@ STATIC_DCL void FDECL(hermit_talk, (struct monst*, const char**));
 STATIC_DCL int FDECL(do_chat_hermit_dungeons, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_quests, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_gnomish_mines, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit_luckstone, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_sokoban, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_sokoprizes, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_further_advice, (struct monst*));
@@ -36,6 +35,11 @@ STATIC_DCL int FDECL(do_chat_hermit2_silver_bell, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit2_candelabrum, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit2_book_of_the_dead, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit2_ritual, (struct monst*));
+
+STATIC_DCL int FDECL(do_chat_hermit3_gnomish_mines, (struct monst*));
+STATIC_DCL int FDECL(do_chat_hermit3_luckstone, (struct monst*));
+STATIC_DCL int FDECL(do_chat_orc_hermit3_gnomish_mines, (struct monst*));
+STATIC_DCL int FDECL(do_chat_orc_hermit3_luckstone, (struct monst*));
 
 #define hermit_told_dungeon special_talk_flag1
 #define hermit_told_quests special_talk_flag2
@@ -55,6 +59,7 @@ STATIC_DCL int FDECL(do_chat_hermit2_ritual, (struct monst*));
 #define hermit2_told_silver_bell special_talk_flag7
 #define hermit2_told_ritual special_talk_flag8
 
+#define hermit3_told_gnomish_mines special_talk_flag1
 
 STATIC_DCL int FDECL(do_chat_pet_sit, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_givepaw, (struct monst*));
@@ -2372,22 +2377,6 @@ dochat()
             chatnum++;
         }
 
-        if (mtmp->hermit_told_gnomish_mines)
-        {
-            strcpy(available_chat_list[chatnum].name, "Ask about the Luckstone");
-            available_chat_list[chatnum].function_ptr = &do_chat_hermit_luckstone;
-            available_chat_list[chatnum].charnum = 'a' + chatnum;
-
-            any = zeroany;
-            any.a_char = available_chat_list[chatnum].charnum;
-
-            add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
-                available_chat_list[chatnum].name, MENU_UNSELECTED);
-
-            chatnum++;
-        }
-
         if (mtmp->hermit_told_sokoban)
         {
             strcpy(available_chat_list[chatnum].name, "Ask about the prizes in Sokoban");
@@ -2530,8 +2519,74 @@ dochat()
 
     }
 
+    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_GNOMISH_QUESTS) != 0)
+    {
+        /* Hermit - Gnomish Quests */
+        strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
+        available_chat_list[chatnum].function_ptr = &do_chat_hermit3_gnomish_mines;
+        available_chat_list[chatnum].charnum = 'a' + chatnum;
 
-        /* Tame dog and cat commands */
+        any = zeroany;
+        any.a_char = available_chat_list[chatnum].charnum;
+
+        add_menu(win, NO_GLYPH, &any,
+            any.a_char, 0, ATR_NONE,
+            available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+        chatnum++;
+
+        if (mtmp->hermit3_told_gnomish_mines)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about the Gladstone");
+            available_chat_list[chatnum].function_ptr = &do_chat_hermit3_luckstone;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
+    }
+
+    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ORCISH_QUESTS) != 0)
+    {
+        /* Hermit - Orcish Quests */
+        strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
+        available_chat_list[chatnum].function_ptr = &do_chat_orc_hermit3_gnomish_mines;
+        available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+        any = zeroany;
+        any.a_char = available_chat_list[chatnum].charnum;
+
+        add_menu(win, NO_GLYPH, &any,
+            any.a_char, 0, ATR_NONE,
+            available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+        chatnum++;
+
+        if (mtmp->hermit3_told_gnomish_mines)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about the Gladstone");
+            available_chat_list[chatnum].function_ptr = &do_chat_orc_hermit3_luckstone;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+    }
+
+    /* Tame dog and cat commands */
     if (has_edog(mtmp) && is_tame(mtmp) && is_peaceful(mtmp))
     {
         if (mtmp->data->mlet == S_DOG)
@@ -7875,30 +7930,88 @@ struct monst* mtmp;
 
     const char* linearray[5] = {
         "The Gnomish Mines are a complex of ancient mines, some eight levels deep, inhabited by Gnomes of Yendor.",
-        "There, on its bottom level, they worship a magical stone, the Luckstone, through strange ceremonies.",
+        "There, on its bottom level, they worship a magical stone, the Gladstone, through strange ceremonies.",
         "There is also a trading outpost, called Mine Town, which is located somewhere in the middle of the complex.",
-        "Seek out Izchak who runs a lighting store there. He knows more about the gnomes and their mysterious artifact.",
+        "Seek out Herbert Reed there. He knows more about the gnomes and their mysterious artifact.",
         0 };
     hermit_talk(mtmp, linearray);
 
     mtmp->hermit_told_gnomish_mines = 1;
     return 1;
 }
+
+
 STATIC_OVL int
-do_chat_hermit_luckstone(mtmp)
+do_chat_hermit3_gnomish_mines(mtmp)
 struct monst* mtmp;
 {
     if (!m_speak_check(mtmp))
         return 0;
 
     const char* linearray[3] = {
-        "The Luckstone is a magnificient magical stone that bestows good luck on the wearer.",
-        "It can greatly help you in your quest.",
+        "These mines have been inhabited by the Gnomes of Yendor as long as I can remember.",
+        "Their most precious treasures, including the famed Gladstone, are located on the bottom level of the complex, a few levels down from here.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
+    mtmp->hermit3_told_gnomish_mines = 1;
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_hermit3_luckstone(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+
+    const char* linearray[5] = {
+        "The Gladstone is a magnificient magical stone that is known to bestow unparalleled good luck on the wearer.",
+        "They also say that it can may grant protection from poison and heal the bearer upon invocation.",
+        "It has been worshipped by the gnomes since the beginning of time, and they will guard it jealously from anyone attempting to take it from them.",
+        "However, such a powerful artifact can greatly help you in your quest for the Amulet of Yendor.",
         0 };
     hermit_talk(mtmp, linearray);
 
     return 1;
 }
+
+STATIC_OVL int
+do_chat_orc_hermit3_gnomish_mines(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+
+    const char* linearray[4] = {
+        "We came to these mines to seek the treasures of the gnomes, especially the famed Gladstone.",
+        "So far we have been able to overrun this town; the human guards were but mere weaklings, and faltered to our horde with little resistance.",
+        "However, the gnomes are putting up a fierce fight on the bottom level of the complex, and we have been unable to claim to the Gladstone.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
+    mtmp->hermit3_told_gnomish_mines = 1;
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_orc_hermit3_luckstone(mtmp)
+struct monst* mtmp;
+{
+    if (!m_speak_check(mtmp))
+        return 0;
+
+    const char* linearray[4] = {
+        "The Gladstone is a great magical stone that is known to bestow unparalleled good luck on the wearer.",
+        "They also say that it can may grant protection from poison and heal the bearer upon invocation.",
+        "It still angers me that our warriors have not been able to bring it to me.",
+        0 };
+    hermit_talk(mtmp, linearray);
+
+    return 1;
+}
+
+
 STATIC_OVL int
 do_chat_hermit_sokoban(mtmp)
 struct monst* mtmp;
@@ -8128,7 +8241,7 @@ struct monst* mtmp;
 
     const char* linearray[4] = {
         "Please consult with the Oracle of Delphi a few levels down from here.",
-        "Also, Izchak at the Mine Town may be able to help you.",
+        "Also, Izchak and Herbert at the Mine Town may be able to help you.",
         "Finally, if you reach the bottom of this dungeon, speak with Eduard, who is confined at the castle there.",
         0 };
     hermit_talk(mtmp, linearray);

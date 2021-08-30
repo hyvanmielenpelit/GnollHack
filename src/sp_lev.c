@@ -2354,7 +2354,7 @@ struct mkroom *croom;
            exploring the target level, although the exploration part
            might be short-circuited if a monster brings object to hero) */
         if (Is_mineend_level(&u.uz)) {
-            if (otmp->otyp == iflags.mines_prize_type) {
+            if (otmp->otyp == iflags.mines_prize_type && otmp->oartifact == iflags.mines_prize_oartifact) {
                 otmp->speflags |= SPEFLAGS_MINES_PRIZE;
                 /* prevent stacking; cleared when achievement is recorded */
                 otmp->nomerge = 1;

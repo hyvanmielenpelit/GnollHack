@@ -629,7 +629,7 @@ struct obj {
    which use that field for monster type (or other overloaded purpose) */
 
 #define is_mines_prize(o) \
-    ((o)->otyp == iflags.mines_prize_type                \
+    ((o)->otyp == iflags.mines_prize_type && (o)->oartifact == iflags.mines_prize_oartifact              \
      && ((o)->speflags & SPEFLAGS_MINES_PRIZE) != 0)
 #define is_soko_prize(o) \
     (((o)->otyp == iflags.soko_prize_type1               \

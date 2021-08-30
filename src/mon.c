@@ -3263,6 +3263,8 @@ unsigned long mdiedflags;
         if (flags.showscore && !u.uachieve.killed_medusa)
             context.botl = 1;
 #endif
+        if (!u.uachieve.killed_medusa)
+            achievement_gained("Defeated Medusa");
         u.uachieve.killed_medusa = 1;
     }
     if (mtmp->data == &mons[PM_YACC])
@@ -3271,6 +3273,8 @@ unsigned long mdiedflags;
         if (flags.showscore && !u.uachieve.killed_yacc)
             context.botl = 1;
 #endif
+        if (!u.uachieve.killed_yacc)
+            achievement_gained("Defeated Yacc");
         u.uachieve.killed_yacc = 1;
     }
     if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].hero_memory_layers.glyph))
