@@ -7968,7 +7968,7 @@ struct monst* mtmp;
     const char* linearray[5] = {
         "The Gladstone is a magnificient magical stone that is known to bestow unparalleled good luck on the wearer.",
         "They also say that it can may grant protection from poison and heal the bearer upon invocation.",
-        "It has been worshipped by the gnomes since the beginning of time, and they will guard it jealously from anyone attempting to take it from them.",
+        "It has been worshipped by the gnomes since the beginning of time, and they will jealously guard it from anyone attempting to take it from them.",
         "However, such a powerful artifact can greatly help you in your quest for the Amulet of Yendor.",
         0 };
     hermit_talk(mtmp, linearray);
@@ -7986,7 +7986,7 @@ struct monst* mtmp;
     const char* linearray[4] = {
         "We came to these mines to seek the treasures of the gnomes, especially the famed Gladstone.",
         "So far we have been able to overrun this town; the human guards were but mere weaklings, and faltered to our horde with little resistance.",
-        "However, the gnomes are putting up a fierce fight on the bottom level of the complex, and we have been unable to claim to the Gladstone.",
+        "However, the gnomes are putting up a fierce fight on the bottom level of the complex, and we have been unable to reach the Gladstone.",
         0 };
     hermit_talk(mtmp, linearray);
 

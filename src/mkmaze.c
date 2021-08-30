@@ -819,7 +819,7 @@ stolen_booty(VOID_ARGS)
              * Don't christen the orc captain as a subordinate
              * member of the main orc horde.
              */
-            if (mtmp->data != &mons[PM_ORC_CAPTAIN])
+            if (mtmp->data != &mons[PM_ORC_CAPTAIN] && !(has_enpc(mtmp) && has_mname(mtmp)))
             {
                 mtmp = christen_orc(mtmp, gang, "");
                 mtmp->u_know_mname = TRUE; /* Not realistic, but let's do it */

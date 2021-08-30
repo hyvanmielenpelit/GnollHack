@@ -153,7 +153,7 @@ NPC:npc_orc_hermit3, (13,05)
 # set up the shop doors; could be broken down
 DOOR:random,(5,8)
 DOOR:random,(9,8)
-DOOR:random,(13,7)
+DOOR:closed,(13,7)
 DOOR:random,(22,5)
 DOOR:random,(27,7)
 DOOR:random,(31,7)
@@ -554,7 +554,7 @@ SUBROOM:"candle shop",lit,(22,2),(3,3) {
 }
 
 SUBROOM:"npcroom",lit,(26,2),(2,2) {
-  ROOMDOOR:false,locked,east,random
+  ROOMDOOR:false,closed,east,random
   NPC: npc_hermit3, random
 }
 
