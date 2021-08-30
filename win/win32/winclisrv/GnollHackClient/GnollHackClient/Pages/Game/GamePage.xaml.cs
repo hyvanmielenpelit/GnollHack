@@ -1081,11 +1081,26 @@ namespace GnollHackClient.Pages.Game
             string res = "resource://GnollHackClient.Assets.Icons.missing_icon.png";
             switch (ch)
             {
+                case 'i':
+                    /* Put in */
+                    break;
+                case 'd':
+                    if(desc.Substring(0, 4) == "Drop")
+                        res = "resource://GnollHackClient.Assets.UI.dropmany.png";
+                    else if(desc == "Disarm")
+                        res = "resource://GnollHackClient.Assets.UI.yes.png";
+                    break;
                 case 'y':
                     res = "resource://GnollHackClient.Assets.UI.yes.png";
                     break;
                 case 'n':
                     res = "resource://GnollHackClient.Assets.UI.no.png";
+                    break;
+                case 'q':
+                    res = "resource://GnollHackClient.Assets.UI.cancel.png";
+                    break;
+                case 'a':
+                    res = "resource://GnollHackClient.Assets.UI.yestoall.png";
                     break;
                 default:
                     break;
@@ -7171,7 +7186,7 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[1, 1] = new GHCommandButtonItem("Go Up", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'<');
             _moreBtnMatrix[2, 1] = new GHCommandButtonItem("Open", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'o');
             _moreBtnMatrix[3, 1] = new GHCommandButtonItem("Close", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'c');
-            _moreBtnMatrix[4, 1] = new GHCommandButtonItem("Drop Types", "GnollHackClient.Assets.Icons.dropmany.png", (int)'D');
+            _moreBtnMatrix[4, 1] = new GHCommandButtonItem("Drop Types", "GnollHackClient.Assets.UI.dropmany.png", (int)'D');
             _moreBtnMatrix[5, 1] = new GHCommandButtonItem("2-Weapon", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'x'));
 
             _moreBtnMatrix[0, 2] = new GHCommandButtonItem("Eat", "GnollHackClient.Assets.Icons.eat.png", (int)'e');

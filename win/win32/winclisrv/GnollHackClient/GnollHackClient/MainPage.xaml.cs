@@ -26,6 +26,7 @@ using System.Net.Http.Headers;
 using GnollHackClient.Pages.Game;
 using FFImageLoading;
 using Xamarin.Essentials;
+using Plugin.InAppBilling;
 
 namespace GnollHackClient
 {
@@ -617,5 +618,52 @@ namespace GnollHackClient
             _downloadresult = 0;
         }
 
+
+        public async Task<bool> MakePurchase(string productId)
+        {
+            if (!CrossInAppBilling.IsSupported)
+                return false;
+
+            var billing = CrossInAppBilling.Current;
+            try
+            {
+                var connected = await billing.ConnectAsync();
+                if (!connected)
+                    return false;
+
+                //check purchases
+                var purchase = await billing.PurchaseAsync(productId, ItemType.InAppPurchase);
+
+                //possibility that a null came through.
+                if (purchase == null)
+                {
+                    //did not purchase
+                }
+                else if (purchase.State == PurchaseState.Purchased)
+                {
+                    //purchased!
+                    if (Device.RuntimePlatform == Device.Android)
+                    {
+                        // Must call AcknowledgePurchaseAsync else the purchase will be refunded
+                        await billing.AcknowledgePurchaseAsync(purchase.PurchaseToken);
+                    }
+                }
+            }
+            catch (InAppBillingPurchaseException purchaseEx)
+            {
+                //Billing Exception handle this based on the type
+                Debug.WriteLine("Error: " + purchaseEx);
+            }
+            catch (Exception ex)
+            {
+                //Something else has gone wrong, log it
+                Debug.WriteLine("Issue connecting: " + ex);
+            }
+            finally
+            {
+                await billing.DisconnectAsync();
+            }
+            return true;
+        }
     }
 }

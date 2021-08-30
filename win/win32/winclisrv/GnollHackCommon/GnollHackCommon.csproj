@@ -12,4 +12,8 @@
     <OutputPath></OutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Plugin.InAppBilling" Version="4.0.2" />
+  </ItemGroup>
+
 </Project>
