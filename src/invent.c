@@ -4513,7 +4513,7 @@ nextclass:
 #if !defined(GNH_ANDROID)
         end_menu(win, query && *query ? query : (char*)0);
 #else
-        end_menu_ex(win, query && *query ? query : (char*)0, headertext);
+        end_menu_ex(win, query && *query ? query : (char*)0, headertext && strcmp(headertext, "") != 0 ? headertext : (char*)0);
 #endif
     }
 
