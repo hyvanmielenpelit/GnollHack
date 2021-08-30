@@ -4412,6 +4412,7 @@ boolean addinventoryheader;
                  xtra_choice, MENU_UNSELECTED);
     }
 
+#if !defined(GNH_ANDROID)
    if(strcmp(headertext, "") != 0)
    {
        add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE,
@@ -4419,6 +4420,7 @@ boolean addinventoryheader;
        add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE,
            "", MENU_UNSELECTED);
    }
+#endif
 nextclass:
     classcount = 0;
     for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) {
@@ -4507,7 +4509,13 @@ nextclass:
         end_menu_ex(win, qbuf, subtitlebuf);
     }
     else
-        end_menu(win, query && *query ? query : (char *) 0);
+    {
+#if !defined(GNH_ANDROID)
+        end_menu(win, query && *query ? query : (char*)0);
+#else
+        end_menu_ex(win, query && *query ? query : (char*)0, headertext);
+#endif
+    }
 
     n = select_menu(win,
                     wizid ? PICK_ANY : want_reply ? PICK_ONE : PICK_NONE,

@@ -7946,7 +7946,7 @@ struct monst* mtmp;
 
     const char* linearray[5] = {
         "The Gladstone is a magnificient magical stone that is known to bestow unparalleled good luck on the wearer.",
-        "They also say that it can may grant protection from poison and heal the bearer upon invocation.",
+        "They also say that it can grant protection from poison and heal the bearer upon invocation.",
         "It has been worshipped by the gnomes since the beginning of time, and they will jealously guard it from anyone attempting to take it from them.",
         "However, such a powerful artifact can greatly help you in your quest for the Amulet of Yendor.",
         0 };

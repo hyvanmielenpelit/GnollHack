@@ -3307,7 +3307,11 @@ int *spell_no;
 
         if (!iflags.menu_tab_sep) {
             Sprintf(fmt, "%%-%ds#  Description    %%s", namelength + 6);
+#if defined (GNH_ANDROID)
+            Sprintf(buf, fmt, "Name", spacebuf);
+#else
             Sprintf(buf, fmt, "    Name", spacebuf);
+#endif
         }
         else {
             Sprintf(buf, "Name\tH\tDescription");
@@ -3528,8 +3532,12 @@ boolean addemptyline;
 
     if (!iflags.menu_tab_sep)
     {
-        Sprintf(fmt, "%%-%ds  Casts  Adds  Material components    %%s", namelength + 4);
-        Sprintf(buf, fmt, "    Name", spacebuf);
+#if defined (GNH_ANDROID)
+        Sprintf(fmt, "%%-%ds  Casts  Adds  Material components    %%s", namelength);
+#else
+        Sprintf(fmt, "    %%-%ds  Casts  Adds  Material components    %%s", namelength);
+#endif
+        Sprintf(buf, fmt, "Name", spacebuf);
     }
     else
     {
