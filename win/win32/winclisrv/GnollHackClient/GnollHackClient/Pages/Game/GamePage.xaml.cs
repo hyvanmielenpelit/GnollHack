@@ -6241,7 +6241,7 @@ namespace GnollHackClient.Pages.Game
                     _lastDrawnMenuItemIdx = -1;
                     foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
                     {
-                        if (mi.Identifier != 0)
+                        if (mi.Identifier != 0 || mi.SpecialMark != '\0')
                             has_identifiers = true;
 
                         if (mi.IsGlyphVisible)
@@ -6347,7 +6347,10 @@ namespace GnollHackClient.Pages.Game
 
                         if (has_identifiers)
                         {
-                            str = mi.FormattedAccelerator;
+                            if(mi.Identifier == 0 && mi.SpecialMark != '\0')
+                                str = mi.FormattedSpecialMark;
+                            else
+                                str = mi.FormattedAccelerator;
                             textPaint.Color = SKColors.Gray;
                             if (!(y + singlelinepadding + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + singlelinepadding + textPaint.FontMetrics.Ascent >= canvasheight))
                                 canvas.DrawText(str, x, y + singlelinepadding, textPaint);

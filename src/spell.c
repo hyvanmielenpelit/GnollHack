@@ -3682,9 +3682,12 @@ boolean addemptyline;
 
     if (!iflags.menu_tab_sep)
     {
-        Sprintf(fmt, "%%-%ds     Level %%-13s Mana Stat Fail Cool Casts", namelength);
-        Sprintf(buf, fmt, "    Name",
-            "Category");
+#if defined(GNH_ANDROID)
+        Sprintf(fmt, "%%-%ds Level %%-13s Mana Stat Fail Cool Casts", namelength);
+#else
+        Sprintf(fmt, "    %%-%ds Level %%-13s Mana Stat Fail Cool Casts", namelength);
+#endif
+        Sprintf(buf, fmt, "Name", "Category");
     }
     else {
         Sprintf(buf, "Name\tLevel\tCategory\tMana\tStat\tFail\tCool\tCasts");

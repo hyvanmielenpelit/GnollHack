@@ -689,10 +689,10 @@ namespace GnollHackClient
         public void ClientCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color)
         {
             ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attributes, text, presel, color, 
-                0, 0, 0, '\0', 0, 0, zeroobj, zeroobjclassdata);
+                0, 0, 0, '\0', '\0', 0, 0, zeroobj, zeroobjclassdata);
         }
         public void ClientCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color, 
-            int maxcount, UInt64 oid, UInt64 mid, char headingaccel, ulong menuflags, byte dataflags, obj otmpdata, objclassdata otypdata)
+            int maxcount, UInt64 oid, UInt64 mid, char headingaccel, char special_mark, ulong menuflags, byte dataflags, obj otmpdata, objclassdata otypdata)
         {
             App.DebugWriteProfilingStopwatchTimeAndStart("AddExtendedMenu");
             lock (_ghWindowsLock)
@@ -706,6 +706,7 @@ namespace GnollHackClient
                     else
                         mi.Accelerator = accel;
                     mi.GroupAccelerator = groupaccel;
+                    mi.SpecialMark = special_mark;
                     mi.Attributes = attributes;
                     mi.Glyph = glyph;
                     if((dataflags & 1) != 0)

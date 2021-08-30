@@ -1915,7 +1915,8 @@ enhance_weapon_skill()
 {
     int pass, i, n, len, longest, to_advance, eventually_advance, maxxed_cnt;
     char buf[BUFSZ], sklnambuf[BUFSZ];
-    const char *prefix;
+    const char* prefix;
+    char special_mark = '\0';
     menu_item *selected;
     anything any;
     winid win;
@@ -2034,11 +2035,14 @@ enhance_weapon_skill()
 
         char headerbuf[BUFSZ] = "";
         any = zeroany;
-        prefix =
+#if defined(GNH_ANDROID)
+        prefix = "";
+#else
+            prefix =
             (to_advance + eventually_advance + maxxed_cnt > 0)
             ? (iflags.menu_tab_sep ? "" : "    ")
             : "";
-
+#endif
         if (speedy /*wizard*/)
         {
             if (!iflags.menu_tab_sep)
@@ -2126,26 +2130,41 @@ enhance_weapon_skill()
                  * The 12 is the longest skill level name.
                  * The "    " is room for a selection letter and dash, "a - ".
                  */
+                special_mark = '\0';
                 if (can_advance(i, speedy))
+                {
 #ifdef ANDROID
                     prefix = "+ ";    /* will be preceded by menu choice */
 #else
                     prefix = ""; /* will be preceded by menu choice */
 #endif
+                }
                 else if (could_advance(i))
-#ifdef ANDROID
+                {
+#if defined (GNH_ANDROID)
+                    prefix = "";
+                    special_mark = '*';
+#elif defined (ANDROID)
                     prefix = "  * ";
 #else
                     prefix = iflags.menu_tab_sep ? "* " : "  * ";
 #endif
+                }
                 else if (peaked_skill(i))
-#ifdef ANDROID
+                {
+#if defined (GNH_ANDROID)
+                    prefix = "";
+                    special_mark = '#';
+#elif defined (ANDROID)
                     prefix = "  # ";
 #else
                     prefix = iflags.menu_tab_sep ? "# " : "  # ";
 #endif
+                }
                 else
-#ifdef ANDROID
+#if defined (GNH_ANDROID)
+                    prefix = "";
+#elif defined (ANDROID)
                     prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? "  " : "";
 #else
                     prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? (iflags.menu_tab_sep ? "" : "    ") : "";
@@ -2349,7 +2368,7 @@ enhance_weapon_skill()
                             sklnambuf, skillslotbuf, skillmaxbuf, bonusbuf, nextbonusbuf);
                 }
                 any.a_int = can_advance(i, speedy) ? i + 1 : 0;
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
+                add_extended_menu(win, NO_GLYPH, &any, menu_special_mark_info(special_mark), 0, 0, ATR_NONE, buf,
                     MENU_UNSELECTED);
             }
         }

@@ -142,6 +142,7 @@ struct extended_menu_info {
     char heading_for_group_accelerator;
     int color;
     int item_subtype; /* Generic subtype if needed */
+    char special_mark;
     unsigned long menu_flags;
 };
 

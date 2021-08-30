@@ -46,10 +46,22 @@ namespace GnollHackClient
         public int MaxCount { get; set; }
         public char Accelerator { get; set; }
         public char GroupAccelerator { get; set; }
+        public char SpecialMark { get; set; }
         public string FormattedAccelerator
         { 
             get
             { string res = Accelerator.ToString(); 
+                if (res == "" || res == "\0")
+                    return "";
+                else
+                    return "   " + res;
+            }
+        }
+        public string FormattedSpecialMark
+        {
+            get
+            {
+                string res = SpecialMark.ToString();
                 if (res == "" || res == "\0")
                     return "";
                 else

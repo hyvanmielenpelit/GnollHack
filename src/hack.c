@@ -3839,6 +3839,17 @@ char groupaccel;
     return info;
 }
 
+struct extended_menu_info
+menu_special_mark_info(special_mark)
+char special_mark;
+{
+    struct extended_menu_info info = { 0 };
+    info.color = CLR_WHITE;
+    info.special_mark = special_mark;
+
+    return info;
+}
+
 const char*
 get_cmap_or_cmap_variation_glyph_explanation(int glyph)
 {
