@@ -3306,12 +3306,12 @@ int *spell_no;
             Strcat(spacebuf, " ");
 
         if (!iflags.menu_tab_sep) {
-            Sprintf(fmt, "%%-%ds#  Description    %%s", namelength + 6);
 #if defined (GNH_ANDROID)
-            Sprintf(buf, fmt, "Name", spacebuf);
+            Sprintf(fmt, "%%-%ds  #  Description    %%s", namelength);
 #else
-            Sprintf(buf, fmt, "    Name", spacebuf);
+            Sprintf(fmt, "    %%-%ds  #  Description    %%s", namelength);
 #endif
+            Sprintf(buf, fmt, "Name", spacebuf);
         }
         else {
             Sprintf(buf, "Name\tH\tDescription");
