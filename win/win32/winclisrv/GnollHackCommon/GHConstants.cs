@@ -959,8 +959,7 @@ namespace GnollHackCommon
         public const int MoreButtonsPerRow = 6;
         public const int MoreButtonsPerColumn = 9;
         public const int NumBanks = 3;
-        public const bool DownloadFromWebInDebugMode = false;
-        public const bool EnforceDemoRestrictionsInDebugMode = false;
+        public const bool DownloadFromWebInDebugMode = true;
         public const string FullVersionProductName = "upgrade_to_full_version";
     }
 

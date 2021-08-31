@@ -79,7 +79,7 @@ namespace GnollHackClient
 
         private bool _firsttime = true;
         private int starttimercount = 0;
-        private void ContentPage_Appearing(object sender, EventArgs e)
+        private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             wizardModeGrid.IsVisible = App.DeveloperMode;
             ResetGrid.IsVisible = App.DeveloperMode;
@@ -91,6 +91,8 @@ namespace GnollHackClient
             {
                 App.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
                 _firsttime = false;
+                if (App.FullVersionMode)
+                    await CheckPurchaseStatus();
                 _banksAcquired = 0;
                 _downloadresult = -1;
                 StartFadeLogoIn();
@@ -116,9 +118,6 @@ namespace GnollHackClient
                             App.GHPath = path;
                             VersionLabel.Text = verid;
                             GnollHackLabel.Text = "GnollHack"; // + verstr;
-
-                            if (App.FullVersionMode)
-                                CheckPurchaseStatus();
 
                             if (VersionTracking.IsFirstLaunchEver)
                             {
@@ -160,6 +159,7 @@ namespace GnollHackClient
                             if (_banksAcquired >= GHConstants.NumBanks || _downloadresult > 0)
                             {
                                 Preferences.Set("ResetBanks", false);
+                                CheckBanks();
                                 App.FmodService.LoadBanks();
                                 float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
                                 generalVolume = Preferences.Get("GeneralVolume", 1.0f);
@@ -231,11 +231,12 @@ namespace GnollHackClient
                 await DownloadProgressBar.ProgressTo((float)percentage / 100, 100, Easing.Linear);
                 Device.BeginInvokeOnMainThread(() =>
                 {
+                    DownloadTitleLabel.Text = "Downloading...";
                     DownloadFileNameLabel.Text = fileDescription;
                     if (totalFileSize <= 0)
                         DownloadBytesLabel.Text = "Calculating file size...";
                     else
-                        DownloadBytesLabel.Text = bytesDownloaded + " / " + totalFileSize + " bytes";
+                        DownloadBytesLabel.Text = string.Format("{0:0.00}", (double)bytesDownloaded / 1000000) + " / " + string.Format("{0:0.00}", totalFileSize / 1000000) + " MB";
                 });
             }
 
@@ -450,6 +451,13 @@ namespace GnollHackClient
         private long? _downloadProgressTotalFileSize = 0;
         private string _downloadProgressFileDescription = "";
         private string _downloadProgressFilePath = "";
+        private string[] banknamelist = { "Master.bank", "Master.strings.bank", "Auxiliary.bank" };
+        private string[] bankresourcelist = { "GnollHackClient.Assets.Master.bank", "GnollHackClient.Assets.Master.strings.bank", "GnollHackClient.Assets.Auxiliary.bank" };
+#if DEBUG
+        private bool[] bankwebdownloadlist = { false, false, GHConstants.DownloadFromWebInDebugMode };
+#else
+        private bool[] bankwebdownloadlist = { false, false, true };
+#endif
 
         private void AcquireBanks()
         {
@@ -472,13 +480,6 @@ namespace GnollHackClient
                 }
             }
 
-            string[] banknamelist = { "Master.bank", "Master.strings.bank", "Auxiliary.bank" };
-            string[] bankresourcelist = { "GnollHackClient.Assets.Master.bank", "GnollHackClient.Assets.Master.strings.bank", "GnollHackClient.Assets.Auxiliary.bank" };
-#if DEBUG
-            bool[] bankwebdownloadlist = { false, false, GHConstants.DownloadFromWebInDebugMode };
-#else
-            bool[] bankwebdownloadlist = { false, false, true };
-#endif
             App.DebugWriteProfilingStopwatchTimeAndStart("Start Acquiring Banks");
             for (int idx = 0; idx < banknamelist.Length; idx++)
             {
@@ -505,6 +506,34 @@ namespace GnollHackClient
             }
         }
 
+        private async void CheckBanks()
+        {
+            string bank_dir = App.FmodService.GetBankDir();
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
+            for (int idx = 0; idx < banknamelist.Length; idx++)
+            {
+                string bank_path = Path.Combine(bank_dir, banknamelist[idx]);
+                if (bankwebdownloadlist[idx])
+                {
+                    int res = await CheckDownloadedFile(assembly, banknamelist[idx], bank_dir);
+                    if(res != 0)
+                    {
+                        bool dodelete = false;
+                        if (res == 4)
+                        {
+                            string target_path = Path.Combine(bank_dir, banknamelist[idx]);
+                            if(File.Exists(target_path))
+                            {
+                                FileInfo file = new FileInfo(target_path);
+                                file.Delete();
+                                dodelete = true;
+                            }
+                        }
+                        await DisplayAlert("Sound Bank Verification Failure", "Sound bank verification failed with error code " + res + "." + (dodelete ? " Deleting the sound bank." : ""), "OK");
+                    }
+                }
+            }
+        }
 
         private void CancelDownloadButton_Clicked(object sender, EventArgs e)
         {
@@ -578,7 +607,7 @@ namespace GnollHackClient
                     }
                     else
                     {
-                        isfileok = VerifyDownloadedFile(target_path, f.sha256);
+                        isfileok = await VerifyDownloadedFile(target_path, f.sha256);
                         if(isfileok)
                             Preferences.Set("VerifyBank_LastWriteTime", file.LastWriteTimeUtc.ToBinary());
                     }
@@ -641,12 +670,109 @@ namespace GnollHackClient
             _downloadresult = 0;
         }
 
-        public bool VerifyDownloadedFile(string target_path, string sha256)
+        public async Task<int> CheckDownloadedFile(Assembly assembly, string filename, string target_directory)
+        {
+            string json = "";
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.secrets.jsons"))
+            {
+                if (stream != null)
+                {
+                    using (StreamReader sr = new StreamReader(stream))
+                    {
+                        json = sr.ReadToEnd();
+                    }
+                }
+                else
+                    return 1;
+            }
+
+            string target_path = Path.Combine(target_directory, filename);
+
+            DownloadableFileList dflist = JsonConvert.DeserializeObject<DownloadableFileList>(json);
+            DownloadableFile f = null;
+            if (dflist != null && dflist.files != null)
+            {
+                foreach (DownloadableFile df in dflist.files)
+                {
+                    if (df.name == filename)
+                    {
+                        f = df;
+                        break;
+                    }
+                }
+            }
+
+            if (f == null)
+                return 2;
+
+            /* Check if ok */
+            if (File.Exists(target_path))
+            {
+                FileInfo file = new FileInfo(target_path);
+                bool isfileok = true;
+                if (file.Length != f.length)
+                    isfileok = false;
+                if (isfileok)
+                {
+                    long moddatelong = Preferences.Get("VerifyBank_LastWriteTime", 0L);
+                    DateTime moddate = DateTime.FromBinary(moddatelong);
+                    if (moddate == file.LastWriteTimeUtc)
+                        return 0;
+                    else
+                    {
+                        isfileok = await VerifyDownloadedFile(target_path, f.sha256);
+                        if (isfileok)
+                            Preferences.Set("VerifyBank_LastWriteTime", file.LastWriteTimeUtc.ToBinary());
+                        else
+                            return 3;
+
+                    }
+                }
+                if (isfileok)
+                    return 0;
+                else
+                    return 4;
+            }
+            else
+                return 5;
+        }
+
+        private object checksumlock = new object();
+        string _checksum;
+        public async Task<bool> VerifyDownloadedFile(string target_path, string sha256)
         {
             App.DebugWriteProfilingStopwatchTimeAndStart("Begin Checksum");
-            string checksum = ChecksumUtil.GetChecksum(HashingAlgoTypes.SHA256, target_path);
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                DownloadTitleLabel.Text = "Verifying...";
+                DownloadFileNameLabel.Text = "Downloaded files";
+                DownloadBytesLabel.Text = "Please wait...";
+                DownloadProgressBar.IsVisible = false;
+                DownloadButtonGrid.IsVisible = false;
+                DownloadGrid.IsVisible = true;
+            });
+            await Task.Run(() => {
+                string checksum = ChecksumUtil.GetChecksum(HashingAlgoTypes.SHA256, target_path);
+                lock (checksumlock)
+                {
+                    _checksum = checksum;
+                };
+            });
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                DownloadGrid.IsVisible = false;
+                DownloadButtonGrid.IsVisible = true;
+                DownloadProgressBar.IsVisible = true;
+            });
+
             App.DebugWriteProfilingStopwatchTimeAndStart("Finish Checksum");
-            return checksum == sha256;
+            string chksum ="";
+            lock (checksumlock)
+            {
+                chksum = _checksum;
+            };
+            return chksum == sha256;
         }
 
         public async Task<bool> MakePurchase(string productId)
