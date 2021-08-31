@@ -296,7 +296,7 @@ namespace GnollHackClient
             await LogoGrid.FadeTo(1, 250);
         }
 
-        private async void CheckPurchaseStatus()
+        private async Task CheckPurchaseStatus()
         {
             int res = await IsUpgradePurchased(GHConstants.FullVersionProductName);
             if(res == 0 && App.FullVersionMode)
@@ -767,15 +767,15 @@ namespace GnollHackClient
             }
         }
 
-        private void BuyNowButton_Clicked(object sender, EventArgs e)
+        private async void BuyNowButton_Clicked(object sender, EventArgs e)
         {
             BuyNowButton.IsEnabled = false;
-            CheckPurchaseStatus();
-            PurchaseUpgrade();
+            await CheckPurchaseStatus();
+            await PurchaseUpgrade();
             BuyNowButton.IsEnabled = true;
         }
 
-        private async void PurchaseUpgrade()
+        private async Task PurchaseUpgrade()
         {
             if (!App.FullVersionMode)
             {
