@@ -550,22 +550,30 @@ namespace GnollHackClient
             {
                 FileInfo file = new FileInfo(target_path);
                 bool isfileok = true;
+                bool isdateok = false;
                 if (file.Length != f.length)
                     isfileok = false;
                 if(isfileok)
                 {
-                    App.DebugWriteProfilingStopwatchTimeAndStart("Begin Checksum");
-                    string checksum = ChecksumUtil.GetChecksum(HashingAlgoTypes.SHA256, target_path);
-                    App.DebugWriteProfilingStopwatchTimeAndStart("Finish Checksum");
-                    if(checksum != f.sha256)
-                        isfileok = false;
+                    long moddatelong = Preferences.Get("VerifyBank_LastWriteTime", 0L);
+                    DateTime moddate = DateTime.FromBinary(moddatelong);
+                    if(moddate == file.LastWriteTimeUtc)
+                    {
+                        isdateok = true;
+                    }
+                    else
+                    {
+                        isfileok = VerifyDownloadedFile(target_path, f.sha256);
+                        if(isfileok)
+                            Preferences.Set("VerifyBank_LastWriteTime", file.LastWriteTimeUtc.ToBinary());
+                    }
                 }
                 if (isfileok)
                 {
                     /* Ok, no need to download */
                     _banksAcquired++;
                     _downloadresult = 0;
-                    App.DebugWriteProfilingStopwatchTimeAndStart("Checksum ok, exiting");
+                    App.DebugWriteProfilingStopwatchTimeAndStart(isdateok ? "Length and date ok, exiting" : "Length and checksum ok, exiting");
                     return;
                 }
                 else
@@ -618,6 +626,13 @@ namespace GnollHackClient
             _downloadresult = 0;
         }
 
+        public bool VerifyDownloadedFile(string target_path, string sha256)
+        {
+            App.DebugWriteProfilingStopwatchTimeAndStart("Begin Checksum");
+            string checksum = ChecksumUtil.GetChecksum(HashingAlgoTypes.SHA256, target_path);
+            App.DebugWriteProfilingStopwatchTimeAndStart("Finish Checksum");
+            return checksum == sha256;
+        }
 
         public async Task<bool> MakePurchase(string productId)
         {
