@@ -37,6 +37,7 @@ namespace GnollHackClient
             MainPage = navPage;
             App.HideAndroidNavigatioBar = Preferences.Get("HideAndroidNavigationBar", false);
             App.DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
+            App.FullVersionMode = Preferences.Get("FullVersion", false);
         }
 
         protected override void OnStart()
@@ -90,6 +91,7 @@ namespace GnollHackClient
 
         public static bool IsModernAndroid { get; set; }
         public static bool DeveloperMode { get; set; }
+        public static bool FullVersionMode { get; set; }
 
         public static string GHVersionId { get; set; }
         public static string GHVersionString { get; set; }

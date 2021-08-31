@@ -58,22 +58,21 @@
 
         <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="60, 35, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <ff:CachedImage Grid.Row="0" x:Name="MainLogoImage" HeightRequest="100" WidthRequest="100" Aspect="AspectFill"
-               HorizontalOptions="Center" VerticalOptions="End"
-               />
-            <Label Grid.Row="1" x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
+            <StackLayout>
+                <ff:CachedImage Grid.Row="0" x:Name="MainLogoImage" HeightRequest="100" WidthRequest="100" Aspect="AspectFill"
+                   HorizontalOptions="Center" VerticalOptions="End"/>
+                <Label x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
                    TextColor="White" 
                    FontFamily="ARChristy" FontSize="27" />
-            <Label Grid.Row="2" x:Name="AndroidLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"  
+                <Label x:Name="AndroidLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"  
                    Text="Android Version" TextColor="White"
                    FontFamily="ARChristy" FontSize="18" />
+                <Grid x:Name="BuyNowGrid"  WidthRequest="120">
+                    <ff:CachedImage x:Name="BuyNowImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" WidthRequest="120" HeightRequest="50"/>
+                    <Button Text="Buy Now" x:Name="BuyNowButton" Clicked="BuyNowButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
+                </Grid>
+            </StackLayout>
         </Grid>
-
 
         <Label x:Name="VersionLabel" TextColor="White" FontSize="6" FontFamily="Lato" AbsoluteLayout.LayoutBounds="0.99, 0.99, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional" />
         <Label x:Name="ErrorLabel" TextColor="Red" FontSize="Small" FontFamily="Lato" AbsoluteLayout.LayoutBounds="10, 10, AutoSize, AutoSize" />

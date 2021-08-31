@@ -31,6 +31,8 @@ struct flag {
     boolean dark_room; /* show shadows in lit rooms */
     boolean debug;     /* in debugging mode */
 #define wizard flags.debug
+    boolean demo_version;  /* in demo version mode */
+#define In_Demo flags.demo_version
     boolean end_own; /* list all own scores */
     boolean exchange_prompt; /* automatic prompt for exchanging armors */
     boolean explore; /* in exploration mode */

@@ -503,7 +503,7 @@ namespace GnollHackClient.Droid
             return RunGnollHack(
                 _gnollhackfilesdir,
                 "",
-                (ulong)(clientGame.WizardMode ? RunGnollHackFlags.WizardMode : 0),
+                (ulong)(clientGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) | (ulong)(App.FullVersionMode ? RunGnollHackFlags.FullVersion : 0),
                 0,
                 0,
                 clientGame.ClientCallback_InitWindows,

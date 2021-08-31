@@ -85,6 +85,7 @@ namespace GnollHackClient
             ResetGrid.IsVisible = App.DeveloperMode;
             if (!App.DeveloperMode)
                 wizardModeSwitch.IsToggled = false;
+            UpdateBuyNow();
 
             if (_firsttime)
             {
@@ -115,6 +116,9 @@ namespace GnollHackClient
                             App.GHPath = path;
                             VersionLabel.Text = verid;
                             GnollHackLabel.Text = "GnollHack"; // + verstr;
+
+                            if (App.FullVersionMode)
+                                CheckPurchaseStatus();
 
                             if (VersionTracking.IsFirstLaunchEver)
                             {
@@ -292,6 +296,23 @@ namespace GnollHackClient
             await LogoGrid.FadeTo(1, 250);
         }
 
+        private async void CheckPurchaseStatus()
+        {
+            int res = await IsUpgradePurchased(GHConstants.FullVersionProductName);
+            if(res == 0 && App.FullVersionMode)
+            {
+                App.FullVersionMode = false;
+                Preferences.Set("FullVersion", false);
+            }
+            else if (res == 1 && !App.FullVersionMode)
+            {
+                App.FullVersionMode = true;
+                Preferences.Set("FullVersion", true);
+            }
+            UpdateBuyNow();
+        }
+
+
         private void ExitAppButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
@@ -303,17 +324,11 @@ namespace GnollHackClient
 
         private async void ClearFilesButton_Clicked(object sender, EventArgs e)
         {
+            UpperButtonGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
-            bool answer = await DisplayAlert("Reset GnollHack?", "Are you sure to reset GnollHack?", "Yes", "No");
-            if (answer)
-            {
-                App.GnollHackService.ClearFiles();
-                Preferences.Clear();
-                Preferences.Set("ResetBanks", true);
-                App.GnollHackService.InitializeGnollHack();
-                ClearFilesButton.Text = "Done";
-                ClearFilesButton.TextColor = Color.Red;
-            }
+            var resetPage = new ResetPage();
+            await App.Current.MainPage.Navigation.PushModalAsync(resetPage);
+
         }
 
         private async void SettingsButton_Clicked(object sender, EventArgs e)
@@ -637,14 +652,20 @@ namespace GnollHackClient
         public async Task<bool> MakePurchase(string productId)
         {
             if (!CrossInAppBilling.IsSupported)
+            {
+                await DisplayAlert("Purchasing Not Supported", "Purchasing an upgrade is not supported on your platform.", "OK");
                 return false;
+            }
 
             var billing = CrossInAppBilling.Current;
             try
             {
                 var connected = await billing.ConnectAsync();
                 if (!connected)
+                {
+                    await DisplayAlert("Connection Failed", "There was an error in connecting to the store.", "OK");
                     return false;
+                }
 
                 //check purchases
                 var purchase = await billing.PurchaseAsync(productId, ItemType.InAppPurchase);
@@ -653,6 +674,8 @@ namespace GnollHackClient
                 if (purchase == null)
                 {
                     //did not purchase
+                    await DisplayAlert("Purchase Failed", "Your purchase failed.", "OK");
+                    return false;
                 }
                 else if (purchase.State == PurchaseState.Purchased)
                 {
@@ -662,23 +685,122 @@ namespace GnollHackClient
                         // Must call AcknowledgePurchaseAsync else the purchase will be refunded
                         await billing.AcknowledgePurchaseAsync(purchase.PurchaseToken);
                     }
+                    return true;
+                }
+                else
+                {
+                    await DisplayAlert("Upgrade Not Purchased", "The upgrade was not purchased.", "OK");
+                    return false;
                 }
             }
             catch (InAppBillingPurchaseException purchaseEx)
             {
                 //Billing Exception handle this based on the type
                 Debug.WriteLine("Error: " + purchaseEx);
+                await DisplayAlert("Error in Purchasing Upgrade", "There was an error purchasing the full version upgrade.", "OK");
+                return false;
             }
             catch (Exception ex)
             {
                 //Something else has gone wrong, log it
                 Debug.WriteLine("Issue connecting: " + ex);
+                await DisplayAlert("Error", "There was a general error in the transaction.", "OK");
+                return false;
             }
             finally
             {
                 await billing.DisconnectAsync();
             }
-            return true;
+        }
+
+
+        public async Task<int> IsUpgradePurchased(string productId)
+        {
+            var billing = CrossInAppBilling.Current;
+            try
+            {
+                var connected = await billing.ConnectAsync();
+
+                if (!connected)
+                {
+                    //Couldn't connect
+                    return -1;
+                }
+
+                //check purchases
+                var purchases = await billing.GetPurchasesAsync(ItemType.InAppPurchase);
+
+                //check for null just in case
+                if (purchases?.Any(p => p.ProductId == productId) ?? false)
+                {
+                    foreach(InAppBillingPurchase purchase in purchases)
+                    {
+                        if(purchase.ProductId == productId)
+                        {
+                            if (purchase.State == PurchaseState.Purchased)
+                                return 1;
+                        }
+                    }
+                    //No purchased purchases left
+                    return 0;
+                }
+                else
+                {
+                    //no purchases found
+                    return 0;
+                }
+            }
+            catch (InAppBillingPurchaseException purchaseEx)
+            {
+                //Billing Exception handle this based on the type
+                Debug.WriteLine("Error: " + purchaseEx);
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                //Something has gone wrong
+                return -1;
+            }
+            finally
+            {
+                await billing.DisconnectAsync();
+            }
+        }
+
+        private void BuyNowButton_Clicked(object sender, EventArgs e)
+        {
+            BuyNowButton.IsEnabled = false;
+            CheckPurchaseStatus();
+            PurchaseUpgrade();
+            BuyNowButton.IsEnabled = true;
+        }
+
+        private async void PurchaseUpgrade()
+        {
+            if (!App.FullVersionMode)
+            {
+                bool result = await MakePurchase(GHConstants.FullVersionProductName);
+                if (result)
+                {
+                    Preferences.Set("FullVersion", true);
+                    App.FullVersionMode = true;
+                    UpdateBuyNow();
+                }
+            }
+        }
+
+        private void UpdateBuyNow()
+        {
+            if(App.FullVersionMode)
+            {
+                AndroidLabel.Text = "Full Version";
+                BuyNowGrid.IsVisible = false;
+            }
+            else
+            {
+                AndroidLabel.Text = "Demo Version";
+                BuyNowGrid.IsVisible = true;
+            }
         }
     }
 }

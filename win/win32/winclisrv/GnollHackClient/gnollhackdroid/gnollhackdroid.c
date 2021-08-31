@@ -421,6 +421,11 @@ int RunGnollHack(
         strcpy(plname, "wizard");
     }
 
+    if (!(runflags & GHRUNFLAGS_FULL_VERSION))
+    {
+        In_Demo = TRUE;
+    }
+
     /* Set callback function pointers here */
     lib_callbacks.callback_init_nhwindows = callback_init_nhwindows;
     lib_callbacks.callback_player_selection = callback_player_selection;

@@ -108,7 +108,8 @@ namespace GnollHackCommon
     {
         None =          0x00000000,
         SetWinCaps =    0x00000001,
-        WizardMode =    0x00000002
+        WizardMode =    0x00000002,
+        FullVersion =   0x00000004
     }
 
     [Flags]
@@ -959,6 +960,8 @@ namespace GnollHackCommon
         public const int MoreButtonsPerColumn = 9;
         public const int NumBanks = 3;
         public const bool DownloadFromWebInDebugMode = false;
+        public const bool EnforceDemoRestrictionsInDebugMode = false;
+        public const string FullVersionProductName = "upgrade_to_full_version";
     }
 
 
