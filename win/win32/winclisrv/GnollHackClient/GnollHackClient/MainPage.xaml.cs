@@ -516,11 +516,11 @@ namespace GnollHackClient
                 string bank_path = Path.Combine(bank_dir, banknamelist[idx]);
                 if (bankwebdownloadlist[idx])
                 {
-                    int res = await CheckDownloadedFile(assembly, banknamelist[idx], bank_dir);
-                    if(res != 0)
+                    downloaded_file_check_results res = await CheckDownloadedFile(assembly, banknamelist[idx], bank_dir);
+                    if(res != downloaded_file_check_results.OK)
                     {
                         bool dodelete = false;
-                        if (res == 4)
+                        if (res == downloaded_file_check_results.VerificationFailed)
                         {
                             string target_path = Path.Combine(bank_dir, banknamelist[idx]);
                             if(File.Exists(target_path))
@@ -530,7 +530,7 @@ namespace GnollHackClient
                                 dodelete = true;
                             }
                         }
-                        await DisplayAlert("Sound Bank Verification Failure", "Sound bank verification failed with error code " + res + "." + (dodelete ? " Deleting the sound bank." : ""), "OK");
+                        await DisplayAlert("Sound Bank Verification Failure", "Sound bank verification failed with error code " + (int)res + "." + (dodelete ? " Deleting the sound bank." : ""), "OK");
                     }
                 }
             }
@@ -591,11 +591,18 @@ namespace GnollHackClient
             }
 
             /* Check if ok */
-            if(File.Exists(target_path))
+            bool correctversion = true;
+            string bankversion = Preferences.Get("VerifyBank_Version", "");
+            if (bankversion != "" && bankversion != f.version)
+                correctversion = false;
+
+            if (File.Exists(target_path))
             {
                 FileInfo file = new FileInfo(target_path);
                 bool isfileok = true;
                 bool isdateok = false;
+                if(!correctversion)
+                    isfileok = false;
                 if (file.Length != f.length)
                     isfileok = false;
                 if(isfileok)
@@ -628,7 +635,8 @@ namespace GnollHackClient
                 }
             }
 
-            /* Download */
+            /* Set version to be downloaded, and download */
+            Preferences.Set("VerifyBank_Version", f.version);
             Device.BeginInvokeOnMainThread(() =>
             {
                 DownloadGrid.IsVisible = true;
@@ -671,7 +679,8 @@ namespace GnollHackClient
             _downloadresult = 0;
         }
 
-        public async Task<int> CheckDownloadedFile(Assembly assembly, string filename, string target_directory)
+
+        public async Task<downloaded_file_check_results> CheckDownloadedFile(Assembly assembly, string filename, string target_directory)
         {
             string json = "";
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.secrets.jsons"))
@@ -684,7 +693,7 @@ namespace GnollHackClient
                     }
                 }
                 else
-                    return 1;
+                    return downloaded_file_check_results.NoSecretsFile;
             }
 
             string target_path = Path.Combine(target_directory, filename);
@@ -704,7 +713,7 @@ namespace GnollHackClient
             }
 
             if (f == null)
-                return 2;
+                return downloaded_file_check_results.FileNotInSecretsList;
 
             /* Check if ok */
             if (File.Exists(target_path))
@@ -717,25 +726,22 @@ namespace GnollHackClient
                 {
                     long moddatelong = Preferences.Get("VerifyBank_LastWriteTime", 0L);
                     DateTime moddate = DateTime.FromBinary(moddatelong);
-                    if (moddate == file.LastWriteTimeUtc)
-                        return 0;
-                    else
+                    if (moddate != file.LastWriteTimeUtc)
                     {
                         isfileok = await VerifyDownloadedFile(target_path, f.sha256);
                         if (isfileok)
                             Preferences.Set("VerifyBank_LastWriteTime", file.LastWriteTimeUtc.ToBinary());
-                        else
-                            return 3;
 
                     }
                 }
+
                 if (isfileok)
-                    return 0;
+                    return downloaded_file_check_results.OK;
                 else
-                    return 4;
+                    return downloaded_file_check_results.VerificationFailed;
             }
             else
-                return 5;
+                return downloaded_file_check_results.FileDoesNotExist;
         }
 
         private object checksumlock = new object();

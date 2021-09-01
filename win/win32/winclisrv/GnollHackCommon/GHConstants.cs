@@ -893,6 +893,15 @@ namespace GnollHackCommon
         MAX_SPECIAL_VIEW_TYPES
     }
 
+    public enum downloaded_file_check_results
+    {
+        OK = 0,
+        NoSecretsFile,
+        FileNotInSecretsList,
+        VerificationFailed,
+        FileDoesNotExist,
+    }
+
     public class GHConstants
     {
         public const int InputBufferLength = 32;
