@@ -84,6 +84,7 @@ namespace GnollHackClient
         {
             wizardModeGrid.IsVisible = App.DeveloperMode;
             ResetGrid.IsVisible = App.DeveloperMode;
+            OptionsGrid.IsVisible = App.DeveloperMode;
             if (!App.DeveloperMode)
                 wizardModeSwitch.IsToggled = false;
             UpdateBuyNow();
@@ -93,7 +94,7 @@ namespace GnollHackClient
                 App.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
                 _firsttime = false;
                 if (App.FullVersionMode)
-                    await CheckPurchaseStatus();
+                    await CheckPurchaseStatus(true);
                 _banksAcquired = 0;
                 _downloadresult = -1;
                 StartFadeLogoIn();
@@ -298,10 +299,22 @@ namespace GnollHackClient
             await LogoGrid.FadeTo(1, 250);
         }
 
-        private async Task CheckPurchaseStatus()
+        private async Task CheckPurchaseStatus(bool atappstart)
         {
             int res = await IsUpgradePurchased(GHConstants.FullVersionProductName);
-            if(res == 0 && App.FullVersionMode)
+            if(res >= 0)
+            {
+                if (Preferences.ContainsKey("CheckPurchase_FirstConnectFail"))
+                {
+                    Preferences.Remove("CheckPurchase_FirstConnectFail");
+                }
+                if (Preferences.ContainsKey("CheckPurchase_ConnectFail_GameStartCount"))
+                {
+                    Preferences.Remove("CheckPurchase_ConnectFail_GameStartCount");
+                }
+            }
+
+            if (res == 0 && App.FullVersionMode)
             {
                 App.FullVersionMode = false;
                 Preferences.Set("FullVersion", false);
@@ -310,6 +323,33 @@ namespace GnollHackClient
             {
                 App.FullVersionMode = true;
                 Preferences.Set("FullVersion", true);
+            }
+            else if(res == -1 && App.FullVersionMode && atappstart)
+            {
+                if (!Preferences.ContainsKey("CheckPurchase_FirstConnectFail"))
+                    Preferences.Set("CheckPurchase_FirstConnectFail", DateTime.Now);
+
+                DateTime firstfaildate = Preferences.Get("CheckPurchase_FirstConnectFail", DateTime.MinValue);
+                TimeSpan ts = DateTime.Now - firstfaildate;
+                double ddays = ts.TotalDays;
+
+                int game_start_count = Preferences.Get("CheckPurchase_ConnectFail_GameStartCount", 0);
+                game_start_count++;
+                Preferences.Set("CheckPurchase_ConnectFail_GameStartCount", game_start_count);
+
+                if (ddays > 30 || game_start_count > 30)
+                {
+                    App.FullVersionMode = false;
+                    await DisplayAlert("Verification Connection Failure",
+                        "GnollHack has been unable to verify the full version purchase for more than " + (ddays > 30 ? "30 days" : "30 app starts") + ". Only demo version features are accessible until verification is successful. Please check your internet connection.", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Verification Connection Failure", 
+                        "GnollHack is unable to connect to verify your full version. Your are able to use the full version still for "
+                        + (ddays < 29 ? string.Format("{0:0}", ddays) : string.Format("{0:0.0}", ddays))
+                        + " days" + (game_start_count < 29 ? " up to " + (30 - game_start_count) + " times." : game_start_count == 29 ? " one more time." : ". This is the last time you can use the full version."), "OK");
+                }
             }
             UpdateBuyNow();
         }
@@ -903,7 +943,7 @@ namespace GnollHackClient
         private async void BuyNowButton_Clicked(object sender, EventArgs e)
         {
             BuyNowButton.IsEnabled = false;
-            await CheckPurchaseStatus();
+            await CheckPurchaseStatus(false);
             await PurchaseUpgrade();
             BuyNowButton.IsEnabled = true;
         }
