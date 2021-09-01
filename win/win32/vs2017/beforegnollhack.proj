@@ -3,11 +3,11 @@
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
   <Target Name="Build"
-    Inputs="$(BankDesktopDir)Master.bank;$(BankDesktopDir)Master.strings.bank"
-    Outputs="$(WinWin32Dir)Master.bank;$(WinWin32Dir)Master.strings.bank">
-    <Copy SourceFiles="$(BankDesktopDir)Master.bank;$(BankDesktopDir)Master.strings.bank" DestinationFolder="$(WinWin32Dir)"/>
+    Inputs="$(BankDesktopDir)Master.bank;$(BankDesktopDir)Master.strings.bank;$(BankDesktopDir)Auxiliary.bank"
+    Outputs="$(WinWin32Dir)Master.bank;$(WinWin32Dir)Master.strings.bank;$(WinWin32Dir)Auxiliary.bank">
+    <Copy SourceFiles="$(BankDesktopDir)Master.bank;$(BankDesktopDir)Master.strings.bank;$(BankDesktopDir)Auxiliary.bank" DestinationFolder="$(WinWin32Dir)"/>
   </Target>
   <Target Name="Clean">
-    <Delete Files="$(WinWin32Dir)Master.bank;$(WinWin32Dir)Master.strings.bank"/>
+    <Delete Files="$(WinWin32Dir)Master.bank;$(WinWin32Dir)Master.strings.bank;$(WinWin32Dir)Auxiliary.bank"/>
   </Target>
 </Project>
