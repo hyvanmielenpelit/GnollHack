@@ -885,6 +885,13 @@ namespace GnollHackCommon
         YN_STYLE_MONSTER_QUESTION,
     }
 
+    public enum special_view_types
+    {
+        SPECIAL_VIEW_NONE = 0,
+        SPECIAL_VIEW_CHAT_MESSAGE,
+        SPECIAL_VIEW_PURCHASE_INFO,
+        MAX_SPECIAL_VIEW_TYPES
+    }
 
     public class GHConstants
     {

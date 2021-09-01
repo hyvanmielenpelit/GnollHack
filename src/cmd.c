@@ -218,6 +218,7 @@ STATIC_DCL char *NDECL(parse);
 STATIC_DCL void FDECL(show_direction_keys, (winid, CHAR_P, BOOLEAN_P));
 STATIC_DCL boolean FDECL(help_dir, (CHAR_P, int, const char *));
 STATIC_DCL void FDECL(add_command_menu_items, (winid, int));
+STATIC_DCL void NDECL(check_demo_version);
 
 
 static const char *readchar_queue = "";
@@ -6522,6 +6523,7 @@ register char *cmd;
     create_context_menu();
     update_here_window();
     //reset_all_monster_origin_coordinates();
+    check_demo_version();
 
     iflags.menu_requested = FALSE;
 #ifdef SAFERHANGUP
@@ -6806,6 +6808,34 @@ register char *cmd;
     context.move = FALSE;
     multi = 0;
     return;
+}
+
+STATIC_OVL void
+check_demo_version()
+{
+    if (In_Demo)
+    {
+        if (u.uz.dnum != mines_dnum && depth(&u.uz) > DEMO_VERSION_MAX_LEVEL_DEPTH)
+        {
+            /* Inform about purchasing a full version and then save */
+            struct special_view_info info = { 0 };
+            info.viewtype = SPECIAL_VIEW_PURCHASE_INFO;
+            info.text = "You have exceeded the maximum playable levels in the demo version. Please purchase the full version to continue playing.";
+            open_special_view(info);
+            if (In_Demo)
+            {
+                if (dosave0()) {
+                    u.uhp = -1; /* universal game's over indicator */
+                    /* make sure they see the Saving message */
+                    display_nhwindow(WIN_MESSAGE, TRUE);
+                    exit_nhwindows("Be seeing you...");
+                    nh_terminate(EXIT_SUCCESS);
+                }
+                else
+                    (void)doredraw();
+            }
+        }
+    }
 }
 
 /* convert an x,y pair into a direction code */

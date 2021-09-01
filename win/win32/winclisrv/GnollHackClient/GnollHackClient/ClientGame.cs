@@ -1242,6 +1242,25 @@ namespace GnollHackClient
             return 0;
         }
 
+        public void ClientCallback_OpenSpecialView(int viewtype, string text)
+        {
+            switch(viewtype)
+            {
+                case (int)special_view_types.SPECIAL_VIEW_CHAT_MESSAGE:
+                    break;
+                case (int)special_view_types.SPECIAL_VIEW_PURCHASE_INFO:
+                    ConcurrentQueue<GHRequest> queue;
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowPurchasePage, text));
+                    }
+                    int res = ClientCallback_nhgetch();
+
+                    break;
+                default:
+                    break;
+            }
+        }
 
 
         /* Dummies */

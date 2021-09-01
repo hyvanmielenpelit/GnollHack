@@ -92,7 +92,7 @@ namespace GnollHackClient.Droid
             BooleanVoidCallback callback_can_suspend_yes,
             VoidVoidCallback callback_stretch_window,
             VoidUlongCallback callback_set_animation_timer_interval,
-            VoidIntCallback callback_open_special_view,
+            OpenSpecialViewCallback callback_open_special_view,
             StopAllSoundsCallback callback_stop_all_sounds,
             PlayImmediateSoundCallback callback_play_immediate_ghsound,
             BooleanIntDoubleCallback callback_play_ghsound_occupation_ambient,
@@ -203,6 +203,8 @@ namespace GnollHackClient.Droid
             out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, ref int autodraw_ptr);
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern void LibSwitchDemoVersion(int state);
 
         private void LoadNativeLibrary(string libName)
         {
@@ -497,13 +499,19 @@ namespace GnollHackClient.Droid
             string ret = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(resptr);
             return ret;
         }
+        public void SwitchDemoVersion(bool active)
+        {
+            LibSwitchDemoVersion(active ? 1 : 0);
+        }
 
         public int StartGnollHack(ClientGame clientGame)
         {
+            ulong runflags = (ulong)(clientGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
+                (ulong)(App.FullVersionMode ? RunGnollHackFlags.FullVersion : 0);
             return RunGnollHack(
                 _gnollhackfilesdir,
                 "",
-                (ulong)(clientGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) | (ulong)(App.FullVersionMode ? RunGnollHackFlags.FullVersion : 0),
+                runflags,
                 0,
                 0,
                 clientGame.ClientCallback_InitWindows,
@@ -568,7 +576,7 @@ namespace GnollHackClient.Droid
                 clientGame.ClientCallback_BooleanVoidDummy,
                 clientGame.ClientCallback_VoidVoidDummy,
                 clientGame.ClientCallback_VoidUlongDummy,
-                clientGame.ClientCallback_VoidIntDummy,
+                clientGame.ClientCallback_OpenSpecialView,
                 clientGame.ClientCallback_StopAllSounds,
                 clientGame.ClientCallback_PlayImmediateSound,
                 clientGame.ClientCallback_BooleanIntDoubleDummy,

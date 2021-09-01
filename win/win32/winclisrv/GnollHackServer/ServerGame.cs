@@ -81,7 +81,7 @@ namespace GnollHackServer
             BooleanVoidCallback callback_can_suspend_yes,
             VoidVoidCallback callback_stretch_window,
             VoidUlongCallback callback_set_animation_timer_interval,
-            VoidIntCallback callback_open_special_view,
+            OpenSpecialViewCallback callback_open_special_view,
             StopAllSoundsCallback callback_stop_all_sounds,
             PlayImmediateSoundCallback callback_play_immediate_ghsound,
             BooleanIntDoubleCallback callback_play_ghsound_occupation_ambient,
@@ -236,7 +236,7 @@ namespace GnollHackServer
                 GameCallback_BooleanVoidDummy,
                 GameCallback_VoidVoidDummy,
                 GameCallback_VoidUlongDummy,
-                GameCallback_VoidIntDummy,
+                GameCallback_OpenSpecialView,
                 GameCallback_StopAllSounds,
                 GameCallback_PlayImmediateSound,
                 GameCallback_BooleanIntDoubleDummy,
@@ -405,6 +405,13 @@ namespace GnollHackServer
         {
             return 0;
         }
+
+        protected void GameCallback_OpenSpecialView(int viewtype, string text)
+        {
+
+        }
+
+
 
         protected void GameCallback_VoidVoidDummy()
         {

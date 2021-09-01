@@ -291,6 +291,12 @@ int LibZapGlyphToCornerGlyph(int adjglyph, unsigned long adjflags, int source_di
     return zap_glyph_to_corner_glyph(adjglyph, adjflags, source_dir);
 }
 
+void
+LibSwitchDemoVersion(int state)
+{
+    In_Demo = (state != 0);
+}
+
 
 int GnollHackStart(cmdlineargs)
 char* cmdlineargs;

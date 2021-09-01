@@ -31,8 +31,6 @@ struct flag {
     boolean dark_room; /* show shadows in lit rooms */
     boolean debug;     /* in debugging mode */
 #define wizard flags.debug
-    boolean demo_version;  /* in demo version mode */
-#define In_Demo flags.demo_version
     boolean end_own; /* list all own scores */
     boolean exchange_prompt; /* automatic prompt for exchanging armors */
     boolean explore; /* in exploration mode */
@@ -428,6 +426,11 @@ struct instance_flags {
     boolean cmdassist;       /* provide detailed assistance for some comnds */
     boolean time_botl;       /* context.botl for 'time' (moves) only */
     boolean wizweight;       /* display weight of everything in wizard mode */
+
+    /* Is the system in demo version */
+    boolean demo_version;  /* in demo version mode */
+    #define In_Demo iflags.demo_version
+
     /*
      * Window capability support.
      */

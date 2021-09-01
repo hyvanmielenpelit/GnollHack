@@ -826,6 +826,9 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.ShowOutRipPage:
                                 ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
                                 break;
+                            case GHRequestType.ShowPurchasePage:
+                                ShowPurchasePage(req.RequestString);
+                                break;
                             case GHRequestType.CreateWindowView:
                                 CreateWindowView(req.RequestInt);
                                 break;
@@ -1375,6 +1378,11 @@ namespace GnollHackClient.Pages.Game
         {
             var outRipPage = new OutRipPage(this, ghwindow, outripinfo);
             await App.Current.MainPage.Navigation.PushModalAsync(outRipPage);
+        }
+        private async void ShowPurchasePage(string text)
+        {
+            await DisplayAlert("Demo Level Limit Exceeded", text, "Save and Exit");
+            GenericButton_Clicked(null, null, 27);
         }
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)

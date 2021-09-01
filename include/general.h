@@ -389,15 +389,14 @@ enum special_view_types
 {
     SPECIAL_VIEW_NONE = 0,
     SPECIAL_VIEW_CHAT_MESSAGE,
-    SPECIAL_VIEW_FADE_SCREEN_OUT,
-    SPECIAL_VIEW_FADE_SCREEN_IN,
+    SPECIAL_VIEW_PURCHASE_INFO,
     MAX_SPECIAL_VIEW_TYPES
 };
 
 
 struct special_view_info {
     enum special_view_types viewtype;
-    char text[256];
+    const char* text;
 };
 
 /* Fountain types */
@@ -575,6 +574,9 @@ enum main_menu_command {
 
 /* Turn on score on botl everywhere */
 #define SCORE_ON_BOTL
+
+/* Demo version */
+#define DEMO_VERSION_MAX_LEVEL_DEPTH 10
 
 /* Basic tile information */
 #define NUM_TILES_PER_SHEET 16224
