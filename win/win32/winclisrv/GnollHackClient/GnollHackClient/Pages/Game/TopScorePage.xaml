@@ -39,25 +39,28 @@
                     </CollectionView.Header>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <StackLayout Orientation="Horizontal" Spacing="0" Padding="0" Margin="0" >
-                                <Label WidthRequest="35" Text="{Binding Rank}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                <Grid WidthRequest="165" Padding="0" RowSpacing="0" ColumnSpacing="0" Margin="0" VerticalOptions="FillAndExpand">
-                                    <Label WidthRequest="165" Text="{Binding Name}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                </Grid>
-                                <Label WidthRequest="80" Text="{Binding Score}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                <Label WidthRequest="50" Text="{Binding Role}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                <Label WidthRequest="50" Text="{Binding Race}" IsVisible="{Binding IsRaceVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                <Label WidthRequest="60" Text="{Binding Gender}" IsVisible="{Binding IsGenderVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                <Label WidthRequest="50" Text="{Binding Alignment}" IsVisible="{Binding IsAlignmentVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                <Label WidthRequest="50" Text="{Binding HP}" IsVisible="{Binding IsHPVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                <Label WidthRequest="50" Text="{Binding HPMax}" IsVisible="{Binding IsHPMaxVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                <Label WidthRequest="75" Text="{Binding Turns}" IsVisible="{Binding IsTurnsVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                <Label WidthRequest="85" Text="{Binding BirthDate}" IsVisible="{Binding IsBirthDateVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                <Label WidthRequest="25" Text="{Binding DifficultyString}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                <Grid WidthRequest="220" IsVisible="{Binding IsOutcomeVisible}" VerticalOptions="FillAndExpand" Padding="0" RowSpacing="0" ColumnSpacing="0" Margin="0" >
-                                    <Label Text="{Binding Outcome}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
-                                </Grid>
-                            </StackLayout>
+                            <Grid Padding="0" Margin="0" >
+                                <StackLayout Orientation="Horizontal" Spacing="0" Padding="0" Margin="0" >
+                                    <Label WidthRequest="35" Text="{Binding Rank}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    <Grid WidthRequest="165" Padding="0" RowSpacing="0" ColumnSpacing="0" Margin="0" VerticalOptions="FillAndExpand">
+                                        <Label WidthRequest="165" Text="{Binding Name}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    </Grid>
+                                    <Label WidthRequest="80" Text="{Binding Score}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    <Label WidthRequest="50" Text="{Binding Role}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    <Label WidthRequest="50" Text="{Binding Race}" IsVisible="{Binding IsRaceVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    <Label WidthRequest="60" Text="{Binding Gender}" IsVisible="{Binding IsGenderVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    <Label WidthRequest="50" Text="{Binding Alignment}" IsVisible="{Binding IsAlignmentVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    <Label WidthRequest="50" Text="{Binding HP}" IsVisible="{Binding IsHPVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    <Label WidthRequest="50" Text="{Binding HPMax}" IsVisible="{Binding IsHPMaxVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    <Label WidthRequest="75" Text="{Binding Turns}" IsVisible="{Binding IsTurnsVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    <Label WidthRequest="85" Text="{Binding BirthDate}" IsVisible="{Binding IsBirthDateVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    <Label WidthRequest="25" Text="{Binding DifficultyString}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    <Grid WidthRequest="220" IsVisible="{Binding IsOutcomeVisible}" VerticalOptions="FillAndExpand" Padding="0" RowSpacing="0" ColumnSpacing="0" Margin="0" >
+                                        <Label Text="{Binding Outcome}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                    </Grid>
+                                </StackLayout>
+                                <Button Text = " " IsEnabled="{Binding IsDumplogButtonEnabled}" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" Clicked="Button_Clicked" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
+                            </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>

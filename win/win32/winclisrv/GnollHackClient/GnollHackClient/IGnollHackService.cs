@@ -38,7 +38,7 @@ namespace GnollHackClient
 
         string GetVersionString();
         string GetVersionId();
-
+        string DumplogDateString(long startdate);
         void SwitchDemoVersion(bool active);
 
         int StartGnollHack(ClientGame clientGame);

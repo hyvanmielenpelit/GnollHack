@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Text;
 
 namespace GnollHackClient
@@ -22,6 +23,10 @@ namespace GnollHackClient
         public int dnum { get; set; }
         public int dlevel { get; set; }
         public int Difficulty { get; set; }
+        public int UID { get; set; }
+        public long StartTime { get; set; }
+        public long EndTime { get; set; }
+
         public string DifficultyString
         {
             get
@@ -84,6 +89,7 @@ namespace GnollHackClient
                 return;
 
             int parseint = 0;
+            long parselong = 0;
             if (elements[0] == "name")
             {
                 Name = elements[1];
@@ -151,6 +157,39 @@ namespace GnollHackClient
             {
                 if (int.TryParse(elements[1], out parseint))
                     BirthDate = parseint;
+            }
+            else if (elements[0] == "uid")
+            {
+                if (int.TryParse(elements[1], out parseint))
+                    UID = parseint;
+            }
+            else if (elements[0] == "starttime")
+            {
+                if (long.TryParse(elements[1], out parselong))
+                    StartTime = parselong;
+            }
+            else if (elements[0] == "endtime")
+            {
+                if (long.TryParse(elements[1], out parselong))
+                    EndTime = parselong;
+            }
+        }
+
+
+        public string GetDumplogFileName()
+        {
+            string startdatestring = App.GnollHackService.DumplogDateString(StartTime);
+            return "gnollhack." + Name + "." + startdatestring + ".log";
+        }
+
+        public bool IsDumplogButtonEnabled
+        {
+            get
+            {
+                string filename = GetDumplogFileName();
+                string fulltargetpath = Path.Combine(App.GHPath, "dumplog", filename);
+                bool res = File.Exists(fulltargetpath);
+                return res;
             }
         }
 

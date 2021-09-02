@@ -303,5 +303,6 @@ namespace GnollHackClient
                     1.0f, parameterNames, parameterValues, 0, 0, 0, 0);
             }
         }
+
     }
 }

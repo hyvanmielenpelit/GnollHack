@@ -237,5 +237,30 @@ namespace GnollHackClient.Pages.Game
                 return _outcomeVisible;
             }
         }
+
+        private async void Button_Clicked(object sender, EventArgs e)
+        {
+            App.PlayButtonClickedSound();
+
+            Button btn = sender as Button;
+            GHTopScoreItem tsi = null;
+            if (btn != null)
+                tsi = btn.BindingContext as GHTopScoreItem;
+
+            if(tsi != null)
+            {
+                string fulltargetpath = Path.Combine(App.GHPath, "dumplog", tsi.GetDumplogFileName());
+                var displFilePage = new DisplayFilePage(fulltargetpath, "Dumplog - " + tsi.Name);
+                string errormsg = "";
+                if (!displFilePage.ReadFile(out errormsg))
+                {
+                    await DisplayAlert("Error Reading Dumplog File", errormsg, "OK");
+                }
+                else
+                {
+                    await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+                }
+            }
+        }
     }
 }

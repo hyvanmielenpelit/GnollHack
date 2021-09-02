@@ -307,7 +307,7 @@ namespace GnollHackClient
             await LogoGrid.FadeTo(1, 250);
         }
 
-        private async Task CheckPurchaseStatus(bool atappstart)
+        public async Task CheckPurchaseStatus(bool atappstart)
         {
             int res = await IsUpgradePurchased(GHConstants.FullVersionProductName);
             if(res >= 0)
@@ -331,6 +331,10 @@ namespace GnollHackClient
             {
                 App.FullVersionMode = true;
                 Preferences.Set("FullVersion", true);
+                if(!atappstart)
+                {
+                    await DisplayAlert("Existing Purchase Found", "Your existing purchase of the full version was found and has been activated.", "OK");
+                }
             }
             else if(res == -1 && App.FullVersionMode && atappstart)
             {
@@ -962,7 +966,7 @@ namespace GnollHackClient
             BuyNowButton.IsEnabled = true;
         }
 
-        private async Task PurchaseUpgrade()
+        public async Task PurchaseUpgrade()
         {
             if (!App.FullVersionMode)
             {

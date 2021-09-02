@@ -224,6 +224,17 @@ const char* LibGetVersionId()
     return VERSION_ID;
 }
 
+char _dumplogbuf[BUFSZ];
+
+char* LibDumplogDateString(startdate)
+long startdate;
+{
+    Sprintf(_dumplogbuf, "%08ld%06ld",
+        yyyymmdd(startdate), hhmmss(startdate));
+
+    return _dumplogbuf;
+}
+
 
 int LibGetAnimationArraySize()
 {

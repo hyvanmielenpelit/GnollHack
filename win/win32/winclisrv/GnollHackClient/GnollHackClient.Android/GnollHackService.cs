@@ -171,6 +171,8 @@ namespace GnollHackClient.Droid
 
         [DllImport(@"libgnollhackdroid.so")]
         public static extern IntPtr LibGetVersionId();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern IntPtr LibDumplogDateString(long startdate);
 
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibGetAnimationArraySize();
@@ -325,7 +327,7 @@ namespace GnollHackClient.Droid
             //}
 
             /* Make relevant directories */
-            string[] ghdirlist = { "save" };
+            string[] ghdirlist = { "save", "dumplog" };
             foreach (string ghdir in ghdirlist)
             {
                 string fulldirepath = Path.Combine(_gnollhackfilesdir, ghdir);
@@ -515,15 +517,22 @@ namespace GnollHackClient.Droid
         public string GetVersionString()
         {
             IntPtr resptr = LibGetVersionString();
-            string ret = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(resptr);
+            string ret = Marshal.PtrToStringAnsi(resptr);
             return ret;
         }
         public string GetVersionId()
         {
             IntPtr resptr = LibGetVersionId();
-            string ret = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(resptr);
+            string ret = Marshal.PtrToStringAnsi(resptr);
             return ret;
         }
+        public string DumplogDateString(long startdate)
+        {
+            IntPtr resptr = LibDumplogDateString(startdate);
+            string ret = Marshal.PtrToStringAnsi(resptr);
+            return ret;
+        }
+
         public void SwitchDemoVersion(bool active)
         {
             LibSwitchDemoVersion(active ? 1 : 0);

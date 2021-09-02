@@ -1402,7 +1402,14 @@ namespace GnollHackClient.Pages.Game
         }
         private async void ShowPurchasePage(string text)
         {
-            await DisplayAlert("Demo Level Limit Exceeded", text, "Save and Exit");
+            bool res = await DisplayAlert("Demo Level Limit Exceeded", text, "Buy Now", "Save and Exit");
+            if(res)
+            {
+                await _mainPage.CheckPurchaseStatus(false);
+                await _mainPage.PurchaseUpgrade();
+                if (App.FullVersionMode)
+                    App.GnollHackService.SwitchDemoVersion(false);
+            }
             GenericButton_Clicked(null, null, 27);
         }
 

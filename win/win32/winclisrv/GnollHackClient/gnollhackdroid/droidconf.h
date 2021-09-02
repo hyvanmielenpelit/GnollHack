@@ -25,7 +25,7 @@
 
 #ifdef DUMPLOG
 #undef DUMPLOG_FILE
-#define DUMPLOG_FILE        "dumplog/%n.%d.dumplog.txt"
+#define DUMPLOG_FILE        "dumplog/gnollhack.%n.%d.log" /* Note: Actually the one in sysconf is used, not this one */
 #undef DUMPLOG_DIR
 #define DUMPLOG_DIR        "dumplog" /* Note: this is just used to create a directory, DUMPLOG_FILE still needs to have the full path */
 #endif
