@@ -220,12 +220,14 @@ namespace GnollHackClient
             long bytesDownloaded;
             long? totalFileSize;
             string fileDescription;
+            long desiredFileSize;
             lock (_downloadProgressLock)
             {
                 percentage = _downloadProgressPercentage;
                 bytesDownloaded = _downloadProgressTotalBytesDownloaded;
                 totalFileSize = _downloadProgressTotalFileSize;
                 fileDescription = _downloadProgressFileDescription;
+                desiredFileSize = _downloadProgressDesiredFileSize;           
             }
 
             if (totalFileSize != null)
@@ -240,6 +242,12 @@ namespace GnollHackClient
                     else
                         DownloadBytesLabel.Text = string.Format("{0:0.00}", (double)bytesDownloaded / 1000000) + " / " + string.Format("{0:0.00}", totalFileSize / 1000000) + " MB";
                 });
+            }
+
+            if(totalFileSize != null && totalFileSize > 0 && desiredFileSize > 0 && totalFileSize != desiredFileSize && _cancellationTokenSource != null && _cancellationToken.CanBeCanceled)
+            {
+                _cancellationTokenSource?.Cancel();
+                await DisplayAlert("Downloadable File Invalid", "The specified download file does not match the required file description. Aborting.", "OK");
             }
 
             if ((((totalFileSize > 0 && bytesDownloaded >= totalFileSize) || totalFileSize == null || (_cancellationToken.CanBeCanceled && _cancellationToken.IsCancellationRequested)) && DownloadGrid.IsVisible))
@@ -492,6 +500,7 @@ namespace GnollHackClient
         private long? _downloadProgressTotalFileSize = 0;
         private string _downloadProgressFileDescription = "";
         private string _downloadProgressFilePath = "";
+        private long _downloadProgressDesiredFileSize = 0;
         private string[] banknamelist = { "Master.bank", "Master.strings.bank", "Auxiliary.bank" };
         private string[] bankresourcelist = { "GnollHackClient.Assets.Master.bank", "GnollHackClient.Assets.Master.strings.bank", "GnollHackClient.Assets.Auxiliary.bank" };
 #if DEBUG
@@ -691,6 +700,7 @@ namespace GnollHackClient
             {
                 _downloadProgressFileDescription = f.description;
                 _downloadProgressFilePath = target_path;
+                _downloadProgressDesiredFileSize = f.length;
             }
             _cancellationTokenSource = new CancellationTokenSource();
             _cancellationToken = _cancellationTokenSource.Token;
