@@ -20,13 +20,37 @@ namespace GnollHackClient.Pages.Game
         private async void btnDeleteFiles_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
-            bool answer = await DisplayAlert("Delete GnollHack Files?", "Are you sure to delete all GnollHack files?", "Yes", "No");
+            bool answer = await DisplayAlert("Delete GnollHack Core Files?", "Are you sure to delete GnollHack core files?", "Yes", "No");
             if (answer)
             {
-                App.GnollHackService.ClearFiles();
+                App.GnollHackService.ClearCoreFiles();
                 App.GnollHackService.InitializeGnollHack();
                 btnDeleteFiles.Text = "Done";
                 btnDeleteFiles.TextColor = Color.Red;
+            }
+        }
+
+        private async void btnDeleteSavedGames_Clicked(object sender, EventArgs e)
+        {
+            App.PlayButtonClickedSound();
+            bool answer = await DisplayAlert("Delete Saved Games?", "Are you sure to delete all saved games?", "Yes", "No");
+            if (answer)
+            {
+                App.GnollHackService.ClearSavedGames();
+                btnDeleteSavedGames.Text = "Done";
+                btnDeleteSavedGames.TextColor = Color.Red;
+            }
+        }
+
+        private async void btnDeleteDumplogs_Clicked(object sender, EventArgs e)
+        {
+            App.PlayButtonClickedSound();
+            bool answer = await DisplayAlert("Delete Dumplogs?", "Are you sure to delete all dumplogs?", "Yes", "No");
+            if (answer)
+            {
+                App.GnollHackService.ClearDumplogs();
+                btnDeleteDumplogs.Text = "Done";
+                btnDeleteDumplogs.TextColor = Color.Red;
             }
         }
 
@@ -48,8 +72,32 @@ namespace GnollHackClient.Pages.Game
             bool answer = await DisplayAlert("Delete App Preferences?", "Are you sure to delete all app preference settings?", "Yes", "No");
             if (answer)
             {
+
+                bool has_resetbanks = Preferences.ContainsKey("ResetBanks");
+                bool resetbanks = Preferences.Get("ResetBanks", false);
+                bool has_fcf = Preferences.ContainsKey("CheckPurchase_FirstConnectFail");
+                DateTime fcf = Preferences.Get("CheckPurchase_FirstConnectFail", DateTime.MinValue);
+                bool has_gsc = Preferences.ContainsKey("CheckPurchase_ConnectFail_GameStartCount");
+                int gsc = Preferences.Get("CheckPurchase_ConnectFail_GameStartCount", 0);
+                bool has_vbv = Preferences.ContainsKey("VerifyBank_Version");
+                string vbv = Preferences.Get("VerifyBank_Version", "");
+                bool has_vblwt = Preferences.ContainsKey("VerifyBank_LastWriteTime");
+                long vblwt = Preferences.Get("VerifyBank_LastWriteTime", 0);
+
                 Preferences.Clear();
+
                 Preferences.Set("FullVersion", App.FullVersionMode);
+                if(has_resetbanks)
+                    Preferences.Set("ResetBanks", resetbanks);
+                if(has_fcf)
+                    Preferences.Set("CheckPurchase_FirstConnectFail", fcf);
+                if (has_gsc)
+                    Preferences.Set("CheckPurchase_ConnectFail_GameStartCount", fcf);
+                if (has_vbv)
+                    Preferences.Set("VerifyBank_Version", vbv);
+                if (has_vblwt)
+                    Preferences.Set("VerifyBank_LastWriteTime", vblwt);
+                
                 btnDeletePreferences.Text = "Done";
                 btnDeletePreferences.TextColor = Color.Red;
             }

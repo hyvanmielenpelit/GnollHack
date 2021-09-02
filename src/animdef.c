@@ -7516,6 +7516,34 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "ettin-skeleton-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "ettin-skeleton-statue-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "orion-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "orion-statue-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
 };
 
 NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =

@@ -519,6 +519,10 @@ namespace GnollHackClient
                 {
                     file.Delete();
                 }
+                if (Preferences.ContainsKey("VerifyBank_Version"))
+                    Preferences.Remove("VerifyBank_Version");
+                if (Preferences.ContainsKey("VerifyBank_LastWriteTime"))
+                    Preferences.Remove("VerifyBank_LastWriteTime");
             }
 
             App.DebugWriteProfilingStopwatchTimeAndStart("Start Acquiring Banks");
@@ -559,7 +563,7 @@ namespace GnollHackClient
                     downloaded_file_check_results res = await CheckDownloadedFile(assembly, banknamelist[idx], bank_dir);
                     if(res != downloaded_file_check_results.OK)
                     {
-                        bool dodelete = false;
+                        bool diddelete = false;
                         if (res == downloaded_file_check_results.VerificationFailed)
                         {
                             string target_path = Path.Combine(bank_dir, banknamelist[idx]);
@@ -567,10 +571,10 @@ namespace GnollHackClient
                             {
                                 FileInfo file = new FileInfo(target_path);
                                 file.Delete();
-                                dodelete = true;
+                                diddelete = true;
                             }
                         }
-                        await DisplayAlert("Sound Bank Verification Failure", "Sound bank verification failed with error code " + (int)res + "." + (dodelete ? " Deleting the sound bank." : ""), "OK");
+                        await DisplayAlert("Sound Bank Verification Failure", "Sound bank verification failed with error code " + (int)res + "." + (diddelete ? " Deleting the sound bank." : ""), "OK");
                     }
                 }
             }

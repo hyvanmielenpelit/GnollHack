@@ -129,7 +129,7 @@ namespace GnollHackClient.Pages.Game
 
 
         private float _mapFontSize = GHConstants.MapFontDefaultSize;
-        private float _mapFontAlternateSize = GHConstants.MapFontDefaultAlternateSize;
+        private float _mapFontAlternateSize = GHConstants.MapFontDefaultSize * GHConstants.MapFontRelativeAlternateSize;
         private object _mapFontSizeLock = new object();
         public float MapFontSize { get { lock (_mapFontSizeLock) { return _mapFontSize; } } set { lock (_mapFontSizeLock) { _mapFontSize = value; } } }
         public float MapFontAlternateSize { get { lock (_mapFontSizeLock) { return _mapFontAlternateSize; } } set { lock (_mapFontSizeLock) { _mapFontAlternateSize = value; } } }
@@ -204,14 +204,35 @@ namespace GnollHackClient.Pages.Game
             ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
             HitPointBars = Preferences.Get("HitPointBars", false);
             NumDisplayedMessages = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
-            MapFontSize = Preferences.Get("MapFontSize", GHConstants.MapFontDefaultSize);
-            MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", GHConstants.MapFontDefaultAlternateSize);
+            float deffontsize = GetDefaultMapFontSize();
+            MapFontSize = Preferences.Get("MapFontSize", deffontsize);
+            MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", deffontsize * GHConstants.MapFontRelativeAlternateSize);
 
             ToggleModeButton_Clicked(null, null);
             ZoomMiniMode = true;
             ZoomAlternateMode = true;
             ToggleZoomMiniButton_Clicked(null, null);
             ToggleZoomAlternateButton_Clicked(null, null);
+        }
+
+        private float GetDefaultMapFontSize()
+        {
+            float c_numerator = 1.0f;
+            float c_denominator = 1.0f;
+            TargetIdiom ti = Device.Idiom;
+            var mainDisplayInfo = DeviceDisplay.MainDisplayInfo;
+            float density = (float)mainDisplayInfo.Density;
+            switch (ti)
+            {
+                case TargetIdiom.Tablet:
+                case TargetIdiom.Phone:
+                    c_numerator = 2.0f;
+                    c_denominator = 3.0f;
+                    break;
+                default:
+                    break;
+            }
+            return GHConstants.MapFontDefaultSize * (density * c_numerator) / c_denominator;
         }
 
         public async void StartGame()
@@ -2692,8 +2713,8 @@ namespace GnollHackClient.Pages.Game
                     float tmpheight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                     if (GraphicsStyle == GHGraphicsStyle.Tiles && !ForceAscii)
                     {
-                        tmpwidth = GHConstants.TileWidth * UsedFontSize / 48;
-                        tmpheight = GHConstants.TileHeight * UsedFontSize / 48;
+                        tmpwidth = GHConstants.TileWidth * UsedFontSize / GHConstants.MapFontDefaultSize;
+                        tmpheight = GHConstants.TileHeight * UsedFontSize / GHConstants.MapFontDefaultSize;
                     }
                     float tmpmapwidth = tmpwidth * (GHConstants.MapCols - 1);
                     float tmpmapheight = tmpheight * GHConstants.MapRows;
@@ -2708,8 +2729,8 @@ namespace GnollHackClient.Pages.Game
 
                 if (GraphicsStyle == GHGraphicsStyle.Tiles && !ForceAscii)
                 {
-                    width = GHConstants.TileWidth * UsedFontSize / 48;
-                    height = GHConstants.TileHeight * UsedFontSize / 48;
+                    width = GHConstants.TileWidth * UsedFontSize / GHConstants.MapFontDefaultSize;
+                    height = GHConstants.TileHeight * UsedFontSize / GHConstants.MapFontDefaultSize;
                 }
 
                 float mapwidth = width * (GHConstants.MapCols - 1);
@@ -5797,7 +5818,7 @@ namespace GnollHackClient.Pages.Game
         {
             lock (TargetClipLock)
             {
-                if (immediate_pan)
+                if (immediate_pan || GraphicsStyle == GHGraphicsStyle.ASCII)
                 {
                     _targetClipOn = false;
                     _originMapOffsetWithNewClipX = 0;

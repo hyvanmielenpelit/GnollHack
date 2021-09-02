@@ -82,11 +82,11 @@ namespace GnollHackClient.Pages.Game
             bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", 1.0f);
-            musicVolume = Preferences.Get("MusicVolume", 1.0f);
-            ambientVolume = Preferences.Get("AmbientVolume", 1.0f);
-            dialogueVolume = Preferences.Get("DialogueVolume", 1.0f);
-            effectsVolume = Preferences.Get("EffectsVolume", 1.0f);
-            UIVolume = Preferences.Get("UIVolume", 1.0f);
+            musicVolume = Preferences.Get("MusicVolume", 0.5f);
+            ambientVolume = Preferences.Get("AmbientVolume", 0.5f);
+            dialogueVolume = Preferences.Get("DialogueVolume", 0.5f);
+            effectsVolume = Preferences.Get("EffectsVolume", 0.5f);
+            UIVolume = Preferences.Get("UIVolume", 0.5f);
             navbar = App.HideAndroidNavigatioBar;
             devmode = App.DeveloperMode;
             if (_gamePage == null)

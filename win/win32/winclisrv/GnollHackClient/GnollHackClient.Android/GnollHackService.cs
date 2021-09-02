@@ -225,22 +225,32 @@ namespace GnollHackClient.Droid
         }
         public void ClearFiles()
         {
-            string filesdir = Android.App.Application.Context.FilesDir.Path;
-            _gnollhackfilesdir = filesdir;
+            ClearCoreFiles();
+            ClearSavedGames();
+            ClearDumplogs();
+        }
 
-            System.IO.DirectoryInfo di = new DirectoryInfo(_gnollhackfilesdir);
+        public void ClearCoreFiles()
+        {
+            string filesdir = GetGnollHackPath();
+            DirectoryInfo di = new DirectoryInfo(filesdir);
             foreach (FileInfo file in di.GetFiles())
             {
                 file.Delete();
             }
+        }
 
-            string[] ghdirlist = { "save", "dumplog" };
+        public void ClearSavedGames()
+        {
+            string filesdir = GetGnollHackPath();
+
+            string[] ghdirlist = { "save" };
             foreach (string ghdir in ghdirlist)
             {
                 string fulldirepath = Path.Combine(_gnollhackfilesdir, ghdir);
                 if (Directory.Exists(fulldirepath))
                 {
-                    System.IO.DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                    DirectoryInfo disave = new DirectoryInfo(fulldirepath);
                     foreach (FileInfo file in disave.GetFiles())
                     {
                         file.Delete();
@@ -248,6 +258,26 @@ namespace GnollHackClient.Droid
                 }
             }
         }
+
+        public void ClearDumplogs()
+        {
+            string filesdir = GetGnollHackPath();
+
+            string[] ghdirlist = { "dumplog" };
+            foreach (string ghdir in ghdirlist)
+            {
+                string fulldirepath = Path.Combine(_gnollhackfilesdir, ghdir);
+                if (Directory.Exists(fulldirepath))
+                {
+                    DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                    foreach (FileInfo file in disave.GetFiles())
+                    {
+                        file.Delete();
+                    }
+                }
+            }
+        }
+
 
         public void ResetDefaultsFile()
         {
@@ -274,21 +304,16 @@ namespace GnollHackClient.Droid
 
         public string GetGnollHackPath()
         {
-            return _gnollhackfilesdir;
+            return Android.App.Application.Context.FilesDir.Path;
         }
 
-        public void InitializeGame()
-        {
-            string filesdir = Android.App.Application.Context.FilesDir.Path;
-            _gnollhackfilesdir = filesdir;
-        }
 
         public void InitializeGnollHack()
         {
             /* Unpack GnollHack files */
             /* Add a check whether to unpack if there are existing files or not */
 
-            string filesdir = Android.App.Application.Context.FilesDir.Path;
+            string filesdir = GetGnollHackPath();
             _gnollhackfilesdir = filesdir;
 
             /* For debugging purposes now, delete all existing files in filesdir first */
