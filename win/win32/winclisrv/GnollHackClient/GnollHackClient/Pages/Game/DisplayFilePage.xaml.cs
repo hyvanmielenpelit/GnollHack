@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SkiaSharp;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -57,7 +58,17 @@ namespace GnollHackClient.Pages.Game
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
-                TextEditor.FontSize = Math.Min(18.5, 13 * Math.Min(width, MainGrid.WidthRequest) / 600);
+                double avg_width = 0;
+                using (SKPaint textPaint = new SKPaint())
+                {
+                    textPaint.Typeface = App.DejaVuSansMonoTypeface;
+                    textPaint.TextSize = 13.0f;
+                    avg_width = (double)textPaint.FontMetrics.AverageCharacterWidth;
+                }
+                double oldsize = Math.Min(18.5, 13 * Math.Min(width, MainGrid.WidthRequest) / 600);
+                double target_avgwidth = (Math.Min(width, MainGrid.WidthRequest) - MainGrid.Margin.Left - MainGrid.Margin.Right - MainGrid.Padding.Left - MainGrid.Padding.Right) / 82;
+                double newsize = 13 * target_avgwidth / avg_width;
+                TextEditor.FontSize = newsize;
             }
         }
 

@@ -30,7 +30,7 @@ namespace GnollHackClient
         {
             _httpClient = new HttpClient { Timeout = TimeSpan.FromDays(1) };
 
-            using (var response = await _httpClient.GetAsync(_downloadUrl, HttpCompletionOption.ResponseHeadersRead, _cancellationToken))
+            using (var response = await _httpClient.GetAsync(_downloadUrl, HttpCompletionOption.ResponseHeadersRead, _cancellationToken).ConfigureAwait(false))
                 await DownloadFileFromHttpResponseMessage(response);
         }
 

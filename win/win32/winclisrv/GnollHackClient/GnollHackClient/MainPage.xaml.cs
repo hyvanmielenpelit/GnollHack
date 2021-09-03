@@ -79,7 +79,6 @@ namespace GnollHackClient
         }
 
         private bool _firsttime = true;
-        private int starttimercount = 0;
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             wizardModeGrid.IsVisible = App.DeveloperMode;
@@ -96,116 +95,17 @@ namespace GnollHackClient
                 if (App.FullVersionMode)
                     await CheckPurchaseStatus(true);
                 _banksAcquired = 0;
-                _downloadresult = -1;
-                StartFadeLogoIn();
                 Assembly thisassembly = GetType().GetTypeInfo().Assembly;
                 FmodLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.FMOD-Logo-192-White.png", thisassembly);
                 StartLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
                 MainLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
-                App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Start Timer");
-                Device.StartTimer(TimeSpan.FromSeconds(1f / 4), () =>
-                {
-                    bool res = false;
-                    switch (starttimercount)
-                    {
-                        case 0:
-                            App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer "+ starttimercount);
-                            App.LoadServices();
-                            App.IsModernAndroid = App.AppCloseService.IsModernAndroid();
-                            string verstr = App.GnollHackService.GetVersionString();
-                            string verid = App.GnollHackService.GetVersionId();
-                            string path = App.GnollHackService.GetGnollHackPath();
-                            App.GHVersionString = verstr;
-                            App.GHVersionId = verid;
-                            App.GHPath = path;
-                            VersionLabel.Text = verid;
-                            GnollHackLabel.Text = "GnollHack"; // + verstr;
-
-                            if (VersionTracking.IsFirstLaunchEver)
-                            {
-                                // Do something
-                            }
-                            else if (VersionTracking.IsFirstLaunchForCurrentVersion)
-                            {
-                                // Do something
-                            }
-                            else if (VersionTracking.IsFirstLaunchForCurrentBuild)
-                            {
-                                // Do something
-                            }
-
-                            Assembly assembly = GetType().GetTypeInfo().Assembly;
-                            App.InitTypefaces(assembly);
-
-                            //firstButton.ImageSource = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                            StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                            StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                            clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                            topScoreImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                            optionsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                            settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                            creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                            exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-                            StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
-                            starttimercount++;
-                            res = true;
-                            break;
-                        case 1:
-                            App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer " + starttimercount);
-                            AcquireBanks();
-                            starttimercount++;
-                            res = true;
-                            break;
-                        case 2:
-                            App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer " + starttimercount);
-                            if (_banksAcquired >= GHConstants.NumBanks || _downloadresult > 0)
-                            {
-                                Preferences.Set("ResetBanks", false);
-                                CheckBanks();
-                                App.FmodService.LoadBanks();
-                                float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
-                                generalVolume = Preferences.Get("GeneralVolume", 1.0f);
-                                musicVolume = Preferences.Get("MusicVolume", 0.5f);
-                                ambientVolume = Preferences.Get("AmbientVolume", 0.5f);
-                                dialogueVolume = Preferences.Get("DialogueVolume", 0.5f);
-                                effectsVolume = Preferences.Get("EffectsVolume", 0.5f);
-                                UIVolume = Preferences.Get("UIVolume", 0.5f);
-                                App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
-                                App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
-                                App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer Done Banks Ok" + starttimercount);
-                                starttimercount++;
-                            }
-                            else
-                            {
-                                if (DownloadGrid.IsVisible)
-                                {
-                                    UpdateDownloadProgress();
-                                    App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer Done Update Progress" + starttimercount);
-                                }
-                                else
-                                {
-                                    App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer Done Update Nothing" + starttimercount);
-                                }
-                            }
-                            res = true;
-                            break;
-                        case 3:
-                            App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer " + starttimercount);
-                            StartFadeIn();
-                            res = true;
-                            starttimercount++;
-                            break;
-                        default:
-                            App.DebugWriteProfilingStopwatchTimeAndStart("MainPage Timer " + starttimercount);
-                            StartLogoImage.IsVisible = false;
-                            FmodLogoImage.IsVisible = false;
-                            starttimercount++;
-                            break;
-                    }
-                    return res;
-                });
+                await StartFadeLogoIn();
+                await StartUpTasks();
+                await StartFadeIn();
+                StartLogoImage.IsVisible = false;
+                FmodLogoImage.IsVisible = false;
             }
-            else if(!GameStarted && videoView.IsVisible == false)
+            else if (!GameStarted && videoView.IsVisible == false)
             {
                 PlayMainScreenVideoAndMusic();
             }
@@ -213,6 +113,63 @@ namespace GnollHackClient
             StartServerGrid.IsEnabled = true;
             UpperButtonGrid.IsEnabled = true;
         }
+
+        private async Task StartUpTasks()
+        {
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
+            App.LoadServices();
+            App.InitTypefaces(assembly);
+            App.IsModernAndroid = App.AppCloseService.IsModernAndroid();
+            string verstr = App.GnollHackService.GetVersionString();
+            string verid = App.GnollHackService.GetVersionId();
+            string path = App.GnollHackService.GetGnollHackPath();
+            App.GHVersionString = verstr;
+            App.GHVersionId = verid;
+            App.GHPath = path;
+            VersionLabel.Text = verid;
+            GnollHackLabel.Text = "GnollHack"; // + verstr;
+
+            StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            topScoreImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            optionsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
+
+            if (VersionTracking.IsFirstLaunchEver)
+            {
+                // Do something
+            }
+            else if (VersionTracking.IsFirstLaunchForCurrentVersion)
+            {
+                // Do something
+            }
+            else if (VersionTracking.IsFirstLaunchForCurrentBuild)
+            {
+                // Do something
+            }
+
+            await AcquireBanks();
+            Preferences.Set("ResetBanks", false);
+            await CheckBanks();
+            App.FmodService.LoadBanks();
+
+            float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
+            generalVolume = Preferences.Get("GeneralVolume", 1.0f);
+            musicVolume = Preferences.Get("MusicVolume", 0.5f);
+            ambientVolume = Preferences.Get("AmbientVolume", 0.5f);
+            dialogueVolume = Preferences.Get("DialogueVolume", 0.5f);
+            effectsVolume = Preferences.Get("EffectsVolume", 0.5f);
+            UIVolume = Preferences.Get("UIVolume", 0.5f);
+            App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
+            App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+        }
+
+        private object _abortLock = new object();
+        private bool _abortDisplayed = false;
 
         private async void UpdateDownloadProgress()
         {
@@ -232,7 +189,6 @@ namespace GnollHackClient
 
             if (totalFileSize != null)
             {
-                await DownloadProgressBar.ProgressTo((float)percentage / 100, 100, Easing.Linear);
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     DownloadTitleLabel.Text = "Downloading...";
@@ -242,35 +198,24 @@ namespace GnollHackClient
                     else
                         DownloadBytesLabel.Text = string.Format("{0:0.00}", (double)bytesDownloaded / 1000000) + " / " + string.Format("{0:0.00}", totalFileSize / 1000000) + " MB";
                 });
+                await DownloadProgressBar.ProgressTo((float)percentage / 100, 100, Easing.Linear);
             }
 
-            if(totalFileSize != null && totalFileSize > 0 && desiredFileSize > 0 && totalFileSize != desiredFileSize && _cancellationTokenSource != null && _cancellationToken.CanBeCanceled)
+            if (totalFileSize != null && totalFileSize > 0 && desiredFileSize > 0 && totalFileSize != desiredFileSize && _cancellationToken.CanBeCanceled)
             {
-                _cancellationTokenSource?.Cancel();
-                await DisplayAlert("Downloadable File Invalid", "The specified download file does not match the required file description. Aborting.", "OK");
-            }
-
-            if ((((totalFileSize > 0 && bytesDownloaded >= totalFileSize) || totalFileSize == null || (_cancellationToken.CanBeCanceled && _cancellationToken.IsCancellationRequested)) && DownloadGrid.IsVisible))
-            {
-                Device.BeginInvokeOnMainThread(() =>
+                _cancellationTokenSource.Cancel();
+                bool displayAbort = false;
+                lock(_abortLock)
                 {
-                    DownloadGrid.IsVisible = false;
-                });
-                _banksAcquired++;
-                if(_cancellationToken.IsCancellationRequested)
-                {
-                    /* Delete cancelled files */
-                    if(File.Exists(_downloadProgressFilePath))
+                    if (!_abortDisplayed)
                     {
-                        FileInfo file = new FileInfo(_downloadProgressFilePath);
-                        file.Delete();
+                        _abortDisplayed = true;
+                        displayAbort = true;
                     }
                 }
-                if(_cancellationTokenSource != null)
-                {
-                    _cancellationTokenSource.Dispose();
-                    _cancellationTokenSource = null;
-                }
+                if(displayAbort)
+                    await DisplayAlert("Downloadable File Invalid", "The specified download file does not match the required file description. Aborting.", "OK");
+                ;
             }
         }
 
@@ -284,13 +229,13 @@ namespace GnollHackClient
 
         }
 
-        private async void StartFadeLogoIn()
+        private async Task StartFadeLogoIn()
         {
             await StartLogoImage.FadeTo(1, 250);
             await FmodLogoImage.FadeTo(1, 250);
         }
 
-        private async void StartFadeIn()
+        private async Task StartFadeIn()
         {
             await StartLogoImage.FadeTo(0, 250);
             await FmodLogoImage.FadeTo(0, 250);
@@ -513,7 +458,7 @@ namespace GnollHackClient
         private bool[] bankwebdownloadlist = { false, false, true };
 #endif
 
-        private void AcquireBanks()
+        private async Task AcquireBanks()
         {
             string bank_dir = App.FmodService.GetBankDir();
             Assembly assembly = GetType().GetTypeInfo().Assembly;
@@ -544,7 +489,7 @@ namespace GnollHackClient
                 string bank_path = Path.Combine(bank_dir, banknamelist[idx]);
                 if (bankwebdownloadlist[idx])
                 {
-                    DownloadFileFromWebServer(assembly, banknamelist[idx], bank_dir);
+                    downloaded_file_check_results res = await DownloadFileFromWebServer(assembly, banknamelist[idx], bank_dir);
                 }
                 else
                 {
@@ -558,13 +503,13 @@ namespace GnollHackClient
                             }
                         }
                     }
-                    _banksAcquired++;
                 }
+                _banksAcquired++;
                 App.DebugWriteProfilingStopwatchTimeAndStart("Acquired Bank "+ idx);
             }
         }
 
-        private async void CheckBanks()
+        private async Task CheckBanks()
         {
             string bank_dir = App.FmodService.GetBankDir();
             Assembly assembly = GetType().GetTypeInfo().Assembly;
@@ -595,15 +540,14 @@ namespace GnollHackClient
 
         private void CancelDownloadButton_Clicked(object sender, EventArgs e)
         {
-            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource.Cancel();
         }
 
         //private static HttpClient _httpClient = new HttpClient();
-        public static int _downloadresult = -1;
-        CancellationTokenSource _cancellationTokenSource= null;
+        CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         CancellationToken _cancellationToken;
 
-        public async void DownloadFileFromWebServer(Assembly assembly, string filename, string target_directory)
+        public async Task<downloaded_file_check_results> DownloadFileFromWebServer(Assembly assembly, string filename, string target_directory)
         {
             string json = "";
             App.DebugWriteProfilingStopwatchTimeAndStart("Start Downloading Bank " + filename);
@@ -618,9 +562,7 @@ namespace GnollHackClient
                 }
                 else
                 {
-                    _downloadresult = 1; /* cannot find secrets.json */
-                    _banksAcquired++;
-                    return;
+                    return downloaded_file_check_results.NoSecretsFile;
                 }
             }
 
@@ -642,9 +584,7 @@ namespace GnollHackClient
 
             if (f == null)
             {
-                _downloadresult = 2;
-                _banksAcquired++;
-                return;
+                return downloaded_file_check_results.FileNotInSecretsList;
             }
 
             /* Check if ok */
@@ -680,10 +620,8 @@ namespace GnollHackClient
                 if (isfileok)
                 {
                     /* Ok, no need to download */
-                    _banksAcquired++;
-                    _downloadresult = 0;
                     App.DebugWriteProfilingStopwatchTimeAndStart(isdateok ? "Length and date ok, exiting" : "Length and checksum ok, exiting");
-                    return;
+                    return downloaded_file_check_results.OK;
                 }
                 else
                 {
@@ -706,7 +644,7 @@ namespace GnollHackClient
                 _downloadProgressFilePath = target_path;
                 _downloadProgressDesiredFileSize = f.length;
             }
-            _cancellationTokenSource = new CancellationTokenSource();
+
             _cancellationToken = _cancellationTokenSource.Token;
 
             App.DebugWriteProfilingStopwatchTimeAndStart("Begin Http Download " + filename);
@@ -719,22 +657,35 @@ namespace GnollHackClient
                         _downloadProgressTotalBytesDownloaded = totalBytesDownloaded;
                         _downloadProgressTotalFileSize = totalFileSize;
                     }
+                    UpdateDownloadProgress();
                 };
 
-                await client.StartDownload();
+                try
+                {
+                    await client.StartDownload();
+                }
+                catch(Exception e)
+                {
+                    await DisplayAlert("Download Error", "A download error occurred: " + e.Message, "OK");
+                }
             }
 
-            //var response = await _httpClient.GetAsync(url);
-            //using (var stream = await response.Content.ReadAsStreamAsync())
-            //{
-            //    var fileInfo = new FileInfo(target_path);
-            //    using (var fileStream = fileInfo.OpenWrite())
-            //    {
-            //        await stream.CopyToAsync(fileStream);
-            //    }
-            //}
+            /* Finished download */
+            DownloadGrid.IsVisible = false;
+            if (_cancellationToken.IsCancellationRequested)
+            {
+                /* Delete cancelled files */
+                if (File.Exists(_downloadProgressFilePath))
+                {
+                    FileInfo file = new FileInfo(_downloadProgressFilePath);
+                    file.Delete();
+                }
+            }
 
-            _downloadresult = 0;
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = new CancellationTokenSource();
+
+            return downloaded_file_check_results.OK;
         }
 
 
