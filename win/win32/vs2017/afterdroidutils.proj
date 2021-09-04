@@ -3,11 +3,12 @@
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
   <Target Name="Build"
-    Inputs="$(WslOutDir)include\date.h;$(WslOutDir)bin\nhdat;$(WslOutDir)dat\credits;$(WslOutDir)dat\license;$(WslOutDir)rc\defaults.gnh"
-    Outputs="$(LibDroidDir)include\date_unix.h;$(AndroidGnhDir)nhdat;$(AndroidGnhDir)credits;$(AndroidGnhDir)license;$(AndroidGnhDir)symbols;$(AndroidGnhDir)defaults.gnh">
+    Inputs="$(WslOutDir)include\date.h;$(WslOutDir)bin\nhdat;$(WslOutDir)dat\credits;$(WslOutDir)dat\xcredits;$(WslOutDir)dat\license;$(WslOutDir)rc\defaults.gnh"
+    Outputs="$(LibDroidDir)include\date_unix.h;$(AndroidGnhDir)nhdat;$(AndroidGnhDir)credits;$(AndroidGnhDir)xcredits;$(AndroidGnhDir)license;$(AndroidGnhDir)symbols;$(AndroidGnhDir)defaults.gnh">
     <Copy SourceFiles="$(WslOutDir)include\date_unix.h" DestinationFolder="$(LibDroidDir)"/>
     <Copy SourceFiles="$(WslOutDir)bin\nhdat" DestinationFolder="$(AndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\credits" DestinationFolder="$(AndroidGnhDir)"/>
+    <Copy SourceFiles="$(WslOutDir)dat\xcredits" DestinationFolder="$(AndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\license" DestinationFolder="$(AndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\symbols" DestinationFolder="$(AndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)rc\defaults.gnh" DestinationFolder="$(AndroidGnhDir)"/>
@@ -16,6 +17,7 @@
     <Delete Files="$(LibDroidDir)date.h"/>
     <Delete Files="$(AndroidGnhDir)nhdat"/>
     <Delete Files="$(AndroidGnhDir)credits"/>
+    <Delete Files="$(AndroidGnhDir)xcredits"/>
     <Delete Files="$(AndroidGnhDir)license"/>
     <Delete Files="$(AndroidGnhDir)symbols"/>
   </Target>

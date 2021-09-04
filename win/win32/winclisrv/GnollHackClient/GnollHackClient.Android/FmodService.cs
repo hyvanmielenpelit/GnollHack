@@ -90,10 +90,9 @@ namespace GnollHackClient.Droid
         {
             RESULT res;
             string bankdir = GetBankDir();
-            string[] banklist = { "Master.bank", "Master.strings.bank", "Auxiliary.bank" };
             string bank_path;
             int idx = -1;
-            foreach (string bankname in banklist)
+            foreach (string bankname in App.BankNameList)
             {
                 idx++;
                 bank_path = Path.Combine(bankdir, bankname);

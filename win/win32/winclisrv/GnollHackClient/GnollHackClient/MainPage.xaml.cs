@@ -129,15 +129,14 @@ namespace GnollHackClient
             VersionLabel.Text = verid;
             GnollHackLabel.Text = "GnollHack"; // + verstr;
 
-            StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            topScoreImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            optionsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
+            string prev_version = Preferences.Get("VersionId", "");
+            if(prev_version != verid)
+            {
+                App.GnollHackService.ClearCoreFiles();
+                App.GnollHackService.InitializeGnollHack();
+                Preferences.Set("ResetLocalBanks", true);
+            }
+            Preferences.Set("VersionId", verid);
 
             if (VersionTracking.IsFirstLaunchEver)
             {
@@ -152,8 +151,18 @@ namespace GnollHackClient
                 // Do something
             }
 
+
+            StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            topScoreImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            optionsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
+
             await AcquireBanks();
-            Preferences.Set("ResetBanks", false);
             await CheckBanks();
             App.FmodService.LoadBanks();
 
@@ -361,19 +370,8 @@ namespace GnollHackClient
         {
             UpperButtonGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
-            string fulltargetpath = Path.Combine(App.GHPath, "credits");
-            var displFilePage = new DisplayFilePage(fulltargetpath, "Credits");
-            string errormsg = "";
-            if (!displFilePage.ReadFile(out errormsg))
-            {
-                UpperButtonGrid.IsEnabled = true;
-                ErrorLabel.Text = errormsg;
-            }
-            else
-            {
-                ErrorLabel.Text = "";
-                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
-            }
+            var creditsPage = new CreditsPage();
+            await App.Current.MainPage.Navigation.PushModalAsync(creditsPage);
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
@@ -450,13 +448,6 @@ namespace GnollHackClient
         private string _downloadProgressFileDescription = "";
         private string _downloadProgressFilePath = "";
         private long _downloadProgressDesiredFileSize = 0;
-        private string[] banknamelist = { "Master.bank", "Master.strings.bank", "Auxiliary.bank" };
-        private string[] bankresourcelist = { "GnollHackClient.Assets.Master.bank", "GnollHackClient.Assets.Master.strings.bank", "GnollHackClient.Assets.Auxiliary.bank" };
-#if DEBUG
-        private bool[] bankwebdownloadlist = { false, false, GHConstants.DownloadFromWebInDebugMode };
-#else
-        private bool[] bankwebdownloadlist = { false, false, true };
-#endif
 
         private async Task AcquireBanks()
         {
@@ -469,8 +460,8 @@ namespace GnollHackClient
                 Directory.CreateDirectory(bank_dir);
             }
 
-            bool reset = Preferences.Get("ResetBanks", true);
-            if (reset)
+            bool resetbanks = Preferences.Get("ResetBanks", true);
+            if (resetbanks)
             {
                 DirectoryInfo di = new DirectoryInfo(bank_dir);
                 foreach (FileInfo file in di.GetFiles())
@@ -481,21 +472,48 @@ namespace GnollHackClient
                     Preferences.Remove("VerifyBank_Version");
                 if (Preferences.ContainsKey("VerifyBank_LastWriteTime"))
                     Preferences.Remove("VerifyBank_LastWriteTime");
+
+                Preferences.Set("ResetBanks", false);
+            }
+
+            bool resetlocalbanks = Preferences.Get("ResetLocalBanks", true);
+            if (resetlocalbanks)
+            {
+                if(!resetbanks)
+                {
+                    DirectoryInfo di = new DirectoryInfo(bank_dir);
+                    foreach (FileInfo file in di.GetFiles())
+                    {
+                        bool docontinue = false;
+                        for (int i = 0; i < App.BankWebDownloadList.Length; i++)
+                        {
+                            if (App.BankWebDownloadList[i] && file.Name == App.BankNameList[i])
+                            {
+                                docontinue = true;
+                                break;
+                            }
+                        }
+                        if (docontinue)
+                            continue;
+                        file.Delete();
+                    }
+                }
+                Preferences.Set("ResetLocalBanks", false);
             }
 
             App.DebugWriteProfilingStopwatchTimeAndStart("Start Acquiring Banks");
-            for (int idx = 0; idx < banknamelist.Length; idx++)
+            for (int idx = 0; idx < App.BankNameList.Length; idx++)
             {
-                string bank_path = Path.Combine(bank_dir, banknamelist[idx]);
-                if (bankwebdownloadlist[idx])
+                string bank_path = Path.Combine(bank_dir, App.BankNameList[idx]);
+                if (App.BankWebDownloadList[idx])
                 {
-                    downloaded_file_check_results res = await DownloadFileFromWebServer(assembly, banknamelist[idx], bank_dir);
+                    downloaded_file_check_results res = await DownloadFileFromWebServer(assembly, App.BankNameList[idx], bank_dir);
                 }
                 else
                 {
                     if (!File.Exists(bank_path))
                     {
-                        using (Stream stream = assembly.GetManifestResourceStream(bankresourcelist[idx]))
+                        using (Stream stream = assembly.GetManifestResourceStream(App.BankResourceList[idx]))
                         {
                             using (var fileStream = File.Create(bank_path))
                             {
@@ -513,18 +531,18 @@ namespace GnollHackClient
         {
             string bank_dir = App.FmodService.GetBankDir();
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            for (int idx = 0; idx < banknamelist.Length; idx++)
+            for (int idx = 0; idx < App.BankNameList.Length; idx++)
             {
-                string bank_path = Path.Combine(bank_dir, banknamelist[idx]);
-                if (bankwebdownloadlist[idx])
+                string bank_path = Path.Combine(bank_dir, App.BankNameList[idx]);
+                if (App.BankWebDownloadList[idx])
                 {
-                    downloaded_file_check_results res = await CheckDownloadedFile(assembly, banknamelist[idx], bank_dir);
+                    downloaded_file_check_results res = await CheckDownloadedFile(assembly, App.BankNameList[idx], bank_dir);
                     if(res != downloaded_file_check_results.OK)
                     {
                         bool diddelete = false;
                         if (res == downloaded_file_check_results.VerificationFailed)
                         {
-                            string target_path = Path.Combine(bank_dir, banknamelist[idx]);
+                            string target_path = Path.Combine(bank_dir, App.BankNameList[idx]);
                             if(File.Exists(target_path))
                             {
                                 FileInfo file = new FileInfo(target_path);

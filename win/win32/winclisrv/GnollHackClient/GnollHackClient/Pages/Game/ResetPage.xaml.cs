@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -66,6 +67,18 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private async void btnDeleteLocalBanks_Clicked(object sender, EventArgs e)
+        {
+            App.PlayButtonClickedSound();
+            bool answer = await DisplayAlert("Delete Local Sound Banks?", "Are you sure to delete all local sound banks on restart?", "Yes", "No");
+            if (answer)
+            {
+                Preferences.Set("ResetLocalBanks", true);
+                btnDeleteDownloads.Text = "Deletion on restart";
+                btnDeleteDownloads.TextColor = Color.Red;
+            }
+        }
+
         private async void btnDeletePreferences_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
@@ -75,6 +88,8 @@ namespace GnollHackClient.Pages.Game
 
                 bool has_resetbanks = Preferences.ContainsKey("ResetBanks");
                 bool resetbanks = Preferences.Get("ResetBanks", false);
+                bool has_resetlocalbanks = Preferences.ContainsKey("ResetLocalBanks");
+                bool resetlocalbanks = Preferences.Get("ResetLocalBanks", false);
                 bool has_fcf = Preferences.ContainsKey("CheckPurchase_FirstConnectFail");
                 DateTime fcf = Preferences.Get("CheckPurchase_FirstConnectFail", DateTime.MinValue);
                 bool has_gsc = Preferences.ContainsKey("CheckPurchase_ConnectFail_GameStartCount");
@@ -83,13 +98,17 @@ namespace GnollHackClient.Pages.Game
                 string vbv = Preferences.Get("VerifyBank_Version", "");
                 bool has_vblwt = Preferences.ContainsKey("VerifyBank_LastWriteTime");
                 long vblwt = Preferences.Get("VerifyBank_LastWriteTime", 0);
+                bool has_verid = Preferences.ContainsKey("VersionId");
+                string verid = Preferences.Get("VersionId", "");
 
                 Preferences.Clear();
 
                 Preferences.Set("FullVersion", App.FullVersionMode);
                 if(has_resetbanks)
                     Preferences.Set("ResetBanks", resetbanks);
-                if(has_fcf)
+                if (has_resetlocalbanks)
+                    Preferences.Set("ResetLocalBanks", resetlocalbanks);
+                if (has_fcf)
                     Preferences.Set("CheckPurchase_FirstConnectFail", fcf);
                 if (has_gsc)
                     Preferences.Set("CheckPurchase_ConnectFail_GameStartCount", fcf);
@@ -97,7 +116,9 @@ namespace GnollHackClient.Pages.Game
                     Preferences.Set("VerifyBank_Version", vbv);
                 if (has_vblwt)
                     Preferences.Set("VerifyBank_LastWriteTime", vblwt);
-                
+                if (has_verid)
+                    Preferences.Set("VersionId", verid);
+
                 btnDeletePreferences.Text = "Done";
                 btnDeletePreferences.TextColor = Color.Red;
             }

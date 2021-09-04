@@ -29,6 +29,14 @@ namespace GnollHackClient
 
     public partial class App : Application
     {
+        public static readonly string[] BankNameList = { "Master.bank", "Master.strings.bank", "Auxiliary.bank" };
+        public static readonly string[] BankResourceList = { "GnollHackClient.Assets.Master.bank", "GnollHackClient.Assets.Master.strings.bank", "GnollHackClient.Assets.Auxiliary.bank" };
+#if DEBUG
+        public static readonly bool[] BankWebDownloadList = { false, false, GHConstants.DownloadFromWebInDebugMode };
+#else
+        public static readonly bool[] BankWebDownloadList = { false, false, true };
+#endif
+
         public App()
         {
             InitializeComponent();
