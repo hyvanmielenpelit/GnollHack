@@ -2944,7 +2944,7 @@ namespace GnollHackClient.Pages.Game
                                                                 ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
 
                                                                 textPaint.Style = SKPaintStyle.Stroke;
-                                                                textPaint.StrokeWidth = 1;
+                                                                textPaint.StrokeWidth = 2.0f;
                                                                 textPaint.Color = SKColors.Black;
                                                                 textPaint.PathEffect = _pathEffect;
                                                                 SKPoint p0 = new SKPoint(tx, ty);
@@ -3081,7 +3081,7 @@ namespace GnollHackClient.Pages.Game
                                                                 textPaint.TextAlign = SKTextAlign.Center;
                                                                 float textheight = textPaint.FontSpacing; // FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                                                                 float texttx = tx + width / 2;
-                                                                float textty = ty + height / 2 - textheight / 2 - textPaint.FontMetrics.Ascent;
+                                                                float textty = ty + height / 2 - textheight / 2 - textPaint.FontMetrics.Ascent - 1f / 96f * height;
                                                                 canvas.DrawText(_mapData[mapx, mapy].Symbol, texttx, textty, textPaint);
                                                                 textPaint.TextAlign = SKTextAlign.Left;
                                                             }

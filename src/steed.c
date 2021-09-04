@@ -433,6 +433,10 @@ boolean force;      /* Quietly force this animal */
         if (Flying)
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "and %s take flight together.", mon_nam(mtmp));
     }
+    else
+    {
+        play_sfx_sound(SFX_MOUNT_SUCCESS);
+    }
     /* setuwep handles polearms differently when you're mounted */
     update_unweapon();
     /*

@@ -846,9 +846,9 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Tentacled One/Wave of Psychic Energy", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Boss Fight", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Achievement", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Mount/Fail Slip Away", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Mount/Fail and Slip", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Mount/Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Mount/Mount Fail Slip Away", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Mount/Mount Fail and Slip", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Mount/Mount Success", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Saddle/Saddle Apply", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Saddle/Saddle Drop", 1.0f },
 
