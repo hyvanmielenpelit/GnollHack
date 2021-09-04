@@ -21,8 +21,6 @@ namespace GnollHackClient.Droid
 {
     class GnollHackService : IGnollHackService
     {
-        private string _gnollhackfilesdir;
-
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
@@ -263,7 +261,7 @@ namespace GnollHackClient.Droid
             string[] ghdirlist = { "save" };
             foreach (string ghdir in ghdirlist)
             {
-                string fulldirepath = Path.Combine(_gnollhackfilesdir, ghdir);
+                string fulldirepath = Path.Combine(filesdir, ghdir);
                 if (Directory.Exists(fulldirepath))
                 {
                     DirectoryInfo disave = new DirectoryInfo(fulldirepath);
@@ -282,7 +280,7 @@ namespace GnollHackClient.Droid
             string[] ghdirlist = { "dumplog" };
             foreach (string ghdir in ghdirlist)
             {
-                string fulldirepath = Path.Combine(_gnollhackfilesdir, ghdir);
+                string fulldirepath = Path.Combine(filesdir, ghdir);
                 if (Directory.Exists(fulldirepath))
                 {
                     DirectoryInfo disave = new DirectoryInfo(fulldirepath);
@@ -299,6 +297,7 @@ namespace GnollHackClient.Droid
         {
             string content;
             AssetManager assets = MainActivity.StaticAssets;
+            string filesdir = GetGnollHackPath();
 
             string assetsourcedir = "gnh";
             string txtfile = "defaults.gnh";
@@ -307,7 +306,7 @@ namespace GnollHackClient.Droid
             {
                 content = sr.ReadToEnd();
             }
-            string fulltargetpath = Path.Combine(_gnollhackfilesdir, txtfile);
+            string fulltargetpath = Path.Combine(filesdir, txtfile);
             if (File.Exists(fulltargetpath))
             {
                 File.Delete(fulltargetpath);
@@ -330,10 +329,9 @@ namespace GnollHackClient.Droid
             /* Add a check whether to unpack if there are existing files or not */
 
             string filesdir = GetGnollHackPath();
-            _gnollhackfilesdir = filesdir;
 
             /* For debugging purposes now, delete all existing files in filesdir first */
-            //System.IO.DirectoryInfo di = new DirectoryInfo(_gnollhackfilesdir);
+            //System.IO.DirectoryInfo di = new DirectoryInfo(filesdir);
 
             //foreach (FileInfo file in di.GetFiles())
             //{
@@ -344,7 +342,7 @@ namespace GnollHackClient.Droid
             string[] ghdirlist = { "save", "dumplog" };
             foreach (string ghdir in ghdirlist)
             {
-                string fulldirepath = Path.Combine(_gnollhackfilesdir, ghdir);
+                string fulldirepath = Path.Combine(filesdir, ghdir);
                 if (!Directory.Exists(fulldirepath))
                 {
                     Directory.CreateDirectory(fulldirepath);
@@ -554,10 +552,11 @@ namespace GnollHackClient.Droid
 
         public int StartGnollHack(ClientGame clientGame)
         {
+            string filesdir = GetGnollHackPath();
             ulong runflags = (ulong)(clientGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
                 (ulong)(App.FullVersionMode ? RunGnollHackFlags.FullVersion : 0);
             return RunGnollHack(
-                _gnollhackfilesdir,
+                filesdir,
                 "",
                 runflags,
                 0,
