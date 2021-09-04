@@ -32,7 +32,7 @@ namespace GnollHackClient.Pages.Game
             string res = "";
             try
             {
-                TextEditor.Text = File.ReadAllText(_fileName);
+                TextEditor.Text = File.ReadAllText(_fileName, Encoding.UTF8);
             }
             catch (Exception e)
             {
@@ -55,7 +55,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     try
                     {
-                        File.WriteAllText(_fileName, TextEditor.Text);
+                        File.WriteAllText(_fileName, TextEditor.Text, Encoding.UTF8);
                     }
                     catch (Exception ex)
                     {

@@ -87,11 +87,11 @@ namespace GnollHackClient
                 case 2:
                 case 5:
                 case 6:
-                    return 0.75f;
+                    return 0.6f;
                default:
                     break;
             }
-            return 0.6f;
+            return 0.5f;
         }
         public SKTypeface GetTypeface(long counter_value)
         {
