@@ -68,6 +68,7 @@ struct window_procs Gnome_procs = {
     genl_set_ambient_ghsound_volume,
     genl_clear_context_menu,
     genl_add_context_menu,
+    genl_update_status_button,
     genl_toggle_animation_timer,
     genl_display_floating_text,
     genl_display_screen_text,

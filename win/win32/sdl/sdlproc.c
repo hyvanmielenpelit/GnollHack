@@ -133,6 +133,7 @@ struct window_procs nuklear_procs = {
     sdl_set_ambient_ghsound_volume,
     sdl_clear_context_menu,
     sdl_add_context_menu,
+    sdl_update_status_button,
     sdl_toggle_animation_timer,
     sdl_display_floating_text,
     sdl_display_screen_text,
@@ -3650,6 +3651,12 @@ sdl_clear_context_menu(VOID_ARGS)
 
 void
 sdl_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color)
+{
+    return;
+}
+
+void
+sdl_update_status_button(int cmd, int btn, int val, unsigned long bflags)
 {
     return;
 }

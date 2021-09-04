@@ -926,6 +926,12 @@ namespace GnollHackClient
             }
 
         }
+
+        public void ClientCallback_UpdateStatusButton(int cmd, int btn, int val, ulong bflags)
+        {
+
+        }
+
         public void ClientCallback_ToggleAnimationTimer(int timertype, int timerid, int state, int x, int y, int layer, ulong tflags)
         {
             lock(_gamePageLock)

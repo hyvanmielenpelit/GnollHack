@@ -136,6 +136,7 @@ typedef int(__callconv* DeleteAmbientSoundCallback)(unsigned long long);
 typedef int(__callconv* SetAmbientVolumeCallback)(unsigned long long, double);
 typedef void(__callconv* ClearContextMenuCallback)(void);
 typedef void(__callconv* AddContextMenuCallback)(int, int, int, int, const char*, const char*, int, int);
+typedef void(__callconv* UpdateStatusButtonCallback)(int, int, int, unsigned long);
 typedef void(__callconv* ToggleAnimationTimerCallback)(int, int, int, int, int, int, unsigned long);
 typedef void(__callconv* DisplayFloatingTextCallback)(int, int, const char*, int, int, int, unsigned long);
 typedef void(__callconv* DisplayScreenTextCallback)(const char*, const char*, int, int, int, unsigned long);
@@ -229,6 +230,7 @@ struct callback_procs {
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume;
     ClearContextMenuCallback callback_clear_context_menu;
     AddContextMenuCallback callback_add_context_menu;
+    UpdateStatusButtonCallback callback_update_status_button;
     ToggleAnimationTimerCallback callback_toggle_animation_timer;
     DisplayFloatingTextCallback callback_display_floating_text;
     DisplayScreenTextCallback callback_display_screen_text;

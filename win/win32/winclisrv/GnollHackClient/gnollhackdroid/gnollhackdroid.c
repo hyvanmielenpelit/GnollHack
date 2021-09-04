@@ -410,6 +410,7 @@ int RunGnollHack(
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume,
     ClearContextMenuCallback callback_clear_context_menu,
     AddContextMenuCallback callback_add_context_menu,
+    UpdateStatusButtonCallback callback_update_status_button,
     ToggleAnimationTimerCallback callback_toggle_animation_timer,
     DisplayFloatingTextCallback callback_display_floating_text,
     DisplayScreenTextCallback callback_display_screen_text,
@@ -519,6 +520,7 @@ int RunGnollHack(
     lib_callbacks.callback_set_ambient_ghsound_volume = callback_set_ambient_ghsound_volume;
     lib_callbacks.callback_clear_context_menu = callback_clear_context_menu;
     lib_callbacks.callback_add_context_menu = callback_add_context_menu;
+    lib_callbacks.callback_update_status_button = callback_update_status_button;
     lib_callbacks.callback_toggle_animation_timer = callback_toggle_animation_timer;
     lib_callbacks.callback_display_floating_text = callback_display_floating_text;
     lib_callbacks.callback_display_screen_text = callback_display_screen_text;

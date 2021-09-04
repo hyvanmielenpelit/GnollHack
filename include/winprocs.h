@@ -106,6 +106,7 @@ struct window_procs {
     void FDECL((*win_set_ambient_ghsound_volume), (sound_source*));
     void NDECL((*win_clear_context_menu));
     void FDECL((*win_add_context_menu), (int, int, int, int, const char*, const char*, int, int));
+    void FDECL((*win_update_status_button), (int, int, int, unsigned long));
     void FDECL((*win_toggle_animation_timer), (int, int, int, int, int, int, unsigned long)); /* timettype, id, state = on/off, x, y, flags */
     void FDECL((*win_display_floating_text), (int, int, const char*, int, int, int, unsigned long));
     void FDECL((*win_display_screen_text), (const char*, const char*, int, int, int, unsigned long));
@@ -222,6 +223,7 @@ extern
 #define set_ambient_ghsound_volume (*windowprocs.win_set_ambient_ghsound_volume)
 #define clear_context_menu (*windowprocs.win_clear_context_menu)
 #define add_context_menu (*windowprocs.win_add_context_menu)
+#define update_status_button (*windowprocs.win_update_status_button)
 #define toggle_animation_timer (*windowprocs.win_toggle_animation_timer)
 #define display_floating_text (*windowprocs.win_display_floating_text)
 #define display_screen_text (*windowprocs.win_display_screen_text)
@@ -478,6 +480,7 @@ struct chain_procs {
     void FDECL((*win_set_ambient_ghsound_volume), (CARGS, sound_source*));
     void FDECL((*win_clear_context_menu), (CARGS));
     void FDECL((*win_add_context_menu), (CARGS, int, int, int, int, const char*, const char*, int, int));
+    void FDECL((*win_update_status_button), (CARGS, int, int, int, unsigned long));
     void FDECL((*win_toggle_animation_timer), (CARGS, int, int, int, int, int, int, unsigned long));
     void FDECL((*win_display_floating_text), (CARGS, int, int, const char*, int, int, int, unsigned long));
     void FDECL((*win_display_screen_text), (CARGS, const char*, const char*, int, int, int, unsigned long));
@@ -577,6 +580,7 @@ extern void FDECL(safe_delete_ambient_ghsound, (struct soundsource_t*));
 extern void FDECL(safe_set_ambient_ghsound_volume, (struct soundsource_t*));
 extern void NDECL(safe_clear_context_menu);
 extern void FDECL(safe_add_context_menu, (int, int, int, int, const char*, const char*, int, int));
+extern void FDECL(safe_update_status_button, (int, int, int, unsigned long));
 extern void FDECL(safe_toggle_animation_timer, (int, int, int, int, int, int, unsigned long));
 extern void FDECL(safe_display_floating_text, (int, int, const char*, int, int, int, unsigned long));
 extern void FDECL(safe_display_screen_text, (const char*, const char*, int, int, int, unsigned long));

@@ -118,6 +118,7 @@ struct window_procs safe_procs = {
     safe_set_ambient_ghsound_volume,
     safe_clear_context_menu,
     safe_add_context_menu,
+    safe_update_status_button,
     safe_toggle_animation_timer,
     safe_display_floating_text,
     safe_display_screen_text,
@@ -552,6 +553,13 @@ safe_add_context_menu(int cmd_def_char UNUSED, int cmd_cur_char UNUSED, int dir 
 {
     return;
 }
+
+void
+safe_update_status_button(int cmd UNUSED, int btn UNUSED, int val UNUSED, unsigned long bflags UNUSED)
+{
+    return;
+}
+
 
 void
 safe_toggle_animation_timer(int type UNUSED, int id UNUSED, int state UNUSED, int x UNUSED, int y UNUSED, int layer UNUSED, unsigned long tflags UNUSED)

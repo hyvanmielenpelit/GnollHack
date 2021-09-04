@@ -102,6 +102,7 @@ int RunGnollHack(
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume,
     ClearContextMenuCallback callback_clear_context_menu,
     AddContextMenuCallback callback_add_context_menu,
+    UpdateStatusButtonCallback callback_update_status_button,
     ToggleAnimationTimerCallback callback_toggle_animation_timer,
     DisplayFloatingTextCallback callback_display_floating_text,
     DisplayScreenTextCallback callback_display_screen_text,

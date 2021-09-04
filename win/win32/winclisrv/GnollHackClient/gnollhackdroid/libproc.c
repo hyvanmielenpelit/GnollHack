@@ -62,6 +62,7 @@ struct window_procs lib_procs = {
     lib_set_ambient_ghsound_volume,
     lib_clear_context_menu,
     lib_add_context_menu,
+    lib_update_status_button,
     lib_toggle_animation_timer,
     lib_display_floating_text,
     lib_display_screen_text,
@@ -1085,6 +1086,12 @@ void
 lib_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color)
 {
     lib_callbacks.callback_add_context_menu(cmd_def_char, cmd_cur_char, dir, glyph, cmd_text, target_text, attr, color);
+}
+
+void
+lib_update_status_button(int cmd, int btn, int val, unsigned long bflags)
+{
+    lib_callbacks.callback_update_status_button(cmd, btn, val, bflags);
 }
 
 void

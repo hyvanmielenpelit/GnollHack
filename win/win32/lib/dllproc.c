@@ -113,7 +113,8 @@ struct window_procs dll_procs = {
     dll_set_ambient_ghsound_volume,
     dll_clear_context_menu,
     dll_add_context_menu,
-    dll_toggle_animation_timer,    
+    dll_update_status_button,
+    dll_toggle_animation_timer,
     dll_display_floating_text,
     dll_display_screen_text,
     dll_display_popup_text,
@@ -2881,6 +2882,12 @@ dll_clear_context_menu(VOID_ARGS)
 
 void
 dll_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color)
+{
+    return;
+}
+
+void
+dll_update_status_button(int cmd, int btn, int val, unsigned long bflags)
 {
     return;
 }

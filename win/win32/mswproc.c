@@ -138,6 +138,7 @@ struct window_procs mswin_procs = {
     mswin_set_ambient_ghsound_volume,
     mswin_clear_context_menu,
     mswin_add_context_menu,
+    mswin_update_status_button,
     mswin_toggle_animation_timer,
     mswin_display_floating_text,
     mswin_display_screen_text,
@@ -3742,6 +3743,12 @@ mswin_clear_context_menu(VOID_ARGS)
 
 void
 mswin_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color)
+{
+    return;
+}
+
+void
+mswin_update_status_button(int cmd, int btn, int val, unsigned long bflags)
 {
     return;
 }

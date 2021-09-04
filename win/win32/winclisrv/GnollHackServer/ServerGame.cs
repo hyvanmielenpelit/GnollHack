@@ -96,6 +96,7 @@ namespace GnollHackServer
             SetAmbientSoundVolumeCallback callback_set_ambient_ghsound_volume,
             VoidVoidCallback callback_clear_context_menu,
             AddContextMenuCallback callback_add_context_menu,
+            UpdateStatusButtonCallback callback_update_status_button,
             ToggleAnimationTimerCallback callback_toggle_animation_timer,
             DisplayFloatingTextCallback callback_display_floating_text,
             DisplayScreenTextCallback callback_display_screen_text,
@@ -251,6 +252,7 @@ namespace GnollHackServer
                 GameCallback_SetAmbientSoundVolume,
                 GameCallback_ClearContextMenu,
                 GameCallback_AddContextMenu,
+                GameCallback_UpdateStatusButton,
                 GameCallback_ToggleAnimationTimer,
                 GameCallback_DisplayFloatingText,
                 GameCallback_DisplayScreenText,
@@ -298,6 +300,11 @@ namespace GnollHackServer
         }
 
         public void GameCallback_AddContextMenu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, string cmd_text, string target_text, int attr, int color)
+        {
+
+        }
+
+        public void GameCallback_UpdateStatusButton(int cmd, int btn, int val, ulong bflags)
         {
 
         }

@@ -108,6 +108,7 @@ DLL int WINAPI RunGnollHack(
     SetAmbientVolumeCallback callback_set_ambient_ghsound_volume,
     ClearContextMenuCallback callback_clear_context_menu,
     AddContextMenuCallback callback_add_context_menu,
+    UpdateStatusButtonCallback callback_update_status_button,
     ToggleAnimationTimerCallback callback_toggle_animation_timer,
     DisplayFloatingTextCallback callback_display_floating_text,
     DisplayScreenTextCallback callback_display_screen_text,
@@ -205,6 +206,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_set_ambient_ghsound_volume = callback_set_ambient_ghsound_volume;
     dll_callbacks.callback_clear_context_menu = callback_clear_context_menu;
     dll_callbacks.callback_add_context_menu = callback_add_context_menu;
+    dll_callbacks.callback_update_status_button = callback_update_status_button;
     dll_callbacks.callback_toggle_animation_timer = callback_toggle_animation_timer;
     dll_callbacks.callback_display_floating_text = callback_display_floating_text;
     dll_callbacks.callback_display_screen_text = callback_display_screen_text;

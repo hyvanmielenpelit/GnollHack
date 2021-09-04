@@ -159,6 +159,7 @@ void sdl_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void sdl_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
 void sdl_clear_context_menu(VOID_ARGS);
 void sdl_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color);
+void sdl_update_status_button(int cmd, int btn, int val, unsigned long bflags);
 void sdl_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, int tflags);
 void sdl_display_floating_text(int x, int y, const char* text, int style, int attr, int color, unsigned long tflags);
 void sdl_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags);
