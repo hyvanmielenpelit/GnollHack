@@ -229,6 +229,7 @@ namespace GnollHackClient.Droid
         public void ClearFiles()
         {
             ClearCoreFiles();
+            ClearTopScores();
             ClearSavedGames();
             ClearDumplogs();
         }
@@ -239,7 +240,19 @@ namespace GnollHackClient.Droid
             DirectoryInfo di = new DirectoryInfo(filesdir);
             foreach (FileInfo file in di.GetFiles())
             {
-                file.Delete();
+                if(file.Name != "logfile" && file.Name != "xlogfile")
+                    file.Delete();
+            }
+        }
+
+        public void ClearTopScores()
+        {
+            string filesdir = GetGnollHackPath();
+            DirectoryInfo di = new DirectoryInfo(filesdir);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                if (file.Name == "logfile" || file.Name == "xlogfile")
+                    file.Delete();
             }
         }
 

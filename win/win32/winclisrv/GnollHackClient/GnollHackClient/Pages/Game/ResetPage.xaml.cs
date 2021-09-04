@@ -46,9 +46,10 @@ namespace GnollHackClient.Pages.Game
         private async void btnDeleteDumplogs_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
-            bool answer = await DisplayAlert("Delete Dumplogs?", "Are you sure to delete all dumplogs?", "Yes", "No");
+            bool answer = await DisplayAlert("Delete Top Scores?", "Are you sure to delete all top scores and associated dumplogs?", "Yes", "No");
             if (answer)
             {
+                App.GnollHackService.ClearTopScores();
                 App.GnollHackService.ClearDumplogs();
                 btnDeleteDumplogs.Text = "Done";
                 btnDeleteDumplogs.TextColor = Color.Red;

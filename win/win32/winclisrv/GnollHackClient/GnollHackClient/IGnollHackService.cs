@@ -13,6 +13,7 @@ namespace GnollHackClient
         string GetGnollHackPath();
         void ClearFiles();
         void ClearCoreFiles();
+        void ClearTopScores();
         void ClearSavedGames();
         void ClearDumplogs();
         void ResetDefaultsFile();
