@@ -95,7 +95,10 @@ namespace GnollHackClient.Pages.Game
         private Stopwatch _animationStopwatch = new Stopwatch();
         private TimeSpan _previousTimeSpan;
 
+        public bool MapGrid { get; set; }
         public bool HitPointBars { get; set; }
+        public bool PlayerMark { get; set; }
+        public bool MonsterTargeting { get; set; }
 
         private bool _cursorIsOn;
         private bool _showDirections = false;
@@ -202,7 +205,10 @@ namespace GnollHackClient.Pages.Game
             GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
             ShowFPS = Preferences.Get("ShowFPS", false);
             ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
+            MapGrid = Preferences.Get("MapGrid", false);
             HitPointBars = Preferences.Get("HitPointBars", false);
+            PlayerMark = Preferences.Get("PlayerMark", false);
+            MonsterTargeting = Preferences.Get("MonsterTargeting", false);
             NumDisplayedMessages = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
@@ -385,13 +391,13 @@ namespace GnollHackClient.Pages.Game
                 {
                     TextCanvas.InvalidateSurface();
                 }
-                else  if (MenuGrid.IsVisible)
+                else if (MenuGrid.IsVisible)
                 {
-                    lock(_menuDrawOnlyLock)
+                    lock (_menuDrawOnlyLock)
                     {
                         refresh = _menuRefresh;
                     }
-                    if(refresh)
+                    if (refresh)
                         MenuCanvas.InvalidateSurface();
                 }
 
@@ -702,13 +708,13 @@ namespace GnollHackClient.Pages.Game
         public void DisplayPopupText(DisplayScreenTextData data)
         {
             PopupTitleLabel.Text = data.subtext;
-            if((data.tflags & 1UL) != 0)
+            if ((data.tflags & 1UL) != 0)
                 PopupLabel.Text = "\"" + data.text + "\"";
             else
                 PopupLabel.Text = data.text;
 
-            if(data.style == (int)popup_text_types.POPUP_TEXT_DIALOGUE || 
-                data.style == (int)popup_text_types.POPUP_TEXT_ADVICE || 
+            if (data.style == (int)popup_text_types.POPUP_TEXT_DIALOGUE ||
+                data.style == (int)popup_text_types.POPUP_TEXT_ADVICE ||
                 data.style == (int)popup_text_types.POPUP_TEXT_MESSAGE)
             {
                 PopupTitleLabel.TextColor = _titleGoldColor;
@@ -1109,9 +1115,9 @@ namespace GnollHackClient.Pages.Game
                     /* Put in */
                     break;
                 case 'd':
-                    if(desc.Substring(0, 4) == "Drop")
+                    if (desc.Substring(0, 4) == "Drop")
                         res = "resource://GnollHackClient.Assets.UI.dropmany.png";
-                    else if(desc == "Disarm")
+                    else if (desc == "Disarm")
                         res = "resource://GnollHackClient.Assets.UI.yes.png";
                     break;
                 case 'y':
@@ -1403,7 +1409,7 @@ namespace GnollHackClient.Pages.Game
         private async void ShowPurchasePage(string text)
         {
             bool res = await DisplayAlert("Demo Level Limit Exceeded", text, "Buy Now", "Save and Exit");
-            if(res)
+            if (res)
             {
                 await _mainPage.CheckPurchaseStatus(false);
                 await _mainPage.PurchaseUpgrade();
@@ -1415,7 +1421,7 @@ namespace GnollHackClient.Pages.Game
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
-            if(MoreCommandsGrid.IsVisible)
+            if (MoreCommandsGrid.IsVisible)
             {
                 MoreCommandsGrid.IsVisible = false;
                 lock (RefreshScreenLock)
@@ -1423,11 +1429,11 @@ namespace GnollHackClient.Pages.Game
                     RefreshScreen = true;
                 }
             }
-            else if(GetLineGrid.IsVisible)
+            else if (GetLineGrid.IsVisible)
             {
                 GetLineCancelButton_Clicked(sender, e);
             }
-            else if(PopupGrid.IsVisible)
+            else if (PopupGrid.IsVisible)
             {
                 PopupOkButton_Clicked(sender, e);
             }
@@ -2624,6 +2630,8 @@ namespace GnollHackClient.Pages.Game
             canvas.Flush();
         }
 
+        private float[] _gridIntervals = {2.0f, 2.0f};
+
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
 
@@ -2636,8 +2644,8 @@ namespace GnollHackClient.Pages.Game
             using (SKPaint textPaint = new SKPaint())
             {
                 string str = "";
-                float textWidth = 0;
                 SKRect textBounds = new SKRect();
+                SKPathEffect _pathEffect = SKPathEffect.CreateDash(_gridIntervals, 0);
                 float xText = 0;
                 float yText = 0;
 
@@ -2929,6 +2937,25 @@ namespace GnollHackClient.Pages.Game
                                                             if (monster_height > 0)
                                                                 scaled_y_height_change = (float)-monster_height * height / (float)GHConstants.TileHeight;
 
+                                                            /* Grid */
+                                                            if (MapGrid)
+                                                            {
+                                                                tx = (offsetX + _mapOffsetX + width * (float)mapx);
+                                                                ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+
+                                                                textPaint.Style = SKPaintStyle.Stroke;
+                                                                textPaint.StrokeWidth = 1;
+                                                                textPaint.Color = SKColors.Black;
+                                                                textPaint.PathEffect = _pathEffect;
+                                                                SKPoint p0 = new SKPoint(tx, ty);
+                                                                SKPoint p1 = new SKPoint(tx, ty + height);
+                                                                canvas.DrawLine(p0, p1, textPaint);
+                                                                SKPoint p2 = new SKPoint(tx + width, ty + height);
+                                                                canvas.DrawLine(p1, p2, textPaint);
+                                                                textPaint.PathEffect = null;
+                                                                textPaint.Style = SKPaintStyle.Fill;
+                                                            }
+
                                                             /* Cursor */
                                                             bool cannotseeself = (loc_is_you && !canspotself);
                                                             if (loc_is_you
@@ -2993,6 +3020,70 @@ namespace GnollHackClient.Pages.Game
                                                                     paint.Color = clr;
                                                                     canvas.DrawRect(even_smaller_rect, paint);
                                                                 }
+                                                            }
+
+                                                            bool draw_character = false;
+                                                            /* Player mark */
+                                                            if (PlayerMark && loc_is_you)
+                                                            {
+                                                                int cglyph = (int)game_ui_tile_types.U_TILE_MARK + UITileOff;
+                                                                int ctile = Glyph2Tile[cglyph];
+                                                                int animation = Tile2Animation[ctile];
+                                                                int autodraw = Tile2Autodraw[ctile];
+                                                                int anim_frame_idx = 0, main_tile_idx = 0;
+                                                                sbyte mapAnimated = 0;
+                                                                int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(cglyph);
+                                                                ctile = _gnollHackService.GetAnimatedTile(ctile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, AnimationTimers.general_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                                                                int sheet_idx = TileSheetIdx(ctile);
+                                                                int tile_x = TileSheetX(ctile);
+                                                                int tile_y = TileSheetY(ctile);
+
+                                                                SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                                SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+
+                                                                if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
+                                                                {
+                                                                    draw_character = true;
+                                                                }
+                                                            }
+
+                                                            /* Monster targeting mark */
+                                                            if (MonsterTargeting && !loc_is_you && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_CANSPOTMON)) != 0)
+                                                            {
+                                                                int cglyph = (int)game_ui_tile_types.MAIN_TILE_MARK + UITileOff;
+                                                                int ctile = Glyph2Tile[cglyph];
+                                                                int animation = Tile2Animation[ctile];
+                                                                int autodraw = Tile2Autodraw[ctile];
+                                                                int anim_frame_idx = 0, main_tile_idx = 0;
+                                                                sbyte mapAnimated = 0;
+                                                                int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(cglyph);
+                                                                ctile = _gnollHackService.GetAnimatedTile(ctile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, AnimationTimers.general_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                                                                int sheet_idx = TileSheetIdx(ctile);
+                                                                int tile_x = TileSheetX(ctile);
+                                                                int tile_y = TileSheetY(ctile);
+
+                                                                SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                                SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
+                                                                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+
+                                                                if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
+                                                                {
+                                                                    draw_character = true;
+                                                                }
+                                                            }
+
+                                                            if(draw_character)
+                                                            {
+                                                                textPaint.TextSize = UsedFontSize / 4;
+                                                                textPaint.Typeface = App.DejaVuSansMonoTypeface;
+                                                                textPaint.Color = _mapData[mapx, mapy].Color;
+                                                                textPaint.TextAlign = SKTextAlign.Center;
+                                                                float textheight = textPaint.FontSpacing; // FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+                                                                float texttx = tx + width / 2;
+                                                                float textty = ty + height / 2 - textheight / 2 - textPaint.FontMetrics.Ascent;
+                                                                canvas.DrawText(_mapData[mapx, mapy].Symbol, texttx, textty, textPaint);
+                                                                textPaint.TextAlign = SKTextAlign.Left;
                                                             }
 
                                                             if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)(LayerFlags.LFLAGS_M_YOU | LayerFlags.LFLAGS_UXUY | LayerFlags.LFLAGS_M_CANSPOTMON)) != 0

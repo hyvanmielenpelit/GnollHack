@@ -242,7 +242,7 @@ namespace GnollHackClient.Pages.Game
         {
             App.PlayButtonClickedSound();
 
-            Button btn = sender as Button;
+            Label btn = sender as Label;
             GHTopScoreItem tsi = null;
             if (btn != null)
                 tsi = btn.BindingContext as GHTopScoreItem;
@@ -262,5 +262,6 @@ namespace GnollHackClient.Pages.Game
                 }
             }
         }
+
     }
 }

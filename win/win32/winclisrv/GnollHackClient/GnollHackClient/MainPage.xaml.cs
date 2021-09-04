@@ -201,7 +201,7 @@ namespace GnollHackClient
                 await DownloadProgressBar.ProgressTo((float)percentage / 100, 100, Easing.Linear);
             }
 
-            if (totalFileSize != null && totalFileSize > 0 && desiredFileSize > 0 && totalFileSize != desiredFileSize && _cancellationToken.CanBeCanceled)
+            if (totalFileSize != null && totalFileSize > 0 && desiredFileSize > 0 && totalFileSize != desiredFileSize && _cancellationTokenSource.Token.CanBeCanceled)
             {
                 _cancellationTokenSource.Cancel();
                 bool displayAbort = false;
@@ -545,7 +545,6 @@ namespace GnollHackClient
 
         //private static HttpClient _httpClient = new HttpClient();
         CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        CancellationToken _cancellationToken;
 
         public async Task<downloaded_file_check_results> DownloadFileFromWebServer(Assembly assembly, string filename, string target_directory)
         {
@@ -645,10 +644,8 @@ namespace GnollHackClient
                 _downloadProgressDesiredFileSize = f.length;
             }
 
-            _cancellationToken = _cancellationTokenSource.Token;
-
             App.DebugWriteProfilingStopwatchTimeAndStart("Begin Http Download " + filename);
-            using (var client = new HttpClientDownloadWithProgress(url, target_path, _cancellationToken))
+            using (var client = new HttpClientDownloadWithProgress(url, target_path, _cancellationTokenSource))
             {
                 client.ProgressChanged += (totalFileSize, totalBytesDownloaded, progressPercentage) => {
                     lock(_downloadProgressLock)
@@ -664,15 +661,20 @@ namespace GnollHackClient
                 {
                     await client.StartDownload();
                 }
+                catch(OperationCanceledException)
+                {
+                    /* Download was cancelled */
+                }
                 catch(Exception e)
                 {
-                    await DisplayAlert("Download Error", "A download error occurred: " + e.Message, "OK");
+                    if(!_cancellationTokenSource.Token.IsCancellationRequested)
+                        await DisplayAlert("Download Error", "A download error occurred: " + e.Message, "OK");
                 }
             }
 
             /* Finished download */
             DownloadGrid.IsVisible = false;
-            if (_cancellationToken.IsCancellationRequested)
+            if (_cancellationTokenSource.Token.IsCancellationRequested)
             {
                 /* Delete cancelled files */
                 if (File.Exists(_downloadProgressFilePath))

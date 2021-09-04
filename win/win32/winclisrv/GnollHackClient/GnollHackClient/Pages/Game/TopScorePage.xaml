@@ -59,7 +59,12 @@
                                         <Label Text="{Binding Outcome}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono"/>
                                     </Grid>
                                 </StackLayout>
-                                <Button Text = "" IsEnabled="{Binding IsDumplogButtonEnabled}" BackgroundColor="Transparent" Margin="0" Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Clicked="Button_Clicked" FontSize="5" TextColor="White" FontFamily="DejaVuSansMono"/>
+                                <Label IsVisible="{Binding IsDumplogButtonEnabled}" Margin="0" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" FontSize="13" TextColor="White" FontFamily="DejaVuSansMono">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="Button_Clicked"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+                                <!--<Button Text = "" IsEnabled="{Binding IsDumplogButtonEnabled}" BackgroundColor="Transparent" Margin="0" Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Clicked="Button_Clicked" FontSize="5" TextColor="White" FontFamily="DejaVuSansMono"/>-->
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

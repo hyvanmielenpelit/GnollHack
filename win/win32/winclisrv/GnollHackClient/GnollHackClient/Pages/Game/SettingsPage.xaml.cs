@@ -44,8 +44,20 @@ namespace GnollHackClient.Pages.Game
             Preferences.Set("ShowFPS", FPSSwitch.IsToggled);
 
             if (_gamePage != null)
+                _gamePage.MapGrid = GridSwitch.IsToggled;
+            Preferences.Set("MapGrid", GridSwitch.IsToggled);
+
+            if (_gamePage != null)
                 _gamePage.HitPointBars = HitPointBarSwitch.IsToggled;
             Preferences.Set("HitPointBars", HitPointBarSwitch.IsToggled);
+
+            if (_gamePage != null)
+                _gamePage.PlayerMark = PlayerMarkSwitch.IsToggled;
+            Preferences.Set("PlayerMark", PlayerMarkSwitch.IsToggled);
+
+            if (_gamePage != null)
+                _gamePage.MonsterTargeting = MonsterTargetingSwitch.IsToggled;
+            Preferences.Set("MonsterTargeting", MonsterTargetingSwitch.IsToggled);
 
             App.HideAndroidNavigatioBar = NavBarSwitch.IsToggled;
             Preferences.Set("HideAndroidNavigationBar", App.HideAndroidNavigatioBar);
@@ -79,7 +91,7 @@ namespace GnollHackClient.Pages.Game
             App.BackButtonPressed += BackButtonPressed;
 
             int cursor = 0, graphics = 0, msgnum = 0;
-            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false;
+            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, mapgrid = false, playermark = false, monstertargeting = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", 1.0f);
             musicVolume = Preferences.Get("MusicVolume", 0.5f);
@@ -93,7 +105,10 @@ namespace GnollHackClient.Pages.Game
             {
                 cursor = Preferences.Get("CursorStyle", 1);
                 graphics = Preferences.Get("GraphicsStyle", 1);
+                mapgrid = Preferences.Get("MapGrid", false);
                 hpbars = Preferences.Get("HitPointBars", false);
+                playermark = Preferences.Get("PlayerMark", false);
+                monstertargeting = Preferences.Get("MonsterTargeting", false);
                 mem = Preferences.Get("ShowMemoryUsage", false);
                 fps = Preferences.Get("ShowFPS", false);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
@@ -102,14 +117,20 @@ namespace GnollHackClient.Pages.Game
             {
                 cursor = (int)_gamePage.CursorStyle;
                 graphics = (int)_gamePage.GraphicsStyle;
+                mapgrid = _gamePage.MapGrid;
                 hpbars = _gamePage.HitPointBars;
+                playermark = _gamePage.PlayerMark;
+                monstertargeting = _gamePage.MonsterTargeting;
                 mem = _gamePage.ShowMemoryUsage;
                 fps = _gamePage.ShowFPS;
                 msgnum = _gamePage.NumDisplayedMessages;
             }
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
+            GridSwitch.IsToggled = mapgrid;
             HitPointBarSwitch.IsToggled = hpbars;
+            PlayerMarkSwitch.IsToggled = playermark;
+            MonsterTargetingSwitch.IsToggled = monstertargeting;
             MemorySwitch.IsToggled = mem;
             FPSSwitch.IsToggled = fps;
             NavBarSwitch.IsToggled = navbar;

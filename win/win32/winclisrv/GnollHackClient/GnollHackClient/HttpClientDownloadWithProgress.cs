@@ -12,26 +12,28 @@ namespace GnollHackClient
     {
         private readonly string _downloadUrl;
         private readonly string _destinationFilePath;
-        private CancellationToken _cancellationToken;
+        private CancellationTokenSource _cancellationTokenSource;
         private HttpClient _httpClient;
 
         public delegate void ProgressChangedHandler(long? totalFileSize, long totalBytesDownloaded, double? progressPercentage);
 
         public event ProgressChangedHandler ProgressChanged;
 
-        public HttpClientDownloadWithProgress(string downloadUrl, string destinationFilePath, CancellationToken cancellationToken)
+        public HttpClientDownloadWithProgress(string downloadUrl, string destinationFilePath, CancellationTokenSource cancellationTokenSource)
         {
             _downloadUrl = downloadUrl;
             _destinationFilePath = destinationFilePath;
-            _cancellationToken = cancellationToken;
+            _cancellationTokenSource = cancellationTokenSource;
         }
 
         public async Task StartDownload()
         {
             _httpClient = new HttpClient { Timeout = TimeSpan.FromDays(1) };
 
-            using (var response = await _httpClient.GetAsync(_downloadUrl, HttpCompletionOption.ResponseHeadersRead, _cancellationToken).ConfigureAwait(false))
+            using (var response = await _httpClient.GetAsync(_downloadUrl, HttpCompletionOption.ResponseHeadersRead, _cancellationTokenSource.Token))
+            {
                 await DownloadFileFromHttpResponseMessage(response);
+            }
         }
 
         private async Task DownloadFileFromHttpResponseMessage(HttpResponseMessage response)
@@ -41,7 +43,9 @@ namespace GnollHackClient
             var totalBytes = response.Content.Headers.ContentLength;
 
             using (var contentStream = await response.Content.ReadAsStreamAsync())
+            {
                 await ProcessContentStream(totalBytes, contentStream);
+            }
         }
 
         private async Task ProcessContentStream(long? totalDownloadSize, Stream contentStream)
@@ -70,6 +74,11 @@ namespace GnollHackClient
 
                     if (readCount % 100 == 0)
                         TriggerProgressChanged(totalDownloadSize, totalBytesRead);
+
+                    if(_cancellationTokenSource.Token.IsCancellationRequested)
+                    {
+                        _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    }
                 }
                 while (isMoreToRead);
             }
@@ -85,6 +94,7 @@ namespace GnollHackClient
                 progressPercentage = Math.Round((double)totalBytesRead / totalDownloadSize.Value * 100, 2);
 
             ProgressChanged(totalDownloadSize, totalBytesRead, progressPercentage);
+
         }
 
         public void Dispose()
