@@ -9,6 +9,8 @@
 #include "general.h"
 #include "soundset.h"
 #include "permonst.h"
+#include "prop.h"
+#include "config.h"
 
 /* general and attack-based flags */
 #define AF_NONE        0x00000000UL  /* no special effects, just a bonus */
