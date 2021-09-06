@@ -1128,5 +1128,17 @@ namespace GnollHackClient
             await App.Current.MainPage.Navigation.PushModalAsync(storepage);
 
         }
+
+        private void PopupOkButton_Clicked(object sender, EventArgs e)
+        {
+            PopupGrid.IsVisible = false;
+        }
+
+        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            PopupTitleLabel.Text = "Hardcore Mode";
+            PopupLabel.Text = "In Hardcore Mode you have just one life. You cannot spend any extra lives to save your character from death.";
+            PopupGrid.IsVisible = true;
+        }
     }
 }
