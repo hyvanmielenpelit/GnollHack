@@ -109,7 +109,8 @@ namespace GnollHackCommon
         None =          0x00000000,
         SetWinCaps =    0x00000001,
         WizardMode =    0x00000002,
-        FullVersion =   0x00000004
+        FullVersion =   0x00000004,
+        HardCore =      0x00000008,
     }
 
     [Flags]
@@ -464,6 +465,7 @@ namespace GnollHackCommon
         SCREEN_TEXT_ASCENDED,
         SCREEN_TEXT_SPECIAL_END,
         SCREEN_TEXT_BOSS_FIGHT,
+        SCREEN_TEXT_EXTRA_LIFE_SPENT,
     }
 
     public enum game_cursor_types
@@ -875,6 +877,7 @@ namespace GnollHackCommon
         POPUP_TEXT_DIALOGUE,
         POPUP_TEXT_ADVICE,
         POPUP_TEXT_MESSAGE,
+        POPUP_TEXT_EXTRA_LIFE_SPENT
     }
 
     public enum yn_function_styles
@@ -889,7 +892,8 @@ namespace GnollHackCommon
     {
         SPECIAL_VIEW_NONE = 0,
         SPECIAL_VIEW_CHAT_MESSAGE,
-        SPECIAL_VIEW_PURCHASE_INFO,
+        SPECIAL_VIEW_PURCHASE_FULL_VERSION,
+        SPECIAL_VIEW_PURCHASE_EXTRA_LIFE,
         MAX_SPECIAL_VIEW_TYPES
     }
 
@@ -977,6 +981,9 @@ namespace GnollHackCommon
         public const int NumBanks = 3;
         public const bool DownloadFromWebInDebugMode = true;
         public const string FullVersionProductName = "upgrade_to_full_version";
+        public const string ExtraLifeProductName = "extra_life";
+        public const string ThreeExtraLivesProductName = "3_extra_lives";
+        public const string GnollHackGitHubPage = "https://github.com/hyvanmielenpelit/GnollHack";
     }
 
 

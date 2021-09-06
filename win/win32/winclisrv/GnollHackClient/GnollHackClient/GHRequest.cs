@@ -34,6 +34,7 @@ namespace GnollHackClient
         HideSkillButton,
         ShowOutRipPage,
         ShowPurchasePage,
+        ShowPurchaseExtraLife,
         FadeToBlack,
         FadeFromBlack,
     }
@@ -83,6 +84,7 @@ namespace GnollHackClient
         public string TitleString { get; set; }
         public uint RequestStringAttributes { get; set; }
         public int RequestInt { get; set; }
+        public int RequestInt2 { get; set; }
         public int RequestAttr { get; set; }
         public int RequestNhColor { get; set; }
         public int RequestGlyph { get; set; }
@@ -112,6 +114,14 @@ namespace GnollHackClient
             RequestType = requesttype;
             RequestInt = requestint;
         }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint, int requestint2)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            RequestInt = requestint;
+            RequestInt2 = requestint2;
+        }
+
         public GHRequest(ClientGame clientgame, GHRequestType requesttype, int requestint, List<GHPutStrItem> strs)
         {
             RequestingClientGame = clientgame;

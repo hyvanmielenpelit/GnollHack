@@ -389,7 +389,8 @@ enum special_view_types
 {
     SPECIAL_VIEW_NONE = 0,
     SPECIAL_VIEW_CHAT_MESSAGE,
-    SPECIAL_VIEW_PURCHASE_INFO,
+    SPECIAL_VIEW_PURCHASE_FULL_VERSION,
+    SPECIAL_VIEW_PURCHASE_EXTRA_LIFE,
     MAX_SPECIAL_VIEW_TYPES
 };
 
@@ -397,6 +398,8 @@ enum special_view_types
 struct special_view_info {
     enum special_view_types viewtype;
     const char* text;
+    int param1;
+    int param2;
 };
 
 /* Fountain types */
@@ -473,6 +476,7 @@ enum screen_text_types {
     SCREEN_TEXT_ASCENDED,
     SCREEN_TEXT_SPECIAL_END,
     SCREEN_TEXT_BOSS_FIGHT,
+    SCREEN_TEXT_EXTRA_LIFE_SPENT,
 };
 
 enum popup_text_types {
@@ -482,6 +486,7 @@ enum popup_text_types {
     POPUP_TEXT_DIALOGUE,
     POPUP_TEXT_ADVICE,
     POPUP_TEXT_MESSAGE,
+    POPUP_TEXT_EXTRA_LIFE_SPENT,
 };
 
 #define POPUP_FLAGS_NONE        0x00000000UL
@@ -659,6 +664,8 @@ enum quest_states {
     QUEST_STATE_FAILED,
 };
 
+
+#define MAX_EXTRA_LIVES_PER_GAME 3
 
 #endif /* GENERAL_H */
 

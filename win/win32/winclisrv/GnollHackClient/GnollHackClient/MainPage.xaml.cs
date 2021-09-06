@@ -81,11 +81,20 @@ namespace GnollHackClient
         private bool _firsttime = true;
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
+#if DEBUG
             wizardModeGrid.IsVisible = App.DeveloperMode;
-            ResetGrid.IsVisible = App.DeveloperMode;
-            OptionsGrid.IsVisible = App.DeveloperMode;
             if (!App.DeveloperMode)
                 wizardModeSwitch.IsToggled = false;
+#else
+            wizardModeGrid.IsVisible = false;
+            wizardModeSwitch.IsToggled = false;
+#endif
+            ResetGrid.IsVisible = App.DeveloperMode;
+            OptionsGrid.IsVisible = App.DeveloperMode;
+            StartServerGrid.IsVisible = App.ServerGameAvailable;
+
+            hardcoreModeSwitch.IsToggled = App.HardCoreMode;
+
             UpdateBuyNow();
 
             if (_firsttime)
@@ -112,6 +121,7 @@ namespace GnollHackClient
 
             StartServerGrid.IsEnabled = true;
             UpperButtonGrid.IsEnabled = true;
+            LogoGrid.IsEnabled = true;
         }
 
         private async Task StartUpTasks()
@@ -811,7 +821,7 @@ namespace GnollHackClient
             return chksum == sha256;
         }
 
-        public async Task<bool> MakePurchase(string productId)
+        public async Task<bool> PurchaseNonConsumable(string productId)
         {
             if (!CrossInAppBilling.IsSupported)
             {
@@ -941,7 +951,7 @@ namespace GnollHackClient
         {
             if (!App.FullVersionMode)
             {
-                bool result = await MakePurchase(GHConstants.FullVersionProductName);
+                bool result = await PurchaseNonConsumable(GHConstants.FullVersionProductName);
                 if (result)
                 {
                     Preferences.Set("FullVersion", true);
@@ -949,6 +959,145 @@ namespace GnollHackClient
                     UpdateBuyNow();
                 }
             }
+        }
+        public async Task PurchaseExtraLife()
+        {
+            bool result = await PurchaseConsumable(GHConstants.ExtraLifeProductName);
+            if (result)
+            {
+                App.ExtraLives++;
+                Preferences.Set("ExtraLives", App.ExtraLives);
+            }
+        }
+
+        public async Task Purchase3ExtraLives()
+        {
+            bool result = await PurchaseConsumable(GHConstants.ThreeExtraLivesProductName);
+            if (result)
+            {
+                App.ExtraLives += 3;
+                Preferences.Set("ExtraLives", App.ExtraLives);
+            }
+        }
+
+        public async Task<bool> PurchaseConsumable(string productId)
+        {
+            if (!CrossInAppBilling.IsSupported)
+            {
+                await DisplayAlert("Purchasing Not Supported", "Purchasing an extra life is not supported on your platform.", "OK");
+                return false;
+            }
+
+            var billing = CrossInAppBilling.Current;
+            try
+            {
+                var connected = await billing.ConnectAsync();
+                if (!connected)
+                {
+                    await DisplayAlert("Connection Failed", "There was an error in connecting to the store.", "OK");
+                    return false;
+                }
+
+                //check purchases
+                var purchase = await billing.PurchaseAsync(productId, ItemType.InAppPurchase);
+
+                //possibility that a null came through.
+                if (purchase == null)
+                {
+                    //did not purchase
+                    await DisplayAlert("Purchase Failed", "Your purchase failed.", "OK");
+                    return false;
+                }
+                else if (purchase.State == PurchaseState.Purchased)
+                {
+                    //purchased!
+                    if (Device.RuntimePlatform == Device.Android)
+                    {
+                        // Must call AcknowledgePurchaseAsync else the purchase will be refunded
+                        await billing.AcknowledgePurchaseAsync(purchase.PurchaseToken);
+                    }
+
+                    if (Device.RuntimePlatform == Device.iOS)
+                        return true;
+
+                    /* Consumption */
+                    bool success = await CrossInAppBilling.Current.ConsumePurchaseAsync(purchase.ProductId, purchase.PurchaseToken);
+                    if (success)
+                    {
+                        return true;
+                    }
+                    await DisplayAlert("Extra Life Purchased But Not Consumed", "The extra life was purchased but not consumed.", "OK");
+                    return false;
+                }
+                else
+                {
+                    await DisplayAlert("Extra Life Not Purchased", "The extra life was not purchased.", "OK");
+                    return false;
+                }
+            }
+            catch (InAppBillingPurchaseException purchaseEx)
+            {
+                //Billing Exception handle this based on the type
+                Debug.WriteLine("Error: " + purchaseEx);
+                await DisplayAlert("Error in Purchasing Extra Life", "There was an error purchasing an extra life upgrade.", "OK");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                //Something else has gone wrong, log it
+                Debug.WriteLine("Issue connecting: " + ex);
+                await DisplayAlert("Error", "There was a general error in the transaction.", "OK");
+                return false;
+            }
+            finally
+            {
+                await billing.DisconnectAsync();
+            }
+        }
+
+        public async Task<InAppBillingProduct> GetProductDetails(string productid)
+        {
+            InAppBillingProduct res = null;
+            var billing = CrossInAppBilling.Current;
+            try
+            {
+
+                var productIds = new string[] { productid };
+                //You must connect
+                var connected = await billing.ConnectAsync();
+
+                if (!connected)
+                {
+                    //Couldn't connect
+                    return res;
+                }
+
+                //check purchases
+
+                var items = await billing.GetProductInfoAsync(ItemType.InAppPurchase, productIds);
+
+                foreach (var item in items)
+                {
+                    if(item != null && item.ProductId == productid)
+                    {
+                        res = item;
+                        break;
+                    }
+                }
+            }
+            catch (InAppBillingPurchaseException pEx)
+            {
+                //Handle IAP Billing Exception
+            }
+            catch (Exception ex)
+            {
+                //Something has gone wrong
+            }
+            finally
+            {
+                await billing.DisconnectAsync();
+            }
+            return res;
         }
 
         private void UpdateBuyNow()
@@ -963,6 +1112,21 @@ namespace GnollHackClient
                 AndroidLabel.Text = "Demo Version";
                 BuyNowGrid.IsVisible = true;
             }
+        }
+
+        private void hardcoreModeSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            App.HardCoreMode = hardcoreModeSwitch.IsToggled;
+            Preferences.Set("HardCoreMode", App.HardCoreMode);
+        }
+
+        private async void StoreButton_Clicked(object sender, EventArgs e)
+        {
+            LogoGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            var storepage = new StorePage(this);
+            await App.Current.MainPage.Navigation.PushModalAsync(storepage);
+
         }
     }
 }

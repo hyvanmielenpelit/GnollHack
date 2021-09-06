@@ -105,7 +105,8 @@ namespace GnollHackClient.Pages.Game
                 Preferences.Clear();
 
                 Preferences.Set("FullVersion", App.FullVersionMode);
-                if(has_resetbanks)
+                Preferences.Set("ExtraLives", App.ExtraLives);
+                if (has_resetbanks)
                     Preferences.Set("ResetBanks", resetbanks);
                 if (has_resetlocalbanks)
                     Preferences.Set("ResetLocalBanks", resetlocalbanks);

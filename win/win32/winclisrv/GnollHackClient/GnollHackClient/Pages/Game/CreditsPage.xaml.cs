@@ -1,10 +1,11 @@
-﻿using System;
+﻿using GnollHackCommon;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -69,6 +70,24 @@ namespace GnollHackClient.Pages.Game
             else
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+            }
+        }
+        private async void btnGitHub_Clicked(object sender, EventArgs e)
+        {
+            btnGitHub.IsEnabled = false;
+            await OpenBrowser(new Uri(GHConstants.GnollHackGitHubPage));
+            btnGitHub.IsEnabled = true;
+        }
+
+        public async Task OpenBrowser(Uri uri)
+        {
+            try
+            {
+                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
             }
         }
 

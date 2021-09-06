@@ -188,6 +188,8 @@ namespace GnollHackClient
                     return SKColors.Pink;
                 case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
                     return SKColors.Yellow;
+                case (int)screen_text_types.SCREEN_TEXT_EXTRA_LIFE_SPENT:
+                    return SKColors.Green;
                 default:
                     break;
             }

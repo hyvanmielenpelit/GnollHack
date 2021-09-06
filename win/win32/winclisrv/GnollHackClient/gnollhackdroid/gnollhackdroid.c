@@ -308,6 +308,11 @@ LibSwitchDemoVersion(int state)
     In_Demo = (state != 0);
 }
 
+void
+LibAddExtraLife(int amount)
+{
+    flags.extra_lives_left += amount;
+}
 
 int GnollHackStart(cmdlineargs)
 char* cmdlineargs;
@@ -442,6 +447,11 @@ int RunGnollHack(
     if (!(runflags & GHRUNFLAGS_FULL_VERSION))
     {
         In_Demo = TRUE;
+    }
+
+    if (runflags & GHRUNFLAGS_HARDCORE)
+    {
+        HardCoreMode = TRUE;
     }
 
     /* Set callback function pointers here */

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-             x:Class="GnollHackClient.Pages.Game.CreditsPage" Appearing="ContentPage_Appearing" Disappearing="ContentPage_Disappearing">
+             x:Class="GnollHackClient.Pages.Game.StorePage" Appearing="ContentPage_Appearing" Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
@@ -13,38 +13,27 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" x:Name="lblHeader" Text="Credits and License" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="White"
+                <Label Grid.Row="0" x:Name="lblHeader" Text="Store" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="White"
                     HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,30" />
-                <TableView Grid.Row="1" x:Name="CreditsTableView" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent"
+                <TableView Grid.Row="1" x:Name="StoreTableView" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent"
                            Intent="Menu">
                     <TableRoot>
                         <TableSection x:Name="BaseSection">
                             <ViewCell>
+                                <Label x:Name="ExtraLifeLabel" Text="" FontSize="20" FontFamily="Immortal" BackgroundColor="Transparent" TextColor="White" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"/>
+                            </ViewCell>
+                            <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center" >
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnCreditsX" Text="Cross-Platform Credits" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnCreditsX_Clicked" />
+                                    <Button x:Name="btnExtraLife" Text="Purchase Extra Life" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnExtraLife_Clicked" />
                                 </Grid>
                             </ViewCell>
                             <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center" >
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnCreditsW" Text="Windows Credits" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnCreditsW_Clicked" />
-                                </Grid>
-                            </ViewCell>
-                            <ViewCell>
-                                <Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnLicense" Text="License" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnLicense_Clicked" />
-                                </Grid>
-                            </ViewCell>
-                            <ViewCell>
-                                <Grid WidthRequest="320" HorizontalOptions="Center" >
-                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnGitHub" Text="Source Code" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnGitHub_Clicked" />
+                                    <Button x:Name="btn3ExtraLives" Text="Purchase 3 Extra Lives" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btn3ExtraLives_Clicked" />
                                 </Grid>
                             </ViewCell>
                         </TableSection>

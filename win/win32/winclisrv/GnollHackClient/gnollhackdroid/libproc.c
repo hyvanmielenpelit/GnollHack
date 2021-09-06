@@ -933,7 +933,7 @@ void lib_open_special_view(struct special_view_info info)
     if (info.text)
         write_text2buf_utf8(buf, BUFSIZ, info.text);
 
-    lib_callbacks.callback_open_special_view(info.viewtype, info.text ? buf : 0);
+    lib_callbacks.callback_open_special_view(info.viewtype, info.text ? buf : 0, info.param1, info.param2);
     return;
 }
 

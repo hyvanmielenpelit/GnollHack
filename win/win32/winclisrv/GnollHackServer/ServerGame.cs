@@ -413,7 +413,7 @@ namespace GnollHackServer
             return 0;
         }
 
-        protected void GameCallback_OpenSpecialView(int viewtype, string text)
+        protected void GameCallback_OpenSpecialView(int viewtype, string text, int param1, int param2)
         {
 
         }

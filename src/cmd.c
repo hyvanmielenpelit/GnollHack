@@ -1365,9 +1365,12 @@ enter_explore_mode(VOID_ARGS)
         You("are already in explore mode.");
     } else {
 #ifdef SYSCF
-#if defined(UNIX) && !defined(GNH_ANDROID)
-        if (!sysopt.explorers || !sysopt.explorers[0]
-            || !check_user_string(sysopt.explorers)) {
+#if defined(UNIX)
+#if !defined(GNH_ANDROID)
+            if (!sysopt.explorers || !sysopt.explorers[0]
+            || !check_user_string(sysopt.explorers)) 
+#endif
+        {
             You("cannot access explore mode.");
             return 0;
         }
@@ -6819,8 +6822,8 @@ check_demo_version()
         {
             /* Inform about purchasing a full version and then save */
             struct special_view_info info = { 0 };
-            info.viewtype = SPECIAL_VIEW_PURCHASE_INFO;
-            info.text = "You have exceeded the maximum playable levels in the demo version. Please purchase the full version to continue playing.";
+            info.viewtype = SPECIAL_VIEW_PURCHASE_FULL_VERSION;
+            info.text = 0;
             open_special_view(info);
             if (In_Demo)
             {

@@ -206,6 +206,8 @@ namespace GnollHackClient.Droid
         public static extern int LibZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir);
         [DllImport(@"libgnollhackdroid.so")]
         public static extern void LibSwitchDemoVersion(int state);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern void LibAddExtraLife(int amount);
 
         private void LoadNativeLibrary(string libName)
         {
@@ -550,11 +552,18 @@ namespace GnollHackClient.Droid
             LibSwitchDemoVersion(active ? 1 : 0);
         }
 
+        public void AddExtraLife(int amount)
+        {
+            LibAddExtraLife(amount);
+        }
+
         public int StartGnollHack(ClientGame clientGame)
         {
             string filesdir = GetGnollHackPath();
             ulong runflags = (ulong)(clientGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
-                (ulong)(App.FullVersionMode ? RunGnollHackFlags.FullVersion : 0);
+                (ulong)(App.FullVersionMode ? RunGnollHackFlags.FullVersion : 0) |
+                (ulong)(App.HardCoreMode ? RunGnollHackFlags.HardCore : 0);
+
             return RunGnollHack(
                 filesdir,
                 "",

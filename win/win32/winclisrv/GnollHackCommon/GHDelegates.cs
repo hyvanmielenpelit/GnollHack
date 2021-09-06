@@ -165,7 +165,7 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void UpdateCursorCallback(int style, int force_paint, int show_on_u);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void OpenSpecialViewCallback(int viewtype, [MarshalAs(UnmanagedType.LPStr)] string text);
+    public delegate void OpenSpecialViewCallback(int viewtype, [MarshalAs(UnmanagedType.LPStr)] string text, int param1, int param2);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void SendObjectDataCallback(int x, int y, obj otmp, int cmdtype, int where, objclassdata otypdata, ulong oflags);
