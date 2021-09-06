@@ -1259,11 +1259,14 @@ int how;
     /* explore and wizard modes offer player the option to keep playing */
     if (!survive && how <= GENOCIDED)
     {
-        if ((wizard || discover) && !paranoid_query_ex(ATR_NONE, NO_COLOR, ParanoidDie, (char*)0, "Die?"))
+        if (wizard || discover)
         {
-            pline("OK, so you don't %s.", (how == CHOKING) ? "choke" : "die");
-            savelife(how);
-            survive = TRUE;
+            if (!paranoid_query_ex(ATR_NONE, NO_COLOR, ParanoidDie, (char*)0, "Die?"))
+            {
+                pline("OK, so you don't %s.", (how == CHOKING) ? "choke" : "die");
+                savelife(how);
+                survive = TRUE;
+            }
         }
         else if (!HardCoreMode && flags.extra_lives_spent < MAX_EXTRA_LIVES_PER_GAME)
         {
@@ -1285,9 +1288,9 @@ int how;
                 if (flags.extra_lives_spent < MAX_EXTRA_LIVES_PER_GAME)
                     Sprintf(buf, "An extra life has been spent. You can still spend %d more extra %s in this game.", livesleft, livesleft != 1 ? "lives" : "life");
                 else
-                    Sprintf(buf, "An extra life has been spent. You have now spent all your %s extra lives that are available in this game.", MAX_EXTRA_LIVES_PER_GAME);
+                    Sprintf(buf, "An extra life has been spent. You have now spent all your %d extra lives that are available in this game.", MAX_EXTRA_LIVES_PER_GAME);
 
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, buf);
+                pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, buf);
                 display_popup_text(buf, "Extra Life Spent", POPUP_TEXT_EXTRA_LIFE_SPENT, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
 
                 savelife(how);
