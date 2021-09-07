@@ -81,14 +81,9 @@ namespace GnollHackClient
         private bool _firsttime = true;
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
-#if DEBUG
             wizardModeGrid.IsVisible = App.DeveloperMode;
             if (!App.DeveloperMode)
                 wizardModeSwitch.IsToggled = false;
-#else
-            wizardModeGrid.IsVisible = false;
-            wizardModeSwitch.IsToggled = false;
-#endif
             ResetGrid.IsVisible = App.DeveloperMode;
             OptionsGrid.IsVisible = App.DeveloperMode;
             StartServerGrid.IsVisible = App.ServerGameAvailable;

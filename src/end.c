@@ -1268,6 +1268,7 @@ int how;
                 survive = TRUE;
             }
         }
+#if 0
         else if (!HardCoreMode && flags.extra_lives_spent < MAX_EXTRA_LIVES_PER_GAME)
         {
             if (flags.extra_lives_left == 0)
@@ -1297,6 +1298,7 @@ int how;
                 survive = TRUE;
             }
         }
+#endif
     }
 
     if (survive)

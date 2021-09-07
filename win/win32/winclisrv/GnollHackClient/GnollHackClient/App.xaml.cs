@@ -46,7 +46,7 @@ namespace GnollHackClient
             App.HideAndroidNavigatioBar = Preferences.Get("HideAndroidNavigationBar", false);
             App.DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
             App.FullVersionMode = Preferences.Get("FullVersion", false);
-            App.HardCoreMode = Preferences.Get("HardCoreMode", false);
+            App.HardCoreMode = false; // Preferences.Get("HardCoreMode", false);
             App.ExtraLives = Preferences.Get("ExtraLives", 0);
         }
 

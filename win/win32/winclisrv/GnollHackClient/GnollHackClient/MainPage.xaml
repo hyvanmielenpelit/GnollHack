@@ -71,7 +71,7 @@
                     <ff:CachedImage x:Name="BuyNowImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" WidthRequest="120" HeightRequest="50"/>
                     <Button Text="Buy Now" x:Name="BuyNowButton" Clicked="BuyNowButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
                 </Grid>
-                <Grid x:Name="StoreGrid"  WidthRequest="120">
+                <Grid x:Name="StoreGrid" IsVisible="False" WidthRequest="120">
                     <ff:CachedImage x:Name="StoreImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" WidthRequest="120" HeightRequest="50"/>
                     <Button Text="Store" x:Name="StoreButton" Clicked="StoreButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
                 </Grid>
@@ -113,11 +113,10 @@
               AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300" HeightRequest="160">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid x:Name="hardcoreModeGrid" Grid.Row="1" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+            <Grid x:Name="hardcoreModeGrid" IsVisible="False" Grid.Row="0" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
