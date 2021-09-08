@@ -11,6 +11,7 @@ using Xamarin.Forms.Xaml;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
+using Xamarin.Essentials;
 
 namespace GnollHackClient
 {
@@ -25,7 +26,6 @@ namespace GnollHackClient
         private string _characterName = "";
         private object _characterNameLock = new object();
         private GamePage _gamePage;
-        private object _gamePageLock = new object();
 
         private bool _touchLocSet = false;
         private int _touchLocX;
@@ -52,19 +52,11 @@ namespace GnollHackClient
         private bool _wizardMode;
         public bool WizardMode { get { return _wizardMode; } }
 
-        public GamePage ClientGamePage
-        {
-            get { lock (_gamePageLock) { return _gamePage; } }
-        }
-
         public ClientGame(GamePage gamePage, bool wizardMode)
         {
             ClientGame.RequestDictionary.TryAdd(this, new ConcurrentQueue<GHRequest>());
             ClientGame.ResponseDictionary.TryAdd(this, new ConcurrentQueue<GHResponse>());
-            lock (_gamePageLock)
-            {
-                _gamePage = gamePage;
-            }
+            _gamePage = gamePage;
             _wizardMode = wizardMode;
         }
 
@@ -231,7 +223,7 @@ namespace GnollHackClient
 
             int handle = _lastWindowHandle;
             GHWindow ghwin = new GHWindow((GHWinType)wintype, (ghwindow_styles)style, glyph,
-                (dataflags & 1) == 0 ? null : new ObjectDataItem(objdata, otypdata, (dataflags & 4) != 0), ClientGamePage, handle);
+                (dataflags & 1) == 0 ? null : new ObjectDataItem(objdata, otypdata, (dataflags & 4) != 0), _gamePage, handle);
 
             lock(_ghWindowsLock)
             {
@@ -335,10 +327,7 @@ namespace GnollHackClient
                     _ghWindows[winHandle].PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, layers);
             }
 
-            lock (_gamePageLock)
-            {
-                _gamePage.ClearAllObjectData(x, y);
-            }
+            _gamePage.ClearAllObjectData(x, y);
 
         }
 
@@ -578,12 +567,9 @@ namespace GnollHackClient
         {
             long start_counter_value = 0L;
             long current_counter_value = 0L;
-            lock (_gamePageLock)
+            lock (_gamePage.AnimationTimerLock)
             {
-                lock(_gamePage.AnimationTimerLock)
-                {
-                    start_counter_value = _gamePage.AnimationTimers.general_animation_counter;
-                }
+                start_counter_value = _gamePage.AnimationTimers.general_animation_counter;
             }
 
             do
@@ -592,12 +578,9 @@ namespace GnollHackClient
                     break;
 
                 Thread.Sleep(5);
-                lock (_gamePageLock)
+                lock (_gamePage.AnimationTimerLock)
                 {
-                    lock (_gamePage.AnimationTimerLock)
-                    {
-                        current_counter_value = _gamePage.AnimationTimers.general_animation_counter;
-                    }
+                    current_counter_value = _gamePage.AnimationTimers.general_animation_counter;
                 }
             } while (current_counter_value < start_counter_value + (long)intervals);
         }
@@ -744,16 +727,7 @@ namespace GnollHackClient
         }
         public int ClientCallback_SelectMenu(int winid, int how, out IntPtr picklistptr, out int listsize)
         {
-            lock (_gamePageLock)
-            {
-                //lock (_gamePage.RefreshScreenLock)
-                //{
-                //    _gamePage.RefreshScreen = false;
-                //}
-
-                App.DebugWriteProfilingStopwatchTimeAndStart("SelectMenu");
-            }
-
+            App.DebugWriteProfilingStopwatchTimeAndStart("SelectMenu");
             Debug.WriteLine("ClientCallback_SelectMenu");
             ConcurrentQueue<GHRequest> queue;
 
@@ -867,10 +841,7 @@ namespace GnollHackClient
 
         public void ClientCallback_SendObjectData(int x, int y, obj otmp, int cmdtype, int where, objclassdata otypdata, ulong oflags)
         {
-            lock(_gamePageLock)
-            {
-                _gamePage.AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
-            }
+            _gamePage.AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
         }
 
 
@@ -934,47 +905,44 @@ namespace GnollHackClient
 
         public void ClientCallback_ToggleAnimationTimer(int timertype, int timerid, int state, int x, int y, int layer, ulong tflags)
         {
-            lock(_gamePageLock)
+            lock (_gamePage.AnimationTimerLock)
             {
-                lock(_gamePage.AnimationTimerLock)
+                bool ison = (state != 0);
+                switch ((animation_timer_types)timertype)
                 {
-                    bool ison = (state != 0);
-                    switch ((animation_timer_types)timertype)
-                    {
                     case animation_timer_types.ANIMATION_TIMER_GENERAL:
                         break;
                     case animation_timer_types.ANIMATION_TIMER_YOU:
-                            _gamePage.AnimationTimers.u_action_animation_counter = 0L;
-                            _gamePage.AnimationTimers.u_action_animation_counter_on = ison;
+                        _gamePage.AnimationTimers.u_action_animation_counter = 0L;
+                        _gamePage.AnimationTimers.u_action_animation_counter_on = ison;
                         break;
                     case animation_timer_types.ANIMATION_TIMER_MONSTER:
-                            _gamePage.AnimationTimers.m_action_animation_counter = 0L;
-                            _gamePage.AnimationTimers.m_action_animation_counter_on = ison;
-                            _gamePage.AnimationTimers.m_action_animation_x = (byte)x;
-                            _gamePage.AnimationTimers.m_action_animation_y = (byte)y;
+                        _gamePage.AnimationTimers.m_action_animation_counter = 0L;
+                        _gamePage.AnimationTimers.m_action_animation_counter_on = ison;
+                        _gamePage.AnimationTimers.m_action_animation_x = (byte)x;
+                        _gamePage.AnimationTimers.m_action_animation_y = (byte)y;
                         break;
                     case animation_timer_types.ANIMATION_TIMER_EXPLOSION:
-                            _gamePage.AnimationTimers.explosion_animation_counter = 0L;
-                            _gamePage.AnimationTimers.explosion_animation_counter_on = ison;
-                            _gamePage.AnimationTimers.explosion_animation_x = (byte)x;
-                            _gamePage.AnimationTimers.explosion_animation_y = (byte)y;
+                        _gamePage.AnimationTimers.explosion_animation_counter = 0L;
+                        _gamePage.AnimationTimers.explosion_animation_counter_on = ison;
+                        _gamePage.AnimationTimers.explosion_animation_x = (byte)x;
+                        _gamePage.AnimationTimers.explosion_animation_y = (byte)y;
                         break;
                     case animation_timer_types.ANIMATION_TIMER_ZAP:
-                            _gamePage.AnimationTimers.zap_animation_counter[timerid] = 0L;
-                            _gamePage.AnimationTimers.zap_animation_counter_on[timerid] = ison;
-                            _gamePage.AnimationTimers.zap_animation_x[timerid] = (byte)x;
-                            _gamePage.AnimationTimers.zap_animation_y[timerid] = (byte)y;
+                        _gamePage.AnimationTimers.zap_animation_counter[timerid] = 0L;
+                        _gamePage.AnimationTimers.zap_animation_counter_on[timerid] = ison;
+                        _gamePage.AnimationTimers.zap_animation_x[timerid] = (byte)x;
+                        _gamePage.AnimationTimers.zap_animation_y[timerid] = (byte)y;
                         break;
                     case animation_timer_types.ANIMATION_TIMER_SPECIAL_EFFECT:
-                            _gamePage.AnimationTimers.special_effect_animation_counter[timerid] = 0L;
-                            _gamePage.AnimationTimers.special_effect_animation_counter_on[timerid] = ison;
-                            _gamePage.AnimationTimers.spef_action_animation_x[timerid] = (byte)x;
-                            _gamePage.AnimationTimers.spef_action_animation_y[timerid] = (byte)y;
-                            _gamePage.AnimationTimers.spef_action_animation_layer[timerid] = (layer_types)layer;
+                        _gamePage.AnimationTimers.special_effect_animation_counter[timerid] = 0L;
+                        _gamePage.AnimationTimers.special_effect_animation_counter_on[timerid] = ison;
+                        _gamePage.AnimationTimers.spef_action_animation_x[timerid] = (byte)x;
+                        _gamePage.AnimationTimers.spef_action_animation_y[timerid] = (byte)y;
+                        _gamePage.AnimationTimers.spef_action_animation_layer[timerid] = (layer_types)layer;
                         break;
                     default:
                         break;
-                    }
                 }
             }
         }
@@ -1025,21 +993,18 @@ namespace GnollHackClient
                 int cnt = 0;
                 do
                 {
-                    lock (_gamePageLock)
+                    lock (_gamePage._screenTextLock)
                     {
-                        lock (_gamePage._screenTextLock)
+                        if (_gamePage._screenText != null)
                         {
-                            if (_gamePage._screenText != null)
+                            lock (_gamePage.AnimationTimerLock)
                             {
-                                lock (_gamePage.AnimationTimerLock)
-                                {
-                                    if (_gamePage._screenText.IsFinished(_gamePage.AnimationTimers.general_animation_counter))
-                                        break;
-                                }
+                                if (_gamePage._screenText.IsFinished(_gamePage.AnimationTimers.general_animation_counter))
+                                    break;
                             }
-                            else
-                                break;
                         }
+                        else
+                            break;
                     }
                     Thread.Sleep(25);
                     cnt++;
@@ -1068,15 +1033,12 @@ namespace GnollHackClient
 
         public void ClientCallback_UpdateCursor(int style, int force_paint, int show_on_u)
         {
-            lock (_gamePageLock)
-            {
-                _gamePage.UpdateCursor(style, force_paint, show_on_u);
-            }
+            _gamePage.UpdateCursor(style, force_paint, show_on_u);
         }
 
         public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid)
         {
-            if(App.FmodService != null)
+            if(App.FmodService != null && !_gamePage.MuteSounds)
             {
                 return App.FmodService.PlayImmediateSound(ghsound, eventPath, bankid, (float)eventVolume, (float)soundVolume, parameterNames, parameterValues, arraysize, sound_type, play_group, dialogue_mid);
             }
@@ -1154,6 +1116,12 @@ namespace GnollHackClient
         public void ClientCallback_InitPrintGlyph(int cmdtype)
         {
             ConcurrentQueue<GHRequest> queue;
+            float generalVolume = Preferences.Get("GeneralVolume", 1.0f);
+            float musicVolume = Preferences.Get("MusicVolume", 0.5f);
+            float ambientVolume = Preferences.Get("AmbientVolume", 0.5f);
+            float dialogueVolume = Preferences.Get("DialogueVolume", 0.5f);
+            float effectsVolume = Preferences.Get("EffectsVolume", 0.5f);
+            float UIVolume = Preferences.Get("UIVolume", 0.5f);
             switch (cmdtype)
             {
                 case (int)init_print_glyph_stages.INIT_GLYPH_LOAD_GLYPHS:
@@ -1199,16 +1167,20 @@ namespace GnollHackClient
                     }
                     break;
                 case (int)init_print_glyph_stages.INIT_GLYPH_FORCE_ASCII:
-                    lock(_gamePageLock)
-                    {
-                        _gamePage.ForceAscii = true;
-                    }
+                    _gamePage.ForceAscii = true;
                     break;
                 case (int)init_print_glyph_stages.INIT_GLYPH_UNFORCE_ASCII:
-                    lock (_gamePageLock)
-                    {
-                        _gamePage.ForceAscii = false;
-                    }
+                    _gamePage.ForceAscii = false;
+                    break;
+                case (int)init_print_glyph_stages.INIT_GLYPH_MUTE_SOUNDS:
+                    _gamePage.MuteSounds = true;
+                    App.FmodService.AdjustVolumes(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+                    break;
+                case (int)init_print_glyph_stages.INIT_GLYPH_UNMUTE_SOUNDS:
+                    _gamePage.MuteSounds = false;
+                    App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
+                    break;
+                case (int)init_print_glyph_stages.INIT_GLYPH_LOAD_VIDEOS:
                     break;
                 default:
                     break;
@@ -1256,21 +1228,35 @@ namespace GnollHackClient
             {
                 case (int)special_view_types.SPECIAL_VIEW_CHAT_MESSAGE:
                     break;
-                case (int)special_view_types.SPECIAL_VIEW_PURCHASE_FULL_VERSION:
+                //case (int)special_view_types.SPECIAL_VIEW_PURCHASE_FULL_VERSION:
+                //    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                //    {
+                //        queue.Enqueue(new GHRequest(this, GHRequestType.ShowPurchasePage));
+                //    }
+                //    res = ClientCallback_nhgetch();
+
+                //    break;
+                //case (int)special_view_types.SPECIAL_VIEW_PURCHASE_EXTRA_LIFE:
+                //if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                //{
+                //    queue.Enqueue(new GHRequest(this, GHRequestType.ShowPurchaseExtraLife, param1, param2));
+                //}
+                //res = ClientCallback_nhgetch();
+                //break;
+                //case (int)special_view_types.SPECIAL_VIEW_SHOW_ADS:
+                //    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                //    {
+                //        queue.Enqueue(new GHRequest(this, GHRequestType.ShowAds));
+                //    }
+                //    res = ClientCallback_nhgetch();
+
+                //    break;
+                case (int)special_view_types.SPECIAL_VIEW_SHOW_ACTIVATE_ASCII:
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowPurchasePage));
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowActivateAscii));
                     }
                     res = ClientCallback_nhgetch();
-
-                    break;
-                case (int)special_view_types.SPECIAL_VIEW_PURCHASE_EXTRA_LIFE:
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
-                    {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowPurchaseExtraLife, param1, param2));
-                    }
-                    res = ClientCallback_nhgetch();
-
                     break;
                 default:
                     break;

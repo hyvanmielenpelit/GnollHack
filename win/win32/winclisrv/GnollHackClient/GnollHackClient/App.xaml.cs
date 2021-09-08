@@ -48,6 +48,30 @@ namespace GnollHackClient
             App.FullVersionMode = Preferences.Get("FullVersion", false);
             App.HardCoreMode = false; // Preferences.Get("HardCoreMode", false);
             App.ExtraLives = Preferences.Get("ExtraLives", 0);
+            App.ReadSecrets();
+        }
+
+        public static Secrets CurrentSecrets { get; set; }
+        public static void ReadSecrets()
+        {
+            Assembly assembly = typeof(App).GetTypeInfo().Assembly;
+            string json = "";
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.secrets.jsons"))
+            {
+                if (stream != null)
+                {
+                    using (StreamReader sr = new StreamReader(stream))
+                    {
+                        json = sr.ReadToEnd();
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            CurrentSecrets = JsonConvert.DeserializeObject<Secrets>(json);
         }
 
         protected override void OnStart()

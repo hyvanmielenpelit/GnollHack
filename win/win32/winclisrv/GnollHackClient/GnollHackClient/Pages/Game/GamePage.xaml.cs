@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using GnollHackClient.Controls;
 using Plugin.InAppBilling;
+using MarcTron.Plugin;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -62,6 +63,9 @@ namespace GnollHackClient.Pages.Game
         private object _forceAsciiLock = new object();
         private bool _forceAscii = false;
         public bool ForceAscii { get { lock (_forceAsciiLock) { return _forceAscii; } } set { lock (_forceAsciiLock) { _forceAscii = value; } } }
+        private object _muteSoundsLock = new object();
+        private bool _muteSounds = false;
+        public bool MuteSounds { get { lock (_muteSoundsLock) { return _muteSounds; } } set { lock (_muteSoundsLock) { _muteSounds = value; } } }
 
         private CommandCanvasPage _cmdPage = null;
 
@@ -854,11 +858,17 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.ShowOutRipPage:
                                 ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
                                 break;
-                            case GHRequestType.ShowPurchasePage:
-                                ShowPurchasePage();
-                                break;
-                            case GHRequestType.ShowPurchaseExtraLife:
-                                ShowPurchaseExtraLife(req.RequestInt, req.RequestInt2);
+                            //case GHRequestType.ShowPurchasePage:
+                            //    ShowPurchasePage();
+                            //    break;
+                            //case GHRequestType.ShowAds:
+                            //    ShowInterstitial();
+                            //    break;
+                            //case GHRequestType.ShowPurchaseExtraLife:
+                            //    ShowPurchaseExtraLife(req.RequestInt, req.RequestInt2);
+                            //    break;
+                            case GHRequestType.ShowActivateAscii:
+                                ShowActivateAscii();
                                 break;
                             case GHRequestType.CreateWindowView:
                                 CreateWindowView(req.RequestInt);
@@ -1410,61 +1420,91 @@ namespace GnollHackClient.Pages.Game
             var outRipPage = new OutRipPage(this, ghwindow, outripinfo);
             await App.Current.MainPage.Navigation.PushModalAsync(outRipPage);
         }
-        private async void ShowPurchasePage()
+        //private async void ShowPurchasePage()
+        //{
+        //    InAppBillingProduct productdetails = await _mainPage.GetProductDetails(GHConstants.FullVersionProductName);
+        //    if (productdetails != null)
+        //    {
+        //        string text = "You have exceeded the maximum playable levels in the demo version. Please purchase the full version for " + productdetails.LocalizedPrice + " to continue playing.";
+        //        bool res = await DisplayAlert("Demo Level Limit Exceeded", text, "Buy Now", "Save and Exit");
+        //        if (res)
+        //        {
+        //            await _mainPage.CheckPurchaseStatus(false);
+        //            await _mainPage.PurchaseUpgrade();
+        //            if (App.FullVersionMode)
+        //                App.GnollHackService.SwitchDemoVersion(false);
+        //        }
+        //    }
+        //    GenericButton_Clicked(null, null, 27);
+        //}
+        //private async void ShowPurchaseExtraLife(int spentlives, int maxlives)
+        //{
+        //    if (spentlives < maxlives)
+        //    {
+        //        bool useextralife = false;
+        //        if (App.ExtraLives == 0)
+        //        {
+        //            InAppBillingProduct productdetails = await _mainPage.GetProductDetails(GHConstants.ExtraLifeProductName);
+        //            if (productdetails == null)
+        //                return;
+        //            int livesleft = maxlives - spentlives;
+        //            string text = "Your character is about to die. You still have " + livesleft + " of your " + maxlives + " extra lives left in this game. The price is " + productdetails.LocalizedPrice + ". Purchase the extra life?";
+        //            bool res = await DisplayAlert("Purchase Extra Life", text, "Buy Now", "Die");
+        //            if (res)
+        //            {
+        //                await _mainPage.PurchaseExtraLife();
+        //                if (App.ExtraLives > 0)
+        //                    useextralife = true;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            int livesleft = maxlives - spentlives;
+        //            string text = "Your character is about to die. You still have " + livesleft + " of your " + maxlives + " extra lives left in this game. You have already "
+        //                + App.ExtraLives + " extra " + (App.ExtraLives != 1 ? "lives" : "life") + " purchased. Do you want to use "
+        //                + (App.ExtraLives > 1 ? "one of your purchased extra lives" : "your purchased extra life") + " now?";
+        //            bool res = await DisplayAlert("Use Purchased Extra Life", text, "Save Life", "Die");
+        //            if (res)
+        //                useextralife = true;
+        //        }
+        //        if (useextralife)
+        //        {
+        //            App.ExtraLives--;
+        //            Preferences.Set("ExtraLives", App.ExtraLives);
+        //            App.GnollHackService.AddExtraLife(1);
+        //        }
+        //    }
+        //    GenericButton_Clicked(null, null, 27);
+        //}
+
+        //private void ShowInterstitial()
+        //{
+        //    CrossMTAdmob.Current.LoadInterstitial(App.CurrentSecrets.AdUnitId);
+        //    CrossMTAdmob.Current.ShowInterstitial();
+        //    GenericButton_Clicked(null, null, 27);
+        //}
+        private async void ShowActivateAscii()
         {
+            Boolean redraw = false;
             InAppBillingProduct productdetails = await _mainPage.GetProductDetails(GHConstants.FullVersionProductName);
             if (productdetails != null)
             {
-                string text = "You have exceeded the maximum playable levels in the demo version. Please purchase the full version for " + productdetails.LocalizedPrice + " to continue playing.";
-                bool res = await DisplayAlert("Demo Level Limit Exceeded", text, "Buy Now", "Save and Exit");
+                string text = "You have exceeded the maximum playable levels in the demo version. Only ASCII graphics with no sounds remain functional. Please purchase the full version for " + productdetails.LocalizedPrice + " to continue playing with tiles and sounds.";
+                bool res = await DisplayAlert("Demo Level Limit Exceeded", text, "Buy Now", "No thanks");
                 if (res)
                 {
                     await _mainPage.CheckPurchaseStatus(false);
                     await _mainPage.PurchaseUpgrade();
                     if (App.FullVersionMode)
-                        App.GnollHackService.SwitchDemoVersion(false);
-                }
-            }
-            GenericButton_Clicked(null, null, 27);
-        }
-        private async void ShowPurchaseExtraLife(int spentlives, int maxlives)
-        {
-            if (spentlives < maxlives)
-            {
-                bool useextralife = false;
-                if (App.ExtraLives == 0)
-                {
-                    InAppBillingProduct productdetails = await _mainPage.GetProductDetails(GHConstants.ExtraLifeProductName);
-                    if (productdetails == null)
-                        return;
-                    int livesleft = maxlives - spentlives;
-                    string text = "Your character is about to die. You still have " + livesleft + " of your " + maxlives + " extra lives left in this game. The price is " + productdetails.LocalizedPrice + ". Purchase the extra life?";
-                    bool res = await DisplayAlert("Purchase Extra Life", text, "Buy Now", "Die");
-                    if (res)
                     {
-                        await _mainPage.PurchaseExtraLife();
-                        if (App.ExtraLives > 0)
-                            useextralife = true;
+                        App.GnollHackService.SwitchDemoVersion(false);
+                        redraw = true;
                     }
                 }
-                else
-                {
-                    int livesleft = maxlives - spentlives;
-                    string text = "Your character is about to die. You still have " + livesleft + " of your " + maxlives + " extra lives left in this game. You have already "
-                        + App.ExtraLives + " extra " + (App.ExtraLives != 1 ? "lives" : "life") + " purchased. Do you want to use "
-                        + (App.ExtraLives > 1 ? "one of your purchased extra lives" : "your purchased extra life") + " now?";
-                    bool res = await DisplayAlert("Use Purchased Extra Life", text, "Save Life", "Die");
-                    if (res)
-                        useextralife = true;
-                }
-                if (useextralife)
-                {
-                    App.ExtraLives--;
-                    Preferences.Set("ExtraLives", App.ExtraLives);
-                    App.GnollHackService.AddExtraLife(1);
-                }
             }
             GenericButton_Clicked(null, null, 27);
+            if(redraw)
+                GenericButton_Clicked(null, null, GHUtils.Ctrl('r'));
         }
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
@@ -5964,7 +6004,7 @@ namespace GnollHackClient.Pages.Game
         {
             lock (TargetClipLock)
             {
-                if (immediate_pan || GraphicsStyle == GHGraphicsStyle.ASCII)
+                if (immediate_pan || GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii)
                 {
                     _targetClipOn = false;
                     _originMapOffsetWithNewClipX = 0;

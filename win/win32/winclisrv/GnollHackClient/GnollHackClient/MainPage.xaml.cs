@@ -571,26 +571,10 @@ namespace GnollHackClient
 
         public async Task<downloaded_file_check_results> DownloadFileFromWebServer(Assembly assembly, string filename, string target_directory)
         {
-            string json = "";
-            App.DebugWriteProfilingStopwatchTimeAndStart("Start Downloading Bank " + filename);
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.secrets.jsons"))
-            {
-                if (stream != null)
-                {
-                    using (StreamReader sr = new StreamReader(stream))
-                    {
-                        json = sr.ReadToEnd();
-                    }
-                }
-                else
-                {
-                    return downloaded_file_check_results.NoSecretsFile;
-                }
-            }
-
             string target_path = Path.Combine(target_directory, filename);
-
-            DownloadableFileList dflist = JsonConvert.DeserializeObject<DownloadableFileList>(json);
+            if (App.CurrentSecrets == null)
+                return downloaded_file_check_results.NoSecretsFile;
+            Secrets dflist = App.CurrentSecrets;
             DownloadableFile f = null;
             if(dflist != null && dflist.files != null)
             {
@@ -732,7 +716,7 @@ namespace GnollHackClient
 
             string target_path = Path.Combine(target_directory, filename);
 
-            DownloadableFileList dflist = JsonConvert.DeserializeObject<DownloadableFileList>(json);
+            Secrets dflist = JsonConvert.DeserializeObject<Secrets>(json);
             DownloadableFile f = null;
             if (dflist != null && dflist.files != null)
             {

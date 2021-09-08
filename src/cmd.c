@@ -6813,14 +6813,27 @@ register char *cmd;
     return;
 }
 
+static boolean ascii_msg_given = FALSE;
+
 STATIC_OVL void
 check_demo_version()
 {
+    boolean soundson = TRUE;
     if (In_Demo)
     {
         if (u.uz.dnum != mines_dnum && depth(&u.uz) > DEMO_VERSION_MAX_LEVEL_DEPTH)
         {
-            /* Inform about purchasing a full version and then save */
+            soundson = FALSE;
+            init_print_glyph(INIT_GLYPH_MUTE_SOUNDS);
+            if (!ascii_msg_given)
+            {
+                struct special_view_info info = { 0 };
+                info.viewtype = SPECIAL_VIEW_ACTIVATE_ASCII;
+                info.text = 0;
+                open_special_view(info);
+                ascii_msg_given = TRUE;
+            }
+#if 0
             struct special_view_info info = { 0 };
             info.viewtype = SPECIAL_VIEW_PURCHASE_FULL_VERSION;
             info.text = 0;
@@ -6837,8 +6850,12 @@ check_demo_version()
                 else
                     (void)doredraw();
             }
+#endif
         }
     }
+    if(soundson)
+        init_print_glyph(INIT_GLYPH_UNMUTE_SOUNDS);
+
 }
 
 /* convert an x,y pair into a direction code */

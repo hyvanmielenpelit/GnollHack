@@ -71,7 +71,9 @@ namespace GnollHackClient.Pages.Game
             Preferences.Set("DialogueVolume", (float)DialogueVolumeSlider.Value);
             Preferences.Set("EffectsVolume", (float)EffectsVolumeSlider.Value);
             Preferences.Set("UIVolume", (float)UIVolumeSlider.Value);
-            App.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
+
+            if(!_gamePage.MuteSounds)
+                App.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
 
             int res = 4, tryres = 0;
             string str = MessageLengthPicker.SelectedItem.ToString();
@@ -151,7 +153,7 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
-            _doChangeVolume = true;
+            _doChangeVolume = !_gamePage.MuteSounds;
         }
 
         private async void Button_Clicked(object sender, EventArgs e)

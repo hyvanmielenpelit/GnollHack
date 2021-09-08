@@ -204,6 +204,7 @@ struct monst {
     unsigned long mon_flags; /* General easy-to-add flags for monsters for things not covered by the above bitfields */
 #define MON_FLAGS_NONE              0x00000000
 #define MON_FLAGS_RWRAITH           0x00000001
+#define MON_FLAGS_CHAINED           0x00000002
 
     unsigned long mstrategy; /* for monsters with mflag3: current strategy */
 

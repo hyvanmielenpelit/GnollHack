@@ -4,11 +4,11 @@ using System.Text;
 
 namespace GnollHackClient
 {
-    public class DownloadableFileList
+    public class Secrets
     {
         public DownloadableFile[] files = null;
-
-        public DownloadableFileList()
+        public string AdUnitId;
+        public Secrets()
         {
 
         }

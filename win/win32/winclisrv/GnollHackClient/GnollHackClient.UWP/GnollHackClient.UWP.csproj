@@ -144,6 +144,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="MarcTron.Admob">
+      <Version>1.6.5</Version>
+    </PackageReference>
     <PackageReference Include="Plugin.InAppBilling">
       <Version>4.0.2</Version>
     </PackageReference>

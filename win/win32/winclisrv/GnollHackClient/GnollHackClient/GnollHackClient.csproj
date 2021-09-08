@@ -124,6 +124,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MarcTron.Admob" Version="1.6.5" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.14" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />

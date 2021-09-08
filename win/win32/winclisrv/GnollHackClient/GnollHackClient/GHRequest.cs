@@ -33,8 +33,10 @@ namespace GnollHackClient
         ShowSkillButton,
         HideSkillButton,
         ShowOutRipPage,
-        ShowPurchasePage,
-        ShowPurchaseExtraLife,
+        //ShowPurchasePage,
+        //ShowPurchaseExtraLife,
+        //ShowAds,
+        ShowActivateAscii,
         FadeToBlack,
         FadeFromBlack,
     }

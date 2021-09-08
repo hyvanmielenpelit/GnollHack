@@ -215,6 +215,3475 @@ namespace GnollHackClient.Droid
 			global::Plugin.InAppBilling.Resource.Styleable.GradientColor_android_type = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_type;
 			global::Plugin.InAppBilling.Resource.Xml.image_share_filepaths = global::GnollHackClient.Droid.Resource.Xml.image_share_filepaths;
 			global::Plugin.InAppBilling.Resource.Xml.xamarin_essentials_fileprovider_file_paths = global::GnollHackClient.Droid.Resource.Xml.xamarin_essentials_fileprovider_file_paths;
+			global::MarcTron.Plugin.Resource.Animation.abc_fade_in = global::GnollHackClient.Droid.Resource.Animation.abc_fade_in;
+			global::MarcTron.Plugin.Resource.Animation.abc_fade_out = global::GnollHackClient.Droid.Resource.Animation.abc_fade_out;
+			global::MarcTron.Plugin.Resource.Animation.abc_grow_fade_in_from_bottom = global::GnollHackClient.Droid.Resource.Animation.abc_grow_fade_in_from_bottom;
+			global::MarcTron.Plugin.Resource.Animation.abc_popup_enter = global::GnollHackClient.Droid.Resource.Animation.abc_popup_enter;
+			global::MarcTron.Plugin.Resource.Animation.abc_popup_exit = global::GnollHackClient.Droid.Resource.Animation.abc_popup_exit;
+			global::MarcTron.Plugin.Resource.Animation.abc_shrink_fade_out_from_bottom = global::GnollHackClient.Droid.Resource.Animation.abc_shrink_fade_out_from_bottom;
+			global::MarcTron.Plugin.Resource.Animation.abc_slide_in_bottom = global::GnollHackClient.Droid.Resource.Animation.abc_slide_in_bottom;
+			global::MarcTron.Plugin.Resource.Animation.abc_slide_in_top = global::GnollHackClient.Droid.Resource.Animation.abc_slide_in_top;
+			global::MarcTron.Plugin.Resource.Animation.abc_slide_out_bottom = global::GnollHackClient.Droid.Resource.Animation.abc_slide_out_bottom;
+			global::MarcTron.Plugin.Resource.Animation.abc_slide_out_top = global::GnollHackClient.Droid.Resource.Animation.abc_slide_out_top;
+			global::MarcTron.Plugin.Resource.Animation.abc_tooltip_enter = global::GnollHackClient.Droid.Resource.Animation.abc_tooltip_enter;
+			global::MarcTron.Plugin.Resource.Animation.abc_tooltip_exit = global::GnollHackClient.Droid.Resource.Animation.abc_tooltip_exit;
+			global::MarcTron.Plugin.Resource.Animation.btn_checkbox_to_checked_box_inner_merged_animation = global::GnollHackClient.Droid.Resource.Animation.btn_checkbox_to_checked_box_inner_merged_animation;
+			global::MarcTron.Plugin.Resource.Animation.btn_checkbox_to_checked_box_outer_merged_animation = global::GnollHackClient.Droid.Resource.Animation.btn_checkbox_to_checked_box_outer_merged_animation;
+			global::MarcTron.Plugin.Resource.Animation.btn_checkbox_to_checked_icon_null_animation = global::GnollHackClient.Droid.Resource.Animation.btn_checkbox_to_checked_icon_null_animation;
+			global::MarcTron.Plugin.Resource.Animation.btn_checkbox_to_unchecked_box_inner_merged_animation = global::GnollHackClient.Droid.Resource.Animation.btn_checkbox_to_unchecked_box_inner_merged_animation;
+			global::MarcTron.Plugin.Resource.Animation.btn_checkbox_to_unchecked_check_path_merged_animation = global::GnollHackClient.Droid.Resource.Animation.btn_checkbox_to_unchecked_check_path_merged_animation;
+			global::MarcTron.Plugin.Resource.Animation.btn_checkbox_to_unchecked_icon_null_animation = global::GnollHackClient.Droid.Resource.Animation.btn_checkbox_to_unchecked_icon_null_animation;
+			global::MarcTron.Plugin.Resource.Animation.btn_radio_to_off_mtrl_dot_group_animation = global::GnollHackClient.Droid.Resource.Animation.btn_radio_to_off_mtrl_dot_group_animation;
+			global::MarcTron.Plugin.Resource.Animation.btn_radio_to_off_mtrl_ring_outer_animation = global::GnollHackClient.Droid.Resource.Animation.btn_radio_to_off_mtrl_ring_outer_animation;
+			global::MarcTron.Plugin.Resource.Animation.btn_radio_to_off_mtrl_ring_outer_path_animation = global::GnollHackClient.Droid.Resource.Animation.btn_radio_to_off_mtrl_ring_outer_path_animation;
+			global::MarcTron.Plugin.Resource.Animation.btn_radio_to_on_mtrl_dot_group_animation = global::GnollHackClient.Droid.Resource.Animation.btn_radio_to_on_mtrl_dot_group_animation;
+			global::MarcTron.Plugin.Resource.Animation.btn_radio_to_on_mtrl_ring_outer_animation = global::GnollHackClient.Droid.Resource.Animation.btn_radio_to_on_mtrl_ring_outer_animation;
+			global::MarcTron.Plugin.Resource.Animation.btn_radio_to_on_mtrl_ring_outer_path_animation = global::GnollHackClient.Droid.Resource.Animation.btn_radio_to_on_mtrl_ring_outer_path_animation;
+			global::MarcTron.Plugin.Resource.Animation.design_bottom_sheet_slide_in = global::GnollHackClient.Droid.Resource.Animation.design_bottom_sheet_slide_in;
+			global::MarcTron.Plugin.Resource.Animation.design_bottom_sheet_slide_out = global::GnollHackClient.Droid.Resource.Animation.design_bottom_sheet_slide_out;
+			global::MarcTron.Plugin.Resource.Animation.design_snackbar_in = global::GnollHackClient.Droid.Resource.Animation.design_snackbar_in;
+			global::MarcTron.Plugin.Resource.Animation.design_snackbar_out = global::GnollHackClient.Droid.Resource.Animation.design_snackbar_out;
+			global::MarcTron.Plugin.Resource.Animation.EnterFromLeft = global::GnollHackClient.Droid.Resource.Animation.EnterFromLeft;
+			global::MarcTron.Plugin.Resource.Animation.EnterFromRight = global::GnollHackClient.Droid.Resource.Animation.EnterFromRight;
+			global::MarcTron.Plugin.Resource.Animation.ExitToLeft = global::GnollHackClient.Droid.Resource.Animation.ExitToLeft;
+			global::MarcTron.Plugin.Resource.Animation.ExitToRight = global::GnollHackClient.Droid.Resource.Animation.ExitToRight;
+			global::MarcTron.Plugin.Resource.Animation.fragment_close_enter = global::GnollHackClient.Droid.Resource.Animation.fragment_close_enter;
+			global::MarcTron.Plugin.Resource.Animation.fragment_close_exit = global::GnollHackClient.Droid.Resource.Animation.fragment_close_exit;
+			global::MarcTron.Plugin.Resource.Animation.fragment_fade_enter = global::GnollHackClient.Droid.Resource.Animation.fragment_fade_enter;
+			global::MarcTron.Plugin.Resource.Animation.fragment_fade_exit = global::GnollHackClient.Droid.Resource.Animation.fragment_fade_exit;
+			global::MarcTron.Plugin.Resource.Animation.fragment_fast_out_extra_slow_in = global::GnollHackClient.Droid.Resource.Animation.fragment_fast_out_extra_slow_in;
+			global::MarcTron.Plugin.Resource.Animation.fragment_open_enter = global::GnollHackClient.Droid.Resource.Animation.fragment_open_enter;
+			global::MarcTron.Plugin.Resource.Animation.fragment_open_exit = global::GnollHackClient.Droid.Resource.Animation.fragment_open_exit;
+			global::MarcTron.Plugin.Resource.Animation.mtrl_bottom_sheet_slide_in = global::GnollHackClient.Droid.Resource.Animation.mtrl_bottom_sheet_slide_in;
+			global::MarcTron.Plugin.Resource.Animation.mtrl_bottom_sheet_slide_out = global::GnollHackClient.Droid.Resource.Animation.mtrl_bottom_sheet_slide_out;
+			global::MarcTron.Plugin.Resource.Animation.mtrl_card_lowers_interpolator = global::GnollHackClient.Droid.Resource.Animation.mtrl_card_lowers_interpolator;
+			global::MarcTron.Plugin.Resource.Animator.design_appbar_state_list_animator = global::GnollHackClient.Droid.Resource.Animator.design_appbar_state_list_animator;
+			global::MarcTron.Plugin.Resource.Animator.design_fab_hide_motion_spec = global::GnollHackClient.Droid.Resource.Animator.design_fab_hide_motion_spec;
+			global::MarcTron.Plugin.Resource.Animator.design_fab_show_motion_spec = global::GnollHackClient.Droid.Resource.Animator.design_fab_show_motion_spec;
+			global::MarcTron.Plugin.Resource.Animator.mtrl_btn_state_list_anim = global::GnollHackClient.Droid.Resource.Animator.mtrl_btn_state_list_anim;
+			global::MarcTron.Plugin.Resource.Animator.mtrl_btn_unelevated_state_list_anim = global::GnollHackClient.Droid.Resource.Animator.mtrl_btn_unelevated_state_list_anim;
+			global::MarcTron.Plugin.Resource.Animator.mtrl_card_state_list_anim = global::GnollHackClient.Droid.Resource.Animator.mtrl_card_state_list_anim;
+			global::MarcTron.Plugin.Resource.Animator.mtrl_chip_state_list_anim = global::GnollHackClient.Droid.Resource.Animator.mtrl_chip_state_list_anim;
+			global::MarcTron.Plugin.Resource.Animator.mtrl_extended_fab_change_size_motion_spec = global::GnollHackClient.Droid.Resource.Animator.mtrl_extended_fab_change_size_motion_spec;
+			global::MarcTron.Plugin.Resource.Animator.mtrl_extended_fab_hide_motion_spec = global::GnollHackClient.Droid.Resource.Animator.mtrl_extended_fab_hide_motion_spec;
+			global::MarcTron.Plugin.Resource.Animator.mtrl_extended_fab_show_motion_spec = global::GnollHackClient.Droid.Resource.Animator.mtrl_extended_fab_show_motion_spec;
+			global::MarcTron.Plugin.Resource.Animator.mtrl_extended_fab_state_list_animator = global::GnollHackClient.Droid.Resource.Animator.mtrl_extended_fab_state_list_animator;
+			global::MarcTron.Plugin.Resource.Animator.mtrl_fab_hide_motion_spec = global::GnollHackClient.Droid.Resource.Animator.mtrl_fab_hide_motion_spec;
+			global::MarcTron.Plugin.Resource.Animator.mtrl_fab_show_motion_spec = global::GnollHackClient.Droid.Resource.Animator.mtrl_fab_show_motion_spec;
+			global::MarcTron.Plugin.Resource.Animator.mtrl_fab_transformation_sheet_collapse_spec = global::GnollHackClient.Droid.Resource.Animator.mtrl_fab_transformation_sheet_collapse_spec;
+			global::MarcTron.Plugin.Resource.Animator.mtrl_fab_transformation_sheet_expand_spec = global::GnollHackClient.Droid.Resource.Animator.mtrl_fab_transformation_sheet_expand_spec;
+			global::MarcTron.Plugin.Resource.Attribute.actionBarDivider = global::GnollHackClient.Droid.Resource.Attribute.actionBarDivider;
+			global::MarcTron.Plugin.Resource.Attribute.actionBarItemBackground = global::GnollHackClient.Droid.Resource.Attribute.actionBarItemBackground;
+			global::MarcTron.Plugin.Resource.Attribute.actionBarPopupTheme = global::GnollHackClient.Droid.Resource.Attribute.actionBarPopupTheme;
+			global::MarcTron.Plugin.Resource.Attribute.actionBarSize = global::GnollHackClient.Droid.Resource.Attribute.actionBarSize;
+			global::MarcTron.Plugin.Resource.Attribute.actionBarSplitStyle = global::GnollHackClient.Droid.Resource.Attribute.actionBarSplitStyle;
+			global::MarcTron.Plugin.Resource.Attribute.actionBarStyle = global::GnollHackClient.Droid.Resource.Attribute.actionBarStyle;
+			global::MarcTron.Plugin.Resource.Attribute.actionBarTabBarStyle = global::GnollHackClient.Droid.Resource.Attribute.actionBarTabBarStyle;
+			global::MarcTron.Plugin.Resource.Attribute.actionBarTabStyle = global::GnollHackClient.Droid.Resource.Attribute.actionBarTabStyle;
+			global::MarcTron.Plugin.Resource.Attribute.actionBarTabTextStyle = global::GnollHackClient.Droid.Resource.Attribute.actionBarTabTextStyle;
+			global::MarcTron.Plugin.Resource.Attribute.actionBarTheme = global::GnollHackClient.Droid.Resource.Attribute.actionBarTheme;
+			global::MarcTron.Plugin.Resource.Attribute.actionBarWidgetTheme = global::GnollHackClient.Droid.Resource.Attribute.actionBarWidgetTheme;
+			global::MarcTron.Plugin.Resource.Attribute.actionButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.actionButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.actionDropDownStyle = global::GnollHackClient.Droid.Resource.Attribute.actionDropDownStyle;
+			global::MarcTron.Plugin.Resource.Attribute.actionLayout = global::GnollHackClient.Droid.Resource.Attribute.actionLayout;
+			global::MarcTron.Plugin.Resource.Attribute.actionMenuTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.actionMenuTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.actionMenuTextColor = global::GnollHackClient.Droid.Resource.Attribute.actionMenuTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.actionModeBackground = global::GnollHackClient.Droid.Resource.Attribute.actionModeBackground;
+			global::MarcTron.Plugin.Resource.Attribute.actionModeCloseButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.actionModeCloseButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.actionModeCloseDrawable = global::GnollHackClient.Droid.Resource.Attribute.actionModeCloseDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.actionModeCopyDrawable = global::GnollHackClient.Droid.Resource.Attribute.actionModeCopyDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.actionModeCutDrawable = global::GnollHackClient.Droid.Resource.Attribute.actionModeCutDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.actionModeFindDrawable = global::GnollHackClient.Droid.Resource.Attribute.actionModeFindDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.actionModePasteDrawable = global::GnollHackClient.Droid.Resource.Attribute.actionModePasteDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.actionModePopupWindowStyle = global::GnollHackClient.Droid.Resource.Attribute.actionModePopupWindowStyle;
+			global::MarcTron.Plugin.Resource.Attribute.actionModeSelectAllDrawable = global::GnollHackClient.Droid.Resource.Attribute.actionModeSelectAllDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.actionModeShareDrawable = global::GnollHackClient.Droid.Resource.Attribute.actionModeShareDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.actionModeSplitBackground = global::GnollHackClient.Droid.Resource.Attribute.actionModeSplitBackground;
+			global::MarcTron.Plugin.Resource.Attribute.actionModeStyle = global::GnollHackClient.Droid.Resource.Attribute.actionModeStyle;
+			global::MarcTron.Plugin.Resource.Attribute.actionModeWebSearchDrawable = global::GnollHackClient.Droid.Resource.Attribute.actionModeWebSearchDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.actionOverflowButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.actionOverflowButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.actionOverflowMenuStyle = global::GnollHackClient.Droid.Resource.Attribute.actionOverflowMenuStyle;
+			global::MarcTron.Plugin.Resource.Attribute.actionProviderClass = global::GnollHackClient.Droid.Resource.Attribute.actionProviderClass;
+			global::MarcTron.Plugin.Resource.Attribute.actionTextColorAlpha = global::GnollHackClient.Droid.Resource.Attribute.actionTextColorAlpha;
+			global::MarcTron.Plugin.Resource.Attribute.actionViewClass = global::GnollHackClient.Droid.Resource.Attribute.actionViewClass;
+			global::MarcTron.Plugin.Resource.Attribute.activityChooserViewStyle = global::GnollHackClient.Droid.Resource.Attribute.activityChooserViewStyle;
+			global::MarcTron.Plugin.Resource.Attribute.adSize = global::GnollHackClient.Droid.Resource.Attribute.adSize;
+			global::MarcTron.Plugin.Resource.Attribute.adSizes = global::GnollHackClient.Droid.Resource.Attribute.adSizes;
+			global::MarcTron.Plugin.Resource.Attribute.adUnitId = global::GnollHackClient.Droid.Resource.Attribute.adUnitId;
+			global::MarcTron.Plugin.Resource.Attribute.alertDialogButtonGroupStyle = global::GnollHackClient.Droid.Resource.Attribute.alertDialogButtonGroupStyle;
+			global::MarcTron.Plugin.Resource.Attribute.alertDialogCenterButtons = global::GnollHackClient.Droid.Resource.Attribute.alertDialogCenterButtons;
+			global::MarcTron.Plugin.Resource.Attribute.alertDialogStyle = global::GnollHackClient.Droid.Resource.Attribute.alertDialogStyle;
+			global::MarcTron.Plugin.Resource.Attribute.alertDialogTheme = global::GnollHackClient.Droid.Resource.Attribute.alertDialogTheme;
+			global::MarcTron.Plugin.Resource.Attribute.allowStacking = global::GnollHackClient.Droid.Resource.Attribute.allowStacking;
+			global::MarcTron.Plugin.Resource.Attribute.alpha = global::GnollHackClient.Droid.Resource.Attribute.alpha;
+			global::MarcTron.Plugin.Resource.Attribute.alphabeticModifiers = global::GnollHackClient.Droid.Resource.Attribute.alphabeticModifiers;
+			global::MarcTron.Plugin.Resource.Attribute.animationMode = global::GnollHackClient.Droid.Resource.Attribute.animationMode;
+			global::MarcTron.Plugin.Resource.Attribute.appBarLayoutStyle = global::GnollHackClient.Droid.Resource.Attribute.appBarLayoutStyle;
+			global::MarcTron.Plugin.Resource.Attribute.arrowHeadLength = global::GnollHackClient.Droid.Resource.Attribute.arrowHeadLength;
+			global::MarcTron.Plugin.Resource.Attribute.arrowShaftLength = global::GnollHackClient.Droid.Resource.Attribute.arrowShaftLength;
+			global::MarcTron.Plugin.Resource.Attribute.autoCompleteTextViewStyle = global::GnollHackClient.Droid.Resource.Attribute.autoCompleteTextViewStyle;
+			global::MarcTron.Plugin.Resource.Attribute.autoSizeMaxTextSize = global::GnollHackClient.Droid.Resource.Attribute.autoSizeMaxTextSize;
+			global::MarcTron.Plugin.Resource.Attribute.autoSizeMinTextSize = global::GnollHackClient.Droid.Resource.Attribute.autoSizeMinTextSize;
+			global::MarcTron.Plugin.Resource.Attribute.autoSizePresetSizes = global::GnollHackClient.Droid.Resource.Attribute.autoSizePresetSizes;
+			global::MarcTron.Plugin.Resource.Attribute.autoSizeStepGranularity = global::GnollHackClient.Droid.Resource.Attribute.autoSizeStepGranularity;
+			global::MarcTron.Plugin.Resource.Attribute.autoSizeTextType = global::GnollHackClient.Droid.Resource.Attribute.autoSizeTextType;
+			global::MarcTron.Plugin.Resource.Attribute.background = global::GnollHackClient.Droid.Resource.Attribute.background;
+			global::MarcTron.Plugin.Resource.Attribute.backgroundColor = global::GnollHackClient.Droid.Resource.Attribute.backgroundColor;
+			global::MarcTron.Plugin.Resource.Attribute.backgroundInsetBottom = global::GnollHackClient.Droid.Resource.Attribute.backgroundInsetBottom;
+			global::MarcTron.Plugin.Resource.Attribute.backgroundInsetEnd = global::GnollHackClient.Droid.Resource.Attribute.backgroundInsetEnd;
+			global::MarcTron.Plugin.Resource.Attribute.backgroundInsetStart = global::GnollHackClient.Droid.Resource.Attribute.backgroundInsetStart;
+			global::MarcTron.Plugin.Resource.Attribute.backgroundInsetTop = global::GnollHackClient.Droid.Resource.Attribute.backgroundInsetTop;
+			global::MarcTron.Plugin.Resource.Attribute.backgroundOverlayColorAlpha = global::GnollHackClient.Droid.Resource.Attribute.backgroundOverlayColorAlpha;
+			global::MarcTron.Plugin.Resource.Attribute.backgroundSplit = global::GnollHackClient.Droid.Resource.Attribute.backgroundSplit;
+			global::MarcTron.Plugin.Resource.Attribute.backgroundStacked = global::GnollHackClient.Droid.Resource.Attribute.backgroundStacked;
+			global::MarcTron.Plugin.Resource.Attribute.backgroundTint = global::GnollHackClient.Droid.Resource.Attribute.backgroundTint;
+			global::MarcTron.Plugin.Resource.Attribute.backgroundTintMode = global::GnollHackClient.Droid.Resource.Attribute.backgroundTintMode;
+			global::MarcTron.Plugin.Resource.Attribute.badgeGravity = global::GnollHackClient.Droid.Resource.Attribute.badgeGravity;
+			global::MarcTron.Plugin.Resource.Attribute.badgeStyle = global::GnollHackClient.Droid.Resource.Attribute.badgeStyle;
+			global::MarcTron.Plugin.Resource.Attribute.badgeTextColor = global::GnollHackClient.Droid.Resource.Attribute.badgeTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.barLength = global::GnollHackClient.Droid.Resource.Attribute.barLength;
+			global::MarcTron.Plugin.Resource.Attribute.behavior_autoHide = global::GnollHackClient.Droid.Resource.Attribute.behavior_autoHide;
+			global::MarcTron.Plugin.Resource.Attribute.behavior_autoShrink = global::GnollHackClient.Droid.Resource.Attribute.behavior_autoShrink;
+			global::MarcTron.Plugin.Resource.Attribute.behavior_expandedOffset = global::GnollHackClient.Droid.Resource.Attribute.behavior_expandedOffset;
+			global::MarcTron.Plugin.Resource.Attribute.behavior_fitToContents = global::GnollHackClient.Droid.Resource.Attribute.behavior_fitToContents;
+			global::MarcTron.Plugin.Resource.Attribute.behavior_halfExpandedRatio = global::GnollHackClient.Droid.Resource.Attribute.behavior_halfExpandedRatio;
+			global::MarcTron.Plugin.Resource.Attribute.behavior_hideable = global::GnollHackClient.Droid.Resource.Attribute.behavior_hideable;
+			global::MarcTron.Plugin.Resource.Attribute.behavior_overlapTop = global::GnollHackClient.Droid.Resource.Attribute.behavior_overlapTop;
+			global::MarcTron.Plugin.Resource.Attribute.behavior_peekHeight = global::GnollHackClient.Droid.Resource.Attribute.behavior_peekHeight;
+			global::MarcTron.Plugin.Resource.Attribute.behavior_saveFlags = global::GnollHackClient.Droid.Resource.Attribute.behavior_saveFlags;
+			global::MarcTron.Plugin.Resource.Attribute.behavior_skipCollapsed = global::GnollHackClient.Droid.Resource.Attribute.behavior_skipCollapsed;
+			global::MarcTron.Plugin.Resource.Attribute.borderlessButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.borderlessButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.borderWidth = global::GnollHackClient.Droid.Resource.Attribute.borderWidth;
+			global::MarcTron.Plugin.Resource.Attribute.bottomAppBarStyle = global::GnollHackClient.Droid.Resource.Attribute.bottomAppBarStyle;
+			global::MarcTron.Plugin.Resource.Attribute.bottomNavigationStyle = global::GnollHackClient.Droid.Resource.Attribute.bottomNavigationStyle;
+			global::MarcTron.Plugin.Resource.Attribute.bottomSheetDialogTheme = global::GnollHackClient.Droid.Resource.Attribute.bottomSheetDialogTheme;
+			global::MarcTron.Plugin.Resource.Attribute.bottomSheetStyle = global::GnollHackClient.Droid.Resource.Attribute.bottomSheetStyle;
+			global::MarcTron.Plugin.Resource.Attribute.boxBackgroundColor = global::GnollHackClient.Droid.Resource.Attribute.boxBackgroundColor;
+			global::MarcTron.Plugin.Resource.Attribute.boxBackgroundMode = global::GnollHackClient.Droid.Resource.Attribute.boxBackgroundMode;
+			global::MarcTron.Plugin.Resource.Attribute.boxCollapsedPaddingTop = global::GnollHackClient.Droid.Resource.Attribute.boxCollapsedPaddingTop;
+			global::MarcTron.Plugin.Resource.Attribute.boxCornerRadiusBottomEnd = global::GnollHackClient.Droid.Resource.Attribute.boxCornerRadiusBottomEnd;
+			global::MarcTron.Plugin.Resource.Attribute.boxCornerRadiusBottomStart = global::GnollHackClient.Droid.Resource.Attribute.boxCornerRadiusBottomStart;
+			global::MarcTron.Plugin.Resource.Attribute.boxCornerRadiusTopEnd = global::GnollHackClient.Droid.Resource.Attribute.boxCornerRadiusTopEnd;
+			global::MarcTron.Plugin.Resource.Attribute.boxCornerRadiusTopStart = global::GnollHackClient.Droid.Resource.Attribute.boxCornerRadiusTopStart;
+			global::MarcTron.Plugin.Resource.Attribute.boxStrokeColor = global::GnollHackClient.Droid.Resource.Attribute.boxStrokeColor;
+			global::MarcTron.Plugin.Resource.Attribute.boxStrokeWidth = global::GnollHackClient.Droid.Resource.Attribute.boxStrokeWidth;
+			global::MarcTron.Plugin.Resource.Attribute.boxStrokeWidthFocused = global::GnollHackClient.Droid.Resource.Attribute.boxStrokeWidthFocused;
+			global::MarcTron.Plugin.Resource.Attribute.buttonBarButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.buttonBarButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.buttonBarNegativeButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.buttonBarNegativeButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.buttonBarNeutralButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.buttonBarNeutralButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.buttonBarPositiveButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.buttonBarPositiveButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.buttonBarStyle = global::GnollHackClient.Droid.Resource.Attribute.buttonBarStyle;
+			global::MarcTron.Plugin.Resource.Attribute.buttonCompat = global::GnollHackClient.Droid.Resource.Attribute.buttonCompat;
+			global::MarcTron.Plugin.Resource.Attribute.buttonGravity = global::GnollHackClient.Droid.Resource.Attribute.buttonGravity;
+			global::MarcTron.Plugin.Resource.Attribute.buttonIconDimen = global::GnollHackClient.Droid.Resource.Attribute.buttonIconDimen;
+			global::MarcTron.Plugin.Resource.Attribute.buttonPanelSideLayout = global::GnollHackClient.Droid.Resource.Attribute.buttonPanelSideLayout;
+			global::MarcTron.Plugin.Resource.Attribute.buttonStyle = global::GnollHackClient.Droid.Resource.Attribute.buttonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.buttonStyleSmall = global::GnollHackClient.Droid.Resource.Attribute.buttonStyleSmall;
+			global::MarcTron.Plugin.Resource.Attribute.buttonTint = global::GnollHackClient.Droid.Resource.Attribute.buttonTint;
+			global::MarcTron.Plugin.Resource.Attribute.buttonTintMode = global::GnollHackClient.Droid.Resource.Attribute.buttonTintMode;
+			global::MarcTron.Plugin.Resource.Attribute.cardBackgroundColor = global::GnollHackClient.Droid.Resource.Attribute.cardBackgroundColor;
+			global::MarcTron.Plugin.Resource.Attribute.cardCornerRadius = global::GnollHackClient.Droid.Resource.Attribute.cardCornerRadius;
+			global::MarcTron.Plugin.Resource.Attribute.cardElevation = global::GnollHackClient.Droid.Resource.Attribute.cardElevation;
+			global::MarcTron.Plugin.Resource.Attribute.cardForegroundColor = global::GnollHackClient.Droid.Resource.Attribute.cardForegroundColor;
+			global::MarcTron.Plugin.Resource.Attribute.cardMaxElevation = global::GnollHackClient.Droid.Resource.Attribute.cardMaxElevation;
+			global::MarcTron.Plugin.Resource.Attribute.cardPreventCornerOverlap = global::GnollHackClient.Droid.Resource.Attribute.cardPreventCornerOverlap;
+			global::MarcTron.Plugin.Resource.Attribute.cardUseCompatPadding = global::GnollHackClient.Droid.Resource.Attribute.cardUseCompatPadding;
+			global::MarcTron.Plugin.Resource.Attribute.cardViewStyle = global::GnollHackClient.Droid.Resource.Attribute.cardViewStyle;
+			global::MarcTron.Plugin.Resource.Attribute.checkboxStyle = global::GnollHackClient.Droid.Resource.Attribute.checkboxStyle;
+			global::MarcTron.Plugin.Resource.Attribute.checkedButton = global::GnollHackClient.Droid.Resource.Attribute.checkedButton;
+			global::MarcTron.Plugin.Resource.Attribute.checkedChip = global::GnollHackClient.Droid.Resource.Attribute.checkedChip;
+			global::MarcTron.Plugin.Resource.Attribute.checkedIcon = global::GnollHackClient.Droid.Resource.Attribute.checkedIcon;
+			global::MarcTron.Plugin.Resource.Attribute.checkedIconEnabled = global::GnollHackClient.Droid.Resource.Attribute.checkedIconEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.checkedIconTint = global::GnollHackClient.Droid.Resource.Attribute.checkedIconTint;
+			global::MarcTron.Plugin.Resource.Attribute.checkedIconVisible = global::GnollHackClient.Droid.Resource.Attribute.checkedIconVisible;
+			global::MarcTron.Plugin.Resource.Attribute.checkedTextViewStyle = global::GnollHackClient.Droid.Resource.Attribute.checkedTextViewStyle;
+			global::MarcTron.Plugin.Resource.Attribute.chipBackgroundColor = global::GnollHackClient.Droid.Resource.Attribute.chipBackgroundColor;
+			global::MarcTron.Plugin.Resource.Attribute.chipCornerRadius = global::GnollHackClient.Droid.Resource.Attribute.chipCornerRadius;
+			global::MarcTron.Plugin.Resource.Attribute.chipEndPadding = global::GnollHackClient.Droid.Resource.Attribute.chipEndPadding;
+			global::MarcTron.Plugin.Resource.Attribute.chipGroupStyle = global::GnollHackClient.Droid.Resource.Attribute.chipGroupStyle;
+			global::MarcTron.Plugin.Resource.Attribute.chipIcon = global::GnollHackClient.Droid.Resource.Attribute.chipIcon;
+			global::MarcTron.Plugin.Resource.Attribute.chipIconEnabled = global::GnollHackClient.Droid.Resource.Attribute.chipIconEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.chipIconSize = global::GnollHackClient.Droid.Resource.Attribute.chipIconSize;
+			global::MarcTron.Plugin.Resource.Attribute.chipIconTint = global::GnollHackClient.Droid.Resource.Attribute.chipIconTint;
+			global::MarcTron.Plugin.Resource.Attribute.chipIconVisible = global::GnollHackClient.Droid.Resource.Attribute.chipIconVisible;
+			global::MarcTron.Plugin.Resource.Attribute.chipMinHeight = global::GnollHackClient.Droid.Resource.Attribute.chipMinHeight;
+			global::MarcTron.Plugin.Resource.Attribute.chipMinTouchTargetSize = global::GnollHackClient.Droid.Resource.Attribute.chipMinTouchTargetSize;
+			global::MarcTron.Plugin.Resource.Attribute.chipSpacing = global::GnollHackClient.Droid.Resource.Attribute.chipSpacing;
+			global::MarcTron.Plugin.Resource.Attribute.chipSpacingHorizontal = global::GnollHackClient.Droid.Resource.Attribute.chipSpacingHorizontal;
+			global::MarcTron.Plugin.Resource.Attribute.chipSpacingVertical = global::GnollHackClient.Droid.Resource.Attribute.chipSpacingVertical;
+			global::MarcTron.Plugin.Resource.Attribute.chipStandaloneStyle = global::GnollHackClient.Droid.Resource.Attribute.chipStandaloneStyle;
+			global::MarcTron.Plugin.Resource.Attribute.chipStartPadding = global::GnollHackClient.Droid.Resource.Attribute.chipStartPadding;
+			global::MarcTron.Plugin.Resource.Attribute.chipStrokeColor = global::GnollHackClient.Droid.Resource.Attribute.chipStrokeColor;
+			global::MarcTron.Plugin.Resource.Attribute.chipStrokeWidth = global::GnollHackClient.Droid.Resource.Attribute.chipStrokeWidth;
+			global::MarcTron.Plugin.Resource.Attribute.chipStyle = global::GnollHackClient.Droid.Resource.Attribute.chipStyle;
+			global::MarcTron.Plugin.Resource.Attribute.chipSurfaceColor = global::GnollHackClient.Droid.Resource.Attribute.chipSurfaceColor;
+			global::MarcTron.Plugin.Resource.Attribute.closeIcon = global::GnollHackClient.Droid.Resource.Attribute.closeIcon;
+			global::MarcTron.Plugin.Resource.Attribute.closeIconEnabled = global::GnollHackClient.Droid.Resource.Attribute.closeIconEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.closeIconEndPadding = global::GnollHackClient.Droid.Resource.Attribute.closeIconEndPadding;
+			global::MarcTron.Plugin.Resource.Attribute.closeIconSize = global::GnollHackClient.Droid.Resource.Attribute.closeIconSize;
+			global::MarcTron.Plugin.Resource.Attribute.closeIconStartPadding = global::GnollHackClient.Droid.Resource.Attribute.closeIconStartPadding;
+			global::MarcTron.Plugin.Resource.Attribute.closeIconTint = global::GnollHackClient.Droid.Resource.Attribute.closeIconTint;
+			global::MarcTron.Plugin.Resource.Attribute.closeIconVisible = global::GnollHackClient.Droid.Resource.Attribute.closeIconVisible;
+			global::MarcTron.Plugin.Resource.Attribute.closeItemLayout = global::GnollHackClient.Droid.Resource.Attribute.closeItemLayout;
+			global::MarcTron.Plugin.Resource.Attribute.collapseContentDescription = global::GnollHackClient.Droid.Resource.Attribute.collapseContentDescription;
+			global::MarcTron.Plugin.Resource.Attribute.collapsedTitleGravity = global::GnollHackClient.Droid.Resource.Attribute.collapsedTitleGravity;
+			global::MarcTron.Plugin.Resource.Attribute.collapsedTitleTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.collapsedTitleTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.collapseIcon = global::GnollHackClient.Droid.Resource.Attribute.collapseIcon;
+			global::MarcTron.Plugin.Resource.Attribute.collectionViewStyle = global::GnollHackClient.Droid.Resource.Attribute.collectionViewStyle;
+			global::MarcTron.Plugin.Resource.Attribute.color = global::GnollHackClient.Droid.Resource.Attribute.color;
+			global::MarcTron.Plugin.Resource.Attribute.colorAccent = global::GnollHackClient.Droid.Resource.Attribute.colorAccent;
+			global::MarcTron.Plugin.Resource.Attribute.colorBackgroundFloating = global::GnollHackClient.Droid.Resource.Attribute.colorBackgroundFloating;
+			global::MarcTron.Plugin.Resource.Attribute.colorButtonNormal = global::GnollHackClient.Droid.Resource.Attribute.colorButtonNormal;
+			global::MarcTron.Plugin.Resource.Attribute.colorControlActivated = global::GnollHackClient.Droid.Resource.Attribute.colorControlActivated;
+			global::MarcTron.Plugin.Resource.Attribute.colorControlHighlight = global::GnollHackClient.Droid.Resource.Attribute.colorControlHighlight;
+			global::MarcTron.Plugin.Resource.Attribute.colorControlNormal = global::GnollHackClient.Droid.Resource.Attribute.colorControlNormal;
+			global::MarcTron.Plugin.Resource.Attribute.colorError = global::GnollHackClient.Droid.Resource.Attribute.colorError;
+			global::MarcTron.Plugin.Resource.Attribute.colorOnBackground = global::GnollHackClient.Droid.Resource.Attribute.colorOnBackground;
+			global::MarcTron.Plugin.Resource.Attribute.colorOnError = global::GnollHackClient.Droid.Resource.Attribute.colorOnError;
+			global::MarcTron.Plugin.Resource.Attribute.colorOnPrimary = global::GnollHackClient.Droid.Resource.Attribute.colorOnPrimary;
+			global::MarcTron.Plugin.Resource.Attribute.colorOnPrimarySurface = global::GnollHackClient.Droid.Resource.Attribute.colorOnPrimarySurface;
+			global::MarcTron.Plugin.Resource.Attribute.colorOnSecondary = global::GnollHackClient.Droid.Resource.Attribute.colorOnSecondary;
+			global::MarcTron.Plugin.Resource.Attribute.colorOnSurface = global::GnollHackClient.Droid.Resource.Attribute.colorOnSurface;
+			global::MarcTron.Plugin.Resource.Attribute.colorPrimary = global::GnollHackClient.Droid.Resource.Attribute.colorPrimary;
+			global::MarcTron.Plugin.Resource.Attribute.colorPrimaryDark = global::GnollHackClient.Droid.Resource.Attribute.colorPrimaryDark;
+			global::MarcTron.Plugin.Resource.Attribute.colorPrimarySurface = global::GnollHackClient.Droid.Resource.Attribute.colorPrimarySurface;
+			global::MarcTron.Plugin.Resource.Attribute.colorPrimaryVariant = global::GnollHackClient.Droid.Resource.Attribute.colorPrimaryVariant;
+			global::MarcTron.Plugin.Resource.Attribute.colorSecondary = global::GnollHackClient.Droid.Resource.Attribute.colorSecondary;
+			global::MarcTron.Plugin.Resource.Attribute.colorSecondaryVariant = global::GnollHackClient.Droid.Resource.Attribute.colorSecondaryVariant;
+			global::MarcTron.Plugin.Resource.Attribute.colorSurface = global::GnollHackClient.Droid.Resource.Attribute.colorSurface;
+			global::MarcTron.Plugin.Resource.Attribute.colorSwitchThumbNormal = global::GnollHackClient.Droid.Resource.Attribute.colorSwitchThumbNormal;
+			global::MarcTron.Plugin.Resource.Attribute.commitIcon = global::GnollHackClient.Droid.Resource.Attribute.commitIcon;
+			global::MarcTron.Plugin.Resource.Attribute.contentDescription = global::GnollHackClient.Droid.Resource.Attribute.contentDescription;
+			global::MarcTron.Plugin.Resource.Attribute.contentInsetEnd = global::GnollHackClient.Droid.Resource.Attribute.contentInsetEnd;
+			global::MarcTron.Plugin.Resource.Attribute.contentInsetEndWithActions = global::GnollHackClient.Droid.Resource.Attribute.contentInsetEndWithActions;
+			global::MarcTron.Plugin.Resource.Attribute.contentInsetLeft = global::GnollHackClient.Droid.Resource.Attribute.contentInsetLeft;
+			global::MarcTron.Plugin.Resource.Attribute.contentInsetRight = global::GnollHackClient.Droid.Resource.Attribute.contentInsetRight;
+			global::MarcTron.Plugin.Resource.Attribute.contentInsetStart = global::GnollHackClient.Droid.Resource.Attribute.contentInsetStart;
+			global::MarcTron.Plugin.Resource.Attribute.contentInsetStartWithNavigation = global::GnollHackClient.Droid.Resource.Attribute.contentInsetStartWithNavigation;
+			global::MarcTron.Plugin.Resource.Attribute.contentPadding = global::GnollHackClient.Droid.Resource.Attribute.contentPadding;
+			global::MarcTron.Plugin.Resource.Attribute.contentPaddingBottom = global::GnollHackClient.Droid.Resource.Attribute.contentPaddingBottom;
+			global::MarcTron.Plugin.Resource.Attribute.contentPaddingLeft = global::GnollHackClient.Droid.Resource.Attribute.contentPaddingLeft;
+			global::MarcTron.Plugin.Resource.Attribute.contentPaddingRight = global::GnollHackClient.Droid.Resource.Attribute.contentPaddingRight;
+			global::MarcTron.Plugin.Resource.Attribute.contentPaddingTop = global::GnollHackClient.Droid.Resource.Attribute.contentPaddingTop;
+			global::MarcTron.Plugin.Resource.Attribute.contentScrim = global::GnollHackClient.Droid.Resource.Attribute.contentScrim;
+			global::MarcTron.Plugin.Resource.Attribute.controlBackground = global::GnollHackClient.Droid.Resource.Attribute.controlBackground;
+			global::MarcTron.Plugin.Resource.Attribute.coordinatorLayoutStyle = global::GnollHackClient.Droid.Resource.Attribute.coordinatorLayoutStyle;
+			global::MarcTron.Plugin.Resource.Attribute.cornerFamily = global::GnollHackClient.Droid.Resource.Attribute.cornerFamily;
+			global::MarcTron.Plugin.Resource.Attribute.cornerFamilyBottomLeft = global::GnollHackClient.Droid.Resource.Attribute.cornerFamilyBottomLeft;
+			global::MarcTron.Plugin.Resource.Attribute.cornerFamilyBottomRight = global::GnollHackClient.Droid.Resource.Attribute.cornerFamilyBottomRight;
+			global::MarcTron.Plugin.Resource.Attribute.cornerFamilyTopLeft = global::GnollHackClient.Droid.Resource.Attribute.cornerFamilyTopLeft;
+			global::MarcTron.Plugin.Resource.Attribute.cornerFamilyTopRight = global::GnollHackClient.Droid.Resource.Attribute.cornerFamilyTopRight;
+			global::MarcTron.Plugin.Resource.Attribute.cornerRadius = global::GnollHackClient.Droid.Resource.Attribute.cornerRadius;
+			global::MarcTron.Plugin.Resource.Attribute.cornerSize = global::GnollHackClient.Droid.Resource.Attribute.cornerSize;
+			global::MarcTron.Plugin.Resource.Attribute.cornerSizeBottomLeft = global::GnollHackClient.Droid.Resource.Attribute.cornerSizeBottomLeft;
+			global::MarcTron.Plugin.Resource.Attribute.cornerSizeBottomRight = global::GnollHackClient.Droid.Resource.Attribute.cornerSizeBottomRight;
+			global::MarcTron.Plugin.Resource.Attribute.cornerSizeTopLeft = global::GnollHackClient.Droid.Resource.Attribute.cornerSizeTopLeft;
+			global::MarcTron.Plugin.Resource.Attribute.cornerSizeTopRight = global::GnollHackClient.Droid.Resource.Attribute.cornerSizeTopRight;
+			global::MarcTron.Plugin.Resource.Attribute.counterEnabled = global::GnollHackClient.Droid.Resource.Attribute.counterEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.counterMaxLength = global::GnollHackClient.Droid.Resource.Attribute.counterMaxLength;
+			global::MarcTron.Plugin.Resource.Attribute.counterOverflowTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.counterOverflowTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.counterOverflowTextColor = global::GnollHackClient.Droid.Resource.Attribute.counterOverflowTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.counterTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.counterTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.counterTextColor = global::GnollHackClient.Droid.Resource.Attribute.counterTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.customNavigationLayout = global::GnollHackClient.Droid.Resource.Attribute.customNavigationLayout;
+			global::MarcTron.Plugin.Resource.Attribute.dayInvalidStyle = global::GnollHackClient.Droid.Resource.Attribute.dayInvalidStyle;
+			global::MarcTron.Plugin.Resource.Attribute.daySelectedStyle = global::GnollHackClient.Droid.Resource.Attribute.daySelectedStyle;
+			global::MarcTron.Plugin.Resource.Attribute.dayStyle = global::GnollHackClient.Droid.Resource.Attribute.dayStyle;
+			global::MarcTron.Plugin.Resource.Attribute.dayTodayStyle = global::GnollHackClient.Droid.Resource.Attribute.dayTodayStyle;
+			global::MarcTron.Plugin.Resource.Attribute.defaultQueryHint = global::GnollHackClient.Droid.Resource.Attribute.defaultQueryHint;
+			global::MarcTron.Plugin.Resource.Attribute.dialogCornerRadius = global::GnollHackClient.Droid.Resource.Attribute.dialogCornerRadius;
+			global::MarcTron.Plugin.Resource.Attribute.dialogPreferredPadding = global::GnollHackClient.Droid.Resource.Attribute.dialogPreferredPadding;
+			global::MarcTron.Plugin.Resource.Attribute.dialogTheme = global::GnollHackClient.Droid.Resource.Attribute.dialogTheme;
+			global::MarcTron.Plugin.Resource.Attribute.displayOptions = global::GnollHackClient.Droid.Resource.Attribute.displayOptions;
+			global::MarcTron.Plugin.Resource.Attribute.divider = global::GnollHackClient.Droid.Resource.Attribute.divider;
+			global::MarcTron.Plugin.Resource.Attribute.dividerHorizontal = global::GnollHackClient.Droid.Resource.Attribute.dividerHorizontal;
+			global::MarcTron.Plugin.Resource.Attribute.dividerPadding = global::GnollHackClient.Droid.Resource.Attribute.dividerPadding;
+			global::MarcTron.Plugin.Resource.Attribute.dividerVertical = global::GnollHackClient.Droid.Resource.Attribute.dividerVertical;
+			global::MarcTron.Plugin.Resource.Attribute.drawableBottomCompat = global::GnollHackClient.Droid.Resource.Attribute.drawableBottomCompat;
+			global::MarcTron.Plugin.Resource.Attribute.drawableEndCompat = global::GnollHackClient.Droid.Resource.Attribute.drawableEndCompat;
+			global::MarcTron.Plugin.Resource.Attribute.drawableLeftCompat = global::GnollHackClient.Droid.Resource.Attribute.drawableLeftCompat;
+			global::MarcTron.Plugin.Resource.Attribute.drawableRightCompat = global::GnollHackClient.Droid.Resource.Attribute.drawableRightCompat;
+			global::MarcTron.Plugin.Resource.Attribute.drawableSize = global::GnollHackClient.Droid.Resource.Attribute.drawableSize;
+			global::MarcTron.Plugin.Resource.Attribute.drawableStartCompat = global::GnollHackClient.Droid.Resource.Attribute.drawableStartCompat;
+			global::MarcTron.Plugin.Resource.Attribute.drawableTint = global::GnollHackClient.Droid.Resource.Attribute.drawableTint;
+			global::MarcTron.Plugin.Resource.Attribute.drawableTintMode = global::GnollHackClient.Droid.Resource.Attribute.drawableTintMode;
+			global::MarcTron.Plugin.Resource.Attribute.drawableTopCompat = global::GnollHackClient.Droid.Resource.Attribute.drawableTopCompat;
+			global::MarcTron.Plugin.Resource.Attribute.drawerArrowStyle = global::GnollHackClient.Droid.Resource.Attribute.drawerArrowStyle;
+			global::MarcTron.Plugin.Resource.Attribute.drawerLayoutStyle = global::GnollHackClient.Droid.Resource.Attribute.drawerLayoutStyle;
+			global::MarcTron.Plugin.Resource.Attribute.dropdownListPreferredItemHeight = global::GnollHackClient.Droid.Resource.Attribute.dropdownListPreferredItemHeight;
+			global::MarcTron.Plugin.Resource.Attribute.dropDownListViewStyle = global::GnollHackClient.Droid.Resource.Attribute.dropDownListViewStyle;
+			global::MarcTron.Plugin.Resource.Attribute.editTextBackground = global::GnollHackClient.Droid.Resource.Attribute.editTextBackground;
+			global::MarcTron.Plugin.Resource.Attribute.editTextColor = global::GnollHackClient.Droid.Resource.Attribute.editTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.editTextStyle = global::GnollHackClient.Droid.Resource.Attribute.editTextStyle;
+			global::MarcTron.Plugin.Resource.Attribute.elevation = global::GnollHackClient.Droid.Resource.Attribute.elevation;
+			global::MarcTron.Plugin.Resource.Attribute.elevationOverlayColor = global::GnollHackClient.Droid.Resource.Attribute.elevationOverlayColor;
+			global::MarcTron.Plugin.Resource.Attribute.elevationOverlayEnabled = global::GnollHackClient.Droid.Resource.Attribute.elevationOverlayEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.endIconCheckable = global::GnollHackClient.Droid.Resource.Attribute.endIconCheckable;
+			global::MarcTron.Plugin.Resource.Attribute.endIconContentDescription = global::GnollHackClient.Droid.Resource.Attribute.endIconContentDescription;
+			global::MarcTron.Plugin.Resource.Attribute.endIconDrawable = global::GnollHackClient.Droid.Resource.Attribute.endIconDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.endIconMode = global::GnollHackClient.Droid.Resource.Attribute.endIconMode;
+			global::MarcTron.Plugin.Resource.Attribute.endIconTint = global::GnollHackClient.Droid.Resource.Attribute.endIconTint;
+			global::MarcTron.Plugin.Resource.Attribute.endIconTintMode = global::GnollHackClient.Droid.Resource.Attribute.endIconTintMode;
+			global::MarcTron.Plugin.Resource.Attribute.enforceMaterialTheme = global::GnollHackClient.Droid.Resource.Attribute.enforceMaterialTheme;
+			global::MarcTron.Plugin.Resource.Attribute.enforceTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.enforceTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.ensureMinTouchTargetSize = global::GnollHackClient.Droid.Resource.Attribute.ensureMinTouchTargetSize;
+			global::MarcTron.Plugin.Resource.Attribute.errorEnabled = global::GnollHackClient.Droid.Resource.Attribute.errorEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.errorIconDrawable = global::GnollHackClient.Droid.Resource.Attribute.errorIconDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.errorIconTint = global::GnollHackClient.Droid.Resource.Attribute.errorIconTint;
+			global::MarcTron.Plugin.Resource.Attribute.errorIconTintMode = global::GnollHackClient.Droid.Resource.Attribute.errorIconTintMode;
+			global::MarcTron.Plugin.Resource.Attribute.errorTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.errorTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.errorTextColor = global::GnollHackClient.Droid.Resource.Attribute.errorTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.expandActivityOverflowButtonDrawable = global::GnollHackClient.Droid.Resource.Attribute.expandActivityOverflowButtonDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.expanded = global::GnollHackClient.Droid.Resource.Attribute.expanded;
+			global::MarcTron.Plugin.Resource.Attribute.expandedTitleGravity = global::GnollHackClient.Droid.Resource.Attribute.expandedTitleGravity;
+			global::MarcTron.Plugin.Resource.Attribute.expandedTitleMargin = global::GnollHackClient.Droid.Resource.Attribute.expandedTitleMargin;
+			global::MarcTron.Plugin.Resource.Attribute.expandedTitleMarginBottom = global::GnollHackClient.Droid.Resource.Attribute.expandedTitleMarginBottom;
+			global::MarcTron.Plugin.Resource.Attribute.expandedTitleMarginEnd = global::GnollHackClient.Droid.Resource.Attribute.expandedTitleMarginEnd;
+			global::MarcTron.Plugin.Resource.Attribute.expandedTitleMarginStart = global::GnollHackClient.Droid.Resource.Attribute.expandedTitleMarginStart;
+			global::MarcTron.Plugin.Resource.Attribute.expandedTitleMarginTop = global::GnollHackClient.Droid.Resource.Attribute.expandedTitleMarginTop;
+			global::MarcTron.Plugin.Resource.Attribute.expandedTitleTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.expandedTitleTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.extendedFloatingActionButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.extendedFloatingActionButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.extendMotionSpec = global::GnollHackClient.Droid.Resource.Attribute.extendMotionSpec;
+			global::MarcTron.Plugin.Resource.Attribute.fabAlignmentMode = global::GnollHackClient.Droid.Resource.Attribute.fabAlignmentMode;
+			global::MarcTron.Plugin.Resource.Attribute.fabAnimationMode = global::GnollHackClient.Droid.Resource.Attribute.fabAnimationMode;
+			global::MarcTron.Plugin.Resource.Attribute.fabCradleMargin = global::GnollHackClient.Droid.Resource.Attribute.fabCradleMargin;
+			global::MarcTron.Plugin.Resource.Attribute.fabCradleRoundedCornerRadius = global::GnollHackClient.Droid.Resource.Attribute.fabCradleRoundedCornerRadius;
+			global::MarcTron.Plugin.Resource.Attribute.fabCradleVerticalOffset = global::GnollHackClient.Droid.Resource.Attribute.fabCradleVerticalOffset;
+			global::MarcTron.Plugin.Resource.Attribute.fabCustomSize = global::GnollHackClient.Droid.Resource.Attribute.fabCustomSize;
+			global::MarcTron.Plugin.Resource.Attribute.fabSize = global::GnollHackClient.Droid.Resource.Attribute.fabSize;
+			global::MarcTron.Plugin.Resource.Attribute.fastScrollEnabled = global::GnollHackClient.Droid.Resource.Attribute.fastScrollEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.fastScrollHorizontalThumbDrawable = global::GnollHackClient.Droid.Resource.Attribute.fastScrollHorizontalThumbDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.fastScrollHorizontalTrackDrawable = global::GnollHackClient.Droid.Resource.Attribute.fastScrollHorizontalTrackDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.fastScrollVerticalThumbDrawable = global::GnollHackClient.Droid.Resource.Attribute.fastScrollVerticalThumbDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.fastScrollVerticalTrackDrawable = global::GnollHackClient.Droid.Resource.Attribute.fastScrollVerticalTrackDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.firstBaselineToTopHeight = global::GnollHackClient.Droid.Resource.Attribute.firstBaselineToTopHeight;
+			global::MarcTron.Plugin.Resource.Attribute.floatingActionButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.floatingActionButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.font = global::GnollHackClient.Droid.Resource.Attribute.font;
+			global::MarcTron.Plugin.Resource.Attribute.fontFamily = global::GnollHackClient.Droid.Resource.Attribute.fontFamily;
+			global::MarcTron.Plugin.Resource.Attribute.fontProviderAuthority = global::GnollHackClient.Droid.Resource.Attribute.fontProviderAuthority;
+			global::MarcTron.Plugin.Resource.Attribute.fontProviderCerts = global::GnollHackClient.Droid.Resource.Attribute.fontProviderCerts;
+			global::MarcTron.Plugin.Resource.Attribute.fontProviderFetchStrategy = global::GnollHackClient.Droid.Resource.Attribute.fontProviderFetchStrategy;
+			global::MarcTron.Plugin.Resource.Attribute.fontProviderFetchTimeout = global::GnollHackClient.Droid.Resource.Attribute.fontProviderFetchTimeout;
+			global::MarcTron.Plugin.Resource.Attribute.fontProviderPackage = global::GnollHackClient.Droid.Resource.Attribute.fontProviderPackage;
+			global::MarcTron.Plugin.Resource.Attribute.fontProviderQuery = global::GnollHackClient.Droid.Resource.Attribute.fontProviderQuery;
+			global::MarcTron.Plugin.Resource.Attribute.fontStyle = global::GnollHackClient.Droid.Resource.Attribute.fontStyle;
+			global::MarcTron.Plugin.Resource.Attribute.fontVariationSettings = global::GnollHackClient.Droid.Resource.Attribute.fontVariationSettings;
+			global::MarcTron.Plugin.Resource.Attribute.fontWeight = global::GnollHackClient.Droid.Resource.Attribute.fontWeight;
+			global::MarcTron.Plugin.Resource.Attribute.foregroundInsidePadding = global::GnollHackClient.Droid.Resource.Attribute.foregroundInsidePadding;
+			global::MarcTron.Plugin.Resource.Attribute.gapBetweenBars = global::GnollHackClient.Droid.Resource.Attribute.gapBetweenBars;
+			global::MarcTron.Plugin.Resource.Attribute.goIcon = global::GnollHackClient.Droid.Resource.Attribute.goIcon;
+			global::MarcTron.Plugin.Resource.Attribute.headerLayout = global::GnollHackClient.Droid.Resource.Attribute.headerLayout;
+			global::MarcTron.Plugin.Resource.Attribute.height = global::GnollHackClient.Droid.Resource.Attribute.height;
+			global::MarcTron.Plugin.Resource.Attribute.helperText = global::GnollHackClient.Droid.Resource.Attribute.helperText;
+			global::MarcTron.Plugin.Resource.Attribute.helperTextEnabled = global::GnollHackClient.Droid.Resource.Attribute.helperTextEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.helperTextTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.helperTextTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.helperTextTextColor = global::GnollHackClient.Droid.Resource.Attribute.helperTextTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.hideMotionSpec = global::GnollHackClient.Droid.Resource.Attribute.hideMotionSpec;
+			global::MarcTron.Plugin.Resource.Attribute.hideOnContentScroll = global::GnollHackClient.Droid.Resource.Attribute.hideOnContentScroll;
+			global::MarcTron.Plugin.Resource.Attribute.hideOnScroll = global::GnollHackClient.Droid.Resource.Attribute.hideOnScroll;
+			global::MarcTron.Plugin.Resource.Attribute.hintAnimationEnabled = global::GnollHackClient.Droid.Resource.Attribute.hintAnimationEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.hintEnabled = global::GnollHackClient.Droid.Resource.Attribute.hintEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.hintTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.hintTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.hintTextColor = global::GnollHackClient.Droid.Resource.Attribute.hintTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.homeAsUpIndicator = global::GnollHackClient.Droid.Resource.Attribute.homeAsUpIndicator;
+			global::MarcTron.Plugin.Resource.Attribute.homeLayout = global::GnollHackClient.Droid.Resource.Attribute.homeLayout;
+			global::MarcTron.Plugin.Resource.Attribute.hoveredFocusedTranslationZ = global::GnollHackClient.Droid.Resource.Attribute.hoveredFocusedTranslationZ;
+			global::MarcTron.Plugin.Resource.Attribute.icon = global::GnollHackClient.Droid.Resource.Attribute.icon;
+			global::MarcTron.Plugin.Resource.Attribute.iconEndPadding = global::GnollHackClient.Droid.Resource.Attribute.iconEndPadding;
+			global::MarcTron.Plugin.Resource.Attribute.iconGravity = global::GnollHackClient.Droid.Resource.Attribute.iconGravity;
+			global::MarcTron.Plugin.Resource.Attribute.iconifiedByDefault = global::GnollHackClient.Droid.Resource.Attribute.iconifiedByDefault;
+			global::MarcTron.Plugin.Resource.Attribute.iconPadding = global::GnollHackClient.Droid.Resource.Attribute.iconPadding;
+			global::MarcTron.Plugin.Resource.Attribute.iconSize = global::GnollHackClient.Droid.Resource.Attribute.iconSize;
+			global::MarcTron.Plugin.Resource.Attribute.iconStartPadding = global::GnollHackClient.Droid.Resource.Attribute.iconStartPadding;
+			global::MarcTron.Plugin.Resource.Attribute.iconTint = global::GnollHackClient.Droid.Resource.Attribute.iconTint;
+			global::MarcTron.Plugin.Resource.Attribute.iconTintMode = global::GnollHackClient.Droid.Resource.Attribute.iconTintMode;
+			global::MarcTron.Plugin.Resource.Attribute.imageButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.imageButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.indeterminateProgressStyle = global::GnollHackClient.Droid.Resource.Attribute.indeterminateProgressStyle;
+			global::MarcTron.Plugin.Resource.Attribute.initialActivityCount = global::GnollHackClient.Droid.Resource.Attribute.initialActivityCount;
+			global::MarcTron.Plugin.Resource.Attribute.insetForeground = global::GnollHackClient.Droid.Resource.Attribute.insetForeground;
+			global::MarcTron.Plugin.Resource.Attribute.isLightTheme = global::GnollHackClient.Droid.Resource.Attribute.isLightTheme;
+			global::MarcTron.Plugin.Resource.Attribute.isMaterialTheme = global::GnollHackClient.Droid.Resource.Attribute.isMaterialTheme;
+			global::MarcTron.Plugin.Resource.Attribute.itemBackground = global::GnollHackClient.Droid.Resource.Attribute.itemBackground;
+			global::MarcTron.Plugin.Resource.Attribute.itemFillColor = global::GnollHackClient.Droid.Resource.Attribute.itemFillColor;
+			global::MarcTron.Plugin.Resource.Attribute.itemHorizontalPadding = global::GnollHackClient.Droid.Resource.Attribute.itemHorizontalPadding;
+			global::MarcTron.Plugin.Resource.Attribute.itemHorizontalTranslationEnabled = global::GnollHackClient.Droid.Resource.Attribute.itemHorizontalTranslationEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.itemIconPadding = global::GnollHackClient.Droid.Resource.Attribute.itemIconPadding;
+			global::MarcTron.Plugin.Resource.Attribute.itemIconSize = global::GnollHackClient.Droid.Resource.Attribute.itemIconSize;
+			global::MarcTron.Plugin.Resource.Attribute.itemIconTint = global::GnollHackClient.Droid.Resource.Attribute.itemIconTint;
+			global::MarcTron.Plugin.Resource.Attribute.itemMaxLines = global::GnollHackClient.Droid.Resource.Attribute.itemMaxLines;
+			global::MarcTron.Plugin.Resource.Attribute.itemPadding = global::GnollHackClient.Droid.Resource.Attribute.itemPadding;
+			global::MarcTron.Plugin.Resource.Attribute.itemRippleColor = global::GnollHackClient.Droid.Resource.Attribute.itemRippleColor;
+			global::MarcTron.Plugin.Resource.Attribute.itemShapeAppearance = global::GnollHackClient.Droid.Resource.Attribute.itemShapeAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.itemShapeAppearanceOverlay = global::GnollHackClient.Droid.Resource.Attribute.itemShapeAppearanceOverlay;
+			global::MarcTron.Plugin.Resource.Attribute.itemShapeFillColor = global::GnollHackClient.Droid.Resource.Attribute.itemShapeFillColor;
+			global::MarcTron.Plugin.Resource.Attribute.itemShapeInsetBottom = global::GnollHackClient.Droid.Resource.Attribute.itemShapeInsetBottom;
+			global::MarcTron.Plugin.Resource.Attribute.itemShapeInsetEnd = global::GnollHackClient.Droid.Resource.Attribute.itemShapeInsetEnd;
+			global::MarcTron.Plugin.Resource.Attribute.itemShapeInsetStart = global::GnollHackClient.Droid.Resource.Attribute.itemShapeInsetStart;
+			global::MarcTron.Plugin.Resource.Attribute.itemShapeInsetTop = global::GnollHackClient.Droid.Resource.Attribute.itemShapeInsetTop;
+			global::MarcTron.Plugin.Resource.Attribute.itemSpacing = global::GnollHackClient.Droid.Resource.Attribute.itemSpacing;
+			global::MarcTron.Plugin.Resource.Attribute.itemStrokeColor = global::GnollHackClient.Droid.Resource.Attribute.itemStrokeColor;
+			global::MarcTron.Plugin.Resource.Attribute.itemStrokeWidth = global::GnollHackClient.Droid.Resource.Attribute.itemStrokeWidth;
+			global::MarcTron.Plugin.Resource.Attribute.itemTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.itemTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.itemTextAppearanceActive = global::GnollHackClient.Droid.Resource.Attribute.itemTextAppearanceActive;
+			global::MarcTron.Plugin.Resource.Attribute.itemTextAppearanceInactive = global::GnollHackClient.Droid.Resource.Attribute.itemTextAppearanceInactive;
+			global::MarcTron.Plugin.Resource.Attribute.itemTextColor = global::GnollHackClient.Droid.Resource.Attribute.itemTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.keylines = global::GnollHackClient.Droid.Resource.Attribute.keylines;
+			global::MarcTron.Plugin.Resource.Attribute.labelVisibilityMode = global::GnollHackClient.Droid.Resource.Attribute.labelVisibilityMode;
+			global::MarcTron.Plugin.Resource.Attribute.lastBaselineToBottomHeight = global::GnollHackClient.Droid.Resource.Attribute.lastBaselineToBottomHeight;
+			global::MarcTron.Plugin.Resource.Attribute.layout = global::GnollHackClient.Droid.Resource.Attribute.layout;
+			global::MarcTron.Plugin.Resource.Attribute.layoutManager = global::GnollHackClient.Droid.Resource.Attribute.layoutManager;
+			global::MarcTron.Plugin.Resource.Attribute.layout_anchor = global::GnollHackClient.Droid.Resource.Attribute.layout_anchor;
+			global::MarcTron.Plugin.Resource.Attribute.layout_anchorGravity = global::GnollHackClient.Droid.Resource.Attribute.layout_anchorGravity;
+			global::MarcTron.Plugin.Resource.Attribute.layout_behavior = global::GnollHackClient.Droid.Resource.Attribute.layout_behavior;
+			global::MarcTron.Plugin.Resource.Attribute.layout_collapseMode = global::GnollHackClient.Droid.Resource.Attribute.layout_collapseMode;
+			global::MarcTron.Plugin.Resource.Attribute.layout_collapseParallaxMultiplier = global::GnollHackClient.Droid.Resource.Attribute.layout_collapseParallaxMultiplier;
+			global::MarcTron.Plugin.Resource.Attribute.layout_dodgeInsetEdges = global::GnollHackClient.Droid.Resource.Attribute.layout_dodgeInsetEdges;
+			global::MarcTron.Plugin.Resource.Attribute.layout_insetEdge = global::GnollHackClient.Droid.Resource.Attribute.layout_insetEdge;
+			global::MarcTron.Plugin.Resource.Attribute.layout_keyline = global::GnollHackClient.Droid.Resource.Attribute.layout_keyline;
+			global::MarcTron.Plugin.Resource.Attribute.layout_scrollFlags = global::GnollHackClient.Droid.Resource.Attribute.layout_scrollFlags;
+			global::MarcTron.Plugin.Resource.Attribute.layout_scrollInterpolator = global::GnollHackClient.Droid.Resource.Attribute.layout_scrollInterpolator;
+			global::MarcTron.Plugin.Resource.Attribute.liftOnScroll = global::GnollHackClient.Droid.Resource.Attribute.liftOnScroll;
+			global::MarcTron.Plugin.Resource.Attribute.liftOnScrollTargetViewId = global::GnollHackClient.Droid.Resource.Attribute.liftOnScrollTargetViewId;
+			global::MarcTron.Plugin.Resource.Attribute.lineHeight = global::GnollHackClient.Droid.Resource.Attribute.lineHeight;
+			global::MarcTron.Plugin.Resource.Attribute.lineSpacing = global::GnollHackClient.Droid.Resource.Attribute.lineSpacing;
+			global::MarcTron.Plugin.Resource.Attribute.listChoiceBackgroundIndicator = global::GnollHackClient.Droid.Resource.Attribute.listChoiceBackgroundIndicator;
+			global::MarcTron.Plugin.Resource.Attribute.listChoiceIndicatorMultipleAnimated = global::GnollHackClient.Droid.Resource.Attribute.listChoiceIndicatorMultipleAnimated;
+			global::MarcTron.Plugin.Resource.Attribute.listChoiceIndicatorSingleAnimated = global::GnollHackClient.Droid.Resource.Attribute.listChoiceIndicatorSingleAnimated;
+			global::MarcTron.Plugin.Resource.Attribute.listDividerAlertDialog = global::GnollHackClient.Droid.Resource.Attribute.listDividerAlertDialog;
+			global::MarcTron.Plugin.Resource.Attribute.listItemLayout = global::GnollHackClient.Droid.Resource.Attribute.listItemLayout;
+			global::MarcTron.Plugin.Resource.Attribute.listLayout = global::GnollHackClient.Droid.Resource.Attribute.listLayout;
+			global::MarcTron.Plugin.Resource.Attribute.listMenuViewStyle = global::GnollHackClient.Droid.Resource.Attribute.listMenuViewStyle;
+			global::MarcTron.Plugin.Resource.Attribute.listPopupWindowStyle = global::GnollHackClient.Droid.Resource.Attribute.listPopupWindowStyle;
+			global::MarcTron.Plugin.Resource.Attribute.listPreferredItemHeight = global::GnollHackClient.Droid.Resource.Attribute.listPreferredItemHeight;
+			global::MarcTron.Plugin.Resource.Attribute.listPreferredItemHeightLarge = global::GnollHackClient.Droid.Resource.Attribute.listPreferredItemHeightLarge;
+			global::MarcTron.Plugin.Resource.Attribute.listPreferredItemHeightSmall = global::GnollHackClient.Droid.Resource.Attribute.listPreferredItemHeightSmall;
+			global::MarcTron.Plugin.Resource.Attribute.listPreferredItemPaddingEnd = global::GnollHackClient.Droid.Resource.Attribute.listPreferredItemPaddingEnd;
+			global::MarcTron.Plugin.Resource.Attribute.listPreferredItemPaddingLeft = global::GnollHackClient.Droid.Resource.Attribute.listPreferredItemPaddingLeft;
+			global::MarcTron.Plugin.Resource.Attribute.listPreferredItemPaddingRight = global::GnollHackClient.Droid.Resource.Attribute.listPreferredItemPaddingRight;
+			global::MarcTron.Plugin.Resource.Attribute.listPreferredItemPaddingStart = global::GnollHackClient.Droid.Resource.Attribute.listPreferredItemPaddingStart;
+			global::MarcTron.Plugin.Resource.Attribute.logo = global::GnollHackClient.Droid.Resource.Attribute.logo;
+			global::MarcTron.Plugin.Resource.Attribute.logoDescription = global::GnollHackClient.Droid.Resource.Attribute.logoDescription;
+			global::MarcTron.Plugin.Resource.Attribute.materialAlertDialogBodyTextStyle = global::GnollHackClient.Droid.Resource.Attribute.materialAlertDialogBodyTextStyle;
+			global::MarcTron.Plugin.Resource.Attribute.materialAlertDialogTheme = global::GnollHackClient.Droid.Resource.Attribute.materialAlertDialogTheme;
+			global::MarcTron.Plugin.Resource.Attribute.materialAlertDialogTitleIconStyle = global::GnollHackClient.Droid.Resource.Attribute.materialAlertDialogTitleIconStyle;
+			global::MarcTron.Plugin.Resource.Attribute.materialAlertDialogTitlePanelStyle = global::GnollHackClient.Droid.Resource.Attribute.materialAlertDialogTitlePanelStyle;
+			global::MarcTron.Plugin.Resource.Attribute.materialAlertDialogTitleTextStyle = global::GnollHackClient.Droid.Resource.Attribute.materialAlertDialogTitleTextStyle;
+			global::MarcTron.Plugin.Resource.Attribute.materialButtonOutlinedStyle = global::GnollHackClient.Droid.Resource.Attribute.materialButtonOutlinedStyle;
+			global::MarcTron.Plugin.Resource.Attribute.materialButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.materialButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.materialButtonToggleGroupStyle = global::GnollHackClient.Droid.Resource.Attribute.materialButtonToggleGroupStyle;
+			global::MarcTron.Plugin.Resource.Attribute.materialCalendarDay = global::GnollHackClient.Droid.Resource.Attribute.materialCalendarDay;
+			global::MarcTron.Plugin.Resource.Attribute.materialCalendarFullscreenTheme = global::GnollHackClient.Droid.Resource.Attribute.materialCalendarFullscreenTheme;
+			global::MarcTron.Plugin.Resource.Attribute.materialCalendarHeaderConfirmButton = global::GnollHackClient.Droid.Resource.Attribute.materialCalendarHeaderConfirmButton;
+			global::MarcTron.Plugin.Resource.Attribute.materialCalendarHeaderDivider = global::GnollHackClient.Droid.Resource.Attribute.materialCalendarHeaderDivider;
+			global::MarcTron.Plugin.Resource.Attribute.materialCalendarHeaderLayout = global::GnollHackClient.Droid.Resource.Attribute.materialCalendarHeaderLayout;
+			global::MarcTron.Plugin.Resource.Attribute.materialCalendarHeaderSelection = global::GnollHackClient.Droid.Resource.Attribute.materialCalendarHeaderSelection;
+			global::MarcTron.Plugin.Resource.Attribute.materialCalendarHeaderTitle = global::GnollHackClient.Droid.Resource.Attribute.materialCalendarHeaderTitle;
+			global::MarcTron.Plugin.Resource.Attribute.materialCalendarHeaderToggleButton = global::GnollHackClient.Droid.Resource.Attribute.materialCalendarHeaderToggleButton;
+			global::MarcTron.Plugin.Resource.Attribute.materialCalendarStyle = global::GnollHackClient.Droid.Resource.Attribute.materialCalendarStyle;
+			global::MarcTron.Plugin.Resource.Attribute.materialCalendarTheme = global::GnollHackClient.Droid.Resource.Attribute.materialCalendarTheme;
+			global::MarcTron.Plugin.Resource.Attribute.materialCardViewStyle = global::GnollHackClient.Droid.Resource.Attribute.materialCardViewStyle;
+			global::MarcTron.Plugin.Resource.Attribute.materialThemeOverlay = global::GnollHackClient.Droid.Resource.Attribute.materialThemeOverlay;
+			global::MarcTron.Plugin.Resource.Attribute.maxActionInlineWidth = global::GnollHackClient.Droid.Resource.Attribute.maxActionInlineWidth;
+			global::MarcTron.Plugin.Resource.Attribute.maxButtonHeight = global::GnollHackClient.Droid.Resource.Attribute.maxButtonHeight;
+			global::MarcTron.Plugin.Resource.Attribute.maxCharacterCount = global::GnollHackClient.Droid.Resource.Attribute.maxCharacterCount;
+			global::MarcTron.Plugin.Resource.Attribute.maxImageSize = global::GnollHackClient.Droid.Resource.Attribute.maxImageSize;
+			global::MarcTron.Plugin.Resource.Attribute.measureWithLargestChild = global::GnollHackClient.Droid.Resource.Attribute.measureWithLargestChild;
+			global::MarcTron.Plugin.Resource.Attribute.menu = global::GnollHackClient.Droid.Resource.Attribute.menu;
+			global::MarcTron.Plugin.Resource.Attribute.minTouchTargetSize = global::GnollHackClient.Droid.Resource.Attribute.minTouchTargetSize;
+			global::MarcTron.Plugin.Resource.Attribute.multiChoiceItemLayout = global::GnollHackClient.Droid.Resource.Attribute.multiChoiceItemLayout;
+			global::MarcTron.Plugin.Resource.Attribute.navigationContentDescription = global::GnollHackClient.Droid.Resource.Attribute.navigationContentDescription;
+			global::MarcTron.Plugin.Resource.Attribute.navigationIcon = global::GnollHackClient.Droid.Resource.Attribute.navigationIcon;
+			global::MarcTron.Plugin.Resource.Attribute.navigationMode = global::GnollHackClient.Droid.Resource.Attribute.navigationMode;
+			global::MarcTron.Plugin.Resource.Attribute.navigationViewStyle = global::GnollHackClient.Droid.Resource.Attribute.navigationViewStyle;
+			global::MarcTron.Plugin.Resource.Attribute.number = global::GnollHackClient.Droid.Resource.Attribute.number;
+			global::MarcTron.Plugin.Resource.Attribute.numericModifiers = global::GnollHackClient.Droid.Resource.Attribute.numericModifiers;
+			global::MarcTron.Plugin.Resource.Attribute.overlapAnchor = global::GnollHackClient.Droid.Resource.Attribute.overlapAnchor;
+			global::MarcTron.Plugin.Resource.Attribute.paddingBottomNoButtons = global::GnollHackClient.Droid.Resource.Attribute.paddingBottomNoButtons;
+			global::MarcTron.Plugin.Resource.Attribute.paddingEnd = global::GnollHackClient.Droid.Resource.Attribute.paddingEnd;
+			global::MarcTron.Plugin.Resource.Attribute.paddingStart = global::GnollHackClient.Droid.Resource.Attribute.paddingStart;
+			global::MarcTron.Plugin.Resource.Attribute.paddingTopNoTitle = global::GnollHackClient.Droid.Resource.Attribute.paddingTopNoTitle;
+			global::MarcTron.Plugin.Resource.Attribute.panelBackground = global::GnollHackClient.Droid.Resource.Attribute.panelBackground;
+			global::MarcTron.Plugin.Resource.Attribute.panelMenuListTheme = global::GnollHackClient.Droid.Resource.Attribute.panelMenuListTheme;
+			global::MarcTron.Plugin.Resource.Attribute.panelMenuListWidth = global::GnollHackClient.Droid.Resource.Attribute.panelMenuListWidth;
+			global::MarcTron.Plugin.Resource.Attribute.passwordToggleContentDescription = global::GnollHackClient.Droid.Resource.Attribute.passwordToggleContentDescription;
+			global::MarcTron.Plugin.Resource.Attribute.passwordToggleDrawable = global::GnollHackClient.Droid.Resource.Attribute.passwordToggleDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.passwordToggleEnabled = global::GnollHackClient.Droid.Resource.Attribute.passwordToggleEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.passwordToggleTint = global::GnollHackClient.Droid.Resource.Attribute.passwordToggleTint;
+			global::MarcTron.Plugin.Resource.Attribute.passwordToggleTintMode = global::GnollHackClient.Droid.Resource.Attribute.passwordToggleTintMode;
+			global::MarcTron.Plugin.Resource.Attribute.popupMenuBackground = global::GnollHackClient.Droid.Resource.Attribute.popupMenuBackground;
+			global::MarcTron.Plugin.Resource.Attribute.popupMenuStyle = global::GnollHackClient.Droid.Resource.Attribute.popupMenuStyle;
+			global::MarcTron.Plugin.Resource.Attribute.popupTheme = global::GnollHackClient.Droid.Resource.Attribute.popupTheme;
+			global::MarcTron.Plugin.Resource.Attribute.popupWindowStyle = global::GnollHackClient.Droid.Resource.Attribute.popupWindowStyle;
+			global::MarcTron.Plugin.Resource.Attribute.preserveIconSpacing = global::GnollHackClient.Droid.Resource.Attribute.preserveIconSpacing;
+			global::MarcTron.Plugin.Resource.Attribute.pressedTranslationZ = global::GnollHackClient.Droid.Resource.Attribute.pressedTranslationZ;
+			global::MarcTron.Plugin.Resource.Attribute.progressBarPadding = global::GnollHackClient.Droid.Resource.Attribute.progressBarPadding;
+			global::MarcTron.Plugin.Resource.Attribute.progressBarStyle = global::GnollHackClient.Droid.Resource.Attribute.progressBarStyle;
+			global::MarcTron.Plugin.Resource.Attribute.queryBackground = global::GnollHackClient.Droid.Resource.Attribute.queryBackground;
+			global::MarcTron.Plugin.Resource.Attribute.queryHint = global::GnollHackClient.Droid.Resource.Attribute.queryHint;
+			global::MarcTron.Plugin.Resource.Attribute.radioButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.radioButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.rangeFillColor = global::GnollHackClient.Droid.Resource.Attribute.rangeFillColor;
+			global::MarcTron.Plugin.Resource.Attribute.ratingBarStyle = global::GnollHackClient.Droid.Resource.Attribute.ratingBarStyle;
+			global::MarcTron.Plugin.Resource.Attribute.ratingBarStyleIndicator = global::GnollHackClient.Droid.Resource.Attribute.ratingBarStyleIndicator;
+			global::MarcTron.Plugin.Resource.Attribute.ratingBarStyleSmall = global::GnollHackClient.Droid.Resource.Attribute.ratingBarStyleSmall;
+			global::MarcTron.Plugin.Resource.Attribute.recyclerViewStyle = global::GnollHackClient.Droid.Resource.Attribute.recyclerViewStyle;
+			global::MarcTron.Plugin.Resource.Attribute.reverseLayout = global::GnollHackClient.Droid.Resource.Attribute.reverseLayout;
+			global::MarcTron.Plugin.Resource.Attribute.rippleColor = global::GnollHackClient.Droid.Resource.Attribute.rippleColor;
+			global::MarcTron.Plugin.Resource.Attribute.scrimAnimationDuration = global::GnollHackClient.Droid.Resource.Attribute.scrimAnimationDuration;
+			global::MarcTron.Plugin.Resource.Attribute.scrimBackground = global::GnollHackClient.Droid.Resource.Attribute.scrimBackground;
+			global::MarcTron.Plugin.Resource.Attribute.scrimVisibleHeightTrigger = global::GnollHackClient.Droid.Resource.Attribute.scrimVisibleHeightTrigger;
+			global::MarcTron.Plugin.Resource.Attribute.scrollViewStyle = global::GnollHackClient.Droid.Resource.Attribute.scrollViewStyle;
+			global::MarcTron.Plugin.Resource.Attribute.searchHintIcon = global::GnollHackClient.Droid.Resource.Attribute.searchHintIcon;
+			global::MarcTron.Plugin.Resource.Attribute.searchIcon = global::GnollHackClient.Droid.Resource.Attribute.searchIcon;
+			global::MarcTron.Plugin.Resource.Attribute.searchViewStyle = global::GnollHackClient.Droid.Resource.Attribute.searchViewStyle;
+			global::MarcTron.Plugin.Resource.Attribute.seekBarStyle = global::GnollHackClient.Droid.Resource.Attribute.seekBarStyle;
+			global::MarcTron.Plugin.Resource.Attribute.selectableItemBackground = global::GnollHackClient.Droid.Resource.Attribute.selectableItemBackground;
+			global::MarcTron.Plugin.Resource.Attribute.selectableItemBackgroundBorderless = global::GnollHackClient.Droid.Resource.Attribute.selectableItemBackgroundBorderless;
+			global::MarcTron.Plugin.Resource.Attribute.shapeAppearance = global::GnollHackClient.Droid.Resource.Attribute.shapeAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.shapeAppearanceLargeComponent = global::GnollHackClient.Droid.Resource.Attribute.shapeAppearanceLargeComponent;
+			global::MarcTron.Plugin.Resource.Attribute.shapeAppearanceMediumComponent = global::GnollHackClient.Droid.Resource.Attribute.shapeAppearanceMediumComponent;
+			global::MarcTron.Plugin.Resource.Attribute.shapeAppearanceOverlay = global::GnollHackClient.Droid.Resource.Attribute.shapeAppearanceOverlay;
+			global::MarcTron.Plugin.Resource.Attribute.shapeAppearanceSmallComponent = global::GnollHackClient.Droid.Resource.Attribute.shapeAppearanceSmallComponent;
+			global::MarcTron.Plugin.Resource.Attribute.showAsAction = global::GnollHackClient.Droid.Resource.Attribute.showAsAction;
+			global::MarcTron.Plugin.Resource.Attribute.showDividers = global::GnollHackClient.Droid.Resource.Attribute.showDividers;
+			global::MarcTron.Plugin.Resource.Attribute.showMotionSpec = global::GnollHackClient.Droid.Resource.Attribute.showMotionSpec;
+			global::MarcTron.Plugin.Resource.Attribute.showText = global::GnollHackClient.Droid.Resource.Attribute.showText;
+			global::MarcTron.Plugin.Resource.Attribute.showTitle = global::GnollHackClient.Droid.Resource.Attribute.showTitle;
+			global::MarcTron.Plugin.Resource.Attribute.shrinkMotionSpec = global::GnollHackClient.Droid.Resource.Attribute.shrinkMotionSpec;
+			global::MarcTron.Plugin.Resource.Attribute.singleChoiceItemLayout = global::GnollHackClient.Droid.Resource.Attribute.singleChoiceItemLayout;
+			global::MarcTron.Plugin.Resource.Attribute.singleLine = global::GnollHackClient.Droid.Resource.Attribute.singleLine;
+			global::MarcTron.Plugin.Resource.Attribute.singleSelection = global::GnollHackClient.Droid.Resource.Attribute.singleSelection;
+			global::MarcTron.Plugin.Resource.Attribute.snackbarButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.snackbarButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.snackbarStyle = global::GnollHackClient.Droid.Resource.Attribute.snackbarStyle;
+			global::MarcTron.Plugin.Resource.Attribute.spanCount = global::GnollHackClient.Droid.Resource.Attribute.spanCount;
+			global::MarcTron.Plugin.Resource.Attribute.spinBars = global::GnollHackClient.Droid.Resource.Attribute.spinBars;
+			global::MarcTron.Plugin.Resource.Attribute.spinnerDropDownItemStyle = global::GnollHackClient.Droid.Resource.Attribute.spinnerDropDownItemStyle;
+			global::MarcTron.Plugin.Resource.Attribute.spinnerStyle = global::GnollHackClient.Droid.Resource.Attribute.spinnerStyle;
+			global::MarcTron.Plugin.Resource.Attribute.splitTrack = global::GnollHackClient.Droid.Resource.Attribute.splitTrack;
+			global::MarcTron.Plugin.Resource.Attribute.srcCompat = global::GnollHackClient.Droid.Resource.Attribute.srcCompat;
+			global::MarcTron.Plugin.Resource.Attribute.stackFromEnd = global::GnollHackClient.Droid.Resource.Attribute.stackFromEnd;
+			global::MarcTron.Plugin.Resource.Attribute.startIconCheckable = global::GnollHackClient.Droid.Resource.Attribute.startIconCheckable;
+			global::MarcTron.Plugin.Resource.Attribute.startIconContentDescription = global::GnollHackClient.Droid.Resource.Attribute.startIconContentDescription;
+			global::MarcTron.Plugin.Resource.Attribute.startIconDrawable = global::GnollHackClient.Droid.Resource.Attribute.startIconDrawable;
+			global::MarcTron.Plugin.Resource.Attribute.startIconTint = global::GnollHackClient.Droid.Resource.Attribute.startIconTint;
+			global::MarcTron.Plugin.Resource.Attribute.startIconTintMode = global::GnollHackClient.Droid.Resource.Attribute.startIconTintMode;
+			global::MarcTron.Plugin.Resource.Attribute.state_above_anchor = global::GnollHackClient.Droid.Resource.Attribute.state_above_anchor;
+			global::MarcTron.Plugin.Resource.Attribute.state_collapsed = global::GnollHackClient.Droid.Resource.Attribute.state_collapsed;
+			global::MarcTron.Plugin.Resource.Attribute.state_collapsible = global::GnollHackClient.Droid.Resource.Attribute.state_collapsible;
+			global::MarcTron.Plugin.Resource.Attribute.state_dragged = global::GnollHackClient.Droid.Resource.Attribute.state_dragged;
+			global::MarcTron.Plugin.Resource.Attribute.state_liftable = global::GnollHackClient.Droid.Resource.Attribute.state_liftable;
+			global::MarcTron.Plugin.Resource.Attribute.state_lifted = global::GnollHackClient.Droid.Resource.Attribute.state_lifted;
+			global::MarcTron.Plugin.Resource.Attribute.statusBarBackground = global::GnollHackClient.Droid.Resource.Attribute.statusBarBackground;
+			global::MarcTron.Plugin.Resource.Attribute.statusBarForeground = global::GnollHackClient.Droid.Resource.Attribute.statusBarForeground;
+			global::MarcTron.Plugin.Resource.Attribute.statusBarScrim = global::GnollHackClient.Droid.Resource.Attribute.statusBarScrim;
+			global::MarcTron.Plugin.Resource.Attribute.strokeColor = global::GnollHackClient.Droid.Resource.Attribute.strokeColor;
+			global::MarcTron.Plugin.Resource.Attribute.strokeWidth = global::GnollHackClient.Droid.Resource.Attribute.strokeWidth;
+			global::MarcTron.Plugin.Resource.Attribute.subMenuArrow = global::GnollHackClient.Droid.Resource.Attribute.subMenuArrow;
+			global::MarcTron.Plugin.Resource.Attribute.submitBackground = global::GnollHackClient.Droid.Resource.Attribute.submitBackground;
+			global::MarcTron.Plugin.Resource.Attribute.subtitle = global::GnollHackClient.Droid.Resource.Attribute.subtitle;
+			global::MarcTron.Plugin.Resource.Attribute.subtitleTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.subtitleTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.subtitleTextColor = global::GnollHackClient.Droid.Resource.Attribute.subtitleTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.subtitleTextStyle = global::GnollHackClient.Droid.Resource.Attribute.subtitleTextStyle;
+			global::MarcTron.Plugin.Resource.Attribute.suggestionRowLayout = global::GnollHackClient.Droid.Resource.Attribute.suggestionRowLayout;
+			global::MarcTron.Plugin.Resource.Attribute.swipeRefreshLayoutProgressSpinnerBackgroundColor = global::GnollHackClient.Droid.Resource.Attribute.swipeRefreshLayoutProgressSpinnerBackgroundColor;
+			global::MarcTron.Plugin.Resource.Attribute.switchMinWidth = global::GnollHackClient.Droid.Resource.Attribute.switchMinWidth;
+			global::MarcTron.Plugin.Resource.Attribute.switchPadding = global::GnollHackClient.Droid.Resource.Attribute.switchPadding;
+			global::MarcTron.Plugin.Resource.Attribute.switchStyle = global::GnollHackClient.Droid.Resource.Attribute.switchStyle;
+			global::MarcTron.Plugin.Resource.Attribute.switchTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.switchTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.tabBackground = global::GnollHackClient.Droid.Resource.Attribute.tabBackground;
+			global::MarcTron.Plugin.Resource.Attribute.tabContentStart = global::GnollHackClient.Droid.Resource.Attribute.tabContentStart;
+			global::MarcTron.Plugin.Resource.Attribute.tabGravity = global::GnollHackClient.Droid.Resource.Attribute.tabGravity;
+			global::MarcTron.Plugin.Resource.Attribute.tabIconTint = global::GnollHackClient.Droid.Resource.Attribute.tabIconTint;
+			global::MarcTron.Plugin.Resource.Attribute.tabIconTintMode = global::GnollHackClient.Droid.Resource.Attribute.tabIconTintMode;
+			global::MarcTron.Plugin.Resource.Attribute.tabIndicator = global::GnollHackClient.Droid.Resource.Attribute.tabIndicator;
+			global::MarcTron.Plugin.Resource.Attribute.tabIndicatorAnimationDuration = global::GnollHackClient.Droid.Resource.Attribute.tabIndicatorAnimationDuration;
+			global::MarcTron.Plugin.Resource.Attribute.tabIndicatorColor = global::GnollHackClient.Droid.Resource.Attribute.tabIndicatorColor;
+			global::MarcTron.Plugin.Resource.Attribute.tabIndicatorFullWidth = global::GnollHackClient.Droid.Resource.Attribute.tabIndicatorFullWidth;
+			global::MarcTron.Plugin.Resource.Attribute.tabIndicatorGravity = global::GnollHackClient.Droid.Resource.Attribute.tabIndicatorGravity;
+			global::MarcTron.Plugin.Resource.Attribute.tabIndicatorHeight = global::GnollHackClient.Droid.Resource.Attribute.tabIndicatorHeight;
+			global::MarcTron.Plugin.Resource.Attribute.tabInlineLabel = global::GnollHackClient.Droid.Resource.Attribute.tabInlineLabel;
+			global::MarcTron.Plugin.Resource.Attribute.tabMaxWidth = global::GnollHackClient.Droid.Resource.Attribute.tabMaxWidth;
+			global::MarcTron.Plugin.Resource.Attribute.tabMinWidth = global::GnollHackClient.Droid.Resource.Attribute.tabMinWidth;
+			global::MarcTron.Plugin.Resource.Attribute.tabMode = global::GnollHackClient.Droid.Resource.Attribute.tabMode;
+			global::MarcTron.Plugin.Resource.Attribute.tabPadding = global::GnollHackClient.Droid.Resource.Attribute.tabPadding;
+			global::MarcTron.Plugin.Resource.Attribute.tabPaddingBottom = global::GnollHackClient.Droid.Resource.Attribute.tabPaddingBottom;
+			global::MarcTron.Plugin.Resource.Attribute.tabPaddingEnd = global::GnollHackClient.Droid.Resource.Attribute.tabPaddingEnd;
+			global::MarcTron.Plugin.Resource.Attribute.tabPaddingStart = global::GnollHackClient.Droid.Resource.Attribute.tabPaddingStart;
+			global::MarcTron.Plugin.Resource.Attribute.tabPaddingTop = global::GnollHackClient.Droid.Resource.Attribute.tabPaddingTop;
+			global::MarcTron.Plugin.Resource.Attribute.tabRippleColor = global::GnollHackClient.Droid.Resource.Attribute.tabRippleColor;
+			global::MarcTron.Plugin.Resource.Attribute.tabSelectedTextColor = global::GnollHackClient.Droid.Resource.Attribute.tabSelectedTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.tabStyle = global::GnollHackClient.Droid.Resource.Attribute.tabStyle;
+			global::MarcTron.Plugin.Resource.Attribute.tabTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.tabTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.tabTextColor = global::GnollHackClient.Droid.Resource.Attribute.tabTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.tabUnboundedRipple = global::GnollHackClient.Droid.Resource.Attribute.tabUnboundedRipple;
+			global::MarcTron.Plugin.Resource.Attribute.textAllCaps = global::GnollHackClient.Droid.Resource.Attribute.textAllCaps;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceBody1 = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceBody1;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceBody2 = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceBody2;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceButton = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceButton;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceCaption = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceCaption;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceHeadline1 = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceHeadline1;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceHeadline2 = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceHeadline2;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceHeadline3 = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceHeadline3;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceHeadline4 = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceHeadline4;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceHeadline5 = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceHeadline5;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceHeadline6 = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceHeadline6;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceLargePopupMenu = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceLargePopupMenu;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceLineHeightEnabled = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceLineHeightEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceListItem = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceListItem;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceListItemSecondary = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceListItemSecondary;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceListItemSmall = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceListItemSmall;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceOverline = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceOverline;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearancePopupMenuHeader = global::GnollHackClient.Droid.Resource.Attribute.textAppearancePopupMenuHeader;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceSearchResultSubtitle = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceSearchResultSubtitle;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceSearchResultTitle = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceSearchResultTitle;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceSmallPopupMenu = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceSmallPopupMenu;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceSubtitle1 = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceSubtitle1;
+			global::MarcTron.Plugin.Resource.Attribute.textAppearanceSubtitle2 = global::GnollHackClient.Droid.Resource.Attribute.textAppearanceSubtitle2;
+			global::MarcTron.Plugin.Resource.Attribute.textColorAlertDialogListItem = global::GnollHackClient.Droid.Resource.Attribute.textColorAlertDialogListItem;
+			global::MarcTron.Plugin.Resource.Attribute.textColorSearchUrl = global::GnollHackClient.Droid.Resource.Attribute.textColorSearchUrl;
+			global::MarcTron.Plugin.Resource.Attribute.textEndPadding = global::GnollHackClient.Droid.Resource.Attribute.textEndPadding;
+			global::MarcTron.Plugin.Resource.Attribute.textInputStyle = global::GnollHackClient.Droid.Resource.Attribute.textInputStyle;
+			global::MarcTron.Plugin.Resource.Attribute.textLocale = global::GnollHackClient.Droid.Resource.Attribute.textLocale;
+			global::MarcTron.Plugin.Resource.Attribute.textStartPadding = global::GnollHackClient.Droid.Resource.Attribute.textStartPadding;
+			global::MarcTron.Plugin.Resource.Attribute.theme = global::GnollHackClient.Droid.Resource.Attribute.theme;
+			global::MarcTron.Plugin.Resource.Attribute.themeLineHeight = global::GnollHackClient.Droid.Resource.Attribute.themeLineHeight;
+			global::MarcTron.Plugin.Resource.Attribute.thickness = global::GnollHackClient.Droid.Resource.Attribute.thickness;
+			global::MarcTron.Plugin.Resource.Attribute.thumbTextPadding = global::GnollHackClient.Droid.Resource.Attribute.thumbTextPadding;
+			global::MarcTron.Plugin.Resource.Attribute.thumbTint = global::GnollHackClient.Droid.Resource.Attribute.thumbTint;
+			global::MarcTron.Plugin.Resource.Attribute.thumbTintMode = global::GnollHackClient.Droid.Resource.Attribute.thumbTintMode;
+			global::MarcTron.Plugin.Resource.Attribute.tickMark = global::GnollHackClient.Droid.Resource.Attribute.tickMark;
+			global::MarcTron.Plugin.Resource.Attribute.tickMarkTint = global::GnollHackClient.Droid.Resource.Attribute.tickMarkTint;
+			global::MarcTron.Plugin.Resource.Attribute.tickMarkTintMode = global::GnollHackClient.Droid.Resource.Attribute.tickMarkTintMode;
+			global::MarcTron.Plugin.Resource.Attribute.tint = global::GnollHackClient.Droid.Resource.Attribute.tint;
+			global::MarcTron.Plugin.Resource.Attribute.tintMode = global::GnollHackClient.Droid.Resource.Attribute.tintMode;
+			global::MarcTron.Plugin.Resource.Attribute.title = global::GnollHackClient.Droid.Resource.Attribute.title;
+			global::MarcTron.Plugin.Resource.Attribute.titleEnabled = global::GnollHackClient.Droid.Resource.Attribute.titleEnabled;
+			global::MarcTron.Plugin.Resource.Attribute.titleMargin = global::GnollHackClient.Droid.Resource.Attribute.titleMargin;
+			global::MarcTron.Plugin.Resource.Attribute.titleMarginBottom = global::GnollHackClient.Droid.Resource.Attribute.titleMarginBottom;
+			global::MarcTron.Plugin.Resource.Attribute.titleMarginEnd = global::GnollHackClient.Droid.Resource.Attribute.titleMarginEnd;
+			global::MarcTron.Plugin.Resource.Attribute.titleMargins = global::GnollHackClient.Droid.Resource.Attribute.titleMargins;
+			global::MarcTron.Plugin.Resource.Attribute.titleMarginStart = global::GnollHackClient.Droid.Resource.Attribute.titleMarginStart;
+			global::MarcTron.Plugin.Resource.Attribute.titleMarginTop = global::GnollHackClient.Droid.Resource.Attribute.titleMarginTop;
+			global::MarcTron.Plugin.Resource.Attribute.titleTextAppearance = global::GnollHackClient.Droid.Resource.Attribute.titleTextAppearance;
+			global::MarcTron.Plugin.Resource.Attribute.titleTextColor = global::GnollHackClient.Droid.Resource.Attribute.titleTextColor;
+			global::MarcTron.Plugin.Resource.Attribute.titleTextStyle = global::GnollHackClient.Droid.Resource.Attribute.titleTextStyle;
+			global::MarcTron.Plugin.Resource.Attribute.toolbarId = global::GnollHackClient.Droid.Resource.Attribute.toolbarId;
+			global::MarcTron.Plugin.Resource.Attribute.toolbarNavigationButtonStyle = global::GnollHackClient.Droid.Resource.Attribute.toolbarNavigationButtonStyle;
+			global::MarcTron.Plugin.Resource.Attribute.toolbarStyle = global::GnollHackClient.Droid.Resource.Attribute.toolbarStyle;
+			global::MarcTron.Plugin.Resource.Attribute.tooltipForegroundColor = global::GnollHackClient.Droid.Resource.Attribute.tooltipForegroundColor;
+			global::MarcTron.Plugin.Resource.Attribute.tooltipFrameBackground = global::GnollHackClient.Droid.Resource.Attribute.tooltipFrameBackground;
+			global::MarcTron.Plugin.Resource.Attribute.tooltipText = global::GnollHackClient.Droid.Resource.Attribute.tooltipText;
+			global::MarcTron.Plugin.Resource.Attribute.track = global::GnollHackClient.Droid.Resource.Attribute.track;
+			global::MarcTron.Plugin.Resource.Attribute.trackTint = global::GnollHackClient.Droid.Resource.Attribute.trackTint;
+			global::MarcTron.Plugin.Resource.Attribute.trackTintMode = global::GnollHackClient.Droid.Resource.Attribute.trackTintMode;
+			global::MarcTron.Plugin.Resource.Attribute.ttcIndex = global::GnollHackClient.Droid.Resource.Attribute.ttcIndex;
+			global::MarcTron.Plugin.Resource.Attribute.useCompatPadding = global::GnollHackClient.Droid.Resource.Attribute.useCompatPadding;
+			global::MarcTron.Plugin.Resource.Attribute.useMaterialThemeColors = global::GnollHackClient.Droid.Resource.Attribute.useMaterialThemeColors;
+			global::MarcTron.Plugin.Resource.Attribute.viewInflaterClass = global::GnollHackClient.Droid.Resource.Attribute.viewInflaterClass;
+			global::MarcTron.Plugin.Resource.Attribute.voiceIcon = global::GnollHackClient.Droid.Resource.Attribute.voiceIcon;
+			global::MarcTron.Plugin.Resource.Attribute.windowActionBar = global::GnollHackClient.Droid.Resource.Attribute.windowActionBar;
+			global::MarcTron.Plugin.Resource.Attribute.windowActionBarOverlay = global::GnollHackClient.Droid.Resource.Attribute.windowActionBarOverlay;
+			global::MarcTron.Plugin.Resource.Attribute.windowActionModeOverlay = global::GnollHackClient.Droid.Resource.Attribute.windowActionModeOverlay;
+			global::MarcTron.Plugin.Resource.Attribute.windowFixedHeightMajor = global::GnollHackClient.Droid.Resource.Attribute.windowFixedHeightMajor;
+			global::MarcTron.Plugin.Resource.Attribute.windowFixedHeightMinor = global::GnollHackClient.Droid.Resource.Attribute.windowFixedHeightMinor;
+			global::MarcTron.Plugin.Resource.Attribute.windowFixedWidthMajor = global::GnollHackClient.Droid.Resource.Attribute.windowFixedWidthMajor;
+			global::MarcTron.Plugin.Resource.Attribute.windowFixedWidthMinor = global::GnollHackClient.Droid.Resource.Attribute.windowFixedWidthMinor;
+			global::MarcTron.Plugin.Resource.Attribute.windowMinWidthMajor = global::GnollHackClient.Droid.Resource.Attribute.windowMinWidthMajor;
+			global::MarcTron.Plugin.Resource.Attribute.windowMinWidthMinor = global::GnollHackClient.Droid.Resource.Attribute.windowMinWidthMinor;
+			global::MarcTron.Plugin.Resource.Attribute.windowNoTitle = global::GnollHackClient.Droid.Resource.Attribute.windowNoTitle;
+			global::MarcTron.Plugin.Resource.Attribute.yearSelectedStyle = global::GnollHackClient.Droid.Resource.Attribute.yearSelectedStyle;
+			global::MarcTron.Plugin.Resource.Attribute.yearStyle = global::GnollHackClient.Droid.Resource.Attribute.yearStyle;
+			global::MarcTron.Plugin.Resource.Attribute.yearTodayStyle = global::GnollHackClient.Droid.Resource.Attribute.yearTodayStyle;
+			global::MarcTron.Plugin.Resource.Boolean.abc_action_bar_embed_tabs = global::GnollHackClient.Droid.Resource.Boolean.abc_action_bar_embed_tabs;
+			global::MarcTron.Plugin.Resource.Boolean.abc_allow_stacked_button_bar = global::GnollHackClient.Droid.Resource.Boolean.abc_allow_stacked_button_bar;
+			global::MarcTron.Plugin.Resource.Boolean.abc_config_actionMenuItemAllCaps = global::GnollHackClient.Droid.Resource.Boolean.abc_config_actionMenuItemAllCaps;
+			global::MarcTron.Plugin.Resource.Boolean.enable_system_alarm_service_default = global::GnollHackClient.Droid.Resource.Boolean.enable_system_alarm_service_default;
+			global::MarcTron.Plugin.Resource.Boolean.enable_system_foreground_service_default = global::GnollHackClient.Droid.Resource.Boolean.enable_system_foreground_service_default;
+			global::MarcTron.Plugin.Resource.Boolean.enable_system_job_service_default = global::GnollHackClient.Droid.Resource.Boolean.enable_system_job_service_default;
+			global::MarcTron.Plugin.Resource.Boolean.mtrl_btn_textappearance_all_caps = global::GnollHackClient.Droid.Resource.Boolean.mtrl_btn_textappearance_all_caps;
+			global::MarcTron.Plugin.Resource.Boolean.workmanager_test_configuration = global::GnollHackClient.Droid.Resource.Boolean.workmanager_test_configuration;
+			global::MarcTron.Plugin.Resource.Color.abc_background_cache_hint_selector_material_dark = global::GnollHackClient.Droid.Resource.Color.abc_background_cache_hint_selector_material_dark;
+			global::MarcTron.Plugin.Resource.Color.abc_background_cache_hint_selector_material_light = global::GnollHackClient.Droid.Resource.Color.abc_background_cache_hint_selector_material_light;
+			global::MarcTron.Plugin.Resource.Color.abc_btn_colored_borderless_text_material = global::GnollHackClient.Droid.Resource.Color.abc_btn_colored_borderless_text_material;
+			global::MarcTron.Plugin.Resource.Color.abc_btn_colored_text_material = global::GnollHackClient.Droid.Resource.Color.abc_btn_colored_text_material;
+			global::MarcTron.Plugin.Resource.Color.abc_color_highlight_material = global::GnollHackClient.Droid.Resource.Color.abc_color_highlight_material;
+			global::MarcTron.Plugin.Resource.Color.abc_decor_view_status_guard = global::GnollHackClient.Droid.Resource.Color.abc_decor_view_status_guard;
+			global::MarcTron.Plugin.Resource.Color.abc_decor_view_status_guard_light = global::GnollHackClient.Droid.Resource.Color.abc_decor_view_status_guard_light;
+			global::MarcTron.Plugin.Resource.Color.abc_hint_foreground_material_dark = global::GnollHackClient.Droid.Resource.Color.abc_hint_foreground_material_dark;
+			global::MarcTron.Plugin.Resource.Color.abc_hint_foreground_material_light = global::GnollHackClient.Droid.Resource.Color.abc_hint_foreground_material_light;
+			global::MarcTron.Plugin.Resource.Color.abc_primary_text_disable_only_material_dark = global::GnollHackClient.Droid.Resource.Color.abc_primary_text_disable_only_material_dark;
+			global::MarcTron.Plugin.Resource.Color.abc_primary_text_disable_only_material_light = global::GnollHackClient.Droid.Resource.Color.abc_primary_text_disable_only_material_light;
+			global::MarcTron.Plugin.Resource.Color.abc_primary_text_material_dark = global::GnollHackClient.Droid.Resource.Color.abc_primary_text_material_dark;
+			global::MarcTron.Plugin.Resource.Color.abc_primary_text_material_light = global::GnollHackClient.Droid.Resource.Color.abc_primary_text_material_light;
+			global::MarcTron.Plugin.Resource.Color.abc_search_url_text = global::GnollHackClient.Droid.Resource.Color.abc_search_url_text;
+			global::MarcTron.Plugin.Resource.Color.abc_search_url_text_normal = global::GnollHackClient.Droid.Resource.Color.abc_search_url_text_normal;
+			global::MarcTron.Plugin.Resource.Color.abc_search_url_text_pressed = global::GnollHackClient.Droid.Resource.Color.abc_search_url_text_pressed;
+			global::MarcTron.Plugin.Resource.Color.abc_search_url_text_selected = global::GnollHackClient.Droid.Resource.Color.abc_search_url_text_selected;
+			global::MarcTron.Plugin.Resource.Color.abc_secondary_text_material_dark = global::GnollHackClient.Droid.Resource.Color.abc_secondary_text_material_dark;
+			global::MarcTron.Plugin.Resource.Color.abc_secondary_text_material_light = global::GnollHackClient.Droid.Resource.Color.abc_secondary_text_material_light;
+			global::MarcTron.Plugin.Resource.Color.abc_tint_btn_checkable = global::GnollHackClient.Droid.Resource.Color.abc_tint_btn_checkable;
+			global::MarcTron.Plugin.Resource.Color.abc_tint_default = global::GnollHackClient.Droid.Resource.Color.abc_tint_default;
+			global::MarcTron.Plugin.Resource.Color.abc_tint_edittext = global::GnollHackClient.Droid.Resource.Color.abc_tint_edittext;
+			global::MarcTron.Plugin.Resource.Color.abc_tint_seek_thumb = global::GnollHackClient.Droid.Resource.Color.abc_tint_seek_thumb;
+			global::MarcTron.Plugin.Resource.Color.abc_tint_spinner = global::GnollHackClient.Droid.Resource.Color.abc_tint_spinner;
+			global::MarcTron.Plugin.Resource.Color.abc_tint_switch_track = global::GnollHackClient.Droid.Resource.Color.abc_tint_switch_track;
+			global::MarcTron.Plugin.Resource.Color.accent_material_dark = global::GnollHackClient.Droid.Resource.Color.accent_material_dark;
+			global::MarcTron.Plugin.Resource.Color.accent_material_light = global::GnollHackClient.Droid.Resource.Color.accent_material_light;
+			global::MarcTron.Plugin.Resource.Color.androidx_core_ripple_material_light = global::GnollHackClient.Droid.Resource.Color.androidx_core_ripple_material_light;
+			global::MarcTron.Plugin.Resource.Color.androidx_core_secondary_text_default_material_light = global::GnollHackClient.Droid.Resource.Color.androidx_core_secondary_text_default_material_light;
+			global::MarcTron.Plugin.Resource.Color.background_floating_material_dark = global::GnollHackClient.Droid.Resource.Color.background_floating_material_dark;
+			global::MarcTron.Plugin.Resource.Color.background_floating_material_light = global::GnollHackClient.Droid.Resource.Color.background_floating_material_light;
+			global::MarcTron.Plugin.Resource.Color.background_material_dark = global::GnollHackClient.Droid.Resource.Color.background_material_dark;
+			global::MarcTron.Plugin.Resource.Color.background_material_light = global::GnollHackClient.Droid.Resource.Color.background_material_light;
+			global::MarcTron.Plugin.Resource.Color.bright_foreground_disabled_material_dark = global::GnollHackClient.Droid.Resource.Color.bright_foreground_disabled_material_dark;
+			global::MarcTron.Plugin.Resource.Color.bright_foreground_disabled_material_light = global::GnollHackClient.Droid.Resource.Color.bright_foreground_disabled_material_light;
+			global::MarcTron.Plugin.Resource.Color.bright_foreground_inverse_material_dark = global::GnollHackClient.Droid.Resource.Color.bright_foreground_inverse_material_dark;
+			global::MarcTron.Plugin.Resource.Color.bright_foreground_inverse_material_light = global::GnollHackClient.Droid.Resource.Color.bright_foreground_inverse_material_light;
+			global::MarcTron.Plugin.Resource.Color.bright_foreground_material_dark = global::GnollHackClient.Droid.Resource.Color.bright_foreground_material_dark;
+			global::MarcTron.Plugin.Resource.Color.bright_foreground_material_light = global::GnollHackClient.Droid.Resource.Color.bright_foreground_material_light;
+			global::MarcTron.Plugin.Resource.Color.browser_actions_bg_grey = global::GnollHackClient.Droid.Resource.Color.browser_actions_bg_grey;
+			global::MarcTron.Plugin.Resource.Color.browser_actions_divider_color = global::GnollHackClient.Droid.Resource.Color.browser_actions_divider_color;
+			global::MarcTron.Plugin.Resource.Color.browser_actions_text_color = global::GnollHackClient.Droid.Resource.Color.browser_actions_text_color;
+			global::MarcTron.Plugin.Resource.Color.browser_actions_title_color = global::GnollHackClient.Droid.Resource.Color.browser_actions_title_color;
+			global::MarcTron.Plugin.Resource.Color.button_material_dark = global::GnollHackClient.Droid.Resource.Color.button_material_dark;
+			global::MarcTron.Plugin.Resource.Color.button_material_light = global::GnollHackClient.Droid.Resource.Color.button_material_light;
+			global::MarcTron.Plugin.Resource.Color.cardview_dark_background = global::GnollHackClient.Droid.Resource.Color.cardview_dark_background;
+			global::MarcTron.Plugin.Resource.Color.cardview_light_background = global::GnollHackClient.Droid.Resource.Color.cardview_light_background;
+			global::MarcTron.Plugin.Resource.Color.cardview_shadow_end_color = global::GnollHackClient.Droid.Resource.Color.cardview_shadow_end_color;
+			global::MarcTron.Plugin.Resource.Color.cardview_shadow_start_color = global::GnollHackClient.Droid.Resource.Color.cardview_shadow_start_color;
+			global::MarcTron.Plugin.Resource.Color.checkbox_themeable_attribute_color = global::GnollHackClient.Droid.Resource.Color.checkbox_themeable_attribute_color;
+			global::MarcTron.Plugin.Resource.Color.design_bottom_navigation_shadow_color = global::GnollHackClient.Droid.Resource.Color.design_bottom_navigation_shadow_color;
+			global::MarcTron.Plugin.Resource.Color.design_box_stroke_color = global::GnollHackClient.Droid.Resource.Color.design_box_stroke_color;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_background = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_background;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_error = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_error;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_on_background = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_on_background;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_on_error = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_on_error;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_on_primary = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_on_primary;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_on_secondary = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_on_secondary;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_on_surface = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_on_surface;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_primary = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_primary;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_primary_dark = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_primary_dark;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_primary_variant = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_primary_variant;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_secondary = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_secondary;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_secondary_variant = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_secondary_variant;
+			global::MarcTron.Plugin.Resource.Color.design_dark_default_color_surface = global::GnollHackClient.Droid.Resource.Color.design_dark_default_color_surface;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_background = global::GnollHackClient.Droid.Resource.Color.design_default_color_background;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_error = global::GnollHackClient.Droid.Resource.Color.design_default_color_error;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_on_background = global::GnollHackClient.Droid.Resource.Color.design_default_color_on_background;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_on_error = global::GnollHackClient.Droid.Resource.Color.design_default_color_on_error;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_on_primary = global::GnollHackClient.Droid.Resource.Color.design_default_color_on_primary;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_on_secondary = global::GnollHackClient.Droid.Resource.Color.design_default_color_on_secondary;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_on_surface = global::GnollHackClient.Droid.Resource.Color.design_default_color_on_surface;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_primary = global::GnollHackClient.Droid.Resource.Color.design_default_color_primary;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_primary_dark = global::GnollHackClient.Droid.Resource.Color.design_default_color_primary_dark;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_primary_variant = global::GnollHackClient.Droid.Resource.Color.design_default_color_primary_variant;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_secondary = global::GnollHackClient.Droid.Resource.Color.design_default_color_secondary;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_secondary_variant = global::GnollHackClient.Droid.Resource.Color.design_default_color_secondary_variant;
+			global::MarcTron.Plugin.Resource.Color.design_default_color_surface = global::GnollHackClient.Droid.Resource.Color.design_default_color_surface;
+			global::MarcTron.Plugin.Resource.Color.design_error = global::GnollHackClient.Droid.Resource.Color.design_error;
+			global::MarcTron.Plugin.Resource.Color.design_fab_shadow_end_color = global::GnollHackClient.Droid.Resource.Color.design_fab_shadow_end_color;
+			global::MarcTron.Plugin.Resource.Color.design_fab_shadow_mid_color = global::GnollHackClient.Droid.Resource.Color.design_fab_shadow_mid_color;
+			global::MarcTron.Plugin.Resource.Color.design_fab_shadow_start_color = global::GnollHackClient.Droid.Resource.Color.design_fab_shadow_start_color;
+			global::MarcTron.Plugin.Resource.Color.design_fab_stroke_end_inner_color = global::GnollHackClient.Droid.Resource.Color.design_fab_stroke_end_inner_color;
+			global::MarcTron.Plugin.Resource.Color.design_fab_stroke_end_outer_color = global::GnollHackClient.Droid.Resource.Color.design_fab_stroke_end_outer_color;
+			global::MarcTron.Plugin.Resource.Color.design_fab_stroke_top_inner_color = global::GnollHackClient.Droid.Resource.Color.design_fab_stroke_top_inner_color;
+			global::MarcTron.Plugin.Resource.Color.design_fab_stroke_top_outer_color = global::GnollHackClient.Droid.Resource.Color.design_fab_stroke_top_outer_color;
+			global::MarcTron.Plugin.Resource.Color.design_icon_tint = global::GnollHackClient.Droid.Resource.Color.design_icon_tint;
+			global::MarcTron.Plugin.Resource.Color.design_snackbar_background_color = global::GnollHackClient.Droid.Resource.Color.design_snackbar_background_color;
+			global::MarcTron.Plugin.Resource.Color.dim_foreground_disabled_material_dark = global::GnollHackClient.Droid.Resource.Color.dim_foreground_disabled_material_dark;
+			global::MarcTron.Plugin.Resource.Color.dim_foreground_disabled_material_light = global::GnollHackClient.Droid.Resource.Color.dim_foreground_disabled_material_light;
+			global::MarcTron.Plugin.Resource.Color.dim_foreground_material_dark = global::GnollHackClient.Droid.Resource.Color.dim_foreground_material_dark;
+			global::MarcTron.Plugin.Resource.Color.dim_foreground_material_light = global::GnollHackClient.Droid.Resource.Color.dim_foreground_material_light;
+			global::MarcTron.Plugin.Resource.Color.error_color_material_dark = global::GnollHackClient.Droid.Resource.Color.error_color_material_dark;
+			global::MarcTron.Plugin.Resource.Color.error_color_material_light = global::GnollHackClient.Droid.Resource.Color.error_color_material_light;
+			global::MarcTron.Plugin.Resource.Color.foreground_material_dark = global::GnollHackClient.Droid.Resource.Color.foreground_material_dark;
+			global::MarcTron.Plugin.Resource.Color.foreground_material_light = global::GnollHackClient.Droid.Resource.Color.foreground_material_light;
+			global::MarcTron.Plugin.Resource.Color.highlighted_text_material_dark = global::GnollHackClient.Droid.Resource.Color.highlighted_text_material_dark;
+			global::MarcTron.Plugin.Resource.Color.highlighted_text_material_light = global::GnollHackClient.Droid.Resource.Color.highlighted_text_material_light;
+			global::MarcTron.Plugin.Resource.Color.material_blue_grey_800 = global::GnollHackClient.Droid.Resource.Color.material_blue_grey_800;
+			global::MarcTron.Plugin.Resource.Color.material_blue_grey_900 = global::GnollHackClient.Droid.Resource.Color.material_blue_grey_900;
+			global::MarcTron.Plugin.Resource.Color.material_blue_grey_950 = global::GnollHackClient.Droid.Resource.Color.material_blue_grey_950;
+			global::MarcTron.Plugin.Resource.Color.material_deep_teal_200 = global::GnollHackClient.Droid.Resource.Color.material_deep_teal_200;
+			global::MarcTron.Plugin.Resource.Color.material_deep_teal_500 = global::GnollHackClient.Droid.Resource.Color.material_deep_teal_500;
+			global::MarcTron.Plugin.Resource.Color.material_grey_100 = global::GnollHackClient.Droid.Resource.Color.material_grey_100;
+			global::MarcTron.Plugin.Resource.Color.material_grey_300 = global::GnollHackClient.Droid.Resource.Color.material_grey_300;
+			global::MarcTron.Plugin.Resource.Color.material_grey_50 = global::GnollHackClient.Droid.Resource.Color.material_grey_50;
+			global::MarcTron.Plugin.Resource.Color.material_grey_600 = global::GnollHackClient.Droid.Resource.Color.material_grey_600;
+			global::MarcTron.Plugin.Resource.Color.material_grey_800 = global::GnollHackClient.Droid.Resource.Color.material_grey_800;
+			global::MarcTron.Plugin.Resource.Color.material_grey_850 = global::GnollHackClient.Droid.Resource.Color.material_grey_850;
+			global::MarcTron.Plugin.Resource.Color.material_grey_900 = global::GnollHackClient.Droid.Resource.Color.material_grey_900;
+			global::MarcTron.Plugin.Resource.Color.material_on_background_disabled = global::GnollHackClient.Droid.Resource.Color.material_on_background_disabled;
+			global::MarcTron.Plugin.Resource.Color.material_on_background_emphasis_high_type = global::GnollHackClient.Droid.Resource.Color.material_on_background_emphasis_high_type;
+			global::MarcTron.Plugin.Resource.Color.material_on_background_emphasis_medium = global::GnollHackClient.Droid.Resource.Color.material_on_background_emphasis_medium;
+			global::MarcTron.Plugin.Resource.Color.material_on_primary_disabled = global::GnollHackClient.Droid.Resource.Color.material_on_primary_disabled;
+			global::MarcTron.Plugin.Resource.Color.material_on_primary_emphasis_high_type = global::GnollHackClient.Droid.Resource.Color.material_on_primary_emphasis_high_type;
+			global::MarcTron.Plugin.Resource.Color.material_on_primary_emphasis_medium = global::GnollHackClient.Droid.Resource.Color.material_on_primary_emphasis_medium;
+			global::MarcTron.Plugin.Resource.Color.material_on_surface_disabled = global::GnollHackClient.Droid.Resource.Color.material_on_surface_disabled;
+			global::MarcTron.Plugin.Resource.Color.material_on_surface_emphasis_high_type = global::GnollHackClient.Droid.Resource.Color.material_on_surface_emphasis_high_type;
+			global::MarcTron.Plugin.Resource.Color.material_on_surface_emphasis_medium = global::GnollHackClient.Droid.Resource.Color.material_on_surface_emphasis_medium;
+			global::MarcTron.Plugin.Resource.Color.mtrl_bottom_nav_colored_item_tint = global::GnollHackClient.Droid.Resource.Color.mtrl_bottom_nav_colored_item_tint;
+			global::MarcTron.Plugin.Resource.Color.mtrl_bottom_nav_colored_ripple_color = global::GnollHackClient.Droid.Resource.Color.mtrl_bottom_nav_colored_ripple_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_bottom_nav_item_tint = global::GnollHackClient.Droid.Resource.Color.mtrl_bottom_nav_item_tint;
+			global::MarcTron.Plugin.Resource.Color.mtrl_bottom_nav_ripple_color = global::GnollHackClient.Droid.Resource.Color.mtrl_bottom_nav_ripple_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_btn_bg_color_selector = global::GnollHackClient.Droid.Resource.Color.mtrl_btn_bg_color_selector;
+			global::MarcTron.Plugin.Resource.Color.mtrl_btn_ripple_color = global::GnollHackClient.Droid.Resource.Color.mtrl_btn_ripple_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_btn_stroke_color_selector = global::GnollHackClient.Droid.Resource.Color.mtrl_btn_stroke_color_selector;
+			global::MarcTron.Plugin.Resource.Color.mtrl_btn_text_btn_bg_color_selector = global::GnollHackClient.Droid.Resource.Color.mtrl_btn_text_btn_bg_color_selector;
+			global::MarcTron.Plugin.Resource.Color.mtrl_btn_text_btn_ripple_color = global::GnollHackClient.Droid.Resource.Color.mtrl_btn_text_btn_ripple_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_btn_text_color_disabled = global::GnollHackClient.Droid.Resource.Color.mtrl_btn_text_color_disabled;
+			global::MarcTron.Plugin.Resource.Color.mtrl_btn_text_color_selector = global::GnollHackClient.Droid.Resource.Color.mtrl_btn_text_color_selector;
+			global::MarcTron.Plugin.Resource.Color.mtrl_btn_transparent_bg_color = global::GnollHackClient.Droid.Resource.Color.mtrl_btn_transparent_bg_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_calendar_item_stroke_color = global::GnollHackClient.Droid.Resource.Color.mtrl_calendar_item_stroke_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_calendar_selected_range = global::GnollHackClient.Droid.Resource.Color.mtrl_calendar_selected_range;
+			global::MarcTron.Plugin.Resource.Color.mtrl_card_view_foreground = global::GnollHackClient.Droid.Resource.Color.mtrl_card_view_foreground;
+			global::MarcTron.Plugin.Resource.Color.mtrl_card_view_ripple = global::GnollHackClient.Droid.Resource.Color.mtrl_card_view_ripple;
+			global::MarcTron.Plugin.Resource.Color.mtrl_chip_background_color = global::GnollHackClient.Droid.Resource.Color.mtrl_chip_background_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_chip_close_icon_tint = global::GnollHackClient.Droid.Resource.Color.mtrl_chip_close_icon_tint;
+			global::MarcTron.Plugin.Resource.Color.mtrl_chip_ripple_color = global::GnollHackClient.Droid.Resource.Color.mtrl_chip_ripple_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_chip_surface_color = global::GnollHackClient.Droid.Resource.Color.mtrl_chip_surface_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_chip_text_color = global::GnollHackClient.Droid.Resource.Color.mtrl_chip_text_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_choice_chip_background_color = global::GnollHackClient.Droid.Resource.Color.mtrl_choice_chip_background_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_choice_chip_ripple_color = global::GnollHackClient.Droid.Resource.Color.mtrl_choice_chip_ripple_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_choice_chip_text_color = global::GnollHackClient.Droid.Resource.Color.mtrl_choice_chip_text_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_error = global::GnollHackClient.Droid.Resource.Color.mtrl_error;
+			global::MarcTron.Plugin.Resource.Color.mtrl_fab_ripple_color = global::GnollHackClient.Droid.Resource.Color.mtrl_fab_ripple_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_filled_background_color = global::GnollHackClient.Droid.Resource.Color.mtrl_filled_background_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_filled_icon_tint = global::GnollHackClient.Droid.Resource.Color.mtrl_filled_icon_tint;
+			global::MarcTron.Plugin.Resource.Color.mtrl_filled_stroke_color = global::GnollHackClient.Droid.Resource.Color.mtrl_filled_stroke_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_indicator_text_color = global::GnollHackClient.Droid.Resource.Color.mtrl_indicator_text_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_navigation_item_background_color = global::GnollHackClient.Droid.Resource.Color.mtrl_navigation_item_background_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_navigation_item_icon_tint = global::GnollHackClient.Droid.Resource.Color.mtrl_navigation_item_icon_tint;
+			global::MarcTron.Plugin.Resource.Color.mtrl_navigation_item_text_color = global::GnollHackClient.Droid.Resource.Color.mtrl_navigation_item_text_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_on_primary_text_btn_text_color_selector = global::GnollHackClient.Droid.Resource.Color.mtrl_on_primary_text_btn_text_color_selector;
+			global::MarcTron.Plugin.Resource.Color.mtrl_outlined_icon_tint = global::GnollHackClient.Droid.Resource.Color.mtrl_outlined_icon_tint;
+			global::MarcTron.Plugin.Resource.Color.mtrl_outlined_stroke_color = global::GnollHackClient.Droid.Resource.Color.mtrl_outlined_stroke_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_popupmenu_overlay_color = global::GnollHackClient.Droid.Resource.Color.mtrl_popupmenu_overlay_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_scrim_color = global::GnollHackClient.Droid.Resource.Color.mtrl_scrim_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_tabs_colored_ripple_color = global::GnollHackClient.Droid.Resource.Color.mtrl_tabs_colored_ripple_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_tabs_icon_color_selector = global::GnollHackClient.Droid.Resource.Color.mtrl_tabs_icon_color_selector;
+			global::MarcTron.Plugin.Resource.Color.mtrl_tabs_icon_color_selector_colored = global::GnollHackClient.Droid.Resource.Color.mtrl_tabs_icon_color_selector_colored;
+			global::MarcTron.Plugin.Resource.Color.mtrl_tabs_legacy_text_color_selector = global::GnollHackClient.Droid.Resource.Color.mtrl_tabs_legacy_text_color_selector;
+			global::MarcTron.Plugin.Resource.Color.mtrl_tabs_ripple_color = global::GnollHackClient.Droid.Resource.Color.mtrl_tabs_ripple_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_textinput_default_box_stroke_color = global::GnollHackClient.Droid.Resource.Color.mtrl_textinput_default_box_stroke_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_textinput_disabled_color = global::GnollHackClient.Droid.Resource.Color.mtrl_textinput_disabled_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_textinput_filled_box_default_background_color = global::GnollHackClient.Droid.Resource.Color.mtrl_textinput_filled_box_default_background_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_textinput_focused_box_stroke_color = global::GnollHackClient.Droid.Resource.Color.mtrl_textinput_focused_box_stroke_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_textinput_hovered_box_stroke_color = global::GnollHackClient.Droid.Resource.Color.mtrl_textinput_hovered_box_stroke_color;
+			global::MarcTron.Plugin.Resource.Color.mtrl_text_btn_text_color_selector = global::GnollHackClient.Droid.Resource.Color.mtrl_text_btn_text_color_selector;
+			global::MarcTron.Plugin.Resource.Color.notification_action_color_filter = global::GnollHackClient.Droid.Resource.Color.notification_action_color_filter;
+			global::MarcTron.Plugin.Resource.Color.notification_icon_bg_color = global::GnollHackClient.Droid.Resource.Color.notification_icon_bg_color;
+			global::MarcTron.Plugin.Resource.Color.notification_material_background_media_default_color = global::GnollHackClient.Droid.Resource.Color.notification_material_background_media_default_color;
+			global::MarcTron.Plugin.Resource.Color.primary_dark_material_dark = global::GnollHackClient.Droid.Resource.Color.primary_dark_material_dark;
+			global::MarcTron.Plugin.Resource.Color.primary_dark_material_light = global::GnollHackClient.Droid.Resource.Color.primary_dark_material_light;
+			global::MarcTron.Plugin.Resource.Color.primary_material_dark = global::GnollHackClient.Droid.Resource.Color.primary_material_dark;
+			global::MarcTron.Plugin.Resource.Color.primary_material_light = global::GnollHackClient.Droid.Resource.Color.primary_material_light;
+			global::MarcTron.Plugin.Resource.Color.primary_text_default_material_dark = global::GnollHackClient.Droid.Resource.Color.primary_text_default_material_dark;
+			global::MarcTron.Plugin.Resource.Color.primary_text_default_material_light = global::GnollHackClient.Droid.Resource.Color.primary_text_default_material_light;
+			global::MarcTron.Plugin.Resource.Color.primary_text_disabled_material_dark = global::GnollHackClient.Droid.Resource.Color.primary_text_disabled_material_dark;
+			global::MarcTron.Plugin.Resource.Color.primary_text_disabled_material_light = global::GnollHackClient.Droid.Resource.Color.primary_text_disabled_material_light;
+			global::MarcTron.Plugin.Resource.Color.ripple_material_dark = global::GnollHackClient.Droid.Resource.Color.ripple_material_dark;
+			global::MarcTron.Plugin.Resource.Color.ripple_material_light = global::GnollHackClient.Droid.Resource.Color.ripple_material_light;
+			global::MarcTron.Plugin.Resource.Color.secondary_text_default_material_dark = global::GnollHackClient.Droid.Resource.Color.secondary_text_default_material_dark;
+			global::MarcTron.Plugin.Resource.Color.secondary_text_default_material_light = global::GnollHackClient.Droid.Resource.Color.secondary_text_default_material_light;
+			global::MarcTron.Plugin.Resource.Color.secondary_text_disabled_material_dark = global::GnollHackClient.Droid.Resource.Color.secondary_text_disabled_material_dark;
+			global::MarcTron.Plugin.Resource.Color.secondary_text_disabled_material_light = global::GnollHackClient.Droid.Resource.Color.secondary_text_disabled_material_light;
+			global::MarcTron.Plugin.Resource.Color.switch_thumb_disabled_material_dark = global::GnollHackClient.Droid.Resource.Color.switch_thumb_disabled_material_dark;
+			global::MarcTron.Plugin.Resource.Color.switch_thumb_disabled_material_light = global::GnollHackClient.Droid.Resource.Color.switch_thumb_disabled_material_light;
+			global::MarcTron.Plugin.Resource.Color.switch_thumb_material_dark = global::GnollHackClient.Droid.Resource.Color.switch_thumb_material_dark;
+			global::MarcTron.Plugin.Resource.Color.switch_thumb_material_light = global::GnollHackClient.Droid.Resource.Color.switch_thumb_material_light;
+			global::MarcTron.Plugin.Resource.Color.switch_thumb_normal_material_dark = global::GnollHackClient.Droid.Resource.Color.switch_thumb_normal_material_dark;
+			global::MarcTron.Plugin.Resource.Color.switch_thumb_normal_material_light = global::GnollHackClient.Droid.Resource.Color.switch_thumb_normal_material_light;
+			global::MarcTron.Plugin.Resource.Color.test_mtrl_calendar_day = global::GnollHackClient.Droid.Resource.Color.test_mtrl_calendar_day;
+			global::MarcTron.Plugin.Resource.Color.test_mtrl_calendar_day_selected = global::GnollHackClient.Droid.Resource.Color.test_mtrl_calendar_day_selected;
+			global::MarcTron.Plugin.Resource.Color.tooltip_background_dark = global::GnollHackClient.Droid.Resource.Color.tooltip_background_dark;
+			global::MarcTron.Plugin.Resource.Color.tooltip_background_light = global::GnollHackClient.Droid.Resource.Color.tooltip_background_light;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_content_inset_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_content_inset_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_content_inset_with_nav = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_content_inset_with_nav;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_default_height_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_default_height_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_default_padding_end_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_default_padding_end_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_default_padding_start_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_default_padding_start_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_elevation_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_elevation_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_icon_vertical_padding_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_icon_vertical_padding_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_overflow_padding_end_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_overflow_padding_end_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_overflow_padding_start_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_overflow_padding_start_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_stacked_max_height = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_stacked_max_height;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_stacked_tab_max_width = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_stacked_tab_max_width;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_subtitle_bottom_margin_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_subtitle_bottom_margin_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_bar_subtitle_top_margin_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_bar_subtitle_top_margin_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_button_min_height_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_button_min_height_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_button_min_width_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_button_min_width_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_action_button_min_width_overflow_material = global::GnollHackClient.Droid.Resource.Dimension.abc_action_button_min_width_overflow_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_alert_dialog_button_bar_height = global::GnollHackClient.Droid.Resource.Dimension.abc_alert_dialog_button_bar_height;
+			global::MarcTron.Plugin.Resource.Dimension.abc_alert_dialog_button_dimen = global::GnollHackClient.Droid.Resource.Dimension.abc_alert_dialog_button_dimen;
+			global::MarcTron.Plugin.Resource.Dimension.abc_button_inset_horizontal_material = global::GnollHackClient.Droid.Resource.Dimension.abc_button_inset_horizontal_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_button_inset_vertical_material = global::GnollHackClient.Droid.Resource.Dimension.abc_button_inset_vertical_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_button_padding_horizontal_material = global::GnollHackClient.Droid.Resource.Dimension.abc_button_padding_horizontal_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_button_padding_vertical_material = global::GnollHackClient.Droid.Resource.Dimension.abc_button_padding_vertical_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_cascading_menus_min_smallest_width = global::GnollHackClient.Droid.Resource.Dimension.abc_cascading_menus_min_smallest_width;
+			global::MarcTron.Plugin.Resource.Dimension.abc_config_prefDialogWidth = global::GnollHackClient.Droid.Resource.Dimension.abc_config_prefDialogWidth;
+			global::MarcTron.Plugin.Resource.Dimension.abc_control_corner_material = global::GnollHackClient.Droid.Resource.Dimension.abc_control_corner_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_control_inset_material = global::GnollHackClient.Droid.Resource.Dimension.abc_control_inset_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_control_padding_material = global::GnollHackClient.Droid.Resource.Dimension.abc_control_padding_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dialog_corner_radius_material = global::GnollHackClient.Droid.Resource.Dimension.abc_dialog_corner_radius_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dialog_fixed_height_major = global::GnollHackClient.Droid.Resource.Dimension.abc_dialog_fixed_height_major;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dialog_fixed_height_minor = global::GnollHackClient.Droid.Resource.Dimension.abc_dialog_fixed_height_minor;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dialog_fixed_width_major = global::GnollHackClient.Droid.Resource.Dimension.abc_dialog_fixed_width_major;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dialog_fixed_width_minor = global::GnollHackClient.Droid.Resource.Dimension.abc_dialog_fixed_width_minor;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dialog_list_padding_bottom_no_buttons = global::GnollHackClient.Droid.Resource.Dimension.abc_dialog_list_padding_bottom_no_buttons;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dialog_list_padding_top_no_title = global::GnollHackClient.Droid.Resource.Dimension.abc_dialog_list_padding_top_no_title;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dialog_min_width_major = global::GnollHackClient.Droid.Resource.Dimension.abc_dialog_min_width_major;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dialog_min_width_minor = global::GnollHackClient.Droid.Resource.Dimension.abc_dialog_min_width_minor;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dialog_padding_material = global::GnollHackClient.Droid.Resource.Dimension.abc_dialog_padding_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dialog_padding_top_material = global::GnollHackClient.Droid.Resource.Dimension.abc_dialog_padding_top_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dialog_title_divider_material = global::GnollHackClient.Droid.Resource.Dimension.abc_dialog_title_divider_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_disabled_alpha_material_dark = global::GnollHackClient.Droid.Resource.Dimension.abc_disabled_alpha_material_dark;
+			global::MarcTron.Plugin.Resource.Dimension.abc_disabled_alpha_material_light = global::GnollHackClient.Droid.Resource.Dimension.abc_disabled_alpha_material_light;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dropdownitem_icon_width = global::GnollHackClient.Droid.Resource.Dimension.abc_dropdownitem_icon_width;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dropdownitem_text_padding_left = global::GnollHackClient.Droid.Resource.Dimension.abc_dropdownitem_text_padding_left;
+			global::MarcTron.Plugin.Resource.Dimension.abc_dropdownitem_text_padding_right = global::GnollHackClient.Droid.Resource.Dimension.abc_dropdownitem_text_padding_right;
+			global::MarcTron.Plugin.Resource.Dimension.abc_edit_text_inset_bottom_material = global::GnollHackClient.Droid.Resource.Dimension.abc_edit_text_inset_bottom_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_edit_text_inset_horizontal_material = global::GnollHackClient.Droid.Resource.Dimension.abc_edit_text_inset_horizontal_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_edit_text_inset_top_material = global::GnollHackClient.Droid.Resource.Dimension.abc_edit_text_inset_top_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_floating_window_z = global::GnollHackClient.Droid.Resource.Dimension.abc_floating_window_z;
+			global::MarcTron.Plugin.Resource.Dimension.abc_list_item_height_large_material = global::GnollHackClient.Droid.Resource.Dimension.abc_list_item_height_large_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_list_item_height_material = global::GnollHackClient.Droid.Resource.Dimension.abc_list_item_height_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_list_item_height_small_material = global::GnollHackClient.Droid.Resource.Dimension.abc_list_item_height_small_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_list_item_padding_horizontal_material = global::GnollHackClient.Droid.Resource.Dimension.abc_list_item_padding_horizontal_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_panel_menu_list_width = global::GnollHackClient.Droid.Resource.Dimension.abc_panel_menu_list_width;
+			global::MarcTron.Plugin.Resource.Dimension.abc_progress_bar_height_material = global::GnollHackClient.Droid.Resource.Dimension.abc_progress_bar_height_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_search_view_preferred_height = global::GnollHackClient.Droid.Resource.Dimension.abc_search_view_preferred_height;
+			global::MarcTron.Plugin.Resource.Dimension.abc_search_view_preferred_width = global::GnollHackClient.Droid.Resource.Dimension.abc_search_view_preferred_width;
+			global::MarcTron.Plugin.Resource.Dimension.abc_seekbar_track_background_height_material = global::GnollHackClient.Droid.Resource.Dimension.abc_seekbar_track_background_height_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_seekbar_track_progress_height_material = global::GnollHackClient.Droid.Resource.Dimension.abc_seekbar_track_progress_height_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_select_dialog_padding_start_material = global::GnollHackClient.Droid.Resource.Dimension.abc_select_dialog_padding_start_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_switch_padding = global::GnollHackClient.Droid.Resource.Dimension.abc_switch_padding;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_body_1_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_body_1_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_body_2_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_body_2_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_button_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_button_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_caption_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_caption_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_display_1_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_display_1_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_display_2_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_display_2_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_display_3_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_display_3_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_display_4_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_display_4_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_headline_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_headline_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_large_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_large_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_medium_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_medium_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_menu_header_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_menu_header_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_menu_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_menu_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_small_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_small_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_subhead_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_subhead_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_subtitle_material_toolbar = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_subtitle_material_toolbar;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_title_material = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_title_material;
+			global::MarcTron.Plugin.Resource.Dimension.abc_text_size_title_material_toolbar = global::GnollHackClient.Droid.Resource.Dimension.abc_text_size_title_material_toolbar;
+			global::MarcTron.Plugin.Resource.Dimension.action_bar_size = global::GnollHackClient.Droid.Resource.Dimension.action_bar_size;
+			global::MarcTron.Plugin.Resource.Dimension.appcompat_dialog_background_inset = global::GnollHackClient.Droid.Resource.Dimension.appcompat_dialog_background_inset;
+			global::MarcTron.Plugin.Resource.Dimension.browser_actions_context_menu_max_width = global::GnollHackClient.Droid.Resource.Dimension.browser_actions_context_menu_max_width;
+			global::MarcTron.Plugin.Resource.Dimension.browser_actions_context_menu_min_padding = global::GnollHackClient.Droid.Resource.Dimension.browser_actions_context_menu_min_padding;
+			global::MarcTron.Plugin.Resource.Dimension.cardview_compat_inset_shadow = global::GnollHackClient.Droid.Resource.Dimension.cardview_compat_inset_shadow;
+			global::MarcTron.Plugin.Resource.Dimension.cardview_default_elevation = global::GnollHackClient.Droid.Resource.Dimension.cardview_default_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.cardview_default_radius = global::GnollHackClient.Droid.Resource.Dimension.cardview_default_radius;
+			global::MarcTron.Plugin.Resource.Dimension.compat_button_inset_horizontal_material = global::GnollHackClient.Droid.Resource.Dimension.compat_button_inset_horizontal_material;
+			global::MarcTron.Plugin.Resource.Dimension.compat_button_inset_vertical_material = global::GnollHackClient.Droid.Resource.Dimension.compat_button_inset_vertical_material;
+			global::MarcTron.Plugin.Resource.Dimension.compat_button_padding_horizontal_material = global::GnollHackClient.Droid.Resource.Dimension.compat_button_padding_horizontal_material;
+			global::MarcTron.Plugin.Resource.Dimension.compat_button_padding_vertical_material = global::GnollHackClient.Droid.Resource.Dimension.compat_button_padding_vertical_material;
+			global::MarcTron.Plugin.Resource.Dimension.compat_control_corner_material = global::GnollHackClient.Droid.Resource.Dimension.compat_control_corner_material;
+			global::MarcTron.Plugin.Resource.Dimension.compat_notification_large_icon_max_height = global::GnollHackClient.Droid.Resource.Dimension.compat_notification_large_icon_max_height;
+			global::MarcTron.Plugin.Resource.Dimension.compat_notification_large_icon_max_width = global::GnollHackClient.Droid.Resource.Dimension.compat_notification_large_icon_max_width;
+			global::MarcTron.Plugin.Resource.Dimension.default_dimension = global::GnollHackClient.Droid.Resource.Dimension.default_dimension;
+			global::MarcTron.Plugin.Resource.Dimension.def_drawer_elevation = global::GnollHackClient.Droid.Resource.Dimension.def_drawer_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.design_appbar_elevation = global::GnollHackClient.Droid.Resource.Dimension.design_appbar_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_navigation_active_item_max_width = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_navigation_active_item_max_width;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_navigation_active_item_min_width = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_navigation_active_item_min_width;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_navigation_active_text_size = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_navigation_active_text_size;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_navigation_elevation = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_navigation_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_navigation_height = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_navigation_height;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_navigation_icon_size = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_navigation_icon_size;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_navigation_item_max_width = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_navigation_item_max_width;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_navigation_item_min_width = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_navigation_item_min_width;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_navigation_margin = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_navigation_margin;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_navigation_shadow_height = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_navigation_shadow_height;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_navigation_text_size = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_navigation_text_size;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_sheet_elevation = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_sheet_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_sheet_modal_elevation = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_sheet_modal_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.design_bottom_sheet_peek_height_min = global::GnollHackClient.Droid.Resource.Dimension.design_bottom_sheet_peek_height_min;
+			global::MarcTron.Plugin.Resource.Dimension.design_fab_border_width = global::GnollHackClient.Droid.Resource.Dimension.design_fab_border_width;
+			global::MarcTron.Plugin.Resource.Dimension.design_fab_elevation = global::GnollHackClient.Droid.Resource.Dimension.design_fab_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.design_fab_image_size = global::GnollHackClient.Droid.Resource.Dimension.design_fab_image_size;
+			global::MarcTron.Plugin.Resource.Dimension.design_fab_size_mini = global::GnollHackClient.Droid.Resource.Dimension.design_fab_size_mini;
+			global::MarcTron.Plugin.Resource.Dimension.design_fab_size_normal = global::GnollHackClient.Droid.Resource.Dimension.design_fab_size_normal;
+			global::MarcTron.Plugin.Resource.Dimension.design_fab_translation_z_hovered_focused = global::GnollHackClient.Droid.Resource.Dimension.design_fab_translation_z_hovered_focused;
+			global::MarcTron.Plugin.Resource.Dimension.design_fab_translation_z_pressed = global::GnollHackClient.Droid.Resource.Dimension.design_fab_translation_z_pressed;
+			global::MarcTron.Plugin.Resource.Dimension.design_navigation_elevation = global::GnollHackClient.Droid.Resource.Dimension.design_navigation_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.design_navigation_icon_padding = global::GnollHackClient.Droid.Resource.Dimension.design_navigation_icon_padding;
+			global::MarcTron.Plugin.Resource.Dimension.design_navigation_icon_size = global::GnollHackClient.Droid.Resource.Dimension.design_navigation_icon_size;
+			global::MarcTron.Plugin.Resource.Dimension.design_navigation_item_horizontal_padding = global::GnollHackClient.Droid.Resource.Dimension.design_navigation_item_horizontal_padding;
+			global::MarcTron.Plugin.Resource.Dimension.design_navigation_item_icon_padding = global::GnollHackClient.Droid.Resource.Dimension.design_navigation_item_icon_padding;
+			global::MarcTron.Plugin.Resource.Dimension.design_navigation_max_width = global::GnollHackClient.Droid.Resource.Dimension.design_navigation_max_width;
+			global::MarcTron.Plugin.Resource.Dimension.design_navigation_padding_bottom = global::GnollHackClient.Droid.Resource.Dimension.design_navigation_padding_bottom;
+			global::MarcTron.Plugin.Resource.Dimension.design_navigation_separator_vertical_padding = global::GnollHackClient.Droid.Resource.Dimension.design_navigation_separator_vertical_padding;
+			global::MarcTron.Plugin.Resource.Dimension.design_snackbar_action_inline_max_width = global::GnollHackClient.Droid.Resource.Dimension.design_snackbar_action_inline_max_width;
+			global::MarcTron.Plugin.Resource.Dimension.design_snackbar_action_text_color_alpha = global::GnollHackClient.Droid.Resource.Dimension.design_snackbar_action_text_color_alpha;
+			global::MarcTron.Plugin.Resource.Dimension.design_snackbar_background_corner_radius = global::GnollHackClient.Droid.Resource.Dimension.design_snackbar_background_corner_radius;
+			global::MarcTron.Plugin.Resource.Dimension.design_snackbar_elevation = global::GnollHackClient.Droid.Resource.Dimension.design_snackbar_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.design_snackbar_extra_spacing_horizontal = global::GnollHackClient.Droid.Resource.Dimension.design_snackbar_extra_spacing_horizontal;
+			global::MarcTron.Plugin.Resource.Dimension.design_snackbar_max_width = global::GnollHackClient.Droid.Resource.Dimension.design_snackbar_max_width;
+			global::MarcTron.Plugin.Resource.Dimension.design_snackbar_min_width = global::GnollHackClient.Droid.Resource.Dimension.design_snackbar_min_width;
+			global::MarcTron.Plugin.Resource.Dimension.design_snackbar_padding_horizontal = global::GnollHackClient.Droid.Resource.Dimension.design_snackbar_padding_horizontal;
+			global::MarcTron.Plugin.Resource.Dimension.design_snackbar_padding_vertical = global::GnollHackClient.Droid.Resource.Dimension.design_snackbar_padding_vertical;
+			global::MarcTron.Plugin.Resource.Dimension.design_snackbar_padding_vertical_2lines = global::GnollHackClient.Droid.Resource.Dimension.design_snackbar_padding_vertical_2lines;
+			global::MarcTron.Plugin.Resource.Dimension.design_snackbar_text_size = global::GnollHackClient.Droid.Resource.Dimension.design_snackbar_text_size;
+			global::MarcTron.Plugin.Resource.Dimension.design_tab_max_width = global::GnollHackClient.Droid.Resource.Dimension.design_tab_max_width;
+			global::MarcTron.Plugin.Resource.Dimension.design_tab_scrollable_min_width = global::GnollHackClient.Droid.Resource.Dimension.design_tab_scrollable_min_width;
+			global::MarcTron.Plugin.Resource.Dimension.design_tab_text_size = global::GnollHackClient.Droid.Resource.Dimension.design_tab_text_size;
+			global::MarcTron.Plugin.Resource.Dimension.design_tab_text_size_2line = global::GnollHackClient.Droid.Resource.Dimension.design_tab_text_size_2line;
+			global::MarcTron.Plugin.Resource.Dimension.design_textinput_caption_translate_y = global::GnollHackClient.Droid.Resource.Dimension.design_textinput_caption_translate_y;
+			global::MarcTron.Plugin.Resource.Dimension.disabled_alpha_material_dark = global::GnollHackClient.Droid.Resource.Dimension.disabled_alpha_material_dark;
+			global::MarcTron.Plugin.Resource.Dimension.disabled_alpha_material_light = global::GnollHackClient.Droid.Resource.Dimension.disabled_alpha_material_light;
+			global::MarcTron.Plugin.Resource.Dimension.fastscroll_default_thickness = global::GnollHackClient.Droid.Resource.Dimension.fastscroll_default_thickness;
+			global::MarcTron.Plugin.Resource.Dimension.fastscroll_margin = global::GnollHackClient.Droid.Resource.Dimension.fastscroll_margin;
+			global::MarcTron.Plugin.Resource.Dimension.fastscroll_minimum_range = global::GnollHackClient.Droid.Resource.Dimension.fastscroll_minimum_range;
+			global::MarcTron.Plugin.Resource.Dimension.highlight_alpha_material_colored = global::GnollHackClient.Droid.Resource.Dimension.highlight_alpha_material_colored;
+			global::MarcTron.Plugin.Resource.Dimension.highlight_alpha_material_dark = global::GnollHackClient.Droid.Resource.Dimension.highlight_alpha_material_dark;
+			global::MarcTron.Plugin.Resource.Dimension.highlight_alpha_material_light = global::GnollHackClient.Droid.Resource.Dimension.highlight_alpha_material_light;
+			global::MarcTron.Plugin.Resource.Dimension.hint_alpha_material_dark = global::GnollHackClient.Droid.Resource.Dimension.hint_alpha_material_dark;
+			global::MarcTron.Plugin.Resource.Dimension.hint_alpha_material_light = global::GnollHackClient.Droid.Resource.Dimension.hint_alpha_material_light;
+			global::MarcTron.Plugin.Resource.Dimension.hint_pressed_alpha_material_dark = global::GnollHackClient.Droid.Resource.Dimension.hint_pressed_alpha_material_dark;
+			global::MarcTron.Plugin.Resource.Dimension.hint_pressed_alpha_material_light = global::GnollHackClient.Droid.Resource.Dimension.hint_pressed_alpha_material_light;
+			global::MarcTron.Plugin.Resource.Dimension.item_touch_helper_max_drag_scroll_per_frame = global::GnollHackClient.Droid.Resource.Dimension.item_touch_helper_max_drag_scroll_per_frame;
+			global::MarcTron.Plugin.Resource.Dimension.item_touch_helper_swipe_escape_max_velocity = global::GnollHackClient.Droid.Resource.Dimension.item_touch_helper_swipe_escape_max_velocity;
+			global::MarcTron.Plugin.Resource.Dimension.item_touch_helper_swipe_escape_velocity = global::GnollHackClient.Droid.Resource.Dimension.item_touch_helper_swipe_escape_velocity;
+			global::MarcTron.Plugin.Resource.Dimension.material_emphasis_disabled = global::GnollHackClient.Droid.Resource.Dimension.material_emphasis_disabled;
+			global::MarcTron.Plugin.Resource.Dimension.material_emphasis_high_type = global::GnollHackClient.Droid.Resource.Dimension.material_emphasis_high_type;
+			global::MarcTron.Plugin.Resource.Dimension.material_emphasis_medium = global::GnollHackClient.Droid.Resource.Dimension.material_emphasis_medium;
+			global::MarcTron.Plugin.Resource.Dimension.material_text_view_test_line_height = global::GnollHackClient.Droid.Resource.Dimension.material_text_view_test_line_height;
+			global::MarcTron.Plugin.Resource.Dimension.material_text_view_test_line_height_override = global::GnollHackClient.Droid.Resource.Dimension.material_text_view_test_line_height_override;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_alert_dialog_background_inset_bottom = global::GnollHackClient.Droid.Resource.Dimension.mtrl_alert_dialog_background_inset_bottom;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_alert_dialog_background_inset_end = global::GnollHackClient.Droid.Resource.Dimension.mtrl_alert_dialog_background_inset_end;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_alert_dialog_background_inset_start = global::GnollHackClient.Droid.Resource.Dimension.mtrl_alert_dialog_background_inset_start;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_alert_dialog_background_inset_top = global::GnollHackClient.Droid.Resource.Dimension.mtrl_alert_dialog_background_inset_top;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_alert_dialog_picker_background_inset = global::GnollHackClient.Droid.Resource.Dimension.mtrl_alert_dialog_picker_background_inset;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_badge_horizontal_edge_offset = global::GnollHackClient.Droid.Resource.Dimension.mtrl_badge_horizontal_edge_offset;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_badge_long_text_horizontal_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_badge_long_text_horizontal_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_badge_radius = global::GnollHackClient.Droid.Resource.Dimension.mtrl_badge_radius;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_badge_text_horizontal_edge_offset = global::GnollHackClient.Droid.Resource.Dimension.mtrl_badge_text_horizontal_edge_offset;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_badge_text_size = global::GnollHackClient.Droid.Resource.Dimension.mtrl_badge_text_size;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_badge_with_text_radius = global::GnollHackClient.Droid.Resource.Dimension.mtrl_badge_with_text_radius;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_bottomappbar_fabOffsetEndMode = global::GnollHackClient.Droid.Resource.Dimension.mtrl_bottomappbar_fabOffsetEndMode;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_bottomappbar_fab_bottom_margin = global::GnollHackClient.Droid.Resource.Dimension.mtrl_bottomappbar_fab_bottom_margin;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_bottomappbar_fab_cradle_margin = global::GnollHackClient.Droid.Resource.Dimension.mtrl_bottomappbar_fab_cradle_margin;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_bottomappbar_fab_cradle_rounded_corner_radius = global::GnollHackClient.Droid.Resource.Dimension.mtrl_bottomappbar_fab_cradle_rounded_corner_radius;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_bottomappbar_fab_cradle_vertical_offset = global::GnollHackClient.Droid.Resource.Dimension.mtrl_bottomappbar_fab_cradle_vertical_offset;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_bottomappbar_height = global::GnollHackClient.Droid.Resource.Dimension.mtrl_bottomappbar_height;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_corner_radius = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_corner_radius;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_dialog_btn_min_width = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_dialog_btn_min_width;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_disabled_elevation = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_disabled_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_disabled_z = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_disabled_z;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_elevation = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_focused_z = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_focused_z;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_hovered_z = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_hovered_z;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_icon_btn_padding_left = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_icon_btn_padding_left;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_icon_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_icon_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_inset = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_inset;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_letter_spacing = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_letter_spacing;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_padding_bottom = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_padding_bottom;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_padding_left = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_padding_left;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_padding_right = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_padding_right;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_padding_top = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_padding_top;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_pressed_z = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_pressed_z;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_stroke_size = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_stroke_size;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_text_btn_icon_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_text_btn_icon_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_text_btn_padding_left = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_text_btn_padding_left;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_text_btn_padding_right = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_text_btn_padding_right;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_text_size = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_text_size;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_btn_z = global::GnollHackClient.Droid.Resource.Dimension.mtrl_btn_z;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_action_height = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_action_height;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_action_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_action_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_bottom_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_bottom_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_content_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_content_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_days_of_week_height = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_days_of_week_height;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_day_corner = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_day_corner;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_day_height = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_day_height;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_day_horizontal_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_day_horizontal_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_day_today_stroke = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_day_today_stroke;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_day_vertical_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_day_vertical_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_day_width = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_day_width;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_dialog_background_inset = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_dialog_background_inset;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_header_content_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_header_content_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_header_content_padding_fullscreen = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_header_content_padding_fullscreen;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_header_divider_thickness = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_header_divider_thickness;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_header_height = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_header_height;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_header_height_fullscreen = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_header_height_fullscreen;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_header_selection_line_height = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_header_selection_line_height;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_header_text_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_header_text_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_header_toggle_margin_bottom = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_header_toggle_margin_bottom;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_header_toggle_margin_top = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_header_toggle_margin_top;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_landscape_header_width = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_landscape_header_width;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_maximum_default_fullscreen_minor_axis = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_maximum_default_fullscreen_minor_axis;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_month_horizontal_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_month_horizontal_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_month_vertical_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_month_vertical_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_navigation_bottom_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_navigation_bottom_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_navigation_height = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_navigation_height;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_navigation_top_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_navigation_top_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_pre_l_text_clip_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_pre_l_text_clip_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_selection_baseline_to_top_fullscreen = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_selection_baseline_to_top_fullscreen;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_selection_text_baseline_to_bottom = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_selection_text_baseline_to_bottom;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_selection_text_baseline_to_bottom_fullscreen = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_selection_text_baseline_to_bottom_fullscreen;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_selection_text_baseline_to_top = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_selection_text_baseline_to_top;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_text_input_padding_top = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_text_input_padding_top;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_title_baseline_to_top = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_title_baseline_to_top;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_title_baseline_to_top_fullscreen = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_title_baseline_to_top_fullscreen;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_year_corner = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_year_corner;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_year_height = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_year_height;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_year_horizontal_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_year_horizontal_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_year_vertical_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_year_vertical_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_calendar_year_width = global::GnollHackClient.Droid.Resource.Dimension.mtrl_calendar_year_width;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_card_checked_icon_margin = global::GnollHackClient.Droid.Resource.Dimension.mtrl_card_checked_icon_margin;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_card_checked_icon_size = global::GnollHackClient.Droid.Resource.Dimension.mtrl_card_checked_icon_size;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_card_corner_radius = global::GnollHackClient.Droid.Resource.Dimension.mtrl_card_corner_radius;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_card_dragged_z = global::GnollHackClient.Droid.Resource.Dimension.mtrl_card_dragged_z;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_card_elevation = global::GnollHackClient.Droid.Resource.Dimension.mtrl_card_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_card_spacing = global::GnollHackClient.Droid.Resource.Dimension.mtrl_card_spacing;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_chip_pressed_translation_z = global::GnollHackClient.Droid.Resource.Dimension.mtrl_chip_pressed_translation_z;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_chip_text_size = global::GnollHackClient.Droid.Resource.Dimension.mtrl_chip_text_size;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_exposed_dropdown_menu_popup_elevation = global::GnollHackClient.Droid.Resource.Dimension.mtrl_exposed_dropdown_menu_popup_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_exposed_dropdown_menu_popup_vertical_offset = global::GnollHackClient.Droid.Resource.Dimension.mtrl_exposed_dropdown_menu_popup_vertical_offset;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_exposed_dropdown_menu_popup_vertical_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_exposed_dropdown_menu_popup_vertical_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_bottom_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_bottom_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_corner_radius = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_corner_radius;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_disabled_elevation = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_disabled_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_disabled_translation_z = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_disabled_translation_z;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_elevation = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_end_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_end_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_end_padding_icon = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_end_padding_icon;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_icon_size = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_icon_size;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_icon_text_spacing = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_icon_text_spacing;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_min_height = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_min_height;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_min_width = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_min_width;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_start_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_start_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_start_padding_icon = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_start_padding_icon;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_top_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_top_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_translation_z_base = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_translation_z_base;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_translation_z_hovered_focused = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_translation_z_hovered_focused;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_extended_fab_translation_z_pressed = global::GnollHackClient.Droid.Resource.Dimension.mtrl_extended_fab_translation_z_pressed;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_fab_elevation = global::GnollHackClient.Droid.Resource.Dimension.mtrl_fab_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_fab_min_touch_target = global::GnollHackClient.Droid.Resource.Dimension.mtrl_fab_min_touch_target;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_fab_translation_z_hovered_focused = global::GnollHackClient.Droid.Resource.Dimension.mtrl_fab_translation_z_hovered_focused;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_fab_translation_z_pressed = global::GnollHackClient.Droid.Resource.Dimension.mtrl_fab_translation_z_pressed;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_high_ripple_default_alpha = global::GnollHackClient.Droid.Resource.Dimension.mtrl_high_ripple_default_alpha;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_high_ripple_focused_alpha = global::GnollHackClient.Droid.Resource.Dimension.mtrl_high_ripple_focused_alpha;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_high_ripple_hovered_alpha = global::GnollHackClient.Droid.Resource.Dimension.mtrl_high_ripple_hovered_alpha;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_high_ripple_pressed_alpha = global::GnollHackClient.Droid.Resource.Dimension.mtrl_high_ripple_pressed_alpha;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_large_touch_target = global::GnollHackClient.Droid.Resource.Dimension.mtrl_large_touch_target;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_low_ripple_default_alpha = global::GnollHackClient.Droid.Resource.Dimension.mtrl_low_ripple_default_alpha;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_low_ripple_focused_alpha = global::GnollHackClient.Droid.Resource.Dimension.mtrl_low_ripple_focused_alpha;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_low_ripple_hovered_alpha = global::GnollHackClient.Droid.Resource.Dimension.mtrl_low_ripple_hovered_alpha;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_low_ripple_pressed_alpha = global::GnollHackClient.Droid.Resource.Dimension.mtrl_low_ripple_pressed_alpha;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_min_touch_target_size = global::GnollHackClient.Droid.Resource.Dimension.mtrl_min_touch_target_size;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_navigation_elevation = global::GnollHackClient.Droid.Resource.Dimension.mtrl_navigation_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_navigation_item_horizontal_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_navigation_item_horizontal_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_navigation_item_icon_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_navigation_item_icon_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_navigation_item_icon_size = global::GnollHackClient.Droid.Resource.Dimension.mtrl_navigation_item_icon_size;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_navigation_item_shape_horizontal_margin = global::GnollHackClient.Droid.Resource.Dimension.mtrl_navigation_item_shape_horizontal_margin;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_navigation_item_shape_vertical_margin = global::GnollHackClient.Droid.Resource.Dimension.mtrl_navigation_item_shape_vertical_margin;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_shape_corner_size_large_component = global::GnollHackClient.Droid.Resource.Dimension.mtrl_shape_corner_size_large_component;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_shape_corner_size_medium_component = global::GnollHackClient.Droid.Resource.Dimension.mtrl_shape_corner_size_medium_component;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_shape_corner_size_small_component = global::GnollHackClient.Droid.Resource.Dimension.mtrl_shape_corner_size_small_component;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_snackbar_action_text_color_alpha = global::GnollHackClient.Droid.Resource.Dimension.mtrl_snackbar_action_text_color_alpha;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_snackbar_background_corner_radius = global::GnollHackClient.Droid.Resource.Dimension.mtrl_snackbar_background_corner_radius;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_snackbar_background_overlay_color_alpha = global::GnollHackClient.Droid.Resource.Dimension.mtrl_snackbar_background_overlay_color_alpha;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_snackbar_margin = global::GnollHackClient.Droid.Resource.Dimension.mtrl_snackbar_margin;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_switch_thumb_elevation = global::GnollHackClient.Droid.Resource.Dimension.mtrl_switch_thumb_elevation;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_textinput_box_corner_radius_medium = global::GnollHackClient.Droid.Resource.Dimension.mtrl_textinput_box_corner_radius_medium;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_textinput_box_corner_radius_small = global::GnollHackClient.Droid.Resource.Dimension.mtrl_textinput_box_corner_radius_small;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_textinput_box_label_cutout_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_textinput_box_label_cutout_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_textinput_box_stroke_width_default = global::GnollHackClient.Droid.Resource.Dimension.mtrl_textinput_box_stroke_width_default;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_textinput_box_stroke_width_focused = global::GnollHackClient.Droid.Resource.Dimension.mtrl_textinput_box_stroke_width_focused;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_textinput_end_icon_margin_start = global::GnollHackClient.Droid.Resource.Dimension.mtrl_textinput_end_icon_margin_start;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_textinput_outline_box_expanded_padding = global::GnollHackClient.Droid.Resource.Dimension.mtrl_textinput_outline_box_expanded_padding;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_textinput_start_icon_margin_end = global::GnollHackClient.Droid.Resource.Dimension.mtrl_textinput_start_icon_margin_end;
+			global::MarcTron.Plugin.Resource.Dimension.mtrl_toolbar_default_height = global::GnollHackClient.Droid.Resource.Dimension.mtrl_toolbar_default_height;
+			global::MarcTron.Plugin.Resource.Dimension.notification_action_icon_size = global::GnollHackClient.Droid.Resource.Dimension.notification_action_icon_size;
+			global::MarcTron.Plugin.Resource.Dimension.notification_action_text_size = global::GnollHackClient.Droid.Resource.Dimension.notification_action_text_size;
+			global::MarcTron.Plugin.Resource.Dimension.notification_big_circle_margin = global::GnollHackClient.Droid.Resource.Dimension.notification_big_circle_margin;
+			global::MarcTron.Plugin.Resource.Dimension.notification_content_margin_start = global::GnollHackClient.Droid.Resource.Dimension.notification_content_margin_start;
+			global::MarcTron.Plugin.Resource.Dimension.notification_large_icon_height = global::GnollHackClient.Droid.Resource.Dimension.notification_large_icon_height;
+			global::MarcTron.Plugin.Resource.Dimension.notification_large_icon_width = global::GnollHackClient.Droid.Resource.Dimension.notification_large_icon_width;
+			global::MarcTron.Plugin.Resource.Dimension.notification_main_column_padding_top = global::GnollHackClient.Droid.Resource.Dimension.notification_main_column_padding_top;
+			global::MarcTron.Plugin.Resource.Dimension.notification_media_narrow_margin = global::GnollHackClient.Droid.Resource.Dimension.notification_media_narrow_margin;
+			global::MarcTron.Plugin.Resource.Dimension.notification_right_icon_size = global::GnollHackClient.Droid.Resource.Dimension.notification_right_icon_size;
+			global::MarcTron.Plugin.Resource.Dimension.notification_right_side_padding_top = global::GnollHackClient.Droid.Resource.Dimension.notification_right_side_padding_top;
+			global::MarcTron.Plugin.Resource.Dimension.notification_small_icon_background_padding = global::GnollHackClient.Droid.Resource.Dimension.notification_small_icon_background_padding;
+			global::MarcTron.Plugin.Resource.Dimension.notification_small_icon_size_as_large = global::GnollHackClient.Droid.Resource.Dimension.notification_small_icon_size_as_large;
+			global::MarcTron.Plugin.Resource.Dimension.notification_subtext_size = global::GnollHackClient.Droid.Resource.Dimension.notification_subtext_size;
+			global::MarcTron.Plugin.Resource.Dimension.notification_top_pad = global::GnollHackClient.Droid.Resource.Dimension.notification_top_pad;
+			global::MarcTron.Plugin.Resource.Dimension.notification_top_pad_large_text = global::GnollHackClient.Droid.Resource.Dimension.notification_top_pad_large_text;
+			global::MarcTron.Plugin.Resource.Dimension.test_mtrl_calendar_day_cornerSize = global::GnollHackClient.Droid.Resource.Dimension.test_mtrl_calendar_day_cornerSize;
+			global::MarcTron.Plugin.Resource.Dimension.tooltip_corner_radius = global::GnollHackClient.Droid.Resource.Dimension.tooltip_corner_radius;
+			global::MarcTron.Plugin.Resource.Dimension.tooltip_horizontal_padding = global::GnollHackClient.Droid.Resource.Dimension.tooltip_horizontal_padding;
+			global::MarcTron.Plugin.Resource.Dimension.tooltip_margin = global::GnollHackClient.Droid.Resource.Dimension.tooltip_margin;
+			global::MarcTron.Plugin.Resource.Dimension.tooltip_precise_anchor_extra_offset = global::GnollHackClient.Droid.Resource.Dimension.tooltip_precise_anchor_extra_offset;
+			global::MarcTron.Plugin.Resource.Dimension.tooltip_precise_anchor_threshold = global::GnollHackClient.Droid.Resource.Dimension.tooltip_precise_anchor_threshold;
+			global::MarcTron.Plugin.Resource.Dimension.tooltip_vertical_padding = global::GnollHackClient.Droid.Resource.Dimension.tooltip_vertical_padding;
+			global::MarcTron.Plugin.Resource.Dimension.tooltip_y_offset_non_touch = global::GnollHackClient.Droid.Resource.Dimension.tooltip_y_offset_non_touch;
+			global::MarcTron.Plugin.Resource.Dimension.tooltip_y_offset_touch = global::GnollHackClient.Droid.Resource.Dimension.tooltip_y_offset_touch;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ab_share_pack_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_ab_share_pack_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_action_bar_item_background_material = global::GnollHackClient.Droid.Resource.Drawable.abc_action_bar_item_background_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_borderless_material = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_borderless_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_check_material = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_check_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_check_material_anim = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_check_material_anim;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_check_to_on_mtrl_000 = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_check_to_on_mtrl_000;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_check_to_on_mtrl_015 = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_check_to_on_mtrl_015;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_colored_material = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_colored_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_default_mtrl_shape = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_default_mtrl_shape;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_radio_material = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_radio_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_radio_material_anim = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_radio_material_anim;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_radio_to_on_mtrl_000 = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_radio_to_on_mtrl_000;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_radio_to_on_mtrl_015 = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_radio_to_on_mtrl_015;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_switch_to_on_mtrl_00001 = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_switch_to_on_mtrl_00001;
+			global::MarcTron.Plugin.Resource.Drawable.abc_btn_switch_to_on_mtrl_00012 = global::GnollHackClient.Droid.Resource.Drawable.abc_btn_switch_to_on_mtrl_00012;
+			global::MarcTron.Plugin.Resource.Drawable.abc_cab_background_internal_bg = global::GnollHackClient.Droid.Resource.Drawable.abc_cab_background_internal_bg;
+			global::MarcTron.Plugin.Resource.Drawable.abc_cab_background_top_material = global::GnollHackClient.Droid.Resource.Drawable.abc_cab_background_top_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_cab_background_top_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_cab_background_top_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_control_background_material = global::GnollHackClient.Droid.Resource.Drawable.abc_control_background_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_dialog_material_background = global::GnollHackClient.Droid.Resource.Drawable.abc_dialog_material_background;
+			global::MarcTron.Plugin.Resource.Drawable.abc_edit_text_material = global::GnollHackClient.Droid.Resource.Drawable.abc_edit_text_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_ab_back_material = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_ab_back_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_arrow_drop_right_black_24dp = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_arrow_drop_right_black_24dp;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_clear_material = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_clear_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_commit_search_api_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_commit_search_api_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_go_search_api_material = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_go_search_api_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_menu_copy_mtrl_am_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_menu_copy_mtrl_am_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_menu_cut_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_menu_cut_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_menu_overflow_material = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_menu_overflow_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_menu_paste_mtrl_am_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_menu_paste_mtrl_am_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_menu_selectall_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_menu_selectall_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_menu_share_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_menu_share_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_search_api_material = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_search_api_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_star_black_16dp = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_star_black_16dp;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_star_black_36dp = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_star_black_36dp;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_star_black_48dp = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_star_black_48dp;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_star_half_black_16dp = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_star_half_black_16dp;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_star_half_black_36dp = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_star_half_black_36dp;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_star_half_black_48dp = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_star_half_black_48dp;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ic_voice_search_api_material = global::GnollHackClient.Droid.Resource.Drawable.abc_ic_voice_search_api_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_item_background_holo_dark = global::GnollHackClient.Droid.Resource.Drawable.abc_item_background_holo_dark;
+			global::MarcTron.Plugin.Resource.Drawable.abc_item_background_holo_light = global::GnollHackClient.Droid.Resource.Drawable.abc_item_background_holo_light;
+			global::MarcTron.Plugin.Resource.Drawable.abc_list_divider_material = global::GnollHackClient.Droid.Resource.Drawable.abc_list_divider_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_list_divider_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_list_divider_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_list_focused_holo = global::GnollHackClient.Droid.Resource.Drawable.abc_list_focused_holo;
+			global::MarcTron.Plugin.Resource.Drawable.abc_list_longpressed_holo = global::GnollHackClient.Droid.Resource.Drawable.abc_list_longpressed_holo;
+			global::MarcTron.Plugin.Resource.Drawable.abc_list_pressed_holo_dark = global::GnollHackClient.Droid.Resource.Drawable.abc_list_pressed_holo_dark;
+			global::MarcTron.Plugin.Resource.Drawable.abc_list_pressed_holo_light = global::GnollHackClient.Droid.Resource.Drawable.abc_list_pressed_holo_light;
+			global::MarcTron.Plugin.Resource.Drawable.abc_list_selector_background_transition_holo_dark = global::GnollHackClient.Droid.Resource.Drawable.abc_list_selector_background_transition_holo_dark;
+			global::MarcTron.Plugin.Resource.Drawable.abc_list_selector_background_transition_holo_light = global::GnollHackClient.Droid.Resource.Drawable.abc_list_selector_background_transition_holo_light;
+			global::MarcTron.Plugin.Resource.Drawable.abc_list_selector_disabled_holo_dark = global::GnollHackClient.Droid.Resource.Drawable.abc_list_selector_disabled_holo_dark;
+			global::MarcTron.Plugin.Resource.Drawable.abc_list_selector_disabled_holo_light = global::GnollHackClient.Droid.Resource.Drawable.abc_list_selector_disabled_holo_light;
+			global::MarcTron.Plugin.Resource.Drawable.abc_list_selector_holo_dark = global::GnollHackClient.Droid.Resource.Drawable.abc_list_selector_holo_dark;
+			global::MarcTron.Plugin.Resource.Drawable.abc_list_selector_holo_light = global::GnollHackClient.Droid.Resource.Drawable.abc_list_selector_holo_light;
+			global::MarcTron.Plugin.Resource.Drawable.abc_menu_hardkey_panel_mtrl_mult = global::GnollHackClient.Droid.Resource.Drawable.abc_menu_hardkey_panel_mtrl_mult;
+			global::MarcTron.Plugin.Resource.Drawable.abc_popup_background_mtrl_mult = global::GnollHackClient.Droid.Resource.Drawable.abc_popup_background_mtrl_mult;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ratingbar_indicator_material = global::GnollHackClient.Droid.Resource.Drawable.abc_ratingbar_indicator_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ratingbar_material = global::GnollHackClient.Droid.Resource.Drawable.abc_ratingbar_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_ratingbar_small_material = global::GnollHackClient.Droid.Resource.Drawable.abc_ratingbar_small_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_scrubber_control_off_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_scrubber_control_off_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_scrubber_control_to_pressed_mtrl_000 = global::GnollHackClient.Droid.Resource.Drawable.abc_scrubber_control_to_pressed_mtrl_000;
+			global::MarcTron.Plugin.Resource.Drawable.abc_scrubber_control_to_pressed_mtrl_005 = global::GnollHackClient.Droid.Resource.Drawable.abc_scrubber_control_to_pressed_mtrl_005;
+			global::MarcTron.Plugin.Resource.Drawable.abc_scrubber_primary_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_scrubber_primary_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_scrubber_track_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_scrubber_track_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_seekbar_thumb_material = global::GnollHackClient.Droid.Resource.Drawable.abc_seekbar_thumb_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_seekbar_tick_mark_material = global::GnollHackClient.Droid.Resource.Drawable.abc_seekbar_tick_mark_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_seekbar_track_material = global::GnollHackClient.Droid.Resource.Drawable.abc_seekbar_track_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_spinner_mtrl_am_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_spinner_mtrl_am_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_spinner_textfield_background_material = global::GnollHackClient.Droid.Resource.Drawable.abc_spinner_textfield_background_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_switch_thumb_material = global::GnollHackClient.Droid.Resource.Drawable.abc_switch_thumb_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_switch_track_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_switch_track_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_tab_indicator_material = global::GnollHackClient.Droid.Resource.Drawable.abc_tab_indicator_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_tab_indicator_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_tab_indicator_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_textfield_activated_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_textfield_activated_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_textfield_default_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_textfield_default_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_textfield_search_activated_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_textfield_search_activated_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_textfield_search_default_mtrl_alpha = global::GnollHackClient.Droid.Resource.Drawable.abc_textfield_search_default_mtrl_alpha;
+			global::MarcTron.Plugin.Resource.Drawable.abc_textfield_search_material = global::GnollHackClient.Droid.Resource.Drawable.abc_textfield_search_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_text_cursor_material = global::GnollHackClient.Droid.Resource.Drawable.abc_text_cursor_material;
+			global::MarcTron.Plugin.Resource.Drawable.abc_text_select_handle_left_mtrl_dark = global::GnollHackClient.Droid.Resource.Drawable.abc_text_select_handle_left_mtrl_dark;
+			global::MarcTron.Plugin.Resource.Drawable.abc_text_select_handle_left_mtrl_light = global::GnollHackClient.Droid.Resource.Drawable.abc_text_select_handle_left_mtrl_light;
+			global::MarcTron.Plugin.Resource.Drawable.abc_text_select_handle_middle_mtrl_dark = global::GnollHackClient.Droid.Resource.Drawable.abc_text_select_handle_middle_mtrl_dark;
+			global::MarcTron.Plugin.Resource.Drawable.abc_text_select_handle_middle_mtrl_light = global::GnollHackClient.Droid.Resource.Drawable.abc_text_select_handle_middle_mtrl_light;
+			global::MarcTron.Plugin.Resource.Drawable.abc_text_select_handle_right_mtrl_dark = global::GnollHackClient.Droid.Resource.Drawable.abc_text_select_handle_right_mtrl_dark;
+			global::MarcTron.Plugin.Resource.Drawable.abc_text_select_handle_right_mtrl_light = global::GnollHackClient.Droid.Resource.Drawable.abc_text_select_handle_right_mtrl_light;
+			global::MarcTron.Plugin.Resource.Drawable.abc_vector_test = global::GnollHackClient.Droid.Resource.Drawable.abc_vector_test;
+			global::MarcTron.Plugin.Resource.Drawable.avd_hide_password = global::GnollHackClient.Droid.Resource.Drawable.avd_hide_password;
+			global::MarcTron.Plugin.Resource.Drawable.avd_show_password = global::GnollHackClient.Droid.Resource.Drawable.avd_show_password;
+			global::MarcTron.Plugin.Resource.Drawable.btn_checkbox_checked_mtrl = global::GnollHackClient.Droid.Resource.Drawable.btn_checkbox_checked_mtrl;
+			global::MarcTron.Plugin.Resource.Drawable.btn_checkbox_checked_to_unchecked_mtrl_animation = global::GnollHackClient.Droid.Resource.Drawable.btn_checkbox_checked_to_unchecked_mtrl_animation;
+			global::MarcTron.Plugin.Resource.Drawable.btn_checkbox_unchecked_mtrl = global::GnollHackClient.Droid.Resource.Drawable.btn_checkbox_unchecked_mtrl;
+			global::MarcTron.Plugin.Resource.Drawable.btn_checkbox_unchecked_to_checked_mtrl_animation = global::GnollHackClient.Droid.Resource.Drawable.btn_checkbox_unchecked_to_checked_mtrl_animation;
+			global::MarcTron.Plugin.Resource.Drawable.btn_radio_off_mtrl = global::GnollHackClient.Droid.Resource.Drawable.btn_radio_off_mtrl;
+			global::MarcTron.Plugin.Resource.Drawable.btn_radio_off_to_on_mtrl_animation = global::GnollHackClient.Droid.Resource.Drawable.btn_radio_off_to_on_mtrl_animation;
+			global::MarcTron.Plugin.Resource.Drawable.btn_radio_on_mtrl = global::GnollHackClient.Droid.Resource.Drawable.btn_radio_on_mtrl;
+			global::MarcTron.Plugin.Resource.Drawable.btn_radio_on_to_off_mtrl_animation = global::GnollHackClient.Droid.Resource.Drawable.btn_radio_on_to_off_mtrl_animation;
+			global::MarcTron.Plugin.Resource.Drawable.design_bottom_navigation_item_background = global::GnollHackClient.Droid.Resource.Drawable.design_bottom_navigation_item_background;
+			global::MarcTron.Plugin.Resource.Drawable.design_fab_background = global::GnollHackClient.Droid.Resource.Drawable.design_fab_background;
+			global::MarcTron.Plugin.Resource.Drawable.design_ic_visibility = global::GnollHackClient.Droid.Resource.Drawable.design_ic_visibility;
+			global::MarcTron.Plugin.Resource.Drawable.design_ic_visibility_off = global::GnollHackClient.Droid.Resource.Drawable.design_ic_visibility_off;
+			global::MarcTron.Plugin.Resource.Drawable.design_password_eye = global::GnollHackClient.Droid.Resource.Drawable.design_password_eye;
+			global::MarcTron.Plugin.Resource.Drawable.design_snackbar_background = global::GnollHackClient.Droid.Resource.Drawable.design_snackbar_background;
+			global::MarcTron.Plugin.Resource.Drawable.ic_mtrl_checked_circle = global::GnollHackClient.Droid.Resource.Drawable.ic_mtrl_checked_circle;
+			global::MarcTron.Plugin.Resource.Drawable.ic_mtrl_chip_checked_black = global::GnollHackClient.Droid.Resource.Drawable.ic_mtrl_chip_checked_black;
+			global::MarcTron.Plugin.Resource.Drawable.ic_mtrl_chip_checked_circle = global::GnollHackClient.Droid.Resource.Drawable.ic_mtrl_chip_checked_circle;
+			global::MarcTron.Plugin.Resource.Drawable.ic_mtrl_chip_close_circle = global::GnollHackClient.Droid.Resource.Drawable.ic_mtrl_chip_close_circle;
+			global::MarcTron.Plugin.Resource.Drawable.mtrl_dialog_background = global::GnollHackClient.Droid.Resource.Drawable.mtrl_dialog_background;
+			global::MarcTron.Plugin.Resource.Drawable.mtrl_dropdown_arrow = global::GnollHackClient.Droid.Resource.Drawable.mtrl_dropdown_arrow;
+			global::MarcTron.Plugin.Resource.Drawable.mtrl_ic_arrow_drop_down = global::GnollHackClient.Droid.Resource.Drawable.mtrl_ic_arrow_drop_down;
+			global::MarcTron.Plugin.Resource.Drawable.mtrl_ic_arrow_drop_up = global::GnollHackClient.Droid.Resource.Drawable.mtrl_ic_arrow_drop_up;
+			global::MarcTron.Plugin.Resource.Drawable.mtrl_ic_cancel = global::GnollHackClient.Droid.Resource.Drawable.mtrl_ic_cancel;
+			global::MarcTron.Plugin.Resource.Drawable.mtrl_ic_error = global::GnollHackClient.Droid.Resource.Drawable.mtrl_ic_error;
+			global::MarcTron.Plugin.Resource.Drawable.mtrl_popupmenu_background = global::GnollHackClient.Droid.Resource.Drawable.mtrl_popupmenu_background;
+			global::MarcTron.Plugin.Resource.Drawable.mtrl_popupmenu_background_dark = global::GnollHackClient.Droid.Resource.Drawable.mtrl_popupmenu_background_dark;
+			global::MarcTron.Plugin.Resource.Drawable.mtrl_tabs_default_indicator = global::GnollHackClient.Droid.Resource.Drawable.mtrl_tabs_default_indicator;
+			global::MarcTron.Plugin.Resource.Drawable.navigation_empty_icon = global::GnollHackClient.Droid.Resource.Drawable.navigation_empty_icon;
+			global::MarcTron.Plugin.Resource.Drawable.notification_action_background = global::GnollHackClient.Droid.Resource.Drawable.notification_action_background;
+			global::MarcTron.Plugin.Resource.Drawable.notification_bg = global::GnollHackClient.Droid.Resource.Drawable.notification_bg;
+			global::MarcTron.Plugin.Resource.Drawable.notification_bg_low = global::GnollHackClient.Droid.Resource.Drawable.notification_bg_low;
+			global::MarcTron.Plugin.Resource.Drawable.notification_bg_low_normal = global::GnollHackClient.Droid.Resource.Drawable.notification_bg_low_normal;
+			global::MarcTron.Plugin.Resource.Drawable.notification_bg_low_pressed = global::GnollHackClient.Droid.Resource.Drawable.notification_bg_low_pressed;
+			global::MarcTron.Plugin.Resource.Drawable.notification_bg_normal = global::GnollHackClient.Droid.Resource.Drawable.notification_bg_normal;
+			global::MarcTron.Plugin.Resource.Drawable.notification_bg_normal_pressed = global::GnollHackClient.Droid.Resource.Drawable.notification_bg_normal_pressed;
+			global::MarcTron.Plugin.Resource.Drawable.notification_icon_background = global::GnollHackClient.Droid.Resource.Drawable.notification_icon_background;
+			global::MarcTron.Plugin.Resource.Drawable.notification_template_icon_bg = global::GnollHackClient.Droid.Resource.Drawable.notification_template_icon_bg;
+			global::MarcTron.Plugin.Resource.Drawable.notification_template_icon_low_bg = global::GnollHackClient.Droid.Resource.Drawable.notification_template_icon_low_bg;
+			global::MarcTron.Plugin.Resource.Drawable.notification_tile_bg = global::GnollHackClient.Droid.Resource.Drawable.notification_tile_bg;
+			global::MarcTron.Plugin.Resource.Drawable.notify_panel_notification_icon_bg = global::GnollHackClient.Droid.Resource.Drawable.notify_panel_notification_icon_bg;
+			global::MarcTron.Plugin.Resource.Drawable.test_custom_background = global::GnollHackClient.Droid.Resource.Drawable.test_custom_background;
+			global::MarcTron.Plugin.Resource.Drawable.tooltip_frame_dark = global::GnollHackClient.Droid.Resource.Drawable.tooltip_frame_dark;
+			global::MarcTron.Plugin.Resource.Drawable.tooltip_frame_light = global::GnollHackClient.Droid.Resource.Drawable.tooltip_frame_light;
+			global::MarcTron.Plugin.Resource.Id.accessibility_action_clickable_span = global::GnollHackClient.Droid.Resource.Id.accessibility_action_clickable_span;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_0 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_0;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_1 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_1;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_10 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_10;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_11 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_11;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_12 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_12;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_13 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_13;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_14 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_14;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_15 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_15;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_16 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_16;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_17 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_17;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_18 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_18;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_19 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_19;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_2 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_2;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_20 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_20;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_21 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_21;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_22 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_22;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_23 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_23;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_24 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_24;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_25 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_25;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_26 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_26;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_27 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_27;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_28 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_28;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_29 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_29;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_3 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_3;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_30 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_30;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_31 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_31;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_4 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_4;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_5 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_5;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_6 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_6;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_7 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_7;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_8 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_8;
+			global::MarcTron.Plugin.Resource.Id.accessibility_custom_action_9 = global::GnollHackClient.Droid.Resource.Id.accessibility_custom_action_9;
+			global::MarcTron.Plugin.Resource.Id.action0 = global::GnollHackClient.Droid.Resource.Id.action0;
+			global::MarcTron.Plugin.Resource.Id.actions = global::GnollHackClient.Droid.Resource.Id.actions;
+			global::MarcTron.Plugin.Resource.Id.action_bar = global::GnollHackClient.Droid.Resource.Id.action_bar;
+			global::MarcTron.Plugin.Resource.Id.action_bar_activity_content = global::GnollHackClient.Droid.Resource.Id.action_bar_activity_content;
+			global::MarcTron.Plugin.Resource.Id.action_bar_container = global::GnollHackClient.Droid.Resource.Id.action_bar_container;
+			global::MarcTron.Plugin.Resource.Id.action_bar_root = global::GnollHackClient.Droid.Resource.Id.action_bar_root;
+			global::MarcTron.Plugin.Resource.Id.action_bar_spinner = global::GnollHackClient.Droid.Resource.Id.action_bar_spinner;
+			global::MarcTron.Plugin.Resource.Id.action_bar_subtitle = global::GnollHackClient.Droid.Resource.Id.action_bar_subtitle;
+			global::MarcTron.Plugin.Resource.Id.action_bar_title = global::GnollHackClient.Droid.Resource.Id.action_bar_title;
+			global::MarcTron.Plugin.Resource.Id.action_container = global::GnollHackClient.Droid.Resource.Id.action_container;
+			global::MarcTron.Plugin.Resource.Id.action_context_bar = global::GnollHackClient.Droid.Resource.Id.action_context_bar;
+			global::MarcTron.Plugin.Resource.Id.action_divider = global::GnollHackClient.Droid.Resource.Id.action_divider;
+			global::MarcTron.Plugin.Resource.Id.action_image = global::GnollHackClient.Droid.Resource.Id.action_image;
+			global::MarcTron.Plugin.Resource.Id.action_menu_divider = global::GnollHackClient.Droid.Resource.Id.action_menu_divider;
+			global::MarcTron.Plugin.Resource.Id.action_menu_presenter = global::GnollHackClient.Droid.Resource.Id.action_menu_presenter;
+			global::MarcTron.Plugin.Resource.Id.action_mode_bar = global::GnollHackClient.Droid.Resource.Id.action_mode_bar;
+			global::MarcTron.Plugin.Resource.Id.action_mode_bar_stub = global::GnollHackClient.Droid.Resource.Id.action_mode_bar_stub;
+			global::MarcTron.Plugin.Resource.Id.action_mode_close_button = global::GnollHackClient.Droid.Resource.Id.action_mode_close_button;
+			global::MarcTron.Plugin.Resource.Id.action_text = global::GnollHackClient.Droid.Resource.Id.action_text;
+			global::MarcTron.Plugin.Resource.Id.activity_chooser_view_content = global::GnollHackClient.Droid.Resource.Id.activity_chooser_view_content;
+			global::MarcTron.Plugin.Resource.Id.add = global::GnollHackClient.Droid.Resource.Id.add;
+			global::MarcTron.Plugin.Resource.Id.alertTitle = global::GnollHackClient.Droid.Resource.Id.alertTitle;
+			global::MarcTron.Plugin.Resource.Id.all = global::GnollHackClient.Droid.Resource.Id.all;
+			global::MarcTron.Plugin.Resource.Id.ALT = global::GnollHackClient.Droid.Resource.Id.ALT;
+			global::MarcTron.Plugin.Resource.Id.always = global::GnollHackClient.Droid.Resource.Id.always;
+			global::MarcTron.Plugin.Resource.Id.async = global::GnollHackClient.Droid.Resource.Id.async;
+			global::MarcTron.Plugin.Resource.Id.auto = global::GnollHackClient.Droid.Resource.Id.auto;
+			global::MarcTron.Plugin.Resource.Id.beginning = global::GnollHackClient.Droid.Resource.Id.beginning;
+			global::MarcTron.Plugin.Resource.Id.blocking = global::GnollHackClient.Droid.Resource.Id.blocking;
+			global::MarcTron.Plugin.Resource.Id.bottom = global::GnollHackClient.Droid.Resource.Id.bottom;
+			global::MarcTron.Plugin.Resource.Id.bottomtab_navarea = global::GnollHackClient.Droid.Resource.Id.bottomtab_navarea;
+			global::MarcTron.Plugin.Resource.Id.bottomtab_tabbar = global::GnollHackClient.Droid.Resource.Id.bottomtab_tabbar;
+			global::MarcTron.Plugin.Resource.Id.BOTTOM_END = global::GnollHackClient.Droid.Resource.Id.BOTTOM_END;
+			global::MarcTron.Plugin.Resource.Id.BOTTOM_START = global::GnollHackClient.Droid.Resource.Id.BOTTOM_START;
+			global::MarcTron.Plugin.Resource.Id.browser_actions_header_text = global::GnollHackClient.Droid.Resource.Id.browser_actions_header_text;
+			global::MarcTron.Plugin.Resource.Id.browser_actions_menu_items = global::GnollHackClient.Droid.Resource.Id.browser_actions_menu_items;
+			global::MarcTron.Plugin.Resource.Id.browser_actions_menu_item_icon = global::GnollHackClient.Droid.Resource.Id.browser_actions_menu_item_icon;
+			global::MarcTron.Plugin.Resource.Id.browser_actions_menu_item_text = global::GnollHackClient.Droid.Resource.Id.browser_actions_menu_item_text;
+			global::MarcTron.Plugin.Resource.Id.browser_actions_menu_view = global::GnollHackClient.Droid.Resource.Id.browser_actions_menu_view;
+			global::MarcTron.Plugin.Resource.Id.buttonPanel = global::GnollHackClient.Droid.Resource.Id.buttonPanel;
+			global::MarcTron.Plugin.Resource.Id.cancel_action = global::GnollHackClient.Droid.Resource.Id.cancel_action;
+			global::MarcTron.Plugin.Resource.Id.cancel_button = global::GnollHackClient.Droid.Resource.Id.cancel_button;
+			global::MarcTron.Plugin.Resource.Id.center = global::GnollHackClient.Droid.Resource.Id.center;
+			global::MarcTron.Plugin.Resource.Id.center_horizontal = global::GnollHackClient.Droid.Resource.Id.center_horizontal;
+			global::MarcTron.Plugin.Resource.Id.center_vertical = global::GnollHackClient.Droid.Resource.Id.center_vertical;
+			global::MarcTron.Plugin.Resource.Id.checkbox = global::GnollHackClient.Droid.Resource.Id.checkbox;
+			global::MarcTron.Plugin.Resource.Id.@checked = global::GnollHackClient.Droid.Resource.Id.@checked;
+			global::MarcTron.Plugin.Resource.Id.chip = global::GnollHackClient.Droid.Resource.Id.chip;
+			global::MarcTron.Plugin.Resource.Id.chip_group = global::GnollHackClient.Droid.Resource.Id.chip_group;
+			global::MarcTron.Plugin.Resource.Id.chronometer = global::GnollHackClient.Droid.Resource.Id.chronometer;
+			global::MarcTron.Plugin.Resource.Id.clear_text = global::GnollHackClient.Droid.Resource.Id.clear_text;
+			global::MarcTron.Plugin.Resource.Id.clip_horizontal = global::GnollHackClient.Droid.Resource.Id.clip_horizontal;
+			global::MarcTron.Plugin.Resource.Id.clip_vertical = global::GnollHackClient.Droid.Resource.Id.clip_vertical;
+			global::MarcTron.Plugin.Resource.Id.collapseActionView = global::GnollHackClient.Droid.Resource.Id.collapseActionView;
+			global::MarcTron.Plugin.Resource.Id.confirm_button = global::GnollHackClient.Droid.Resource.Id.confirm_button;
+			global::MarcTron.Plugin.Resource.Id.container = global::GnollHackClient.Droid.Resource.Id.container;
+			global::MarcTron.Plugin.Resource.Id.content = global::GnollHackClient.Droid.Resource.Id.content;
+			global::MarcTron.Plugin.Resource.Id.contentPanel = global::GnollHackClient.Droid.Resource.Id.contentPanel;
+			global::MarcTron.Plugin.Resource.Id.coordinator = global::GnollHackClient.Droid.Resource.Id.coordinator;
+			global::MarcTron.Plugin.Resource.Id.CTRL = global::GnollHackClient.Droid.Resource.Id.CTRL;
+			global::MarcTron.Plugin.Resource.Id.custom = global::GnollHackClient.Droid.Resource.Id.custom;
+			global::MarcTron.Plugin.Resource.Id.customPanel = global::GnollHackClient.Droid.Resource.Id.customPanel;
+			global::MarcTron.Plugin.Resource.Id.cut = global::GnollHackClient.Droid.Resource.Id.cut;
+			global::MarcTron.Plugin.Resource.Id.date_picker_actions = global::GnollHackClient.Droid.Resource.Id.date_picker_actions;
+			global::MarcTron.Plugin.Resource.Id.decor_content_parent = global::GnollHackClient.Droid.Resource.Id.decor_content_parent;
+			global::MarcTron.Plugin.Resource.Id.default_activity_button = global::GnollHackClient.Droid.Resource.Id.default_activity_button;
+			global::MarcTron.Plugin.Resource.Id.design_bottom_sheet = global::GnollHackClient.Droid.Resource.Id.design_bottom_sheet;
+			global::MarcTron.Plugin.Resource.Id.design_menu_item_action_area = global::GnollHackClient.Droid.Resource.Id.design_menu_item_action_area;
+			global::MarcTron.Plugin.Resource.Id.design_menu_item_action_area_stub = global::GnollHackClient.Droid.Resource.Id.design_menu_item_action_area_stub;
+			global::MarcTron.Plugin.Resource.Id.design_menu_item_text = global::GnollHackClient.Droid.Resource.Id.design_menu_item_text;
+			global::MarcTron.Plugin.Resource.Id.design_navigation_view = global::GnollHackClient.Droid.Resource.Id.design_navigation_view;
+			global::MarcTron.Plugin.Resource.Id.dialog_button = global::GnollHackClient.Droid.Resource.Id.dialog_button;
+			global::MarcTron.Plugin.Resource.Id.disableHome = global::GnollHackClient.Droid.Resource.Id.disableHome;
+			global::MarcTron.Plugin.Resource.Id.dropdown_menu = global::GnollHackClient.Droid.Resource.Id.dropdown_menu;
+			global::MarcTron.Plugin.Resource.Id.edit_query = global::GnollHackClient.Droid.Resource.Id.edit_query;
+			global::MarcTron.Plugin.Resource.Id.end = global::GnollHackClient.Droid.Resource.Id.end;
+			global::MarcTron.Plugin.Resource.Id.end_padder = global::GnollHackClient.Droid.Resource.Id.end_padder;
+			global::MarcTron.Plugin.Resource.Id.enterAlways = global::GnollHackClient.Droid.Resource.Id.enterAlways;
+			global::MarcTron.Plugin.Resource.Id.enterAlwaysCollapsed = global::GnollHackClient.Droid.Resource.Id.enterAlwaysCollapsed;
+			global::MarcTron.Plugin.Resource.Id.exitUntilCollapsed = global::GnollHackClient.Droid.Resource.Id.exitUntilCollapsed;
+			global::MarcTron.Plugin.Resource.Id.expanded_menu = global::GnollHackClient.Droid.Resource.Id.expanded_menu;
+			global::MarcTron.Plugin.Resource.Id.expand_activities_button = global::GnollHackClient.Droid.Resource.Id.expand_activities_button;
+			global::MarcTron.Plugin.Resource.Id.fade = global::GnollHackClient.Droid.Resource.Id.fade;
+			global::MarcTron.Plugin.Resource.Id.fill = global::GnollHackClient.Droid.Resource.Id.fill;
+			global::MarcTron.Plugin.Resource.Id.filled = global::GnollHackClient.Droid.Resource.Id.filled;
+			global::MarcTron.Plugin.Resource.Id.fill_horizontal = global::GnollHackClient.Droid.Resource.Id.fill_horizontal;
+			global::MarcTron.Plugin.Resource.Id.fill_vertical = global::GnollHackClient.Droid.Resource.Id.fill_vertical;
+			global::MarcTron.Plugin.Resource.Id.fitToContents = global::GnollHackClient.Droid.Resource.Id.fitToContents;
+			global::MarcTron.Plugin.Resource.Id.@fixed = global::GnollHackClient.Droid.Resource.Id.@fixed;
+			global::MarcTron.Plugin.Resource.Id.flyoutcontent_appbar = global::GnollHackClient.Droid.Resource.Id.flyoutcontent_appbar;
+			global::MarcTron.Plugin.Resource.Id.forever = global::GnollHackClient.Droid.Resource.Id.forever;
+			global::MarcTron.Plugin.Resource.Id.fragment_container_view_tag = global::GnollHackClient.Droid.Resource.Id.fragment_container_view_tag;
+			global::MarcTron.Plugin.Resource.Id.FUNCTION = global::GnollHackClient.Droid.Resource.Id.FUNCTION;
+			global::MarcTron.Plugin.Resource.Id.ghost_view = global::GnollHackClient.Droid.Resource.Id.ghost_view;
+			global::MarcTron.Plugin.Resource.Id.ghost_view_holder = global::GnollHackClient.Droid.Resource.Id.ghost_view_holder;
+			global::MarcTron.Plugin.Resource.Id.group_divider = global::GnollHackClient.Droid.Resource.Id.group_divider;
+			global::MarcTron.Plugin.Resource.Id.hideable = global::GnollHackClient.Droid.Resource.Id.hideable;
+			global::MarcTron.Plugin.Resource.Id.home = global::GnollHackClient.Droid.Resource.Id.home;
+			global::MarcTron.Plugin.Resource.Id.homeAsUp = global::GnollHackClient.Droid.Resource.Id.homeAsUp;
+			global::MarcTron.Plugin.Resource.Id.icon = global::GnollHackClient.Droid.Resource.Id.icon;
+			global::MarcTron.Plugin.Resource.Id.icon_group = global::GnollHackClient.Droid.Resource.Id.icon_group;
+			global::MarcTron.Plugin.Resource.Id.ifRoom = global::GnollHackClient.Droid.Resource.Id.ifRoom;
+			global::MarcTron.Plugin.Resource.Id.image = global::GnollHackClient.Droid.Resource.Id.image;
+			global::MarcTron.Plugin.Resource.Id.info = global::GnollHackClient.Droid.Resource.Id.info;
+			global::MarcTron.Plugin.Resource.Id.italic = global::GnollHackClient.Droid.Resource.Id.italic;
+			global::MarcTron.Plugin.Resource.Id.item_touch_helper_previous_elevation = global::GnollHackClient.Droid.Resource.Id.item_touch_helper_previous_elevation;
+			global::MarcTron.Plugin.Resource.Id.labeled = global::GnollHackClient.Droid.Resource.Id.labeled;
+			global::MarcTron.Plugin.Resource.Id.largeLabel = global::GnollHackClient.Droid.Resource.Id.largeLabel;
+			global::MarcTron.Plugin.Resource.Id.left = global::GnollHackClient.Droid.Resource.Id.left;
+			global::MarcTron.Plugin.Resource.Id.line1 = global::GnollHackClient.Droid.Resource.Id.line1;
+			global::MarcTron.Plugin.Resource.Id.line3 = global::GnollHackClient.Droid.Resource.Id.line3;
+			global::MarcTron.Plugin.Resource.Id.listMode = global::GnollHackClient.Droid.Resource.Id.listMode;
+			global::MarcTron.Plugin.Resource.Id.list_item = global::GnollHackClient.Droid.Resource.Id.list_item;
+			global::MarcTron.Plugin.Resource.Id.main_appbar = global::GnollHackClient.Droid.Resource.Id.main_appbar;
+			global::MarcTron.Plugin.Resource.Id.main_tablayout = global::GnollHackClient.Droid.Resource.Id.main_tablayout;
+			global::MarcTron.Plugin.Resource.Id.main_toolbar = global::GnollHackClient.Droid.Resource.Id.main_toolbar;
+			global::MarcTron.Plugin.Resource.Id.main_viewpager = global::GnollHackClient.Droid.Resource.Id.main_viewpager;
+			global::MarcTron.Plugin.Resource.Id.masked = global::GnollHackClient.Droid.Resource.Id.masked;
+			global::MarcTron.Plugin.Resource.Id.media_actions = global::GnollHackClient.Droid.Resource.Id.media_actions;
+			global::MarcTron.Plugin.Resource.Id.media_controller_compat_view_tag = global::GnollHackClient.Droid.Resource.Id.media_controller_compat_view_tag;
+			global::MarcTron.Plugin.Resource.Id.message = global::GnollHackClient.Droid.Resource.Id.message;
+			global::MarcTron.Plugin.Resource.Id.META = global::GnollHackClient.Droid.Resource.Id.META;
+			global::MarcTron.Plugin.Resource.Id.middle = global::GnollHackClient.Droid.Resource.Id.middle;
+			global::MarcTron.Plugin.Resource.Id.mini = global::GnollHackClient.Droid.Resource.Id.mini;
+			global::MarcTron.Plugin.Resource.Id.month_grid = global::GnollHackClient.Droid.Resource.Id.month_grid;
+			global::MarcTron.Plugin.Resource.Id.month_navigation_bar = global::GnollHackClient.Droid.Resource.Id.month_navigation_bar;
+			global::MarcTron.Plugin.Resource.Id.month_navigation_fragment_toggle = global::GnollHackClient.Droid.Resource.Id.month_navigation_fragment_toggle;
+			global::MarcTron.Plugin.Resource.Id.month_navigation_next = global::GnollHackClient.Droid.Resource.Id.month_navigation_next;
+			global::MarcTron.Plugin.Resource.Id.month_navigation_previous = global::GnollHackClient.Droid.Resource.Id.month_navigation_previous;
+			global::MarcTron.Plugin.Resource.Id.month_title = global::GnollHackClient.Droid.Resource.Id.month_title;
+			global::MarcTron.Plugin.Resource.Id.mtrl_calendar_days_of_week = global::GnollHackClient.Droid.Resource.Id.mtrl_calendar_days_of_week;
+			global::MarcTron.Plugin.Resource.Id.mtrl_calendar_day_selector_frame = global::GnollHackClient.Droid.Resource.Id.mtrl_calendar_day_selector_frame;
+			global::MarcTron.Plugin.Resource.Id.mtrl_calendar_frame = global::GnollHackClient.Droid.Resource.Id.mtrl_calendar_frame;
+			global::MarcTron.Plugin.Resource.Id.mtrl_calendar_main_pane = global::GnollHackClient.Droid.Resource.Id.mtrl_calendar_main_pane;
+			global::MarcTron.Plugin.Resource.Id.mtrl_calendar_months = global::GnollHackClient.Droid.Resource.Id.mtrl_calendar_months;
+			global::MarcTron.Plugin.Resource.Id.mtrl_calendar_selection_frame = global::GnollHackClient.Droid.Resource.Id.mtrl_calendar_selection_frame;
+			global::MarcTron.Plugin.Resource.Id.mtrl_calendar_text_input_frame = global::GnollHackClient.Droid.Resource.Id.mtrl_calendar_text_input_frame;
+			global::MarcTron.Plugin.Resource.Id.mtrl_calendar_year_selector_frame = global::GnollHackClient.Droid.Resource.Id.mtrl_calendar_year_selector_frame;
+			global::MarcTron.Plugin.Resource.Id.mtrl_card_checked_layer_id = global::GnollHackClient.Droid.Resource.Id.mtrl_card_checked_layer_id;
+			global::MarcTron.Plugin.Resource.Id.mtrl_child_content_container = global::GnollHackClient.Droid.Resource.Id.mtrl_child_content_container;
+			global::MarcTron.Plugin.Resource.Id.mtrl_internal_children_alpha_tag = global::GnollHackClient.Droid.Resource.Id.mtrl_internal_children_alpha_tag;
+			global::MarcTron.Plugin.Resource.Id.mtrl_picker_fullscreen = global::GnollHackClient.Droid.Resource.Id.mtrl_picker_fullscreen;
+			global::MarcTron.Plugin.Resource.Id.mtrl_picker_header = global::GnollHackClient.Droid.Resource.Id.mtrl_picker_header;
+			global::MarcTron.Plugin.Resource.Id.mtrl_picker_header_selection_text = global::GnollHackClient.Droid.Resource.Id.mtrl_picker_header_selection_text;
+			global::MarcTron.Plugin.Resource.Id.mtrl_picker_header_title_and_selection = global::GnollHackClient.Droid.Resource.Id.mtrl_picker_header_title_and_selection;
+			global::MarcTron.Plugin.Resource.Id.mtrl_picker_header_toggle = global::GnollHackClient.Droid.Resource.Id.mtrl_picker_header_toggle;
+			global::MarcTron.Plugin.Resource.Id.mtrl_picker_text_input_date = global::GnollHackClient.Droid.Resource.Id.mtrl_picker_text_input_date;
+			global::MarcTron.Plugin.Resource.Id.mtrl_picker_text_input_range_end = global::GnollHackClient.Droid.Resource.Id.mtrl_picker_text_input_range_end;
+			global::MarcTron.Plugin.Resource.Id.mtrl_picker_text_input_range_start = global::GnollHackClient.Droid.Resource.Id.mtrl_picker_text_input_range_start;
+			global::MarcTron.Plugin.Resource.Id.mtrl_picker_title_text = global::GnollHackClient.Droid.Resource.Id.mtrl_picker_title_text;
+			global::MarcTron.Plugin.Resource.Id.multiply = global::GnollHackClient.Droid.Resource.Id.multiply;
+			global::MarcTron.Plugin.Resource.Id.navigation_header_container = global::GnollHackClient.Droid.Resource.Id.navigation_header_container;
+			global::MarcTron.Plugin.Resource.Id.never = global::GnollHackClient.Droid.Resource.Id.never;
+			global::MarcTron.Plugin.Resource.Id.none = global::GnollHackClient.Droid.Resource.Id.none;
+			global::MarcTron.Plugin.Resource.Id.normal = global::GnollHackClient.Droid.Resource.Id.normal;
+			global::MarcTron.Plugin.Resource.Id.noScroll = global::GnollHackClient.Droid.Resource.Id.noScroll;
+			global::MarcTron.Plugin.Resource.Id.notification_background = global::GnollHackClient.Droid.Resource.Id.notification_background;
+			global::MarcTron.Plugin.Resource.Id.notification_main_column = global::GnollHackClient.Droid.Resource.Id.notification_main_column;
+			global::MarcTron.Plugin.Resource.Id.notification_main_column_container = global::GnollHackClient.Droid.Resource.Id.notification_main_column_container;
+			global::MarcTron.Plugin.Resource.Id.off = global::GnollHackClient.Droid.Resource.Id.off;
+			global::MarcTron.Plugin.Resource.Id.on = global::GnollHackClient.Droid.Resource.Id.on;
+			global::MarcTron.Plugin.Resource.Id.outline = global::GnollHackClient.Droid.Resource.Id.outline;
+			global::MarcTron.Plugin.Resource.Id.parallax = global::GnollHackClient.Droid.Resource.Id.parallax;
+			global::MarcTron.Plugin.Resource.Id.parentPanel = global::GnollHackClient.Droid.Resource.Id.parentPanel;
+			global::MarcTron.Plugin.Resource.Id.parent_matrix = global::GnollHackClient.Droid.Resource.Id.parent_matrix;
+			global::MarcTron.Plugin.Resource.Id.password_toggle = global::GnollHackClient.Droid.Resource.Id.password_toggle;
+			global::MarcTron.Plugin.Resource.Id.peekHeight = global::GnollHackClient.Droid.Resource.Id.peekHeight;
+			global::MarcTron.Plugin.Resource.Id.pin = global::GnollHackClient.Droid.Resource.Id.pin;
+			global::MarcTron.Plugin.Resource.Id.progress_circular = global::GnollHackClient.Droid.Resource.Id.progress_circular;
+			global::MarcTron.Plugin.Resource.Id.progress_horizontal = global::GnollHackClient.Droid.Resource.Id.progress_horizontal;
+			global::MarcTron.Plugin.Resource.Id.radio = global::GnollHackClient.Droid.Resource.Id.radio;
+			global::MarcTron.Plugin.Resource.Id.right = global::GnollHackClient.Droid.Resource.Id.right;
+			global::MarcTron.Plugin.Resource.Id.right_icon = global::GnollHackClient.Droid.Resource.Id.right_icon;
+			global::MarcTron.Plugin.Resource.Id.right_side = global::GnollHackClient.Droid.Resource.Id.right_side;
+			global::MarcTron.Plugin.Resource.Id.rounded = global::GnollHackClient.Droid.Resource.Id.rounded;
+			global::MarcTron.Plugin.Resource.Id.save_non_transition_alpha = global::GnollHackClient.Droid.Resource.Id.save_non_transition_alpha;
+			global::MarcTron.Plugin.Resource.Id.save_overlay_view = global::GnollHackClient.Droid.Resource.Id.save_overlay_view;
+			global::MarcTron.Plugin.Resource.Id.scale = global::GnollHackClient.Droid.Resource.Id.scale;
+			global::MarcTron.Plugin.Resource.Id.screen = global::GnollHackClient.Droid.Resource.Id.screen;
+			global::MarcTron.Plugin.Resource.Id.scroll = global::GnollHackClient.Droid.Resource.Id.scroll;
+			global::MarcTron.Plugin.Resource.Id.scrollable = global::GnollHackClient.Droid.Resource.Id.scrollable;
+			global::MarcTron.Plugin.Resource.Id.scrollIndicatorDown = global::GnollHackClient.Droid.Resource.Id.scrollIndicatorDown;
+			global::MarcTron.Plugin.Resource.Id.scrollIndicatorUp = global::GnollHackClient.Droid.Resource.Id.scrollIndicatorUp;
+			global::MarcTron.Plugin.Resource.Id.scrollView = global::GnollHackClient.Droid.Resource.Id.scrollView;
+			global::MarcTron.Plugin.Resource.Id.search_badge = global::GnollHackClient.Droid.Resource.Id.search_badge;
+			global::MarcTron.Plugin.Resource.Id.search_bar = global::GnollHackClient.Droid.Resource.Id.search_bar;
+			global::MarcTron.Plugin.Resource.Id.search_button = global::GnollHackClient.Droid.Resource.Id.search_button;
+			global::MarcTron.Plugin.Resource.Id.search_close_btn = global::GnollHackClient.Droid.Resource.Id.search_close_btn;
+			global::MarcTron.Plugin.Resource.Id.search_edit_frame = global::GnollHackClient.Droid.Resource.Id.search_edit_frame;
+			global::MarcTron.Plugin.Resource.Id.search_go_btn = global::GnollHackClient.Droid.Resource.Id.search_go_btn;
+			global::MarcTron.Plugin.Resource.Id.search_mag_icon = global::GnollHackClient.Droid.Resource.Id.search_mag_icon;
+			global::MarcTron.Plugin.Resource.Id.search_plate = global::GnollHackClient.Droid.Resource.Id.search_plate;
+			global::MarcTron.Plugin.Resource.Id.search_src_text = global::GnollHackClient.Droid.Resource.Id.search_src_text;
+			global::MarcTron.Plugin.Resource.Id.search_voice_btn = global::GnollHackClient.Droid.Resource.Id.search_voice_btn;
+			global::MarcTron.Plugin.Resource.Id.selected = global::GnollHackClient.Droid.Resource.Id.selected;
+			global::MarcTron.Plugin.Resource.Id.select_dialog_listview = global::GnollHackClient.Droid.Resource.Id.select_dialog_listview;
+			global::MarcTron.Plugin.Resource.Id.shellcontent_appbar = global::GnollHackClient.Droid.Resource.Id.shellcontent_appbar;
+			global::MarcTron.Plugin.Resource.Id.shellcontent_toolbar = global::GnollHackClient.Droid.Resource.Id.shellcontent_toolbar;
+			global::MarcTron.Plugin.Resource.Id.SHIFT = global::GnollHackClient.Droid.Resource.Id.SHIFT;
+			global::MarcTron.Plugin.Resource.Id.shortcut = global::GnollHackClient.Droid.Resource.Id.shortcut;
+			global::MarcTron.Plugin.Resource.Id.showCustom = global::GnollHackClient.Droid.Resource.Id.showCustom;
+			global::MarcTron.Plugin.Resource.Id.showHome = global::GnollHackClient.Droid.Resource.Id.showHome;
+			global::MarcTron.Plugin.Resource.Id.showTitle = global::GnollHackClient.Droid.Resource.Id.showTitle;
+			global::MarcTron.Plugin.Resource.Id.skipCollapsed = global::GnollHackClient.Droid.Resource.Id.skipCollapsed;
+			global::MarcTron.Plugin.Resource.Id.slide = global::GnollHackClient.Droid.Resource.Id.slide;
+			global::MarcTron.Plugin.Resource.Id.sliding_tabs = global::GnollHackClient.Droid.Resource.Id.sliding_tabs;
+			global::MarcTron.Plugin.Resource.Id.smallLabel = global::GnollHackClient.Droid.Resource.Id.smallLabel;
+			global::MarcTron.Plugin.Resource.Id.snackbar_action = global::GnollHackClient.Droid.Resource.Id.snackbar_action;
+			global::MarcTron.Plugin.Resource.Id.snackbar_text = global::GnollHackClient.Droid.Resource.Id.snackbar_text;
+			global::MarcTron.Plugin.Resource.Id.snap = global::GnollHackClient.Droid.Resource.Id.snap;
+			global::MarcTron.Plugin.Resource.Id.snapMargins = global::GnollHackClient.Droid.Resource.Id.snapMargins;
+			global::MarcTron.Plugin.Resource.Id.spacer = global::GnollHackClient.Droid.Resource.Id.spacer;
+			global::MarcTron.Plugin.Resource.Id.split_action_bar = global::GnollHackClient.Droid.Resource.Id.split_action_bar;
+			global::MarcTron.Plugin.Resource.Id.src_atop = global::GnollHackClient.Droid.Resource.Id.src_atop;
+			global::MarcTron.Plugin.Resource.Id.src_in = global::GnollHackClient.Droid.Resource.Id.src_in;
+			global::MarcTron.Plugin.Resource.Id.src_over = global::GnollHackClient.Droid.Resource.Id.src_over;
+			global::MarcTron.Plugin.Resource.Id.start = global::GnollHackClient.Droid.Resource.Id.start;
+			global::MarcTron.Plugin.Resource.Id.status_bar_latest_event_content = global::GnollHackClient.Droid.Resource.Id.status_bar_latest_event_content;
+			global::MarcTron.Plugin.Resource.Id.stretch = global::GnollHackClient.Droid.Resource.Id.stretch;
+			global::MarcTron.Plugin.Resource.Id.submenuarrow = global::GnollHackClient.Droid.Resource.Id.submenuarrow;
+			global::MarcTron.Plugin.Resource.Id.submit_area = global::GnollHackClient.Droid.Resource.Id.submit_area;
+			global::MarcTron.Plugin.Resource.Id.SYM = global::GnollHackClient.Droid.Resource.Id.SYM;
+			global::MarcTron.Plugin.Resource.Id.tabMode = global::GnollHackClient.Droid.Resource.Id.tabMode;
+			global::MarcTron.Plugin.Resource.Id.tag_accessibility_actions = global::GnollHackClient.Droid.Resource.Id.tag_accessibility_actions;
+			global::MarcTron.Plugin.Resource.Id.tag_accessibility_clickable_spans = global::GnollHackClient.Droid.Resource.Id.tag_accessibility_clickable_spans;
+			global::MarcTron.Plugin.Resource.Id.tag_accessibility_heading = global::GnollHackClient.Droid.Resource.Id.tag_accessibility_heading;
+			global::MarcTron.Plugin.Resource.Id.tag_accessibility_pane_title = global::GnollHackClient.Droid.Resource.Id.tag_accessibility_pane_title;
+			global::MarcTron.Plugin.Resource.Id.tag_screen_reader_focusable = global::GnollHackClient.Droid.Resource.Id.tag_screen_reader_focusable;
+			global::MarcTron.Plugin.Resource.Id.tag_transition_group = global::GnollHackClient.Droid.Resource.Id.tag_transition_group;
+			global::MarcTron.Plugin.Resource.Id.tag_unhandled_key_event_manager = global::GnollHackClient.Droid.Resource.Id.tag_unhandled_key_event_manager;
+			global::MarcTron.Plugin.Resource.Id.tag_unhandled_key_listeners = global::GnollHackClient.Droid.Resource.Id.tag_unhandled_key_listeners;
+			global::MarcTron.Plugin.Resource.Id.test_checkbox_android_button_tint = global::GnollHackClient.Droid.Resource.Id.test_checkbox_android_button_tint;
+			global::MarcTron.Plugin.Resource.Id.test_checkbox_app_button_tint = global::GnollHackClient.Droid.Resource.Id.test_checkbox_app_button_tint;
+			global::MarcTron.Plugin.Resource.Id.text = global::GnollHackClient.Droid.Resource.Id.text;
+			global::MarcTron.Plugin.Resource.Id.text2 = global::GnollHackClient.Droid.Resource.Id.text2;
+			global::MarcTron.Plugin.Resource.Id.textEnd = global::GnollHackClient.Droid.Resource.Id.textEnd;
+			global::MarcTron.Plugin.Resource.Id.textinput_counter = global::GnollHackClient.Droid.Resource.Id.textinput_counter;
+			global::MarcTron.Plugin.Resource.Id.textinput_error = global::GnollHackClient.Droid.Resource.Id.textinput_error;
+			global::MarcTron.Plugin.Resource.Id.textinput_helper_text = global::GnollHackClient.Droid.Resource.Id.textinput_helper_text;
+			global::MarcTron.Plugin.Resource.Id.textSpacerNoButtons = global::GnollHackClient.Droid.Resource.Id.textSpacerNoButtons;
+			global::MarcTron.Plugin.Resource.Id.textSpacerNoTitle = global::GnollHackClient.Droid.Resource.Id.textSpacerNoTitle;
+			global::MarcTron.Plugin.Resource.Id.textStart = global::GnollHackClient.Droid.Resource.Id.textStart;
+			global::MarcTron.Plugin.Resource.Id.text_input_end_icon = global::GnollHackClient.Droid.Resource.Id.text_input_end_icon;
+			global::MarcTron.Plugin.Resource.Id.text_input_start_icon = global::GnollHackClient.Droid.Resource.Id.text_input_start_icon;
+			global::MarcTron.Plugin.Resource.Id.time = global::GnollHackClient.Droid.Resource.Id.time;
+			global::MarcTron.Plugin.Resource.Id.title = global::GnollHackClient.Droid.Resource.Id.title;
+			global::MarcTron.Plugin.Resource.Id.titleDividerNoCustom = global::GnollHackClient.Droid.Resource.Id.titleDividerNoCustom;
+			global::MarcTron.Plugin.Resource.Id.title_template = global::GnollHackClient.Droid.Resource.Id.title_template;
+			global::MarcTron.Plugin.Resource.Id.toolbar = global::GnollHackClient.Droid.Resource.Id.toolbar;
+			global::MarcTron.Plugin.Resource.Id.top = global::GnollHackClient.Droid.Resource.Id.top;
+			global::MarcTron.Plugin.Resource.Id.topPanel = global::GnollHackClient.Droid.Resource.Id.topPanel;
+			global::MarcTron.Plugin.Resource.Id.TOP_END = global::GnollHackClient.Droid.Resource.Id.TOP_END;
+			global::MarcTron.Plugin.Resource.Id.TOP_START = global::GnollHackClient.Droid.Resource.Id.TOP_START;
+			global::MarcTron.Plugin.Resource.Id.touch_outside = global::GnollHackClient.Droid.Resource.Id.touch_outside;
+			global::MarcTron.Plugin.Resource.Id.transition_current_scene = global::GnollHackClient.Droid.Resource.Id.transition_current_scene;
+			global::MarcTron.Plugin.Resource.Id.transition_layout_save = global::GnollHackClient.Droid.Resource.Id.transition_layout_save;
+			global::MarcTron.Plugin.Resource.Id.transition_position = global::GnollHackClient.Droid.Resource.Id.transition_position;
+			global::MarcTron.Plugin.Resource.Id.transition_scene_layoutid_cache = global::GnollHackClient.Droid.Resource.Id.transition_scene_layoutid_cache;
+			global::MarcTron.Plugin.Resource.Id.transition_transform = global::GnollHackClient.Droid.Resource.Id.transition_transform;
+			global::MarcTron.Plugin.Resource.Id.@unchecked = global::GnollHackClient.Droid.Resource.Id.@unchecked;
+			global::MarcTron.Plugin.Resource.Id.uniform = global::GnollHackClient.Droid.Resource.Id.uniform;
+			global::MarcTron.Plugin.Resource.Id.unlabeled = global::GnollHackClient.Droid.Resource.Id.unlabeled;
+			global::MarcTron.Plugin.Resource.Id.up = global::GnollHackClient.Droid.Resource.Id.up;
+			global::MarcTron.Plugin.Resource.Id.useLogo = global::GnollHackClient.Droid.Resource.Id.useLogo;
+			global::MarcTron.Plugin.Resource.Id.view_offset_helper = global::GnollHackClient.Droid.Resource.Id.view_offset_helper;
+			global::MarcTron.Plugin.Resource.Id.view_tree_lifecycle_owner = global::GnollHackClient.Droid.Resource.Id.view_tree_lifecycle_owner;
+			global::MarcTron.Plugin.Resource.Id.view_tree_saved_state_registry_owner = global::GnollHackClient.Droid.Resource.Id.view_tree_saved_state_registry_owner;
+			global::MarcTron.Plugin.Resource.Id.visible = global::GnollHackClient.Droid.Resource.Id.visible;
+			global::MarcTron.Plugin.Resource.Id.visible_removing_fragment_view_tag = global::GnollHackClient.Droid.Resource.Id.visible_removing_fragment_view_tag;
+			global::MarcTron.Plugin.Resource.Id.withText = global::GnollHackClient.Droid.Resource.Id.withText;
+			global::MarcTron.Plugin.Resource.Id.wrap_content = global::GnollHackClient.Droid.Resource.Id.wrap_content;
+			global::MarcTron.Plugin.Resource.Integer.abc_config_activityDefaultDur = global::GnollHackClient.Droid.Resource.Integer.abc_config_activityDefaultDur;
+			global::MarcTron.Plugin.Resource.Integer.abc_config_activityShortDur = global::GnollHackClient.Droid.Resource.Integer.abc_config_activityShortDur;
+			global::MarcTron.Plugin.Resource.Integer.app_bar_elevation_anim_duration = global::GnollHackClient.Droid.Resource.Integer.app_bar_elevation_anim_duration;
+			global::MarcTron.Plugin.Resource.Integer.bottom_sheet_slide_duration = global::GnollHackClient.Droid.Resource.Integer.bottom_sheet_slide_duration;
+			global::MarcTron.Plugin.Resource.Integer.cancel_button_image_alpha = global::GnollHackClient.Droid.Resource.Integer.cancel_button_image_alpha;
+			global::MarcTron.Plugin.Resource.Integer.config_tooltipAnimTime = global::GnollHackClient.Droid.Resource.Integer.config_tooltipAnimTime;
+			global::MarcTron.Plugin.Resource.Integer.design_snackbar_text_max_lines = global::GnollHackClient.Droid.Resource.Integer.design_snackbar_text_max_lines;
+			global::MarcTron.Plugin.Resource.Integer.design_tab_indicator_anim_duration_ms = global::GnollHackClient.Droid.Resource.Integer.design_tab_indicator_anim_duration_ms;
+			global::MarcTron.Plugin.Resource.Integer.google_play_services_version = global::GnollHackClient.Droid.Resource.Integer.google_play_services_version;
+			global::MarcTron.Plugin.Resource.Integer.hide_password_duration = global::GnollHackClient.Droid.Resource.Integer.hide_password_duration;
+			global::MarcTron.Plugin.Resource.Integer.mtrl_badge_max_character_count = global::GnollHackClient.Droid.Resource.Integer.mtrl_badge_max_character_count;
+			global::MarcTron.Plugin.Resource.Integer.mtrl_btn_anim_delay_ms = global::GnollHackClient.Droid.Resource.Integer.mtrl_btn_anim_delay_ms;
+			global::MarcTron.Plugin.Resource.Integer.mtrl_btn_anim_duration_ms = global::GnollHackClient.Droid.Resource.Integer.mtrl_btn_anim_duration_ms;
+			global::MarcTron.Plugin.Resource.Integer.mtrl_calendar_header_orientation = global::GnollHackClient.Droid.Resource.Integer.mtrl_calendar_header_orientation;
+			global::MarcTron.Plugin.Resource.Integer.mtrl_calendar_selection_text_lines = global::GnollHackClient.Droid.Resource.Integer.mtrl_calendar_selection_text_lines;
+			global::MarcTron.Plugin.Resource.Integer.mtrl_calendar_year_selector_span = global::GnollHackClient.Droid.Resource.Integer.mtrl_calendar_year_selector_span;
+			global::MarcTron.Plugin.Resource.Integer.mtrl_card_anim_delay_ms = global::GnollHackClient.Droid.Resource.Integer.mtrl_card_anim_delay_ms;
+			global::MarcTron.Plugin.Resource.Integer.mtrl_card_anim_duration_ms = global::GnollHackClient.Droid.Resource.Integer.mtrl_card_anim_duration_ms;
+			global::MarcTron.Plugin.Resource.Integer.mtrl_chip_anim_duration = global::GnollHackClient.Droid.Resource.Integer.mtrl_chip_anim_duration;
+			global::MarcTron.Plugin.Resource.Integer.mtrl_tab_indicator_anim_duration_ms = global::GnollHackClient.Droid.Resource.Integer.mtrl_tab_indicator_anim_duration_ms;
+			global::MarcTron.Plugin.Resource.Integer.show_password_duration = global::GnollHackClient.Droid.Resource.Integer.show_password_duration;
+			global::MarcTron.Plugin.Resource.Integer.status_bar_notification_info_maxnum = global::GnollHackClient.Droid.Resource.Integer.status_bar_notification_info_maxnum;
+			global::MarcTron.Plugin.Resource.Interpolator.btn_checkbox_checked_mtrl_animation_interpolator_0 = global::GnollHackClient.Droid.Resource.Interpolator.btn_checkbox_checked_mtrl_animation_interpolator_0;
+			global::MarcTron.Plugin.Resource.Interpolator.btn_checkbox_checked_mtrl_animation_interpolator_1 = global::GnollHackClient.Droid.Resource.Interpolator.btn_checkbox_checked_mtrl_animation_interpolator_1;
+			global::MarcTron.Plugin.Resource.Interpolator.btn_checkbox_unchecked_mtrl_animation_interpolator_0 = global::GnollHackClient.Droid.Resource.Interpolator.btn_checkbox_unchecked_mtrl_animation_interpolator_0;
+			global::MarcTron.Plugin.Resource.Interpolator.btn_checkbox_unchecked_mtrl_animation_interpolator_1 = global::GnollHackClient.Droid.Resource.Interpolator.btn_checkbox_unchecked_mtrl_animation_interpolator_1;
+			global::MarcTron.Plugin.Resource.Interpolator.btn_radio_to_off_mtrl_animation_interpolator_0 = global::GnollHackClient.Droid.Resource.Interpolator.btn_radio_to_off_mtrl_animation_interpolator_0;
+			global::MarcTron.Plugin.Resource.Interpolator.btn_radio_to_on_mtrl_animation_interpolator_0 = global::GnollHackClient.Droid.Resource.Interpolator.btn_radio_to_on_mtrl_animation_interpolator_0;
+			global::MarcTron.Plugin.Resource.Interpolator.fast_out_slow_in = global::GnollHackClient.Droid.Resource.Interpolator.fast_out_slow_in;
+			global::MarcTron.Plugin.Resource.Interpolator.mtrl_fast_out_linear_in = global::GnollHackClient.Droid.Resource.Interpolator.mtrl_fast_out_linear_in;
+			global::MarcTron.Plugin.Resource.Interpolator.mtrl_fast_out_slow_in = global::GnollHackClient.Droid.Resource.Interpolator.mtrl_fast_out_slow_in;
+			global::MarcTron.Plugin.Resource.Interpolator.mtrl_linear = global::GnollHackClient.Droid.Resource.Interpolator.mtrl_linear;
+			global::MarcTron.Plugin.Resource.Interpolator.mtrl_linear_out_slow_in = global::GnollHackClient.Droid.Resource.Interpolator.mtrl_linear_out_slow_in;
+			global::MarcTron.Plugin.Resource.Layout.abc_action_bar_title_item = global::GnollHackClient.Droid.Resource.Layout.abc_action_bar_title_item;
+			global::MarcTron.Plugin.Resource.Layout.abc_action_bar_up_container = global::GnollHackClient.Droid.Resource.Layout.abc_action_bar_up_container;
+			global::MarcTron.Plugin.Resource.Layout.abc_action_menu_item_layout = global::GnollHackClient.Droid.Resource.Layout.abc_action_menu_item_layout;
+			global::MarcTron.Plugin.Resource.Layout.abc_action_menu_layout = global::GnollHackClient.Droid.Resource.Layout.abc_action_menu_layout;
+			global::MarcTron.Plugin.Resource.Layout.abc_action_mode_bar = global::GnollHackClient.Droid.Resource.Layout.abc_action_mode_bar;
+			global::MarcTron.Plugin.Resource.Layout.abc_action_mode_close_item_material = global::GnollHackClient.Droid.Resource.Layout.abc_action_mode_close_item_material;
+			global::MarcTron.Plugin.Resource.Layout.abc_activity_chooser_view = global::GnollHackClient.Droid.Resource.Layout.abc_activity_chooser_view;
+			global::MarcTron.Plugin.Resource.Layout.abc_activity_chooser_view_list_item = global::GnollHackClient.Droid.Resource.Layout.abc_activity_chooser_view_list_item;
+			global::MarcTron.Plugin.Resource.Layout.abc_alert_dialog_button_bar_material = global::GnollHackClient.Droid.Resource.Layout.abc_alert_dialog_button_bar_material;
+			global::MarcTron.Plugin.Resource.Layout.abc_alert_dialog_material = global::GnollHackClient.Droid.Resource.Layout.abc_alert_dialog_material;
+			global::MarcTron.Plugin.Resource.Layout.abc_alert_dialog_title_material = global::GnollHackClient.Droid.Resource.Layout.abc_alert_dialog_title_material;
+			global::MarcTron.Plugin.Resource.Layout.abc_cascading_menu_item_layout = global::GnollHackClient.Droid.Resource.Layout.abc_cascading_menu_item_layout;
+			global::MarcTron.Plugin.Resource.Layout.abc_dialog_title_material = global::GnollHackClient.Droid.Resource.Layout.abc_dialog_title_material;
+			global::MarcTron.Plugin.Resource.Layout.abc_expanded_menu_layout = global::GnollHackClient.Droid.Resource.Layout.abc_expanded_menu_layout;
+			global::MarcTron.Plugin.Resource.Layout.abc_list_menu_item_checkbox = global::GnollHackClient.Droid.Resource.Layout.abc_list_menu_item_checkbox;
+			global::MarcTron.Plugin.Resource.Layout.abc_list_menu_item_icon = global::GnollHackClient.Droid.Resource.Layout.abc_list_menu_item_icon;
+			global::MarcTron.Plugin.Resource.Layout.abc_list_menu_item_layout = global::GnollHackClient.Droid.Resource.Layout.abc_list_menu_item_layout;
+			global::MarcTron.Plugin.Resource.Layout.abc_list_menu_item_radio = global::GnollHackClient.Droid.Resource.Layout.abc_list_menu_item_radio;
+			global::MarcTron.Plugin.Resource.Layout.abc_popup_menu_header_item_layout = global::GnollHackClient.Droid.Resource.Layout.abc_popup_menu_header_item_layout;
+			global::MarcTron.Plugin.Resource.Layout.abc_popup_menu_item_layout = global::GnollHackClient.Droid.Resource.Layout.abc_popup_menu_item_layout;
+			global::MarcTron.Plugin.Resource.Layout.abc_screen_content_include = global::GnollHackClient.Droid.Resource.Layout.abc_screen_content_include;
+			global::MarcTron.Plugin.Resource.Layout.abc_screen_simple = global::GnollHackClient.Droid.Resource.Layout.abc_screen_simple;
+			global::MarcTron.Plugin.Resource.Layout.abc_screen_simple_overlay_action_mode = global::GnollHackClient.Droid.Resource.Layout.abc_screen_simple_overlay_action_mode;
+			global::MarcTron.Plugin.Resource.Layout.abc_screen_toolbar = global::GnollHackClient.Droid.Resource.Layout.abc_screen_toolbar;
+			global::MarcTron.Plugin.Resource.Layout.abc_search_dropdown_item_icons_2line = global::GnollHackClient.Droid.Resource.Layout.abc_search_dropdown_item_icons_2line;
+			global::MarcTron.Plugin.Resource.Layout.abc_search_view = global::GnollHackClient.Droid.Resource.Layout.abc_search_view;
+			global::MarcTron.Plugin.Resource.Layout.abc_select_dialog_material = global::GnollHackClient.Droid.Resource.Layout.abc_select_dialog_material;
+			global::MarcTron.Plugin.Resource.Layout.abc_tooltip = global::GnollHackClient.Droid.Resource.Layout.abc_tooltip;
+			global::MarcTron.Plugin.Resource.Layout.BottomTabLayout = global::GnollHackClient.Droid.Resource.Layout.BottomTabLayout;
+			global::MarcTron.Plugin.Resource.Layout.browser_actions_context_menu_page = global::GnollHackClient.Droid.Resource.Layout.browser_actions_context_menu_page;
+			global::MarcTron.Plugin.Resource.Layout.browser_actions_context_menu_row = global::GnollHackClient.Droid.Resource.Layout.browser_actions_context_menu_row;
+			global::MarcTron.Plugin.Resource.Layout.custom_dialog = global::GnollHackClient.Droid.Resource.Layout.custom_dialog;
+			global::MarcTron.Plugin.Resource.Layout.design_bottom_navigation_item = global::GnollHackClient.Droid.Resource.Layout.design_bottom_navigation_item;
+			global::MarcTron.Plugin.Resource.Layout.design_bottom_sheet_dialog = global::GnollHackClient.Droid.Resource.Layout.design_bottom_sheet_dialog;
+			global::MarcTron.Plugin.Resource.Layout.design_layout_snackbar = global::GnollHackClient.Droid.Resource.Layout.design_layout_snackbar;
+			global::MarcTron.Plugin.Resource.Layout.design_layout_snackbar_include = global::GnollHackClient.Droid.Resource.Layout.design_layout_snackbar_include;
+			global::MarcTron.Plugin.Resource.Layout.design_layout_tab_icon = global::GnollHackClient.Droid.Resource.Layout.design_layout_tab_icon;
+			global::MarcTron.Plugin.Resource.Layout.design_layout_tab_text = global::GnollHackClient.Droid.Resource.Layout.design_layout_tab_text;
+			global::MarcTron.Plugin.Resource.Layout.design_menu_item_action_area = global::GnollHackClient.Droid.Resource.Layout.design_menu_item_action_area;
+			global::MarcTron.Plugin.Resource.Layout.design_navigation_item = global::GnollHackClient.Droid.Resource.Layout.design_navigation_item;
+			global::MarcTron.Plugin.Resource.Layout.design_navigation_item_header = global::GnollHackClient.Droid.Resource.Layout.design_navigation_item_header;
+			global::MarcTron.Plugin.Resource.Layout.design_navigation_item_separator = global::GnollHackClient.Droid.Resource.Layout.design_navigation_item_separator;
+			global::MarcTron.Plugin.Resource.Layout.design_navigation_item_subheader = global::GnollHackClient.Droid.Resource.Layout.design_navigation_item_subheader;
+			global::MarcTron.Plugin.Resource.Layout.design_navigation_menu = global::GnollHackClient.Droid.Resource.Layout.design_navigation_menu;
+			global::MarcTron.Plugin.Resource.Layout.design_navigation_menu_item = global::GnollHackClient.Droid.Resource.Layout.design_navigation_menu_item;
+			global::MarcTron.Plugin.Resource.Layout.design_text_input_end_icon = global::GnollHackClient.Droid.Resource.Layout.design_text_input_end_icon;
+			global::MarcTron.Plugin.Resource.Layout.design_text_input_start_icon = global::GnollHackClient.Droid.Resource.Layout.design_text_input_start_icon;
+			global::MarcTron.Plugin.Resource.Layout.FallbackTabbarDoNotUse = global::GnollHackClient.Droid.Resource.Layout.FallbackTabbarDoNotUse;
+			global::MarcTron.Plugin.Resource.Layout.FallbackToolbarDoNotUse = global::GnollHackClient.Droid.Resource.Layout.FallbackToolbarDoNotUse;
+			global::MarcTron.Plugin.Resource.Layout.FlyoutContent = global::GnollHackClient.Droid.Resource.Layout.FlyoutContent;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_alert_dialog = global::GnollHackClient.Droid.Resource.Layout.mtrl_alert_dialog;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_alert_dialog_actions = global::GnollHackClient.Droid.Resource.Layout.mtrl_alert_dialog_actions;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_alert_dialog_title = global::GnollHackClient.Droid.Resource.Layout.mtrl_alert_dialog_title;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_alert_select_dialog_item = global::GnollHackClient.Droid.Resource.Layout.mtrl_alert_select_dialog_item;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_alert_select_dialog_multichoice = global::GnollHackClient.Droid.Resource.Layout.mtrl_alert_select_dialog_multichoice;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_alert_select_dialog_singlechoice = global::GnollHackClient.Droid.Resource.Layout.mtrl_alert_select_dialog_singlechoice;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_calendar_day = global::GnollHackClient.Droid.Resource.Layout.mtrl_calendar_day;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_calendar_days_of_week = global::GnollHackClient.Droid.Resource.Layout.mtrl_calendar_days_of_week;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_calendar_day_of_week = global::GnollHackClient.Droid.Resource.Layout.mtrl_calendar_day_of_week;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_calendar_horizontal = global::GnollHackClient.Droid.Resource.Layout.mtrl_calendar_horizontal;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_calendar_month = global::GnollHackClient.Droid.Resource.Layout.mtrl_calendar_month;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_calendar_months = global::GnollHackClient.Droid.Resource.Layout.mtrl_calendar_months;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_calendar_month_labeled = global::GnollHackClient.Droid.Resource.Layout.mtrl_calendar_month_labeled;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_calendar_month_navigation = global::GnollHackClient.Droid.Resource.Layout.mtrl_calendar_month_navigation;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_calendar_vertical = global::GnollHackClient.Droid.Resource.Layout.mtrl_calendar_vertical;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_calendar_year = global::GnollHackClient.Droid.Resource.Layout.mtrl_calendar_year;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_layout_snackbar = global::GnollHackClient.Droid.Resource.Layout.mtrl_layout_snackbar;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_layout_snackbar_include = global::GnollHackClient.Droid.Resource.Layout.mtrl_layout_snackbar_include;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_picker_actions = global::GnollHackClient.Droid.Resource.Layout.mtrl_picker_actions;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_picker_dialog = global::GnollHackClient.Droid.Resource.Layout.mtrl_picker_dialog;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_picker_fullscreen = global::GnollHackClient.Droid.Resource.Layout.mtrl_picker_fullscreen;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_picker_header_dialog = global::GnollHackClient.Droid.Resource.Layout.mtrl_picker_header_dialog;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_picker_header_fullscreen = global::GnollHackClient.Droid.Resource.Layout.mtrl_picker_header_fullscreen;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_picker_header_selection_text = global::GnollHackClient.Droid.Resource.Layout.mtrl_picker_header_selection_text;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_picker_header_title_text = global::GnollHackClient.Droid.Resource.Layout.mtrl_picker_header_title_text;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_picker_header_toggle = global::GnollHackClient.Droid.Resource.Layout.mtrl_picker_header_toggle;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_picker_text_input_date = global::GnollHackClient.Droid.Resource.Layout.mtrl_picker_text_input_date;
+			global::MarcTron.Plugin.Resource.Layout.mtrl_picker_text_input_date_range = global::GnollHackClient.Droid.Resource.Layout.mtrl_picker_text_input_date_range;
+			global::MarcTron.Plugin.Resource.Layout.notification_action = global::GnollHackClient.Droid.Resource.Layout.notification_action;
+			global::MarcTron.Plugin.Resource.Layout.notification_action_tombstone = global::GnollHackClient.Droid.Resource.Layout.notification_action_tombstone;
+			global::MarcTron.Plugin.Resource.Layout.notification_media_action = global::GnollHackClient.Droid.Resource.Layout.notification_media_action;
+			global::MarcTron.Plugin.Resource.Layout.notification_media_cancel_action = global::GnollHackClient.Droid.Resource.Layout.notification_media_cancel_action;
+			global::MarcTron.Plugin.Resource.Layout.notification_template_big_media = global::GnollHackClient.Droid.Resource.Layout.notification_template_big_media;
+			global::MarcTron.Plugin.Resource.Layout.notification_template_big_media_custom = global::GnollHackClient.Droid.Resource.Layout.notification_template_big_media_custom;
+			global::MarcTron.Plugin.Resource.Layout.notification_template_big_media_narrow = global::GnollHackClient.Droid.Resource.Layout.notification_template_big_media_narrow;
+			global::MarcTron.Plugin.Resource.Layout.notification_template_big_media_narrow_custom = global::GnollHackClient.Droid.Resource.Layout.notification_template_big_media_narrow_custom;
+			global::MarcTron.Plugin.Resource.Layout.notification_template_custom_big = global::GnollHackClient.Droid.Resource.Layout.notification_template_custom_big;
+			global::MarcTron.Plugin.Resource.Layout.notification_template_icon_group = global::GnollHackClient.Droid.Resource.Layout.notification_template_icon_group;
+			global::MarcTron.Plugin.Resource.Layout.notification_template_lines_media = global::GnollHackClient.Droid.Resource.Layout.notification_template_lines_media;
+			global::MarcTron.Plugin.Resource.Layout.notification_template_media = global::GnollHackClient.Droid.Resource.Layout.notification_template_media;
+			global::MarcTron.Plugin.Resource.Layout.notification_template_media_custom = global::GnollHackClient.Droid.Resource.Layout.notification_template_media_custom;
+			global::MarcTron.Plugin.Resource.Layout.notification_template_part_chronometer = global::GnollHackClient.Droid.Resource.Layout.notification_template_part_chronometer;
+			global::MarcTron.Plugin.Resource.Layout.notification_template_part_time = global::GnollHackClient.Droid.Resource.Layout.notification_template_part_time;
+			global::MarcTron.Plugin.Resource.Layout.RootLayout = global::GnollHackClient.Droid.Resource.Layout.RootLayout;
+			global::MarcTron.Plugin.Resource.Layout.select_dialog_item_material = global::GnollHackClient.Droid.Resource.Layout.select_dialog_item_material;
+			global::MarcTron.Plugin.Resource.Layout.select_dialog_multichoice_material = global::GnollHackClient.Droid.Resource.Layout.select_dialog_multichoice_material;
+			global::MarcTron.Plugin.Resource.Layout.select_dialog_singlechoice_material = global::GnollHackClient.Droid.Resource.Layout.select_dialog_singlechoice_material;
+			global::MarcTron.Plugin.Resource.Layout.ShellContent = global::GnollHackClient.Droid.Resource.Layout.ShellContent;
+			global::MarcTron.Plugin.Resource.Layout.support_simple_spinner_dropdown_item = global::GnollHackClient.Droid.Resource.Layout.support_simple_spinner_dropdown_item;
+			global::MarcTron.Plugin.Resource.Layout.Tabbar = global::GnollHackClient.Droid.Resource.Layout.Tabbar;
+			global::MarcTron.Plugin.Resource.Layout.test_action_chip = global::GnollHackClient.Droid.Resource.Layout.test_action_chip;
+			global::MarcTron.Plugin.Resource.Layout.test_design_checkbox = global::GnollHackClient.Droid.Resource.Layout.test_design_checkbox;
+			global::MarcTron.Plugin.Resource.Layout.test_reflow_chipgroup = global::GnollHackClient.Droid.Resource.Layout.test_reflow_chipgroup;
+			global::MarcTron.Plugin.Resource.Layout.test_toolbar = global::GnollHackClient.Droid.Resource.Layout.test_toolbar;
+			global::MarcTron.Plugin.Resource.Layout.test_toolbar_custom_background = global::GnollHackClient.Droid.Resource.Layout.test_toolbar_custom_background;
+			global::MarcTron.Plugin.Resource.Layout.test_toolbar_elevation = global::GnollHackClient.Droid.Resource.Layout.test_toolbar_elevation;
+			global::MarcTron.Plugin.Resource.Layout.test_toolbar_surface = global::GnollHackClient.Droid.Resource.Layout.test_toolbar_surface;
+			global::MarcTron.Plugin.Resource.Layout.text_view_without_line_height = global::GnollHackClient.Droid.Resource.Layout.text_view_without_line_height;
+			global::MarcTron.Plugin.Resource.Layout.text_view_with_line_height_from_appearance = global::GnollHackClient.Droid.Resource.Layout.text_view_with_line_height_from_appearance;
+			global::MarcTron.Plugin.Resource.Layout.text_view_with_line_height_from_layout = global::GnollHackClient.Droid.Resource.Layout.text_view_with_line_height_from_layout;
+			global::MarcTron.Plugin.Resource.Layout.text_view_with_line_height_from_style = global::GnollHackClient.Droid.Resource.Layout.text_view_with_line_height_from_style;
+			global::MarcTron.Plugin.Resource.Layout.text_view_with_theme_line_height = global::GnollHackClient.Droid.Resource.Layout.text_view_with_theme_line_height;
+			global::MarcTron.Plugin.Resource.Layout.Toolbar = global::GnollHackClient.Droid.Resource.Layout.Toolbar;
+			global::MarcTron.Plugin.Resource.Plurals.mtrl_badge_content_description = global::GnollHackClient.Droid.Resource.Plurals.mtrl_badge_content_description;
+			global::MarcTron.Plugin.Resource.String.abc_action_bar_home_description = global::GnollHackClient.Droid.Resource.String.abc_action_bar_home_description;
+			global::MarcTron.Plugin.Resource.String.abc_action_bar_up_description = global::GnollHackClient.Droid.Resource.String.abc_action_bar_up_description;
+			global::MarcTron.Plugin.Resource.String.abc_action_menu_overflow_description = global::GnollHackClient.Droid.Resource.String.abc_action_menu_overflow_description;
+			global::MarcTron.Plugin.Resource.String.abc_action_mode_done = global::GnollHackClient.Droid.Resource.String.abc_action_mode_done;
+			global::MarcTron.Plugin.Resource.String.abc_activitychooserview_choose_application = global::GnollHackClient.Droid.Resource.String.abc_activitychooserview_choose_application;
+			global::MarcTron.Plugin.Resource.String.abc_activity_chooser_view_see_all = global::GnollHackClient.Droid.Resource.String.abc_activity_chooser_view_see_all;
+			global::MarcTron.Plugin.Resource.String.abc_capital_off = global::GnollHackClient.Droid.Resource.String.abc_capital_off;
+			global::MarcTron.Plugin.Resource.String.abc_capital_on = global::GnollHackClient.Droid.Resource.String.abc_capital_on;
+			global::MarcTron.Plugin.Resource.String.abc_menu_alt_shortcut_label = global::GnollHackClient.Droid.Resource.String.abc_menu_alt_shortcut_label;
+			global::MarcTron.Plugin.Resource.String.abc_menu_ctrl_shortcut_label = global::GnollHackClient.Droid.Resource.String.abc_menu_ctrl_shortcut_label;
+			global::MarcTron.Plugin.Resource.String.abc_menu_delete_shortcut_label = global::GnollHackClient.Droid.Resource.String.abc_menu_delete_shortcut_label;
+			global::MarcTron.Plugin.Resource.String.abc_menu_enter_shortcut_label = global::GnollHackClient.Droid.Resource.String.abc_menu_enter_shortcut_label;
+			global::MarcTron.Plugin.Resource.String.abc_menu_function_shortcut_label = global::GnollHackClient.Droid.Resource.String.abc_menu_function_shortcut_label;
+			global::MarcTron.Plugin.Resource.String.abc_menu_meta_shortcut_label = global::GnollHackClient.Droid.Resource.String.abc_menu_meta_shortcut_label;
+			global::MarcTron.Plugin.Resource.String.abc_menu_shift_shortcut_label = global::GnollHackClient.Droid.Resource.String.abc_menu_shift_shortcut_label;
+			global::MarcTron.Plugin.Resource.String.abc_menu_space_shortcut_label = global::GnollHackClient.Droid.Resource.String.abc_menu_space_shortcut_label;
+			global::MarcTron.Plugin.Resource.String.abc_menu_sym_shortcut_label = global::GnollHackClient.Droid.Resource.String.abc_menu_sym_shortcut_label;
+			global::MarcTron.Plugin.Resource.String.abc_prepend_shortcut_label = global::GnollHackClient.Droid.Resource.String.abc_prepend_shortcut_label;
+			global::MarcTron.Plugin.Resource.String.abc_searchview_description_clear = global::GnollHackClient.Droid.Resource.String.abc_searchview_description_clear;
+			global::MarcTron.Plugin.Resource.String.abc_searchview_description_query = global::GnollHackClient.Droid.Resource.String.abc_searchview_description_query;
+			global::MarcTron.Plugin.Resource.String.abc_searchview_description_search = global::GnollHackClient.Droid.Resource.String.abc_searchview_description_search;
+			global::MarcTron.Plugin.Resource.String.abc_searchview_description_submit = global::GnollHackClient.Droid.Resource.String.abc_searchview_description_submit;
+			global::MarcTron.Plugin.Resource.String.abc_searchview_description_voice = global::GnollHackClient.Droid.Resource.String.abc_searchview_description_voice;
+			global::MarcTron.Plugin.Resource.String.abc_search_hint = global::GnollHackClient.Droid.Resource.String.abc_search_hint;
+			global::MarcTron.Plugin.Resource.String.abc_shareactionprovider_share_with = global::GnollHackClient.Droid.Resource.String.abc_shareactionprovider_share_with;
+			global::MarcTron.Plugin.Resource.String.abc_shareactionprovider_share_with_application = global::GnollHackClient.Droid.Resource.String.abc_shareactionprovider_share_with_application;
+			global::MarcTron.Plugin.Resource.String.abc_toolbar_collapse_description = global::GnollHackClient.Droid.Resource.String.abc_toolbar_collapse_description;
+			global::MarcTron.Plugin.Resource.String.appbar_scrolling_view_behavior = global::GnollHackClient.Droid.Resource.String.appbar_scrolling_view_behavior;
+			global::MarcTron.Plugin.Resource.String.bottom_sheet_behavior = global::GnollHackClient.Droid.Resource.String.bottom_sheet_behavior;
+			global::MarcTron.Plugin.Resource.String.character_counter_content_description = global::GnollHackClient.Droid.Resource.String.character_counter_content_description;
+			global::MarcTron.Plugin.Resource.String.character_counter_overflowed_content_description = global::GnollHackClient.Droid.Resource.String.character_counter_overflowed_content_description;
+			global::MarcTron.Plugin.Resource.String.character_counter_pattern = global::GnollHackClient.Droid.Resource.String.character_counter_pattern;
+			global::MarcTron.Plugin.Resource.String.chip_text = global::GnollHackClient.Droid.Resource.String.chip_text;
+			global::MarcTron.Plugin.Resource.String.clear_text_end_icon_content_description = global::GnollHackClient.Droid.Resource.String.clear_text_end_icon_content_description;
+			global::MarcTron.Plugin.Resource.String.common_google_play_services_unknown_issue = global::GnollHackClient.Droid.Resource.String.common_google_play_services_unknown_issue;
+			global::MarcTron.Plugin.Resource.String.copy_toast_msg = global::GnollHackClient.Droid.Resource.String.copy_toast_msg;
+			global::MarcTron.Plugin.Resource.String.error_icon_content_description = global::GnollHackClient.Droid.Resource.String.error_icon_content_description;
+			global::MarcTron.Plugin.Resource.String.exposed_dropdown_menu_content_description = global::GnollHackClient.Droid.Resource.String.exposed_dropdown_menu_content_description;
+			global::MarcTron.Plugin.Resource.String.fab_transformation_scrim_behavior = global::GnollHackClient.Droid.Resource.String.fab_transformation_scrim_behavior;
+			global::MarcTron.Plugin.Resource.String.fab_transformation_sheet_behavior = global::GnollHackClient.Droid.Resource.String.fab_transformation_sheet_behavior;
+			global::MarcTron.Plugin.Resource.String.fallback_menu_item_copy_link = global::GnollHackClient.Droid.Resource.String.fallback_menu_item_copy_link;
+			global::MarcTron.Plugin.Resource.String.fallback_menu_item_open_in_browser = global::GnollHackClient.Droid.Resource.String.fallback_menu_item_open_in_browser;
+			global::MarcTron.Plugin.Resource.String.fallback_menu_item_share_link = global::GnollHackClient.Droid.Resource.String.fallback_menu_item_share_link;
+			global::MarcTron.Plugin.Resource.String.hide_bottom_view_on_scroll_behavior = global::GnollHackClient.Droid.Resource.String.hide_bottom_view_on_scroll_behavior;
+			global::MarcTron.Plugin.Resource.String.icon_content_description = global::GnollHackClient.Droid.Resource.String.icon_content_description;
+			global::MarcTron.Plugin.Resource.String.mtrl_badge_numberless_content_description = global::GnollHackClient.Droid.Resource.String.mtrl_badge_numberless_content_description;
+			global::MarcTron.Plugin.Resource.String.mtrl_chip_close_icon_content_description = global::GnollHackClient.Droid.Resource.String.mtrl_chip_close_icon_content_description;
+			global::MarcTron.Plugin.Resource.String.mtrl_exceed_max_badge_number_suffix = global::GnollHackClient.Droid.Resource.String.mtrl_exceed_max_badge_number_suffix;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_a11y_next_month = global::GnollHackClient.Droid.Resource.String.mtrl_picker_a11y_next_month;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_a11y_prev_month = global::GnollHackClient.Droid.Resource.String.mtrl_picker_a11y_prev_month;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_announce_current_selection = global::GnollHackClient.Droid.Resource.String.mtrl_picker_announce_current_selection;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_cancel = global::GnollHackClient.Droid.Resource.String.mtrl_picker_cancel;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_confirm = global::GnollHackClient.Droid.Resource.String.mtrl_picker_confirm;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_date_header_selected = global::GnollHackClient.Droid.Resource.String.mtrl_picker_date_header_selected;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_date_header_title = global::GnollHackClient.Droid.Resource.String.mtrl_picker_date_header_title;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_date_header_unselected = global::GnollHackClient.Droid.Resource.String.mtrl_picker_date_header_unselected;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_day_of_week_column_header = global::GnollHackClient.Droid.Resource.String.mtrl_picker_day_of_week_column_header;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_invalid_format = global::GnollHackClient.Droid.Resource.String.mtrl_picker_invalid_format;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_invalid_format_example = global::GnollHackClient.Droid.Resource.String.mtrl_picker_invalid_format_example;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_invalid_format_use = global::GnollHackClient.Droid.Resource.String.mtrl_picker_invalid_format_use;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_invalid_range = global::GnollHackClient.Droid.Resource.String.mtrl_picker_invalid_range;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_navigate_to_year_description = global::GnollHackClient.Droid.Resource.String.mtrl_picker_navigate_to_year_description;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_out_of_range = global::GnollHackClient.Droid.Resource.String.mtrl_picker_out_of_range;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_range_header_only_end_selected = global::GnollHackClient.Droid.Resource.String.mtrl_picker_range_header_only_end_selected;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_range_header_only_start_selected = global::GnollHackClient.Droid.Resource.String.mtrl_picker_range_header_only_start_selected;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_range_header_selected = global::GnollHackClient.Droid.Resource.String.mtrl_picker_range_header_selected;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_range_header_title = global::GnollHackClient.Droid.Resource.String.mtrl_picker_range_header_title;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_range_header_unselected = global::GnollHackClient.Droid.Resource.String.mtrl_picker_range_header_unselected;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_save = global::GnollHackClient.Droid.Resource.String.mtrl_picker_save;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_text_input_date_hint = global::GnollHackClient.Droid.Resource.String.mtrl_picker_text_input_date_hint;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_text_input_date_range_end_hint = global::GnollHackClient.Droid.Resource.String.mtrl_picker_text_input_date_range_end_hint;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_text_input_date_range_start_hint = global::GnollHackClient.Droid.Resource.String.mtrl_picker_text_input_date_range_start_hint;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_text_input_day_abbr = global::GnollHackClient.Droid.Resource.String.mtrl_picker_text_input_day_abbr;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_text_input_month_abbr = global::GnollHackClient.Droid.Resource.String.mtrl_picker_text_input_month_abbr;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_text_input_year_abbr = global::GnollHackClient.Droid.Resource.String.mtrl_picker_text_input_year_abbr;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_toggle_to_calendar_input_mode = global::GnollHackClient.Droid.Resource.String.mtrl_picker_toggle_to_calendar_input_mode;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_toggle_to_day_selection = global::GnollHackClient.Droid.Resource.String.mtrl_picker_toggle_to_day_selection;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_toggle_to_text_input_mode = global::GnollHackClient.Droid.Resource.String.mtrl_picker_toggle_to_text_input_mode;
+			global::MarcTron.Plugin.Resource.String.mtrl_picker_toggle_to_year_selection = global::GnollHackClient.Droid.Resource.String.mtrl_picker_toggle_to_year_selection;
+			global::MarcTron.Plugin.Resource.String.overflow_tab_title = global::GnollHackClient.Droid.Resource.String.overflow_tab_title;
+			global::MarcTron.Plugin.Resource.String.password_toggle_content_description = global::GnollHackClient.Droid.Resource.String.password_toggle_content_description;
+			global::MarcTron.Plugin.Resource.String.path_password_eye = global::GnollHackClient.Droid.Resource.String.path_password_eye;
+			global::MarcTron.Plugin.Resource.String.path_password_eye_mask_strike_through = global::GnollHackClient.Droid.Resource.String.path_password_eye_mask_strike_through;
+			global::MarcTron.Plugin.Resource.String.path_password_eye_mask_visible = global::GnollHackClient.Droid.Resource.String.path_password_eye_mask_visible;
+			global::MarcTron.Plugin.Resource.String.path_password_strike_through = global::GnollHackClient.Droid.Resource.String.path_password_strike_through;
+			global::MarcTron.Plugin.Resource.String.search_menu_title = global::GnollHackClient.Droid.Resource.String.search_menu_title;
+			global::MarcTron.Plugin.Resource.String.status_bar_notification_info_overflow = global::GnollHackClient.Droid.Resource.String.status_bar_notification_info_overflow;
+			global::MarcTron.Plugin.Resource.Style.AlertDialog_AppCompat = global::GnollHackClient.Droid.Resource.Style.AlertDialog_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.AlertDialog_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.AlertDialog_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Animation_AppCompat_Dialog = global::GnollHackClient.Droid.Resource.Style.Animation_AppCompat_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Animation_AppCompat_DropDownUp = global::GnollHackClient.Droid.Resource.Style.Animation_AppCompat_DropDownUp;
+			global::MarcTron.Plugin.Resource.Style.Animation_AppCompat_Tooltip = global::GnollHackClient.Droid.Resource.Style.Animation_AppCompat_Tooltip;
+			global::MarcTron.Plugin.Resource.Style.Animation_Design_BottomSheetDialog = global::GnollHackClient.Droid.Resource.Style.Animation_Design_BottomSheetDialog;
+			global::MarcTron.Plugin.Resource.Style.Animation_MaterialComponents_BottomSheetDialog = global::GnollHackClient.Droid.Resource.Style.Animation_MaterialComponents_BottomSheetDialog;
+			global::MarcTron.Plugin.Resource.Style.AppCompatDialogStyle = global::GnollHackClient.Droid.Resource.Style.AppCompatDialogStyle;
+			global::MarcTron.Plugin.Resource.Style.Base_AlertDialog_AppCompat = global::GnollHackClient.Droid.Resource.Style.Base_AlertDialog_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Base_AlertDialog_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Base_AlertDialog_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Base_Animation_AppCompat_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_Animation_AppCompat_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_Animation_AppCompat_DropDownUp = global::GnollHackClient.Droid.Resource.Style.Base_Animation_AppCompat_DropDownUp;
+			global::MarcTron.Plugin.Resource.Style.Base_Animation_AppCompat_Tooltip = global::GnollHackClient.Droid.Resource.Style.Base_Animation_AppCompat_Tooltip;
+			global::MarcTron.Plugin.Resource.Style.Base_CardView = global::GnollHackClient.Droid.Resource.Style.Base_CardView;
+			global::MarcTron.Plugin.Resource.Style.Base_DialogWindowTitleBackground_AppCompat = global::GnollHackClient.Droid.Resource.Style.Base_DialogWindowTitleBackground_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Base_DialogWindowTitle_AppCompat = global::GnollHackClient.Droid.Resource.Style.Base_DialogWindowTitle_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Base_MaterialAlertDialog_MaterialComponents_Title_Icon = global::GnollHackClient.Droid.Resource.Style.Base_MaterialAlertDialog_MaterialComponents_Title_Icon;
+			global::MarcTron.Plugin.Resource.Style.Base_MaterialAlertDialog_MaterialComponents_Title_Panel = global::GnollHackClient.Droid.Resource.Style.Base_MaterialAlertDialog_MaterialComponents_Title_Panel;
+			global::MarcTron.Plugin.Resource.Style.Base_MaterialAlertDialog_MaterialComponents_Title_Text = global::GnollHackClient.Droid.Resource.Style.Base_MaterialAlertDialog_MaterialComponents_Title_Text;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Body1 = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Body1;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Body2 = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Body2;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Button = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Button;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Caption = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Caption;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Display1 = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Display1;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Display2 = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Display2;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Display3 = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Display3;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Display4 = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Display4;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Headline = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Headline;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Inverse = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Large = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Large;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Large_Inverse = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Large_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Light_Widget_PopupMenu_Large = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Light_Widget_PopupMenu_Large;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Light_Widget_PopupMenu_Small = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Light_Widget_PopupMenu_Small;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Medium = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Medium;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Medium_Inverse = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Medium_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Menu = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Menu;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_SearchResult = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_SearchResult;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_SearchResult_Subtitle = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_SearchResult_Subtitle;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_SearchResult_Title = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_SearchResult_Title;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Small = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Small;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Small_Inverse = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Small_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Subhead = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Subhead;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Subhead_Inverse = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Subhead_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Title = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Title;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Title_Inverse = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Title_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Tooltip = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Tooltip;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionBar_Menu = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionBar_Menu;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionBar_Subtitle = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionBar_Subtitle;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionBar_Subtitle_Inverse = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionBar_Subtitle_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionBar_Title = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionBar_Title;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionBar_Title_Inverse = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionBar_Title_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionMode_Subtitle = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionMode_Subtitle;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionMode_Title = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_ActionMode_Title;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_Button = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_Button;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_Button_Borderless_Colored = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_Button_Borderless_Colored;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_Button_Colored = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_Button_Colored;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_Button_Inverse = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_Button_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_DropDownItem = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_DropDownItem;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_PopupMenu_Header = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_PopupMenu_Header;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_PopupMenu_Large = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_PopupMenu_Large;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_PopupMenu_Small = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_PopupMenu_Small;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_Switch = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_Switch;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_AppCompat_Widget_TextView_SpinnerItem = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_AppCompat_Widget_TextView_SpinnerItem;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_MaterialComponents_Badge = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_MaterialComponents_Badge;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_MaterialComponents_Button = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_MaterialComponents_Button;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_MaterialComponents_Headline6 = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_MaterialComponents_Headline6;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_MaterialComponents_Subtitle2 = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_MaterialComponents_Subtitle2;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_Widget_AppCompat_ExpandedMenu_Item = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_Widget_AppCompat_ExpandedMenu_Item;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_Widget_AppCompat_Toolbar_Subtitle = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_Widget_AppCompat_Toolbar_Subtitle;
+			global::MarcTron.Plugin.Resource.Style.Base_TextAppearance_Widget_AppCompat_Toolbar_Title = global::GnollHackClient.Droid.Resource.Style.Base_TextAppearance_Widget_AppCompat_Toolbar_Title;
+			global::MarcTron.Plugin.Resource.Style.Base_ThemeOverlay_AppCompat = global::GnollHackClient.Droid.Resource.Style.Base_ThemeOverlay_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Base_ThemeOverlay_AppCompat_ActionBar = global::GnollHackClient.Droid.Resource.Style.Base_ThemeOverlay_AppCompat_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.Base_ThemeOverlay_AppCompat_Dark = global::GnollHackClient.Droid.Resource.Style.Base_ThemeOverlay_AppCompat_Dark;
+			global::MarcTron.Plugin.Resource.Style.Base_ThemeOverlay_AppCompat_Dark_ActionBar = global::GnollHackClient.Droid.Resource.Style.Base_ThemeOverlay_AppCompat_Dark_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.Base_ThemeOverlay_AppCompat_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_ThemeOverlay_AppCompat_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_ThemeOverlay_AppCompat_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Base_ThemeOverlay_AppCompat_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Base_ThemeOverlay_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Base_ThemeOverlay_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Base_ThemeOverlay_MaterialComponents_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_ThemeOverlay_MaterialComponents_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_ThemeOverlay_MaterialComponents_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Base_ThemeOverlay_MaterialComponents_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Base_ThemeOverlay_MaterialComponents_MaterialAlertDialog = global::GnollHackClient.Droid.Resource.Style.Base_ThemeOverlay_MaterialComponents_MaterialAlertDialog;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_CompactMenu = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_CompactMenu;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_DialogWhenLarge = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_DialogWhenLarge;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_Dialog_FixedSize = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_Dialog_FixedSize;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_Dialog_MinWidth = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_Dialog_MinWidth;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_Light_DarkActionBar = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_Light_DarkActionBar;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_Light_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_Light_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_Light_DialogWhenLarge = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_Light_DialogWhenLarge;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_Light_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_Light_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_Light_Dialog_FixedSize = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_Light_Dialog_FixedSize;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_AppCompat_Light_Dialog_MinWidth = global::GnollHackClient.Droid.Resource.Style.Base_Theme_AppCompat_Light_Dialog_MinWidth;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Bridge = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_CompactMenu = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_CompactMenu;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_DialogWhenLarge = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_DialogWhenLarge;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Dialog_Bridge = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Dialog_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Dialog_FixedSize = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Dialog_FixedSize;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Dialog_MinWidth = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Dialog_MinWidth;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Light = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Light;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Light_Bridge = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Light_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Light_DarkActionBar = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Light_DarkActionBar;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Light_DarkActionBar_Bridge = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Light_DarkActionBar_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Light_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Light_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Light_DialogWhenLarge = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Light_DialogWhenLarge;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Light_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Light_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Light_Dialog_Bridge = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Light_Dialog_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Light_Dialog_FixedSize = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Light_Dialog_FixedSize;
+			global::MarcTron.Plugin.Resource.Style.Base_Theme_MaterialComponents_Light_Dialog_MinWidth = global::GnollHackClient.Droid.Resource.Style.Base_Theme_MaterialComponents_Light_Dialog_MinWidth;
+			global::MarcTron.Plugin.Resource.Style.Base_V14_ThemeOverlay_MaterialComponents_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_V14_ThemeOverlay_MaterialComponents_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_V14_ThemeOverlay_MaterialComponents_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Base_V14_ThemeOverlay_MaterialComponents_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Base_V14_ThemeOverlay_MaterialComponents_MaterialAlertDialog = global::GnollHackClient.Droid.Resource.Style.Base_V14_ThemeOverlay_MaterialComponents_MaterialAlertDialog;
+			global::MarcTron.Plugin.Resource.Style.Base_V14_Theme_MaterialComponents = global::GnollHackClient.Droid.Resource.Style.Base_V14_Theme_MaterialComponents;
+			global::MarcTron.Plugin.Resource.Style.Base_V14_Theme_MaterialComponents_Bridge = global::GnollHackClient.Droid.Resource.Style.Base_V14_Theme_MaterialComponents_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Base_V14_Theme_MaterialComponents_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_V14_Theme_MaterialComponents_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_V14_Theme_MaterialComponents_Dialog_Bridge = global::GnollHackClient.Droid.Resource.Style.Base_V14_Theme_MaterialComponents_Dialog_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Base_V14_Theme_MaterialComponents_Light = global::GnollHackClient.Droid.Resource.Style.Base_V14_Theme_MaterialComponents_Light;
+			global::MarcTron.Plugin.Resource.Style.Base_V14_Theme_MaterialComponents_Light_Bridge = global::GnollHackClient.Droid.Resource.Style.Base_V14_Theme_MaterialComponents_Light_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Base_V14_Theme_MaterialComponents_Light_DarkActionBar_Bridge = global::GnollHackClient.Droid.Resource.Style.Base_V14_Theme_MaterialComponents_Light_DarkActionBar_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Base_V14_Theme_MaterialComponents_Light_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_V14_Theme_MaterialComponents_Light_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_V14_Theme_MaterialComponents_Light_Dialog_Bridge = global::GnollHackClient.Droid.Resource.Style.Base_V14_Theme_MaterialComponents_Light_Dialog_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Base_V21_ThemeOverlay_AppCompat_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_V21_ThemeOverlay_AppCompat_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_V21_Theme_AppCompat = global::GnollHackClient.Droid.Resource.Style.Base_V21_Theme_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Base_V21_Theme_AppCompat_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_V21_Theme_AppCompat_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_V21_Theme_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Base_V21_Theme_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Base_V21_Theme_AppCompat_Light_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_V21_Theme_AppCompat_Light_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_V22_Theme_AppCompat = global::GnollHackClient.Droid.Resource.Style.Base_V22_Theme_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Base_V22_Theme_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Base_V22_Theme_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Base_V23_Theme_AppCompat = global::GnollHackClient.Droid.Resource.Style.Base_V23_Theme_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Base_V23_Theme_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Base_V23_Theme_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Base_V26_Theme_AppCompat = global::GnollHackClient.Droid.Resource.Style.Base_V26_Theme_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Base_V26_Theme_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Base_V26_Theme_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Base_V26_Widget_AppCompat_Toolbar = global::GnollHackClient.Droid.Resource.Style.Base_V26_Widget_AppCompat_Toolbar;
+			global::MarcTron.Plugin.Resource.Style.Base_V28_Theme_AppCompat = global::GnollHackClient.Droid.Resource.Style.Base_V28_Theme_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Base_V28_Theme_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Base_V28_Theme_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Base_V7_ThemeOverlay_AppCompat_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_V7_ThemeOverlay_AppCompat_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_V7_Theme_AppCompat = global::GnollHackClient.Droid.Resource.Style.Base_V7_Theme_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Base_V7_Theme_AppCompat_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_V7_Theme_AppCompat_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_V7_Theme_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Base_V7_Theme_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Base_V7_Theme_AppCompat_Light_Dialog = global::GnollHackClient.Droid.Resource.Style.Base_V7_Theme_AppCompat_Light_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Base_V7_Widget_AppCompat_AutoCompleteTextView = global::GnollHackClient.Droid.Resource.Style.Base_V7_Widget_AppCompat_AutoCompleteTextView;
+			global::MarcTron.Plugin.Resource.Style.Base_V7_Widget_AppCompat_EditText = global::GnollHackClient.Droid.Resource.Style.Base_V7_Widget_AppCompat_EditText;
+			global::MarcTron.Plugin.Resource.Style.Base_V7_Widget_AppCompat_Toolbar = global::GnollHackClient.Droid.Resource.Style.Base_V7_Widget_AppCompat_Toolbar;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ActionBar = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ActionBar_Solid = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ActionBar_Solid;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ActionBar_TabBar = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ActionBar_TabBar;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ActionBar_TabText = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ActionBar_TabText;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ActionBar_TabView = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ActionBar_TabView;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ActionButton = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ActionButton;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ActionButton_CloseMode = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ActionButton_CloseMode;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ActionButton_Overflow = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ActionButton_Overflow;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ActionMode = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ActionMode;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ActivityChooserView = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ActivityChooserView;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_AutoCompleteTextView = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_AutoCompleteTextView;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Button = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Button;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ButtonBar = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ButtonBar;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ButtonBar_AlertDialog = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ButtonBar_AlertDialog;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Button_Borderless = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Button_Borderless;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Button_Borderless_Colored = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Button_Borderless_Colored;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Button_ButtonBar_AlertDialog = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Button_ButtonBar_AlertDialog;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Button_Colored = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Button_Colored;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Button_Small = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Button_Small;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_CompoundButton_CheckBox = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_CompoundButton_CheckBox;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_CompoundButton_RadioButton = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_CompoundButton_RadioButton;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_CompoundButton_Switch = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_CompoundButton_Switch;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_DrawerArrowToggle = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_DrawerArrowToggle;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_DrawerArrowToggle_Common = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_DrawerArrowToggle_Common;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_DropDownItem_Spinner = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_DropDownItem_Spinner;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_EditText = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_EditText;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ImageButton = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ImageButton;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Light_ActionBar = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Light_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Light_ActionBar_Solid = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Light_ActionBar_Solid;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Light_ActionBar_TabBar = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Light_ActionBar_TabBar;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Light_ActionBar_TabText = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Light_ActionBar_TabText;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Light_ActionBar_TabText_Inverse = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Light_ActionBar_TabText_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Light_ActionBar_TabView = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Light_ActionBar_TabView;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Light_PopupMenu = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Light_PopupMenu;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Light_PopupMenu_Overflow = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Light_PopupMenu_Overflow;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ListMenuView = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ListMenuView;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ListPopupWindow = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ListPopupWindow;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ListView = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ListView;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ListView_DropDown = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ListView_DropDown;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ListView_Menu = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ListView_Menu;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_PopupMenu = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_PopupMenu;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_PopupMenu_Overflow = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_PopupMenu_Overflow;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_PopupWindow = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_PopupWindow;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ProgressBar = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ProgressBar;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_ProgressBar_Horizontal = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_ProgressBar_Horizontal;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_RatingBar = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_RatingBar;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_RatingBar_Indicator = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_RatingBar_Indicator;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_RatingBar_Small = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_RatingBar_Small;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_SearchView = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_SearchView;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_SearchView_ActionBar = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_SearchView_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_SeekBar = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_SeekBar;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_SeekBar_Discrete = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_SeekBar_Discrete;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Spinner = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Spinner;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Spinner_Underlined = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Spinner_Underlined;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_TextView = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_TextView;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_TextView_SpinnerItem = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_TextView_SpinnerItem;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Toolbar = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Toolbar;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_AppCompat_Toolbar_Button_Navigation = global::GnollHackClient.Droid.Resource.Style.Base_Widget_AppCompat_Toolbar_Button_Navigation;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_Design_TabLayout = global::GnollHackClient.Droid.Resource.Style.Base_Widget_Design_TabLayout;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_MaterialComponents_AutoCompleteTextView = global::GnollHackClient.Droid.Resource.Style.Base_Widget_MaterialComponents_AutoCompleteTextView;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_MaterialComponents_CheckedTextView = global::GnollHackClient.Droid.Resource.Style.Base_Widget_MaterialComponents_CheckedTextView;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_MaterialComponents_Chip = global::GnollHackClient.Droid.Resource.Style.Base_Widget_MaterialComponents_Chip;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_MaterialComponents_PopupMenu = global::GnollHackClient.Droid.Resource.Style.Base_Widget_MaterialComponents_PopupMenu;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_MaterialComponents_PopupMenu_ContextMenu = global::GnollHackClient.Droid.Resource.Style.Base_Widget_MaterialComponents_PopupMenu_ContextMenu;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_MaterialComponents_PopupMenu_ListPopupWindow = global::GnollHackClient.Droid.Resource.Style.Base_Widget_MaterialComponents_PopupMenu_ListPopupWindow;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_MaterialComponents_PopupMenu_Overflow = global::GnollHackClient.Droid.Resource.Style.Base_Widget_MaterialComponents_PopupMenu_Overflow;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_MaterialComponents_TextInputEditText = global::GnollHackClient.Droid.Resource.Style.Base_Widget_MaterialComponents_TextInputEditText;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_MaterialComponents_TextInputLayout = global::GnollHackClient.Droid.Resource.Style.Base_Widget_MaterialComponents_TextInputLayout;
+			global::MarcTron.Plugin.Resource.Style.Base_Widget_MaterialComponents_TextView = global::GnollHackClient.Droid.Resource.Style.Base_Widget_MaterialComponents_TextView;
+			global::MarcTron.Plugin.Resource.Style.CardView = global::GnollHackClient.Droid.Resource.Style.CardView;
+			global::MarcTron.Plugin.Resource.Style.CardView_Dark = global::GnollHackClient.Droid.Resource.Style.CardView_Dark;
+			global::MarcTron.Plugin.Resource.Style.CardView_Light = global::GnollHackClient.Droid.Resource.Style.CardView_Light;
+			global::MarcTron.Plugin.Resource.Style.collectionViewTheme = global::GnollHackClient.Droid.Resource.Style.collectionViewTheme;
+			global::MarcTron.Plugin.Resource.Style.EmptyTheme = global::GnollHackClient.Droid.Resource.Style.EmptyTheme;
+			global::MarcTron.Plugin.Resource.Style.MainTheme = global::GnollHackClient.Droid.Resource.Style.MainTheme;
+			global::MarcTron.Plugin.Resource.Style.MainTheme_Base = global::GnollHackClient.Droid.Resource.Style.MainTheme_Base;
+			global::MarcTron.Plugin.Resource.Style.MaterialAlertDialog_MaterialComponents = global::GnollHackClient.Droid.Resource.Style.MaterialAlertDialog_MaterialComponents;
+			global::MarcTron.Plugin.Resource.Style.MaterialAlertDialog_MaterialComponents_Body_Text = global::GnollHackClient.Droid.Resource.Style.MaterialAlertDialog_MaterialComponents_Body_Text;
+			global::MarcTron.Plugin.Resource.Style.MaterialAlertDialog_MaterialComponents_Picker_Date_Calendar = global::GnollHackClient.Droid.Resource.Style.MaterialAlertDialog_MaterialComponents_Picker_Date_Calendar;
+			global::MarcTron.Plugin.Resource.Style.MaterialAlertDialog_MaterialComponents_Picker_Date_Spinner = global::GnollHackClient.Droid.Resource.Style.MaterialAlertDialog_MaterialComponents_Picker_Date_Spinner;
+			global::MarcTron.Plugin.Resource.Style.MaterialAlertDialog_MaterialComponents_Title_Icon = global::GnollHackClient.Droid.Resource.Style.MaterialAlertDialog_MaterialComponents_Title_Icon;
+			global::MarcTron.Plugin.Resource.Style.MaterialAlertDialog_MaterialComponents_Title_Icon_CenterStacked = global::GnollHackClient.Droid.Resource.Style.MaterialAlertDialog_MaterialComponents_Title_Icon_CenterStacked;
+			global::MarcTron.Plugin.Resource.Style.MaterialAlertDialog_MaterialComponents_Title_Panel = global::GnollHackClient.Droid.Resource.Style.MaterialAlertDialog_MaterialComponents_Title_Panel;
+			global::MarcTron.Plugin.Resource.Style.MaterialAlertDialog_MaterialComponents_Title_Panel_CenterStacked = global::GnollHackClient.Droid.Resource.Style.MaterialAlertDialog_MaterialComponents_Title_Panel_CenterStacked;
+			global::MarcTron.Plugin.Resource.Style.MaterialAlertDialog_MaterialComponents_Title_Text = global::GnollHackClient.Droid.Resource.Style.MaterialAlertDialog_MaterialComponents_Title_Text;
+			global::MarcTron.Plugin.Resource.Style.MaterialAlertDialog_MaterialComponents_Title_Text_CenterStacked = global::GnollHackClient.Droid.Resource.Style.MaterialAlertDialog_MaterialComponents_Title_Text_CenterStacked;
+			global::MarcTron.Plugin.Resource.Style.Platform_AppCompat = global::GnollHackClient.Droid.Resource.Style.Platform_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Platform_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Platform_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Platform_MaterialComponents = global::GnollHackClient.Droid.Resource.Style.Platform_MaterialComponents;
+			global::MarcTron.Plugin.Resource.Style.Platform_MaterialComponents_Dialog = global::GnollHackClient.Droid.Resource.Style.Platform_MaterialComponents_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Platform_MaterialComponents_Light = global::GnollHackClient.Droid.Resource.Style.Platform_MaterialComponents_Light;
+			global::MarcTron.Plugin.Resource.Style.Platform_MaterialComponents_Light_Dialog = global::GnollHackClient.Droid.Resource.Style.Platform_MaterialComponents_Light_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Platform_ThemeOverlay_AppCompat = global::GnollHackClient.Droid.Resource.Style.Platform_ThemeOverlay_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Platform_ThemeOverlay_AppCompat_Dark = global::GnollHackClient.Droid.Resource.Style.Platform_ThemeOverlay_AppCompat_Dark;
+			global::MarcTron.Plugin.Resource.Style.Platform_ThemeOverlay_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Platform_ThemeOverlay_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Platform_V21_AppCompat = global::GnollHackClient.Droid.Resource.Style.Platform_V21_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Platform_V21_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Platform_V21_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Platform_V25_AppCompat = global::GnollHackClient.Droid.Resource.Style.Platform_V25_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Platform_V25_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Platform_V25_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Platform_Widget_AppCompat_Spinner = global::GnollHackClient.Droid.Resource.Style.Platform_Widget_AppCompat_Spinner;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_DialogWindowTitle_AppCompat = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_DialogWindowTitle_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_ActionBar_TitleItem = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_ActionBar_TitleItem;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_DialogTitle_Icon = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_DialogTitle_Icon;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_PopupMenuItem = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_PopupMenuItem;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_PopupMenuItem_InternalGroup = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_PopupMenuItem_InternalGroup;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_PopupMenuItem_Shortcut = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_PopupMenuItem_Shortcut;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_PopupMenuItem_SubmenuArrow = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_PopupMenuItem_SubmenuArrow;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_PopupMenuItem_Text = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_PopupMenuItem_Text;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_PopupMenuItem_Title = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_PopupMenuItem_Title;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_SearchView_MagIcon = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_SearchView_MagIcon;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_Search_DropDown = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_Search_DropDown;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_Search_DropDown_Icon1 = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_Search_DropDown_Icon1;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_Search_DropDown_Icon2 = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_Search_DropDown_Icon2;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_Search_DropDown_Query = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_Search_DropDown_Query;
+			global::MarcTron.Plugin.Resource.Style.RtlOverlay_Widget_AppCompat_Search_DropDown_Text = global::GnollHackClient.Droid.Resource.Style.RtlOverlay_Widget_AppCompat_Search_DropDown_Text;
+			global::MarcTron.Plugin.Resource.Style.RtlUnderlay_Widget_AppCompat_ActionButton = global::GnollHackClient.Droid.Resource.Style.RtlUnderlay_Widget_AppCompat_ActionButton;
+			global::MarcTron.Plugin.Resource.Style.RtlUnderlay_Widget_AppCompat_ActionButton_Overflow = global::GnollHackClient.Droid.Resource.Style.RtlUnderlay_Widget_AppCompat_ActionButton_Overflow;
+			global::MarcTron.Plugin.Resource.Style.scrollViewScrollBars = global::GnollHackClient.Droid.Resource.Style.scrollViewScrollBars;
+			global::MarcTron.Plugin.Resource.Style.scrollViewTheme = global::GnollHackClient.Droid.Resource.Style.scrollViewTheme;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_BottomLeftDifferentCornerSize = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_BottomLeftDifferentCornerSize;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_BottomRightCut = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_BottomRightCut;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_Cut = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_Cut;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_DifferentCornerSize = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_DifferentCornerSize;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_BottomSheet = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_BottomSheet;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_Chip = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_Chip;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_ExtendedFloatingActionButton = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_ExtendedFloatingActionButton;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_FloatingActionButton = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_FloatingActionButton;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Day = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Day;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Window_Fullscreen = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Window_Fullscreen;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Year = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Year;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_TextInputLayout_FilledBox = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_MaterialComponents_TextInputLayout_FilledBox;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_TopLeftCut = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_TopLeftCut;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearanceOverlay_TopRightDifferentCornerSize = global::GnollHackClient.Droid.Resource.Style.ShapeAppearanceOverlay_TopRightDifferentCornerSize;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearance_MaterialComponents = global::GnollHackClient.Droid.Resource.Style.ShapeAppearance_MaterialComponents;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearance_MaterialComponents_LargeComponent = global::GnollHackClient.Droid.Resource.Style.ShapeAppearance_MaterialComponents_LargeComponent;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearance_MaterialComponents_MediumComponent = global::GnollHackClient.Droid.Resource.Style.ShapeAppearance_MaterialComponents_MediumComponent;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearance_MaterialComponents_SmallComponent = global::GnollHackClient.Droid.Resource.Style.ShapeAppearance_MaterialComponents_SmallComponent;
+			global::MarcTron.Plugin.Resource.Style.ShapeAppearance_MaterialComponents_Test = global::GnollHackClient.Droid.Resource.Style.ShapeAppearance_MaterialComponents_Test;
+			global::MarcTron.Plugin.Resource.Style.TestStyleWithLineHeight = global::GnollHackClient.Droid.Resource.Style.TestStyleWithLineHeight;
+			global::MarcTron.Plugin.Resource.Style.TestStyleWithLineHeightAppearance = global::GnollHackClient.Droid.Resource.Style.TestStyleWithLineHeightAppearance;
+			global::MarcTron.Plugin.Resource.Style.TestStyleWithoutLineHeight = global::GnollHackClient.Droid.Resource.Style.TestStyleWithoutLineHeight;
+			global::MarcTron.Plugin.Resource.Style.TestStyleWithThemeLineHeightAttribute = global::GnollHackClient.Droid.Resource.Style.TestStyleWithThemeLineHeightAttribute;
+			global::MarcTron.Plugin.Resource.Style.TestThemeWithLineHeight = global::GnollHackClient.Droid.Resource.Style.TestThemeWithLineHeight;
+			global::MarcTron.Plugin.Resource.Style.TestThemeWithLineHeightDisabled = global::GnollHackClient.Droid.Resource.Style.TestThemeWithLineHeightDisabled;
+			global::MarcTron.Plugin.Resource.Style.Test_ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Day = global::GnollHackClient.Droid.Resource.Style.Test_ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Day;
+			global::MarcTron.Plugin.Resource.Style.Test_Theme_MaterialComponents_MaterialCalendar = global::GnollHackClient.Droid.Resource.Style.Test_Theme_MaterialComponents_MaterialCalendar;
+			global::MarcTron.Plugin.Resource.Style.Test_Widget_MaterialComponents_MaterialCalendar = global::GnollHackClient.Droid.Resource.Style.Test_Widget_MaterialComponents_MaterialCalendar;
+			global::MarcTron.Plugin.Resource.Style.Test_Widget_MaterialComponents_MaterialCalendar_Day = global::GnollHackClient.Droid.Resource.Style.Test_Widget_MaterialComponents_MaterialCalendar_Day;
+			global::MarcTron.Plugin.Resource.Style.Test_Widget_MaterialComponents_MaterialCalendar_Day_Selected = global::GnollHackClient.Droid.Resource.Style.Test_Widget_MaterialComponents_MaterialCalendar_Day_Selected;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Body1 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Body1;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Body2 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Body2;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Button = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Button;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Caption = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Caption;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Display1 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Display1;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Display2 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Display2;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Display3 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Display3;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Display4 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Display4;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Headline = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Headline;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Inverse = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Inverse;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Large = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Large;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Large_Inverse = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Large_Inverse;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Light_SearchResult_Subtitle = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Light_SearchResult_Subtitle;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Light_SearchResult_Title = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Light_SearchResult_Title;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Light_Widget_PopupMenu_Large = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Light_Widget_PopupMenu_Large;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Light_Widget_PopupMenu_Small = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Light_Widget_PopupMenu_Small;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Medium = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Medium;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Medium_Inverse = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Medium_Inverse;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Menu = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Menu;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_SearchResult_Subtitle = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_SearchResult_Subtitle;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_SearchResult_Title = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_SearchResult_Title;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Small = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Small;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Small_Inverse = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Small_Inverse;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Subhead = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Subhead;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Subhead_Inverse = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Subhead_Inverse;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Title = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Title;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Title_Inverse = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Title_Inverse;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Tooltip = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Tooltip;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_ActionBar_Menu = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_ActionBar_Menu;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_ActionBar_Subtitle = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_ActionBar_Subtitle;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_ActionBar_Subtitle_Inverse = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_ActionBar_Subtitle_Inverse;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_ActionBar_Title = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_ActionBar_Title;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_ActionBar_Title_Inverse = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_ActionBar_Title_Inverse;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_ActionMode_Subtitle = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_ActionMode_Subtitle;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_ActionMode_Subtitle_Inverse = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_ActionMode_Subtitle_Inverse;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_ActionMode_Title = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_ActionMode_Title;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_ActionMode_Title_Inverse = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_ActionMode_Title_Inverse;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_Button = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_Button;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_Button_Borderless_Colored = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_Button_Borderless_Colored;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_Button_Colored = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_Button_Colored;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_Button_Inverse = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_Button_Inverse;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_DropDownItem = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_DropDownItem;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_PopupMenu_Header = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_PopupMenu_Header;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_PopupMenu_Large = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_PopupMenu_Large;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_PopupMenu_Small = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_PopupMenu_Small;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_Switch = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_Switch;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_AppCompat_Widget_TextView_SpinnerItem = global::GnollHackClient.Droid.Resource.Style.TextAppearance_AppCompat_Widget_TextView_SpinnerItem;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Compat_Notification = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Compat_Notification;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Compat_Notification_Info = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Compat_Notification_Info;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Compat_Notification_Info_Media = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Compat_Notification_Info_Media;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Compat_Notification_Line2 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Compat_Notification_Line2;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Compat_Notification_Line2_Media = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Compat_Notification_Line2_Media;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Compat_Notification_Media = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Compat_Notification_Media;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Compat_Notification_Time = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Compat_Notification_Time;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Compat_Notification_Time_Media = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Compat_Notification_Time_Media;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Compat_Notification_Title = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Compat_Notification_Title;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Compat_Notification_Title_Media = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Compat_Notification_Title_Media;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Design_CollapsingToolbar_Expanded = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Design_CollapsingToolbar_Expanded;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Design_Counter = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Design_Counter;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Design_Counter_Overflow = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Design_Counter_Overflow;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Design_Error = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Design_Error;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Design_HelperText = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Design_HelperText;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Design_Hint = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Design_Hint;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Design_Snackbar_Message = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Design_Snackbar_Message;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Design_Tab = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Design_Tab;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Badge = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Badge;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Body1 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Body1;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Body2 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Body2;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Button = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Button;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Caption = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Caption;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Chip = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Chip;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Headline1 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Headline1;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Headline2 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Headline2;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Headline3 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Headline3;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Headline4 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Headline4;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Headline5 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Headline5;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Headline6 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Headline6;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Overline = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Overline;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Subtitle1 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Subtitle1;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_MaterialComponents_Subtitle2 = global::GnollHackClient.Droid.Resource.Style.TextAppearance_MaterialComponents_Subtitle2;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Widget_AppCompat_ExpandedMenu_Item = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Widget_AppCompat_ExpandedMenu_Item;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Widget_AppCompat_Toolbar_Subtitle = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Widget_AppCompat_Toolbar_Subtitle;
+			global::MarcTron.Plugin.Resource.Style.TextAppearance_Widget_AppCompat_Toolbar_Title = global::GnollHackClient.Droid.Resource.Style.TextAppearance_Widget_AppCompat_Toolbar_Title;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_AppCompat = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_AppCompat_ActionBar = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_AppCompat_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_AppCompat_Dark = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_AppCompat_Dark;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_AppCompat_Dark_ActionBar = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_AppCompat_Dark_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_AppCompat_DayNight = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_AppCompat_DayNight;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_AppCompat_DayNight_ActionBar = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_AppCompat_DayNight_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_AppCompat_Dialog = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_AppCompat_Dialog;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_AppCompat_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_AppCompat_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_Design_TextInputEditText = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_Design_TextInputEditText;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_ActionBar = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_ActionBar_Primary = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_ActionBar_Primary;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_ActionBar_Surface = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_ActionBar_Surface;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_AutoCompleteTextView = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_AutoCompleteTextView;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_AutoCompleteTextView_FilledBox = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_AutoCompleteTextView_FilledBox;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_AutoCompleteTextView_FilledBox_Dense = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_AutoCompleteTextView_FilledBox_Dense;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_AutoCompleteTextView_OutlinedBox = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_AutoCompleteTextView_OutlinedBox;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_AutoCompleteTextView_OutlinedBox_Dense = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_AutoCompleteTextView_OutlinedBox_Dense;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_BottomAppBar_Primary = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_BottomAppBar_Primary;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_BottomAppBar_Surface = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_BottomAppBar_Surface;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_BottomSheetDialog = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_BottomSheetDialog;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_Dark = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_Dark;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_Dark_ActionBar = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_Dark_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_DayNight_BottomSheetDialog = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_DayNight_BottomSheetDialog;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_Dialog = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_Dialog;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_Light = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_Light;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_Light_BottomSheetDialog = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_Light_BottomSheetDialog;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Centered = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Centered;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Calendar = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Calendar;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Header_Text = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Header_Text;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Header_Text_Day = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Header_Text_Day;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Spinner = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Spinner;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_MaterialCalendar = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_MaterialCalendar;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_MaterialCalendar_Fullscreen = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_MaterialCalendar_Fullscreen;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_TextInputEditText = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_TextInputEditText;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_TextInputEditText_FilledBox = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_TextInputEditText_FilledBox;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_TextInputEditText_FilledBox_Dense = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_TextInputEditText_FilledBox_Dense;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_TextInputEditText_OutlinedBox = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_TextInputEditText_OutlinedBox;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_TextInputEditText_OutlinedBox_Dense = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_TextInputEditText_OutlinedBox_Dense;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_Toolbar_Primary = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_Toolbar_Primary;
+			global::MarcTron.Plugin.Resource.Style.ThemeOverlay_MaterialComponents_Toolbar_Surface = global::GnollHackClient.Droid.Resource.Style.ThemeOverlay_MaterialComponents_Toolbar_Surface;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_CompactMenu = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_CompactMenu;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_DayNight = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_DayNight;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_DayNight_DarkActionBar = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_DayNight_DarkActionBar;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_DayNight_Dialog = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_DayNight_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_DayNight_DialogWhenLarge = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_DayNight_DialogWhenLarge;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_DayNight_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_DayNight_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_DayNight_Dialog_MinWidth = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_DayNight_Dialog_MinWidth;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_DayNight_NoActionBar = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_DayNight_NoActionBar;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_Dialog = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_DialogWhenLarge = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_DialogWhenLarge;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_Dialog_MinWidth = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_Dialog_MinWidth;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_Empty = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_Empty;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_Light = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_Light;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_Light_DarkActionBar = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_Light_DarkActionBar;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_Light_Dialog = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_Light_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_Light_DialogWhenLarge = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_Light_DialogWhenLarge;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_Light_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_Light_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_Light_Dialog_MinWidth = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_Light_Dialog_MinWidth;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_Light_NoActionBar = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_Light_NoActionBar;
+			global::MarcTron.Plugin.Resource.Style.Theme_AppCompat_NoActionBar = global::GnollHackClient.Droid.Resource.Style.Theme_AppCompat_NoActionBar;
+			global::MarcTron.Plugin.Resource.Style.Theme_Design = global::GnollHackClient.Droid.Resource.Style.Theme_Design;
+			global::MarcTron.Plugin.Resource.Style.Theme_Design_BottomSheetDialog = global::GnollHackClient.Droid.Resource.Style.Theme_Design_BottomSheetDialog;
+			global::MarcTron.Plugin.Resource.Style.Theme_Design_Light = global::GnollHackClient.Droid.Resource.Style.Theme_Design_Light;
+			global::MarcTron.Plugin.Resource.Style.Theme_Design_Light_BottomSheetDialog = global::GnollHackClient.Droid.Resource.Style.Theme_Design_Light_BottomSheetDialog;
+			global::MarcTron.Plugin.Resource.Style.Theme_Design_Light_NoActionBar = global::GnollHackClient.Droid.Resource.Style.Theme_Design_Light_NoActionBar;
+			global::MarcTron.Plugin.Resource.Style.Theme_Design_NoActionBar = global::GnollHackClient.Droid.Resource.Style.Theme_Design_NoActionBar;
+			global::MarcTron.Plugin.Resource.Style.Theme_IAPTheme = global::GnollHackClient.Droid.Resource.Style.Theme_IAPTheme;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_BottomSheetDialog = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_BottomSheetDialog;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_CompactMenu = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_CompactMenu;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_BottomSheetDialog = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_BottomSheetDialog;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_DarkActionBar = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_DarkActionBar;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_DarkActionBar_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_DarkActionBar_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_Dialog = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_DialogWhenLarge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_DialogWhenLarge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_Alert_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_Alert_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_FixedSize = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_FixedSize;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_FixedSize_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_FixedSize_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_MinWidth = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_MinWidth;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_MinWidth_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_Dialog_MinWidth_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_NoActionBar = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_NoActionBar;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DayNight_NoActionBar_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DayNight_NoActionBar_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Dialog = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_DialogWhenLarge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_DialogWhenLarge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Dialog_Alert_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Dialog_Alert_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Dialog_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Dialog_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Dialog_FixedSize = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Dialog_FixedSize;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Dialog_FixedSize_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Dialog_FixedSize_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Dialog_MinWidth = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Dialog_MinWidth;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Dialog_MinWidth_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Dialog_MinWidth_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_BarSize = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_BarSize;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_BottomSheetDialog = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_BottomSheetDialog;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_DarkActionBar = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_DarkActionBar;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_DarkActionBar_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_DarkActionBar_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_Dialog = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_DialogWhenLarge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_DialogWhenLarge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_Dialog_Alert = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_Dialog_Alert;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_Dialog_Alert_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_Dialog_Alert_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_Dialog_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_Dialog_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_Dialog_FixedSize = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_Dialog_FixedSize;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_Dialog_FixedSize_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_Dialog_FixedSize_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_Dialog_MinWidth = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_Dialog_MinWidth;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_Dialog_MinWidth_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_Dialog_MinWidth_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_LargeTouch = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_LargeTouch;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_NoActionBar = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_NoActionBar;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_Light_NoActionBar_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_Light_NoActionBar_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_NoActionBar = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_NoActionBar;
+			global::MarcTron.Plugin.Resource.Style.Theme_MaterialComponents_NoActionBar_Bridge = global::GnollHackClient.Droid.Resource.Style.Theme_MaterialComponents_NoActionBar_Bridge;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ActionBar = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ActionBar_Solid = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ActionBar_Solid;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ActionBar_TabBar = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ActionBar_TabBar;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ActionBar_TabText = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ActionBar_TabText;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ActionBar_TabView = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ActionBar_TabView;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ActionButton = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ActionButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ActionButton_CloseMode = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ActionButton_CloseMode;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ActionButton_Overflow = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ActionButton_Overflow;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ActionMode = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ActionMode;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ActivityChooserView = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ActivityChooserView;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_AutoCompleteTextView = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_AutoCompleteTextView;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Button = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Button;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ButtonBar = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ButtonBar;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ButtonBar_AlertDialog = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ButtonBar_AlertDialog;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Button_Borderless = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Button_Borderless;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Button_Borderless_Colored = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Button_Borderless_Colored;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Button_ButtonBar_AlertDialog = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Button_ButtonBar_AlertDialog;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Button_Colored = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Button_Colored;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Button_Small = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Button_Small;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_CompoundButton_CheckBox = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_CompoundButton_CheckBox;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_CompoundButton_RadioButton = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_CompoundButton_RadioButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_CompoundButton_Switch = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_CompoundButton_Switch;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_DrawerArrowToggle = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_DrawerArrowToggle;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_DropDownItem_Spinner = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_DropDownItem_Spinner;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_EditText = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_EditText;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ImageButton = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ImageButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionBar = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionBar_Solid = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionBar_Solid;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionBar_Solid_Inverse = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionBar_Solid_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionBar_TabBar = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionBar_TabBar;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionBar_TabBar_Inverse = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionBar_TabBar_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionBar_TabText = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionBar_TabText;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionBar_TabText_Inverse = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionBar_TabText_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionBar_TabView = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionBar_TabView;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionBar_TabView_Inverse = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionBar_TabView_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionButton = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionButton_CloseMode = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionButton_CloseMode;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionButton_Overflow = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionButton_Overflow;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActionMode_Inverse = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActionMode_Inverse;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ActivityChooserView = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ActivityChooserView;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_AutoCompleteTextView = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_AutoCompleteTextView;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_DropDownItem_Spinner = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_DropDownItem_Spinner;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ListPopupWindow = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ListPopupWindow;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_ListView_DropDown = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_ListView_DropDown;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_PopupMenu = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_PopupMenu;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_PopupMenu_Overflow = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_PopupMenu_Overflow;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_SearchView = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_SearchView;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Light_Spinner_DropDown_ActionBar = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Light_Spinner_DropDown_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ListMenuView = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ListMenuView;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ListPopupWindow = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ListPopupWindow;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ListView = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ListView;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ListView_DropDown = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ListView_DropDown;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ListView_Menu = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ListView_Menu;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_PopupMenu = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_PopupMenu;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_PopupMenu_Overflow = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_PopupMenu_Overflow;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_PopupWindow = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_PopupWindow;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ProgressBar = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ProgressBar;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_ProgressBar_Horizontal = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_ProgressBar_Horizontal;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_RatingBar = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_RatingBar;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_RatingBar_Indicator = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_RatingBar_Indicator;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_RatingBar_Small = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_RatingBar_Small;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_SearchView = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_SearchView;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_SearchView_ActionBar = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_SearchView_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_SeekBar = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_SeekBar;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_SeekBar_Discrete = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_SeekBar_Discrete;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Spinner = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Spinner;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Spinner_DropDown = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Spinner_DropDown;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Spinner_DropDown_ActionBar = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Spinner_DropDown_ActionBar;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Spinner_Underlined = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Spinner_Underlined;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_TextView = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_TextView;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_TextView_SpinnerItem = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_TextView_SpinnerItem;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Toolbar = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Toolbar;
+			global::MarcTron.Plugin.Resource.Style.Widget_AppCompat_Toolbar_Button_Navigation = global::GnollHackClient.Droid.Resource.Style.Widget_AppCompat_Toolbar_Button_Navigation;
+			global::MarcTron.Plugin.Resource.Style.Widget_Compat_NotificationActionContainer = global::GnollHackClient.Droid.Resource.Style.Widget_Compat_NotificationActionContainer;
+			global::MarcTron.Plugin.Resource.Style.Widget_Compat_NotificationActionText = global::GnollHackClient.Droid.Resource.Style.Widget_Compat_NotificationActionText;
+			global::MarcTron.Plugin.Resource.Style.Widget_Design_AppBarLayout = global::GnollHackClient.Droid.Resource.Style.Widget_Design_AppBarLayout;
+			global::MarcTron.Plugin.Resource.Style.Widget_Design_BottomNavigationView = global::GnollHackClient.Droid.Resource.Style.Widget_Design_BottomNavigationView;
+			global::MarcTron.Plugin.Resource.Style.Widget_Design_BottomSheet_Modal = global::GnollHackClient.Droid.Resource.Style.Widget_Design_BottomSheet_Modal;
+			global::MarcTron.Plugin.Resource.Style.Widget_Design_CollapsingToolbar = global::GnollHackClient.Droid.Resource.Style.Widget_Design_CollapsingToolbar;
+			global::MarcTron.Plugin.Resource.Style.Widget_Design_FloatingActionButton = global::GnollHackClient.Droid.Resource.Style.Widget_Design_FloatingActionButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_Design_NavigationView = global::GnollHackClient.Droid.Resource.Style.Widget_Design_NavigationView;
+			global::MarcTron.Plugin.Resource.Style.Widget_Design_ScrimInsetsFrameLayout = global::GnollHackClient.Droid.Resource.Style.Widget_Design_ScrimInsetsFrameLayout;
+			global::MarcTron.Plugin.Resource.Style.Widget_Design_Snackbar = global::GnollHackClient.Droid.Resource.Style.Widget_Design_Snackbar;
+			global::MarcTron.Plugin.Resource.Style.Widget_Design_TabLayout = global::GnollHackClient.Droid.Resource.Style.Widget_Design_TabLayout;
+			global::MarcTron.Plugin.Resource.Style.Widget_Design_TextInputLayout = global::GnollHackClient.Droid.Resource.Style.Widget_Design_TextInputLayout;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_ActionBar_Primary = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_ActionBar_Primary;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_ActionBar_PrimarySurface = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_ActionBar_PrimarySurface;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_ActionBar_Solid = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_ActionBar_Solid;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_ActionBar_Surface = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_ActionBar_Surface;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_AppBarLayout_Primary = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_AppBarLayout_Primary;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_AppBarLayout_PrimarySurface = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_AppBarLayout_PrimarySurface;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_AppBarLayout_Surface = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_AppBarLayout_Surface;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_AutoCompleteTextView_FilledBox = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_AutoCompleteTextView_FilledBox;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_AutoCompleteTextView_FilledBox_Dense = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_AutoCompleteTextView_FilledBox_Dense;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_AutoCompleteTextView_OutlinedBox = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_AutoCompleteTextView_OutlinedBox;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_AutoCompleteTextView_OutlinedBox_Dense = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_AutoCompleteTextView_OutlinedBox_Dense;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Badge = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Badge;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_BottomAppBar = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_BottomAppBar;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_BottomAppBar_Colored = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_BottomAppBar_Colored;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_BottomAppBar_PrimarySurface = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_BottomAppBar_PrimarySurface;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_BottomNavigationView = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_BottomNavigationView;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_BottomNavigationView_Colored = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_BottomNavigationView_Colored;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_BottomNavigationView_PrimarySurface = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_BottomNavigationView_PrimarySurface;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_BottomSheet = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_BottomSheet;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_BottomSheet_Modal = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_BottomSheet_Modal;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Button = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Button;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Button_Icon = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Button_Icon;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Button_OutlinedButton = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Button_OutlinedButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Button_OutlinedButton_Icon = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Button_OutlinedButton_Icon;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Button_TextButton = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Button_TextButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Button_TextButton_Dialog = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Button_TextButton_Dialog;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Button_TextButton_Dialog_Flush = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Button_TextButton_Dialog_Flush;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Button_TextButton_Dialog_Icon = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Button_TextButton_Dialog_Icon;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Button_TextButton_Icon = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Button_TextButton_Icon;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Button_TextButton_Snackbar = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Button_TextButton_Snackbar;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Button_UnelevatedButton = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Button_UnelevatedButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Button_UnelevatedButton_Icon = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Button_UnelevatedButton_Icon;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_CardView = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_CardView;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_CheckedTextView = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_CheckedTextView;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_ChipGroup = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_ChipGroup;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Chip_Action = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Chip_Action;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Chip_Choice = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Chip_Choice;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Chip_Entry = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Chip_Entry;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Chip_Filter = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Chip_Filter;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_CompoundButton_CheckBox = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_CompoundButton_CheckBox;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_CompoundButton_RadioButton = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_CompoundButton_RadioButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_CompoundButton_Switch = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_CompoundButton_Switch;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_ExtendedFloatingActionButton = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_ExtendedFloatingActionButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_ExtendedFloatingActionButton_Icon = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_ExtendedFloatingActionButton_Icon;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_FloatingActionButton = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_FloatingActionButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Light_ActionBar_Solid = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Light_ActionBar_Solid;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialButtonToggleGroup = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialButtonToggleGroup;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Day = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Day;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_DayTextView = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_DayTextView;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Day_Invalid = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Day_Invalid;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Day_Selected = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Day_Selected;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Day_Today = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Day_Today;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Fullscreen = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Fullscreen;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderConfirmButton = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderConfirmButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderDivider = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderDivider;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderLayout = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderLayout;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderSelection = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderSelection;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderSelection_Fullscreen = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderSelection_Fullscreen;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderTitle = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderTitle;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderToggleButton = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_HeaderToggleButton;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Item = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Item;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Year = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Year;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Year_Selected = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Year_Selected;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Year_Today = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_MaterialCalendar_Year_Today;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_NavigationView = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_NavigationView;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_PopupMenu = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_PopupMenu;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_PopupMenu_ContextMenu = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_PopupMenu_ContextMenu;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_PopupMenu_ListPopupWindow = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_PopupMenu_ListPopupWindow;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_PopupMenu_Overflow = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_PopupMenu_Overflow;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Snackbar = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Snackbar;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Snackbar_FullWidth = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Snackbar_FullWidth;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TabLayout = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TabLayout;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TabLayout_Colored = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TabLayout_Colored;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TabLayout_PrimarySurface = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TabLayout_PrimarySurface;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextInputEditText_FilledBox = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextInputEditText_FilledBox;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextInputEditText_FilledBox_Dense = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextInputEditText_FilledBox_Dense;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextInputEditText_OutlinedBox = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextInputEditText_OutlinedBox;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextInputEditText_OutlinedBox_Dense = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextInputEditText_OutlinedBox_Dense;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextInputLayout_FilledBox = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextInputLayout_FilledBox;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextInputLayout_FilledBox_Dense = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextInputLayout_FilledBox_Dense;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextInputLayout_FilledBox_Dense_ExposedDropdownMenu = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextInputLayout_FilledBox_Dense_ExposedDropdownMenu;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextInputLayout_FilledBox_ExposedDropdownMenu = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextInputLayout_FilledBox_ExposedDropdownMenu;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextInputLayout_OutlinedBox = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextInputLayout_OutlinedBox;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense_ExposedDropdownMenu = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense_ExposedDropdownMenu;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextInputLayout_OutlinedBox_ExposedDropdownMenu = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextInputLayout_OutlinedBox_ExposedDropdownMenu;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_TextView = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_TextView;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Toolbar = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Toolbar;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Toolbar_Primary = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Toolbar_Primary;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Toolbar_PrimarySurface = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Toolbar_PrimarySurface;
+			global::MarcTron.Plugin.Resource.Style.Widget_MaterialComponents_Toolbar_Surface = global::GnollHackClient.Droid.Resource.Style.Widget_MaterialComponents_Toolbar_Surface;
+			global::MarcTron.Plugin.Resource.Style.Widget_Support_CoordinatorLayout = global::GnollHackClient.Droid.Resource.Style.Widget_Support_CoordinatorLayout;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar = global::GnollHackClient.Droid.Resource.Styleable.ActionBar;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBarLayout = global::GnollHackClient.Droid.Resource.Styleable.ActionBarLayout;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBarLayout_android_layout_gravity = global::GnollHackClient.Droid.Resource.Styleable.ActionBarLayout_android_layout_gravity;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_background = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_background;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_backgroundSplit = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_backgroundSplit;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_backgroundStacked = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_backgroundStacked;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_contentInsetEnd = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_contentInsetEnd;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_contentInsetEndWithActions = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_contentInsetEndWithActions;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_contentInsetLeft = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_contentInsetLeft;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_contentInsetRight = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_contentInsetRight;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_contentInsetStart = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_contentInsetStart;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_contentInsetStartWithNavigation = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_contentInsetStartWithNavigation;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_customNavigationLayout = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_customNavigationLayout;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_displayOptions = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_displayOptions;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_divider = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_divider;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_elevation = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_elevation;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_height = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_height;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_hideOnContentScroll = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_hideOnContentScroll;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_homeAsUpIndicator = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_homeAsUpIndicator;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_homeLayout = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_homeLayout;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_icon = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_icon;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_indeterminateProgressStyle = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_indeterminateProgressStyle;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_itemPadding = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_itemPadding;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_logo = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_logo;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_navigationMode = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_navigationMode;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_popupTheme = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_popupTheme;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_progressBarPadding = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_progressBarPadding;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_progressBarStyle = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_progressBarStyle;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_subtitle = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_subtitle;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_subtitleTextStyle = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_subtitleTextStyle;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_title = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_title;
+			global::MarcTron.Plugin.Resource.Styleable.ActionBar_titleTextStyle = global::GnollHackClient.Droid.Resource.Styleable.ActionBar_titleTextStyle;
+			global::MarcTron.Plugin.Resource.Styleable.ActionMenuItemView = global::GnollHackClient.Droid.Resource.Styleable.ActionMenuItemView;
+			global::MarcTron.Plugin.Resource.Styleable.ActionMenuItemView_android_minWidth = global::GnollHackClient.Droid.Resource.Styleable.ActionMenuItemView_android_minWidth;
+			global::MarcTron.Plugin.Resource.Styleable.ActionMenuView = global::GnollHackClient.Droid.Resource.Styleable.ActionMenuView;
+			global::MarcTron.Plugin.Resource.Styleable.ActionMode = global::GnollHackClient.Droid.Resource.Styleable.ActionMode;
+			global::MarcTron.Plugin.Resource.Styleable.ActionMode_background = global::GnollHackClient.Droid.Resource.Styleable.ActionMode_background;
+			global::MarcTron.Plugin.Resource.Styleable.ActionMode_backgroundSplit = global::GnollHackClient.Droid.Resource.Styleable.ActionMode_backgroundSplit;
+			global::MarcTron.Plugin.Resource.Styleable.ActionMode_closeItemLayout = global::GnollHackClient.Droid.Resource.Styleable.ActionMode_closeItemLayout;
+			global::MarcTron.Plugin.Resource.Styleable.ActionMode_height = global::GnollHackClient.Droid.Resource.Styleable.ActionMode_height;
+			global::MarcTron.Plugin.Resource.Styleable.ActionMode_subtitleTextStyle = global::GnollHackClient.Droid.Resource.Styleable.ActionMode_subtitleTextStyle;
+			global::MarcTron.Plugin.Resource.Styleable.ActionMode_titleTextStyle = global::GnollHackClient.Droid.Resource.Styleable.ActionMode_titleTextStyle;
+			global::MarcTron.Plugin.Resource.Styleable.ActivityChooserView = global::GnollHackClient.Droid.Resource.Styleable.ActivityChooserView;
+			global::MarcTron.Plugin.Resource.Styleable.ActivityChooserView_expandActivityOverflowButtonDrawable = global::GnollHackClient.Droid.Resource.Styleable.ActivityChooserView_expandActivityOverflowButtonDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.ActivityChooserView_initialActivityCount = global::GnollHackClient.Droid.Resource.Styleable.ActivityChooserView_initialActivityCount;
+			global::MarcTron.Plugin.Resource.Styleable.AdsAttrs = global::GnollHackClient.Droid.Resource.Styleable.AdsAttrs;
+			global::MarcTron.Plugin.Resource.Styleable.AdsAttrs_adSize = global::GnollHackClient.Droid.Resource.Styleable.AdsAttrs_adSize;
+			global::MarcTron.Plugin.Resource.Styleable.AdsAttrs_adSizes = global::GnollHackClient.Droid.Resource.Styleable.AdsAttrs_adSizes;
+			global::MarcTron.Plugin.Resource.Styleable.AdsAttrs_adUnitId = global::GnollHackClient.Droid.Resource.Styleable.AdsAttrs_adUnitId;
+			global::MarcTron.Plugin.Resource.Styleable.AlertDialog = global::GnollHackClient.Droid.Resource.Styleable.AlertDialog;
+			global::MarcTron.Plugin.Resource.Styleable.AlertDialog_android_layout = global::GnollHackClient.Droid.Resource.Styleable.AlertDialog_android_layout;
+			global::MarcTron.Plugin.Resource.Styleable.AlertDialog_buttonIconDimen = global::GnollHackClient.Droid.Resource.Styleable.AlertDialog_buttonIconDimen;
+			global::MarcTron.Plugin.Resource.Styleable.AlertDialog_buttonPanelSideLayout = global::GnollHackClient.Droid.Resource.Styleable.AlertDialog_buttonPanelSideLayout;
+			global::MarcTron.Plugin.Resource.Styleable.AlertDialog_listItemLayout = global::GnollHackClient.Droid.Resource.Styleable.AlertDialog_listItemLayout;
+			global::MarcTron.Plugin.Resource.Styleable.AlertDialog_listLayout = global::GnollHackClient.Droid.Resource.Styleable.AlertDialog_listLayout;
+			global::MarcTron.Plugin.Resource.Styleable.AlertDialog_multiChoiceItemLayout = global::GnollHackClient.Droid.Resource.Styleable.AlertDialog_multiChoiceItemLayout;
+			global::MarcTron.Plugin.Resource.Styleable.AlertDialog_showTitle = global::GnollHackClient.Droid.Resource.Styleable.AlertDialog_showTitle;
+			global::MarcTron.Plugin.Resource.Styleable.AlertDialog_singleChoiceItemLayout = global::GnollHackClient.Droid.Resource.Styleable.AlertDialog_singleChoiceItemLayout;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableCompat = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableCompat;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableCompat_android_constantSize = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableCompat_android_constantSize;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableCompat_android_dither = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableCompat_android_dither;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableCompat_android_enterFadeDuration = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableCompat_android_enterFadeDuration;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableCompat_android_exitFadeDuration = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableCompat_android_exitFadeDuration;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableCompat_android_variablePadding = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableCompat_android_variablePadding;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableCompat_android_visible = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableCompat_android_visible;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableItem = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableItem;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableItem_android_drawable = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableItem_android_drawable;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableItem_android_id = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableItem_android_id;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableTransition = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableTransition;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableTransition_android_drawable = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableTransition_android_drawable;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableTransition_android_fromId = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableTransition_android_fromId;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableTransition_android_reversible = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableTransition_android_reversible;
+			global::MarcTron.Plugin.Resource.Styleable.AnimatedStateListDrawableTransition_android_toId = global::GnollHackClient.Droid.Resource.Styleable.AnimatedStateListDrawableTransition_android_toId;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayout = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayout;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayoutStates = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayoutStates;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayoutStates_state_collapsed = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayoutStates_state_collapsed;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayoutStates_state_collapsible = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayoutStates_state_collapsible;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayoutStates_state_liftable = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayoutStates_state_liftable;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayoutStates_state_lifted = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayoutStates_state_lifted;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayout_android_background = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayout_android_background;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayout_android_keyboardNavigationCluster = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayout_android_keyboardNavigationCluster;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayout_android_touchscreenBlocksFocus = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayout_android_touchscreenBlocksFocus;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayout_elevation = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayout_elevation;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayout_expanded = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayout_expanded;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayout_Layout = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayout_Layout;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayout_Layout_layout_scrollFlags = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayout_Layout_layout_scrollFlags;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayout_Layout_layout_scrollInterpolator = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayout_Layout_layout_scrollInterpolator;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayout_liftOnScroll = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayout_liftOnScroll;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayout_liftOnScrollTargetViewId = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayout_liftOnScrollTargetViewId;
+			global::MarcTron.Plugin.Resource.Styleable.AppBarLayout_statusBarForeground = global::GnollHackClient.Droid.Resource.Styleable.AppBarLayout_statusBarForeground;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatImageView = global::GnollHackClient.Droid.Resource.Styleable.AppCompatImageView;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatImageView_android_src = global::GnollHackClient.Droid.Resource.Styleable.AppCompatImageView_android_src;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatImageView_srcCompat = global::GnollHackClient.Droid.Resource.Styleable.AppCompatImageView_srcCompat;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatImageView_tint = global::GnollHackClient.Droid.Resource.Styleable.AppCompatImageView_tint;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatImageView_tintMode = global::GnollHackClient.Droid.Resource.Styleable.AppCompatImageView_tintMode;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatSeekBar = global::GnollHackClient.Droid.Resource.Styleable.AppCompatSeekBar;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatSeekBar_android_thumb = global::GnollHackClient.Droid.Resource.Styleable.AppCompatSeekBar_android_thumb;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatSeekBar_tickMark = global::GnollHackClient.Droid.Resource.Styleable.AppCompatSeekBar_tickMark;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatSeekBar_tickMarkTint = global::GnollHackClient.Droid.Resource.Styleable.AppCompatSeekBar_tickMarkTint;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatSeekBar_tickMarkTintMode = global::GnollHackClient.Droid.Resource.Styleable.AppCompatSeekBar_tickMarkTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextHelper = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextHelper;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextHelper_android_drawableBottom = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextHelper_android_drawableBottom;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextHelper_android_drawableEnd = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextHelper_android_drawableEnd;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextHelper_android_drawableLeft = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextHelper_android_drawableLeft;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextHelper_android_drawableRight = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextHelper_android_drawableRight;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextHelper_android_drawableStart = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextHelper_android_drawableStart;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextHelper_android_drawableTop = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextHelper_android_drawableTop;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextHelper_android_textAppearance = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextHelper_android_textAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_android_textAppearance = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_android_textAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_autoSizeMaxTextSize = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_autoSizeMaxTextSize;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_autoSizeMinTextSize = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_autoSizeMinTextSize;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_autoSizePresetSizes = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_autoSizePresetSizes;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_autoSizeStepGranularity = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_autoSizeStepGranularity;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_autoSizeTextType = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_autoSizeTextType;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_drawableBottomCompat = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_drawableBottomCompat;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_drawableEndCompat = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_drawableEndCompat;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_drawableLeftCompat = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_drawableLeftCompat;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_drawableRightCompat = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_drawableRightCompat;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_drawableStartCompat = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_drawableStartCompat;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_drawableTint = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_drawableTint;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_drawableTintMode = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_drawableTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_drawableTopCompat = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_drawableTopCompat;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_firstBaselineToTopHeight = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_firstBaselineToTopHeight;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_fontFamily = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_fontFamily;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_fontVariationSettings = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_fontVariationSettings;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_lastBaselineToBottomHeight = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_lastBaselineToBottomHeight;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_lineHeight = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_lineHeight;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_textAllCaps = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_textAllCaps;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTextView_textLocale = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTextView_textLocale;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionBarDivider = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionBarDivider;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionBarItemBackground = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionBarItemBackground;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionBarPopupTheme = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionBarPopupTheme;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionBarSize = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionBarSize;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionBarSplitStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionBarSplitStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionBarStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionBarStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionBarTabBarStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionBarTabBarStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionBarTabStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionBarTabStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionBarTabTextStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionBarTabTextStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionBarTheme = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionBarTheme;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionBarWidgetTheme = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionBarWidgetTheme;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionButtonStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionButtonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionDropDownStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionDropDownStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionMenuTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionMenuTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionMenuTextColor = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionMenuTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModeBackground = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModeBackground;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModeCloseButtonStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModeCloseButtonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModeCloseDrawable = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModeCloseDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModeCopyDrawable = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModeCopyDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModeCutDrawable = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModeCutDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModeFindDrawable = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModeFindDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModePasteDrawable = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModePasteDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModePopupWindowStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModePopupWindowStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModeSelectAllDrawable = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModeSelectAllDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModeShareDrawable = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModeShareDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModeSplitBackground = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModeSplitBackground;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModeStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModeStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionModeWebSearchDrawable = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionModeWebSearchDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionOverflowButtonStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionOverflowButtonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_actionOverflowMenuStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_actionOverflowMenuStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_activityChooserViewStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_activityChooserViewStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_alertDialogButtonGroupStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_alertDialogButtonGroupStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_alertDialogCenterButtons = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_alertDialogCenterButtons;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_alertDialogStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_alertDialogStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_alertDialogTheme = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_alertDialogTheme;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_android_windowAnimationStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_android_windowAnimationStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_android_windowIsFloating = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_android_windowIsFloating;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_autoCompleteTextViewStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_autoCompleteTextViewStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_borderlessButtonStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_borderlessButtonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_buttonBarButtonStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_buttonBarButtonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_buttonBarNegativeButtonStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_buttonBarNegativeButtonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_buttonBarNeutralButtonStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_buttonBarNeutralButtonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_buttonBarPositiveButtonStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_buttonBarPositiveButtonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_buttonBarStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_buttonBarStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_buttonStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_buttonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_buttonStyleSmall = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_buttonStyleSmall;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_checkboxStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_checkboxStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_checkedTextViewStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_checkedTextViewStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_colorAccent = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_colorAccent;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_colorBackgroundFloating = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_colorBackgroundFloating;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_colorButtonNormal = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_colorButtonNormal;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_colorControlActivated = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_colorControlActivated;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_colorControlHighlight = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_colorControlHighlight;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_colorControlNormal = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_colorControlNormal;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_colorError = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_colorError;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_colorPrimary = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_colorPrimary;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_colorPrimaryDark = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_colorPrimaryDark;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_colorSwitchThumbNormal = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_colorSwitchThumbNormal;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_controlBackground = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_controlBackground;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_dialogCornerRadius = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_dialogCornerRadius;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_dialogPreferredPadding = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_dialogPreferredPadding;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_dialogTheme = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_dialogTheme;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_dividerHorizontal = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_dividerHorizontal;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_dividerVertical = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_dividerVertical;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_dropdownListPreferredItemHeight = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_dropdownListPreferredItemHeight;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_dropDownListViewStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_dropDownListViewStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_editTextBackground = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_editTextBackground;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_editTextColor = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_editTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_editTextStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_editTextStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_homeAsUpIndicator = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_homeAsUpIndicator;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_imageButtonStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_imageButtonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listChoiceBackgroundIndicator = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listChoiceBackgroundIndicator;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listChoiceIndicatorMultipleAnimated = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listChoiceIndicatorMultipleAnimated;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listChoiceIndicatorSingleAnimated = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listChoiceIndicatorSingleAnimated;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listDividerAlertDialog = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listDividerAlertDialog;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listMenuViewStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listMenuViewStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listPopupWindowStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listPopupWindowStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listPreferredItemHeight = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listPreferredItemHeight;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listPreferredItemHeightLarge = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listPreferredItemHeightLarge;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listPreferredItemHeightSmall = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listPreferredItemHeightSmall;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listPreferredItemPaddingEnd = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listPreferredItemPaddingEnd;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listPreferredItemPaddingLeft = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listPreferredItemPaddingLeft;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listPreferredItemPaddingRight = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listPreferredItemPaddingRight;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_listPreferredItemPaddingStart = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_listPreferredItemPaddingStart;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_panelBackground = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_panelBackground;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_panelMenuListTheme = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_panelMenuListTheme;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_panelMenuListWidth = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_panelMenuListWidth;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_popupMenuStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_popupMenuStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_popupWindowStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_popupWindowStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_radioButtonStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_radioButtonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_ratingBarStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_ratingBarStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_ratingBarStyleIndicator = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_ratingBarStyleIndicator;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_ratingBarStyleSmall = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_ratingBarStyleSmall;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_searchViewStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_searchViewStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_seekBarStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_seekBarStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_selectableItemBackground = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_selectableItemBackground;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_selectableItemBackgroundBorderless = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_selectableItemBackgroundBorderless;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_spinnerDropDownItemStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_spinnerDropDownItemStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_spinnerStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_spinnerStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_switchStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_switchStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_textAppearanceLargePopupMenu = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_textAppearanceLargePopupMenu;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_textAppearanceListItem = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_textAppearanceListItem;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_textAppearanceListItemSecondary = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_textAppearanceListItemSecondary;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_textAppearanceListItemSmall = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_textAppearanceListItemSmall;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_textAppearancePopupMenuHeader = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_textAppearancePopupMenuHeader;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_textAppearanceSearchResultSubtitle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_textAppearanceSearchResultSubtitle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_textAppearanceSearchResultTitle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_textAppearanceSearchResultTitle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_textAppearanceSmallPopupMenu = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_textAppearanceSmallPopupMenu;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_textColorAlertDialogListItem = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_textColorAlertDialogListItem;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_textColorSearchUrl = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_textColorSearchUrl;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_toolbarNavigationButtonStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_toolbarNavigationButtonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_toolbarStyle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_toolbarStyle;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_tooltipForegroundColor = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_tooltipForegroundColor;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_tooltipFrameBackground = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_tooltipFrameBackground;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_viewInflaterClass = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_viewInflaterClass;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_windowActionBar = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_windowActionBar;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_windowActionBarOverlay = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_windowActionBarOverlay;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_windowActionModeOverlay = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_windowActionModeOverlay;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_windowFixedHeightMajor = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_windowFixedHeightMajor;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_windowFixedHeightMinor = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_windowFixedHeightMinor;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_windowFixedWidthMajor = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_windowFixedWidthMajor;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_windowFixedWidthMinor = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_windowFixedWidthMinor;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_windowMinWidthMajor = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_windowMinWidthMajor;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_windowMinWidthMinor = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_windowMinWidthMinor;
+			global::MarcTron.Plugin.Resource.Styleable.AppCompatTheme_windowNoTitle = global::GnollHackClient.Droid.Resource.Styleable.AppCompatTheme_windowNoTitle;
+			global::MarcTron.Plugin.Resource.Styleable.Badge = global::GnollHackClient.Droid.Resource.Styleable.Badge;
+			global::MarcTron.Plugin.Resource.Styleable.Badge_backgroundColor = global::GnollHackClient.Droid.Resource.Styleable.Badge_backgroundColor;
+			global::MarcTron.Plugin.Resource.Styleable.Badge_badgeGravity = global::GnollHackClient.Droid.Resource.Styleable.Badge_badgeGravity;
+			global::MarcTron.Plugin.Resource.Styleable.Badge_badgeTextColor = global::GnollHackClient.Droid.Resource.Styleable.Badge_badgeTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.Badge_maxCharacterCount = global::GnollHackClient.Droid.Resource.Styleable.Badge_maxCharacterCount;
+			global::MarcTron.Plugin.Resource.Styleable.Badge_number = global::GnollHackClient.Droid.Resource.Styleable.Badge_number;
+			global::MarcTron.Plugin.Resource.Styleable.BottomAppBar = global::GnollHackClient.Droid.Resource.Styleable.BottomAppBar;
+			global::MarcTron.Plugin.Resource.Styleable.BottomAppBar_backgroundTint = global::GnollHackClient.Droid.Resource.Styleable.BottomAppBar_backgroundTint;
+			global::MarcTron.Plugin.Resource.Styleable.BottomAppBar_elevation = global::GnollHackClient.Droid.Resource.Styleable.BottomAppBar_elevation;
+			global::MarcTron.Plugin.Resource.Styleable.BottomAppBar_fabAlignmentMode = global::GnollHackClient.Droid.Resource.Styleable.BottomAppBar_fabAlignmentMode;
+			global::MarcTron.Plugin.Resource.Styleable.BottomAppBar_fabAnimationMode = global::GnollHackClient.Droid.Resource.Styleable.BottomAppBar_fabAnimationMode;
+			global::MarcTron.Plugin.Resource.Styleable.BottomAppBar_fabCradleMargin = global::GnollHackClient.Droid.Resource.Styleable.BottomAppBar_fabCradleMargin;
+			global::MarcTron.Plugin.Resource.Styleable.BottomAppBar_fabCradleRoundedCornerRadius = global::GnollHackClient.Droid.Resource.Styleable.BottomAppBar_fabCradleRoundedCornerRadius;
+			global::MarcTron.Plugin.Resource.Styleable.BottomAppBar_fabCradleVerticalOffset = global::GnollHackClient.Droid.Resource.Styleable.BottomAppBar_fabCradleVerticalOffset;
+			global::MarcTron.Plugin.Resource.Styleable.BottomAppBar_hideOnScroll = global::GnollHackClient.Droid.Resource.Styleable.BottomAppBar_hideOnScroll;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView_backgroundTint = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView_backgroundTint;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView_elevation = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView_elevation;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView_itemBackground = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView_itemBackground;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView_itemHorizontalTranslationEnabled = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView_itemHorizontalTranslationEnabled;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView_itemIconSize = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView_itemIconSize;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView_itemIconTint = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView_itemIconTint;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView_itemRippleColor = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView_itemRippleColor;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView_itemTextAppearanceActive = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView_itemTextAppearanceActive;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView_itemTextAppearanceInactive = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView_itemTextAppearanceInactive;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView_itemTextColor = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView_itemTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView_labelVisibilityMode = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView_labelVisibilityMode;
+			global::MarcTron.Plugin.Resource.Styleable.BottomNavigationView_menu = global::GnollHackClient.Droid.Resource.Styleable.BottomNavigationView_menu;
+			global::MarcTron.Plugin.Resource.Styleable.BottomSheetBehavior_Layout = global::GnollHackClient.Droid.Resource.Styleable.BottomSheetBehavior_Layout;
+			global::MarcTron.Plugin.Resource.Styleable.BottomSheetBehavior_Layout_android_elevation = global::GnollHackClient.Droid.Resource.Styleable.BottomSheetBehavior_Layout_android_elevation;
+			global::MarcTron.Plugin.Resource.Styleable.BottomSheetBehavior_Layout_backgroundTint = global::GnollHackClient.Droid.Resource.Styleable.BottomSheetBehavior_Layout_backgroundTint;
+			global::MarcTron.Plugin.Resource.Styleable.BottomSheetBehavior_Layout_behavior_expandedOffset = global::GnollHackClient.Droid.Resource.Styleable.BottomSheetBehavior_Layout_behavior_expandedOffset;
+			global::MarcTron.Plugin.Resource.Styleable.BottomSheetBehavior_Layout_behavior_fitToContents = global::GnollHackClient.Droid.Resource.Styleable.BottomSheetBehavior_Layout_behavior_fitToContents;
+			global::MarcTron.Plugin.Resource.Styleable.BottomSheetBehavior_Layout_behavior_halfExpandedRatio = global::GnollHackClient.Droid.Resource.Styleable.BottomSheetBehavior_Layout_behavior_halfExpandedRatio;
+			global::MarcTron.Plugin.Resource.Styleable.BottomSheetBehavior_Layout_behavior_hideable = global::GnollHackClient.Droid.Resource.Styleable.BottomSheetBehavior_Layout_behavior_hideable;
+			global::MarcTron.Plugin.Resource.Styleable.BottomSheetBehavior_Layout_behavior_peekHeight = global::GnollHackClient.Droid.Resource.Styleable.BottomSheetBehavior_Layout_behavior_peekHeight;
+			global::MarcTron.Plugin.Resource.Styleable.BottomSheetBehavior_Layout_behavior_saveFlags = global::GnollHackClient.Droid.Resource.Styleable.BottomSheetBehavior_Layout_behavior_saveFlags;
+			global::MarcTron.Plugin.Resource.Styleable.BottomSheetBehavior_Layout_behavior_skipCollapsed = global::GnollHackClient.Droid.Resource.Styleable.BottomSheetBehavior_Layout_behavior_skipCollapsed;
+			global::MarcTron.Plugin.Resource.Styleable.BottomSheetBehavior_Layout_shapeAppearance = global::GnollHackClient.Droid.Resource.Styleable.BottomSheetBehavior_Layout_shapeAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.BottomSheetBehavior_Layout_shapeAppearanceOverlay = global::GnollHackClient.Droid.Resource.Styleable.BottomSheetBehavior_Layout_shapeAppearanceOverlay;
+			global::MarcTron.Plugin.Resource.Styleable.ButtonBarLayout = global::GnollHackClient.Droid.Resource.Styleable.ButtonBarLayout;
+			global::MarcTron.Plugin.Resource.Styleable.ButtonBarLayout_allowStacking = global::GnollHackClient.Droid.Resource.Styleable.ButtonBarLayout_allowStacking;
+			global::MarcTron.Plugin.Resource.Styleable.CardView = global::GnollHackClient.Droid.Resource.Styleable.CardView;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_android_minHeight = global::GnollHackClient.Droid.Resource.Styleable.CardView_android_minHeight;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_android_minWidth = global::GnollHackClient.Droid.Resource.Styleable.CardView_android_minWidth;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_cardBackgroundColor = global::GnollHackClient.Droid.Resource.Styleable.CardView_cardBackgroundColor;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_cardCornerRadius = global::GnollHackClient.Droid.Resource.Styleable.CardView_cardCornerRadius;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_cardElevation = global::GnollHackClient.Droid.Resource.Styleable.CardView_cardElevation;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_cardMaxElevation = global::GnollHackClient.Droid.Resource.Styleable.CardView_cardMaxElevation;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_cardPreventCornerOverlap = global::GnollHackClient.Droid.Resource.Styleable.CardView_cardPreventCornerOverlap;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_cardUseCompatPadding = global::GnollHackClient.Droid.Resource.Styleable.CardView_cardUseCompatPadding;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_contentPadding = global::GnollHackClient.Droid.Resource.Styleable.CardView_contentPadding;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_contentPaddingBottom = global::GnollHackClient.Droid.Resource.Styleable.CardView_contentPaddingBottom;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_contentPaddingLeft = global::GnollHackClient.Droid.Resource.Styleable.CardView_contentPaddingLeft;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_contentPaddingRight = global::GnollHackClient.Droid.Resource.Styleable.CardView_contentPaddingRight;
+			global::MarcTron.Plugin.Resource.Styleable.CardView_contentPaddingTop = global::GnollHackClient.Droid.Resource.Styleable.CardView_contentPaddingTop;
+			global::MarcTron.Plugin.Resource.Styleable.Chip = global::GnollHackClient.Droid.Resource.Styleable.Chip;
+			global::MarcTron.Plugin.Resource.Styleable.ChipGroup = global::GnollHackClient.Droid.Resource.Styleable.ChipGroup;
+			global::MarcTron.Plugin.Resource.Styleable.ChipGroup_checkedChip = global::GnollHackClient.Droid.Resource.Styleable.ChipGroup_checkedChip;
+			global::MarcTron.Plugin.Resource.Styleable.ChipGroup_chipSpacing = global::GnollHackClient.Droid.Resource.Styleable.ChipGroup_chipSpacing;
+			global::MarcTron.Plugin.Resource.Styleable.ChipGroup_chipSpacingHorizontal = global::GnollHackClient.Droid.Resource.Styleable.ChipGroup_chipSpacingHorizontal;
+			global::MarcTron.Plugin.Resource.Styleable.ChipGroup_chipSpacingVertical = global::GnollHackClient.Droid.Resource.Styleable.ChipGroup_chipSpacingVertical;
+			global::MarcTron.Plugin.Resource.Styleable.ChipGroup_singleLine = global::GnollHackClient.Droid.Resource.Styleable.ChipGroup_singleLine;
+			global::MarcTron.Plugin.Resource.Styleable.ChipGroup_singleSelection = global::GnollHackClient.Droid.Resource.Styleable.ChipGroup_singleSelection;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_android_checkable = global::GnollHackClient.Droid.Resource.Styleable.Chip_android_checkable;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_android_ellipsize = global::GnollHackClient.Droid.Resource.Styleable.Chip_android_ellipsize;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_android_maxWidth = global::GnollHackClient.Droid.Resource.Styleable.Chip_android_maxWidth;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_android_text = global::GnollHackClient.Droid.Resource.Styleable.Chip_android_text;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_android_textAppearance = global::GnollHackClient.Droid.Resource.Styleable.Chip_android_textAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_android_textColor = global::GnollHackClient.Droid.Resource.Styleable.Chip_android_textColor;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_checkedIcon = global::GnollHackClient.Droid.Resource.Styleable.Chip_checkedIcon;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_checkedIconEnabled = global::GnollHackClient.Droid.Resource.Styleable.Chip_checkedIconEnabled;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_checkedIconVisible = global::GnollHackClient.Droid.Resource.Styleable.Chip_checkedIconVisible;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipBackgroundColor = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipBackgroundColor;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipCornerRadius = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipCornerRadius;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipEndPadding = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipEndPadding;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipIcon = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipIcon;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipIconEnabled = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipIconEnabled;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipIconSize = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipIconSize;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipIconTint = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipIconTint;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipIconVisible = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipIconVisible;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipMinHeight = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipMinHeight;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipMinTouchTargetSize = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipMinTouchTargetSize;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipStartPadding = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipStartPadding;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipStrokeColor = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipStrokeColor;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipStrokeWidth = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipStrokeWidth;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_chipSurfaceColor = global::GnollHackClient.Droid.Resource.Styleable.Chip_chipSurfaceColor;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_closeIcon = global::GnollHackClient.Droid.Resource.Styleable.Chip_closeIcon;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_closeIconEnabled = global::GnollHackClient.Droid.Resource.Styleable.Chip_closeIconEnabled;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_closeIconEndPadding = global::GnollHackClient.Droid.Resource.Styleable.Chip_closeIconEndPadding;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_closeIconSize = global::GnollHackClient.Droid.Resource.Styleable.Chip_closeIconSize;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_closeIconStartPadding = global::GnollHackClient.Droid.Resource.Styleable.Chip_closeIconStartPadding;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_closeIconTint = global::GnollHackClient.Droid.Resource.Styleable.Chip_closeIconTint;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_closeIconVisible = global::GnollHackClient.Droid.Resource.Styleable.Chip_closeIconVisible;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_ensureMinTouchTargetSize = global::GnollHackClient.Droid.Resource.Styleable.Chip_ensureMinTouchTargetSize;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_hideMotionSpec = global::GnollHackClient.Droid.Resource.Styleable.Chip_hideMotionSpec;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_iconEndPadding = global::GnollHackClient.Droid.Resource.Styleable.Chip_iconEndPadding;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_iconStartPadding = global::GnollHackClient.Droid.Resource.Styleable.Chip_iconStartPadding;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_rippleColor = global::GnollHackClient.Droid.Resource.Styleable.Chip_rippleColor;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_shapeAppearance = global::GnollHackClient.Droid.Resource.Styleable.Chip_shapeAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_shapeAppearanceOverlay = global::GnollHackClient.Droid.Resource.Styleable.Chip_shapeAppearanceOverlay;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_showMotionSpec = global::GnollHackClient.Droid.Resource.Styleable.Chip_showMotionSpec;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_textEndPadding = global::GnollHackClient.Droid.Resource.Styleable.Chip_textEndPadding;
+			global::MarcTron.Plugin.Resource.Styleable.Chip_textStartPadding = global::GnollHackClient.Droid.Resource.Styleable.Chip_textStartPadding;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_collapsedTitleGravity = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_collapsedTitleGravity;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_collapsedTitleTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_collapsedTitleTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_contentScrim = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_contentScrim;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_expandedTitleGravity = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_expandedTitleGravity;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_expandedTitleMargin = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_expandedTitleMargin;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_expandedTitleMarginBottom = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_expandedTitleMarginBottom;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_expandedTitleMarginEnd = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_expandedTitleMarginEnd;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_expandedTitleMarginStart = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_expandedTitleMarginStart;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_expandedTitleMarginTop = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_expandedTitleMarginTop;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_expandedTitleTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_expandedTitleTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_Layout = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_Layout;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_Layout_layout_collapseMode = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_Layout_layout_collapseMode;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_Layout_layout_collapseParallaxMultiplier = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_Layout_layout_collapseParallaxMultiplier;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_scrimAnimationDuration = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_scrimAnimationDuration;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_scrimVisibleHeightTrigger = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_scrimVisibleHeightTrigger;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_statusBarScrim = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_statusBarScrim;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_title = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_title;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_titleEnabled = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_titleEnabled;
+			global::MarcTron.Plugin.Resource.Styleable.CollapsingToolbarLayout_toolbarId = global::GnollHackClient.Droid.Resource.Styleable.CollapsingToolbarLayout_toolbarId;
+			global::MarcTron.Plugin.Resource.Styleable.ColorStateListItem = global::GnollHackClient.Droid.Resource.Styleable.ColorStateListItem;
+			global::MarcTron.Plugin.Resource.Styleable.ColorStateListItem_alpha = global::GnollHackClient.Droid.Resource.Styleable.ColorStateListItem_alpha;
+			global::MarcTron.Plugin.Resource.Styleable.ColorStateListItem_android_alpha = global::GnollHackClient.Droid.Resource.Styleable.ColorStateListItem_android_alpha;
+			global::MarcTron.Plugin.Resource.Styleable.ColorStateListItem_android_color = global::GnollHackClient.Droid.Resource.Styleable.ColorStateListItem_android_color;
+			global::MarcTron.Plugin.Resource.Styleable.CompoundButton = global::GnollHackClient.Droid.Resource.Styleable.CompoundButton;
+			global::MarcTron.Plugin.Resource.Styleable.CompoundButton_android_button = global::GnollHackClient.Droid.Resource.Styleable.CompoundButton_android_button;
+			global::MarcTron.Plugin.Resource.Styleable.CompoundButton_buttonCompat = global::GnollHackClient.Droid.Resource.Styleable.CompoundButton_buttonCompat;
+			global::MarcTron.Plugin.Resource.Styleable.CompoundButton_buttonTint = global::GnollHackClient.Droid.Resource.Styleable.CompoundButton_buttonTint;
+			global::MarcTron.Plugin.Resource.Styleable.CompoundButton_buttonTintMode = global::GnollHackClient.Droid.Resource.Styleable.CompoundButton_buttonTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.CoordinatorLayout = global::GnollHackClient.Droid.Resource.Styleable.CoordinatorLayout;
+			global::MarcTron.Plugin.Resource.Styleable.CoordinatorLayout_keylines = global::GnollHackClient.Droid.Resource.Styleable.CoordinatorLayout_keylines;
+			global::MarcTron.Plugin.Resource.Styleable.CoordinatorLayout_Layout = global::GnollHackClient.Droid.Resource.Styleable.CoordinatorLayout_Layout;
+			global::MarcTron.Plugin.Resource.Styleable.CoordinatorLayout_Layout_android_layout_gravity = global::GnollHackClient.Droid.Resource.Styleable.CoordinatorLayout_Layout_android_layout_gravity;
+			global::MarcTron.Plugin.Resource.Styleable.CoordinatorLayout_Layout_layout_anchor = global::GnollHackClient.Droid.Resource.Styleable.CoordinatorLayout_Layout_layout_anchor;
+			global::MarcTron.Plugin.Resource.Styleable.CoordinatorLayout_Layout_layout_anchorGravity = global::GnollHackClient.Droid.Resource.Styleable.CoordinatorLayout_Layout_layout_anchorGravity;
+			global::MarcTron.Plugin.Resource.Styleable.CoordinatorLayout_Layout_layout_behavior = global::GnollHackClient.Droid.Resource.Styleable.CoordinatorLayout_Layout_layout_behavior;
+			global::MarcTron.Plugin.Resource.Styleable.CoordinatorLayout_Layout_layout_dodgeInsetEdges = global::GnollHackClient.Droid.Resource.Styleable.CoordinatorLayout_Layout_layout_dodgeInsetEdges;
+			global::MarcTron.Plugin.Resource.Styleable.CoordinatorLayout_Layout_layout_insetEdge = global::GnollHackClient.Droid.Resource.Styleable.CoordinatorLayout_Layout_layout_insetEdge;
+			global::MarcTron.Plugin.Resource.Styleable.CoordinatorLayout_Layout_layout_keyline = global::GnollHackClient.Droid.Resource.Styleable.CoordinatorLayout_Layout_layout_keyline;
+			global::MarcTron.Plugin.Resource.Styleable.CoordinatorLayout_statusBarBackground = global::GnollHackClient.Droid.Resource.Styleable.CoordinatorLayout_statusBarBackground;
+			global::MarcTron.Plugin.Resource.Styleable.DrawerArrowToggle = global::GnollHackClient.Droid.Resource.Styleable.DrawerArrowToggle;
+			global::MarcTron.Plugin.Resource.Styleable.DrawerArrowToggle_arrowHeadLength = global::GnollHackClient.Droid.Resource.Styleable.DrawerArrowToggle_arrowHeadLength;
+			global::MarcTron.Plugin.Resource.Styleable.DrawerArrowToggle_arrowShaftLength = global::GnollHackClient.Droid.Resource.Styleable.DrawerArrowToggle_arrowShaftLength;
+			global::MarcTron.Plugin.Resource.Styleable.DrawerArrowToggle_barLength = global::GnollHackClient.Droid.Resource.Styleable.DrawerArrowToggle_barLength;
+			global::MarcTron.Plugin.Resource.Styleable.DrawerArrowToggle_color = global::GnollHackClient.Droid.Resource.Styleable.DrawerArrowToggle_color;
+			global::MarcTron.Plugin.Resource.Styleable.DrawerArrowToggle_drawableSize = global::GnollHackClient.Droid.Resource.Styleable.DrawerArrowToggle_drawableSize;
+			global::MarcTron.Plugin.Resource.Styleable.DrawerArrowToggle_gapBetweenBars = global::GnollHackClient.Droid.Resource.Styleable.DrawerArrowToggle_gapBetweenBars;
+			global::MarcTron.Plugin.Resource.Styleable.DrawerArrowToggle_spinBars = global::GnollHackClient.Droid.Resource.Styleable.DrawerArrowToggle_spinBars;
+			global::MarcTron.Plugin.Resource.Styleable.DrawerArrowToggle_thickness = global::GnollHackClient.Droid.Resource.Styleable.DrawerArrowToggle_thickness;
+			global::MarcTron.Plugin.Resource.Styleable.DrawerLayout = global::GnollHackClient.Droid.Resource.Styleable.DrawerLayout;
+			global::MarcTron.Plugin.Resource.Styleable.DrawerLayout_elevation = global::GnollHackClient.Droid.Resource.Styleable.DrawerLayout_elevation;
+			global::MarcTron.Plugin.Resource.Styleable.ExtendedFloatingActionButton = global::GnollHackClient.Droid.Resource.Styleable.ExtendedFloatingActionButton;
+			global::MarcTron.Plugin.Resource.Styleable.ExtendedFloatingActionButton_Behavior_Layout = global::GnollHackClient.Droid.Resource.Styleable.ExtendedFloatingActionButton_Behavior_Layout;
+			global::MarcTron.Plugin.Resource.Styleable.ExtendedFloatingActionButton_Behavior_Layout_behavior_autoHide = global::GnollHackClient.Droid.Resource.Styleable.ExtendedFloatingActionButton_Behavior_Layout_behavior_autoHide;
+			global::MarcTron.Plugin.Resource.Styleable.ExtendedFloatingActionButton_Behavior_Layout_behavior_autoShrink = global::GnollHackClient.Droid.Resource.Styleable.ExtendedFloatingActionButton_Behavior_Layout_behavior_autoShrink;
+			global::MarcTron.Plugin.Resource.Styleable.ExtendedFloatingActionButton_elevation = global::GnollHackClient.Droid.Resource.Styleable.ExtendedFloatingActionButton_elevation;
+			global::MarcTron.Plugin.Resource.Styleable.ExtendedFloatingActionButton_extendMotionSpec = global::GnollHackClient.Droid.Resource.Styleable.ExtendedFloatingActionButton_extendMotionSpec;
+			global::MarcTron.Plugin.Resource.Styleable.ExtendedFloatingActionButton_hideMotionSpec = global::GnollHackClient.Droid.Resource.Styleable.ExtendedFloatingActionButton_hideMotionSpec;
+			global::MarcTron.Plugin.Resource.Styleable.ExtendedFloatingActionButton_showMotionSpec = global::GnollHackClient.Droid.Resource.Styleable.ExtendedFloatingActionButton_showMotionSpec;
+			global::MarcTron.Plugin.Resource.Styleable.ExtendedFloatingActionButton_shrinkMotionSpec = global::GnollHackClient.Droid.Resource.Styleable.ExtendedFloatingActionButton_shrinkMotionSpec;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_backgroundTint = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_backgroundTint;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_backgroundTintMode = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_backgroundTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_Behavior_Layout = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_Behavior_Layout;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_Behavior_Layout_behavior_autoHide = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_Behavior_Layout_behavior_autoHide;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_borderWidth = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_borderWidth;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_elevation = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_elevation;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_ensureMinTouchTargetSize = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_ensureMinTouchTargetSize;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_fabCustomSize = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_fabCustomSize;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_fabSize = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_fabSize;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_hideMotionSpec = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_hideMotionSpec;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_hoveredFocusedTranslationZ = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_hoveredFocusedTranslationZ;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_maxImageSize = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_maxImageSize;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_pressedTranslationZ = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_pressedTranslationZ;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_rippleColor = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_rippleColor;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_shapeAppearance = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_shapeAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_shapeAppearanceOverlay = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_shapeAppearanceOverlay;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_showMotionSpec = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_showMotionSpec;
+			global::MarcTron.Plugin.Resource.Styleable.FloatingActionButton_useCompatPadding = global::GnollHackClient.Droid.Resource.Styleable.FloatingActionButton_useCompatPadding;
+			global::MarcTron.Plugin.Resource.Styleable.FlowLayout = global::GnollHackClient.Droid.Resource.Styleable.FlowLayout;
+			global::MarcTron.Plugin.Resource.Styleable.FlowLayout_itemSpacing = global::GnollHackClient.Droid.Resource.Styleable.FlowLayout_itemSpacing;
+			global::MarcTron.Plugin.Resource.Styleable.FlowLayout_lineSpacing = global::GnollHackClient.Droid.Resource.Styleable.FlowLayout_lineSpacing;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamily = global::GnollHackClient.Droid.Resource.Styleable.FontFamily;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamilyFont = global::GnollHackClient.Droid.Resource.Styleable.FontFamilyFont;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamilyFont_android_font = global::GnollHackClient.Droid.Resource.Styleable.FontFamilyFont_android_font;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamilyFont_android_fontStyle = global::GnollHackClient.Droid.Resource.Styleable.FontFamilyFont_android_fontStyle;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamilyFont_android_fontVariationSettings = global::GnollHackClient.Droid.Resource.Styleable.FontFamilyFont_android_fontVariationSettings;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamilyFont_android_fontWeight = global::GnollHackClient.Droid.Resource.Styleable.FontFamilyFont_android_fontWeight;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamilyFont_android_ttcIndex = global::GnollHackClient.Droid.Resource.Styleable.FontFamilyFont_android_ttcIndex;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamilyFont_font = global::GnollHackClient.Droid.Resource.Styleable.FontFamilyFont_font;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamilyFont_fontStyle = global::GnollHackClient.Droid.Resource.Styleable.FontFamilyFont_fontStyle;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamilyFont_fontVariationSettings = global::GnollHackClient.Droid.Resource.Styleable.FontFamilyFont_fontVariationSettings;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamilyFont_fontWeight = global::GnollHackClient.Droid.Resource.Styleable.FontFamilyFont_fontWeight;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamilyFont_ttcIndex = global::GnollHackClient.Droid.Resource.Styleable.FontFamilyFont_ttcIndex;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamily_fontProviderAuthority = global::GnollHackClient.Droid.Resource.Styleable.FontFamily_fontProviderAuthority;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamily_fontProviderCerts = global::GnollHackClient.Droid.Resource.Styleable.FontFamily_fontProviderCerts;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamily_fontProviderFetchStrategy = global::GnollHackClient.Droid.Resource.Styleable.FontFamily_fontProviderFetchStrategy;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamily_fontProviderFetchTimeout = global::GnollHackClient.Droid.Resource.Styleable.FontFamily_fontProviderFetchTimeout;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamily_fontProviderPackage = global::GnollHackClient.Droid.Resource.Styleable.FontFamily_fontProviderPackage;
+			global::MarcTron.Plugin.Resource.Styleable.FontFamily_fontProviderQuery = global::GnollHackClient.Droid.Resource.Styleable.FontFamily_fontProviderQuery;
+			global::MarcTron.Plugin.Resource.Styleable.ForegroundLinearLayout = global::GnollHackClient.Droid.Resource.Styleable.ForegroundLinearLayout;
+			global::MarcTron.Plugin.Resource.Styleable.ForegroundLinearLayout_android_foreground = global::GnollHackClient.Droid.Resource.Styleable.ForegroundLinearLayout_android_foreground;
+			global::MarcTron.Plugin.Resource.Styleable.ForegroundLinearLayout_android_foregroundGravity = global::GnollHackClient.Droid.Resource.Styleable.ForegroundLinearLayout_android_foregroundGravity;
+			global::MarcTron.Plugin.Resource.Styleable.ForegroundLinearLayout_foregroundInsidePadding = global::GnollHackClient.Droid.Resource.Styleable.ForegroundLinearLayout_foregroundInsidePadding;
+			global::MarcTron.Plugin.Resource.Styleable.Fragment = global::GnollHackClient.Droid.Resource.Styleable.Fragment;
+			global::MarcTron.Plugin.Resource.Styleable.FragmentContainerView = global::GnollHackClient.Droid.Resource.Styleable.FragmentContainerView;
+			global::MarcTron.Plugin.Resource.Styleable.FragmentContainerView_android_name = global::GnollHackClient.Droid.Resource.Styleable.FragmentContainerView_android_name;
+			global::MarcTron.Plugin.Resource.Styleable.FragmentContainerView_android_tag = global::GnollHackClient.Droid.Resource.Styleable.FragmentContainerView_android_tag;
+			global::MarcTron.Plugin.Resource.Styleable.Fragment_android_id = global::GnollHackClient.Droid.Resource.Styleable.Fragment_android_id;
+			global::MarcTron.Plugin.Resource.Styleable.Fragment_android_name = global::GnollHackClient.Droid.Resource.Styleable.Fragment_android_name;
+			global::MarcTron.Plugin.Resource.Styleable.Fragment_android_tag = global::GnollHackClient.Droid.Resource.Styleable.Fragment_android_tag;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor = global::GnollHackClient.Droid.Resource.Styleable.GradientColor;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColorItem = global::GnollHackClient.Droid.Resource.Styleable.GradientColorItem;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColorItem_android_color = global::GnollHackClient.Droid.Resource.Styleable.GradientColorItem_android_color;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColorItem_android_offset = global::GnollHackClient.Droid.Resource.Styleable.GradientColorItem_android_offset;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor_android_centerColor = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_centerColor;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor_android_centerX = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_centerX;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor_android_centerY = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_centerY;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor_android_endColor = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_endColor;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor_android_endX = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_endX;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor_android_endY = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_endY;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor_android_gradientRadius = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_gradientRadius;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor_android_startColor = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_startColor;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor_android_startX = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_startX;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor_android_startY = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_startY;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor_android_tileMode = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_tileMode;
+			global::MarcTron.Plugin.Resource.Styleable.GradientColor_android_type = global::GnollHackClient.Droid.Resource.Styleable.GradientColor_android_type;
+			global::MarcTron.Plugin.Resource.Styleable.ItemsViewRendererTheme = global::GnollHackClient.Droid.Resource.Styleable.ItemsViewRendererTheme;
+			global::MarcTron.Plugin.Resource.Styleable.ItemsViewRendererTheme_collectionViewStyle = global::GnollHackClient.Droid.Resource.Styleable.ItemsViewRendererTheme_collectionViewStyle;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_android_baselineAligned = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_android_baselineAligned;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_android_baselineAlignedChildIndex = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_android_baselineAlignedChildIndex;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_android_gravity = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_android_gravity;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_android_orientation = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_android_orientation;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_android_weightSum = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_android_weightSum;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_divider = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_divider;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_dividerPadding = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_dividerPadding;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_Layout = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_Layout;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_Layout_android_layout_gravity = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_Layout_android_layout_gravity;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_Layout_android_layout_height = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_Layout_android_layout_height;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_Layout_android_layout_weight = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_Layout_android_layout_weight;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_Layout_android_layout_width = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_Layout_android_layout_width;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_measureWithLargestChild = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_measureWithLargestChild;
+			global::MarcTron.Plugin.Resource.Styleable.LinearLayoutCompat_showDividers = global::GnollHackClient.Droid.Resource.Styleable.LinearLayoutCompat_showDividers;
+			global::MarcTron.Plugin.Resource.Styleable.ListPopupWindow = global::GnollHackClient.Droid.Resource.Styleable.ListPopupWindow;
+			global::MarcTron.Plugin.Resource.Styleable.ListPopupWindow_android_dropDownHorizontalOffset = global::GnollHackClient.Droid.Resource.Styleable.ListPopupWindow_android_dropDownHorizontalOffset;
+			global::MarcTron.Plugin.Resource.Styleable.ListPopupWindow_android_dropDownVerticalOffset = global::GnollHackClient.Droid.Resource.Styleable.ListPopupWindow_android_dropDownVerticalOffset;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialAlertDialog = global::GnollHackClient.Droid.Resource.Styleable.MaterialAlertDialog;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialAlertDialogTheme = global::GnollHackClient.Droid.Resource.Styleable.MaterialAlertDialogTheme;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialAlertDialogTheme_materialAlertDialogBodyTextStyle = global::GnollHackClient.Droid.Resource.Styleable.MaterialAlertDialogTheme_materialAlertDialogBodyTextStyle;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialAlertDialogTheme_materialAlertDialogTheme = global::GnollHackClient.Droid.Resource.Styleable.MaterialAlertDialogTheme_materialAlertDialogTheme;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialAlertDialogTheme_materialAlertDialogTitleIconStyle = global::GnollHackClient.Droid.Resource.Styleable.MaterialAlertDialogTheme_materialAlertDialogTitleIconStyle;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialAlertDialogTheme_materialAlertDialogTitlePanelStyle = global::GnollHackClient.Droid.Resource.Styleable.MaterialAlertDialogTheme_materialAlertDialogTitlePanelStyle;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialAlertDialogTheme_materialAlertDialogTitleTextStyle = global::GnollHackClient.Droid.Resource.Styleable.MaterialAlertDialogTheme_materialAlertDialogTitleTextStyle;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialAlertDialog_backgroundInsetBottom = global::GnollHackClient.Droid.Resource.Styleable.MaterialAlertDialog_backgroundInsetBottom;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialAlertDialog_backgroundInsetEnd = global::GnollHackClient.Droid.Resource.Styleable.MaterialAlertDialog_backgroundInsetEnd;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialAlertDialog_backgroundInsetStart = global::GnollHackClient.Droid.Resource.Styleable.MaterialAlertDialog_backgroundInsetStart;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialAlertDialog_backgroundInsetTop = global::GnollHackClient.Droid.Resource.Styleable.MaterialAlertDialog_backgroundInsetTop;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButtonToggleGroup = global::GnollHackClient.Droid.Resource.Styleable.MaterialButtonToggleGroup;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButtonToggleGroup_checkedButton = global::GnollHackClient.Droid.Resource.Styleable.MaterialButtonToggleGroup_checkedButton;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButtonToggleGroup_singleSelection = global::GnollHackClient.Droid.Resource.Styleable.MaterialButtonToggleGroup_singleSelection;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_android_checkable = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_android_checkable;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_android_insetBottom = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_android_insetBottom;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_android_insetLeft = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_android_insetLeft;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_android_insetRight = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_android_insetRight;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_android_insetTop = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_android_insetTop;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_backgroundTint = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_backgroundTint;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_backgroundTintMode = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_backgroundTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_cornerRadius = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_cornerRadius;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_elevation = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_elevation;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_icon = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_icon;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_iconGravity = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_iconGravity;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_iconPadding = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_iconPadding;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_iconSize = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_iconSize;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_iconTint = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_iconTint;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_iconTintMode = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_iconTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_rippleColor = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_rippleColor;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_shapeAppearance = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_shapeAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_shapeAppearanceOverlay = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_shapeAppearanceOverlay;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_strokeColor = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_strokeColor;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialButton_strokeWidth = global::GnollHackClient.Droid.Resource.Styleable.MaterialButton_strokeWidth;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendar = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendar;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendarItem = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendarItem;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendarItem_android_insetBottom = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendarItem_android_insetBottom;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendarItem_android_insetLeft = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendarItem_android_insetLeft;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendarItem_android_insetRight = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendarItem_android_insetRight;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendarItem_android_insetTop = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendarItem_android_insetTop;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendarItem_itemFillColor = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendarItem_itemFillColor;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendarItem_itemShapeAppearance = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendarItem_itemShapeAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendarItem_itemShapeAppearanceOverlay = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendarItem_itemShapeAppearanceOverlay;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendarItem_itemStrokeColor = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendarItem_itemStrokeColor;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendarItem_itemStrokeWidth = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendarItem_itemStrokeWidth;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendarItem_itemTextColor = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendarItem_itemTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendar_android_windowFullscreen = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendar_android_windowFullscreen;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendar_dayInvalidStyle = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendar_dayInvalidStyle;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendar_daySelectedStyle = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendar_daySelectedStyle;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendar_dayStyle = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendar_dayStyle;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendar_dayTodayStyle = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendar_dayTodayStyle;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendar_rangeFillColor = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendar_rangeFillColor;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendar_yearSelectedStyle = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendar_yearSelectedStyle;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendar_yearStyle = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendar_yearStyle;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCalendar_yearTodayStyle = global::GnollHackClient.Droid.Resource.Styleable.MaterialCalendar_yearTodayStyle;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCardView = global::GnollHackClient.Droid.Resource.Styleable.MaterialCardView;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCardView_android_checkable = global::GnollHackClient.Droid.Resource.Styleable.MaterialCardView_android_checkable;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCardView_cardForegroundColor = global::GnollHackClient.Droid.Resource.Styleable.MaterialCardView_cardForegroundColor;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCardView_checkedIcon = global::GnollHackClient.Droid.Resource.Styleable.MaterialCardView_checkedIcon;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCardView_checkedIconTint = global::GnollHackClient.Droid.Resource.Styleable.MaterialCardView_checkedIconTint;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCardView_rippleColor = global::GnollHackClient.Droid.Resource.Styleable.MaterialCardView_rippleColor;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCardView_shapeAppearance = global::GnollHackClient.Droid.Resource.Styleable.MaterialCardView_shapeAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCardView_shapeAppearanceOverlay = global::GnollHackClient.Droid.Resource.Styleable.MaterialCardView_shapeAppearanceOverlay;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCardView_state_dragged = global::GnollHackClient.Droid.Resource.Styleable.MaterialCardView_state_dragged;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCardView_strokeColor = global::GnollHackClient.Droid.Resource.Styleable.MaterialCardView_strokeColor;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCardView_strokeWidth = global::GnollHackClient.Droid.Resource.Styleable.MaterialCardView_strokeWidth;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCheckBox = global::GnollHackClient.Droid.Resource.Styleable.MaterialCheckBox;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCheckBox_buttonTint = global::GnollHackClient.Droid.Resource.Styleable.MaterialCheckBox_buttonTint;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialCheckBox_useMaterialThemeColors = global::GnollHackClient.Droid.Resource.Styleable.MaterialCheckBox_useMaterialThemeColors;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialRadioButton = global::GnollHackClient.Droid.Resource.Styleable.MaterialRadioButton;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialRadioButton_useMaterialThemeColors = global::GnollHackClient.Droid.Resource.Styleable.MaterialRadioButton_useMaterialThemeColors;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialShape = global::GnollHackClient.Droid.Resource.Styleable.MaterialShape;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialShape_shapeAppearance = global::GnollHackClient.Droid.Resource.Styleable.MaterialShape_shapeAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialShape_shapeAppearanceOverlay = global::GnollHackClient.Droid.Resource.Styleable.MaterialShape_shapeAppearanceOverlay;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.MaterialTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialTextAppearance_android_lineHeight = global::GnollHackClient.Droid.Resource.Styleable.MaterialTextAppearance_android_lineHeight;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialTextAppearance_lineHeight = global::GnollHackClient.Droid.Resource.Styleable.MaterialTextAppearance_lineHeight;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialTextView = global::GnollHackClient.Droid.Resource.Styleable.MaterialTextView;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialTextView_android_lineHeight = global::GnollHackClient.Droid.Resource.Styleable.MaterialTextView_android_lineHeight;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialTextView_android_textAppearance = global::GnollHackClient.Droid.Resource.Styleable.MaterialTextView_android_textAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.MaterialTextView_lineHeight = global::GnollHackClient.Droid.Resource.Styleable.MaterialTextView_lineHeight;
+			global::MarcTron.Plugin.Resource.Styleable.MenuGroup = global::GnollHackClient.Droid.Resource.Styleable.MenuGroup;
+			global::MarcTron.Plugin.Resource.Styleable.MenuGroup_android_checkableBehavior = global::GnollHackClient.Droid.Resource.Styleable.MenuGroup_android_checkableBehavior;
+			global::MarcTron.Plugin.Resource.Styleable.MenuGroup_android_enabled = global::GnollHackClient.Droid.Resource.Styleable.MenuGroup_android_enabled;
+			global::MarcTron.Plugin.Resource.Styleable.MenuGroup_android_id = global::GnollHackClient.Droid.Resource.Styleable.MenuGroup_android_id;
+			global::MarcTron.Plugin.Resource.Styleable.MenuGroup_android_menuCategory = global::GnollHackClient.Droid.Resource.Styleable.MenuGroup_android_menuCategory;
+			global::MarcTron.Plugin.Resource.Styleable.MenuGroup_android_orderInCategory = global::GnollHackClient.Droid.Resource.Styleable.MenuGroup_android_orderInCategory;
+			global::MarcTron.Plugin.Resource.Styleable.MenuGroup_android_visible = global::GnollHackClient.Droid.Resource.Styleable.MenuGroup_android_visible;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem = global::GnollHackClient.Droid.Resource.Styleable.MenuItem;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_actionLayout = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_actionLayout;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_actionProviderClass = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_actionProviderClass;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_actionViewClass = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_actionViewClass;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_alphabeticModifiers = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_alphabeticModifiers;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_alphabeticShortcut = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_alphabeticShortcut;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_checkable = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_checkable;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_checked = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_checked;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_enabled = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_enabled;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_icon = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_icon;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_id = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_id;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_menuCategory = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_menuCategory;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_numericShortcut = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_numericShortcut;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_onClick = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_onClick;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_orderInCategory = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_orderInCategory;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_title = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_title;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_titleCondensed = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_titleCondensed;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_android_visible = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_android_visible;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_contentDescription = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_contentDescription;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_iconTint = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_iconTint;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_iconTintMode = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_iconTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_numericModifiers = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_numericModifiers;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_showAsAction = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_showAsAction;
+			global::MarcTron.Plugin.Resource.Styleable.MenuItem_tooltipText = global::GnollHackClient.Droid.Resource.Styleable.MenuItem_tooltipText;
+			global::MarcTron.Plugin.Resource.Styleable.MenuView = global::GnollHackClient.Droid.Resource.Styleable.MenuView;
+			global::MarcTron.Plugin.Resource.Styleable.MenuView_android_headerBackground = global::GnollHackClient.Droid.Resource.Styleable.MenuView_android_headerBackground;
+			global::MarcTron.Plugin.Resource.Styleable.MenuView_android_horizontalDivider = global::GnollHackClient.Droid.Resource.Styleable.MenuView_android_horizontalDivider;
+			global::MarcTron.Plugin.Resource.Styleable.MenuView_android_itemBackground = global::GnollHackClient.Droid.Resource.Styleable.MenuView_android_itemBackground;
+			global::MarcTron.Plugin.Resource.Styleable.MenuView_android_itemIconDisabledAlpha = global::GnollHackClient.Droid.Resource.Styleable.MenuView_android_itemIconDisabledAlpha;
+			global::MarcTron.Plugin.Resource.Styleable.MenuView_android_itemTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.MenuView_android_itemTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.MenuView_android_verticalDivider = global::GnollHackClient.Droid.Resource.Styleable.MenuView_android_verticalDivider;
+			global::MarcTron.Plugin.Resource.Styleable.MenuView_android_windowAnimationStyle = global::GnollHackClient.Droid.Resource.Styleable.MenuView_android_windowAnimationStyle;
+			global::MarcTron.Plugin.Resource.Styleable.MenuView_preserveIconSpacing = global::GnollHackClient.Droid.Resource.Styleable.MenuView_preserveIconSpacing;
+			global::MarcTron.Plugin.Resource.Styleable.MenuView_subMenuArrow = global::GnollHackClient.Droid.Resource.Styleable.MenuView_subMenuArrow;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView = global::GnollHackClient.Droid.Resource.Styleable.NavigationView;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_android_background = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_android_background;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_android_fitsSystemWindows = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_android_fitsSystemWindows;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_android_maxWidth = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_android_maxWidth;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_elevation = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_elevation;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_headerLayout = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_headerLayout;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemBackground = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemBackground;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemHorizontalPadding = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemHorizontalPadding;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemIconPadding = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemIconPadding;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemIconSize = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemIconSize;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemIconTint = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemIconTint;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemMaxLines = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemMaxLines;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemShapeAppearance = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemShapeAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemShapeAppearanceOverlay = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemShapeAppearanceOverlay;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemShapeFillColor = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemShapeFillColor;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemShapeInsetBottom = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemShapeInsetBottom;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemShapeInsetEnd = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemShapeInsetEnd;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemShapeInsetStart = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemShapeInsetStart;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemShapeInsetTop = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemShapeInsetTop;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_itemTextColor = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_itemTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.NavigationView_menu = global::GnollHackClient.Droid.Resource.Styleable.NavigationView_menu;
+			global::MarcTron.Plugin.Resource.Styleable.PopupWindow = global::GnollHackClient.Droid.Resource.Styleable.PopupWindow;
+			global::MarcTron.Plugin.Resource.Styleable.PopupWindowBackgroundState = global::GnollHackClient.Droid.Resource.Styleable.PopupWindowBackgroundState;
+			global::MarcTron.Plugin.Resource.Styleable.PopupWindowBackgroundState_state_above_anchor = global::GnollHackClient.Droid.Resource.Styleable.PopupWindowBackgroundState_state_above_anchor;
+			global::MarcTron.Plugin.Resource.Styleable.PopupWindow_android_popupAnimationStyle = global::GnollHackClient.Droid.Resource.Styleable.PopupWindow_android_popupAnimationStyle;
+			global::MarcTron.Plugin.Resource.Styleable.PopupWindow_android_popupBackground = global::GnollHackClient.Droid.Resource.Styleable.PopupWindow_android_popupBackground;
+			global::MarcTron.Plugin.Resource.Styleable.PopupWindow_overlapAnchor = global::GnollHackClient.Droid.Resource.Styleable.PopupWindow_overlapAnchor;
+			global::MarcTron.Plugin.Resource.Styleable.RecycleListView = global::GnollHackClient.Droid.Resource.Styleable.RecycleListView;
+			global::MarcTron.Plugin.Resource.Styleable.RecycleListView_paddingBottomNoButtons = global::GnollHackClient.Droid.Resource.Styleable.RecycleListView_paddingBottomNoButtons;
+			global::MarcTron.Plugin.Resource.Styleable.RecycleListView_paddingTopNoTitle = global::GnollHackClient.Droid.Resource.Styleable.RecycleListView_paddingTopNoTitle;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView_android_clipToPadding = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView_android_clipToPadding;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView_android_descendantFocusability = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView_android_descendantFocusability;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView_android_orientation = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView_android_orientation;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView_fastScrollEnabled = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView_fastScrollEnabled;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView_fastScrollHorizontalThumbDrawable = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView_fastScrollHorizontalThumbDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView_fastScrollHorizontalTrackDrawable = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView_fastScrollHorizontalTrackDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView_fastScrollVerticalThumbDrawable = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView_fastScrollVerticalThumbDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView_fastScrollVerticalTrackDrawable = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView_fastScrollVerticalTrackDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView_layoutManager = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView_layoutManager;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView_reverseLayout = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView_reverseLayout;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView_spanCount = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView_spanCount;
+			global::MarcTron.Plugin.Resource.Styleable.RecyclerView_stackFromEnd = global::GnollHackClient.Droid.Resource.Styleable.RecyclerView_stackFromEnd;
+			global::MarcTron.Plugin.Resource.Styleable.ScrimInsetsFrameLayout = global::GnollHackClient.Droid.Resource.Styleable.ScrimInsetsFrameLayout;
+			global::MarcTron.Plugin.Resource.Styleable.ScrimInsetsFrameLayout_insetForeground = global::GnollHackClient.Droid.Resource.Styleable.ScrimInsetsFrameLayout_insetForeground;
+			global::MarcTron.Plugin.Resource.Styleable.ScrollingViewBehavior_Layout = global::GnollHackClient.Droid.Resource.Styleable.ScrollingViewBehavior_Layout;
+			global::MarcTron.Plugin.Resource.Styleable.ScrollingViewBehavior_Layout_behavior_overlapTop = global::GnollHackClient.Droid.Resource.Styleable.ScrollingViewBehavior_Layout_behavior_overlapTop;
+			global::MarcTron.Plugin.Resource.Styleable.ScrollViewRendererTheme = global::GnollHackClient.Droid.Resource.Styleable.ScrollViewRendererTheme;
+			global::MarcTron.Plugin.Resource.Styleable.ScrollViewRendererTheme_scrollViewStyle = global::GnollHackClient.Droid.Resource.Styleable.ScrollViewRendererTheme_scrollViewStyle;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView = global::GnollHackClient.Droid.Resource.Styleable.SearchView;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_android_focusable = global::GnollHackClient.Droid.Resource.Styleable.SearchView_android_focusable;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_android_imeOptions = global::GnollHackClient.Droid.Resource.Styleable.SearchView_android_imeOptions;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_android_inputType = global::GnollHackClient.Droid.Resource.Styleable.SearchView_android_inputType;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_android_maxWidth = global::GnollHackClient.Droid.Resource.Styleable.SearchView_android_maxWidth;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_closeIcon = global::GnollHackClient.Droid.Resource.Styleable.SearchView_closeIcon;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_commitIcon = global::GnollHackClient.Droid.Resource.Styleable.SearchView_commitIcon;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_defaultQueryHint = global::GnollHackClient.Droid.Resource.Styleable.SearchView_defaultQueryHint;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_goIcon = global::GnollHackClient.Droid.Resource.Styleable.SearchView_goIcon;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_iconifiedByDefault = global::GnollHackClient.Droid.Resource.Styleable.SearchView_iconifiedByDefault;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_layout = global::GnollHackClient.Droid.Resource.Styleable.SearchView_layout;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_queryBackground = global::GnollHackClient.Droid.Resource.Styleable.SearchView_queryBackground;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_queryHint = global::GnollHackClient.Droid.Resource.Styleable.SearchView_queryHint;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_searchHintIcon = global::GnollHackClient.Droid.Resource.Styleable.SearchView_searchHintIcon;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_searchIcon = global::GnollHackClient.Droid.Resource.Styleable.SearchView_searchIcon;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_submitBackground = global::GnollHackClient.Droid.Resource.Styleable.SearchView_submitBackground;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_suggestionRowLayout = global::GnollHackClient.Droid.Resource.Styleable.SearchView_suggestionRowLayout;
+			global::MarcTron.Plugin.Resource.Styleable.SearchView_voiceIcon = global::GnollHackClient.Droid.Resource.Styleable.SearchView_voiceIcon;
+			global::MarcTron.Plugin.Resource.Styleable.ShapeAppearance = global::GnollHackClient.Droid.Resource.Styleable.ShapeAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.ShapeAppearance_cornerFamily = global::GnollHackClient.Droid.Resource.Styleable.ShapeAppearance_cornerFamily;
+			global::MarcTron.Plugin.Resource.Styleable.ShapeAppearance_cornerFamilyBottomLeft = global::GnollHackClient.Droid.Resource.Styleable.ShapeAppearance_cornerFamilyBottomLeft;
+			global::MarcTron.Plugin.Resource.Styleable.ShapeAppearance_cornerFamilyBottomRight = global::GnollHackClient.Droid.Resource.Styleable.ShapeAppearance_cornerFamilyBottomRight;
+			global::MarcTron.Plugin.Resource.Styleable.ShapeAppearance_cornerFamilyTopLeft = global::GnollHackClient.Droid.Resource.Styleable.ShapeAppearance_cornerFamilyTopLeft;
+			global::MarcTron.Plugin.Resource.Styleable.ShapeAppearance_cornerFamilyTopRight = global::GnollHackClient.Droid.Resource.Styleable.ShapeAppearance_cornerFamilyTopRight;
+			global::MarcTron.Plugin.Resource.Styleable.ShapeAppearance_cornerSize = global::GnollHackClient.Droid.Resource.Styleable.ShapeAppearance_cornerSize;
+			global::MarcTron.Plugin.Resource.Styleable.ShapeAppearance_cornerSizeBottomLeft = global::GnollHackClient.Droid.Resource.Styleable.ShapeAppearance_cornerSizeBottomLeft;
+			global::MarcTron.Plugin.Resource.Styleable.ShapeAppearance_cornerSizeBottomRight = global::GnollHackClient.Droid.Resource.Styleable.ShapeAppearance_cornerSizeBottomRight;
+			global::MarcTron.Plugin.Resource.Styleable.ShapeAppearance_cornerSizeTopLeft = global::GnollHackClient.Droid.Resource.Styleable.ShapeAppearance_cornerSizeTopLeft;
+			global::MarcTron.Plugin.Resource.Styleable.ShapeAppearance_cornerSizeTopRight = global::GnollHackClient.Droid.Resource.Styleable.ShapeAppearance_cornerSizeTopRight;
+			global::MarcTron.Plugin.Resource.Styleable.Snackbar = global::GnollHackClient.Droid.Resource.Styleable.Snackbar;
+			global::MarcTron.Plugin.Resource.Styleable.SnackbarLayout = global::GnollHackClient.Droid.Resource.Styleable.SnackbarLayout;
+			global::MarcTron.Plugin.Resource.Styleable.SnackbarLayout_actionTextColorAlpha = global::GnollHackClient.Droid.Resource.Styleable.SnackbarLayout_actionTextColorAlpha;
+			global::MarcTron.Plugin.Resource.Styleable.SnackbarLayout_android_maxWidth = global::GnollHackClient.Droid.Resource.Styleable.SnackbarLayout_android_maxWidth;
+			global::MarcTron.Plugin.Resource.Styleable.SnackbarLayout_animationMode = global::GnollHackClient.Droid.Resource.Styleable.SnackbarLayout_animationMode;
+			global::MarcTron.Plugin.Resource.Styleable.SnackbarLayout_backgroundOverlayColorAlpha = global::GnollHackClient.Droid.Resource.Styleable.SnackbarLayout_backgroundOverlayColorAlpha;
+			global::MarcTron.Plugin.Resource.Styleable.SnackbarLayout_elevation = global::GnollHackClient.Droid.Resource.Styleable.SnackbarLayout_elevation;
+			global::MarcTron.Plugin.Resource.Styleable.SnackbarLayout_maxActionInlineWidth = global::GnollHackClient.Droid.Resource.Styleable.SnackbarLayout_maxActionInlineWidth;
+			global::MarcTron.Plugin.Resource.Styleable.Snackbar_snackbarButtonStyle = global::GnollHackClient.Droid.Resource.Styleable.Snackbar_snackbarButtonStyle;
+			global::MarcTron.Plugin.Resource.Styleable.Snackbar_snackbarStyle = global::GnollHackClient.Droid.Resource.Styleable.Snackbar_snackbarStyle;
+			global::MarcTron.Plugin.Resource.Styleable.Spinner = global::GnollHackClient.Droid.Resource.Styleable.Spinner;
+			global::MarcTron.Plugin.Resource.Styleable.Spinner_android_dropDownWidth = global::GnollHackClient.Droid.Resource.Styleable.Spinner_android_dropDownWidth;
+			global::MarcTron.Plugin.Resource.Styleable.Spinner_android_entries = global::GnollHackClient.Droid.Resource.Styleable.Spinner_android_entries;
+			global::MarcTron.Plugin.Resource.Styleable.Spinner_android_popupBackground = global::GnollHackClient.Droid.Resource.Styleable.Spinner_android_popupBackground;
+			global::MarcTron.Plugin.Resource.Styleable.Spinner_android_prompt = global::GnollHackClient.Droid.Resource.Styleable.Spinner_android_prompt;
+			global::MarcTron.Plugin.Resource.Styleable.Spinner_popupTheme = global::GnollHackClient.Droid.Resource.Styleable.Spinner_popupTheme;
+			global::MarcTron.Plugin.Resource.Styleable.StateListDrawable = global::GnollHackClient.Droid.Resource.Styleable.StateListDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.StateListDrawableItem = global::GnollHackClient.Droid.Resource.Styleable.StateListDrawableItem;
+			global::MarcTron.Plugin.Resource.Styleable.StateListDrawableItem_android_drawable = global::GnollHackClient.Droid.Resource.Styleable.StateListDrawableItem_android_drawable;
+			global::MarcTron.Plugin.Resource.Styleable.StateListDrawable_android_constantSize = global::GnollHackClient.Droid.Resource.Styleable.StateListDrawable_android_constantSize;
+			global::MarcTron.Plugin.Resource.Styleable.StateListDrawable_android_dither = global::GnollHackClient.Droid.Resource.Styleable.StateListDrawable_android_dither;
+			global::MarcTron.Plugin.Resource.Styleable.StateListDrawable_android_enterFadeDuration = global::GnollHackClient.Droid.Resource.Styleable.StateListDrawable_android_enterFadeDuration;
+			global::MarcTron.Plugin.Resource.Styleable.StateListDrawable_android_exitFadeDuration = global::GnollHackClient.Droid.Resource.Styleable.StateListDrawable_android_exitFadeDuration;
+			global::MarcTron.Plugin.Resource.Styleable.StateListDrawable_android_variablePadding = global::GnollHackClient.Droid.Resource.Styleable.StateListDrawable_android_variablePadding;
+			global::MarcTron.Plugin.Resource.Styleable.StateListDrawable_android_visible = global::GnollHackClient.Droid.Resource.Styleable.StateListDrawable_android_visible;
+			global::MarcTron.Plugin.Resource.Styleable.SwipeRefreshLayout = global::GnollHackClient.Droid.Resource.Styleable.SwipeRefreshLayout;
+			global::MarcTron.Plugin.Resource.Styleable.SwipeRefreshLayout_swipeRefreshLayoutProgressSpinnerBackgroundColor = global::GnollHackClient.Droid.Resource.Styleable.SwipeRefreshLayout_swipeRefreshLayoutProgressSpinnerBackgroundColor;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_android_textOff = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_android_textOff;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_android_textOn = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_android_textOn;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_android_thumb = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_android_thumb;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_showText = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_showText;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_splitTrack = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_splitTrack;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_switchMinWidth = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_switchMinWidth;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_switchPadding = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_switchPadding;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_switchTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_switchTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_thumbTextPadding = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_thumbTextPadding;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_thumbTint = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_thumbTint;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_thumbTintMode = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_thumbTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_track = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_track;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_trackTint = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_trackTint;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchCompat_trackTintMode = global::GnollHackClient.Droid.Resource.Styleable.SwitchCompat_trackTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchMaterial = global::GnollHackClient.Droid.Resource.Styleable.SwitchMaterial;
+			global::MarcTron.Plugin.Resource.Styleable.SwitchMaterial_useMaterialThemeColors = global::GnollHackClient.Droid.Resource.Styleable.SwitchMaterial_useMaterialThemeColors;
+			global::MarcTron.Plugin.Resource.Styleable.TabItem = global::GnollHackClient.Droid.Resource.Styleable.TabItem;
+			global::MarcTron.Plugin.Resource.Styleable.TabItem_android_icon = global::GnollHackClient.Droid.Resource.Styleable.TabItem_android_icon;
+			global::MarcTron.Plugin.Resource.Styleable.TabItem_android_layout = global::GnollHackClient.Droid.Resource.Styleable.TabItem_android_layout;
+			global::MarcTron.Plugin.Resource.Styleable.TabItem_android_text = global::GnollHackClient.Droid.Resource.Styleable.TabItem_android_text;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout = global::GnollHackClient.Droid.Resource.Styleable.TabLayout;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabBackground = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabBackground;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabContentStart = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabContentStart;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabGravity = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabGravity;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabIconTint = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabIconTint;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabIconTintMode = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabIconTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabIndicator = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabIndicator;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabIndicatorAnimationDuration = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabIndicatorAnimationDuration;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabIndicatorColor = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabIndicatorColor;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabIndicatorFullWidth = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabIndicatorFullWidth;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabIndicatorGravity = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabIndicatorGravity;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabIndicatorHeight = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabIndicatorHeight;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabInlineLabel = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabInlineLabel;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabMaxWidth = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabMaxWidth;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabMinWidth = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabMinWidth;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabMode = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabMode;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabPadding = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabPadding;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabPaddingBottom = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabPaddingBottom;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabPaddingEnd = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabPaddingEnd;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabPaddingStart = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabPaddingStart;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabPaddingTop = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabPaddingTop;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabRippleColor = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabRippleColor;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabSelectedTextColor = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabSelectedTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabTextColor = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.TabLayout_tabUnboundedRipple = global::GnollHackClient.Droid.Resource.Styleable.TabLayout_tabUnboundedRipple;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_android_fontFamily = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_android_fontFamily;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_android_shadowColor = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_android_shadowColor;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_android_shadowDx = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_android_shadowDx;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_android_shadowDy = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_android_shadowDy;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_android_shadowRadius = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_android_shadowRadius;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_android_textColor = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_android_textColor;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_android_textColorHint = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_android_textColorHint;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_android_textColorLink = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_android_textColorLink;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_android_textFontWeight = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_android_textFontWeight;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_android_textSize = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_android_textSize;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_android_textStyle = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_android_textStyle;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_android_typeface = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_android_typeface;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_fontFamily = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_fontFamily;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_fontVariationSettings = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_fontVariationSettings;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_textAllCaps = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_textAllCaps;
+			global::MarcTron.Plugin.Resource.Styleable.TextAppearance_textLocale = global::GnollHackClient.Droid.Resource.Styleable.TextAppearance_textLocale;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_android_hint = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_android_hint;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_android_textColorHint = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_android_textColorHint;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_boxBackgroundColor = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_boxBackgroundColor;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_boxBackgroundMode = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_boxBackgroundMode;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_boxCollapsedPaddingTop = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_boxCollapsedPaddingTop;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_boxCornerRadiusBottomEnd = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_boxCornerRadiusBottomEnd;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_boxCornerRadiusBottomStart = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_boxCornerRadiusBottomStart;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_boxCornerRadiusTopEnd = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_boxCornerRadiusTopEnd;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_boxCornerRadiusTopStart = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_boxCornerRadiusTopStart;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_boxStrokeColor = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_boxStrokeColor;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_boxStrokeWidth = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_boxStrokeWidth;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_boxStrokeWidthFocused = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_boxStrokeWidthFocused;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_counterEnabled = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_counterEnabled;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_counterMaxLength = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_counterMaxLength;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_counterOverflowTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_counterOverflowTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_counterOverflowTextColor = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_counterOverflowTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_counterTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_counterTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_counterTextColor = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_counterTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_endIconCheckable = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_endIconCheckable;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_endIconContentDescription = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_endIconContentDescription;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_endIconDrawable = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_endIconDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_endIconMode = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_endIconMode;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_endIconTint = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_endIconTint;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_endIconTintMode = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_endIconTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_errorEnabled = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_errorEnabled;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_errorIconDrawable = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_errorIconDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_errorIconTint = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_errorIconTint;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_errorIconTintMode = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_errorIconTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_errorTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_errorTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_errorTextColor = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_errorTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_helperText = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_helperText;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_helperTextEnabled = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_helperTextEnabled;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_helperTextTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_helperTextTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_helperTextTextColor = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_helperTextTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_hintAnimationEnabled = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_hintAnimationEnabled;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_hintEnabled = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_hintEnabled;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_hintTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_hintTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_hintTextColor = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_hintTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_passwordToggleContentDescription = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_passwordToggleContentDescription;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_passwordToggleDrawable = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_passwordToggleDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_passwordToggleEnabled = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_passwordToggleEnabled;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_passwordToggleTint = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_passwordToggleTint;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_passwordToggleTintMode = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_passwordToggleTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_shapeAppearance = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_shapeAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_shapeAppearanceOverlay = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_shapeAppearanceOverlay;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_startIconCheckable = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_startIconCheckable;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_startIconContentDescription = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_startIconContentDescription;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_startIconDrawable = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_startIconDrawable;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_startIconTint = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_startIconTint;
+			global::MarcTron.Plugin.Resource.Styleable.TextInputLayout_startIconTintMode = global::GnollHackClient.Droid.Resource.Styleable.TextInputLayout_startIconTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.ThemeEnforcement = global::GnollHackClient.Droid.Resource.Styleable.ThemeEnforcement;
+			global::MarcTron.Plugin.Resource.Styleable.ThemeEnforcement_android_textAppearance = global::GnollHackClient.Droid.Resource.Styleable.ThemeEnforcement_android_textAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.ThemeEnforcement_enforceMaterialTheme = global::GnollHackClient.Droid.Resource.Styleable.ThemeEnforcement_enforceMaterialTheme;
+			global::MarcTron.Plugin.Resource.Styleable.ThemeEnforcement_enforceTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.ThemeEnforcement_enforceTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar = global::GnollHackClient.Droid.Resource.Styleable.Toolbar;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_android_gravity = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_android_gravity;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_android_minHeight = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_android_minHeight;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_buttonGravity = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_buttonGravity;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_collapseContentDescription = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_collapseContentDescription;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_collapseIcon = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_collapseIcon;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_contentInsetEnd = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_contentInsetEnd;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_contentInsetEndWithActions = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_contentInsetEndWithActions;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_contentInsetLeft = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_contentInsetLeft;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_contentInsetRight = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_contentInsetRight;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_contentInsetStart = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_contentInsetStart;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_contentInsetStartWithNavigation = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_contentInsetStartWithNavigation;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_logo = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_logo;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_logoDescription = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_logoDescription;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_maxButtonHeight = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_maxButtonHeight;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_menu = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_menu;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_navigationContentDescription = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_navigationContentDescription;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_navigationIcon = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_navigationIcon;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_popupTheme = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_popupTheme;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_subtitle = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_subtitle;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_subtitleTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_subtitleTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_subtitleTextColor = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_subtitleTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_title = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_title;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_titleMargin = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_titleMargin;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_titleMarginBottom = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_titleMarginBottom;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_titleMarginEnd = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_titleMarginEnd;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_titleMargins = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_titleMargins;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_titleMarginStart = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_titleMarginStart;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_titleMarginTop = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_titleMarginTop;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_titleTextAppearance = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_titleTextAppearance;
+			global::MarcTron.Plugin.Resource.Styleable.Toolbar_titleTextColor = global::GnollHackClient.Droid.Resource.Styleable.Toolbar_titleTextColor;
+			global::MarcTron.Plugin.Resource.Styleable.View = global::GnollHackClient.Droid.Resource.Styleable.View;
+			global::MarcTron.Plugin.Resource.Styleable.ViewBackgroundHelper = global::GnollHackClient.Droid.Resource.Styleable.ViewBackgroundHelper;
+			global::MarcTron.Plugin.Resource.Styleable.ViewBackgroundHelper_android_background = global::GnollHackClient.Droid.Resource.Styleable.ViewBackgroundHelper_android_background;
+			global::MarcTron.Plugin.Resource.Styleable.ViewBackgroundHelper_backgroundTint = global::GnollHackClient.Droid.Resource.Styleable.ViewBackgroundHelper_backgroundTint;
+			global::MarcTron.Plugin.Resource.Styleable.ViewBackgroundHelper_backgroundTintMode = global::GnollHackClient.Droid.Resource.Styleable.ViewBackgroundHelper_backgroundTintMode;
+			global::MarcTron.Plugin.Resource.Styleable.ViewPager2 = global::GnollHackClient.Droid.Resource.Styleable.ViewPager2;
+			global::MarcTron.Plugin.Resource.Styleable.ViewPager2_android_orientation = global::GnollHackClient.Droid.Resource.Styleable.ViewPager2_android_orientation;
+			global::MarcTron.Plugin.Resource.Styleable.ViewStubCompat = global::GnollHackClient.Droid.Resource.Styleable.ViewStubCompat;
+			global::MarcTron.Plugin.Resource.Styleable.ViewStubCompat_android_id = global::GnollHackClient.Droid.Resource.Styleable.ViewStubCompat_android_id;
+			global::MarcTron.Plugin.Resource.Styleable.ViewStubCompat_android_inflatedId = global::GnollHackClient.Droid.Resource.Styleable.ViewStubCompat_android_inflatedId;
+			global::MarcTron.Plugin.Resource.Styleable.ViewStubCompat_android_layout = global::GnollHackClient.Droid.Resource.Styleable.ViewStubCompat_android_layout;
+			global::MarcTron.Plugin.Resource.Styleable.View_android_focusable = global::GnollHackClient.Droid.Resource.Styleable.View_android_focusable;
+			global::MarcTron.Plugin.Resource.Styleable.View_android_theme = global::GnollHackClient.Droid.Resource.Styleable.View_android_theme;
+			global::MarcTron.Plugin.Resource.Styleable.View_paddingEnd = global::GnollHackClient.Droid.Resource.Styleable.View_paddingEnd;
+			global::MarcTron.Plugin.Resource.Styleable.View_paddingStart = global::GnollHackClient.Droid.Resource.Styleable.View_paddingStart;
+			global::MarcTron.Plugin.Resource.Styleable.View_theme = global::GnollHackClient.Droid.Resource.Styleable.View_theme;
+			global::MarcTron.Plugin.Resource.Xml.image_share_filepaths = global::GnollHackClient.Droid.Resource.Xml.image_share_filepaths;
+			global::MarcTron.Plugin.Resource.Xml.standalone_badge = global::GnollHackClient.Droid.Resource.Xml.standalone_badge;
+			global::MarcTron.Plugin.Resource.Xml.standalone_badge_gravity_bottom_end = global::GnollHackClient.Droid.Resource.Xml.standalone_badge_gravity_bottom_end;
+			global::MarcTron.Plugin.Resource.Xml.standalone_badge_gravity_bottom_start = global::GnollHackClient.Droid.Resource.Xml.standalone_badge_gravity_bottom_start;
+			global::MarcTron.Plugin.Resource.Xml.standalone_badge_gravity_top_start = global::GnollHackClient.Droid.Resource.Xml.standalone_badge_gravity_top_start;
 			global::Rg.Plugins.Popup.Resource.Animation.abc_fade_in = global::GnollHackClient.Droid.Resource.Animation.abc_fade_in;
 			global::Rg.Plugins.Popup.Resource.Animation.abc_fade_out = global::GnollHackClient.Droid.Resource.Animation.abc_fade_out;
 			global::Rg.Plugins.Popup.Resource.Animation.abc_grow_fade_in_from_bottom = global::GnollHackClient.Droid.Resource.Animation.abc_grow_fade_in_from_bottom;
@@ -16562,1873 +20031,1882 @@ namespace GnollHackClient.Droid
 			public const int activityChooserViewStyle = 2130903074;
 			
 			// aapt resource value: 0x7F030023
-			public const int alertDialogButtonGroupStyle = 2130903075;
+			public const int adSize = 2130903075;
 			
 			// aapt resource value: 0x7F030024
-			public const int alertDialogCenterButtons = 2130903076;
+			public const int adSizes = 2130903076;
 			
 			// aapt resource value: 0x7F030025
-			public const int alertDialogStyle = 2130903077;
+			public const int adUnitId = 2130903077;
 			
 			// aapt resource value: 0x7F030026
-			public const int alertDialogTheme = 2130903078;
+			public const int alertDialogButtonGroupStyle = 2130903078;
 			
 			// aapt resource value: 0x7F030027
-			public const int allowStacking = 2130903079;
+			public const int alertDialogCenterButtons = 2130903079;
 			
 			// aapt resource value: 0x7F030028
-			public const int alpha = 2130903080;
+			public const int alertDialogStyle = 2130903080;
 			
 			// aapt resource value: 0x7F030029
-			public const int alphabeticModifiers = 2130903081;
+			public const int alertDialogTheme = 2130903081;
 			
 			// aapt resource value: 0x7F03002A
-			public const int animationMode = 2130903082;
+			public const int allowStacking = 2130903082;
 			
 			// aapt resource value: 0x7F03002B
-			public const int appBarLayoutStyle = 2130903083;
+			public const int alpha = 2130903083;
 			
 			// aapt resource value: 0x7F03002C
-			public const int arrowHeadLength = 2130903084;
+			public const int alphabeticModifiers = 2130903084;
 			
 			// aapt resource value: 0x7F03002D
-			public const int arrowShaftLength = 2130903085;
+			public const int animationMode = 2130903085;
 			
 			// aapt resource value: 0x7F03002E
-			public const int autoCompleteTextViewStyle = 2130903086;
+			public const int appBarLayoutStyle = 2130903086;
 			
 			// aapt resource value: 0x7F03002F
-			public const int autoSizeMaxTextSize = 2130903087;
+			public const int arrowHeadLength = 2130903087;
 			
 			// aapt resource value: 0x7F030030
-			public const int autoSizeMinTextSize = 2130903088;
+			public const int arrowShaftLength = 2130903088;
 			
 			// aapt resource value: 0x7F030031
-			public const int autoSizePresetSizes = 2130903089;
+			public const int autoCompleteTextViewStyle = 2130903089;
 			
 			// aapt resource value: 0x7F030032
-			public const int autoSizeStepGranularity = 2130903090;
+			public const int autoSizeMaxTextSize = 2130903090;
 			
 			// aapt resource value: 0x7F030033
-			public const int autoSizeTextType = 2130903091;
+			public const int autoSizeMinTextSize = 2130903091;
 			
 			// aapt resource value: 0x7F030034
-			public const int background = 2130903092;
+			public const int autoSizePresetSizes = 2130903092;
 			
 			// aapt resource value: 0x7F030035
-			public const int backgroundColor = 2130903093;
+			public const int autoSizeStepGranularity = 2130903093;
 			
 			// aapt resource value: 0x7F030036
-			public const int backgroundInsetBottom = 2130903094;
+			public const int autoSizeTextType = 2130903094;
 			
 			// aapt resource value: 0x7F030037
-			public const int backgroundInsetEnd = 2130903095;
+			public const int background = 2130903095;
 			
 			// aapt resource value: 0x7F030038
-			public const int backgroundInsetStart = 2130903096;
+			public const int backgroundColor = 2130903096;
 			
 			// aapt resource value: 0x7F030039
-			public const int backgroundInsetTop = 2130903097;
+			public const int backgroundInsetBottom = 2130903097;
 			
 			// aapt resource value: 0x7F03003A
-			public const int backgroundOverlayColorAlpha = 2130903098;
+			public const int backgroundInsetEnd = 2130903098;
 			
 			// aapt resource value: 0x7F03003B
-			public const int backgroundSplit = 2130903099;
+			public const int backgroundInsetStart = 2130903099;
 			
 			// aapt resource value: 0x7F03003C
-			public const int backgroundStacked = 2130903100;
+			public const int backgroundInsetTop = 2130903100;
 			
 			// aapt resource value: 0x7F03003D
-			public const int backgroundTint = 2130903101;
+			public const int backgroundOverlayColorAlpha = 2130903101;
 			
 			// aapt resource value: 0x7F03003E
-			public const int backgroundTintMode = 2130903102;
+			public const int backgroundSplit = 2130903102;
 			
 			// aapt resource value: 0x7F03003F
-			public const int badgeGravity = 2130903103;
+			public const int backgroundStacked = 2130903103;
 			
 			// aapt resource value: 0x7F030040
-			public const int badgeStyle = 2130903104;
+			public const int backgroundTint = 2130903104;
 			
 			// aapt resource value: 0x7F030041
-			public const int badgeTextColor = 2130903105;
+			public const int backgroundTintMode = 2130903105;
 			
 			// aapt resource value: 0x7F030042
-			public const int barLength = 2130903106;
+			public const int badgeGravity = 2130903106;
 			
 			// aapt resource value: 0x7F030043
-			public const int behavior_autoHide = 2130903107;
+			public const int badgeStyle = 2130903107;
 			
 			// aapt resource value: 0x7F030044
-			public const int behavior_autoShrink = 2130903108;
+			public const int badgeTextColor = 2130903108;
 			
 			// aapt resource value: 0x7F030045
-			public const int behavior_draggable = 2130903109;
+			public const int barLength = 2130903109;
 			
 			// aapt resource value: 0x7F030046
-			public const int behavior_expandedOffset = 2130903110;
+			public const int behavior_autoHide = 2130903110;
 			
 			// aapt resource value: 0x7F030047
-			public const int behavior_fitToContents = 2130903111;
+			public const int behavior_autoShrink = 2130903111;
 			
 			// aapt resource value: 0x7F030048
-			public const int behavior_halfExpandedRatio = 2130903112;
+			public const int behavior_draggable = 2130903112;
 			
 			// aapt resource value: 0x7F030049
-			public const int behavior_hideable = 2130903113;
+			public const int behavior_expandedOffset = 2130903113;
 			
 			// aapt resource value: 0x7F03004A
-			public const int behavior_overlapTop = 2130903114;
+			public const int behavior_fitToContents = 2130903114;
 			
 			// aapt resource value: 0x7F03004B
-			public const int behavior_peekHeight = 2130903115;
+			public const int behavior_halfExpandedRatio = 2130903115;
 			
 			// aapt resource value: 0x7F03004C
-			public const int behavior_saveFlags = 2130903116;
+			public const int behavior_hideable = 2130903116;
 			
 			// aapt resource value: 0x7F03004D
-			public const int behavior_skipCollapsed = 2130903117;
-			
-			// aapt resource value: 0x7F03004F
-			public const int borderlessButtonStyle = 2130903119;
+			public const int behavior_overlapTop = 2130903117;
 			
 			// aapt resource value: 0x7F03004E
-			public const int borderWidth = 2130903118;
+			public const int behavior_peekHeight = 2130903118;
+			
+			// aapt resource value: 0x7F03004F
+			public const int behavior_saveFlags = 2130903119;
 			
 			// aapt resource value: 0x7F030050
-			public const int bottomAppBarStyle = 2130903120;
-			
-			// aapt resource value: 0x7F030051
-			public const int bottomNavigationStyle = 2130903121;
+			public const int behavior_skipCollapsed = 2130903120;
 			
 			// aapt resource value: 0x7F030052
-			public const int bottomSheetDialogTheme = 2130903122;
+			public const int borderlessButtonStyle = 2130903122;
+			
+			// aapt resource value: 0x7F030051
+			public const int borderWidth = 2130903121;
 			
 			// aapt resource value: 0x7F030053
-			public const int bottomSheetStyle = 2130903123;
+			public const int bottomAppBarStyle = 2130903123;
 			
 			// aapt resource value: 0x7F030054
-			public const int boxBackgroundColor = 2130903124;
+			public const int bottomNavigationStyle = 2130903124;
 			
 			// aapt resource value: 0x7F030055
-			public const int boxBackgroundMode = 2130903125;
+			public const int bottomSheetDialogTheme = 2130903125;
 			
 			// aapt resource value: 0x7F030056
-			public const int boxCollapsedPaddingTop = 2130903126;
+			public const int bottomSheetStyle = 2130903126;
 			
 			// aapt resource value: 0x7F030057
-			public const int boxCornerRadiusBottomEnd = 2130903127;
+			public const int boxBackgroundColor = 2130903127;
 			
 			// aapt resource value: 0x7F030058
-			public const int boxCornerRadiusBottomStart = 2130903128;
+			public const int boxBackgroundMode = 2130903128;
 			
 			// aapt resource value: 0x7F030059
-			public const int boxCornerRadiusTopEnd = 2130903129;
+			public const int boxCollapsedPaddingTop = 2130903129;
 			
 			// aapt resource value: 0x7F03005A
-			public const int boxCornerRadiusTopStart = 2130903130;
+			public const int boxCornerRadiusBottomEnd = 2130903130;
 			
 			// aapt resource value: 0x7F03005B
-			public const int boxStrokeColor = 2130903131;
+			public const int boxCornerRadiusBottomStart = 2130903131;
 			
 			// aapt resource value: 0x7F03005C
-			public const int boxStrokeErrorColor = 2130903132;
+			public const int boxCornerRadiusTopEnd = 2130903132;
 			
 			// aapt resource value: 0x7F03005D
-			public const int boxStrokeWidth = 2130903133;
+			public const int boxCornerRadiusTopStart = 2130903133;
 			
 			// aapt resource value: 0x7F03005E
-			public const int boxStrokeWidthFocused = 2130903134;
+			public const int boxStrokeColor = 2130903134;
 			
 			// aapt resource value: 0x7F03005F
-			public const int buttonBarButtonStyle = 2130903135;
+			public const int boxStrokeErrorColor = 2130903135;
 			
 			// aapt resource value: 0x7F030060
-			public const int buttonBarNegativeButtonStyle = 2130903136;
+			public const int boxStrokeWidth = 2130903136;
 			
 			// aapt resource value: 0x7F030061
-			public const int buttonBarNeutralButtonStyle = 2130903137;
+			public const int boxStrokeWidthFocused = 2130903137;
 			
 			// aapt resource value: 0x7F030062
-			public const int buttonBarPositiveButtonStyle = 2130903138;
+			public const int buttonBarButtonStyle = 2130903138;
 			
 			// aapt resource value: 0x7F030063
-			public const int buttonBarStyle = 2130903139;
+			public const int buttonBarNegativeButtonStyle = 2130903139;
 			
 			// aapt resource value: 0x7F030064
-			public const int buttonCompat = 2130903140;
+			public const int buttonBarNeutralButtonStyle = 2130903140;
 			
 			// aapt resource value: 0x7F030065
-			public const int buttonGravity = 2130903141;
+			public const int buttonBarPositiveButtonStyle = 2130903141;
 			
 			// aapt resource value: 0x7F030066
-			public const int buttonIconDimen = 2130903142;
+			public const int buttonBarStyle = 2130903142;
 			
 			// aapt resource value: 0x7F030067
-			public const int buttonPanelSideLayout = 2130903143;
+			public const int buttonCompat = 2130903143;
 			
 			// aapt resource value: 0x7F030068
-			public const int buttonStyle = 2130903144;
+			public const int buttonGravity = 2130903144;
 			
 			// aapt resource value: 0x7F030069
-			public const int buttonStyleSmall = 2130903145;
+			public const int buttonIconDimen = 2130903145;
 			
 			// aapt resource value: 0x7F03006A
-			public const int buttonTint = 2130903146;
+			public const int buttonPanelSideLayout = 2130903146;
 			
 			// aapt resource value: 0x7F03006B
-			public const int buttonTintMode = 2130903147;
+			public const int buttonStyle = 2130903147;
 			
 			// aapt resource value: 0x7F03006C
-			public const int cardBackgroundColor = 2130903148;
+			public const int buttonStyleSmall = 2130903148;
 			
 			// aapt resource value: 0x7F03006D
-			public const int cardCornerRadius = 2130903149;
+			public const int buttonTint = 2130903149;
 			
 			// aapt resource value: 0x7F03006E
-			public const int cardElevation = 2130903150;
+			public const int buttonTintMode = 2130903150;
 			
 			// aapt resource value: 0x7F03006F
-			public const int cardForegroundColor = 2130903151;
+			public const int cardBackgroundColor = 2130903151;
 			
 			// aapt resource value: 0x7F030070
-			public const int cardMaxElevation = 2130903152;
+			public const int cardCornerRadius = 2130903152;
 			
 			// aapt resource value: 0x7F030071
-			public const int cardPreventCornerOverlap = 2130903153;
+			public const int cardElevation = 2130903153;
 			
 			// aapt resource value: 0x7F030072
-			public const int cardUseCompatPadding = 2130903154;
+			public const int cardForegroundColor = 2130903154;
 			
 			// aapt resource value: 0x7F030073
-			public const int cardViewStyle = 2130903155;
+			public const int cardMaxElevation = 2130903155;
 			
 			// aapt resource value: 0x7F030074
-			public const int checkboxStyle = 2130903156;
+			public const int cardPreventCornerOverlap = 2130903156;
 			
 			// aapt resource value: 0x7F030075
-			public const int checkedButton = 2130903157;
+			public const int cardUseCompatPadding = 2130903157;
 			
 			// aapt resource value: 0x7F030076
-			public const int checkedChip = 2130903158;
+			public const int cardViewStyle = 2130903158;
 			
 			// aapt resource value: 0x7F030077
-			public const int checkedIcon = 2130903159;
+			public const int checkboxStyle = 2130903159;
 			
 			// aapt resource value: 0x7F030078
-			public const int checkedIconEnabled = 2130903160;
+			public const int checkedButton = 2130903160;
 			
 			// aapt resource value: 0x7F030079
-			public const int checkedIconTint = 2130903161;
+			public const int checkedChip = 2130903161;
 			
 			// aapt resource value: 0x7F03007A
-			public const int checkedIconVisible = 2130903162;
+			public const int checkedIcon = 2130903162;
 			
 			// aapt resource value: 0x7F03007B
-			public const int checkedTextViewStyle = 2130903163;
+			public const int checkedIconEnabled = 2130903163;
 			
 			// aapt resource value: 0x7F03007C
-			public const int chipBackgroundColor = 2130903164;
+			public const int checkedIconTint = 2130903164;
 			
 			// aapt resource value: 0x7F03007D
-			public const int chipCornerRadius = 2130903165;
+			public const int checkedIconVisible = 2130903165;
 			
 			// aapt resource value: 0x7F03007E
-			public const int chipEndPadding = 2130903166;
+			public const int checkedTextViewStyle = 2130903166;
 			
 			// aapt resource value: 0x7F03007F
-			public const int chipGroupStyle = 2130903167;
+			public const int chipBackgroundColor = 2130903167;
 			
 			// aapt resource value: 0x7F030080
-			public const int chipIcon = 2130903168;
+			public const int chipCornerRadius = 2130903168;
 			
 			// aapt resource value: 0x7F030081
-			public const int chipIconEnabled = 2130903169;
+			public const int chipEndPadding = 2130903169;
 			
 			// aapt resource value: 0x7F030082
-			public const int chipIconSize = 2130903170;
+			public const int chipGroupStyle = 2130903170;
 			
 			// aapt resource value: 0x7F030083
-			public const int chipIconTint = 2130903171;
+			public const int chipIcon = 2130903171;
 			
 			// aapt resource value: 0x7F030084
-			public const int chipIconVisible = 2130903172;
+			public const int chipIconEnabled = 2130903172;
 			
 			// aapt resource value: 0x7F030085
-			public const int chipMinHeight = 2130903173;
+			public const int chipIconSize = 2130903173;
 			
 			// aapt resource value: 0x7F030086
-			public const int chipMinTouchTargetSize = 2130903174;
+			public const int chipIconTint = 2130903174;
 			
 			// aapt resource value: 0x7F030087
-			public const int chipSpacing = 2130903175;
+			public const int chipIconVisible = 2130903175;
 			
 			// aapt resource value: 0x7F030088
-			public const int chipSpacingHorizontal = 2130903176;
+			public const int chipMinHeight = 2130903176;
 			
 			// aapt resource value: 0x7F030089
-			public const int chipSpacingVertical = 2130903177;
+			public const int chipMinTouchTargetSize = 2130903177;
 			
 			// aapt resource value: 0x7F03008A
-			public const int chipStandaloneStyle = 2130903178;
+			public const int chipSpacing = 2130903178;
 			
 			// aapt resource value: 0x7F03008B
-			public const int chipStartPadding = 2130903179;
+			public const int chipSpacingHorizontal = 2130903179;
 			
 			// aapt resource value: 0x7F03008C
-			public const int chipStrokeColor = 2130903180;
+			public const int chipSpacingVertical = 2130903180;
 			
 			// aapt resource value: 0x7F03008D
-			public const int chipStrokeWidth = 2130903181;
+			public const int chipStandaloneStyle = 2130903181;
 			
 			// aapt resource value: 0x7F03008E
-			public const int chipStyle = 2130903182;
+			public const int chipStartPadding = 2130903182;
 			
 			// aapt resource value: 0x7F03008F
-			public const int chipSurfaceColor = 2130903183;
+			public const int chipStrokeColor = 2130903183;
 			
 			// aapt resource value: 0x7F030090
-			public const int closeIcon = 2130903184;
+			public const int chipStrokeWidth = 2130903184;
 			
 			// aapt resource value: 0x7F030091
-			public const int closeIconEnabled = 2130903185;
+			public const int chipStyle = 2130903185;
 			
 			// aapt resource value: 0x7F030092
-			public const int closeIconEndPadding = 2130903186;
+			public const int chipSurfaceColor = 2130903186;
 			
 			// aapt resource value: 0x7F030093
-			public const int closeIconSize = 2130903187;
+			public const int closeIcon = 2130903187;
 			
 			// aapt resource value: 0x7F030094
-			public const int closeIconStartPadding = 2130903188;
+			public const int closeIconEnabled = 2130903188;
 			
 			// aapt resource value: 0x7F030095
-			public const int closeIconTint = 2130903189;
+			public const int closeIconEndPadding = 2130903189;
 			
 			// aapt resource value: 0x7F030096
-			public const int closeIconVisible = 2130903190;
+			public const int closeIconSize = 2130903190;
 			
 			// aapt resource value: 0x7F030097
-			public const int closeItemLayout = 2130903191;
+			public const int closeIconStartPadding = 2130903191;
 			
 			// aapt resource value: 0x7F030098
-			public const int collapseContentDescription = 2130903192;
-			
-			// aapt resource value: 0x7F03009A
-			public const int collapsedTitleGravity = 2130903194;
-			
-			// aapt resource value: 0x7F03009B
-			public const int collapsedTitleTextAppearance = 2130903195;
+			public const int closeIconTint = 2130903192;
 			
 			// aapt resource value: 0x7F030099
-			public const int collapseIcon = 2130903193;
+			public const int closeIconVisible = 2130903193;
 			
-			// aapt resource value: 0x7F03009C
-			public const int collectionViewStyle = 2130903196;
+			// aapt resource value: 0x7F03009A
+			public const int closeItemLayout = 2130903194;
+			
+			// aapt resource value: 0x7F03009B
+			public const int collapseContentDescription = 2130903195;
 			
 			// aapt resource value: 0x7F03009D
-			public const int color = 2130903197;
+			public const int collapsedTitleGravity = 2130903197;
 			
 			// aapt resource value: 0x7F03009E
-			public const int colorAccent = 2130903198;
+			public const int collapsedTitleTextAppearance = 2130903198;
+			
+			// aapt resource value: 0x7F03009C
+			public const int collapseIcon = 2130903196;
 			
 			// aapt resource value: 0x7F03009F
-			public const int colorBackgroundFloating = 2130903199;
+			public const int collectionViewStyle = 2130903199;
 			
 			// aapt resource value: 0x7F0300A0
-			public const int colorButtonNormal = 2130903200;
+			public const int color = 2130903200;
 			
 			// aapt resource value: 0x7F0300A1
-			public const int colorControlActivated = 2130903201;
+			public const int colorAccent = 2130903201;
 			
 			// aapt resource value: 0x7F0300A2
-			public const int colorControlHighlight = 2130903202;
+			public const int colorBackgroundFloating = 2130903202;
 			
 			// aapt resource value: 0x7F0300A3
-			public const int colorControlNormal = 2130903203;
+			public const int colorButtonNormal = 2130903203;
 			
 			// aapt resource value: 0x7F0300A4
-			public const int colorError = 2130903204;
+			public const int colorControlActivated = 2130903204;
 			
 			// aapt resource value: 0x7F0300A5
-			public const int colorOnBackground = 2130903205;
+			public const int colorControlHighlight = 2130903205;
 			
 			// aapt resource value: 0x7F0300A6
-			public const int colorOnError = 2130903206;
+			public const int colorControlNormal = 2130903206;
 			
 			// aapt resource value: 0x7F0300A7
-			public const int colorOnPrimary = 2130903207;
+			public const int colorError = 2130903207;
 			
 			// aapt resource value: 0x7F0300A8
-			public const int colorOnPrimarySurface = 2130903208;
+			public const int colorOnBackground = 2130903208;
 			
 			// aapt resource value: 0x7F0300A9
-			public const int colorOnSecondary = 2130903209;
+			public const int colorOnError = 2130903209;
 			
 			// aapt resource value: 0x7F0300AA
-			public const int colorOnSurface = 2130903210;
+			public const int colorOnPrimary = 2130903210;
 			
 			// aapt resource value: 0x7F0300AB
-			public const int colorPrimary = 2130903211;
+			public const int colorOnPrimarySurface = 2130903211;
 			
 			// aapt resource value: 0x7F0300AC
-			public const int colorPrimaryDark = 2130903212;
+			public const int colorOnSecondary = 2130903212;
 			
 			// aapt resource value: 0x7F0300AD
-			public const int colorPrimarySurface = 2130903213;
+			public const int colorOnSurface = 2130903213;
 			
 			// aapt resource value: 0x7F0300AE
-			public const int colorPrimaryVariant = 2130903214;
+			public const int colorPrimary = 2130903214;
 			
 			// aapt resource value: 0x7F0300AF
-			public const int colorSecondary = 2130903215;
+			public const int colorPrimaryDark = 2130903215;
 			
 			// aapt resource value: 0x7F0300B0
-			public const int colorSecondaryVariant = 2130903216;
+			public const int colorPrimarySurface = 2130903216;
 			
 			// aapt resource value: 0x7F0300B1
-			public const int colorSurface = 2130903217;
+			public const int colorPrimaryVariant = 2130903217;
 			
 			// aapt resource value: 0x7F0300B2
-			public const int colorSwitchThumbNormal = 2130903218;
+			public const int colorSecondary = 2130903218;
 			
 			// aapt resource value: 0x7F0300B3
-			public const int commitIcon = 2130903219;
+			public const int colorSecondaryVariant = 2130903219;
 			
 			// aapt resource value: 0x7F0300B4
-			public const int contentDescription = 2130903220;
+			public const int colorSurface = 2130903220;
 			
 			// aapt resource value: 0x7F0300B5
-			public const int contentInsetEnd = 2130903221;
+			public const int colorSwitchThumbNormal = 2130903221;
 			
 			// aapt resource value: 0x7F0300B6
-			public const int contentInsetEndWithActions = 2130903222;
+			public const int commitIcon = 2130903222;
 			
 			// aapt resource value: 0x7F0300B7
-			public const int contentInsetLeft = 2130903223;
+			public const int contentDescription = 2130903223;
 			
 			// aapt resource value: 0x7F0300B8
-			public const int contentInsetRight = 2130903224;
+			public const int contentInsetEnd = 2130903224;
 			
 			// aapt resource value: 0x7F0300B9
-			public const int contentInsetStart = 2130903225;
+			public const int contentInsetEndWithActions = 2130903225;
 			
 			// aapt resource value: 0x7F0300BA
-			public const int contentInsetStartWithNavigation = 2130903226;
+			public const int contentInsetLeft = 2130903226;
 			
 			// aapt resource value: 0x7F0300BB
-			public const int contentPadding = 2130903227;
+			public const int contentInsetRight = 2130903227;
 			
 			// aapt resource value: 0x7F0300BC
-			public const int contentPaddingBottom = 2130903228;
+			public const int contentInsetStart = 2130903228;
 			
 			// aapt resource value: 0x7F0300BD
-			public const int contentPaddingLeft = 2130903229;
+			public const int contentInsetStartWithNavigation = 2130903229;
 			
 			// aapt resource value: 0x7F0300BE
-			public const int contentPaddingRight = 2130903230;
+			public const int contentPadding = 2130903230;
 			
 			// aapt resource value: 0x7F0300BF
-			public const int contentPaddingTop = 2130903231;
+			public const int contentPaddingBottom = 2130903231;
 			
 			// aapt resource value: 0x7F0300C0
-			public const int contentScrim = 2130903232;
+			public const int contentPaddingLeft = 2130903232;
 			
 			// aapt resource value: 0x7F0300C1
-			public const int controlBackground = 2130903233;
+			public const int contentPaddingRight = 2130903233;
 			
 			// aapt resource value: 0x7F0300C2
-			public const int coordinatorLayoutStyle = 2130903234;
+			public const int contentPaddingTop = 2130903234;
 			
 			// aapt resource value: 0x7F0300C3
-			public const int cornerFamily = 2130903235;
+			public const int contentScrim = 2130903235;
 			
 			// aapt resource value: 0x7F0300C4
-			public const int cornerFamilyBottomLeft = 2130903236;
+			public const int controlBackground = 2130903236;
 			
 			// aapt resource value: 0x7F0300C5
-			public const int cornerFamilyBottomRight = 2130903237;
+			public const int coordinatorLayoutStyle = 2130903237;
 			
 			// aapt resource value: 0x7F0300C6
-			public const int cornerFamilyTopLeft = 2130903238;
+			public const int cornerFamily = 2130903238;
 			
 			// aapt resource value: 0x7F0300C7
-			public const int cornerFamilyTopRight = 2130903239;
+			public const int cornerFamilyBottomLeft = 2130903239;
 			
 			// aapt resource value: 0x7F0300C8
-			public const int cornerRadius = 2130903240;
+			public const int cornerFamilyBottomRight = 2130903240;
 			
 			// aapt resource value: 0x7F0300C9
-			public const int cornerSize = 2130903241;
+			public const int cornerFamilyTopLeft = 2130903241;
 			
 			// aapt resource value: 0x7F0300CA
-			public const int cornerSizeBottomLeft = 2130903242;
+			public const int cornerFamilyTopRight = 2130903242;
 			
 			// aapt resource value: 0x7F0300CB
-			public const int cornerSizeBottomRight = 2130903243;
+			public const int cornerRadius = 2130903243;
 			
 			// aapt resource value: 0x7F0300CC
-			public const int cornerSizeTopLeft = 2130903244;
+			public const int cornerSize = 2130903244;
 			
 			// aapt resource value: 0x7F0300CD
-			public const int cornerSizeTopRight = 2130903245;
+			public const int cornerSizeBottomLeft = 2130903245;
 			
 			// aapt resource value: 0x7F0300CE
-			public const int counterEnabled = 2130903246;
+			public const int cornerSizeBottomRight = 2130903246;
 			
 			// aapt resource value: 0x7F0300CF
-			public const int counterMaxLength = 2130903247;
+			public const int cornerSizeTopLeft = 2130903247;
 			
 			// aapt resource value: 0x7F0300D0
-			public const int counterOverflowTextAppearance = 2130903248;
+			public const int cornerSizeTopRight = 2130903248;
 			
 			// aapt resource value: 0x7F0300D1
-			public const int counterOverflowTextColor = 2130903249;
+			public const int counterEnabled = 2130903249;
 			
 			// aapt resource value: 0x7F0300D2
-			public const int counterTextAppearance = 2130903250;
+			public const int counterMaxLength = 2130903250;
 			
 			// aapt resource value: 0x7F0300D3
-			public const int counterTextColor = 2130903251;
+			public const int counterOverflowTextAppearance = 2130903251;
 			
 			// aapt resource value: 0x7F0300D4
-			public const int customNavigationLayout = 2130903252;
+			public const int counterOverflowTextColor = 2130903252;
 			
 			// aapt resource value: 0x7F0300D5
-			public const int dayInvalidStyle = 2130903253;
+			public const int counterTextAppearance = 2130903253;
 			
 			// aapt resource value: 0x7F0300D6
-			public const int daySelectedStyle = 2130903254;
+			public const int counterTextColor = 2130903254;
 			
 			// aapt resource value: 0x7F0300D7
-			public const int dayStyle = 2130903255;
+			public const int customNavigationLayout = 2130903255;
 			
 			// aapt resource value: 0x7F0300D8
-			public const int dayTodayStyle = 2130903256;
+			public const int dayInvalidStyle = 2130903256;
 			
 			// aapt resource value: 0x7F0300D9
-			public const int defaultQueryHint = 2130903257;
+			public const int daySelectedStyle = 2130903257;
 			
 			// aapt resource value: 0x7F0300DA
-			public const int dialogCornerRadius = 2130903258;
+			public const int dayStyle = 2130903258;
 			
 			// aapt resource value: 0x7F0300DB
-			public const int dialogPreferredPadding = 2130903259;
+			public const int dayTodayStyle = 2130903259;
 			
 			// aapt resource value: 0x7F0300DC
-			public const int dialogTheme = 2130903260;
+			public const int defaultQueryHint = 2130903260;
 			
 			// aapt resource value: 0x7F0300DD
-			public const int displayOptions = 2130903261;
+			public const int dialogCornerRadius = 2130903261;
 			
 			// aapt resource value: 0x7F0300DE
-			public const int divider = 2130903262;
+			public const int dialogPreferredPadding = 2130903262;
 			
 			// aapt resource value: 0x7F0300DF
-			public const int dividerHorizontal = 2130903263;
+			public const int dialogTheme = 2130903263;
 			
 			// aapt resource value: 0x7F0300E0
-			public const int dividerPadding = 2130903264;
+			public const int displayOptions = 2130903264;
 			
 			// aapt resource value: 0x7F0300E1
-			public const int dividerVertical = 2130903265;
+			public const int divider = 2130903265;
 			
 			// aapt resource value: 0x7F0300E2
-			public const int drawableBottomCompat = 2130903266;
+			public const int dividerHorizontal = 2130903266;
 			
 			// aapt resource value: 0x7F0300E3
-			public const int drawableEndCompat = 2130903267;
+			public const int dividerPadding = 2130903267;
 			
 			// aapt resource value: 0x7F0300E4
-			public const int drawableLeftCompat = 2130903268;
+			public const int dividerVertical = 2130903268;
 			
 			// aapt resource value: 0x7F0300E5
-			public const int drawableRightCompat = 2130903269;
+			public const int drawableBottomCompat = 2130903269;
 			
 			// aapt resource value: 0x7F0300E6
-			public const int drawableSize = 2130903270;
+			public const int drawableEndCompat = 2130903270;
 			
 			// aapt resource value: 0x7F0300E7
-			public const int drawableStartCompat = 2130903271;
+			public const int drawableLeftCompat = 2130903271;
 			
 			// aapt resource value: 0x7F0300E8
-			public const int drawableTint = 2130903272;
+			public const int drawableRightCompat = 2130903272;
 			
 			// aapt resource value: 0x7F0300E9
-			public const int drawableTintMode = 2130903273;
+			public const int drawableSize = 2130903273;
 			
 			// aapt resource value: 0x7F0300EA
-			public const int drawableTopCompat = 2130903274;
+			public const int drawableStartCompat = 2130903274;
 			
 			// aapt resource value: 0x7F0300EB
-			public const int drawerArrowStyle = 2130903275;
+			public const int drawableTint = 2130903275;
 			
 			// aapt resource value: 0x7F0300EC
-			public const int drawerLayoutStyle = 2130903276;
-			
-			// aapt resource value: 0x7F0300EE
-			public const int dropdownListPreferredItemHeight = 2130903278;
+			public const int drawableTintMode = 2130903276;
 			
 			// aapt resource value: 0x7F0300ED
-			public const int dropDownListViewStyle = 2130903277;
+			public const int drawableTopCompat = 2130903277;
+			
+			// aapt resource value: 0x7F0300EE
+			public const int drawerArrowStyle = 2130903278;
 			
 			// aapt resource value: 0x7F0300EF
-			public const int editTextBackground = 2130903279;
-			
-			// aapt resource value: 0x7F0300F0
-			public const int editTextColor = 2130903280;
+			public const int drawerLayoutStyle = 2130903279;
 			
 			// aapt resource value: 0x7F0300F1
-			public const int editTextStyle = 2130903281;
+			public const int dropdownListPreferredItemHeight = 2130903281;
+			
+			// aapt resource value: 0x7F0300F0
+			public const int dropDownListViewStyle = 2130903280;
 			
 			// aapt resource value: 0x7F0300F2
-			public const int elevation = 2130903282;
+			public const int editTextBackground = 2130903282;
 			
 			// aapt resource value: 0x7F0300F3
-			public const int elevationOverlayColor = 2130903283;
+			public const int editTextColor = 2130903283;
 			
 			// aapt resource value: 0x7F0300F4
-			public const int elevationOverlayEnabled = 2130903284;
+			public const int editTextStyle = 2130903284;
 			
 			// aapt resource value: 0x7F0300F5
-			public const int endIconCheckable = 2130903285;
+			public const int elevation = 2130903285;
 			
 			// aapt resource value: 0x7F0300F6
-			public const int endIconContentDescription = 2130903286;
+			public const int elevationOverlayColor = 2130903286;
 			
 			// aapt resource value: 0x7F0300F7
-			public const int endIconDrawable = 2130903287;
+			public const int elevationOverlayEnabled = 2130903287;
 			
 			// aapt resource value: 0x7F0300F8
-			public const int endIconMode = 2130903288;
+			public const int endIconCheckable = 2130903288;
 			
 			// aapt resource value: 0x7F0300F9
-			public const int endIconTint = 2130903289;
+			public const int endIconContentDescription = 2130903289;
 			
 			// aapt resource value: 0x7F0300FA
-			public const int endIconTintMode = 2130903290;
+			public const int endIconDrawable = 2130903290;
 			
 			// aapt resource value: 0x7F0300FB
-			public const int enforceMaterialTheme = 2130903291;
+			public const int endIconMode = 2130903291;
 			
 			// aapt resource value: 0x7F0300FC
-			public const int enforceTextAppearance = 2130903292;
+			public const int endIconTint = 2130903292;
 			
 			// aapt resource value: 0x7F0300FD
-			public const int ensureMinTouchTargetSize = 2130903293;
+			public const int endIconTintMode = 2130903293;
 			
 			// aapt resource value: 0x7F0300FE
-			public const int errorContentDescription = 2130903294;
+			public const int enforceMaterialTheme = 2130903294;
 			
 			// aapt resource value: 0x7F0300FF
-			public const int errorEnabled = 2130903295;
+			public const int enforceTextAppearance = 2130903295;
 			
 			// aapt resource value: 0x7F030100
-			public const int errorIconDrawable = 2130903296;
+			public const int ensureMinTouchTargetSize = 2130903296;
 			
 			// aapt resource value: 0x7F030101
-			public const int errorIconTint = 2130903297;
+			public const int errorContentDescription = 2130903297;
 			
 			// aapt resource value: 0x7F030102
-			public const int errorIconTintMode = 2130903298;
+			public const int errorEnabled = 2130903298;
 			
 			// aapt resource value: 0x7F030103
-			public const int errorTextAppearance = 2130903299;
+			public const int errorIconDrawable = 2130903299;
 			
 			// aapt resource value: 0x7F030104
-			public const int errorTextColor = 2130903300;
+			public const int errorIconTint = 2130903300;
 			
 			// aapt resource value: 0x7F030105
-			public const int expandActivityOverflowButtonDrawable = 2130903301;
+			public const int errorIconTintMode = 2130903301;
 			
 			// aapt resource value: 0x7F030106
-			public const int expanded = 2130903302;
+			public const int errorTextAppearance = 2130903302;
 			
 			// aapt resource value: 0x7F030107
-			public const int expandedTitleGravity = 2130903303;
+			public const int errorTextColor = 2130903303;
 			
 			// aapt resource value: 0x7F030108
-			public const int expandedTitleMargin = 2130903304;
+			public const int expandActivityOverflowButtonDrawable = 2130903304;
 			
 			// aapt resource value: 0x7F030109
-			public const int expandedTitleMarginBottom = 2130903305;
+			public const int expanded = 2130903305;
 			
 			// aapt resource value: 0x7F03010A
-			public const int expandedTitleMarginEnd = 2130903306;
+			public const int expandedTitleGravity = 2130903306;
 			
 			// aapt resource value: 0x7F03010B
-			public const int expandedTitleMarginStart = 2130903307;
+			public const int expandedTitleMargin = 2130903307;
 			
 			// aapt resource value: 0x7F03010C
-			public const int expandedTitleMarginTop = 2130903308;
+			public const int expandedTitleMarginBottom = 2130903308;
 			
 			// aapt resource value: 0x7F03010D
-			public const int expandedTitleTextAppearance = 2130903309;
-			
-			// aapt resource value: 0x7F03010F
-			public const int extendedFloatingActionButtonStyle = 2130903311;
+			public const int expandedTitleMarginEnd = 2130903309;
 			
 			// aapt resource value: 0x7F03010E
-			public const int extendMotionSpec = 2130903310;
+			public const int expandedTitleMarginStart = 2130903310;
+			
+			// aapt resource value: 0x7F03010F
+			public const int expandedTitleMarginTop = 2130903311;
 			
 			// aapt resource value: 0x7F030110
-			public const int fabAlignmentMode = 2130903312;
-			
-			// aapt resource value: 0x7F030111
-			public const int fabAnimationMode = 2130903313;
+			public const int expandedTitleTextAppearance = 2130903312;
 			
 			// aapt resource value: 0x7F030112
-			public const int fabCradleMargin = 2130903314;
+			public const int extendedFloatingActionButtonStyle = 2130903314;
+			
+			// aapt resource value: 0x7F030111
+			public const int extendMotionSpec = 2130903313;
 			
 			// aapt resource value: 0x7F030113
-			public const int fabCradleRoundedCornerRadius = 2130903315;
+			public const int fabAlignmentMode = 2130903315;
 			
 			// aapt resource value: 0x7F030114
-			public const int fabCradleVerticalOffset = 2130903316;
+			public const int fabAnimationMode = 2130903316;
 			
 			// aapt resource value: 0x7F030115
-			public const int fabCustomSize = 2130903317;
+			public const int fabCradleMargin = 2130903317;
 			
 			// aapt resource value: 0x7F030116
-			public const int fabSize = 2130903318;
+			public const int fabCradleRoundedCornerRadius = 2130903318;
 			
 			// aapt resource value: 0x7F030117
-			public const int fastScrollEnabled = 2130903319;
+			public const int fabCradleVerticalOffset = 2130903319;
 			
 			// aapt resource value: 0x7F030118
-			public const int fastScrollHorizontalThumbDrawable = 2130903320;
+			public const int fabCustomSize = 2130903320;
 			
 			// aapt resource value: 0x7F030119
-			public const int fastScrollHorizontalTrackDrawable = 2130903321;
+			public const int fabSize = 2130903321;
 			
 			// aapt resource value: 0x7F03011A
-			public const int fastScrollVerticalThumbDrawable = 2130903322;
+			public const int fastScrollEnabled = 2130903322;
 			
 			// aapt resource value: 0x7F03011B
-			public const int fastScrollVerticalTrackDrawable = 2130903323;
+			public const int fastScrollHorizontalThumbDrawable = 2130903323;
 			
 			// aapt resource value: 0x7F03011C
-			public const int firstBaselineToTopHeight = 2130903324;
+			public const int fastScrollHorizontalTrackDrawable = 2130903324;
 			
 			// aapt resource value: 0x7F03011D
-			public const int floatingActionButtonStyle = 2130903325;
+			public const int fastScrollVerticalThumbDrawable = 2130903325;
 			
 			// aapt resource value: 0x7F03011E
-			public const int font = 2130903326;
+			public const int fastScrollVerticalTrackDrawable = 2130903326;
 			
 			// aapt resource value: 0x7F03011F
-			public const int fontFamily = 2130903327;
+			public const int firstBaselineToTopHeight = 2130903327;
 			
 			// aapt resource value: 0x7F030120
-			public const int fontProviderAuthority = 2130903328;
+			public const int floatingActionButtonStyle = 2130903328;
 			
 			// aapt resource value: 0x7F030121
-			public const int fontProviderCerts = 2130903329;
+			public const int font = 2130903329;
 			
 			// aapt resource value: 0x7F030122
-			public const int fontProviderFetchStrategy = 2130903330;
+			public const int fontFamily = 2130903330;
 			
 			// aapt resource value: 0x7F030123
-			public const int fontProviderFetchTimeout = 2130903331;
+			public const int fontProviderAuthority = 2130903331;
 			
 			// aapt resource value: 0x7F030124
-			public const int fontProviderPackage = 2130903332;
+			public const int fontProviderCerts = 2130903332;
 			
 			// aapt resource value: 0x7F030125
-			public const int fontProviderQuery = 2130903333;
+			public const int fontProviderFetchStrategy = 2130903333;
 			
 			// aapt resource value: 0x7F030126
-			public const int fontStyle = 2130903334;
+			public const int fontProviderFetchTimeout = 2130903334;
 			
 			// aapt resource value: 0x7F030127
-			public const int fontVariationSettings = 2130903335;
+			public const int fontProviderPackage = 2130903335;
 			
 			// aapt resource value: 0x7F030128
-			public const int fontWeight = 2130903336;
+			public const int fontProviderQuery = 2130903336;
 			
 			// aapt resource value: 0x7F030129
-			public const int foregroundInsidePadding = 2130903337;
+			public const int fontStyle = 2130903337;
 			
 			// aapt resource value: 0x7F03012A
-			public const int gapBetweenBars = 2130903338;
+			public const int fontVariationSettings = 2130903338;
 			
 			// aapt resource value: 0x7F03012B
-			public const int gestureInsetBottomIgnored = 2130903339;
+			public const int fontWeight = 2130903339;
 			
 			// aapt resource value: 0x7F03012C
-			public const int goIcon = 2130903340;
+			public const int foregroundInsidePadding = 2130903340;
 			
 			// aapt resource value: 0x7F03012D
-			public const int haloColor = 2130903341;
+			public const int gapBetweenBars = 2130903341;
 			
 			// aapt resource value: 0x7F03012E
-			public const int haloRadius = 2130903342;
+			public const int gestureInsetBottomIgnored = 2130903342;
 			
 			// aapt resource value: 0x7F03012F
-			public const int headerLayout = 2130903343;
+			public const int goIcon = 2130903343;
 			
 			// aapt resource value: 0x7F030130
-			public const int height = 2130903344;
+			public const int haloColor = 2130903344;
 			
 			// aapt resource value: 0x7F030131
-			public const int helperText = 2130903345;
+			public const int haloRadius = 2130903345;
 			
 			// aapt resource value: 0x7F030132
-			public const int helperTextEnabled = 2130903346;
+			public const int headerLayout = 2130903346;
 			
 			// aapt resource value: 0x7F030133
-			public const int helperTextTextAppearance = 2130903347;
+			public const int height = 2130903347;
 			
 			// aapt resource value: 0x7F030134
-			public const int helperTextTextColor = 2130903348;
+			public const int helperText = 2130903348;
 			
 			// aapt resource value: 0x7F030135
-			public const int hideMotionSpec = 2130903349;
+			public const int helperTextEnabled = 2130903349;
 			
 			// aapt resource value: 0x7F030136
-			public const int hideOnContentScroll = 2130903350;
+			public const int helperTextTextAppearance = 2130903350;
 			
 			// aapt resource value: 0x7F030137
-			public const int hideOnScroll = 2130903351;
+			public const int helperTextTextColor = 2130903351;
 			
 			// aapt resource value: 0x7F030138
-			public const int hintAnimationEnabled = 2130903352;
+			public const int hideMotionSpec = 2130903352;
 			
 			// aapt resource value: 0x7F030139
-			public const int hintEnabled = 2130903353;
+			public const int hideOnContentScroll = 2130903353;
 			
 			// aapt resource value: 0x7F03013A
-			public const int hintTextAppearance = 2130903354;
+			public const int hideOnScroll = 2130903354;
 			
 			// aapt resource value: 0x7F03013B
-			public const int hintTextColor = 2130903355;
+			public const int hintAnimationEnabled = 2130903355;
 			
 			// aapt resource value: 0x7F03013C
-			public const int homeAsUpIndicator = 2130903356;
+			public const int hintEnabled = 2130903356;
 			
 			// aapt resource value: 0x7F03013D
-			public const int homeLayout = 2130903357;
+			public const int hintTextAppearance = 2130903357;
 			
 			// aapt resource value: 0x7F03013E
-			public const int horizontalOffset = 2130903358;
+			public const int hintTextColor = 2130903358;
 			
 			// aapt resource value: 0x7F03013F
-			public const int hoveredFocusedTranslationZ = 2130903359;
+			public const int homeAsUpIndicator = 2130903359;
 			
 			// aapt resource value: 0x7F030140
-			public const int icon = 2130903360;
+			public const int homeLayout = 2130903360;
 			
 			// aapt resource value: 0x7F030141
-			public const int iconEndPadding = 2130903361;
+			public const int horizontalOffset = 2130903361;
 			
 			// aapt resource value: 0x7F030142
-			public const int iconGravity = 2130903362;
-			
-			// aapt resource value: 0x7F030148
-			public const int iconifiedByDefault = 2130903368;
+			public const int hoveredFocusedTranslationZ = 2130903362;
 			
 			// aapt resource value: 0x7F030143
-			public const int iconPadding = 2130903363;
+			public const int icon = 2130903363;
 			
 			// aapt resource value: 0x7F030144
-			public const int iconSize = 2130903364;
+			public const int iconEndPadding = 2130903364;
 			
 			// aapt resource value: 0x7F030145
-			public const int iconStartPadding = 2130903365;
-			
-			// aapt resource value: 0x7F030146
-			public const int iconTint = 2130903366;
-			
-			// aapt resource value: 0x7F030147
-			public const int iconTintMode = 2130903367;
-			
-			// aapt resource value: 0x7F030149
-			public const int imageButtonStyle = 2130903369;
-			
-			// aapt resource value: 0x7F03014A
-			public const int indeterminateProgressStyle = 2130903370;
+			public const int iconGravity = 2130903365;
 			
 			// aapt resource value: 0x7F03014B
-			public const int initialActivityCount = 2130903371;
+			public const int iconifiedByDefault = 2130903371;
+			
+			// aapt resource value: 0x7F030146
+			public const int iconPadding = 2130903366;
+			
+			// aapt resource value: 0x7F030147
+			public const int iconSize = 2130903367;
+			
+			// aapt resource value: 0x7F030148
+			public const int iconStartPadding = 2130903368;
+			
+			// aapt resource value: 0x7F030149
+			public const int iconTint = 2130903369;
+			
+			// aapt resource value: 0x7F03014A
+			public const int iconTintMode = 2130903370;
 			
 			// aapt resource value: 0x7F03014C
-			public const int insetForeground = 2130903372;
+			public const int imageButtonStyle = 2130903372;
 			
 			// aapt resource value: 0x7F03014D
-			public const int isLightTheme = 2130903373;
+			public const int indeterminateProgressStyle = 2130903373;
 			
 			// aapt resource value: 0x7F03014E
-			public const int isMaterialTheme = 2130903374;
+			public const int initialActivityCount = 2130903374;
 			
 			// aapt resource value: 0x7F03014F
-			public const int itemBackground = 2130903375;
+			public const int insetForeground = 2130903375;
 			
 			// aapt resource value: 0x7F030150
-			public const int itemFillColor = 2130903376;
+			public const int isLightTheme = 2130903376;
 			
 			// aapt resource value: 0x7F030151
-			public const int itemHorizontalPadding = 2130903377;
+			public const int isMaterialTheme = 2130903377;
 			
 			// aapt resource value: 0x7F030152
-			public const int itemHorizontalTranslationEnabled = 2130903378;
+			public const int itemBackground = 2130903378;
 			
 			// aapt resource value: 0x7F030153
-			public const int itemIconPadding = 2130903379;
+			public const int itemFillColor = 2130903379;
 			
 			// aapt resource value: 0x7F030154
-			public const int itemIconSize = 2130903380;
+			public const int itemHorizontalPadding = 2130903380;
 			
 			// aapt resource value: 0x7F030155
-			public const int itemIconTint = 2130903381;
+			public const int itemHorizontalTranslationEnabled = 2130903381;
 			
 			// aapt resource value: 0x7F030156
-			public const int itemMaxLines = 2130903382;
+			public const int itemIconPadding = 2130903382;
 			
 			// aapt resource value: 0x7F030157
-			public const int itemPadding = 2130903383;
+			public const int itemIconSize = 2130903383;
 			
 			// aapt resource value: 0x7F030158
-			public const int itemRippleColor = 2130903384;
+			public const int itemIconTint = 2130903384;
 			
 			// aapt resource value: 0x7F030159
-			public const int itemShapeAppearance = 2130903385;
+			public const int itemMaxLines = 2130903385;
 			
 			// aapt resource value: 0x7F03015A
-			public const int itemShapeAppearanceOverlay = 2130903386;
+			public const int itemPadding = 2130903386;
 			
 			// aapt resource value: 0x7F03015B
-			public const int itemShapeFillColor = 2130903387;
+			public const int itemRippleColor = 2130903387;
 			
 			// aapt resource value: 0x7F03015C
-			public const int itemShapeInsetBottom = 2130903388;
+			public const int itemShapeAppearance = 2130903388;
 			
 			// aapt resource value: 0x7F03015D
-			public const int itemShapeInsetEnd = 2130903389;
+			public const int itemShapeAppearanceOverlay = 2130903389;
 			
 			// aapt resource value: 0x7F03015E
-			public const int itemShapeInsetStart = 2130903390;
+			public const int itemShapeFillColor = 2130903390;
 			
 			// aapt resource value: 0x7F03015F
-			public const int itemShapeInsetTop = 2130903391;
+			public const int itemShapeInsetBottom = 2130903391;
 			
 			// aapt resource value: 0x7F030160
-			public const int itemSpacing = 2130903392;
+			public const int itemShapeInsetEnd = 2130903392;
 			
 			// aapt resource value: 0x7F030161
-			public const int itemStrokeColor = 2130903393;
+			public const int itemShapeInsetStart = 2130903393;
 			
 			// aapt resource value: 0x7F030162
-			public const int itemStrokeWidth = 2130903394;
+			public const int itemShapeInsetTop = 2130903394;
 			
 			// aapt resource value: 0x7F030163
-			public const int itemTextAppearance = 2130903395;
+			public const int itemSpacing = 2130903395;
 			
 			// aapt resource value: 0x7F030164
-			public const int itemTextAppearanceActive = 2130903396;
+			public const int itemStrokeColor = 2130903396;
 			
 			// aapt resource value: 0x7F030165
-			public const int itemTextAppearanceInactive = 2130903397;
+			public const int itemStrokeWidth = 2130903397;
 			
 			// aapt resource value: 0x7F030166
-			public const int itemTextColor = 2130903398;
+			public const int itemTextAppearance = 2130903398;
 			
 			// aapt resource value: 0x7F030167
-			public const int keylines = 2130903399;
+			public const int itemTextAppearanceActive = 2130903399;
 			
 			// aapt resource value: 0x7F030168
-			public const int labelBehavior = 2130903400;
+			public const int itemTextAppearanceInactive = 2130903400;
 			
 			// aapt resource value: 0x7F030169
-			public const int labelStyle = 2130903401;
+			public const int itemTextColor = 2130903401;
 			
 			// aapt resource value: 0x7F03016A
-			public const int labelVisibilityMode = 2130903402;
+			public const int keylines = 2130903402;
 			
 			// aapt resource value: 0x7F03016B
-			public const int lastBaselineToBottomHeight = 2130903403;
+			public const int labelBehavior = 2130903403;
 			
 			// aapt resource value: 0x7F03016C
-			public const int layout = 2130903404;
+			public const int labelStyle = 2130903404;
 			
 			// aapt resource value: 0x7F03016D
-			public const int layoutManager = 2130903405;
+			public const int labelVisibilityMode = 2130903405;
 			
 			// aapt resource value: 0x7F03016E
-			public const int layout_anchor = 2130903406;
+			public const int lastBaselineToBottomHeight = 2130903406;
 			
 			// aapt resource value: 0x7F03016F
-			public const int layout_anchorGravity = 2130903407;
+			public const int layout = 2130903407;
 			
 			// aapt resource value: 0x7F030170
-			public const int layout_behavior = 2130903408;
+			public const int layoutManager = 2130903408;
 			
 			// aapt resource value: 0x7F030171
-			public const int layout_collapseMode = 2130903409;
+			public const int layout_anchor = 2130903409;
 			
 			// aapt resource value: 0x7F030172
-			public const int layout_collapseParallaxMultiplier = 2130903410;
+			public const int layout_anchorGravity = 2130903410;
 			
 			// aapt resource value: 0x7F030173
-			public const int layout_dodgeInsetEdges = 2130903411;
+			public const int layout_behavior = 2130903411;
 			
 			// aapt resource value: 0x7F030174
-			public const int layout_insetEdge = 2130903412;
+			public const int layout_collapseMode = 2130903412;
 			
 			// aapt resource value: 0x7F030175
-			public const int layout_keyline = 2130903413;
+			public const int layout_collapseParallaxMultiplier = 2130903413;
 			
 			// aapt resource value: 0x7F030176
-			public const int layout_scrollFlags = 2130903414;
+			public const int layout_dodgeInsetEdges = 2130903414;
 			
 			// aapt resource value: 0x7F030177
-			public const int layout_scrollInterpolator = 2130903415;
+			public const int layout_insetEdge = 2130903415;
 			
 			// aapt resource value: 0x7F030178
-			public const int liftOnScroll = 2130903416;
+			public const int layout_keyline = 2130903416;
 			
 			// aapt resource value: 0x7F030179
-			public const int liftOnScrollTargetViewId = 2130903417;
+			public const int layout_scrollFlags = 2130903417;
 			
 			// aapt resource value: 0x7F03017A
-			public const int lineHeight = 2130903418;
+			public const int layout_scrollInterpolator = 2130903418;
 			
 			// aapt resource value: 0x7F03017B
-			public const int lineSpacing = 2130903419;
+			public const int liftOnScroll = 2130903419;
 			
 			// aapt resource value: 0x7F03017C
-			public const int listChoiceBackgroundIndicator = 2130903420;
+			public const int liftOnScrollTargetViewId = 2130903420;
 			
 			// aapt resource value: 0x7F03017D
-			public const int listChoiceIndicatorMultipleAnimated = 2130903421;
+			public const int lineHeight = 2130903421;
 			
 			// aapt resource value: 0x7F03017E
-			public const int listChoiceIndicatorSingleAnimated = 2130903422;
+			public const int lineSpacing = 2130903422;
 			
 			// aapt resource value: 0x7F03017F
-			public const int listDividerAlertDialog = 2130903423;
+			public const int listChoiceBackgroundIndicator = 2130903423;
 			
 			// aapt resource value: 0x7F030180
-			public const int listItemLayout = 2130903424;
+			public const int listChoiceIndicatorMultipleAnimated = 2130903424;
 			
 			// aapt resource value: 0x7F030181
-			public const int listLayout = 2130903425;
+			public const int listChoiceIndicatorSingleAnimated = 2130903425;
 			
 			// aapt resource value: 0x7F030182
-			public const int listMenuViewStyle = 2130903426;
+			public const int listDividerAlertDialog = 2130903426;
 			
 			// aapt resource value: 0x7F030183
-			public const int listPopupWindowStyle = 2130903427;
+			public const int listItemLayout = 2130903427;
 			
 			// aapt resource value: 0x7F030184
-			public const int listPreferredItemHeight = 2130903428;
+			public const int listLayout = 2130903428;
 			
 			// aapt resource value: 0x7F030185
-			public const int listPreferredItemHeightLarge = 2130903429;
+			public const int listMenuViewStyle = 2130903429;
 			
 			// aapt resource value: 0x7F030186
-			public const int listPreferredItemHeightSmall = 2130903430;
+			public const int listPopupWindowStyle = 2130903430;
 			
 			// aapt resource value: 0x7F030187
-			public const int listPreferredItemPaddingEnd = 2130903431;
+			public const int listPreferredItemHeight = 2130903431;
 			
 			// aapt resource value: 0x7F030188
-			public const int listPreferredItemPaddingLeft = 2130903432;
+			public const int listPreferredItemHeightLarge = 2130903432;
 			
 			// aapt resource value: 0x7F030189
-			public const int listPreferredItemPaddingRight = 2130903433;
+			public const int listPreferredItemHeightSmall = 2130903433;
 			
 			// aapt resource value: 0x7F03018A
-			public const int listPreferredItemPaddingStart = 2130903434;
+			public const int listPreferredItemPaddingEnd = 2130903434;
 			
 			// aapt resource value: 0x7F03018B
-			public const int logo = 2130903435;
+			public const int listPreferredItemPaddingLeft = 2130903435;
 			
 			// aapt resource value: 0x7F03018C
-			public const int logoDescription = 2130903436;
+			public const int listPreferredItemPaddingRight = 2130903436;
 			
 			// aapt resource value: 0x7F03018D
-			public const int materialAlertDialogBodyTextStyle = 2130903437;
+			public const int listPreferredItemPaddingStart = 2130903437;
 			
 			// aapt resource value: 0x7F03018E
-			public const int materialAlertDialogTheme = 2130903438;
+			public const int logo = 2130903438;
 			
 			// aapt resource value: 0x7F03018F
-			public const int materialAlertDialogTitleIconStyle = 2130903439;
+			public const int logoDescription = 2130903439;
 			
 			// aapt resource value: 0x7F030190
-			public const int materialAlertDialogTitlePanelStyle = 2130903440;
+			public const int materialAlertDialogBodyTextStyle = 2130903440;
 			
 			// aapt resource value: 0x7F030191
-			public const int materialAlertDialogTitleTextStyle = 2130903441;
+			public const int materialAlertDialogTheme = 2130903441;
 			
 			// aapt resource value: 0x7F030192
-			public const int materialButtonOutlinedStyle = 2130903442;
+			public const int materialAlertDialogTitleIconStyle = 2130903442;
 			
 			// aapt resource value: 0x7F030193
-			public const int materialButtonStyle = 2130903443;
+			public const int materialAlertDialogTitlePanelStyle = 2130903443;
 			
 			// aapt resource value: 0x7F030194
-			public const int materialButtonToggleGroupStyle = 2130903444;
+			public const int materialAlertDialogTitleTextStyle = 2130903444;
 			
 			// aapt resource value: 0x7F030195
-			public const int materialCalendarDay = 2130903445;
+			public const int materialButtonOutlinedStyle = 2130903445;
 			
 			// aapt resource value: 0x7F030196
-			public const int materialCalendarFullscreenTheme = 2130903446;
+			public const int materialButtonStyle = 2130903446;
 			
 			// aapt resource value: 0x7F030197
-			public const int materialCalendarHeaderConfirmButton = 2130903447;
+			public const int materialButtonToggleGroupStyle = 2130903447;
 			
 			// aapt resource value: 0x7F030198
-			public const int materialCalendarHeaderDivider = 2130903448;
+			public const int materialCalendarDay = 2130903448;
 			
 			// aapt resource value: 0x7F030199
-			public const int materialCalendarHeaderLayout = 2130903449;
+			public const int materialCalendarFullscreenTheme = 2130903449;
 			
 			// aapt resource value: 0x7F03019A
-			public const int materialCalendarHeaderSelection = 2130903450;
+			public const int materialCalendarHeaderConfirmButton = 2130903450;
 			
 			// aapt resource value: 0x7F03019B
-			public const int materialCalendarHeaderTitle = 2130903451;
+			public const int materialCalendarHeaderDivider = 2130903451;
 			
 			// aapt resource value: 0x7F03019C
-			public const int materialCalendarHeaderToggleButton = 2130903452;
+			public const int materialCalendarHeaderLayout = 2130903452;
 			
 			// aapt resource value: 0x7F03019D
-			public const int materialCalendarStyle = 2130903453;
+			public const int materialCalendarHeaderSelection = 2130903453;
 			
 			// aapt resource value: 0x7F03019E
-			public const int materialCalendarTheme = 2130903454;
+			public const int materialCalendarHeaderTitle = 2130903454;
 			
 			// aapt resource value: 0x7F03019F
-			public const int materialCardViewStyle = 2130903455;
+			public const int materialCalendarHeaderToggleButton = 2130903455;
 			
 			// aapt resource value: 0x7F0301A0
-			public const int materialThemeOverlay = 2130903456;
+			public const int materialCalendarStyle = 2130903456;
 			
 			// aapt resource value: 0x7F0301A1
-			public const int maxActionInlineWidth = 2130903457;
+			public const int materialCalendarTheme = 2130903457;
 			
 			// aapt resource value: 0x7F0301A2
-			public const int maxButtonHeight = 2130903458;
+			public const int materialCardViewStyle = 2130903458;
 			
 			// aapt resource value: 0x7F0301A3
-			public const int maxCharacterCount = 2130903459;
+			public const int materialThemeOverlay = 2130903459;
 			
 			// aapt resource value: 0x7F0301A4
-			public const int maxImageSize = 2130903460;
+			public const int maxActionInlineWidth = 2130903460;
 			
 			// aapt resource value: 0x7F0301A5
-			public const int maxLines = 2130903461;
+			public const int maxButtonHeight = 2130903461;
 			
 			// aapt resource value: 0x7F0301A6
-			public const int measureWithLargestChild = 2130903462;
+			public const int maxCharacterCount = 2130903462;
 			
 			// aapt resource value: 0x7F0301A7
-			public const int menu = 2130903463;
+			public const int maxImageSize = 2130903463;
 			
 			// aapt resource value: 0x7F0301A8
-			public const int minTouchTargetSize = 2130903464;
+			public const int maxLines = 2130903464;
 			
 			// aapt resource value: 0x7F0301A9
-			public const int multiChoiceItemLayout = 2130903465;
+			public const int measureWithLargestChild = 2130903465;
 			
 			// aapt resource value: 0x7F0301AA
-			public const int navigationContentDescription = 2130903466;
+			public const int menu = 2130903466;
 			
 			// aapt resource value: 0x7F0301AB
-			public const int navigationIcon = 2130903467;
+			public const int minTouchTargetSize = 2130903467;
 			
 			// aapt resource value: 0x7F0301AC
-			public const int navigationMode = 2130903468;
+			public const int multiChoiceItemLayout = 2130903468;
 			
 			// aapt resource value: 0x7F0301AD
-			public const int navigationViewStyle = 2130903469;
+			public const int navigationContentDescription = 2130903469;
 			
 			// aapt resource value: 0x7F0301AE
-			public const int number = 2130903470;
+			public const int navigationIcon = 2130903470;
 			
 			// aapt resource value: 0x7F0301AF
-			public const int numericModifiers = 2130903471;
+			public const int navigationMode = 2130903471;
 			
 			// aapt resource value: 0x7F0301B0
-			public const int overlapAnchor = 2130903472;
+			public const int navigationViewStyle = 2130903472;
 			
 			// aapt resource value: 0x7F0301B1
-			public const int paddingBottomNoButtons = 2130903473;
+			public const int number = 2130903473;
 			
 			// aapt resource value: 0x7F0301B2
-			public const int paddingBottomSystemWindowInsets = 2130903474;
+			public const int numericModifiers = 2130903474;
 			
 			// aapt resource value: 0x7F0301B3
-			public const int paddingEnd = 2130903475;
+			public const int overlapAnchor = 2130903475;
 			
 			// aapt resource value: 0x7F0301B4
-			public const int paddingLeftSystemWindowInsets = 2130903476;
+			public const int paddingBottomNoButtons = 2130903476;
 			
 			// aapt resource value: 0x7F0301B5
-			public const int paddingRightSystemWindowInsets = 2130903477;
+			public const int paddingBottomSystemWindowInsets = 2130903477;
 			
 			// aapt resource value: 0x7F0301B6
-			public const int paddingStart = 2130903478;
+			public const int paddingEnd = 2130903478;
 			
 			// aapt resource value: 0x7F0301B7
-			public const int paddingTopNoTitle = 2130903479;
+			public const int paddingLeftSystemWindowInsets = 2130903479;
 			
 			// aapt resource value: 0x7F0301B8
-			public const int panelBackground = 2130903480;
+			public const int paddingRightSystemWindowInsets = 2130903480;
 			
 			// aapt resource value: 0x7F0301B9
-			public const int panelMenuListTheme = 2130903481;
+			public const int paddingStart = 2130903481;
 			
 			// aapt resource value: 0x7F0301BA
-			public const int panelMenuListWidth = 2130903482;
+			public const int paddingTopNoTitle = 2130903482;
 			
 			// aapt resource value: 0x7F0301BB
-			public const int passwordToggleContentDescription = 2130903483;
+			public const int panelBackground = 2130903483;
 			
 			// aapt resource value: 0x7F0301BC
-			public const int passwordToggleDrawable = 2130903484;
+			public const int panelMenuListTheme = 2130903484;
 			
 			// aapt resource value: 0x7F0301BD
-			public const int passwordToggleEnabled = 2130903485;
+			public const int panelMenuListWidth = 2130903485;
 			
 			// aapt resource value: 0x7F0301BE
-			public const int passwordToggleTint = 2130903486;
+			public const int passwordToggleContentDescription = 2130903486;
 			
 			// aapt resource value: 0x7F0301BF
-			public const int passwordToggleTintMode = 2130903487;
+			public const int passwordToggleDrawable = 2130903487;
 			
 			// aapt resource value: 0x7F0301C0
-			public const int placeholderText = 2130903488;
+			public const int passwordToggleEnabled = 2130903488;
 			
 			// aapt resource value: 0x7F0301C1
-			public const int placeholderTextAppearance = 2130903489;
+			public const int passwordToggleTint = 2130903489;
 			
 			// aapt resource value: 0x7F0301C2
-			public const int placeholderTextColor = 2130903490;
+			public const int passwordToggleTintMode = 2130903490;
 			
 			// aapt resource value: 0x7F0301C3
-			public const int popupMenuBackground = 2130903491;
+			public const int placeholderText = 2130903491;
 			
 			// aapt resource value: 0x7F0301C4
-			public const int popupMenuStyle = 2130903492;
+			public const int placeholderTextAppearance = 2130903492;
 			
 			// aapt resource value: 0x7F0301C5
-			public const int popupTheme = 2130903493;
+			public const int placeholderTextColor = 2130903493;
 			
 			// aapt resource value: 0x7F0301C6
-			public const int popupWindowStyle = 2130903494;
+			public const int popupMenuBackground = 2130903494;
 			
 			// aapt resource value: 0x7F0301C7
-			public const int prefixText = 2130903495;
+			public const int popupMenuStyle = 2130903495;
 			
 			// aapt resource value: 0x7F0301C8
-			public const int prefixTextAppearance = 2130903496;
+			public const int popupTheme = 2130903496;
 			
 			// aapt resource value: 0x7F0301C9
-			public const int prefixTextColor = 2130903497;
+			public const int popupWindowStyle = 2130903497;
 			
 			// aapt resource value: 0x7F0301CA
-			public const int preserveIconSpacing = 2130903498;
+			public const int prefixText = 2130903498;
 			
 			// aapt resource value: 0x7F0301CB
-			public const int pressedTranslationZ = 2130903499;
+			public const int prefixTextAppearance = 2130903499;
 			
 			// aapt resource value: 0x7F0301CC
-			public const int progressBarPadding = 2130903500;
+			public const int prefixTextColor = 2130903500;
 			
 			// aapt resource value: 0x7F0301CD
-			public const int progressBarStyle = 2130903501;
+			public const int preserveIconSpacing = 2130903501;
 			
 			// aapt resource value: 0x7F0301CE
-			public const int queryBackground = 2130903502;
+			public const int pressedTranslationZ = 2130903502;
 			
 			// aapt resource value: 0x7F0301CF
-			public const int queryHint = 2130903503;
+			public const int progressBarPadding = 2130903503;
 			
 			// aapt resource value: 0x7F0301D0
-			public const int radioButtonStyle = 2130903504;
+			public const int progressBarStyle = 2130903504;
 			
 			// aapt resource value: 0x7F0301D1
-			public const int rangeFillColor = 2130903505;
+			public const int queryBackground = 2130903505;
 			
 			// aapt resource value: 0x7F0301D2
-			public const int ratingBarStyle = 2130903506;
+			public const int queryHint = 2130903506;
 			
 			// aapt resource value: 0x7F0301D3
-			public const int ratingBarStyleIndicator = 2130903507;
+			public const int radioButtonStyle = 2130903507;
 			
 			// aapt resource value: 0x7F0301D4
-			public const int ratingBarStyleSmall = 2130903508;
+			public const int rangeFillColor = 2130903508;
 			
 			// aapt resource value: 0x7F0301D5
-			public const int recyclerViewStyle = 2130903509;
+			public const int ratingBarStyle = 2130903509;
 			
 			// aapt resource value: 0x7F0301D6
-			public const int reverseLayout = 2130903510;
+			public const int ratingBarStyleIndicator = 2130903510;
 			
 			// aapt resource value: 0x7F0301D7
-			public const int rippleColor = 2130903511;
+			public const int ratingBarStyleSmall = 2130903511;
 			
 			// aapt resource value: 0x7F0301D8
-			public const int scrimAnimationDuration = 2130903512;
+			public const int recyclerViewStyle = 2130903512;
 			
 			// aapt resource value: 0x7F0301D9
-			public const int scrimBackground = 2130903513;
+			public const int reverseLayout = 2130903513;
 			
 			// aapt resource value: 0x7F0301DA
-			public const int scrimVisibleHeightTrigger = 2130903514;
+			public const int rippleColor = 2130903514;
 			
 			// aapt resource value: 0x7F0301DB
-			public const int scrollViewStyle = 2130903515;
+			public const int scrimAnimationDuration = 2130903515;
 			
 			// aapt resource value: 0x7F0301DC
-			public const int searchHintIcon = 2130903516;
+			public const int scrimBackground = 2130903516;
 			
 			// aapt resource value: 0x7F0301DD
-			public const int searchIcon = 2130903517;
+			public const int scrimVisibleHeightTrigger = 2130903517;
 			
 			// aapt resource value: 0x7F0301DE
-			public const int searchViewStyle = 2130903518;
+			public const int scrollViewStyle = 2130903518;
 			
 			// aapt resource value: 0x7F0301DF
-			public const int seekBarStyle = 2130903519;
+			public const int searchHintIcon = 2130903519;
 			
 			// aapt resource value: 0x7F0301E0
-			public const int selectableItemBackground = 2130903520;
+			public const int searchIcon = 2130903520;
 			
 			// aapt resource value: 0x7F0301E1
-			public const int selectableItemBackgroundBorderless = 2130903521;
+			public const int searchViewStyle = 2130903521;
 			
 			// aapt resource value: 0x7F0301E2
-			public const int selectionRequired = 2130903522;
+			public const int seekBarStyle = 2130903522;
 			
 			// aapt resource value: 0x7F0301E3
-			public const int shapeAppearance = 2130903523;
+			public const int selectableItemBackground = 2130903523;
 			
 			// aapt resource value: 0x7F0301E4
-			public const int shapeAppearanceLargeComponent = 2130903524;
+			public const int selectableItemBackgroundBorderless = 2130903524;
 			
 			// aapt resource value: 0x7F0301E5
-			public const int shapeAppearanceMediumComponent = 2130903525;
+			public const int selectionRequired = 2130903525;
 			
 			// aapt resource value: 0x7F0301E6
-			public const int shapeAppearanceOverlay = 2130903526;
+			public const int shapeAppearance = 2130903526;
 			
 			// aapt resource value: 0x7F0301E7
-			public const int shapeAppearanceSmallComponent = 2130903527;
+			public const int shapeAppearanceLargeComponent = 2130903527;
 			
 			// aapt resource value: 0x7F0301E8
-			public const int showAsAction = 2130903528;
+			public const int shapeAppearanceMediumComponent = 2130903528;
 			
 			// aapt resource value: 0x7F0301E9
-			public const int showDividers = 2130903529;
+			public const int shapeAppearanceOverlay = 2130903529;
 			
 			// aapt resource value: 0x7F0301EA
-			public const int showMotionSpec = 2130903530;
+			public const int shapeAppearanceSmallComponent = 2130903530;
 			
 			// aapt resource value: 0x7F0301EB
-			public const int showText = 2130903531;
+			public const int showAsAction = 2130903531;
 			
 			// aapt resource value: 0x7F0301EC
-			public const int showTitle = 2130903532;
+			public const int showDividers = 2130903532;
 			
 			// aapt resource value: 0x7F0301ED
-			public const int shrinkMotionSpec = 2130903533;
+			public const int showMotionSpec = 2130903533;
 			
 			// aapt resource value: 0x7F0301EE
-			public const int singleChoiceItemLayout = 2130903534;
+			public const int showText = 2130903534;
 			
 			// aapt resource value: 0x7F0301EF
-			public const int singleLine = 2130903535;
+			public const int showTitle = 2130903535;
 			
 			// aapt resource value: 0x7F0301F0
-			public const int singleSelection = 2130903536;
+			public const int shrinkMotionSpec = 2130903536;
 			
 			// aapt resource value: 0x7F0301F1
-			public const int sliderStyle = 2130903537;
+			public const int singleChoiceItemLayout = 2130903537;
 			
 			// aapt resource value: 0x7F0301F2
-			public const int snackbarButtonStyle = 2130903538;
+			public const int singleLine = 2130903538;
 			
 			// aapt resource value: 0x7F0301F3
-			public const int snackbarStyle = 2130903539;
+			public const int singleSelection = 2130903539;
 			
 			// aapt resource value: 0x7F0301F4
-			public const int snackbarTextViewStyle = 2130903540;
+			public const int sliderStyle = 2130903540;
 			
 			// aapt resource value: 0x7F0301F5
-			public const int spanCount = 2130903541;
+			public const int snackbarButtonStyle = 2130903541;
 			
 			// aapt resource value: 0x7F0301F6
-			public const int spinBars = 2130903542;
+			public const int snackbarStyle = 2130903542;
 			
 			// aapt resource value: 0x7F0301F7
-			public const int spinnerDropDownItemStyle = 2130903543;
+			public const int snackbarTextViewStyle = 2130903543;
 			
 			// aapt resource value: 0x7F0301F8
-			public const int spinnerStyle = 2130903544;
+			public const int spanCount = 2130903544;
 			
 			// aapt resource value: 0x7F0301F9
-			public const int splitTrack = 2130903545;
+			public const int spinBars = 2130903545;
 			
 			// aapt resource value: 0x7F0301FA
-			public const int srcCompat = 2130903546;
+			public const int spinnerDropDownItemStyle = 2130903546;
 			
 			// aapt resource value: 0x7F0301FB
-			public const int stackFromEnd = 2130903547;
+			public const int spinnerStyle = 2130903547;
 			
 			// aapt resource value: 0x7F0301FC
-			public const int startIconCheckable = 2130903548;
+			public const int splitTrack = 2130903548;
 			
 			// aapt resource value: 0x7F0301FD
-			public const int startIconContentDescription = 2130903549;
+			public const int srcCompat = 2130903549;
 			
 			// aapt resource value: 0x7F0301FE
-			public const int startIconDrawable = 2130903550;
+			public const int stackFromEnd = 2130903550;
 			
 			// aapt resource value: 0x7F0301FF
-			public const int startIconTint = 2130903551;
+			public const int startIconCheckable = 2130903551;
 			
 			// aapt resource value: 0x7F030200
-			public const int startIconTintMode = 2130903552;
+			public const int startIconContentDescription = 2130903552;
 			
 			// aapt resource value: 0x7F030201
-			public const int state_above_anchor = 2130903553;
+			public const int startIconDrawable = 2130903553;
 			
 			// aapt resource value: 0x7F030202
-			public const int state_collapsed = 2130903554;
+			public const int startIconTint = 2130903554;
 			
 			// aapt resource value: 0x7F030203
-			public const int state_collapsible = 2130903555;
+			public const int startIconTintMode = 2130903555;
 			
 			// aapt resource value: 0x7F030204
-			public const int state_dragged = 2130903556;
+			public const int state_above_anchor = 2130903556;
 			
 			// aapt resource value: 0x7F030205
-			public const int state_liftable = 2130903557;
+			public const int state_collapsed = 2130903557;
 			
 			// aapt resource value: 0x7F030206
-			public const int state_lifted = 2130903558;
+			public const int state_collapsible = 2130903558;
 			
 			// aapt resource value: 0x7F030207
-			public const int statusBarBackground = 2130903559;
+			public const int state_dragged = 2130903559;
 			
 			// aapt resource value: 0x7F030208
-			public const int statusBarForeground = 2130903560;
+			public const int state_liftable = 2130903560;
 			
 			// aapt resource value: 0x7F030209
-			public const int statusBarScrim = 2130903561;
+			public const int state_lifted = 2130903561;
 			
 			// aapt resource value: 0x7F03020A
-			public const int strokeColor = 2130903562;
+			public const int statusBarBackground = 2130903562;
 			
 			// aapt resource value: 0x7F03020B
-			public const int strokeWidth = 2130903563;
+			public const int statusBarForeground = 2130903563;
 			
 			// aapt resource value: 0x7F03020C
-			public const int subMenuArrow = 2130903564;
+			public const int statusBarScrim = 2130903564;
 			
 			// aapt resource value: 0x7F03020D
-			public const int submitBackground = 2130903565;
+			public const int strokeColor = 2130903565;
 			
 			// aapt resource value: 0x7F03020E
-			public const int subtitle = 2130903566;
+			public const int strokeWidth = 2130903566;
 			
 			// aapt resource value: 0x7F03020F
-			public const int subtitleTextAppearance = 2130903567;
+			public const int subMenuArrow = 2130903567;
 			
 			// aapt resource value: 0x7F030210
-			public const int subtitleTextColor = 2130903568;
+			public const int submitBackground = 2130903568;
 			
 			// aapt resource value: 0x7F030211
-			public const int subtitleTextStyle = 2130903569;
+			public const int subtitle = 2130903569;
 			
 			// aapt resource value: 0x7F030212
-			public const int suffixText = 2130903570;
+			public const int subtitleTextAppearance = 2130903570;
 			
 			// aapt resource value: 0x7F030213
-			public const int suffixTextAppearance = 2130903571;
+			public const int subtitleTextColor = 2130903571;
 			
 			// aapt resource value: 0x7F030214
-			public const int suffixTextColor = 2130903572;
+			public const int subtitleTextStyle = 2130903572;
 			
 			// aapt resource value: 0x7F030215
-			public const int suggestionRowLayout = 2130903573;
+			public const int suffixText = 2130903573;
 			
 			// aapt resource value: 0x7F030216
-			public const int swipeRefreshLayoutProgressSpinnerBackgroundColor = 2130903574;
+			public const int suffixTextAppearance = 2130903574;
 			
 			// aapt resource value: 0x7F030217
-			public const int switchMinWidth = 2130903575;
+			public const int suffixTextColor = 2130903575;
 			
 			// aapt resource value: 0x7F030218
-			public const int switchPadding = 2130903576;
+			public const int suggestionRowLayout = 2130903576;
 			
 			// aapt resource value: 0x7F030219
-			public const int switchStyle = 2130903577;
+			public const int swipeRefreshLayoutProgressSpinnerBackgroundColor = 2130903577;
 			
 			// aapt resource value: 0x7F03021A
-			public const int switchTextAppearance = 2130903578;
+			public const int switchMinWidth = 2130903578;
 			
 			// aapt resource value: 0x7F03021B
-			public const int tabBackground = 2130903579;
+			public const int switchPadding = 2130903579;
 			
 			// aapt resource value: 0x7F03021C
-			public const int tabContentStart = 2130903580;
+			public const int switchStyle = 2130903580;
 			
 			// aapt resource value: 0x7F03021D
-			public const int tabGravity = 2130903581;
+			public const int switchTextAppearance = 2130903581;
 			
 			// aapt resource value: 0x7F03021E
-			public const int tabIconTint = 2130903582;
+			public const int tabBackground = 2130903582;
 			
 			// aapt resource value: 0x7F03021F
-			public const int tabIconTintMode = 2130903583;
+			public const int tabContentStart = 2130903583;
 			
 			// aapt resource value: 0x7F030220
-			public const int tabIndicator = 2130903584;
+			public const int tabGravity = 2130903584;
 			
 			// aapt resource value: 0x7F030221
-			public const int tabIndicatorAnimationDuration = 2130903585;
+			public const int tabIconTint = 2130903585;
 			
 			// aapt resource value: 0x7F030222
-			public const int tabIndicatorColor = 2130903586;
+			public const int tabIconTintMode = 2130903586;
 			
 			// aapt resource value: 0x7F030223
-			public const int tabIndicatorFullWidth = 2130903587;
+			public const int tabIndicator = 2130903587;
 			
 			// aapt resource value: 0x7F030224
-			public const int tabIndicatorGravity = 2130903588;
+			public const int tabIndicatorAnimationDuration = 2130903588;
 			
 			// aapt resource value: 0x7F030225
-			public const int tabIndicatorHeight = 2130903589;
+			public const int tabIndicatorColor = 2130903589;
 			
 			// aapt resource value: 0x7F030226
-			public const int tabInlineLabel = 2130903590;
+			public const int tabIndicatorFullWidth = 2130903590;
 			
 			// aapt resource value: 0x7F030227
-			public const int tabMaxWidth = 2130903591;
+			public const int tabIndicatorGravity = 2130903591;
 			
 			// aapt resource value: 0x7F030228
-			public const int tabMinWidth = 2130903592;
+			public const int tabIndicatorHeight = 2130903592;
 			
 			// aapt resource value: 0x7F030229
-			public const int tabMode = 2130903593;
+			public const int tabInlineLabel = 2130903593;
 			
 			// aapt resource value: 0x7F03022A
-			public const int tabPadding = 2130903594;
+			public const int tabMaxWidth = 2130903594;
 			
 			// aapt resource value: 0x7F03022B
-			public const int tabPaddingBottom = 2130903595;
+			public const int tabMinWidth = 2130903595;
 			
 			// aapt resource value: 0x7F03022C
-			public const int tabPaddingEnd = 2130903596;
+			public const int tabMode = 2130903596;
 			
 			// aapt resource value: 0x7F03022D
-			public const int tabPaddingStart = 2130903597;
+			public const int tabPadding = 2130903597;
 			
 			// aapt resource value: 0x7F03022E
-			public const int tabPaddingTop = 2130903598;
+			public const int tabPaddingBottom = 2130903598;
 			
 			// aapt resource value: 0x7F03022F
-			public const int tabRippleColor = 2130903599;
+			public const int tabPaddingEnd = 2130903599;
 			
 			// aapt resource value: 0x7F030230
-			public const int tabSelectedTextColor = 2130903600;
+			public const int tabPaddingStart = 2130903600;
 			
 			// aapt resource value: 0x7F030231
-			public const int tabStyle = 2130903601;
+			public const int tabPaddingTop = 2130903601;
 			
 			// aapt resource value: 0x7F030232
-			public const int tabTextAppearance = 2130903602;
+			public const int tabRippleColor = 2130903602;
 			
 			// aapt resource value: 0x7F030233
-			public const int tabTextColor = 2130903603;
+			public const int tabSelectedTextColor = 2130903603;
 			
 			// aapt resource value: 0x7F030234
-			public const int tabUnboundedRipple = 2130903604;
+			public const int tabStyle = 2130903604;
 			
 			// aapt resource value: 0x7F030235
-			public const int textAllCaps = 2130903605;
+			public const int tabTextAppearance = 2130903605;
 			
 			// aapt resource value: 0x7F030236
-			public const int textAppearanceBody1 = 2130903606;
+			public const int tabTextColor = 2130903606;
 			
 			// aapt resource value: 0x7F030237
-			public const int textAppearanceBody2 = 2130903607;
+			public const int tabUnboundedRipple = 2130903607;
 			
 			// aapt resource value: 0x7F030238
-			public const int textAppearanceButton = 2130903608;
+			public const int textAllCaps = 2130903608;
 			
 			// aapt resource value: 0x7F030239
-			public const int textAppearanceCaption = 2130903609;
+			public const int textAppearanceBody1 = 2130903609;
 			
 			// aapt resource value: 0x7F03023A
-			public const int textAppearanceHeadline1 = 2130903610;
+			public const int textAppearanceBody2 = 2130903610;
 			
 			// aapt resource value: 0x7F03023B
-			public const int textAppearanceHeadline2 = 2130903611;
+			public const int textAppearanceButton = 2130903611;
 			
 			// aapt resource value: 0x7F03023C
-			public const int textAppearanceHeadline3 = 2130903612;
+			public const int textAppearanceCaption = 2130903612;
 			
 			// aapt resource value: 0x7F03023D
-			public const int textAppearanceHeadline4 = 2130903613;
+			public const int textAppearanceHeadline1 = 2130903613;
 			
 			// aapt resource value: 0x7F03023E
-			public const int textAppearanceHeadline5 = 2130903614;
+			public const int textAppearanceHeadline2 = 2130903614;
 			
 			// aapt resource value: 0x7F03023F
-			public const int textAppearanceHeadline6 = 2130903615;
+			public const int textAppearanceHeadline3 = 2130903615;
 			
 			// aapt resource value: 0x7F030240
-			public const int textAppearanceLargePopupMenu = 2130903616;
+			public const int textAppearanceHeadline4 = 2130903616;
 			
 			// aapt resource value: 0x7F030241
-			public const int textAppearanceLineHeightEnabled = 2130903617;
+			public const int textAppearanceHeadline5 = 2130903617;
 			
 			// aapt resource value: 0x7F030242
-			public const int textAppearanceListItem = 2130903618;
+			public const int textAppearanceHeadline6 = 2130903618;
 			
 			// aapt resource value: 0x7F030243
-			public const int textAppearanceListItemSecondary = 2130903619;
+			public const int textAppearanceLargePopupMenu = 2130903619;
 			
 			// aapt resource value: 0x7F030244
-			public const int textAppearanceListItemSmall = 2130903620;
+			public const int textAppearanceLineHeightEnabled = 2130903620;
 			
 			// aapt resource value: 0x7F030245
-			public const int textAppearanceOverline = 2130903621;
+			public const int textAppearanceListItem = 2130903621;
 			
 			// aapt resource value: 0x7F030246
-			public const int textAppearancePopupMenuHeader = 2130903622;
+			public const int textAppearanceListItemSecondary = 2130903622;
 			
 			// aapt resource value: 0x7F030247
-			public const int textAppearanceSearchResultSubtitle = 2130903623;
+			public const int textAppearanceListItemSmall = 2130903623;
 			
 			// aapt resource value: 0x7F030248
-			public const int textAppearanceSearchResultTitle = 2130903624;
+			public const int textAppearanceOverline = 2130903624;
 			
 			// aapt resource value: 0x7F030249
-			public const int textAppearanceSmallPopupMenu = 2130903625;
+			public const int textAppearancePopupMenuHeader = 2130903625;
 			
 			// aapt resource value: 0x7F03024A
-			public const int textAppearanceSubtitle1 = 2130903626;
+			public const int textAppearanceSearchResultSubtitle = 2130903626;
 			
 			// aapt resource value: 0x7F03024B
-			public const int textAppearanceSubtitle2 = 2130903627;
+			public const int textAppearanceSearchResultTitle = 2130903627;
 			
 			// aapt resource value: 0x7F03024C
-			public const int textColorAlertDialogListItem = 2130903628;
+			public const int textAppearanceSmallPopupMenu = 2130903628;
 			
 			// aapt resource value: 0x7F03024D
-			public const int textColorSearchUrl = 2130903629;
+			public const int textAppearanceSubtitle1 = 2130903629;
 			
 			// aapt resource value: 0x7F03024E
-			public const int textEndPadding = 2130903630;
+			public const int textAppearanceSubtitle2 = 2130903630;
 			
 			// aapt resource value: 0x7F03024F
-			public const int textInputLayoutFocusedRectEnabled = 2130903631;
+			public const int textColorAlertDialogListItem = 2130903631;
 			
 			// aapt resource value: 0x7F030250
-			public const int textInputStyle = 2130903632;
+			public const int textColorSearchUrl = 2130903632;
 			
 			// aapt resource value: 0x7F030251
-			public const int textLocale = 2130903633;
+			public const int textEndPadding = 2130903633;
 			
 			// aapt resource value: 0x7F030252
-			public const int textStartPadding = 2130903634;
+			public const int textInputLayoutFocusedRectEnabled = 2130903634;
 			
 			// aapt resource value: 0x7F030253
-			public const int theme = 2130903635;
+			public const int textInputStyle = 2130903635;
 			
 			// aapt resource value: 0x7F030254
-			public const int themeLineHeight = 2130903636;
+			public const int textLocale = 2130903636;
 			
 			// aapt resource value: 0x7F030255
-			public const int thickness = 2130903637;
+			public const int textStartPadding = 2130903637;
 			
 			// aapt resource value: 0x7F030256
-			public const int thumbColor = 2130903638;
+			public const int theme = 2130903638;
 			
 			// aapt resource value: 0x7F030257
-			public const int thumbElevation = 2130903639;
+			public const int themeLineHeight = 2130903639;
 			
 			// aapt resource value: 0x7F030258
-			public const int thumbRadius = 2130903640;
+			public const int thickness = 2130903640;
 			
 			// aapt resource value: 0x7F030259
-			public const int thumbTextPadding = 2130903641;
+			public const int thumbColor = 2130903641;
 			
 			// aapt resource value: 0x7F03025A
-			public const int thumbTint = 2130903642;
+			public const int thumbElevation = 2130903642;
 			
 			// aapt resource value: 0x7F03025B
-			public const int thumbTintMode = 2130903643;
+			public const int thumbRadius = 2130903643;
 			
 			// aapt resource value: 0x7F03025C
-			public const int tickColor = 2130903644;
+			public const int thumbTextPadding = 2130903644;
 			
 			// aapt resource value: 0x7F03025D
-			public const int tickColorActive = 2130903645;
+			public const int thumbTint = 2130903645;
 			
 			// aapt resource value: 0x7F03025E
-			public const int tickColorInactive = 2130903646;
+			public const int thumbTintMode = 2130903646;
 			
 			// aapt resource value: 0x7F03025F
-			public const int tickMark = 2130903647;
+			public const int tickColor = 2130903647;
 			
 			// aapt resource value: 0x7F030260
-			public const int tickMarkTint = 2130903648;
+			public const int tickColorActive = 2130903648;
 			
 			// aapt resource value: 0x7F030261
-			public const int tickMarkTintMode = 2130903649;
+			public const int tickColorInactive = 2130903649;
 			
 			// aapt resource value: 0x7F030262
-			public const int tint = 2130903650;
+			public const int tickMark = 2130903650;
 			
 			// aapt resource value: 0x7F030263
-			public const int tintMode = 2130903651;
+			public const int tickMarkTint = 2130903651;
 			
 			// aapt resource value: 0x7F030264
-			public const int title = 2130903652;
+			public const int tickMarkTintMode = 2130903652;
 			
 			// aapt resource value: 0x7F030265
-			public const int titleEnabled = 2130903653;
+			public const int tint = 2130903653;
 			
 			// aapt resource value: 0x7F030266
-			public const int titleMargin = 2130903654;
+			public const int tintMode = 2130903654;
 			
 			// aapt resource value: 0x7F030267
-			public const int titleMarginBottom = 2130903655;
+			public const int title = 2130903655;
 			
 			// aapt resource value: 0x7F030268
-			public const int titleMarginEnd = 2130903656;
-			
-			// aapt resource value: 0x7F03026B
-			public const int titleMargins = 2130903659;
+			public const int titleEnabled = 2130903656;
 			
 			// aapt resource value: 0x7F030269
-			public const int titleMarginStart = 2130903657;
+			public const int titleMargin = 2130903657;
 			
 			// aapt resource value: 0x7F03026A
-			public const int titleMarginTop = 2130903658;
+			public const int titleMarginBottom = 2130903658;
 			
-			// aapt resource value: 0x7F03026C
-			public const int titleTextAppearance = 2130903660;
-			
-			// aapt resource value: 0x7F03026D
-			public const int titleTextColor = 2130903661;
+			// aapt resource value: 0x7F03026B
+			public const int titleMarginEnd = 2130903659;
 			
 			// aapt resource value: 0x7F03026E
-			public const int titleTextStyle = 2130903662;
+			public const int titleMargins = 2130903662;
+			
+			// aapt resource value: 0x7F03026C
+			public const int titleMarginStart = 2130903660;
+			
+			// aapt resource value: 0x7F03026D
+			public const int titleMarginTop = 2130903661;
 			
 			// aapt resource value: 0x7F03026F
-			public const int toolbarId = 2130903663;
+			public const int titleTextAppearance = 2130903663;
 			
 			// aapt resource value: 0x7F030270
-			public const int toolbarNavigationButtonStyle = 2130903664;
+			public const int titleTextColor = 2130903664;
 			
 			// aapt resource value: 0x7F030271
-			public const int toolbarStyle = 2130903665;
+			public const int titleTextStyle = 2130903665;
 			
 			// aapt resource value: 0x7F030272
-			public const int tooltipForegroundColor = 2130903666;
+			public const int toolbarId = 2130903666;
 			
 			// aapt resource value: 0x7F030273
-			public const int tooltipFrameBackground = 2130903667;
+			public const int toolbarNavigationButtonStyle = 2130903667;
 			
 			// aapt resource value: 0x7F030274
-			public const int tooltipStyle = 2130903668;
+			public const int toolbarStyle = 2130903668;
 			
 			// aapt resource value: 0x7F030275
-			public const int tooltipText = 2130903669;
+			public const int tooltipForegroundColor = 2130903669;
 			
 			// aapt resource value: 0x7F030276
-			public const int track = 2130903670;
+			public const int tooltipFrameBackground = 2130903670;
 			
 			// aapt resource value: 0x7F030277
-			public const int trackColor = 2130903671;
+			public const int tooltipStyle = 2130903671;
 			
 			// aapt resource value: 0x7F030278
-			public const int trackColorActive = 2130903672;
+			public const int tooltipText = 2130903672;
 			
 			// aapt resource value: 0x7F030279
-			public const int trackColorInactive = 2130903673;
+			public const int track = 2130903673;
 			
 			// aapt resource value: 0x7F03027A
-			public const int trackHeight = 2130903674;
+			public const int trackColor = 2130903674;
 			
 			// aapt resource value: 0x7F03027B
-			public const int trackTint = 2130903675;
+			public const int trackColorActive = 2130903675;
 			
 			// aapt resource value: 0x7F03027C
-			public const int trackTintMode = 2130903676;
+			public const int trackColorInactive = 2130903676;
 			
 			// aapt resource value: 0x7F03027D
-			public const int transitionShapeAppearance = 2130903677;
+			public const int trackHeight = 2130903677;
 			
 			// aapt resource value: 0x7F03027E
-			public const int ttcIndex = 2130903678;
+			public const int trackTint = 2130903678;
 			
 			// aapt resource value: 0x7F03027F
-			public const int useCompatPadding = 2130903679;
+			public const int trackTintMode = 2130903679;
 			
 			// aapt resource value: 0x7F030280
-			public const int useMaterialThemeColors = 2130903680;
+			public const int transitionShapeAppearance = 2130903680;
 			
 			// aapt resource value: 0x7F030281
-			public const int values = 2130903681;
+			public const int ttcIndex = 2130903681;
 			
 			// aapt resource value: 0x7F030282
-			public const int verticalOffset = 2130903682;
+			public const int useCompatPadding = 2130903682;
 			
 			// aapt resource value: 0x7F030283
-			public const int viewInflaterClass = 2130903683;
+			public const int useMaterialThemeColors = 2130903683;
 			
 			// aapt resource value: 0x7F030284
-			public const int voiceIcon = 2130903684;
+			public const int values = 2130903684;
 			
 			// aapt resource value: 0x7F030285
-			public const int windowActionBar = 2130903685;
+			public const int verticalOffset = 2130903685;
 			
 			// aapt resource value: 0x7F030286
-			public const int windowActionBarOverlay = 2130903686;
+			public const int viewInflaterClass = 2130903686;
 			
 			// aapt resource value: 0x7F030287
-			public const int windowActionModeOverlay = 2130903687;
+			public const int voiceIcon = 2130903687;
 			
 			// aapt resource value: 0x7F030288
-			public const int windowFixedHeightMajor = 2130903688;
+			public const int windowActionBar = 2130903688;
 			
 			// aapt resource value: 0x7F030289
-			public const int windowFixedHeightMinor = 2130903689;
+			public const int windowActionBarOverlay = 2130903689;
 			
 			// aapt resource value: 0x7F03028A
-			public const int windowFixedWidthMajor = 2130903690;
+			public const int windowActionModeOverlay = 2130903690;
 			
 			// aapt resource value: 0x7F03028B
-			public const int windowFixedWidthMinor = 2130903691;
+			public const int windowFixedHeightMajor = 2130903691;
 			
 			// aapt resource value: 0x7F03028C
-			public const int windowMinWidthMajor = 2130903692;
+			public const int windowFixedHeightMinor = 2130903692;
 			
 			// aapt resource value: 0x7F03028D
-			public const int windowMinWidthMinor = 2130903693;
+			public const int windowFixedWidthMajor = 2130903693;
 			
 			// aapt resource value: 0x7F03028E
-			public const int windowNoTitle = 2130903694;
+			public const int windowFixedWidthMinor = 2130903694;
 			
 			// aapt resource value: 0x7F03028F
-			public const int yearSelectedStyle = 2130903695;
+			public const int windowMinWidthMajor = 2130903695;
 			
 			// aapt resource value: 0x7F030290
-			public const int yearStyle = 2130903696;
+			public const int windowMinWidthMinor = 2130903696;
 			
 			// aapt resource value: 0x7F030291
-			public const int yearTodayStyle = 2130903697;
+			public const int windowNoTitle = 2130903697;
+			
+			// aapt resource value: 0x7F030292
+			public const int yearSelectedStyle = 2130903698;
+			
+			// aapt resource value: 0x7F030293
+			public const int yearStyle = 2130903699;
+			
+			// aapt resource value: 0x7F030294
+			public const int yearTodayStyle = 2130903700;
 			
 			static Attribute()
 			{
@@ -18453,7 +21931,19 @@ namespace GnollHackClient.Droid
 			public const int abc_config_actionMenuItemAllCaps = 2130968578;
 			
 			// aapt resource value: 0x7F040003
-			public const int mtrl_btn_textappearance_all_caps = 2130968579;
+			public const int enable_system_alarm_service_default = 2130968579;
+			
+			// aapt resource value: 0x7F040004
+			public const int enable_system_foreground_service_default = 2130968580;
+			
+			// aapt resource value: 0x7F040005
+			public const int enable_system_job_service_default = 2130968581;
+			
+			// aapt resource value: 0x7F040006
+			public const int mtrl_btn_textappearance_all_caps = 2130968582;
+			
+			// aapt resource value: 0x7F040007
+			public const int workmanager_test_configuration = 2130968583;
 			
 			static Boolean()
 			{
@@ -21526,25 +25016,28 @@ namespace GnollHackClient.Droid
 			public const int view_offset_helper = 2131231030;
 			
 			// aapt resource value: 0x7F080137
-			public const int view_tree_saved_state_registry_owner = 2131231031;
+			public const int view_tree_lifecycle_owner = 2131231031;
 			
 			// aapt resource value: 0x7F080138
-			public const int visible = 2131231032;
+			public const int view_tree_saved_state_registry_owner = 2131231032;
 			
 			// aapt resource value: 0x7F080139
-			public const int visible_removing_fragment_view_tag = 2131231033;
-			
-			// aapt resource value: 0x7F08013B
-			public const int withinBounds = 2131231035;
+			public const int visible = 2131231033;
 			
 			// aapt resource value: 0x7F08013A
-			public const int withText = 2131231034;
+			public const int visible_removing_fragment_view_tag = 2131231034;
 			
 			// aapt resource value: 0x7F08013C
-			public const int wrap_content = 2131231036;
+			public const int withinBounds = 2131231036;
+			
+			// aapt resource value: 0x7F08013B
+			public const int withText = 2131231035;
 			
 			// aapt resource value: 0x7F08013D
-			public const int zero_corner_chip = 2131231037;
+			public const int wrap_content = 2131231037;
+			
+			// aapt resource value: 0x7F08013E
+			public const int zero_corner_chip = 2131231038;
 			
 			static Id()
 			{
@@ -21584,43 +25077,46 @@ namespace GnollHackClient.Droid
 			public const int design_tab_indicator_anim_duration_ms = 2131296263;
 			
 			// aapt resource value: 0x7F090008
-			public const int hide_password_duration = 2131296264;
+			public const int google_play_services_version = 2131296264;
 			
 			// aapt resource value: 0x7F090009
-			public const int mtrl_badge_max_character_count = 2131296265;
+			public const int hide_password_duration = 2131296265;
 			
 			// aapt resource value: 0x7F09000A
-			public const int mtrl_btn_anim_delay_ms = 2131296266;
+			public const int mtrl_badge_max_character_count = 2131296266;
 			
 			// aapt resource value: 0x7F09000B
-			public const int mtrl_btn_anim_duration_ms = 2131296267;
+			public const int mtrl_btn_anim_delay_ms = 2131296267;
 			
 			// aapt resource value: 0x7F09000C
-			public const int mtrl_calendar_header_orientation = 2131296268;
+			public const int mtrl_btn_anim_duration_ms = 2131296268;
 			
 			// aapt resource value: 0x7F09000D
-			public const int mtrl_calendar_selection_text_lines = 2131296269;
+			public const int mtrl_calendar_header_orientation = 2131296269;
 			
 			// aapt resource value: 0x7F09000E
-			public const int mtrl_calendar_year_selector_span = 2131296270;
+			public const int mtrl_calendar_selection_text_lines = 2131296270;
 			
 			// aapt resource value: 0x7F09000F
-			public const int mtrl_card_anim_delay_ms = 2131296271;
+			public const int mtrl_calendar_year_selector_span = 2131296271;
 			
 			// aapt resource value: 0x7F090010
-			public const int mtrl_card_anim_duration_ms = 2131296272;
+			public const int mtrl_card_anim_delay_ms = 2131296272;
 			
 			// aapt resource value: 0x7F090011
-			public const int mtrl_chip_anim_duration = 2131296273;
+			public const int mtrl_card_anim_duration_ms = 2131296273;
 			
 			// aapt resource value: 0x7F090012
-			public const int mtrl_tab_indicator_anim_duration_ms = 2131296274;
+			public const int mtrl_chip_anim_duration = 2131296274;
 			
 			// aapt resource value: 0x7F090013
-			public const int show_password_duration = 2131296275;
+			public const int mtrl_tab_indicator_anim_duration_ms = 2131296275;
 			
 			// aapt resource value: 0x7F090014
-			public const int status_bar_notification_info_maxnum = 2131296276;
+			public const int show_password_duration = 2131296276;
+			
+			// aapt resource value: 0x7F090015
+			public const int status_bar_notification_info_maxnum = 2131296277;
 			
 			static Integer()
 			{
@@ -22202,172 +25698,175 @@ namespace GnollHackClient.Droid
 			public const int clear_text_end_icon_content_description = 2131689505;
 			
 			// aapt resource value: 0x7F0F0022
-			public const int copy_toast_msg = 2131689506;
+			public const int common_google_play_services_unknown_issue = 2131689506;
 			
 			// aapt resource value: 0x7F0F0023
-			public const int error_icon_content_description = 2131689507;
+			public const int copy_toast_msg = 2131689507;
 			
 			// aapt resource value: 0x7F0F0024
-			public const int exposed_dropdown_menu_content_description = 2131689508;
+			public const int error_icon_content_description = 2131689508;
 			
 			// aapt resource value: 0x7F0F0025
-			public const int fab_transformation_scrim_behavior = 2131689509;
+			public const int exposed_dropdown_menu_content_description = 2131689509;
 			
 			// aapt resource value: 0x7F0F0026
-			public const int fab_transformation_sheet_behavior = 2131689510;
+			public const int fab_transformation_scrim_behavior = 2131689510;
 			
 			// aapt resource value: 0x7F0F0027
-			public const int fallback_menu_item_copy_link = 2131689511;
+			public const int fab_transformation_sheet_behavior = 2131689511;
 			
 			// aapt resource value: 0x7F0F0028
-			public const int fallback_menu_item_open_in_browser = 2131689512;
+			public const int fallback_menu_item_copy_link = 2131689512;
 			
 			// aapt resource value: 0x7F0F0029
-			public const int fallback_menu_item_share_link = 2131689513;
+			public const int fallback_menu_item_open_in_browser = 2131689513;
 			
 			// aapt resource value: 0x7F0F002A
-			public const int hide_bottom_view_on_scroll_behavior = 2131689514;
+			public const int fallback_menu_item_share_link = 2131689514;
 			
 			// aapt resource value: 0x7F0F002B
-			public const int icon_content_description = 2131689515;
+			public const int hide_bottom_view_on_scroll_behavior = 2131689515;
 			
 			// aapt resource value: 0x7F0F002C
-			public const int item_view_role_description = 2131689516;
+			public const int icon_content_description = 2131689516;
 			
 			// aapt resource value: 0x7F0F002D
-			public const int material_slider_range_end = 2131689517;
+			public const int item_view_role_description = 2131689517;
 			
 			// aapt resource value: 0x7F0F002E
-			public const int material_slider_range_start = 2131689518;
+			public const int material_slider_range_end = 2131689518;
 			
 			// aapt resource value: 0x7F0F002F
-			public const int mtrl_badge_numberless_content_description = 2131689519;
+			public const int material_slider_range_start = 2131689519;
 			
 			// aapt resource value: 0x7F0F0030
-			public const int mtrl_chip_close_icon_content_description = 2131689520;
+			public const int mtrl_badge_numberless_content_description = 2131689520;
 			
 			// aapt resource value: 0x7F0F0031
-			public const int mtrl_exceed_max_badge_number_content_description = 2131689521;
+			public const int mtrl_chip_close_icon_content_description = 2131689521;
 			
 			// aapt resource value: 0x7F0F0032
-			public const int mtrl_exceed_max_badge_number_suffix = 2131689522;
+			public const int mtrl_exceed_max_badge_number_content_description = 2131689522;
 			
 			// aapt resource value: 0x7F0F0033
-			public const int mtrl_picker_a11y_next_month = 2131689523;
+			public const int mtrl_exceed_max_badge_number_suffix = 2131689523;
 			
 			// aapt resource value: 0x7F0F0034
-			public const int mtrl_picker_a11y_prev_month = 2131689524;
+			public const int mtrl_picker_a11y_next_month = 2131689524;
 			
 			// aapt resource value: 0x7F0F0035
-			public const int mtrl_picker_announce_current_selection = 2131689525;
+			public const int mtrl_picker_a11y_prev_month = 2131689525;
 			
 			// aapt resource value: 0x7F0F0036
-			public const int mtrl_picker_cancel = 2131689526;
+			public const int mtrl_picker_announce_current_selection = 2131689526;
 			
 			// aapt resource value: 0x7F0F0037
-			public const int mtrl_picker_confirm = 2131689527;
+			public const int mtrl_picker_cancel = 2131689527;
 			
 			// aapt resource value: 0x7F0F0038
-			public const int mtrl_picker_date_header_selected = 2131689528;
+			public const int mtrl_picker_confirm = 2131689528;
 			
 			// aapt resource value: 0x7F0F0039
-			public const int mtrl_picker_date_header_title = 2131689529;
+			public const int mtrl_picker_date_header_selected = 2131689529;
 			
 			// aapt resource value: 0x7F0F003A
-			public const int mtrl_picker_date_header_unselected = 2131689530;
+			public const int mtrl_picker_date_header_title = 2131689530;
 			
 			// aapt resource value: 0x7F0F003B
-			public const int mtrl_picker_day_of_week_column_header = 2131689531;
+			public const int mtrl_picker_date_header_unselected = 2131689531;
 			
 			// aapt resource value: 0x7F0F003C
-			public const int mtrl_picker_invalid_format = 2131689532;
+			public const int mtrl_picker_day_of_week_column_header = 2131689532;
 			
 			// aapt resource value: 0x7F0F003D
-			public const int mtrl_picker_invalid_format_example = 2131689533;
+			public const int mtrl_picker_invalid_format = 2131689533;
 			
 			// aapt resource value: 0x7F0F003E
-			public const int mtrl_picker_invalid_format_use = 2131689534;
+			public const int mtrl_picker_invalid_format_example = 2131689534;
 			
 			// aapt resource value: 0x7F0F003F
-			public const int mtrl_picker_invalid_range = 2131689535;
+			public const int mtrl_picker_invalid_format_use = 2131689535;
 			
 			// aapt resource value: 0x7F0F0040
-			public const int mtrl_picker_navigate_to_year_description = 2131689536;
+			public const int mtrl_picker_invalid_range = 2131689536;
 			
 			// aapt resource value: 0x7F0F0041
-			public const int mtrl_picker_out_of_range = 2131689537;
+			public const int mtrl_picker_navigate_to_year_description = 2131689537;
 			
 			// aapt resource value: 0x7F0F0042
-			public const int mtrl_picker_range_header_only_end_selected = 2131689538;
+			public const int mtrl_picker_out_of_range = 2131689538;
 			
 			// aapt resource value: 0x7F0F0043
-			public const int mtrl_picker_range_header_only_start_selected = 2131689539;
+			public const int mtrl_picker_range_header_only_end_selected = 2131689539;
 			
 			// aapt resource value: 0x7F0F0044
-			public const int mtrl_picker_range_header_selected = 2131689540;
+			public const int mtrl_picker_range_header_only_start_selected = 2131689540;
 			
 			// aapt resource value: 0x7F0F0045
-			public const int mtrl_picker_range_header_title = 2131689541;
+			public const int mtrl_picker_range_header_selected = 2131689541;
 			
 			// aapt resource value: 0x7F0F0046
-			public const int mtrl_picker_range_header_unselected = 2131689542;
+			public const int mtrl_picker_range_header_title = 2131689542;
 			
 			// aapt resource value: 0x7F0F0047
-			public const int mtrl_picker_save = 2131689543;
+			public const int mtrl_picker_range_header_unselected = 2131689543;
 			
 			// aapt resource value: 0x7F0F0048
-			public const int mtrl_picker_text_input_date_hint = 2131689544;
+			public const int mtrl_picker_save = 2131689544;
 			
 			// aapt resource value: 0x7F0F0049
-			public const int mtrl_picker_text_input_date_range_end_hint = 2131689545;
+			public const int mtrl_picker_text_input_date_hint = 2131689545;
 			
 			// aapt resource value: 0x7F0F004A
-			public const int mtrl_picker_text_input_date_range_start_hint = 2131689546;
+			public const int mtrl_picker_text_input_date_range_end_hint = 2131689546;
 			
 			// aapt resource value: 0x7F0F004B
-			public const int mtrl_picker_text_input_day_abbr = 2131689547;
+			public const int mtrl_picker_text_input_date_range_start_hint = 2131689547;
 			
 			// aapt resource value: 0x7F0F004C
-			public const int mtrl_picker_text_input_month_abbr = 2131689548;
+			public const int mtrl_picker_text_input_day_abbr = 2131689548;
 			
 			// aapt resource value: 0x7F0F004D
-			public const int mtrl_picker_text_input_year_abbr = 2131689549;
+			public const int mtrl_picker_text_input_month_abbr = 2131689549;
 			
 			// aapt resource value: 0x7F0F004E
-			public const int mtrl_picker_toggle_to_calendar_input_mode = 2131689550;
+			public const int mtrl_picker_text_input_year_abbr = 2131689550;
 			
 			// aapt resource value: 0x7F0F004F
-			public const int mtrl_picker_toggle_to_day_selection = 2131689551;
+			public const int mtrl_picker_toggle_to_calendar_input_mode = 2131689551;
 			
 			// aapt resource value: 0x7F0F0050
-			public const int mtrl_picker_toggle_to_text_input_mode = 2131689552;
+			public const int mtrl_picker_toggle_to_day_selection = 2131689552;
 			
 			// aapt resource value: 0x7F0F0051
-			public const int mtrl_picker_toggle_to_year_selection = 2131689553;
+			public const int mtrl_picker_toggle_to_text_input_mode = 2131689553;
 			
 			// aapt resource value: 0x7F0F0052
-			public const int overflow_tab_title = 2131689554;
+			public const int mtrl_picker_toggle_to_year_selection = 2131689554;
 			
 			// aapt resource value: 0x7F0F0053
-			public const int password_toggle_content_description = 2131689555;
+			public const int overflow_tab_title = 2131689555;
 			
 			// aapt resource value: 0x7F0F0054
-			public const int path_password_eye = 2131689556;
+			public const int password_toggle_content_description = 2131689556;
 			
 			// aapt resource value: 0x7F0F0055
-			public const int path_password_eye_mask_strike_through = 2131689557;
+			public const int path_password_eye = 2131689557;
 			
 			// aapt resource value: 0x7F0F0056
-			public const int path_password_eye_mask_visible = 2131689558;
+			public const int path_password_eye_mask_strike_through = 2131689558;
 			
 			// aapt resource value: 0x7F0F0057
-			public const int path_password_strike_through = 2131689559;
+			public const int path_password_eye_mask_visible = 2131689559;
 			
 			// aapt resource value: 0x7F0F0058
-			public const int search_menu_title = 2131689560;
+			public const int path_password_strike_through = 2131689560;
 			
 			// aapt resource value: 0x7F0F0059
-			public const int status_bar_notification_info_overflow = 2131689561;
+			public const int search_menu_title = 2131689561;
+			
+			// aapt resource value: 0x7F0F005A
+			public const int status_bar_notification_info_overflow = 2131689562;
 			
 			static String()
 			{
@@ -23066,8 +26565,8 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 0x7F1000E3
 			public const int CardView_Light = 2131755235;
 			
-			// aapt resource value: 0x7F1002BC
-			public const int collectionViewTheme = 2131755708;
+			// aapt resource value: 0x7F1002BD
+			public const int collectionViewTheme = 2131755709;
 			
 			// aapt resource value: 0x7F1000E4
 			public const int EmptyTheme = 2131755236;
@@ -23201,11 +26700,11 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 0x7F10010F
 			public const int RtlUnderlay_Widget_AppCompat_ActionButton_Overflow = 2131755279;
 			
-			// aapt resource value: 0x7F1002BD
-			public const int scrollViewScrollBars = 2131755709;
-			
 			// aapt resource value: 0x7F1002BE
-			public const int scrollViewTheme = 2131755710;
+			public const int scrollViewScrollBars = 2131755710;
+			
+			// aapt resource value: 0x7F1002BF
+			public const int scrollViewTheme = 2131755711;
 			
 			// aapt resource value: 0x7F100116
 			public const int ShapeAppearanceOverlay = 2131755286;
@@ -23567,149 +27066,149 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 0x7F100187
 			public const int TextAppearance_Widget_AppCompat_Toolbar_Title = 2131755399;
 			
-			// aapt resource value: 0x7F100204
-			public const int ThemeOverlayColorAccentRed = 2131755524;
-			
-			// aapt resource value: 0x7F1001D5
-			public const int ThemeOverlay_AppCompat = 2131755477;
+			// aapt resource value: 0x7F100205
+			public const int ThemeOverlayColorAccentRed = 2131755525;
 			
 			// aapt resource value: 0x7F1001D6
-			public const int ThemeOverlay_AppCompat_ActionBar = 2131755478;
+			public const int ThemeOverlay_AppCompat = 2131755478;
 			
 			// aapt resource value: 0x7F1001D7
-			public const int ThemeOverlay_AppCompat_Dark = 2131755479;
+			public const int ThemeOverlay_AppCompat_ActionBar = 2131755479;
 			
 			// aapt resource value: 0x7F1001D8
-			public const int ThemeOverlay_AppCompat_Dark_ActionBar = 2131755480;
+			public const int ThemeOverlay_AppCompat_Dark = 2131755480;
 			
 			// aapt resource value: 0x7F1001D9
-			public const int ThemeOverlay_AppCompat_DayNight = 2131755481;
+			public const int ThemeOverlay_AppCompat_Dark_ActionBar = 2131755481;
 			
 			// aapt resource value: 0x7F1001DA
-			public const int ThemeOverlay_AppCompat_DayNight_ActionBar = 2131755482;
+			public const int ThemeOverlay_AppCompat_DayNight = 2131755482;
 			
 			// aapt resource value: 0x7F1001DB
-			public const int ThemeOverlay_AppCompat_Dialog = 2131755483;
+			public const int ThemeOverlay_AppCompat_DayNight_ActionBar = 2131755483;
 			
 			// aapt resource value: 0x7F1001DC
-			public const int ThemeOverlay_AppCompat_Dialog_Alert = 2131755484;
+			public const int ThemeOverlay_AppCompat_Dialog = 2131755484;
 			
 			// aapt resource value: 0x7F1001DD
-			public const int ThemeOverlay_AppCompat_Light = 2131755485;
+			public const int ThemeOverlay_AppCompat_Dialog_Alert = 2131755485;
 			
 			// aapt resource value: 0x7F1001DE
-			public const int ThemeOverlay_Design_TextInputEditText = 2131755486;
+			public const int ThemeOverlay_AppCompat_Light = 2131755486;
 			
 			// aapt resource value: 0x7F1001DF
-			public const int ThemeOverlay_MaterialComponents = 2131755487;
+			public const int ThemeOverlay_Design_TextInputEditText = 2131755487;
 			
 			// aapt resource value: 0x7F1001E0
-			public const int ThemeOverlay_MaterialComponents_ActionBar = 2131755488;
+			public const int ThemeOverlay_MaterialComponents = 2131755488;
 			
 			// aapt resource value: 0x7F1001E1
-			public const int ThemeOverlay_MaterialComponents_ActionBar_Primary = 2131755489;
+			public const int ThemeOverlay_MaterialComponents_ActionBar = 2131755489;
 			
 			// aapt resource value: 0x7F1001E2
-			public const int ThemeOverlay_MaterialComponents_ActionBar_Surface = 2131755490;
+			public const int ThemeOverlay_MaterialComponents_ActionBar_Primary = 2131755490;
 			
 			// aapt resource value: 0x7F1001E3
-			public const int ThemeOverlay_MaterialComponents_AutoCompleteTextView = 2131755491;
+			public const int ThemeOverlay_MaterialComponents_ActionBar_Surface = 2131755491;
 			
 			// aapt resource value: 0x7F1001E4
-			public const int ThemeOverlay_MaterialComponents_AutoCompleteTextView_FilledBox = 2131755492;
+			public const int ThemeOverlay_MaterialComponents_AutoCompleteTextView = 2131755492;
 			
 			// aapt resource value: 0x7F1001E5
-			public const int ThemeOverlay_MaterialComponents_AutoCompleteTextView_FilledBox_Dense = 2131755493;
+			public const int ThemeOverlay_MaterialComponents_AutoCompleteTextView_FilledBox = 2131755493;
 			
 			// aapt resource value: 0x7F1001E6
-			public const int ThemeOverlay_MaterialComponents_AutoCompleteTextView_OutlinedBox = 2131755494;
+			public const int ThemeOverlay_MaterialComponents_AutoCompleteTextView_FilledBox_Dense = 2131755494;
 			
 			// aapt resource value: 0x7F1001E7
-			public const int ThemeOverlay_MaterialComponents_AutoCompleteTextView_OutlinedBox_Dense = 2131755495;
+			public const int ThemeOverlay_MaterialComponents_AutoCompleteTextView_OutlinedBox = 2131755495;
 			
 			// aapt resource value: 0x7F1001E8
-			public const int ThemeOverlay_MaterialComponents_BottomAppBar_Primary = 2131755496;
+			public const int ThemeOverlay_MaterialComponents_AutoCompleteTextView_OutlinedBox_Dense = 2131755496;
 			
 			// aapt resource value: 0x7F1001E9
-			public const int ThemeOverlay_MaterialComponents_BottomAppBar_Surface = 2131755497;
+			public const int ThemeOverlay_MaterialComponents_BottomAppBar_Primary = 2131755497;
 			
 			// aapt resource value: 0x7F1001EA
-			public const int ThemeOverlay_MaterialComponents_BottomSheetDialog = 2131755498;
+			public const int ThemeOverlay_MaterialComponents_BottomAppBar_Surface = 2131755498;
 			
 			// aapt resource value: 0x7F1001EB
-			public const int ThemeOverlay_MaterialComponents_Dark = 2131755499;
+			public const int ThemeOverlay_MaterialComponents_BottomSheetDialog = 2131755499;
 			
 			// aapt resource value: 0x7F1001EC
-			public const int ThemeOverlay_MaterialComponents_Dark_ActionBar = 2131755500;
+			public const int ThemeOverlay_MaterialComponents_Dark = 2131755500;
 			
 			// aapt resource value: 0x7F1001ED
-			public const int ThemeOverlay_MaterialComponents_DayNight_BottomSheetDialog = 2131755501;
+			public const int ThemeOverlay_MaterialComponents_Dark_ActionBar = 2131755501;
 			
 			// aapt resource value: 0x7F1001EE
-			public const int ThemeOverlay_MaterialComponents_Dialog = 2131755502;
+			public const int ThemeOverlay_MaterialComponents_DayNight_BottomSheetDialog = 2131755502;
 			
 			// aapt resource value: 0x7F1001EF
-			public const int ThemeOverlay_MaterialComponents_Dialog_Alert = 2131755503;
+			public const int ThemeOverlay_MaterialComponents_Dialog = 2131755503;
 			
 			// aapt resource value: 0x7F1001F0
-			public const int ThemeOverlay_MaterialComponents_Dialog_Alert_Framework = 2131755504;
+			public const int ThemeOverlay_MaterialComponents_Dialog_Alert = 2131755504;
 			
 			// aapt resource value: 0x7F1001F1
-			public const int ThemeOverlay_MaterialComponents_Light = 2131755505;
+			public const int ThemeOverlay_MaterialComponents_Dialog_Alert_Framework = 2131755505;
 			
 			// aapt resource value: 0x7F1001F2
-			public const int ThemeOverlay_MaterialComponents_Light_BottomSheetDialog = 2131755506;
+			public const int ThemeOverlay_MaterialComponents_Light = 2131755506;
 			
 			// aapt resource value: 0x7F1001F3
-			public const int ThemeOverlay_MaterialComponents_Light_Dialog_Alert_Framework = 2131755507;
+			public const int ThemeOverlay_MaterialComponents_Light_BottomSheetDialog = 2131755507;
 			
 			// aapt resource value: 0x7F1001F4
-			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog = 2131755508;
+			public const int ThemeOverlay_MaterialComponents_Light_Dialog_Alert_Framework = 2131755508;
 			
 			// aapt resource value: 0x7F1001F5
-			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog_Centered = 2131755509;
+			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog = 2131755509;
 			
 			// aapt resource value: 0x7F1001F6
-			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date = 2131755510;
+			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog_Centered = 2131755510;
 			
 			// aapt resource value: 0x7F1001F7
-			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Calendar = 2131755511;
+			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date = 2131755511;
 			
 			// aapt resource value: 0x7F1001F8
-			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Header_Text = 2131755512;
+			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Calendar = 2131755512;
 			
 			// aapt resource value: 0x7F1001F9
-			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Header_Text_Day = 2131755513;
+			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Header_Text = 2131755513;
 			
 			// aapt resource value: 0x7F1001FA
-			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Spinner = 2131755514;
+			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Header_Text_Day = 2131755514;
 			
 			// aapt resource value: 0x7F1001FB
-			public const int ThemeOverlay_MaterialComponents_MaterialCalendar = 2131755515;
+			public const int ThemeOverlay_MaterialComponents_MaterialAlertDialog_Picker_Date_Spinner = 2131755515;
 			
 			// aapt resource value: 0x7F1001FC
-			public const int ThemeOverlay_MaterialComponents_MaterialCalendar_Fullscreen = 2131755516;
+			public const int ThemeOverlay_MaterialComponents_MaterialCalendar = 2131755516;
 			
 			// aapt resource value: 0x7F1001FD
-			public const int ThemeOverlay_MaterialComponents_TextInputEditText = 2131755517;
+			public const int ThemeOverlay_MaterialComponents_MaterialCalendar_Fullscreen = 2131755517;
 			
 			// aapt resource value: 0x7F1001FE
-			public const int ThemeOverlay_MaterialComponents_TextInputEditText_FilledBox = 2131755518;
+			public const int ThemeOverlay_MaterialComponents_TextInputEditText = 2131755518;
 			
 			// aapt resource value: 0x7F1001FF
-			public const int ThemeOverlay_MaterialComponents_TextInputEditText_FilledBox_Dense = 2131755519;
+			public const int ThemeOverlay_MaterialComponents_TextInputEditText_FilledBox = 2131755519;
 			
 			// aapt resource value: 0x7F100200
-			public const int ThemeOverlay_MaterialComponents_TextInputEditText_OutlinedBox = 2131755520;
+			public const int ThemeOverlay_MaterialComponents_TextInputEditText_FilledBox_Dense = 2131755520;
 			
 			// aapt resource value: 0x7F100201
-			public const int ThemeOverlay_MaterialComponents_TextInputEditText_OutlinedBox_Dense = 2131755521;
+			public const int ThemeOverlay_MaterialComponents_TextInputEditText_OutlinedBox = 2131755521;
 			
 			// aapt resource value: 0x7F100202
-			public const int ThemeOverlay_MaterialComponents_Toolbar_Primary = 2131755522;
+			public const int ThemeOverlay_MaterialComponents_TextInputEditText_OutlinedBox_Dense = 2131755522;
 			
 			// aapt resource value: 0x7F100203
-			public const int ThemeOverlay_MaterialComponents_Toolbar_Surface = 2131755523;
+			public const int ThemeOverlay_MaterialComponents_Toolbar_Primary = 2131755523;
+			
+			// aapt resource value: 0x7F100204
+			public const int ThemeOverlay_MaterialComponents_Toolbar_Surface = 2131755524;
 			
 			// aapt resource value: 0x7F100188
 			public const int Theme_AppCompat = 2131755400;
@@ -23796,700 +27295,703 @@ namespace GnollHackClient.Droid
 			public const int Theme_Design_NoActionBar = 2131755427;
 			
 			// aapt resource value: 0x7F1001A4
-			public const int Theme_MaterialComponents = 2131755428;
+			public const int Theme_IAPTheme = 2131755428;
 			
 			// aapt resource value: 0x7F1001A5
-			public const int Theme_MaterialComponents_BottomSheetDialog = 2131755429;
+			public const int Theme_MaterialComponents = 2131755429;
 			
 			// aapt resource value: 0x7F1001A6
-			public const int Theme_MaterialComponents_Bridge = 2131755430;
+			public const int Theme_MaterialComponents_BottomSheetDialog = 2131755430;
 			
 			// aapt resource value: 0x7F1001A7
-			public const int Theme_MaterialComponents_CompactMenu = 2131755431;
+			public const int Theme_MaterialComponents_Bridge = 2131755431;
 			
 			// aapt resource value: 0x7F1001A8
-			public const int Theme_MaterialComponents_DayNight = 2131755432;
+			public const int Theme_MaterialComponents_CompactMenu = 2131755432;
 			
 			// aapt resource value: 0x7F1001A9
-			public const int Theme_MaterialComponents_DayNight_BottomSheetDialog = 2131755433;
+			public const int Theme_MaterialComponents_DayNight = 2131755433;
 			
 			// aapt resource value: 0x7F1001AA
-			public const int Theme_MaterialComponents_DayNight_Bridge = 2131755434;
+			public const int Theme_MaterialComponents_DayNight_BottomSheetDialog = 2131755434;
 			
 			// aapt resource value: 0x7F1001AB
-			public const int Theme_MaterialComponents_DayNight_DarkActionBar = 2131755435;
+			public const int Theme_MaterialComponents_DayNight_Bridge = 2131755435;
 			
 			// aapt resource value: 0x7F1001AC
-			public const int Theme_MaterialComponents_DayNight_DarkActionBar_Bridge = 2131755436;
+			public const int Theme_MaterialComponents_DayNight_DarkActionBar = 2131755436;
 			
 			// aapt resource value: 0x7F1001AD
-			public const int Theme_MaterialComponents_DayNight_Dialog = 2131755437;
-			
-			// aapt resource value: 0x7F1001B5
-			public const int Theme_MaterialComponents_DayNight_DialogWhenLarge = 2131755445;
+			public const int Theme_MaterialComponents_DayNight_DarkActionBar_Bridge = 2131755437;
 			
 			// aapt resource value: 0x7F1001AE
-			public const int Theme_MaterialComponents_DayNight_Dialog_Alert = 2131755438;
-			
-			// aapt resource value: 0x7F1001AF
-			public const int Theme_MaterialComponents_DayNight_Dialog_Alert_Bridge = 2131755439;
-			
-			// aapt resource value: 0x7F1001B0
-			public const int Theme_MaterialComponents_DayNight_Dialog_Bridge = 2131755440;
-			
-			// aapt resource value: 0x7F1001B1
-			public const int Theme_MaterialComponents_DayNight_Dialog_FixedSize = 2131755441;
-			
-			// aapt resource value: 0x7F1001B2
-			public const int Theme_MaterialComponents_DayNight_Dialog_FixedSize_Bridge = 2131755442;
-			
-			// aapt resource value: 0x7F1001B3
-			public const int Theme_MaterialComponents_DayNight_Dialog_MinWidth = 2131755443;
-			
-			// aapt resource value: 0x7F1001B4
-			public const int Theme_MaterialComponents_DayNight_Dialog_MinWidth_Bridge = 2131755444;
+			public const int Theme_MaterialComponents_DayNight_Dialog = 2131755438;
 			
 			// aapt resource value: 0x7F1001B6
-			public const int Theme_MaterialComponents_DayNight_NoActionBar = 2131755446;
+			public const int Theme_MaterialComponents_DayNight_DialogWhenLarge = 2131755446;
+			
+			// aapt resource value: 0x7F1001AF
+			public const int Theme_MaterialComponents_DayNight_Dialog_Alert = 2131755439;
+			
+			// aapt resource value: 0x7F1001B0
+			public const int Theme_MaterialComponents_DayNight_Dialog_Alert_Bridge = 2131755440;
+			
+			// aapt resource value: 0x7F1001B1
+			public const int Theme_MaterialComponents_DayNight_Dialog_Bridge = 2131755441;
+			
+			// aapt resource value: 0x7F1001B2
+			public const int Theme_MaterialComponents_DayNight_Dialog_FixedSize = 2131755442;
+			
+			// aapt resource value: 0x7F1001B3
+			public const int Theme_MaterialComponents_DayNight_Dialog_FixedSize_Bridge = 2131755443;
+			
+			// aapt resource value: 0x7F1001B4
+			public const int Theme_MaterialComponents_DayNight_Dialog_MinWidth = 2131755444;
+			
+			// aapt resource value: 0x7F1001B5
+			public const int Theme_MaterialComponents_DayNight_Dialog_MinWidth_Bridge = 2131755445;
 			
 			// aapt resource value: 0x7F1001B7
-			public const int Theme_MaterialComponents_DayNight_NoActionBar_Bridge = 2131755447;
+			public const int Theme_MaterialComponents_DayNight_NoActionBar = 2131755447;
 			
 			// aapt resource value: 0x7F1001B8
-			public const int Theme_MaterialComponents_Dialog = 2131755448;
-			
-			// aapt resource value: 0x7F1001C0
-			public const int Theme_MaterialComponents_DialogWhenLarge = 2131755456;
+			public const int Theme_MaterialComponents_DayNight_NoActionBar_Bridge = 2131755448;
 			
 			// aapt resource value: 0x7F1001B9
-			public const int Theme_MaterialComponents_Dialog_Alert = 2131755449;
-			
-			// aapt resource value: 0x7F1001BA
-			public const int Theme_MaterialComponents_Dialog_Alert_Bridge = 2131755450;
-			
-			// aapt resource value: 0x7F1001BB
-			public const int Theme_MaterialComponents_Dialog_Bridge = 2131755451;
-			
-			// aapt resource value: 0x7F1001BC
-			public const int Theme_MaterialComponents_Dialog_FixedSize = 2131755452;
-			
-			// aapt resource value: 0x7F1001BD
-			public const int Theme_MaterialComponents_Dialog_FixedSize_Bridge = 2131755453;
-			
-			// aapt resource value: 0x7F1001BE
-			public const int Theme_MaterialComponents_Dialog_MinWidth = 2131755454;
-			
-			// aapt resource value: 0x7F1001BF
-			public const int Theme_MaterialComponents_Dialog_MinWidth_Bridge = 2131755455;
+			public const int Theme_MaterialComponents_Dialog = 2131755449;
 			
 			// aapt resource value: 0x7F1001C1
-			public const int Theme_MaterialComponents_Light = 2131755457;
+			public const int Theme_MaterialComponents_DialogWhenLarge = 2131755457;
+			
+			// aapt resource value: 0x7F1001BA
+			public const int Theme_MaterialComponents_Dialog_Alert = 2131755450;
+			
+			// aapt resource value: 0x7F1001BB
+			public const int Theme_MaterialComponents_Dialog_Alert_Bridge = 2131755451;
+			
+			// aapt resource value: 0x7F1001BC
+			public const int Theme_MaterialComponents_Dialog_Bridge = 2131755452;
+			
+			// aapt resource value: 0x7F1001BD
+			public const int Theme_MaterialComponents_Dialog_FixedSize = 2131755453;
+			
+			// aapt resource value: 0x7F1001BE
+			public const int Theme_MaterialComponents_Dialog_FixedSize_Bridge = 2131755454;
+			
+			// aapt resource value: 0x7F1001BF
+			public const int Theme_MaterialComponents_Dialog_MinWidth = 2131755455;
+			
+			// aapt resource value: 0x7F1001C0
+			public const int Theme_MaterialComponents_Dialog_MinWidth_Bridge = 2131755456;
 			
 			// aapt resource value: 0x7F1001C2
-			public const int Theme_MaterialComponents_Light_BarSize = 2131755458;
+			public const int Theme_MaterialComponents_Light = 2131755458;
 			
 			// aapt resource value: 0x7F1001C3
-			public const int Theme_MaterialComponents_Light_BottomSheetDialog = 2131755459;
+			public const int Theme_MaterialComponents_Light_BarSize = 2131755459;
 			
 			// aapt resource value: 0x7F1001C4
-			public const int Theme_MaterialComponents_Light_Bridge = 2131755460;
+			public const int Theme_MaterialComponents_Light_BottomSheetDialog = 2131755460;
 			
 			// aapt resource value: 0x7F1001C5
-			public const int Theme_MaterialComponents_Light_DarkActionBar = 2131755461;
+			public const int Theme_MaterialComponents_Light_Bridge = 2131755461;
 			
 			// aapt resource value: 0x7F1001C6
-			public const int Theme_MaterialComponents_Light_DarkActionBar_Bridge = 2131755462;
+			public const int Theme_MaterialComponents_Light_DarkActionBar = 2131755462;
 			
 			// aapt resource value: 0x7F1001C7
-			public const int Theme_MaterialComponents_Light_Dialog = 2131755463;
-			
-			// aapt resource value: 0x7F1001CF
-			public const int Theme_MaterialComponents_Light_DialogWhenLarge = 2131755471;
+			public const int Theme_MaterialComponents_Light_DarkActionBar_Bridge = 2131755463;
 			
 			// aapt resource value: 0x7F1001C8
-			public const int Theme_MaterialComponents_Light_Dialog_Alert = 2131755464;
-			
-			// aapt resource value: 0x7F1001C9
-			public const int Theme_MaterialComponents_Light_Dialog_Alert_Bridge = 2131755465;
-			
-			// aapt resource value: 0x7F1001CA
-			public const int Theme_MaterialComponents_Light_Dialog_Bridge = 2131755466;
-			
-			// aapt resource value: 0x7F1001CB
-			public const int Theme_MaterialComponents_Light_Dialog_FixedSize = 2131755467;
-			
-			// aapt resource value: 0x7F1001CC
-			public const int Theme_MaterialComponents_Light_Dialog_FixedSize_Bridge = 2131755468;
-			
-			// aapt resource value: 0x7F1001CD
-			public const int Theme_MaterialComponents_Light_Dialog_MinWidth = 2131755469;
-			
-			// aapt resource value: 0x7F1001CE
-			public const int Theme_MaterialComponents_Light_Dialog_MinWidth_Bridge = 2131755470;
+			public const int Theme_MaterialComponents_Light_Dialog = 2131755464;
 			
 			// aapt resource value: 0x7F1001D0
-			public const int Theme_MaterialComponents_Light_LargeTouch = 2131755472;
+			public const int Theme_MaterialComponents_Light_DialogWhenLarge = 2131755472;
+			
+			// aapt resource value: 0x7F1001C9
+			public const int Theme_MaterialComponents_Light_Dialog_Alert = 2131755465;
+			
+			// aapt resource value: 0x7F1001CA
+			public const int Theme_MaterialComponents_Light_Dialog_Alert_Bridge = 2131755466;
+			
+			// aapt resource value: 0x7F1001CB
+			public const int Theme_MaterialComponents_Light_Dialog_Bridge = 2131755467;
+			
+			// aapt resource value: 0x7F1001CC
+			public const int Theme_MaterialComponents_Light_Dialog_FixedSize = 2131755468;
+			
+			// aapt resource value: 0x7F1001CD
+			public const int Theme_MaterialComponents_Light_Dialog_FixedSize_Bridge = 2131755469;
+			
+			// aapt resource value: 0x7F1001CE
+			public const int Theme_MaterialComponents_Light_Dialog_MinWidth = 2131755470;
+			
+			// aapt resource value: 0x7F1001CF
+			public const int Theme_MaterialComponents_Light_Dialog_MinWidth_Bridge = 2131755471;
 			
 			// aapt resource value: 0x7F1001D1
-			public const int Theme_MaterialComponents_Light_NoActionBar = 2131755473;
+			public const int Theme_MaterialComponents_Light_LargeTouch = 2131755473;
 			
 			// aapt resource value: 0x7F1001D2
-			public const int Theme_MaterialComponents_Light_NoActionBar_Bridge = 2131755474;
+			public const int Theme_MaterialComponents_Light_NoActionBar = 2131755474;
 			
 			// aapt resource value: 0x7F1001D3
-			public const int Theme_MaterialComponents_NoActionBar = 2131755475;
+			public const int Theme_MaterialComponents_Light_NoActionBar_Bridge = 2131755475;
 			
 			// aapt resource value: 0x7F1001D4
-			public const int Theme_MaterialComponents_NoActionBar_Bridge = 2131755476;
+			public const int Theme_MaterialComponents_NoActionBar = 2131755476;
 			
-			// aapt resource value: 0x7F100205
-			public const int Widget_AppCompat_ActionBar = 2131755525;
+			// aapt resource value: 0x7F1001D5
+			public const int Theme_MaterialComponents_NoActionBar_Bridge = 2131755477;
 			
 			// aapt resource value: 0x7F100206
-			public const int Widget_AppCompat_ActionBar_Solid = 2131755526;
+			public const int Widget_AppCompat_ActionBar = 2131755526;
 			
 			// aapt resource value: 0x7F100207
-			public const int Widget_AppCompat_ActionBar_TabBar = 2131755527;
+			public const int Widget_AppCompat_ActionBar_Solid = 2131755527;
 			
 			// aapt resource value: 0x7F100208
-			public const int Widget_AppCompat_ActionBar_TabText = 2131755528;
+			public const int Widget_AppCompat_ActionBar_TabBar = 2131755528;
 			
 			// aapt resource value: 0x7F100209
-			public const int Widget_AppCompat_ActionBar_TabView = 2131755529;
+			public const int Widget_AppCompat_ActionBar_TabText = 2131755529;
 			
 			// aapt resource value: 0x7F10020A
-			public const int Widget_AppCompat_ActionButton = 2131755530;
+			public const int Widget_AppCompat_ActionBar_TabView = 2131755530;
 			
 			// aapt resource value: 0x7F10020B
-			public const int Widget_AppCompat_ActionButton_CloseMode = 2131755531;
+			public const int Widget_AppCompat_ActionButton = 2131755531;
 			
 			// aapt resource value: 0x7F10020C
-			public const int Widget_AppCompat_ActionButton_Overflow = 2131755532;
+			public const int Widget_AppCompat_ActionButton_CloseMode = 2131755532;
 			
 			// aapt resource value: 0x7F10020D
-			public const int Widget_AppCompat_ActionMode = 2131755533;
+			public const int Widget_AppCompat_ActionButton_Overflow = 2131755533;
 			
 			// aapt resource value: 0x7F10020E
-			public const int Widget_AppCompat_ActivityChooserView = 2131755534;
+			public const int Widget_AppCompat_ActionMode = 2131755534;
 			
 			// aapt resource value: 0x7F10020F
-			public const int Widget_AppCompat_AutoCompleteTextView = 2131755535;
+			public const int Widget_AppCompat_ActivityChooserView = 2131755535;
 			
 			// aapt resource value: 0x7F100210
-			public const int Widget_AppCompat_Button = 2131755536;
-			
-			// aapt resource value: 0x7F100216
-			public const int Widget_AppCompat_ButtonBar = 2131755542;
-			
-			// aapt resource value: 0x7F100217
-			public const int Widget_AppCompat_ButtonBar_AlertDialog = 2131755543;
+			public const int Widget_AppCompat_AutoCompleteTextView = 2131755536;
 			
 			// aapt resource value: 0x7F100211
-			public const int Widget_AppCompat_Button_Borderless = 2131755537;
+			public const int Widget_AppCompat_Button = 2131755537;
 			
-			// aapt resource value: 0x7F100212
-			public const int Widget_AppCompat_Button_Borderless_Colored = 2131755538;
-			
-			// aapt resource value: 0x7F100213
-			public const int Widget_AppCompat_Button_ButtonBar_AlertDialog = 2131755539;
-			
-			// aapt resource value: 0x7F100214
-			public const int Widget_AppCompat_Button_Colored = 2131755540;
-			
-			// aapt resource value: 0x7F100215
-			public const int Widget_AppCompat_Button_Small = 2131755541;
+			// aapt resource value: 0x7F100217
+			public const int Widget_AppCompat_ButtonBar = 2131755543;
 			
 			// aapt resource value: 0x7F100218
-			public const int Widget_AppCompat_CompoundButton_CheckBox = 2131755544;
+			public const int Widget_AppCompat_ButtonBar_AlertDialog = 2131755544;
+			
+			// aapt resource value: 0x7F100212
+			public const int Widget_AppCompat_Button_Borderless = 2131755538;
+			
+			// aapt resource value: 0x7F100213
+			public const int Widget_AppCompat_Button_Borderless_Colored = 2131755539;
+			
+			// aapt resource value: 0x7F100214
+			public const int Widget_AppCompat_Button_ButtonBar_AlertDialog = 2131755540;
+			
+			// aapt resource value: 0x7F100215
+			public const int Widget_AppCompat_Button_Colored = 2131755541;
+			
+			// aapt resource value: 0x7F100216
+			public const int Widget_AppCompat_Button_Small = 2131755542;
 			
 			// aapt resource value: 0x7F100219
-			public const int Widget_AppCompat_CompoundButton_RadioButton = 2131755545;
+			public const int Widget_AppCompat_CompoundButton_CheckBox = 2131755545;
 			
 			// aapt resource value: 0x7F10021A
-			public const int Widget_AppCompat_CompoundButton_Switch = 2131755546;
+			public const int Widget_AppCompat_CompoundButton_RadioButton = 2131755546;
 			
 			// aapt resource value: 0x7F10021B
-			public const int Widget_AppCompat_DrawerArrowToggle = 2131755547;
+			public const int Widget_AppCompat_CompoundButton_Switch = 2131755547;
 			
 			// aapt resource value: 0x7F10021C
-			public const int Widget_AppCompat_DropDownItem_Spinner = 2131755548;
+			public const int Widget_AppCompat_DrawerArrowToggle = 2131755548;
 			
 			// aapt resource value: 0x7F10021D
-			public const int Widget_AppCompat_EditText = 2131755549;
+			public const int Widget_AppCompat_DropDownItem_Spinner = 2131755549;
 			
 			// aapt resource value: 0x7F10021E
-			public const int Widget_AppCompat_ImageButton = 2131755550;
+			public const int Widget_AppCompat_EditText = 2131755550;
 			
 			// aapt resource value: 0x7F10021F
-			public const int Widget_AppCompat_Light_ActionBar = 2131755551;
+			public const int Widget_AppCompat_ImageButton = 2131755551;
 			
 			// aapt resource value: 0x7F100220
-			public const int Widget_AppCompat_Light_ActionBar_Solid = 2131755552;
+			public const int Widget_AppCompat_Light_ActionBar = 2131755552;
 			
 			// aapt resource value: 0x7F100221
-			public const int Widget_AppCompat_Light_ActionBar_Solid_Inverse = 2131755553;
+			public const int Widget_AppCompat_Light_ActionBar_Solid = 2131755553;
 			
 			// aapt resource value: 0x7F100222
-			public const int Widget_AppCompat_Light_ActionBar_TabBar = 2131755554;
+			public const int Widget_AppCompat_Light_ActionBar_Solid_Inverse = 2131755554;
 			
 			// aapt resource value: 0x7F100223
-			public const int Widget_AppCompat_Light_ActionBar_TabBar_Inverse = 2131755555;
+			public const int Widget_AppCompat_Light_ActionBar_TabBar = 2131755555;
 			
 			// aapt resource value: 0x7F100224
-			public const int Widget_AppCompat_Light_ActionBar_TabText = 2131755556;
+			public const int Widget_AppCompat_Light_ActionBar_TabBar_Inverse = 2131755556;
 			
 			// aapt resource value: 0x7F100225
-			public const int Widget_AppCompat_Light_ActionBar_TabText_Inverse = 2131755557;
+			public const int Widget_AppCompat_Light_ActionBar_TabText = 2131755557;
 			
 			// aapt resource value: 0x7F100226
-			public const int Widget_AppCompat_Light_ActionBar_TabView = 2131755558;
+			public const int Widget_AppCompat_Light_ActionBar_TabText_Inverse = 2131755558;
 			
 			// aapt resource value: 0x7F100227
-			public const int Widget_AppCompat_Light_ActionBar_TabView_Inverse = 2131755559;
+			public const int Widget_AppCompat_Light_ActionBar_TabView = 2131755559;
 			
 			// aapt resource value: 0x7F100228
-			public const int Widget_AppCompat_Light_ActionButton = 2131755560;
+			public const int Widget_AppCompat_Light_ActionBar_TabView_Inverse = 2131755560;
 			
 			// aapt resource value: 0x7F100229
-			public const int Widget_AppCompat_Light_ActionButton_CloseMode = 2131755561;
+			public const int Widget_AppCompat_Light_ActionButton = 2131755561;
 			
 			// aapt resource value: 0x7F10022A
-			public const int Widget_AppCompat_Light_ActionButton_Overflow = 2131755562;
+			public const int Widget_AppCompat_Light_ActionButton_CloseMode = 2131755562;
 			
 			// aapt resource value: 0x7F10022B
-			public const int Widget_AppCompat_Light_ActionMode_Inverse = 2131755563;
+			public const int Widget_AppCompat_Light_ActionButton_Overflow = 2131755563;
 			
 			// aapt resource value: 0x7F10022C
-			public const int Widget_AppCompat_Light_ActivityChooserView = 2131755564;
+			public const int Widget_AppCompat_Light_ActionMode_Inverse = 2131755564;
 			
 			// aapt resource value: 0x7F10022D
-			public const int Widget_AppCompat_Light_AutoCompleteTextView = 2131755565;
+			public const int Widget_AppCompat_Light_ActivityChooserView = 2131755565;
 			
 			// aapt resource value: 0x7F10022E
-			public const int Widget_AppCompat_Light_DropDownItem_Spinner = 2131755566;
+			public const int Widget_AppCompat_Light_AutoCompleteTextView = 2131755566;
 			
 			// aapt resource value: 0x7F10022F
-			public const int Widget_AppCompat_Light_ListPopupWindow = 2131755567;
+			public const int Widget_AppCompat_Light_DropDownItem_Spinner = 2131755567;
 			
 			// aapt resource value: 0x7F100230
-			public const int Widget_AppCompat_Light_ListView_DropDown = 2131755568;
+			public const int Widget_AppCompat_Light_ListPopupWindow = 2131755568;
 			
 			// aapt resource value: 0x7F100231
-			public const int Widget_AppCompat_Light_PopupMenu = 2131755569;
+			public const int Widget_AppCompat_Light_ListView_DropDown = 2131755569;
 			
 			// aapt resource value: 0x7F100232
-			public const int Widget_AppCompat_Light_PopupMenu_Overflow = 2131755570;
+			public const int Widget_AppCompat_Light_PopupMenu = 2131755570;
 			
 			// aapt resource value: 0x7F100233
-			public const int Widget_AppCompat_Light_SearchView = 2131755571;
+			public const int Widget_AppCompat_Light_PopupMenu_Overflow = 2131755571;
 			
 			// aapt resource value: 0x7F100234
-			public const int Widget_AppCompat_Light_Spinner_DropDown_ActionBar = 2131755572;
+			public const int Widget_AppCompat_Light_SearchView = 2131755572;
 			
 			// aapt resource value: 0x7F100235
-			public const int Widget_AppCompat_ListMenuView = 2131755573;
+			public const int Widget_AppCompat_Light_Spinner_DropDown_ActionBar = 2131755573;
 			
 			// aapt resource value: 0x7F100236
-			public const int Widget_AppCompat_ListPopupWindow = 2131755574;
+			public const int Widget_AppCompat_ListMenuView = 2131755574;
 			
 			// aapt resource value: 0x7F100237
-			public const int Widget_AppCompat_ListView = 2131755575;
+			public const int Widget_AppCompat_ListPopupWindow = 2131755575;
 			
 			// aapt resource value: 0x7F100238
-			public const int Widget_AppCompat_ListView_DropDown = 2131755576;
+			public const int Widget_AppCompat_ListView = 2131755576;
 			
 			// aapt resource value: 0x7F100239
-			public const int Widget_AppCompat_ListView_Menu = 2131755577;
+			public const int Widget_AppCompat_ListView_DropDown = 2131755577;
 			
 			// aapt resource value: 0x7F10023A
-			public const int Widget_AppCompat_PopupMenu = 2131755578;
+			public const int Widget_AppCompat_ListView_Menu = 2131755578;
 			
 			// aapt resource value: 0x7F10023B
-			public const int Widget_AppCompat_PopupMenu_Overflow = 2131755579;
+			public const int Widget_AppCompat_PopupMenu = 2131755579;
 			
 			// aapt resource value: 0x7F10023C
-			public const int Widget_AppCompat_PopupWindow = 2131755580;
+			public const int Widget_AppCompat_PopupMenu_Overflow = 2131755580;
 			
 			// aapt resource value: 0x7F10023D
-			public const int Widget_AppCompat_ProgressBar = 2131755581;
+			public const int Widget_AppCompat_PopupWindow = 2131755581;
 			
 			// aapt resource value: 0x7F10023E
-			public const int Widget_AppCompat_ProgressBar_Horizontal = 2131755582;
+			public const int Widget_AppCompat_ProgressBar = 2131755582;
 			
 			// aapt resource value: 0x7F10023F
-			public const int Widget_AppCompat_RatingBar = 2131755583;
+			public const int Widget_AppCompat_ProgressBar_Horizontal = 2131755583;
 			
 			// aapt resource value: 0x7F100240
-			public const int Widget_AppCompat_RatingBar_Indicator = 2131755584;
+			public const int Widget_AppCompat_RatingBar = 2131755584;
 			
 			// aapt resource value: 0x7F100241
-			public const int Widget_AppCompat_RatingBar_Small = 2131755585;
+			public const int Widget_AppCompat_RatingBar_Indicator = 2131755585;
 			
 			// aapt resource value: 0x7F100242
-			public const int Widget_AppCompat_SearchView = 2131755586;
+			public const int Widget_AppCompat_RatingBar_Small = 2131755586;
 			
 			// aapt resource value: 0x7F100243
-			public const int Widget_AppCompat_SearchView_ActionBar = 2131755587;
+			public const int Widget_AppCompat_SearchView = 2131755587;
 			
 			// aapt resource value: 0x7F100244
-			public const int Widget_AppCompat_SeekBar = 2131755588;
+			public const int Widget_AppCompat_SearchView_ActionBar = 2131755588;
 			
 			// aapt resource value: 0x7F100245
-			public const int Widget_AppCompat_SeekBar_Discrete = 2131755589;
+			public const int Widget_AppCompat_SeekBar = 2131755589;
 			
 			// aapt resource value: 0x7F100246
-			public const int Widget_AppCompat_Spinner = 2131755590;
+			public const int Widget_AppCompat_SeekBar_Discrete = 2131755590;
 			
 			// aapt resource value: 0x7F100247
-			public const int Widget_AppCompat_Spinner_DropDown = 2131755591;
+			public const int Widget_AppCompat_Spinner = 2131755591;
 			
 			// aapt resource value: 0x7F100248
-			public const int Widget_AppCompat_Spinner_DropDown_ActionBar = 2131755592;
+			public const int Widget_AppCompat_Spinner_DropDown = 2131755592;
 			
 			// aapt resource value: 0x7F100249
-			public const int Widget_AppCompat_Spinner_Underlined = 2131755593;
+			public const int Widget_AppCompat_Spinner_DropDown_ActionBar = 2131755593;
 			
 			// aapt resource value: 0x7F10024A
-			public const int Widget_AppCompat_TextView = 2131755594;
+			public const int Widget_AppCompat_Spinner_Underlined = 2131755594;
 			
 			// aapt resource value: 0x7F10024B
-			public const int Widget_AppCompat_TextView_SpinnerItem = 2131755595;
+			public const int Widget_AppCompat_TextView = 2131755595;
 			
 			// aapt resource value: 0x7F10024C
-			public const int Widget_AppCompat_Toolbar = 2131755596;
+			public const int Widget_AppCompat_TextView_SpinnerItem = 2131755596;
 			
 			// aapt resource value: 0x7F10024D
-			public const int Widget_AppCompat_Toolbar_Button_Navigation = 2131755597;
+			public const int Widget_AppCompat_Toolbar = 2131755597;
 			
 			// aapt resource value: 0x7F10024E
-			public const int Widget_Compat_NotificationActionContainer = 2131755598;
+			public const int Widget_AppCompat_Toolbar_Button_Navigation = 2131755598;
 			
 			// aapt resource value: 0x7F10024F
-			public const int Widget_Compat_NotificationActionText = 2131755599;
+			public const int Widget_Compat_NotificationActionContainer = 2131755599;
 			
 			// aapt resource value: 0x7F100250
-			public const int Widget_Design_AppBarLayout = 2131755600;
+			public const int Widget_Compat_NotificationActionText = 2131755600;
 			
 			// aapt resource value: 0x7F100251
-			public const int Widget_Design_BottomNavigationView = 2131755601;
+			public const int Widget_Design_AppBarLayout = 2131755601;
 			
 			// aapt resource value: 0x7F100252
-			public const int Widget_Design_BottomSheet_Modal = 2131755602;
+			public const int Widget_Design_BottomNavigationView = 2131755602;
 			
 			// aapt resource value: 0x7F100253
-			public const int Widget_Design_CollapsingToolbar = 2131755603;
+			public const int Widget_Design_BottomSheet_Modal = 2131755603;
 			
 			// aapt resource value: 0x7F100254
-			public const int Widget_Design_FloatingActionButton = 2131755604;
+			public const int Widget_Design_CollapsingToolbar = 2131755604;
 			
 			// aapt resource value: 0x7F100255
-			public const int Widget_Design_NavigationView = 2131755605;
+			public const int Widget_Design_FloatingActionButton = 2131755605;
 			
 			// aapt resource value: 0x7F100256
-			public const int Widget_Design_ScrimInsetsFrameLayout = 2131755606;
+			public const int Widget_Design_NavigationView = 2131755606;
 			
 			// aapt resource value: 0x7F100257
-			public const int Widget_Design_Snackbar = 2131755607;
+			public const int Widget_Design_ScrimInsetsFrameLayout = 2131755607;
 			
 			// aapt resource value: 0x7F100258
-			public const int Widget_Design_TabLayout = 2131755608;
+			public const int Widget_Design_Snackbar = 2131755608;
 			
 			// aapt resource value: 0x7F100259
-			public const int Widget_Design_TextInputEditText = 2131755609;
+			public const int Widget_Design_TabLayout = 2131755609;
 			
 			// aapt resource value: 0x7F10025A
-			public const int Widget_Design_TextInputLayout = 2131755610;
+			public const int Widget_Design_TextInputEditText = 2131755610;
 			
 			// aapt resource value: 0x7F10025B
-			public const int Widget_MaterialComponents_ActionBar_Primary = 2131755611;
+			public const int Widget_Design_TextInputLayout = 2131755611;
 			
 			// aapt resource value: 0x7F10025C
-			public const int Widget_MaterialComponents_ActionBar_PrimarySurface = 2131755612;
+			public const int Widget_MaterialComponents_ActionBar_Primary = 2131755612;
 			
 			// aapt resource value: 0x7F10025D
-			public const int Widget_MaterialComponents_ActionBar_Solid = 2131755613;
+			public const int Widget_MaterialComponents_ActionBar_PrimarySurface = 2131755613;
 			
 			// aapt resource value: 0x7F10025E
-			public const int Widget_MaterialComponents_ActionBar_Surface = 2131755614;
+			public const int Widget_MaterialComponents_ActionBar_Solid = 2131755614;
 			
 			// aapt resource value: 0x7F10025F
-			public const int Widget_MaterialComponents_AppBarLayout_Primary = 2131755615;
+			public const int Widget_MaterialComponents_ActionBar_Surface = 2131755615;
 			
 			// aapt resource value: 0x7F100260
-			public const int Widget_MaterialComponents_AppBarLayout_PrimarySurface = 2131755616;
+			public const int Widget_MaterialComponents_AppBarLayout_Primary = 2131755616;
 			
 			// aapt resource value: 0x7F100261
-			public const int Widget_MaterialComponents_AppBarLayout_Surface = 2131755617;
+			public const int Widget_MaterialComponents_AppBarLayout_PrimarySurface = 2131755617;
 			
 			// aapt resource value: 0x7F100262
-			public const int Widget_MaterialComponents_AutoCompleteTextView_FilledBox = 2131755618;
+			public const int Widget_MaterialComponents_AppBarLayout_Surface = 2131755618;
 			
 			// aapt resource value: 0x7F100263
-			public const int Widget_MaterialComponents_AutoCompleteTextView_FilledBox_Dense = 2131755619;
+			public const int Widget_MaterialComponents_AutoCompleteTextView_FilledBox = 2131755619;
 			
 			// aapt resource value: 0x7F100264
-			public const int Widget_MaterialComponents_AutoCompleteTextView_OutlinedBox = 2131755620;
+			public const int Widget_MaterialComponents_AutoCompleteTextView_FilledBox_Dense = 2131755620;
 			
 			// aapt resource value: 0x7F100265
-			public const int Widget_MaterialComponents_AutoCompleteTextView_OutlinedBox_Dense = 2131755621;
+			public const int Widget_MaterialComponents_AutoCompleteTextView_OutlinedBox = 2131755621;
 			
 			// aapt resource value: 0x7F100266
-			public const int Widget_MaterialComponents_Badge = 2131755622;
+			public const int Widget_MaterialComponents_AutoCompleteTextView_OutlinedBox_Dense = 2131755622;
 			
 			// aapt resource value: 0x7F100267
-			public const int Widget_MaterialComponents_BottomAppBar = 2131755623;
+			public const int Widget_MaterialComponents_Badge = 2131755623;
 			
 			// aapt resource value: 0x7F100268
-			public const int Widget_MaterialComponents_BottomAppBar_Colored = 2131755624;
+			public const int Widget_MaterialComponents_BottomAppBar = 2131755624;
 			
 			// aapt resource value: 0x7F100269
-			public const int Widget_MaterialComponents_BottomAppBar_PrimarySurface = 2131755625;
+			public const int Widget_MaterialComponents_BottomAppBar_Colored = 2131755625;
 			
 			// aapt resource value: 0x7F10026A
-			public const int Widget_MaterialComponents_BottomNavigationView = 2131755626;
+			public const int Widget_MaterialComponents_BottomAppBar_PrimarySurface = 2131755626;
 			
 			// aapt resource value: 0x7F10026B
-			public const int Widget_MaterialComponents_BottomNavigationView_Colored = 2131755627;
+			public const int Widget_MaterialComponents_BottomNavigationView = 2131755627;
 			
 			// aapt resource value: 0x7F10026C
-			public const int Widget_MaterialComponents_BottomNavigationView_PrimarySurface = 2131755628;
+			public const int Widget_MaterialComponents_BottomNavigationView_Colored = 2131755628;
 			
 			// aapt resource value: 0x7F10026D
-			public const int Widget_MaterialComponents_BottomSheet = 2131755629;
+			public const int Widget_MaterialComponents_BottomNavigationView_PrimarySurface = 2131755629;
 			
 			// aapt resource value: 0x7F10026E
-			public const int Widget_MaterialComponents_BottomSheet_Modal = 2131755630;
+			public const int Widget_MaterialComponents_BottomSheet = 2131755630;
 			
 			// aapt resource value: 0x7F10026F
-			public const int Widget_MaterialComponents_Button = 2131755631;
+			public const int Widget_MaterialComponents_BottomSheet_Modal = 2131755631;
 			
 			// aapt resource value: 0x7F100270
-			public const int Widget_MaterialComponents_Button_Icon = 2131755632;
+			public const int Widget_MaterialComponents_Button = 2131755632;
 			
 			// aapt resource value: 0x7F100271
-			public const int Widget_MaterialComponents_Button_OutlinedButton = 2131755633;
+			public const int Widget_MaterialComponents_Button_Icon = 2131755633;
 			
 			// aapt resource value: 0x7F100272
-			public const int Widget_MaterialComponents_Button_OutlinedButton_Icon = 2131755634;
+			public const int Widget_MaterialComponents_Button_OutlinedButton = 2131755634;
 			
 			// aapt resource value: 0x7F100273
-			public const int Widget_MaterialComponents_Button_TextButton = 2131755635;
+			public const int Widget_MaterialComponents_Button_OutlinedButton_Icon = 2131755635;
 			
 			// aapt resource value: 0x7F100274
-			public const int Widget_MaterialComponents_Button_TextButton_Dialog = 2131755636;
+			public const int Widget_MaterialComponents_Button_TextButton = 2131755636;
 			
 			// aapt resource value: 0x7F100275
-			public const int Widget_MaterialComponents_Button_TextButton_Dialog_Flush = 2131755637;
+			public const int Widget_MaterialComponents_Button_TextButton_Dialog = 2131755637;
 			
 			// aapt resource value: 0x7F100276
-			public const int Widget_MaterialComponents_Button_TextButton_Dialog_Icon = 2131755638;
+			public const int Widget_MaterialComponents_Button_TextButton_Dialog_Flush = 2131755638;
 			
 			// aapt resource value: 0x7F100277
-			public const int Widget_MaterialComponents_Button_TextButton_Icon = 2131755639;
+			public const int Widget_MaterialComponents_Button_TextButton_Dialog_Icon = 2131755639;
 			
 			// aapt resource value: 0x7F100278
-			public const int Widget_MaterialComponents_Button_TextButton_Snackbar = 2131755640;
+			public const int Widget_MaterialComponents_Button_TextButton_Icon = 2131755640;
 			
 			// aapt resource value: 0x7F100279
-			public const int Widget_MaterialComponents_Button_UnelevatedButton = 2131755641;
+			public const int Widget_MaterialComponents_Button_TextButton_Snackbar = 2131755641;
 			
 			// aapt resource value: 0x7F10027A
-			public const int Widget_MaterialComponents_Button_UnelevatedButton_Icon = 2131755642;
+			public const int Widget_MaterialComponents_Button_UnelevatedButton = 2131755642;
 			
 			// aapt resource value: 0x7F10027B
-			public const int Widget_MaterialComponents_CardView = 2131755643;
+			public const int Widget_MaterialComponents_Button_UnelevatedButton_Icon = 2131755643;
 			
 			// aapt resource value: 0x7F10027C
-			public const int Widget_MaterialComponents_CheckedTextView = 2131755644;
-			
-			// aapt resource value: 0x7F100281
-			public const int Widget_MaterialComponents_ChipGroup = 2131755649;
+			public const int Widget_MaterialComponents_CardView = 2131755644;
 			
 			// aapt resource value: 0x7F10027D
-			public const int Widget_MaterialComponents_Chip_Action = 2131755645;
-			
-			// aapt resource value: 0x7F10027E
-			public const int Widget_MaterialComponents_Chip_Choice = 2131755646;
-			
-			// aapt resource value: 0x7F10027F
-			public const int Widget_MaterialComponents_Chip_Entry = 2131755647;
-			
-			// aapt resource value: 0x7F100280
-			public const int Widget_MaterialComponents_Chip_Filter = 2131755648;
+			public const int Widget_MaterialComponents_CheckedTextView = 2131755645;
 			
 			// aapt resource value: 0x7F100282
-			public const int Widget_MaterialComponents_CompoundButton_CheckBox = 2131755650;
+			public const int Widget_MaterialComponents_ChipGroup = 2131755650;
+			
+			// aapt resource value: 0x7F10027E
+			public const int Widget_MaterialComponents_Chip_Action = 2131755646;
+			
+			// aapt resource value: 0x7F10027F
+			public const int Widget_MaterialComponents_Chip_Choice = 2131755647;
+			
+			// aapt resource value: 0x7F100280
+			public const int Widget_MaterialComponents_Chip_Entry = 2131755648;
+			
+			// aapt resource value: 0x7F100281
+			public const int Widget_MaterialComponents_Chip_Filter = 2131755649;
 			
 			// aapt resource value: 0x7F100283
-			public const int Widget_MaterialComponents_CompoundButton_RadioButton = 2131755651;
+			public const int Widget_MaterialComponents_CompoundButton_CheckBox = 2131755651;
 			
 			// aapt resource value: 0x7F100284
-			public const int Widget_MaterialComponents_CompoundButton_Switch = 2131755652;
+			public const int Widget_MaterialComponents_CompoundButton_RadioButton = 2131755652;
 			
 			// aapt resource value: 0x7F100285
-			public const int Widget_MaterialComponents_ExtendedFloatingActionButton = 2131755653;
+			public const int Widget_MaterialComponents_CompoundButton_Switch = 2131755653;
 			
 			// aapt resource value: 0x7F100286
-			public const int Widget_MaterialComponents_ExtendedFloatingActionButton_Icon = 2131755654;
+			public const int Widget_MaterialComponents_ExtendedFloatingActionButton = 2131755654;
 			
 			// aapt resource value: 0x7F100287
-			public const int Widget_MaterialComponents_FloatingActionButton = 2131755655;
+			public const int Widget_MaterialComponents_ExtendedFloatingActionButton_Icon = 2131755655;
 			
 			// aapt resource value: 0x7F100288
-			public const int Widget_MaterialComponents_Light_ActionBar_Solid = 2131755656;
+			public const int Widget_MaterialComponents_FloatingActionButton = 2131755656;
 			
 			// aapt resource value: 0x7F100289
-			public const int Widget_MaterialComponents_MaterialButtonToggleGroup = 2131755657;
+			public const int Widget_MaterialComponents_Light_ActionBar_Solid = 2131755657;
 			
 			// aapt resource value: 0x7F10028A
-			public const int Widget_MaterialComponents_MaterialCalendar = 2131755658;
+			public const int Widget_MaterialComponents_MaterialButtonToggleGroup = 2131755658;
 			
 			// aapt resource value: 0x7F10028B
-			public const int Widget_MaterialComponents_MaterialCalendar_Day = 2131755659;
-			
-			// aapt resource value: 0x7F10028F
-			public const int Widget_MaterialComponents_MaterialCalendar_DayTextView = 2131755663;
+			public const int Widget_MaterialComponents_MaterialCalendar = 2131755659;
 			
 			// aapt resource value: 0x7F10028C
-			public const int Widget_MaterialComponents_MaterialCalendar_Day_Invalid = 2131755660;
-			
-			// aapt resource value: 0x7F10028D
-			public const int Widget_MaterialComponents_MaterialCalendar_Day_Selected = 2131755661;
-			
-			// aapt resource value: 0x7F10028E
-			public const int Widget_MaterialComponents_MaterialCalendar_Day_Today = 2131755662;
+			public const int Widget_MaterialComponents_MaterialCalendar_Day = 2131755660;
 			
 			// aapt resource value: 0x7F100290
-			public const int Widget_MaterialComponents_MaterialCalendar_Fullscreen = 2131755664;
+			public const int Widget_MaterialComponents_MaterialCalendar_DayTextView = 2131755664;
+			
+			// aapt resource value: 0x7F10028D
+			public const int Widget_MaterialComponents_MaterialCalendar_Day_Invalid = 2131755661;
+			
+			// aapt resource value: 0x7F10028E
+			public const int Widget_MaterialComponents_MaterialCalendar_Day_Selected = 2131755662;
+			
+			// aapt resource value: 0x7F10028F
+			public const int Widget_MaterialComponents_MaterialCalendar_Day_Today = 2131755663;
 			
 			// aapt resource value: 0x7F100291
-			public const int Widget_MaterialComponents_MaterialCalendar_HeaderConfirmButton = 2131755665;
+			public const int Widget_MaterialComponents_MaterialCalendar_Fullscreen = 2131755665;
 			
 			// aapt resource value: 0x7F100292
-			public const int Widget_MaterialComponents_MaterialCalendar_HeaderDivider = 2131755666;
+			public const int Widget_MaterialComponents_MaterialCalendar_HeaderConfirmButton = 2131755666;
 			
 			// aapt resource value: 0x7F100293
-			public const int Widget_MaterialComponents_MaterialCalendar_HeaderLayout = 2131755667;
+			public const int Widget_MaterialComponents_MaterialCalendar_HeaderDivider = 2131755667;
 			
 			// aapt resource value: 0x7F100294
-			public const int Widget_MaterialComponents_MaterialCalendar_HeaderSelection = 2131755668;
+			public const int Widget_MaterialComponents_MaterialCalendar_HeaderLayout = 2131755668;
 			
 			// aapt resource value: 0x7F100295
-			public const int Widget_MaterialComponents_MaterialCalendar_HeaderSelection_Fullscreen = 2131755669;
+			public const int Widget_MaterialComponents_MaterialCalendar_HeaderSelection = 2131755669;
 			
 			// aapt resource value: 0x7F100296
-			public const int Widget_MaterialComponents_MaterialCalendar_HeaderTitle = 2131755670;
+			public const int Widget_MaterialComponents_MaterialCalendar_HeaderSelection_Fullscreen = 2131755670;
 			
 			// aapt resource value: 0x7F100297
-			public const int Widget_MaterialComponents_MaterialCalendar_HeaderToggleButton = 2131755671;
+			public const int Widget_MaterialComponents_MaterialCalendar_HeaderTitle = 2131755671;
 			
 			// aapt resource value: 0x7F100298
-			public const int Widget_MaterialComponents_MaterialCalendar_Item = 2131755672;
+			public const int Widget_MaterialComponents_MaterialCalendar_HeaderToggleButton = 2131755672;
 			
 			// aapt resource value: 0x7F100299
-			public const int Widget_MaterialComponents_MaterialCalendar_Year = 2131755673;
+			public const int Widget_MaterialComponents_MaterialCalendar_Item = 2131755673;
 			
 			// aapt resource value: 0x7F10029A
-			public const int Widget_MaterialComponents_MaterialCalendar_Year_Selected = 2131755674;
+			public const int Widget_MaterialComponents_MaterialCalendar_Year = 2131755674;
 			
 			// aapt resource value: 0x7F10029B
-			public const int Widget_MaterialComponents_MaterialCalendar_Year_Today = 2131755675;
+			public const int Widget_MaterialComponents_MaterialCalendar_Year_Selected = 2131755675;
 			
 			// aapt resource value: 0x7F10029C
-			public const int Widget_MaterialComponents_NavigationView = 2131755676;
+			public const int Widget_MaterialComponents_MaterialCalendar_Year_Today = 2131755676;
 			
 			// aapt resource value: 0x7F10029D
-			public const int Widget_MaterialComponents_PopupMenu = 2131755677;
+			public const int Widget_MaterialComponents_NavigationView = 2131755677;
 			
 			// aapt resource value: 0x7F10029E
-			public const int Widget_MaterialComponents_PopupMenu_ContextMenu = 2131755678;
+			public const int Widget_MaterialComponents_PopupMenu = 2131755678;
 			
 			// aapt resource value: 0x7F10029F
-			public const int Widget_MaterialComponents_PopupMenu_ListPopupWindow = 2131755679;
+			public const int Widget_MaterialComponents_PopupMenu_ContextMenu = 2131755679;
 			
 			// aapt resource value: 0x7F1002A0
-			public const int Widget_MaterialComponents_PopupMenu_Overflow = 2131755680;
+			public const int Widget_MaterialComponents_PopupMenu_ListPopupWindow = 2131755680;
 			
 			// aapt resource value: 0x7F1002A1
-			public const int Widget_MaterialComponents_ShapeableImageView = 2131755681;
+			public const int Widget_MaterialComponents_PopupMenu_Overflow = 2131755681;
 			
 			// aapt resource value: 0x7F1002A2
-			public const int Widget_MaterialComponents_Slider = 2131755682;
+			public const int Widget_MaterialComponents_ShapeableImageView = 2131755682;
 			
 			// aapt resource value: 0x7F1002A3
-			public const int Widget_MaterialComponents_Snackbar = 2131755683;
+			public const int Widget_MaterialComponents_Slider = 2131755683;
 			
 			// aapt resource value: 0x7F1002A4
-			public const int Widget_MaterialComponents_Snackbar_FullWidth = 2131755684;
+			public const int Widget_MaterialComponents_Snackbar = 2131755684;
 			
 			// aapt resource value: 0x7F1002A5
-			public const int Widget_MaterialComponents_Snackbar_TextView = 2131755685;
+			public const int Widget_MaterialComponents_Snackbar_FullWidth = 2131755685;
 			
 			// aapt resource value: 0x7F1002A6
-			public const int Widget_MaterialComponents_TabLayout = 2131755686;
+			public const int Widget_MaterialComponents_Snackbar_TextView = 2131755686;
 			
 			// aapt resource value: 0x7F1002A7
-			public const int Widget_MaterialComponents_TabLayout_Colored = 2131755687;
+			public const int Widget_MaterialComponents_TabLayout = 2131755687;
 			
 			// aapt resource value: 0x7F1002A8
-			public const int Widget_MaterialComponents_TabLayout_PrimarySurface = 2131755688;
+			public const int Widget_MaterialComponents_TabLayout_Colored = 2131755688;
 			
 			// aapt resource value: 0x7F1002A9
-			public const int Widget_MaterialComponents_TextInputEditText_FilledBox = 2131755689;
+			public const int Widget_MaterialComponents_TabLayout_PrimarySurface = 2131755689;
 			
 			// aapt resource value: 0x7F1002AA
-			public const int Widget_MaterialComponents_TextInputEditText_FilledBox_Dense = 2131755690;
+			public const int Widget_MaterialComponents_TextInputEditText_FilledBox = 2131755690;
 			
 			// aapt resource value: 0x7F1002AB
-			public const int Widget_MaterialComponents_TextInputEditText_OutlinedBox = 2131755691;
+			public const int Widget_MaterialComponents_TextInputEditText_FilledBox_Dense = 2131755691;
 			
 			// aapt resource value: 0x7F1002AC
-			public const int Widget_MaterialComponents_TextInputEditText_OutlinedBox_Dense = 2131755692;
+			public const int Widget_MaterialComponents_TextInputEditText_OutlinedBox = 2131755692;
 			
 			// aapt resource value: 0x7F1002AD
-			public const int Widget_MaterialComponents_TextInputLayout_FilledBox = 2131755693;
+			public const int Widget_MaterialComponents_TextInputEditText_OutlinedBox_Dense = 2131755693;
 			
 			// aapt resource value: 0x7F1002AE
-			public const int Widget_MaterialComponents_TextInputLayout_FilledBox_Dense = 2131755694;
+			public const int Widget_MaterialComponents_TextInputLayout_FilledBox = 2131755694;
 			
 			// aapt resource value: 0x7F1002AF
-			public const int Widget_MaterialComponents_TextInputLayout_FilledBox_Dense_ExposedDropdownMenu = 2131755695;
+			public const int Widget_MaterialComponents_TextInputLayout_FilledBox_Dense = 2131755695;
 			
 			// aapt resource value: 0x7F1002B0
-			public const int Widget_MaterialComponents_TextInputLayout_FilledBox_ExposedDropdownMenu = 2131755696;
+			public const int Widget_MaterialComponents_TextInputLayout_FilledBox_Dense_ExposedDropdownMenu = 2131755696;
 			
 			// aapt resource value: 0x7F1002B1
-			public const int Widget_MaterialComponents_TextInputLayout_OutlinedBox = 2131755697;
+			public const int Widget_MaterialComponents_TextInputLayout_FilledBox_ExposedDropdownMenu = 2131755697;
 			
 			// aapt resource value: 0x7F1002B2
-			public const int Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense = 2131755698;
+			public const int Widget_MaterialComponents_TextInputLayout_OutlinedBox = 2131755698;
 			
 			// aapt resource value: 0x7F1002B3
-			public const int Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense_ExposedDropdownMenu = 2131755699;
+			public const int Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense = 2131755699;
 			
 			// aapt resource value: 0x7F1002B4
-			public const int Widget_MaterialComponents_TextInputLayout_OutlinedBox_ExposedDropdownMenu = 2131755700;
+			public const int Widget_MaterialComponents_TextInputLayout_OutlinedBox_Dense_ExposedDropdownMenu = 2131755700;
 			
 			// aapt resource value: 0x7F1002B5
-			public const int Widget_MaterialComponents_TextView = 2131755701;
+			public const int Widget_MaterialComponents_TextInputLayout_OutlinedBox_ExposedDropdownMenu = 2131755701;
 			
 			// aapt resource value: 0x7F1002B6
-			public const int Widget_MaterialComponents_Toolbar = 2131755702;
+			public const int Widget_MaterialComponents_TextView = 2131755702;
 			
 			// aapt resource value: 0x7F1002B7
-			public const int Widget_MaterialComponents_Toolbar_Primary = 2131755703;
+			public const int Widget_MaterialComponents_Toolbar = 2131755703;
 			
 			// aapt resource value: 0x7F1002B8
-			public const int Widget_MaterialComponents_Toolbar_PrimarySurface = 2131755704;
+			public const int Widget_MaterialComponents_Toolbar_Primary = 2131755704;
 			
 			// aapt resource value: 0x7F1002B9
-			public const int Widget_MaterialComponents_Toolbar_Surface = 2131755705;
+			public const int Widget_MaterialComponents_Toolbar_PrimarySurface = 2131755705;
 			
 			// aapt resource value: 0x7F1002BA
-			public const int Widget_MaterialComponents_Tooltip = 2131755706;
+			public const int Widget_MaterialComponents_Toolbar_Surface = 2131755706;
 			
 			// aapt resource value: 0x7F1002BB
-			public const int Widget_Support_CoordinatorLayout = 2131755707;
+			public const int Widget_MaterialComponents_Tooltip = 2131755707;
+			
+			// aapt resource value: 0x7F1002BC
+			public const int Widget_Support_CoordinatorLayout = 2131755708;
 			
 			static Style()
 			{
@@ -24504,37 +28006,37 @@ namespace GnollHackClient.Droid
 		public partial class Styleable
 		{
 			
-			// aapt resource value: { 0x7F030034,0x7F03003B,0x7F03003C,0x7F0300B5,0x7F0300B6,0x7F0300B7,0x7F0300B8,0x7F0300B9,0x7F0300BA,0x7F0300D4,0x7F0300DD,0x7F0300DE,0x7F0300F2,0x7F030130,0x7F030136,0x7F03013C,0x7F03013D,0x7F030140,0x7F03014A,0x7F030157,0x7F03018B,0x7F0301AC,0x7F0301C5,0x7F0301CC,0x7F0301CD,0x7F03020E,0x7F030211,0x7F030264,0x7F03026E }
+			// aapt resource value: { 0x7F030037,0x7F03003E,0x7F03003F,0x7F0300B8,0x7F0300B9,0x7F0300BA,0x7F0300BB,0x7F0300BC,0x7F0300BD,0x7F0300D7,0x7F0300E0,0x7F0300E1,0x7F0300F5,0x7F030133,0x7F030139,0x7F03013F,0x7F030140,0x7F030143,0x7F03014D,0x7F03015A,0x7F03018E,0x7F0301AF,0x7F0301C8,0x7F0301CF,0x7F0301D0,0x7F030211,0x7F030214,0x7F030267,0x7F030271 }
 			public static int[] ActionBar = new int[] {
-					2130903092,
-					2130903099,
-					2130903100,
-					2130903221,
-					2130903222,
-					2130903223,
+					2130903095,
+					2130903102,
+					2130903103,
 					2130903224,
 					2130903225,
 					2130903226,
-					2130903252,
-					2130903261,
-					2130903262,
-					2130903282,
-					2130903344,
-					2130903350,
-					2130903356,
-					2130903357,
+					2130903227,
+					2130903228,
+					2130903229,
+					2130903255,
+					2130903264,
+					2130903265,
+					2130903285,
+					2130903347,
+					2130903353,
+					2130903359,
 					2130903360,
-					2130903370,
-					2130903383,
-					2130903435,
-					2130903468,
-					2130903493,
-					2130903500,
-					2130903501,
-					2130903566,
+					2130903363,
+					2130903373,
+					2130903386,
+					2130903438,
+					2130903471,
+					2130903496,
+					2130903503,
+					2130903504,
 					2130903569,
-					2130903652,
-					2130903662};
+					2130903572,
+					2130903655,
+					2130903665};
 			
 			// aapt resource value: { 0x10100B3 }
 			public static int[] ActionBarLayout = new int[] {
@@ -24641,14 +28143,14 @@ namespace GnollHackClient.Droid
 			public static int[] ActionMenuView = new int[] {
 					-1};
 			
-			// aapt resource value: { 0x7F030034,0x7F03003B,0x7F030097,0x7F030130,0x7F030211,0x7F03026E }
+			// aapt resource value: { 0x7F030037,0x7F03003E,0x7F03009A,0x7F030133,0x7F030214,0x7F030271 }
 			public static int[] ActionMode = new int[] {
-					2130903092,
-					2130903099,
-					2130903191,
-					2130903344,
-					2130903569,
-					2130903662};
+					2130903095,
+					2130903102,
+					2130903194,
+					2130903347,
+					2130903572,
+					2130903665};
 			
 			// aapt resource value: 0
 			public const int ActionMode_background = 0;
@@ -24668,10 +28170,10 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 5
 			public const int ActionMode_titleTextStyle = 5;
 			
-			// aapt resource value: { 0x7F030105,0x7F03014B }
+			// aapt resource value: { 0x7F030108,0x7F03014E }
 			public static int[] ActivityChooserView = new int[] {
-					2130903301,
-					2130903371};
+					2130903304,
+					2130903374};
 			
 			// aapt resource value: 0
 			public const int ActivityChooserView_expandActivityOverflowButtonDrawable = 0;
@@ -24679,16 +28181,31 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 1
 			public const int ActivityChooserView_initialActivityCount = 1;
 			
-			// aapt resource value: { 0x10100F2,0x7F030066,0x7F030067,0x7F030180,0x7F030181,0x7F0301A9,0x7F0301EC,0x7F0301EE }
+			// aapt resource value: { 0x7F030023,0x7F030024,0x7F030025 }
+			public static int[] AdsAttrs = new int[] {
+					2130903075,
+					2130903076,
+					2130903077};
+			
+			// aapt resource value: 0
+			public const int AdsAttrs_adSize = 0;
+			
+			// aapt resource value: 1
+			public const int AdsAttrs_adSizes = 1;
+			
+			// aapt resource value: 2
+			public const int AdsAttrs_adUnitId = 2;
+			
+			// aapt resource value: { 0x10100F2,0x7F030069,0x7F03006A,0x7F030183,0x7F030184,0x7F0301AC,0x7F0301EF,0x7F0301F1 }
 			public static int[] AlertDialog = new int[] {
 					16842994,
-					2130903142,
-					2130903143,
-					2130903424,
-					2130903425,
-					2130903465,
-					2130903532,
-					2130903534};
+					2130903145,
+					2130903146,
+					2130903427,
+					2130903428,
+					2130903468,
+					2130903535,
+					2130903537};
 			
 			// aapt resource value: 0
 			public const int AlertDialog_android_layout = 0;
@@ -24771,23 +28288,23 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 1
 			public const int AnimatedStateListDrawableTransition_android_toId = 1;
 			
-			// aapt resource value: { 0x10100D4,0x101048F,0x1010540,0x7F0300F2,0x7F030106,0x7F030178,0x7F030179,0x7F030208 }
+			// aapt resource value: { 0x10100D4,0x101048F,0x1010540,0x7F0300F5,0x7F030109,0x7F03017B,0x7F03017C,0x7F03020B }
 			public static int[] AppBarLayout = new int[] {
 					16842964,
 					16843919,
 					16844096,
-					2130903282,
-					2130903302,
-					2130903416,
-					2130903417,
-					2130903560};
+					2130903285,
+					2130903305,
+					2130903419,
+					2130903420,
+					2130903563};
 			
-			// aapt resource value: { 0x7F030202,0x7F030203,0x7F030205,0x7F030206 }
+			// aapt resource value: { 0x7F030205,0x7F030206,0x7F030208,0x7F030209 }
 			public static int[] AppBarLayoutStates = new int[] {
-					2130903554,
-					2130903555,
 					2130903557,
-					2130903558};
+					2130903558,
+					2130903560,
+					2130903561};
 			
 			// aapt resource value: 0
 			public const int AppBarLayoutStates_state_collapsed = 0;
@@ -24816,10 +28333,10 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 4
 			public const int AppBarLayout_expanded = 4;
 			
-			// aapt resource value: { 0x7F030176,0x7F030177 }
+			// aapt resource value: { 0x7F030179,0x7F03017A }
 			public static int[] AppBarLayout_Layout = new int[] {
-					2130903414,
-					2130903415};
+					2130903417,
+					2130903418};
 			
 			// aapt resource value: 0
 			public const int AppBarLayout_Layout_layout_scrollFlags = 0;
@@ -24836,12 +28353,12 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 7
 			public const int AppBarLayout_statusBarForeground = 7;
 			
-			// aapt resource value: { 0x1010119,0x7F0301FA,0x7F030262,0x7F030263 }
+			// aapt resource value: { 0x1010119,0x7F0301FD,0x7F030265,0x7F030266 }
 			public static int[] AppCompatImageView = new int[] {
 					16843033,
-					2130903546,
-					2130903650,
-					2130903651};
+					2130903549,
+					2130903653,
+					2130903654};
 			
 			// aapt resource value: 0
 			public const int AppCompatImageView_android_src = 0;
@@ -24855,12 +28372,12 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 3
 			public const int AppCompatImageView_tintMode = 3;
 			
-			// aapt resource value: { 0x1010142,0x7F03025F,0x7F030260,0x7F030261 }
+			// aapt resource value: { 0x1010142,0x7F030262,0x7F030263,0x7F030264 }
 			public static int[] AppCompatSeekBar = new int[] {
 					16843074,
-					2130903647,
-					2130903648,
-					2130903649};
+					2130903650,
+					2130903651,
+					2130903652};
 			
 			// aapt resource value: 0
 			public const int AppCompatSeekBar_android_thumb = 0;
@@ -24905,29 +28422,29 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 0
 			public const int AppCompatTextHelper_android_textAppearance = 0;
 			
-			// aapt resource value: { 0x1010034,0x7F03002F,0x7F030030,0x7F030031,0x7F030032,0x7F030033,0x7F0300E2,0x7F0300E3,0x7F0300E4,0x7F0300E5,0x7F0300E7,0x7F0300E8,0x7F0300E9,0x7F0300EA,0x7F03011C,0x7F03011F,0x7F030127,0x7F03016B,0x7F03017A,0x7F030235,0x7F030251 }
+			// aapt resource value: { 0x1010034,0x7F030032,0x7F030033,0x7F030034,0x7F030035,0x7F030036,0x7F0300E5,0x7F0300E6,0x7F0300E7,0x7F0300E8,0x7F0300EA,0x7F0300EB,0x7F0300EC,0x7F0300ED,0x7F03011F,0x7F030122,0x7F03012A,0x7F03016E,0x7F03017D,0x7F030238,0x7F030254 }
 			public static int[] AppCompatTextView = new int[] {
 					16842804,
-					2130903087,
-					2130903088,
-					2130903089,
 					2130903090,
 					2130903091,
-					2130903266,
-					2130903267,
-					2130903268,
+					2130903092,
+					2130903093,
+					2130903094,
 					2130903269,
+					2130903270,
 					2130903271,
 					2130903272,
-					2130903273,
 					2130903274,
-					2130903324,
+					2130903275,
+					2130903276,
+					2130903277,
 					2130903327,
-					2130903335,
-					2130903403,
-					2130903418,
-					2130903605,
-					2130903633};
+					2130903330,
+					2130903338,
+					2130903406,
+					2130903421,
+					2130903608,
+					2130903636};
 			
 			// aapt resource value: 0
 			public const int AppCompatTextView_android_textAppearance = 0;
@@ -24992,7 +28509,7 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 20
 			public const int AppCompatTextView_textLocale = 20;
 			
-			// aapt resource value: { 0x1010057,0x10100AE,0x7F030000,0x7F030001,0x7F030002,0x7F030003,0x7F030004,0x7F030005,0x7F030006,0x7F030007,0x7F030008,0x7F030009,0x7F03000A,0x7F03000B,0x7F03000C,0x7F03000E,0x7F03000F,0x7F030010,0x7F030011,0x7F030012,0x7F030013,0x7F030014,0x7F030015,0x7F030016,0x7F030017,0x7F030018,0x7F030019,0x7F03001A,0x7F03001B,0x7F03001C,0x7F03001D,0x7F03001E,0x7F030022,0x7F030023,0x7F030024,0x7F030025,0x7F030026,0x7F03002E,0x7F03004F,0x7F03005F,0x7F030060,0x7F030061,0x7F030062,0x7F030063,0x7F030068,0x7F030069,0x7F030074,0x7F03007B,0x7F03009E,0x7F03009F,0x7F0300A0,0x7F0300A1,0x7F0300A2,0x7F0300A3,0x7F0300A4,0x7F0300AB,0x7F0300AC,0x7F0300B2,0x7F0300C1,0x7F0300DA,0x7F0300DB,0x7F0300DC,0x7F0300DF,0x7F0300E1,0x7F0300ED,0x7F0300EE,0x7F0300EF,0x7F0300F0,0x7F0300F1,0x7F03013C,0x7F030149,0x7F03017C,0x7F03017D,0x7F03017E,0x7F03017F,0x7F030182,0x7F030183,0x7F030184,0x7F030185,0x7F030186,0x7F030187,0x7F030188,0x7F030189,0x7F03018A,0x7F0301B8,0x7F0301B9,0x7F0301BA,0x7F0301C4,0x7F0301C6,0x7F0301D0,0x7F0301D2,0x7F0301D3,0x7F0301D4,0x7F0301DE,0x7F0301DF,0x7F0301E0,0x7F0301E1,0x7F0301F7,0x7F0301F8,0x7F030219,0x7F030240,0x7F030242,0x7F030243,0x7F030244,0x7F030246,0x7F030247,0x7F030248,0x7F030249,0x7F03024C,0x7F03024D,0x7F030270,0x7F030271,0x7F030272,0x7F030273,0x7F030283,0x7F030285,0x7F030286,0x7F030287,0x7F030288,0x7F030289,0x7F03028A,0x7F03028B,0x7F03028C,0x7F03028D,0x7F03028E }
+			// aapt resource value: { 0x1010057,0x10100AE,0x7F030000,0x7F030001,0x7F030002,0x7F030003,0x7F030004,0x7F030005,0x7F030006,0x7F030007,0x7F030008,0x7F030009,0x7F03000A,0x7F03000B,0x7F03000C,0x7F03000E,0x7F03000F,0x7F030010,0x7F030011,0x7F030012,0x7F030013,0x7F030014,0x7F030015,0x7F030016,0x7F030017,0x7F030018,0x7F030019,0x7F03001A,0x7F03001B,0x7F03001C,0x7F03001D,0x7F03001E,0x7F030022,0x7F030026,0x7F030027,0x7F030028,0x7F030029,0x7F030031,0x7F030052,0x7F030062,0x7F030063,0x7F030064,0x7F030065,0x7F030066,0x7F03006B,0x7F03006C,0x7F030077,0x7F03007E,0x7F0300A1,0x7F0300A2,0x7F0300A3,0x7F0300A4,0x7F0300A5,0x7F0300A6,0x7F0300A7,0x7F0300AE,0x7F0300AF,0x7F0300B5,0x7F0300C4,0x7F0300DD,0x7F0300DE,0x7F0300DF,0x7F0300E2,0x7F0300E4,0x7F0300F0,0x7F0300F1,0x7F0300F2,0x7F0300F3,0x7F0300F4,0x7F03013F,0x7F03014C,0x7F03017F,0x7F030180,0x7F030181,0x7F030182,0x7F030185,0x7F030186,0x7F030187,0x7F030188,0x7F030189,0x7F03018A,0x7F03018B,0x7F03018C,0x7F03018D,0x7F0301BB,0x7F0301BC,0x7F0301BD,0x7F0301C7,0x7F0301C9,0x7F0301D3,0x7F0301D5,0x7F0301D6,0x7F0301D7,0x7F0301E1,0x7F0301E2,0x7F0301E3,0x7F0301E4,0x7F0301FA,0x7F0301FB,0x7F03021C,0x7F030243,0x7F030245,0x7F030246,0x7F030247,0x7F030249,0x7F03024A,0x7F03024B,0x7F03024C,0x7F03024F,0x7F030250,0x7F030273,0x7F030274,0x7F030275,0x7F030276,0x7F030286,0x7F030288,0x7F030289,0x7F03028A,0x7F03028B,0x7F03028C,0x7F03028D,0x7F03028E,0x7F03028F,0x7F030290,0x7F030291 }
 			public static int[] AppCompatTheme = new int[] {
 					16842839,
 					16842926,
@@ -25027,98 +28544,98 @@ namespace GnollHackClient.Droid
 					2130903069,
 					2130903070,
 					2130903074,
-					2130903075,
-					2130903076,
-					2130903077,
 					2130903078,
-					2130903086,
-					2130903119,
-					2130903135,
-					2130903136,
-					2130903137,
+					2130903079,
+					2130903080,
+					2130903081,
+					2130903089,
+					2130903122,
 					2130903138,
 					2130903139,
-					2130903144,
-					2130903145,
-					2130903156,
-					2130903163,
-					2130903198,
-					2130903199,
-					2130903200,
+					2130903140,
+					2130903141,
+					2130903142,
+					2130903147,
+					2130903148,
+					2130903159,
+					2130903166,
 					2130903201,
 					2130903202,
 					2130903203,
 					2130903204,
-					2130903211,
-					2130903212,
-					2130903218,
-					2130903233,
-					2130903258,
-					2130903259,
-					2130903260,
+					2130903205,
+					2130903206,
+					2130903207,
+					2130903214,
+					2130903215,
+					2130903221,
+					2130903236,
+					2130903261,
+					2130903262,
 					2130903263,
-					2130903265,
-					2130903277,
-					2130903278,
-					2130903279,
+					2130903266,
+					2130903268,
 					2130903280,
 					2130903281,
-					2130903356,
-					2130903369,
-					2130903420,
-					2130903421,
-					2130903422,
+					2130903282,
+					2130903283,
+					2130903284,
+					2130903359,
+					2130903372,
 					2130903423,
+					2130903424,
+					2130903425,
 					2130903426,
-					2130903427,
-					2130903428,
 					2130903429,
 					2130903430,
 					2130903431,
 					2130903432,
 					2130903433,
 					2130903434,
-					2130903480,
-					2130903481,
-					2130903482,
-					2130903492,
-					2130903494,
-					2130903504,
-					2130903506,
+					2130903435,
+					2130903436,
+					2130903437,
+					2130903483,
+					2130903484,
+					2130903485,
+					2130903495,
+					2130903497,
 					2130903507,
-					2130903508,
-					2130903518,
-					2130903519,
-					2130903520,
+					2130903509,
+					2130903510,
+					2130903511,
 					2130903521,
-					2130903543,
-					2130903544,
-					2130903577,
-					2130903616,
-					2130903618,
+					2130903522,
+					2130903523,
+					2130903524,
+					2130903546,
+					2130903547,
+					2130903580,
 					2130903619,
-					2130903620,
+					2130903621,
 					2130903622,
 					2130903623,
-					2130903624,
 					2130903625,
+					2130903626,
+					2130903627,
 					2130903628,
-					2130903629,
-					2130903664,
-					2130903665,
-					2130903666,
+					2130903631,
+					2130903632,
 					2130903667,
-					2130903683,
-					2130903685,
+					2130903668,
+					2130903669,
+					2130903670,
 					2130903686,
-					2130903687,
 					2130903688,
 					2130903689,
 					2130903690,
 					2130903691,
 					2130903692,
 					2130903693,
-					2130903694};
+					2130903694,
+					2130903695,
+					2130903696,
+					2130903697};
 			
 			// aapt resource value: 2
 			public const int AppCompatTheme_actionBarDivider = 2;
@@ -25495,15 +29012,15 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 124
 			public const int AppCompatTheme_windowNoTitle = 124;
 			
-			// aapt resource value: { 0x7F030035,0x7F03003F,0x7F030041,0x7F03013E,0x7F0301A3,0x7F0301AE,0x7F030282 }
+			// aapt resource value: { 0x7F030038,0x7F030042,0x7F030044,0x7F030141,0x7F0301A6,0x7F0301B1,0x7F030285 }
 			public static int[] Badge = new int[] {
-					2130903093,
-					2130903103,
-					2130903105,
-					2130903358,
-					2130903459,
-					2130903470,
-					2130903682};
+					2130903096,
+					2130903106,
+					2130903108,
+					2130903361,
+					2130903462,
+					2130903473,
+					2130903685};
 			
 			// aapt resource value: 0
 			public const int Badge_backgroundColor = 0;
@@ -25526,19 +29043,19 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 6
 			public const int Badge_verticalOffset = 6;
 			
-			// aapt resource value: { 0x7F03003D,0x7F0300F2,0x7F030110,0x7F030111,0x7F030112,0x7F030113,0x7F030114,0x7F030137,0x7F0301B2,0x7F0301B4,0x7F0301B5 }
+			// aapt resource value: { 0x7F030040,0x7F0300F5,0x7F030113,0x7F030114,0x7F030115,0x7F030116,0x7F030117,0x7F03013A,0x7F0301B5,0x7F0301B7,0x7F0301B8 }
 			public static int[] BottomAppBar = new int[] {
-					2130903101,
-					2130903282,
-					2130903312,
-					2130903313,
-					2130903314,
+					2130903104,
+					2130903285,
 					2130903315,
 					2130903316,
-					2130903351,
-					2130903474,
-					2130903476,
-					2130903477};
+					2130903317,
+					2130903318,
+					2130903319,
+					2130903354,
+					2130903477,
+					2130903479,
+					2130903480};
 			
 			// aapt resource value: 0
 			public const int BottomAppBar_backgroundTint = 0;
@@ -25573,20 +29090,20 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 10
 			public const int BottomAppBar_paddingRightSystemWindowInsets = 10;
 			
-			// aapt resource value: { 0x7F03003D,0x7F0300F2,0x7F03014F,0x7F030152,0x7F030154,0x7F030155,0x7F030158,0x7F030164,0x7F030165,0x7F030166,0x7F03016A,0x7F0301A7 }
+			// aapt resource value: { 0x7F030040,0x7F0300F5,0x7F030152,0x7F030155,0x7F030157,0x7F030158,0x7F03015B,0x7F030167,0x7F030168,0x7F030169,0x7F03016D,0x7F0301AA }
 			public static int[] BottomNavigationView = new int[] {
-					2130903101,
-					2130903282,
-					2130903375,
+					2130903104,
+					2130903285,
 					2130903378,
-					2130903380,
 					2130903381,
+					2130903383,
 					2130903384,
-					2130903396,
-					2130903397,
-					2130903398,
-					2130903402,
-					2130903463};
+					2130903387,
+					2130903399,
+					2130903400,
+					2130903401,
+					2130903405,
+					2130903466};
 			
 			// aapt resource value: 0
 			public const int BottomNavigationView_backgroundTint = 0;
@@ -25624,21 +29141,21 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 11
 			public const int BottomNavigationView_menu = 11;
 			
-			// aapt resource value: { 0x1010440,0x7F03003D,0x7F030045,0x7F030046,0x7F030047,0x7F030048,0x7F030049,0x7F03004B,0x7F03004C,0x7F03004D,0x7F03012B,0x7F0301E3,0x7F0301E6 }
+			// aapt resource value: { 0x1010440,0x7F030040,0x7F030048,0x7F030049,0x7F03004A,0x7F03004B,0x7F03004C,0x7F03004E,0x7F03004F,0x7F030050,0x7F03012E,0x7F0301E6,0x7F0301E9 }
 			public static int[] BottomSheetBehavior_Layout = new int[] {
 					16843840,
-					2130903101,
-					2130903109,
-					2130903110,
-					2130903111,
+					2130903104,
 					2130903112,
 					2130903113,
+					2130903114,
 					2130903115,
 					2130903116,
-					2130903117,
-					2130903339,
-					2130903523,
-					2130903526};
+					2130903118,
+					2130903119,
+					2130903120,
+					2130903342,
+					2130903526,
+					2130903529};
 			
 			// aapt resource value: 0
 			public const int BottomSheetBehavior_Layout_android_elevation = 0;
@@ -25679,28 +29196,28 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 12
 			public const int BottomSheetBehavior_Layout_shapeAppearanceOverlay = 12;
 			
-			// aapt resource value: { 0x7F030027 }
+			// aapt resource value: { 0x7F03002A }
 			public static int[] ButtonBarLayout = new int[] {
-					2130903079};
+					2130903082};
 			
 			// aapt resource value: 0
 			public const int ButtonBarLayout_allowStacking = 0;
 			
-			// aapt resource value: { 0x101013F,0x1010140,0x7F03006C,0x7F03006D,0x7F03006E,0x7F030070,0x7F030071,0x7F030072,0x7F0300BB,0x7F0300BC,0x7F0300BD,0x7F0300BE,0x7F0300BF }
+			// aapt resource value: { 0x101013F,0x1010140,0x7F03006F,0x7F030070,0x7F030071,0x7F030073,0x7F030074,0x7F030075,0x7F0300BE,0x7F0300BF,0x7F0300C0,0x7F0300C1,0x7F0300C2 }
 			public static int[] CardView = new int[] {
 					16843071,
 					16843072,
-					2130903148,
-					2130903149,
-					2130903150,
+					2130903151,
 					2130903152,
 					2130903153,
-					2130903154,
-					2130903227,
-					2130903228,
-					2130903229,
+					2130903155,
+					2130903156,
+					2130903157,
 					2130903230,
-					2130903231};
+					2130903231,
+					2130903232,
+					2130903233,
+					2130903234};
 			
 			// aapt resource value: 1
 			public const int CardView_android_minHeight = 1;
@@ -25741,7 +29258,7 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 12
 			public const int CardView_contentPaddingTop = 12;
 			
-			// aapt resource value: { 0x1010034,0x1010098,0x10100AB,0x101011F,0x101014F,0x10101E5,0x7F030077,0x7F030078,0x7F030079,0x7F03007A,0x7F03007C,0x7F03007D,0x7F03007E,0x7F030080,0x7F030081,0x7F030082,0x7F030083,0x7F030084,0x7F030085,0x7F030086,0x7F03008B,0x7F03008C,0x7F03008D,0x7F03008F,0x7F030090,0x7F030091,0x7F030092,0x7F030093,0x7F030094,0x7F030095,0x7F030096,0x7F0300FD,0x7F030135,0x7F030141,0x7F030145,0x7F0301D7,0x7F0301E3,0x7F0301E6,0x7F0301EA,0x7F03024E,0x7F030252 }
+			// aapt resource value: { 0x1010034,0x1010098,0x10100AB,0x101011F,0x101014F,0x10101E5,0x7F03007A,0x7F03007B,0x7F03007C,0x7F03007D,0x7F03007F,0x7F030080,0x7F030081,0x7F030083,0x7F030084,0x7F030085,0x7F030086,0x7F030087,0x7F030088,0x7F030089,0x7F03008E,0x7F03008F,0x7F030090,0x7F030092,0x7F030093,0x7F030094,0x7F030095,0x7F030096,0x7F030097,0x7F030098,0x7F030099,0x7F030100,0x7F030138,0x7F030144,0x7F030148,0x7F0301DA,0x7F0301E6,0x7F0301E9,0x7F0301ED,0x7F030251,0x7F030255 }
 			public static int[] Chip = new int[] {
 					16842804,
 					16842904,
@@ -25749,51 +29266,51 @@ namespace GnollHackClient.Droid
 					16843039,
 					16843087,
 					16843237,
-					2130903159,
-					2130903160,
-					2130903161,
 					2130903162,
+					2130903163,
 					2130903164,
 					2130903165,
-					2130903166,
+					2130903167,
 					2130903168,
 					2130903169,
-					2130903170,
 					2130903171,
 					2130903172,
 					2130903173,
 					2130903174,
-					2130903179,
-					2130903180,
-					2130903181,
+					2130903175,
+					2130903176,
+					2130903177,
+					2130903182,
 					2130903183,
 					2130903184,
-					2130903185,
 					2130903186,
 					2130903187,
 					2130903188,
 					2130903189,
 					2130903190,
-					2130903293,
-					2130903349,
-					2130903361,
-					2130903365,
-					2130903511,
-					2130903523,
+					2130903191,
+					2130903192,
+					2130903193,
+					2130903296,
+					2130903352,
+					2130903364,
+					2130903368,
+					2130903514,
 					2130903526,
-					2130903530,
-					2130903630,
-					2130903634};
+					2130903529,
+					2130903533,
+					2130903633,
+					2130903637};
 			
-			// aapt resource value: { 0x7F030076,0x7F030087,0x7F030088,0x7F030089,0x7F0301E2,0x7F0301EF,0x7F0301F0 }
+			// aapt resource value: { 0x7F030079,0x7F03008A,0x7F03008B,0x7F03008C,0x7F0301E5,0x7F0301F2,0x7F0301F3 }
 			public static int[] ChipGroup = new int[] {
-					2130903158,
-					2130903175,
-					2130903176,
-					2130903177,
-					2130903522,
-					2130903535,
-					2130903536};
+					2130903161,
+					2130903178,
+					2130903179,
+					2130903180,
+					2130903525,
+					2130903538,
+					2130903539};
 			
 			// aapt resource value: 0
 			public const int ChipGroup_checkedChip = 0;
@@ -25939,25 +29456,25 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 40
 			public const int Chip_textStartPadding = 40;
 			
-			// aapt resource value: { 0x7F03009A,0x7F03009B,0x7F0300C0,0x7F030107,0x7F030108,0x7F030109,0x7F03010A,0x7F03010B,0x7F03010C,0x7F03010D,0x7F0301A5,0x7F0301D8,0x7F0301DA,0x7F030209,0x7F030264,0x7F030265,0x7F03026F }
+			// aapt resource value: { 0x7F03009D,0x7F03009E,0x7F0300C3,0x7F03010A,0x7F03010B,0x7F03010C,0x7F03010D,0x7F03010E,0x7F03010F,0x7F030110,0x7F0301A8,0x7F0301DB,0x7F0301DD,0x7F03020C,0x7F030267,0x7F030268,0x7F030272 }
 			public static int[] CollapsingToolbarLayout = new int[] {
-					2130903194,
-					2130903195,
-					2130903232,
-					2130903303,
-					2130903304,
-					2130903305,
+					2130903197,
+					2130903198,
+					2130903235,
 					2130903306,
 					2130903307,
 					2130903308,
 					2130903309,
-					2130903461,
-					2130903512,
-					2130903514,
-					2130903561,
-					2130903652,
-					2130903653,
-					2130903663};
+					2130903310,
+					2130903311,
+					2130903312,
+					2130903464,
+					2130903515,
+					2130903517,
+					2130903564,
+					2130903655,
+					2130903656,
+					2130903666};
 			
 			// aapt resource value: 0
 			public const int CollapsingToolbarLayout_collapsedTitleGravity = 0;
@@ -25989,10 +29506,10 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 9
 			public const int CollapsingToolbarLayout_expandedTitleTextAppearance = 9;
 			
-			// aapt resource value: { 0x7F030171,0x7F030172 }
+			// aapt resource value: { 0x7F030174,0x7F030175 }
 			public static int[] CollapsingToolbarLayout_Layout = new int[] {
-					2130903409,
-					2130903410};
+					2130903412,
+					2130903413};
 			
 			// aapt resource value: 0
 			public const int CollapsingToolbarLayout_Layout_layout_collapseMode = 0;
@@ -26021,11 +29538,11 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 16
 			public const int CollapsingToolbarLayout_toolbarId = 16;
 			
-			// aapt resource value: { 0x10101A5,0x101031F,0x7F030028 }
+			// aapt resource value: { 0x10101A5,0x101031F,0x7F03002B }
 			public static int[] ColorStateListItem = new int[] {
 					16843173,
 					16843551,
-					2130903080};
+					2130903083};
 			
 			// aapt resource value: 2
 			public const int ColorStateListItem_alpha = 2;
@@ -26036,12 +29553,12 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 0
 			public const int ColorStateListItem_android_color = 0;
 			
-			// aapt resource value: { 0x1010107,0x7F030064,0x7F03006A,0x7F03006B }
+			// aapt resource value: { 0x1010107,0x7F030067,0x7F03006D,0x7F03006E }
 			public static int[] CompoundButton = new int[] {
 					16843015,
-					2130903140,
-					2130903146,
-					2130903147};
+					2130903143,
+					2130903149,
+					2130903150};
 			
 			// aapt resource value: 0
 			public const int CompoundButton_android_button = 0;
@@ -26055,23 +29572,23 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 3
 			public const int CompoundButton_buttonTintMode = 3;
 			
-			// aapt resource value: { 0x7F030167,0x7F030207 }
+			// aapt resource value: { 0x7F03016A,0x7F03020A }
 			public static int[] CoordinatorLayout = new int[] {
-					2130903399,
-					2130903559};
+					2130903402,
+					2130903562};
 			
 			// aapt resource value: 0
 			public const int CoordinatorLayout_keylines = 0;
 			
-			// aapt resource value: { 0x10100B3,0x7F03016E,0x7F03016F,0x7F030170,0x7F030173,0x7F030174,0x7F030175 }
+			// aapt resource value: { 0x10100B3,0x7F030171,0x7F030172,0x7F030173,0x7F030176,0x7F030177,0x7F030178 }
 			public static int[] CoordinatorLayout_Layout = new int[] {
 					16842931,
-					2130903406,
-					2130903407,
-					2130903408,
+					2130903409,
+					2130903410,
 					2130903411,
-					2130903412,
-					2130903413};
+					2130903414,
+					2130903415,
+					2130903416};
 			
 			// aapt resource value: 0
 			public const int CoordinatorLayout_Layout_android_layout_gravity = 0;
@@ -26097,16 +29614,16 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 1
 			public const int CoordinatorLayout_statusBarBackground = 1;
 			
-			// aapt resource value: { 0x7F03002C,0x7F03002D,0x7F030042,0x7F03009D,0x7F0300E6,0x7F03012A,0x7F0301F6,0x7F030255 }
+			// aapt resource value: { 0x7F03002F,0x7F030030,0x7F030045,0x7F0300A0,0x7F0300E9,0x7F03012D,0x7F0301F9,0x7F030258 }
 			public static int[] DrawerArrowToggle = new int[] {
-					2130903084,
-					2130903085,
-					2130903106,
-					2130903197,
-					2130903270,
-					2130903338,
-					2130903542,
-					2130903637};
+					2130903087,
+					2130903088,
+					2130903109,
+					2130903200,
+					2130903273,
+					2130903341,
+					2130903545,
+					2130903640};
 			
 			// aapt resource value: 0
 			public const int DrawerArrowToggle_arrowHeadLength = 0;
@@ -26132,25 +29649,25 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 7
 			public const int DrawerArrowToggle_thickness = 7;
 			
-			// aapt resource value: { 0x7F0300F2 }
+			// aapt resource value: { 0x7F0300F5 }
 			public static int[] DrawerLayout = new int[] {
-					2130903282};
+					2130903285};
 			
 			// aapt resource value: 0
 			public const int DrawerLayout_elevation = 0;
 			
-			// aapt resource value: { 0x7F0300F2,0x7F03010E,0x7F030135,0x7F0301EA,0x7F0301ED }
+			// aapt resource value: { 0x7F0300F5,0x7F030111,0x7F030138,0x7F0301ED,0x7F0301F0 }
 			public static int[] ExtendedFloatingActionButton = new int[] {
-					2130903282,
-					2130903310,
-					2130903349,
-					2130903530,
-					2130903533};
+					2130903285,
+					2130903313,
+					2130903352,
+					2130903533,
+					2130903536};
 			
-			// aapt resource value: { 0x7F030043,0x7F030044 }
+			// aapt resource value: { 0x7F030046,0x7F030047 }
 			public static int[] ExtendedFloatingActionButton_Behavior_Layout = new int[] {
-					2130903107,
-					2130903108};
+					2130903110,
+					2130903111};
 			
 			// aapt resource value: 0
 			public const int ExtendedFloatingActionButton_Behavior_Layout_behavior_autoHide = 0;
@@ -26173,25 +29690,25 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 4
 			public const int ExtendedFloatingActionButton_shrinkMotionSpec = 4;
 			
-			// aapt resource value: { 0x101000E,0x7F03003D,0x7F03003E,0x7F03004E,0x7F0300F2,0x7F0300FD,0x7F030115,0x7F030116,0x7F030135,0x7F03013F,0x7F0301A4,0x7F0301CB,0x7F0301D7,0x7F0301E3,0x7F0301E6,0x7F0301EA,0x7F03027F }
+			// aapt resource value: { 0x101000E,0x7F030040,0x7F030041,0x7F030051,0x7F0300F5,0x7F030100,0x7F030118,0x7F030119,0x7F030138,0x7F030142,0x7F0301A7,0x7F0301CE,0x7F0301DA,0x7F0301E6,0x7F0301E9,0x7F0301ED,0x7F030282 }
 			public static int[] FloatingActionButton = new int[] {
 					16842766,
-					2130903101,
-					2130903102,
-					2130903118,
-					2130903282,
-					2130903293,
-					2130903317,
-					2130903318,
-					2130903349,
-					2130903359,
-					2130903460,
-					2130903499,
-					2130903511,
-					2130903523,
+					2130903104,
+					2130903105,
+					2130903121,
+					2130903285,
+					2130903296,
+					2130903320,
+					2130903321,
+					2130903352,
+					2130903362,
+					2130903463,
+					2130903502,
+					2130903514,
 					2130903526,
-					2130903530,
-					2130903679};
+					2130903529,
+					2130903533,
+					2130903682};
 			
 			// aapt resource value: 0
 			public const int FloatingActionButton_android_enabled = 0;
@@ -26202,9 +29719,9 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 2
 			public const int FloatingActionButton_backgroundTintMode = 2;
 			
-			// aapt resource value: { 0x7F030043 }
+			// aapt resource value: { 0x7F030046 }
 			public static int[] FloatingActionButton_Behavior_Layout = new int[] {
-					2130903107};
+					2130903110};
 			
 			// aapt resource value: 0
 			public const int FloatingActionButton_Behavior_Layout_behavior_autoHide = 0;
@@ -26251,10 +29768,10 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 16
 			public const int FloatingActionButton_useCompatPadding = 16;
 			
-			// aapt resource value: { 0x7F030160,0x7F03017B }
+			// aapt resource value: { 0x7F030163,0x7F03017E }
 			public static int[] FlowLayout = new int[] {
-					2130903392,
-					2130903419};
+					2130903395,
+					2130903422};
 			
 			// aapt resource value: 0
 			public const int FlowLayout_itemSpacing = 0;
@@ -26262,27 +29779,27 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 1
 			public const int FlowLayout_lineSpacing = 1;
 			
-			// aapt resource value: { 0x7F030120,0x7F030121,0x7F030122,0x7F030123,0x7F030124,0x7F030125 }
+			// aapt resource value: { 0x7F030123,0x7F030124,0x7F030125,0x7F030126,0x7F030127,0x7F030128 }
 			public static int[] FontFamily = new int[] {
-					2130903328,
-					2130903329,
-					2130903330,
 					2130903331,
 					2130903332,
-					2130903333};
+					2130903333,
+					2130903334,
+					2130903335,
+					2130903336};
 			
-			// aapt resource value: { 0x1010532,0x1010533,0x101053F,0x101056F,0x1010570,0x7F03011E,0x7F030126,0x7F030127,0x7F030128,0x7F03027E }
+			// aapt resource value: { 0x1010532,0x1010533,0x101053F,0x101056F,0x1010570,0x7F030121,0x7F030129,0x7F03012A,0x7F03012B,0x7F030281 }
 			public static int[] FontFamilyFont = new int[] {
 					16844082,
 					16844083,
 					16844095,
 					16844143,
 					16844144,
-					2130903326,
-					2130903334,
-					2130903335,
-					2130903336,
-					2130903678};
+					2130903329,
+					2130903337,
+					2130903338,
+					2130903339,
+					2130903681};
 			
 			// aapt resource value: 0
 			public const int FontFamilyFont_android_font = 0;
@@ -26332,11 +29849,11 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 5
 			public const int FontFamily_fontProviderQuery = 5;
 			
-			// aapt resource value: { 0x1010109,0x1010200,0x7F030129 }
+			// aapt resource value: { 0x1010109,0x1010200,0x7F03012C }
 			public static int[] ForegroundLinearLayout = new int[] {
 					16843017,
 					16843264,
-					2130903337};
+					2130903340};
 			
 			// aapt resource value: 0
 			public const int ForegroundLinearLayout_android_foreground = 0;
@@ -26435,11 +29952,11 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 2
 			public const int GradientColor_android_type = 2;
 			
-			// aapt resource value: { 0x7F0301B2,0x7F0301B4,0x7F0301B5 }
+			// aapt resource value: { 0x7F0301B5,0x7F0301B7,0x7F0301B8 }
 			public static int[] Insets = new int[] {
-					2130903474,
-					2130903476,
-					2130903477};
+					2130903477,
+					2130903479,
+					2130903480};
 			
 			// aapt resource value: 0
 			public const int Insets_paddingBottomSystemWindowInsets = 0;
@@ -26450,24 +29967,24 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 2
 			public const int Insets_paddingRightSystemWindowInsets = 2;
 			
-			// aapt resource value: { 0x7F03009C }
+			// aapt resource value: { 0x7F03009F }
 			public static int[] ItemsViewRendererTheme = new int[] {
-					2130903196};
+					2130903199};
 			
 			// aapt resource value: 0
 			public const int ItemsViewRendererTheme_collectionViewStyle = 0;
 			
-			// aapt resource value: { 0x10100AF,0x10100C4,0x1010126,0x1010127,0x1010128,0x7F0300DE,0x7F0300E0,0x7F0301A6,0x7F0301E9 }
+			// aapt resource value: { 0x10100AF,0x10100C4,0x1010126,0x1010127,0x1010128,0x7F0300E1,0x7F0300E3,0x7F0301A9,0x7F0301EC }
 			public static int[] LinearLayoutCompat = new int[] {
 					16842927,
 					16842948,
 					16843046,
 					16843047,
 					16843048,
-					2130903262,
-					2130903264,
-					2130903462,
-					2130903529};
+					2130903265,
+					2130903267,
+					2130903465,
+					2130903532};
 			
 			// aapt resource value: 2
 			public const int LinearLayoutCompat_android_baselineAligned = 2;
@@ -26526,20 +30043,20 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 1
 			public const int ListPopupWindow_android_dropDownVerticalOffset = 1;
 			
-			// aapt resource value: { 0x7F030036,0x7F030037,0x7F030038,0x7F030039 }
+			// aapt resource value: { 0x7F030039,0x7F03003A,0x7F03003B,0x7F03003C }
 			public static int[] MaterialAlertDialog = new int[] {
-					2130903094,
-					2130903095,
-					2130903096,
-					2130903097};
+					2130903097,
+					2130903098,
+					2130903099,
+					2130903100};
 			
-			// aapt resource value: { 0x7F03018D,0x7F03018E,0x7F03018F,0x7F030190,0x7F030191 }
+			// aapt resource value: { 0x7F030190,0x7F030191,0x7F030192,0x7F030193,0x7F030194 }
 			public static int[] MaterialAlertDialogTheme = new int[] {
-					2130903437,
-					2130903438,
-					2130903439,
 					2130903440,
-					2130903441};
+					2130903441,
+					2130903442,
+					2130903443,
+					2130903444};
 			
 			// aapt resource value: 0
 			public const int MaterialAlertDialogTheme_materialAlertDialogBodyTextStyle = 0;
@@ -26575,7 +30092,7 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 0
 			public const int MaterialAutoCompleteTextView_android_inputType = 0;
 			
-			// aapt resource value: { 0x10100D4,0x10101B7,0x10101B8,0x10101B9,0x10101BA,0x10101E5,0x7F03003D,0x7F03003E,0x7F0300C8,0x7F0300F2,0x7F030140,0x7F030142,0x7F030143,0x7F030144,0x7F030146,0x7F030147,0x7F0301D7,0x7F0301E3,0x7F0301E6,0x7F03020A,0x7F03020B }
+			// aapt resource value: { 0x10100D4,0x10101B7,0x10101B8,0x10101B9,0x10101BA,0x10101E5,0x7F030040,0x7F030041,0x7F0300CB,0x7F0300F5,0x7F030143,0x7F030145,0x7F030146,0x7F030147,0x7F030149,0x7F03014A,0x7F0301DA,0x7F0301E6,0x7F0301E9,0x7F03020D,0x7F03020E }
 			public static int[] MaterialButton = new int[] {
 					16842964,
 					16843191,
@@ -26583,27 +30100,27 @@ namespace GnollHackClient.Droid
 					16843193,
 					16843194,
 					16843237,
-					2130903101,
-					2130903102,
-					2130903240,
-					2130903282,
-					2130903360,
-					2130903362,
+					2130903104,
+					2130903105,
+					2130903243,
+					2130903285,
 					2130903363,
-					2130903364,
+					2130903365,
 					2130903366,
 					2130903367,
-					2130903511,
-					2130903523,
+					2130903369,
+					2130903370,
+					2130903514,
 					2130903526,
-					2130903562,
-					2130903563};
+					2130903529,
+					2130903565,
+					2130903566};
 			
-			// aapt resource value: { 0x7F030075,0x7F0301E2,0x7F0301F0 }
+			// aapt resource value: { 0x7F030078,0x7F0301E5,0x7F0301F3 }
 			public static int[] MaterialButtonToggleGroup = new int[] {
-					2130903157,
-					2130903522,
-					2130903536};
+					2130903160,
+					2130903525,
+					2130903539};
 			
 			// aapt resource value: 0
 			public const int MaterialButtonToggleGroup_checkedButton = 0;
@@ -26677,30 +30194,30 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 20
 			public const int MaterialButton_strokeWidth = 20;
 			
-			// aapt resource value: { 0x101020D,0x7F0300D5,0x7F0300D6,0x7F0300D7,0x7F0300D8,0x7F0301D1,0x7F03028F,0x7F030290,0x7F030291 }
+			// aapt resource value: { 0x101020D,0x7F0300D8,0x7F0300D9,0x7F0300DA,0x7F0300DB,0x7F0301D4,0x7F030292,0x7F030293,0x7F030294 }
 			public static int[] MaterialCalendar = new int[] {
 					16843277,
-					2130903253,
-					2130903254,
-					2130903255,
 					2130903256,
-					2130903505,
-					2130903695,
-					2130903696,
-					2130903697};
+					2130903257,
+					2130903258,
+					2130903259,
+					2130903508,
+					2130903698,
+					2130903699,
+					2130903700};
 			
-			// aapt resource value: { 0x10101B7,0x10101B8,0x10101B9,0x10101BA,0x7F030150,0x7F030159,0x7F03015A,0x7F030161,0x7F030162,0x7F030166 }
+			// aapt resource value: { 0x10101B7,0x10101B8,0x10101B9,0x10101BA,0x7F030153,0x7F03015C,0x7F03015D,0x7F030164,0x7F030165,0x7F030169 }
 			public static int[] MaterialCalendarItem = new int[] {
 					16843191,
 					16843192,
 					16843193,
 					16843194,
-					2130903376,
-					2130903385,
-					2130903386,
-					2130903393,
-					2130903394,
-					2130903398};
+					2130903379,
+					2130903388,
+					2130903389,
+					2130903396,
+					2130903397,
+					2130903401};
 			
 			// aapt resource value: 3
 			public const int MaterialCalendarItem_android_insetBottom = 3;
@@ -26759,18 +30276,18 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 8
 			public const int MaterialCalendar_yearTodayStyle = 8;
 			
-			// aapt resource value: { 0x10101E5,0x7F03006F,0x7F030077,0x7F030079,0x7F0301D7,0x7F0301E3,0x7F0301E6,0x7F030204,0x7F03020A,0x7F03020B }
+			// aapt resource value: { 0x10101E5,0x7F030072,0x7F03007A,0x7F03007C,0x7F0301DA,0x7F0301E6,0x7F0301E9,0x7F030207,0x7F03020D,0x7F03020E }
 			public static int[] MaterialCardView = new int[] {
 					16843237,
-					2130903151,
-					2130903159,
-					2130903161,
-					2130903511,
-					2130903523,
+					2130903154,
+					2130903162,
+					2130903164,
+					2130903514,
 					2130903526,
-					2130903556,
-					2130903562,
-					2130903563};
+					2130903529,
+					2130903559,
+					2130903565,
+					2130903566};
 			
 			// aapt resource value: 0
 			public const int MaterialCardView_android_checkable = 0;
@@ -26802,10 +30319,10 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 9
 			public const int MaterialCardView_strokeWidth = 9;
 			
-			// aapt resource value: { 0x7F03006A,0x7F030280 }
+			// aapt resource value: { 0x7F03006D,0x7F030283 }
 			public static int[] MaterialCheckBox = new int[] {
-					2130903146,
-					2130903680};
+					2130903149,
+					2130903683};
 			
 			// aapt resource value: 0
 			public const int MaterialCheckBox_buttonTint = 0;
@@ -26813,10 +30330,10 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 1
 			public const int MaterialCheckBox_useMaterialThemeColors = 1;
 			
-			// aapt resource value: { 0x7F03006A,0x7F030280 }
+			// aapt resource value: { 0x7F03006D,0x7F030283 }
 			public static int[] MaterialRadioButton = new int[] {
-					2130903146,
-					2130903680};
+					2130903149,
+					2130903683};
 			
 			// aapt resource value: 0
 			public const int MaterialRadioButton_buttonTint = 0;
@@ -26824,10 +30341,10 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 1
 			public const int MaterialRadioButton_useMaterialThemeColors = 1;
 			
-			// aapt resource value: { 0x7F0301E3,0x7F0301E6 }
+			// aapt resource value: { 0x7F0301E6,0x7F0301E9 }
 			public static int[] MaterialShape = new int[] {
-					2130903523,
-					2130903526};
+					2130903526,
+					2130903529};
 			
 			// aapt resource value: 0
 			public const int MaterialShape_shapeAppearance = 0;
@@ -26835,10 +30352,10 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 1
 			public const int MaterialShape_shapeAppearanceOverlay = 1;
 			
-			// aapt resource value: { 0x101057F,0x7F03017A }
+			// aapt resource value: { 0x101057F,0x7F03017D }
 			public static int[] MaterialTextAppearance = new int[] {
 					16844159,
-					2130903418};
+					2130903421};
 			
 			// aapt resource value: 0
 			public const int MaterialTextAppearance_android_lineHeight = 0;
@@ -26846,11 +30363,11 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 1
 			public const int MaterialTextAppearance_lineHeight = 1;
 			
-			// aapt resource value: { 0x1010034,0x101057F,0x7F03017A }
+			// aapt resource value: { 0x1010034,0x101057F,0x7F03017D }
 			public static int[] MaterialTextView = new int[] {
 					16842804,
 					16844159,
-					2130903418};
+					2130903421};
 			
 			// aapt resource value: 1
 			public const int MaterialTextView_android_lineHeight = 1;
@@ -26888,7 +30405,7 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 2
 			public const int MenuGroup_android_visible = 2;
 			
-			// aapt resource value: { 0x1010002,0x101000E,0x10100D0,0x1010106,0x1010194,0x10101DE,0x10101DF,0x10101E1,0x10101E2,0x10101E3,0x10101E4,0x10101E5,0x101026F,0x7F03000D,0x7F03001F,0x7F030021,0x7F030029,0x7F0300B4,0x7F030146,0x7F030147,0x7F0301AF,0x7F0301E8,0x7F030275 }
+			// aapt resource value: { 0x1010002,0x101000E,0x10100D0,0x1010106,0x1010194,0x10101DE,0x10101DF,0x10101E1,0x10101E2,0x10101E3,0x10101E4,0x10101E5,0x101026F,0x7F03000D,0x7F03001F,0x7F030021,0x7F03002C,0x7F0300B7,0x7F030149,0x7F03014A,0x7F0301B2,0x7F0301EB,0x7F030278 }
 			public static int[] MenuItem = new int[] {
 					16842754,
 					16842766,
@@ -26906,13 +30423,13 @@ namespace GnollHackClient.Droid
 					2130903053,
 					2130903071,
 					2130903073,
-					2130903081,
-					2130903220,
-					2130903366,
-					2130903367,
-					2130903471,
-					2130903528,
-					2130903669};
+					2130903084,
+					2130903223,
+					2130903369,
+					2130903370,
+					2130903474,
+					2130903531,
+					2130903672};
 			
 			// aapt resource value: 13
 			public const int MenuItem_actionLayout = 13;
@@ -26983,7 +30500,7 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 22
 			public const int MenuItem_tooltipText = 22;
 			
-			// aapt resource value: { 0x10100AE,0x101012C,0x101012D,0x101012E,0x101012F,0x1010130,0x1010131,0x7F0301CA,0x7F03020C }
+			// aapt resource value: { 0x10100AE,0x101012C,0x101012D,0x101012E,0x101012F,0x1010130,0x1010131,0x7F0301CD,0x7F03020F }
 			public static int[] MenuView = new int[] {
 					16842926,
 					16843052,
@@ -26992,8 +30509,8 @@ namespace GnollHackClient.Droid
 					16843055,
 					16843056,
 					16843057,
-					2130903498,
-					2130903564};
+					2130903501,
+					2130903567};
 			
 			// aapt resource value: 4
 			public const int MenuView_android_headerBackground = 4;
@@ -27022,29 +30539,29 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 8
 			public const int MenuView_subMenuArrow = 8;
 			
-			// aapt resource value: { 0x10100D4,0x10100DD,0x101011F,0x7F0300F2,0x7F03012F,0x7F03014F,0x7F030151,0x7F030153,0x7F030154,0x7F030155,0x7F030156,0x7F030159,0x7F03015A,0x7F03015B,0x7F03015C,0x7F03015D,0x7F03015E,0x7F03015F,0x7F030163,0x7F030166,0x7F0301A7 }
+			// aapt resource value: { 0x10100D4,0x10100DD,0x101011F,0x7F0300F5,0x7F030132,0x7F030152,0x7F030154,0x7F030156,0x7F030157,0x7F030158,0x7F030159,0x7F03015C,0x7F03015D,0x7F03015E,0x7F03015F,0x7F030160,0x7F030161,0x7F030162,0x7F030166,0x7F030169,0x7F0301AA }
 			public static int[] NavigationView = new int[] {
 					16842964,
 					16842973,
 					16843039,
-					2130903282,
-					2130903343,
-					2130903375,
-					2130903377,
-					2130903379,
+					2130903285,
+					2130903346,
+					2130903378,
 					2130903380,
-					2130903381,
 					2130903382,
+					2130903383,
+					2130903384,
 					2130903385,
-					2130903386,
-					2130903387,
 					2130903388,
 					2130903389,
 					2130903390,
 					2130903391,
-					2130903395,
+					2130903392,
+					2130903393,
+					2130903394,
 					2130903398,
-					2130903463};
+					2130903401,
+					2130903466};
 			
 			// aapt resource value: 0
 			public const int NavigationView_android_background = 0;
@@ -27109,15 +30626,15 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 20
 			public const int NavigationView_menu = 20;
 			
-			// aapt resource value: { 0x1010176,0x10102C9,0x7F0301B0 }
+			// aapt resource value: { 0x1010176,0x10102C9,0x7F0301B3 }
 			public static int[] PopupWindow = new int[] {
 					16843126,
 					16843465,
-					2130903472};
+					2130903475};
 			
-			// aapt resource value: { 0x7F030201 }
+			// aapt resource value: { 0x7F030204 }
 			public static int[] PopupWindowBackgroundState = new int[] {
-					2130903553};
+					2130903556};
 			
 			// aapt resource value: 0
 			public const int PopupWindowBackgroundState_state_above_anchor = 0;
@@ -27131,17 +30648,17 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 2
 			public const int PopupWindow_overlapAnchor = 2;
 			
-			// aapt resource value: { 0x7F030281 }
+			// aapt resource value: { 0x7F030284 }
 			public static int[] RangeSlider = new int[] {
-					2130903681};
+					2130903684};
 			
 			// aapt resource value: 0
 			public const int RangeSlider_values = 0;
 			
-			// aapt resource value: { 0x7F0301B1,0x7F0301B7 }
+			// aapt resource value: { 0x7F0301B4,0x7F0301BA }
 			public static int[] RecycleListView = new int[] {
-					2130903473,
-					2130903479};
+					2130903476,
+					2130903482};
 			
 			// aapt resource value: 0
 			public const int RecycleListView_paddingBottomNoButtons = 0;
@@ -27149,20 +30666,20 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 1
 			public const int RecycleListView_paddingTopNoTitle = 1;
 			
-			// aapt resource value: { 0x10100C4,0x10100EB,0x10100F1,0x7F030117,0x7F030118,0x7F030119,0x7F03011A,0x7F03011B,0x7F03016D,0x7F0301D6,0x7F0301F5,0x7F0301FB }
+			// aapt resource value: { 0x10100C4,0x10100EB,0x10100F1,0x7F03011A,0x7F03011B,0x7F03011C,0x7F03011D,0x7F03011E,0x7F030170,0x7F0301D9,0x7F0301F8,0x7F0301FE }
 			public static int[] RecyclerView = new int[] {
 					16842948,
 					16842987,
 					16842993,
-					2130903319,
-					2130903320,
-					2130903321,
 					2130903322,
 					2130903323,
-					2130903405,
-					2130903510,
-					2130903541,
-					2130903547};
+					2130903324,
+					2130903325,
+					2130903326,
+					2130903408,
+					2130903513,
+					2130903544,
+					2130903550};
 			
 			// aapt resource value: 1
 			public const int RecyclerView_android_clipToPadding = 1;
@@ -27200,46 +30717,46 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 11
 			public const int RecyclerView_stackFromEnd = 11;
 			
-			// aapt resource value: { 0x7F03014C }
+			// aapt resource value: { 0x7F03014F }
 			public static int[] ScrimInsetsFrameLayout = new int[] {
-					2130903372};
+					2130903375};
 			
 			// aapt resource value: 0
 			public const int ScrimInsetsFrameLayout_insetForeground = 0;
 			
-			// aapt resource value: { 0x7F03004A }
+			// aapt resource value: { 0x7F03004D }
 			public static int[] ScrollingViewBehavior_Layout = new int[] {
-					2130903114};
+					2130903117};
 			
 			// aapt resource value: 0
 			public const int ScrollingViewBehavior_Layout_behavior_overlapTop = 0;
 			
-			// aapt resource value: { 0x7F0301DB }
+			// aapt resource value: { 0x7F0301DE }
 			public static int[] ScrollViewRendererTheme = new int[] {
-					2130903515};
+					2130903518};
 			
 			// aapt resource value: 0
 			public const int ScrollViewRendererTheme_scrollViewStyle = 0;
 			
-			// aapt resource value: { 0x10100DA,0x101011F,0x1010220,0x1010264,0x7F030090,0x7F0300B3,0x7F0300D9,0x7F03012C,0x7F030148,0x7F03016C,0x7F0301CE,0x7F0301CF,0x7F0301DC,0x7F0301DD,0x7F03020D,0x7F030215,0x7F030284 }
+			// aapt resource value: { 0x10100DA,0x101011F,0x1010220,0x1010264,0x7F030093,0x7F0300B6,0x7F0300DC,0x7F03012F,0x7F03014B,0x7F03016F,0x7F0301D1,0x7F0301D2,0x7F0301DF,0x7F0301E0,0x7F030210,0x7F030218,0x7F030287 }
 			public static int[] SearchView = new int[] {
 					16842970,
 					16843039,
 					16843296,
 					16843364,
-					2130903184,
-					2130903219,
-					2130903257,
-					2130903340,
-					2130903368,
-					2130903404,
-					2130903502,
-					2130903503,
-					2130903516,
-					2130903517,
-					2130903565,
-					2130903573,
-					2130903684};
+					2130903187,
+					2130903222,
+					2130903260,
+					2130903343,
+					2130903371,
+					2130903407,
+					2130903505,
+					2130903506,
+					2130903519,
+					2130903520,
+					2130903568,
+					2130903576,
+					2130903687};
 			
 			// aapt resource value: 0
 			public const int SearchView_android_focusable = 0;
@@ -27292,12 +30809,12 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 16
 			public const int SearchView_voiceIcon = 16;
 			
-			// aapt resource value: { 0x7F0301E3,0x7F0301E6,0x7F03020A,0x7F03020B }
+			// aapt resource value: { 0x7F0301E6,0x7F0301E9,0x7F03020D,0x7F03020E }
 			public static int[] ShapeableImageView = new int[] {
-					2130903523,
 					2130903526,
-					2130903562,
-					2130903563};
+					2130903529,
+					2130903565,
+					2130903566};
 			
 			// aapt resource value: 0
 			public const int ShapeableImageView_shapeAppearance = 0;
@@ -27311,18 +30828,18 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 3
 			public const int ShapeableImageView_strokeWidth = 3;
 			
-			// aapt resource value: { 0x7F0300C3,0x7F0300C4,0x7F0300C5,0x7F0300C6,0x7F0300C7,0x7F0300C9,0x7F0300CA,0x7F0300CB,0x7F0300CC,0x7F0300CD }
+			// aapt resource value: { 0x7F0300C6,0x7F0300C7,0x7F0300C8,0x7F0300C9,0x7F0300CA,0x7F0300CC,0x7F0300CD,0x7F0300CE,0x7F0300CF,0x7F0300D0 }
 			public static int[] ShapeAppearance = new int[] {
-					2130903235,
-					2130903236,
-					2130903237,
 					2130903238,
 					2130903239,
+					2130903240,
 					2130903241,
 					2130903242,
-					2130903243,
 					2130903244,
-					2130903245};
+					2130903245,
+					2130903246,
+					2130903247,
+					2130903248};
 			
 			// aapt resource value: 0
 			public const int ShapeAppearance_cornerFamily = 0;
@@ -27354,27 +30871,27 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 9
 			public const int ShapeAppearance_cornerSizeTopRight = 9;
 			
-			// aapt resource value: { 0x101000E,0x1010024,0x1010146,0x10102DE,0x10102DF,0x7F03012D,0x7F03012E,0x7F030168,0x7F030169,0x7F030256,0x7F030257,0x7F030258,0x7F03025C,0x7F03025D,0x7F03025E,0x7F030277,0x7F030278,0x7F030279,0x7F03027A }
+			// aapt resource value: { 0x101000E,0x1010024,0x1010146,0x10102DE,0x10102DF,0x7F030130,0x7F030131,0x7F03016B,0x7F03016C,0x7F030259,0x7F03025A,0x7F03025B,0x7F03025F,0x7F030260,0x7F030261,0x7F03027A,0x7F03027B,0x7F03027C,0x7F03027D }
 			public static int[] Slider = new int[] {
 					16842766,
 					16842788,
 					16843078,
 					16843486,
 					16843487,
-					2130903341,
-					2130903342,
-					2130903400,
-					2130903401,
-					2130903638,
-					2130903639,
-					2130903640,
-					2130903644,
-					2130903645,
-					2130903646,
-					2130903671,
-					2130903672,
-					2130903673,
-					2130903674};
+					2130903344,
+					2130903345,
+					2130903403,
+					2130903404,
+					2130903641,
+					2130903642,
+					2130903643,
+					2130903647,
+					2130903648,
+					2130903649,
+					2130903674,
+					2130903675,
+					2130903676,
+					2130903677};
 			
 			// aapt resource value: 0
 			public const int Slider_android_enabled = 0;
@@ -27433,22 +30950,22 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 18
 			public const int Slider_trackHeight = 18;
 			
-			// aapt resource value: { 0x7F0301F2,0x7F0301F3,0x7F0301F4 }
+			// aapt resource value: { 0x7F0301F5,0x7F0301F6,0x7F0301F7 }
 			public static int[] Snackbar = new int[] {
-					2130903538,
-					2130903539,
-					2130903540};
+					2130903541,
+					2130903542,
+					2130903543};
 			
-			// aapt resource value: { 0x101011F,0x7F030020,0x7F03002A,0x7F03003A,0x7F03003D,0x7F03003E,0x7F0300F2,0x7F0301A1 }
+			// aapt resource value: { 0x101011F,0x7F030020,0x7F03002D,0x7F03003D,0x7F030040,0x7F030041,0x7F0300F5,0x7F0301A4 }
 			public static int[] SnackbarLayout = new int[] {
 					16843039,
 					2130903072,
-					2130903082,
-					2130903098,
+					2130903085,
 					2130903101,
-					2130903102,
-					2130903282,
-					2130903457};
+					2130903104,
+					2130903105,
+					2130903285,
+					2130903460};
 			
 			// aapt resource value: 1
 			public const int SnackbarLayout_actionTextColorAlpha = 1;
@@ -27483,13 +31000,13 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 2
 			public const int Snackbar_snackbarTextViewStyle = 2;
 			
-			// aapt resource value: { 0x10100B2,0x1010176,0x101017B,0x1010262,0x7F0301C5 }
+			// aapt resource value: { 0x10100B2,0x1010176,0x101017B,0x1010262,0x7F0301C8 }
 			public static int[] Spinner = new int[] {
 					16842930,
 					16843126,
 					16843131,
 					16843362,
-					2130903493};
+					2130903496};
 			
 			// aapt resource value: 3
 			public const int Spinner_android_dropDownWidth = 3;
@@ -27540,29 +31057,29 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 1
 			public const int StateListDrawable_android_visible = 1;
 			
-			// aapt resource value: { 0x7F030216 }
+			// aapt resource value: { 0x7F030219 }
 			public static int[] SwipeRefreshLayout = new int[] {
-					2130903574};
+					2130903577};
 			
 			// aapt resource value: 0
 			public const int SwipeRefreshLayout_swipeRefreshLayoutProgressSpinnerBackgroundColor = 0;
 			
-			// aapt resource value: { 0x1010124,0x1010125,0x1010142,0x7F0301EB,0x7F0301F9,0x7F030217,0x7F030218,0x7F03021A,0x7F030259,0x7F03025A,0x7F03025B,0x7F030276,0x7F03027B,0x7F03027C }
+			// aapt resource value: { 0x1010124,0x1010125,0x1010142,0x7F0301EE,0x7F0301FC,0x7F03021A,0x7F03021B,0x7F03021D,0x7F03025C,0x7F03025D,0x7F03025E,0x7F030279,0x7F03027E,0x7F03027F }
 			public static int[] SwitchCompat = new int[] {
 					16843044,
 					16843045,
 					16843074,
-					2130903531,
-					2130903545,
-					2130903575,
-					2130903576,
+					2130903534,
+					2130903548,
 					2130903578,
-					2130903641,
-					2130903642,
-					2130903643,
-					2130903670,
-					2130903675,
-					2130903676};
+					2130903579,
+					2130903581,
+					2130903644,
+					2130903645,
+					2130903646,
+					2130903673,
+					2130903678,
+					2130903679};
 			
 			// aapt resource value: 1
 			public const int SwitchCompat_android_textOff = 1;
@@ -27606,9 +31123,9 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 13
 			public const int SwitchCompat_trackTintMode = 13;
 			
-			// aapt resource value: { 0x7F030280 }
+			// aapt resource value: { 0x7F030283 }
 			public static int[] SwitchMaterial = new int[] {
-					2130903680};
+					2130903683};
 			
 			// aapt resource value: 0
 			public const int SwitchMaterial_useMaterialThemeColors = 0;
@@ -27628,11 +31145,8 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 2
 			public const int TabItem_android_text = 2;
 			
-			// aapt resource value: { 0x7F03021B,0x7F03021C,0x7F03021D,0x7F03021E,0x7F03021F,0x7F030220,0x7F030221,0x7F030222,0x7F030223,0x7F030224,0x7F030225,0x7F030226,0x7F030227,0x7F030228,0x7F030229,0x7F03022A,0x7F03022B,0x7F03022C,0x7F03022D,0x7F03022E,0x7F03022F,0x7F030230,0x7F030232,0x7F030233,0x7F030234 }
+			// aapt resource value: { 0x7F03021E,0x7F03021F,0x7F030220,0x7F030221,0x7F030222,0x7F030223,0x7F030224,0x7F030225,0x7F030226,0x7F030227,0x7F030228,0x7F030229,0x7F03022A,0x7F03022B,0x7F03022C,0x7F03022D,0x7F03022E,0x7F03022F,0x7F030230,0x7F030231,0x7F030232,0x7F030233,0x7F030235,0x7F030236,0x7F030237 }
 			public static int[] TabLayout = new int[] {
-					2130903579,
-					2130903580,
-					2130903581,
 					2130903582,
 					2130903583,
 					2130903584,
@@ -27652,9 +31166,12 @@ namespace GnollHackClient.Droid
 					2130903598,
 					2130903599,
 					2130903600,
+					2130903601,
 					2130903602,
 					2130903603,
-					2130903604};
+					2130903605,
+					2130903606,
+					2130903607};
 			
 			// aapt resource value: 0
 			public const int TabLayout_tabBackground = 0;
@@ -27731,7 +31248,7 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 24
 			public const int TabLayout_tabUnboundedRipple = 24;
 			
-			// aapt resource value: { 0x1010095,0x1010096,0x1010097,0x1010098,0x101009A,0x101009B,0x1010161,0x1010162,0x1010163,0x1010164,0x10103AC,0x1010585,0x7F03011F,0x7F030127,0x7F030235,0x7F030251 }
+			// aapt resource value: { 0x1010095,0x1010096,0x1010097,0x1010098,0x101009A,0x101009B,0x1010161,0x1010162,0x1010163,0x1010164,0x10103AC,0x1010585,0x7F030122,0x7F03012A,0x7F030238,0x7F030254 }
 			public static int[] TextAppearance = new int[] {
 					16842901,
 					16842902,
@@ -27745,10 +31262,10 @@ namespace GnollHackClient.Droid
 					16843108,
 					16843692,
 					16844165,
-					2130903327,
-					2130903335,
-					2130903605,
-					2130903633};
+					2130903330,
+					2130903338,
+					2130903608,
+					2130903636};
 			
 			// aapt resource value: 10
 			public const int TextAppearance_android_fontFamily = 10;
@@ -27798,21 +31315,18 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 15
 			public const int TextAppearance_textLocale = 15;
 			
-			// aapt resource value: { 0x7F03024F }
+			// aapt resource value: { 0x7F030252 }
 			public static int[] TextInputEditText = new int[] {
-					2130903631};
+					2130903634};
 			
 			// aapt resource value: 0
 			public const int TextInputEditText_textInputLayoutFocusedRectEnabled = 0;
 			
-			// aapt resource value: { 0x101000E,0x101009A,0x1010150,0x7F030054,0x7F030055,0x7F030056,0x7F030057,0x7F030058,0x7F030059,0x7F03005A,0x7F03005B,0x7F03005C,0x7F03005D,0x7F03005E,0x7F0300CE,0x7F0300CF,0x7F0300D0,0x7F0300D1,0x7F0300D2,0x7F0300D3,0x7F0300F5,0x7F0300F6,0x7F0300F7,0x7F0300F8,0x7F0300F9,0x7F0300FA,0x7F0300FE,0x7F0300FF,0x7F030100,0x7F030101,0x7F030102,0x7F030103,0x7F030104,0x7F030131,0x7F030132,0x7F030133,0x7F030134,0x7F030138,0x7F030139,0x7F03013A,0x7F03013B,0x7F0301BB,0x7F0301BC,0x7F0301BD,0x7F0301BE,0x7F0301BF,0x7F0301C0,0x7F0301C1,0x7F0301C2,0x7F0301C7,0x7F0301C8,0x7F0301C9,0x7F0301E3,0x7F0301E6,0x7F0301FC,0x7F0301FD,0x7F0301FE,0x7F0301FF,0x7F030200,0x7F030212,0x7F030213,0x7F030214 }
+			// aapt resource value: { 0x101000E,0x101009A,0x1010150,0x7F030057,0x7F030058,0x7F030059,0x7F03005A,0x7F03005B,0x7F03005C,0x7F03005D,0x7F03005E,0x7F03005F,0x7F030060,0x7F030061,0x7F0300D1,0x7F0300D2,0x7F0300D3,0x7F0300D4,0x7F0300D5,0x7F0300D6,0x7F0300F8,0x7F0300F9,0x7F0300FA,0x7F0300FB,0x7F0300FC,0x7F0300FD,0x7F030101,0x7F030102,0x7F030103,0x7F030104,0x7F030105,0x7F030106,0x7F030107,0x7F030134,0x7F030135,0x7F030136,0x7F030137,0x7F03013B,0x7F03013C,0x7F03013D,0x7F03013E,0x7F0301BE,0x7F0301BF,0x7F0301C0,0x7F0301C1,0x7F0301C2,0x7F0301C3,0x7F0301C4,0x7F0301C5,0x7F0301CA,0x7F0301CB,0x7F0301CC,0x7F0301E6,0x7F0301E9,0x7F0301FF,0x7F030200,0x7F030201,0x7F030202,0x7F030203,0x7F030215,0x7F030216,0x7F030217 }
 			public static int[] TextInputLayout = new int[] {
 					16842766,
 					16842906,
 					16843088,
-					2130903124,
-					2130903125,
-					2130903126,
 					2130903127,
 					2130903128,
 					2130903129,
@@ -27821,54 +31335,57 @@ namespace GnollHackClient.Droid
 					2130903132,
 					2130903133,
 					2130903134,
-					2130903246,
-					2130903247,
-					2130903248,
+					2130903135,
+					2130903136,
+					2130903137,
 					2130903249,
 					2130903250,
 					2130903251,
-					2130903285,
-					2130903286,
-					2130903287,
+					2130903252,
+					2130903253,
+					2130903254,
 					2130903288,
 					2130903289,
 					2130903290,
-					2130903294,
-					2130903295,
-					2130903296,
+					2130903291,
+					2130903292,
+					2130903293,
 					2130903297,
 					2130903298,
 					2130903299,
 					2130903300,
-					2130903345,
-					2130903346,
-					2130903347,
+					2130903301,
+					2130903302,
+					2130903303,
 					2130903348,
-					2130903352,
-					2130903353,
-					2130903354,
+					2130903349,
+					2130903350,
+					2130903351,
 					2130903355,
-					2130903483,
-					2130903484,
-					2130903485,
+					2130903356,
+					2130903357,
+					2130903358,
 					2130903486,
 					2130903487,
 					2130903488,
 					2130903489,
 					2130903490,
-					2130903495,
-					2130903496,
-					2130903497,
-					2130903523,
+					2130903491,
+					2130903492,
+					2130903493,
+					2130903498,
+					2130903499,
+					2130903500,
 					2130903526,
-					2130903548,
-					2130903549,
-					2130903550,
+					2130903529,
 					2130903551,
 					2130903552,
-					2130903570,
-					2130903571,
-					2130903572};
+					2130903553,
+					2130903554,
+					2130903555,
+					2130903573,
+					2130903574,
+					2130903575};
 			
 			// aapt resource value: 0
 			public const int TextInputLayout_android_enabled = 0;
@@ -28056,11 +31573,11 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 61
 			public const int TextInputLayout_suffixTextColor = 61;
 			
-			// aapt resource value: { 0x1010034,0x7F0300FB,0x7F0300FC }
+			// aapt resource value: { 0x1010034,0x7F0300FE,0x7F0300FF }
 			public static int[] ThemeEnforcement = new int[] {
 					16842804,
-					2130903291,
-					2130903292};
+					2130903294,
+					2130903295};
 			
 			// aapt resource value: 0
 			public const int ThemeEnforcement_android_textAppearance = 0;
@@ -28071,38 +31588,38 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 2
 			public const int ThemeEnforcement_enforceTextAppearance = 2;
 			
-			// aapt resource value: { 0x10100AF,0x1010140,0x7F030065,0x7F030098,0x7F030099,0x7F0300B5,0x7F0300B6,0x7F0300B7,0x7F0300B8,0x7F0300B9,0x7F0300BA,0x7F03018B,0x7F03018C,0x7F0301A2,0x7F0301A7,0x7F0301AA,0x7F0301AB,0x7F0301C5,0x7F03020E,0x7F03020F,0x7F030210,0x7F030264,0x7F030266,0x7F030267,0x7F030268,0x7F030269,0x7F03026A,0x7F03026B,0x7F03026C,0x7F03026D }
+			// aapt resource value: { 0x10100AF,0x1010140,0x7F030068,0x7F03009B,0x7F03009C,0x7F0300B8,0x7F0300B9,0x7F0300BA,0x7F0300BB,0x7F0300BC,0x7F0300BD,0x7F03018E,0x7F03018F,0x7F0301A5,0x7F0301AA,0x7F0301AD,0x7F0301AE,0x7F0301C8,0x7F030211,0x7F030212,0x7F030213,0x7F030267,0x7F030269,0x7F03026A,0x7F03026B,0x7F03026C,0x7F03026D,0x7F03026E,0x7F03026F,0x7F030270 }
 			public static int[] Toolbar = new int[] {
 					16842927,
 					16843072,
-					2130903141,
-					2130903192,
-					2130903193,
-					2130903221,
-					2130903222,
-					2130903223,
+					2130903144,
+					2130903195,
+					2130903196,
 					2130903224,
 					2130903225,
 					2130903226,
-					2130903435,
-					2130903436,
-					2130903458,
-					2130903463,
+					2130903227,
+					2130903228,
+					2130903229,
+					2130903438,
+					2130903439,
+					2130903461,
 					2130903466,
-					2130903467,
-					2130903493,
-					2130903566,
-					2130903567,
-					2130903568,
-					2130903652,
-					2130903654,
+					2130903469,
+					2130903470,
+					2130903496,
+					2130903569,
+					2130903570,
+					2130903571,
 					2130903655,
-					2130903656,
 					2130903657,
 					2130903658,
 					2130903659,
 					2130903660,
-					2130903661};
+					2130903661,
+					2130903662,
+					2130903663,
+					2130903664};
 			
 			// aapt resource value: 0
 			public const int Toolbar_android_gravity = 0;
@@ -28194,7 +31711,7 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 29
 			public const int Toolbar_titleTextColor = 29;
 			
-			// aapt resource value: { 0x1010034,0x10100D5,0x10100F6,0x101013F,0x1010140,0x101014F,0x7F03003D }
+			// aapt resource value: { 0x1010034,0x10100D5,0x10100F6,0x101013F,0x1010140,0x101014F,0x7F030040 }
 			public static int[] Tooltip = new int[] {
 					16842804,
 					16842965,
@@ -28202,7 +31719,7 @@ namespace GnollHackClient.Droid
 					16843071,
 					16843072,
 					16843087,
-					2130903101};
+					2130903104};
 			
 			// aapt resource value: 2
 			public const int Tooltip_android_layout_margin = 2;
@@ -28225,19 +31742,19 @@ namespace GnollHackClient.Droid
 			// aapt resource value: 6
 			public const int Tooltip_backgroundTint = 6;
 			
-			// aapt resource value: { 0x1010000,0x10100DA,0x7F0301B3,0x7F0301B6,0x7F030253 }
+			// aapt resource value: { 0x1010000,0x10100DA,0x7F0301B6,0x7F0301B9,0x7F030256 }
 			public static int[] View = new int[] {
 					16842752,
 					16842970,
-					2130903475,
 					2130903478,
-					2130903635};
+					2130903481,
+					2130903638};
 			
-			// aapt resource value: { 0x10100D4,0x7F03003D,0x7F03003E }
+			// aapt resource value: { 0x10100D4,0x7F030040,0x7F030041 }
 			public static int[] ViewBackgroundHelper = new int[] {
 					16842964,
-					2130903101,
-					2130903102};
+					2130903104,
+					2130903105};
 			
 			// aapt resource value: 0
 			public const int ViewBackgroundHelper_android_background = 0;
