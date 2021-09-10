@@ -164,7 +164,7 @@
                     <controls:LabeledImageButton LblText="Discoveries" BtnLetter="\" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
                 </Grid>
                 <Grid>
-                    <controls:LabeledImageButton LblText="Pick Up" BtnLetter="," ImgSourcePath="resource://GnollHackClient.Assets.Icons.pickup.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <controls:LabeledImageButton LblText="Pick Up" BtnLetter="," ImgSourcePath="resource://GnollHackClient.Assets.UI.pickup.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
                 </Grid>
                 <Grid>
                     <controls:LabeledImageButton LblText="Cancel" BtnCommand="27" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />

@@ -563,14 +563,14 @@ namespace GnollHackClient.Pages.Game
                     icon_string = "GnollHackClient.Assets.Icons.pay.png";
                     break;
                 case ',':
-                    icon_string = "GnollHackClient.Assets.Icons.pickup.png";
+                    icon_string = "GnollHackClient.Assets.UI.pickup.png";
                     break;
                 case ':':
-                    icon_string = "GnollHackClient.Assets.Icons.search.png";
+                    icon_string = "GnollHackClient.Assets.UI.search.png";
                     break;
                 default:
                     if (data.cmd_def_char == LastPicked)
-                        icon_string = "GnollHackClient.Assets.Icons.inventory.png";
+                        icon_string = "GnollHackClient.Assets.UI.inventory.png";
                     else
                         icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
                     break;
