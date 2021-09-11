@@ -3,11 +3,11 @@
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
   <Target Name="Build"
-    Inputs="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png;$(BankMobileDir)Master.bank;$(BankMobileDir)Master.strings.bank;$(BankMobileDir)Auxiliary.bank"
-    Outputs="$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits.png;$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits-2.png;$(ClientCommonAssetsDir)Master.bank;$(ClientCommonAssetsDir)Master.strings.bank;$(ClientCommonAssetsDir)Auxiliary.bank">
-    <Copy SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png;$(BankMobileDir)Master.bank;$(BankMobileDir)Master.strings.bank;$(BankMobileDir)Auxiliary.bank" DestinationFolder="$(ClientCommonAssetsDir)"/>
+    Inputs="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png"
+    Outputs="$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits.png;$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits-2.png">
+    <Copy SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(ClientCommonAssetsDir)"/>
   </Target>
   <Target Name="Clean">
-    <Delete Files="$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits.png;$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits-2.png;$(ClientCommonAssetsDir)Master.bank;$(ClientCommonAssetsDir)Master.strings.bank;$(ClientCommonAssetsDir)Auxiliary.bank"/>
+    <Delete Files="$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits.png;$(ClientCommonAssetsDir)gnollhack_64x96_transparent_32bits-2.png"/>
   </Target>
 </Project>
