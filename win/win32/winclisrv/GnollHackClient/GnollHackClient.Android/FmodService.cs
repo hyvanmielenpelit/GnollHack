@@ -46,7 +46,7 @@ namespace GnollHackClient.Droid
         //private byte[] _bankBuffer1;
         //private byte[] _bankBuffer2;
 
-        Bank[] _bank = new Bank[GHConstants.NumBanks];
+        List<Bank> _banks = new List<Bank>();
 
         EventInstance? _testEventInstance;
 
@@ -79,41 +79,29 @@ namespace GnollHackClient.Droid
             res = _system.initialize(1024, FMOD.Studio.INITFLAGS.NORMAL, FMOD.INITFLAGS.NORMAL, IntPtr.Zero);
         }
 
-        public string GetBankDir()
-        {
-            string filesdir = Android.App.Application.Context.FilesDir.Path;
-            string bankdir = Path.Combine(filesdir, "bank");
-            return bankdir;
-        }
-
         public void LoadBanks()
         {
             RESULT res;
-            string bankdir = GetBankDir();
-            string bank_path;
-            int idx = -1;
-            foreach (string bankname in App.BankNameList)
+            foreach (string bank_path in _loadableSoundBanks)
             {
-                idx++;
-                bank_path = Path.Combine(bankdir, bankname);
-                if (!File.Exists(bank_path))
+                if (File.Exists(bank_path))
                 {
-                    /* Error; should already be here */
-                    continue;
-
-                    //using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Master.bank"))
-                    //{
-                    //    using (var fileStream = File.Create(bank_path))
-                    //    {
-                    //        stream.CopyTo(fileStream);
-                    //    }
-                    //    //_bankBuffer1 = new byte[stream.Length];
-                    //    //stream.Read(_bankBuffer1, 0, (int)stream.Length);
-                    //    //res = _system.loadBankMemory(_bankBuffer1, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out _bank1);
-                    //}
+                    Bank tmpbank = new Bank();
+                    res = _system.loadBankFile(bank_path, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
+                    _banks.Add(tmpbank);
                 }
-                res = _system.loadBankFile(bank_path, LOAD_BANK_FLAGS.NORMAL, out _bank[idx]);
             }
+        }
+
+        private List<string> _loadableSoundBanks = new List<string>();
+
+        public void ClearLoadableSoundBanks()
+        {
+            _loadableSoundBanks.Clear();
+        }
+        public void AddLoadableSoundBank(string fullfilepath)
+        {
+            _loadableSoundBanks.Add(fullfilepath);
         }
 
         public void PlayTestSound()

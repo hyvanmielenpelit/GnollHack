@@ -62,7 +62,7 @@ namespace GnollHackClient.Pages.Game
             bool answer = await DisplayAlert("Delete Downloaded Files?", "Are you sure to delete all downloaded files on restart?", "Yes", "No");
             if (answer)
             {
-                Preferences.Set("ResetBanks", true);
+                Preferences.Set("ResetExternalFiles", true);
                 btnDeleteDownloads.Text = "Deletion on restart";
                 btnDeleteDownloads.TextColor = Color.Red;
             }
@@ -74,7 +74,7 @@ namespace GnollHackClient.Pages.Game
             bool answer = await DisplayAlert("Delete Local Sound Banks?", "Are you sure to delete all local sound banks on restart?", "Yes", "No");
             if (answer)
             {
-                Preferences.Set("ResetLocalBanks", true);
+                Preferences.Set("ResetLocalFiles", true);
                 btnDeleteDownloads.Text = "Deletion on restart";
                 btnDeleteDownloads.TextColor = Color.Red;
             }
@@ -87,37 +87,56 @@ namespace GnollHackClient.Pages.Game
             if (answer)
             {
 
-                bool has_resetbanks = Preferences.ContainsKey("ResetBanks");
-                bool resetbanks = Preferences.Get("ResetBanks", false);
-                bool has_resetlocalbanks = Preferences.ContainsKey("ResetLocalBanks");
-                bool resetlocalbanks = Preferences.Get("ResetLocalBanks", false);
+                bool has_resetbanks = Preferences.ContainsKey("ResetExternalFiles");
+                bool resetbanks = Preferences.Get("ResetExternalFiles", false);
+                bool has_resetlocalbanks = Preferences.ContainsKey("ResetLocalFiles");
+                bool resetlocalbanks = Preferences.Get("ResetLocalFiles", false);
                 bool has_fcf = Preferences.ContainsKey("CheckPurchase_FirstConnectFail");
                 DateTime fcf = Preferences.Get("CheckPurchase_FirstConnectFail", DateTime.MinValue);
                 bool has_gsc = Preferences.ContainsKey("CheckPurchase_ConnectFail_GameStartCount");
                 int gsc = Preferences.Get("CheckPurchase_ConnectFail_GameStartCount", 0);
-                bool has_vbv = Preferences.ContainsKey("VerifyBank_Version");
-                string vbv = Preferences.Get("VerifyBank_Version", "");
-                bool has_vblwt = Preferences.ContainsKey("VerifyBank_LastWriteTime");
-                long vblwt = Preferences.Get("VerifyBank_LastWriteTime", 0);
                 bool has_verid = Preferences.ContainsKey("VersionId");
                 string verid = Preferences.Get("VersionId", "");
+
+                Dictionary<string, string> saveverdict = new Dictionary<string, string>();
+                Dictionary<string, DateTime> savetimedict = new Dictionary<string, DateTime>();
+                foreach(SecretsFile sf in App.CurrentSecrets.files)
+                {
+                    bool has_vbv = Preferences.ContainsKey("Verify_" + sf.id + "_Version");
+                    string vbv = Preferences.Get("Verify_" + sf.id + "_Version", "");
+                    if(has_vbv)
+                        saveverdict.Add("Verify_" + sf.id + "_Version", vbv);
+                    bool has_vblwt = Preferences.ContainsKey("Verify_" + sf.id + "_LastWriteTime");
+                    DateTime vblwt = Preferences.Get("Verify_" + sf.id + "_LastWriteTime", DateTime.MinValue);
+                    if (has_vblwt)
+                        savetimedict.Add("Verify_" + sf.id + "_LastWriteTime", vblwt);
+                }
 
                 Preferences.Clear();
 
                 Preferences.Set("FullVersion", App.FullVersionMode);
                 Preferences.Set("ExtraLives", App.ExtraLives);
                 if (has_resetbanks)
-                    Preferences.Set("ResetBanks", resetbanks);
+                    Preferences.Set("ResetExternalFiles", resetbanks);
                 if (has_resetlocalbanks)
-                    Preferences.Set("ResetLocalBanks", resetlocalbanks);
+                    Preferences.Set("ResetLocalFiles", resetlocalbanks);
                 if (has_fcf)
                     Preferences.Set("CheckPurchase_FirstConnectFail", fcf);
                 if (has_gsc)
                     Preferences.Set("CheckPurchase_ConnectFail_GameStartCount", fcf);
-                if (has_vbv)
-                    Preferences.Set("VerifyBank_Version", vbv);
-                if (has_vblwt)
-                    Preferences.Set("VerifyBank_LastWriteTime", vblwt);
+
+                KeyValuePair<string, string>[] arr = saveverdict.ToArray<KeyValuePair<string, string>>();
+                foreach (KeyValuePair<string, string> kvp in arr)
+                {
+                    Preferences.Set(kvp.Key, kvp.Value);
+
+                }
+                KeyValuePair<string, DateTime>[] arr2 = savetimedict.ToArray<KeyValuePair<string, DateTime>>();
+                foreach (KeyValuePair<string, DateTime> kvp2 in arr2)
+                {
+                    Preferences.Set(kvp2.Key, kvp2.Value);
+
+                }
                 if (has_verid)
                     Preferences.Set("VersionId", verid);
 

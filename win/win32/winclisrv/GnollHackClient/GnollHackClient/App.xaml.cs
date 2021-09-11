@@ -29,14 +29,6 @@ namespace GnollHackClient
 
     public partial class App : Application
     {
-        public static readonly string[] BankNameList = { "Master.bank", "Master.strings.bank", "Auxiliary.bank" };
-        public static readonly string[] BankResourceList = { "GnollHackClient.Assets.Master.bank", "GnollHackClient.Assets.Master.strings.bank", "GnollHackClient.Assets.Auxiliary.bank" };
-#if DEBUG
-        public static readonly bool[] BankWebDownloadList = { false, false, GHConstants.DownloadFromWebInDebugMode };
-#else
-        public static readonly bool[] BankWebDownloadList = { false, false, true };
-#endif
-
         public App()
         {
             InitializeComponent();
@@ -91,12 +83,12 @@ namespace GnollHackClient
             _mainGnollHackService = DependencyService.Get<IGnollHackService>();
             _mainGnollHackService.LoadLibrary();
             _mainGnollHackService.Test();
-            bool resetFiles = Preferences.Get("ResetFiles", true);
+            bool resetFiles = Preferences.Get("ResetAtStart", true);
             if (resetFiles)
             {
                 _mainGnollHackService.ClearFiles();
-                Preferences.Set("ResetFiles", false);
-                Preferences.Set("ResetBanks", true);
+                Preferences.Set("ResetAtStart", false);
+                Preferences.Set("ResetExternalFiles", true);
             }
             _mainGnollHackService.InitializeGnollHack();
             _fmodService = DependencyService.Get<IFmodService>();

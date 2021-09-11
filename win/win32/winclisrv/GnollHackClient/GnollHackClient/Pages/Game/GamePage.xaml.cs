@@ -248,8 +248,6 @@ namespace GnollHackClient.Pages.Game
 
         public async void StartGame()
         {
-            //Authenticated
-            //App.FmodService.PlayTestSound();
             _mainPage.GameStarted = true;
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             await LoadingProgressBar.ProgressTo(0.3, 600, Easing.Linear);
@@ -268,12 +266,6 @@ namespace GnollHackClient.Pages.Game
                 _logoBitmap = SKBitmap.Decode(stream);
             }
             InitializeMoreCommandButtons();
-
-            //InventoryImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.inventory.png");
-            //SearchImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.search.png");
-            //WaitImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.wait.png");
-            //DropManyImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.dropmany.png");
-            //SkillImg.Source = ImageSource.FromResource("GnollHackClient.Assets.Icons.skill.png");
             await LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear);
 
             _gnollHackService = DependencyService.Get<IGnollHackService>();

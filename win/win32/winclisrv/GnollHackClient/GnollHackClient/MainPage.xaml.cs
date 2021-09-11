@@ -98,7 +98,6 @@ namespace GnollHackClient
                 _firsttime = false;
                 if (App.FullVersionMode)
                     await CheckPurchaseStatus(true);
-                _banksAcquired = 0;
                 Assembly thisassembly = GetType().GetTypeInfo().Assembly;
                 FmodLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.FMOD-Logo-192-White.png", thisassembly);
                 StartLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
@@ -139,7 +138,7 @@ namespace GnollHackClient
             {
                 App.GnollHackService.ClearCoreFiles();
                 App.GnollHackService.InitializeGnollHack();
-                Preferences.Set("ResetLocalBanks", true);
+                Preferences.Set("ResetLocalFiles", true);
             }
             Preferences.Set("VersionId", verid);
 
@@ -167,8 +166,8 @@ namespace GnollHackClient
             exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
 
-            await AcquireBanks();
-            await CheckBanks();
+            await AcquireFiles();
+            await CheckFiles();
             App.FmodService.LoadBanks();
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
@@ -445,7 +444,6 @@ namespace GnollHackClient
             }
         }
 
-        private int _banksAcquired = 0;
         private object _downloadProgressLock = new object();
         private float _downloadProgressPercentage = 0.0f;
         private long _downloadProgressTotalBytesDownloaded = 0;
@@ -454,100 +452,192 @@ namespace GnollHackClient
         private string _downloadProgressFilePath = "";
         private long _downloadProgressDesiredFileSize = 0;
 
-        private async Task AcquireBanks()
+        private async Task AcquireFiles()
         {
-            string bank_dir = App.FmodService.GetBankDir();
+            string ghdir = App.GnollHackService.GetGnollHackPath();
             Assembly assembly = GetType().GetTypeInfo().Assembly;
 
-            /* Make the relevant directory */
-            if (!Directory.Exists(bank_dir))
+            foreach(SecretsDirectory sd in App.CurrentSecrets.directories)
             {
-                Directory.CreateDirectory(bank_dir);
-            }
+                if (string.IsNullOrWhiteSpace(sd.name))
+                    continue;
 
-            bool resetbanks = Preferences.Get("ResetBanks", true);
-            if (resetbanks)
-            {
-                DirectoryInfo di = new DirectoryInfo(bank_dir);
-                foreach (FileInfo file in di.GetFiles())
+                string sdir = Path.Combine(ghdir, sd.name);
+
+                /* Make the relevant directory */
+                if (!Directory.Exists(sdir))
                 {
-                    file.Delete();
+                    Directory.CreateDirectory(sdir);
                 }
-                if (Preferences.ContainsKey("VerifyBank_Version"))
-                    Preferences.Remove("VerifyBank_Version");
-                if (Preferences.ContainsKey("VerifyBank_LastWriteTime"))
-                    Preferences.Remove("VerifyBank_LastWriteTime");
-
-                Preferences.Set("ResetBanks", false);
             }
 
-            bool resetlocalbanks = Preferences.Get("ResetLocalBanks", true);
-            if (resetlocalbanks)
+            bool resetfiles = Preferences.Get("ResetExternalFiles", true);
+            if (resetfiles)
             {
-                if(!resetbanks)
+                foreach(SecretsFile sf in App.CurrentSecrets.files)
                 {
-                    DirectoryInfo di = new DirectoryInfo(bank_dir);
-                    foreach (FileInfo file in di.GetFiles())
+                    string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory);
+                    string sfile = Path.Combine(sdir, sf.name);
+                    if(File.Exists(sfile))
                     {
-                        bool docontinue = false;
-                        for (int i = 0; i < App.BankWebDownloadList.Length; i++)
-                        {
-                            if (App.BankWebDownloadList[i] && file.Name == App.BankNameList[i])
-                            {
-                                docontinue = true;
-                                break;
-                            }
-                        }
-                        if (docontinue)
-                            continue;
+                        FileInfo file = new FileInfo(sfile);
                         file.Delete();
                     }
+                    if (Preferences.ContainsKey("Verify_" + sf.id + "_Version"))
+                        Preferences.Remove("Verify_" + sf.id + "_Version");
+                    if (Preferences.ContainsKey("Verify_" + sf.id + "_LastWriteTime"))
+                        Preferences.Remove("Verify_" + sf.id + "_LastWriteTime");
+
+                    Preferences.Set("ResetExternalFiles", false);
                 }
-                Preferences.Set("ResetLocalBanks", false);
             }
 
             App.DebugWriteProfilingStopwatchTimeAndStart("Start Acquiring Banks");
-            for (int idx = 0; idx < App.BankNameList.Length; idx++)
+            App.FmodService.ClearLoadableSoundBanks();
+            foreach (SecretsFile sf in App.CurrentSecrets.files)
             {
-                string bank_path = Path.Combine(bank_dir, App.BankNameList[idx]);
-                if (App.BankWebDownloadList[idx])
+                string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory);
+                string sfile = Path.Combine(sdir, sf.name);
+                if (sf.source == "url")
                 {
-                    downloaded_file_check_results res = await DownloadFileFromWebServer(assembly, App.BankNameList[idx], bank_dir);
+                    downloaded_file_check_results res = await DownloadFileFromWebServer(assembly, sf, ghdir);
                 }
-                else
+                else if (sf.source == "resource")
                 {
-                    if (!File.Exists(bank_path))
+                    if (!File.Exists(sfile))
                     {
-                        using (Stream stream = assembly.GetManifestResourceStream(App.BankResourceList[idx]))
+                        using (Stream stream = assembly.GetManifestResourceStream(sf.uri))
                         {
-                            using (var fileStream = File.Create(bank_path))
+                            using (var fileStream = File.Create(sfile))
                             {
                                 stream.CopyTo(fileStream);
                             }
                         }
                     }
                 }
-                _banksAcquired++;
-                App.DebugWriteProfilingStopwatchTimeAndStart("Acquired Bank "+ idx);
+
+                if(sf.type == "sound_bank")
+                {
+                    App.FmodService.AddLoadableSoundBank(sfile);
+                }
             }
+
+            //for (int idx = 0; idx < App.BankNameList.Length; idx++)
+            //{
+            //    string bank_path = Path.Combine(ghdir, App.BankNameList[idx]);
+            //    if (App.BankWebDownloadList[idx])
+            //    {
+            //        downloaded_file_check_results res = await DownloadFileFromWebServer(assembly, App.BankNameList[idx], bank_dir);
+            //    }
+            //    else
+            //    {
+            //        if (!File.Exists(bank_path))
+            //        {
+            //            using (Stream stream = assembly.GetManifestResourceStream(App.BankResourceList[idx]))
+            //            {
+            //                using (var fileStream = File.Create(bank_path))
+            //                {
+            //                    stream.CopyTo(fileStream);
+            //                }
+            //            }
+            //        }
+            //    }
+            //    App.DebugWriteProfilingStopwatchTimeAndStart("Acquired Bank " + idx);
+            //}
         }
 
-        private async Task CheckBanks()
+        //private async Task AcquireBanks()
+        //{
+        //    string bank_dir = App.FmodService.GetBankDir();
+        //    Assembly assembly = GetType().GetTypeInfo().Assembly;
+
+        //    /* Make the relevant directory */
+        //    if (!Directory.Exists(bank_dir))
+        //    {
+        //        Directory.CreateDirectory(bank_dir);
+        //    }
+
+        //    bool resetbanks = Preferences.Get("ResetExternalFiles", true);
+        //    if (resetbanks)
+        //    {
+        //        DirectoryInfo di = new DirectoryInfo(bank_dir);
+        //        foreach (FileInfo file in di.GetFiles())
+        //        {
+        //            file.Delete();
+        //        }
+        //        if (Preferences.ContainsKey("VerifyBank_Version"))
+        //            Preferences.Remove("VerifyBank_Version");
+        //        if (Preferences.ContainsKey("VerifyBank_LastWriteTime"))
+        //            Preferences.Remove("VerifyBank_LastWriteTime");
+
+        //        Preferences.Set("ResetExternalFiles", false);
+        //    }
+
+        //    bool resetlocalbanks = Preferences.Get("ResetLocalFiles", true);
+        //    if (resetlocalbanks)
+        //    {
+        //        if(!resetbanks)
+        //        {
+        //            DirectoryInfo di = new DirectoryInfo(bank_dir);
+        //            foreach (FileInfo file in di.GetFiles())
+        //            {
+        //                bool docontinue = false;
+        //                for (int i = 0; i < App.BankWebDownloadList.Length; i++)
+        //                {
+        //                    if (App.BankWebDownloadList[i] && file.Name == App.BankNameList[i])
+        //                    {
+        //                        docontinue = true;
+        //                        break;
+        //                    }
+        //                }
+        //                if (docontinue)
+        //                    continue;
+        //                file.Delete();
+        //            }
+        //        }
+        //        Preferences.Set("ResetLocalFiles", false);
+        //    }
+
+        //    App.DebugWriteProfilingStopwatchTimeAndStart("Start Acquiring Banks");
+        //    for (int idx = 0; idx < App.BankNameList.Length; idx++)
+        //    {
+        //        string bank_path = Path.Combine(bank_dir, App.BankNameList[idx]);
+        //        if (App.BankWebDownloadList[idx])
+        //        {
+        //            downloaded_file_check_results res = await DownloadFileFromWebServer(assembly, App.BankNameList[idx], bank_dir);
+        //        }
+        //        else
+        //        {
+        //            if (!File.Exists(bank_path))
+        //            {
+        //                using (Stream stream = assembly.GetManifestResourceStream(App.BankResourceList[idx]))
+        //                {
+        //                    using (var fileStream = File.Create(bank_path))
+        //                    {
+        //                        stream.CopyTo(fileStream);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        App.DebugWriteProfilingStopwatchTimeAndStart("Acquired Bank "+ idx);
+        //    }
+        //}
+
+        private async Task CheckFiles()
         {
-            string bank_dir = App.FmodService.GetBankDir();
+            string ghdir = App.GnollHackService.GetGnollHackPath();
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            for (int idx = 0; idx < App.BankNameList.Length; idx++)
+            foreach (SecretsFile sf in App.CurrentSecrets.files)
             {
-                string bank_path = Path.Combine(bank_dir, App.BankNameList[idx]);
-                if (App.BankWebDownloadList[idx])
+                if (sf.source == "url")
                 {
-                    downloaded_file_check_results res = await CheckDownloadedFile(assembly, App.BankNameList[idx], bank_dir);
+                    downloaded_file_check_results res = await CheckDownloadedFile(assembly, sf, ghdir);
                     if(res != downloaded_file_check_results.OK)
                     {
                         bool diddelete = false;
                         if (res == downloaded_file_check_results.VerificationFailed)
                         {
-                            string target_path = Path.Combine(bank_dir, App.BankNameList[idx]);
+                            string target_path = Path.Combine(ghdir, sf.target_directory, sf.name);
                             if(File.Exists(target_path))
                             {
                                 FileInfo file = new FileInfo(target_path);
@@ -569,34 +659,19 @@ namespace GnollHackClient
         //private static HttpClient _httpClient = new HttpClient();
         CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
-        public async Task<downloaded_file_check_results> DownloadFileFromWebServer(Assembly assembly, string filename, string target_directory)
+        public async Task<downloaded_file_check_results> DownloadFileFromWebServer(Assembly assembly, SecretsFile f, string ghdir)
         {
-            string target_path = Path.Combine(target_directory, filename);
-            if (App.CurrentSecrets == null)
-                return downloaded_file_check_results.NoSecretsFile;
-            Secrets dflist = App.CurrentSecrets;
-            DownloadableFile f = null;
-            if(dflist != null && dflist.files != null)
-            {
-                foreach (DownloadableFile df in dflist.files)
-                {
-                    if (df.name == filename)
-                    {
-                        f = df;
-                        break;
-                    }
-                }
-            }
-
             if (f == null)
-            {
-                return downloaded_file_check_results.FileNotInSecretsList;
-            }
+                return downloaded_file_check_results.NoSecretsFile;
+
+            string target_directory = f.target_directory;
+            string target_path = Path.Combine(ghdir, f.target_directory, f.name);
+            Secrets dflist = App.CurrentSecrets;
 
             /* Check if ok */
             bool correctversion = true;
-            string bankversion = Preferences.Get("VerifyBank_Version", "");
-            if (bankversion != "" && bankversion != f.version)
+            string curfileversion = Preferences.Get("Verify_" + f.id + "_Version", "");
+            if (curfileversion != "" && curfileversion != f.version)
                 correctversion = false;
 
             if (File.Exists(target_path))
@@ -610,8 +685,7 @@ namespace GnollHackClient
                     isfileok = false;
                 if(isfileok)
                 {
-                    long moddatelong = Preferences.Get("VerifyBank_LastWriteTime", 0L);
-                    DateTime moddate = DateTime.FromBinary(moddatelong);
+                    DateTime moddate = Preferences.Get("Verify_" + f.id + "_LastWriteTime", DateTime.MinValue);
                     if(moddate == file.LastWriteTimeUtc)
                     {
                         isdateok = true;
@@ -620,7 +694,7 @@ namespace GnollHackClient
                     {
                         isfileok = await VerifyDownloadedFile(target_path, f.sha256);
                         if(isfileok)
-                            Preferences.Set("VerifyBank_LastWriteTime", file.LastWriteTimeUtc.ToBinary());
+                            Preferences.Set("Verify_" + f.id + "_LastWriteTime", file.LastWriteTimeUtc);
                     }
                 }
                 if (isfileok)
@@ -637,13 +711,13 @@ namespace GnollHackClient
             }
 
             /* Set version to be downloaded, and download */
-            Preferences.Set("VerifyBank_Version", f.version);
+            Preferences.Set("Verify_" + f.id + "_Version", f.version);
             Device.BeginInvokeOnMainThread(() =>
             {
                 DownloadGrid.IsVisible = true;
             });
 
-            string url = f.download_url;
+            string url = f.uri;
             lock (_downloadProgressLock)
             {
                 _downloadProgressFileDescription = f.description;
@@ -651,7 +725,7 @@ namespace GnollHackClient
                 _downloadProgressDesiredFileSize = f.length;
             }
 
-            App.DebugWriteProfilingStopwatchTimeAndStart("Begin Http Download " + filename);
+            App.DebugWriteProfilingStopwatchTimeAndStart("Begin Http Download " + f.name);
             using (var client = new HttpClientDownloadWithProgress(url, target_path, _cancellationTokenSource))
             {
                 client.ProgressChanged += (totalFileSize, totalBytesDownloaded, progressPercentage) => {
@@ -698,40 +772,13 @@ namespace GnollHackClient
         }
 
 
-        public async Task<downloaded_file_check_results> CheckDownloadedFile(Assembly assembly, string filename, string target_directory)
+        public async Task<downloaded_file_check_results> CheckDownloadedFile(Assembly assembly, SecretsFile f, string ghdir)
         {
-            string json = "";
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.secrets.jsons"))
-            {
-                if (stream != null)
-                {
-                    using (StreamReader sr = new StreamReader(stream))
-                    {
-                        json = sr.ReadToEnd();
-                    }
-                }
-                else
-                    return downloaded_file_check_results.NoSecretsFile;
-            }
-
-            string target_path = Path.Combine(target_directory, filename);
-
-            Secrets dflist = JsonConvert.DeserializeObject<Secrets>(json);
-            DownloadableFile f = null;
-            if (dflist != null && dflist.files != null)
-            {
-                foreach (DownloadableFile df in dflist.files)
-                {
-                    if (df.name == filename)
-                    {
-                        f = df;
-                        break;
-                    }
-                }
-            }
-
             if (f == null)
-                return downloaded_file_check_results.FileNotInSecretsList;
+                return downloaded_file_check_results.NoSecretsFile;
+
+            string target_directory = f.target_directory;
+            string target_path = Path.Combine(ghdir, target_directory, f.name);
 
             /* Check if ok */
             if (File.Exists(target_path))
@@ -742,13 +789,12 @@ namespace GnollHackClient
                     isfileok = false;
                 if (isfileok)
                 {
-                    long moddatelong = Preferences.Get("VerifyBank_LastWriteTime", 0L);
-                    DateTime moddate = DateTime.FromBinary(moddatelong);
+                    DateTime moddate = Preferences.Get("Verify_" + f.id + "_LastWriteTime", DateTime.MinValue);
                     if (moddate != file.LastWriteTimeUtc)
                     {
                         isfileok = await VerifyDownloadedFile(target_path, f.sha256);
                         if (isfileok)
-                            Preferences.Set("VerifyBank_LastWriteTime", file.LastWriteTimeUtc.ToBinary());
+                            Preferences.Set("Verify_" + f.id + "_LastWriteTime", file.LastWriteTimeUtc);
 
                     }
                 }
