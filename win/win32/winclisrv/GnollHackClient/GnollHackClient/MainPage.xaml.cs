@@ -27,6 +27,7 @@ using GnollHackClient.Pages.Game;
 using FFImageLoading;
 using Xamarin.Essentials;
 using Plugin.InAppBilling;
+using System.Collections;
 
 namespace GnollHackClient
 {
@@ -167,8 +168,8 @@ namespace GnollHackClient
             StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
 
             ResetAcquiredFiles();
-            await AcquireFiles();
-            await CheckFiles();
+            await AcquireAndCheckFiles();
+            //await CheckFiles();
             App.FmodService.LoadBanks();
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
@@ -187,35 +188,63 @@ namespace GnollHackClient
 
         private async void UpdateDownloadProgress()
         {
+            bool dl;
+            bool ver;
             float percentage;
             long bytesDownloaded;
             long? totalFileSize;
             string fileDescription;
             long desiredFileSize;
+            string verifyFileDescription;
             lock (_downloadProgressLock)
             {
+                dl = _downloading;
+                ver = _verifying;
                 percentage = _downloadProgressPercentage;
                 bytesDownloaded = _downloadProgressTotalBytesDownloaded;
                 totalFileSize = _downloadProgressTotalFileSize;
                 fileDescription = _downloadProgressFileDescription;
-                desiredFileSize = _downloadProgressDesiredFileSize;           
+                desiredFileSize = _downloadProgressDesiredFileSize;
+                verifyFileDescription = _verifyingFileDescription;
             }
 
-            if (totalFileSize != null)
+            if (!dl && !ver)
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    DownloadTitleLabel.Text = "Downloading...";
-                    DownloadFileNameLabel.Text = fileDescription;
-                    if (totalFileSize <= 0)
-                        DownloadBytesLabel.Text = "Calculating file size...";
-                    else
-                        DownloadBytesLabel.Text = string.Format("{0:0.00}", (double)bytesDownloaded / 1000000) + " / " + string.Format("{0:0.00}", totalFileSize / 1000000) + " MB";
+                    DownloadGrid.IsVisible = false;
                 });
-                await DownloadProgressBar.ProgressTo((float)percentage / 100, 100, Easing.Linear);
+                return;
             }
 
-            if (totalFileSize != null && totalFileSize > 0 && desiredFileSize > 0 && totalFileSize != desiredFileSize && _cancellationTokenSource.Token.CanBeCanceled)
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (dl && ver)
+                {
+                    DownloadTitleLabel.Text = "Downloading; Verifying...";
+                    DownloadFileNameLabel.Text = fileDescription + "; " + verifyFileDescription;
+                }
+                else if(dl)
+                {
+                    DownloadTitleLabel.Text = "Downloading...";
+                    DownloadFileNameLabel.Text = fileDescription;
+                }
+                else
+                {
+                    DownloadTitleLabel.Text = "Verifying...";
+                    DownloadFileNameLabel.Text = verifyFileDescription;
+                }
+
+                if (totalFileSize <= 0 || !dl)
+                    DownloadBytesLabel.Text = "Please wait...";
+                else
+                    DownloadBytesLabel.Text = string.Format("{0:0.00}", (double)bytesDownloaded / 1000000) + " / " + string.Format("{0:0.00}", (double)totalFileSize / 1000000) + " MB";
+
+                DownloadGrid.IsVisible = true;
+            });
+            await DownloadProgressBar.ProgressTo((float)percentage / 100, 100, Easing.Linear);
+
+            if (dl && totalFileSize != null && totalFileSize > 0 && desiredFileSize > 0 && totalFileSize != desiredFileSize && _cancellationTokenSource.Token.CanBeCanceled)
             {
                 _cancellationTokenSource.Cancel();
                 bool displayAbort = false;
@@ -486,8 +515,11 @@ namespace GnollHackClient
         private string _downloadProgressFileDescription = "";
         private string _downloadProgressFilePath = "";
         private long _downloadProgressDesiredFileSize = 0;
+        private bool _downloading = false;
+        private bool _verifying = false;
+        private string _verifyingFileDescription = "";
 
-        private async Task AcquireFiles()
+        private async Task AcquireAndCheckFiles()
         {
             string ghdir = App.GnollHackService.GetGnollHackPath();
             Assembly assembly = GetType().GetTypeInfo().Assembly;
@@ -508,56 +540,60 @@ namespace GnollHackClient
 
             App.DebugWriteProfilingStopwatchTimeAndStart("Start Acquiring Banks");
             App.FmodService.ClearLoadableSoundBanks();
+            SecretsFile prev_sf = null;
             foreach (SecretsFile sf in App.CurrentSecrets.files)
             {
                 string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory);
                 string sfile = Path.Combine(sdir, sf.name);
+                Task<downloaded_file_check_results> dltask = null;
+                Task restask = null;
+                Task checktask = null;
                 if (sf.source == "url")
                 {
-                    downloaded_file_check_results res = await DownloadFileFromWebServer(assembly, sf, ghdir);
+                    dltask = DownloadFileFromWebServer(assembly, sf, ghdir);
                 }
                 else if (sf.source == "resource")
                 {
-                    if (!File.Exists(sfile))
+                    restask = Task.Run(() =>
                     {
-                        using (Stream stream = assembly.GetManifestResourceStream(sf.source_path))
+                        if (!File.Exists(sfile))
                         {
-                            using (var fileStream = File.Create(sfile))
+                            using (Stream stream = assembly.GetManifestResourceStream(sf.source_path))
                             {
-                                stream.CopyTo(fileStream);
+                                using (var fileStream = File.Create(sfile))
+                                {
+                                    stream.CopyTo(fileStream);
+                                }
                             }
                         }
-                    }
+                    });
                 }
+
+                if(prev_sf != null)
+                {
+                    checktask = CheckSecretsFile(prev_sf);
+                }
+
+                List<Task> tasks = new List<Task>();
+                if(dltask != null)
+                    tasks.Add(dltask);
+                if (restask != null)
+                    tasks.Add(restask);
+                if (checktask != null)
+                    tasks.Add(checktask);
+                await Task.WhenAll(tasks);
 
                 if(sf.type == "sound_bank")
                 {
                     App.FmodService.AddLoadableSoundBank(sfile);
                 }
-            }
 
-            //for (int idx = 0; idx < App.BankNameList.Length; idx++)
-            //{
-            //    string bank_path = Path.Combine(ghdir, App.BankNameList[idx]);
-            //    if (App.BankWebDownloadList[idx])
-            //    {
-            //        downloaded_file_check_results res = await DownloadFileFromWebServer(assembly, App.BankNameList[idx], bank_dir);
-            //    }
-            //    else
-            //    {
-            //        if (!File.Exists(bank_path))
-            //        {
-            //            using (Stream stream = assembly.GetManifestResourceStream(App.BankResourceList[idx]))
-            //            {
-            //                using (var fileStream = File.Create(bank_path))
-            //                {
-            //                    stream.CopyTo(fileStream);
-            //                }
-            //            }
-            //        }
-            //    }
-            //    App.DebugWriteProfilingStopwatchTimeAndStart("Acquired Bank " + idx);
-            //}
+                if (sf == App.CurrentSecrets.files.Last<SecretsFile>())
+                {
+                    await CheckSecretsFile(sf);
+                }
+                prev_sf = sf;
+            }
         }
 
         //private async Task AcquireBanks()
@@ -639,29 +675,34 @@ namespace GnollHackClient
 
         private async Task CheckFiles()
         {
-            string ghdir = App.GnollHackService.GetGnollHackPath();
-            Assembly assembly = GetType().GetTypeInfo().Assembly;
             foreach (SecretsFile sf in App.CurrentSecrets.files)
             {
                 if (sf.source == "url")
                 {
-                    downloaded_file_check_results res = await CheckDownloadedFile(assembly, sf, ghdir);
-                    if(res != downloaded_file_check_results.OK)
+                    await CheckSecretsFile(sf);
+                }
+            }
+        }
+
+        private async Task CheckSecretsFile(SecretsFile sf)
+        {
+            string ghdir = App.GnollHackService.GetGnollHackPath();
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
+            downloaded_file_check_results res = await CheckDownloadedFile(assembly, sf, ghdir);
+            if (res != downloaded_file_check_results.OK)
+            {
+                bool diddelete = false;
+                if (res == downloaded_file_check_results.VerificationFailed)
+                {
+                    string target_path = Path.Combine(ghdir, sf.target_directory, sf.name);
+                    if (File.Exists(target_path))
                     {
-                        bool diddelete = false;
-                        if (res == downloaded_file_check_results.VerificationFailed)
-                        {
-                            string target_path = Path.Combine(ghdir, sf.target_directory, sf.name);
-                            if(File.Exists(target_path))
-                            {
-                                FileInfo file = new FileInfo(target_path);
-                                file.Delete();
-                                diddelete = true;
-                            }
-                        }
-                        await DisplayAlert("Sound Bank Verification Failure", "Sound bank verification failed with error code " + (int)res + "." + (diddelete ? " Deleting the sound bank." : ""), "OK");
+                        FileInfo file = new FileInfo(target_path);
+                        file.Delete();
+                        diddelete = true;
                     }
                 }
+                await DisplayAlert("Sound Bank Verification Failure", "Sound bank verification failed with error code " + (int)res + "." + (diddelete ? " Deleting the sound bank." : ""), "OK");
             }
         }
 
@@ -734,6 +775,10 @@ namespace GnollHackClient
             string url = f.source_path;
             lock (_downloadProgressLock)
             {
+                _downloading = false;
+                _downloadProgressPercentage = 0.0f;
+                _downloadProgressTotalBytesDownloaded = 0;
+                _downloadProgressTotalFileSize = 0;
                 _downloadProgressFileDescription = f.description;
                 _downloadProgressFilePath = target_path;
                 _downloadProgressDesiredFileSize = f.length;
@@ -754,21 +799,39 @@ namespace GnollHackClient
 
                 try
                 {
+                    lock(_downloadProgressLock)
+                    {
+                        _downloading = true;
+                    }
                     await client.StartDownload();
                 }
                 catch(OperationCanceledException)
                 {
+                    lock (_downloadProgressLock)
+                    {
+                        _downloading = false;
+                    }
                     /* Download was cancelled */
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    if(!_cancellationTokenSource.Token.IsCancellationRequested)
+                    lock (_downloadProgressLock)
+                    {
+                        _downloading = false;
+                    }
+                    if (!_cancellationTokenSource.Token.IsCancellationRequested)
                         await DisplayAlert("Download Error", "A download error occurred: " + e.Message, "OK");
                 }
             }
 
+            lock (_downloadProgressLock)
+            {
+                _downloading = false;
+            }
+
             /* Finished download */
-            DownloadGrid.IsVisible = false;
+            UpdateDownloadProgress();
+            //DownloadGrid.IsVisible = false;
             if (_cancellationTokenSource.Token.IsCancellationRequested)
             {
                 /* Delete cancelled files */
@@ -828,15 +891,23 @@ namespace GnollHackClient
         {
             App.DebugWriteProfilingStopwatchTimeAndStart("Begin Checksum");
 
-            Device.BeginInvokeOnMainThread(() =>
+            lock (_downloadProgressLock)
             {
-                DownloadTitleLabel.Text = "Verifying...";
-                DownloadFileNameLabel.Text = desc;
-                DownloadBytesLabel.Text = "Please wait...";
-                DownloadProgressBar.IsVisible = false;
-                DownloadButtonGrid.IsVisible = false;
-                DownloadGrid.IsVisible = true;
-            });
+                _verifying = true;
+                _verifyingFileDescription = desc;
+            }
+            UpdateDownloadProgress();
+
+            //Device.BeginInvokeOnMainThread(() =>
+            //{
+            //    DownloadTitleLabel.Text = "Verifying...";
+            //    DownloadFileNameLabel.Text = desc;
+            //    DownloadBytesLabel.Text = "Please wait...";
+            //    DownloadProgressBar.IsVisible = false;
+            //    DownloadButtonGrid.IsVisible = false;
+            //    DownloadGrid.IsVisible = true;
+            //});
+
             await Task.Run(() => {
                 string checksum = ChecksumUtil.GetChecksum(HashingAlgoTypes.SHA256, target_path);
                 lock (checksumlock)
@@ -844,15 +915,23 @@ namespace GnollHackClient
                     _checksum = checksum;
                 };
             });
-            Device.BeginInvokeOnMainThread(() =>
+
+            lock (_downloadProgressLock)
             {
-                DownloadGrid.IsVisible = false;
-                DownloadButtonGrid.IsVisible = true;
-                DownloadProgressBar.IsVisible = true;
-            });
+                _verifying = false;
+                _verifyingFileDescription = "";
+            }
+            UpdateDownloadProgress();
+
+            //Device.BeginInvokeOnMainThread(() =>
+            //{
+            //    DownloadGrid.IsVisible = false;
+            //    DownloadButtonGrid.IsVisible = true;
+            //    DownloadProgressBar.IsVisible = true;
+            //});
 
             App.DebugWriteProfilingStopwatchTimeAndStart("Finish Checksum");
-            string chksum ="";
+            string chksum = "";
             lock (checksumlock)
             {
                 chksum = _checksum;
@@ -1180,4 +1259,5 @@ namespace GnollHackClient
             PopupGrid.IsVisible = true;
         }
     }
+
 }

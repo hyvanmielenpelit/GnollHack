@@ -13,6 +13,7 @@ using Xamarin.Forms.Xaml;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Collections;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 [assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
@@ -41,6 +42,7 @@ namespace GnollHackClient
             App.HardCoreMode = false; // Preferences.Get("HardCoreMode", false);
             App.ExtraLives = Preferences.Get("ExtraLives", 0);
             App.ReadSecrets();
+            Array.Sort<SecretsFile>(App.CurrentSecrets.files, new SecretsFileSizeComparer());
         }
 
         public static Secrets CurrentSecrets { get; set; }
@@ -335,4 +337,18 @@ namespace GnollHackClient
         }
 
     }
+
+    class SecretsFileSizeComparer : IComparer<SecretsFile>
+    {
+        public SecretsFileSizeComparer()
+        {
+
+        }
+
+        public int Compare(SecretsFile x, SecretsFile y)
+        {
+            return y.length - x.length;
+        }
+    }
+
 }
