@@ -166,6 +166,7 @@ namespace GnollHackClient
             exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
 
+            ResetAcquiredFiles();
             await AcquireFiles();
             await CheckFiles();
             App.FmodService.LoadBanks();
@@ -444,6 +445,40 @@ namespace GnollHackClient
             }
         }
 
+
+        private void ResetAcquiredFiles()
+        {
+            string ghdir = App.GnollHackService.GetGnollHackPath();
+            bool resetfiles = Preferences.Get("ResetExternalFiles", true);
+            bool resetlocalfiles = Preferences.Get("ResetLocalFiles", true);
+            if (resetfiles || resetlocalfiles)
+            {
+                foreach(SecretsFile sf in App.CurrentSecrets.files)
+                {
+                    if (resetfiles || (resetlocalfiles && sf.source != "url"))
+                    {
+                        string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory);
+                        string sfile = Path.Combine(sdir, sf.name);
+                        if (File.Exists(sfile))
+                        {
+                            FileInfo file = new FileInfo(sfile);
+                            file.Delete();
+                        }
+                        if (Preferences.ContainsKey("Verify_" + sf.id + "_Version"))
+                            Preferences.Remove("Verify_" + sf.id + "_Version");
+                        if (Preferences.ContainsKey("Verify_" + sf.id + "_LastWriteTime"))
+                            Preferences.Remove("Verify_" + sf.id + "_LastWriteTime");
+                    }
+                }
+
+                if (resetfiles)
+                    Preferences.Set("ResetExternalFiles", false);
+                if (resetlocalfiles)
+                    Preferences.Set("ResetLocalFiles", false);
+            }
+        }
+
+
         private object _downloadProgressLock = new object();
         private float _downloadProgressPercentage = 0.0f;
         private long _downloadProgressTotalBytesDownloaded = 0;
@@ -471,27 +506,6 @@ namespace GnollHackClient
                 }
             }
 
-            bool resetfiles = Preferences.Get("ResetExternalFiles", true);
-            if (resetfiles)
-            {
-                foreach(SecretsFile sf in App.CurrentSecrets.files)
-                {
-                    string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory);
-                    string sfile = Path.Combine(sdir, sf.name);
-                    if(File.Exists(sfile))
-                    {
-                        FileInfo file = new FileInfo(sfile);
-                        file.Delete();
-                    }
-                    if (Preferences.ContainsKey("Verify_" + sf.id + "_Version"))
-                        Preferences.Remove("Verify_" + sf.id + "_Version");
-                    if (Preferences.ContainsKey("Verify_" + sf.id + "_LastWriteTime"))
-                        Preferences.Remove("Verify_" + sf.id + "_LastWriteTime");
-
-                    Preferences.Set("ResetExternalFiles", false);
-                }
-            }
-
             App.DebugWriteProfilingStopwatchTimeAndStart("Start Acquiring Banks");
             App.FmodService.ClearLoadableSoundBanks();
             foreach (SecretsFile sf in App.CurrentSecrets.files)
@@ -506,7 +520,7 @@ namespace GnollHackClient
                 {
                     if (!File.Exists(sfile))
                     {
-                        using (Stream stream = assembly.GetManifestResourceStream(sf.uri))
+                        using (Stream stream = assembly.GetManifestResourceStream(sf.source_path))
                         {
                             using (var fileStream = File.Create(sfile))
                             {
@@ -692,7 +706,7 @@ namespace GnollHackClient
                     }
                     else
                     {
-                        isfileok = await VerifyDownloadedFile(target_path, f.sha256);
+                        isfileok = await VerifyDownloadedFile(target_path, f.sha256, f.description);
                         if(isfileok)
                             Preferences.Set("Verify_" + f.id + "_LastWriteTime", file.LastWriteTimeUtc);
                     }
@@ -717,7 +731,7 @@ namespace GnollHackClient
                 DownloadGrid.IsVisible = true;
             });
 
-            string url = f.uri;
+            string url = f.source_path;
             lock (_downloadProgressLock)
             {
                 _downloadProgressFileDescription = f.description;
@@ -792,7 +806,7 @@ namespace GnollHackClient
                     DateTime moddate = Preferences.Get("Verify_" + f.id + "_LastWriteTime", DateTime.MinValue);
                     if (moddate != file.LastWriteTimeUtc)
                     {
-                        isfileok = await VerifyDownloadedFile(target_path, f.sha256);
+                        isfileok = await VerifyDownloadedFile(target_path, f.sha256, f.description);
                         if (isfileok)
                             Preferences.Set("Verify_" + f.id + "_LastWriteTime", file.LastWriteTimeUtc);
 
@@ -810,14 +824,14 @@ namespace GnollHackClient
 
         private object checksumlock = new object();
         string _checksum;
-        public async Task<bool> VerifyDownloadedFile(string target_path, string sha256)
+        public async Task<bool> VerifyDownloadedFile(string target_path, string sha256, string desc)
         {
             App.DebugWriteProfilingStopwatchTimeAndStart("Begin Checksum");
 
             Device.BeginInvokeOnMainThread(() =>
             {
                 DownloadTitleLabel.Text = "Verifying...";
-                DownloadFileNameLabel.Text = "Downloaded files";
+                DownloadFileNameLabel.Text = desc;
                 DownloadBytesLabel.Text = "Please wait...";
                 DownloadProgressBar.IsVisible = false;
                 DownloadButtonGrid.IsVisible = false;

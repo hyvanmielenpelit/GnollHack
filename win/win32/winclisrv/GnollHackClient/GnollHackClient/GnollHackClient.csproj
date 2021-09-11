@@ -107,8 +107,8 @@
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />
     <EmbeddedResource Include="Assets\main-menu-portrait-snapshot.jpg" />
-    <EmbeddedResource Include="Assets\Master.bank" />
-    <EmbeddedResource Include="Assets\Master.strings.bank" />
+    <EmbeddedResource Include="Assets\Master.bank" Condition="'$(Configuration)'=='Debug'" />
+    <EmbeddedResource Include="Assets\Master.strings.bank" Condition="'$(Configuration)'=='Debug'" />
     <EmbeddedResource Include="Assets\secrets.jsons" />
     <EmbeddedResource Include="Assets\shxi.ttf" />
     <EmbeddedResource Include="Assets\tombstone.png" />

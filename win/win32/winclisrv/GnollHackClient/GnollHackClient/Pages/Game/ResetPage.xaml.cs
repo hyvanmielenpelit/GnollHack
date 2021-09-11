@@ -75,8 +75,8 @@ namespace GnollHackClient.Pages.Game
             if (answer)
             {
                 Preferences.Set("ResetLocalFiles", true);
-                btnDeleteDownloads.Text = "Deletion on restart";
-                btnDeleteDownloads.TextColor = Color.Red;
+                btnDeleteLocalBanks.Text = "Deletion on restart";
+                btnDeleteLocalBanks.TextColor = Color.Red;
             }
         }
 

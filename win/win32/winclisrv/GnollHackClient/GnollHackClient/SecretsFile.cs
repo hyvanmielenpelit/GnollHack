@@ -12,7 +12,7 @@ namespace GnollHackClient
         public string description;
         public string version;
         public string source;
-        public string uri;
+        public string source_path;
         public int length;
         public string sha256;
         public string target_directory;
