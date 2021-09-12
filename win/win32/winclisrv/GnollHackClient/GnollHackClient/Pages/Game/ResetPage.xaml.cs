@@ -68,18 +68,6 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private async void btnDeleteLocalBanks_Clicked(object sender, EventArgs e)
-        {
-            App.PlayButtonClickedSound();
-            bool answer = await DisplayAlert("Delete Local Sound Banks?", "Are you sure to delete all local sound banks on restart?", "Yes", "No");
-            if (answer)
-            {
-                Preferences.Set("ResetLocalFiles", true);
-                btnDeleteLocalBanks.Text = "Deletion on restart";
-                btnDeleteLocalBanks.TextColor = Color.Red;
-            }
-        }
-
         private async void btnDeletePreferences_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
@@ -89,8 +77,6 @@ namespace GnollHackClient.Pages.Game
 
                 bool has_resetbanks = Preferences.ContainsKey("ResetExternalFiles");
                 bool resetbanks = Preferences.Get("ResetExternalFiles", false);
-                bool has_resetlocalbanks = Preferences.ContainsKey("ResetLocalFiles");
-                bool resetlocalbanks = Preferences.Get("ResetLocalFiles", false);
                 bool has_fcf = Preferences.ContainsKey("CheckPurchase_FirstConnectFail");
                 DateTime fcf = Preferences.Get("CheckPurchase_FirstConnectFail", DateTime.MinValue);
                 bool has_gsc = Preferences.ContainsKey("CheckPurchase_ConnectFail_GameStartCount");
@@ -118,8 +104,6 @@ namespace GnollHackClient.Pages.Game
                 Preferences.Set("ExtraLives", App.ExtraLives);
                 if (has_resetbanks)
                     Preferences.Set("ResetExternalFiles", resetbanks);
-                if (has_resetlocalbanks)
-                    Preferences.Set("ResetLocalFiles", resetlocalbanks);
                 if (has_fcf)
                     Preferences.Set("CheckPurchase_FirstConnectFail", fcf);
                 if (has_gsc)

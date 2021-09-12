@@ -909,6 +909,18 @@ namespace GnollHackCommon
         FileNotInSecretsList,
         VerificationFailed,
         FileDoesNotExist,
+        FileAlreadyExists,
+        Cancelled,
+    }
+
+    [Flags]
+    public enum secrets_flags : int
+    {
+        None = 0x00,
+        IncludedInFullVersion = 0x01,
+        Reserved1 = 0x02,
+        Reserved2 = 0x04,
+        Reserved3 = 0x08,
     }
 
     public class GHConstants

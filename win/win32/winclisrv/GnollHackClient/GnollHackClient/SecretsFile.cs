@@ -16,6 +16,7 @@ namespace GnollHackClient
         public int length;
         public string sha256;
         public string target_directory;
+        public int flags;
 
         public SecretsFile()
         {

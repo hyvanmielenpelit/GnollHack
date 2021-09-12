@@ -45,7 +45,14 @@ namespace GnollHackClient
             Array.Sort<SecretsFile>(App.CurrentSecrets.files, new SecretsFileSizeComparer());
         }
 
-        public static Secrets CurrentSecrets { get; set; }
+        private static Secrets _currentSecrets = null;
+        public static Secrets CurrentSecrets 
+        { 
+            get
+            { return _currentSecrets; } 
+            set 
+            { _currentSecrets = value; } 
+        }
         public static void ReadSecrets()
         {
             Assembly assembly = typeof(App).GetTypeInfo().Assembly;
