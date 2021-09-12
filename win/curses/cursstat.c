@@ -2366,8 +2366,12 @@ draw_horizontal(int x, int y, int hp, int hpmax)
     describe_mode(buf);
     wprintw(win, "%s", buf);
 
+    waddch(win, ' ');
+
     describe_level(buf);
     wprintw(win, "%s", buf);
+
+    waddch(win, ' ');
 
     print_statdiff("$", &prevau, money_cnt(invent), STAT_GOLD);
 
@@ -2473,6 +2477,8 @@ draw_horizontal_new(int x, int y, int hp, int hpmax)
     
     describe_mode(buf);
     wprintw(win, "%s", buf);
+
+    waddch(win, ' ');
 
     describe_level(buf);
     wprintw(win, "%s", buf);

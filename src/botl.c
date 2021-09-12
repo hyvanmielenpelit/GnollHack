@@ -143,10 +143,12 @@ do_statusline2()
 
      /* game mode */
     (void)describe_mode(gmode); /* includes at least one trailing space */
+    (void)trimspaces(gmode);
     gln = strlen(gmode);
 
     /* dungeon location */
-    (void) describe_level(dloc); /* includes at least one trailing space */
+    (void)describe_level(dloc); /* includes at least one trailing space */
+    (void)trimspaces(dloc);
     dln = strlen(dloc);
 
     /* health and armor class (has trailing space for AC 0..9) */
@@ -456,18 +458,18 @@ char *buf;
 
     /* TODO:    Add in dungeon name */
     if (Is_knox(&u.uz)) {
-        Sprintf(buf, "%s ", dungeons[u.uz.dnum].dname);
+        Sprintf(buf, "%s", dungeons[u.uz.dnum].dname);
     } else if (In_quest(&u.uz)) {
-        Sprintf(buf, "Home %d ", dunlev(&u.uz));
+        Sprintf(buf, "Home %d", dunlev(&u.uz));
     } else if (In_endgame(&u.uz)) {
         /* [3.6.2: this used to be "Astral Plane" or generic "End Game"] */
         char buf2[BUFSZ];
         (void) endgamelevelname(buf2, depth(&u.uz));
         (void) strsubst(buf2, "Plane of ", ""); /* just keep <element> */
-        Sprintf(buf, "%s ", buf2);
+        Sprintf(buf, "%s", buf2);
     } else {
         /* ports with more room may expand this one */
-        Sprintf(buf, "DL:%-2d ", depth(&u.uz));
+        Sprintf(buf, "DL:%-2d", depth(&u.uz));
         ret = 0;
     }
     return ret;
