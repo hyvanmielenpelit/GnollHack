@@ -1118,7 +1118,7 @@ namespace GnollHackClient.Pages.Game
             switch (ch)
             {
                 case 'i':
-                    /* Put in */
+                    res = "resource://GnollHackClient.Assets.UI.inventory.png";
                     break;
                 case 'd':
                     if (desc.Substring(0, 4) == "Drop")

@@ -589,17 +589,6 @@ namespace GnollHackClient
             }
         }
 
-        private async Task CheckFiles()
-        {
-            foreach (SecretsFile sf in App.CurrentSecrets.files)
-            {
-                if (sf.source == "url")
-                {
-                    await CheckSecretsFile(sf);
-                }
-            }
-        }
-
         private async Task CheckSecretsFile(SecretsFile sf)
         {
             string ghdir = App.GnollHackService.GetGnollHackPath();
