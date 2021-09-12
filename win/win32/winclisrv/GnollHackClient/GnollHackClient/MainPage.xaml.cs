@@ -90,7 +90,7 @@ namespace GnollHackClient
             OptionsGrid.IsVisible = App.DeveloperMode;
             StartServerGrid.IsVisible = App.ServerGameAvailable;
 
-            hardcoreModeSwitch.IsToggled = App.HardCoreMode;
+            beginnerModeSwitch.IsToggled = App.BeginnerMode;
 
             UpdateBuyNow();
 
@@ -296,7 +296,7 @@ namespace GnollHackClient
 
         public async Task CheckPurchaseStatus(bool atappstart)
         {
-            int res = await IsUpgradePurchased(GHConstants.FullVersionProductName);
+            int res = await IsUpgradePurchased(GHConstants.DistributionFeeProductName);
             if(res >= 0)
             {
                 if (Preferences.ContainsKey("CheckPurchase_FirstConnectFail"))
@@ -989,7 +989,7 @@ namespace GnollHackClient
         {
             if (!App.FullVersionMode)
             {
-                bool result = await PurchaseNonConsumable(GHConstants.FullVersionProductName);
+                bool result = await PurchaseNonConsumable(GHConstants.DistributionFeeProductName);
                 if (result)
                 {
                     Preferences.Set("FullVersion", true);
@@ -998,25 +998,6 @@ namespace GnollHackClient
                     await AcquireAndCheckFiles();
                     App.FmodService.LoadBanks();
                 }
-            }
-        }
-        public async Task PurchaseExtraLife()
-        {
-            bool result = await PurchaseConsumable(GHConstants.ExtraLifeProductName);
-            if (result)
-            {
-                App.ExtraLives++;
-                Preferences.Set("ExtraLives", App.ExtraLives);
-            }
-        }
-
-        public async Task Purchase3ExtraLives()
-        {
-            bool result = await PurchaseConsumable(GHConstants.ThreeExtraLivesProductName);
-            if (result)
-            {
-                App.ExtraLives += 3;
-                Preferences.Set("ExtraLives", App.ExtraLives);
             }
         }
 
@@ -1156,8 +1137,8 @@ namespace GnollHackClient
 
         private void hardcoreModeSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            App.HardCoreMode = hardcoreModeSwitch.IsToggled;
-            Preferences.Set("HardCoreMode", App.HardCoreMode);
+            App.BeginnerMode = beginnerModeSwitch.IsToggled;
+            Preferences.Set("BeginnerMode", App.BeginnerMode);
         }
 
         private async void StoreButton_Clicked(object sender, EventArgs e)

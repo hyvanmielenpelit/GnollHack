@@ -145,10 +145,8 @@ struct flag {
     int sound_volume_dialogue;   /* user set preference for dialogue volume 1...100 */
     int sound_volume_ui;        /* user set preference for user interface sound volume 1...100 */
 
-    boolean hardcore;  /* in hardcore mode */
-#define HardCoreMode flags.hardcore
-    uchar extra_lives_spent;
-    uchar extra_lives_left;
+    boolean beginner_mode;  /* in beginner mode */
+#define BeginnerMode flags.beginner_mode
 
     int end_top, end_around; /* describe desired score list */
     unsigned moonphase;

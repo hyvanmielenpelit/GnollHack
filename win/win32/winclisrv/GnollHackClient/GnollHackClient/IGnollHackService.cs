@@ -41,7 +41,6 @@ namespace GnollHackClient
         string GetVersionId();
         string DumplogDateString(long startdate);
         void SwitchDemoVersion(bool active);
-        void AddExtraLife(int amount);
 
         int StartGnollHack(ClientGame clientGame);
     }

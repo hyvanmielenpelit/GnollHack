@@ -19,14 +19,6 @@ namespace GnollHackClient.Pages.Game
             _mainPage = mainPage;
         }
 
-        void UpdateExtraLives()
-        {
-            if(StoreTableView.IsEnabled == false)
-                ExtraLifeLabel.Text = "(Please wait...)";
-            else
-                ExtraLifeLabel.Text = "Extra Lives: " + App.ExtraLives;
-        }
-
         private async void Button_Clicked(object sender, EventArgs e)
         {
             CloseGrid.IsEnabled = false;
@@ -49,29 +41,11 @@ namespace GnollHackClient.Pages.Game
         {
             App.BackButtonPressed += BackButtonPressed;
             StoreTableView.IsEnabled = true;
-            UpdateExtraLives();
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             App.BackButtonPressed -= BackButtonPressed;
         }
 
-        private async void btnExtraLife_Clicked(object sender, EventArgs e)
-        {
-            StoreTableView.IsEnabled = false;
-            UpdateExtraLives();
-            await _mainPage.PurchaseExtraLife();
-            StoreTableView.IsEnabled = true;
-            UpdateExtraLives();
-        }
-
-        private async void btn3ExtraLives_Clicked(object sender, EventArgs e)
-        {
-            StoreTableView.IsEnabled = false;
-            UpdateExtraLives();
-            await _mainPage.Purchase3ExtraLives();
-            StoreTableView.IsEnabled = true;
-            UpdateExtraLives();
-        }
     }
 }

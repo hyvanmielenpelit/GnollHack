@@ -1268,37 +1268,6 @@ int how;
                 survive = TRUE;
             }
         }
-#if 0
-        else if (!HardCoreMode && flags.extra_lives_spent < MAX_EXTRA_LIVES_PER_GAME)
-        {
-            if (flags.extra_lives_left == 0)
-            {
-                struct special_view_info info = { 0 };
-                info.viewtype = SPECIAL_VIEW_PURCHASE_EXTRA_LIFE;
-                info.text = 0;
-                info.param1 = flags.extra_lives_spent;
-                info.param2 = MAX_EXTRA_LIVES_PER_GAME;
-                open_special_view(info);
-            }
-            if (flags.extra_lives_left > 0)
-            {
-                flags.extra_lives_left--;
-                flags.extra_lives_spent++;
-                int livesleft = MAX_EXTRA_LIVES_PER_GAME - flags.extra_lives_spent;
-                char buf[BUFSZ];
-                if (flags.extra_lives_spent < MAX_EXTRA_LIVES_PER_GAME)
-                    Sprintf(buf, "An extra life has been spent. You can still spend %d more extra %s in this game.", livesleft, livesleft != 1 ? "lives" : "life");
-                else
-                    Sprintf(buf, "An extra life has been spent. You have now spent all your %d extra lives that are available in this game.", MAX_EXTRA_LIVES_PER_GAME);
-
-                pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, buf);
-                display_popup_text(buf, "Extra Life Spent", POPUP_TEXT_EXTRA_LIFE_SPENT, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
-
-                savelife(how);
-                survive = TRUE;
-            }
-        }
-#endif
     }
 
     if (survive)

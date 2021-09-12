@@ -116,7 +116,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid x:Name="hardcoreModeGrid" IsVisible="False" Grid.Row="0" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+            <Grid x:Name="beginnerModeGrid" IsVisible="False" Grid.Row="0" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -124,12 +124,12 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="hardcoreModeLabel" Text="Hardcore Mode" TextColor="White" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
+                <Label x:Name="beginnerModeLabel" Text="Beginner Mode" TextColor="White" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                     </Label.GestureRecognizers>
                 </Label>
-                <Switch x:Name="hardcoreModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="hardcoreModeSwitch_Toggled"  />
+                <Switch x:Name="beginnerModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="hardcoreModeSwitch_Toggled"  />
             </Grid>
             <Grid x:Name="wizardModeGrid" Grid.Row="0" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>

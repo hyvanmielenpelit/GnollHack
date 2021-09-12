@@ -453,7 +453,7 @@ char *buf;
     char modebuf[BUFSZ];
     const char* difsym = get_game_difficulty_symbol(context.game_difficulty);
 
-    Sprintf(modebuf, "%s%s%s", wizard ? "W" : discover ? "X" : HardCoreMode ? "H" : "",
+    Sprintf(modebuf, "%s%s%s", wizard ? "W" : discover ? "X" : BeginnerMode ? "B" : "",
         difsym,
         (wizard || discover || strcmp(difsym, "")) ? " " : "");
 

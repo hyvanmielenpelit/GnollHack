@@ -110,7 +110,7 @@ namespace GnollHackCommon
         SetWinCaps =    0x00000001,
         WizardMode =    0x00000002,
         FullVersion =   0x00000004,
-        HardCore =      0x00000008,
+        BeginnerMode =  0x00000008,
     }
 
     [Flags]
@@ -895,9 +895,7 @@ namespace GnollHackCommon
     {
         SPECIAL_VIEW_NONE = 0,
         SPECIAL_VIEW_CHAT_MESSAGE,
-        SPECIAL_VIEW_PURCHASE_FULL_VERSION,
-        //SPECIAL_VIEW_PURCHASE_EXTRA_LIFE,
-        SPECIAL_VIEW_SHOW_ADS,
+        //SPECIAL_VIEW_SHOW_ADS,
         SPECIAL_VIEW_SHOW_ACTIVATE_ASCII,
         MAX_SPECIAL_VIEW_TYPES
     }
@@ -996,9 +994,7 @@ namespace GnollHackCommon
         public const int MoreButtonsPerRow = 6;
         public const int MoreButtonsPerColumn = 9;
         public const bool DownloadFromWebInDebugMode = true;
-        public const string FullVersionProductName = "upgrade_to_full_version";
-        public const string ExtraLifeProductName = "extra_life";
-        public const string ThreeExtraLivesProductName = "3_extra_lives";
+        public const string DistributionFeeProductName = "upgrade_to_full_version";
         public const string GnollHackGitHubPage = "https://github.com/hyvanmielenpelit/GnollHack";
     }
 

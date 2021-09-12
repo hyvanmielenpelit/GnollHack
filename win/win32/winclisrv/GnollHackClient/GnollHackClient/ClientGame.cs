@@ -1228,21 +1228,6 @@ namespace GnollHackClient
             {
                 case (int)special_view_types.SPECIAL_VIEW_CHAT_MESSAGE:
                     break;
-                //case (int)special_view_types.SPECIAL_VIEW_PURCHASE_FULL_VERSION:
-                //    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
-                //    {
-                //        queue.Enqueue(new GHRequest(this, GHRequestType.ShowPurchasePage));
-                //    }
-                //    res = ClientCallback_nhgetch();
-
-                //    break;
-                //case (int)special_view_types.SPECIAL_VIEW_PURCHASE_EXTRA_LIFE:
-                //if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
-                //{
-                //    queue.Enqueue(new GHRequest(this, GHRequestType.ShowPurchaseExtraLife, param1, param2));
-                //}
-                //res = ClientCallback_nhgetch();
-                //break;
                 //case (int)special_view_types.SPECIAL_VIEW_SHOW_ADS:
                 //    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                 //    {
