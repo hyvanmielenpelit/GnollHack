@@ -287,7 +287,7 @@ boolean border;
 		  /*xspace*/ BL_MC_LVL, BL_MC_PCT,
           /*xspace*/ BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD,
 		  /*xspace*/ BL_TIME, BL_SCORE,
-		  BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+		  BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD },
 		{ /*xspace*/ BL_SKILL, BL_2WEP,
 		  /*xspace*/ BL_HUNGER, BL_CAP,
 		  /*xspecial*/ BL_CONDITION,
