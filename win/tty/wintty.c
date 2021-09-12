@@ -4606,17 +4606,10 @@ int lvl;
     /* try changing Dlvl: to Dl: */
     char buf[BUFSZ];
     char *levval = index(status_vals[BL_LEVELDESC], ':');
-    char modebuf[BUFSZ];
-    if (wizard)
-        strcpy(modebuf, (lvl == 0) ? "W " : "W");
-    else if (discover)
-        strcpy(modebuf, (lvl == 0) ? "E " : "E");
-    else
-        strcpy(modebuf, "");
 
     if (levval) {
         dlvl_shrinklvl = lvl;
-        Sprintf(buf, "%s%s", modebuf, (lvl == 0) ? "DL" : "D");
+        Sprintf(buf, "%s", (lvl == 0) ? "DL" : "D");
         Strcat(buf, levval);
         Strcpy(status_vals[BL_LEVELDESC], buf);
         tty_status[NOW][BL_LEVELDESC].lth = strlen(status_vals[BL_LEVELDESC]);

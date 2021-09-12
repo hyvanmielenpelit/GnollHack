@@ -469,7 +469,7 @@ char *buf;
         Sprintf(buf, "%s", buf2);
     } else {
         /* ports with more room may expand this one */
-        Sprintf(buf, "DL:%-2d", depth(&u.uz));
+        Sprintf(buf, "DL:%d", depth(&u.uz));
         ret = 0;
     }
     return ret;
@@ -484,9 +484,7 @@ char* buf;
     char modebuf[BUFSZ];
     const char* difsym = get_game_difficulty_symbol(context.game_difficulty);
 
-    Sprintf(modebuf, "%s%s%s", wizard ? "W" : discover ? "X" : BeginnerMode ? "B" : "",
-        difsym,
-        (wizard || discover || BeginnerMode || strcmp(difsym, "")) ? " " : "");
+    Sprintf(modebuf, "%s%s", wizard ? "W" : discover ? "X" : BeginnerMode ? "B" : "", difsym);
 
     Sprintf(buf, "%s", modebuf);
     return ret;
@@ -625,7 +623,7 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTATP("hitpoints", " HP:%s", ANY_INT, 10, BL_HPMAX, BL_HP),
     INIT_BLSTATM("hitpoints-max", "(%s)", ANY_INT, 10, BL_HP, BL_HPMAX),
     INIT_BLSTAT("game-mode", "%s", ANY_STR, 10, BL_MODE),
-    INIT_BLSTAT("dungeon-level", "%s", ANY_STR, MAXVALWIDTH, BL_LEVELDESC),
+    INIT_BLSTAT("dungeon-level", " %s", ANY_STR, MAXVALWIDTH, BL_LEVELDESC),
     INIT_BLSTAT("experience", "/%s", ANY_LONG, 20, BL_EXP),
     INIT_BLSTAT("condition", "%s", ANY_MASK32, 0, BL_CONDITION),
     INIT_BLSTAT("partystats", "%s", ANY_STR, MAXVALWIDTH, BL_PARTYSTATS),
