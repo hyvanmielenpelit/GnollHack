@@ -767,6 +767,12 @@ void print_status_field(int idx, boolean first_field)
         // No extra spaces if the field is just a space
         val++;
     }
+    else if (idx == BL_MODE && !first_field)
+    {
+        /* game mode has no leading space, so if we've moved
+           it past the first position, provide one */
+        lib_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
+    }
     else if (idx == BL_LEVELDESC && !first_field)
     {
         /* leveldesc has no leading space, so if we've moved
@@ -847,10 +853,10 @@ void lib_status_flush(void)
 
     static const int fieldorder1[] = { BL_TITLE, BL_STR, BL_DX,    BL_CO,    BL_IN,
                              BL_WI,    BL_CH, BL_GOLD,  /*BL_ALIGN,*/ BL_FLUSH, };
-    static const int fieldorder2[] = { BL_LEVELDESC, BL_HP,   BL_HPMAX,
+    static const int fieldorder2[] = { BL_MODE, BL_LEVELDESC, BL_HP,   BL_HPMAX,
                                  BL_ENE,       BL_ENEMAX,    BL_AC,  BL_MC_LVL, BL_MC_PCT,    BL_MOVE, BL_UWEP, BL_UWEP2,  BL_XP,
                                  BL_EXP,       BL_HD,        BL_TIME, BL_SCORE, BL_FLUSH };
-    static const int fieldorder2_2statuslines[] = { BL_LEVELDESC, BL_HP,   BL_HPMAX,
+    static const int fieldorder2_2statuslines[] = { BL_MODE, BL_LEVELDESC, BL_HP,   BL_HPMAX,
                                  BL_ENE,       BL_ENEMAX,    BL_AC,    BL_MC_LVL, BL_MC_PCT,    BL_MOVE, BL_UWEP, BL_UWEP2,   BL_XP,
                                  BL_EXP,       BL_HD,        BL_TIME,  BL_2WEP,   BL_SKILL,     BL_HUNGER, BL_CAP,  BL_CONDITION, BL_FLUSH };
     static const int fieldorder3[] = { BL_2WEP, BL_SKILL,     BL_HUNGER,

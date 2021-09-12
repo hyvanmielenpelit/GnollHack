@@ -256,6 +256,7 @@ E void NDECL(max_rank_sz);
 E long NDECL(botl_score);
 #endif
 E int FDECL(describe_level, (char *));
+E int FDECL(describe_mode, (char*));
 E void FDECL(status_initialize, (BOOLEAN_P));
 E void NDECL(status_finish);
 E int NDECL(stat_cap_indx);

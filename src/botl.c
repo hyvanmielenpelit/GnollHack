@@ -127,9 +127,9 @@ do_statusline2()
          /* dungeon location (and gold), hero health (HP, PW, AC),
             experience (HD if poly'd, else Exp level and maybe Exp points),
             time (in moves), varying number of status conditions */
-         dloc[QBUFSZ], hlth[QBUFSZ], expr[QBUFSZ], tmmv[QBUFSZ], move[QBUFSZ], weaponstyle[QBUFSZ], cond[QBUFSZ], skll[QBUFSZ];
+        gmode[QBUFSZ], dloc[QBUFSZ], hlth[QBUFSZ], expr[QBUFSZ], tmmv[QBUFSZ], move[QBUFSZ], weaponstyle[QBUFSZ], cond[QBUFSZ], skll[QBUFSZ];
     register char *nb;
-    unsigned dln, dx, hln, xln, mln, tln, cln, sln, wln;
+    unsigned gln, dln, hln, xln, mln, tln, cln, sln, wln;
     int hp, hpmax, cap;
 
     /*
@@ -141,10 +141,13 @@ do_statusline2()
      * Turn counter is also long, but we'll risk that.
      */
 
+     /* game mode */
+    (void)describe_mode(gmode); /* includes at least one trailing space */
+    gln = strlen(gmode);
+
     /* dungeon location */
     (void) describe_level(dloc); /* includes at least one trailing space */
     dln = strlen(dloc);
-    dx = 0;
 
     /* health and armor class (has trailing space for AC 0..9) */
     hp = Upolyd ? u.mh : u.uhp;
@@ -270,26 +273,26 @@ do_statusline2()
      * wider displays can still show wider status than the map if the
      * interface supports that.
      */
-    if ((dln - dx) + 1 + hln + 1 + xln + 1 + mln + 1 + wln + 1 + tln + 1 + sln + 1 + cln <= COLNO) 
+    if (gln + 1 + dln + 1 + hln + 1 + xln + 1 + mln + 1 + wln + 1 + tln + 1 + sln + 1 + cln <= COLNO)
     {
-        Sprintf(newbot2, "%s %s %s %s %s %s %s %s", dloc, hlth, expr, move, weaponstyle, tmmv, skll, cond);
+        Sprintf(newbot2, "%s %s %s %s %s %s %s %s %s", gmode, dloc, hlth, expr, move, weaponstyle, tmmv, skll, cond);
     }
     else
     {
-        if (dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1 > MAXCO)
+        if (gln + 1 + dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1 > MAXCO)
         {
             panic("bot2: second status line exceeds MAXCO (%u > %d)",
-                  (dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1), MAXCO);
+                  (gln + 1 + dln + 1 + hln + 1 + xln + 1 + tln + 1 + cln + 1), MAXCO);
             strcpy(newbot2, "");
             return newbot2;
         }
-        else if ((dln - dx) + 1 + hln + 1 + xln + 1 + cln <= COLNO) 
+        else if (gln + 1 + dln+ 1 + hln + 1 + xln + 1 + cln <= COLNO)
         {
-            Sprintf(newbot2, "%s %s %s %s %s", dloc, hlth, expr, cond, tmmv);
+            Sprintf(newbot2, "%s %s %s %s %s %s", gmode, dloc, hlth, expr, cond, tmmv);
         } 
-        else if ((dln - dx) + 1 + hln + 1 + cln <= COLNO) 
+        else if (gln + 1 + dln + 1 + hln + 1 + cln <= COLNO)
         {
-            Sprintf(newbot2, "%s %s %s %s %s", dloc, hlth, cond, expr, tmmv);
+            Sprintf(newbot2, "%s %s %s %s %s %s", gmode, dloc, hlth, cond, expr, tmmv);
         }
         else 
         {
@@ -450,29 +453,40 @@ describe_level(buf)
 char *buf;
 {
     int ret = 1;
-    char modebuf[BUFSZ];
-    const char* difsym = get_game_difficulty_symbol(context.game_difficulty);
-
-    Sprintf(modebuf, "%s%s%s", wizard ? "W" : discover ? "X" : BeginnerMode ? "B" : "",
-        difsym,
-        (wizard || discover || strcmp(difsym, "")) ? " " : "");
 
     /* TODO:    Add in dungeon name */
     if (Is_knox(&u.uz)) {
-        Sprintf(buf, "%s%s ", modebuf, dungeons[u.uz.dnum].dname);
+        Sprintf(buf, "%s ", dungeons[u.uz.dnum].dname);
     } else if (In_quest(&u.uz)) {
-        Sprintf(buf, "%sHome %d ", modebuf, dunlev(&u.uz));
+        Sprintf(buf, "Home %d ", dunlev(&u.uz));
     } else if (In_endgame(&u.uz)) {
         /* [3.6.2: this used to be "Astral Plane" or generic "End Game"] */
         char buf2[BUFSZ];
         (void) endgamelevelname(buf2, depth(&u.uz));
         (void) strsubst(buf2, "Plane of ", ""); /* just keep <element> */
-        Sprintf(buf, "%s%s ", modebuf, buf2);
+        Sprintf(buf, "%s ", buf2);
     } else {
         /* ports with more room may expand this one */
-        Sprintf(buf, "%sDL:%-2d ", modebuf, depth(&u.uz));
+        Sprintf(buf, "DL:%-2d ", depth(&u.uz));
         ret = 0;
     }
+    return ret;
+}
+
+/* provide the game mode string */
+int
+describe_mode(buf)
+char* buf;
+{
+    int ret = 0;
+    char modebuf[BUFSZ];
+    const char* difsym = get_game_difficulty_symbol(context.game_difficulty);
+
+    Sprintf(modebuf, "%s%s%s", wizard ? "W" : discover ? "X" : BeginnerMode ? "B" : "",
+        difsym,
+        (wizard || discover || BeginnerMode || strcmp(difsym, "")) ? " " : "");
+
+    Sprintf(buf, "%s", modebuf);
     return ret;
 }
 
@@ -608,6 +622,7 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("hunger", " %s", ANY_INT, 40, BL_HUNGER),
     INIT_BLSTATP("hitpoints", " HP:%s", ANY_INT, 10, BL_HPMAX, BL_HP),
     INIT_BLSTATM("hitpoints-max", "(%s)", ANY_INT, 10, BL_HP, BL_HPMAX),
+    INIT_BLSTAT("game-mode", "%s", ANY_STR, 10, BL_MODE),
     INIT_BLSTAT("dungeon-level", "%s", ANY_STR, MAXVALWIDTH, BL_LEVELDESC),
     INIT_BLSTAT("experience", "/%s", ANY_LONG, 20, BL_EXP),
     INIT_BLSTAT("condition", "%s", ANY_MASK32, 0, BL_CONDITION),
@@ -724,7 +739,11 @@ bot_via_windowport()
     i = Upolyd ? u.mhmax : u.uhpmax;
     blstats[idx][BL_HPMAX].a.a_int = min(i, 9999);
 
-    /*  Dungeon level. */
+    /*  Game mode */
+    (void)describe_mode(blstats[idx][BL_MODE].val);
+    valset[BL_MODE] = TRUE; /* indicate val already set */
+
+                                 /*  Dungeon level. */
     (void) describe_level(blstats[idx][BL_LEVELDESC].val);
     valset[BL_LEVELDESC] = TRUE; /* indicate val already set */
 
@@ -1763,6 +1782,7 @@ static struct fieldid_t {
     { "turns",    BL_TIME },
     { "hp",       BL_HP },
     { "hp-max",   BL_HPMAX },
+    { "mode",     BL_MODE },
     { "dgn",      BL_LEVELDESC },
     { "xp",       BL_EXP },
     { "exp",      BL_EXP },
