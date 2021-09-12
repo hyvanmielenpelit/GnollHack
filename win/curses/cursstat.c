@@ -2366,12 +2366,10 @@ draw_horizontal(int x, int y, int hp, int hpmax)
     describe_mode(buf);
     wprintw(win, "%s", buf);
 
-    waddch(win, ' ');
+    boolean isemptystr = (*buf == 0);
 
     describe_level(buf);
-    wprintw(win, "%s", buf);
-
-    waddch(win, ' ');
+    wprintw(win, "%s%s", isemptystr ? "" : " ", buf);
 
     print_statdiff("$", &prevau, money_cnt(invent), STAT_GOLD);
 
