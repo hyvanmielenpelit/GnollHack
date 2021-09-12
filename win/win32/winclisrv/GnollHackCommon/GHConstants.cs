@@ -997,6 +997,8 @@ namespace GnollHackCommon
         public const string DistributionFeeProductName = "upgrade_to_full_version";
         public const int DemoLevelLimit = 10;
         public const string GnollHackGitHubPage = "https://github.com/hyvanmielenpelit/GnollHack";
+        public const string GnollHackWebPage = "https://gnollhack.com";
+        public const string GnollHackWikiPage = "https://github.com/hyvanmielenpelit/GnollHack/wiki";
     }
 
 

@@ -26,6 +26,7 @@
     <None Remove="Assets\endr.ttf" />
     <None Remove="Assets\FMOD-Logo-192-White.png" />
     <None Remove="Assets\gnollhack-logo-test-2.png" />
+    <None Remove="Assets\GnollHack-master.zip" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits.png" />
     <None Remove="Assets\Icons\dropmany.png" />
@@ -85,6 +86,7 @@
     <EmbeddedResource Include="Assets\endr.ttf" />
     <EmbeddedResource Include="Assets\FMOD-Logo-192-White.png" />
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
+    <EmbeddedResource Include="Assets\GnollHack-master.zip" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
     <EmbeddedResource Include="Assets\Icons\dropmany.png" />
