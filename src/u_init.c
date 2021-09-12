@@ -103,7 +103,7 @@ static struct trobj Healer[] = {
 static struct trobj Knight[] = {
     { LONG_SWORD, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
     { LANCE, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
-    { RING_MAIL, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { PLATE_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
     { HELMET, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
     { APPLE, 0, FOOD_CLASS, 2, 0, 0, 0 },
     { CARROT, 0, FOOD_CLASS, 2, 0, 0, 0 },
