@@ -1413,18 +1413,22 @@ namespace GnollHackClient.Pages.Game
         //    CrossMTAdmob.Current.ShowInterstitial();
         //    GenericButton_Clicked(null, null, 27);
         //}
+
         private async void ShowActivateAscii()
         {
             Boolean redraw = false;
             InAppBillingProduct productdetails = await _mainPage.GetProductDetails(GHConstants.DistributionFeeProductName);
             if (productdetails != null)
             {
-                string text = "You have exceeded the maximum playable levels in the demo version. Only ASCII graphics with no sounds remain functional. Please purchase the full version for " + productdetails.LocalizedPrice + " to continue playing with tiles and sounds.";
-                bool res = await DisplayAlert("Demo Level Limit Exceeded", text, "Buy Now", "No thanks");
+                string text = "You have exceeded the maximum playable levels in the demo version. Only ASCII graphics without sounds are now accessible. Please pay the distribution fee of " + productdetails.LocalizedPrice + " to access the full version of GnollHack and continue playing with tiles and sounds.";
+                bool res = await DisplayAlert("Demo Level Limit Exceeded", text, "Pay Now", "No Thanks");
                 if (res)
                 {
                     await _mainPage.CheckPurchaseStatus(false);
-                    await _mainPage.PurchaseUpgrade();
+                    if (!App.FullVersionMode)
+                    {
+                        await _mainPage.PayDistributionFee();
+                    }
                     if (App.FullVersionMode)
                     {
                         App.GnollHackService.SwitchDemoVersion(false);

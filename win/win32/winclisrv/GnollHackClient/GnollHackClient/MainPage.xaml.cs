@@ -296,7 +296,7 @@ namespace GnollHackClient
 
         public async Task CheckPurchaseStatus(bool atappstart)
         {
-            int res = await IsUpgradePurchased(GHConstants.DistributionFeeProductName);
+            int res = await IsProductPurchased(GHConstants.DistributionFeeProductName);
             if(res >= 0)
             {
                 if (Preferences.ContainsKey("CheckPurchase_FirstConnectFail"))
@@ -924,7 +924,7 @@ namespace GnollHackClient
         }
 
 
-        public async Task<int> IsUpgradePurchased(string productId)
+        public async Task<int> IsProductPurchased(string productId)
         {
             var billing = CrossInAppBilling.Current;
             try
@@ -981,23 +981,31 @@ namespace GnollHackClient
         {
             BuyNowButton.IsEnabled = false;
             await CheckPurchaseStatus(false);
-            await PurchaseUpgrade();
+            if (!App.FullVersionMode)
+            {
+                InAppBillingProduct productdetails = await GetProductDetails(GHConstants.DistributionFeeProductName);
+                if (productdetails != null)
+                {
+                    bool res = await DisplayAlert("Pay Distribution Fee to Access Full Version", "You can pay a distribution fee of " + productdetails.LocalizedPrice + " to access the full version of GnollHack. This unlocks graphics and sounds beyond dungeon level " + GHConstants.DemoLevelLimit + ".", "Pay Now", "No Thanks");
+                    if (res)
+                    {
+                        await PayDistributionFee();
+                    }
+                }
+            }
             BuyNowButton.IsEnabled = true;
         }
 
-        public async Task PurchaseUpgrade()
+        public async Task PayDistributionFee()
         {
-            if (!App.FullVersionMode)
+            bool result = await PurchaseNonConsumable(GHConstants.DistributionFeeProductName);
+            if (result)
             {
-                bool result = await PurchaseNonConsumable(GHConstants.DistributionFeeProductName);
-                if (result)
-                {
-                    Preferences.Set("FullVersion", true);
-                    App.FullVersionMode = true;
-                    UpdateBuyNow();
-                    await AcquireAndCheckFiles();
-                    App.FmodService.LoadBanks();
-                }
+                Preferences.Set("FullVersion", true);
+                App.FullVersionMode = true;
+                UpdateBuyNow();
+                await AcquireAndCheckFiles();
+                App.FmodService.LoadBanks();
             }
         }
 
@@ -1157,8 +1165,8 @@ namespace GnollHackClient
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
-            PopupTitleLabel.Text = "Hardcore Mode";
-            PopupLabel.Text = "In Hardcore Mode you have just one life. You cannot spend any extra lives to save your character from death.";
+            PopupTitleLabel.Text = "Beginner Mode";
+            PopupLabel.Text = "In Beginner Mode, you [enter the Beginner Mode description].";
             PopupGrid.IsVisible = true;
         }
     }

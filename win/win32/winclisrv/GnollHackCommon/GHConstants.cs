@@ -995,6 +995,7 @@ namespace GnollHackCommon
         public const int MoreButtonsPerColumn = 9;
         public const bool DownloadFromWebInDebugMode = true;
         public const string DistributionFeeProductName = "upgrade_to_full_version";
+        public const int DemoLevelLimit = 10;
         public const string GnollHackGitHubPage = "https://github.com/hyvanmielenpelit/GnollHack";
     }
 
