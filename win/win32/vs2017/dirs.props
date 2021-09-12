@@ -11,19 +11,6 @@
     <DocDir>$(RootDir)doc\</DocDir>
     <ExtDir>$(RootDir)ext\</ExtDir>
     <FmodDir>$(RootDir)ext\fmod\</FmodDir>
-    <SdlDir>$(RootDir)ext\sdl\</SdlDir>
-
-    <!--
-    <GlfwDir>$(RootDir)ext\glfw\</GlfwDir>
-    <SdlImageDir>$(RootDir)ext\sdl_image\</SdlImageDir>
-    <SdlGfxDir>$(RootDir)ext\sdl_gfx\</SdlGfxDir>
-    <SdlTtfDir>$(RootDir)ext\sdl_ttf\</SdlTtfDir>
-    <BgfxDir>$(RootDir)ext\bgfx\</BgfxDir>
-    <BxDir>$(RootDir)ext\bx\</BxDir>
-    <BimgDir>$(RootDir)ext\bimg\</BimgDir>
-    -->
-    <NuklearDir>$(RootDir)ext\nuklear\</NuklearDir>
-    <StbDir>$(RootDir)ext\stb\</StbDir>
     <IncDir>$(RootDir)include\</IncDir>
     <SrcDir>$(RootDir)src\</SrcDir>
     <SysDir>$(RootDir)sys\</SysDir>

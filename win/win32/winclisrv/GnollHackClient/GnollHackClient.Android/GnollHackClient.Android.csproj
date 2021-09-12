@@ -127,14 +127,8 @@
     <AndroidNativeLibrary Include="libs\arm64-v8a\libfmodstudio.so" />
     <AndroidNativeLibrary Include="libs\armeabi-v7a\libfmod.so" />
     <AndroidNativeLibrary Include="libs\armeabi-v7a\libfmodstudio.so" />
-    <AndroidNativeLibrary Include="libs\x86\libfmod.so" />
-    <AndroidNativeLibrary Include="libs\x86\libfmodstudio.so" />
-    <AndroidNativeLibrary Include="libs\x86_64\libfmod.so" />
-    <AndroidNativeLibrary Include="libs\x86_64\libfmodstudio.so" />
     <AndroidNativeLibrary Include="libs\armeabi-v7a\libgnollhackdroid.so" />
     <AndroidNativeLibrary Include="libs\arm64-v8a\libgnollhackdroid.so" />
-    <AndroidNativeLibrary Include="libs\x86\libgnollhackdroid.so" />
-    <AndroidNativeLibrary Include="libs\x86_64\libgnollhackdroid.so" />
     <AndroidAsset Include="gnh\credits" />
     <AndroidAsset Include="gnh\license" />
     <AndroidAsset Include="gnh\logfile" />
@@ -168,6 +162,8 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="libs\x86\" />
+    <Folder Include="libs\x86_64\" />
     <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>

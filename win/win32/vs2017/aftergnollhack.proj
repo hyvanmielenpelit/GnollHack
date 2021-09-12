@@ -9,28 +9,6 @@
   	<Copy SourceFiles="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp" DestinationFolder="$(BinDir)"/>
   	<Copy SourceFiles="$(FmodDir)core\lib\winnt-x86\fmod.dll;$(FmodDir)fsbank\lib\winnt-x86\fsbank.dll;$(FmodDir)fsbank\lib\winnt-x86\libfsbvorbis.dll;$(FmodDir)studio\lib\winnt-x86\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
   	<Copy SourceFiles="$(FmodDir)core\lib\winnt-x64\fmod.dll;$(FmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(FmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(FmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
-    <Copy SourceFiles="$(SdlDir)lib\winnt-x86\SDL2.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
-    <Copy SourceFiles="$(SdlDir)lib\winnt-x64\SDL2.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
-    <!--
-    <Copy SourceFiles="$(GlfwDir)lib\winnt-x86-vc2019\glfw3.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
-    <Copy SourceFiles="$(GlfwDir)lib\winnt-x64-vc2019\glfw3.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
-    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\SDL2_image.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
-    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\SDL2_image.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
-    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\libpng16-16.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
-    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\libpng16-16.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
-    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\zlib1.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
-    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\zlib1.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
-    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\libjpeg-9.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
-    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\libjpeg-9.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
-    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\libtiff-5.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
-    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\libtiff-5.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
-    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x86\libwebp-7.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
-    <Copy SourceFiles="$(SdlImageDir)lib\winnt-x64\libwebp-7.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
-    <Copy SourceFiles="$(SdlTtfDir)lib\winnt-x86\SDL2_ttf.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
-    <Copy SourceFiles="$(SdlTtfDir)lib\winnt-x64\SDL2_ttf.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
-    <Copy SourceFiles="$(SdlTtfDir)lib\winnt-x86\libfreetype-6.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
-    <Copy SourceFiles="$(SdlTtfDir)lib\winnt-x64\libfreetype-6.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
--->
   </Target>
   <Target Name="Clean">
 	  <Delete Files="$(BinDir)defaults.gnh;$(BinDir)Guidebook.txt;$(BinDir)license;$(BinDir)credits;$(BinDir)sysconf;$(BinDir)nethack.txt;$(BinDir)symbols;$(BinDir)record;$(BinDir)opthelp"/>

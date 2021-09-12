@@ -70,7 +70,6 @@
     <None Remove="Assets\UI\yestoall.png" />
     <None Remove="Assets\UI\zap.png" />
     <None Remove="Assets\uwch.ttf" />
-    <None Remove="Assets\window_background.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -127,7 +126,6 @@
     <EmbeddedResource Include="Assets\UI\yestoall.png" />
     <EmbeddedResource Include="Assets\UI\zap.png" />
     <EmbeddedResource Include="Assets\uwch.ttf" />
-    <EmbeddedResource Include="Assets\window_background.png" />
   </ItemGroup>
 
   <ItemGroup>
