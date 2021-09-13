@@ -5347,7 +5347,7 @@ struct permonst _mons2[] = {
         M3_INFRAVISIBLE | M3_INFRAVISION, 
         M4_NONE, M5_NONE, M6_NON_EATER, M7_NONE, M8_NONE,
         26, CLR_BRIGHT_BLUE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("djinni", None, "humanoid-shaped magical being from the elemental plane of air sometimes capable of granting wishes", None, None, 
+    ENLARGED_MON("djinni", None, "humanoid-shaped magical being from the elemental plane of air sometimes capable of granting wishes", None, None, 
         S_DEMON, LVL(7, 12, 4, 15, 30, 0), (G_NOGEN | G_NOCORPSE),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -5357,7 +5357,9 @@ struct permonst _mons2[] = {
         M1_HUMANOID | M1_FLY, M2_NOPOLY | M2_STALK | M2_COLLECT,
         M3_INFRAVISIBLE | M3_SPEAKING, 
         M4_NONE, M5_NONE, M6_NON_EATER, M7_NONE, M8_NONE, 
-        9, CLR_YELLOW, MONSTER_SOUNDSET_DJINN, MONSTER_SOUNDSET_DJINN),
+        9, CLR_YELLOW, MONSTER_SOUNDSET_DJINN, MONSTER_SOUNDSET_DJINN,
+        ACTION_INFO(DJINN_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DJINN_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(DJINN_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DJINN_STATUE_ENLARGEMENT, 0, 0)),
 
     /*
      * sea monsters
