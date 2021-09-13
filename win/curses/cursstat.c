@@ -1326,7 +1326,10 @@ boolean border;
         if ((fld == BL_HUNGER && !(cap_and_hunger & 1))
             || (fld == BL_CAP && !(cap_and_hunger & 2))
             || (fld == BL_TIME && !(time_and_score & 1))
-            || (fld == BL_SCORE && !(time_and_score & 2)))
+            || (fld == BL_SCORE && !(time_and_score & 2))
+            || (fld == BL_SKILL && !(skill_and_2wep & 1))
+            || (fld == BL_2WEP && !(skill_and_2wep & 2))
+            )
             continue;
 
         if (spacing[fld]) {
