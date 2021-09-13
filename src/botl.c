@@ -634,6 +634,7 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
 };
 
 #undef INIT_BLSTATP
+#undef INIT_BLSTATM
 #undef INIT_BLSTAT
 #undef INIT_THRESH
 

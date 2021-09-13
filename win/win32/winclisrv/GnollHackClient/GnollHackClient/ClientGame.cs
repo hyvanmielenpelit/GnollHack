@@ -600,7 +600,7 @@ namespace GnollHackClient
             if (_statusInfo == null)
                 return;
         }
-        public void ClientCallback_StatusEnable(int value1, string value2, string value3, byte value4)
+        public void ClientCallback_StatusEnable(int fieldidx, string nm, string fmt, byte enable)
         {
             if (_statusInfo == null)
                 return;
