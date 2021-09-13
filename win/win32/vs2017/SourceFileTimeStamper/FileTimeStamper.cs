@@ -9,7 +9,7 @@ namespace SourceFileTimeStamper
 {
     public class FileTimeStamper
     {
-        string _modifiedDateString = "/* GnollHack File Has Last Changed: {0} */";
+        string _modifiedDateString = "/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: {0} */";
         string _separatorString = "";
         string _gitDateFormatString = @"yyyy\-MM\-dd HH\:mm\:ss zz00";
         string _dayFormatString = @"yyyy\-MM\-dd";
