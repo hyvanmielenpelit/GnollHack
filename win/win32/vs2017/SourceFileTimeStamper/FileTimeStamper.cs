@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -8,9 +9,10 @@ namespace SourceFileTimeStamper
 {
     public class FileTimeStamper
     {
-        string _modifiedDateString = "//** GnollHack File Changed: ";
-        string _stampDateString = "//** GnollHack File Time Stamped: ";
+        string _modifiedDateString = "/* GnollHack File Has Last Changed: {0} */";
         string _separatorString = "";
+        string _gitDateFormatString = @"yyyy\-MM\-dd HH\:mm\:ss zz00";
+        string _dayFormatString = @"yyyy\-MM\-dd";
 
         public FileTimeStamper()
         {
@@ -21,41 +23,54 @@ namespace SourceFileTimeStamper
         {
             var lines = File.ReadAllLines(file.FullName);
 
-            var fileLastWriteTimeString = file.LastWriteTimeUtc.ToString("u");
-            var nowString = DateTime.Now.ToUniversalTime().ToString("u");
+            string modifiedDateStringStart = _modifiedDateString.Substring(0, _modifiedDateString.Length - 6);
 
-            var modifiedTimeStamp = _modifiedDateString + fileLastWriteTimeString;
-            var stampTimeStamp = _stampDateString + nowString;
+            Process p = new Process();
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.FileName = "git";
+            p.StartInfo.Arguments = "log -1 --format=\"%ai\" " + file.FullName;
+            p.Start();
+            string gitTimeStamp = p.StandardOutput.ReadToEnd().Trim();
+            p.WaitForExit();
 
-            if (lines.Length < 3 || !lines[0].StartsWith(_modifiedDateString) || !lines[1].StartsWith(_stampDateString) || lines[2] != _separatorString)
+            var gitTime = DateTime.ParseExact(gitTimeStamp, _gitDateFormatString, CultureInfo.InvariantCulture);
+            var gitTimeString = gitTime.ToUniversalTime().ToString(_dayFormatString);
+            //var modifiedTimeStamp = string.Format(_modifiedDateString, gitTimeString);
+
+            var nowTimeString = DateTime.Now.ToUniversalTime().ToString(_dayFormatString);
+            var nowTimeStamp = string.Format(_modifiedDateString, nowTimeString);
+
+            if (lines.Length < 3 || !lines[0].StartsWith(modifiedDateStringStart) || lines[1] != _separatorString)
             {
                 //No stamp, insert
                 List<string> lines2 = new List<string>(lines);
-                lines2.Insert(0, modifiedTimeStamp);
-                Console.WriteLine("- Adding Modified Time Stamp: " + fileLastWriteTimeString);
-                lines2.Insert(1, stampTimeStamp);
-                Console.WriteLine("- Adding Stamp Time Stamp: " + nowString);
-                lines2.Insert(2, _separatorString);
+                lines2.Insert(0, nowTimeStamp);
+                Console.WriteLine("- Adding Modified Time Stamp: " + nowTimeString);
+                lines2.Insert(1, _separatorString);
 
                 File.WriteAllLines(file.FullName, lines2);
             }
-            else if (lines[0].StartsWith(_modifiedDateString) && lines[1].StartsWith(_stampDateString) && lines[2] == _separatorString)
+            else if (lines[0].StartsWith(modifiedDateStringStart) && lines[1] == _separatorString)
             {
                 //Already stamped
-                var stampedDateEnd = lines[1].Substring(_stampDateString.Length);
-                var stampedDate = DateTime.ParseExact(stampedDateEnd, "u", CultureInfo.InvariantCulture);
-                if(file.LastWriteTimeUtc.AddSeconds(-10) < stampedDate && stampedDate < file.LastWriteTimeUtc.AddSeconds(10))
+                var modifiedDateString = lines[0].Substring(modifiedDateStringStart.Length, lines[0].Length - modifiedDateStringStart.Length - 3);
+                //var modifiedDate = DateTime.ParseExact(modifiedDateString, _dayFormatString, CultureInfo.InvariantCulture);
+                if (modifiedDateString == gitTimeString)
+                {
+                    //Already stamped with Git Date
+                    Console.WriteLine("- OK: Already stamped with Git Time");
+                }
+                else if (modifiedDateString == nowTimeString)
                 {
                     //Already stamped, do nothing
-                    Console.WriteLine("- OK: Already stamped and not modified");
+                    Console.WriteLine("- OK: Already stamped with Today");
                 }
                 else
                 {
                     //Changed!, update stamps
-                    lines[0] = modifiedTimeStamp;
-                    Console.WriteLine("- Updating Modified Time Stamp: " + fileLastWriteTimeString);
-                    lines[1] = stampTimeStamp;
-                    Console.WriteLine("- Updating Stamp Time Stamp: " + nowString);
+                    lines[0] = nowTimeStamp;
+                    Console.WriteLine("- Updating Modified Time Stamp: " + nowTimeString);
                     File.WriteAllLines(file.FullName, lines);
                 }
             }
