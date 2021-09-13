@@ -188,6 +188,7 @@
 #define is_quantum_mechanic(ptr) (((ptr)->mflags6 & M6_QUANTUM_MECHANIC) != 0)
 #define is_hell_hound(ptr) (((ptr)->mflags6 & M6_HELL_HOUND) != 0L)
 #define is_boss_monster(ptr) (((ptr)->mflags6 & M6_BOSS_MONSTER) != 0L)
+#define may_start_with_saddle(ptr) (((ptr)->mflags6 & M6_MAY_START_WITH_SADDLE) != 0L)
 
 #define is_archaeologist(ptr) (((ptr)->mflags7 & M7_ARCHAEOLOGIST) != 0L)
 #define is_barbarian(ptr) (((ptr)->mflags7 & M7_BARBARIAN) != 0L)

@@ -1170,6 +1170,14 @@ register struct monst *mtmp;
     if (has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_NO_ITEMS) != 0)
         return;
 
+    /* Add saddle for relevant monsters */
+    if (is_steed(mtmp->data) && may_start_with_saddle(mtmp->data) && !rn2(4))
+    {
+        otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
+        if (otmp)
+            put_saddle_on_mon(otmp, mtmp);
+    }
+
     /*
      *  Soldiers get armour & rations - armour approximates their ac.
      *  Nymphs may get mirror or potion of object detection.
@@ -1177,12 +1185,6 @@ register struct monst *mtmp;
     switch (ptr->mlet) 
     {
     case S_ANGEL:
-        if (is_steed(mtmp->data) && !rn2(4)) /* Ki-rin */
-        {
-            otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
-            if (otmp)
-                put_saddle_on_mon(otmp, mtmp);
-        }
         break;
     case S_DRAGON:
         if (mndx >= PM_GRAY_DRAGON_HATCHLING && mndx <= PM_YELLOW_DRAGON_HATCHLING)
@@ -1221,13 +1223,6 @@ register struct monst *mtmp;
         }
         break;
     case S_DOG:
-        if (is_steed(mtmp->data) && !rn2(4)) /* Warg */
-        {
-            otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
-            if (otmp)
-                put_saddle_on_mon(otmp, mtmp);
-        }
-        
         if(!rn2(7))
             (void)mon_gets_noinit_item(mtmp, BONE, 1);
         
@@ -1803,12 +1798,6 @@ register struct monst *mtmp;
         mkmonmoney(mtmp, (long)d(level_difficulty(), 30));
         break;
     case S_UNICORN:
-        if (is_steed(mtmp->data) && is_domestic(mtmp->data) && !rn2(4))
-        {
-            otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
-            if(otmp)
-                put_saddle_on_mon(otmp, mtmp);
-        }
         break;
     case S_DEMON:
         /* moved here from m_initweap() because these don't

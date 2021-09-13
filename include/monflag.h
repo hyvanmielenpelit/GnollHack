@@ -351,6 +351,7 @@
 #define M6_LONG_WORM_TAIL           0x00000400UL /* Tail of a long worm */
 #define M6_HELL_HOUND               0x00000800UL /* Is a hell hound */
 #define M6_BOSS_MONSTER             0x00001000UL /* Seeing the monster triggers a boss fight */
+#define M6_MAY_START_WITH_SADDLE    0x00002000UL /* If steed, then may be generated with saddle */
 
 #define M7_NONE                     0x00000000UL
 #define M7_ARCHAEOLOGIST            0x00000001UL            /* monster can use archaeologist items */

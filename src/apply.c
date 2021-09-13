@@ -2443,8 +2443,11 @@ dorub()
             makeknown(MAGIC_LAMP);
             update_inventory();
         } else if (rn2(2)) {
+            play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
+            special_effect_wait_until_action(0);
             You("%s smoke.", !Blind ? "see a puff of" : "smell");
+            special_effect_wait_until_end(0);
         } else
             pline1(nothing_happens);
     } else if (obj->otyp == BRASS_LANTERN) {

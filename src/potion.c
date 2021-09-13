@@ -3474,7 +3474,11 @@ struct monst **monp;
     /* grant the wish */
     makewish(FALSE);
     /* clean up */
+    play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, mx, my, FALSE);
+    play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
+    special_effect_wait_until_action(0);
     tmp_at(DISP_END, 0);
+    special_effect_wait_until_end(0);
 }
 
 void
@@ -3527,9 +3531,12 @@ struct obj *obj;
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_IT_IS_ABOUT_TIME);
         verbalize("It is about time!");
         play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
+        play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
         if (canspotmon(mtmp))
             pline("%s vanishes.", Monnam(mtmp));
+        special_effect_wait_until_action(0);
         mongone(mtmp);
+        special_effect_wait_until_end(0);
         break;
     default:
         play_monster_special_dialogue_line(mtmp, DJINN_LINE_YOU_DISTURBED);
