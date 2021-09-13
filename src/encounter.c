@@ -1,5 +1,5 @@
-/* GnollHack 4.0 encounter.c */
-/* Copyright (c) Janne Gustafsson, 2019.                           */
+/* GnollHack 4.1.0 encounter.c */
+/* Copyright (c) Janne Gustafsson, 2019. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"

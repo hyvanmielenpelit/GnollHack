@@ -1,7 +1,7 @@
-/*
- * animation.c 
- * Copyright (c) Janne Gustafsson, 2020
- */
+/* GnollHack 4.1.0 animation.c */
+/* Copyright (c) Janne Gustafsson, 2020. */
+/* GnollHack may be freely redistributed.  See license for details. */
+
 #include "hack.h"
 #include "animoff.h"
 
@@ -3050,7 +3050,8 @@ int
 get_animation_frame_with_tile(animidx, tileidx)
 int animidx, tileidx;
 {
-    for (int i = 0; i < animations[animidx].number_of_frames; i++)
+    int i;
+    for (i = 0; i < animations[animidx].number_of_frames; i++)
     {
         if (animations[animidx].frame2tile[i] == tileidx)
             return i;
@@ -3288,6 +3289,8 @@ void
 reduce_counters_intervals(intervals)
 int intervals;
 {
+    int i;
+
     /* Reduce animation ending counters */
     if (context.u_action_animation_counter_on && context.u_intervals_to_wait_until_action == 0UL && context.u_intervals_to_wait_until_end > 0UL)
     {
@@ -3313,7 +3316,7 @@ int intervals;
             context.expl_intervals_to_wait_until_end -= (unsigned long)intervals;
     }
 
-    for (int i = 0; i < MAX_PLAYED_SPECIAL_EFFECTS; i++)
+    for (i = 0; i < MAX_PLAYED_SPECIAL_EFFECTS; i++)
     {
         if (context.special_effect_animation_counter_on[i] && context.spef_intervals_to_wait_until_action[i] == 0UL && context.spef_intervals_to_wait_until_end[i] > 0UL)
         {

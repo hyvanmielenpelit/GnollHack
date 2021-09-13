@@ -1,4 +1,4 @@
-/* GnollHack 4.0 matcomps.c */
+/* GnollHack 4.1.0 matcomps.c */
 /* Copyright (c) Janne Gustafsson, 2019.                           */
 /* GnollHack may be freely redistributed.  See license for details. */
 
