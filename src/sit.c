@@ -265,7 +265,7 @@ dosit()
                     change_luck(1, TRUE);
                 } 
                 else
-                    makewish(FALSE);
+                    makewish(FALSE, TRUE);
                 break;
             case 7:
               {

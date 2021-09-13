@@ -3472,7 +3472,7 @@ struct monst **monp;
     tmp_at(DISP_ALWAYS, glyph);
     tmp_at(mx, my);
     /* grant the wish */
-    makewish(FALSE);
+    makewish(FALSE, FALSE);
     /* clean up */
     play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, mx, my, FALSE);
     play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);

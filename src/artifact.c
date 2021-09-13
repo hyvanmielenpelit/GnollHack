@@ -2751,7 +2751,7 @@ struct obj *obj;
         case ARTINVOKE_WISHING:
         {
             play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
-            makewish(FALSE);
+            makewish(FALSE, TRUE);
             break;
         }
         case ARTINVOKE_DEMON_SUMMON:

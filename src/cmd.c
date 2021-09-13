@@ -1400,7 +1400,7 @@ wiz_wish(VOID_ARGS) /* Unlimited wishes for debug mode by Paul Polderman */
         boolean save_verbose = flags.verbose;
 
         flags.verbose = FALSE;
-        makewish(TRUE);
+        makewish(TRUE, FALSE);
         flags.verbose = save_verbose;
         (void) encumber_msg();
     } else

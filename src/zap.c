@@ -4245,7 +4245,7 @@ register struct obj *obj;
         break;
     case SPE_WISH:
         known = TRUE;
-        makewish(FALSE);
+        makewish(FALSE, TRUE);
         break;
     case SPE_TIME_STOP:
         known = TRUE;
@@ -5291,7 +5291,7 @@ register struct obj *obj;
             pline("Unfortunately, nothing happens.");
             break;
         }
-        makewish(FALSE);
+        makewish(FALSE, TRUE);
         break;
     case WAN_IDENTIFY:
         if (invent)
@@ -10922,8 +10922,8 @@ int triesleft;
 }
 
 void
-makewish(is_wiz_wish)
-boolean is_wiz_wish;
+makewish(is_wiz_wish, play_sound)
+boolean is_wiz_wish, play_sound;
 {
     char buf[BUFSZ] = DUMMY;
     char promptbuf[BUFSZ];
@@ -10934,7 +10934,8 @@ boolean is_wiz_wish;
     nothing = zeroobj; /* lint suppression; only its address matters */
     if (flags.verbose)
     {
-        play_sfx_sound(SFX_WISH_FOR_OBJECT);
+        if (play_sound)
+            play_sfx_sound(SFX_WISH_FOR_OBJECT);
         You("may wish for an object.");
     }
 retry:
