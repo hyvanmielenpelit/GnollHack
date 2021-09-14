@@ -9,11 +9,11 @@ namespace SourceFileTimeStamper.Data
     {
         public DirectoryData()
         {
-            Extensions = new List<string>();
+            SearchPatterns = new List<string>();
         }
 
         public string RelativePath { get; set; }
-        public List<string> Extensions { get; set; }
+        public List<string> SearchPatterns { get; set; }
         public SearchOption DirectorySearchOption { get; set; }
     }
 }

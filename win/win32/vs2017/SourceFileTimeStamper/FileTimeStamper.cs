@@ -7,9 +7,40 @@ using System.Text;
 
 namespace SourceFileTimeStamper
 {
+    public enum ModifificationMarkStyles
+    {
+        C = 0,
+        Des,
+        YaccLex,
+        Shell,
+        MaxStyles
+    }
+
     public class FileTimeStamper
     {
-        string _modifiedDateString = "/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: {0} */";
+        string _baseModifiedDateString = "GnollHack File Change Notice: This file has been changed from the original. Date of last change: {0}";
+        string[] _firstLineString = new string[(int)ModifificationMarkStyles.MaxStyles]
+        {
+            null,
+            null,
+            "%{",
+            "#!/bin/sh",
+        };
+        string[] _prefixString = new string[(int)ModifificationMarkStyles.MaxStyles]
+        {
+            "/* ",
+            "# ",
+            "/* ",
+            "# ",
+        };
+        string[] _suffixString = new string[(int)ModifificationMarkStyles.MaxStyles]
+        {
+            " */",
+            "",
+            " */",
+            "",
+        };
+
         string _separatorString = "";
         string _gitDateFormatString = @"yyyy\-MM\-dd HH\:mm\:ss zz00";
         string _dayFormatString = @"yyyy\-MM\-dd";
@@ -21,9 +52,36 @@ namespace SourceFileTimeStamper
 
         public void StampFile(FileInfo file)
         {
-            var lines = File.ReadAllLines(file.FullName);
+            ModifificationMarkStyles style = 0;
+            string ext = file.Extension;
+            switch(ext)
+            {
+                case ".c":
+                case ".cpp":
+                case ".h":
+                case ".hpp":
+                    style = ModifificationMarkStyles.C;
+                    break;
+                case ".des":
+                case ".def":
+                case "":
+                    style = ModifificationMarkStyles.Des;
+                    break;
+                case ".sh":
+                    style = ModifificationMarkStyles.Shell;
+                    break;
+                case ".y":
+                case ".l":
+                    style = ModifificationMarkStyles.YaccLex;
+                    break;
+                default:
+                    return;
+            }
 
-            string modifiedDateStringStart = _modifiedDateString.Substring(0, _modifiedDateString.Length - 6);
+            var lines = File.ReadAllLines(file.FullName);
+            string _modifiedDateString = _prefixString[(int)style] + _baseModifiedDateString + _suffixString[(int)style];
+
+            string modifiedDateStringStart = _modifiedDateString.Substring(0, _modifiedDateString.Length - 3 - _suffixString[(int)style].Length);
 
             Process p = new Process();
             p.StartInfo.UseShellExecute = false;
@@ -41,20 +99,38 @@ namespace SourceFileTimeStamper
             var nowTimeString = DateTime.Now.ToUniversalTime().ToString(_dayFormatString);
             var nowTimeStamp = string.Format(_modifiedDateString, nowTimeString);
 
-            if (lines.Length < 3 || !lines[0].StartsWith(modifiedDateStringStart) || lines[1] != _separatorString)
+            int modLineNum = 0;
+            int sepLineNum = 1;
+            int minlinenum = 3;
+            bool has_first_line = false;
+            if(_firstLineString[(int)style] != null)
+            {
+                has_first_line = true;
+                modLineNum++;
+                sepLineNum++;
+                minlinenum++;
+            }
+
+            if (has_first_line && !lines[0].StartsWith(_firstLineString[(int)style]))
+            {
+                //Error
+                throw new Exception(file.FullName + " does not start with the correct line.");
+            }
+            else if (lines.Length < minlinenum
+                || !lines[modLineNum].StartsWith(modifiedDateStringStart) || lines[sepLineNum] != _separatorString)
             {
                 //No stamp, insert
                 List<string> lines2 = new List<string>(lines);
-                lines2.Insert(0, nowTimeStamp);
+                lines2.Insert(modLineNum, nowTimeStamp);
                 Console.WriteLine("- Adding Modified Time Stamp: " + nowTimeString);
-                lines2.Insert(1, _separatorString);
+                lines2.Insert(sepLineNum, _separatorString);
 
                 File.WriteAllLines(file.FullName, lines2);
             }
-            else if (lines[0].StartsWith(modifiedDateStringStart) && lines[1] == _separatorString)
+            else if (lines[modLineNum].StartsWith(modifiedDateStringStart) && lines[sepLineNum] == _separatorString)
             {
                 //Already stamped
-                var modifiedDateString = lines[0].Substring(modifiedDateStringStart.Length, lines[0].Length - modifiedDateStringStart.Length - 3);
+                var modifiedDateString = lines[modLineNum].Substring(modifiedDateStringStart.Length, lines[modLineNum].Length - modifiedDateStringStart.Length - _suffixString[(int)style].Length);
                 //var modifiedDate = DateTime.ParseExact(modifiedDateString, _dayFormatString, CultureInfo.InvariantCulture);
                 if (modifiedDateString == gitTimeString)
                 {
@@ -69,7 +145,7 @@ namespace SourceFileTimeStamper
                 else
                 {
                     //Changed!, update stamps
-                    lines[0] = nowTimeStamp;
+                    lines[modLineNum] = nowTimeStamp;
                     Console.WriteLine("- Updating Modified Time Stamp: " + nowTimeString);
                     File.WriteAllLines(file.FullName, lines);
                 }

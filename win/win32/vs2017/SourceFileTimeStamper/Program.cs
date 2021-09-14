@@ -20,34 +20,39 @@ namespace SourceFileTimeStamper
                 new DirectoryData()
                 {
                     RelativePath = "src",
-                    Extensions = new List<string>() { "*.c", "*.cpp" }
+                    SearchPatterns = new List<string>() { "*.c", "*.cpp" }
                 },
                 new DirectoryData()
                 {
                     RelativePath = "include",
-                    Extensions = new List<string>() { "*.h", "*.hpp" }
+                    SearchPatterns = new List<string>() { "*.h", "*.hpp" }
                 },
                 new DirectoryData()
                 {
                     RelativePath = @"win",
-                    Extensions = new List<string>() { "*.c", "*.cpp", "*.h", "*.hpp" },
+                    SearchPatterns = new List<string>() { "*.c", "*.cpp", "*.h", "*.hpp" },
                     DirectorySearchOption = SearchOption.AllDirectories
                 },
                 new DirectoryData()
                 {
                     RelativePath = @"sys",
-                    Extensions = new List<string>() { "*.c", "*.cpp", "*.h", "*.hpp" },
+                    SearchPatterns = new List<string>() { "*.c", "*.cpp", "*.h", "*.hpp", "sysconf", "sysconfdgl" },
                     DirectorySearchOption = SearchOption.AllDirectories
                 },
                 new DirectoryData()
                 {
+                    RelativePath = @"sys\unix",
+                    SearchPatterns = new List<string>() { "Makefile.dat", "Makefile.src", "Makefile.top", "Makefile.utl" },
+                },
+                new DirectoryData()
+                {
                     RelativePath = "util",
-                    Extensions = new List<string>() { "*.c", "*.cpp", "*.h", "*.hpp", "*.l", "*.y" }
+                    SearchPatterns = new List<string>() { "*.c", "*.cpp", "*.h", "*.hpp", "*.l", "*.y" }
                 },
                 new DirectoryData()
                 {
                     RelativePath = "dat",
-                    Extensions = new List<string>() { "*.des", "*.def" }
+                    SearchPatterns = new List<string>() { "*.des", "*.def", "symbols" },
                 },
             };
 
@@ -59,10 +64,11 @@ namespace SourceFileTimeStamper
             {
                 string directoryPath = Path.Combine(baseDirectoryPath, directoryData.RelativePath);
                 Console.WriteLine("Processing Directory: " + directoryData.RelativePath);
-                foreach (string searchPattern in directoryData.Extensions)
+                foreach (string searchPattern in directoryData.SearchPatterns)
                 {
                     var filePaths = Directory.GetFiles(directoryPath, searchPattern, directoryData.DirectorySearchOption);
-                    foreach(string filePath in filePaths)
+
+                    foreach (string filePath in filePaths)
                     {
                         Console.WriteLine("Processing File: " + directoryData.RelativePath + @"\" + Path.GetFileName(filePath));
                         FileInfo file = new FileInfo(filePath);
