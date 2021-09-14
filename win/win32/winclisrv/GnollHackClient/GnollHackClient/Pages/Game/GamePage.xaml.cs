@@ -2888,7 +2888,7 @@ namespace GnollHackClient.Pages.Game
                                     {
                                         paint.FilterQuality = SKFilterQuality.None;
 
-                                        bool[,] draw_shadow = new bool[GHConstants.MapCols, GHConstants.MapRows];
+                                        short[,] draw_shadow = new short[GHConstants.MapCols, GHConstants.MapRows];
                                         float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
                                         long currentcountervalue = 0;
                                         lock (AnimationTimerLock)
@@ -2927,13 +2927,13 @@ namespace GnollHackClient.Pages.Game
                                                             continue;
 
                                                         if (layer_idx == (int)layer_types.MAX_LAYERS
-                                                            && (!draw_shadow[mapx, mapy] || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_MONSTER] == NoGlyph)
+                                                            && (draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_MONSTER] == NoGlyph)
                                                             )
                                                             continue;
 
                                                         bool loc_is_you = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
                                                         bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
-                                                        bool canspotself = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
+                                                        bool canspotself = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
                                                         short monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
                                                         float scaled_y_height_change = 0;
                                                         sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
@@ -3857,7 +3857,9 @@ namespace GnollHackClient.Pages.Game
                                                                             //    darken = false;
 
                                                                             if (dx != 0 || dy != 0)
-                                                                                draw_shadow[draw_map_x, draw_map_y] = true;
+                                                                            {
+                                                                                draw_shadow[draw_map_x, draw_map_y] = 1;
+                                                                            }
 
                                                                             int sheet_idx = TileSheetIdx(ntile);
                                                                             int tile_x = TileSheetX(ntile);
@@ -3962,11 +3964,11 @@ namespace GnollHackClient.Pages.Game
                                                                                 move_offset_y = base_move_offset_y;
                                                                                 if (layer_idx == (int)layer_types.MAX_LAYERS)
                                                                                 {
-                                                                                    opaqueness = 0.5f;
+                                                                                    opaqueness = draw_shadow[mapx, mapy] == 2 && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY)) != 0 ? 0.65f : 0.5f;
                                                                                 }
                                                                                 else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
                                                                                 {
-                                                                                    draw_shadow[mapx, mapy] = true;
+                                                                                    draw_shadow[mapx, mapy] = 2;
                                                                                     continue; /* Draw only the transparent shadow in the max_layers shadow layer; otherwise, if drawn twice, the result will be nontransparent */
                                                                                 }
                                                                             }

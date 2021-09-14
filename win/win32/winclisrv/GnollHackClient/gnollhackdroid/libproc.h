@@ -62,7 +62,7 @@ void lib_putmsghistory(const char* msg, BOOLEAN_P);
 
 void lib_status_init(void);
 void lib_status_finish(void);
-void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, int enable);
+void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, BOOLEAN_P enable);
 void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks);
 void lib_stretch_window(void);
 void lib_set_animation_timer_interval(unsigned int);

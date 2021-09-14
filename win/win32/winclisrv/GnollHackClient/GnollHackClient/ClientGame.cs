@@ -600,6 +600,8 @@ namespace GnollHackClient
             if (_statusInfo == null)
                 return;
         }
+
+        public readonly string[] StatusFields = new string[50];
         public void ClientCallback_StatusEnable(int fieldidx, string nm, string fmt, byte enable)
         {
             if (_statusInfo == null)
@@ -746,12 +748,9 @@ namespace GnollHackClient
                 }
             }
 
-            //lock (_gamePageLock)
+            //lock (_gamePage.RefreshScreenLock)
             //{
-            //    lock(_gamePage.RefreshScreenLock)
-            //    {
-            //        _gamePage.RefreshScreen = false;
-            //    }
+            //    _gamePage.RefreshScreen = false;
             //}
 
             bool continuepolling = true;
@@ -771,12 +770,9 @@ namespace GnollHackClient
                 pollResponseQueue();
             }
 
-            //lock(_gamePageLock)
+            //lock (_gamePage.RefreshScreenLock)
             //{
-            //    lock (_gamePage.RefreshScreenLock)
-            //    {
-            //        _gamePage.RefreshScreen = true;
-            //    }
+            //    _gamePage.RefreshScreen = true;
             //}
 
             /* Handle result */
@@ -816,14 +812,10 @@ namespace GnollHackClient
             _outGoingIntPtr = arrayptr;
             listsize = cnt * 2;
 
-            //lock (_gamePageLock)
+            //lock (_gamePage.RefreshScreenLock)
             //{
-            //    lock (_gamePage.RefreshScreenLock)
-            //    {
-            //        _gamePage.RefreshScreen = true;
-            //    }
+            //    _gamePage.RefreshScreen = true;
             //}
-
             return cnt;
         }
 

@@ -123,7 +123,7 @@ namespace GnollHackClient
         private async Task StartUpTasks()
         {
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            App.LoadServices();
+            App.InitializeServices();
             App.InitTypefaces(assembly);
             App.IsModernAndroid = App.AppCloseService.IsModernAndroid();
             string verstr = App.GnollHackService.GetVersionString();

@@ -651,8 +651,7 @@ void lib_status_finish(void)
     genl_status_finish();
 }
 
-void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt,
-    BOOLEAN_P enable)
+void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, BOOLEAN_P enable)
 {
     lib_callbacks.callback_status_enablefield(fieldidx, nm, fmt, enable);
     genl_status_enablefield(fieldidx, nm, fmt, enable);
@@ -773,12 +772,14 @@ void print_status_field(int idx, boolean first_field)
            it past the first position, provide one */
         lib_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
     }
+#if 0
     else if (idx == BL_LEVELDESC && !first_field)
     {
         /* leveldesc has no leading space, so if we've moved
            it past the first position, provide one */
         lib_putstr_ex(WIN_STATUS, ATR_NONE, " ", 0, CLR_WHITE);
     }
+#endif
     else if (iflags.wc2_statuslines >= 3)
     {
         /* looks like first field */

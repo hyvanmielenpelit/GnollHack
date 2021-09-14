@@ -1824,6 +1824,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean make_semi_transparent = FALSE;
                     boolean make_invis_transparent = FALSE;
                     boolean use_radial_transparency = FALSE;
+                    boolean use_glass_transparency = FALSE;
                     if (base_layer == LAYER_MONSTER)
                     {
                         if (mtmp && (is_semi_transparent(mtmp->data)))
@@ -1831,6 +1832,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             make_semi_transparent = TRUE;
                             if (is_radially_transparent(mtmp->data))
                                 use_radial_transparency = TRUE;
+                            if (is_glass_transparent(mtmp->data))
+                                use_glass_transparency = TRUE;
                         }
 
                         if ((mtmp && ((!is_enl_you && is_invisible(mtmp) && canspotmon(mtmp)))) || (is_enl_you && Invis))
@@ -2227,7 +2230,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             /* Draw semitransparency */
                             int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
                             int idx, x, y;
-                            double semi_transparency = make_semi_transparent && make_invis_transparent ? 0.5 * 0.85 : 0.5;
+                            double base_transparency = use_glass_transparency ? 0.35 : 0.5;
+                            double semi_transparency = make_semi_transparent && make_invis_transparent ? (1.0 - (1.0 - base_transparency) * 0.85) : base_transparency;
 
                             if (use_radial_transparency)
                             {

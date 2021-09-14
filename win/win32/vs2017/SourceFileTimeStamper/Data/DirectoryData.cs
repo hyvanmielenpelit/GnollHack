@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace SourceFileTimeStamper.Data
@@ -13,5 +14,6 @@ namespace SourceFileTimeStamper.Data
 
         public string RelativePath { get; set; }
         public List<string> Extensions { get; set; }
+        public SearchOption DirectorySearchOption { get; set; }
     }
 }

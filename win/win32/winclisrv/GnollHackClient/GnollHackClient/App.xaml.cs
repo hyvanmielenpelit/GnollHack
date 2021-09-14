@@ -33,6 +33,7 @@ namespace GnollHackClient
         public App()
         {
             InitializeComponent();
+            App.LoadServices();
             var mainPage = new MainPage();
             var navPage = new NavigationPage(mainPage);
             MainPage = navPage;
@@ -91,6 +92,12 @@ namespace GnollHackClient
             _mainGnollHackService = DependencyService.Get<IGnollHackService>();
             _mainGnollHackService.LoadLibrary();
             _mainGnollHackService.Test();
+            _fmodService = DependencyService.Get<IFmodService>();
+            _appCloseService = DependencyService.Get<IAppCloseService>();
+        }
+
+        public static void InitializeServices()
+        {
             bool resetFiles = Preferences.Get("ResetAtStart", true);
             if (resetFiles)
             {
@@ -99,10 +106,8 @@ namespace GnollHackClient
                 Preferences.Set("ResetExternalFiles", true);
             }
             _mainGnollHackService.InitializeGnollHack();
-            _fmodService = DependencyService.Get<IFmodService>();
             _fmodService.InitializeFmod();
             _fmodService.LoadBanks();
-            _appCloseService = DependencyService.Get<IAppCloseService>();
         }
 
         private static bool _hideNavBar;
