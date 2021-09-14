@@ -70,7 +70,7 @@ namespace SourceFileTimeStamper
             string baseDirectoryPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), BaseDirectoryRelativePath));
 
             Console.WriteLine("Base Directory Path: " + baseDirectoryPath);
-
+            int count = 0;
             foreach (var directoryData in DirectoriesToProcess)
             {
                 string directoryPath = Path.Combine(baseDirectoryPath, directoryData.RelativePath);
@@ -101,6 +101,7 @@ namespace SourceFileTimeStamper
                         try
                         {
                             TimeStamper.StampFile(file);
+                            count++;
                         }
                         catch (Exception ex)
                         {
@@ -110,7 +111,7 @@ namespace SourceFileTimeStamper
                 }
             }
             
-            Console.WriteLine("Finished");            
+            Console.WriteLine("Finished. Processed " + count + " files.");            
         }
     }
 }
