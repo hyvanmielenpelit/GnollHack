@@ -56,7 +56,9 @@ namespace SourceFileTimeStamper
                 new DirectoryData()
                 {
                     RelativePath = "util",
-                    SearchPatterns = new List<string>() { "*.c", "*.cpp", "*.h", "*.hpp", "*.l", "*.y" }
+                    SearchPatterns = new List<string>() { "*.c", "*.cpp", "*.h", "*.hpp", "*.l", "*.y" },
+                    ExcludedFiles = new List<string>() { "dgn_comp.tab.c", "dgn_lex.c", "dgn_yacc.c", "lev_comp.tab.c", "lev_lex.c", "lev_yacc.c", "lex.yy.c",
+                    "dgn_comp.tab.h", "lev_comp.tab.h" }
                 },
                 new DirectoryData()
                 {

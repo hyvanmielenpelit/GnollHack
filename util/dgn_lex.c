@@ -560,6 +560,8 @@ char *yytext;
 #line 1 "dgn_comp.l"
 #define INITIAL 0
 #line 2 "dgn_comp.l"
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0  dgn_comp.l	$NHDT-Date: 1455415007 2016/02/14 01:56:47 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.13 $ */
 /*	Copyright (c) 1989 by Jean-Christophe Collet */
 /*	Copyright (c) 1990 by M. Stephenson	     */
@@ -647,7 +649,7 @@ extern YYSTYPE yylval;
 
 int nh_line_number = 1;
 
-#line 651 "lex.yy.c"
+#line 653 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -801,9 +803,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 90 "dgn_comp.l"
+#line 92 "dgn_comp.l"
 
-#line 807 "lex.yy.c"
+#line 809 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -889,227 +891,227 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 91 "dgn_comp.l"
+#line 93 "dgn_comp.l"
 return(A_DUNGEON);
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 92 "dgn_comp.l"
+#line 94 "dgn_comp.l"
 { yylval.i=1; return(UP_OR_DOWN); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 93 "dgn_comp.l"
+#line 95 "dgn_comp.l"
 { yylval.i=0; return(UP_OR_DOWN); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 94 "dgn_comp.l"
+#line 96 "dgn_comp.l"
 return(ENTRY);
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 95 "dgn_comp.l"
+#line 97 "dgn_comp.l"
 return(STAIR);
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 96 "dgn_comp.l"
+#line 98 "dgn_comp.l"
 return(NO_UP);
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 97 "dgn_comp.l"
+#line 99 "dgn_comp.l"
 return(NO_DOWN);
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 98 "dgn_comp.l"
+#line 100 "dgn_comp.l"
 return(PORTAL);
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 99 "dgn_comp.l"
+#line 101 "dgn_comp.l"
 return(PROTOFILE);
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 100 "dgn_comp.l"
+#line 102 "dgn_comp.l"
 return(DESCRIPTION);
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 101 "dgn_comp.l"
+#line 103 "dgn_comp.l"
 return(LEVELDESC);
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 102 "dgn_comp.l"
+#line 104 "dgn_comp.l"
 return(ALIGNMENT);
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 103 "dgn_comp.l"
+#line 105 "dgn_comp.l"
 return(LEVALIGN);
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 104 "dgn_comp.l"
+#line 106 "dgn_comp.l"
 return(TILESET_ID);
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 105 "dgn_comp.l"
+#line 107 "dgn_comp.l"
 { yylval.i=TOWN ; return(DESCRIPTOR); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 106 "dgn_comp.l"
+#line 108 "dgn_comp.l"
 { yylval.i=HELLISH ; return(DESCRIPTOR); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 107 "dgn_comp.l"
+#line 109 "dgn_comp.l"
 { yylval.i=MAZELIKE ; return(DESCRIPTOR); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 108 "dgn_comp.l"
+#line 110 "dgn_comp.l"
 { yylval.i=ROGUELIKE ; return(DESCRIPTOR); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 109 "dgn_comp.l"
+#line 111 "dgn_comp.l"
 { yylval.i=D_ALIGN_NONE ; return(DESCRIPTOR); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 110 "dgn_comp.l"
+#line 112 "dgn_comp.l"
 { yylval.i=D_ALIGN_NONE ; return(DESCRIPTOR); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 111 "dgn_comp.l"
+#line 113 "dgn_comp.l"
 { yylval.i=D_ALIGN_LAWFUL ; return(DESCRIPTOR); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 112 "dgn_comp.l"
+#line 114 "dgn_comp.l"
 { yylval.i=D_ALIGN_NEUTRAL ; return(DESCRIPTOR); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 113 "dgn_comp.l"
+#line 115 "dgn_comp.l"
 { yylval.i=D_ALIGN_CHAOTIC ; return(DESCRIPTOR); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 114 "dgn_comp.l"
+#line 116 "dgn_comp.l"
 { yylval.i=CMAP_NORMAL; return CMAP_TYPE; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 115 "dgn_comp.l"
+#line 117 "dgn_comp.l"
 { yylval.i=CMAP_GNOMISH_MINES; return CMAP_TYPE; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 116 "dgn_comp.l"
+#line 118 "dgn_comp.l"
 { yylval.i=CMAP_GEHENNOM; return CMAP_TYPE; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 117 "dgn_comp.l"
+#line 119 "dgn_comp.l"
 { yylval.i=CMAP_UNDEAD_STYLE; return CMAP_TYPE; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 118 "dgn_comp.l"
+#line 120 "dgn_comp.l"
 { yylval.i=CMAP_SOKOBAN; return CMAP_TYPE; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 119 "dgn_comp.l"
+#line 121 "dgn_comp.l"
 { yylval.i=CMAP_ELEMENTAL_PLANES; return CMAP_TYPE; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 120 "dgn_comp.l"
+#line 122 "dgn_comp.l"
 { yylval.i=CMAP_ASTRAL; return CMAP_TYPE; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 121 "dgn_comp.l"
+#line 123 "dgn_comp.l"
 { yylval.i=CMAP_GEHENNOM_CAVERNOUS; return CMAP_TYPE; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 122 "dgn_comp.l"
+#line 124 "dgn_comp.l"
 return(BRANCH);
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 123 "dgn_comp.l"
+#line 125 "dgn_comp.l"
 return(CHBRANCH);
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 124 "dgn_comp.l"
+#line 126 "dgn_comp.l"
 return(LEVEL);
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 125 "dgn_comp.l"
+#line 127 "dgn_comp.l"
 return(RNDLEVEL);
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 126 "dgn_comp.l"
+#line 128 "dgn_comp.l"
 return(CHLEVEL);
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 127 "dgn_comp.l"
+#line 129 "dgn_comp.l"
 return(RNDCHLEVEL);
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 128 "dgn_comp.l"
+#line 130 "dgn_comp.l"
 { yylval.i=atoi(yytext); return(INTEGER); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 129 "dgn_comp.l"
+#line 131 "dgn_comp.l"
 { yytext[yyleng - 1] = '\0'; /* discard the trailing \" */
 		  yylval.str = dupstr(yytext + 1); /* skip the first \" */
 		  return STRING; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 132 "dgn_comp.l"
+#line 134 "dgn_comp.l"
 { nh_line_number++; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 133 "dgn_comp.l"
+#line 135 "dgn_comp.l"
 { nh_line_number++; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 134 "dgn_comp.l"
+#line 136 "dgn_comp.l"
 ;	/* skip trailing tabs & spaces */
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 135 "dgn_comp.l"
+#line 137 "dgn_comp.l"
 { return yytext[0]; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 136 "dgn_comp.l"
+#line 138 "dgn_comp.l"
 ECHO;
 	YY_BREAK
-#line 1113 "lex.yy.c"
+#line 1115 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1997,7 +1999,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 136 "dgn_comp.l"
+#line 138 "dgn_comp.l"
 
 
 /* routine to switch to another input file; needed for flex */

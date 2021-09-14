@@ -1,3 +1,5 @@
+# GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14
+
 #	Makefile for GnollHack's utility programs.
 # GnollHack 3.6  Makefile.utl    $NHDT-Date: 1539968067 2018/10/19 16:54:27 $  $NHDT-Branch: keni-makedefsm $:$NHDT-Revision: 1.38 $
 # Copyright (c) 2018 by Robert Patrick Rankin
