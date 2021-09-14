@@ -80,7 +80,6 @@ namespace SourceFileTimeStamper
                         {
                             Console.WriteLine("Exception: " + ex.Message);
                         }
-                        break;
                     }
                 }
             }
