@@ -84,7 +84,7 @@ namespace SourceFileTimeStamper
                         return;
             }
 
-            var lines = File.ReadAllLines(file.FullName);
+            var lines = File.ReadAllLines(file.FullName, Encoding.UTF8);
             string _modifiedDateString = _prefixString[(int)style] + _baseModifiedDateString + _suffixString[(int)style];
 
             string modifiedDateStringStart = _modifiedDateString.Substring(0, _modifiedDateString.Length - 3 - _suffixString[(int)style].Length);
@@ -131,7 +131,7 @@ namespace SourceFileTimeStamper
                 Console.WriteLine("- Adding Modified Time Stamp: " + nowTimeString);
                 lines2.Insert(sepLineNum, _separatorString);
 
-                File.WriteAllLines(file.FullName, lines2);
+                File.WriteAllLines(file.FullName, lines2, Encoding.UTF8);
             }
             else if (lines[modLineNum].StartsWith(modifiedDateStringStart) && lines[sepLineNum] == _separatorString)
             {

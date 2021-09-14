@@ -3853,17 +3853,17 @@ size_t bufsize;
                 bp++;
                 uc = (uchar)(*bp);
                 if (0xa5 == uc)
-                    *wp = '�'; /* � */
+                    *wp = 'å'; /* å */
                 else if (0xa4 == uc)
-                    *wp = '�';  /* � */
+                    *wp = 'ä';  /* ä */
                 else if (0xb6 == uc)
-                    *wp = '�'; /* � */
+                    *wp = 'ö'; /* ö */
                 else if (0x85 == uc)
-                    *wp = '�'; /* � */
+                    *wp = 'Å'; /* Å */
                 else if (0x84 == uc)
-                    *wp = '�'; /* � */
+                    *wp = 'Ä'; /* Ä */
                 else if (0x96 == uc)
-                    *wp = '�'; /* � */
+                    *wp = 'Ö'; /* Ö */
                 else
                     *wp = '?';
 
