@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    trap.h    $NHDT-Date: 1547255912 2019/01/12 01:18:32 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.17 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2016. */

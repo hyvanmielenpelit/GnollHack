@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	vmsconf.h	$NHDT-Date: 1555361299 2019/04/15 20:48:19 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.30 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */

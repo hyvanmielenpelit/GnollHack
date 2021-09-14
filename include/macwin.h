@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	macwin.h	$NHDT-Date: 1447755970 2015/11/17 10:26:10 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Kevin Hugo, 2003. */

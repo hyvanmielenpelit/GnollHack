@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    permonst.h    $NHDT-Date: 1539804913 2018/10/17 19:35:13 $  $NHDT-Branch: keni-makedefsm $:$NHDT-Revision: 1.12 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Kenneth Lorber, Kensington, Maryland, 2015. */

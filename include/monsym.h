@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0  monsym.h        $NHDT-Date: 1547428769 2019/01/14 01:19:29 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.12 $ */
 /*      Copyright (c) 2016 by Pasi Kallinen              */
 /* GnollHack may be freely redistributed.  See license for details. */

@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 
 /* A Bison parser, made by GNU Bison 2.4.1.  */
 

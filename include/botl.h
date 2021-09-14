@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0  botl.h  $NHDT-Date: 1554591222 2019/04/06 22:53:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.24 $ */
 /* Copyright (c) Michael Allison, 2003                            */
 /* GnollHack may be freely redistributed.  See license for details. */

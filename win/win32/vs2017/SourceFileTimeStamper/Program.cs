@@ -20,12 +20,15 @@ namespace SourceFileTimeStamper
                 new DirectoryData()
                 {
                     RelativePath = "src",
-                    SearchPatterns = new List<string>() { "*.c", "*.cpp" }
+                    SearchPatterns = new List<string>() { "*.c", "*.cpp" },
+                    ExcludedFiles = new List<string>() { "animation.c", "animdef.c", "encounter.c", "matcomps.c", "npc.c", "rm.c", "soundset.c", "tiledata.c" }
                 },
                 new DirectoryData()
                 {
                     RelativePath = "include",
-                    SearchPatterns = new List<string>() { "*.h", "*.hpp" }
+                    SearchPatterns = new List<string>() { "*.h", "*.hpp" },
+                    ExcludedFiles = new List<string>() { "animation.h", "animoff.h", "animtotals.h", "encounter.h", "general.h", "layers.h", "action.h",
+                        "matcomps.h", "npc.h", "soundset.h", "tiledata.h" }
                 },
                 new DirectoryData()
                 {
@@ -72,6 +75,21 @@ namespace SourceFileTimeStamper
                     {
                         Console.WriteLine("Processing File: " + directoryData.RelativePath + @"\" + Path.GetFileName(filePath));
                         FileInfo file = new FileInfo(filePath);
+                        bool doexclude = false;
+                        foreach(string exclfile in directoryData.ExcludedFiles)
+                        {
+                            if(exclfile == file.Name)
+                            {
+                                doexclude = true;
+                                break;
+                            }
+                        }
+                        if (doexclude)
+                        {
+                            Console.WriteLine("Excluded File: " + directoryData.RelativePath + @"\" + Path.GetFileName(filePath));
+                            continue;
+                        }
+
                         try
                         {
                             TimeStamper.StampFile(file);

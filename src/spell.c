@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    spell.c    $NHDT-Date: 1546565814 2019/01/04 01:36:54 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.88 $ */
 /*      Copyright (c) M. Stephenson 1988                          */
 /* GnollHack may be freely redistributed.  See license for details. */

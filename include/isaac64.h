@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* CC0 (Public domain) - see http://creativecommons.org/publicdomain/zero/1.0/ for details */
 #if !defined(_isaac64_H)
 # define _isaac64_H (1)

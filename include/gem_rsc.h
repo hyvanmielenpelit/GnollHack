@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* resource set indices for GEM_RSC */
 
 #define MENU 0     /* menu */

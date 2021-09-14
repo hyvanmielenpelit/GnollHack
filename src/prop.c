@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0 prop.c */
 /* Copyright (c) Janne Gustafsson, 2021.                            */
 /* GnollHack may be freely redistributed.  See license for details. */

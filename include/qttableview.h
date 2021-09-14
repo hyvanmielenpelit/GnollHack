@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /**********************************************************************
 ** $NHDT-Date: 1524683840 2018/04/25 19:17:20 $ $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.5 $
 ** $Id: qttableview.h,v 1.2 2002/03/09 03:13:13 jwalz Exp $

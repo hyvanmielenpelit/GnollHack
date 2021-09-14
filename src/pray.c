@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    pray.c    $NHDT-Date: 1549074257 2019/02/02 02:24:17 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.110 $ */
 /* Copyright (c) Benson I. Margulies, Mike Stephenson, Steve Linhart, 1989. */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -1963,7 +1965,7 @@ boolean bless_water;
 }
 
 /* either blesses or curses holy symbols and prayer stones on the altar, and either charges a holy symbol or strips charges to zero
- * returns true if it found any holy´symbols here.
+ * returns true if it found any holyï¿½symbols here.
  */
 STATIC_OVL boolean
 symbol_prayer(bless_stuff)

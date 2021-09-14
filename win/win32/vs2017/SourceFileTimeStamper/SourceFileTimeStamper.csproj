@@ -9,4 +9,9 @@
     <OutputPath></OutputPath>
   </PropertyGroup>
 
+  <!--
+  <Target Name="AfterBuild">
+    <Exec Command="$(ProjectDir)$(OutputPath)$(AssemblyName).$(OutputType)" />  	
+  </Target>
+  -->
 </Project>

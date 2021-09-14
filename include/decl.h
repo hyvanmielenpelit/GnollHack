@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0  decl.h  $NHDT-Date: 1547025154 2019/01/09 09:12:34 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.147 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2007. */

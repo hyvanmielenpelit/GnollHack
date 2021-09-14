@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    steed.c    $NHDT-Date: 1545441042 2018/12/22 01:10:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.62 $ */
 /* Copyright (c) Kevin Hugo, 1998-1999. */
 /* GnollHack may be freely redistributed.  See license for details. */

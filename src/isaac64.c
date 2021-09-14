@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /*Written by Timothy B. Terriberry (tterribe@xiph.org) 1999-2009
   CC0 (Public domain) - see http://creativecommons.org/publicdomain/zero/1.0/
   for details.

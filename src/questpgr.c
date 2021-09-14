@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    questpgr.c    $NHDT-Date: 1505172128 2017/09/11 23:22:08 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.38 $ */
 /*      Copyright 1991, M. Stephenson                             */
 /* GnollHack may be freely redistributed.  See license for details. */

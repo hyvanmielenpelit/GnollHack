@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    integer.h    $NHDT-Date: 1551901047 2019/03/06 19:37:27 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.7 $ */
 /*      Copyright (c) 2016 by Michael Allison          */
 /* GnollHack may be freely redistributed.  See license for details. */

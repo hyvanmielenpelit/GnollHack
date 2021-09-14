@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    write.c    $NHDT-Date: 1450261366 2015/12/16 10:22:46 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.17 $ */
 /* GnollHack may be freely redistributed.  See license for details. */
 

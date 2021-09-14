@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    cmd.c    $NHDT-Date: 1557088405 2019/05/05 20:33:25 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.333 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2013. */
@@ -6077,7 +6079,7 @@ struct {
 } const spkeys_binds[] = {
     { NHKF_ESC,              '\033', (char *) 0 }, /* no binding */
     { NHKF_DOAGAIN,          DOAGAIN, "repeat" },
-    { NHKF_DOAGAIN2,         -89 /*'§'*/, "repeat.alternate" },
+    { NHKF_DOAGAIN2,         -89 /*'ï¿½'*/, "repeat.alternate" },
     { NHKF_REQMENU,          'm', "reqmenu" },
     { NHKF_RUN,              'G', "run" },
     { NHKF_RUN2,             '5', "run.numpad" },

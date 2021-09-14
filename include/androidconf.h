@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /*	SCCS Id: @(#)androidconf.h	3.4	2011/03/31	*/
 /* Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1990, 1991, 1992, 1993. */
 /* GnollHack may be freely redistributed.  See license for details. */
