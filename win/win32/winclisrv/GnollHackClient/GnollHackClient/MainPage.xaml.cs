@@ -273,18 +273,18 @@ namespace GnollHackClient
 
         private async Task StartFadeLogoIn()
         {
-            Task t1 = StartLogoImage.FadeTo(1, 500);
-            Task t2 = FmodLogoImage.FadeTo(1, 500);
-            List<Task> tasklist = new List<Task> { t1, t2 };
-            await Task.WhenAll(tasklist);
+            await StartLogoImage.FadeTo(1, 250);
+            await FmodLogoImage.FadeTo(1, 250);
+            //List<Task> tasklist = new List<Task> { t1, t2 };
+            //await Task.WhenAll(tasklist);
         }
 
         private async Task StartFadeIn()
         {
             await StartLogoImage.FadeTo(0, 250);
             await FmodLogoImage.FadeTo(0, 250);
-            //List<Task> tasklist1 = new List<Task> { t1, t2 };
-            //await Task.WhenAll(tasklist1);
+            //Task[] tasklist1 = new Task[2] { t1, t2 };
+            //Task.WaitAll(tasklist1);
 
             videoView.IsVisible = true;
             await videoView.FadeTo(1, 250);
