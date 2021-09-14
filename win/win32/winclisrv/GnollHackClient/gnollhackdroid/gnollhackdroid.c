@@ -1,3 +1,7 @@
+/* GnollHack 4.1.0 gnollhackdroid.c */
+/* Copyright (c) Janne Gustafsson, 2021. */
+/* GnollHack may be freely redistributed.  See license for details. */
+
 #include "gnollhackdroid.h"
 #include "hack.h"
 #include "libproc.h"

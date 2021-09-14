@@ -75,7 +75,13 @@ namespace SourceFileTimeStamper
                     style = ModifificationMarkStyles.YaccLex;
                     break;
                 default:
-                    return;
+                    if(file.Name.StartsWith("Makefile."))
+                    {
+                        style = ModifificationMarkStyles.Des;
+                        break;
+                    }
+                    else
+                        return;
             }
 
             var lines = File.ReadAllLines(file.FullName);

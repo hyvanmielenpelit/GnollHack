@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	pcvideo.h	$NHDT-Date: 1457207040 2016/03/05 19:44:00 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.9 $ */
 /*   Copyright (c) NetHack PC Development Team 1993, 1994           */
 /*   NetHack may be freely redistributed.  See license for details. */

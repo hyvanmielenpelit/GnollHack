@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GIF reading routines based on those in pbmplus:ppm/giftoppm.c, bearing
  * following copyright notice:
  */

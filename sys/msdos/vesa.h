@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	vesa.h	$NHDT-Date: 1507161296 2017/10/04 23:54:56 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.0 $ */
 
 /* VESA structures from the VESA BIOS Specification, retrieved 15 Jan 2016

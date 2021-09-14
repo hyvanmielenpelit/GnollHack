@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	lev_lex.h	$NHDT-Date: 1432512790 2015/05/25 00:13:10 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
 /* "vms/lev_lex.h" copied into "util/stdio.h" for use in *_lex.c only!
  * This is an awful kludge to allow util/*_lex.c made by SunOS's `lex'

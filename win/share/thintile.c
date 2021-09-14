@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	thintile.c	$NHDT-Date: 1457207049 2016/03/05 19:44:09 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.10 $ */
 /*   Copyright (c) NetHack Development Team 1995                    */
 /*   NetHack may be freely redistributed.  See license for details. */

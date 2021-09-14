@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	winmap.c	$NHDT-Date: 1455389908 2016/02/13 18:58:28 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.29 $ */
 /* Copyright (c) Dean Luick, 1992                                 */
 /* GnollHack may be freely redistributed.  See license for details. */

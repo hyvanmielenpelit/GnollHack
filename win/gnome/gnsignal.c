@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	gnsignal.c	$NHDT-Date: 1432512805 2015/05/25 00:13:25 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
 /* Copyright (C) 1998 by Anthony Taylor <tonyt@ptialaska.net> */
 /* GnollHack may be freely redistributed.  See license for details. */

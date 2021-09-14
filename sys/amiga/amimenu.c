@@ -1,7 +1,9 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	amimenu.c	$NHDT-Date: 1432512796 2015/05/25 00:13:16 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
 /*    Copyright (c) Olaf 'Rhialto' Seibert, 1989		   */
 /*    Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1992, 1993, 1996 */
-/*    Copyright (c) Janne Salmijärvi, 2000 */
+/*    Copyright (c) Janne Salmijï¿½rvi, 2000 */
 /* GnollHack may be freely redistributed.  See license for details.  */
 
 /*  Originally by John Toebes.  */

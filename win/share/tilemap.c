@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    tilemap.c    $NHDT-Date: 1542501042 2018/11/18 00:30:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.35 $ */
 /*      Copyright (c) 2016 by Michael Allison                     */
 /* GnollHack may be freely redistributed.  See license for details. */

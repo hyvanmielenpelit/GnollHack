@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	vidvga.c	$NHDT-Date: 1457207044 2016/03/05 19:44:04 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.18 $ */
 /*   Copyright (c) NetHack PC Development Team 1995                 */
 /*   NetHack may be freely redistributed.  See license for details. */

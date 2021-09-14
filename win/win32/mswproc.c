@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    mswproc.c    $NHDT-Date: 1545705822 2018/12/25 02:43:42 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.130 $ */
 /* Copyright (C) 2001 by Alex Kompel      */
 /* GnollHack may be freely redistributed.  See license for details. */
@@ -3851,17 +3853,17 @@ size_t bufsize;
                 bp++;
                 uc = (uchar)(*bp);
                 if (0xa5 == uc)
-                    *wp = 'å'; /* å */
+                    *wp = 'ï¿½'; /* ï¿½ */
                 else if (0xa4 == uc)
-                    *wp = 'ä';  /* ä */
+                    *wp = 'ï¿½';  /* ï¿½ */
                 else if (0xb6 == uc)
-                    *wp = 'ö'; /* ö */
+                    *wp = 'ï¿½'; /* ï¿½ */
                 else if (0x85 == uc)
-                    *wp = 'Å'; /* Å */
+                    *wp = 'ï¿½'; /* ï¿½ */
                 else if (0x84 == uc)
-                    *wp = 'Ä'; /* Ä */
+                    *wp = 'ï¿½'; /* ï¿½ */
                 else if (0x96 == uc)
-                    *wp = 'Ö'; /* Ö */
+                    *wp = 'ï¿½'; /* ï¿½ */
                 else
                     *wp = '?';
 

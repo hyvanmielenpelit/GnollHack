@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0  ppmwrite.c	$NHDT-Date: 1432512803 2015/05/25 00:13:23 $  $NHDT-Branch: master $:$NHDT-Revision: 1.6 $ */
 /* this produces a raw ppm file, with a 15-character header of
  * "P6 3-digit-width 3-digit-height 255\n"

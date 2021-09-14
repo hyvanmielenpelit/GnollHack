@@ -1,7 +1,6 @@
-/*
- * callback.h
- * Copyright (c) Janne Gustafsson, 2021
- */
+/* GnollHack 4.1.0 callback.h */
+/* Copyright (c) Janne Gustafsson, 2021. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "config.h"
 #include "layer.h"

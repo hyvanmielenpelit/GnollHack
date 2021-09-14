@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /*   Copyright (c) NetHack PC Development Team 1995                 */
 /*   VESA BIOS functions copyright (c) Ray Chason 2016              */
 /*   NetHack may be freely redistributed.  See license for details. */

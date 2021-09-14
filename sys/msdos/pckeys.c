@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	pckeys.c	$NHDT-Date: 1501465420 2017/07/31 01:43:40 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.12 $ */
 /* Copyright (c) NetHack PC Development Team 1996                 */
 /* GnollHack may be freely redistributed.  See license for details. */

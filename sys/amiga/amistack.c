@@ -1,5 +1,7 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	amistack.c	$NHDT-Date: 1432512795 2015/05/25 00:13:15 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
-/* Copyright (c) Janne Salmijärvi, Tampere, Finland, 2000		*/
+/* Copyright (c) Janne Salmijï¿½rvi, Tampere, Finland, 2000		*/
 /* GnollHack may be freely redistributed.  See license for details.	*/
 
 /*

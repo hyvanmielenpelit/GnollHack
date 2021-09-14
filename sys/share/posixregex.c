@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0  posixregex.c	$NHDT-Date: 1434446947 2015/06/16 09:29:07 $  $NHDT-Branch: master $:$NHDT-Revision: 1.5 $ */
 /* Copyright (c) Sean Hunt  2015.                                 */
 /* GnollHack may be freely redistributed.  See license for details. */

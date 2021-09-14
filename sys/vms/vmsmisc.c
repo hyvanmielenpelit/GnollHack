@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	vmsmisc.c	$NHDT-Date: 1524689429 2018/04/25 20:50:29 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.11 $ */
 /*      Copyright (c) 2011 by Robert Patrick Rankin              */
 /* GnollHack may be freely redistributed.  See license for details. */

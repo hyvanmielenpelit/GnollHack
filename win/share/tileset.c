@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    tileset.c    $NHDT-Date: 1501463811 2017/07/31 01:16:51 $ $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.0 $ */
 /* Copyright (c) Ray Chason, 2016. */
 /* GnollHack may be freely redistributed.  See license for details. */

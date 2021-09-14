@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /*
  * Use this stub to insert a needed pragma prior
  * to compiling $(PDCWINCON)\pdcscrn.c in the

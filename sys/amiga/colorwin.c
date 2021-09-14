@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 SHORT Col_BorderVectors1[] = { 0, 0, 59, 0, 59, 12, 0, 12, 0, 0 };
 struct Border Col_Border1 = {
     -1, -1,             /* XY origin relative to container TopLeft */

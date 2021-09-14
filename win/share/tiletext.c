@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0    tiletext.c    $NHDT-Date: 1524689272 2018/04/25 20:47:52 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.16 $ */
 /*      Copyright (c) 2016 by Pasi Kallinen                       */
 /* GnollHack may be freely redistributed.  See license for details. */

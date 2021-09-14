@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0  cppregex.cpp */
 /* $NHDT-Date: 1524684157 2018/04/25 19:22:37 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.8 $ */
 /* Copyright (c) Sean Hunt  2015.                                 */

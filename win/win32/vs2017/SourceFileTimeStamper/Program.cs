@@ -21,26 +21,32 @@ namespace SourceFileTimeStamper
                 {
                     RelativePath = "src",
                     SearchPatterns = new List<string>() { "*.c", "*.cpp" },
-                    ExcludedFiles = new List<string>() { "animation.c", "animdef.c", "encounter.c", "matcomps.c", "npc.c", "rm.c", "soundset.c", "tiledata.c" }
+                    ExcludedFiles = new List<string>() { "animation.c", "animdef.c", "encounter.c", "matcomps.c", "npc.c", "rm.c", 
+                        "soundset.c", "tiledata.c", "vis_tab.c" }
                 },
                 new DirectoryData()
                 {
                     RelativePath = "include",
                     SearchPatterns = new List<string>() { "*.h", "*.hpp" },
-                    ExcludedFiles = new List<string>() { "animation.h", "animoff.h", "animtotals.h", "encounter.h", "general.h", "layers.h", "action.h",
-                        "matcomps.h", "npc.h", "soundset.h", "tiledata.h" }
+                    ExcludedFiles = new List<string>() { "animation.h", "animoff.h", "animtotals.h", "encounter.h", "general.h", 
+                        "layers.h", "action.h", "matcomps.h", "npc.h", "soundset.h", "tiledata.h", "date.h", "pm.h", "onames.h",
+                        "vis_tab.h", "dgn_comp.h", "lev_comp.h" }
                 },
                 new DirectoryData()
                 {
                     RelativePath = @"win",
                     SearchPatterns = new List<string>() { "*.c", "*.cpp", "*.h", "*.hpp" },
-                    DirectorySearchOption = SearchOption.AllDirectories
+                    DirectorySearchOption = SearchOption.AllDirectories,
+                    ExcludedFiles = new List<string>() { "callback.c", "callback.h", "dllhack.c", "dllmain.c", "dllproc.c", "dllhack.h", "dllproc.h",
+                        "date_unix.h", "gnollhackdroid.h", "libproc.h", "pch.h", "droidmain.c", "droidunix.c", "gnollhackdroid.c", "libproc.c",
+                        "soundfx.cpp", "soundfx.h", "mhwingdi.cpp", "mhwingdi.h", "resource.h", "nhresource.h" }
                 },
                 new DirectoryData()
                 {
                     RelativePath = @"sys",
                     SearchPatterns = new List<string>() { "*.c", "*.cpp", "*.h", "*.hpp", "sysconf", "sysconfdgl" },
-                    DirectorySearchOption = SearchOption.AllDirectories
+                    DirectorySearchOption = SearchOption.AllDirectories,
+                    ExcludedFiles = new List<string>() { "dgn_comp.h", "dgn_lex.c", "dgn_yacc.c", "lev_comp.h", "lev_lex.c", "lev_yacc.c" }
                 },
                 new DirectoryData()
                 {

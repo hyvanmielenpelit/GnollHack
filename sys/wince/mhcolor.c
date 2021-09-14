@@ -1,3 +1,5 @@
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+
 /* GnollHack 4.0	mhcolor.c	$NHDT-Date: 1432512802 2015/05/25 00:13:22 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
 /* GnollHack may be freely redistributed.  See license for details. */
