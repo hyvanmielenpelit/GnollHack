@@ -273,25 +273,32 @@ namespace GnollHackClient
 
         private async Task StartFadeLogoIn()
         {
-            await StartLogoImage.FadeTo(1, 250);
-            await FmodLogoImage.FadeTo(1, 250);
+            Task t1 = StartLogoImage.FadeTo(1, 500);
+            Task t2 = FmodLogoImage.FadeTo(1, 500);
+            List<Task> tasklist = new List<Task> { t1, t2 };
+            await Task.WhenAll(tasklist);
         }
 
         private async Task StartFadeIn()
         {
             await StartLogoImage.FadeTo(0, 250);
             await FmodLogoImage.FadeTo(0, 250);
-            UpperButtonGrid.IsVisible = true;
-            await UpperButtonGrid.FadeTo(1, 250);
+            //List<Task> tasklist1 = new List<Task> { t1, t2 };
+            //await Task.WhenAll(tasklist1);
 
             videoView.IsVisible = true;
             await videoView.FadeTo(1, 250);
             videoView.Play();
 
+            UpperButtonGrid.IsVisible = true;
+            await UpperButtonGrid.FadeTo(1, 250);
             StartButtonGrid.IsVisible = true;
             await StartButtonGrid.FadeTo(1, 250);
             LogoGrid.IsVisible = true;
             await LogoGrid.FadeTo(1, 250);
+
+            //List<Task> tasklist2 = new List<Task> { t3, t4, t5 };
+            //await Task.WhenAll(tasklist2);
         }
 
         public async Task CheckPurchaseStatus(bool atappstart)

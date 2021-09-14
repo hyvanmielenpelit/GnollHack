@@ -3858,7 +3858,7 @@ namespace GnollHackClient.Pages.Game
 
                                                                             if (dx != 0 || dy != 0)
                                                                             {
-                                                                                draw_shadow[draw_map_x, draw_map_y] = 1;
+                                                                                draw_shadow[draw_map_x, draw_map_y] |= 1;
                                                                             }
 
                                                                             int sheet_idx = TileSheetIdx(ntile);
@@ -3964,11 +3964,11 @@ namespace GnollHackClient.Pages.Game
                                                                                 move_offset_y = base_move_offset_y;
                                                                                 if (layer_idx == (int)layer_types.MAX_LAYERS)
                                                                                 {
-                                                                                    opaqueness = draw_shadow[mapx, mapy] == 2 && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY)) != 0 ? 0.65f : 0.5f;
+                                                                                    opaqueness = (draw_shadow[mapx, mapy] & 2) != 0 && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY)) != 0 ? 0.65f : 0.5f;
                                                                                 }
                                                                                 else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
                                                                                 {
-                                                                                    draw_shadow[mapx, mapy] = 2;
+                                                                                    draw_shadow[mapx, mapy] |= 2;
                                                                                     continue; /* Draw only the transparent shadow in the max_layers shadow layer; otherwise, if drawn twice, the result will be nontransparent */
                                                                                 }
                                                                             }

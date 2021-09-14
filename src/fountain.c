@@ -261,10 +261,11 @@ drinkfountain()
 
         if (ftyp == FOUNTAIN_HEALING)
         {
-            pline("The water makes you feel better.");
+            play_sfx_sound(SFX_HEALING);
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "The water makes you feel better.");
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline("That was a fountain of healing.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of healing.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
@@ -292,32 +293,34 @@ drinkfountain()
 
         if (ftyp == FOUNTAIN_MANA)
         {
-            pline("The water makes magical energies course through your body.");
+            play_sfx_sound(SFX_GAIN_ENERGY);
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "The water makes magical energies course through your body.");
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline("That was a fountain of mana.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of mana.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
     }
     if (ftyp == FOUNTAIN_POWER)
     {
-        pline("The water fills your body with new energy.");
+        play_sfx_sound(SFX_GAIN_ENERGY);
+        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "The water fills your body with new energy.");
         if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
         {
-            pline("That was a fountain of power.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of power.");
             SET_FOUNTAIN_KNOWN(u.ux, u.uy);
         }
     }
 
     if (ftyp == FOUNTAIN_WATER)
     {
-        pline_The("tasty water refreshes you.");
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "tasty water refreshes you.");
         u.uhunger += rnd(10); /* don't choke on water */
         update_hunger_status(FALSE);
         if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
         {
-            pline("That was a fountain of spring water.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of spring water.");
             SET_FOUNTAIN_KNOWN(u.ux, u.uy);
         }
     }
@@ -336,7 +339,8 @@ drinkfountain()
 
     if (ftyp == FOUNTAIN_POISON)
     {
-        pline_The("water tastes foul! It was poisoned!");
+        play_sfx_sound(SFX_MONSTER_IS_POISONED);
+        pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "water tastes foul! It was poisoned!");
         if (Poison_resistance) 
         {
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
@@ -349,7 +353,7 @@ drinkfountain()
         }
         if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
         {
-            pline("That was a fountain of poison.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of poison.");
             SET_FOUNTAIN_KNOWN(u.ux, u.uy);
         }
     }

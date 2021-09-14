@@ -100,7 +100,7 @@
                 </Grid>
                 <Grid>
                     <Image x:Name="creditsImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
-                    <Button Text="Credits" x:Name="CreditsButton" Clicked="CreditsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
+                    <Button Text="About" x:Name="CreditsButton" Clicked="CreditsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="100" HeightRequest="50" />
                 </Grid>
                 <Grid>
                     <Image x:Name="exitImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="120" HeightRequest="50"/>
