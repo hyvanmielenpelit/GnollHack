@@ -4679,10 +4679,9 @@ struct permonst _mons2[] = {
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_IMITATE, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(12, 12, 12, 12, 12, 12), MR_SLEEP, MR2_NONE, MC_NONE,
         M1_HUMANOID | M1_OMNIVORE,
-        M2_NOPOLY | M2_HUMAN | M2_HOSTILE | M2_COLLECT
-            | M2_SHAPESHIFTER,
+        M2_NOPOLY | M2_HUMAN | M2_HOSTILE | M2_COLLECT | M2_SHAPESHIFTER,
         M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
-        M4_NONE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
+        M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
         10, HI_DOMESTIC, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
     ENLARGED_MON("Elvenking", None, "long-living humanoid with sleep and charm resistance in a top leadership position", "Elvenqueen", "Elvenroyal", S_HUMAN, LVL(9, 12, 10, 0, 25, -10), (G_GENO | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
