@@ -325,7 +325,6 @@ namespace GnollHackClient
             }
         }
 
-
         public static void PlayButtonClickedSound()
         {
             if(_fmodService != null)

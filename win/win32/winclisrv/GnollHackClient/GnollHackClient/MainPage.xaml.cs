@@ -80,6 +80,7 @@ namespace GnollHackClient
             await Navigation.PushAsync(_loginNavPage);
         }
 
+        private Animation _sponsorAnimation = null;
         private bool _firsttime = true;
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
@@ -116,6 +117,13 @@ namespace GnollHackClient
             StartServerGrid.IsEnabled = true;
             UpperButtonGrid.IsEnabled = true;
             LogoGrid.IsEnabled = true;
+
+            if(App.ShowSpecialEffect && !App.SponsorButtonVisited)
+            {
+                SponsorButton.AbortAnimation("AnimationCounter");
+                _sponsorAnimation = new Animation(v => SponsorButton.AnimationCounter = (long)v, 1, 120);
+                _sponsorAnimation.Commit(SponsorButton, "AnimationCounter", length: 1500, rate: 25, repeat: () => App.ShowSpecialEffect);
+            }
         }
 
         private async Task StartUpTasks()
@@ -1131,15 +1139,6 @@ namespace GnollHackClient
         {
             App.BeginnerMode = beginnerModeSwitch.IsToggled;
             Preferences.Set("BeginnerMode", App.BeginnerMode);
-        }
-
-        private async void StoreButton_Clicked(object sender, EventArgs e)
-        {
-            LogoGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
-            var storepage = new StorePage(this);
-            await App.Current.MainPage.Navigation.PushModalAsync(storepage);
-
         }
 
         private void PopupOkButton_Clicked(object sender, EventArgs e)

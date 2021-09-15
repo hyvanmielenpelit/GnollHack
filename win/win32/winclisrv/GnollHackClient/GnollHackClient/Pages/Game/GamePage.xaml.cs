@@ -867,9 +867,6 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.ShowOutRipPage:
                                 ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
                                 break;
-                            case GHRequestType.ShowSpecialEffect:
-                                ShowSpecialEffect();
-                                break;
                             case GHRequestType.CreateWindowView:
                                 CreateWindowView(req.RequestInt);
                                 break;
@@ -1420,22 +1417,6 @@ namespace GnollHackClient.Pages.Game
             var outRipPage = new OutRipPage(this, ghwindow, outripinfo);
             await App.Current.MainPage.Navigation.PushModalAsync(outRipPage);
         }
-
-        private void ShowSpecialEffect()
-        {
-            if(!App.SponsorButtonVisited)
-            {
-                App.ShowSpecialEffect = true;
-                Preferences.Set("ShowSpecialEffect", true);
-            }
-        }
-
-        //private void ShowInterstitial()
-        //{
-        //    CrossMTAdmob.Current.LoadInterstitial(App.CurrentSecrets.AdUnitId);
-        //    CrossMTAdmob.Current.ShowInterstitial();
-        //    GenericButton_Clicked(null, null, 27);
-        //}
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {

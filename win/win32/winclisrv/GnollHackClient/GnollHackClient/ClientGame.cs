@@ -1232,18 +1232,16 @@ namespace GnollHackClient
 
         public void ClientCallback_OpenSpecialView(int viewtype, string text, int param1, int param2)
         {
-            ConcurrentQueue<GHRequest> queue;
-            int res;
             switch (viewtype)
             {
                 case (int)special_view_types.SPECIAL_VIEW_CHAT_MESSAGE:
                     break;
                 case (int)special_view_types.SPECIAL_VIEW_SHOW_SPECIAL_EFFECT:
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (!App.SponsorButtonVisited)
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowSpecialEffect));
+                        App.ShowSpecialEffect = true;
+                        Preferences.Set("ShowSpecialEffect", true);
                     }
-                    res = ClientCallback_nhgetch();
                     break;
                 default:
                     break;

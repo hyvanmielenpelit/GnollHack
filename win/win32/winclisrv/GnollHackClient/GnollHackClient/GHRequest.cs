@@ -33,7 +33,6 @@ namespace GnollHackClient
         ShowSkillButton,
         HideSkillButton,
         ShowOutRipPage,
-        ShowSpecialEffect,
         FadeToBlack,
         FadeFromBlack,
     }

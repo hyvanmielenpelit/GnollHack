@@ -69,11 +69,7 @@
                    FontFamily="ARChristy" FontSize="18" />
                 <Grid x:Name="SponsorGrid"  WidthRequest="120">
                     <ff:CachedImage x:Name="BuyNowImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" WidthRequest="120" HeightRequest="50"/>
-                    <Button Text="Sponsor" x:Name="SponsorButton" Clicked="SponsorButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
-                </Grid>
-                <Grid x:Name="StoreGrid" IsVisible="False" WidthRequest="120">
-                    <ff:CachedImage x:Name="StoreImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" WidthRequest="120" HeightRequest="50"/>
-                    <Button Text="Store" x:Name="StoreButton" Clicked="StoreButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
+                    <local:AnimatedButton Text="Sponsor" x:Name="SponsorButton" Clicked="SponsorButton_Clicked" CornerRadius="10" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
                 </Grid>
             </StackLayout>
         </Grid>
