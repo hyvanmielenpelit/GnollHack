@@ -296,7 +296,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 151 "lev_comp.y"
+#line 153 "lev_comp.y"
 
     long    i;
     char    *map;

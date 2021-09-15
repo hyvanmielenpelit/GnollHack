@@ -40,7 +40,6 @@ namespace GnollHackClient
         public int MapWindowId { get; set; }
         public int MessageWindowId { get; set; }
         public int StatusWindowId { get; set; }
-        private StatusInfo _statusInfo;
         private List<GHMsgHistoryItem> _message_history = new List<GHMsgHistoryItem>();
 
         public static ConcurrentDictionary<ClientGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
@@ -593,29 +592,43 @@ namespace GnollHackClient
         }
         public void ClientCallback_StatusInit()
         {
-            _statusInfo = new StatusInfo();
+
         }
         public void ClientCallback_StatusFinish()
         {
-            if (_statusInfo == null)
-                return;
+
         }
 
-        public readonly string[] StatusFields = new string[50];
         public void ClientCallback_StatusEnable(int fieldidx, string nm, string fmt, byte enable)
         {
-            if (_statusInfo == null)
-                return;
+            if(fieldidx >= 0 && fieldidx < (int)statusfields.MAXBLSTATS)
+            {
+                lock(_gamePage.StatusFieldLock)
+                {
+                    _gamePage.StatusFields[fieldidx].Name = nm;
+                    _gamePage.StatusFields[fieldidx].Format = fmt;
+                    _gamePage.StatusFields[fieldidx].IsEnabled = enable != 0;
+                }
+            }
         }
-        public void ClientCallback_StatusUpdate(int idx, string str, long condbits, int cng, int percent, int color, IntPtr colormasksptr)
+        public void ClientCallback_StatusUpdate(int fieldidx, string text, long condbits, int cng, int percent, int color, IntPtr colormasksptr)
         {
-            if (_statusInfo == null)
-                return;
+            if (fieldidx >= 0 && fieldidx < (int)statusfields.MAXBLSTATS)
+            {
+                lock (_gamePage.StatusFieldLock)
+                {
+                    _gamePage.StatusFields[fieldidx].Text = text;
+                    _gamePage.StatusFields[fieldidx].Bits = condbits;
+                    _gamePage.StatusFields[fieldidx].Change = cng;
+                    _gamePage.StatusFields[fieldidx].Percent = percent;
+                    _gamePage.StatusFields[fieldidx].Color = color;
+                }
+            }
 
-            if(idx == (int)statusfields.BL_SKILL)
+            if (fieldidx == (int)statusfields.BL_SKILL)
             {
                 GHRequestType rtype;
-                if (str != null && str == "Skill")
+                if (text != null && text == "Skill")
                     rtype = GHRequestType.ShowSkillButton;
                 else
                     rtype = GHRequestType.HideSkillButton;
@@ -627,10 +640,11 @@ namespace GnollHackClient
                 }
 
             }
-            //Int32[] colormasks = new Int32[GHConstants.BlCondMaskBits];
+
+            //Int32[] colormasks = new Int32[(int)bl_conditions.NUM_BL_CONDITIONS];
             //if(colormasksptr != null)
             //{
-            //    Marshal.Copy(colormasksptr, colormasks, 0, GHConstants.BlCondMaskBits);
+            //    Marshal.Copy(colormasksptr, colormasks, 0, (int)bl_conditions.NUM_BL_CONDITIONS);
             //}
         }
 

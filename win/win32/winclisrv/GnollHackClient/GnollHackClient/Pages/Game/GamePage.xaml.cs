@@ -100,10 +100,25 @@ namespace GnollHackClient.Pages.Game
         private Stopwatch _animationStopwatch = new Stopwatch();
         private TimeSpan _previousTimeSpan;
 
-        public bool MapGrid { get; set; }
-        public bool HitPointBars { get; set; }
-        public bool PlayerMark { get; set; }
-        public bool MonsterTargeting { get; set; }
+        private object _mapGridLock = new object();
+        private bool _mapGrid = false;
+        public bool MapGrid { get { lock (_mapGridLock) { return _mapGrid; } } set { lock (_mapGridLock) { _mapGrid = value; } } }
+
+        private object _hitPointBarLock = new object();
+        private bool _hitPointBarGrid = false;
+        public bool HitPointBars { get { lock (_hitPointBarLock) { return _hitPointBarGrid; } } set { lock (_hitPointBarLock) { _hitPointBarGrid = value; } } }
+
+        private object _playerMarkLock = new object();
+        private bool _playerMark = false;
+        public bool PlayerMark { get { lock (_playerMarkLock) { return _playerMark; } } set { lock (_playerMarkLock) { _playerMark = value; } } }
+
+        private object _monsterTargetingLock = new object();
+        private bool _monsterTargeting = false;
+        public bool MonsterTargeting { get { lock (_monsterTargetingLock) { return _monsterTargeting; } } set { lock (_monsterTargetingLock) { _monsterTargeting = value; } } }
+
+        private object _classicStatusBarLock = new object();
+        private bool _classicStatusBar = false;
+        public bool ClassicStatusBar { get { lock (_classicStatusBarLock) { return _classicStatusBar; } } set { lock (_classicStatusBarLock) { _classicStatusBar = value; } } }
 
         private bool _cursorIsOn;
         private bool _showDirections = false;
@@ -112,6 +127,8 @@ namespace GnollHackClient.Pages.Game
         private bool _showWaitIcon = false;
         public bool ShowWaitIcon { get { return _showWaitIcon; } set { _showWaitIcon = value; } }
 
+        public object StatusFieldLock = new object();
+        public readonly GHStatusField[] StatusFields = new GHStatusField[(int)statusfields.MAXBLSTATS];
 
         private MainPage _mainPage;
         private SKBitmap _logoBitmap;

@@ -923,6 +923,7 @@ namespace GnollHackCommon
         Reserved3 = 0x08,
     }
 
+
     public class GHConstants
     {
         public const int InputBufferLength = 32;
@@ -936,9 +937,6 @@ namespace GnollHackCommon
         public const long MoveOrPressTimeThreshold = 200; /* Milliseconds */
         public const double MoveByHoldingDownThreshold = 0.20; /* Seconds */
         public const double LongMenuTapThreshold = 0.75; /* Seconds */
-        public const int BlCondMaskBits = 23;
-        public const int MaxStatusLines = 8;
-        public const int MaxStatusFieldsPerLine = 24;
         public const int TileWidth = 64;
         public const int TileHeight = 96;
         public const int StatusMarkWidth = 16;
