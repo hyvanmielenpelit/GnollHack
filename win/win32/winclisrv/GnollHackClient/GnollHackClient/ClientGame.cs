@@ -601,29 +601,33 @@ namespace GnollHackClient
 
         public void ClientCallback_StatusEnable(int fieldidx, string nm, string fmt, byte enable)
         {
-            if(fieldidx >= 0 && fieldidx < (int)statusfields.MAXBLSTATS)
-            {
-                lock(_gamePage.StatusFieldLock)
-                {
-                    _gamePage.StatusFields[fieldidx].Name = nm;
-                    _gamePage.StatusFields[fieldidx].Format = fmt;
-                    _gamePage.StatusFields[fieldidx].IsEnabled = enable != 0;
-                }
-            }
+            //if(fieldidx >= 0 && fieldidx < (int)statusfields.MAXBLSTATS)
+            //{
+            //    lock(_gamePage.StatusFieldLock)
+            //    {
+            //        _gamePage.StatusFields[fieldidx] = new GHStatusField();
+            //        _gamePage.StatusFields[fieldidx].Name = nm;
+            //        _gamePage.StatusFields[fieldidx].Format = fmt;
+            //        _gamePage.StatusFields[fieldidx].IsEnabled = enable != 0;
+            //    }
+            //}
         }
         public void ClientCallback_StatusUpdate(int fieldidx, string text, long condbits, int cng, int percent, int color, IntPtr colormasksptr)
         {
-            if (fieldidx >= 0 && fieldidx < (int)statusfields.MAXBLSTATS)
-            {
-                lock (_gamePage.StatusFieldLock)
-                {
-                    _gamePage.StatusFields[fieldidx].Text = text;
-                    _gamePage.StatusFields[fieldidx].Bits = condbits;
-                    _gamePage.StatusFields[fieldidx].Change = cng;
-                    _gamePage.StatusFields[fieldidx].Percent = percent;
-                    _gamePage.StatusFields[fieldidx].Color = color;
-                }
-            }
+            //if (fieldidx >= 0 && fieldidx < (int)statusfields.MAXBLSTATS)
+            //{
+            //    lock (_gamePage.StatusFieldLock)
+            //    {
+            //        if (_gamePage.StatusFields[fieldidx] != null)
+            //        {
+            //            _gamePage.StatusFields[fieldidx].Text = text;
+            //            _gamePage.StatusFields[fieldidx].Bits = condbits;
+            //            _gamePage.StatusFields[fieldidx].Change = cng;
+            //            _gamePage.StatusFields[fieldidx].Percent = percent;
+            //            _gamePage.StatusFields[fieldidx].Color = color;
+            //        }
+            //    }
+            //}
 
             if (fieldidx == (int)statusfields.BL_SKILL)
             {
