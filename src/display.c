@@ -3456,7 +3456,7 @@ int cursor_on_u;
         }
     }
 #endif
-    boolean demoascii = In_Demo && u.uz.dnum != mines_dnum && depth(&u.uz) > DEMO_VERSION_MAX_LEVEL_DEPTH;
+    boolean demoascii = In_Demo && u.uz.dnum != mines_dnum && depth(&u.uz) > GUI_SPECIAL_EFFECT_LEVEL_DEPTH_THRESHOLD;
     init_print_glyph(Is_rogue_level(&u.uz) || demoascii ? INIT_GLYPH_FORCE_ASCII : INIT_GLYPH_UNFORCE_ASCII);
     init_print_glyph(INIT_GLYPH_START_FLUSH);
     for (y = 0; y < ROWNO; y++) {

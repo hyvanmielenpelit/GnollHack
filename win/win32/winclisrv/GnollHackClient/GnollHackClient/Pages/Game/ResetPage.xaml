@@ -54,6 +54,7 @@
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnDeletePreferences_Clicked" />
                                 </Grid>
                             </ViewCell>
+                            <!--
                             <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
@@ -61,6 +62,7 @@
                                     HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnRevertToDemo_Clicked" />
                                 </Grid>
                             </ViewCell>
+                            -->
                         </TableSection>
                     </TableRoot>
                 </TableView>

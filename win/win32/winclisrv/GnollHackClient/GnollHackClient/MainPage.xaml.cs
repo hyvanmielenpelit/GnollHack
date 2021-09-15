@@ -92,14 +92,12 @@ namespace GnollHackClient
 
             beginnerModeSwitch.IsToggled = App.BeginnerMode;
 
-            UpdateBuyNow();
+            UpdateSponsor();
 
             if (_firsttime)
             {
                 App.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
                 _firsttime = false;
-                if (App.FullVersionMode)
-                    await CheckPurchaseStatus(true);
                 Assembly thisassembly = GetType().GetTypeInfo().Assembly;
                 FmodLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.FMOD-Logo-192-White.png", thisassembly);
                 StartLogoImage.Source = ImageSource.FromResource("GnollHackClient.Assets.gnollhack-logo-test-2.png", thisassembly);
@@ -301,64 +299,64 @@ namespace GnollHackClient
             //await Task.WhenAll(tasklist2);
         }
 
-        public async Task CheckPurchaseStatus(bool atappstart)
-        {
-            int res = await IsProductPurchased(GHConstants.DistributionFeeProductName);
-            if(res >= 0)
-            {
-                if (Preferences.ContainsKey("CheckPurchase_FirstConnectFail"))
-                {
-                    Preferences.Remove("CheckPurchase_FirstConnectFail");
-                }
-                if (Preferences.ContainsKey("CheckPurchase_ConnectFail_GameStartCount"))
-                {
-                    Preferences.Remove("CheckPurchase_ConnectFail_GameStartCount");
-                }
-            }
+        //public async Task CheckPurchaseStatus(bool atappstart)
+        //{
+        //    int res = await IsProductPurchased(GHConstants.DistributionFeeProductName);
+        //    if(res >= 0)
+        //    {
+        //        if (Preferences.ContainsKey("CheckPurchase_FirstConnectFail"))
+        //        {
+        //            Preferences.Remove("CheckPurchase_FirstConnectFail");
+        //        }
+        //        if (Preferences.ContainsKey("CheckPurchase_ConnectFail_GameStartCount"))
+        //        {
+        //            Preferences.Remove("CheckPurchase_ConnectFail_GameStartCount");
+        //        }
+        //    }
 
-            if (res == 0 && App.FullVersionMode)
-            {
-                App.FullVersionMode = false;
-                Preferences.Set("FullVersion", false);
-            }
-            else if (res == 1 && !App.FullVersionMode)
-            {
-                App.FullVersionMode = true;
-                Preferences.Set("FullVersion", true);
-                if(!atappstart)
-                {
-                    await DisplayAlert("Existing Purchase Found", "Your existing purchase of the full version was found and has been activated.", "OK");
-                }
-            }
-            else if(res == -1 && App.FullVersionMode && atappstart)
-            {
-                if (!Preferences.ContainsKey("CheckPurchase_FirstConnectFail"))
-                    Preferences.Set("CheckPurchase_FirstConnectFail", DateTime.Now);
+        //    if (res == 0 && App.FullVersionMode)
+        //    {
+        //        App.FullVersionMode = false;
+        //        Preferences.Set("FullVersion", false);
+        //    }
+        //    else if (res == 1 && !App.FullVersionMode)
+        //    {
+        //        App.FullVersionMode = true;
+        //        Preferences.Set("FullVersion", true);
+        //        if(!atappstart)
+        //        {
+        //            await DisplayAlert("Existing Purchase Found", "Your existing purchase of the full version was found and has been activated.", "OK");
+        //        }
+        //    }
+        //    else if(res == -1 && App.FullVersionMode && atappstart)
+        //    {
+        //        if (!Preferences.ContainsKey("CheckPurchase_FirstConnectFail"))
+        //            Preferences.Set("CheckPurchase_FirstConnectFail", DateTime.Now);
 
-                DateTime firstfaildate = Preferences.Get("CheckPurchase_FirstConnectFail", DateTime.MinValue);
-                TimeSpan ts = DateTime.Now - firstfaildate;
-                double ddays = ts.TotalDays;
+        //        DateTime firstfaildate = Preferences.Get("CheckPurchase_FirstConnectFail", DateTime.MinValue);
+        //        TimeSpan ts = DateTime.Now - firstfaildate;
+        //        double ddays = ts.TotalDays;
 
-                int game_start_count = Preferences.Get("CheckPurchase_ConnectFail_GameStartCount", 0);
-                game_start_count++;
-                Preferences.Set("CheckPurchase_ConnectFail_GameStartCount", game_start_count);
+        //        int game_start_count = Preferences.Get("CheckPurchase_ConnectFail_GameStartCount", 0);
+        //        game_start_count++;
+        //        Preferences.Set("CheckPurchase_ConnectFail_GameStartCount", game_start_count);
 
-                if (ddays > 30 || game_start_count > 30)
-                {
-                    App.FullVersionMode = false;
-                    await DisplayAlert("Verification Connection Failure",
-                        "GnollHack has been unable to verify the full version purchase for more than " + (ddays > 30 ? "30 days" : "30 app starts") + ". Only demo version features are accessible until verification is successful. Please check your internet connection.", "OK");
-                }
-                else
-                {
-                    await DisplayAlert("Verification Connection Failure", 
-                        "GnollHack is unable to connect to verify your full version. Your are able to use the full version still for "
-                        + (ddays < 29 ? string.Format("{0:0}", ddays) : string.Format("{0:0.0}", ddays))
-                        + " days" + (game_start_count < 29 ? " up to " + (30 - game_start_count) + " times." : game_start_count == 29 ? " one more time." : ". This is the last time you can use the full version."), "OK");
-                }
-            }
-            UpdateBuyNow();
-        }
+        //        if (ddays > 30 || game_start_count > 30)
+        //        {
+        //            App.FullVersionMode = false;
+        //            await DisplayAlert("Verification Connection Failure",
+        //                "GnollHack has been unable to verify the full version purchase for more than " + (ddays > 30 ? "30 days" : "30 app starts") + ". Only demo version features are accessible until verification is successful. Please check your internet connection.", "OK");
+        //        }
+        //        else
+        //        {
+        //            await DisplayAlert("Verification Connection Failure", 
+        //                "GnollHack is unable to connect to verify your full version. Your are able to use the full version still for "
+        //                + (ddays < 29 ? string.Format("{0:0}", ddays) : string.Format("{0:0.0}", ddays))
+        //                + " days" + (game_start_count < 29 ? " up to " + (30 - game_start_count) + " times." : game_start_count == 29 ? " one more time." : ". This is the last time you can use the full version."), "OK");
+        //        }
+        //    }
+        //    UpdateSponsor();
+        //}
 
 
         private void ExitAppButton_Clicked(object sender, EventArgs e)
@@ -984,170 +982,149 @@ namespace GnollHackClient
             }
         }
 
-        private async void BuyNowButton_Clicked(object sender, EventArgs e)
+        private async void SponsorButton_Clicked(object sender, EventArgs e)
         {
-            BuyNowButton.IsEnabled = false;
-            await CheckPurchaseStatus(false);
-            if (!App.FullVersionMode)
-            {
-                InAppBillingProduct productdetails = await GetProductDetails(GHConstants.DistributionFeeProductName);
-                if (productdetails != null)
-                {
-                    bool res = await DisplayAlert("Pay Distribution Fee to Access Full Version", "You can pay a distribution fee of " + productdetails.LocalizedPrice + " to access the full version of GnollHack. This unlocks graphics and sounds beyond dungeon level " + GHConstants.DemoLevelLimit + ".", "Pay Now", "No Thanks");
-                    if (res)
-                    {
-                        await PayDistributionFee();
-                    }
-                }
-            }
-            BuyNowButton.IsEnabled = true;
-        }
-
-        public async Task PayDistributionFee()
-        {
-            bool result = await PurchaseNonConsumable(GHConstants.DistributionFeeProductName);
-            if (result)
-            {
-                Preferences.Set("FullVersion", true);
-                App.FullVersionMode = true;
-                UpdateBuyNow();
-                await AcquireAndCheckFiles();
-                App.FmodService.LoadBanks();
-            }
-        }
-
-        public async Task<bool> PurchaseConsumable(string productId)
-        {
-            if (!CrossInAppBilling.IsSupported)
-            {
-                await DisplayAlert("Purchasing Not Supported", "Purchasing an extra life is not supported on your platform.", "OK");
-                return false;
-            }
-
-            var billing = CrossInAppBilling.Current;
+            SponsorButton.IsEnabled = false;
+            Uri uri = new Uri(GHConstants.GnollHackSponsorPage);
+            App.PlayButtonClickedSound();
             try
             {
-                var connected = await billing.ConnectAsync();
-                if (!connected)
-                {
-                    await DisplayAlert("Connection Failed", "There was an error in connecting to the store.", "OK");
-                    return false;
-                }
-
-                //check purchases
-                var purchase = await billing.PurchaseAsync(productId, ItemType.InAppPurchase);
-
-                //possibility that a null came through.
-                if (purchase == null)
-                {
-                    //did not purchase
-                    await DisplayAlert("Purchase Failed", "Your purchase failed.", "OK");
-                    return false;
-                }
-                else if (purchase.State == PurchaseState.Purchased)
-                {
-                    //purchased!
-                    if (Device.RuntimePlatform == Device.Android)
-                    {
-                        // Must call AcknowledgePurchaseAsync else the purchase will be refunded
-                        await billing.AcknowledgePurchaseAsync(purchase.PurchaseToken);
-                    }
-
-                    if (Device.RuntimePlatform == Device.iOS)
-                        return true;
-
-                    /* Consumption */
-                    bool success = await CrossInAppBilling.Current.ConsumePurchaseAsync(purchase.ProductId, purchase.PurchaseToken);
-                    if (success)
-                    {
-                        return true;
-                    }
-                    await DisplayAlert("Extra Life Purchased But Not Consumed", "The extra life was purchased but not consumed.", "OK");
-                    return false;
-                }
-                else
-                {
-                    await DisplayAlert("Extra Life Not Purchased", "The extra life was not purchased.", "OK");
-                    return false;
-                }
-            }
-            catch (InAppBillingPurchaseException purchaseEx)
-            {
-                //Billing Exception handle this based on the type
-                Debug.WriteLine("Error: " + purchaseEx);
-                await DisplayAlert("Error in Purchasing Extra Life", "There was an error purchasing an extra life upgrade.", "OK");
-                return false;
+                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+                App.SponsorButtonVisited = true;
+                Preferences.Set("SponsorButtonVisited", true);
+                App.ShowSpecialEffect = false;
+                Preferences.Set("ShowSpecialEffect", false);
             }
             catch (Exception ex)
             {
-                //Something else has gone wrong, log it
-                Debug.WriteLine("Issue connecting: " + ex);
-                await DisplayAlert("Error", "There was a general error in the transaction.", "OK");
-                return false;
+                await DisplayAlert("Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
             }
-            finally
-            {
-                await billing.DisconnectAsync();
-            }
+            SponsorButton.IsEnabled = true;
         }
 
-        public async Task<InAppBillingProduct> GetProductDetails(string productid)
+        //public async Task<bool> PurchaseConsumable(string productId)
+        //{
+        //    if (!CrossInAppBilling.IsSupported)
+        //    {
+        //        await DisplayAlert("Purchasing Not Supported", "Purchasing an extra life is not supported on your platform.", "OK");
+        //        return false;
+        //    }
+
+        //    var billing = CrossInAppBilling.Current;
+        //    try
+        //    {
+        //        var connected = await billing.ConnectAsync();
+        //        if (!connected)
+        //        {
+        //            await DisplayAlert("Connection Failed", "There was an error in connecting to the store.", "OK");
+        //            return false;
+        //        }
+
+        //        //check purchases
+        //        var purchase = await billing.PurchaseAsync(productId, ItemType.InAppPurchase);
+
+        //        //possibility that a null came through.
+        //        if (purchase == null)
+        //        {
+        //            //did not purchase
+        //            await DisplayAlert("Purchase Failed", "Your purchase failed.", "OK");
+        //            return false;
+        //        }
+        //        else if (purchase.State == PurchaseState.Purchased)
+        //        {
+        //            //purchased!
+        //            if (Device.RuntimePlatform == Device.Android)
+        //            {
+        //                // Must call AcknowledgePurchaseAsync else the purchase will be refunded
+        //                await billing.AcknowledgePurchaseAsync(purchase.PurchaseToken);
+        //            }
+
+        //            if (Device.RuntimePlatform == Device.iOS)
+        //                return true;
+
+        //            /* Consumption */
+        //            bool success = await CrossInAppBilling.Current.ConsumePurchaseAsync(purchase.ProductId, purchase.PurchaseToken);
+        //            if (success)
+        //            {
+        //                return true;
+        //            }
+        //            await DisplayAlert("Extra Life Purchased But Not Consumed", "The extra life was purchased but not consumed.", "OK");
+        //            return false;
+        //        }
+        //        else
+        //        {
+        //            await DisplayAlert("Extra Life Not Purchased", "The extra life was not purchased.", "OK");
+        //            return false;
+        //        }
+        //    }
+        //    catch (InAppBillingPurchaseException purchaseEx)
+        //    {
+        //        //Billing Exception handle this based on the type
+        //        Debug.WriteLine("Error: " + purchaseEx);
+        //        await DisplayAlert("Error in Purchasing Extra Life", "There was an error purchasing an extra life upgrade.", "OK");
+        //        return false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //Something else has gone wrong, log it
+        //        Debug.WriteLine("Issue connecting: " + ex);
+        //        await DisplayAlert("Error", "There was a general error in the transaction.", "OK");
+        //        return false;
+        //    }
+        //    finally
+        //    {
+        //        await billing.DisconnectAsync();
+        //    }
+        //}
+
+        //public async Task<InAppBillingProduct> GetProductDetails(string productid)
+        //{
+        //    InAppBillingProduct res = null;
+        //    var billing = CrossInAppBilling.Current;
+        //    try
+        //    {
+
+        //        var productIds = new string[] { productid };
+        //        //You must connect
+        //        var connected = await billing.ConnectAsync();
+
+        //        if (!connected)
+        //        {
+        //            //Couldn't connect
+        //            return res;
+        //        }
+
+        //        //check purchases
+
+        //        var items = await billing.GetProductInfoAsync(ItemType.InAppPurchase, productIds);
+
+        //        foreach (var item in items)
+        //        {
+        //            if(item != null && item.ProductId == productid)
+        //            {
+        //                res = item;
+        //                break;
+        //            }
+        //        }
+        //    }
+        //    catch (InAppBillingPurchaseException pEx)
+        //    {
+        //        //Handle IAP Billing Exception
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //Something has gone wrong
+        //    }
+        //    finally
+        //    {
+        //        await billing.DisconnectAsync();
+        //    }
+        //    return res;
+        //}
+
+        private void UpdateSponsor()
         {
-            InAppBillingProduct res = null;
-            var billing = CrossInAppBilling.Current;
-            try
-            {
-
-                var productIds = new string[] { productid };
-                //You must connect
-                var connected = await billing.ConnectAsync();
-
-                if (!connected)
-                {
-                    //Couldn't connect
-                    return res;
-                }
-
-                //check purchases
-
-                var items = await billing.GetProductInfoAsync(ItemType.InAppPurchase, productIds);
-
-                foreach (var item in items)
-                {
-                    if(item != null && item.ProductId == productid)
-                    {
-                        res = item;
-                        break;
-                    }
-                }
-            }
-            catch (InAppBillingPurchaseException pEx)
-            {
-                //Handle IAP Billing Exception
-            }
-            catch (Exception ex)
-            {
-                //Something has gone wrong
-            }
-            finally
-            {
-                await billing.DisconnectAsync();
-            }
-            return res;
-        }
-
-        private void UpdateBuyNow()
-        {
-            if(App.FullVersionMode)
-            {
-                AndroidLabel.Text = "Full Version";
-                BuyNowGrid.IsVisible = false;
-            }
-            else
-            {
-                AndroidLabel.Text = "Demo Version";
-                BuyNowGrid.IsVisible = true;
-            }
+            AndroidLabel.Text = "Android Version";
         }
 
         private void hardcoreModeSwitch_Toggled(object sender, ToggledEventArgs e)

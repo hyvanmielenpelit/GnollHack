@@ -1234,18 +1234,10 @@ namespace GnollHackClient
             {
                 case (int)special_view_types.SPECIAL_VIEW_CHAT_MESSAGE:
                     break;
-                //case (int)special_view_types.SPECIAL_VIEW_SHOW_ADS:
-                //    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
-                //    {
-                //        queue.Enqueue(new GHRequest(this, GHRequestType.ShowAds));
-                //    }
-                //    res = ClientCallback_nhgetch();
-
-                //    break;
-                case (int)special_view_types.SPECIAL_VIEW_SHOW_ACTIVATE_ASCII:
+                case (int)special_view_types.SPECIAL_VIEW_SHOW_SPECIAL_EFFECT:
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowActivateAscii));
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowSpecialEffect));
                     }
                     res = ClientCallback_nhgetch();
                     break;

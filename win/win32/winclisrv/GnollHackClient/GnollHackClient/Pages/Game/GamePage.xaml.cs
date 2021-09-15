@@ -867,11 +867,8 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.ShowOutRipPage:
                                 ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
                                 break;
-                            //case GHRequestType.ShowAds:
-                            //    ShowInterstitial();
-                            //    break;
-                            case GHRequestType.ShowActivateAscii:
-                                ShowActivateAscii();
+                            case GHRequestType.ShowSpecialEffect:
+                                ShowSpecialEffect();
                                 break;
                             case GHRequestType.CreateWindowView:
                                 CreateWindowView(req.RequestInt);
@@ -1424,39 +1421,21 @@ namespace GnollHackClient.Pages.Game
             await App.Current.MainPage.Navigation.PushModalAsync(outRipPage);
         }
 
+        private void ShowSpecialEffect()
+        {
+            if(!App.SponsorButtonVisited)
+            {
+                App.ShowSpecialEffect = true;
+                Preferences.Set("ShowSpecialEffect", true);
+            }
+        }
+
         //private void ShowInterstitial()
         //{
         //    CrossMTAdmob.Current.LoadInterstitial(App.CurrentSecrets.AdUnitId);
         //    CrossMTAdmob.Current.ShowInterstitial();
         //    GenericButton_Clicked(null, null, 27);
         //}
-
-        private async void ShowActivateAscii()
-        {
-            Boolean redraw = false;
-            InAppBillingProduct productdetails = await _mainPage.GetProductDetails(GHConstants.DistributionFeeProductName);
-            if (productdetails != null)
-            {
-                string text = "You have exceeded the maximum playable levels in the demo version. Only ASCII graphics without sounds are now accessible. Please pay the distribution fee of " + productdetails.LocalizedPrice + " to access the full version of GnollHack and continue playing with tiles and sounds.";
-                bool res = await DisplayAlert("Demo Level Limit Exceeded", text, "Pay Now", "No Thanks");
-                if (res)
-                {
-                    await _mainPage.CheckPurchaseStatus(false);
-                    if (!App.FullVersionMode)
-                    {
-                        await _mainPage.PayDistributionFee();
-                    }
-                    if (App.FullVersionMode)
-                    {
-                        App.GnollHackService.SwitchDemoVersion(false);
-                        redraw = true;
-                    }
-                }
-            }
-            GenericButton_Clicked(null, null, 27);
-            if(redraw)
-                GenericButton_Clicked(null, null, GHUtils.Ctrl('r'));
-        }
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {

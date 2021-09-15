@@ -897,8 +897,7 @@ namespace GnollHackCommon
     {
         SPECIAL_VIEW_NONE = 0,
         SPECIAL_VIEW_CHAT_MESSAGE,
-        //SPECIAL_VIEW_SHOW_ADS,
-        SPECIAL_VIEW_SHOW_ACTIVATE_ASCII,
+        SPECIAL_VIEW_SHOW_SPECIAL_EFFECT,
         MAX_SPECIAL_VIEW_TYPES
     }
 
@@ -994,11 +993,15 @@ namespace GnollHackCommon
         public const int MoreButtonsPerRow = 6;
         public const int MoreButtonsPerColumn = 9;
         public const bool DownloadFromWebInDebugMode = true;
-        public const string DistributionFeeProductName = "upgrade_to_full_version";
-        public const int DemoLevelLimit = 10;
         public const string GnollHackGitHubPage = "https://github.com/hyvanmielenpelit/GnollHack";
         public const string GnollHackWebPage = "https://gnollhack.com";
         public const string GnollHackWikiPage = "https://github.com/hyvanmielenpelit/GnollHack/wiki";
+        public const string GnollHackSponsorPage = "https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english";
+#if DEBUG
+        public const string GHSettingsResourcePath = "GnollHackClient.Assets.ghsettings.debug.json";
+#else
+        public const string GHSettingsResourcePath = "GnollHackClient.Assets.ghsettings.release.json";
+#endif
     }
 
 

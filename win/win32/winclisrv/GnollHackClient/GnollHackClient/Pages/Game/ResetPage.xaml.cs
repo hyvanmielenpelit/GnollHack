@@ -128,18 +128,18 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private async void btnRevertToDemo_Clicked(object sender, EventArgs e)
-        {
-            App.PlayButtonClickedSound();
-            bool answer = await DisplayAlert("Revert to Demo Version?", "Are you sure to revert to demo version?", "Yes", "No");
-            if (answer)
-            {
-                Preferences.Set("FullVersion", false);
-                App.FullVersionMode = false;
-                btnRevertToDemo.Text = "Done";
-                btnRevertToDemo.TextColor = Color.Red;
-            }
-        }
+        //private async void btnRevertToDemo_Clicked(object sender, EventArgs e)
+        //{
+        //    App.PlayButtonClickedSound();
+        //    bool answer = await DisplayAlert("Revert to Demo Version?", "Are you sure to revert to demo version?", "Yes", "No");
+        //    if (answer)
+        //    {
+        //        Preferences.Set("FullVersion", false);
+        //        App.FullVersionMode = false;
+        //        btnRevertToDemo.Text = "Done";
+        //        btnRevertToDemo.TextColor = Color.Red;
+        //    }
+        //}
 
         private async void Button_Clicked(object sender, EventArgs e)
         {

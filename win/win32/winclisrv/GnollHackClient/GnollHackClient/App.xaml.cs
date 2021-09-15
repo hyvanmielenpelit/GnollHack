@@ -39,8 +39,10 @@ namespace GnollHackClient
             MainPage = navPage;
             App.HideAndroidNavigatioBar = Preferences.Get("HideAndroidNavigationBar", false);
             App.DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
-            App.FullVersionMode = Preferences.Get("FullVersion", false);
+            App.FullVersionMode = true; // Preferences.Get("FullVersion", true);
             App.BeginnerMode = Preferences.Get("BeginnerMode", false);
+            App.SponsorButtonVisited = Preferences.Get("SponsorButtonVisited", false);
+            App.ShowSpecialEffect = Preferences.Get("ShowSpecialEffect", false);
             App.ReadSecrets();
             Array.Sort<SecretsFile>(App.CurrentSecrets.files, new SecretsFileSizeComparer());
         }
@@ -57,7 +59,7 @@ namespace GnollHackClient
         {
             Assembly assembly = typeof(App).GetTypeInfo().Assembly;
             string json = "";
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.secrets.jsons"))
+            using (Stream stream = assembly.GetManifestResourceStream(GHConstants.GHSettingsResourcePath))
             {
                 if (stream != null)
                 {
@@ -141,6 +143,9 @@ namespace GnollHackClient
         public static Server SelectedServer { get; set; }
         public static string UserName { get; set; }
         public static bool IsServerGame { get; set; }
+        public static bool SponsorButtonVisited { get; set; }
+        public static bool ShowSpecialEffect { get; set; }
+
 
         public static NavigationPage MainNavigationPage { get { return (NavigationPage)Current.MainPage; } }
 

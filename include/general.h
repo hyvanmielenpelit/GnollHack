@@ -389,8 +389,7 @@ enum special_view_types
 {
     SPECIAL_VIEW_NONE = 0,
     SPECIAL_VIEW_CHAT_MESSAGE,
-    //SPECIAL_VIEW_SHOW_ADS,
-    SPECIAL_VIEW_ACTIVATE_ASCII,
+    SPECIAL_VIEW_SHOW_SPECIAL_EFFECT,
     MAX_SPECIAL_VIEW_TYPES
 };
 
@@ -581,7 +580,7 @@ enum main_menu_command {
 #define SCORE_ON_BOTL
 
 /* Demo version */
-#define DEMO_VERSION_MAX_LEVEL_DEPTH 10
+#define GUI_SPECIAL_EFFECT_LEVEL_DEPTH_THRESHOLD 10
 
 /* Basic tile information */
 #define NUM_TILES_PER_SHEET 16224

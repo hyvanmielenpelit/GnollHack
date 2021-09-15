@@ -1,0 +1,47 @@
+{
+  "directories": [
+    {"name": "bank"}
+  ],
+  "files": [
+    {
+      "id": "MasterBank",
+      "name": "Master.bank",
+      "type": "sound_bank",
+      "description": "Master Sound Files",
+      "version": "4",
+      "source": "url",
+      "source_path": "https://download.gnollhack.com/gnollhack-xu5yROO95006WNM/v4/Master.bank",
+      "length": 51912992,
+      "sha256": "1A2D0F611FCBED1F19C458859FAF9B9F107A74D754E654E04D6114BE7FCBC09C",
+      "target_directory": "bank",
+      "flags": 0
+    },
+    {
+      "id": "MasterStringsBank",
+      "name": "Master.strings.bank",
+      "type": "sound_bank",
+      "description": "Master Strings Bank",
+      "version": "4",
+      "source": "url",
+      "source_path": "https://download.gnollhack.com/gnollhack-xu5yROO95006WNM/v4/Master.strings.bank",
+      "length": 68210,
+      "sha256": "D2D9CD9A9706767756DD23F88039BD490E5EF4594E50170BBC152235AA53FC78",
+      "target_directory": "bank",
+      "flags": 0
+    },
+    {
+      "id": "AuxBank",
+      "name": "Auxiliary.bank",
+      "type": "sound_bank",
+      "description": "Additional Sound Files",
+      "version": "4",
+      "source": "url",
+      "source_path": "https://download.gnollhack.com/gnollhack-xu5yROO95006WNM/v4/Auxiliary.bank",
+      "length": 220605792,
+      "sha256": "14EDD6A4A6A7827DB946C9D9A99BBCAF3DEB7C01C161817BA033CAB2B7FB33D1",
+      "target_directory": "bank",
+      "flags": 0
+    }
+  ],
+  "AdUnitID": ""
+}

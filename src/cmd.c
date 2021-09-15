@@ -220,7 +220,7 @@ STATIC_DCL char *NDECL(parse);
 STATIC_DCL void FDECL(show_direction_keys, (winid, CHAR_P, BOOLEAN_P));
 STATIC_DCL boolean FDECL(help_dir, (CHAR_P, int, const char *));
 STATIC_DCL void FDECL(add_command_menu_items, (winid, int));
-STATIC_DCL void NDECL(check_demo_version);
+STATIC_DCL void NDECL(check_gui_special_effect);
 
 
 static const char *readchar_queue = "";
@@ -6528,7 +6528,7 @@ register char *cmd;
     create_context_menu();
     update_here_window();
     //reset_all_monster_origin_coordinates();
-    check_demo_version();
+    check_gui_special_effect();
 
     iflags.menu_requested = FALSE;
 #ifdef SAFERHANGUP
@@ -6815,49 +6815,22 @@ register char *cmd;
     return;
 }
 
-static boolean ascii_msg_given = FALSE;
+static boolean special_effect_shown = FALSE;
 
 STATIC_OVL void
-check_demo_version()
+check_gui_special_effect()
 {
-    boolean soundson = TRUE;
-    if (In_Demo)
+    if (u.uz.dnum != mines_dnum && depth(&u.uz) > GUI_SPECIAL_EFFECT_LEVEL_DEPTH_THRESHOLD)
     {
-        if (u.uz.dnum != mines_dnum && depth(&u.uz) > DEMO_VERSION_MAX_LEVEL_DEPTH)
+        if (!special_effect_shown)
         {
-            soundson = FALSE;
-            init_print_glyph(INIT_GLYPH_MUTE_SOUNDS);
-            if (!ascii_msg_given)
-            {
-                struct special_view_info info = { 0 };
-                info.viewtype = SPECIAL_VIEW_ACTIVATE_ASCII;
-                info.text = 0;
-                open_special_view(info);
-                ascii_msg_given = TRUE;
-            }
-#if 0
             struct special_view_info info = { 0 };
-            info.viewtype = SPECIAL_VIEW_PURCHASE_FULL_VERSION;
+            info.viewtype = SPECIAL_VIEW_SHOW_SPECIAL_EFFECT;
             info.text = 0;
             open_special_view(info);
-            if (In_Demo)
-            {
-                if (dosave0()) {
-                    u.uhp = -1; /* universal game's over indicator */
-                    /* make sure they see the Saving message */
-                    display_nhwindow(WIN_MESSAGE, TRUE);
-                    exit_nhwindows("Be seeing you...");
-                    nh_terminate(EXIT_SUCCESS);
-                }
-                else
-                    (void)doredraw();
-            }
-#endif
+            special_effect_shown = TRUE;
         }
     }
-    if(soundson)
-        init_print_glyph(INIT_GLYPH_UNMUTE_SOUNDS);
-
 }
 
 /* convert an x,y pair into a direction code */
