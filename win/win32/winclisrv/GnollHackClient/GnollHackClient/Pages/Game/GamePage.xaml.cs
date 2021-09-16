@@ -21,8 +21,6 @@ using FFImageLoading.Forms;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using GnollHackClient.Controls;
-using Plugin.InAppBilling;
-using MarcTron.Plugin;
 
 namespace GnollHackClient.Pages.Game
 {

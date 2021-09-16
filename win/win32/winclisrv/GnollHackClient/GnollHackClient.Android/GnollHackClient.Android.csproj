@@ -89,12 +89,6 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MarcTron.Admob">
-      <Version>1.6.5</Version>
-    </PackageReference>
-    <PackageReference Include="Plugin.InAppBilling">
-      <Version>5.0.1-beta</Version>
-    </PackageReference>
     <PackageReference Include="SkiaSharp.Views.Forms">
       <Version>2.80.2</Version>
     </PackageReference>
