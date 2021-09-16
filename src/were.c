@@ -122,8 +122,11 @@ register struct monst *mon;
     }
 
     if (canseemon(mon) && !Hallucination)
-        pline("%s changes into a %s.", Monnam(mon),
-              is_human(&mons[pm]) ? "human" : pm_monster_name(&mons[pm], mon->female) + 4);
+    {
+        play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mon->mx, mon->my);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s changes into a %s.", Monnam(mon),
+            is_human(&mons[pm]) ? "human" : pm_monster_name(&mons[pm], mon->female) + 4);
+    }
 
     set_mon_data(mon, &mons[pm]);
     if (!mon_can_move(mon)) 

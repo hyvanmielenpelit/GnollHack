@@ -123,6 +123,8 @@ namespace GnollHackClient
                 SponsorButton.AbortAnimation("AnimationCounter");
                 _sponsorAnimation = new Animation(v => SponsorButton.AnimationCounter = (long)v, 1, 120);
                 _sponsorAnimation.Commit(SponsorButton, "AnimationCounter", length: 1500, rate: 25, repeat: () => App.ShowSpecialEffect);
+                //_sponsorAnimation = new Animation(callback: v => BackgroundColor = Color.FromHsla(v, 1, 0.5), start: 0, end: 1);
+                //_sponsorAnimation.Commit(SponsorButton, "Animation", 16, 4000, Easing.Linear, (v, c) => BackgroundColor = Color.Default);
             }
         }
 
@@ -148,20 +150,6 @@ namespace GnollHackClient
                 App.GnollHackService.InitializeGnollHack();
             }
             Preferences.Set("VersionId", verid);
-
-            if (VersionTracking.IsFirstLaunchEver)
-            {
-                // Do something
-            }
-            else if (VersionTracking.IsFirstLaunchForCurrentVersion)
-            {
-                // Do something
-            }
-            else if (VersionTracking.IsFirstLaunchForCurrentBuild)
-            {
-                // Do something
-            }
-
 
             StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
