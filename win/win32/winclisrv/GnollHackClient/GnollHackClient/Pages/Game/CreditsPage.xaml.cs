@@ -42,7 +42,7 @@ namespace GnollHackClient.Pages.Game
             App.PlayButtonClickedSound();
             CreditsTableView.IsEnabled = false;
             string fulltargetpath = Path.Combine(App.GHPath, "credits");
-            var displFilePage = new DisplayFilePage(fulltargetpath, "Windows Credits");
+            var displFilePage = new DisplayFilePage(fulltargetpath, "Credits");
             string errormsg = "";
             if (!displFilePage.ReadFile(out errormsg))
             {
