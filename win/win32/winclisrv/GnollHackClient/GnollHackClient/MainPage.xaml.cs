@@ -402,7 +402,7 @@ namespace GnollHackClient
         private async void CreditsButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
-            App.PlayButtonClickedSound();
+            App.PlayButtonClickedSoundB();
             var creditsPage = new CreditsPage();
             await App.Current.MainPage.Navigation.PushModalAsync(creditsPage);
         }

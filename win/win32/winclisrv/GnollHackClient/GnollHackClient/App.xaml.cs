@@ -14,6 +14,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Collections;
+using Plugin.SimpleAudioPlayer;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 [assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
@@ -335,6 +336,22 @@ namespace GnollHackClient
                 _fmodService.PlayImmediateSound(GHConstants.ButtonClickGHSound, GHConstants.ButtonClickEventPath, GHConstants.ButtonClickBankId, GHConstants.ButtonClickVolume,
                     1.0f, parameterNames, parameterValues, 0, 0, 0, 0);
             }
+        }
+
+        public static void PlayButtonClickedSoundB()
+        {
+            var player = CrossSimpleAudioPlayer.Current;
+            player.Load(GetStreamFromFile("Assets.test.wav"));
+            player.Volume = 0.5;
+            player.Play();
+        }
+
+        private static Stream GetStreamFromFile(string filename)
+        {
+            var assembly = typeof(App).GetTypeInfo().Assembly;
+            var stream = assembly.GetManifestResourceStream("GnollHackClient." + filename);
+
+            return stream;
         }
 
         public static void PlayMenuSelectSound()
