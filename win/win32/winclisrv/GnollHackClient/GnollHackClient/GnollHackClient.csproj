@@ -53,6 +53,7 @@
     <None Remove="Assets\shxi.ttf" />
     <None Remove="Assets\splash-snapshot.jpg" />
     <None Remove="Assets\test.wav" />
+    <None Remove="Assets\test2.mp3" />
     <None Remove="Assets\tombstone.png" />
     <None Remove="Assets\UI\cancel.png" />
     <None Remove="Assets\UI\cast.png" />
@@ -110,7 +111,6 @@
     <EmbeddedResource Include="Assets\main-menu-portrait-snapshot.jpg" />
     <EmbeddedResource Include="Assets\ghsettings.debug.json" />
     <EmbeddedResource Include="Assets\shxi.ttf" />
-    <EmbeddedResource Include="Assets\test.wav" />
     <EmbeddedResource Include="Assets\tombstone.png" />
     <EmbeddedResource Include="Assets\UI\cancel.png" />
     <EmbeddedResource Include="Assets\UI\cast.png" />

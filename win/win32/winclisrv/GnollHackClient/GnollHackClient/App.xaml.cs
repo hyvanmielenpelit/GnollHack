@@ -342,8 +342,12 @@ namespace GnollHackClient
         {
             var player = CrossSimpleAudioPlayer.Current;
             player.Load(GetStreamFromFile("Assets.test.wav"));
-            player.Volume = 0.5;
+            player.Volume = 0.75;
             player.Play();
+        }
+
+        private static void Player_PlaybackEnded(object sender, EventArgs e)
+        {
         }
 
         private static Stream GetStreamFromFile(string filename)
@@ -352,6 +356,18 @@ namespace GnollHackClient
             var stream = assembly.GetManifestResourceStream("GnollHackClient." + filename);
 
             return stream;
+        }
+
+        private static ISimpleAudioPlayer _musicPlayer = CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
+        public static void PlayIntroMusic()
+        {
+            if (_musicPlayer.IsPlaying)
+                return;
+
+            _musicPlayer.Load(GetStreamFromFile("Assets.test2.mp3"));
+            _musicPlayer.Volume = 0.25;
+            _musicPlayer.Loop = true;
+            _musicPlayer.Play();
         }
 
         public static void PlayMenuSelectSound()

@@ -173,6 +173,7 @@ namespace GnollHackClient
             UIVolume = Preferences.Get("UIVolume", 0.5f);
             App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
             App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+            //App.PlayIntroMusic();
         }
 
         private object _abortLock = new object();
@@ -261,7 +262,7 @@ namespace GnollHackClient
             StillImage.IsVisible = false;
 
             App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
-
+            //App.PlayIntroMusic();
         }
 
         private async Task StartFadeLogoIn()
@@ -402,7 +403,7 @@ namespace GnollHackClient
         private async void CreditsButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
-            App.PlayButtonClickedSoundB();
+            App.PlayButtonClickedSound();
             var creditsPage = new CreditsPage();
             await App.Current.MainPage.Navigation.PushModalAsync(creditsPage);
         }
