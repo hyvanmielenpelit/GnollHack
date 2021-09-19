@@ -4825,6 +4825,7 @@ struct monst *shkp;
 {
     struct eshk *eshk;
     long shkmoney;
+    char ansbuf[BUFSZ] = "";
 
     if (!shkp->isshk) 
     {
@@ -4859,7 +4860,9 @@ struct monst *shkp;
                 if (iflags.using_gui_sounds)
                 {
                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_I_WAS_LOOKING_FOR_SOMEONE_ELSE);
-                    verbalize("%s, adventurer!  I was looking for someone else.", Hello(shkp));
+                    Sprintf(ansbuf, "%s, adventurer!  I was looking for someone else.", Hello(shkp));
+                    verbalize(ansbuf);
+                    popup_talk_line(shkp, ansbuf);
                 }
                 else
                     verbalize("%s, %s!  I was looking for %s.",
@@ -4872,9 +4875,10 @@ struct monst *shkp;
             if (!Deaf && !muteshk(shkp))
             {
                 play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DIDNT_YOU_FORGET_TO_PAY);
-                verbalize("%s, %s!  Didn't you forget to pay?",
+                Sprintf(ansbuf, "%s, %s!  Didn't you forget to pay?",
                     Hello(shkp), iflags.using_gui_sounds ? "adventurer" : plname);
-
+                verbalize(ansbuf);
+                popup_talk_line(shkp, ansbuf);
             }
             else
                 pline("%s taps you on the %s.",
@@ -4931,6 +4935,9 @@ struct monst *shkp;
         pline("%s %s that business is bad.",
               Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "complains" : "indicates");
+
+        if (!Deaf && !muteshk(shkp))
+            popup_talk_line(shkp, "Business is bad.");
     }
     else if (shkmoney > 8000)
     {
@@ -4939,6 +4946,9 @@ struct monst *shkp;
         pline("%s %s that business is good.",
               Shknam(shkp),
               (!Deaf && !muteshk(shkp)) ? "says" : "indicates");
+
+        if (!Deaf && !muteshk(shkp))
+            popup_talk_line(shkp, "Business is good.");
     }
     else
     {
@@ -4946,6 +4956,7 @@ struct monst *shkp;
         {
             play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_PROBLEM_WITH_SHOPLIFTERS);
             pline("%s talks about the problem of shoplifters.", Shknam(shkp));
+            popup_talk_line(shkp, "We have a problem with shoplifters around here.");
         }
     }
 }
