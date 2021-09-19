@@ -75,7 +75,7 @@ namespace GnollHackClient
 
             var loginPage = new LoginPage(this);
             _loginNavPage = new NavigationPage(loginPage);
-
+            
             await Navigation.PushAsync(_loginNavPage);
         }
 

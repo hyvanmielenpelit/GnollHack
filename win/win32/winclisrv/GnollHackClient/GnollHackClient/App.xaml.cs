@@ -338,12 +338,12 @@ namespace GnollHackClient
             }
         }
 
+        private static ISimpleAudioPlayer _soundPlayer = CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
         public static void PlayButtonClickedSoundB()
         {
-            var player = CrossSimpleAudioPlayer.Current;
-            player.Load(GetStreamFromFile("Assets.test.wav"));
-            player.Volume = 0.75;
-            player.Play();
+            _soundPlayer.Load(GetStreamFromFile("Assets.test4.wav"));
+            _soundPlayer.Volume = 0.075;
+            _soundPlayer.Play();
         }
 
         private static void Player_PlaybackEnded(object sender, EventArgs e)
@@ -364,7 +364,7 @@ namespace GnollHackClient
             if (_musicPlayer.IsPlaying)
                 return;
 
-            _musicPlayer.Load(GetStreamFromFile("Assets.test2.mp3"));
+            _musicPlayer.Load(GetStreamFromFile("Assets.testm.mp3"));
             _musicPlayer.Volume = 0.25;
             _musicPlayer.Loop = true;
             _musicPlayer.Play();

@@ -53,6 +53,7 @@
     <None Remove="Assets\shxi.ttf" />
     <None Remove="Assets\splash-snapshot.jpg" />
     <None Remove="Assets\test.wav" />
+    <None Remove="Assets\test1.m4a" />
     <None Remove="Assets\test2.mp3" />
     <None Remove="Assets\tombstone.png" />
     <None Remove="Assets\UI\cancel.png" />
