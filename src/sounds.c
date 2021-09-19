@@ -4097,26 +4097,30 @@ struct monst* mtmp;
     {
         char namebuf[BUFSIZ] = "";
         char endbuf[BUFSIZ] = "";
-        const char * titlestr = "";
+        char titlebuf[BUFSIZ] = "";
         switch (mtmp->mnum)
         {
         case PM_STUDENT:
-            titlestr = "a student at the College of Archaeology";
+            strcpy(titlebuf, "a student at the College of Archaeology");
             break;
         case PM_CHIEFTAIN:
-            titlestr = "a local chieftain";
-            break;
+        case PM_NEANDERTHAL:
+        case PM_PAGE:
+        case PM_ATTENDANT:
+        case PM_ABBOT:
+        case PM_ACOLYTE:
+        case PM_THUG:
+        case PM_HUNTER:
+        case PM_GUIDE:
         case PM_WARRIOR:
-            titlestr = "a local warrior";
-            break;
         case PM_APPRENTICE:
-            titlestr = "a local apprentice";
+            Sprintf(titlebuf, "a local %s", mtmp->data->mname);
             break;
         default:
             if (mtmp->mnum == urole.guardnum)
-                titlestr = "your quest guardian";
+                strcpy(titlebuf, "your quest guardian");
             else
-                titlestr = "a quest guardian";
+                strcpy(titlebuf, "a quest guardian");
             break;
 
         }
@@ -4132,7 +4136,7 @@ struct monst* mtmp;
         }
 
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
-        Sprintf(ansbuf, "I am %s%s.%s", namebuf, titlestr, endbuf);
+        Sprintf(ansbuf, "I am %s%s.%s", namebuf, titlebuf, endbuf);
         popup_talk_line(mtmp, ansbuf);
     }
     else if (msound == MS_NEMESIS)
