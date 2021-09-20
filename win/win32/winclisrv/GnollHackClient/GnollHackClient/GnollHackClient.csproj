@@ -56,6 +56,7 @@
     <None Remove="Assets\test1.m4a" />
     <None Remove="Assets\test2.mp3" />
     <None Remove="Assets\tombstone.png" />
+    <None Remove="Assets\UI\apply.png" />
     <None Remove="Assets\UI\cancel.png" />
     <None Remove="Assets\UI\cast.png" />
     <None Remove="Assets\UI\chat.png" />
@@ -63,10 +64,14 @@
     <None Remove="Assets\UI\fire.png" />
     <None Remove="Assets\UI\inventory.png" />
     <None Remove="Assets\UI\kick.png" />
+    <None Remove="Assets\UI\lastitem.png" />
     <None Remove="Assets\UI\menubackground.png" />
     <None Remove="Assets\UI\no.png" />
     <None Remove="Assets\UI\pickup.png" />
+    <None Remove="Assets\UI\repeat.png" />
     <None Remove="Assets\UI\search.png" />
+    <None Remove="Assets\UI\stairs-down.png" />
+    <None Remove="Assets\UI\stairs-up.png" />
     <None Remove="Assets\UI\swap.png" />
     <None Remove="Assets\UI\throw.png" />
     <None Remove="Assets\UI\wait.png" />
@@ -113,6 +118,7 @@
     <EmbeddedResource Include="Assets\ghsettings.debug.json" />
     <EmbeddedResource Include="Assets\shxi.ttf" />
     <EmbeddedResource Include="Assets\tombstone.png" />
+    <EmbeddedResource Include="Assets\UI\apply.png" />
     <EmbeddedResource Include="Assets\UI\cancel.png" />
     <EmbeddedResource Include="Assets\UI\cast.png" />
     <EmbeddedResource Include="Assets\UI\chat.png" />
@@ -120,10 +126,14 @@
     <EmbeddedResource Include="Assets\UI\fire.png" />
     <EmbeddedResource Include="Assets\UI\inventory.png" />
     <EmbeddedResource Include="Assets\UI\kick.png" />
+    <EmbeddedResource Include="Assets\UI\lastitem.png" />
     <EmbeddedResource Include="Assets\UI\menubackground.png" />
     <EmbeddedResource Include="Assets\UI\no.png" />
     <EmbeddedResource Include="Assets\UI\pickup.png" />
+    <EmbeddedResource Include="Assets\UI\repeat.png" />
     <EmbeddedResource Include="Assets\UI\search.png" />
+    <EmbeddedResource Include="Assets\UI\stairs-down.png" />
+    <EmbeddedResource Include="Assets\UI\stairs-up.png" />
     <EmbeddedResource Include="Assets\UI\swap.png" />
     <EmbeddedResource Include="Assets\UI\throw.png" />
     <EmbeddedResource Include="Assets\UI\wait.png" />

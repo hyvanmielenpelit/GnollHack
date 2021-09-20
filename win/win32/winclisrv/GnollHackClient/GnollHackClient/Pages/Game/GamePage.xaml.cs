@@ -554,9 +554,9 @@ namespace GnollHackClient.Pages.Game
         {
             _contextMenuData.Add(data);
             string icon_string = "";
-            int LastPicked = GHUtils.Meta('<');
+            int LastPickedCmd = GHUtils.Meta('<');
             if (data.cmd_def_char < 0)
-                LastPicked -= 256;
+                LastPickedCmd -= 256;
 
             switch ((char)data.cmd_def_char)
             {
@@ -572,12 +572,18 @@ namespace GnollHackClient.Pages.Game
                 case ',':
                     icon_string = "GnollHackClient.Assets.UI.pickup.png";
                     break;
+                case '<':
+                    icon_string = "GnollHackClient.Assets.UI.stairs-up.png";
+                    break;
+                case '>':
+                    icon_string = "GnollHackClient.Assets.UI.stairs-down.png";
+                    break;
                 case ':':
                     icon_string = "GnollHackClient.Assets.UI.search.png";
                     break;
                 default:
-                    if (data.cmd_def_char == LastPicked)
-                        icon_string = "GnollHackClient.Assets.UI.inventory.png";
+                    if (data.cmd_def_char == LastPickedCmd)
+                        icon_string = "GnollHackClient.Assets.UI.lastitem.png";
                     else
                         icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
                     break;
