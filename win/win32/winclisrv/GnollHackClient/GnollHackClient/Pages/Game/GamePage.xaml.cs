@@ -7314,8 +7314,8 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[4, 0] = new GHCommandButtonItem("Identify", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'i'));
             _moreBtnMatrix[5, 0] = new GHCommandButtonItem("Teleport", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'t'));
 
-            _moreBtnMatrix[0, 1] = new GHCommandButtonItem("Go Down", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'>');
-            _moreBtnMatrix[1, 1] = new GHCommandButtonItem("Go Up", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'<');
+            _moreBtnMatrix[0, 1] = new GHCommandButtonItem("Go Down", "GnollHackClient.Assets.UI.stairs-down.png", (int)'>');
+            _moreBtnMatrix[1, 1] = new GHCommandButtonItem("Go Up", "GnollHackClient.Assets.UI.stairs-up.png", (int)'<');
             _moreBtnMatrix[2, 1] = new GHCommandButtonItem("Open", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'o');
             _moreBtnMatrix[3, 1] = new GHCommandButtonItem("Close", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'c');
             _moreBtnMatrix[4, 1] = new GHCommandButtonItem("Drop Types", "GnollHackClient.Assets.UI.dropmany.png", (int)'D');

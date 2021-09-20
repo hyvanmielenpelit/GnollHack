@@ -32,10 +32,10 @@
             </StackLayout>
             <StackLayout x:Name="FirstCmdRow" Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black">
                 <Grid>
-                    <controls:LabeledImageButton LblText="Go Down" BtnLetter="&gt;" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <controls:LabeledImageButton LblText="Go Down" BtnLetter="&gt;" ImgSourcePath="resource://GnollHackClient.Assets.UI.stairs-down.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
                 </Grid>
                 <Grid>
-                    <controls:LabeledImageButton LblText="Go Up" BtnLetter="&lt;" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <controls:LabeledImageButton LblText="Go Up" BtnLetter="&lt;" ImgSourcePath="resource://GnollHackClient.Assets.UI.stairs-up.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
                 </Grid>
                 <Grid>
                     <controls:LabeledImageButton LblText="Open" BtnLetter="o" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="GHButton_Clicked" PortraitButtonsInRow="6" LandscapeButtonsInRow="9" HorizontalOptions="Center" VerticalOptions="Center" />
