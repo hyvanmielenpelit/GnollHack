@@ -64,6 +64,7 @@ namespace SourceFileTimeStamper
                     break;
                 case ".des":
                 case ".def":
+                case ".txt":
                 case "":
                     style = ModifificationMarkStyles.Des;
                     break;

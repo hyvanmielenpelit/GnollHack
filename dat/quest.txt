@@ -747,7 +747,7 @@ Now I shall kill you."
 "You are weak, %c.  No challenge for the Mother of all Dragons."
 %E
 %Cp Cav 00061
-"I grow hungry, %r.  You look like a nice appetizer!"
+"I grow hungry, %c.  You look like a nice appetizer!"
 %E
 %Cp Cav 00062
 "Join me for lunch?  You're the main course, %c."
@@ -759,10 +759,10 @@ Now I shall kill you."
 "Your mentor, %l has failed.  You are nothing to fear."
 %E
 %Cp Cav 00065
-"You shall die here, %c.  %rA cannot hope to defeat me."
+"You shall die here.  %cA cannot hope to defeat me."
 %E
 %Cp Cav 00066
-"You, a mere %r challenge the might of %n?  Hah!"
+"You, a mere %c challenge the might of %n?  Hah!"
 %E
 %Cp Cav 00067
 "I am the Mother of all Dragons!  You cannot hope to defeat me."

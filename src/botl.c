@@ -1017,7 +1017,8 @@ char* outbuf5;
     if (maxlines == 0)
         return;
 
-    for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    struct monst* mtmp;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
         char* targetbuf = outbufs[line_idx-1];
         char tempbuf[BUFSIZ];
@@ -2791,7 +2792,8 @@ const char*
 get_condition_name(ul)
 unsigned long ul;
 {
-    for (int i = 0; i < SIZE(valid_conditions); i++)
+    int i;
+    for (i = 0; i < SIZE(valid_conditions); i++)
         if ((valid_conditions[i].bitmask & ul) != 0UL)
             return valid_conditions[i].id;
 

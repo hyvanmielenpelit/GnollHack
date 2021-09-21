@@ -63,7 +63,8 @@ namespace SourceFileTimeStamper
                 new DirectoryData()
                 {
                     RelativePath = "dat",
-                    SearchPatterns = new List<string>() { "*.des", "*.def", "symbols" },
+                    SearchPatterns = new List<string>() { "*.des", "*.def", "*.txt", "symbols" },
+                    ExcludedFiles = new List<string>() { "oracles.txt" }
                 },
             };
 
