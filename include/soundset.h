@@ -1888,7 +1888,7 @@ enum sfx_sound_types {
 /* 
  * SOUND WINDOWPROC FUNCTION DEFINITIONS 
  */
-#define MAX_SOUND_PARAMETERS 8
+#define MAX_SOUND_PARAMETERS 10
 enum immediate_sound_types {
     IMMEDIATE_SOUND_SFX = 0,
     IMMEDIATE_SOUND_UI,

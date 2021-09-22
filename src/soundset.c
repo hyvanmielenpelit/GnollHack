@@ -13279,7 +13279,9 @@ boolean via_pline;
     info.parameter_values[5] = mon ? (float)mon->female : 0;
     info.parameter_names[6] = "YourGenderIndex";
     info.parameter_values[6] = (float)flags.female;
-    info.parameter_names[7] = (char*)0;
+    info.parameter_names[7] = "YouBlind";
+    info.parameter_values[7] = (float)Blind;
+    info.parameter_names[8] = (char*)0;
 
     if (via_pline)
     {

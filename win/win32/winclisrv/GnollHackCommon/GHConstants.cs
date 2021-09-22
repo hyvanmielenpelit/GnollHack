@@ -942,7 +942,7 @@ namespace GnollHackCommon
         public const int StatusMarkHeight = 16;
         public const int MaxTileSheets = 4;
         public const int NumberOfTilesPerSheet = 16224;
-        public const int MaxSoundParameters = 8;
+        public const int MaxSoundParameters = 10;
         public const int MaxFramesPerAnimation = 32;
         public const int NumPositionsInEnlargement = 5;
         public const int MaxTilesPerReplacement = 32;
