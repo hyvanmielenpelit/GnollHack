@@ -5495,17 +5495,17 @@ struct permonst _mons2[] = {
         M3_INFRAVISIBLE, 
         M4_LIKES_FIRE | M4_VORPAL_VULNERABILITY, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
         17, CLR_RED, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("lernaean hydra", None, "seven-headed regenerating reptilian monster that can come back to life", None, None, S_LIZARD, LVL(12, 9, 5, 10, 0, 0), (G_GENO | 1),
-        A(ATTK(AT_BITE, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0),
+    MON("Lernaean hydra", None, "nine-headed regenerating reptilian monster that can come back to life", None, None, S_LIZARD, LVL(12, 9, 5, 10, 0, 0), (G_GENO | 1),
+        A(ATTK(AT_BREA, AD_DRST, 3, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_BITE, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0),
-            ATTK(AT_BITE, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), NO_ATTK),
-        SIZ(2000, 600, MS_SILENT, MZ_LARGE, 7, 0, MAT_FLESH), STATS(STR18(100), 12, 25, 2, 2, 1), 
-        MR_REGENERATION, MR2_NONE, MC_NONE,
+            ATTK(AT_BITE, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0)),
+        SIZ(2000, 600, MS_SILENT, MZ_LARGE, 9, 0, MAT_FLESH), STATS(STR18(100), 12, 25, 2, 2, 1), 
+        MR_REGENERATION | MR_POISON, MR2_NONE, MC_POISONOUS_CORPSE | MC_POISON,
         M1_SWIM | M1_AMPHIBIOUS | M1_ANIMAL | M1_THICK_HIDE | M1_NOHANDS | M1_OVIPAROUS | M1_CARNIVORE,
         M2_HOSTILE, 
         M3_REGENERATES_LOST_BODY_PARTS | M3_REVIVES_FROM_DEAD, 
         M4_VORPAL_VULNERABILITY, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
-        21, CLR_BRIGHT_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        30, CLR_BRIGHT_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     /*
      * dummy monster needed for visual interface
      * (marking it unique prevents figurines)
