@@ -2090,7 +2090,7 @@ NEARDATA struct permonst mons[] = {
         the isminion flag set; however, non-minion Angels can be tamed
         and will switch to edog (guardian Angel is handled specially and
         always sticks with emin) */
-    MON("couatl", None, "flying poisonous angelic serpent with constriction attack", None, None, S_ANGEL, LVL(8, 10, 5, 11, 30, 7),
+    ENLARGED_MON("couatl", None, "flying poisonous angelic serpent with constriction attack", None, None, S_ANGEL, LVL(8, 10, 5, 11, 30, 7),
         (G_NOHELL | G_SGROUP | G_NOCORPSE | 1),
         A(ATTK(AT_BITE, AD_DRST, 2, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 1, 3, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_HUGS, AD_WRAP, 2, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2101,7 +2101,9 @@ NEARDATA struct permonst mons[] = {
         M2_MINION | M2_STALK | M2_NASTY | M2_ANGEL,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY | M3_CONSTRICTOR,
         M4_BRAVE | M4_FEARLESS, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
-        15, CLR_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        15, CLR_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(COUATL_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, COUATL_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(COUATL_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, COUATL_STATUE_ENLARGEMENT, 0, 0)),
     MON("Aleax", None, "angelic being that embodies divine punishment by god", None, None, S_ANGEL, LVL(13, 12, 0, 20, 100, 7), (G_NOHELL | G_NOCORPSE | G_STRAYED | 3),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_KICK, AD_PHYS, 1, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
