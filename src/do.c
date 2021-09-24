@@ -6051,7 +6051,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     }
     else 
     { /* trap door or level_tele or In_endgame */
-        if ((at_location & 2) != 0)
+        if (context.reviving)
             up = TRUE;
         u_on_rndspot((up ? 1 : 0) | (was_in_W_tower ? 2 : 0));
         if (falling) 

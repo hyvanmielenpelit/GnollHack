@@ -2672,8 +2672,9 @@ get_current_game_score()
     double Turn_Count_Multiplier = sqrt(50000.0) / sqrt((double)max(1L, moves));
     double Ascension_Multiplier = u.uachieve.ascended ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;
     double Difficulty_Multiplier = pow(10.0, 0.5 * (double)context.game_difficulty);
+    double Beginner_Multiplier = BeginnerMode ? pow(10.0, -0.5 * (MAX_DIFFICULTY_LEVEL - MIN_DIFFICULTY_LEVEL)) : 1.0;
 
-    utotal = (long)(round((double)Base_Score * Ascension_Multiplier * Difficulty_Multiplier));
+    utotal = (long)(round((double)Base_Score * Ascension_Multiplier * Difficulty_Multiplier * Beginner_Multiplier));
     return utotal;
 }
 

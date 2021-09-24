@@ -36,8 +36,8 @@ namespace GnollHackClient
                     res += "W";
                 else if (Mode == "explore")
                     res += "X";
-                else if (Mode == "hardcore")
-                    res += "H";
+                else if (Mode == "beginner")
+                    res += "B";
 
                 switch (Difficulty)
                 {
