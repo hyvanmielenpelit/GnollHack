@@ -390,7 +390,7 @@ can_make_bones()
         return FALSE;
     /* don't let multiple restarts generate multiple copies of objects
        in bones files */
-    if (discover)
+    if (discover || BeginnerMode)
         return FALSE;
     return TRUE;
 }
@@ -639,7 +639,7 @@ getbones()
     register int ok;
     char c, *bonesid, oldbonesid[40]; /* was [10]; more should be safer */
 
-    if (discover) /* save bones files for real games */
+    if (discover || BeginnerMode) /* save bones files for real games */
         return 0;
 
     if (!flags.bones)

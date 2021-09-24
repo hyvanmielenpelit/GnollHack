@@ -1123,10 +1123,19 @@ namespace GnollHackClient
             AndroidLabel.Text = "Android Version";
         }
 
-        private void hardcoreModeSwitch_Toggled(object sender, ToggledEventArgs e)
+        private void BeginnerModeSwitch_Toggled(object sender, ToggledEventArgs e)
         {
             App.BeginnerMode = beginnerModeSwitch.IsToggled;
             Preferences.Set("BeginnerMode", App.BeginnerMode);
+            if(beginnerModeSwitch.IsToggled)
+            {
+                wizardModeSwitch.IsToggled = false;
+                wizardModeSwitch.IsEnabled = false;
+            }
+            else
+            {
+                wizardModeSwitch.IsEnabled = true;
+            }
         }
 
         private void PopupOkButton_Clicked(object sender, EventArgs e)
@@ -1137,8 +1146,28 @@ namespace GnollHackClient
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             PopupTitleLabel.Text = "Beginner Mode";
-            PopupLabel.Text = "In Beginner Mode, you [enter the Beginner Mode description].";
+            PopupLabel.Text = "In the Beginner Mode, whenever you die, your god will revive you at the starting altar, or at another special location.";
             PopupGrid.IsVisible = true;
+        }
+
+        private void WizTapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            PopupTitleLabel.Text = "Wizard Mode";
+            PopupLabel.Text = "Wizard Mode is a debug mode that makes you immortal and enables you to issue special wizard mode commands.";
+            PopupGrid.IsVisible = true;
+        }
+
+        private void wizardModeSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (wizardModeSwitch.IsToggled)
+            {
+                beginnerModeSwitch.IsToggled = false;
+                beginnerModeSwitch.IsEnabled = false;
+            }
+            else
+            {
+                beginnerModeSwitch.IsEnabled = true;
+            }
         }
     }
 

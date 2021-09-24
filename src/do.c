@@ -2084,7 +2084,8 @@ register struct obj* obj;
             putstr(datawin, ATR_HEADING, txt);
 
             int powercnt = 0;
-            for (int j = 1; j <= 6; j++)
+            int j;
+            for (j = 1; j <= 6; j++)
             {
                 int prop = 0;
                 if (j == 1)
@@ -2218,7 +2219,8 @@ register struct obj* obj;
                     }
                     else if (j == 6)
                     {
-                        for (int k = 0; k < 14; k++)
+                        int k;
+                        for (k = 0; k < 14; k++)
                         {
                             strcpy(buf2, "");
                             int stat = (k == 9 ? /* MC */ objects[otyp].oc_attribute_bonus / 3 : objects[otyp].oc_attribute_bonus);
@@ -2755,7 +2757,8 @@ register struct obj* obj;
                     else if (objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M5_FLAG))
                         flag_idx = 5;
 
-                    for (int idx = 0; idx < NUM_UNSIGNED_LONG_BITS; idx++)
+                    int idx;
+                    for (idx = 0; idx < NUM_UNSIGNED_LONG_BITS; idx++)
                     {
                         unsigned long bit = 1;
                         if (idx > 0)
@@ -3465,7 +3468,8 @@ register struct obj* obj;
                 strcpy(endbuf, "when carried");
             }
             int propnum = 0;
-            for (int idx = 0; idx < 32; idx++)
+            int idx;
+            for (idx = 0; idx < 32; idx++)
             {
                 unsigned long bit = 1;
                 if (idx > 0)
@@ -5660,9 +5664,10 @@ struct monst *mtmp;
 }
 
 void
-goto_level(newlevel, at_stairs, falling, portal)
+goto_level(newlevel, at_location, falling, portal)
 d_level *newlevel;
-boolean at_stairs, falling;
+boolean at_location; /* 1 = at stairs, 2 = at altar */
+boolean falling;
 xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = Modron portal up (find portal down), 4 = Modron portal (random destination) */
 {
     int fd, l_idx;
@@ -5676,7 +5681,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     struct monst *mtmp;
     char whynot[BUFSZ];
     char *annotation;
-    boolean play_arrival_teleport_effect = !!(u.utotype & 0400);
+    boolean play_arrival_teleport_effect = !!(u.utotype & 0x0100);
 
     if (dunlev(newlevel) > dunlevs_in_dungeon(newlevel))
         newlevel->dlevel = dunlevs_in_dungeon(newlevel);
@@ -5838,7 +5843,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
      * some non-standard means of transportation (level teleport).
      */
 
-    if ((at_stairs || falling || portal) && (u.uz.dnum != newlevel->dnum))
+    if ((at_location || falling || portal) && (u.uz.dnum != newlevel->dnum))
         recbranch_mapseen(&u.uz, newlevel);
     assign_level(&u.uz0, &u.uz);
     assign_level(&u.uz, newlevel);
@@ -5898,7 +5903,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     vision_reset();         /* clear old level's line-of-sight */
     vision_full_recalc = 0; /* don't let that reenable vision yet */
     flush_screen(-1);       /* ensure all map flushes are postponed */
-
+    char wakeupbuf[BUFSZ] = "";
+    boolean displaywakeup = FALSE;
     if (portal == 1 && !In_endgame(&u.uz)) 
     {
         /* find the portal on the new level */
@@ -5937,7 +5943,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         seetrap(ttrap);
         u_on_newpos(ttrap->tx, ttrap->ty);
     }
-    else if (at_stairs && !In_endgame(&u.uz))
+    else if ((at_location & 1) && !In_endgame(&u.uz))
     {
         if (up) 
         {
@@ -6002,8 +6008,48 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             }
         }
     }
+    else if ((at_location & 2) && !In_endgame(&u.uz))
+    {
+        int altar_x = 0, altar_y = 0;
+        int x, y;
+        boolean dobreak = FALSE;
+        for (x = 1; x < COLNO; x++)
+        {
+            for (y = 0; y < ROWNO; y++)
+            {
+                if (IS_ALTAR(levl[x][y].typ))
+                {
+                    altar_x = x;
+                    altar_y = y;
+                    if (a_align(x, y) == u.ualign.type)
+                    {
+                        dobreak = TRUE;
+                        break;
+                    }
+                }
+            }
+            if (dobreak)
+                break;
+        }
+
+        set_itimeout(&HInvulnerable, 0L);
+        displaywakeup = TRUE;
+
+        if (isok(altar_x, altar_y))
+        {
+            u_on_newpos(altar_x, altar_y);
+            Sprintf(wakeupbuf, "%s revives you at the altar.", u_gname());
+        }
+        else
+        {
+            u_on_rndspot(FALSE);
+            Sprintf(wakeupbuf, "You feel the saving grace of %s. You wake up.", u_gname());
+        }
+    }
     else 
     { /* trap door or level_tele or In_endgame */
+        if ((at_location & 2) != 0)
+            up = TRUE;
         u_on_rndspot((up ? 1 : 0) | (was_in_W_tower ? 2 : 0));
         if (falling) 
         {
@@ -6247,6 +6293,12 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     save_currentstate();
 #endif
 
+    if (displaywakeup)
+    {
+        pline1(wakeupbuf);
+        display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_EXTRA_LIFE_SPENT, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
+    }
+
     if ((annotation = get_annotation(&u.uz)) != 0)
         You("remember this level as %s.", annotation);
 
@@ -6281,36 +6333,40 @@ static char *dfr_pre_msg = 0,  /* pline() before level change */
 
 /* change levels at the end of this turn, after monsters finish moving */
 void
-schedule_goto(tolev, at_stairs, falling, teleport, portal_flag, pre_msg, post_msg)
+schedule_goto(tolev, at_location, falling, teleport, portal_flag, pre_msg, post_msg)
 d_level *tolev;
-boolean at_stairs, falling, teleport;
+uchar at_location; /* 1 = at stairs, 2 = at altar */
+boolean falling, teleport;
 long portal_flag;
 const char *pre_msg, *post_msg;
 {
-    int typmask = 0100; /* non-zero triggers `deferred_goto' */
+    short typmask = 0x0040; /* non-zero triggers `deferred_goto' */
 
     /* destination flags (`goto_level' args) */
-    if (at_stairs)
-        typmask |= 1;
+    if (at_location == 1)
+        typmask |= 0x0001;
+    else if (at_location == 2)
+        typmask |= 0x0200;
+
     if (falling)
-        typmask |= 2;
+        typmask |= 0x0002;
     if (portal_flag == 1)
-        typmask |= 4;
+        typmask |= 0x0004;
     else if (portal_flag == 2)
-        typmask |= 8;
+        typmask |= 0x0008;
     else if (portal_flag == 3)
-        typmask |= 16;
+        typmask |= 0x0010;
     else if (portal_flag == 4)
-        typmask |= 32;
+        typmask |= 0x0020;
 
     if (portal_flag < 0)
     {
-        typmask |= 4; /* The same otherwise as 1 */
-        typmask |= 0200; /* flag for portal removal */
+        typmask |= 0x0004; /* The same otherwise as 1 */
+        typmask |= 0x0080; /* flag for portal removal */
     }
 
     if (teleport)
-        typmask |= 0400; /* flag for teleport in effect on new level */
+        typmask |= 0x0100; /* flag for teleport in effect on new level */
 
     u.utotype = typmask;
     /* destination level */
@@ -6329,14 +6385,14 @@ deferred_goto()
     if (!on_level(&u.uz, &u.utolev))
     {
         d_level dest;
-        int typmask = u.utotype; /* save it; goto_level zeroes u.utotype */
+        short typmask = u.utotype; /* save it; goto_level zeroes u.utotype */
 
         assign_level(&dest, &u.utolev);
         if (dfr_pre_msg)
             pline1(dfr_pre_msg);
         xchar portal_flag = (typmask & 4) ? 1 : (typmask & 8) ? 2 : (typmask & 16) ? 3 : (typmask & 32) ? 4 : 0;
-        goto_level(&dest, !!(typmask & 1), !!(typmask & 2), portal_flag);
-        if (typmask & 0200) { /* remove portal */
+        goto_level(&dest, !!(typmask & 1) | (2 * !!(typmask & 0x0200)), !!(typmask & 2), portal_flag);
+        if (typmask & 0x0080) { /* remove portal */
             struct trap *t = t_at(u.ux, u.uy);
 
             if (t)
@@ -6738,7 +6794,8 @@ dotogglehpbars()
 
     newsym(u.ux, u.uy);  // force_redraw_at(u.ux, u.uy);
 
-    for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    struct monst* mtmp;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
         if (canseemon(mtmp))
             newsym(mtmp->mx, mtmp->my);  // force_redraw_at(mtmp->mx, mtmp->my);
@@ -6763,7 +6820,8 @@ dotogglebufftimers()
 {
     flags.show_buff_timer = !flags.show_buff_timer;
     newsym(u.ux, u.uy); //force_redraw_at(u.ux, u.uy);
-    for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    struct monst* mtmp;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
         if (canseemon(mtmp) && is_tame(mtmp))
             newsym(mtmp->mx, mtmp->my); //force_redraw_at(mtmp->mx, mtmp->my);
@@ -6780,7 +6838,8 @@ dotogglemonstertargeting()
 
     flags.show_tile_monster_target = !current_flag;
 
-    for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    struct monst* mtmp;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
         //if (canseemon(mtmp))
         newsym(mtmp->mx, mtmp->my);  //force_redraw_at(mtmp->mx, mtmp->my);

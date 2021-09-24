@@ -447,7 +447,7 @@ int RunGnollHack(
         In_Demo = TRUE;
     }
 
-    if (runflags & GHRUNFLAGS_BEGINNER)
+    if (!wizard && !discover && (runflags & GHRUNFLAGS_BEGINNER))
     {
         BeginnerMode = TRUE;
     }

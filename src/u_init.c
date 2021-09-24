@@ -1301,7 +1301,7 @@ u_init()
     /* 
      * Final stuff
      */
-    if (discover)
+    if (discover && !BeginnerMode)
         ini_inv(Wishing);
 
     if (wizard)

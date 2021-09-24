@@ -1270,6 +1270,42 @@ int how;
                 survive = TRUE;
             }
         }
+        else if (BeginnerMode)
+        {
+            savelife(how);
+            survive = TRUE;
+            boolean teleinstead = FALSE;
+            incr_itimeout(&HInvulnerable, 2);
+            if (!In_endgame(&u.uz))
+            {
+                d_level dl = { 0 };
+                if (u.uachieve.amulet)
+                {
+                    dl = sanctum_level;
+                }
+                else
+                {
+                    dl.dlevel = 1;
+                    dl.dnum = main_dungeon_dnum;
+                }
+                if (on_level(&u.uz, &dl))
+                    teleinstead = TRUE;
+                else
+                    schedule_goto(&dl, 2, FALSE, TRUE, 0, (char*)0, (char*)0);
+            }
+            else
+            {
+                teleinstead = TRUE;
+            }
+
+            if (teleinstead)
+            {
+                tele();
+                if (!Confusion)
+                    play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+                make_confused(itimeout_incr(HConfusion, d(2, 3)), FALSE);
+            }
+        }
     }
 
     if (survive)
@@ -1397,7 +1433,7 @@ int how;
     dump_open_log(endtime);
 
     You("were playing on %s difficulty%s.", get_game_difficulty_text(context.game_difficulty),
-        wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : "");
+        wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : BeginnerMode ? " in beginner mode" : "");
 
     /* Sometimes you die on the first move.  Life's not fair.
      * On those rare occasions you get hosed immediately, go out
@@ -1821,7 +1857,7 @@ int how;
             plur(umoney), moves, plur(moves));
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
     Sprintf(pbuf, "You played on %s difficulty%s.", get_game_difficulty_text(context.game_difficulty),
-        wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : "");
+        wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : BeginnerMode ? " in beginner mode" : "");
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
     Sprintf(pbuf,
             "You were level %d with a maximum of %d hit point%s when you %s.",

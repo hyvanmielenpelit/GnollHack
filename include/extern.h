@@ -590,8 +590,8 @@ E int NDECL(doup);
 E void NDECL(save_currentstate);
 #endif
 E void FDECL(u_collide_m, (struct monst *));
-E void FDECL(goto_level, (d_level *, BOOLEAN_P, BOOLEAN_P, XCHAR_P));
-E void FDECL(schedule_goto, (d_level *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, long,
+E void FDECL(goto_level, (d_level *, UCHAR_P, BOOLEAN_P, XCHAR_P));
+E void FDECL(schedule_goto, (d_level *, UCHAR_P, BOOLEAN_P, BOOLEAN_P, long,
                              const char *, const char *));
 E void NDECL(deferred_goto);
 E boolean FDECL(revive_corpse, (struct obj *));

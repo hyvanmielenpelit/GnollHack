@@ -109,10 +109,11 @@
               AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300" HeightRequest="160">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid x:Name="beginnerModeGrid" IsVisible="False" Grid.Row="0" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+            <Grid x:Name="beginnerModeGrid" IsVisible="True" Grid.Row="0" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -125,9 +126,9 @@
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                     </Label.GestureRecognizers>
                 </Label>
-                <Switch x:Name="beginnerModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="hardcoreModeSwitch_Toggled"  />
+                <Switch x:Name="beginnerModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="BeginnerModeSwitch_Toggled"  />
             </Grid>
-            <Grid x:Name="wizardModeGrid" Grid.Row="0" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+            <Grid x:Name="wizardModeGrid" Grid.Row="1" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -135,10 +136,14 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="White" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center"/>
-                <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" />
+                <Label x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="White" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="WizTapGestureRecognizer_Tapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="wizardModeSwitch_Toggled" />
             </Grid>
-            <Grid Grid.Row="1" x:Name="StartLocalGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+            <Grid Grid.Row="2" x:Name="StartLocalGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                 <Label x:Name="StartLocalGoneLabel" IsVisible="False" Text="Please exit and restart to play" FontFamily="Immortal" FontSize="16" TextColor="LightBlue" 
                        HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <Image x:Name="StartLocalGameImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
@@ -146,7 +151,7 @@
                         FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent"  
                         HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
             </Grid>
-            <Grid Grid.Row="2" x:Name="StartServerGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+            <Grid Grid.Row="3" x:Name="StartServerGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                 <Image x:Name="StartServerGameImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <Button Text="Online Game" x:Name="StartServerGameButton" Clicked="serverButton_Clicked" 
                         FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" 
