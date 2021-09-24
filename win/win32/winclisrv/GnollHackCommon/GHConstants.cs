@@ -882,7 +882,7 @@ namespace GnollHackCommon
         POPUP_TEXT_DIALOGUE,
         POPUP_TEXT_ADVICE,
         POPUP_TEXT_MESSAGE,
-        POPUP_TEXT_EXTRA_LIFE_SPENT
+        POPUP_TEXT_REVIVAL
     }
 
     public enum yn_function_styles

@@ -40,6 +40,7 @@ struct npc_subtype_definition {
     const char* room_name;
     const char* npc_fixed_name;
     const char* npc_fixed_explanation;
+    const char* revival_line;
     schar min_appearance_depth;
     schar max_appearance_depth;
     int start_money_d, start_money_n, start_money_p;
@@ -85,6 +86,7 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_FLAGS_NO_ADVICE                 0x00000100UL
 #define NPC_FLAGS_NO_ITEMS                  0x00000200UL
 #define NPC_FLAGS_DISPLAY_NAME_ONLY         0x00000400UL /* When name is known */
+#define NPC_FLAGS_COMMENTS_ON_REVIVAL       0x00000800UL
 
 
 

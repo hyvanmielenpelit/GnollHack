@@ -17,6 +17,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         "laboratory",
         (char*)0,
         (char*)0,
+        (char*)0,
         8, 0,
         5, 1000, 7500,
         NPC_SERVICE_ENCHANT_ACCESSORY | NPC_SERVICE_RECHARGING | NPC_SERVICE_BLESSED_RECHARGING | NPC_SERVICE_IDENTIFY_ACCESSORIES_AND_CHARGED_ITEMS | NPC_SERVICE_BUY_SPELLBOOKS | NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD | NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT | NPC_SERVICE_TEACH_SPELL_FORCE_BOLT | NPC_SERVICE_TEACH_SPECIAL_SPELLS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
@@ -27,6 +28,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         NPC_GEHENNOM_DWARF_MUMMY,
         "geologist",
         "workshop",
+        (char*)0,
         (char*)0,
         (char*)0,
         6, 0,
@@ -41,6 +43,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         "engineering bay",
         (char*)0,
         (char*)0,
+        (char*)0,
         0, 0,
         10, 1000, 30000,
         NPC_SERVICE_BUY_DILITHIUM_CRYSTALS | NPC_SERVICE_IDENTIFY_GEMS_STONES_AND_CHARGED_ITEMS | NPC_SERVICE_RECHARGING | NPC_SERVICE_BLESSED_RECHARGING | NPC_SERVICE_BRANCH_PORTAL,
@@ -53,10 +56,11 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         "entrance to the Dungeons of Doom",
         "Durward Cos",
         "I have watched over this entrance to the Dungeons of Doom for many decades now.",
+        "Welcome back to the world of the living.",
         0, 0,
         1, 100, 5,
         NPC_SERVICE_GIVE_STARTING_QUESTS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_MY | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_MY | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
     },
     {
         PM_HERMIT,
@@ -65,10 +69,11 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         "simple abode",
         "Eduard Dunley",
         "Long ago, before this place was overrun by evil, I looked after the remains of the dead kings of Yendor.",
+        "Welcome back to the world of the living.",
         0, 0,
         1, 100, 5,
         NPC_SERVICE_GIVE_ADVANCED_QUESTS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
     }, 
     {
         PM_HERMIT,
@@ -77,10 +82,11 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         "simple home",
         "Herbert Reed",
         "I study the local gnomes and their ways.",
+        "Welcome back to the world of the living.",
         0, 0,
         1, 100, 5,
         NPC_SERVICE_GIVE_GNOMISH_QUESTS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
     },
     {
         PM_ORC_SHAMAN,
@@ -89,10 +95,11 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         "lounge",
         "Haiuun",
         "I'm the seer that led our clan to this place.",
+        "Ah, your spirit has returned.",
         0, 0,
         1, 100, 5,
         NPC_SERVICE_GIVE_ORCISH_QUESTS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
     },
 };
 
@@ -276,7 +283,16 @@ int roomno;
                 enpc_p->enter_time = 0L;
             }
 
-            if (moves >= enpc_p->enter_time)
+            if (context.reviving && (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_COMMENTS_ON_REVIVAL))
+            {
+                int dialogueline = NPC_LINE_REVIVAL;
+                context.global_minimum_volume = 0.5;
+                play_monster_special_dialogue_line(npc, dialogueline);
+                context.global_minimum_volume = 0.0;
+                Sprintf(buf, "%s", npc_subtype_definitions[npctype].revival_line);
+                verbalize1(buf);
+            }
+            else if (moves >= enpc_p->enter_time)
             {
                 int dialogueline = !has_room ? NPC_LINE_ADVENTURER_WELCOME : NPC_LINE_ADVENTURER_WELCOME_TO_MY_RESIDENCE;
                 context.global_minimum_volume = 0.5;

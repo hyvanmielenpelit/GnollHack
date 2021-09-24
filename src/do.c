@@ -5683,6 +5683,9 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     char *annotation;
     boolean play_arrival_teleport_effect = !!(u.utotype & 0x0100);
 
+    if(at_location & 2)
+        context.reviving = TRUE;
+
     if (dunlev(newlevel) > dunlevs_in_dungeon(newlevel))
         newlevel->dlevel = dunlevs_in_dungeon(newlevel);
     if (newdungeon && In_endgame(newlevel)) 
@@ -5796,7 +5799,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     u.ustuck = 0; /* idem */
     u.uinwater = 0;
     u.uundetected = 0; /* not hidden, even if means are available */
-    keepdogs(FALSE);
+    keepdogs(context.reviving);
     if (u.uswallow) /* idem */
         u.uswldtim = u.uswallow = 0;
     recalc_mapseen(); /* recalculate map overview before we leave the level */
@@ -6038,12 +6041,12 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         if (isok(altar_x, altar_y))
         {
             u_on_newpos(altar_x, altar_y);
-            Sprintf(wakeupbuf, "%s revives you at the altar.", u_gname());
+            Sprintf(wakeupbuf, "You were dead for a while, but then %s revives you at the altar.", u_gname());
         }
         else
         {
             u_on_rndspot(FALSE);
-            Sprintf(wakeupbuf, "You feel the saving grace of %s. You wake up.", u_gname());
+            Sprintf(wakeupbuf, "You were dead for a while, but then you feel the saving grace of %s. You wake up.", u_gname());
         }
     }
     else 
@@ -6295,8 +6298,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
     if (displaywakeup)
     {
-        pline1(wakeupbuf);
-        display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_EXTRA_LIFE_SPENT, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
+        pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, wakeupbuf);
+        display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_REVIVAL, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
     }
 
     if ((annotation = get_annotation(&u.uz)) != 0)
@@ -6305,6 +6308,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     /* assume this will always return TRUE when changing level */
     (void) in_out_region(u.ux, u.uy);
     (void) pickup(1);
+    context.reviving = FALSE;
 }
 
 
