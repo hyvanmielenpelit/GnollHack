@@ -2708,7 +2708,7 @@ NEARDATA struct permonst mons[] = {
         ACTION_INFO(ELDER_DRACOLICH_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ELDER_DRACOLICH_STATUE_ENLARGEMENT, 0, 0)),
 
     /* angelic dragons */
-    MON("gold dragon", None, "spell-casting dragon with fiery and poison gas breath weapons", None, None, S_DRAGON, LVL(15, 12, -2, 10, 20, 10), (G_NOGEN),
+    ENLARGED_MON("gold dragon", None, "spell-casting dragon with fiery and poison gas breath weapons", None, None, S_DRAGON, LVL(15, 12, -2, 10, 20, 10), (G_NOGEN),
         A(ATTK(AT_BREA, AD_RBGD, 6, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 6, 6, 0, 0, 0, 0, 0UL, 0),
           ATTK(AT_CLAW, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 0, 0, 0UL, 0),
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2719,8 +2719,10 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC | M2_ANGEL,
         M3_INFRAVISIBLE | M3_SPEAKING, 
         M4_BRAVE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-        30, HI_GOLD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("ancient gold dragon", None, "powerful spell-casting dragon with fiery and poison gas breath weapons", None, None, S_DRAGON, LVL(22, 12, -11, 15, 50, 10), (G_NOGEN),
+        30, HI_GOLD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(GOLD_DRAGON_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, GOLD_DRAGON_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(GOLD_DRAGON_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, GOLD_DRAGON_STATUE_ENLARGEMENT, 0, 0)),
+    ENLARGED_MON("ancient gold dragon", None, "powerful spell-casting dragon with fiery and poison gas breath weapons", None, None, S_DRAGON, LVL(22, 12, -11, 15, 50, 10), (G_NOGEN),
         A(ATTK(AT_BREA, AD_RBGD, 12, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 8, 6, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_CLAW, AD_PHYS, 2, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 2, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 0, 0, 0UL, 0),
             NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2731,8 +2733,10 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC | M2_ANGEL,
         M3_INFRAVISIBLE | M3_SPEAKING,
         M4_BRAVE, M5_NONE, M6_ELDER, M7_NONE, M8_NONE,
-        40, HI_GOLD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("Bahamut", "Platinum Dragon, King of Good Dragons", "powerful spell-casting dragon king with cold and disintegrating breath weapons", None, None, S_DRAGON, LVL(33, 12, -13, 18, 80, 14), (G_NOGEN | G_UNIQ),
+        40, HI_GOLD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(ANCIENT_GOLD_DRAGON_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ANCIENT_GOLD_DRAGON_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(ANCIENT_GOLD_DRAGON_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ANCIENT_GOLD_DRAGON_STATUE_ENLARGEMENT, 0, 0)),
+    ENLARGED_MON("Bahamut", "Platinum Dragon, King of Good Dragons", "powerful spell-casting dragon king with cold and disintegrating breath weapons", None, None, S_DRAGON, LVL(33, 12, -13, 18, 80, 14), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_BREA, AD_RBPD, 18, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 6, 8, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_CLAW, AD_PHYS, 2, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 2, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_SMMN, AD_GDRA, 0, 0, 0, 0, 25, 0, 0UL, 0), NO_ATTK, NO_ATTK),
@@ -2743,7 +2747,9 @@ NEARDATA struct permonst mons[] = {
         M2_NOPOLY | M2_HOSTILE | M2_NASTY | M2_GREEDY | M2_JEWELS | M2_MAGIC | M2_ANGEL | M2_MALE,
         M3_INFRAVISIBLE | M3_SPEAKING, 
         M4_BRAVE | M4_PROPER_NAME | M4_PRINCE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
-        70, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        70, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(BAHAMUT_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, BAHAMUT_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(BAHAMUT_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, BAHAMUT_STATUE_ENLARGEMENT, 0, 0)),
     /*
      * Elementals
      */

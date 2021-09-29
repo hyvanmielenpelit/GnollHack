@@ -1004,7 +1004,7 @@ to defeat %l."
 "Which would you like, %p?  Boils, pleurisy, convulsions?"
 %E
 %Cp Hea 00053
-"I'll have %o back from you, %r.  You are
+"I'll have %o back from you, %c.  You are
 not going to live to escape this place."
 %E
 %Cp Hea 00060
