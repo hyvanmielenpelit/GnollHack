@@ -1180,7 +1180,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
         4, CLR_BROWN, MONSTER_SOUNDSET_HUMAN_FEMALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
-    MON("harpy", None, "seducing flying female humanoid", None, None, S_NYMPH, LVL(10, 22, 6, 5, 40, -7), (G_GENO | 2),
+    ENLARGED_MON("harpy", None, "seducing flying female humanoid", None, None, S_NYMPH, LVL(10, 22, 6, 5, 40, -7), (G_GENO | 2),
         A(ATTK(AT_CLAW, AD_SITM, 0, 0, 0, -10, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_SEDU, 0, 0, 0, -10, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_CLAW, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(650, 325, MS_SEDUCE, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(16, 18, 16, 14, 15, 18), 
@@ -1190,7 +1190,9 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_FEMALE | M2_COLLECT, 
         M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-        14, CLR_BLACK, MONSTER_SOUNDSET_HUMAN_FEMALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
+        14, CLR_BLACK, MONSTER_SOUNDSET_HUMAN_FEMALE, MONSTER_SOUNDSET_HUMAN_FEMALE,
+        ACTION_INFO(HARPY_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HARPY_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(HARPY_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HARPY_STATUE_ENLARGEMENT, 0, 0)),
     /*
      * orcs
      */
@@ -5292,7 +5294,7 @@ struct permonst _mons2[] = {
         M3_WANTSAMUL | M3_WAITFORU | M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING,
         M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_PRINCE, M5_NONE, M6_BOSS_MONSTER, M7_NONE, M8_NONE,
         84, HI_LORD, MONSTER_SOUNDSET_HUMANLIKE_DEMON, MONSTER_SOUNDSET_HUMANLIKE_DEMON),
-    MON("Demogorgon", "Prince of Demons", "two-headed demon prince with disease and life-draining attacks capable of summoning other demons", 
+    ENLARGED_MON("Demogorgon", "Prince of Demons", "two-headed demon prince with disease and life-draining attacks capable of summoning other demons", 
         None, None, S_DEMON, LVL(55, 24, -13, 25, 95, -20), //ENDMARKER FOR DEMON PRINCES
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_MAGC, AD_SPEL, 8, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_STNG, AD_DRLI, 3, 4, 0, -20, 0, 0, 0UL, 0),
@@ -5305,7 +5307,9 @@ struct permonst _mons2[] = {
         M2_NOPOLY | M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY | M2_MALE,
         M3_WANTSAMUL | M3_INFRAVISIBLE | M3_INFRAVISION,
         M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_PRINCE, M5_TELEPORT_HEAL_TACTICS, M6_BOSS_MONSTER, M7_NONE, M8_NONE,
-        100, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        100, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(DEMOGORGON_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DEMOGORGON_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(DEMOGORGON_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DEMOGORGON_STATUE_ENLARGEMENT, 0, 0)),
 
 
     /* Riders -- the Four Horsemen of the Apocalypse ("War" == player);
@@ -6033,7 +6037,7 @@ struct permonst _mons2[] = {
         M1_HUMANOID | M1_OMNIVORE,
         M2_NOPOLY | M2_HUMAN | M2_PEACEFUL | M2_COLLECT,
         M3_INFRAVISIBLE | M3_SPEAKING, M4_NONE, M5_FEMALE_TILE, M6_NONE, M7_HEALER, M8_NONE,
-        3, HI_DOMESTIC, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        3, HI_DOMESTIC, MONSTER_SOUNDSET_ATTENDANT_MALE, MONSTER_SOUNDSET_ATTENDANT_FEMALE),
     MON("page", None, None, None, None, S_HUMAN, LVL(5, 12, 10, 0, 10, 3), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
