@@ -33,11 +33,9 @@
     <None Remove="Assets\Icons\engrave.png" />
     <None Remove="Assets\Icons\light.png" />
     <None Remove="Assets\Icons\missing_icon.png" />
-    <None Remove="Assets\Icons\pay.png" />
     <None Remove="Assets\Icons\pickup.png" />
     <None Remove="Assets\Icons\quaff.png" />
     <None Remove="Assets\Icons\read.png" />
-    <None Remove="Assets\Icons\search.png" />
     <None Remove="Assets\Icons\skill.png" />
     <None Remove="Assets\Icons\wait.png" />
     <None Remove="Assets\imrl.ttf" />
@@ -114,10 +112,8 @@
     <EmbeddedResource Include="Assets\Icons\engrave.png" />
     <EmbeddedResource Include="Assets\Icons\light.png" />
     <EmbeddedResource Include="Assets\Icons\missing_icon.png" />
-    <EmbeddedResource Include="Assets\Icons\pay.png" />
     <EmbeddedResource Include="Assets\Icons\quaff.png" />
     <EmbeddedResource Include="Assets\Icons\read.png" />
-    <EmbeddedResource Include="Assets\Icons\search.png" />
     <EmbeddedResource Include="Assets\imrl.ttf" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />
