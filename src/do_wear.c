@@ -2199,10 +2199,10 @@ boolean in_takeoff_wear;
                         humanoid(youmonst.data) ? "Ring-" : "",
                         makeplural(body_part(FINGER)));
 
-                    You("have %s on the right %s and %s on the left.", an(cxname(uright)), body_part(FINGER), an(cxname(uleft)));
+                    You("have %s on the left %s and %s on the right.", an(cxname(uleft)), body_part(FINGER), an(cxname(uright)));
 
-                    Sprintf(qbuf, "Remove Right or Left ring?");
-                    answer = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, "rlq", '\0', "Right\nLeft\nCancel");
+                    Sprintf(qbuf, "Remove Left or Right ring?");
+                    answer = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, "lrq", '\0', "Left\nRight\nCancel");
                     switch (answer)
                     {
                     case '\0':
@@ -2237,10 +2237,10 @@ boolean in_takeoff_wear;
             {
                 do 
                 {
-                    Sprintf(qbuf, "Which %s%s, Right or Left?",
+                    Sprintf(qbuf, "Which %s%s, Left or Right?",
                             humanoid(youmonst.data) ? "ring-" : "",
                             body_part(FINGER));
-                    answer = yn_function(qbuf, "rl", '\0', "Right\nLeft");
+                    answer = yn_function(qbuf, "lr", '\0', "Left\nRight");
                     switch (answer) 
                     {
                     case '\0':
