@@ -1145,8 +1145,8 @@ namespace GnollHackClient
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
-            PopupTitleLabel.Text = "Beginner Mode";
-            PopupLabel.Text = "In the Beginner Mode, whenever you die, your god will revive you at the starting altar, or at another special location.";
+            PopupTitleLabel.Text = "Modern Mode";
+            PopupLabel.Text = "In the Modern Mode, whenever you die, your god will revive you at the starting altar, or at another special location.";
             PopupGrid.IsVisible = true;
         }
 

@@ -36,8 +36,8 @@ namespace GnollHackClient
                     res += "W";
                 else if (Mode == "explore")
                     res += "X";
-                else if (Mode == "beginner")
-                    res += "B";
+                else if (Mode == "modern")
+                    res += "M";
 
                 switch (Difficulty)
                 {
@@ -60,7 +60,7 @@ namespace GnollHackClient
                         res += "m";
                         break;
                     case 2:
-                        res += "M";
+                        res += "g";
                         break;
                     default:
                         res += "?";

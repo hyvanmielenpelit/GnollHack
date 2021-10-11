@@ -1120,7 +1120,7 @@ int dif_level;
     case 1:
         return "m";
     case 2:
-        return "M";
+        return "g";
     default:
         return "?";
     }

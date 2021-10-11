@@ -121,7 +121,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="beginnerModeLabel" Text="Beginner Mode" TextColor="White" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
+                <Label x:Name="beginnerModeLabel" Text="Modern Mode" TextColor="White" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                     </Label.GestureRecognizers>
