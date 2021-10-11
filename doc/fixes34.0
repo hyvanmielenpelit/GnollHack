@@ -192,7 +192,7 @@ stop dungeon file open failure from causing vision-related crash
 wishing for {statue,figurine,corpse} of long worm tail yields long worm instead
 chatting to an arbitrary shopkeeper (not a petrified one) who was created
 	via statue animation produced strange results
-Yeenoghu's confusion attack is not a touch of death
+Yeenaghu's confusion attack is not a touch of death
 an eating steed should not be able to go up or down stairs, etc.
 you don't feel "great" when recovering with a unicorn horn but Slimed; also,
 	make the same check for potions that make you feel "great"

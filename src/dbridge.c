@@ -45,7 +45,7 @@ int x, y;
         return FALSE;
     ltyp = levl[x][y].typ;
     /* The ltyp == MOAT is not redundant with is_moat, because the
-     * Juiblex level does not have moats, although it has MOATs. There
+     * Jubilex level does not have moats, although it has MOATs. There
      * is probably a better way to express this. */
     if (ltyp == POOL || ltyp == MOAT || ltyp == WATER || is_moat(x, y))
         return TRUE;
@@ -102,7 +102,7 @@ int x, y;
     if (!isok(x, y))
         return FALSE;
     ltyp = levl[x][y].typ;
-    if (!Is_juiblex_level(&u.uz)
+    if (!Is_jubilex_level(&u.uz)
         && (ltyp == MOAT
             || (ltyp == DRAWBRIDGE_UP
                 && (levl[x][y].drawbridgemask & DB_UNDER) == DB_MOAT)))

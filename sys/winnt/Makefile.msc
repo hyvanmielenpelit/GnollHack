@@ -1324,7 +1324,7 @@ spotless: clean
 	if exist $(DAT)\earth.lev	 del $(DAT)\earth.lev
 	if exist $(DAT)\fakewiz?.lev	 del $(DAT)\fakewiz?.lev
 	if exist $(DAT)\fire.lev	 del $(DAT)\fire.lev
-	if exist $(DAT)\juiblex.lev	 del $(DAT)\juiblex.lev
+	if exist $(DAT)\jubilex.lev	 del $(DAT)\jubilex.lev
 	if exist $(DAT)\knox.lev	 del $(DAT)\knox.lev
 	if exist $(DAT)\medusa-?.lev	 del $(DAT)\medusa-?.lev
 	if exist $(DAT)\mine*.lev	 del $(DAT)\mine*.lev
@@ -1345,7 +1345,7 @@ spotless: clean
 	if exist $(DAT)\valley.lev	 del $(DAT)\valley.lev
 	if exist $(DAT)\water.lev	 del $(DAT)\water.lev
 	if exist $(DAT)\wizard?.lev	 del $(DAT)\wizard?.lev
-	if exist $(DAT)\yeenoghu.lev	 del $(DAT)\yeenoghu.lev
+	if exist $(DAT)\yeenaghu.lev	 del $(DAT)\yeenaghu.lev
 	if exist $(DAT)\mainfill.lev	 del $(DAT)\mainfill.lev
 	if exist $(DAT)\hellfill.lev	 del $(DAT)\hellfill.lev
 	if exist $(DAT)\dlb.lst		 del $(DAT)\dlb.lst

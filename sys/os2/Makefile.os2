@@ -517,11 +517,11 @@ DATHELP = \
 SPEC_LEVS = \
  dispater.lev baalz.lev    bigrm-1.lev \
  bigrm-2.lev  bigrm-3.lev  bigrm-4.lev castle.lev  bovine1.lev  fakewiz1.lev fakewiz2.lev \
- juiblex.lev  knox.lev     medusa-1.lev medusa-2.lev minend-1.lev minend-2.lev \
+ jubilex.lev  knox.lev     medusa-1.lev medusa-2.lev minend-1.lev minend-2.lev \
  minend-3.lev minefill.lev minetn-1.lev minetn-2.lev minetn-3.lev minetn-4.lev \
  minetn-5.lev minetn-6.lev minetn-7.lev minotaur.lev modron1.lev modron2.lev modron3.lev modron4.lev modron5.lev oracle.lev   orcus.lev    sanctum.lev \
  tarrasque.lev tower1.lev   tower2.lev   tower3.lev treasure1.lev valley.lev   wizard1.lev  wizard2.lev \
- wizard3.lev  yeenoghu.lev mainfill.lev hellfill.lev astral.lev   air.lev earth.lev    fire.lev     water.lev \
+ wizard3.lev  yeenaghu.lev mainfill.lev hellfill.lev astral.lev   air.lev earth.lev    fire.lev     water.lev \
  soko1-1.lev  soko1-2.lev  soko2-1.lev  soko2-2.lev  \
  soko3-1.lev  soko3-2.lev  soko4-1.lev  soko4-2.lev
 
@@ -1114,7 +1114,7 @@ dlb_yup : dlb
 	-$(RM) $(GAMEDIR)\bovine?.lev
 	-$(RM) $(GAMEDIR)\castle.lev
 	-$(RM) $(GAMEDIR)\fakewiz?.lev
-	-$(RM) $(GAMEDIR)\juiblex.lev
+	-$(RM) $(GAMEDIR)\jubilex.lev
 	-$(RM) $(GAMEDIR)\knox.lev
 	-$(RM) $(GAMEDIR)\medusa-?.lev
 	-$(RM) $(GAMEDIR)\minend-?.lev
@@ -1129,7 +1129,7 @@ dlb_yup : dlb
 	-$(RM) $(GAMEDIR)\tower?.lev
 	-$(RM) $(GAMEDIR)\valley.lev
 	-$(RM) $(GAMEDIR)\wizard?.lev
-	-$(RM) $(GAMEDIR)\yeenoghu.lev
+	-$(RM) $(GAMEDIR)\yeenaghu.lev
 	-$(RM) $(GAMEDIR)\mainfill.lev
 	-$(RM) $(GAMEDIR)\hellfill.lev
 	-$(RM) $(GAMEDIR)\astral.lev
@@ -1384,22 +1384,22 @@ $(GAMEDIR)\valley.lev : $(DAT)\gehennom.des $(TEMP)\lev_comp.exe
 	$(TEMP)\lev_comp $(DAT)\gehennom.des
 	$(CP) dispater.lev $(GAMEDIR)
 	$(CP) baalz.lev $(GAMEDIR)
-	$(CP) juiblex.lev $(GAMEDIR)
+	$(CP) jubilex.lev $(GAMEDIR)
 	$(CP) orcus.lev $(GAMEDIR)
 	$(CP) sanctum.lev $(GAMEDIR)
 	$(CP) tarrasque.lev $(GAMEDIR)
 	$(CP) valley.lev $(GAMEDIR)
-	$(CP) yeenoghu.lev $(GAMEDIR)
+	$(CP) yeenaghu.lev $(GAMEDIR)
 	$(CP) mainfill.lev $(GAMEDIR)
 	$(CP) hellfill.lev $(GAMEDIR)
 	$(RM) dispater.lev
 	$(RM) baalz.lev
-	$(RM) juiblex.lev
+	$(RM) jubilex.lev
 	$(RM) orcus.lev
 	$(RM) tarrasque.lev
 	$(RM) sanctum.lev
 	$(RM) valley.lev
-	$(RM) yeenoghu.lev
+	$(RM) yeenaghu.lev
 	$(RM) mainfill.lev
 	$(RM) hellfill.lev
 

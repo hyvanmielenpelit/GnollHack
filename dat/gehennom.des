@@ -190,13 +190,13 @@ MONSTER:'z',random
 
 ########################
 #
-# The Juiblex Level
+# The Jubilex Level
 #
 ########################
-MAZE:"juiblex",' '
+MAZE:"jubilex",' '
 FLAGS:noteleport,shortsighted,swampy
 INIT_MAP:mines,',','}',true,true,unlit,false
-NAMING:"Abysmal swamp", name_revealed_seeing_monster, montype:"Juiblex"
+NAMING:"Abysmal swamp", name_revealed_seeing_monster, montype:"Jubilex"
 # guarantee at least one open spot to ensure successful stair placement
 GEOMETRY:left,bottom
 MAP
@@ -272,7 +272,7 @@ MONSTER:('m',"chaos mimic"),$place[1],m_feature "fountain"
 MONSTER:('m',"chaos mimic"),$place[2],m_feature "fountain"
 MONSTER:('m',"chaos mimic"),$place[3],m_feature "fountain"
 # The demon of the swamp
-MONSTER:('&',"Juiblex"),(25,08)
+MONSTER:('&',"Jubilex"),(25,08)
 CONTAINER:('(',"oilskin sack"),buried,(25,08) {
    OBJECT:('$',"gold piece"),quantity:(2000+(3d1000))
    [25%]:OBJECT:artifact
@@ -897,12 +897,12 @@ MONSTER:'V',random
 
 ########################
 #
-# The Yeenoghu Level
+# The Yeenaghu Level
 #
 ########################
-MAZE:"yeenoghu",' '
+MAZE:"yeenaghu",' '
 FLAGS: noteleport,corrmaze
-NAMING:"A hellish stronghold", name_revealed_seeing_monster, montype:"Yeenoghu"
+NAMING:"A hellish stronghold", name_revealed_seeing_monster, montype:"Yeenaghu"
 # First part
 GEOMETRY:center,center
 #12345678901234567890
@@ -940,8 +940,8 @@ MAZEWALK:(00,06),west
 # Entire main area
 REGION:(00,00,20,11),unlit,"ordinary"
 # The fellow in residence
-MONSTER:('&',"Yeenoghu"),(10,06) {
-  OBJECT:(')',"triple-headed flail"),cursed,enchantment:(2+(1d4)),erodeproof,name:"Triple-Headed Flail of Yeenoghu"
+MONSTER:('&',"Yeenaghu"),(10,06) {
+  OBJECT:(')',"triple-headed flail"),cursed,enchantment:(2+(1d4)),erodeproof,name:"Triple-Headed Flail of Yeenaghu"
   OBJECT:('(',"ornamental key"),special_quality:6
 }
 

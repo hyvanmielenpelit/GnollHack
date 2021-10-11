@@ -889,7 +889,7 @@ WEAPON("double-headed flail", None,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_DOUBLE_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL, ALL_TARGETS),
     /* one-handed, strikes up to two times, -1 hit bonus (difficult to wield) */
-WEAPON("triple-headed flail", None, /* Also a base item for Triple-Headed Flail of Yeenoghu */
+WEAPON("triple-headed flail", None, /* Also a base item for Triple-Headed Flail of Yeenaghu */
     1, 0, 0, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 70, 2000,
     AD_PHYS, 1, 6, 1, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
     -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_MELEE_TRIPLE_HEADED_FLAIL,

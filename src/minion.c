@@ -88,8 +88,8 @@ struct monst *mon;
     {
         mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
 
-        dtype = (!rn2(80)) ? PM_YEENOGHU : (!rn2(40)) ? monsndx(ptr) : (!rn2(4)) ? ndemon(atyp) : PM_FLIND;
-        if (dtype == PM_YEENOGHU && (mvitals[PM_YEENOGHU].mvflags & G_GONE))
+        dtype = (!rn2(80)) ? PM_YEENAGHU : (!rn2(40)) ? monsndx(ptr) : (!rn2(4)) ? ndemon(atyp) : PM_FLIND;
+        if (dtype == PM_YEENAGHU && (mvitals[PM_YEENAGHU].mvflags & G_GONE))
             dtype = monsndx(ptr);
         if (dtype == PM_FLIND && (mvitals[PM_FLIND].mvflags & G_GONE))
             dtype = ndemon(atyp);
@@ -219,9 +219,9 @@ struct monst *mon;
 }
 
 
-/* Yeenoghu summons gnolls */
+/* Yeenaghu summons gnolls */
 int
-yeenoghu_gnoll_summon(summoner)
+yeenaghu_gnoll_summon(summoner)
 struct monst* summoner;
 {
     pline("%s summons some gnolls!", Monnam(summoner));
@@ -324,9 +324,9 @@ struct monst* summoner;
     return result;
 }
 
-/* Yeenoghu summons ghouls */
+/* Yeenaghu summons ghouls */
 int
-yeenoghu_ghoul_summon(summoner)
+yeenaghu_ghoul_summon(summoner)
 struct monst* summoner;
 {
     pline("%s summons some undead assistance!", Monnam(summoner));
@@ -777,7 +777,7 @@ struct monst *mtmp;
         }
         return 1;
     }
-    else if (mtmp->data == &mons[PM_YEENOGHU] && maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
+    else if (mtmp->data == &mons[PM_YEENAGHU] && maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
     {
         if (canspotmon(mtmp))
             pline("%s, the Demon Lord of Gnolls, stands towering before you.", Amonnam(mtmp));
@@ -811,7 +811,7 @@ struct monst *mtmp;
             pline("%s scowls at you menacingly, then vanishes.", Amonnam(mtmp));
         }
     }
-    else if (mtmp->data == &mons[PM_DEMOGORGON] || mtmp->data == &mons[PM_YEENOGHU] || mtmp->data == &mons[PM_JUIBLEX] || mtmp->data == &mons[PM_ORCUS])
+    else if (mtmp->data == &mons[PM_DEMOGORGON] || mtmp->data == &mons[PM_YEENAGHU] || mtmp->data == &mons[PM_JUBILEX] || mtmp->data == &mons[PM_ORCUS])
     {
         //Demon lords and princes get angry for all but devout (and some random less devout) chaotic characters
         if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !rnl(4))))
@@ -944,7 +944,7 @@ aligntyp atyp;
     int tryct, pm;
 
     for (tryct = !In_endgame(&u.uz) ? 20 : 0; tryct > 0; --tryct) {
-        pm = rn1(PM_BAPHOMET + 1 - PM_JUIBLEX, PM_JUIBLEX);
+        pm = rn1(PM_BAPHOMET + 1 - PM_JUBILEX, PM_JUBILEX);
         if (!(mvitals[pm].mvflags & G_GONE)
             && (atyp == A_NONE || sgn(mons[pm].maligntyp) == sgn(atyp)))
             return pm;

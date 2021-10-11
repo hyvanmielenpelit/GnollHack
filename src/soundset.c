@@ -12820,7 +12820,7 @@ struct d_level* dlvl;
         return GHSOUND_GEHENNOM_MUSIC_NORMAL;
     else if (Is_baal_level(dlvl))
         return GHSOUND_GEHENNOM_MUSIC_NORMAL;
-    else if (Is_yeenoghu_level(dlvl))
+    else if (Is_yeenaghu_level(dlvl))
         return GHSOUND_GEHENNOM_MUSIC_NORMAL;
     else if (Is_tarrasque_level(dlvl))
         return GHSOUND_GEHENNOM_MUSIC_NORMAL;

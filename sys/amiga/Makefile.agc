@@ -291,7 +291,7 @@ INSTDUNGEONFILES1= \
 	$(SLIB)bigrm-3.lev	$(SLIB)bigrm-4.lev	$(SLIB)bigrm-5.lev $(SLIB)bovine1.lev \
 	$(SLIB)castle.lev	$(SLIB)dungeon		$(SLIB)earth.lev \
 	$(SLIB)fakewiz1.lev	$(SLIB)fakewiz2.lev	$(SLIB)fire.lev \
-	$(SLIB)juiblex.lev	$(SLIB)knox.lev		$(SLIB)medusa-1.lev \
+	$(SLIB)jubilex.lev	$(SLIB)knox.lev		$(SLIB)medusa-1.lev \
 	$(SLIB)medusa-2.lev	$(SLIB)minend-1.lev	$(SLIB)minend-2.lev \
 	$(SLIB)minetn-1.lev	$(SLIB)minetn-2.lev	$(SLIB)minefill.lev	$(SLIB)minotaur.lev $(SLIB)modron1.lev $(SLIB)modron2.lev $(SLIB)modron3.lev $(SLIB)modron4.lev $(SLIB)modron5.lev \
 	$(SLIB)options		$(SLIB)oracle.lev	$(SLIB)orcus.lev \
@@ -300,7 +300,7 @@ INSTDUNGEONFILES1= \
 	$(SLIB)soko3-2.lev	$(SLIB)soko4-1.lev	$(SLIB)soko4-2.lev \
 	$(SLIB)tower1.lev	$(SLIB)tower2.lev	$(SLIB)tower3.lev	$(SLIB)treasure1.lev \
 	$(SLIB)valley.lev	$(SLIB)water.lev	$(SLIB)wizard1.lev \
-	$(SLIB)wizard2.lev	$(SLIB)wizard3.lev  $(SLIB)yeenoghu.lev \
+	$(SLIB)wizard2.lev	$(SLIB)wizard3.lev  $(SLIB)yeenaghu.lev \
 	$(SLIB)tarrasque.lev $(SLIB)mainfill.lev $(SLIB)hellfill.lev \
 	$(XDFILES)
 
@@ -816,7 +816,7 @@ $(ENDGAME1):	$(SLIB)astral.lev
 
 $(SLIB)astral.lev:	$(DAT)endgame.des $(SBIN)lev_comp
 
-GEHENNOM1= $(SLIB)dispater.lev $(SLIB)baalz.lev $(SLIB)juiblex.lev \
+GEHENNOM1= $(SLIB)dispater.lev $(SLIB)baalz.lev $(SLIB)jubilex.lev \
   $(SLIB)orcus.lev $(SLIB)sanctum.lev 
 $(GEHENNOM1):	$(SLIB)valley.lev
 

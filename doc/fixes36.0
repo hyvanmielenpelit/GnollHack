@@ -79,7 +79,7 @@ thrown potions can sometimes hit a steed's saddle
 if your blindfold glows and you're not otherwise blinded, you can see it
 sync default documentation of "null" option with the code
 tripping over a cockatrice corpse didn't petrify, even when not wearing boots
-do not call swamps on the Juiblex level "moat" when freezing or drowning;
+do not call swamps on the Jubilex level "moat" when freezing or drowning;
 	likewise for Plane of Water when drowning
 keep score from wrapping around and becoming negative by capping it
 kicked objects do not slide when on the air or water levels

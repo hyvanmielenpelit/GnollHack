@@ -5170,7 +5170,7 @@ struct permonst _mons2[] = {
      */
 
      /* Demon lords */
-    ENLARGED_ANIMATED_MON("Juiblex", "the Faceless Lord, Demon Lord of Slimes", "powerful demon lord capable of engulfing opponents and contracting deadly disease", None, None, S_DEMON, 
+    ENLARGED_ANIMATED_MON("Jubilex", "the Faceless Lord, Demon Lord of Slimes", "powerful demon lord capable of engulfing opponents and contracting deadly disease", None, None, S_DEMON, 
         LVL(48, 15, -7, 19, 65, -15), //STARTMARKER FOR DEMON LORDS
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_ENGL, AD_DISE, 4, 10, 0, -12, 0, 0, 0UL, 0), ATTK(AT_SPIT, AD_ACID, 3, 6, 0, 0, 0, 0, 0UL, 0),
@@ -5188,7 +5188,7 @@ struct permonst _mons2[] = {
         ACTION_INFO(JUIBLEX_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, JUIBLEX_STATUE_ENLARGEMENT, 0, 0)),
 
       /* Demon princes */
-      ENLARGED_MON("Yeenoghu", "Demon Lord of Gnolls", "powerful demon lord capable of paralyzing and confusing attacks, shooting magic missiles, and summoning ghouls, gnolls, and other demons", None, None, S_DEMON, 
+      ENLARGED_MON("Yeenaghu", "Demon Lord of Gnolls", "powerful demon lord capable of paralyzing and confusing attacks, shooting magic missiles, and summoning ghouls, gnolls, and other demons", None, None, S_DEMON, 
         LVL(44, 18, -10, 21, 80, -15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_CONF, 2, 8, 0, 0, 0, 0, 0UL, 0),

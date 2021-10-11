@@ -5601,7 +5601,7 @@ struct key_special_description key_special_descriptions[] =
     {ORNAMENTAL_KEY, 3, "grim", "grim"},         /* Dispater */
     {ORNAMENTAL_KEY, 4, "skull-headed", "skull-shaped"}, /* Orcus */
     {ORNAMENTAL_KEY, 5, "fly-shaped", "fly-shaped"},   /* Baalzebub */
-    {ORNAMENTAL_KEY, 6, "hyena-headed", "hyena-shaped"}, /* Yeenoghu */
+    {ORNAMENTAL_KEY, 6, "hyena-headed", "hyena-shaped"}, /* Yeenaghu */
     {0, 0, 0}
 };
 

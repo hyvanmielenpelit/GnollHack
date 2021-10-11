@@ -61,11 +61,11 @@ E struct dgn_topology { /* special dungeon levels for speed */
     d_level d_wiz1_level;
     d_level d_wiz2_level;
     d_level d_wiz3_level;
-    d_level d_juiblex_level;
+    d_level d_jubilex_level;
     d_level d_orcus_level;
     d_level d_baalzebub_level; /* unused */
     d_level d_dispater_level;  /* unused */
-    d_level d_yeenoghu_level;  /* unused */
+    d_level d_yeenaghu_level;  /* unused */
     d_level d_tarrasque_level; /* unused */
     d_level d_portal_level;    /* only in goto_level() [do.c] */
     d_level d_sanctum_level;
@@ -104,11 +104,11 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define wiz1_level              (dungeon_topology.d_wiz1_level)
 #define wiz2_level              (dungeon_topology.d_wiz2_level)
 #define wiz3_level              (dungeon_topology.d_wiz3_level)
-#define juiblex_level           (dungeon_topology.d_juiblex_level)
+#define jubilex_level           (dungeon_topology.d_jubilex_level)
 #define orcus_level             (dungeon_topology.d_orcus_level)
 #define baalzebub_level         (dungeon_topology.d_baalzebub_level)
 #define dispater_level          (dungeon_topology.d_dispater_level)
-#define yeenoghu_level          (dungeon_topology.d_yeenoghu_level)
+#define yeenaghu_level          (dungeon_topology.d_yeenaghu_level)
 #define tarrasque_level         (dungeon_topology.d_tarrasque_level)
 #define portal_level            (dungeon_topology.d_portal_level)
 #define sanctum_level           (dungeon_topology.d_sanctum_level)

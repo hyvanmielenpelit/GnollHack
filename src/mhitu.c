@@ -1117,7 +1117,7 @@ register struct monst *mtmp;
                         int chance = mattk->mlevel;
                         if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
-                            (void)yeenoghu_gnoll_summon(mtmp);
+                            (void)yeenaghu_gnoll_summon(mtmp);
                             sum[i] = 1;
                             mtmp->mspecialsummon_used = 45;
                         }
@@ -1143,7 +1143,7 @@ register struct monst *mtmp;
                         int chance = mattk->mlevel;
                         if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
-                            (void)yeenoghu_ghoul_summon(mtmp);
+                            (void)yeenaghu_ghoul_summon(mtmp);
                             sum[i] = 1;
                             mtmp->mspecialsummon2_used = 45;
                         }

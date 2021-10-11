@@ -4147,7 +4147,7 @@ register struct permonst *ptr;
 {
     aligntyp mal = ptr->maligntyp, ual = u.ualign.type;
 
-    if (ptr == &mons[PM_YEENOGHU] && maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
+    if (ptr == &mons[PM_YEENAGHU] && maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
     {
         return TRUE;
     }

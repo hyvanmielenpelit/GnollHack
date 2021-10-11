@@ -1277,7 +1277,7 @@ ifneq "$(W_DAT)" ""
 	if exist $(W_DAT)\earth.lev	   del $(W_DAT)\earth.lev
 	if exist $(W_DAT)\fakewiz?.lev	   del $(W_DAT)\fakewiz?.lev
 	if exist $(W_DAT)\fire.lev	   del $(W_DAT)\fire.lev
-	if exist $(W_DAT)\juiblex.lev	   del $(W_DAT)\juiblex.lev
+	if exist $(W_DAT)\jubilex.lev	   del $(W_DAT)\jubilex.lev
 	if exist $(W_DAT)\knox.lev	   del $(W_DAT)\knox.lev
 	if exist $(W_DAT)\medusa-?.lev	   del $(W_DAT)\medusa-?.lev
 	if exist $(W_DAT)\mine*.lev	   del $(W_DAT)\mine*.lev
@@ -1298,7 +1298,7 @@ ifneq "$(W_DAT)" ""
 	if exist $(W_DAT)\valley.lev	   del $(W_DAT)\valley.lev
 	if exist $(W_DAT)\water.lev	   del $(W_DAT)\water.lev
 	if exist $(W_DAT)\wizard?.lev	   del $(W_DAT)\wizard?.lev
-	if exist $(W_DAT)\yeenoghu.lev	   del $(W_DAT)\yeenoghu.lev
+	if exist $(W_DAT)\yeenaghu.lev	   del $(W_DAT)\yeenaghu.lev
 	if exist $(W_DAT)\mainfill.lev	   del $(W_DAT)\mainfill.lev
 	if exist $(W_DAT)\hellfill.lev	   del $(W_DAT)\hellfill.lev
 	if exist $(W_DAT)\dlb.lst          del $(W_DAT)\dlb.lst

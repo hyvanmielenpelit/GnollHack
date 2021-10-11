@@ -1317,8 +1317,8 @@ char *monnambuf, *usrbuf;
         pline("%s is already called %s.",
               upstart(strcpy(pronounbuf, mhe(mtmp))), monnambuf);
         return TRUE;
-    } else if (mtmp->data == &mons[PM_JUIBLEX]
-               && strstri(monnambuf, "Juiblex")
+    } else if (mtmp->data == &mons[PM_JUBILEX]
+               && strstri(monnambuf, "Jubilex")
                && !strcmpi(usrbuf, "Jubilex")) {
         pline("%s doesn't like being called %s.", upstart(monnambuf), usrbuf);
         return TRUE;

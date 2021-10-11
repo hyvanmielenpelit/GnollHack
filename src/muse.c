@@ -3137,7 +3137,7 @@ struct monst *mon;
     case PM_GECKO:
     case PM_GREMLIN:
     case PM_HOMUNCULUS:
-    case PM_JUIBLEX:
+    case PM_JUBILEX:
     case PM_LEPRECHAUN:
     case PM_LICHEN:
     case PM_TREANT:

@@ -107,7 +107,7 @@ readability. The following is an example of poor usage:
 Switch statements should have the case labels unindented, and the statements
 should be indented normally. The default case should occur last unless there's
 a compelling reason not to, and fallthroughs should be explicitly marked as
-such with a comment, to avoid Yeenoghu getting the touch of death again:
+such with a comment, to avoid Yeenaghu getting the touch of death again:
 
     switch (condition) {
     case FOO:

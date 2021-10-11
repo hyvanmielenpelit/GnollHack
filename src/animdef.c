@@ -2716,7 +2716,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "juiblex-swallow-animation", ANIMATION_TYPE_NORMAL, JUIBLEX_SWALLOW_ANIMATION_TILES,
+    { "jubilex-swallow-animation", ANIMATION_TYPE_NORMAL, JUIBLEX_SWALLOW_ANIMATION_TILES,
       JUIBLEX_SWALLOW_ANIMATION_FRAMES,
       MAX_SWALLOW_CHARS,
       6,
@@ -6969,14 +6969,14 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
-      { "juiblex-enlargement", 0, 0,
+      { "jubilex-enlargement", 0, 0,
         5,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
-      { "juiblex-statue-enlargement", 0, 0,
+      { "jubilex-statue-enlargement", 0, 0,
         5,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },
@@ -7781,14 +7781,14 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
-      { "yeenoghu-enlargement", 0, 0,
+      { "yeenaghu-enlargement", 0, 0,
         5,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
-      { "yeenoghu-statue-enlargement", 0, 0,
+      { "yeenaghu-statue-enlargement", 0, 0,
         5,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },

@@ -78,7 +78,7 @@
     <Levfiles Include = "water.lev"/>
     <Levfiles Include = "dispater.lev"/>
     <Levfiles Include = "baalz.lev"/>
-    <Levfiles Include = "juiblex.lev"/>
+    <Levfiles Include = "jubilex.lev"/>
     <Levfiles Include = "orcus.lev"/>
     <Levfiles Include = "sanctum.lev"/>
     <Levfiles Include = "valley.lev"/>
@@ -123,7 +123,7 @@
     <Levfiles Include = "wizard1.lev"/>
     <Levfiles Include = "wizard2.lev"/>
     <Levfiles Include = "wizard3.lev"/>
-    <Levfiles Include = "yeenoghu.lev"/>
+    <Levfiles Include = "yeenaghu.lev"/>
     <Levfiles Include = "mainfill.lev"/>
     <Levfiles Include = "hellfill.lev"/>
     <Levfiles Include = "arc-fila.lev"/>

@@ -119,7 +119,7 @@ give Riders non-zero nutritional value so tinning kit doesn't ignore them
 save & restore u.usick_cause properly
 an eating pet can continue & finish eating while you're off its level
 fix object names: "a Dark One corpse", "statue of a Wizard of Yendor"
-killer_format: poisoned "by Pestilence", not "by a Pestilence"; ditto Juiblex
+killer_format: poisoned "by Pestilence", not "by a Pestilence"; ditto Jubilex
 killer prefix might be wrong after having been life-saved
 fix to avoid "invisible invisible {Priest|Minion of Whoever}" on tombstone
 fix bug with cold-resistant monsters attacking jellies (etc.)
@@ -141,7 +141,7 @@ wake up monsters hit by potions thrown by other monsters
 suppress vault hint messages if player is in the vault
 make lev_comp check full object and monster names ([ring of] "protection" in
 	objects[] was matching "protection from shape changers" in .des file)
-guarantee that stairs down from Juiblex swamp level always get created
+guarantee that stairs down from Jubilex swamp level always get created
 	[sometimes got impossible("couldn't place lregion type 0")]
 prevent a three room level which has the stairs to the mines from also having
 	a special room [so that those stairs can't end up placed in a shop]
@@ -242,7 +242,7 @@ disallow digging down while phasing through non-diggable walls
 general fixes to various message sequencing problems
 prevent shopkeeper names from showing up while you are hallucinating
 prevent paralyzed pets from picking up items
-jellies for Juiblex, not Jabberwocks (done properly this time)
+jellies for Jubilex, not Jabberwocks (done properly this time)
 rust monsters can't eat rustproofed objects
 general fixes to inventory merging of items
 monster inventory undergoes merging too; potentially affects probing and theft

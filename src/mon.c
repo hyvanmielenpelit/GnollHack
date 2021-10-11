@@ -5575,7 +5575,7 @@ struct permonst *mdat;
         case PM_BALOR:
         case PM_ASMODEUS:
         case PM_DISPATER:
-        case PM_YEENOGHU:
+        case PM_YEENAGHU:
         case PM_ORCUS:
             break;
         case PM_HUMAN_WEREJACKAL:

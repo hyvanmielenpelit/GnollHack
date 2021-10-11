@@ -1133,6 +1133,10 @@ int* fem_ptr;
             { "elven-queen", PM_ELVENKING, 2 },
             { "elf queen", PM_ELVENKING, 2 },
             { "elf-queen", PM_ELVENKING, 2 },
+            { "Yeenoghu", PM_YEENAGHU, 2 },
+            { "yeenoghu", PM_YEENAGHU, 2 },
+            { "Juiblex", PM_JUBILEX, 2 },
+            { "juiblex", PM_JUBILEX, 2 },
             /* end of list */
             { 0, NON_PM }
         };
