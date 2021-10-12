@@ -1244,17 +1244,17 @@ Again, you stand at the entrance to %ns lair.
 then tomorrow, %H shall fall!"
 %E [%nC taunts you and issues a threat against %H.]
 %Cp Kni 00051
-"Again, thou challengest me, %r?  So be it.  Thou wilt die here."
+"Again, thou challengest me, %c?  So be it.  Thou wilt die here."
 %E
 %Cp Kni 00052
-"Thou art truly foolish, %r.  I shall dispatch thee anon."
+"Thou art truly foolish, %c.  I shall dispatch thee anon."
 %E
 %Cp Kni 00053
 "So, thou darest touch MY property!  I shall have that bauble back,
-puny %r.  Thou wilt die in agony!"
+puny %c.  Thou wilt die in agony!"
 %E
 %Cp Kni 00060
-"A mere %r can never withstand me!"
+"A mere %c can never withstand me!"
 %E
 %Cp Kni 00061
 "I shall kill thee now, and feast!"
