@@ -4114,7 +4114,7 @@ struct monst* mtmp;
         case PM_GUIDE:
         case PM_WARRIOR:
         case PM_APPRENTICE:
-            Sprintf(titlebuf, "a local %s", mtmp->data->mname);
+            Sprintf(titlebuf, "a local %s", pm_monster_name(mtmp->data, mtmp->female));
             break;
         default:
             if (mtmp->mnum == urole.guardnum)

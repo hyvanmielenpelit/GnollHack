@@ -1353,7 +1353,7 @@ Again you face %H.  Your intuition hints that this
 may be the final time you come here.
 %E
 %Cp Mon 00005
-"Greetings, honorable %r.  It is good to see you."
+"Greetings, honorable %c.  It is good to see you."
 %E
 %Cp Mon 00006
 "Ah, %p!  Surely you can help us in our hour of need."
@@ -1368,7 +1368,7 @@ may be the final time you come here.
 "May %d be with you, %s."
 %E
 %Cp Mon 00010
-"Greetings, honorable %r.  It is good to see you again."
+"Greetings, honorable %c.  It is good to see you again."
 %E
 %Cp Mon 00011
 "Ah, %p!  Our deepest gratitude for all of your help."
@@ -1395,7 +1395,7 @@ great challenge."
 "Once more, %p, you stand within the sanctum.  Are you ready now?"
 %E
 %Cc Mon 00018
-"You are a heretic, %p!  How can you, %ra, deviate so from the
+"You are a heretic, %p!  How can you, %ca, deviate so from the
 teachings of %d?  Begone from this temple.  You are no longer
 %sa to this order.  We will pray to %d for other assistance,
 as you have failed us utterly."
@@ -1484,17 +1484,17 @@ Again, you have invaded %ns domain.
 %o.
 
 "No, I see you are no %g.  Perhaps I shall have some fun today
-after all.  Prepare to die, %r!  You shall never regain
+after all.  Prepare to die, %c!  You shall never regain
 %o."
 %E [You are no %g.  You shall never regain %o.]
 %Cp Mon 00051
-"So, %r.  Again you challenge me."
+"So, %c.  Again you challenge me."
 %E
 %Cp Mon 00052
-"Die now, %r.  %d has no power here to aid you."
+"Die now, %c.  %d has no power here to aid you."
 %E
 %Cp Mon 00053
-"You shall die, %r, and I will have %o back."
+"You shall die, %c, and I will have %o back."
 %E
 %Cp Mon 00060
 "Submit to my will, %c, and I shall spare you."
@@ -1506,7 +1506,7 @@ after all.  Prepare to die, %r!  You shall never regain
 "I shall have you turned into a zombie for my pleasure!"
 %E
 %Cp Mon 00063
-"Despair now, %r.  %d cannot help you."
+"Despair now, %c.  %d cannot help you."
 %E
 %Cp Mon 00064
 "I shall feast upon your soul for many days, %c."
@@ -1521,7 +1521,7 @@ after all.  Prepare to die, %r!  You shall never regain
 "Your precious %lt will be my next victim."
 %E
 %Cp Mon 00068
-"I feel your powers failing you, %r.  You shall die now."
+"I feel your powers failing you, %c.  You shall die now."
 %E
 %Cp Mon 00069
 "With %o, nothing can stand in my way."
