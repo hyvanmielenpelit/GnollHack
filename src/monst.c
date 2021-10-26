@@ -3750,7 +3750,7 @@ struct permonst _mons2[] = {
         M3_INFRAVISION | M3_CONSTRICTOR, 
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
         17, CLR_YELLOW, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("giant python", None, "gigantic constrictor snake", None, None, S_SNAKE, LVL(14, 12, -2, 0, 0, 0), (G_GENO | 1),
+    ENLARGED_MON("giant python", None, "gigantic constrictor snake", None, None, S_SNAKE, LVL(14, 12, -2, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_HUGS, AD_WRAP, 2, 10, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_HUGS, AD_PHYS, 2, 10, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -3762,8 +3762,10 @@ struct permonst _mons2[] = {
         M2_HOSTILE, 
         M3_INFRAVISION | M3_CONSTRICTOR, 
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-        22, CLR_ORANGE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("giant anaconda", None, "gigantic constrictor snake", None, None, S_SNAKE, LVL(18, 15, -4, 0, 0, 0), (G_GENO | 1),
+        22, CLR_ORANGE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(GIANT_PYTHON_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, GIANT_PYTHON_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(GIANT_PYTHON_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, GIANT_PYTHON_STATUE_ENLARGEMENT, 0, 0)),
+    ENLARGED_MON("giant anaconda", None, "gigantic constrictor snake", None, None, S_SNAKE, LVL(18, 15, -4, 0, 0, 0), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 3, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_HUGS, AD_WRAP, 4, 10, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(2500, 1000, MS_HISS, MZ_GIGANTIC, 1, 0, MAT_FLESH), STATS(STR19(22), 16, 20, 3, 3, 1), 
@@ -3774,7 +3776,9 @@ struct permonst _mons2[] = {
         M2_HOSTILE, 
         M3_INFRAVISION | M3_CONSTRICTOR, 
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-        33, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        33, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(GIANT_ANACONDA_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, GIANT_ANACONDA_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(GIANT_ANACONDA_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, GIANT_ANACONDA_STATUE_ENLARGEMENT, 0, 0)),
     /*
      * Trolls
      */
