@@ -294,6 +294,7 @@ boolean resuming;
                         {
                             You("smell something buried underground.");
                             (void)unearth_objs(&youmonst, u.ux, u.uy, TRUE, TRUE);
+                            nomul(0);
                         }
                     }
                     if (Searching && multi >= 0 && !Sleeping && !Paralyzed_or_immobile)

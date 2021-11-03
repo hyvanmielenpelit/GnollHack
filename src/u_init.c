@@ -67,6 +67,7 @@ static struct trobj Cave_man[] = {
     { SLING, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
     { FLINT, 0, GEM_CLASS, 15, UNDEF_BLESS, 0, 0 },
     { STONE_PEBBLE, 0, GEM_CLASS, 3, 0, 0, 0 },             /* yields 18..33 */
+    { PRAYERSTONE, 0, GEM_CLASS, 1, 1, 0, 0 },
     { UNDEF_TYP, UNDEF_SPE, AMULET_CLASS, 1, UNDEF_BLESS, 0, 0 },
     { SACK, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
     { FOOD_RATION, 0, FOOD_CLASS, 3, 0, 0 },
