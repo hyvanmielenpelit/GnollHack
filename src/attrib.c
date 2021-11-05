@@ -37,10 +37,8 @@ static const struct innate
                  { 0, 0, 0, 0 } },
 
   hea_abil[] = { { 1, POISON_RESISTANCE, "", "" },
-                 { 9, SLEEP_RESISTANCE, "awake", "tired" },
+                 { 7, LYCANTHROPY_RESISTANCE, "immune to lycanthropy", "less protected from lycanthropy" },
                  { 14, SICK_RESISTANCE, "healthy", "" },
-                 { 19, BRAIN_PROTECTION, "hard-brained", "" },
-                 { 24, DEATH_RESISTANCE, "less mortal", "more mortal" },
                  { 0, 0, 0, 0 } },
 
   kni_abil[] = { { 7, FAST, "quick", "slow" },

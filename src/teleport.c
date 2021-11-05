@@ -1096,8 +1096,8 @@ d_level target_level;
 
     if (iflags.debug_fuzzer)
         goto random_levtport;
-    if ((u.uhave.amulet || In_endgame(&u.uz) || In_sokoban(&u.uz))
-        && !wizard) 
+
+    if ((u.uhave.amulet || In_endgame(&u.uz) || (In_sokoban(&u.uz) && controltype != 2)) && !wizard)
     {
         play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
         You_feel("very disoriented for a moment.");

@@ -2435,10 +2435,18 @@ void
 unrestrict_weapon_skill(skill)
 enum p_skills skill;
 {
-    if (skill < P_NUM_SKILLS && P_RESTRICTED(skill)) {
-        P_SKILL_LEVEL(skill) = P_UNSKILLED;
-        P_MAX_SKILL_LEVEL(skill) = P_EXPERT;
-        P_ADVANCE(skill) = 0;
+    if (skill < P_NUM_SKILLS) 
+    {
+        if (P_RESTRICTED(skill))
+        {
+            P_SKILL_LEVEL(skill) = P_UNSKILLED;
+            P_ADVANCE(skill) = 0;
+            P_MAX_SKILL_LEVEL(skill) = P_EXPERT;
+        }
+        else if (P_MAX_SKILL_LEVEL(skill) < P_EXPERT)
+        {
+            P_MAX_SKILL_LEVEL(skill) = P_EXPERT;
+        }
     }
 }
 
