@@ -43,6 +43,13 @@
                             AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
                     </gnollhackclient:GHCanvasView>
 
+                    <StackLayout x:Name="WornItemsLayout" Padding="0,2"
+                        HorizontalOptions="End"
+                        AbsoluteLayout.LayoutBounds="1.0, 0.0, AutoSize, AutoSize" 
+                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" >
+                        <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" />
+                    </StackLayout>
+
                     <StackLayout x:Name="UpperCmdLayout" Orientation="Horizontal" InputTransparent="true" CascadeInputTransparent="false"
                         HorizontalOptions="End"
                         AbsoluteLayout.LayoutBounds="1.0, 0.10, AutoSize, AutoSize" 
