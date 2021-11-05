@@ -5180,6 +5180,8 @@ struct ext_func_tab extcmdlist[] = {
     { '^', "seetrap", "show the type of adjacent trap", doidtrap, IFBURIED },
     { WEAPON_SYM, "seeweapon", "show the weapon currently wielded",
             doprwep, IFBURIED },
+    { ILLOBJ_SYM, "seeworn", "show the currently worn items",
+            doseeworn, IFBURIED },
     { '!', "shell", "do a shell escape",
             dosh_core, IFBURIED | GENERALCMD
 #ifndef SHELL
@@ -5502,6 +5504,7 @@ dokeylist(VOID_ARGS)
         { NHKF_RUN_NOPICKUP,
           "Prefix: run without picking up objects/fighting", FALSE },
         { NHKF_DOINV, "view inventory", TRUE },
+        { NHKF_DOSEEWORN, "view worn items", TRUE },
         { NHKF_REQMENU, "Prefix: request a menu", FALSE },
 #ifdef REDO
         { NHKF_DOAGAIN , "re-do: perform the previous command again", FALSE },
@@ -6089,6 +6092,7 @@ struct {
     { NHKF_NOPICKUP,         'm', "nopickup" },
     { NHKF_RUN_NOPICKUP,     'M', "run.nopickup" },
     { NHKF_DOINV,            '0', "doinv" },
+    { NHKF_DOSEEWORN,        ']', "doseeworn" },
     { NHKF_TRAVEL,           CMD_TRAVEL, (char *) 0 }, /* no binding */
     { NHKF_TRAVEL_ATTACK,    CMD_TRAVEL_ATTACK, (char*)0 }, /* no binding */
     { NHKF_TRAVEL_WALK,      CMD_TRAVEL_WALK, (char*)0 }, /* no binding */
@@ -6641,6 +6645,13 @@ register char *cmd;
         if (!Cmd.num_pad)
             break;
         (void) ddoinv(); /* a convenience borrowed from the PC */
+        context.move = FALSE;
+        multi = 0;
+        return;
+    case NHKF_DOSEEWORN:
+        if (!Cmd.num_pad)
+            break;
+        (void)doseeworn();
         context.move = FALSE;
         multi = 0;
         return;

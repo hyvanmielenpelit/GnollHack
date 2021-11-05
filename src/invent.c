@@ -33,7 +33,7 @@ STATIC_PTR int FDECL(ckvalidcat, (struct obj *));
 STATIC_PTR int FDECL(ckunpaid, (struct obj *));
 STATIC_PTR char *FDECL(safeq_xprname, (struct obj *));
 STATIC_PTR char *FDECL(safeq_shortxprname, (struct obj *));
-STATIC_DCL char FDECL(display_pickinv, (const char *, char *, char *, BOOLEAN_P, long *, int, const char*, BOOLEAN_P));
+STATIC_DCL char FDECL(display_pickinv, (const char *, char *, char *, BOOLEAN_P, long *, int, const char*, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL char FDECL(display_used_invlets, (CHAR_P));
 STATIC_DCL boolean FDECL(this_type_only, (struct obj *));
 STATIC_DCL void NDECL(dounpaid);
@@ -2751,7 +2751,7 @@ boolean (*validitemfunc)(struct obj*);
                 allowed_choices = altlets;
             ilet = display_pickinv(allowed_choices, *qbuf ? qbuf : (char *) 0,
                                    menuquery,
-                                   TRUE, allowcnt ? &ctmp : (long *) 0, show_weights, headertext, FALSE);
+                                   TRUE, allowcnt ? &ctmp : (long *) 0, show_weights, headertext, FALSE, FALSE);
             if (!ilet)
                 continue;
             if (ilet == HANDS_SYM)
@@ -3924,7 +3924,34 @@ ddoinv()
     char invlet;
     long pickcnt = 0;
 
-    invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, 1);
+    invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, 1, FALSE);
+    if (!invlet || invlet == '\033' || invlet == '\0')
+        return 0;
+
+    if (flags.inventory_obj_cmd)
+    {
+        return display_item_command_menu_by_invlet(invlet, pickcnt);
+    }
+    else
+    {
+        for (struct obj* invobj = invent; invobj; invobj = invobj->nobj)
+            if (invobj->invlet == invlet)
+            {
+                (void)itemdescription(invobj);
+                break;
+            }
+        return 0;
+    }
+}
+
+/* the ']' command */
+int
+doseeworn()
+{
+    char invlet;
+    long pickcnt = 0;
+
+    invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, 1, TRUE);
     if (!invlet || invlet == '\033' || invlet == '\0')
         return 0;
 
@@ -4261,7 +4288,7 @@ free_pickinv_cache()
  * any count returned from the menu selection is placed here.
  */
 STATIC_OVL char
-display_pickinv(lets, xtra_choice, query, want_reply, out_cnt, show_weights, headertext, addinventoryheader)
+display_pickinv(lets, xtra_choice, query, want_reply, out_cnt, show_weights, headertext, addinventoryheader, wornonly)
 const char *lets;
 char *xtra_choice; /* "fingers", pick hands rather than an object */
 char *query;
@@ -4269,7 +4296,7 @@ boolean want_reply;
 long *out_cnt;
 int show_weights;
 const char* headertext;
-boolean addinventoryheader;
+boolean addinventoryheader, wornonly;
 {
     static const char not_carrying_anything[] = "Not carrying anything";
     struct obj *otmp, wizid_fakeobj;
@@ -4428,6 +4455,8 @@ nextclass:
     for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) {
         if (lets && !index(lets, otmp->invlet))
             continue;
+        if (wornonly && !otmp->owornmask)
+            continue;
         if (!flags.sortpack || otmp->oclass == *invlet) {
             if (wizid && !not_fully_identified(otmp))
                 continue;
@@ -4498,7 +4527,7 @@ nextclass:
     if (addinventoryheader)
     {
         char qbuf[BUFSIZ], subtitlebuf[BUFSIZ];
-        int icnt = inv_cnt(FALSE);
+        int icnt = inv_cnt_ex(FALSE, wornonly);
         char weightbuf[BUFSZ];
         printweight(weightbuf, wtcount, FALSE, FALSE);
 
@@ -4506,7 +4535,11 @@ nextclass:
         char maxbuf[BUFSZ];
         printweight(maxbuf, maxwt, FALSE, FALSE);
 
-        strcpy(qbuf, "Inventory");
+        if(wornonly)
+            strcpy(qbuf, "Worn Items");
+        else
+            strcpy(qbuf, "Inventory");
+
         Sprintf(subtitlebuf, "%d/52 slots, %s/%s weight", icnt, weightbuf, maxbuf);
         end_menu_ex(win, qbuf, subtitlebuf);
     }
@@ -4793,18 +4826,18 @@ boolean want_reply;
 int show_weights;
 {
     return display_pickinv(lets, (char *) 0, (char *) 0,
-                           want_reply, (long *) 0, show_weights, "", FALSE);
+                           want_reply, (long *) 0, show_weights, "", FALSE, FALSE);
 }
 
 char
-display_inventory_with_header(lets, want_reply, out_cnt, show_weights)
+display_inventory_with_header(lets, want_reply, out_cnt, show_weights, wornonly)
 const char* lets;
-boolean want_reply;
+boolean want_reply, wornonly;
 long* out_cnt;
 int show_weights;
 {
     return display_pickinv(lets, (char*)0, (char*)0,
-        want_reply, out_cnt, show_weights, "", TRUE);
+        want_reply, out_cnt, show_weights, "", TRUE, wornonly);
 }
 
 /*

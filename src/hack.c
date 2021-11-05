@@ -3779,11 +3779,18 @@ int
 inv_cnt(incl_gold)
 boolean incl_gold;
 {
+    return inv_cnt_ex(incl_gold, FALSE);
+}
+
+int
+inv_cnt_ex(incl_gold, worn_only)
+boolean incl_gold, worn_only;
+{
     register struct obj *otmp = invent;
     register int ct = 0;
 
     while (otmp) {
-        if (incl_gold || otmp->invlet != GOLD_SYM)
+        if ((incl_gold || otmp->invlet != GOLD_SYM) && (!worn_only || otmp->owornmask))
             ct++;
         otmp = otmp->nobj;
     }
