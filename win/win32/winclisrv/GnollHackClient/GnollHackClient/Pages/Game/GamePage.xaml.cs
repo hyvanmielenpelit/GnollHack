@@ -6303,17 +6303,21 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private EmbeddedResourceImageSource altmap_on_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-altmap-on.png"));
+        private EmbeddedResourceImageSource altmap_off_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-altmap-off.png"));
         private void ToggleZoomAlternateButton_Clicked(object sender, EventArgs e)
         {
             App.PlayMenuSelectSound();
             ZoomAlternateMode = !ZoomAlternateMode;
             if (ZoomAlternateMode)
             {
-                ToggleZoomAlternateButton.BackgroundColor = Color.Green;
+                ToggleZoomAlternateImg.Source = altmap_on_source;
+                //ToggleZoomAlternateButton.BackgroundColor = Color.Green;
             }
             else
             {
-                ToggleZoomAlternateButton.BackgroundColor = Color.DarkBlue;
+                ToggleZoomAlternateImg.Source = altmap_off_source;
+                //ToggleZoomAlternateButton.BackgroundColor = Color.DarkBlue;
             }
 
         }

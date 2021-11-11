@@ -84,6 +84,10 @@
     <None Remove="Assets\UI\skill.png" />
     <None Remove="Assets\UI\stairs-down.png" />
     <None Remove="Assets\UI\stairs-up.png" />
+    <None Remove="Assets\UI\stone-altmap-off.png" />
+    <None Remove="Assets\UI\stone-altmap-on.png" />
+    <None Remove="Assets\UI\stone-cancel.png" />
+    <None Remove="Assets\UI\stone-menu.png" />
     <None Remove="Assets\UI\swap.png" />
     <None Remove="Assets\UI\throw.png" />
     <None Remove="Assets\UI\wait.png" />
@@ -155,6 +159,10 @@
     <EmbeddedResource Include="Assets\UI\skill.png" />
     <EmbeddedResource Include="Assets\UI\stairs-down.png" />
     <EmbeddedResource Include="Assets\UI\stairs-up.png" />
+    <EmbeddedResource Include="Assets\UI\stone-altmap-off.png" />
+    <EmbeddedResource Include="Assets\UI\stone-altmap-on.png" />
+    <EmbeddedResource Include="Assets\UI\stone-cancel.png" />
+    <EmbeddedResource Include="Assets\UI\stone-menu.png" />
     <EmbeddedResource Include="Assets\UI\swap.png" />
     <EmbeddedResource Include="Assets\UI\throw.png" />
     <EmbeddedResource Include="Assets\UI\wait.png" />
