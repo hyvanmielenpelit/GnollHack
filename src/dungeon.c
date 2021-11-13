@@ -2556,7 +2556,7 @@ recalc_mapseen()
         mptr->flags.bigroom = Is_bigroom(&u.uz);
     else if (mptr->flags.forgot)
         mptr->flags.bigroom = 0;
-    mptr->flags.roguelevel = Is_rogue_level(&u.uz);
+    mptr->flags.roguelevel = Is_really_rogue_level(&u.uz);
     mptr->flags.oracle = 0; /* recalculated during room traversal below */
     mptr->flags.castletune = 0;
     /* flags.castle, flags.valley, flags.msanctum, mptr->flags.special_level retain previous value */

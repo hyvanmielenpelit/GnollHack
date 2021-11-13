@@ -194,7 +194,7 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
     data->monitorScale = win10_monitor_scale(hWnd);
 
     boolean bText = data->bAsciiMode ||
-                    (u.uz.dlevel != 0 && Is_rogue_level(&u.uz));
+                    (u.uz.dlevel != 0 && Is_really_rogue_level(&u.uz));
 
     if (bText && !data->bFitToScreenMode)
         data->backScale = data->monitorScale;
@@ -777,7 +777,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 }
         }
 
-        boolean asciimode = (data->bAsciiMode || Is_rogue_level(&u.uz));
+        boolean asciimode = (data->bAsciiMode || Is_really_rogue_level(&u.uz));
         if ((asciimode && !win32_cursorblink)
             || (!asciimode && (!flags.blinking_cursor_on_tiles
                     || (/*data->xCur == u.ux && data->yCur == u.uy &&*/ !flags.show_cursor_on_u && !flags.force_paint_at_cursor))
@@ -5828,7 +5828,7 @@ paint(PNHMapWindow data, int i, int j)
     rect.right = rect.left + data->xBackTile;
     rect.bottom = rect.top + data->yBackTile;
 
-    if (data->bAsciiMode || Is_rogue_level(&u.uz)) 
+    if (data->bAsciiMode || Is_really_rogue_level(&u.uz))
     {
         paintGlyph(data, i, j, &rect);
     } 

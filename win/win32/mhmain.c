@@ -1302,7 +1302,7 @@ mswin_select_map_mode(int mode)
         (PNHMainWindow) GetWindowLongPtr(GetNHApp()->hMainWnd, GWLP_USERDATA);
 
     /* override for Rogue level */
-    if (Is_rogue_level(&u.uz) && !IS_MAP_ASCII(mode))
+    if (Is_really_rogue_level(&u.uz) && !IS_MAP_ASCII(mode))
         return;
 
     /* set map mode menu mark */

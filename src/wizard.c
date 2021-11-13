@@ -569,8 +569,8 @@ int summoner_level;
                 res = monsndx(pm);
         }
         roguetrycnt++;
-    } while ((!Is_rogue_level(&u.uz) && res == NON_PM && roguetrycnt <= 5)
-        || (Is_rogue_level(&u.uz) && (res == NON_PM || !('A' <= mons[res].mlet && mons[res].mlet <= 'Z')) && roguetrycnt <= 5));
+    } while ((!Is_really_rogue_level(&u.uz) && res == NON_PM && roguetrycnt <= 5)
+        || (Is_really_rogue_level(&u.uz) && (res == NON_PM || !('A' <= mons[res].mlet && mons[res].mlet <= 'Z')) && roguetrycnt <= 5));
 
     /* Finally, if nothing, just pick something from the nasties list */
     if (res == NON_PM)

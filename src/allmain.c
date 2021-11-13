@@ -610,7 +610,7 @@ create_monster_or_encounter(VOID_ARGS)
             /* Monster generation infos are defined */
             (void)make_level_monster_anywhere();
         }
-        else if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !In_sokoban(&u.uz) && !In_V_tower(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
+        else if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_really_rogue_level(&u.uz) && !In_sokoban(&u.uz) && !In_V_tower(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
         {
             randomize_encounter(0, 0);
         }
@@ -673,7 +673,7 @@ maybe_create_rwraith()
     boolean rwraith_appeared = FALSE;
     int mdx = NON_PM;
 
-    if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !(u.uz.dnum == modron_dnum) && !(u.uz.dnum == bovine_dnum) && (mdx = select_rwraith()) >= LOW_PM)
+    if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_really_rogue_level(&u.uz) && !(u.uz.dnum == modron_dnum) && !(u.uz.dnum == bovine_dnum) && (mdx = select_rwraith()) >= LOW_PM)
     {
         /* Special wraith appearance if carrying the Ruling Ring of Yendor */
         struct obj* ring = carrying(RIN_SUPREME_POWER);

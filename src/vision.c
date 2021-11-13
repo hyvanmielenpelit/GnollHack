@@ -583,7 +583,7 @@ int control;
         /* skip the normal update loop */
         goto skip;
     }
-    else if (Is_rogue_level(&u.uz))
+    else if (Is_really_rogue_level(&u.uz))
     {
         rogue_vision(next_array, next_rmin, next_rmax);
     }

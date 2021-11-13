@@ -1418,7 +1418,7 @@ int x, y;
         if ((door->doormask & D_MASK) & D_PORTCULLIS)
             return FALSE;
 
-        if (Is_rogue_level(&u.uz)) {
+        if (Is_really_rogue_level(&u.uz)) {
             boolean vis = cansee(x, y);
             /* Can't have real locking in Rogue, so just hide doorway */
             if (vis)

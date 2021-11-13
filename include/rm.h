@@ -165,9 +165,9 @@ enum screen_symbols {
 #define NUM_ZAP_CHARS 56 /* number of zap characters */
 #define NUM_ASCII_ZAP_CHARS 4 /* number of zap symbols in ascii */
 
-#define DARKROOMSYM (Is_rogue_level(&u.uz) ? S_unexplored : S_darkroom)
-#define DARKGRASSSYM (Is_rogue_level(&u.uz) ? S_unexplored : S_darkgrass)
-#define DARKGROUNDSYM (Is_rogue_level(&u.uz) ? S_unexplored : S_darkground)
+#define DARKROOMSYM (Is_really_rogue_level(&u.uz) ? S_unexplored : S_darkroom)
+#define DARKGRASSSYM (Is_really_rogue_level(&u.uz) ? S_unexplored : S_darkgrass)
+#define DARKGROUNDSYM (Is_really_rogue_level(&u.uz) ? S_unexplored : S_darkground)
 
 #define is_cmap_trap(i) ((i) >= S_arrow_trap && (i) <= S_vibrating_square)
 #define is_cmap_drawbridge(i) ((i) >= S_vodbridge && (i) <= S_hcdbridge)

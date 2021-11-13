@@ -125,11 +125,13 @@ typedef struct branch {
 #define Is_wiz3_level(x) (on_level(x, &wiz3_level))
 #define Is_sanctum(x) (on_level(x, &sanctum_level))
 #define Is_portal_level(x) (on_level(x, &portal_level))
-#if defined(GNH_ANDROID)
-#define Is_rogue_level(x) 0
-#else
 #define Is_rogue_level(x) (on_level(x, &rogue_level))
+#ifdef GNH_ANDROID
+#define Enable_rogue_level FALSE
+#else
+#define Enable_rogue_level TRUE
 #endif
+#define Is_really_rogue_level(x) (Is_rogue_level(x) && Enable_rogue_level)
 #define Is_stronghold(x) (on_level(x, &stronghold_level))
 #define Is_bigroom(x) (on_level(x, &bigroom_level))
 #define Is_qstart(x) (on_level(x, &qstart_level))

@@ -3175,7 +3175,7 @@ boolean *effect_happened_ptr;
     }
     case SCR_EARTH:
         /* TODO: handle steeds */
-        if (!Is_rogue_level(&u.uz) && has_ceiling(&u.uz)
+        if (!Is_really_rogue_level(&u.uz) && has_ceiling(&u.uz)
             && (!In_endgame(&u.uz) || Is_earthlevel(&u.uz))) 
         {
             register int x, y;
@@ -3617,7 +3617,7 @@ struct obj *obj;
     if (Punished && !on && !Blind)
         move_bc(1, 0, uball->ox, uball->oy, uchain->ox, uchain->oy);
 
-    if (Is_rogue_level(&u.uz)) {
+    if (Is_really_rogue_level(&u.uz)) {
         /* Can't use do_clear_area because MAX_RADIUS is too small */
         /* rogue lighting must light the entire room */
         int rnum = levl[u.ux][u.uy].roomno - ROOMOFFSET;

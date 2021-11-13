@@ -322,7 +322,7 @@ register struct monst *mtmp;
     struct obj *otmp;
     int bias, spe2, w1, w2;
 
-    if (Is_rogue_level(&u.uz))
+    if (Is_really_rogue_level(&u.uz))
         return;
 
     if (has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_NO_ITEMS) != 0)
@@ -1166,7 +1166,7 @@ register struct monst *mtmp;
     int n = 0;
     int i;
 
-    if (Is_rogue_level(&u.uz))
+    if (Is_really_rogue_level(&u.uz))
         return;
 
     if (has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_NO_ITEMS) != 0)
@@ -3365,7 +3365,7 @@ int level_limit;
                     minmlev = (int)((double)level_limit / 2.5);
             }
 
-            upper = Is_rogue_level(&u.uz);
+            upper = Is_really_rogue_level(&u.uz);
             elemlevel = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
 
             /*
@@ -4330,9 +4330,9 @@ register struct monst *mtmp;
                         || levl[mx - 1][my].typ == TDWALL
                         || levl[mx - 1][my].typ == CROSSWALL
                         || levl[mx - 1][my].typ == TUWALL))
-            appear = Is_rogue_level(&u.uz) ? S_hwall : S_hcdoor;
+            appear = Is_really_rogue_level(&u.uz) ? S_hwall : S_hcdoor;
         else
-            appear = Is_rogue_level(&u.uz) ? S_vwall : S_vcdoor;
+            appear = Is_really_rogue_level(&u.uz) ? S_vwall : S_vcdoor;
     } else if (level.flags.is_maze_lev && !In_sokoban(&u.uz) && rn2(2)) {
         ap_type = M_AP_OBJECT;
         appear = STATUE;

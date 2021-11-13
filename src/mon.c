@@ -32,7 +32,7 @@ STATIC_DCL void FDECL(lifesaved_monster, (struct monst *));
 
 /* note: duplicated in dog.c */
 #define LEVEL_SPECIFIC_NOCORPSE(mdat) \
-    (Is_rogue_level(&u.uz)            \
+    (Is_really_rogue_level(&u.uz)            \
      || ((level.flags.graveyard || In_quest(&u.uz)) && is_undead(mdat) && rn2(3)))
 
 #if 0
@@ -2390,7 +2390,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                     || (IS_DOOR(nowtyp) && (levl[x][y].doormask & ~D_BROKEN))
                     || (IS_DOOR(ntyp) && (levl[nx][ny].doormask & ~D_BROKEN))
                     || ((IS_DOOR(nowtyp) || IS_DOOR(ntyp))
-                        && Is_rogue_level(&u.uz))
+                        && Is_really_rogue_level(&u.uz))
                     /* mustn't pass between adjacent long worm segments,
                        but can attack that way */
                     || (m_at(x, ny) && m_at(nx, y) && worm_cross(x, y, nx, ny)
@@ -4611,7 +4611,7 @@ pick_animal()
         /* rogue level should use monsters represented by uppercase letters
            only, but since chameleons aren't generated there (not uppercase!)
            we don't perform a lot of retries */
-        if (Is_rogue_level(&u.uz) && !isupper((uchar)mons[res].mlet))
+        if (Is_really_rogue_level(&u.uz) && !isupper((uchar)mons[res].mlet))
             res = animal_list[rn2(animal_list_count)];
     }
     return res;
@@ -4690,7 +4690,7 @@ struct monst *mon;
     int mndx = mon->cham, wolfchance = 10;
     /* avoid picking monsters with lowercase display symbols ('d' for wolf
        and 'v' for fog cloud) on rogue level*/
-    boolean uppercase_only = Is_rogue_level(&u.uz);
+    boolean uppercase_only = Is_really_rogue_level(&u.uz);
 
     switch (mndx) {
     case PM_VLAD_THE_IMPALER:
@@ -4962,7 +4962,7 @@ struct monst *mon;
         } 
         while (--tryct > 0 && (mndx == NON_PM || !validspecmon(mon, mndx)
                  /* try harder to select uppercase monster on rogue level */
-                                                || (tryct > 40 && Is_rogue_level(&u.uz) && !isupper((uchar) mons[mndx].mlet))
+                                                || (tryct > 40 && Is_really_rogue_level(&u.uz) && !isupper((uchar) mons[mndx].mlet))
                                 )
                  );
     }
@@ -5062,7 +5062,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
             mdat = accept_newcham_form(mndx);
             /* for the first several tries we require upper-case on
                the rogue level (after that, we take whatever we get) */
-            if (tryct > 15 && Is_rogue_level(&u.uz)
+            if (tryct > 15 && Is_really_rogue_level(&u.uz)
                 && mdat && !isupper((uchar) mdat->mlet))
                 mdat = 0;
             if (mdat)

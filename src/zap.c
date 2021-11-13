@@ -9794,7 +9794,7 @@ short exploding_wand_typ;
         if (see_it)
             pline("%s %s reveals a secret door.",
                   yourzap ? "Your" : "The", zapverb);
-        else if (Is_rogue_level(&u.uz))
+        else if (Is_really_rogue_level(&u.uz))
             draft_message(FALSE); /* "You feel a draft." (open doorway) */
     }
 

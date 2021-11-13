@@ -3123,7 +3123,7 @@ int final;
                 In_quest(&u.uz) ? dunlev(&u.uz) : depth(&u.uz));
         /* TODO? maybe extend this bit to include various other automatic
            annotations from the dungeon overview code */
-        if (Is_rogue_level(&u.uz))
+        if (Is_really_rogue_level(&u.uz))
             Strcat(tmpbuf, ", a primitive area");
         else if (Is_bigroom(&u.uz) && !Blind)
             Strcat(tmpbuf, ", a very big room");

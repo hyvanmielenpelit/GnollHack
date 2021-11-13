@@ -998,7 +998,7 @@ register int fd;
 
     if (!wizard && !discover)
         (void) delete_savefile();
-    if (Is_rogue_level(&u.uz))
+    if (Is_really_rogue_level(&u.uz))
         assign_graphics(ROGUESET);
 
 #ifdef MFLOPPY

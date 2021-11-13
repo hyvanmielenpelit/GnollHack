@@ -889,7 +889,7 @@ dll_clear_nhwindow(winid wid)
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
         if (GetNHApp()->windowlist[wid].type == NHW_MAP) {
-            if (Is_rogue_level(&u.uz))
+            if (Is_really_rogue_level(&u.uz))
                 if (iflags.wc_map_mode == MAP_MODE_ASCII_FIT_TO_SCREEN ||
                     iflags.wc_map_mode == MAP_MODE_TILES_FIT_TO_SCREEN)
 

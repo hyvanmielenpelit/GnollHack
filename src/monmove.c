@@ -1177,7 +1177,7 @@ xchar nix,niy;
     boolean can_tunnel = 0;
     struct obj *mw_tmp = MON_WEP(mtmp);
 
-    if (!Is_rogue_level(&u.uz))
+    if (!Is_really_rogue_level(&u.uz))
         can_tunnel = tunnels(mtmp->data);
 
     if (can_tunnel && needspick(mtmp->data) && !mwelded(mw_tmp, mtmp)
@@ -1259,7 +1259,7 @@ register int after;
     /* Not necessary if m_move called from this file, but necessary in
      * other calls of m_move (ex. leprechauns dodging)
      */
-    if (!Is_rogue_level(&u.uz))
+    if (!Is_really_rogue_level(&u.uz))
         can_tunnel = tunnels(ptr);
 
     can_open = can_operate_objects(ptr);
@@ -1430,7 +1430,7 @@ register int after;
 
     register int pctload = 0;
 
-    if ((!is_peaceful(mtmp) || !rn2(10)) && (!Is_rogue_level(&u.uz)))
+    if ((!is_peaceful(mtmp) || !rn2(10)) && (!Is_really_rogue_level(&u.uz)))
     {
         int throwrange = throws_rocks(youmonst.data) ? 20 : ACURRSTR / 2 + 1;
         boolean in_line = (lined_up(mtmp, FALSE, 0, FALSE, throwrange) && (distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= throwrange));

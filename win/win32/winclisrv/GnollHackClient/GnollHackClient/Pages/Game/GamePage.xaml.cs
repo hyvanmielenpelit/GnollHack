@@ -6189,7 +6189,7 @@ namespace GnollHackClient.Pages.Game
                 MapMode = GHMapMode.Travel;
                 MapLookMode = false;
                 //LookModeButton.BackgroundColor = Color.DarkBlue;
-                LookModeImg.Source = travelmode_off_source;
+                LookModeImg.Source = lookmode_off_source;
             }
             else
             {

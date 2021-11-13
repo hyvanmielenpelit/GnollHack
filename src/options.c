@@ -2575,7 +2575,7 @@ boolean tinitial, tfrom_file;
                                  op, SYMBOLS);
                 return FALSE;
             } else {
-                if (!initial && Is_rogue_level(&u.uz))
+                if (!initial && Is_really_rogue_level(&u.uz))
                     assign_graphics(ROGUESET);
                 need_redraw = TRUE;
             }
@@ -4670,7 +4670,7 @@ boolean tinitial, tfrom_file;
                 return FALSE;
             } else {
                 switch_symbols(TRUE);
-                if (!initial && Is_rogue_level(&u.uz))
+                if (!initial && Is_really_rogue_level(&u.uz))
                     assign_graphics(ROGUESET);
             }
         }
@@ -4704,7 +4704,7 @@ boolean tinitial, tfrom_file;
                 return FALSE;
             } else {
                 switch_symbols(TRUE);
-                if (!initial && Is_rogue_level(&u.uz))
+                if (!initial && Is_really_rogue_level(&u.uz))
                     assign_graphics(ROGUESET);
             }
         }
@@ -6338,7 +6338,7 @@ boolean setinitial, setfromfile;
         if (ready_to_switch)
             switch_symbols(TRUE);
 
-        if (Is_rogue_level(&u.uz)) {
+        if (Is_really_rogue_level(&u.uz)) {
             if (rogueflag)
                 assign_graphics(ROGUESET);
         } else if (!rogueflag)

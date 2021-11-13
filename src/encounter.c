@@ -1416,7 +1416,7 @@ int selected_encounter, x, y;
     long total_monster_experience = 0;
     long total_monster_difficulty = 0;
 
-    boolean upper = Is_rogue_level(&u.uz);
+    boolean upper = Is_really_rogue_level(&u.uz);
     boolean elemlevel = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
     int i;
     for (i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)

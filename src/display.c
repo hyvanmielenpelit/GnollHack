@@ -3456,7 +3456,7 @@ int cursor_on_u;
         }
     }
 #endif
-    init_print_glyph(Is_rogue_level(&u.uz) ? INIT_GLYPH_FORCE_ASCII : INIT_GLYPH_UNFORCE_ASCII);
+    init_print_glyph(Is_really_rogue_level(&u.uz) ? INIT_GLYPH_FORCE_ASCII : INIT_GLYPH_UNFORCE_ASCII);
     init_print_glyph(INIT_GLYPH_START_FLUSH);
     for (y = 0; y < ROWNO; y++) {
         register gbuf_entry *gptr = &gbuf[y][x = gbuf_start[y]];

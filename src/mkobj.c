@@ -323,7 +323,7 @@ unsigned long mkflags;
     for (int try_ct = 0; try_ct < 20; try_ct++)
     {
         if (oclass == RANDOM_CLASS) {
-            const struct icp* iprobs = Is_rogue_level(&u.uz)
+            const struct icp* iprobs = Is_really_rogue_level(&u.uz)
                 ? (const struct icp*)rogueprobs
                 : Inhell ? (const struct icp*)hellprobs
                 : (const struct icp*)mkobjprobs;

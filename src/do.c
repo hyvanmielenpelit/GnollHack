@@ -5838,8 +5838,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             remdun_mapseen(l_idx);
     }
 
-    if (Is_rogue_level(newlevel) || Is_rogue_level(&u.uz))
-        assign_graphics(Is_rogue_level(newlevel) ? ROGUESET : PRIMARY);
+    if (Is_really_rogue_level(newlevel) || Is_really_rogue_level(&u.uz))
+        assign_graphics(Is_really_rogue_level(newlevel) ? ROGUESET : PRIMARY);
 
     check_gold_symbol();
     /* record this level transition as a potential seen branch unless using
@@ -6232,7 +6232,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     } 
     else 
     {
-        if (isnew && Is_rogue_level(&u.uz))
+        if (isnew && Is_really_rogue_level(&u.uz))
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter what seems to be an older, more primitive world.");
 
         /* main dungeon message from your quest leader */
