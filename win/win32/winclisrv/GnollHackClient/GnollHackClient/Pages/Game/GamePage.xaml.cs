@@ -6176,37 +6176,47 @@ namespace GnollHackClient.Pages.Game
             GenericButton_Clicked(sender, e, 27);
         }
 
+        private EmbeddedResourceImageSource travelmode_on_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-travel-on.png"));
+        private EmbeddedResourceImageSource travelmode_off_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-travel-off.png"));
         private void ToggleModeButton_Clicked(object sender, EventArgs e)
         {
             App.PlayMenuSelectSound();
             MapTravelMode = !MapTravelMode;
             if (MapTravelMode)
             {
-                ToggleModeButton.BackgroundColor = Color.Green;
+                //ToggleModeButton.BackgroundColor = Color.Green;
+                ToggleModeImg.Source = travelmode_on_source;
                 MapMode = GHMapMode.Travel;
                 MapLookMode = false;
-                LookModeButton.BackgroundColor = Color.DarkBlue;
+                //LookModeButton.BackgroundColor = Color.DarkBlue;
+                LookModeImg.Source = travelmode_off_source;
             }
             else
             {
-                ToggleModeButton.BackgroundColor = Color.DarkBlue;
+                //ToggleModeButton.BackgroundColor = Color.DarkBlue;
+                ToggleModeImg.Source = travelmode_off_source;
                 MapMode = GHMapMode.Normal;
             }
         }
+        private EmbeddedResourceImageSource lookmode_on_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-look-on.png"));
+        private EmbeddedResourceImageSource lookmode_off_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-look-off.png"));
         private void LookModeButton_Clicked(object sender, EventArgs e)
         {
             App.PlayMenuSelectSound();
             MapLookMode = !MapLookMode;
             if (MapLookMode)
             {
-                LookModeButton.BackgroundColor = Color.Green;
+                //LookModeButton.BackgroundColor = Color.Green;
+                LookModeImg.Source = lookmode_on_source;
                 MapMode = GHMapMode.Look;
                 MapTravelMode = false;
-                ToggleModeButton.BackgroundColor = Color.DarkBlue;
+                //ToggleModeButton.BackgroundColor = Color.DarkBlue;
+                ToggleModeImg.Source = travelmode_off_source;
             }
             else
             {
-                LookModeButton.BackgroundColor = Color.DarkBlue;
+                //LookModeButton.BackgroundColor = Color.DarkBlue;
+                LookModeImg.Source = lookmode_off_source;
                 MapMode = GHMapMode.Normal;
             }
         }
@@ -6289,17 +6299,21 @@ namespace GnollHackClient.Pages.Game
             GenericButton_Clicked(sender, e, '%');
         }
 
+        private EmbeddedResourceImageSource minimap_on_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-minimap-on.png"));
+        private EmbeddedResourceImageSource minimap_off_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-minimap-off.png"));
         private void ToggleZoomMiniButton_Clicked(object sender, EventArgs e)
         {
             App.PlayMenuSelectSound();
             ZoomMiniMode = !ZoomMiniMode;
             if (ZoomMiniMode)
             {
-                ToggleZoomMiniButton.BackgroundColor = Color.Green;
+                ToggleZoomMiniImg.Source = minimap_on_source;
+                //ToggleZoomMiniButton.BackgroundColor = Color.Green;
             }
             else
             {
-                ToggleZoomMiniButton.BackgroundColor = Color.DarkBlue;
+                ToggleZoomMiniImg.Source = minimap_off_source;
+                //ToggleZoomMiniButton.BackgroundColor = Color.DarkBlue;
             }
         }
 

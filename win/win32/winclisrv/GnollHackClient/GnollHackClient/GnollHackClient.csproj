@@ -87,7 +87,13 @@
     <None Remove="Assets\UI\stone-altmap-off.png" />
     <None Remove="Assets\UI\stone-altmap-on.png" />
     <None Remove="Assets\UI\stone-cancel.png" />
+    <None Remove="Assets\UI\stone-look-off.png" />
+    <None Remove="Assets\UI\stone-look-on.png" />
     <None Remove="Assets\UI\stone-menu.png" />
+    <None Remove="Assets\UI\stone-minimap-off.png" />
+    <None Remove="Assets\UI\stone-minimap-on.png" />
+    <None Remove="Assets\UI\stone-travel-off.png" />
+    <None Remove="Assets\UI\stone-travel-on.png" />
     <None Remove="Assets\UI\swap.png" />
     <None Remove="Assets\UI\throw.png" />
     <None Remove="Assets\UI\wait.png" />
@@ -162,7 +168,13 @@
     <EmbeddedResource Include="Assets\UI\stone-altmap-off.png" />
     <EmbeddedResource Include="Assets\UI\stone-altmap-on.png" />
     <EmbeddedResource Include="Assets\UI\stone-cancel.png" />
+    <EmbeddedResource Include="Assets\UI\stone-look-off.png" />
+    <EmbeddedResource Include="Assets\UI\stone-look-on.png" />
     <EmbeddedResource Include="Assets\UI\stone-menu.png" />
+    <EmbeddedResource Include="Assets\UI\stone-minimap-off.png" />
+    <EmbeddedResource Include="Assets\UI\stone-minimap-on.png" />
+    <EmbeddedResource Include="Assets\UI\stone-travel-off.png" />
+    <EmbeddedResource Include="Assets\UI\stone-travel-on.png" />
     <EmbeddedResource Include="Assets\UI\swap.png" />
     <EmbeddedResource Include="Assets\UI\throw.png" />
     <EmbeddedResource Include="Assets\UI\wait.png" />
