@@ -282,7 +282,7 @@ boolean devour;
         return 0;
 
     register struct edog* edog = EDOG(mtmp);
-    boolean poly, grow, heal, eyes, slimer, deadmimic, catavenged;
+    boolean poly, grow, heal, eyes, slimer, deadmimic, catavenged, curepetrification;
     int nutrit;
     long oprice;
     char objnambuf[BUFSZ];
@@ -297,6 +297,7 @@ boolean devour;
     poly = polyfodder(obj);
     grow = mlevelgain(obj);
     heal = mhealup(obj);
+    curepetrification = mcurepetrification(obj);
     eyes = (obj->otyp == CARROT);
     catavenged = ((is_domestic(mtmp->data) && mtmp->data->mlet == S_FELINE) && (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM && is_quantum_mechanic(&mons[obj->corpsenm])));
 
@@ -446,7 +447,20 @@ boolean devour;
 
 
     /* Original food effects */
-    if (poly || slimer) 
+    if (curepetrification)
+    {
+        if (has_stoned(mtmp))
+        {
+            (void)set_mon_property_b(mtmp, STONED, 0, canseemon(mtmp));
+            if (canseemon(mtmp))
+                pline("%s looks limber!", Monnam(mtmp));
+        }
+
+        increase_mon_property(mtmp, STONE_RESISTANCE, 13);
+        newsym(mtmp->mx, mtmp->my);
+    }
+
+    if (poly || slimer)
     {
         struct permonst *ptr = slimer ? &mons[PM_GREEN_SLIME] : 0;
 
@@ -638,6 +652,7 @@ boolean verbose;
             }
 
             increase_mon_property(mtmp, STONE_RESISTANCE, 13);
+            newsym(mtmp->mx, mtmp->my);
         }
     }
     return;

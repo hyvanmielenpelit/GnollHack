@@ -414,6 +414,7 @@ struct obj {
 #define polyfodder(o) (ofood(o) && pm_to_cham((o)->corpsenm) != NON_PM)
 #define mlevelgain(o) (ofood(o) && (o)->corpsenm >= LOW_PM && (mons[(o)->corpsenm].mconveys & MC_LEVEL_GAIN))
 #define mhealup(o) (ofood(o) && (o)->corpsenm == PM_NURSE)
+#define mcurepetrification(o) (ofood(o) && (o)->corpsenm == PM_LIZARD)
 #define Is_pudding(o) ((o)->oclass == FOOD_CLASS && objects[(o)->otyp].oc_subtyp == FOODTYPE_GLOB)
 
 /* Containers */
