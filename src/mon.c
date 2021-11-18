@@ -934,14 +934,14 @@ int reagentstyle; //0 = all, 1 = priest only, 2 = wizard (no priest specific rea
         if ((Inhell && !rn2(3)) || (!Inhell && !rn2(5)))
             return randomore();
 
-        if ((Inhell && !rn2(6)) || (!Inhell && !rn2(9)))
+        if ((Inhell && !rn2(3)) || (!Inhell && !rn2(5)))
             return rnd_class(DEATH_CAP, MAGIC_MUSHROOM);
 
         otyp = rnd_class(THREAD_OF_SPIDER_SILK, FEATHER);
     }
     else if (reagentstyle == 1)
     {
-        if ((Inhell && !rn2(4)) || (!Inhell && !rn2(6)))
+        if ((Inhell && !rn2(3)) || (!Inhell && !rn2(5)))
             return rnd_class(DEATH_CAP, MAGIC_MUSHROOM);
 
         otyp = rnd_class(THREAD_OF_SPIDER_SILK, FEATHER);

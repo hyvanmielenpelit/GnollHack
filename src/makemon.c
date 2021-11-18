@@ -1727,22 +1727,22 @@ register struct monst *mtmp;
         if (ptr == &mons[PM_GREATER_MUMMY_PRIEST])
         {
             /* Some random reagants */
-            n = rn2(4);
+            n = rn2(5);
             for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 1));
 
-            n = rn2(3);
+            n = rn2(2);
             for (i = 0; i < n; i++)
                 (void)mongets(mtmp, GINSENG_ROOT);
         }
         else if (ptr == &mons[PM_GREATER_MUMMY_HIGH_PRIEST])
         {
             /* Some random reagants */
-            n = rn2(6);
+            n = rn2(7);
             for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 1));
 
-            n = rn2(4);
+            n = rn2(2);
             for (i = 0; i < n; i++)
                 (void)mongets(mtmp, GINSENG_ROOT);
         }
@@ -1751,11 +1751,11 @@ register struct monst *mtmp;
         if (ptr == &mons[PM_OWLBEAR_MATRIARCH])
         {
             /* Some random reagants */
-            n = rn2(4);
+            n = rn2(5);
             for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 1));
 
-            n = rn2(3);
+            n = rn2(2);
             for (i = 0; i < n; i++)
                 (void)mongets(mtmp, GINSENG_ROOT);
         }
