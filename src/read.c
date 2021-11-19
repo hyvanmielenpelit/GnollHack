@@ -199,7 +199,8 @@ doread()
     }
 
     /* outrumor has its own blindness check */
-    if (scroll->otyp == FORTUNE_COOKIE) {
+    if (scroll->otyp == FORTUNE_COOKIE) 
+    {
         if (flags.verbose)
             You("break up the cookie and throw away the pieces.");
         outrumor((struct monst*)0, scroll, bcsign(scroll), BY_COOKIE);
@@ -207,11 +208,14 @@ doread()
             u.uconduct.literate++;
         useup(scroll);
         return 1;
-    } else if (objects[scroll->otyp].oc_armor_category == ARM_SHIRT || scroll->otyp == ALCHEMY_SMOCK) {
+    } 
+    else if (scroll->oclass == ARMOR_CLASS && (objects[scroll->otyp].oc_armor_category == ARM_SHIRT || scroll->otyp == ALCHEMY_SMOCK)) 
+    {
         char buf[BUFSZ], *mesg;
         const char *endpunct;
 
-        if (Blind) {
+        if (Blind) 
+        {
             You_cant("feel any Braille writing.");
             return 0;
         }
@@ -251,7 +255,8 @@ doread()
             mesg = (scroll->otyp == ALCHEMY_SMOCK) ? apron_text(scroll, buf)
                 : tshirt_text(scroll, buf);
             endpunct = "";
-            if (flags.verbose) {
+            if (flags.verbose) 
+            {
                 int ln = (int)strlen(mesg);
 
                 /* we will be displaying a sentence; need ending punctuation */
@@ -262,7 +267,9 @@ doread()
             pline("\"%s\"%s", mesg, endpunct);
         }
         return 1;
-    } else if (scroll->otyp == CREDIT_CARD) {
+    } 
+    else if (scroll->otyp == CREDIT_CARD) 
+    {
         static const char *card_msgs[] = {
             "Leprechaun Gold Tru$t - Shamrock Card",
             "Magic Memory Vault Charge Card",
@@ -301,11 +308,16 @@ doread()
               (flags.verbose || Blind) ? "." : "");
         u.uconduct.literate++;
         return 1;
-    } else if (scroll->otyp == CAN_OF_GREASE || scroll->otyp == JAR_OF_MEDICINAL_SALVE || scroll->otyp == JAR_OF_BASILISK_BLOOD || scroll->otyp == JAR_OF_EXTRA_HEALING_SALVE || scroll->otyp == JAR_OF_GREATER_HEALING_SALVE || scroll->otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE || scroll->otyp == GRAIL_OF_HEALING) {
+    }
+    else if (scroll->otyp == CAN_OF_GREASE || scroll->otyp == JAR_OF_MEDICINAL_SALVE || scroll->otyp == JAR_OF_BASILISK_BLOOD || scroll->otyp == JAR_OF_EXTRA_HEALING_SALVE || scroll->otyp == JAR_OF_GREATER_HEALING_SALVE || scroll->otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE || scroll->otyp == GRAIL_OF_HEALING) 
+    {
         pline("This %s has no label.", singular(scroll, xname));
         return 0;
-    } else if (scroll->otyp == MAGIC_MARKER) {
-        if (Blind) {
+    } 
+    else if (scroll->otyp == MAGIC_MARKER) 
+    {
+        if (Blind) 
+        {
             You_cant("feel any Braille writing.");
             return 0;
         }
@@ -314,7 +326,9 @@ doread()
         pline("\"Magic Marker(TM) Red Ink Marker Pen.  Water Soluble.\"");
         u.uconduct.literate++;
         return 1;
-    } else if (scroll->oclass == COIN_CLASS) {
+    }
+    else if (scroll->oclass == COIN_CLASS)
+    {
         if (Blind)
             You("feel the embossed words:");
         else if (flags.verbose)
@@ -327,7 +341,9 @@ doread()
 
         u.uconduct.literate++;
         return 1;
-    } else if (scroll->oartifact == ART_ORB_OF_FATE) {
+    } 
+    else if (scroll->oartifact == ART_ORB_OF_FATE) 
+    {
         if (Blind)
             You("feel the engraved signature:");
         else
@@ -335,10 +351,14 @@ doread()
         pline("\"Odin.\"");
         u.uconduct.literate++;
         return 1;
-    } else if (scroll->oartifact == ART_RULING_RING_OF_YENDOR) {
+    }
+    else if (scroll->oartifact == ART_RULING_RING_OF_YENDOR) 
+    {
         pline("The ring is plain and featureless, but you somehow feel that there is more to it than that.");
         return 1;
-    } else if (scroll->otyp == CANDY_BAR) {
+    } 
+    else if (scroll->otyp == CANDY_BAR) 
+    {
         static const char *wrapper_msgs[] = {
             "Apollo",       /* Lost */
             "Moon Crunchy", /* South Park */
@@ -349,7 +369,8 @@ doread()
             "Wonka Bar" /* Charlie and the Chocolate Factory */
         };
 
-        if (Blind) {
+        if (Blind) 
+        {
             You_cant("feel any Braille writing.");
             return 0;
         }
@@ -357,19 +378,25 @@ doread()
               wrapper_msgs[scroll->o_id % SIZE(wrapper_msgs)]);
         u.uconduct.literate++;
         return 1;
-    } else if (scroll->oclass != SCROLL_CLASS
-               && scroll->oclass != SPBOOK_CLASS) {
+    }
+    else if (scroll->oclass != SCROLL_CLASS
+               && scroll->oclass != SPBOOK_CLASS) 
+    {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline(silly_thing_to, "read");
         return 0;
-    } else if (Blind /*&& (scroll->otyp != SPE_BOOK_OF_THE_DEAD)*/) { //Not sure why Book of the Dead should be readable when blind --JG
+    }
+    else if (Blind /*&& (scroll->otyp != SPE_BOOK_OF_THE_DEAD)*/) 
+    { //Not sure why Book of the Dead should be readable when blind --JG
         const char *what = 0;
 
         if (scroll->oclass == SPBOOK_CLASS)
             what = "mystic runes";
         else if (!scroll->dknown)
             what = "formula on the scroll";
-        if (what) {
+
+        if (what) 
+        {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "Being blind, you cannot read the %s.", what);
             return 0;
@@ -378,7 +405,8 @@ doread()
 
     confused = (Confusion != 0);
 #ifdef MAIL
-    if (scroll->otyp == SCR_MAIL) {
+    if (scroll->otyp == SCR_MAIL) 
+    {
         confused = FALSE; /* override */
         /* reading mail is a convenience for the player and takes
            place outside the game, so shouldn't affect gameplay;
@@ -387,7 +415,8 @@ doread()
            to simply ignore; as a compromise, if the player has
            maintained illiterate conduct so far, and this mail
            scroll didn't come from bones, ask for confirmation */
-        if (!u.uconduct.literate) {
+        if (!u.uconduct.literate) 
+        {
             if (!scroll->special_quality && yn_query(
              "Reading mail will violate \"illiterate\" conduct.  Read anyway?"
                                    ) != 'y')
@@ -427,7 +456,8 @@ doread()
         else
             pline(nodisappear ? "You read the scroll."
                               : "As you read the scroll, it disappears.");
-        if (confused) {
+        if (confused) 
+        {
             if (Hallucination)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Being so trippy, you screw up...");
             else
