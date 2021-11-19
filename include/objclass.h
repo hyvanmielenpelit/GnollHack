@@ -282,7 +282,8 @@ enum charged_init_types {
     CHARGED_HOLY_GRAIL = 28,
     CHARGED_UNICORN_HORN = 29,
     CHARGED_1D4_4 = 30,
-    CHARGED_1D20_20 = 31
+    CHARGED_1D20_20 = 31,
+    CHARGED_1D4_1 = 32
 };
 
 enum recharging_types {

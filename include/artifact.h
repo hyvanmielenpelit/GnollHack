@@ -60,6 +60,7 @@
 #define AF2_FULL_SIZED_ITEM                    0x00000008UL  
 #define AF2_APPLICABLE_AS_AXE                  0x00000010UL  
 #define AF2_NAME_IS_PROPER_NAME                0x00000020UL  /* Do not use 'The' */
+#define AF2_INDESTRUCTIBLE                     0x00000040UL  
 
 
 #define has_artifact_floor_tile(artifact_idx) \

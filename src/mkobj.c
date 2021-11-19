@@ -2120,6 +2120,9 @@ int charge_init_index;
     case CHARGED_HOLY_GRAIL:
         charge = 0;
         break;
+    case CHARGED_1D4_1:
+        charge = rnd(4) + 1;
+        break;
     }
 
     return charge;
@@ -2229,6 +2232,9 @@ int charge_init_index;
         break;
     case CHARGED_HOLY_GRAIL:
         charge = 2;
+        break;
+    case CHARGED_1D4_1:
+        charge = 5;
         break;
     }
 

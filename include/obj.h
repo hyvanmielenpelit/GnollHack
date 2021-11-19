@@ -235,7 +235,8 @@ struct obj {
 #define is_obj_invokable(otmp) is_otyp_invokable((otmp)->otyp)
 
 #define is_otyp_indestructible(otyp) ((objects[(otyp)].oc_flags & O1_INDESTRUCTIBLE) != 0)
-#define is_obj_indestructible(o) (is_otyp_indestructible((o)->otyp) || ((o)->speflags & SPEFLAGS_INDESTRUCTIBLE) != 0)
+#define is_obj_indestructible(o) (is_otyp_indestructible((o)->otyp) || ((o)->speflags & SPEFLAGS_INDESTRUCTIBLE) != 0 \
+                                  || ((o)->oartifact > 0 && (artilist[(o)->oartifact].aflags2 & AF2_INDESTRUCTIBLE) != 0))
 
 #define is_otyp_no_pickup(otyp) ((objects[(otyp)].oc_flags3 & O3_NO_PICKUP) != 0)
 #define is_obj_no_pickup(o) (is_otyp_no_pickup((o)->otyp) || ((o)->speflags & SPEFLAGS_NO_PICKUP) != 0)
