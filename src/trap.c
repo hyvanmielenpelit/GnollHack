@@ -5362,7 +5362,8 @@ boolean force_failure;
         if (rnl(5))
         {
             pline("Whoops...");
-            if (mtmp) { /* must be a trap that holds monsters */
+            if (mtmp) 
+            { /* must be a trap that holds monsters */
                 if (ttype == BEAR_TRAP) 
                 {
                     if (mtmp->mtame)
