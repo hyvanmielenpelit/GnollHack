@@ -11,6 +11,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Game\CommandCanvasPage.xaml.cs" />
+    <Compile Remove="Pages\Game\CommandPage.xaml.cs" />
+    <Compile Remove="Pages\Game\GHMenuCanvasPage.xaml.cs" />
+    <Compile Remove="Pages\Game\GHMenuPage.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Pages\Game\CommandCanvasPage.xaml" />
+    <EmbeddedResource Remove="Pages\Game\CommandPage.xaml" />
+    <EmbeddedResource Remove="Pages\Game\GHMenuCanvasPage.xaml" />
+    <EmbeddedResource Remove="Pages\Game\GHMenuPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\archristy.ttf" />
     <None Remove="Assets\Auxiliary.bank" />
     <None Remove="Assets\buttons.png" />
@@ -209,12 +223,6 @@
     <EmbeddedResource Update="Controls\LabeledImageButton.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\CommandCanvasPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\CommandPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="Pages\Game\CreditsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -231,12 +239,6 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\Game\GetLinePage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\GHMenuCanvasPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\GHMenuPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\Game\GHTextCanvasPage.xaml">

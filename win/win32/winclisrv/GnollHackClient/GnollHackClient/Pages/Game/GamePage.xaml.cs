@@ -65,8 +65,6 @@ namespace GnollHackClient.Pages.Game
         private bool _muteSounds = false;
         public bool MuteSounds { get { lock (_muteSoundsLock) { return _muteSounds; } } set { lock (_muteSoundsLock) { _muteSounds = value; } } }
 
-        private CommandCanvasPage _cmdPage = null;
-
         public object RefreshScreenLock = new object();
         private bool _refreshScreen = true;
         public bool RefreshScreen
@@ -323,7 +321,6 @@ namespace GnollHackClient.Pages.Game
                 }
             }
             await LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear);
-            _cmdPage = new CommandCanvasPage(this);
 
             if (App.IsServerGame)
             {
@@ -1274,53 +1271,47 @@ namespace GnollHackClient.Pages.Game
                 await App.Current.MainPage.Navigation.PopAsync(); //Login
             }
         }
-        private async void ShowMenuPage(GHMenuInfo menuinfo, GHWindow ghwindow)
-        {
-            App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuPage Start");
+        //private async void ShowMenuPage(GHMenuInfo menuinfo, GHWindow ghwindow)
+        //{
+        //    App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuPage Start");
 
-            ShowWaitIcon = true;
-            var menuPage = new GHMenuPage(this, ghwindow, menuinfo.Style);
-            menuPage.SelectionHow = menuinfo.SelectionHow;
-            if (menuinfo.Header == null)
-                menuPage.HeaderVisible = false;
-            else
-                menuPage.Header = menuinfo.Header;
+        //    ShowWaitIcon = true;
+        //    var menuPage = new GHMenuPage(this, ghwindow, menuinfo.Style);
+        //    menuPage.SelectionHow = menuinfo.SelectionHow;
+        //    if (menuinfo.Header == null)
+        //        menuPage.HeaderVisible = false;
+        //    else
+        //        menuPage.Header = menuinfo.Header;
 
-            if (menuinfo.Subtitle == null)
-                menuPage.SubtitleVisible = false;
-            else
-                menuPage.Subtitle = menuinfo.Subtitle;
+        //    if (menuinfo.Subtitle == null)
+        //        menuPage.SubtitleVisible = false;
+        //    else
+        //        menuPage.Subtitle = menuinfo.Subtitle;
 
-            App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuPage Before Add Menu Items");
+        //    App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuPage Before Add Menu Items");
 
-            ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
-            if (menuinfo != null)
-            {
-                foreach (GHMenuItem mi in menuinfo.MenuItems)
-                {
-                    newmis.Add(mi);
-                }
-            }
+        //    ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
+        //    if (menuinfo != null)
+        //    {
+        //        foreach (GHMenuItem mi in menuinfo.MenuItems)
+        //        {
+        //            newmis.Add(mi);
+        //        }
+        //    }
 
-            App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuPage Before Process");
+        //    App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuPage Before Process");
 
-            menuPage.MenuItems = newmis;
-            menuPage.Process();
+        //    menuPage.MenuItems = newmis;
+        //    menuPage.Process();
 
-            App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuPage Before Push Modal");
+        //    App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuPage Before Push Modal");
 
-            await App.Current.MainPage.Navigation.PushModalAsync(menuPage, false);
-        }
+        //    await App.Current.MainPage.Navigation.PushModalAsync(menuPage, false);
+        //}
 
         private object _menuDrawOnlyLock = new object();
         private bool _menuDrawOnlyClear = false;
         private bool _menuRefresh = true;
-
-        private async void ShowMenuCanvasPage(GHMenuInfo menuinfo, GHWindow ghwindow)
-        {
-            var cpage = new GHMenuCanvasPage(this, menuinfo, ghwindow);
-            await App.Current.MainPage.Navigation.PushModalAsync(cpage, false);
-        }
 
         private void ShowMenuCanvas(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
@@ -6115,13 +6106,6 @@ namespace GnollHackClient.Pages.Game
         {
             //lMoreButton.IsEnabled = false;
             ShowMoreCanvas(sender, e);
-        }
-
-        private async void ShowMorePage(object sender, EventArgs e)
-        {
-            if (_cmdPage == null)
-                _cmdPage = new CommandCanvasPage(this);
-            await App.Current.MainPage.Navigation.PushModalAsync(_cmdPage);
         }
 
         private void ShowMoreCanvas(object sender, EventArgs e)
