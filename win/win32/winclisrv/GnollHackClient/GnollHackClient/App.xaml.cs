@@ -202,16 +202,30 @@ namespace GnollHackClient
             {
                 if (stream != null)
                 {
-                    App.DiabloTypeface = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("Diablo", App.DiabloTypeface);
+                    try
+                    {
+                        App.DiabloTypeface = SKTypeface.FromStream(stream);
+                        App.TypefaceDictionary.Add("Diablo", App.DiabloTypeface);
+                    }
+                    catch
+                    {
+                        //E.g., if typeface already exists in the dictionary
+                    }
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.uwch.ttf"))
             {
                 if (stream != null)
                 {
-                    App.UnderwoodTypeface = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("Underwood", App.UnderwoodTypeface);
+                    try
+                    {
+                        App.UnderwoodTypeface = SKTypeface.FromStream(stream);
+                        App.TypefaceDictionary.Add("Underwood", App.UnderwoodTypeface);
+                    }
+                    catch
+                    {
+                        //E.g., if typeface already exists in the dictionary
+                    }
                 }
             }
 
@@ -219,64 +233,120 @@ namespace GnollHackClient
             {
                 if (stream != null)
                 {
-                    App.EndorTypeface = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("Endor", App.EndorTypeface);
+                    try
+                    {
+                        App.EndorTypeface = SKTypeface.FromStream(stream);
+                        App.TypefaceDictionary.Add("Endor", App.EndorTypeface);
+                    }
+                    catch
+                    {
+                        //E.g., if typeface already exists in the dictionary
+                    }
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.imrl.ttf"))
             {
                 if (stream != null)
                 {
-                    App.ImmortalTypeface = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("Immortal", App.ImmortalTypeface);
+                    try
+                    {
+                        App.ImmortalTypeface = SKTypeface.FromStream(stream);
+                        App.TypefaceDictionary.Add("Immortal", App.ImmortalTypeface);
+                    }
+                    catch
+                    {
+                        //E.g., if typeface already exists in the dictionary
+                    }
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.shxi.ttf"))
             {
                 if (stream != null)
                 {
-                    App.XizorTypeface = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("Xizor", App.XizorTypeface);
+                    try
+                    {
+                        App.XizorTypeface = SKTypeface.FromStream(stream);
+                        App.TypefaceDictionary.Add("Xizor", App.XizorTypeface);
+                    }
+                    catch
+                    {
+                        //E.g., if typeface already exists in the dictionary
+                    }
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono.ttf"))
             {
                 if (stream != null)
                 {
-                    App.DejaVuSansMonoTypeface = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("DejaVuSansMono", App.DejaVuSansMonoTypeface);
+                    try
+                    {
+                        App.DejaVuSansMonoTypeface = SKTypeface.FromStream(stream);
+                        App.TypefaceDictionary.Add("DejaVuSansMono", App.DejaVuSansMonoTypeface);
+                    }
+                    catch
+                    {
+                        //E.g., if typeface already exists in the dictionary
+                    }
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.DejaVuSansMono-Bold.ttf"))
             {
                 if (stream != null)
                 {
-                    App.DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("DejaVuSansMono-Bold", App.DejaVuSansMonoBoldTypeface);
+                    try
+                    {
+                        App.DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
+                        App.TypefaceDictionary.Add("DejaVuSansMono-Bold", App.DejaVuSansMonoBoldTypeface);
+                    }
+                    catch
+                    {
+                        //E.g., if typeface already exists in the dictionary
+                    }
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Regular.ttf"))
             {
                 if (stream != null)
                 {
-                    App.LatoRegular = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("Lato-Regular", App.LatoRegular);
+                    try
+                    {
+                        App.LatoRegular = SKTypeface.FromStream(stream);
+                        App.TypefaceDictionary.Add("Lato-Regular", App.LatoRegular);
+                    }
+                    catch
+                    {
+                        //E.g., if typeface already exists in the dictionary
+                    }
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Lato-Bold.ttf"))
             {
                 if (stream != null)
                 {
-                    App.LatoBold = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("Lato-Bold", App.LatoBold);
+                    try
+                    {
+                        App.LatoBold = SKTypeface.FromStream(stream);
+                        App.TypefaceDictionary.Add("Lato-Bold", App.LatoBold);
+                    }
+                    catch
+                    {
+                        //E.g., if typeface already exists in the dictionary
+                    }
                 }
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.archristy.ttf"))
             {
                 if (stream != null)
                 {
-                    App.ARChristyTypeface = SKTypeface.FromStream(stream);
-                    App.TypefaceDictionary.Add("ARChristy", App.ARChristyTypeface);
+                    try
+                    {
+                        App.ARChristyTypeface = SKTypeface.FromStream(stream);
+                        App.TypefaceDictionary.Add("ARChristy", App.ARChristyTypeface);
+                    }
+                    catch
+                    {
+                        //E.g., if typeface already exists in the dictionary
+                    }
                 }
             }
         }
