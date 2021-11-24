@@ -7402,7 +7402,7 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[2, 7] = new GHCommandButtonItem("Search 200", "GnollHackClient.Assets.Icons.missing_icon.png", -3);
             _moreBtnMatrix[3, 7] = new GHCommandButtonItem("Discoveries", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'\\');
             _moreBtnMatrix[4, 7] = new GHCommandButtonItem("Pick Up", "GnollHackClient.Assets.Icons.missing_icon.png", (int)',');
-            _moreBtnMatrix[5, 7] = new GHCommandButtonItem("Cancel", "GnollHackClient.Assets.Icons.missing_icon.png", 27);
+            _moreBtnMatrix[5, 7] = new GHCommandButtonItem("Look Here", "GnollHackClient.Assets.UI.lookhere.png", (int)':');
 
             _moreBtnMatrix[0, 8] = new GHCommandButtonItem("What Is", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'/');
             _moreBtnMatrix[1, 8] = new GHCommandButtonItem("Look Far", "GnollHackClient.Assets.Icons.missing_icon.png", (int)';');
