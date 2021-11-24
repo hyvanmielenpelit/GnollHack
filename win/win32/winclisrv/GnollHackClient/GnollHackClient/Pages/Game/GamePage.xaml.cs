@@ -128,6 +128,7 @@ namespace GnollHackClient.Pages.Game
 
         private MainPage _mainPage;
         private SKBitmap _logoBitmap;
+        private SKBitmap[] _arrowBitmap = new SKBitmap[9];
 
         public object TargetClipLock = new object();
         public float _originMapOffsetWithNewClipX;
@@ -277,6 +278,42 @@ namespace GnollHackClient.Pages.Game
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack-logo-test-2.png"))
             {
                 _logoBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_left.png"))
+            {
+                _arrowBitmap[0] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_up.png"))
+            {
+                _arrowBitmap[1] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_right.png"))
+            {
+                _arrowBitmap[2] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_down.png"))
+            {
+                _arrowBitmap[3] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_upleft.png"))
+            {
+                _arrowBitmap[4] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.no.png"))
+            {
+                _arrowBitmap[5] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_upright.png"))
+            {
+                _arrowBitmap[6] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_downright.png"))
+            {
+                _arrowBitmap[7] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_downleft.png"))
+            {
+                _arrowBitmap[8] = SKBitmap.Decode(stream);
             }
             InitializeMoreCommandButtons();
             await LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear);
@@ -4397,10 +4434,67 @@ namespace GnollHackClient.Pages.Game
                 canvasButtonRect.Right = canvaswidth * (float)(0.8);
                 canvasButtonRect.Left = canvaswidth * (float)(0.2);
 
-                if (_showDirections || ShowNumberPad)
+                if (_showDirections)
+                {
+                    SKRect targetrect;
+                    float buttonsize = GHConstants.ArrowButtonSize;
+                    SKColor oldcolor = textPaint.Color;
+                    textPaint.Color = textPaint.Color.WithAlpha(170);
+
+                    for (int i = 0; i < 9; i++)
+                    {
+                        switch (i)
+                        {
+                            case 0:
+                                tx = canvasButtonRect.Left;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 - canvasButtonRect.Height * (buttonsize / 2);
+                                break;
+                            case 1:
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - canvasButtonRect.Width * (buttonsize / 2);
+                                ty = canvasButtonRect.Top;
+                                break;
+                            case 2:
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width - canvasButtonRect.Width * buttonsize;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 - canvasButtonRect.Height * (buttonsize / 2);
+                                break;
+                            case 3:
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - canvasButtonRect.Width * (buttonsize / 2);
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height - canvasButtonRect.Height * buttonsize;
+                                break;
+                            case 4:
+                                tx = canvasButtonRect.Left;
+                                ty = canvasButtonRect.Top;
+                                break;
+                            case 5:
+                                continue;
+                            case 6:
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width * (1.0f - buttonsize);
+                                ty = canvasButtonRect.Top;
+                                break;
+                            case 7:
+                                tx = canvasButtonRect.Left + canvasButtonRect.Width * (1.0f - buttonsize);
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height * (1.0f - buttonsize);
+                                break;
+                            case 8:
+                                tx = canvasButtonRect.Left;
+                                ty = canvasButtonRect.Top + canvasButtonRect.Height * (1.0f - buttonsize);
+                                break;
+                            default:
+                                continue;
+                        }
+
+                        float px = Math.Max(0, canvasButtonRect.Width - canvasButtonRect.Height) * buttonsize / 2;
+                        float py = Math.Max(0, canvasButtonRect.Height - canvasButtonRect.Width) * buttonsize / 2;
+                        float truesize = Math.Min(canvasButtonRect.Width, canvasButtonRect.Height) * buttonsize;
+                        targetrect = new SKRect(tx, ty, tx + px + truesize, ty + py + truesize);
+                        canvas.DrawBitmap(_arrowBitmap[i], targetrect, textPaint);
+                    }
+                    textPaint.Color = oldcolor;
+                }
+                else if (ShowNumberPad)
                 {
                     float buttonsize = ShowNumberPad ? GHConstants.NumberButtonSize : GHConstants.ArrowButtonSize;
-                    textPaint.Color = new SKColor(255, 255, 255, 128);
+                    textPaint.Color = new SKColor(255, 255, 255, 170);
                     textPaint.Typeface = App.DejaVuSansMonoTypeface;
                     textPaint.TextSize = ShowNumberPad ? 225 : 275;
                     for (int i = 0; i <= 9; i++)
