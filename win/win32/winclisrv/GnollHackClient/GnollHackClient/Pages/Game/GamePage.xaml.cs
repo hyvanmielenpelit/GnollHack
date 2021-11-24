@@ -4486,7 +4486,7 @@ namespace GnollHackClient.Pages.Game
                         float px = Math.Max(0, canvasButtonRect.Width - canvasButtonRect.Height) * buttonsize / 2;
                         float py = Math.Max(0, canvasButtonRect.Height - canvasButtonRect.Width) * buttonsize / 2;
                         float truesize = Math.Min(canvasButtonRect.Width, canvasButtonRect.Height) * buttonsize;
-                        targetrect = new SKRect(tx, ty, tx + px + truesize, ty + py + truesize);
+                        targetrect = new SKRect(tx + px, ty + py, tx + px + truesize, ty + py + truesize);
                         canvas.DrawBitmap(_arrowBitmap[i], targetrect, textPaint);
                     }
                     textPaint.Color = oldcolor;
