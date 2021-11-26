@@ -1333,6 +1333,7 @@ E void FDECL(delallobj, (int, int));
 E void FDECL(delobj, (struct obj *));
 E void FDECL(delobj_with_flags, (struct obj*, unsigned long));
 E struct obj *FDECL(sobj_at, (int, int, int));
+E struct obj* FDECL(noncursed_sobj_at, (int, int, int));
 E struct obj* FDECL(any_obj_at, (int, int, int));
 E struct obj* FDECL(otyp_in_objchn, (int, struct obj*));
 E struct obj *FDECL(nxtobj, (struct obj *, int, BOOLEAN_P));

@@ -4175,11 +4175,15 @@ setmangry(mtmp, via_attack)
 struct monst *mtmp;
 boolean via_attack;
 {
+    boolean Elbereth_Hypocrite = FALSE;
+
     if (via_attack && sengr_at(Elbereth_word, u.ux, u.uy, TRUE)
         /* only hypocritical if monster is vulnerable to Elbereth (or
            peaceful--not vulnerable but attacking it is hypocritical) */
-        && (onscary(u.ux, u.uy, mtmp) || is_peaceful(mtmp))) {
-        You_feel("like a hypocrite.");
+        && (onscary(u.ux, u.uy, mtmp) || is_peaceful(mtmp))) 
+    {
+        Elbereth_Hypocrite = TRUE;
+        You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "like a hypocrite.");
         /* AIS: Yes, I know alignment penalties and bonuses aren't balanced
            at the moment. This is about correct relative to other "small"
            penalties; it should be fairly large, as attacking while standing
@@ -4191,8 +4195,25 @@ boolean via_attack;
         adjalign((u.ualign.record > 5) ? -5 : -rnd(5));
 
         if (!Blind)
-            pline("The engraving beneath you fades.");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "The engraving beneath you fades.");
         del_engr_at(u.ux, u.uy);
+    }
+
+    struct obj* scroll = noncursed_sobj_at(SCR_SCARE_MONSTER, u.ux, u.uy);
+    if (via_attack && scroll && !scroll->cursed
+        /* only hypocritical if monster is vulnerable to scroll of scare monster (or
+           peaceful--not vulnerable but attacking it is hypocritical) */
+        && (onscary(u.ux, u.uy, mtmp) || is_peaceful(mtmp)))
+    {
+        if(Elbereth_Hypocrite)
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "even more like a hypocrite.");
+        else
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "like a hypocrite.");
+
+        if (!Blind)
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s at your %s.", Tobjnam(scroll, "glow"), NH_BLACK, makeplural(body_part(FOOT)));
+
+        curse(scroll);
     }
 
     /* AIS: Should this be in both places, or just in wakeup()? */

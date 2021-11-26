@@ -1968,6 +1968,21 @@ int x, y;
     return otmp;
 }
 
+/* try to find a particular type of noncursed object at designated map location */
+struct obj*
+noncursed_sobj_at(otyp, x, y)
+int otyp;
+int x, y;
+{
+    register struct obj* otmp;
+
+    for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
+        if (otmp->otyp == otyp && !otmp->cursed)
+            return otmp;
+
+    return otmp;
+}
+
 /* try to find a particular type of object at designated map location */
 struct obj*
 any_obj_at(otyp, x, y)
