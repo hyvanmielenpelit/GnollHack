@@ -789,12 +789,12 @@ struct monst *mtmp;
         if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !(2-rnl(3)))) || (u.ualign.type == A_NEUTRAL && !rnl(3))
             || ((uwep && uwep->oartifact == ART_HOWLING_FLAIL) || (uarms && uarms->oartifact == ART_HOWLING_FLAIL)))
         {
+            struct monst tmpmon = *mtmp; /* Save Yeenaghu's data */
             verbalize("You have pleased me, my minion. I will grant one wish!");
             /* give a wish and discard the monster (mtmp set to null) */
             mongrantswish(&mtmp);
             //mongrantswish removes the monster (calls mongone)
-            play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
+            play_simple_monster_sound(&tmpmon, MONSTER_SOUND_TYPE_LAUGHTER);
             pline("The demon lord laughs, then vanishes.");
             return 1;
         }
