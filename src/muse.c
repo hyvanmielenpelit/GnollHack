@@ -741,7 +741,14 @@ struct monst *mtmp;
             pline("%s plays %s!", Monnam(mtmp), doname(otmp));
         else if (!Deaf)
             You_hear("a bugle playing reveille!");
-        awaken_soldiers(mtmp);
+
+        boolean is_scary = FALSE;
+        if (otmp->charges > 0)
+        {
+            otmp->charges--;
+            is_scary = TRUE;
+        }
+        awaken_soldiers(mtmp, is_scary);
         return 2;
     case MUSE_WAN_TELEPORTATION_SELF:
         if ((mtmp->isshk && inhishop(mtmp)) || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc)

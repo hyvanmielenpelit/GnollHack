@@ -30,7 +30,7 @@
 
 #include "hack.h"
 
-STATIC_DCL void FDECL(awaken_monsters, (int));
+STATIC_DCL void FDECL(awaken_monsters, (int, BOOLEAN_P));
 STATIC_DCL void FDECL(put_monsters_to_sleep, (int));
 STATIC_DCL void FDECL(charm_snakes, (int));
 STATIC_DCL void FDECL(calm_nymphs, (int));
@@ -60,17 +60,20 @@ void FDECL(amii_speaker, (struct obj *, char *, int));
  */
 
 STATIC_OVL void
-awaken_monsters(distance)
+awaken_monsters(distance, isscary)
 int distance;
+boolean isscary;
 {
     register struct monst *mtmp;
     register int distm;
     int cnt = 0;
 
-    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
+    {
         if (DEADMONSTER(mtmp))
             continue;
-        if ((distm = distu(mtmp->mx, mtmp->my)) < distance) {
+        if ((distm = distu(mtmp->mx, mtmp->my)) < distance) 
+        {
             mtmp->msleeping = 0;
             mtmp->mcanmove = 1;
             mtmp->mfrozen = 0;
@@ -78,7 +81,7 @@ int distance;
             if (!unique_corpstat(mtmp->data)
                 && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
                 mtmp->mstrategy &= ~STRAT_WAITMASK;
-            else if (distm < distance / 3
+            else if (isscary && distm < distance / 3
                      && !check_ability_resistance_success(mtmp, A_WIS, 0)
                      && !resists_fear(mtmp)
                      /* some monsters are immune */
@@ -182,8 +185,9 @@ int distance;
 
 /* Awake soldiers anywhere the level (and any nearby monster). */
 void
-awaken_soldiers(bugler)
+awaken_soldiers(bugler, isscary)
 struct monst *bugler; /* monster that played instrument */
+boolean isscary;
 {
     register struct monst *mtmp;
     int distance, distm, cnt = 0;
@@ -216,7 +220,7 @@ struct monst *bugler; /* monster that played instrument */
             if (!unique_corpstat(mtmp->data)
                 && (mtmp->mstrategy & STRAT_WAITMASK) != 0)
                 mtmp->mstrategy &= ~STRAT_WAITMASK;
-            else if (distm < distance / 3 && !check_ability_resistance_success(mtmp, A_WIS, 0))
+            else if (isscary && distm < distance / 3 && !check_ability_resistance_success(mtmp, A_WIS, 0))
                 monflee(mtmp, 0, FALSE, TRUE);
         }
     }
@@ -633,7 +637,8 @@ struct obj *instr;
         int dur_plus = objects[instr->otyp].oc_spell_dur_plus;
         int radius = 10;
         int affected_cnt = 0;
-        for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+        struct monst* mtmp;
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         {
             if (!DEADMONSTER(mtmp) && !is_tame(mtmp) && !is_peaceful(mtmp) && !has_mind_shielding(mtmp) && isok(mtmp->mx, mtmp->my) && dist2(mtmp->mx, mtmp->my, u.ux, u.uy) <= radius * radius && hearing_array[mtmp->mx][mtmp->my] > 0.0f)
             {
@@ -657,17 +662,32 @@ struct obj *instr;
         wake_nearby();
         break;
     case TOOLED_HORN: /* Awaken or scare monsters */
-        consume_obj_charge(instr, TRUE);
-        You("produce a frightful, grave sound.");
-        awaken_monsters(u.ulevel * 30);
+    {
+        boolean is_scary = FALSE;
+        if (instr->charges > 0)
+        {
+            consume_obj_charge(instr, TRUE);
+            is_scary = TRUE;
+        }
+        You("produce a %sgrave sound.", is_scary ? "frightful, " : "");
+        awaken_monsters(u.ulevel * 30, is_scary);
         exercise(A_WIS, FALSE);
         makeknown(instr->otyp);
         break;
+    }
     case BUGLE: /* Awaken & attract soldiers */
-        You("extract a loud noise from %s.", yname(instr));
-        awaken_soldiers(&youmonst);
+    {
+        boolean is_scary = FALSE;
+        if (instr->charges > 0)
+        {
+            consume_obj_charge(instr, TRUE);
+            is_scary = TRUE;
+        }
+        You("extract a %sloud noise from %s.", is_scary ? "frightful, " : "", yname(instr));
+        awaken_soldiers(&youmonst, is_scary);
         exercise(A_WIS, FALSE);
         break;
+    }
     case MAGIC_HARP: /* Charm monsters */
         consume_obj_charge(instr, TRUE);
 
@@ -694,20 +714,23 @@ struct obj *instr;
         pline_The("entire %s is shaking around you!", generic_lvl_desc());
         do_earthquake((u.ulevel - 1) / 3 + 1);
         /* shake up monsters in a much larger radius... */
-        awaken_monsters(ROWNO * COLNO);
+        awaken_monsters(ROWNO * COLNO, TRUE);
         makeknown(DRUM_OF_EARTHQUAKE);
         break;
     case LEATHER_DRUM: /* Awaken monsters */
-        if (!mundane) {
+        if (!mundane) 
+        {
             You("beat a deafening row!");
             incr_itimeout(&HDeaf, rn1(20, 30));
             play_environment_ambient_sounds();
             exercise(A_WIS, FALSE);
-        } else
+        } 
+        else
             You("%s %s.",
                 rn2(2) ? "butcher" : rn2(2) ? "manage" : "pull off",
                 an(beats[rn2(SIZE(beats))]));
-        awaken_monsters(u.ulevel * (mundane ? 5 : 40));
+
+        awaken_monsters(u.ulevel * (mundane ? 5 : 40), FALSE);
         context.botl = TRUE;
         break;
     default:

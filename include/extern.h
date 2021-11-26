@@ -2124,7 +2124,7 @@ E boolean FDECL(munslime, (struct monst *, BOOLEAN_P));
 
 /* ### music.c ### */
 
-E void FDECL(awaken_soldiers, (struct monst *));
+E void FDECL(awaken_soldiers, (struct monst *, BOOLEAN_P));
 E int FDECL(do_play_instrument, (struct obj *));
 
 /* ### nhlan.c ### */
