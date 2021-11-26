@@ -3523,6 +3523,7 @@ xchar x, y;
         switch (sell_response ? sell_response : ynaq(qbuf)) {
         case 'q':
             sell_response = 'n';
+            context.quit_pressed = TRUE;
             /*FALLTHRU*/
         case 'n':
             if (container)

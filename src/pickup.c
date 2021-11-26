@@ -3669,9 +3669,11 @@ struct obj* other_container;
                           all_categories ? allow_all : allow_category, 2);
         if (n)
         {
-            n_looted = n;
+            n_looted = 0;
+            context.quit_pressed = FALSE;
             for (i = 0; i < n; i++)
             {
+                n_looted++;
                 otmp = pick_list[i].item.a_obj;
                 count = pick_list[i].count;
                 if (count > 0 && count < otmp->quan) 
@@ -3722,8 +3724,12 @@ struct obj* other_container;
                     }
                     break;
                 }
+
+                if (context.quit_pressed)
+                    break;
             }
             free((genericptr_t) pick_list);
+            context.quit_pressed = FALSE;
         }
     }
 

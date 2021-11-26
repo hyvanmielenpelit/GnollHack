@@ -242,6 +242,7 @@ struct context_info
     struct gh_quest_status_data quest_status_info[NUM_QUESTS];
 
     boolean reviving;
+    boolean quit_pressed;
 };
 
 extern NEARDATA struct context_info context;
