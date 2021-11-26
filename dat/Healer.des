@@ -371,6 +371,38 @@ TRAP: random, random
 TRAP: random, random
 TRAP: random, random
 
+LOOP [1d3] {
+    IF [50%] {
+        IF [66%] {
+          IF [50%] {
+            OBJECT: ('%', "champignon"), random
+          } ELSE {
+            OBJECT: ('%', "chanterelle"), random
+          }
+        } ELSE {
+          IF [50%] {
+            OBJECT: ('%', "mana mushroom"), random
+          } ELSE {
+            OBJECT: ('%', "healing mushroom"), random
+          }
+        }
+    } ELSE {
+        IF [33%] {
+          IF [50%] {
+            OBJECT: ('%', "fly agaric"), random
+          } ELSE {
+            OBJECT: ('%', "panther cap"), random
+          }
+        } ELSE {
+          IF [40%] {
+            OBJECT: ('%', "death cap"), random
+          } ELSE {
+            OBJECT: ('%', "magic mushroom"), random
+          }
+        }
+      }
+    }
+
 MAZE: "Hea-filb" , 'P'
 INIT_MAP: mines, ',' , 'P' , false , true , lit , false
 NOMAP
@@ -413,3 +445,35 @@ TRAP: random, random
 TRAP: random, random
 TRAP: random, random
 TRAP: random, random
+
+LOOP [1d3] {
+    IF [50%] {
+        IF [66%] {
+          IF [50%] {
+            OBJECT: ('%', "champignon"), random
+          } ELSE {
+            OBJECT: ('%', "chanterelle"), random
+          }
+        } ELSE {
+          IF [50%] {
+            OBJECT: ('%', "mana mushroom"), random
+          } ELSE {
+            OBJECT: ('%', "healing mushroom"), random
+          }
+        }
+    } ELSE {
+        IF [33%] {
+          IF [50%] {
+            OBJECT: ('%', "fly agaric"), random
+          } ELSE {
+            OBJECT: ('%', "panther cap"), random
+          }
+        } ELSE {
+          IF [40%] {
+            OBJECT: ('%', "death cap"), random
+          } ELSE {
+            OBJECT: ('%', "magic mushroom"), random
+          }
+        }
+      }
+    }

@@ -311,6 +311,12 @@ boolean mod;
 
                     if (is_quest_artifact(otmp))
                         otmp->nknown = TRUE;
+
+                    if (otmp->mythic_prefix == MYTHIC_PREFIX_HALLOWED && otmp->cursed)
+                    {
+                        uncurse(otmp);
+                        otmp->enchantment = (short)abs(otmp->enchantment);
+                    }
                 }
                 break;
             }

@@ -1192,7 +1192,7 @@ HELM("helmet", "plumed helmet",
     O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 HELM("helm of brilliance", "etched helmet",
     0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR,
-    6, 1, 50, 50,  9, 0, 0, 0, BONUS_TO_INT | BONUS_TO_WIS, 0, 0, MAT_IRON, CLR_GREEN, 32, OBJECT_SOUNDSET_GENERIC,
+    6, 1, 50, 50,  9, 0, 0, 0, BONUS_TO_INT | BONUS_TO_WIS | BONUS_TO_ALL_SPELL_CASTING, 0, 0, MAT_IRON, CLR_GREEN, 32, OBJECT_SOUNDSET_GENERIC,
     O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL),
 HELM("helm of opposite alignment", "crested helmet",
      0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR,
@@ -1729,7 +1729,7 @@ AMULET("amulet of mana",                "convex",  70,    NO_POWER, NO_POWER, NO
 AMULET("demon blood talisman",       "tetrahedral",  25,    NO_POWER, NO_POWER, NO_POWER, P1_MANA_PERCENTAGE_BONUS, 100, 0, 0, 0, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), //doubles mana capacity
 AMULET("periapt of vitality",            "linear",  70,    NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 25, 0, 0, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 AMULET("amulet of magical breathing", "octagonal", 70,  MAGICAL_BREATHING, 0, 0, P1_NONE, 0, 0, 0, 0, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-AMULET("amulet of seeing",            "cylindrical",  0,  NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, 0, 0, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Obsolete */
+AMULET("amulet of seeing",            "cylindrical",  0,  NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_UNRESTRICTED_SPELL_CASTING, 24, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* Base item for Eye of the Aethiopica */
 /* fixed descriptions; description duplication is deliberate;
  * fake one must come before real one because selection for
  * description shuffling stops when a non-magic amulet is encountered
