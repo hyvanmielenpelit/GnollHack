@@ -76,6 +76,8 @@
     <None Remove="Assets\UI\cancel.png" />
     <None Remove="Assets\UI\cast.png" />
     <None Remove="Assets\UI\chat.png" />
+    <None Remove="Assets\UI\dig.png" />
+    <None Remove="Assets\UI\dip.png" />
     <None Remove="Assets\UI\dropmany.png" />
     <None Remove="Assets\UI\eat.png" />
     <None Remove="Assets\UI\fire.png" />
@@ -92,9 +94,12 @@
     <None Remove="Assets\UI\pay.png" />
     <None Remove="Assets\UI\pickup.png" />
     <None Remove="Assets\UI\pray.png" />
+    <None Remove="Assets\UI\quaff.png" />
+    <None Remove="Assets\UI\read.png" />
     <None Remove="Assets\UI\repeat.png" />
     <None Remove="Assets\UI\rightring.png" />
     <None Remove="Assets\UI\search.png" />
+    <None Remove="Assets\UI\sit.png" />
     <None Remove="Assets\UI\skill.png" />
     <None Remove="Assets\UI\stairs-down.png" />
     <None Remove="Assets\UI\stairs-up.png" />
@@ -136,8 +141,6 @@
     <EmbeddedResource Include="Assets\Icons\engrave.png" />
     <EmbeddedResource Include="Assets\Icons\light.png" />
     <EmbeddedResource Include="Assets\Icons\missing_icon.png" />
-    <EmbeddedResource Include="Assets\Icons\quaff.png" />
-    <EmbeddedResource Include="Assets\Icons\read.png" />
     <EmbeddedResource Include="Assets\imrl.ttf" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />
@@ -157,6 +160,8 @@
     <EmbeddedResource Include="Assets\UI\cancel.png" />
     <EmbeddedResource Include="Assets\UI\cast.png" />
     <EmbeddedResource Include="Assets\UI\chat.png" />
+    <EmbeddedResource Include="Assets\UI\dig.png" />
+    <EmbeddedResource Include="Assets\UI\dip.png" />
     <EmbeddedResource Include="Assets\UI\dropmany.png" />
     <EmbeddedResource Include="Assets\UI\eat.png" />
     <EmbeddedResource Include="Assets\UI\fire.png" />
@@ -173,9 +178,12 @@
     <EmbeddedResource Include="Assets\UI\pay.png" />
     <EmbeddedResource Include="Assets\UI\pickup.png" />
     <EmbeddedResource Include="Assets\UI\pray.png" />
+    <EmbeddedResource Include="Assets\UI\quaff.png" />
+    <EmbeddedResource Include="Assets\UI\read.png" />
     <EmbeddedResource Include="Assets\UI\repeat.png" />
     <EmbeddedResource Include="Assets\UI\rightring.png" />
     <EmbeddedResource Include="Assets\UI\search.png" />
+    <EmbeddedResource Include="Assets\UI\sit.png" />
     <EmbeddedResource Include="Assets\UI\skill.png" />
     <EmbeddedResource Include="Assets\UI\stairs-down.png" />
     <EmbeddedResource Include="Assets\UI\stairs-up.png" />
