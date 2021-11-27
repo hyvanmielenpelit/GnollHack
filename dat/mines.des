@@ -25,7 +25,8 @@ OBJECT: '(', random
 OBJECT: random, random
 OBJECT: random, random
 OBJECT: random, random
-LOOP [1 + 1d2] {
+IF [75%] {
+  LOOP [1d3] {
     IF [50%] {
         IF [66%] {
           IF [50%] {
@@ -56,6 +57,7 @@ LOOP [1 + 1d2] {
         }
       }
     }
+}
 
 LOOP [2d4] {
           OBJECT: ('(', "mine cart"), random
