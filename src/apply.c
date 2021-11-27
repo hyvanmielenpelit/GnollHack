@@ -3128,6 +3128,7 @@ struct obj *obj;
             did_prop++;
             break;
         case prop2trbl(STUNNED):
+            play_sfx_sound(SFX_CURE_AILMENT);
             make_stunned(0L, TRUE);
             did_prop++;
             break;
