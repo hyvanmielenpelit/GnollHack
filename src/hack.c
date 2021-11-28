@@ -108,11 +108,13 @@ const char *msg;
     coord cc;
     boolean revived = FALSE;
 
-    for (otmp = level.objects[x][y]; otmp; otmp = otmp2) {
+    for (otmp = level.objects[x][y]; otmp; otmp = otmp2) 
+    {
         otmp2 = otmp->nexthere;
         if (otmp->otyp == CORPSE
             && (is_rider(&mons[otmp->corpsenm])
-                || otmp->corpsenm == PM_WIZARD_OF_YENDOR)) {
+                || otmp->corpsenm == PM_WIZARD_OF_YENDOR)) 
+        {
             /* move any living monster already at that location */
             if ((mtmp = m_at(x, y)) && enexto(&cc, x, y, mtmp->data))
                 rloc_to(mtmp, cc.x, cc.y);
@@ -123,10 +125,12 @@ const char *msg;
     }
 
     /* this location might not be safe, if not, move revived monster */
-    if (revived) {
+    if (revived) 
+    {
         mtmp = m_at(x, y);
         if (mtmp && !goodpos(x, y, mtmp, 0)
-            && enexto(&cc, x, y, mtmp->data)) {
+            && enexto(&cc, x, y, mtmp->data)) 
+        {
             rloc_to(mtmp, cc.x, cc.y);
         }
         /* else impossible? */
