@@ -4839,9 +4839,9 @@ struct permonst _mons2[] = {
         M4_NONE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
         21, CLR_YELLOW, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
     /* high priests always have epri and always have ispriest set */
-    GENERAL_MON("high priest", None, "powerful clerical human spellcaster", "high priestess", "high priest", S_HUMAN, LVL(25, 15, 7, 10, 70, 0), (G_NOGEN | G_UNIQ),
-        A(ATTK(AT_WEAP, AD_PHYS, 4, 10, 0, 0, 0, 0, 0UL, 0), ATTK(AT_KICK, AD_PHYS, 2, 8, 0, 0, 0, 0, 0UL, 0),
-          ATTK(AT_MAGC, AD_CLRC, 2, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_CLRC, 2, 8, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
+    GENERAL_MON("high priest", None, "powerful clerical human spellcaster", "high priestess", "high priest", S_HUMAN, LVL(25, 18, 7, 10, 70, 0), (G_NOGEN | G_UNIQ),
+        A(ATTK(AT_WEAP, AD_PHYS, 4, 10, 0, 0, 0, 0, 0UL, 0), ATTK(AT_KICK, AD_PHYS, 3, 8, 0, 0, 0, 0, 0UL, 0),
+          ATTK(AT_MAGC, AD_CLRC, 3, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_CLRC, 3, 8, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_PRIEST, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(18, 16, 18, 16, 19, 20),
         MR_SLEEP | MR_POISON | MR_SEE_INVISIBLE | MR_CHARM,
@@ -4850,7 +4850,7 @@ struct permonst _mons2[] = {
         M1_HUMANOID | M1_OMNIVORE,
         M2_NOPOLY | M2_HUMAN | M2_MINION | M2_NASTY | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_SPEAKING, M4_PRINCE, M5_FEMALE_TILE, M6_BOSS_MONSTER, M7_PRIEST, M8_NONE,
-        31, CLR_WHITE, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE,
+        40, CLR_WHITE, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE,
         NO_ACTION_INFO, NO_ACTION_INFO,
         NO_ACTION_INFO, NO_ACTION_INFO,
         ACTION_INFO(HIGH_PRIEST_MALE_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HIGH_PRIEST_MALE_STATUE_REPLACEMENT, 0, 0), ACTION_INFO(HIGH_PRIEST_FEMALE_REPLACEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HIGH_PRIEST_FEMALE_STATUE_REPLACEMENT, 0, 0)

@@ -1619,7 +1619,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "better.");
         healup(duration, otmp->blessed ? extra_data1 : 0,
-               !!otmp->blessed, !otmp->cursed, FALSE, FALSE, FALSE);
+               otmp->blessed, !otmp->cursed, FALSE, FALSE, FALSE);
         exercise(A_CON, TRUE);
         special_effect_wait_until_end(0);
         break;
@@ -1629,7 +1629,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "much better.");
         healup(duration,
-               otmp->blessed ? extra_data1 : 0, !otmp->cursed,
+               otmp->blessed ? extra_data1 : 0, otmp->blessed /* !otmp->cursed */,
                TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
         exercise(A_CON, TRUE);
         exercise(A_STR, TRUE);

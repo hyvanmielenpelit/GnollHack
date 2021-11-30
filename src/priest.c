@@ -372,6 +372,8 @@ int mtype;
             otmp->enchantment = max(otmp->enchantment, rnd(2) + 1);
             otmp = mongets(priest, SPEED_BOOTS);
             otmp->enchantment = max(otmp->enchantment, rnd(2) + 2);
+            otmp = mongets(priest, IOUN_STONE_OF_CONSTITUTION);
+            otmp->enchantment = max(otmp->enchantment, rnd(2) + 2);
 
             m_dowear(priest, TRUE);
         }

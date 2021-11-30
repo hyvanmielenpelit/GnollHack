@@ -6115,7 +6115,7 @@ boolean ordinary;
             special_effect_wait_until_action(0);
             healup(basedmg, 0,
                 obj->otyp == GRAIL_OF_HEALING, 
-                (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)),
+                (obj->blessed || (obj->otyp != SPE_EXTRA_HEALING && obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)),
                 (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)), 
                 obj->otyp == GRAIL_OF_HEALING, 
                 obj->otyp == GRAIL_OF_HEALING);
