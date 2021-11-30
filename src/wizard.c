@@ -506,6 +506,8 @@ aggravate()
             continue;
         if (in_w_tower != In_W_tower(mtmp->mx, mtmp->my, &u.uz))
             continue;
+        if (mtmp->iswiz) /* Exclude Wizard of Yendor from aggravation */
+            continue;
         mtmp->mstrategy &= ~(STRAT_WAITFORU | STRAT_APPEARMSG);
         boolean refresh = FALSE;
         if (mtmp->msleeping)
