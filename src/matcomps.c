@@ -1553,7 +1553,7 @@ struct materialcomponentlist matlists[] =
     { SPE_MINOR_HEALING,
     "Ginseng root",
     STRANGE_OBJECT,
-    40,
+    25,
         {
             {
                 {GINSENG_ROOT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -1567,7 +1567,7 @@ struct materialcomponentlist matlists[] =
     { SPE_HEALING,
     "Ginseng root",
     STRANGE_OBJECT,
-    20,
+    12,
         {
             {
                 {GINSENG_ROOT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -1581,7 +1581,7 @@ struct materialcomponentlist matlists[] =
     { SPE_EXTRA_HEALING,
     "Ginseng root, sporal powder",
     STRANGE_OBJECT,
-    25,
+    12,
         {
             {
                 {GINSENG_ROOT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -1598,7 +1598,7 @@ struct materialcomponentlist matlists[] =
     { SPE_GREATER_HEALING,
     "Healing mushroom",
     STRANGE_OBJECT,
-    20,
+    10,
         {
             {
                 {HEALING_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -1611,7 +1611,7 @@ struct materialcomponentlist matlists[] =
     { SPE_PRODIGIOUS_HEALING,
         "Ginseng, healing mushroom",
         STRANGE_OBJECT,
-        10,
+        5,
         {
             {
                 {GINSENG_ROOT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
@@ -1628,7 +1628,7 @@ struct materialcomponentlist matlists[] =
     { SPE_FULL_HEALING,
         "Ginseng, healing mushroom, sporal powder",
         STRANGE_OBJECT,
-        3,
+        2,
         {
             {
                 {GINSENG_ROOT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
