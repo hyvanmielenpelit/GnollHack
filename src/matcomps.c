@@ -741,7 +741,7 @@ struct materialcomponentlist matlists[] =
     { SPE_CHARM_MONSTER,
         "Magic mushroom",
         STRANGE_OBJECT,
-        20,
+        10,
         {
             {
                 {MAGIC_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
@@ -754,7 +754,7 @@ struct materialcomponentlist matlists[] =
     { SPE_SPHERE_OF_CHARMING,
         "Magic mushroom, sporal powder",
         STRANGE_OBJECT,
-        12,
+        5,
         {
             {
                 {MAGIC_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -769,7 +769,7 @@ struct materialcomponentlist matlists[] =
     { SPE_MASS_CHARM,
         "Magic mushroom, 2 sporal powder",
         STRANGE_OBJECT,
-        7,
+        3,
         {
             {
                 {MAGIC_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
@@ -786,7 +786,7 @@ struct materialcomponentlist matlists[] =
     { SPE_DOMINATE_MONSTER,
         "Magic mushroom, wolfsbane",
         STRANGE_OBJECT,
-        10,
+        7,
         {
             {
                 {MAGIC_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -803,7 +803,7 @@ struct materialcomponentlist matlists[] =
     { SPE_SPHERE_OF_DOMINATION,
         "Magic mushroom, wolfsbane, powder",
         STRANGE_OBJECT,
-        5,
+        4,
         {
             {
                 {MAGIC_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -824,7 +824,7 @@ struct materialcomponentlist matlists[] =
     { SPE_MASS_DOMINATION,
         "Magic mushroom, wolfsbane, 2 powder",
         STRANGE_OBJECT,
-        3,
+        2,
         {
             {
                 {MAGIC_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
