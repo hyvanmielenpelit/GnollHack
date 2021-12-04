@@ -852,6 +852,24 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Tool/Saddle/Saddle Apply", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Saddle/Saddle Drop", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Blind Telepathy", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Fire Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Cold Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Shock Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Poison Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Sleep Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Acid Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Disintegration Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Death Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Charm Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Fear Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Mind Shielding", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Curse Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Teleport", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Teleport Control", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Telepathy", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Lycanthropy Resistance", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Com Pager", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Quest Pager", 1.0f },
@@ -9370,6 +9388,91 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         "GHSOUND_MOUNT_SUCCESS",
         {GHSOUND_MOUNT_SUCCESS, 1.0f},
         FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_BLIND_TELEPATHY",
+        {GHSOUND_INTRINSIC_ACQUIRED_BLIND_TELEPATHY, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_FIRE_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_FIRE_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_COLD_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_COLD_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_SHOCK_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_SHOCK_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_POISON_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_POISON_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_SLEEP_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_SLEEP_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_ACID_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_ACID_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_DISINTEGRATION_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_DISINTEGRATION_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_DEATH_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_DEATH_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_CHARM_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_CHARM_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_FEAR_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_FEAR_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_MIND_SHIELDING",
+        {GHSOUND_INTRINSIC_ACQUIRED_MIND_SHIELDING, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_CURSE_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_CURSE_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_TELEPORT",
+        {GHSOUND_INTRINSIC_ACQUIRED_TELEPORT, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_TELEPORT_CONTROL",
+        {GHSOUND_INTRINSIC_ACQUIRED_TELEPORT_CONTROL, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_TELEPATHY",
+        {GHSOUND_INTRINSIC_ACQUIRED_TELEPATHY, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_LYCANTHROPY_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_LYCANTHROPY_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
 };
 

@@ -1052,6 +1052,7 @@ register struct permonst *ptr;
     case FIRE_RESISTANCE:
         debugpline0("Trying to give fire resistance");
         if (!(HFire_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_FIRE_RESISTANCE);
             You_ex(ATR_NONE, Hallucination ? CLR_MSG_ATTENTION : CLR_MSG_POSITIVE, Hallucination ? "be chillin'." : "feel cold for a moment.");
             HFire_resistance |= FROM_ACQUIRED;
         }
@@ -1059,6 +1060,7 @@ register struct permonst *ptr;
     case SLEEP_RESISTANCE:
         debugpline0("Trying to give sleep resistance");
         if (!(HSleep_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_SLEEP_RESISTANCE);
             You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "wide awake.");
             HSleep_resistance |= FROM_ACQUIRED;
         }
@@ -1066,6 +1068,7 @@ register struct permonst *ptr;
     case COLD_RESISTANCE:
         debugpline0("Trying to give cold resistance");
         if (!(HCold_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_COLD_RESISTANCE);
             You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "hot inside.");
             HCold_resistance |= FROM_ACQUIRED;
         }
@@ -1073,6 +1076,7 @@ register struct permonst *ptr;
     case ACID_RESISTANCE:
         debugpline0("Trying to give acid resistance");
         if (!(HAcid_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_ACID_RESISTANCE);
             You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "less soluble.");
             HAcid_resistance |= FROM_ACQUIRED;
         }
@@ -1080,6 +1084,7 @@ register struct permonst *ptr;
     case DISINTEGRATION_RESISTANCE:
         debugpline0("Trying to give disintegration resistance");
         if (!(HDisint_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_DISINTEGRATION_RESISTANCE);
             You_feel_ex(ATR_NONE, Hallucination ? CLR_MSG_ATTENTION : CLR_MSG_POSITIVE, Hallucination ? "totally together, man." : "very firm.");
             HDisint_resistance |= FROM_ACQUIRED;
         }
@@ -1087,6 +1092,7 @@ register struct permonst *ptr;
     case SHOCK_RESISTANCE: /* shock (electricity) resistance */
         debugpline0("Trying to give shock resistance");
         if (!(HShock_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_SHOCK_RESISTANCE);
             if (Hallucination)
                 You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "more grounded in reality.");
             else
@@ -1097,6 +1103,7 @@ register struct permonst *ptr;
     case DEATH_RESISTANCE: /* death resistance */
         debugpline0("Trying to give death resistance");
         if (!(HDeath_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_DEATH_RESISTANCE);
             if (Hallucination)
                 You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "immortal!");
             else
@@ -1107,6 +1114,7 @@ register struct permonst *ptr;
     case CHARM_RESISTANCE: /* charm resistance */
         debugpline0("Trying to give charm resistance");
         if (!(HCharm_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_CHARM_RESISTANCE);
             if (Hallucination)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The machinations of the world suddenly make more sense to you!");
             else
@@ -1114,9 +1122,10 @@ register struct permonst *ptr;
             HCharm_resistance |= FROM_ACQUIRED;
         }
         break;
-    case FEAR_RESISTANCE: /* charm resistance */
+    case FEAR_RESISTANCE: /* fear resistance */
         debugpline0("Trying to give fear resistance");
         if (!(HFear_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_FEAR_RESISTANCE);
             if (Hallucination)
                 You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "like Thelma and Louise!");
             else
@@ -1127,6 +1136,7 @@ register struct permonst *ptr;
     case MIND_SHIELDING: /* mind shielding */
         debugpline0("Trying to give mind shielding");
         if (!(HMind_shielding & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_MIND_SHIELDING);
             if (Hallucination)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You finally feel secure from those tentacled monstrosities!");
             else
@@ -1137,16 +1147,18 @@ register struct permonst *ptr;
     case LYCANTHROPY_RESISTANCE: /* immunity to lycanthropy */
         debugpline0("Trying to give immunity to lycanthropy");
         if (!(HLycanthropy_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_LYCANTHROPY_RESISTANCE);
             if (Hallucination)
                 You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "bugs do not bother you!");
             else
-                You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are protected against lycathropy!");
+                You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are protected against lycanthropy!");
             HLycanthropy_resistance |= FROM_ACQUIRED;
         }
         break;
     case CURSE_RESISTANCE: /* protection from curses */
         debugpline0("Trying to give protection from curses");
         if (!(HCurse_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_CURSE_RESISTANCE);
             if (Hallucination)
                 You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "auras are suddenly a bit less bothersome to you!");
             else
@@ -1157,6 +1169,7 @@ register struct permonst *ptr;
     case POISON_RESISTANCE:
         debugpline0("Trying to give poison resistance");
         if (!(HPoison_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_POISON_RESISTANCE);
             You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, Poison_resistance ? "especially healthy." : "healthy.");
             HPoison_resistance |= FROM_ACQUIRED;
         }
@@ -1164,6 +1177,7 @@ register struct permonst *ptr;
     case TELEPORT:
         debugpline0("Trying to give teleport");
         if (!(HTeleportation & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_TELEPORT);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "diffuse." : "very jumpy.");
             HTeleportation |= FROM_ACQUIRED;
         }
@@ -1171,6 +1185,7 @@ register struct permonst *ptr;
     case TELEPORT_CONTROL:
         debugpline0("Trying to give teleport control");
         if (!(HTeleport_control & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_TELEPORT_CONTROL);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "centered in your personal space."
                                    : "in control of yourself.");
             HTeleport_control |= FROM_ACQUIRED;
@@ -1179,6 +1194,7 @@ register struct permonst *ptr;
     case BLIND_TELEPATHY:
         debugpline0("Trying to give blind-telepathy");
         if (!(HBlind_telepat & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_BLIND_TELEPATHY);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "in touch with the cosmos."
                                    : "a strange mental acuity.");
             HBlind_telepat |= FROM_ACQUIRED;
@@ -1190,6 +1206,7 @@ register struct permonst *ptr;
     case TELEPAT:
         debugpline0("Trying to give telepathy");
         if (!(HTelepat & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_TELEPATHY);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "in touch with the cosmos."
                 : "a peculiar mental acuity.");
             HTelepat |= FROM_ACQUIRED;
