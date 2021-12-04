@@ -2883,6 +2883,15 @@ struct obj *obj;
         You("cannot tin %s which is partly eaten.", something);
         return;
     }
+
+    You("start tinning %s.", the(cxname(corpse)));
+
+    if (iflags.using_gui_sounds && !Deaf)
+    {
+        play_sfx_sound(SFX_APPLY_TINNING_KIT);
+        delay_output_milliseconds(2000);
+    }
+
     if (touch_petrifies(&mons[corpse->corpsenm]) && !Stone_resistance
         && !uarmg) {
         char kbuf[BUFSZ];
