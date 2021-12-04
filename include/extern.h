@@ -2963,6 +2963,7 @@ E long FDECL(get_cost, (struct obj*, struct monst*));
 E int FDECL(shk_chastise_pet, (struct monst* mtmp, struct obj*, BOOLEAN_P));
 E long FDECL(set_cost, (struct obj*, struct monst*));
 E boolean FDECL(is_obj_on_shk_bill, (struct obj*, struct monst*));
+E void FDECL(add_one_tobill, (struct obj*, BOOLEAN_P, struct monst*));
 
 /* ### shknam.c ### */
 

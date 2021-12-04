@@ -5852,6 +5852,16 @@ int arrowtype, quan; //ObjID and quantity
             otmp->owt = weight(otmp);
         }
 
+        if ((bag->unpaid || (bag->where == OBJ_FLOOR && !bag->no_charge)) && costly_spot(u.ux, u.uy))
+        {
+            char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
+            struct monst* shkp = shop_keeper(*o_shop);
+            if (shkp && inhishop(shkp) && (bag->where == OBJ_FLOOR || is_obj_on_shk_bill(bag, shkp)))
+            {
+                add_one_tobill(otmp, FALSE, shkp);
+            }
+        }
+
         You("pull %s out of %s.", doname(otmp), yname(bag));
         makeknown(bag->otyp);
         bag->cooldownleft = objects[bag->otyp].oc_item_cooldown;

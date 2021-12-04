@@ -55,8 +55,6 @@ STATIC_DCL void FDECL(rile_shk, (struct monst *));
 STATIC_DCL void FDECL(rouse_shk, (struct monst *, BOOLEAN_P));
 STATIC_DCL void FDECL(remove_damage, (struct monst *, BOOLEAN_P));
 STATIC_DCL void FDECL(sub_one_frombill, (struct obj *, struct monst *));
-STATIC_DCL void FDECL(add_one_tobill, (struct obj *, BOOLEAN_P,
-                                       struct monst *));
 STATIC_DCL void FDECL(dropped_container, (struct obj *, struct monst *,
                                           BOOLEAN_P));
 STATIC_DCL void FDECL(add_to_billobjs, (struct obj *));
@@ -2622,12 +2620,15 @@ boolean include_contents;
     return amt;
 }
 
-STATIC_OVL void
+void
 add_one_tobill(obj, dummy, shkp)
 struct obj *obj;
 boolean dummy;
 struct monst *shkp;
 {
+    if (!obj || !shkp || !has_eshk(shkp))
+        return;
+
     struct eshk *eshkp;
     struct bill_x *bp;
     int bct;
