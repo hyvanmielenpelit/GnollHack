@@ -2424,12 +2424,28 @@ dorub()
         }
     }
 
+    boolean already_uwep = FALSE;
+    if (obj && obj == uwep)
+        already_uwep = TRUE;
+
     if (!obj || !wield_tool(obj, "rub"))
         return 0;
+
+    if(already_uwep)
+        You("rub %s.", yname(uwep));
+    else
+        You("wield %s and start rubbing it.", yname(uwep));
+
+    if (iflags.using_gui_sounds && !Deaf && uwep)
+    {
+        play_sfx_sound(SFX_RUB);
+        delay_output_milliseconds(1500);
+    }
 
     /* now uwep is obj */
     if (uwep->otyp == MAGIC_LAMP) {
         if ((uwep->special_quality == 1) && !rn2(3)) {
+            play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
             check_unpaid_usage(uwep, TRUE); /* unusual item use */
             /* bones preparation:  perform the lamp transformation
                before releasing the djinni in case the latter turns out
@@ -3461,14 +3477,16 @@ struct obj* obj;
     if (!obj || obj->oclass != WAND_CLASS)
         return 0;
 
-    if (Glib) {
+    if (Glib) 
+    {
         pline("%s from your %s.", Tobjnam(obj, "slip"),
             makeplural(body_part(FINGER)));
         dropx(obj);
         return 0;
     }
 
-    if (obj->charges > 0) {
+    if (obj->charges > 0) 
+    {
         otmp = getobj(wand_application_objects, "use wand on", 0, "");
         if (!otmp)
             return 0;
@@ -3485,7 +3503,8 @@ struct obj* obj;
 
         consume_obj_charge(obj, TRUE);
 
-        if ((obj->cursed || Fumbling) && !rn2(2)) {
+        if ((obj->cursed || Fumbling) && !rn2(2)) 
+        {
             //Shoot accidently yourself!!
 
             pline("The wand slips and you accidently zap yourself with it!");
@@ -3494,7 +3513,9 @@ struct obj* obj;
         }
 
         //Normal effect
-        if (otmp && otmp != &zeroobj) {
+        if (otmp && otmp != &zeroobj) 
+        {
+            play_sfx_sound(SFX_ZAP);
             switch (obj->otyp)
             {
             case WAN_DEATH:
@@ -3705,7 +3726,8 @@ struct obj* obj;
                     break;
                 }
 
-                if (oresist_disintegration(otmp) || obj->otyp == AMULET_OF_LIFE_SAVING) {
+                if (oresist_disintegration(otmp) || obj->otyp == AMULET_OF_LIFE_SAVING) 
+                {
                     if (!Blind)
                     {
                         suggestnamingwand = TRUE;
@@ -3727,7 +3749,8 @@ struct obj* obj;
                 break;
             case WAN_POLYMORPH:
                 if (otmp->otyp == WAN_POLYMORPH || otmp->otyp == SPE_POLYMORPH
-                    || otmp->otyp == POT_POLYMORPH || obj_resists(otmp, 5, 95)) {
+                    || otmp->otyp == POT_POLYMORPH || obj_resists(otmp, 5, 95)) 
+                {
                     if (!Blind)
                     {
                         suggestnamingwand = TRUE;
@@ -3793,7 +3816,8 @@ struct obj* obj;
             }
 
             //Make the used wand known
-            if (!objects[obj->otyp].oc_name_known) {
+            if (!objects[obj->otyp].oc_name_known) 
+            {
                 if (wandknown)
                     makeknown(obj->otyp);
                 else if (suggestnamingwand && !objects[obj->otyp].oc_uname)

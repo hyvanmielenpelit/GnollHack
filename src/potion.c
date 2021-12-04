@@ -1576,6 +1576,7 @@ struct obj *otmp;
                 || Can_rise_up(u.ux, u.uy, &u.uz)) 
             {
                 const char *riseup = "rise up, through the %s!";
+                play_sfx_sound(SFX_CURSED_GAIN_LEVEL);
 
                 if (ledger_no(&u.uz) == 1) 
                 {

@@ -2083,6 +2083,7 @@ struct monst *mtmp;
                 if (on_level(&tolevel, &u.uz))
                     goto skipmsg;
                 if (vismon) {
+                    play_sfx_sound_at_location(SFX_CURSED_GAIN_LEVEL, mtmp->mx, mtmp->my);
                     pline("%s rises up, through the %s!", Monnam(mtmp),
                           ceiling(mtmp->mx, mtmp->my));
                     if (!objects[POT_GAIN_LEVEL].oc_name_known
@@ -2106,7 +2107,9 @@ struct monst *mtmp;
             }
         }
         if (vismon)
+        {
             pline("%s seems more experienced.", Monnam(mtmp));
+        }
         if (oseen)
             makeknown(POT_GAIN_LEVEL);
         m_useup(mtmp, otmp);

@@ -870,6 +870,9 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Telepathy", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Lycanthropy Resistance", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Object/Potion/Gain Level/Cursed Effect", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Action/Rub", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Com Pager", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Quest Pager", 1.0f },
@@ -9473,6 +9476,16 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         "GHSOUND_INTRINSIC_ACQUIRED_LYCANTHROPY_RESISTANCE",
         {GHSOUND_INTRINSIC_ACQUIRED_LYCANTHROPY_RESISTANCE, 1.0f},
         FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_CURSED_GAIN_LEVEL",
+        {GHSOUND_CURSED_GAIN_LEVEL, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_RUB",
+        {GHSOUND_RUB, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
     },
 };
 

@@ -3860,6 +3860,7 @@ struct monst *mtmp, *victim;
             /* 3.6.1:
              * Temporary (?) hack to fix growing into opposite gender.
              */
+            play_sfx_sound_at_location(SFX_GAIN_LEVEL, mtmp->mx, mtmp->my);
             Sprintf(buf, "%s%s",
                     /* deal with female gnome becoming a gnome lord */
                     (mtmp->female && !fem) ? "male "
