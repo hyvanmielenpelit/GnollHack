@@ -175,11 +175,35 @@ namespace GnollHackClient.Pages.Game
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             App.BackButtonPressed += BackButtonPressed;
+            GameTableView.IsEnabled = true;
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             App.BackButtonPressed -= BackButtonPressed;
         }
 
+        private async void btnViewPanicLog_Clicked(object sender, EventArgs e)
+        {
+            App.PlayButtonClickedSound();
+            GameTableView.IsEnabled = false;
+            string fulltargetpath = Path.Combine(App.GHPath, "paniclog");
+            var displFilePage = new DisplayFilePage(fulltargetpath, "Panic Log");
+            string errormsg = "";
+            if (!File.Exists(fulltargetpath))
+            {
+                GameTableView.IsEnabled = true;
+                await DisplayAlert("No Panic Log", "Panic Log does not exist.", "OK");
+            }
+            else if (!displFilePage.ReadFile(out errormsg))
+            {
+                GameTableView.IsEnabled = true;
+                await DisplayAlert("Error Opening File", "GnollHack cannot open the paniclog file.", "OK");
+            }
+            else
+            {
+                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+            }
+
+        }
     }
 }
