@@ -2516,7 +2516,7 @@ boolean *effect_happened_ptr;
                     {
                         ++candidates;
                         res = 0;
-                        if (sleep_monst(mtmp, sobj, duration, save_adj, TELL))
+                        if (sleep_monst(mtmp, sobj, &youmonst, duration, save_adj, TELL))
                         {
                             slept_monst(mtmp);
                             res = 1;

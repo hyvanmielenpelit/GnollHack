@@ -2339,7 +2339,7 @@ do_illness: /* Pestilence's potion of healing effect */
         }
         case POT_SLEEPING:
             /* wakeup() doesn't rouse victims of temporary sleep */
-            if (sleep_monst(mon, obj, duration, 0, FALSE)) 
+            if (sleep_monst(mon, obj, (struct monst*)0, duration, 0, FALSE)) 
             {
                 pline("%s falls asleep.", Monnam(mon));
                 slept_monst(mon);

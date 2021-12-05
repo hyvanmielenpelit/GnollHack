@@ -2059,7 +2059,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         if (!resists_sleep(steed) && !has_innate_breathless(steed->data)
             && mon_can_move(steed)) {
-            if (sleep_monst(steed, (struct obj*)0, rn1(7,8), -100, FALSE))
+            if (sleep_monst(steed, (struct obj*)0, (struct monst*)0, rn1(7,8), -100, FALSE))
                 /* no in_sight check here; you can feel it even if blind */
                 pline("%s suddenly falls asleep!", Monnam(steed));
         }
@@ -2967,7 +2967,7 @@ register struct monst *mtmp;
                 play_sfx_sound_at_location(SFX_ENVELOPED_IN_CLOUD_OF_GAS, mtmp->mx, mtmp->my);
             }
 
-            if (!resists_sleep(mtmp) && !has_innate_breathless(mptr) && mon_can_move(mtmp) && sleep_monst(mtmp, (struct obj*)0, rn1(7, 8), -100, FALSE))
+            if (!resists_sleep(mtmp) && !has_innate_breathless(mptr) && mon_can_move(mtmp) && sleep_monst(mtmp, (struct obj*)0, (struct monst*)0, rn1(7, 8), -100, FALSE))
             {
                 if(in_sight || see_it)
                     pline("%s suddenly falls asleep!", Monnam(mtmp));

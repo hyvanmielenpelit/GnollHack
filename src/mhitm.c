@@ -1625,7 +1625,7 @@ register struct obj* omonwep;
         break;
     case AD_SLEE:
         if (!cancelled && !is_sleeping(mdef)
-            && sleep_monst(mdef, (struct obj *)0, rn1(3,8), mattk->mcadj, FALSE)) 
+            && sleep_monst(mdef, (struct obj *)0, magr, rn1(3,8), mattk->mcadj, FALSE)) 
         {
             hit_tile = HIT_SLEEP;
             if (vis && canspotmon(mdef))
@@ -2280,8 +2280,8 @@ boolean verbosely;
 /* `mon' is hit by a sleep attack; return 1 if it's affected, 0 otherwise */
 /* lvl needs to specified only if otmp == 0, level -1 == cannot be resisted */
 int
-sleep_monst(mon, origobj, amt, saving_throw_adjustment, tellstyle)
-struct monst *mon;
+sleep_monst(mon, origobj, origmonst, amt, saving_throw_adjustment, tellstyle)
+struct monst *mon, *origmonst;
 struct obj* origobj;
 int amt, saving_throw_adjustment, tellstyle;
 {
@@ -2293,6 +2293,15 @@ int amt, saving_throw_adjustment, tellstyle;
         /* Do nothing, since not needed */
     }
 
+    int total_save_adj = saving_throw_adjustment;
+    if (origobj && origmonst)
+    {
+        int otyp = origobj->otyp;
+        int skill_level = get_spell_skill_level(otyp, origmonst, mon);
+        if (skill_level > P_UNSKILLED)
+            total_save_adj -= 2 * (skill_level - P_UNSKILLED);
+    }
+
     if (resists_sleep(mon))
     {
         if (tellstyle != NOTELL)
@@ -2302,7 +2311,7 @@ int amt, saving_throw_adjustment, tellstyle;
         }
         m_shieldeff(mon);
     }
-    else if(saving_throw_adjustment > -100 && check_ability_resistance_success(mon, A_WIS, saving_throw_adjustment)) // check_magic_resistance_and_inflict_damage(mon, otmp, FALSE, 0, 0, tellstyle))
+    else if(saving_throw_adjustment > -100 && check_ability_resistance_success(mon, A_WIS, total_save_adj)) // check_magic_resistance_and_inflict_damage(mon, otmp, FALSE, 0, 0, tellstyle))
     {
         if (tellstyle != NOTELL)
         {

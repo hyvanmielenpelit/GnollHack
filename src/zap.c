@@ -98,6 +98,45 @@ struct monst* origmonst;
     return max_level;
 }
 
+int
+get_spell_skill_level(otyp, origmonst, targetmonst)
+int otyp;
+struct monst* origmonst;
+struct monst* targetmonst;
+{
+    if (otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
+        return P_ISRESTRICTED;
+
+    int skill_level = P_UNSKILLED;
+
+    boolean same_side = (origmonst && targetmonst && ((origmonst == targetmonst) || ((origmonst == &youmonst) && is_tame(targetmonst)) || ((origmonst != &youmonst && !is_peaceful(origmonst) && !is_peaceful(targetmonst)))));
+    if (origmonst)
+    {
+        int skill_type = P_NONE;
+
+        if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && objects[otyp].oc_skill == P_WAND))
+        {
+            skill_type = P_WAND;
+        }
+        else if (objects[otyp].oc_class == SPBOOK_CLASS)
+        {
+            skill_type = objects[otyp].oc_skill;
+        }
+
+        if (same_side)
+        {
+            /* Use unskilled */
+        }
+        else if (origmonst == &youmonst)
+            skill_level = P_SKILL_LEVEL(skill_type);
+        else
+            skill_level = is_prince(origmonst->data) ? P_SKILLED : is_lord(origmonst->data) || is_wizard(origmonst->data) ? P_BASIC : P_UNSKILLED;
+
+    }
+
+    return skill_level;
+}
+
 int 
 get_spell_damage(otyp, origmonst, targetmonst)
 int otyp;
@@ -633,6 +672,12 @@ struct monst* origmonst;
     case SPE_SLOW_MONSTER:
     case SPE_MASS_SLOW:
         res = 1;
+        if (origmonst)
+        {
+            int skill_level = get_spell_skill_level(otyp, origmonst, mtmp);
+            if (skill_level > P_UNSKILLED)
+                save_adj -= 2 * (skill_level - P_UNSKILLED);
+        }
         if (!check_ability_resistance_success(mtmp, A_WIS, save_adj)) {
             if (disguised_mimic)
                 seemimic(mtmp);
@@ -663,6 +708,12 @@ struct monst* origmonst;
     case SPE_HOLD_MONSTER:
     case SPE_MASS_HOLD:
         res = 1;
+        if (origmonst)
+        {
+            int skill_level = get_spell_skill_level(otyp, origmonst, mtmp);
+            if (skill_level > P_UNSKILLED)
+                save_adj -= 2 * (skill_level - P_UNSKILLED);
+        }
         if (!check_ability_resistance_success(mtmp, A_WIS, save_adj))
         {
             if (disguised_mimic)
@@ -692,6 +743,12 @@ struct monst* origmonst;
         break;
     case SPE_HOLD_UNDEAD:
         res = 1;
+        if (origmonst)
+        {
+            int skill_level = get_spell_skill_level(otyp, origmonst, mtmp);
+            if (skill_level > P_UNSKILLED)
+                save_adj -= 2 * (skill_level - P_UNSKILLED);
+        }
         if (!(is_undead(mtmp->data) || is_vampshifter(mtmp)))
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
@@ -769,6 +826,12 @@ struct monst* origmonst;
         break;
     case SPE_FEAR:
         res = 1;
+        if (origmonst)
+        {
+            int skill_level = get_spell_skill_level(otyp, origmonst, mtmp);
+            if (skill_level > P_UNSKILLED)
+                save_adj -= 2 * (skill_level - P_UNSKILLED);
+        }
         if (!DEADMONSTER(mtmp) && !resists_fear(mtmp) && !check_ability_resistance_success(mtmp, A_WIS, save_adj))
         {
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
@@ -1307,7 +1370,7 @@ cure_petrification_here:
         reveal_invis = TRUE;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
-        if (sleep_monst(mtmp, otmp, d(1 + otmp->charges, 8), 0, TRUE))
+        if (sleep_monst(mtmp, otmp, origmonst, d(1 + otmp->charges, 8), 0, TRUE))
             slept_monst(mtmp);
         special_effect_wait_until_end(0);
         if (!Blind)
@@ -8224,7 +8287,7 @@ uchar* out_flags_ptr;
         {
             save_adj = -4;
         }
-        sleep_eff = sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, save_adj, NOTELL); // Duration 0 = permanent sleep
+        sleep_eff = sleep_monst(mon, origobj, origmonst, !origobj ? rn1(5, 8) : duration, save_adj, NOTELL); // Duration 0 = permanent sleep
         sho_hit_eff = sleep_eff;
         if (out_flags_ptr && sleep_eff)
             *out_flags_ptr |= ZHITM_FLAGS_SLEEP;
