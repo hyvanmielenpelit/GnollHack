@@ -86,6 +86,10 @@ namespace GnollHackClient.Pages.Game
                     _gamePage.NumDisplayedMessages = res;
                 Preferences.Set("NumDisplayedMessages", res);
             }
+
+            if (_gamePage != null)
+                _gamePage.ForceAllMessages = ForceMaxMessageSwitch.IsToggled;
+
         }
 
         private void ContentPage_Appearing(object sender, EventArgs e)
@@ -94,6 +98,7 @@ namespace GnollHackClient.Pages.Game
 
             int cursor = 0, graphics = 0, msgnum = 0;
             bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, mapgrid = false, playermark = false, monstertargeting = false;
+            bool forcemaxmsg = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", 1.0f);
             musicVolume = Preferences.Get("MusicVolume", 0.5f);
@@ -108,6 +113,9 @@ namespace GnollHackClient.Pages.Game
                 cursor = Preferences.Get("CursorStyle", 1);
                 graphics = Preferences.Get("GraphicsStyle", 1);
                 mapgrid = Preferences.Get("MapGrid", false);
+                forcemaxmsg = false; /* Always starts as false */
+                ForceMaxMessageSwitch.IsEnabled = false;
+                ForceMaxMessageLabel.TextColor = Color.Gray;
                 hpbars = Preferences.Get("HitPointBars", false);
                 playermark = Preferences.Get("PlayerMark", false);
                 monstertargeting = Preferences.Get("MonsterTargeting", false);
@@ -120,6 +128,9 @@ namespace GnollHackClient.Pages.Game
                 cursor = (int)_gamePage.CursorStyle;
                 graphics = (int)_gamePage.GraphicsStyle;
                 mapgrid = _gamePage.MapGrid;
+                forcemaxmsg = _gamePage.ForceAllMessages;
+                ForceMaxMessageSwitch.IsEnabled = true;
+                ForceMaxMessageLabel.TextColor = Color.White;
                 hpbars = _gamePage.HitPointBars;
                 playermark = _gamePage.PlayerMark;
                 monstertargeting = _gamePage.MonsterTargeting;
@@ -152,6 +163,7 @@ namespace GnollHackClient.Pages.Game
                     break;
                 }
             }
+            ForceMaxMessageSwitch.IsToggled = forcemaxmsg;
 
             _doChangeVolume = _gamePage == null ? true : !_gamePage.MuteSounds;
         }
