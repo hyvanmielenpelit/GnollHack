@@ -7346,7 +7346,7 @@ struct monst* mtmp;
         spell_otyps[teach_num] = SPE_FORCE_BOLT;
         teach_num++;
     }
-    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPECIAL_SPELLS)
+    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & (NPC_SERVICE_TEACH_SPECIAL_SPELLS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS))
     {
         for (int i = 0; i < MAX_SPECIAL_TEACH_SPELLS && ENPC(mtmp)->special_teach_spells[i] > STRANGE_OBJECT; i++)
         {

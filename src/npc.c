@@ -477,17 +477,12 @@ int mtype;
                     ENPC(npc)->special_teach_spells[cnt] = SPE_SHOCKING_TOUCH;
                     cnt++;
                 }
-                if (!rn2(4))
-                {
-                    ENPC(npc)->special_teach_spells[cnt] = SPE_FIRE_BOLT;
-                    cnt++;
-                }
                 if (!rn2(3))
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_MAGIC_MISSILE;
                     cnt++;
                 }
-                if (!rn2(4))
+                if (!rn2(3))
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_CIRCLE_OF_FIRE;
                     cnt++;
@@ -497,14 +492,19 @@ int mtype;
                     ENPC(npc)->special_teach_spells[cnt] = SPE_CIRCLE_OF_MAGIC;
                     cnt++;
                 }
-                if (!rn2(4))
+                if (!rn2(3))
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_CIRCLE_OF_FROST;
                     cnt++;
                 }
-                if (!rn2(4))
+                if (!rn2(3))
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_CIRCLE_OF_LIGHTNING;
+                    cnt++;
+                }
+                if (!rn2(3) || cnt == 0)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_FIRE_BOLT;
                     cnt++;
                 }
             }
