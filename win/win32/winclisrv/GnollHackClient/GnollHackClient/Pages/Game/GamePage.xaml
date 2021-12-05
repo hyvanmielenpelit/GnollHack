@@ -102,17 +102,8 @@
                         HorizontalOptions="Start"
                         AbsoluteLayout.LayoutBounds="0.0, 0.0, AutoSize, AutoSize" 
                         AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" >
-                        <!--<Grid x:Name="AbilitiesGrid" HeightRequest="60" WidthRequest="70" IsVisible="true" >
-                            <Image x:Name="AbilitiesImg" HeightRequest="50" WidthRequest="60" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                            <Button x:Name="AbilitiesButton" Clicked="AbilitiesButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                        </Grid>-->
                         <controls:LabeledImageButton x:Name="lAbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" />
                         <controls:LabeledImageButton x:Name="lSkillButton" LblText="Skill" BtnLetter="S" LargerFont="True" ImgSourcePath="resource://GnollHackClient.Assets.UI.skill.png" BtnClicked="GHButton_Clicked" />
-                        <!--<Grid x:Name="SkillGrid" HeightRequest="60" WidthRequest="70" IsVisible="false" >
-                            <Image x:Name="SkillImg" HeightRequest="50" WidthRequest="60" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                            <Label x:Name="SkillLbl" Text="Skill" TextColor="White" FontFamily="Lato-Regular" FontSize="10" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
-                            <Button x:Name="SkillButton" Clicked="SkillButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                        </Grid>-->
                     </StackLayout>
                 </AbsoluteLayout>
 
@@ -124,6 +115,10 @@
                     </Grid.RowDefinitions>
                     <StackLayout Grid.Row="0" x:Name="ContextGrid" Padding="0,2"
                         HorizontalOptions="End" VerticalOptions="End">
+                    </StackLayout>
+                    <StackLayout Grid.Row="0" x:Name="MessageNumberGrid" Padding="0,2"
+                        HorizontalOptions="Start" VerticalOptions="End">
+                        <Button x:Name="ToggleMessageNumberButton" Text="" Clicked="ToggleMessageNumberButton_Clicked" HeightRequest="60" WidthRequest="60" BackgroundColor="Transparent" />
                     </StackLayout>
                     <StackLayout Grid.Row="1" x:Name="ButtonRowStack" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical"
                         BackgroundColor="#66000000">
@@ -140,33 +135,6 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <!--
-                        <Grid x:Name="InventoryGrid" Grid.Column="0" HeightRequest="60" WidthRequest="50" >
-                            <Image x:Name="InventoryImg" HeightRequest="50" WidthRequest="50" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                            <Label x:Name="InventoryLbl" Text="Inventory" TextColor="White" FontFamily="Lato-Regular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
-                            <Button x:Name="InventoryButton" Clicked="InventoryButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                        </Grid>
-                        <Grid x:Name="SearchGrid" Grid.Column="1" HeightRequest="60" WidthRequest="50" >
-                            <Image x:Name="SearchImg" HeightRequest="50" WidthRequest="50" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                            <Label x:Name="SearchLbl" Text="Search" TextColor="White" FontFamily="Lato-Regular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
-                            <Button x:Name="SearchButton" Clicked="SearchButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                        </Grid>
-                        <Grid x:Name="WaitGrid" Grid.Column="2" HeightRequest="60" WidthRequest="50" >
-                            <Image x:Name="WaitImg" HeightRequest="50" WidthRequest="50" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                            <Label x:Name="WaitLbl" Text="Wait" TextColor="White" FontFamily="Lato-Regular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
-                            <Button x:Name="WaitButton" Clicked="WaitButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                        </Grid>
-                        <Grid x:Name="DropManyGrid" Grid.Column="3" HeightRequest="60" WidthRequest="50" >
-                            <Image x:Name="DropManyImg" HeightRequest="50" WidthRequest="50" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                            <Label x:Name="DropManyLbl" Text="Drop Items" TextColor="White" FontFamily="Lato-Regular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
-                            <Button x:Name="DropManyButton" Clicked="DropManyButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                        </Grid>
-                        <Grid Grid.Column="4" x:Name="ChatGrid" HeightRequest="60" WidthRequest="50" >
-                            <ff:CachedImage x:Name="ChatImg" Source="resource://GnollHackClient.Assets.Icons.missing_icon.png" HeightRequest="50" WidthRequest="50" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                            <Label x:Name="ChatLbl" Text="Chat" TextColor="White" FontFamily="Lato-Regular" FontSize="9" BackgroundColor="Transparent" VerticalOptions="End" VerticalTextAlignment="End" HorizontalOptions="Center" HorizontalTextAlignment="Center" InputTransparent="True" />
-                            <gnollhackclient:GHButton x:Name="ChatButton" Letter="C" Clicked="GHButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                        </Grid>
-                        -->
                             <controls:LabeledImageButton Grid.Column="0" x:Name="lInventoryButton" LblText="Inventory" BtnLetter="i" ImgSourcePath="resource://GnollHackClient.Assets.UI.inventory.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="1" x:Name="lSearchButton" LblText="Search" BtnLetter="s" ImgSourcePath="resource://GnollHackClient.Assets.UI.search.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="2" x:Name="lWaitButton" LblText="Wait" BtnLetter="." ImgSourcePath="resource://GnollHackClient.Assets.UI.wait.png" BtnClicked="GHButton_Clicked" />
@@ -174,13 +142,6 @@
                             <controls:LabeledImageButton Grid.Column="4" x:Name="lChatButton" LblText="Chat" BtnLetter="C" ImgSourcePath="resource://GnollHackClient.Assets.UI.chat.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="5" x:Name="lRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackClient.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="6" x:Name="lMoreButton" LblText="More" ImgSourcePath="resource://GnollHackClient.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
-                            <!--<Button Grid.Column="5" Text="&#x21BB;" x:Name="RepeatButton" Clicked="RepeatButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />-->
-                            <!--<Button Grid.Column="6" Text="&#x2261;" x:Name="MenuButton" Clicked="MenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />-->
-                            <!--
-                        <Button Grid.Column="0" Text="i" x:Name="InventoryButton" Clicked="InventoryButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                        <Button Grid.Column="1" Text="s" x:Name="SearchButton" Clicked="SearchButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70" />
-                        <Button Grid.Column="2" Text="." x:Name="WaitButton" Clicked="WaitButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="70"/>
-                        -->
                         </Grid>
                         <Grid x:Name="LowerCmdGrid" HeightRequest="60" HorizontalOptions="CenterAndExpand">
                             <Grid.RowDefinitions>

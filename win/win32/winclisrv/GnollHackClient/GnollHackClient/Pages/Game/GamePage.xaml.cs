@@ -61,6 +61,11 @@ namespace GnollHackClient.Pages.Game
         private object _forceAsciiLock = new object();
         private bool _forceAscii = false;
         public bool ForceAscii { get { lock (_forceAsciiLock) { return _forceAscii; } } set { lock (_forceAsciiLock) { _forceAscii = value; } } }
+
+        private object _forceAllMessagesLock = new object();
+        private bool _forceAllMessages = false;
+        public bool ForceAllMessages { get { lock (_forceAllMessagesLock) { return _forceAllMessages; } } set { lock (_forceAllMessagesLock) { _forceAllMessages = value; } } }
+
         private object _muteSoundsLock = new object();
         private bool _muteSounds = false;
         public bool MuteSounds { get { lock (_muteSoundsLock) { return _muteSounds; } } set { lock (_muteSoundsLock) { _muteSounds = value; } } }
@@ -84,6 +89,7 @@ namespace GnollHackClient.Pages.Game
 
         private int _shownMessageRows = GHConstants.DefaultMessageRows;
         public int NumDisplayedMessages { get { return _shownMessageRows; } set { _shownMessageRows = value; } }
+        public int ActualDisplayedMessages { get { return ForceAllMessages ? GHConstants.AllMessageRows : NumDisplayedMessages; } }
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
         public bool ShowMemoryUsage { get; set; }
@@ -4297,7 +4303,7 @@ namespace GnollHackClient.Pages.Game
                                     if (_clientGame.Windows[i].WindowType == GHWinType.Message)
                                     {
                                         float newleft = 0;
-                                        float newtop = canvasheight - height * _shownMessageRows - canvasheight * (float)ButtonRowStack.Height / Math.Max(1.0f, (float)canvasView.Height) - 30;
+                                        float newtop = canvasheight - height * ActualDisplayedMessages - canvasheight * (float)ButtonRowStack.Height / Math.Max(1.0f, (float)canvasView.Height) - 30;
                                         _clientGame.Windows[i].Left = newleft;
                                         _clientGame.Windows[i].Top = newtop;
                                     }
@@ -4385,7 +4391,7 @@ namespace GnollHackClient.Pages.Game
                                     {
                                         if (_msgHistory != null)
                                         {
-                                            int j = _shownMessageRows - 1, idx;
+                                            int j = ActualDisplayedMessages - 1, idx;
                                             float lineLengthLimit = 0.85f * canvaswidth;
 
                                             for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
@@ -7745,6 +7751,11 @@ namespace GnollHackClient.Pages.Game
                         break;
                 }
             }
+        }
+
+        private void ToggleMessageNumberButton_Clicked(object sender, EventArgs e)
+        {
+            ForceAllMessages = !ForceAllMessages;
         }
     }
 
