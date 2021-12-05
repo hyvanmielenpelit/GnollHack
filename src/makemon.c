@@ -206,6 +206,9 @@ register struct monst* mtmp;
     if (has_enpc(mtmp) && npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_name != 0)
         christen_monst(mtmp, npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_name);
 
+    if (is_mname_proper_name(mtmp->data))
+        return;
+
     if (is_dwarf(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_dwarf_name(mnamebuf)));
 

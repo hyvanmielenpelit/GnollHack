@@ -1026,33 +1026,34 @@ const char *s;
     char protofile[20];
     s_level *sp = Is_special(&u.uz);
     coord mm;
-    boolean use_orc_town = FALSE;
 
     if (*s) 
     {
-        int rndlvl = rnd((int)sp->rndlevs);
-
-        if (wizard && !strcmp(s, "minetn"))
-        {
-            char ans = ynq("Use orc town?");
-            switch (ans)
-            {
-            case 'y':
-                rndlvl = 1;
-                break;
-            case 'n':
-                if (sp->rndlevs > 2)
-                    rndlvl = rnd((int)sp->rndlevs - 1) + 1;
-                else if (sp->rndlevs == 2)
-                    rndlvl = 2;
-                break;
-            default:
-                break;
-            }
-        }
-
         if (sp && sp->rndlevs)
-                Sprintf(protofile, "%s-%d", s, rndlvl);
+        {
+            int rndlvl = rnd((int)sp->rndlevs);
+
+            if (wizard && !strcmp(s, "minetn"))
+            {
+                char ans = ynq("Use orc town?");
+                switch (ans)
+                {
+                case 'y':
+                    rndlvl = 1;
+                    break;
+                case 'n':
+                    if (sp->rndlevs > 2)
+                        rndlvl = rnd((int)sp->rndlevs - 1) + 1;
+                    else if (sp->rndlevs == 2)
+                        rndlvl = 2;
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            Sprintf(protofile, "%s-%d", s, rndlvl);
+        }
         else
             Strcpy(protofile, s);
     }

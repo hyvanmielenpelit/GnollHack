@@ -927,8 +927,8 @@ TELEPORT_REGION:levregion(01,00,6,20),levregion(6,1,70,16)
 STAIR:(10,06),down
 DOOR:closed,(00,06),subtype:door_black_gate
 # One door happens to be unlocked
-DOOR:closed,(04,08),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
-DOOR:locked,(16,08),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
+DOOR:closed,(04,08),subtype:door_obsidian
+DOOR:closed,(16,08),subtype:door_obsidian
 DOOR:locked,(08,02),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
 DOOR:locked,(12,02),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
 

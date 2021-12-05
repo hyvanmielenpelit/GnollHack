@@ -4165,21 +4165,21 @@ struct monst* mtmp;
             popup_talk_line(mtmp, ansbuf);
         }
     }
+    else if (is_mname_proper_name(mtmp->data))
+    {
+        char titlebuf[BUFSZ];
+        strcpy(titlebuf, "");
+        if (mtmp->data->mtitle && strcmp(mtmp->data->mtitle, ""))
+            Sprintf(titlebuf, ", %s", mtmp->data->mtitle);
+
+        Sprintf(ansbuf, "I am %s%s.", mon_monster_name(mtmp), titlebuf);
+        popup_talk_line(mtmp, ansbuf);
+    }
     else if (has_mname(mtmp))
     {
         Sprintf(ansbuf, "My name is %s.", MNAME(mtmp));
         popup_talk_line(mtmp, ansbuf);
         mtmp->u_know_mname = 1;
-    }
-    else if (is_mname_proper_name(mtmp->data))
-    {
-        char titlebuf[BUFSZ];
-        strcpy(titlebuf, "");
-        if(mtmp->data->mtitle && strcmp(mtmp->data->mtitle, "")) 
-            Sprintf(titlebuf, ", %s", mtmp->data->mtitle);
-
-        Sprintf(ansbuf, "I am %s%s.", mon_monster_name(mtmp), titlebuf);
-        popup_talk_line(mtmp, ansbuf);
     }
     else
     {
