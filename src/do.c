@@ -6395,7 +6395,7 @@ deferred_goto()
         if (dfr_pre_msg)
             pline1(dfr_pre_msg);
         xchar portal_flag = (typmask & 4) ? 1 : (typmask & 8) ? 2 : (typmask & 16) ? 3 : (typmask & 32) ? 4 : 0;
-        goto_level(&dest, !!(typmask & 1) | (2 * !!(typmask & 0x0200)), !!(typmask & 2), portal_flag);
+        goto_level(&dest, (!!(typmask & 1)) | (2 * !!(typmask & 0x0200)), !!(typmask & 2), portal_flag);
         if (typmask & 0x0080) { /* remove portal */
             struct trap *t = t_at(u.ux, u.uy);
 

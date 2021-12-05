@@ -4863,7 +4863,7 @@ struct monst *shkp;
                 {
                     play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_I_WAS_LOOKING_FOR_SOMEONE_ELSE);
                     Sprintf(ansbuf, "%s, adventurer!  I was looking for someone else.", Hello(shkp));
-                    verbalize(ansbuf);
+                    verbalize1(ansbuf);
                     popup_talk_line(shkp, ansbuf);
                 }
                 else
@@ -4879,7 +4879,7 @@ struct monst *shkp;
                 play_voice_shopkeeper_simple_line(shkp, SHOPKEEPER_LINE_DIDNT_YOU_FORGET_TO_PAY);
                 Sprintf(ansbuf, "%s, %s!  Didn't you forget to pay?",
                     Hello(shkp), iflags.using_gui_sounds ? "adventurer" : plname);
-                verbalize(ansbuf);
+                verbalize1(ansbuf);
                 popup_talk_line(shkp, ansbuf);
             }
             else
