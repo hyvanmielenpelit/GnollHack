@@ -246,6 +246,7 @@ static struct Bool_Opt {
     { "sanity_check", &iflags.sanity_check, FALSE, SET_IN_WIZGAME },
     { "search_box_traps", &flags.search_box_traps, TRUE, SET_IN_GAME },
     { "selectsaved", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME }, /*WC*/
+    { "self_click_action", &flags.self_click_action, TRUE, SET_IN_GAME },
     { "showexp", &flags.showexp, FALSE, SET_IN_GAME },
     { "showmove", &flags.showmove, TRUE, SET_IN_GAME },
     { "showrace", &flags.showrace, FALSE, SET_IN_GAME },

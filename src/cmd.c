@@ -7545,8 +7545,14 @@ int x, y, mod;
             return cmd;
         }
 
-        if (x == 0 && y == 0) 
+        if (x == 0 && y == 0)
         {
+            if (!flags.self_click_action)
+            {
+                cmd[0] = '\0';
+                return cmd;
+            }
+
             if (iflags.herecmd_menu) 
             {
                 cmd[0] = here_cmd_menu(FALSE);

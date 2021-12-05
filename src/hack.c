@@ -906,15 +906,27 @@ int mode;
         {
             /* MRKR: Automatic digging when wielding the appropriate tool */
             if (mode == DO_MOVE)
-                (void) use_pick_axe2(uwep);
-            return FALSE;
+            {
+                (void)use_pick_axe2(uwep);
+                return FALSE;
+            }
+            else if (mode == TEST_MOVE)
+                return TRUE;
+            else
+                return FALSE;
         }
         else if (flags.autodig && !context.run && !context.nopick && u.twoweap && uarms && is_pick(uarms))
         {
             /* MRKR: Automatic digging when wielding the appropriate tool */
             if (mode == DO_MOVE)
+            {
                 (void)use_pick_axe2(uarms);
-            return FALSE;
+                return FALSE;
+            }
+            else if (mode == TEST_MOVE)
+                return TRUE;
+            else
+                return FALSE;
         }
         else
         {

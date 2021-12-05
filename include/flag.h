@@ -55,6 +55,7 @@ struct flag {
     boolean prefer_fast_move;/* g and G are swapped, and likewise for m and M */
     boolean pushweapon; /* When wielding, push old weapon into second slot */
     boolean rest_on_space;   /* space means rest */
+    boolean self_click_action; /* enable action taken by clicking self in GUI (e.g., wait or pickup) */
     boolean safe_dog;        /* give complete protection to the dog */
     boolean displace_peaceful;  /* displace peaceful monsters */
     boolean showexp;         /* show experience points */
