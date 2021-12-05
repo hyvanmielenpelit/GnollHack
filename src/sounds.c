@@ -1253,6 +1253,7 @@ register struct monst *mtmp;
         }
         break;
     case MS_BARK:
+bark_here:
         if (flags.moonphase == FULL_MOON && night())
         {
             pline_msg = "howls.";
@@ -1709,6 +1710,8 @@ register struct monst *mtmp;
             (void) demon_talk(mtmp);
             break;
         }
+        if (is_gnoll(mtmp->data))
+            goto bark_here;
     /* fall through */
     case MS_CUSS:
         if (!is_peaceful(mtmp))
