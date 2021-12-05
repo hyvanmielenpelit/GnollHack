@@ -798,6 +798,7 @@ enum ghsound_types {
     GHSOUND_RUB,
     GHSOUND_APPLY_TINNING_KIT,
     GHSOUND_FILL_OIL_UP,
+    GHSOUND_GENERIC_ITEM_GIVE,
 
     GHSOUND_INTRO_TEXT,
     GHSOUND_COM_PAGER,
@@ -2157,14 +2158,14 @@ extern struct container_soundset_definition container_soundsets[MAX_CONTAINER_SO
 
 /* OBJECT SOUNDSETS */
 enum object_sound_types {
-    OBJECT_SOUND_TYPE_AMBIENT = 0,        /* Ambient sound that is typically either continuously played or played when the object is lit */
+    OBJECT_SOUND_TYPE_AMBIENT = 0,       /* Ambient sound that is typically either continuously played or played when the object is lit */
 
     /* Combat */
-    OBJECT_SOUND_TYPE_SWING_MELEE,        /* Played at the start of the attack animation */
-    OBJECT_SOUND_TYPE_HIT_MELEE,        /* Played at the end of the melee attack animation and at the end of throw if the attack hits target */
-    OBJECT_SOUND_TYPE_THROW,            /* Played when the object is thrown */
-    OBJECT_SOUND_TYPE_FIRE,                /* Played when a launcher is fired */
-    OBJECT_SOUND_TYPE_HIT_THROW,        /* Played at the end of the throw/fire attack animation and at the end of throw if the attack hits target */
+    OBJECT_SOUND_TYPE_SWING_MELEE,       /* Played at the start of the attack animation */
+    OBJECT_SOUND_TYPE_HIT_MELEE,         /* Played at the end of the melee attack animation and at the end of throw if the attack hits target */
+    OBJECT_SOUND_TYPE_THROW,             /* Played when the object is thrown */
+    OBJECT_SOUND_TYPE_FIRE,              /* Played when a launcher is fired */
+    OBJECT_SOUND_TYPE_HIT_THROW,         /* Played at the end of the throw/fire attack animation and at the end of throw if the attack hits target */
 
     /* Handling */
     OBJECT_SOUND_TYPE_PICK_UP,
@@ -2176,35 +2177,36 @@ enum object_sound_types {
     OBJECT_SOUND_TYPE_UNWIELD,
     OBJECT_SOUND_TYPE_QUIVER,
     OBJECT_SOUND_TYPE_UNQUIVER,
-    OBJECT_SOUND_TYPE_APPLY,            /* E.g., turn on */
+    OBJECT_SOUND_TYPE_APPLY,             /* E.g., turn on */
     OBJECT_SOUND_TYPE_APPLY2,            /* E.g., turn off */
     OBJECT_SOUND_TYPE_INVOKE,            /* E.g., switch on */
-    OBJECT_SOUND_TYPE_INVOKE2,            /* E.g., switch off */
+    OBJECT_SOUND_TYPE_INVOKE2,           /* E.g., switch off */
     OBJECT_SOUND_TYPE_QUAFF,
     OBJECT_SOUND_TYPE_READ,
     OBJECT_SOUND_TYPE_ENGRAVE,
     OBJECT_SOUND_TYPE_ZAP,
 
     /* General */
-    OBJECT_SOUND_TYPE_BREAK,            /* Sound upon breaking the item (with physical force) */
-    OBJECT_SOUND_TYPE_BURNT,            /* Sound upon breaking the item with fire (boil, burn, etc.) */
+    OBJECT_SOUND_TYPE_BREAK,             /* Sound upon breaking the item (with physical force) */
+    OBJECT_SOUND_TYPE_BURNT,             /* Sound upon breaking the item with fire (boil, burn, etc.) */
     OBJECT_SOUND_TYPE_FROZEN,            /* Sound upon breaking the item with cold */
-    OBJECT_SOUND_TYPE_ELECTROCUTED,        /* Sound upon breaking the item with electricity */
-    OBJECT_SOUND_TYPE_EROSION_RUSTS,    /* Sound upon item erosion by rust */
-    OBJECT_SOUND_TYPE_EROSION_BURNT,    /* Sound upon item erosion by burn */
-    OBJECT_SOUND_TYPE_EROSION_CORRODES, /* Sound upon item erosion by corrosion */
-    OBJECT_SOUND_TYPE_EROSION_ROTS,     /* Sound upon item erosion by rotting */
+    OBJECT_SOUND_TYPE_ELECTROCUTED,      /* Sound upon breaking the item with electricity */
+    OBJECT_SOUND_TYPE_EROSION_RUSTS,     /* Sound upon item erosion by rust */
+    OBJECT_SOUND_TYPE_EROSION_BURNT,     /* Sound upon item erosion by burn */
+    OBJECT_SOUND_TYPE_EROSION_CORRODES,  /* Sound upon item erosion by corrosion */
+    OBJECT_SOUND_TYPE_EROSION_ROTS,      /* Sound upon item erosion by rotting */
     OBJECT_SOUND_TYPE_GENERAL_EFFECT,    /* Sound upon general effect 1 - E.g., Discarding a tin */
-    OBJECT_SOUND_TYPE_GENERAL_EFFECT2,    /* Sound when general effect 2 - E.g., for axe, when you hit and sparks fly, or a glob coalesces */
-    OBJECT_SOUND_TYPE_PUSH,                /* Sound upon pushing the item on the ground */
-    OBJECT_SOUND_TYPE_BUMP_INTO,        /* Sound upon bumping into the item, especially boulder */
-    OBJECT_SOUND_TYPE_TUMBLE_DOWNWARDS,        /* Sound upon the object tumbling downwards (to a pit) */
+    OBJECT_SOUND_TYPE_GENERAL_EFFECT2,   /* Sound when general effect 2 - E.g., for axe, when you hit and sparks fly, or a glob coalesces */
+    OBJECT_SOUND_TYPE_PUSH,              /* Sound upon pushing the item on the ground */
+    OBJECT_SOUND_TYPE_BUMP_INTO,         /* Sound upon bumping into the item, especially boulder */
+    OBJECT_SOUND_TYPE_TUMBLE_DOWNWARDS,  /* Sound upon the object tumbling downwards (to a pit) */
+    OBJECT_SOUND_TYPE_GIVE,              /* Giving the item to somebody else */
 
     /* Movement */
-    OBJECT_SOUND_TYPE_WALK,                /* Walk sound if used as boots */
-    OBJECT_SOUND_TYPE_FLY,                /* Fly if attached to back */
+    OBJECT_SOUND_TYPE_WALK,              /* Walk sound if used as boots */
+    OBJECT_SOUND_TYPE_FLY,               /* Fly if attached to back */
     OBJECT_SOUND_TYPE_LEVITATION,        /* Levitate when worn / used */
-    OBJECT_SOUND_TYPE_SWIM,                /* Swim when worn */
+    OBJECT_SOUND_TYPE_SWIM,              /* Swim when worn */
 
     MAX_OBJECT_SOUND_TYPES
 };

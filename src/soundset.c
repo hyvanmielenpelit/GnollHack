@@ -874,6 +874,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Action/Rub", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Tinning Kit/Apply", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Lamp/Fill Oil Up", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Give", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Com Pager", 1.0f },
@@ -3908,6 +3909,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -3977,6 +3979,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_GENERIC_BUMP_INTO, 1.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_GENERIC_ITEM_GIVE, 1.0f},
 
             {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f},
             {GHSOUND_GENERIC_FLY, 1.0f},
@@ -4043,6 +4046,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
             {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -4115,6 +4119,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -4181,6 +4186,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
             {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -4253,6 +4259,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -4319,6 +4326,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
             {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -4391,6 +4399,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -4457,6 +4466,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
             {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -4529,6 +4539,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -4598,6 +4609,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -4654,6 +4666,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
 
+            {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -4736,6 +4749,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
 
             {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f},
             {GHSOUND_GENERIC_FLY, 1.0f},
@@ -4792,6 +4806,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
 
+            {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -4874,6 +4889,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
 
             {GHSOUND_FOOTSTEPS_COTTON_SLIPPERS, 1.0f},
             {GHSOUND_GENERIC_FLY, 1.0f},
@@ -4940,6 +4956,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
             {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -5012,6 +5029,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
+            {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -5081,6 +5099,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_PUSH_BOULDER, 1.0f},
             {MAX_GHSOUNDS, 0.0f},
             {GHSOUND_BOULDER_TUMBLE_DOWNWARDS, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
 
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -5147,6 +5166,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
             {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
+            {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -5219,6 +5239,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f}, /* Push */
             {MAX_GHSOUNDS, 0.0f}, /* Bump into */
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -5288,6 +5309,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -5357,6 +5379,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f}, /* Push */
             {MAX_GHSOUNDS, 0.0f}, /* Bump into */
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -5426,6 +5449,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -5495,6 +5519,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -5564,6 +5589,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -5633,6 +5659,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -5702,6 +5729,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -5771,6 +5799,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -5840,6 +5869,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -5909,6 +5939,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 1.0f},
             {MAX_GHSOUNDS, 1.0f},
@@ -5978,6 +6009,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -6047,6 +6079,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 0.0f},
             {MAX_GHSOUNDS, 0.0f},
@@ -6116,6 +6149,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f}, /* Push */
             {MAX_GHSOUNDS, 0.0f}, /* Bump into */
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 0.0f}, /* Walk */
             {MAX_GHSOUNDS, 0.0f}, /* Fly */
@@ -6185,6 +6219,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f}, /* Push */
             {MAX_GHSOUNDS, 0.0f}, /* Bump into */
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 0.0f}, /* Walk */
             {MAX_GHSOUNDS, 0.0f}, /* Fly */
@@ -6254,6 +6289,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f}, /* Push */
             {MAX_GHSOUNDS, 0.0f}, /* Bump into */
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 0.0f}, /* Walk */
             {MAX_GHSOUNDS, 0.0f}, /* Fly */
@@ -6323,6 +6359,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f}, /* Push */
             {MAX_GHSOUNDS, 0.0f}, /* Bump into */
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 0.0f}, /* Walk */
             {MAX_GHSOUNDS, 0.0f}, /* Fly */
@@ -6392,6 +6429,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f}, /* Push */
             {MAX_GHSOUNDS, 0.0f}, /* Bump into */
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 0.0f}, /* Walk */
             {MAX_GHSOUNDS, 0.0f}, /* Fly */
@@ -6461,6 +6499,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {MAX_GHSOUNDS, 0.0f}, /* Push */
             {MAX_GHSOUNDS, 0.0f}, /* Bump into */
             {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
 
             {MAX_GHSOUNDS, 0.0f}, /* Walk */
             {MAX_GHSOUNDS, 0.0f}, /* Fly */

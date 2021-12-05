@@ -4710,7 +4710,10 @@ struct monst* mtmp;
                         n_given++;
                         
                         if (flags.verbose)
+                        {
+                            play_simple_object_sound_at_location(otmp, u.ux, u.uy, OBJECT_SOUND_TYPE_GIVE);
                             You("give %s to %s.", doname(otmp), mon_nam(mtmp));
+                        }
 
                         if (*u.ushops || otmp->unpaid)
                             check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE);
@@ -5582,7 +5585,8 @@ struct monst* mtmp;
             {
                 if ((objects[item_to_take->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && item_to_take->cursed) 
                 {
-                    You("%s not leave %s!", Tobjnam(item_to_take, "do"), mon_nam(mtmp));
+                    play_sfx_sound(SFX_GENERAL_WELDED);
+                    pline("%s not leave %s!", Tobjnam(item_to_take, "do"), mon_nam(mtmp));
                 }
                 else
                 {
@@ -5591,6 +5595,7 @@ struct monst* mtmp;
 
                     obj_extract_self(item_to_take);
 
+                    play_simple_object_sound_at_location(item_to_take, mtmp->mx, mtmp->my, OBJECT_SOUND_TYPE_GIVE);
                     You("took %s from %s.", doname(item_to_take), mon_nam(mtmp));
 
                     hold_another_object(item_to_take, "Oops!  %s out of your grasp!",
