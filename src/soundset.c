@@ -873,6 +873,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Potion/Gain Level/Cursed Effect", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Action/Rub", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Tinning Kit/Apply", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Lamp/Fill Oil Up", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Com Pager", 1.0f },
@@ -9491,6 +9492,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_APPLY_TINNING_KIT",
         {GHSOUND_APPLY_TINNING_KIT, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_FILL_OIL_UP",
+        {GHSOUND_FILL_OIL_UP, 1.0f},
         TRUE, SOUND_PLAY_GROUP_LONG
     },
 };

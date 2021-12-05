@@ -8620,7 +8620,7 @@ struct monst* mtmp;
     if (otmp->lamplit)
         snuff_lit(otmp);
 
-    play_sfx_sound(SFX_REPAIR_ITEM_SUCCESS);
+    play_sfx_sound(SFX_FILL_OIL_UP);
 
     /* Adding oil to an empty magic lamp renders it into an oil lamp */
     if ((otmp->otyp == MAGIC_LAMP) && otmp->special_quality == 0)

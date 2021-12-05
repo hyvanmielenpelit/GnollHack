@@ -3367,6 +3367,7 @@ dodip()
         } 
         else 
         {
+            play_sfx_sound(SFX_FILL_OIL_UP);
             You("fill %s with oil.", yname(obj));
             check_unpaid(potion);        /* Yendorian Fuel Tax */
             /* burns more efficiently in a lamp than in a bottle;
