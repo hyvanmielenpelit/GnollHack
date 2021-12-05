@@ -3020,6 +3020,7 @@ struct monst *mtmp;
             pline("But wait...");
             pline("%s medallion begins to glow!", s_suffix(Monnam(mtmp)));
             makeknown(AMULET_OF_LIFE_SAVING);
+            play_sfx_sound_at_location(SFX_LIFE_SAVED, mtmp->mx, mtmp->my);
             /* amulet is visible, but monster might not be */
             if (canseemon(mtmp)) 
             {
