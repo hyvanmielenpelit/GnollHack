@@ -114,7 +114,7 @@
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label x:Name="ForceMaxMessageLabel"
-                                           Text=" Use Maximum"
+                                           Text=" Show All"
                                            FontFamily="Underwood" TextColor="White"
                                            FontSize="15"
                                            VerticalOptions="Center"

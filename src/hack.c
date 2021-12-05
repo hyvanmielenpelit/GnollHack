@@ -910,7 +910,7 @@ int mode;
                 (void)use_pick_axe2(uwep);
                 return FALSE;
             }
-            else if (mode == TEST_MOVE)
+            else if (mode == TEST_MOVE && abs(dx) <= 1 && abs(dy) <= 1)
                 return TRUE;
             else
                 return FALSE;
@@ -923,7 +923,7 @@ int mode;
                 (void)use_pick_axe2(uarms);
                 return FALSE;
             }
-            else if (mode == TEST_MOVE)
+            else if (mode == TEST_MOVE && abs(dx) <= 1 && abs(dy) <= 1)
                 return TRUE;
             else
                 return FALSE;
