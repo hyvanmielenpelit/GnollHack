@@ -1210,8 +1210,10 @@ int how;
     }
     if (Lifesaved && (how <= GENOCIDED)) 
     {
-        play_sfx_sound(SFX_LIFE_SAVED);
         pline("But wait...");
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
+        play_sfx_sound(SFX_LIFE_SAVED);
+        special_effect_wait_until_action(0);
         if (HLifesaved)
         {
             You("feel the invisible hand of %s around you.", u_gname());
@@ -1249,6 +1251,7 @@ int how;
                         useup(lifesaver);
                 }
             }
+            special_effect_wait_until_end(0);
         }
         (void) adjattrib(A_CON, -1, TRUE);
         savelife(how);

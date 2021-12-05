@@ -3018,9 +3018,11 @@ struct monst *mtmp;
         if (cansee(mtmp->mx, mtmp->my)) 
         {
             pline("But wait...");
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
+            play_sfx_sound_at_location(SFX_LIFE_SAVED, mtmp->mx, mtmp->my);
+            special_effect_wait_until_action(0);
             pline("%s medallion begins to glow!", s_suffix(Monnam(mtmp)));
             makeknown(AMULET_OF_LIFE_SAVING);
-            play_sfx_sound_at_location(SFX_LIFE_SAVED, mtmp->mx, mtmp->my);
             /* amulet is visible, but monster might not be */
             if (canseemon(mtmp)) 
             {
@@ -3032,6 +3034,7 @@ struct monst *mtmp;
             }
             play_sfx_sound_at_location(SFX_ITEM_CRUMBLES_TO_DUST, mtmp->mx, mtmp->my);
             pline_The("medallion crumbles to dust!");
+            special_effect_wait_until_end(0);
         }
         m_useup(mtmp, lifesave);
         /* equip replacement amulet, if any, on next move */
