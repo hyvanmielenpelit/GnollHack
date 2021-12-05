@@ -23,7 +23,7 @@ STATIC_DCL int FDECL(do_chat_hermit_dungeons, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_quests, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_gnomish_mines, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_sokoban, (struct monst*));
-STATIC_DCL int FDECL(do_chat_hermit_sokoprizes, (struct monst*));
+//STATIC_DCL int FDECL(do_chat_hermit_sokoprizes, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_further_advice, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_castle, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_gehennom, (struct monst*));
@@ -2379,21 +2379,21 @@ dochat()
             chatnum++;
         }
 
-        if (mtmp->hermit_told_sokoban)
-        {
-            strcpy(available_chat_list[chatnum].name, "Ask about the prizes in Sokoban");
-            available_chat_list[chatnum].function_ptr = &do_chat_hermit_sokoprizes;
-            available_chat_list[chatnum].charnum = 'a' + chatnum;
+        //if (mtmp->hermit_told_sokoban)
+        //{
+        //    strcpy(available_chat_list[chatnum].name, "Ask about the prizes in Sokoban");
+        //    available_chat_list[chatnum].function_ptr = &do_chat_hermit_sokoprizes;
+        //    available_chat_list[chatnum].charnum = 'a' + chatnum;
 
-            any = zeroany;
-            any.a_char = available_chat_list[chatnum].charnum;
+        //    any = zeroany;
+        //    any.a_char = available_chat_list[chatnum].charnum;
 
-            add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
-                available_chat_list[chatnum].name, MENU_UNSELECTED);
+        //    add_menu(win, NO_GLYPH, &any,
+        //        any.a_char, 0, ATR_NONE,
+        //        available_chat_list[chatnum].name, MENU_UNSELECTED);
 
-            chatnum++;
-        }
+        //    chatnum++;
+        //}
 
     }
 
@@ -7956,9 +7956,9 @@ struct monst* mtmp;
         return 0;
 
     const char* linearray[5] = {
-        "The Gladstone is a magnificient magical stone that is known to bestow unparalleled good luck on the wearer.",
+        "The Gladstone is a magnificent magical stone that is known to bestow unparalleled good luck on the wearer.",
         "They also say that it can grant protection from poison and heal the bearer upon invocation.",
-        "It has been worshipped by the gnomes since the beginning of time, and they will jealously guard it from anyone attempting to take it from them.",
+        "It has been worshipped by the gnomes as long as anyone can remember, and they will jealously guard it from anyone attempting to take it from them.",
         "However, such a powerful artifact can greatly help you in your quest for the Amulet of Yendor.",
         0 };
     hermit_talk(mtmp, linearray);
@@ -7975,8 +7975,8 @@ struct monst* mtmp;
 
     const char* linearray[4] = {
         "We came to these mines to seek the treasures of the gnomes, especially the famed Gladstone.",
-        "So far we have been able to overrun this town; the human guards were but mere weaklings, and faltered to our horde with little resistance.",
-        "However, the gnomes are putting up a fierce fight on the bottom level of the complex, and we have been unable to reach the Gladstone.",
+        "So far we have just been able to overrun this town; the human guards were but mere weaklings and faltered to our horde with little resistance.",
+        "However, the gnomes are putting up a fierce fight on the bottom level of the complex, and we have been unable to take the Gladstone from them.",
         0 };
     hermit_talk(mtmp, linearray);
 
@@ -7994,7 +7994,7 @@ struct monst* mtmp;
     const char* linearray[4] = {
         "The Gladstone is a great magical stone that is known to bestow unparalleled good luck on the wearer.",
         "They also say that it can may grant protection from poison and heal the bearer upon invocation.",
-        "It still angers me that our warriors have not been able to bring it to me.",
+        "It still angers me that our warriors have failed to bring such a great artifact to me for closer examination.",
         0 };
     hermit_talk(mtmp, linearray);
 
@@ -8009,29 +8009,34 @@ struct monst* mtmp;
     if (!m_speak_check(mtmp))
         return 0;
 
-    const char* linearray[3] = {
+    const char* linearray[4] = {
         "Sokoban is a tower inlaid with puzzles devised by a mad wizard, who resides on the tower's topmost level.",
         "Great treasures have been promised to the one who can solve the wizard's puzzles.",
+        "They say that the wizard will gift either an amulet of reflection or a bag of holding to whomever passes the tests.",
         0 };
     hermit_talk(mtmp, linearray);
 
     mtmp->hermit_told_sokoban = 1;
     return 1;
 }
-STATIC_OVL int
-do_chat_hermit_sokoprizes(mtmp)
-struct monst* mtmp;
-{
-    if (!m_speak_check(mtmp))
-        return 0;
 
-    const char* linearray[2] = {
-        "They say that the wizard will gift either an amulet of reflection or a bag of holding to whomever passes the tests.",
-        0 };
-    hermit_talk(mtmp, linearray);
 
-    return 1;
-}
+//STATIC_OVL int
+//do_chat_hermit_sokoprizes(mtmp)
+//struct monst* mtmp;
+//{
+//    if (!m_speak_check(mtmp))
+//        return 0;
+//
+//    const char* linearray[2] = {
+//        "They say that the wizard will gift either an amulet of reflection or a bag of holding to whomever passes the tests.",
+//        0 };
+//    hermit_talk(mtmp, linearray);
+//
+//    return 1;
+//}
+
+
 STATIC_OVL int
 do_chat_hermit_castle(mtmp)
 struct monst* mtmp;
@@ -8073,7 +8078,7 @@ struct monst* mtmp;
 
     const char* linearray[3] = {
         "The Wizard of Yendor is a great magician who stepped into the Under World to study the secrets of life and death.",
-        "He is said to possess unrivalled power and be nearly immortal.",
+        "He is said to possess vast arcane powers and be almost immortal.",
         0 };
     hermit_talk(mtmp, linearray);
 
@@ -8142,8 +8147,8 @@ struct monst* mtmp;
 
     const char* linearray[4] = {
         "The Wizard of Yendor is studying a tome of ancient evil, the Book of the Dead, in his tower in Gehennom.",
-        "You must kill him and obtain his grimoire.",
-        "Only its words are powerful enough to crack open the passage to Moloch's hiding place.",
+        "You must defeat him and obtain his grimoire.",
+        "Only its tenebrous words are powerful enough to crack open the hidden passage to the sanctum where Moloch's minions guard the Amulet.",
         0 };
     hermit_talk(mtmp, linearray);
 
@@ -8158,9 +8163,9 @@ struct monst* mtmp;
         return 0;
 
     const char* linearray[4] = {
-        "The Silver Bell is an artifact necessary for gaining access Moloch's Sanctum.",
-        "I believe it is held by an enemy of yours near your home.",
-        "Your friends have called for your assistance. Heed that call.",
+        "The Silver Bell is an artifact necessary for gaining access to Moloch's Sanctum.",
+        "The bell is held by a great enemy of yours near your home.",
+        "Your friends have called for your assistance. Heed their call.",
         0 };
 
     if (u.uachieve.bell)
@@ -8198,7 +8203,7 @@ struct monst* mtmp;
 
     const char* linearray[3] = {
         "The Book of the Dead is a terrible tome of great power that can even raise the dead.",
-        "The Wizard of Yendor has been studying it to learn the secrets of life and death.",
+        "The Wizard of Yendor has been studying it to learn the secrets of life and death in his quest for immortality.",
         0 };
     hermit_talk(mtmp, linearray);
 
