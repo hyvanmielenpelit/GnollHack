@@ -3441,7 +3441,9 @@ struct obj *obj;
 
         consume_obj_charge(obj, TRUE);
 
-        if (otmp != &zeroobj) 
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
+
+        if (otmp != &zeroobj)
         {
             You("cover %s with a thick layer of grease.", yname(otmp));
             otmp->greased = 1;
