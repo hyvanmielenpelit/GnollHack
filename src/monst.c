@@ -3983,7 +3983,7 @@ struct permonst _mons2[] = {
         M3_INFRAVISIBLE | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_BLOODLUST, M5_FEMALE_TILE, M6_NONE, M7_WIZARD, M8_NONE,
         16, HI_ZAP, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
-    MON("Vlad the Impaler", "Lord of the Vampires", "very fast powerful human undead with life-draining attack", None, None, S_VAMPIRE, LVL(28, 26, -6, 16, 80, -10),
+    ENLARGED_MON("Vlad the Impaler", "Lord of the Vampires", "very fast powerful human undead with life-draining attack", None, None, S_VAMPIRE, LVL(28, 26, -6, 16, 80, -10),
         (G_NOGEN | G_NOCORPSE | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 10, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 10, 0, 0, 0, 0, 0UL, 0),
             ATTK(AT_BITE, AD_DRLI, 1, 12, 0, -8, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -3993,7 +3993,9 @@ struct permonst _mons2[] = {
         M2_NOPOLY | M2_UNDEAD | M2_HUMAN | M2_STALK | M2_HOSTILE | M2_NASTY | M2_MALE | M2_SHAPESHIFTER,
         M3_WAITFORU | M3_WANTSCAND | M3_INFRAVISIBLE | M3_SPEAKING, 
         M4_BLOODLUST | M4_PROPER_NAME | M4_PRINCE, M5_NONE, M6_BOSS_MONSTER, M7_NONE, M8_NONE,
-        50, HI_LORD, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE),
+        50, HI_LORD, MONSTER_SOUNDSET_HUMAN_MALE, MONSTER_SOUNDSET_HUMAN_FEMALE,
+        ACTION_INFO(VLAD_THE_IMPALER_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, VLAD_THE_IMPALER_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(VLAD_THE_IMPALER_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, VLAD_THE_IMPALER_STATUE_ENLARGEMENT, 0, 0)),
     /*
      * Wraiths
      */
