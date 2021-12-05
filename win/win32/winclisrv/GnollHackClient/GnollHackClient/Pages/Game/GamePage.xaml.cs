@@ -2559,6 +2559,7 @@ namespace GnollHackClient.Pages.Game
         }
 
         private SKMaskFilter _blur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 3.4f);
+        private SKMaskFilter _lookBlur = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 20.0f);
 
         public struct layer_draw_order_definition
         {
@@ -4278,6 +4279,29 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
 
+                /* Look mode rectangle */
+                if(MapLookMode)
+                {
+                    SKColor oldcolor = textPaint.Color;
+                    SKMaskFilter oldfilter = textPaint.MaskFilter;
+                    SKPaintStyle oldstyle = textPaint.Style;
+                    textPaint.MaskFilter = _lookBlur;
+                    textPaint.Style = SKPaintStyle.Stroke;
+                    textPaint.StrokeWidth = Math.Max(3, Math.Min(canvasheight, canvaswidth) / 15);
+                    textPaint.Color = SKColors.Purple.WithAlpha(128);
+                    canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint);
+                    textPaint.Style = oldstyle;
+                    textPaint.Color = oldcolor;
+                    textPaint.MaskFilter = oldfilter;
+                }
+
+                /* Darkening background */
+                if (ForceAllMessages)
+                {
+                    textPaint.Style = SKPaintStyle.Fill;
+                    textPaint.Color = SKColors.Black.WithAlpha(128);
+                    canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint);
+                }
 
                 /* Window strings */
                 canvasButtonRect.Top = 0; /* Maybe overrwritten below */
@@ -4345,7 +4369,7 @@ namespace GnollHackClient.Pages.Game
                                         canvasButtonRect.Bottom = winRect.Top;
                                 }
 
-                                if (_clientGame.Windows[i].WindowType != GHWinType.Message)
+                                if (_clientGame.Windows[i].WindowType != GHWinType.Message && !ForceAllMessages)
                                 {
                                     lock (_clientGame.Windows[i].PutStrsLock)
                                     {
