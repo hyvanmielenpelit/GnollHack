@@ -857,7 +857,7 @@ namespace GnollHackClient
             {
                 chksum = _checksum;
             };
-            return chksum == sha256;
+            return chksum.ToLower() == sha256.ToLower();
         }
 
         //public async Task<bool> PurchaseNonConsumable(string productId)
