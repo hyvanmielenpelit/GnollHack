@@ -191,19 +191,17 @@ namespace GnollHackClient.Pages.Game
             string errormsg = "";
             if (!File.Exists(fulltargetpath))
             {
-                GameTableView.IsEnabled = true;
                 await DisplayAlert("No Panic Log", "Panic Log does not exist.", "OK");
             }
             else if (!displFilePage.ReadFile(out errormsg))
             {
-                GameTableView.IsEnabled = true;
                 await DisplayAlert("Error Opening File", "GnollHack cannot open the paniclog file.", "OK");
             }
             else
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
             }
-
+            GameTableView.IsEnabled = true;
         }
     }
 }
