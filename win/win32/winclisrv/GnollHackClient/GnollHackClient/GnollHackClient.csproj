@@ -81,6 +81,7 @@
     <None Remove="Assets\UI\dropmany.png" />
     <None Remove="Assets\UI\eat.png" />
     <None Remove="Assets\UI\engrave.png" />
+    <None Remove="Assets\UI\fight.png" />
     <None Remove="Assets\UI\fire.png" />
     <None Remove="Assets\UI\inventory.png" />
     <None Remove="Assets\UI\kick.png" />
@@ -101,6 +102,8 @@
     <None Remove="Assets\UI\repeat.png" />
     <None Remove="Assets\UI\rightring.png" />
     <None Remove="Assets\UI\search.png" />
+    <None Remove="Assets\UI\search20.png" />
+    <None Remove="Assets\UI\search200.png" />
     <None Remove="Assets\UI\sit.png" />
     <None Remove="Assets\UI\skill.png" />
     <None Remove="Assets\UI\stairs-down.png" />
@@ -169,6 +172,7 @@
     <EmbeddedResource Include="Assets\UI\dropmany.png" />
     <EmbeddedResource Include="Assets\UI\eat.png" />
     <EmbeddedResource Include="Assets\UI\engrave.png" />
+    <EmbeddedResource Include="Assets\UI\fight.png" />
     <EmbeddedResource Include="Assets\UI\fire.png" />
     <EmbeddedResource Include="Assets\UI\inventory.png" />
     <EmbeddedResource Include="Assets\UI\kick.png" />
@@ -189,6 +193,8 @@
     <EmbeddedResource Include="Assets\UI\repeat.png" />
     <EmbeddedResource Include="Assets\UI\rightring.png" />
     <EmbeddedResource Include="Assets\UI\search.png" />
+    <EmbeddedResource Include="Assets\UI\search20.png" />
+    <EmbeddedResource Include="Assets\UI\search200.png" />
     <EmbeddedResource Include="Assets\UI\sit.png" />
     <EmbeddedResource Include="Assets\UI\skill.png" />
     <EmbeddedResource Include="Assets\UI\stairs-down.png" />
