@@ -2469,7 +2469,7 @@ d_level *lev;
 
 #define INTEREST(feat)                                                \
     ((feat).nfount || (feat).nsink || (feat).nthrone || (feat).naltar \
-     || (feat).ngrave || (feat).nbrazier || (feat).nsignpost || (feat).ntree || (feat).nshop || (feat).ntemple || (feat).nsmithy || (feat).nnpcroom || (feat).nmagicportal)
+     || (feat).ngrave || (feat).nbrazier || (feat).nsignpost || (feat).ntree || (feat).nshop || (feat).ntemple || (feat).nsmithy || (feat).nnpcroom || (feat).nmagicportal || (feat).nvibratingsquare)
   /* || (feat).water || (feat).ice || (feat).lava */
 
 /* returns true if this level has something interesting to print out */
@@ -2803,6 +2803,7 @@ recalc_mapseen()
     struct trap* t;
     int cnt = 0;
     mptr->feat.nmagicportal = 0;
+    mptr->feat.nvibratingsquare = 0;
     for (t = ftrap; t != 0; t = t->ntrap) {
         if (t->tseen)
         {
@@ -2810,6 +2811,11 @@ recalc_mapseen()
             {
                 if(mptr->feat.nmagicportal < 3)
                     mptr->feat.nmagicportal++;
+            }
+            if (t->ttyp == VIBRATING_SQUARE)
+            {
+                if (mptr->feat.nvibratingsquare < 3)
+                    mptr->feat.nvibratingsquare++;
             }
         }
     }
@@ -3210,6 +3216,7 @@ boolean printdun;
         ADDNTOBUF("signpost", mptr->feat.nsignpost);
         ADDNTOBUF("tree", mptr->feat.ntree);
         ADDNTOBUF("magic portal", mptr->feat.nmagicportal);
+        ADDNTOBUF("vibrating square", mptr->feat.nvibratingsquare);
 #if 0
         ADDTOBUF("water", mptr->feat.water);
         ADDTOBUF("lava", mptr->feat.lava);

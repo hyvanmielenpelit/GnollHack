@@ -234,6 +234,7 @@ typedef struct mapseen {
         Bitfield(nsignpost, 2);
         Bitfield(ntree, 2);
         Bitfield(nmagicportal, 2);
+        Bitfield(nvibratingsquare, 2);
         Bitfield(water, 2);
         Bitfield(lava, 2);
 
