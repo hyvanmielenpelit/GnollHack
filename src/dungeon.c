@@ -2469,7 +2469,7 @@ d_level *lev;
 
 #define INTEREST(feat)                                                \
     ((feat).nfount || (feat).nsink || (feat).nthrone || (feat).naltar \
-     || (feat).ngrave || (feat).nbrazier || (feat).nsignpost || (feat).ntree || (feat).nshop || (feat).ntemple || (feat).nsmithy || (feat).nnpcroom)
+     || (feat).ngrave || (feat).nbrazier || (feat).nsignpost || (feat).ntree || (feat).nshop || (feat).ntemple || (feat).nsmithy || (feat).nnpcroom || (feat).nmagicportal)
   /* || (feat).water || (feat).ice || (feat).lava */
 
 /* returns true if this level has something interesting to print out */
@@ -2796,6 +2796,20 @@ recalc_mapseen()
                 break;
             default:
                 break;
+            }
+        }
+    }
+
+    struct trap* t;
+    int cnt = 0;
+    mptr->feat.nmagicportal = 0;
+    for (t = ftrap; t != 0; t = t->ntrap) {
+        if (t->tseen)
+        {
+            if (t->ttyp == MAGIC_PORTAL)
+            {
+                if(mptr->feat.nmagicportal < 3)
+                    mptr->feat.nmagicportal++;
             }
         }
     }
@@ -3195,6 +3209,7 @@ boolean printdun;
         ADDNTOBUF("brazier", mptr->feat.nbrazier);
         ADDNTOBUF("signpost", mptr->feat.nsignpost);
         ADDNTOBUF("tree", mptr->feat.ntree);
+        ADDNTOBUF("magic portal", mptr->feat.nmagicportal);
 #if 0
         ADDTOBUF("water", mptr->feat.water);
         ADDTOBUF("lava", mptr->feat.lava);

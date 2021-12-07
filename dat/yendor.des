@@ -226,6 +226,7 @@ OBJECT:'"',(11,07)
 # distinguish between them for the portal.
 MAZE:"fakewiz1",' '
 FLAGS:corrmaze
+NAMING:"A tower surrounded by a moat",name_revealed_never
 GEOMETRY:center,center
 MAP
 .........
@@ -241,6 +242,7 @@ STAIR:levregion(01,00,79,20),(0,0,8,7),up
 STAIR:levregion(01,00,79,20),(0,0,8,7),down
 BRANCH:levregion(01,00,79,20),(0,0,8,7)
 TELEPORT_REGION:levregion(01,00,79,20),(2,2,6,6)
+SPECIAL_REGION:(00,00,08,07),region_special_level_seen
 PORTAL:(4,4,4,4),(0,0,0,0),"wizard3"
 MAZEWALK:(08,05),east
 REGION:(04,03,06,06),unlit,"ordinary",unfilled,irregular
@@ -256,6 +258,7 @@ TRAP:"board",(05,04)
 
 MAZE:"fakewiz2",' '
 FLAGS:corrmaze
+NAMING:"A tower surrounded by a moat",name_revealed_never
 GEOMETRY:center,center
 MAP
 .........
@@ -271,6 +274,7 @@ STAIR:levregion(01,00,79,20),(0,0,8,7),up
 STAIR:levregion(01,00,79,20),(0,0,8,7),down
 BRANCH:levregion(01,00,79,20),(0,0,8,7)
 TELEPORT_REGION:levregion(01,00,79,20),(2,2,6,6)
+SPECIAL_REGION:(00,00,08,07),region_special_level_seen
 MAZEWALK:(08,05),east
 REGION:(04,03,06,06),unlit,"ordinary",unfilled,irregular
 MONSTER:'L',(04,04)
