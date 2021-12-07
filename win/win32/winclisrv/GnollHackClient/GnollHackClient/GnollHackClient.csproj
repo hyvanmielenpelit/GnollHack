@@ -44,7 +44,6 @@
     <None Remove="Assets\gnollhack-logo-test-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits.png" />
-    <None Remove="Assets\Icons\engrave.png" />
     <None Remove="Assets\Icons\light.png" />
     <None Remove="Assets\Icons\missing_icon.png" />
     <None Remove="Assets\Icons\pickup.png" />
@@ -76,10 +75,12 @@
     <None Remove="Assets\UI\cancel.png" />
     <None Remove="Assets\UI\cast.png" />
     <None Remove="Assets\UI\chat.png" />
+    <None Remove="Assets\UI\close.png" />
     <None Remove="Assets\UI\dig.png" />
     <None Remove="Assets\UI\dip.png" />
     <None Remove="Assets\UI\dropmany.png" />
     <None Remove="Assets\UI\eat.png" />
+    <None Remove="Assets\UI\engrave.png" />
     <None Remove="Assets\UI\fire.png" />
     <None Remove="Assets\UI\inventory.png" />
     <None Remove="Assets\UI\kick.png" />
@@ -91,6 +92,7 @@
     <None Remove="Assets\UI\more.png" />
     <None Remove="Assets\UI\no.png" />
     <None Remove="Assets\UI\offer.png" />
+    <None Remove="Assets\UI\open.png" />
     <None Remove="Assets\UI\pay.png" />
     <None Remove="Assets\UI\pickup.png" />
     <None Remove="Assets\UI\pray.png" />
@@ -115,7 +117,9 @@
     <None Remove="Assets\UI\stone-travel-on.png" />
     <None Remove="Assets\UI\swap.png" />
     <None Remove="Assets\UI\throw.png" />
+    <None Remove="Assets\UI\twoweap.png" />
     <None Remove="Assets\UI\wait.png" />
+    <None Remove="Assets\UI\yell.png" />
     <None Remove="Assets\UI\yes.png" />
     <None Remove="Assets\UI\yestoall.png" />
     <None Remove="Assets\UI\zap.png" />
@@ -138,7 +142,6 @@
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
-    <EmbeddedResource Include="Assets\Icons\engrave.png" />
     <EmbeddedResource Include="Assets\Icons\light.png" />
     <EmbeddedResource Include="Assets\Icons\missing_icon.png" />
     <EmbeddedResource Include="Assets\imrl.ttf" />
@@ -160,10 +163,12 @@
     <EmbeddedResource Include="Assets\UI\cancel.png" />
     <EmbeddedResource Include="Assets\UI\cast.png" />
     <EmbeddedResource Include="Assets\UI\chat.png" />
+    <EmbeddedResource Include="Assets\UI\close.png" />
     <EmbeddedResource Include="Assets\UI\dig.png" />
     <EmbeddedResource Include="Assets\UI\dip.png" />
     <EmbeddedResource Include="Assets\UI\dropmany.png" />
     <EmbeddedResource Include="Assets\UI\eat.png" />
+    <EmbeddedResource Include="Assets\UI\engrave.png" />
     <EmbeddedResource Include="Assets\UI\fire.png" />
     <EmbeddedResource Include="Assets\UI\inventory.png" />
     <EmbeddedResource Include="Assets\UI\kick.png" />
@@ -175,6 +180,7 @@
     <EmbeddedResource Include="Assets\UI\more.png" />
     <EmbeddedResource Include="Assets\UI\no.png" />
     <EmbeddedResource Include="Assets\UI\offer.png" />
+    <EmbeddedResource Include="Assets\UI\open.png" />
     <EmbeddedResource Include="Assets\UI\pay.png" />
     <EmbeddedResource Include="Assets\UI\pickup.png" />
     <EmbeddedResource Include="Assets\UI\pray.png" />
@@ -199,7 +205,9 @@
     <EmbeddedResource Include="Assets\UI\stone-travel-on.png" />
     <EmbeddedResource Include="Assets\UI\swap.png" />
     <EmbeddedResource Include="Assets\UI\throw.png" />
+    <EmbeddedResource Include="Assets\UI\twoweap.png" />
     <EmbeddedResource Include="Assets\UI\wait.png" />
+    <EmbeddedResource Include="Assets\UI\yell.png" />
     <EmbeddedResource Include="Assets\UI\yes.png" />
     <EmbeddedResource Include="Assets\UI\yestoall.png" />
     <EmbeddedResource Include="Assets\UI\zap.png" />
