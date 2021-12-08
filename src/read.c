@@ -3119,6 +3119,7 @@ boolean *effect_happened_ptr;
         u.max_weapon_slots = maxslots;
         u.weapon_slots = u.max_weapon_slots;
         context.botl = context.botlx = 1;
+        update_can_advance_any_skill();
 
         if (Hallucination) /* Ommmmmm! */
             Your("mind releases itself from epistemological concerns.");
