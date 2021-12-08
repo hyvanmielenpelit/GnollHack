@@ -148,7 +148,6 @@ namespace GnollHackClient.Pages.Game
         public object ClipLock = new object();
         public int ClipX { get { return _clipX; } set { _clipX = value; lock (MapOffsetLock) { _mapOffsetX = 0; } } }
         public int ClipY { get { return _clipY; } set { _clipY = value; lock (MapOffsetLock) { _mapOffsetY = 0; } } }
-        public GHMapMode MapMode { get; set; }
         public bool MapNoClipMode { get; set; }
         public bool MapLookMode { get; set; }
         public bool MapTravelMode { get; set; }
@@ -5720,7 +5719,7 @@ namespace GnollHackClient.Pages.Game
 
                         if (TouchDictionary.Count > 1)
                             _touchMoved = true;
-                        else if (MapMode == GHMapMode.Normal)
+                        else if (!MapLookMode && !MapTravelMode && !ForceAllMessages)
                         {
                             _savedSender = sender;
                             _savedEventArgs = e;
@@ -5750,7 +5749,7 @@ namespace GnollHackClient.Pages.Game
 
                                 if (TouchDictionary.Count == 1)
                                 {
-                                    if (MapMode == GHMapMode.Normal)
+                                    if (!MapLookMode && !MapTravelMode && !ForceAllMessages)
                                     {
                                         /* Move the save location */
                                         _savedSender = sender;
@@ -5842,7 +5841,10 @@ namespace GnollHackClient.Pages.Game
 
                             if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_touchMoved)
                             {
-                                IssueNHCommandViaTouch(sender, e);
+                                if (ForceAllMessages)
+                                    ToggleMessageNumberButton_Clicked(sender, e);
+                                else
+                                    IssueNHCommandViaTouch(sender, e);
                             }
                             if (TouchDictionary.ContainsKey(e.Id))
                                 TouchDictionary.Remove(e.Id);
@@ -5899,9 +5901,9 @@ namespace GnollHackClient.Pages.Game
             {
                 if (x > 0 && x < GHConstants.MapCols && y >= 0 && y < GHConstants.MapRows)
                 {
-                    if (MapMode == GHMapMode.Look)
+                    if (MapLookMode)
                         mod = (int)NhGetPosMods.Click2;
-                    else if (MapMode == GHMapMode.Travel)
+                    else if (MapTravelMode)
                         mod = (int)NhGetPosMods.Click1;
                     else
                         mod = (int)NhGetPosMods.Click3;
@@ -6310,18 +6312,11 @@ namespace GnollHackClient.Pages.Game
             MapTravelMode = !MapTravelMode;
             if (MapTravelMode)
             {
-                //ToggleModeButton.BackgroundColor = Color.Green;
                 ToggleModeImg.Source = travelmode_on_source;
-                MapMode = GHMapMode.Travel;
-                MapLookMode = false;
-                //LookModeButton.BackgroundColor = Color.DarkBlue;
-                LookModeImg.Source = lookmode_off_source;
             }
             else
             {
-                //ToggleModeButton.BackgroundColor = Color.DarkBlue;
                 ToggleModeImg.Source = travelmode_off_source;
-                MapMode = GHMapMode.Normal;
             }
         }
         private EmbeddedResourceImageSource lookmode_on_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-look-on.png"));
@@ -6332,18 +6327,11 @@ namespace GnollHackClient.Pages.Game
             MapLookMode = !MapLookMode;
             if (MapLookMode)
             {
-                //LookModeButton.BackgroundColor = Color.Green;
                 LookModeImg.Source = lookmode_on_source;
-                MapMode = GHMapMode.Look;
-                MapTravelMode = false;
-                //ToggleModeButton.BackgroundColor = Color.DarkBlue;
-                ToggleModeImg.Source = travelmode_off_source;
             }
             else
             {
-                //LookModeButton.BackgroundColor = Color.DarkBlue;
                 LookModeImg.Source = lookmode_off_source;
-                MapMode = GHMapMode.Normal;
             }
         }
         private void NoClipButton_Clicked(object sender, EventArgs e)
@@ -7523,7 +7511,7 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[4, 6] = new GHCommandButtonItem("Remove", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'R');
             _moreBtnMatrix[5, 6] = new GHCommandButtonItem("Remove Many", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Meta((int)'t'));
 
-            _moreBtnMatrix[0, 7] = new GHCommandButtonItem("Count", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'n');
+            _moreBtnMatrix[0, 7] = new GHCommandButtonItem("Count", "GnollHackClient.Assets.Icons.missing_icon.png", -5);
             _moreBtnMatrix[1, 7] = new GHCommandButtonItem("Search 20", "GnollHackClient.Assets.UI.search20.png", -2);
             _moreBtnMatrix[2, 7] = new GHCommandButtonItem("Search 200", "GnollHackClient.Assets.UI.search200.png", -3);
             _moreBtnMatrix[3, 7] = new GHCommandButtonItem("Discoveries", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'\\');
@@ -7743,6 +7731,10 @@ namespace GnollHackClient.Pages.Game
                                                     break;
                                                 case -4:
                                                     GameMenuButton_Clicked(sender, e);
+                                                    break;
+                                                case -5:
+                                                    GenericButton_Clicked(sender, e, 'n');
+                                                    DoShowNumberPad();
                                                     break;
                                                 default:
                                                     break;
