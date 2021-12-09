@@ -1414,7 +1414,7 @@ int how;
     }
  
     if(endtext)
-        display_screen_text(endtext, (const char*)0, screentextstyle, ATR_NONE, NO_COLOR, 0UL);
+        display_screen_text(endtext, (const char*)0, (const char*)0, screentextstyle, ATR_NONE, NO_COLOR, 0UL);
 
     /* might have been killed while using a disposable item, so make sure
        it's gone prior to inventory disclosure and creation of bones data */

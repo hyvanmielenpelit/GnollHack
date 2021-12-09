@@ -1099,7 +1099,7 @@ struct monst* mtmp;
         flush_screen(1);
         cliparound(mtmp->mx, mtmp->my, 2);
         play_sfx_sound(SFX_BOSS_FIGHT);
-        display_screen_text(Monnam(mtmp), (char*)0, SCREEN_TEXT_BOSS_FIGHT, ATR_NONE, NO_COLOR, 1UL);
+        display_screen_text(Monnam(mtmp), (char*)0, (char*)0, SCREEN_TEXT_BOSS_FIGHT, ATR_NONE, NO_COLOR, 1UL);
         cliparound(u.ux, u.uy, 2);
     }
 }

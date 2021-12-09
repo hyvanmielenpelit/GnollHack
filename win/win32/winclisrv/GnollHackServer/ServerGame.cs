@@ -319,7 +319,7 @@ namespace GnollHackServer
 
         }
 
-        public void GameCallback_DisplayScreenText(string text, string subtext, int style, int attr, int color, ulong tflags)
+        public void GameCallback_DisplayScreenText(string text, string supertext, string subtext, int style, int attr, int color, ulong tflags)
         {
 
         }

@@ -6269,6 +6269,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         /* Screen text for entering the level */
         char dngbuf[BUFSZ];
         char lvlbuf[BUFSZ];
+        char lvlbuf2[BUFSZ];
         const char* dname = dungeons[u.uz.dnum].dname;
         if (dname && !strncmp(dname, "The ", 4))
             dname += 4;
@@ -6288,7 +6289,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         {
             Sprintf(lvlbuf, "Level %d", u.uz.dlevel);
         }
-        display_screen_text(lvlbuf, dngbuf, SCREEN_TEXT_ENTER_DUNGEON_LEVEL, 0, 0, 0UL);
+        Sprintf(lvlbuf2, "Dungeon Level %d", depth(&u.uz));
+        display_screen_text(lvlbuf, dngbuf, lvlbuf2, SCREEN_TEXT_ENTER_DUNGEON_LEVEL, 0, 0, 0UL);
     }
 
     assign_level(&u.uz0, &u.uz); /* reset u.uz0 */

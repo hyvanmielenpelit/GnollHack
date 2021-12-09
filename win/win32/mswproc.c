@@ -3805,7 +3805,7 @@ mswin_display_floating_text(int x, int y, const char* text, int style, int attr,
 }
 
 void
-mswin_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags)
+mswin_display_screen_text(const char* text, const char* supertext, const char* subtext, int style, int attr, int color, unsigned long tflags)
 {
 
 }

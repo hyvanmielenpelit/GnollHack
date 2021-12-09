@@ -974,7 +974,7 @@ namespace GnollHackClient
 
         }
 
-        public void ClientCallback_DisplayScreenText(string text, string subtext, int style, int attr, int color, ulong tflags)
+        public void ClientCallback_DisplayScreenText(string text, string supertext, string subtext, int style, int attr, int color, ulong tflags)
         {
             _screenTextSet = false;
             ConcurrentQueue<GHRequest> queue;
@@ -982,6 +982,7 @@ namespace GnollHackClient
             {
                 DisplayScreenTextData data = new DisplayScreenTextData();
                 data.text = text;
+                data.supertext = supertext;
                 data.subtext = subtext;
                 data.style = style;
                 data.attr = attr;
@@ -1028,6 +1029,7 @@ namespace GnollHackClient
             {
                 DisplayScreenTextData data = new DisplayScreenTextData();
                 data.text = text;
+                data.supertext = title;
                 data.subtext = title;
                 data.style = style;
                 data.attr = attr;

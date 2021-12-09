@@ -63,6 +63,7 @@ namespace GnollHackClient
     public struct DisplayScreenTextData
     {
         public string text;
+        public string supertext;
         public string subtext;
         public int style;
         public int attr;

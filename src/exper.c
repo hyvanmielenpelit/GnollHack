@@ -506,7 +506,7 @@ boolean incr; /* true iff via incremental experience growth */
 
         char lvlbuf[BUFSZ];
         Sprintf(lvlbuf, "Experience Level %d", u.ulevel);
-        display_screen_text(lvlbuf, welcomenormal ? "Welcome to" : "Welcome Back to", SCREEN_TEXT_GAIN_LEVEL, 0, 0, 0UL);
+        display_screen_text(lvlbuf, welcomenormal ? "Welcome to" : "Welcome Back to", (const char*)0, SCREEN_TEXT_GAIN_LEVEL, 0, 0, 0UL);
     }
     updatemaxhp();
     updatemaxen();

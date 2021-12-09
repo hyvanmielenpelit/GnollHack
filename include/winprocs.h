@@ -111,7 +111,7 @@ struct window_procs {
     void FDECL((*win_update_status_button), (int, int, int, unsigned long));
     void FDECL((*win_toggle_animation_timer), (int, int, int, int, int, int, unsigned long)); /* timettype, id, state = on/off, x, y, flags */
     void FDECL((*win_display_floating_text), (int, int, const char*, int, int, int, unsigned long));
-    void FDECL((*win_display_screen_text), (const char*, const char*, int, int, int, unsigned long));
+    void FDECL((*win_display_screen_text), (const char*, const char*, const char*, int, int, int, unsigned long));
     void FDECL((*win_display_popup_text), (const char*, const char*, int, int, int, int, unsigned long));
     void FDECL((*win_update_cursor), (int, int, int));
     int NDECL((*win_ui_has_input));
@@ -485,7 +485,7 @@ struct chain_procs {
     void FDECL((*win_update_status_button), (CARGS, int, int, int, unsigned long));
     void FDECL((*win_toggle_animation_timer), (CARGS, int, int, int, int, int, int, unsigned long));
     void FDECL((*win_display_floating_text), (CARGS, int, int, const char*, int, int, int, unsigned long));
-    void FDECL((*win_display_screen_text), (CARGS, const char*, const char*, int, int, int, unsigned long));
+    void FDECL((*win_display_screen_text), (CARGS, const char*, const char*, const char*, int, int, int, unsigned long));
     void FDECL((*win_display_popup_text), (CARGS, const char*, const char*, int, int, int, int, unsigned long));
     void FDECL((*win_update_cursor), (CARGS, int, int, int));
     int FDECL((*win_ui_has_input), (CARGS));
@@ -585,7 +585,7 @@ extern void FDECL(safe_add_context_menu, (int, int, int, int, const char*, const
 extern void FDECL(safe_update_status_button, (int, int, int, unsigned long));
 extern void FDECL(safe_toggle_animation_timer, (int, int, int, int, int, int, unsigned long));
 extern void FDECL(safe_display_floating_text, (int, int, const char*, int, int, int, unsigned long));
-extern void FDECL(safe_display_screen_text, (const char*, const char*, int, int, int, unsigned long));
+extern void FDECL(safe_display_screen_text, (const char*, const char*, const char*, int, int, int, unsigned long));
 extern void FDECL(safe_display_popup_text, (const char*, const char*, int, int, int, int, unsigned long));
 extern void FDECL(safe_update_cursor, (int, int, int));
 extern int NDECL(safe_ui_has_input);

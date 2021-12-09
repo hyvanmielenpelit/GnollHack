@@ -138,7 +138,7 @@ typedef void(__callconv* AddContextMenuCallback)(int, int, int, int, const char*
 typedef void(__callconv* UpdateStatusButtonCallback)(int, int, int, unsigned long);
 typedef void(__callconv* ToggleAnimationTimerCallback)(int, int, int, int, int, int, unsigned long);
 typedef void(__callconv* DisplayFloatingTextCallback)(int, int, const char*, int, int, int, unsigned long);
-typedef void(__callconv* DisplayScreenTextCallback)(const char*, const char*, int, int, int, unsigned long);
+typedef void(__callconv* DisplayScreenTextCallback)(const char*, const char*, const char*, int, int, int, unsigned long);
 typedef void(__callconv* DisplayPopupTextCallback)(const char*, const char*, int, int, int, int, unsigned long);
 typedef void(__callconv* UpdateCursorCallback)(int, int, int);
 typedef int(__callconv* UIHasInputCallback)(void);

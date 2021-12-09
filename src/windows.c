@@ -369,7 +369,7 @@ genl_display_floating_text(int x UNUSED, int y UNUSED, const char* text UNUSED, 
 }
 
 void
-genl_display_screen_text(const char* text UNUSED, const char* subtext UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
+genl_display_screen_text(const char* text UNUSED, const char* supertext UNUSED, const char* subtext UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
 {
     return;
 }

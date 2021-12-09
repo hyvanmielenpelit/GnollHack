@@ -576,7 +576,7 @@ safe_display_floating_text(int x UNUSED, int y UNUSED, const char* text UNUSED, 
 }
 
 void
-safe_display_screen_text(const char* text UNUSED, const char* subtext UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
+safe_display_screen_text(const char* text UNUSED, const char* supertext UNUSED, const char* subtext UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
 {
     return;
 }

@@ -11,6 +11,7 @@ namespace GnollHackClient
         private DisplayScreenTextData _data;
         public long _created_at_count;
 
+        public bool HasSuperText { get { return _data.supertext != null; } }
         public bool HasSubText { get { return _data.subtext != null; } }
 
         public GHScreenText(DisplayScreenTextData data, long created_at_count)
@@ -70,26 +71,13 @@ namespace GnollHackClient
                 return false;
         }
 
-        public bool IsSubTextAbove
-        {
-            get
-            {
-                switch (_data.style)
-                {
-                    case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
-                    case 2:
-                    case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
-                        return true;
-                    default:
-                        break;
-                }
-                return false;
-            }
-        }
-
         public string GetText(long counter_value)
         {
             return _data.text;
+        }
+        public string GetSuperText(long counter_value)
+        {
+            return _data.supertext;
         }
         public string GetSubText(long counter_value)
         {
@@ -132,6 +120,16 @@ namespace GnollHackClient
         {
             return 48.0f;
         }
+        public float GetSuperTextSizeRelativeToMainText(long counter_value)
+        {
+            int maintextlen = _data.text != null ? _data.text.Length : 0;
+            int supertextlen = _data.supertext != null ? _data.supertext.Length : 0;
+            if (supertextlen == 0 || maintextlen == 0)
+                return 1.0f;
+
+            float relsize = Math.Min(0.75f, 0.75f * (float)maintextlen / (float)supertextlen);
+            return relsize;
+        }
 
         public float GetSubTextSizeRelativeToMainText(long counter_value)
         {
@@ -140,24 +138,18 @@ namespace GnollHackClient
             if (subtextlen == 0 || maintextlen == 0)
                 return 1.0f;
 
-            float relsize = Math.Min(0.75f, 0.75f * (float)maintextlen / (float)subtextlen);
+            float relsize = Math.Min(0.67f, 0.67f * (float)maintextlen / (float)subtextlen);
             return relsize;
-            //switch (_data.style)
-            //{
-            //    case 0:
-            //    case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
-            //        return 0.30f;
-            //    case 2:
-            //        return 0.80f;
-            //    default:
-            //        return 0.5f;
-            //}
         }
         public SKTypeface GetTextTypeface(long counter_value)
         {
             return App.ImmortalTypeface;
         }
 
+        public SKTypeface GetSuperTextTypeface(long counter_value)
+        {
+            return App.ImmortalTypeface;
+        }
         public SKTypeface GetSubTextTypeface(long counter_value)
         {
             return App.ImmortalTypeface;
@@ -165,6 +157,7 @@ namespace GnollHackClient
 
         public static SKColor TransparentGold = new SKColor(255, 255, 0xD7, 180);
         public static SKColor TransparentWhite = new SKColor(255, 255, 255, 180);
+        public static SKColor TransparentGray = new SKColor(208, 208, 192, 180);
 
         public SKColor GetTextBaseColor(long counter_value)
         {
@@ -196,9 +189,13 @@ namespace GnollHackClient
             return TransparentGold;
         }
 
-        public SKColor GetSubTextBaseColor(long counter_value)
+        public SKColor GetSuperTextBaseColor(long counter_value)
         {
             return TransparentWhite;
+        }
+        public SKColor GetSubTextBaseColor(long counter_value)
+        {
+            return TransparentGold;
         }
 
         private SKColor GetTimedColor(SKColor baseclr, long counter_value)
@@ -227,11 +224,19 @@ namespace GnollHackClient
             return GetTimedColor(GetTextBaseColor(counter_value), counter_value);
         }
 
+        public SKColor GetSuperTextColor(long counter_value)
+        {
+            return GetTimedColor(GetSuperTextBaseColor(counter_value), counter_value);
+        }
         public SKColor GetSubTextColor(long counter_value)
         {
             return GetTimedColor(GetSubTextBaseColor(counter_value), counter_value);
         }
         public float GetRelativeTextOutlineWidth(long counter_value)
+        {
+            return 1f / 48f;
+        }
+        public float GetRelativeSuperTextOutlineWidth(long counter_value)
         {
             return 1f / 48f;
         }
@@ -243,6 +248,10 @@ namespace GnollHackClient
         {
             return SKColors.Black;
         }
+        public SKColor GetSuperTextOutlineBaseColor(long counter_value)
+        {
+            return SKColors.Black;
+        }
         public SKColor GetSubTextOutlineBaseColor(long counter_value)
         {
             return SKColors.Black;
@@ -250,6 +259,10 @@ namespace GnollHackClient
         public SKColor GetTextOutlineColor(long counter_value)
         {
             return GetTimedColor(GetTextOutlineBaseColor(counter_value), counter_value);
+        }
+        public SKColor GetSuperTextOutlineColor(long counter_value)
+        {
+            return GetTimedColor(GetSuperTextOutlineBaseColor(counter_value), counter_value);
         }
         public SKColor GetSubTextOutlineColor(long counter_value)
         {

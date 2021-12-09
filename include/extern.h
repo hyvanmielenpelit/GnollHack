@@ -3821,7 +3821,7 @@ E void FDECL(genl_add_context_menu, (int, int, int, int, const char*, const char
 E void FDECL(genl_update_status_button, (int, int, int, unsigned long));
 E void FDECL(genl_toggle_animation_timer, (int, int, int, int, int, int, unsigned long));
 E void FDECL(genl_display_floating_text, (int, int, const char*, int, int, int, unsigned long));
-E void FDECL(genl_display_screen_text, (const char*, const char*, int, int, int, unsigned long));
+E void FDECL(genl_display_screen_text, (const char*, const char*, const char*, int, int, int, unsigned long));
 E void FDECL(genl_display_popup_text, (const char*, const char*, int, int, int, int, unsigned long));
 E void FDECL(genl_update_cursor, (int, int, int));
 E int NDECL(genl_ui_has_input);

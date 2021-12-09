@@ -1114,9 +1114,9 @@ lib_display_floating_text(int x, int y, const char* text, int style, int attr, i
 }
 
 void
-lib_display_screen_text(const char* text, const char* subtext, int style, int attr, int color, unsigned long tflags)
+lib_display_screen_text(const char* text, const char* supertext, const char* subtext, int style, int attr, int color, unsigned long tflags)
 {
-    lib_callbacks.callback_display_screen_text(text, subtext, style, attr, color, tflags);
+    lib_callbacks.callback_display_screen_text(text, supertext, subtext, style, attr, color, tflags);
 }
 
 void

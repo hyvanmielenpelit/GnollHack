@@ -4174,8 +4174,8 @@ namespace GnollHackClient.Pages.Game
                     {
                         if (_screenText != null)
                         {
-                            float targetwidth = 0, yoffsetpct = 0, relativestrokewidth = 0, relativesubstrokewidth = 0;
-                            SKColor strokecolor = SKColors.White, substrokecolor = SKColors.White;
+                            float targetwidth = 0, yoffsetpct = 0, relativestrokewidth = 0, relativesuperstrokewidth = 0, relativesubstrokewidth = 0;
+                            SKColor strokecolor = SKColors.White, superstrokecolor = SKColors.White, substrokecolor = SKColors.White;
                             float maxfontsize = 9999.0f;
                             lock (AnimationTimerLock)
                             {
@@ -4234,6 +4234,44 @@ namespace GnollHackClient.Pages.Game
                             float maintextspacing = textPaint.FontSpacing;
                             float maintexty = ty;
 
+                            if (_screenText.HasSuperText)
+                            {
+                                lock (AnimationTimerLock)
+                                {
+                                    textPaint.Color = _screenText.GetSuperTextColor(AnimationTimers.general_animation_counter);
+                                    textPaint.Typeface = _screenText.GetSuperTextTypeface(AnimationTimers.general_animation_counter);
+                                    textPaint.TextSize = maintextsize * _screenText.GetSuperTextSizeRelativeToMainText(AnimationTimers.general_animation_counter);
+                                    relativesuperstrokewidth = _screenText.GetRelativeSuperTextOutlineWidth(AnimationTimers.general_animation_counter);
+                                    superstrokecolor = _screenText.GetSuperTextOutlineColor(AnimationTimers.general_animation_counter);
+                                    str = _screenText.GetSuperText(AnimationTimers.general_animation_counter);
+                                }
+                                textPaint.MeasureText(str, ref textBounds);
+                                tx = (canvaswidth / 2 - textBounds.Width / 2);
+                                ty = maintexty + maintextascent - textPaint.FontMetrics.Descent;
+ 
+                                /* Shadow first */
+                                {
+                                    SKColor oldcolor = textPaint.Color;
+                                    SKMaskFilter oldfilter = textPaint.MaskFilter;
+                                    textPaint.Color = SKColors.Black.WithAlpha(oldcolor.Alpha);
+                                    textPaint.MaskFilter = _blur;
+                                    float offset = textPaint.TextSize / 15;
+                                    canvas.DrawText(str, tx + offset, ty + offset, textPaint);
+                                    textPaint.Color = oldcolor;
+                                    textPaint.MaskFilter = oldfilter;
+                                }
+
+                                canvas.DrawText(str, tx, ty, textPaint);
+                                if (relativesuperstrokewidth > 0)
+                                {
+                                    textPaint.Style = SKPaintStyle.Stroke;
+                                    textPaint.StrokeWidth = textPaint.TextSize * relativesuperstrokewidth;
+                                    textPaint.Color = superstrokecolor;
+                                    canvas.DrawText(str, tx, ty, textPaint);
+                                    textPaint.Style = SKPaintStyle.Fill;
+                                }
+                            }
+
                             if (_screenText.HasSubText)
                             {
                                 lock (AnimationTimerLock)
@@ -4247,10 +4285,7 @@ namespace GnollHackClient.Pages.Game
                                 }
                                 textPaint.MeasureText(str, ref textBounds);
                                 tx = (canvaswidth / 2 - textBounds.Width / 2);
-                                if (_screenText.IsSubTextAbove)
-                                    ty = maintexty + maintextascent - textPaint.FontMetrics.Descent;
-                                else
-                                    ty = maintexty + maintextdescent - textPaint.FontMetrics.Ascent;
+                                ty = maintexty + maintextdescent - textPaint.FontMetrics.Ascent;
 
                                 /* Shadow first */
                                 {
