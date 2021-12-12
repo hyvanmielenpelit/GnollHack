@@ -281,7 +281,8 @@ boolean resuming;
                     {
                         int buriedsearchablefound = FALSE;
                         struct obj* otmp2;
-                        for (struct obj* otmp = level.buriedobjlist; otmp; otmp = otmp2)
+                        struct obj* otmp;
+                        for (otmp = level.buriedobjlist; otmp; otmp = otmp2)
                         {
                             otmp2 = otmp->nobj;
                             if (otmp->ox == u.ux && otmp->oy == u.uy && is_otyp_buried_searchable(otmp->otyp))
@@ -635,7 +636,8 @@ select_rwraith()
     boolean barrowwightok = FALSE;
     boolean wraithok = FALSE;
 
-    for (int i = 1; i <= 3; i++)
+    int i;
+    for (i = 1; i <= 3; i++)
     {
         /* Difficulty level is one level higher than normal */
         get_generated_monster_minmax_levels(i, &minlevel, &maxlevel, 1);
@@ -1141,7 +1143,8 @@ choose_game_difficulty()
     start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_DIFFICULTY);
     anything any = zeroany;
 
-    for(int i = MIN_DIFFICULTY_LEVEL; i <= MAX_DIFFICULTY_LEVEL; i++)
+    int i;
+    for(i = MIN_DIFFICULTY_LEVEL; i <= MAX_DIFFICULTY_LEVEL; i++)
     {
         any = zeroany;
         any.a_int = i - MIN_DIFFICULTY_LEVEL + 1;
@@ -1279,7 +1282,18 @@ newgame()
     /* Check special room */
     check_special_room(FALSE);
 
+    /* GUI Tips */
+    show_gui_tips();
+
     return;
+}
+
+void
+show_gui_tips(VOID_ARGS)
+{
+    struct special_view_info info = { 0 };
+    info.viewtype = SPECIAL_VIEW_GUI_TIPS;
+    open_special_view(info);
 }
 
 /* show "welcome [back] to GnollHack" message at program startup */

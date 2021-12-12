@@ -1,5 +1,5 @@
-/* androidmain.c
- * based on unixmain.c
+/* 
+ * droidmain.c
  */
 
 #include "hack.h"

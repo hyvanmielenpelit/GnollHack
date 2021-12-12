@@ -457,6 +457,9 @@ namespace GnollHackClient.Pages.Game
                         MenuCanvas.InvalidateSurface();
                 }
 
+                if (TipView.IsVisible)
+                    TipView.InvalidateSurface();
+
                 pollRequestQueue();
 
                 return true;
@@ -1023,7 +1026,7 @@ namespace GnollHackClient.Pages.Game
                                 FadeFromBlack((uint)req.RequestInt);
                                 break;
                             case GHRequestType.ShowGUITips:
-                                ShowGUITips();
+                                //ShowGUITips();
                                 GenericButton_Clicked(new object(), new EventArgs(), 27);
                                 break;
                         }
@@ -1292,11 +1295,25 @@ namespace GnollHackClient.Pages.Game
                 ShowNumberPad = true;
         }
 
-        public void ShowGUITips()
+        public async void ShowGUITips()
         {
-            //Show on GUI
-            //Popup for explanation and going forward
-            //...
+            await ShowAllTips();
+            GenericButton_Clicked(new object(), new EventArgs(), 27);
+        }
+        public async Task ShowAllTips()
+        {
+            TipView.IsVisible = true;
+            for (int i = 0; i < 5; i++)
+            {
+                bool res = await ShowTip(i);
+                if (!res)
+                    break;
+            }
+            TipView.IsVisible = false;
+        }
+        public async Task<bool> ShowTip(int hint_idx)
+        {
+            return await DisplayAlert("Hint", "This is hint " + hint_idx + ".", "Next", "Skip");
         }
 
         private object msgHistoryLock = new object();
@@ -7849,6 +7866,30 @@ namespace GnollHackClient.Pages.Game
         private void ToggleMessageNumberButton_Clicked(object sender, EventArgs e)
         {
             ForceAllMessages = !ForceAllMessages;
+        }
+
+        private void TipView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        {
+            SKImageInfo info = e.Info;
+            SKSurface surface = e.Surface;
+            SKCanvas canvas = surface.Canvas;
+
+            canvas.Clear(SKColors.Transparent);
+
+            using (SKPaint textPaint = new SKPaint())
+            {
+                float canvaswidth = canvasView.CanvasSize.Width;
+                float canvasheight = canvasView.CanvasSize.Height;
+                float UsedFontSize = ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
+                textPaint.Typeface = App.DejaVuSansMonoTypeface;
+                textPaint.TextSize = UsedFontSize;
+
+            }
+        }
+
+        private void TipView_Touch(object sender, SKTouchEventArgs e)
+        {
+
         }
     }
 

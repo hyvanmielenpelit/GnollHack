@@ -380,6 +380,12 @@
             <Grid x:Name="MoreCommandsGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#FF000000" IsVisible="False">
                 <gnollhackclient:GHCanvasView x:Name="CommandCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" EnableTouchEvents="True" />
             </Grid>
+            <gnollhackclient:GHCanvasView x:Name="TipView" IsVisible="false"
+                            EnableTouchEvents="True"
+                            PaintSurface="TipView_PaintSurface" 
+                            Touch="TipView_Touch"
+                            AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
+                            AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
