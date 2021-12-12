@@ -4330,7 +4330,7 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 /* Darkening background */
-                if (ForceAllMessages)
+                if (ForceAllMessages || ShowNumberPad)
                 {
                     textPaint.Style = SKPaintStyle.Fill;
                     textPaint.Color = SKColors.Black.WithAlpha(128);
@@ -4575,100 +4575,95 @@ namespace GnollHackClient.Pages.Game
                 }
                 else if (ShowNumberPad)
                 {
-                    float buttonsize = ShowNumberPad ? GHConstants.NumberButtonSize : GHConstants.ArrowButtonSize;
-                    textPaint.Color = new SKColor(255, 255, 255, 170);
-                    textPaint.Typeface = App.DejaVuSansMonoTypeface;
-                    textPaint.TextSize = ShowNumberPad ? 225 : 275;
-                    for (int i = 0; i <= 9; i++)
+                    for(int j = 0; j <= 2; j++)
                     {
-                        switch (i)
+                        float buttonsize = GHConstants.NumberButtonSize;
+                        float offset = 0;
+                        SKColor oldcolor = textPaint.Color;
+                        SKMaskFilter oldfilter = textPaint.MaskFilter;
+                        textPaint.Typeface = App.DiabloTypeface;
+                        textPaint.TextSize = 225;
+                        if (j == 0)
                         {
-                            case 0:
-                                if (_showDirections)
-                                    str = "\u2190";
-                                else
-                                    str = "4";
-                                tx = canvasButtonRect.Left + canvasButtonRect.Width * (buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                                ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
-                                break;
-                            case 1:
-                                if (_showDirections)
-                                    str = "\u2191";
-                                else
-                                    str = "8";
-                                tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                                ty = canvasButtonRect.Top + canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
-                                break;
-                            case 2:
-                                if (_showDirections)
-                                    str = "\u2192";
-                                else
-                                    str = "6";
-                                tx = canvasButtonRect.Left + canvasButtonRect.Width * (1.0f - buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                                ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
-                                break;
-                            case 3:
-                                if (_showDirections)
-                                    str = "\u2193";
-                                else
-                                    str = "2";
-                                tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                                ty = canvasButtonRect.Top + canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
-                                break;
-                            case 4:
-                                if (_showDirections)
-                                    str = "\u2196";
-                                else
-                                    str = "7";
-                                tx = canvasButtonRect.Left + canvasButtonRect.Width * (buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                                ty = canvasButtonRect.Top + canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
-                                break;
-                            case 5:
-                                if (_showDirections)
-                                    str = "";
-                                else
-                                    str = "5";
-                                tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                                ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
-                                break;
-                            case 6:
-                                if (_showDirections)
-                                    str = "\u2197";
-                                else
-                                    str = "9";
-                                tx = canvasButtonRect.Left + canvasButtonRect.Width * (1.0f - buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                                ty = canvasButtonRect.Top + canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
-                                break;
-                            case 7:
-                                if (_showDirections)
-                                    str = "\u2198";
-                                else
-                                    str = "3";
-                                tx = canvasButtonRect.Left + canvasButtonRect.Width * (1.0f - buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                                ty = canvasButtonRect.Top + canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
-                                break;
-                            case 8:
-                                if (_showDirections)
-                                    str = "\u2199";
-                                else
-                                    str = "1";
-                                tx = canvasButtonRect.Left + canvasButtonRect.Width * (buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                                ty = canvasButtonRect.Top + canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
-                                break;
-                            case 9:
-                                if (_showDirections)
-                                    continue;
-                                else
-                                    str = "0";
-                                tx = 0 + canvasButtonRect.Left / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
-                                //ty = canvasButtonRect.Top + canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
-                                ty = canvasButtonRect.Top + canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
-                                textPaint.TextSize = Math.Max(10.0f, textPaint.TextSize * Math.Min(1.0f, canvasButtonRect.Left / (canvasButtonRect.Width * buttonsize)));
-                                break;
+                            textPaint.Color = SKColors.Black.WithAlpha(oldcolor.Alpha);
+                            textPaint.MaskFilter = _blur;
+                            offset = textPaint.TextSize / 15;
+                            textPaint.Style = SKPaintStyle.Fill;
                         }
-                        canvas.DrawText(str, tx, ty, textPaint);
-
+                        else if (j == 1)
+                        {
+                            textPaint.Color = new SKColor(255, 255, 0xD7, 255);
+                            textPaint.Style = SKPaintStyle.Fill;
+                        }
+                        else
+                        {
+                            textPaint.Color = new SKColor(80, 80, 50, 255);
+                            textPaint.Style = SKPaintStyle.Stroke;
+                            textPaint.StrokeWidth = textPaint.TextSize / 20;
+                        }
+                        for (int i = 0; i <= 9; i++)
+                        {
+                            switch (i)
+                            {
+                                case 0:
+                                    str = "4";
+                                    tx = canvasButtonRect.Left + canvasButtonRect.Width * (buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
+                                    break;
+                                case 1:
+                                    str = "8";
+                                    tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    ty = canvasButtonRect.Top + canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                    break;
+                                case 2:
+                                    str = "6";
+                                    tx = canvasButtonRect.Left + canvasButtonRect.Width * (1.0f - buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
+                                    break;
+                                case 3:
+                                    str = "2";
+                                    tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    ty = canvasButtonRect.Top + canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                    break;
+                                case 4:
+                                    str = "7";
+                                    tx = canvasButtonRect.Left + canvasButtonRect.Width * (buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    ty = canvasButtonRect.Top + canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                    break;
+                                case 5:
+                                    str = "5";
+                                    tx = canvasButtonRect.Left + canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    ty = canvasButtonRect.Top + canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
+                                    break;
+                                case 6:
+                                    str = "9";
+                                    tx = canvasButtonRect.Left + canvasButtonRect.Width * (1.0f - buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    ty = canvasButtonRect.Top + canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                    break;
+                                case 7:
+                                    str = "3";
+                                    tx = canvasButtonRect.Left + canvasButtonRect.Width * (1.0f - buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    ty = canvasButtonRect.Top + canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                    break;
+                                case 8:
+                                    str = "1";
+                                    tx = canvasButtonRect.Left + canvasButtonRect.Width * (buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    ty = canvasButtonRect.Top + canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                    break;
+                                case 9:
+                                    str = "0";
+                                    tx = 0 + canvasButtonRect.Left / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    //ty = canvasButtonRect.Top + canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                    ty = canvasButtonRect.Top + canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
+                                    textPaint.TextSize = Math.Max(10.0f, textPaint.TextSize * Math.Min(1.0f, canvasButtonRect.Left / (canvasButtonRect.Width * buttonsize)));
+                                    break;
+                            }
+                            canvas.DrawText(str, tx + offset, ty + offset, textPaint);
+                        }
+                        textPaint.Color = oldcolor;
+                        textPaint.MaskFilter = oldfilter;
                     }
+                    textPaint.Style = SKPaintStyle.Fill;
                 }
 
                 if (ShowWaitIcon)

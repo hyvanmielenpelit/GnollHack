@@ -3543,8 +3543,7 @@ E int NDECL(doextversion);
 #ifdef MICRO
 E boolean FDECL(comp_times, (long));
 #endif
-E boolean
-FDECL(check_version, (struct version_info *, const char *, BOOLEAN_P));
+E boolean FDECL(check_version, (struct version_info *, const char *, BOOLEAN_P));
 E boolean FDECL(uptodate, (int, const char *));
 E void FDECL(store_version, (int));
 E unsigned long FDECL(get_feature_notice_ver, (char *));

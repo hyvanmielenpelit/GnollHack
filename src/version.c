@@ -289,7 +289,8 @@ boolean complain;
         || version_data->struct_sizes1 != vsan2
         || version_data->struct_sizes2 != vsan3) {
         if (complain)
-            pline("Configuration incompatibility for file \"%s\".", filename);
+            pline("Configuration incompatibility for file \"%s\". (%lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu)", filename, 
+                (version_data->feature_set & ~IGNORED_FEATURES), (VERSION_FEATURES & ~IGNORED_FEATURES), version_data->entity_count, vsan1, version_data->struct_sizes1, vsan2, version_data->struct_sizes2, vsan3);
         return FALSE;
     }
     return TRUE;

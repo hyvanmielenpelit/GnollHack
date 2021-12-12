@@ -541,6 +541,9 @@ namespace GnollHackClient
         }
         public void ClientCallback_PutStrEx(int win_id, int attributes, string str, int append, int color)
         {
+            if (win_id < 0)
+                return;
+
             if (_ghWindows[win_id].WindowPrintStyle == GHWindowPrintLocations.RawPrint)
             {
                 RawPrintEx(str, attributes, color);
