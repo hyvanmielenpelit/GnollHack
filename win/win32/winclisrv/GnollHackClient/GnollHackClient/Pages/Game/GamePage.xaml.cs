@@ -992,6 +992,10 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.FadeFromBlack:
                                 FadeFromBlack((uint)req.RequestInt);
                                 break;
+                            case GHRequestType.ShowGUITips:
+                                ShowGUITips();
+                                GenericButton_Clicked(new object(), new EventArgs(), 27);
+                                break;
                         }
                     }
                 }
@@ -1256,6 +1260,13 @@ namespace GnollHackClient.Pages.Game
         {
             if (!_showDirections)
                 ShowNumberPad = true;
+        }
+
+        public void ShowGUITips()
+        {
+            //Show on GUI
+            //Popup for explanation and going forward
+            //...
         }
 
         private object msgHistoryLock = new object();

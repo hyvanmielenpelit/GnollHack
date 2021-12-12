@@ -35,6 +35,7 @@ namespace GnollHackClient
         ShowOutRipPage,
         FadeToBlack,
         FadeFromBlack,
+        ShowGUITips,
     }
 
     public struct AddContextMenuData

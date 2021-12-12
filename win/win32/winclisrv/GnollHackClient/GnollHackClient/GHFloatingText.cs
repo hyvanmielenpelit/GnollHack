@@ -54,10 +54,18 @@ namespace GnollHackClient
             return ((float)(counter_value - _created_at_count)) / 40.0f;
         }
 
+        public bool IsVisible(long counter_value)
+        {
+            if (counter_value < _created_at_count || IsFinished(counter_value))
+                return false;
+            else
+                return true;
+        }
+
         public bool IsFinished(long counter_value)
         {
-            if (counter_value < _created_at_count)
-                return true;
+            if (counter_value < 5)
+                return true; //Assume counter has exceeded max value and reverted to 0
 
             float vsecs = GetVSecs(counter_value);
             if (vsecs >= GetFinishTime())
@@ -65,6 +73,7 @@ namespace GnollHackClient
             else
                 return false;
         }
+
         public SKPoint GetPosition(long counter_value)
         {
             SKPoint i = GetInitialPoint();
@@ -140,14 +149,14 @@ namespace GnollHackClient
         public SKColor GetTimedColor(SKColor baseclr, long counter_value)
         {
             float vsecs = GetVSecs(counter_value);
-            if (vsecs < GetFadeInTime())
+            if (!IsVisible(counter_value))
+                return SKColors.Transparent;
+            else if (vsecs < GetFadeInTime())
             {
                 byte val = (byte)(baseclr.Alpha * Math.Max(0.0f, Math.Min(1.0f, (vsecs) / GetFadeInLength())));
                 SKColor clr =  new SKColor(baseclr.Red, baseclr.Green, baseclr.Blue, val);
                 return clr;
             }
-            else if (IsFinished(counter_value))
-                return SKColors.Transparent;
             else if (vsecs >= GetFadeOutTime())
             {
                 byte val = (byte)(baseclr.Alpha * Math.Max(0.0f, Math.Min(1.0f, (GetFinishTime() - vsecs) / GetFadeOutLength())));

@@ -898,6 +898,7 @@ namespace GnollHackCommon
         SPECIAL_VIEW_NONE = 0,
         SPECIAL_VIEW_CHAT_MESSAGE,
         SPECIAL_VIEW_SHOW_SPECIAL_EFFECT,
+        SPECIAL_VIEW_GUI_TIPS,
         MAX_SPECIAL_VIEW_TYPES
     }
 

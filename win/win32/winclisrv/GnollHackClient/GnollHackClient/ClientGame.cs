@@ -1247,6 +1247,15 @@ namespace GnollHackClient
                         Preferences.Set("ShowSpecialEffect", true);
                     }
                     break;
+                case (int)special_view_types.SPECIAL_VIEW_GUI_TIPS:
+                    ConcurrentQueue<GHRequest> queue;
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowGUITips));
+                    }
+
+                    int res = ClientCallback_nhgetch();
+                    break;
                 default:
                     break;
             }
