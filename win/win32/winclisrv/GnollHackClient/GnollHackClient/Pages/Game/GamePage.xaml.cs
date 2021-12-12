@@ -763,10 +763,40 @@ namespace GnollHackClient.Pages.Game
         {
             lock (_floatingTextLock)
             {
+                bool foundanother = false;
+                long highestcounter = 0;
+                SKPoint speedvector = new SKPoint(0, -1);
+                foreach(GHFloatingText fl in _floatingTexts)
+                {
+                    if(fl.X == data.x && fl.Y == data.y)
+                    {
+                        foundanother = true;
+                        if (fl.CreatedAt > highestcounter)
+                        {
+                            highestcounter = fl.CreatedAt;
+                            speedvector = fl.GetVelocity(highestcounter);
+                        }
+                    }
+                }
+
+                long counter = 0;
                 lock (AnimationTimerLock)
                 {
-                    _floatingTexts.Add(new GHFloatingText(data, AnimationTimers.general_animation_counter));
+                    counter = AnimationTimers.general_animation_counter;
                 }
+
+                if(foundanother)
+                {
+                    float YSpeed = Math.Abs(speedvector.Y);
+                    float secs = 0.5f / YSpeed;
+                    long ticks = (long)(secs * 40);
+                    if (counter - highestcounter >= -ticks * 10 && counter - highestcounter < ticks)
+                    {
+                        counter += ticks - (counter - highestcounter);
+                    }
+                }
+
+                _floatingTexts.Add(new GHFloatingText(data, counter));
             }
         }
 

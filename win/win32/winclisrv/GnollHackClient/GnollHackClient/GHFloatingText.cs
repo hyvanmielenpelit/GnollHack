@@ -9,13 +9,17 @@ namespace GnollHackClient
     public class GHFloatingText
     {
         private DisplayFloatingTextData _data;
-        public long _created_at_count;
+        private long _created_at_count;
 
         public GHFloatingText(DisplayFloatingTextData data, long created_at_count)
         {
             _data = data;
             _created_at_count = created_at_count;
         }
+
+        public int X { get { return _data.x; } }
+        public int Y { get { return _data.y; } }
+        public long CreatedAt { get { return _created_at_count; } }
 
         public SKPoint GetInitialPoint()
         {
@@ -48,7 +52,7 @@ namespace GnollHackClient
 
         public float GetVSecs(long counter_value)
         {
-            if (counter_value < _created_at_count)
+            if (counter_value < 5)
                 return 999.0f;
 
             return ((float)(counter_value - _created_at_count)) / 40.0f;
