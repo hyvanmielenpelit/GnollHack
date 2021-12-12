@@ -5933,7 +5933,7 @@ namespace GnollHackClient.Pages.Game
             if (_tileHeight > 0)
                 y = (int)((e.Location.Y - offsetY) / _tileHeight);
 
-            if (!_showDirections && !_showNumberPad && !WalkArrows)
+            if (!_showDirections && !_showNumberPad && !(MapWalkMode && WalkArrows))
             {
                 if (x > 0 && x < GHConstants.MapCols && y >= 0 && y < GHConstants.MapRows)
                 {
