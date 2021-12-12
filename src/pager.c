@@ -955,21 +955,27 @@ struct permonst **for_supplement;
             submerged = (Underwater && !Is_waterlevel(&u.uz));
     const char *x_str;
 
-    if (looked) 
+    if (iflags.using_gui_tiles)
     {
-        int oc;
-        unsigned long os;
-
-        struct layer_info layers = layers_at(cc.x, cc.y);
-        glyph = abs(layers.glyph);
-        /* Convert glyph at selected position to a symbol for use below. */
-        (void) mapglyph(layers, &sym, &oc, &os, cc.x, cc.y);
-
-        Sprintf(prefix, "%c - ", (char)sym);
-        //Sprintf(prefix, "%s - ", encglyph(glyph));
+        strcpy(prefix, "");
     }
     else
-        Sprintf(prefix, "%c - ", (char)sym);
+    {
+        if (looked)
+        {
+            int oc;
+            unsigned long os;
+
+            struct layer_info layers = layers_at(cc.x, cc.y);
+            glyph = abs(layers.glyph);
+            /* Convert glyph at selected position to a symbol for use below. */
+            (void)mapglyph(layers, &sym, &oc, &os, cc.x, cc.y);
+            Sprintf(prefix, "%c - ", (char)sym);
+            //Sprintf(prefix, "%s - ", encglyph(glyph));
+        }
+        else
+            Sprintf(prefix, "%c - ", (char)sym);
+    }
 
     /*
      * Check all the possibilities, saving all explanations in a buffer.
@@ -1280,10 +1286,19 @@ struct permonst **for_supplement;
                     //*mdescbuf2 = lowc(*mdescbuf2);
                     Sprintf(mdescbuf, ", %s", mdescbuf2);
                 }
-                Sprintf(temp_buf, " (%s%s)", *firstmatch, mdescbuf);
 
-                (void) strncat(out_str, temp_buf,
-                               BUFSZ - strlen(out_str) - 1);
+                if (iflags.using_gui_tiles)
+                {
+                    Sprintf(temp_buf, "%s%s", *firstmatch, mdescbuf);
+                    (void)strcpy(out_str, temp_buf);
+                }
+                else
+                {
+                    Sprintf(temp_buf, " (%s%s)", *firstmatch, mdescbuf);
+
+                    (void)strncat(out_str, temp_buf,
+                        BUFSZ - strlen(out_str) - 1);
+                }
                 found = 1; /* we have something to look up */
             }
 
@@ -1295,7 +1310,10 @@ struct permonst **for_supplement;
             }
         }
     }
-
+    if (iflags.using_gui_tiles)
+    {
+        *out_str = highc(*out_str);
+    }
     return found;
 }
 
