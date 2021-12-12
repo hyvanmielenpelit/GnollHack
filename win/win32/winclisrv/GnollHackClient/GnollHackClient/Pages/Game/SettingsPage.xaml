@@ -164,6 +164,16 @@
                                     <Switch x:Name="MonsterTargetingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Walk Arrows"
+                                           FontFamily="Underwood" TextColor="White"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="WalkArrowSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
                         </TableSection>
                         <TableSection>
                             <ViewCell>

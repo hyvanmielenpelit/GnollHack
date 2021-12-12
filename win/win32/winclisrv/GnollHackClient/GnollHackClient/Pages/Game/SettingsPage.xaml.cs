@@ -59,6 +59,11 @@ namespace GnollHackClient.Pages.Game
                 _gamePage.MonsterTargeting = MonsterTargetingSwitch.IsToggled;
             Preferences.Set("MonsterTargeting", MonsterTargetingSwitch.IsToggled);
 
+            if (_gamePage != null)
+                _gamePage.WalkArrows = WalkArrowSwitch.IsToggled;
+            Preferences.Set("WalkArrows", WalkArrowSwitch.IsToggled);
+
+
             App.HideAndroidNavigatioBar = NavBarSwitch.IsToggled;
             Preferences.Set("HideAndroidNavigationBar", App.HideAndroidNavigatioBar);
 
@@ -97,7 +102,7 @@ namespace GnollHackClient.Pages.Game
             App.BackButtonPressed += BackButtonPressed;
 
             int cursor = 0, graphics = 0, msgnum = 0;
-            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, mapgrid = false, playermark = false, monstertargeting = false;
+            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", 1.0f);
@@ -119,6 +124,7 @@ namespace GnollHackClient.Pages.Game
                 hpbars = Preferences.Get("HitPointBars", false);
                 playermark = Preferences.Get("PlayerMark", false);
                 monstertargeting = Preferences.Get("MonsterTargeting", false);
+                walkarrows = Preferences.Get("WalkArrows", true);
                 mem = Preferences.Get("ShowMemoryUsage", false);
                 fps = Preferences.Get("ShowFPS", false);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
@@ -134,6 +140,7 @@ namespace GnollHackClient.Pages.Game
                 hpbars = _gamePage.HitPointBars;
                 playermark = _gamePage.PlayerMark;
                 monstertargeting = _gamePage.MonsterTargeting;
+                walkarrows = _gamePage.WalkArrows;
                 mem = _gamePage.ShowMemoryUsage;
                 fps = _gamePage.ShowFPS;
                 msgnum = _gamePage.NumDisplayedMessages;
@@ -144,6 +151,7 @@ namespace GnollHackClient.Pages.Game
             HitPointBarSwitch.IsToggled = hpbars;
             PlayerMarkSwitch.IsToggled = playermark;
             MonsterTargetingSwitch.IsToggled = monstertargeting;
+            WalkArrowSwitch.IsToggled = walkarrows;
             MemorySwitch.IsToggled = mem;
             FPSSwitch.IsToggled = fps;
             NavBarSwitch.IsToggled = navbar;

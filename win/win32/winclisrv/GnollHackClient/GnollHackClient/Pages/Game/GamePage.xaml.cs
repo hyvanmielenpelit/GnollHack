@@ -118,6 +118,10 @@ namespace GnollHackClient.Pages.Game
         private bool _monsterTargeting = false;
         public bool MonsterTargeting { get { lock (_monsterTargetingLock) { return _monsterTargeting; } } set { lock (_monsterTargetingLock) { _monsterTargeting = value; } } }
 
+        private object _walkArrowLock = new object();
+        private bool _walkArrows = true;
+        public bool WalkArrows { get { lock (_walkArrowLock) { return _walkArrows; } } set { lock (_walkArrowLock) { _walkArrows = value; } } }
+
         private object _classicStatusBarLock = new object();
         private bool _classicStatusBar = false;
         public bool ClassicStatusBar { get { lock (_classicStatusBarLock) { return _classicStatusBar; } } set { lock (_classicStatusBarLock) { _classicStatusBar = value; } } }
@@ -4518,7 +4522,7 @@ namespace GnollHackClient.Pages.Game
                 canvasButtonRect.Left = canvaswidth * (float)(0.2);
                 
 
-                if (_showDirections || MapWalkMode)
+                if (_showDirections || (MapWalkMode && WalkArrows))
                 {
                     SKRect targetrect;
                     float buttonsize = _showDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;
@@ -5929,7 +5933,7 @@ namespace GnollHackClient.Pages.Game
             if (_tileHeight > 0)
                 y = (int)((e.Location.Y - offsetY) / _tileHeight);
 
-            if (!_showDirections && !_showNumberPad)
+            if (!_showDirections && !_showNumberPad && !WalkArrows)
             {
                 if (x > 0 && x < GHConstants.MapCols && y >= 0 && y < GHConstants.MapRows)
                 {
@@ -5949,7 +5953,7 @@ namespace GnollHackClient.Pages.Game
             }
             else
             {
-                float buttonsize = ShowNumberPad ? GHConstants.NumberButtonSize : GHConstants.ArrowButtonSize;
+                float buttonsize = ShowNumberPad ? GHConstants.NumberButtonSize : _showDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;
                 if (e.Location.X >= canvasButtonRect.Left && e.Location.X <= canvasButtonRect.Right && e.Location.Y >= canvasButtonRect.Top && e.Location.Y <= canvasButtonRect.Bottom)
                 {
                     int resp = 0;
