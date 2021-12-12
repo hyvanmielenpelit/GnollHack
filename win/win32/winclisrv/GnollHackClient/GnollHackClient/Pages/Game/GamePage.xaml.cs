@@ -151,6 +151,7 @@ namespace GnollHackClient.Pages.Game
         public bool MapNoClipMode { get; set; }
         public bool MapLookMode { get; set; }
         public bool MapTravelMode { get; set; }
+        public bool MapWalkMode { get { return (!MapTravelMode && !MapLookMode); } }
         public bool ZoomMiniMode { get; set; }
         public bool ZoomAlternateMode { get; set; }
 
@@ -4515,13 +4516,14 @@ namespace GnollHackClient.Pages.Game
 
                 canvasButtonRect.Right = canvaswidth * (float)(0.8);
                 canvasButtonRect.Left = canvaswidth * (float)(0.2);
+                
 
-                if (_showDirections)
+                if (_showDirections || MapWalkMode)
                 {
                     SKRect targetrect;
-                    float buttonsize = GHConstants.ArrowButtonSize;
+                    float buttonsize = _showDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;
                     SKColor oldcolor = textPaint.Color;
-                    textPaint.Color = textPaint.Color.WithAlpha(170);
+                    textPaint.Color = _showDirections ? textPaint.Color.WithAlpha(170) : textPaint.Color.WithAlpha(85);
 
                     for (int i = 0; i < 9; i++)
                     {
