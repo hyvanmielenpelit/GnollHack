@@ -7870,35 +7870,31 @@ namespace GnollHackClient.Pages.Game
                 float canvaswidth = canvasView.CanvasSize.Width;
                 float canvasheight = canvasView.CanvasSize.Height;
                 bool landscape = (canvaswidth > canvasheight);
-                float UsedFontSize = ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
-                textPaint.Typeface = App.DejaVuSansMonoTypeface;
-                textPaint.TextSize = UsedFontSize;
-                textPaint.Color = SKColors.White;
                 float tx = 0, ty = 0;
-                string str = "Hint " + ShownTip;
                 SKRect bounds = new SKRect();
-                float strlength = textPaint.MeasureText(str, ref bounds);
-                tx = canvaswidth / 2 - bounds.Width / 2;
-                ty = canvasheight / 2 - bounds.Height / 2;
+                textPaint.Color = SKColors.White;
+
+                string str = "TestText";
+                textPaint.Typeface = App.LatoRegular;
+                textPaint.TextSize = 36;
+                textPaint.MeasureText(str, ref bounds);
+                float fontsize = Math.Min(48, 36 * 0.2f / (bounds.Width / canvaswidth));
+
+                str = "This is an explanation.";
+                textPaint.Typeface = App.UnderwoodTypeface;
+                textPaint.TextSize = 36;
+                textPaint.MeasureText(str, ref bounds);
+                float centerfontsize = Math.Min(72, 36 * 0.62f / (bounds.Width / canvaswidth));
+
                 float scale_canvas = 1.0f;
                 float target_scale_canvas = 1.0f;
                 float mult_canvas = 1.0f;
                 float prev_bottom = 0;
-                float scale = 1.0f;
-                float target_scale = 1.0f;
-                float mult = 1.0f;
-                float padding = 0.0f;
-                float relX = 0;
-                float relY = 0;
-                float relWidth = 0;
-                float relHeight = 0;
-                SKRect viewrect = new SKRect();
-                SKRect rect = new SKRect();
 
                 switch (ShownTip)
                 {
                     case 0:
-                        textPaint.TextSize = UsedFontSize;
+                        textPaint.TextSize = 36;
                         textPaint.Typeface = App.ARChristyTypeface;
                         str = "Welcome to GnollHack";
                         textPaint.MeasureText(str, ref bounds);
@@ -7920,7 +7916,7 @@ namespace GnollHackClient.Pages.Game
 
                         prev_bottom = ty + textPaint.FontMetrics.Descent;
 
-                        textPaint.TextSize = UsedFontSize;
+                        textPaint.TextSize = 36;
                         textPaint.Typeface = App.UnderwoodTypeface;
                         str = "Let's review the user interface.";
                         textPaint.MeasureText(str, ref bounds);
@@ -7941,34 +7937,34 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText(str, tx, ty, textPaint);
                         break;
                     case 1:
-                        PaintTipButton(canvas, textPaint, GameMenuButton, "This is the main menu.", "Main Menu", 1.5f, 2.5f, false, -0.15f, 0);
+                        PaintTipButton(canvas, textPaint, GameMenuButton, "This opens the main menu.", "Main Menu", 1.5f, centerfontsize, fontsize, false, -0.15f, 0);
                        break;
                     case 2:
-                        PaintTipButton(canvas, textPaint, ESCButton, "This cancels any command.", "ESC Button", 1.5f, 2.5f, false, -1.5f, 0);
+                        PaintTipButton(canvas, textPaint, ESCButton, "This cancels any command.", "Escape Button", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
                         break;
                     case 3:
-                        PaintTipButton(canvas, textPaint, ToggleZoomMiniButton, "This shows the minimap.", "Minimap", 1.5f, 2.0f, false, landscape ? -0.15f  : -0.3f, landscape ? 0 : 1.5f);
+                        PaintTipButton(canvas, textPaint, ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f  : -0.5f, landscape ? 0 : 1.5f);
                         break;
                     case 4:
-                        PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, 4.0f, false, landscape ? -1.5f : -0.15f, 0);
+                        PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0);
                         break;
                     case 5:
-                        PaintTipButton(canvas, textPaint, LookModeButton, "This is the look mode.", "Look Mode", 1.5f, 2.5f, false, -0.15f, 0);
+                        PaintTipButton(canvas, textPaint, LookModeButton, "Learn more about things on the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, 0);
                         break;
                     case 6:
-                        PaintTipButton(canvas, textPaint, ToggleModeButton, "This is the travel mode.", "Travel Mode", 1.5f, 2.7f, false, landscape ? -1.5f : -0.15f, 0);
+                        PaintTipButton(canvas, textPaint, ToggleModeButton, "Move to location or by arrows.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0);
                         break;
                     case 7:
-                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Tap here for status.", "Character and Game Status", 1.0f, 6.0f, true, 0.15f, 1.0f);
+                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Information on character and game.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
                         break;
                     case 8:
-                        PaintTipButton(canvas, textPaint, lWornItemsButton, "Tap here for worn items.", "Worn Items", 1.0f, 2.5f, false, landscape ? -2.0f : -0.5f, 2.0f);
+                        PaintTipButton(canvas, textPaint, lWornItemsButton, "Inventory showing worn items only.", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, 2.0f);
                         break;
                     case 9:
-                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "Tap here to see more messages.", "More messages", 1.0f, 3.5f, true, 0.15f, -1.0f);
+                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "Display older messages.", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
                         break;
                     case 10:
-                        textPaint.TextSize = UsedFontSize;
+                        textPaint.TextSize = 36;
                         textPaint.Typeface = App.ARChristyTypeface;
                         str = "You are all set";
                         textPaint.MeasureText(str, ref bounds);
@@ -7990,7 +7986,7 @@ namespace GnollHackClient.Pages.Game
 
                         prev_bottom = ty + textPaint.FontMetrics.Descent;
 
-                        textPaint.TextSize = UsedFontSize;
+                        textPaint.TextSize = 36;
                         textPaint.Typeface = App.UnderwoodTypeface;
                         str = "Tap to start playing.";
                         textPaint.MeasureText(str, ref bounds);
@@ -8093,15 +8089,12 @@ namespace GnollHackClient.Pages.Game
             return res;
         }
 
-        public void PaintTipButton(SKCanvas canvas, SKPaint textPaint, VisualElement view, string centertext, string boxtext, float radius_mult, float boxsize_mult, bool linefromright, float lineoffsetx, float lineoffsety)
+        public void PaintTipButton(SKCanvas canvas, SKPaint textPaint, VisualElement view, string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety)
         {
             float canvaswidth = canvasView.CanvasSize.Width;
             float canvasheight = canvasView.CanvasSize.Height;
             float tx = 0, ty = 0;
             SKRect bounds = new SKRect();
-            float scale_canvas = 1.0f;
-            float target_scale_canvas = 1.0f;
-            float mult_canvas = 1.0f;
             float scale = 1.0f;
             float target_scale = 1.0f;
             float mult = 1.0f;
@@ -8116,16 +8109,13 @@ namespace GnollHackClient.Pages.Game
             float usedoffsetx = 0;
             float usedoffsety = 0;
             float usedboxwidth = 0;
+            float usedboxheight = 0;
+            float usedboxpadding = 0;
             float usedlinestartoffset = 0;
 
-            textPaint.TextSize = 36;
+            textPaint.TextSize = centertextfontsize;
             textPaint.Typeface = App.UnderwoodTypeface;
             str = centertext;
-            textPaint.MeasureText(str, ref bounds);
-            scale_canvas = Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
-            target_scale_canvas = 0.75f;
-            mult_canvas = target_scale_canvas / scale_canvas;
-            textPaint.TextSize = textPaint.TextSize* mult_canvas;
             textPaint.MeasureText(str, ref bounds);
             tx = canvaswidth / 2 - bounds.Width / 2;
             ty = canvasheight / 2 - bounds.Height / 2;
@@ -8143,9 +8133,17 @@ namespace GnollHackClient.Pages.Game
             relY = viewrect.Top;
             relWidth = viewrect.Width;
             relHeight = viewrect.Height;
+
+            textPaint.Typeface = App.LatoRegular;
+            textPaint.TextSize = boxfontsize;
+            str = boxtext;
+            textPaint.MeasureText(str, ref bounds);
+
             usedoffsetx = relWidth * lineoffsetx;
             usedoffsety = relHeight * lineoffsety;
-            usedboxwidth = relWidth * boxsize_mult;
+            usedboxpadding = bounds.Height * 0.75f;
+            usedboxwidth = bounds.Width + usedboxpadding * 2;
+            usedboxheight = bounds.Height + usedboxpadding * 2;
             usedlinestartoffset = linefromright  ? relWidth / 2 * radius_mult  : - relWidth / 2 * radius_mult;
 
             tx = relX + relWidth / 2;
@@ -8159,24 +8157,15 @@ namespace GnollHackClient.Pages.Game
             textPaint.Color = SKColors.DarkRed;
             textPaint.Style = SKPaintStyle.Fill;
             rect = new SKRect(tx + usedoffsetx + usedlinestartoffset - (linefromright ? 0 : usedboxwidth),
-                ty + usedoffsety - relHeight / 2,
+                ty + usedoffsety - usedboxheight / 2,
                 tx + usedoffsetx + usedlinestartoffset + (linefromright ? usedboxwidth : 0),
-                ty + usedoffsety + relHeight / 2);
+                ty + usedoffsety + usedboxheight / 2);
             canvas.DrawRect(rect, textPaint);
             textPaint.Color = SKColors.Red;
             textPaint.Style = SKPaintStyle.Stroke;
             textPaint.StrokeWidth = relWidth / 25;
             canvas.DrawRect(rect, textPaint);
 
-            textPaint.Typeface = App.DejaVuSansMonoTypeface;
-            textPaint.TextSize = 36;
-            str = boxtext;
-            textPaint.MeasureText(str, ref bounds);
-            scale = Math.Max(bounds.Width / rect.Width, bounds.Height / rect.Height);
-            target_scale = 0.75f;
-            mult = target_scale / scale;
-            textPaint.TextSize = textPaint.TextSize * mult;
-            textPaint.MeasureText(str, ref bounds);
             padding = (rect.Width - bounds.Width) / 2;
             textPaint.Color = SKColors.White;
             textPaint.Style = SKPaintStyle.Fill;
