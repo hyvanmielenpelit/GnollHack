@@ -7949,10 +7949,10 @@ namespace GnollHackClient.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0);
                         break;
                     case 5:
-                        PaintTipButton(canvas, textPaint, LookModeButton, "Learn more about things on the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, 0);
+                        PaintTipButton(canvas, textPaint, LookModeButton, "Learn more about things on the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, landscape ? -0.5f : 0);
                         break;
                     case 6:
-                        PaintTipButton(canvas, textPaint, ToggleModeButton, "Move to location or by arrows.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0);
+                        PaintTipButton(canvas, textPaint, ToggleModeButton, "Move to location or by arrows.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0);
                         break;
                     case 7:
                         PaintTipButton(canvas, textPaint, lAbilitiesButton, "Information on character and game.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
