@@ -8154,6 +8154,7 @@ namespace GnollHackClient.Pages.Game
             textPaint.Style = SKPaintStyle.Stroke;
             textPaint.StrokeWidth = relWidth / 15;
             canvas.DrawCircle(tx, ty, relWidth / 2 * radius_mult, textPaint);
+            textPaint.StrokeWidth = relWidth / 15;
             canvas.DrawLine(tx + usedlinestartoffset + usedoffsetx, ty + usedoffsety, tx + usedlinestartoffset, ty, textPaint);
             textPaint.Color = SKColors.DarkRed;
             textPaint.Style = SKPaintStyle.Fill;
@@ -8164,7 +8165,7 @@ namespace GnollHackClient.Pages.Game
             canvas.DrawRect(rect, textPaint);
             textPaint.Color = SKColors.Red;
             textPaint.Style = SKPaintStyle.Stroke;
-            textPaint.StrokeWidth = relWidth / 15;
+            textPaint.StrokeWidth = relWidth / 25;
             canvas.DrawRect(rect, textPaint);
 
             textPaint.Typeface = App.DejaVuSansMonoTypeface;
