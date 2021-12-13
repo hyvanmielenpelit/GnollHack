@@ -766,9 +766,9 @@ namespace GnollHackClient.Pages.Game
                 bool foundanother = false;
                 long highestcounter = 0;
                 SKPoint speedvector = new SKPoint(0, -1);
-                foreach(GHFloatingText fl in _floatingTexts)
+                foreach (GHFloatingText fl in _floatingTexts)
                 {
-                    if(fl.X == data.x && fl.Y == data.y)
+                    if (fl.X == data.x && fl.Y == data.y)
                     {
                         foundanother = true;
                         if (fl.CreatedAt > highestcounter)
@@ -785,7 +785,7 @@ namespace GnollHackClient.Pages.Game
                     counter = AnimationTimers.general_animation_counter;
                 }
 
-                if(foundanother)
+                if (foundanother)
                 {
                     float YSpeed = Math.Abs(speedvector.Y);
                     float secs = 0.5f / YSpeed;
@@ -2753,7 +2753,7 @@ namespace GnollHackClient.Pages.Game
             canvas.Flush();
         }
 
-        private float[] _gridIntervals = {2.0f, 2.0f};
+        private float[] _gridIntervals = { 2.0f, 2.0f };
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -3196,7 +3196,7 @@ namespace GnollHackClient.Pages.Game
                                                                 }
                                                             }
 
-                                                            if(draw_character)
+                                                            if (draw_character)
                                                             {
                                                                 textPaint.TextSize = UsedFontSize / 4;
                                                                 textPaint.Typeface = App.DejaVuSansMonoTypeface;
@@ -4293,7 +4293,7 @@ namespace GnollHackClient.Pages.Game
                                 textPaint.MeasureText(str, ref textBounds);
                                 tx = (canvaswidth / 2 - textBounds.Width / 2);
                                 ty = maintexty + maintextascent - textPaint.FontMetrics.Descent;
- 
+
                                 /* Shadow first */
                                 {
                                     SKColor oldcolor = textPaint.Color;
@@ -4359,7 +4359,7 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 /* Look mode rectangle */
-                if(MapLookMode)
+                if (MapLookMode)
                 {
                     SKColor oldcolor = textPaint.Color;
                     SKMaskFilter oldfilter = textPaint.MaskFilter;
@@ -4375,7 +4375,7 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 /* Darkening background */
-                if (ForceAllMessages || ShowNumberPad)
+                if (ForceAllMessages || ShowNumberPad || ShownTip >= 0)
                 {
                     textPaint.Style = SKPaintStyle.Fill;
                     textPaint.Color = SKColors.Black.WithAlpha(128);
@@ -4560,7 +4560,7 @@ namespace GnollHackClient.Pages.Game
 
                 canvasButtonRect.Right = canvaswidth * (float)(0.8);
                 canvasButtonRect.Left = canvaswidth * (float)(0.2);
-                
+
 
                 if (_showDirections || (MapWalkMode && WalkArrows))
                 {
@@ -4621,7 +4621,7 @@ namespace GnollHackClient.Pages.Game
                 }
                 else if (ShowNumberPad)
                 {
-                    for(int j = 0; j <= 2; j++)
+                    for (int j = 0; j <= 2; j++)
                     {
                         float buttonsize = GHConstants.NumberButtonSize;
                         float offset = 0;
@@ -5556,6 +5556,9 @@ namespace GnollHackClient.Pages.Game
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
+
+                if (TipView.IsVisible)
+                    TipView.InvalidateSurface();
 
                 double sidesize = Math.Min(Math.Min(80.0, Math.Max(45.0, width / 8)), Math.Min(80.0, Math.Max(45.0, height / 8)));
                 GameMenuButton.WidthRequest = ESCButton.HeightRequest = sidesize;
@@ -6725,7 +6728,7 @@ namespace GnollHackClient.Pages.Game
 
                         if (has_identifiers)
                         {
-                            if(mi.Identifier == 0 && mi.SpecialMark != '\0')
+                            if (mi.Identifier == 0 && mi.SpecialMark != '\0')
                                 str = mi.FormattedSpecialMark;
                             else
                                 str = mi.FormattedAccelerator;
@@ -7771,7 +7774,7 @@ namespace GnollHackClient.Pages.Game
                                 if (btnX >= 0 && btnX < usedButtonsPerRow && btnY >= 0 && btnY < usedButtonsPerColumn)
                                 {
                                     int i, j;
-                                    if(isLandscape)
+                                    if (isLandscape)
                                     {
                                         i = btnY;
                                         j = btnX;
@@ -7790,7 +7793,7 @@ namespace GnollHackClient.Pages.Game
                                             GenericButton_Clicked(CommandCanvas, e, cbi.Command);
                                         else
                                         {
-                                            switch(cbi.Command)
+                                            switch (cbi.Command)
                                             {
                                                 case -2:
                                                     GenericButton_Clicked(sender, e, 'n');
@@ -7866,6 +7869,7 @@ namespace GnollHackClient.Pages.Game
             {
                 float canvaswidth = canvasView.CanvasSize.Width;
                 float canvasheight = canvasView.CanvasSize.Height;
+                bool landscape = (canvaswidth > canvasheight);
                 float UsedFontSize = ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
                 textPaint.Typeface = App.DejaVuSansMonoTypeface;
                 textPaint.TextSize = UsedFontSize;
@@ -7918,7 +7922,7 @@ namespace GnollHackClient.Pages.Game
 
                         textPaint.TextSize = UsedFontSize;
                         textPaint.Typeface = App.UnderwoodTypeface;
-                        str = "Let's review user interface.";
+                        str = "Let's review the user interface.";
                         textPaint.MeasureText(str, ref bounds);
                         scale_canvas = Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
                         target_scale_canvas = 0.8f;
@@ -7937,120 +7941,33 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText(str, tx, ty, textPaint);
                         break;
                     case 1:
-                        textPaint.TextSize = UsedFontSize;
-                        textPaint.Typeface = App.UnderwoodTypeface;
-                        str = "This is the main menu.";
-                        textPaint.MeasureText(str, ref bounds);
-                        scale_canvas = Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
-                        target_scale_canvas = 0.75f;
-                        mult_canvas = target_scale_canvas / scale_canvas;
-                        textPaint.TextSize = textPaint.TextSize * mult_canvas;
-                        textPaint.MeasureText(str, ref bounds);
-                        tx = canvaswidth / 2 - bounds.Width / 2;
-                        ty = canvasheight / 2 - bounds.Height / 2;
-                        textPaint.Style = SKPaintStyle.Fill;
-                        textPaint.Color = SKColors.Black;
-                        textPaint.MaskFilter = _blur;
-                        canvas.DrawText(str, tx + textPaint.TextSize / 15, ty + textPaint.TextSize / 15, textPaint);
-                        textPaint.Style = SKPaintStyle.Fill;
-                        textPaint.Color = SKColors.White;
-                        textPaint.MaskFilter = null;
-                        canvas.DrawText(str, tx, ty, textPaint);
-
-                        viewrect = GetViewScreenRect(GameMenuButton);
-                        relX = viewrect.Left;
-                        relY = viewrect.Top;
-                        relWidth = viewrect.Width;
-                        relHeight = viewrect.Height;
-                        tx = relX + relWidth / 2;
-                        ty = relY + relHeight / 2;
-                        textPaint.Color = SKColors.Red;
-                        textPaint.Style = SKPaintStyle.Stroke;
-                        textPaint.StrokeWidth = relWidth / 15;
-                        canvas.DrawCircle(tx, ty, relWidth / 2 * 1.5f, textPaint);
-                        canvas.DrawLine(tx - relWidth / 2 * 1.5f - relWidth / 6, ty, tx - relWidth / 2 * 1.5f, ty, textPaint);
-                        textPaint.Color = SKColors.DarkRed;
-                        textPaint.Style = SKPaintStyle.Fill;
-                        rect = new SKRect(tx - relWidth / 6 - relWidth / 2 * 1.5f - relWidth * 2,
-                            ty - relHeight / 2,
-                            tx - relWidth / 6 - relWidth / 2 * 1.5f,
-                            ty + relHeight / 2);
-                        canvas.DrawRect(rect, textPaint);
-                        textPaint.Color = SKColors.Red;
-                        textPaint.Style = SKPaintStyle.Stroke;
-                        textPaint.StrokeWidth = relWidth / 15;
-                        canvas.DrawRect(rect, textPaint);
-                        textPaint.TextSize = 36;
-                        str = "Main Menu";
-                        textPaint.MeasureText(str, ref bounds);
-                        scale = Math.Max(bounds.Width / rect.Width, bounds.Height / rect.Height);
-                        target_scale = 0.75f;
-                        mult = target_scale / scale;
-                        textPaint.TextSize = textPaint.TextSize * mult;
-                        textPaint.MeasureText(str, ref bounds);
-                        padding = (rect.Width - bounds.Width) / 2;
-                        textPaint.Color = SKColors.White;
-                        textPaint.Style = SKPaintStyle.Fill;
-                        canvas.DrawText(str, rect.Left + padding, ty + (textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent) / 2 - textPaint.FontMetrics.Ascent, textPaint);
-                        break;
+                        PaintTipButton(canvas, textPaint, GameMenuButton, "This is the main menu.", "Main Menu", 1.5f, 2.5f, false, -0.15f, 0);
+                       break;
                     case 2:
-                        textPaint.TextSize = UsedFontSize;
-                        textPaint.Typeface = App.UnderwoodTypeface;
-                        str = "This button cancels any command.";
-                        textPaint.MeasureText(str, ref bounds);
-                        scale_canvas = Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
-                        target_scale_canvas = 0.75f;
-                        mult_canvas = target_scale_canvas / scale_canvas;
-                        textPaint.TextSize = textPaint.TextSize * mult_canvas;
-                        textPaint.MeasureText(str, ref bounds);
-                        tx = canvaswidth / 2 - bounds.Width / 2;
-                        ty = canvasheight / 2 - bounds.Height / 2;
-                        textPaint.Style = SKPaintStyle.Fill;
-                        textPaint.Color = SKColors.Black;
-                        textPaint.MaskFilter = _blur;
-                        canvas.DrawText(str, tx + textPaint.TextSize / 15, ty + textPaint.TextSize / 15, textPaint);
-                        textPaint.Style = SKPaintStyle.Fill;
-                        textPaint.Color = SKColors.White;
-                        textPaint.MaskFilter = null;
-                        canvas.DrawText(str, tx, ty, textPaint);
-
-                        viewrect = GetViewScreenRect(ESCButton);
-                        relX = viewrect.Left;
-                        relY = viewrect.Top;
-                        relWidth = viewrect.Width;
-                        relHeight = viewrect.Height;
-                        tx = relX + relWidth / 2;
-                        ty = relY + relHeight / 2;
-                        textPaint.Color = SKColors.Red;
-                        textPaint.Style = SKPaintStyle.Stroke;
-                        textPaint.StrokeWidth = relWidth / 15;
-                        canvas.DrawCircle(tx, ty, relWidth / 2 * 1.5f, textPaint);
-                        canvas.DrawLine(tx - relWidth / 2 * 1.5f - relWidth * (1 + 2 / 6), ty, tx - relWidth / 2 * 1.5f, ty, textPaint);
-                        textPaint.Color = SKColors.DarkRed;
-                        textPaint.Style = SKPaintStyle.Fill;
-                        rect = new SKRect(tx - relWidth * (1 + 2 / 6) - relWidth / 2 * 1.5f - relWidth * 2,
-                            ty - relHeight / 2,
-                            tx - relWidth * (1 + 2 / 6) - relWidth / 2 * 1.5f,
-                            ty + relHeight / 2);
-                        canvas.DrawRect(rect, textPaint);
-                        textPaint.Color = SKColors.Red;
-                        textPaint.Style = SKPaintStyle.Stroke;
-                        textPaint.StrokeWidth = relWidth / 15;
-                        canvas.DrawRect(rect, textPaint);
-                        textPaint.TextSize = 36;
-                        str = "ESC Button";
-                        textPaint.MeasureText(str, ref bounds);
-                        scale = Math.Max(bounds.Width / rect.Width, bounds.Height / rect.Height);
-                        target_scale = 0.75f;
-                        mult = target_scale / scale;
-                        textPaint.TextSize = textPaint.TextSize * mult;
-                        textPaint.MeasureText(str, ref bounds);
-                        padding = (rect.Width - bounds.Width) / 2;
-                        textPaint.Color = SKColors.White;
-                        textPaint.Style = SKPaintStyle.Fill;
-                        canvas.DrawText(str, rect.Left + padding, ty + (textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                        PaintTipButton(canvas, textPaint, ESCButton, "This cancels any command.", "ESC Button", 1.5f, 2.5f, false, -1.5f, 0);
                         break;
                     case 3:
+                        PaintTipButton(canvas, textPaint, ToggleZoomMiniButton, "This shows the minimap.", "Minimap", 1.5f, 2.0f, false, landscape ? -0.15f  : -0.3f, landscape ? 0 : 1.5f);
+                        break;
+                    case 4:
+                        PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, 4.0f, false, landscape ? -1.5f : -0.15f, 0);
+                        break;
+                    case 5:
+                        PaintTipButton(canvas, textPaint, LookModeButton, "This is the look mode.", "Look Mode", 1.5f, 2.5f, false, -0.15f, 0);
+                        break;
+                    case 6:
+                        PaintTipButton(canvas, textPaint, ToggleModeButton, "This is the travel mode.", "Travel Mode", 1.5f, 2.7f, false, landscape ? -1.5f : -0.15f, 0);
+                        break;
+                    case 7:
+                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Tap here for status.", "Character and Game Status", 1.0f, 6.0f, true, 0.15f, 1.0f);
+                        break;
+                    case 8:
+                        PaintTipButton(canvas, textPaint, lWornItemsButton, "Tap here for worn items.", "Worn Items", 1.0f, 2.5f, false, landscape ? -2.0f : -0.5f, 2.0f);
+                        break;
+                    case 9:
+                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "Tap here to see more messages.", "More messages", 1.0f, 3.5f, true, 0.15f, -1.0f);
+                        break;
+                    case 10:
                         textPaint.TextSize = UsedFontSize;
                         textPaint.Typeface = App.ARChristyTypeface;
                         str = "You are all set";
@@ -8117,7 +8034,7 @@ namespace GnollHackClient.Pages.Game
                 case SKTouchAction.Released:
                     ShownTip++;
                     TipView.InvalidateSurface();
-                    if(ShownTip >= 4)
+                    if (ShownTip >= 11)
                     {
                         TipView.IsVisible = false;
                         ShownTip = -1;
@@ -8174,6 +8091,95 @@ namespace GnollHackClient.Pages.Game
 
             SKRect res = new SKRect(relX, relY, relX + relWidth, relY + relHeight);
             return res;
+        }
+
+        public void PaintTipButton(SKCanvas canvas, SKPaint textPaint, VisualElement view, string centertext, string boxtext, float radius_mult, float boxsize_mult, bool linefromright, float lineoffsetx, float lineoffsety)
+        {
+            float canvaswidth = canvasView.CanvasSize.Width;
+            float canvasheight = canvasView.CanvasSize.Height;
+            float tx = 0, ty = 0;
+            SKRect bounds = new SKRect();
+            float scale_canvas = 1.0f;
+            float target_scale_canvas = 1.0f;
+            float mult_canvas = 1.0f;
+            float scale = 1.0f;
+            float target_scale = 1.0f;
+            float mult = 1.0f;
+            float padding = 0.0f;
+            float relX = 0;
+            float relY = 0;
+            float relWidth = 0;
+            float relHeight = 0;
+            SKRect viewrect = new SKRect();
+            SKRect rect = new SKRect();
+            string str;
+            float usedoffsetx = 0;
+            float usedoffsety = 0;
+            float usedboxwidth = 0;
+            float usedlinestartoffset = 0;
+
+            textPaint.TextSize = 36;
+            textPaint.Typeface = App.UnderwoodTypeface;
+            str = centertext;
+            textPaint.MeasureText(str, ref bounds);
+            scale_canvas = Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
+            target_scale_canvas = 0.75f;
+            mult_canvas = target_scale_canvas / scale_canvas;
+            textPaint.TextSize = textPaint.TextSize* mult_canvas;
+            textPaint.MeasureText(str, ref bounds);
+            tx = canvaswidth / 2 - bounds.Width / 2;
+            ty = canvasheight / 2 - bounds.Height / 2;
+            textPaint.Style = SKPaintStyle.Fill;
+            textPaint.Color = SKColors.Black;
+            textPaint.MaskFilter = _blur;
+            canvas.DrawText(str, tx + textPaint.TextSize / 15, ty + textPaint.TextSize / 15, textPaint);
+            textPaint.Style = SKPaintStyle.Fill;
+            textPaint.Color = SKColors.White;
+            textPaint.MaskFilter = null;
+            canvas.DrawText(str, tx, ty, textPaint);
+
+            viewrect = GetViewScreenRect(view);
+            relX = viewrect.Left;
+            relY = viewrect.Top;
+            relWidth = viewrect.Width;
+            relHeight = viewrect.Height;
+            usedoffsetx = relWidth * lineoffsetx;
+            usedoffsety = relHeight * lineoffsety;
+            usedboxwidth = relWidth * boxsize_mult;
+            usedlinestartoffset = linefromright  ? relWidth / 2 * radius_mult  : - relWidth / 2 * radius_mult;
+
+            tx = relX + relWidth / 2;
+            ty = relY + relHeight / 2;
+            textPaint.Color = SKColors.Red;
+            textPaint.Style = SKPaintStyle.Stroke;
+            textPaint.StrokeWidth = relWidth / 15;
+            canvas.DrawCircle(tx, ty, relWidth / 2 * radius_mult, textPaint);
+            canvas.DrawLine(tx + usedlinestartoffset + usedoffsetx, ty + usedoffsety, tx + usedlinestartoffset, ty, textPaint);
+            textPaint.Color = SKColors.DarkRed;
+            textPaint.Style = SKPaintStyle.Fill;
+            rect = new SKRect(tx + usedoffsetx + usedlinestartoffset - (linefromright ? 0 : usedboxwidth),
+                ty + usedoffsety - relHeight / 2,
+                tx + usedoffsetx + usedlinestartoffset + (linefromright ? usedboxwidth : 0),
+                ty + usedoffsety + relHeight / 2);
+            canvas.DrawRect(rect, textPaint);
+            textPaint.Color = SKColors.Red;
+            textPaint.Style = SKPaintStyle.Stroke;
+            textPaint.StrokeWidth = relWidth / 15;
+            canvas.DrawRect(rect, textPaint);
+
+            textPaint.Typeface = App.DejaVuSansMonoTypeface;
+            textPaint.TextSize = 36;
+            str = boxtext;
+            textPaint.MeasureText(str, ref bounds);
+            scale = Math.Max(bounds.Width / rect.Width, bounds.Height / rect.Height);
+            target_scale = 0.75f;
+            mult = target_scale / scale;
+            textPaint.TextSize = textPaint.TextSize * mult;
+            textPaint.MeasureText(str, ref bounds);
+            padding = (rect.Width - bounds.Width) / 2;
+            textPaint.Color = SKColors.White;
+            textPaint.Style = SKPaintStyle.Fill;
+            canvas.DrawText(str, rect.Left + padding, ty + usedoffsety + (textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent) / 2 - textPaint.FontMetrics.Ascent, textPaint);
         }
     }
 
