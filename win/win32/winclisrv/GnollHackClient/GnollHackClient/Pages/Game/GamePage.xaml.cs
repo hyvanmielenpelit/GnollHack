@@ -1291,10 +1291,10 @@ namespace GnollHackClient.Pages.Game
                 ShowNumberPad = true;
         }
 
-        public void ShowGUITips(bool blocking)
+        public void ShowGUITips(bool is_game_start)
         {
-            _blockingTipView = blocking;
-            ShownTip = 0;
+            _blockingTipView = is_game_start;
+            ShownTip = is_game_start ? 0 : 1;
             TipView.IsVisible = true;
             TipView.InvalidateSurface();
         }
@@ -7855,7 +7855,7 @@ namespace GnollHackClient.Pages.Game
 
         private object _tipLock = new object();
         private int _shownTip = -1;
-        private int ShownTip { get { int val; lock (_tipLock) { val = _shownTip; } return val; } set { lock (_tipLock) { _shownTip = value; } } }
+        public int ShownTip { get { int val; lock (_tipLock) { val = _shownTip; } return val; } set { lock (_tipLock) { _shownTip = value; } } }
         private bool _blockingTipView = true;
         private void TipView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -8034,7 +8034,7 @@ namespace GnollHackClient.Pages.Game
                 case SKTouchAction.Released:
                     ShownTip++;
                     TipView.InvalidateSurface();
-                    if (ShownTip >= 11)
+                    if (ShownTip >= 11 - (_blockingTipView ? 0 : 1))
                     {
                         TipView.IsVisible = false;
                         ShownTip = -1;

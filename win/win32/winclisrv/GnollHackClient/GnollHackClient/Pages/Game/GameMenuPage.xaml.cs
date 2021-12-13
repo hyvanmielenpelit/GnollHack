@@ -124,5 +124,14 @@ namespace GnollHackClient.Pages.Game
             btnGC.TextColor = Color.Red;
             MainLayout.IsEnabled = true;
         }
+
+        private async void btnTips_Clicked(object sender, EventArgs e)
+        {
+            MainLayout.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            if(_gamePage.ShownTip == -1)
+                _gamePage.ShowGUITips(false);
+            await App.Current.MainPage.Navigation.PopModalAsync();
+        }
     }
 }
