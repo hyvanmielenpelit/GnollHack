@@ -1248,6 +1248,9 @@ namespace GnollHackClient
                     }
                     break;
                 case (int)special_view_types.SPECIAL_VIEW_GUI_TIPS:
+                    //if (Preferences.Get("GUITipsShown", false))
+                    //    break;
+
                     ConcurrentQueue<GHRequest> queue;
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
