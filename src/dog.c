@@ -432,8 +432,7 @@ boolean with_you;
            that spot.  This code doesn't control the final outcome;
            goto_level(do.c) decides who ends up at your target spot
            when there is a monster there too. */
-        if (!MON_AT(u.ux, u.uy)
-            && !rn2(is_tame(mtmp) ? 10 : is_peaceful(mtmp) ? 5 : 2))
+        if (!MON_AT(u.ux, u.uy) && !is_tame(mtmp) && !is_peaceful(mtmp) && !rn2(2))
             rloc_to(mtmp, u.ux, u.uy);
         else
             mnexto(mtmp);
