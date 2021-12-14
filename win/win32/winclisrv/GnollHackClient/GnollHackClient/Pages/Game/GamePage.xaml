@@ -98,12 +98,17 @@
                         </StackLayout>
                     </StackLayout>
 
-                    <StackLayout x:Name="StatusLayout" Padding="0,2"
+                    <StackLayout x:Name="AbilityLayout" Padding="0,2"
                         HorizontalOptions="Start"
                         AbsoluteLayout.LayoutBounds="0.0, 0.0, AutoSize, AutoSize" 
                         AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" >
                         <controls:LabeledImageButton x:Name="lAbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" />
-                        <controls:LabeledImageButton x:Name="lSkillButton" LblText="Skill" BtnLetter="S" LargerFont="True" ImgSourcePath="resource://GnollHackClient.Assets.UI.skill.png" BtnClicked="GHButton_Clicked" />
+                    </StackLayout>
+                    <StackLayout x:Name="StatusLayout" Padding="0,2"
+                        HorizontalOptions="Start"
+                        AbsoluteLayout.LayoutBounds="0.0, 0.5, AutoSize, AutoSize" 
+                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" >
+                        <controls:LabeledImageButton x:Name="lSkillButton" LblText="Skill" BtnLetter="S" LargerFont="True" IsVisible="False" ImgSourcePath="resource://GnollHackClient.Assets.UI.skill.png" BtnClicked="GHButton_Clicked" />
                     </StackLayout>
                 </AbsoluteLayout>
 

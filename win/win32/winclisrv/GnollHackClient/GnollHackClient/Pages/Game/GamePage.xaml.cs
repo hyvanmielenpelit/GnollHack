@@ -107,8 +107,12 @@ namespace GnollHackClient.Pages.Game
         public bool MapGrid { get { lock (_mapGridLock) { return _mapGrid; } } set { lock (_mapGridLock) { _mapGrid = value; } } }
 
         private object _hitPointBarLock = new object();
-        private bool _hitPointBarGrid = false;
-        public bool HitPointBars { get { lock (_hitPointBarLock) { return _hitPointBarGrid; } } set { lock (_hitPointBarLock) { _hitPointBarGrid = value; } } }
+        private bool _hitPointBars = false;
+        public bool HitPointBars { get { lock (_hitPointBarLock) { return _hitPointBars; } } set { lock (_hitPointBarLock) { _hitPointBars = value; } } }
+
+        private object _orbLock = new object();
+        private bool _showOrbs = true;
+        public bool ShowOrbs { get { lock (_orbLock) { return _showOrbs; } } set { lock (_orbLock) { _showOrbs = value; } } }
 
         private object _playerMarkLock = new object();
         private bool _playerMark = false;
@@ -139,6 +143,9 @@ namespace GnollHackClient.Pages.Game
         private MainPage _mainPage;
         private SKBitmap _logoBitmap;
         private SKBitmap[] _arrowBitmap = new SKBitmap[9];
+        private SKBitmap _orbBorderBitmap;
+        private SKBitmap _orbFillBitmap;
+        private SKBitmap _orbGlassBitmap;
 
         public object TargetClipLock = new object();
         public float _originMapOffsetWithNewClipX;
@@ -289,42 +296,9 @@ namespace GnollHackClient.Pages.Game
             {
                 _logoBitmap = SKBitmap.Decode(stream);
             }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_left.png"))
-            {
-                _arrowBitmap[0] = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_up.png"))
-            {
-                _arrowBitmap[1] = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_right.png"))
-            {
-                _arrowBitmap[2] = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_down.png"))
-            {
-                _arrowBitmap[3] = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_upleft.png"))
-            {
-                _arrowBitmap[4] = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.no.png"))
-            {
-                _arrowBitmap[5] = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_upright.png"))
-            {
-                _arrowBitmap[6] = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_downright.png"))
-            {
-                _arrowBitmap[7] = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_downleft.png"))
-            {
-                _arrowBitmap[8] = SKBitmap.Decode(stream);
-            }
+
+            InitializeArrowButtons(assembly);
+            InitializeOrbBitmaps(assembly);
             InitializeMoreCommandButtons();
             await LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear);
 
@@ -4383,6 +4357,8 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 /* Window strings */
+                float lastStatusRowPrintY = 0.0f;
+                float lastStatusRowFontSpacing = 0.0f;
                 canvasButtonRect.Top = 0; /* Maybe overrwritten below */
                 canvasButtonRect.Bottom = canvasheight; /* Maybe overrwritten below */
                 if (_clientGame != null)
@@ -4482,6 +4458,12 @@ namespace GnollHackClient.Pages.Game
                                                 canvas.DrawText(str, tx, ty, textPaint);
                                                 textPaint.Style = SKPaintStyle.Fill;
                                                 xpos += totwidth;
+
+                                                if (_clientGame.Windows[i].WindowType == GHWinType.Status && lastStatusRowPrintY  < ty + textPaint.FontMetrics.Descent)
+                                                {
+                                                    lastStatusRowPrintY = ty + textPaint.FontMetrics.Descent;
+                                                    lastStatusRowFontSpacing = textPaint.FontSpacing;
+                                                }
                                             }
                                             j++;
                                         }
@@ -4555,12 +4537,66 @@ namespace GnollHackClient.Pages.Game
                             }
                         }
                     }
-
                 }
 
+                /* HP and MP */
+                if (ShowOrbs && StatusFields != null && StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "" && StatusFields[(int)statusfields.BL_HPMAX].Text != "0" && !ForceAllMessages)
+                {
+                    tx = 5.0f;
+                    ty = lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing;
+                    float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
+                    SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
+                    float orbfillpercentage = 0.0f;
+                    string valtext = "";
+                    string maxtext = "";
+                    lock (StatusFieldLock)
+                    {
+                        bool pctset = false;
+                        if (StatusFields[(int)statusfields.BL_HP] != null && StatusFields[(int)statusfields.BL_HP].Text != null && StatusFields[(int)statusfields.BL_HP].Text != "" && StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "")
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_HP].Text;
+                            maxtext = StatusFields[(int)statusfields.BL_HPMAX].Text;
+                            int hp = 0, hpmax = 1;
+                            if (int.TryParse(StatusFields[(int)statusfields.BL_HP].Text, out hp) && int.TryParse(StatusFields[(int)statusfields.BL_HPMAX].Text, out hpmax))
+                            {
+                                if (hpmax > 0)
+                                {
+                                    orbfillpercentage = (float)hp / (float)hpmax;
+                                    pctset = true;
+                                }
+                            }
+                            if (!pctset)
+                                orbfillpercentage = ((float)StatusFields[(int)statusfields.BL_HP].Percent) / 100.0f;
+                        }
+                    }
+                    DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage);
+
+                    orbfillpercentage = 0.0f;
+                    valtext = "";
+                    maxtext = "";
+                    lock (StatusFieldLock)
+                    {
+                        if (StatusFields[(int)statusfields.BL_ENE] != null && StatusFields[(int)statusfields.BL_ENE].Text != null && StatusFields[(int)statusfields.BL_ENEMAX] != null && StatusFields[(int)statusfields.BL_ENE].Text != "" && StatusFields[(int)statusfields.BL_ENEMAX].Text != null && StatusFields[(int)statusfields.BL_ENEMAX].Text != "")
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_ENE].Text;
+                            maxtext = StatusFields[(int)statusfields.BL_ENEMAX].Text;
+                            int en = 0, enmax = 1;
+                            if (int.TryParse(StatusFields[(int)statusfields.BL_ENE].Text, out en) && int.TryParse(StatusFields[(int)statusfields.BL_ENEMAX].Text, out enmax))
+                            {
+                                if (enmax > 0)
+                                {
+                                    orbfillpercentage = (float)en / (float)enmax;
+                                }
+                            }
+                        }
+                    }
+                    orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
+                    DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage);
+                }
+
+                /* Number Pad and Direction Arrows */
                 canvasButtonRect.Right = canvaswidth * (float)(0.8);
                 canvasButtonRect.Left = canvaswidth * (float)(0.2);
-
 
                 if (_showDirections || (MapWalkMode && WalkArrows))
                 {
@@ -7535,6 +7571,61 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private void InitializeArrowButtons(Assembly assembly)
+        {
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_left.png"))
+            {
+                _arrowBitmap[0] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_up.png"))
+            {
+                _arrowBitmap[1] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_right.png"))
+            {
+                _arrowBitmap[2] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_down.png"))
+            {
+                _arrowBitmap[3] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_upleft.png"))
+            {
+                _arrowBitmap[4] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.no.png"))
+            {
+                _arrowBitmap[5] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_upright.png"))
+            {
+                _arrowBitmap[6] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_downright.png"))
+            {
+                _arrowBitmap[7] = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.arrow_downleft.png"))
+            {
+                _arrowBitmap[8] = SKBitmap.Decode(stream);
+            }
+        }
+
+        private void InitializeOrbBitmaps(Assembly assembly)
+        {
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.orb_border.png"))
+            {
+                _orbBorderBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.orb_fill.png"))
+            {
+                _orbFillBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.orb_glass.png"))
+            {
+                _orbGlassBitmap = SKBitmap.Decode(stream);
+            }
+        }
 
         public GHCommandButtonItem[,] _moreBtnMatrix = new GHCommandButtonItem[GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
         public SKBitmap[,] _moreBtnBitmaps = new SKBitmap[GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
@@ -7918,7 +8009,7 @@ namespace GnollHackClient.Pages.Game
 
                         textPaint.TextSize = 36;
                         textPaint.Typeface = App.UnderwoodTypeface;
-                        str = "Let's review the user interface.";
+                        str = "Let's review the user interface";
                         textPaint.MeasureText(str, ref bounds);
                         scale_canvas = Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
                         target_scale_canvas = 0.8f;
@@ -7949,19 +8040,19 @@ namespace GnollHackClient.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0);
                         break;
                     case 5:
-                        PaintTipButton(canvas, textPaint, LookModeButton, "Learn more about things on the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, landscape ? -0.5f : 0);
+                        PaintTipButton(canvas, textPaint, LookModeButton, "This allows you to inspect the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, landscape ? -0.5f : 0);
                         break;
                     case 6:
-                        PaintTipButton(canvas, textPaint, ToggleModeButton, "Move to location or by arrows.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0);
+                        PaintTipButton(canvas, textPaint, ToggleModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0);
                         break;
                     case 7:
-                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Information on character and game.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
+                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Some menus do not have buttons.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
                         break;
                     case 8:
-                        PaintTipButton(canvas, textPaint, lWornItemsButton, "Inventory showing worn items only.", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, 2.0f);
+                        PaintTipButton(canvas, textPaint, lWornItemsButton, "Instead, tap a certain place on screen.", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, 2.0f);
                         break;
                     case 9:
-                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "Display older messages.", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
+                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "This is the last special location.", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
                         break;
                     case 10:
                         textPaint.TextSize = 36;
@@ -7988,7 +8079,7 @@ namespace GnollHackClient.Pages.Game
 
                         textPaint.TextSize = 36;
                         textPaint.Typeface = App.UnderwoodTypeface;
-                        str = "Tap to start playing.";
+                        str = "Tap to start playing";
                         textPaint.MeasureText(str, ref bounds);
                         scale_canvas = Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
                         target_scale_canvas = 0.8f;
@@ -8170,6 +8261,71 @@ namespace GnollHackClient.Pages.Game
             textPaint.Color = SKColors.White;
             textPaint.Style = SKPaintStyle.Fill;
             canvas.DrawText(str, rect.Left + padding, ty + usedoffsety + (textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+        }
+
+        private void DrawOrb(SKCanvas canvas, SKPaint textPaint, SKRect orbBorderDest, SKColor fillcolor, string val, string maxval, float orbfillpercentage)
+        {
+            float orbwidth = orbBorderDest.Width / 230.0f * 210.0f;
+            float orbheight = orbBorderDest.Width / 230.0f * 210.0f;
+            SKRect orbDest = new SKRect(orbBorderDest.Left + (orbBorderDest.Width - orbwidth) / 2,
+                orbBorderDest.Top + (orbBorderDest.Height - orbheight) / 2,
+                orbBorderDest.Left + (orbBorderDest.Width - orbwidth) / 2 + orbwidth,
+                orbBorderDest.Top + (orbBorderDest.Height - orbheight) / 2 + orbheight);
+            textPaint.Color = SKColors.White;
+            canvas.DrawBitmap(_orbBorderBitmap, orbBorderDest, textPaint);
+            if (orbfillpercentage < 0)
+                orbfillpercentage = 0;
+            if (orbfillpercentage > 1)
+                orbfillpercentage = 1;
+            SKRect orbFillSrc = new SKRect(0.0f, (float)_orbFillBitmap.Height * (1.0f - orbfillpercentage), (float)_orbFillBitmap.Width, (float)_orbFillBitmap.Height);
+            SKRect orbFillDest = new SKRect(orbDest.Left, orbDest.Top + orbDest.Height * (1.0f - orbfillpercentage), orbDest.Right, orbDest.Bottom);
+            textPaint.Color = SKColors.White.WithAlpha(192);
+            if (fillcolor == SKColors.Red)
+                textPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+                    {
+                        -1.0f, 0,     0,    0, 255f,
+                        0,     1.0f,  0,    0, 0,
+                        0,     0,     1.0f, 0, 0,
+                        0,     0,     0,    1, 0
+                    });
+            else if (fillcolor == SKColors.Blue)
+                textPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+                    {
+                        1.0f,  0,      0,    0,   0,
+                        0,     1.0f,   0,    0,   0,
+                        0,     0,     -1.0f, 0,   255f,
+                        0,     0,     0,     1,   0
+                    });
+            else
+                textPaint.ColorFilter = null;
+            canvas.DrawBitmap(_orbFillBitmap, orbFillSrc, orbFillDest, textPaint);
+            textPaint.ColorFilter = null;
+            textPaint.Color = SKColors.White;
+            canvas.DrawBitmap(_orbGlassBitmap, orbDest, textPaint);
+
+            if(val != null && val != "")
+            {
+                textPaint.Color = SKColors.White;
+                textPaint.Style = SKPaintStyle.Fill;
+                textPaint.TextSize = 36;
+                textPaint.Typeface = App.DiabloTypeface;
+                SKRect bounds = new SKRect();
+                textPaint.MeasureText(val.Length > 4 ? val : "9999", ref bounds);
+                float scale = bounds.Width / orbwidth;
+                if (scale > 0)
+                    textPaint.TextSize = textPaint.TextSize * 0.90f / scale;
+
+                float strwidth = textPaint.MeasureText(val, ref bounds);
+                float tx = orbDest.Left + (orbDest.Width - strwidth) / 2;
+                float ty = orbDest.Top + (orbDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2 - textPaint.FontMetrics.Ascent;
+                canvas.DrawText(val, tx, ty, textPaint);
+                textPaint.Style = SKPaintStyle.Stroke;
+                textPaint.StrokeWidth = textPaint.TextSize / 20;
+                textPaint.Color = SKColors.Black;
+                canvas.DrawText(val, tx, ty, textPaint);
+                textPaint.Style = SKPaintStyle.Fill;
+            }
+
         }
     }
 

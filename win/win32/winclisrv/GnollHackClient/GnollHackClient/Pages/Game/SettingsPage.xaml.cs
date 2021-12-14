@@ -52,6 +52,10 @@ namespace GnollHackClient.Pages.Game
             Preferences.Set("HitPointBars", HitPointBarSwitch.IsToggled);
 
             if (_gamePage != null)
+                _gamePage.ShowOrbs = OrbSwitch.IsToggled;
+            Preferences.Set("ShowOrbs", OrbSwitch.IsToggled);
+
+            if (_gamePage != null)
                 _gamePage.PlayerMark = PlayerMarkSwitch.IsToggled;
             Preferences.Set("PlayerMark", PlayerMarkSwitch.IsToggled);
 
@@ -102,7 +106,7 @@ namespace GnollHackClient.Pages.Game
             App.BackButtonPressed += BackButtonPressed;
 
             int cursor = 0, graphics = 0, msgnum = 0;
-            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, orbs = true, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", 1.0f);
@@ -122,6 +126,7 @@ namespace GnollHackClient.Pages.Game
                 ForceMaxMessageSwitch.IsEnabled = false;
                 ForceMaxMessageLabel.TextColor = Color.Gray;
                 hpbars = Preferences.Get("HitPointBars", false);
+                orbs = Preferences.Get("ShowOrbs", true);
                 playermark = Preferences.Get("PlayerMark", false);
                 monstertargeting = Preferences.Get("MonsterTargeting", false);
                 walkarrows = Preferences.Get("WalkArrows", true);
@@ -138,6 +143,7 @@ namespace GnollHackClient.Pages.Game
                 ForceMaxMessageSwitch.IsEnabled = true;
                 ForceMaxMessageLabel.TextColor = Color.White;
                 hpbars = _gamePage.HitPointBars;
+                orbs = _gamePage.ShowOrbs;
                 playermark = _gamePage.PlayerMark;
                 monstertargeting = _gamePage.MonsterTargeting;
                 walkarrows = _gamePage.WalkArrows;
@@ -149,6 +155,7 @@ namespace GnollHackClient.Pages.Game
             GraphicsPicker.SelectedIndex = graphics;
             GridSwitch.IsToggled = mapgrid;
             HitPointBarSwitch.IsToggled = hpbars;
+            OrbSwitch.IsToggled = orbs;
             PlayerMarkSwitch.IsToggled = playermark;
             MonsterTargetingSwitch.IsToggled = monstertargeting;
             WalkArrowSwitch.IsToggled = walkarrows;

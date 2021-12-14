@@ -94,6 +94,9 @@
     <None Remove="Assets\UI\no.png" />
     <None Remove="Assets\UI\offer.png" />
     <None Remove="Assets\UI\open.png" />
+    <None Remove="Assets\UI\orb_border.png" />
+    <None Remove="Assets\UI\orb_fill.png" />
+    <None Remove="Assets\UI\orb_glass.png" />
     <None Remove="Assets\UI\pay.png" />
     <None Remove="Assets\UI\pickup.png" />
     <None Remove="Assets\UI\pray.png" />
@@ -185,6 +188,9 @@
     <EmbeddedResource Include="Assets\UI\no.png" />
     <EmbeddedResource Include="Assets\UI\offer.png" />
     <EmbeddedResource Include="Assets\UI\open.png" />
+    <EmbeddedResource Include="Assets\UI\orb_border.png" />
+    <EmbeddedResource Include="Assets\UI\orb_fill.png" />
+    <EmbeddedResource Include="Assets\UI\orb_glass.png" />
     <EmbeddedResource Include="Assets\UI\pay.png" />
     <EmbeddedResource Include="Assets\UI\pickup.png" />
     <EmbeddedResource Include="Assets\UI\pray.png" />
