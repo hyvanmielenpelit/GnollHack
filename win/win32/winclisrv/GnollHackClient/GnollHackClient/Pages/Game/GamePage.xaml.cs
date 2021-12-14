@@ -142,10 +142,17 @@ namespace GnollHackClient.Pages.Game
 
         private MainPage _mainPage;
         private SKBitmap _logoBitmap;
+        private SKBitmap _skillBitmap;
         private SKBitmap[] _arrowBitmap = new SKBitmap[9];
         private SKBitmap _orbBorderBitmap;
         private SKBitmap _orbFillBitmap;
+        private SKBitmap _orbFillBitmapRed;
+        private SKBitmap _orbFillBitmapBlue;
         private SKBitmap _orbGlassBitmap;
+
+        private object _skillRectLock = new object();
+        private SKRect _skillRect = new SKRect();
+        public SKRect SkillRect { get { SKRect val; lock (_skillRectLock) { val = _skillRect; } return val;  } set { lock (_skillRectLock) { _skillRect = value; } } }
 
         public object TargetClipLock = new object();
         public float _originMapOffsetWithNewClipX;
@@ -295,6 +302,10 @@ namespace GnollHackClient.Pages.Game
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack-logo-test-2.png"))
             {
                 _logoBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.skill.png"))
+            {
+                _skillBitmap = SKBitmap.Decode(stream);
             }
 
             InitializeArrowButtons(assembly);
@@ -985,10 +996,10 @@ namespace GnollHackClient.Pages.Game
                                 DisplayPopupText(req.ScreenTextData);
                                 break;
                             case GHRequestType.ShowSkillButton:
-                                lSkillButton.IsVisible = true;
+                                //lSkillButton.IsVisible = true;
                                 break;
                             case GHRequestType.HideSkillButton:
-                                lSkillButton.IsVisible = false;
+                                //lSkillButton.IsVisible = false;
                                 break;
                             case GHRequestType.FadeToBlack:
                                 FadeToBlack((uint)req.RequestInt);
@@ -4539,60 +4550,97 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
 
-                /* HP and MP */
-                if (ShowOrbs && StatusFields != null && StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "" && StatusFields[(int)statusfields.BL_HPMAX].Text != "0" && !ForceAllMessages)
+                bool statusfieldsok = false;
+                lock (StatusFieldLock)
                 {
-                    tx = 5.0f;
-                    ty = lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing;
-                    float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
-                    SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
-                    float orbfillpercentage = 0.0f;
-                    string valtext = "";
-                    string maxtext = "";
-                    lock (StatusFieldLock)
-                    {
-                        bool pctset = false;
-                        if (StatusFields[(int)statusfields.BL_HP] != null && StatusFields[(int)statusfields.BL_HP].Text != null && StatusFields[(int)statusfields.BL_HP].Text != "" && StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "")
-                        {
-                            valtext = StatusFields[(int)statusfields.BL_HP].Text;
-                            maxtext = StatusFields[(int)statusfields.BL_HPMAX].Text;
-                            int hp = 0, hpmax = 1;
-                            if (int.TryParse(StatusFields[(int)statusfields.BL_HP].Text, out hp) && int.TryParse(StatusFields[(int)statusfields.BL_HPMAX].Text, out hpmax))
-                            {
-                                if (hpmax > 0)
-                                {
-                                    orbfillpercentage = (float)hp / (float)hpmax;
-                                    pctset = true;
-                                }
-                            }
-                            if (!pctset)
-                                orbfillpercentage = ((float)StatusFields[(int)statusfields.BL_HP].Percent) / 100.0f;
-                        }
-                    }
-                    DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage);
-
-                    orbfillpercentage = 0.0f;
-                    valtext = "";
-                    maxtext = "";
-                    lock (StatusFieldLock)
-                    {
-                        if (StatusFields[(int)statusfields.BL_ENE] != null && StatusFields[(int)statusfields.BL_ENE].Text != null && StatusFields[(int)statusfields.BL_ENEMAX] != null && StatusFields[(int)statusfields.BL_ENE].Text != "" && StatusFields[(int)statusfields.BL_ENEMAX].Text != null && StatusFields[(int)statusfields.BL_ENEMAX].Text != "")
-                        {
-                            valtext = StatusFields[(int)statusfields.BL_ENE].Text;
-                            maxtext = StatusFields[(int)statusfields.BL_ENEMAX].Text;
-                            int en = 0, enmax = 1;
-                            if (int.TryParse(StatusFields[(int)statusfields.BL_ENE].Text, out en) && int.TryParse(StatusFields[(int)statusfields.BL_ENEMAX].Text, out enmax))
-                            {
-                                if (enmax > 0)
-                                {
-                                    orbfillpercentage = (float)en / (float)enmax;
-                                }
-                            }
-                        }
-                    }
-                    orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
-                    DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage);
+                    statusfieldsok = StatusFields != null;
                 }
+
+                if (statusfieldsok && !ForceAllMessages)
+                {
+                    bool orbsok = false;
+                    bool skillbuttonok = false;
+                    lock (StatusFieldLock)
+                    {
+                        orbsok = StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "" && StatusFields[(int)statusfields.BL_HPMAX].Text != "0";
+                        skillbuttonok = StatusFields[(int)statusfields.BL_SKILL] != null && StatusFields[(int)statusfields.BL_SKILL].Text != null && StatusFields[(int)statusfields.BL_SKILL].Text == "Skill";
+                    }
+
+                    float lastdrawnrecty = lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing;
+                    float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
+                    tx = 5.0f;
+                    ty = lastdrawnrecty;
+                    /* HP and MP */
+                    if (ShowOrbs && orbsok)
+                    {
+                        SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
+                        float orbfillpercentage = 0.0f;
+                        string valtext = "";
+                        string maxtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            bool pctset = false;
+                            if (StatusFields[(int)statusfields.BL_HP] != null && StatusFields[(int)statusfields.BL_HP].Text != null && StatusFields[(int)statusfields.BL_HP].Text != "" && StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "")
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_HP].Text;
+                                maxtext = StatusFields[(int)statusfields.BL_HPMAX].Text;
+                                int hp = 0, hpmax = 1;
+                                if (int.TryParse(StatusFields[(int)statusfields.BL_HP].Text, out hp) && int.TryParse(StatusFields[(int)statusfields.BL_HPMAX].Text, out hpmax))
+                                {
+                                    if (hpmax > 0)
+                                    {
+                                        orbfillpercentage = (float)hp / (float)hpmax;
+                                        pctset = true;
+                                    }
+                                }
+                                if (!pctset)
+                                    orbfillpercentage = ((float)StatusFields[(int)statusfields.BL_HP].Percent) / 100.0f;
+                            }
+                        }
+                        DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage);
+
+                        orbfillpercentage = 0.0f;
+                        valtext = "";
+                        maxtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_ENE] != null && StatusFields[(int)statusfields.BL_ENE].Text != null && StatusFields[(int)statusfields.BL_ENEMAX] != null && StatusFields[(int)statusfields.BL_ENE].Text != "" && StatusFields[(int)statusfields.BL_ENEMAX].Text != null && StatusFields[(int)statusfields.BL_ENEMAX].Text != "")
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_ENE].Text;
+                                maxtext = StatusFields[(int)statusfields.BL_ENEMAX].Text;
+                                int en = 0, enmax = 1;
+                                if (int.TryParse(StatusFields[(int)statusfields.BL_ENE].Text, out en) && int.TryParse(StatusFields[(int)statusfields.BL_ENEMAX].Text, out enmax))
+                                {
+                                    if (enmax > 0)
+                                    {
+                                        orbfillpercentage = (float)en / (float)enmax;
+                                    }
+                                }
+                            }
+                        }
+                        orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
+                        DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage);
+                        lastdrawnrecty = orbBorderDest.Bottom;
+                    }
+
+                    if (skillbuttonok)
+                    {
+                        SKRect skillDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
+                        SkillRect = skillDest;
+                        textPaint.Color = SKColors.White;
+                        textPaint.Typeface = App.LatoRegular;
+                        textPaint.TextSize = 9.5f * skillDest.Width / 50.0f;
+                        textPaint.TextAlign = SKTextAlign.Center;
+                        canvas.DrawBitmap(_skillBitmap, skillDest, textPaint);
+                        float text_x = (skillDest.Left + skillDest.Right) / 2;
+                        float text_y = skillDest.Bottom - textPaint.FontMetrics.Ascent;
+                        canvas.DrawText("Skills", text_x, text_y, textPaint);
+                        textPaint.TextAlign = SKTextAlign.Left;
+                    }
+                    else
+                        SkillRect = new SKRect();
+                }
+
 
                 /* Number Pad and Direction Arrows */
                 canvasButtonRect.Right = canvaswidth * (float)(0.8);
@@ -5788,6 +5836,7 @@ namespace GnollHackClient.Pages.Game
         public float _mapOffsetX = 0;
         public float _mapOffsetY = 0;
         private bool _touchMoved = false;
+        private bool _touchWithinSkillButton = false;
         private object _savedSender = null;
         private SKTouchEventArgs _savedEventArgs = null;
 
@@ -5826,6 +5875,7 @@ namespace GnollHackClient.Pages.Game
                     case SKTouchAction.Pressed:
                         _savedSender = null;
                         _savedEventArgs = null;
+                        _touchWithinSkillButton = false;
 
                         if (TouchDictionary.ContainsKey(e.Id))
                             TouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
@@ -5834,6 +5884,10 @@ namespace GnollHackClient.Pages.Game
 
                         if (TouchDictionary.Count > 1)
                             _touchMoved = true;
+                        else if (SkillRect.Contains(e.Location) && !ForceAllMessages)
+                        {
+                            _touchWithinSkillButton = true;
+                        }
                         else if (!MapLookMode && !MapTravelMode && !ForceAllMessages)
                         {
                             _savedSender = sender;
@@ -5864,7 +5918,11 @@ namespace GnollHackClient.Pages.Game
 
                                 if (TouchDictionary.Count == 1)
                                 {
-                                    if (!MapLookMode && !MapTravelMode && !ForceAllMessages)
+                                    if (_touchWithinSkillButton)
+                                    {
+                                        /* Do nothing */
+                                    }
+                                    else if (!MapLookMode && !MapTravelMode && !ForceAllMessages)
                                     {
                                         /* Move the save location */
                                         _savedSender = sender;
@@ -5900,6 +5958,7 @@ namespace GnollHackClient.Pages.Game
                                 {
                                     _savedSender = null;
                                     _savedEventArgs = null;
+                                    _touchWithinSkillButton = false;
 
                                     SKPoint prevloc = TouchDictionary[e.Id].Location;
                                     SKPoint curloc = e.Location;
@@ -5950,21 +6009,28 @@ namespace GnollHackClient.Pages.Game
                             _savedSender = null;
                             _savedEventArgs = null;
 
-                            TouchEntry entry;
-                            bool res = TouchDictionary.TryGetValue(e.Id, out entry);
-                            long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
-
-                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_touchMoved)
+                            if (_touchWithinSkillButton)
                             {
-                                if (ForceAllMessages)
-                                    ToggleMessageNumberButton_Clicked(sender, e);
-                                else
-                                    IssueNHCommandViaTouch(sender, e);
+                                GenericButton_Clicked(sender, e, (int)'S');
                             }
-                            if (TouchDictionary.ContainsKey(e.Id))
-                                TouchDictionary.Remove(e.Id);
-                            if (TouchDictionary.Count == 0)
-                                _touchMoved = false;
+                            else
+                            {
+                                TouchEntry entry;
+                                bool res = TouchDictionary.TryGetValue(e.Id, out entry);
+                                long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+
+                                if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_touchMoved)
+                                {
+                                    if (ForceAllMessages)
+                                        ToggleMessageNumberButton_Clicked(sender, e);
+                                    else
+                                        IssueNHCommandViaTouch(sender, e);
+                                }
+                                if (TouchDictionary.ContainsKey(e.Id))
+                                    TouchDictionary.Remove(e.Id);
+                                if (TouchDictionary.Count == 0)
+                                    _touchMoved = false;
+                            }
                             e.Handled = true;
                         }
                         break;
@@ -7621,6 +7687,39 @@ namespace GnollHackClient.Pages.Game
             {
                 _orbFillBitmap = SKBitmap.Decode(stream);
             }
+
+            using (SKPaint bmpPaint = new SKPaint())
+            {
+                bmpPaint.Color = SKColors.White.WithAlpha(192);
+
+                var redbitmap = new SKBitmap(_orbFillBitmap.Width, _orbFillBitmap.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+                var redcanvas = new SKCanvas(redbitmap);
+                redcanvas.Clear(SKColors.Transparent);
+                bmpPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+                    {
+                    -1.0f, 0,     0,    0, 255f,
+                    0,     1.0f,  0,    0, 0,
+                    0,     0,     1.0f, 0, 0,
+                    0,     0,     0,    1, 0
+                    });
+                redcanvas.DrawBitmap(_orbFillBitmap, 0, 0, bmpPaint);
+                _orbFillBitmapRed = redbitmap;
+
+                var bluebitmap = new SKBitmap(_orbFillBitmap.Width, _orbFillBitmap.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+                var bluecanvas = new SKCanvas(bluebitmap);
+                bluecanvas.Clear(SKColors.Transparent);
+                bmpPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+                    {
+                    1.0f,  0,      0,    0,   0,
+                    0,     1.0f,   0,    0,   0,
+                    0,     0,     -1.0f, 0,   255f,
+                    0,     0,     0,     1,   0
+                    });
+
+                bluecanvas.DrawBitmap(_orbFillBitmap, 0, 0, bmpPaint);
+                _orbFillBitmapBlue = bluebitmap;
+            }
+
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.orb_glass.png"))
             {
                 _orbGlassBitmap = SKBitmap.Decode(stream);
@@ -8277,30 +8376,31 @@ namespace GnollHackClient.Pages.Game
                 orbfillpercentage = 0;
             if (orbfillpercentage > 1)
                 orbfillpercentage = 1;
-            SKRect orbFillSrc = new SKRect(0.0f, (float)_orbFillBitmap.Height * (1.0f - orbfillpercentage), (float)_orbFillBitmap.Width, (float)_orbFillBitmap.Height);
+            SKBitmap fillBitmap = fillcolor == SKColors.Red ? _orbFillBitmapRed : fillcolor == SKColors.Blue ? _orbFillBitmapBlue : _orbFillBitmap;
+            SKRect orbFillSrc = new SKRect(0.0f, (float)fillBitmap.Height * (1.0f - orbfillpercentage), (float)fillBitmap.Width, (float)fillBitmap.Height);
             SKRect orbFillDest = new SKRect(orbDest.Left, orbDest.Top + orbDest.Height * (1.0f - orbfillpercentage), orbDest.Right, orbDest.Bottom);
-            textPaint.Color = SKColors.White.WithAlpha(192);
-            if (fillcolor == SKColors.Red)
-                textPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
-                    {
-                        -1.0f, 0,     0,    0, 255f,
-                        0,     1.0f,  0,    0, 0,
-                        0,     0,     1.0f, 0, 0,
-                        0,     0,     0,    1, 0
-                    });
-            else if (fillcolor == SKColors.Blue)
-                textPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
-                    {
-                        1.0f,  0,      0,    0,   0,
-                        0,     1.0f,   0,    0,   0,
-                        0,     0,     -1.0f, 0,   255f,
-                        0,     0,     0,     1,   0
-                    });
-            else
-                textPaint.ColorFilter = null;
-            canvas.DrawBitmap(_orbFillBitmap, orbFillSrc, orbFillDest, textPaint);
-            textPaint.ColorFilter = null;
-            textPaint.Color = SKColors.White;
+            //textPaint.Color = SKColors.White.WithAlpha(192);
+            //if (fillcolor == SKColors.Red)
+            //    textPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+            //        {
+            //            -1.0f, 0,     0,    0, 255f,
+            //            0,     1.0f,  0,    0, 0,
+            //            0,     0,     1.0f, 0, 0,
+            //            0,     0,     0,    1, 0
+            //        });
+            //else if (fillcolor == SKColors.Blue)
+            //    textPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+            //        {
+            //            1.0f,  0,      0,    0,   0,
+            //            0,     1.0f,   0,    0,   0,
+            //            0,     0,     -1.0f, 0,   255f,
+            //            0,     0,     0,     1,   0
+            //        });
+            //else
+            //    textPaint.ColorFilter = null;
+            canvas.DrawBitmap(fillBitmap, orbFillSrc, orbFillDest, textPaint);
+            //textPaint.ColorFilter = null;
+            //textPaint.Color = SKColors.White;
             canvas.DrawBitmap(_orbGlassBitmap, orbDest, textPaint);
 
             if(val != null && val != "")
