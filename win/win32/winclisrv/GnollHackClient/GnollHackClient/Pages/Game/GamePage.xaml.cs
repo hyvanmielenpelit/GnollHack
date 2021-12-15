@@ -154,6 +154,14 @@ namespace GnollHackClient.Pages.Game
         private SKRect _skillRect = new SKRect();
         public SKRect SkillRect { get { SKRect val; lock (_skillRectLock) { val = _skillRect; } return val;  } set { lock (_skillRectLock) { _skillRect = value; } } }
 
+        private object _healthRectLock = new object();
+        private SKRect _healthRect = new SKRect();
+        public SKRect HealthRect { get { SKRect val; lock (_healthRectLock) { val = _healthRect; } return val; } set { lock (_healthRectLock) { _healthRect = value; } } }
+
+        private object _manaRectLock = new object();
+        private SKRect _manaRect = new SKRect();
+        public SKRect ManaRect { get { SKRect val; lock (_manaRectLock) { val = _manaRect; } return val; } set { lock (_manaRectLock) { _manaRect = value; } } }
+
         public object TargetClipLock = new object();
         public float _originMapOffsetWithNewClipX;
         public float _originMapOffsetWithNewClipY;
@@ -4552,6 +4560,8 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 SkillRect = new SKRect();
+                HealthRect = new SKRect();
+                ManaRect = new SKRect();
                 bool statusfieldsok = false;
                 lock (StatusFieldLock)
                 {
@@ -4575,7 +4585,6 @@ namespace GnollHackClient.Pages.Game
                     /* HP and MP */
                     if (ShowOrbs && orbsok)
                     {
-                        SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
                         float orbfillpercentage = 0.0f;
                         string valtext = "";
                         string maxtext = "";
@@ -4599,6 +4608,8 @@ namespace GnollHackClient.Pages.Game
                                     orbfillpercentage = ((float)StatusFields[(int)statusfields.BL_HP].Percent) / 100.0f;
                             }
                         }
+                        SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
+                        HealthRect = orbBorderDest;
                         DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage);
 
                         orbfillpercentage = 0.0f;
@@ -4621,6 +4632,7 @@ namespace GnollHackClient.Pages.Game
                             }
                         }
                         orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
+                        ManaRect = orbBorderDest;
                         DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage);
                         lastdrawnrecty = orbBorderDest.Bottom;
                     }
@@ -8145,15 +8157,21 @@ namespace GnollHackClient.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0);
                         break;
                     case 7:
-                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Some menus do not have buttons.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
+                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Some commands do not have buttons.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
                         break;
                     case 8:
-                        PaintTipButton(canvas, textPaint, lWornItemsButton, "Instead, tap a certain place on screen.", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, 2.0f);
+                        PaintTipButton(canvas, textPaint, lWornItemsButton, "They are placed in corners.", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, 2.0f);
                         break;
                     case 9:
                         PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "This is the last special location.", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
                         break;
                     case 10:
+                        PaintTipButtonByRect(canvas, textPaint, HealthRect, "This orb shows your hit points.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        break;
+                    case 11:
+                        PaintTipButtonByRect(canvas, textPaint, ManaRect, "And this one your mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        break;
+                    case 12:
                         textPaint.TextSize = 36;
                         textPaint.Typeface = App.ARChristyTypeface;
                         str = "You are all set";
@@ -8219,8 +8237,12 @@ namespace GnollHackClient.Pages.Game
                     break;
                 case SKTouchAction.Released:
                     ShownTip++;
+                    if(ShownTip == 10 && HealthRect.Width == 0)
+                        ShownTip++;
+                    if (ShownTip == 11 && ManaRect.Width == 0)
+                        ShownTip++;
                     TipView.InvalidateSurface();
-                    if (ShownTip >= 11 - (_blockingTipView ? 0 : 1))
+                    if (ShownTip >= 13 - (_blockingTipView ? 0 : 1))
                     {
                         TipView.IsVisible = false;
                         ShownTip = -1;
@@ -8281,6 +8303,12 @@ namespace GnollHackClient.Pages.Game
 
         public void PaintTipButton(SKCanvas canvas, SKPaint textPaint, VisualElement view, string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety)
         {
+            SKRect viewrect = GetViewScreenRect(view);
+            PaintTipButtonByRect(canvas, textPaint, viewrect, centertext, boxtext, radius_mult, centertextfontsize, boxfontsize, linefromright, lineoffsetx, lineoffsety);
+        }
+
+        public void PaintTipButtonByRect(SKCanvas canvas, SKPaint textPaint, SKRect viewrect, string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety)
+        {
             float canvaswidth = canvasView.CanvasSize.Width;
             float canvasheight = canvasView.CanvasSize.Height;
             float tx = 0, ty = 0;
@@ -8293,7 +8321,6 @@ namespace GnollHackClient.Pages.Game
             float relY = 0;
             float relWidth = 0;
             float relHeight = 0;
-            SKRect viewrect = new SKRect();
             SKRect rect = new SKRect();
             string str;
             float usedoffsetx = 0;
@@ -8318,7 +8345,6 @@ namespace GnollHackClient.Pages.Game
             textPaint.MaskFilter = null;
             canvas.DrawText(str, tx, ty, textPaint);
 
-            viewrect = GetViewScreenRect(view);
             relX = viewrect.Left;
             relY = viewrect.Top;
             relWidth = viewrect.Width;
