@@ -4551,6 +4551,7 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
 
+                SkillRect = new SKRect();
                 bool statusfieldsok = false;
                 lock (StatusFieldLock)
                 {
@@ -4638,8 +4639,6 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText("Skills", text_x, text_y, textPaint);
                         textPaint.TextAlign = SKTextAlign.Left;
                     }
-                    else
-                        SkillRect = new SKRect();
                 }
 
 
@@ -5885,7 +5884,7 @@ namespace GnollHackClient.Pages.Game
 
                         if (TouchDictionary.Count > 1)
                             _touchMoved = true;
-                        else if (SkillRect.Contains(e.Location) && !ForceAllMessages)
+                        else if (SkillRect.Contains(e.Location))
                         {
                             _touchWithinSkillButton = true;
                         }
@@ -8409,7 +8408,7 @@ namespace GnollHackClient.Pages.Game
                 textPaint.Color = SKColors.White;
                 textPaint.Style = SKPaintStyle.Fill;
                 textPaint.TextSize = 36;
-                textPaint.Typeface = App.DiabloTypeface;
+                textPaint.Typeface = App.LatoBold;
                 SKRect bounds = new SKRect();
                 textPaint.MeasureText(val.Length > 4 ? val : "9999", ref bounds);
                 float scale = bounds.Width / orbwidth;
