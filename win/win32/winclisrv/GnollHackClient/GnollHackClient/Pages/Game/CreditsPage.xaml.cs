@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -189,5 +190,141 @@ namespace GnollHackClient.Pages.Game
             App.BackButtonPressed -= BackButtonPressed;
         }
 
+        private async void btnCrashReport_Clicked(object sender, EventArgs e)
+        {
+            App.PlayButtonClickedSound();
+            bool answer = await DisplayAlert("Send Crash Report?", "This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
+            if (answer)
+            {
+                string archive_file = "";
+                try
+                {
+                    archive_file = CreateGameZipArchive();
+                }
+                catch(Exception ex)
+                {
+                    await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a crash report archive: " + ex.Message, "OK");
+                    return;
+                }
+                try
+                {
+                    if (archive_file != "")
+                        ShareFile(archive_file, "GnollHack Crash Report");
+
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Share File Failure", "GnollHack failed to share a crash report archive: " + ex.Message, "OK");
+                    return;
+                }
+            }
+        }
+
+        private string CreateGameZipArchive()
+        {
+            string ghdir = App.GnollHackService.GetGnollHackPath();
+            string targetpath = Path.Combine(ghdir, "archive");
+
+            if (!Directory.Exists(targetpath))
+                Directory.CreateDirectory(targetpath);
+
+            string filepath = Path.Combine(targetpath, "crash_report.zip");
+            if (File.Exists(filepath))
+                File.Delete(filepath);
+
+            string zipFile = filepath;
+            string[] files = Directory.GetFiles(ghdir);
+
+            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+            {
+                foreach (var fPath in files)
+                {
+                    archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
+                }
+                string[] ghsubdirlist = { "save", "dumplog" };
+                foreach (string ghsubdir in ghsubdirlist)
+                {
+                    string subdirpath = Path.Combine(ghdir, ghsubdir);
+                    string[] subfiles = Directory.GetFiles(subdirpath);
+                    foreach (var fPath in subfiles)
+                    {
+                        archive.CreateEntryFromFile(fPath, Path.Combine(ghsubdir, Path.GetFileName(fPath)));
+                    }
+                }
+
+            }
+            return zipFile;
+        }
+
+        private string CreateDumplogZipArchive()
+        {
+            string ghdir = App.GnollHackService.GetGnollHackPath();
+            string targetpath = Path.Combine(ghdir, "archive");
+
+            if (!Directory.Exists(targetpath))
+                Directory.CreateDirectory(targetpath);
+
+            string filepath = Path.Combine(targetpath, "dumplogs.zip");
+            if (File.Exists(filepath))
+                File.Delete(filepath);
+
+            string zipFile = filepath;
+            string[] files = Directory.GetFiles(ghdir);
+
+            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+            {
+                string[] ghsubdirlist = { "dumplog" };
+                foreach (string ghsubdir in ghsubdirlist)
+                {
+                    string subdirpath = Path.Combine(ghdir, ghsubdir);
+                    string[] subfiles = Directory.GetFiles(subdirpath);
+                    foreach (var fPath in subfiles)
+                    {
+                        archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
+                    }
+                }
+
+            }
+            return zipFile;
+        }
+
+        private async void ShareFile(string filename, string title)
+        {
+            if(!File.Exists(filename))
+            {
+                await DisplayAlert("File Sharing Failure", "GnollHack cannot find file \'" + filename + "\'" , "OK");
+                return;
+            }
+            await Share.RequestAsync(new ShareFileRequest
+            {
+                Title = title,
+                File = new ShareFile(filename)
+            });
+        }
+
+        private async void btnDumplogs_Clicked(object sender, EventArgs e)
+        {
+            App.PlayButtonClickedSound();
+            string archive_file = "";
+            try
+            {
+                archive_file = CreateDumplogZipArchive();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a dumplog archive: " + ex.Message, "OK");
+                return;
+            }
+            try
+            {
+                if (archive_file != "")
+                    ShareFile(archive_file, "GnollHack Dumplogs");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Share File Failure", "GnollHack failed to share a dumplog archive: " + ex.Message, "OK");
+                return;
+            }
+        }
     }
 }
