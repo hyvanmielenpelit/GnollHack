@@ -7553,6 +7553,12 @@ int x, y, mod;
                 return cmd;
             }
 
+            if (u.uswallow)
+            {
+                cmd[0] = '\0';
+                return cmd;
+            }
+
             if (iflags.herecmd_menu) 
             {
                 cmd[0] = here_cmd_menu(FALSE);
@@ -7604,12 +7610,12 @@ int x, y, mod;
 
         dir = xytod(x, y);
 
-        if (!m_at(u.ux + x, u.uy + y)
+        if (!u.uswallow && !m_at(u.ux + x, u.uy + y)
             && !test_move(u.ux, u.uy, x, y, TEST_MOVE)) 
         {
             cmd[1] = Cmd.dirchars[dir];
             cmd[2] = '\0';
-            if (iflags.herecmd_menu) 
+            if (iflags.herecmd_menu)
             {
                 cmd[0] = there_cmd_menu(FALSE, u.ux + x, u.uy + y);
                 if (cmd[0] == '\0')
@@ -7617,10 +7623,10 @@ int x, y, mod;
                 return cmd;
             }
 
-            if (IS_DOOR(levl[u.ux + x][u.uy + y].typ)) 
+            if (IS_DOOR(levl[u.ux + x][u.uy + y].typ))
             {
                 /* slight assistance to the player: choose kick/open for them
-                 */
+                    */
                 struct rm* door = &levl[u.ux + x][u.uy + y];
                 boolean has_fitting_key = FALSE;
                 if (flags.autounlock)
@@ -7650,7 +7656,7 @@ int x, y, mod;
                     return cmd;
                 }
             }
-            if (levl[u.ux + x][u.uy + y].typ <= SCORR) 
+            if (levl[u.ux + x][u.uy + y].typ <= SCORR)
             {
                 cmd[0] = cmd_from_func(dosearch);
                 cmd[1] = 0;
@@ -7675,14 +7681,17 @@ int x, y, mod;
         if (x == 0 && y == 0) 
         {
             /* map click on player to "rest" command */
-            cmd[0] = cmd_from_func(donull);
+            if (flags.self_click_action)
+                cmd[0] = cmd_from_func(donull);
+            else
+                cmd[0] = '\0';
             return cmd;
         }
         dir = xytod(x, y);
     }
 
     /* move, attack, etc. */
-    cmd[1] = 0;
+    cmd[1] = '\0';
     if (mod == CLICK_1 || mod == CLICK_3) 
     {
         cmd[0] = Cmd.dirchars[dir];
