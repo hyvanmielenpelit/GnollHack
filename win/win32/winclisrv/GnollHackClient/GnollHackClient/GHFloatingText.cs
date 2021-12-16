@@ -172,7 +172,7 @@ namespace GnollHackClient
         }
         public float GetRelativeOutlineWidth(long counter_value)
         {
-            return 1f / 48f;
+            return 1f / 10f;
         }
         public SKColor GetOutlineBaseColor(long counter_value)
         {

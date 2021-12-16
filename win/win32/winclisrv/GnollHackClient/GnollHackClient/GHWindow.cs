@@ -212,15 +212,15 @@ namespace GnollHackClient
                     break;
                 case GHWinType.Message:
                     TextSize = 32;
-                    Typeface = App.DejaVuSansMonoBoldTypeface;
-                    StrokeWidth = 1.5f;
+                    Typeface = App.DejaVuSansMonoTypeface;
+                    StrokeWidth = 8.0f;
                     AutoPlacement = true;
                     break;
                 case GHWinType.Status:
                     //BackgroundColor = TransparentBlack;
                     TextSize = 30;
-                    Typeface = App.LatoBold;
-                    StrokeWidth = 1.5f;
+                    Typeface = App.LatoRegular;
+                    StrokeWidth = 8.0f;
                     Left = 0;
                     Top = 0;
                     break;
@@ -248,8 +248,8 @@ namespace GnollHackClient
                     break;
                 case GHWinType.Here:
                     TextSize = 32;
-                    Typeface = App.DejaVuSansMonoBoldTypeface;
-                    StrokeWidth = 1.5f;
+                    Typeface = App.DejaVuSansMonoTypeface;
+                    StrokeWidth = 8.0f;
                     AutoPlacement = true;
                     break;
                 case GHWinType.Inventory:

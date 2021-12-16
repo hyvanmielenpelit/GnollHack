@@ -234,15 +234,15 @@ namespace GnollHackClient
         }
         public float GetRelativeTextOutlineWidth(long counter_value)
         {
-            return 1f / 48f;
+            return 1f / 15f;
         }
         public float GetRelativeSuperTextOutlineWidth(long counter_value)
         {
-            return 1f / 48f;
+            return 1f / 15f;
         }
         public float GetRelativeSubTextOutlineWidth(long counter_value)
         {
-            return 1f / 48f;
+            return 1f / 15f;
         }
         public SKColor GetTextOutlineBaseColor(long counter_value)
         {
