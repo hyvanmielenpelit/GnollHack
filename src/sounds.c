@@ -2591,6 +2591,17 @@ dochat()
         }
     }
 
+
+    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_QUANTUM_HINTS) != 0)
+    {
+        /* Special hints about game mechanics */
+    }
+
+    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_QUANTUM_CRAFT) != 0)
+    {
+        /* Craft a cubic gate */
+    }
+
     /* Tame dog and cat commands */
     if (has_edog(mtmp) && is_tame(mtmp) && is_peaceful(mtmp))
     {

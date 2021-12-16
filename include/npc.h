@@ -27,6 +27,7 @@ enum npc_subtypes {
     NPC_HERMIT2,
     NPC_HERMIT3,
     NPC_ORC_HERMIT3,
+    NPC_QUANTUM_MECHANIC,
     MAX_NPC_SUBTYPES
 };
 
@@ -74,6 +75,8 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_SERVICE_GIVE_ADVANCED_QUESTS     0x00200000UL
 #define NPC_SERVICE_GIVE_GNOMISH_QUESTS      0x00400000UL
 #define NPC_SERVICE_GIVE_ORCISH_QUESTS       0x00800000UL
+#define NPC_SERVICE_QUANTUM_HINTS            0x01000000UL
+#define NPC_SERVICE_QUANTUM_CRAFT            0x02000000UL
 
 #define NPC_FLAGS_PARQUET_FLOOR             0x00000001UL
 #define NPC_FLAGS_MARBLE_FLOOR              0x00000002UL
@@ -87,6 +90,7 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_FLAGS_NO_ITEMS                  0x00000200UL
 #define NPC_FLAGS_DISPLAY_NAME_ONLY         0x00000400UL /* When name is known */
 #define NPC_FLAGS_COMMENTS_ON_REVIVAL       0x00000800UL
+#define NPC_FLAGS_QUANTUM_ITEMS             0x00001000UL
 
 
 

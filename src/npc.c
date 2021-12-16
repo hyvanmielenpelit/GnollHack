@@ -101,6 +101,19 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         NPC_SERVICE_GIVE_ORCISH_QUESTS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
         NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
     },
+    {
+        PM_ELDER_QUANTUM_MECHANIC,
+        NPC_GEHENNOM_UNDEAD_SPELLCASTER,
+        "Professor of Quantum Mechanics at the University of Yendor",
+        "study",
+        "Endicott Whateley",
+        (char*)0,
+        (char*)0,
+        8, 0,
+        5, 50, 500,
+        NPC_SERVICE_QUANTUM_HINTS | NPC_SERVICE_QUANTUM_CRAFT,
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_QUANTUM_ITEMS
+    },
 };
 
 schar
@@ -463,6 +476,21 @@ int mtype;
             for (i = 0; i < 24; i++)
             {
                 mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
+            }
+        }
+
+        if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_QUANTUM_ITEMS)
+        {
+            int cnt = rnd(3);
+            for (i = 0; i < cnt; i++)
+            {
+                mongets(npc, WAN_TOWN_PORTAL);
+            }
+
+            cnt = rnd(3);
+            for (i = 0; i < cnt; i++)
+            {
+                mongets(npc, WAN_TELEPORTATION);
             }
         }
 
