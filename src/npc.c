@@ -107,12 +107,12 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         "Professor of Quantum Mechanics at the University of Yendor",
         "study",
         "Endicott Whateley",
-        (char*)0,
+        "We conduct delicate underground experiments within these mines.",
         (char*)0,
         8, 0,
         5, 50, 500,
-        NPC_SERVICE_QUANTUM_HINTS | NPC_SERVICE_QUANTUM_CRAFT,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_QUANTUM_ITEMS
+        NPC_SERVICE_QUANTUM_HINTS,
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_QUANTUM_ITEMS | NPC_FLAGS_NO_TITLE_ARTICLE
     },
 };
 
@@ -492,6 +492,7 @@ int mtype;
             {
                 mongets(npc, WAN_TELEPORTATION);
             }
+            mongets(npc, CUBIC_GATE);
         }
 
         if (npc_subtype_definitions[npctype].service_flags & NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS)

@@ -362,6 +362,7 @@ npc_hermit { savetoken(yytext); yylval.i=NPC_HERMIT; return NPC_TYPE; }
 npc_hermit2 { savetoken(yytext); yylval.i=NPC_HERMIT2; return NPC_TYPE; }
 npc_hermit3 { savetoken(yytext); yylval.i=NPC_HERMIT3; return NPC_TYPE; }
 npc_orc_hermit3 { savetoken(yytext); yylval.i=NPC_ORC_HERMIT3; return NPC_TYPE; }
+npc_quantum_mechanic { savetoken(yytext); yylval.i=NPC_QUANTUM_MECHANIC; return NPC_TYPE; }
 fountain_natural { savetoken(yytext); yylval.i=FOUNTAIN_NATURAL; return FOUNTAIN_TYPE; }
 fountain_magic { savetoken(yytext); yylval.i=FOUNTAIN_MAGIC; return FOUNTAIN_TYPE; }
 fountain_healing { savetoken(yytext); yylval.i=FOUNTAIN_HEALING; return FOUNTAIN_TYPE; }

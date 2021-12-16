@@ -117,6 +117,7 @@ STATIC_DCL int FDECL(do_chat_smith_sell_ore, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_mechanic_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_observe_position, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_observe_speed, (struct monst*));
+STATIC_DCL int FDECL(do_chat_quantum_hints, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
@@ -2595,11 +2596,18 @@ dochat()
     if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_QUANTUM_HINTS) != 0)
     {
         /* Special hints about game mechanics */
-    }
+        strcpy(available_chat_list[chatnum].name, "Ask for hints about the reality");
+        available_chat_list[chatnum].function_ptr = &do_chat_quantum_hints;
+        available_chat_list[chatnum].charnum = 'a' + chatnum;
 
-    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_QUANTUM_CRAFT) != 0)
-    {
-        /* Craft a cubic gate */
+        any = zeroany;
+        any.a_char = available_chat_list[chatnum].charnum;
+
+        add_menu(win, NO_GLYPH, &any,
+            any.a_char, 0, ATR_NONE,
+            available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+        chatnum++;
     }
 
     /* Tame dog and cat commands */
@@ -4077,8 +4085,20 @@ struct monst* mtmp;
             play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
             if (has_mname(mtmp))
             {
-                if(npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_name != 0)
-                    Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), an(npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name));
+                if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_fixed_name != 0)
+                {
+                    char titlebuf[BUFSZ];
+                    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_NO_TITLE_ARTICLE)
+                    {
+                        strcpy(titlebuf, npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name);
+                    }
+                    else
+                    {
+                        strcpy(titlebuf, an(npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name));
+                    }
+
+                    Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), titlebuf);
+                }
                 else
                     Sprintf(ansbuf, "I am a local %s. (The name tag indicates that %s name is %s.)", 
                         npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name, mhis(mtmp), MNAME(mtmp));
@@ -7032,6 +7052,24 @@ int npc_identification_type_index;
 
     return TRUE;
 }
+
+STATIC_OVL int
+do_chat_quantum_hints(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !m_speak_check(mtmp))
+        return 0;
+
+    const char* linearray[4] = {
+        "Bear always these rules about our reality in mind:",
+        "You can use a wand of teleportation to teleport monsters away. This works even on a non-teleport level, where you cannot teleport yourself.",
+        "You cannot level teleport while carrying the Amulet of Yendor.",
+        0 };
+
+    hermit_talk(mtmp, linearray);
+    return 1;
+}
+
 
 STATIC_OVL int
 do_chat_quantum_mechanic_reconciliation(mtmp)

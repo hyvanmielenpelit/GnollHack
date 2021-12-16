@@ -311,8 +311,9 @@ SUBROOM: "npcroom", lit, (5,0), (2,2) {
   MONSTER: ('g', "gnome"), random
 }
 
-[75%]: SUBROOM: "ordinary", unlit, (25,0), (2,2) {
+SUBROOM: "npcroom", unlit, (25,0), (2,2) {
   ROOMDOOR: false, closed, east, random
+  NPC: npc_quantum_mechanic, random
 }
 
 [75%]: SUBROOM: "ordinary", lit, (2,5), (2,2) {
@@ -321,7 +322,7 @@ SUBROOM: "npcroom", lit, (5,0), (2,2) {
 
 SUBROOM: "ordinary", lit, (5,5), (2,2) {
   OBJECT:('/',"town portal"),(1,1),no_pickup
-  ENGRAVING:(1,1),engrave, "Here's the special wand you ordered."
+  ENGRAVING:(1,1),engrave, "Here's the wand you ordered. -Endicott"
   ROOMDOOR: false, closed, south, random
 }
 
@@ -454,7 +455,7 @@ SUBROOM:"ordinary",random,(14,8),(2,2) {
 SUBROOM:"ordinary",random,(14,11),(2,2) {
   ROOMDOOR:false,closed,south,random
   OBJECT:('/',"town portal"),(1,1),no_pickup
-  ENGRAVING:(1,1),engrave, "Here's the special wand you ordered."
+  ENGRAVING:(1,1),engrave, "Here's the wand you ordered. -Endicott"
 }
 
 SUBROOM:"tool shop" [40%],lit,(17,10),(3,3) floorsubtype:floor_parquet {
@@ -475,8 +476,9 @@ SUBROOM:"npcroom",random,(16,2),(2,2) {
   NPC: npc_hermit3, random
 }
 
-SUBROOM:"ordinary",random,(19,2),(2,2) floorsubtype:floor_parquet {
+SUBROOM:"npcroom",random,(19,2),(2,2) floorsubtype:floor_parquet {
   ROOMDOOR:false,closed,north,random
+  NPC: npc_quantum_mechanic, random
 }
 
 SUBROOM:"wand shop" [30%],lit,(19,5),(3,2) floorsubtype:floor_parquet {
@@ -581,12 +583,12 @@ SUBROOM:"food shop" [90%],lit,(11,11),(3,2) floorsubtype:floor_parquet {
 SUBROOM:"ordinary",random,(17,11),(2,2) {
   ROOMDOOR:false,closed,west,random
   OBJECT:('/',"town portal"),(1,1),no_pickup
-  ENGRAVING:(1,1),engrave, "Here's the special wand you ordered."
+  ENGRAVING:(1,1),engrave, "Here's the wand you ordered. -Endicott"
 }
 
-SUBROOM:"ordinary",random,(20,10),(2,2) {
-  ROOMDOOR:false,locked,north,random
-  MONSTER:'g',random
+SUBROOM:"npcroom",random,(20,10),(2,2) {
+  ROOMDOOR:false,closed,north,random
+  NPC: npc_quantum_mechanic, random
 }
 
 SUBROOM:"shop" [90%],lit,(23,10),(3,3) floorsubtype:floor_parquet {
@@ -739,9 +741,6 @@ DOOR:random,(63,05)
 DOOR:locked,(71,03)
 DOOR:locked,(71,06)
 DOOR:closed,(69,04)
-DOOR:closed,(67,16)
-MONSTER: ('g', "gnomish wizard"), (67,14)
-OBJECT: '=', (70,14)
 DOOR:locked,(69,18)
 MONSTER: ('g', "gnome lord"), (71,19)
 DOOR:locked,(73,18)
@@ -750,7 +749,7 @@ DOOR:locked,(50,06)
 OBJECT: '(', (50,03)
 OBJECT: ('`', "statue"), (38,15), montype:"gnome king", 1
 OBJECT: ('/', "town portal"), (68,04), no_pickup
-ENGRAVING:(68,04),engrave, "Here's the special wand you ordered."
+ENGRAVING:(68,04),engrave, "Here's the wand you ordered. -Endicott"
 
 # Temple
 REGION:(29,02,33,04),lit,"temple" floorsubtype:floor_marble
@@ -775,6 +774,13 @@ NPC:npc_geologist,(20,18)
 REGION:(38,05,39,07),lit,"npcroom" floorsubtype:floor_parquet
 DOOR:closed,(40,05)
 NPC:npc_hermit3,(38,06)
+
+# Quantum Mechanic
+REGION:(66,14,68,15),lit,"npcroom" floorsubtype:floor_parquet
+DOOR:closed,(67,16)
+NPC:npc_quantum_mechanic,(67,14)
+MONSTER: ('g', "gnomish wizard"), (70,14)
+OBJECT: '=', (70,14)
 
 # "Bustling Town" by Kelly Bailey
 #
@@ -820,7 +826,7 @@ OBJECT: ('(', "large five-branched candelabrum"), (31,14), special_quality:5, li
 OBJECT: ('(', "large five-branched candelabrum"), (36,12), special_quality:5, lit
 OBJECT: ('(', "large five-branched candelabrum"), (36,14), special_quality:5, lit
 OBJECT: ('/', "town portal"), (02,09), no_pickup
-ENGRAVING:(02,09),engrave, "Here's the special wand you ordered."
+ENGRAVING:(02,09),engrave, "Here's the wand you ordered. -Endicott"
 
 # Smithy
 REGION:(02,01,04,03),lit,"smithy"
@@ -837,8 +843,12 @@ REGION:(34,01,36,02),lit,"npcroom" floorsubtype:floor_parquet
 DOOR:closed,(35,03)
 NPC:npc_hermit3,(35,01)
 
+# Quantum Mechanic
+REGION:(09,03,11,05),lit,"npcroom" floorsubtype:floor_parquet
+DOOR:closed,(10,02)
+NPC:npc_quantum_mechanic,(10,04)
+
 DOOR:closed,(4,8)
-DOOR:closed,(10,2)
 DOOR:closed,(10,10)
 DOOR:locked,(13,7)
 DOOR:locked,(14,9)
@@ -887,14 +897,15 @@ SUBROOM: "npcroom", random, (2,2), (4,2) {
   NPC: npc_geologist, random
 } 
 
-[75%]: SUBROOM: "ordinary", random, (7,2), (2,2) floorsubtype:floor_parquet {
+SUBROOM: "npcroom", random, (7,2), (2,2) floorsubtype:floor_parquet {
   ROOMDOOR: false, closed, north, random
+  NPC: npc_quantum_mechanic, random
 }
 
 SUBROOM: "ordinary", random, (7,5), (2,2) {
   ROOMDOOR: false, closed, south, random
   OBJECT: ('/', "town portal"), (1,1), no_pickup
-  ENGRAVING:(1,1),engrave, "Here's the special wand you ordered."
+  ENGRAVING:(1,1),engrave, "Here's the wand you ordered. -Endicott"
 }
 
 [75%]: SUBROOM: "ordinary", lit, (10,2), (3,4) floorsubtype:floor_parquet {
