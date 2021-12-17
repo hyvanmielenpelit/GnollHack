@@ -113,6 +113,10 @@ namespace GnollHackClient.Pages.Game
         private object _orbLock = new object();
         private bool _showOrbs = true;
         public bool ShowOrbs { get { lock (_orbLock) { return _showOrbs; } } set { lock (_orbLock) { _showOrbs = value; } } }
+        private bool _showMaxHealthInOrb = false;
+        public bool ShowMaxHealthInOrb { get { lock (_orbLock) { return _showMaxHealthInOrb; } } set { lock (_orbLock) { _showMaxHealthInOrb = value; } } }
+        private bool _showMaxManaInOrb = false;
+        public bool ShowMaxManaInOrb { get { lock (_orbLock) { return _showMaxManaInOrb; } } set { lock (_orbLock) { _showMaxManaInOrb = value; } } }
 
         private object _playerMarkLock = new object();
         private bool _playerMark = false;
@@ -4471,10 +4475,23 @@ namespace GnollHackClient.Pages.Game
                                                 /* attributes */
                                                 tx = xpos + winRect.Left + _clientGame.Windows[i].Padding.Left;
                                                 ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
-                                                textPaint.Style = SKPaintStyle.Stroke;
-                                                textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
-                                                textPaint.Color = SKColors.Black;
-                                                canvas.DrawText(str, tx, ty, textPaint);
+
+                                                if (_clientGame.Windows[i].HasShadow)
+                                                {
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.Color = SKColors.Black;
+                                                    textPaint.MaskFilter = _blur;
+                                                    float shadow_offset = 0.15f * textPaint.TextSize;
+                                                    canvas.DrawText(str, tx + shadow_offset, ty + shadow_offset, textPaint);
+                                                    textPaint.MaskFilter = null;
+                                                }
+                                                if (_clientGame.Windows[i].StrokeWidth > 0)
+                                                {
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
+                                                    textPaint.Color = SKColors.Black;
+                                                    canvas.DrawText(str, tx, ty, textPaint);
+                                                }
                                                 textPaint.Style = SKPaintStyle.Fill;
                                                 textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? instr.Color : (int)nhcolor.CLR_WHITE);
                                                 canvas.DrawText(str, tx, ty, textPaint);
@@ -4611,7 +4628,7 @@ namespace GnollHackClient.Pages.Game
                         }
                         SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
                         HealthRect = orbBorderDest;
-                        DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage);
+                        DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage, ShowMaxHealthInOrb);
 
                         orbfillpercentage = 0.0f;
                         valtext = "";
@@ -4634,7 +4651,7 @@ namespace GnollHackClient.Pages.Game
                         }
                         orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
                         ManaRect = orbBorderDest;
-                        DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage);
+                        DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage, ShowMaxManaInOrb);
                         lastdrawnrecty = orbBorderDest.Bottom;
                     }
 
@@ -5850,6 +5867,8 @@ namespace GnollHackClient.Pages.Game
         public float _mapOffsetY = 0;
         private bool _touchMoved = false;
         private bool _touchWithinSkillButton = false;
+        private bool _touchWithinHealthOrb = false;
+        private bool _touchWithinManaOrb = false;
         private object _savedSender = null;
         private SKTouchEventArgs _savedEventArgs = null;
 
@@ -5889,6 +5908,8 @@ namespace GnollHackClient.Pages.Game
                         _savedSender = null;
                         _savedEventArgs = null;
                         _touchWithinSkillButton = false;
+                        _touchWithinHealthOrb = false;
+                        _touchWithinManaOrb = false;
 
                         if (TouchDictionary.ContainsKey(e.Id))
                             TouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
@@ -5900,6 +5921,14 @@ namespace GnollHackClient.Pages.Game
                         else if (SkillRect.Contains(e.Location))
                         {
                             _touchWithinSkillButton = true;
+                        }
+                        else if (HealthRect.Contains(e.Location))
+                        {
+                            _touchWithinHealthOrb = true;
+                        }
+                        else if (ManaRect.Contains(e.Location))
+                        {
+                            _touchWithinManaOrb = true;
                         }
                         else if (!MapLookMode && !MapTravelMode && !ForceAllMessages)
                         {
@@ -5931,7 +5960,7 @@ namespace GnollHackClient.Pages.Game
 
                                 if (TouchDictionary.Count == 1)
                                 {
-                                    if (_touchWithinSkillButton)
+                                    if (_touchWithinSkillButton || _touchWithinHealthOrb || _touchWithinManaOrb)
                                     {
                                         /* Do nothing */
                                     }
@@ -5972,6 +6001,8 @@ namespace GnollHackClient.Pages.Game
                                     _savedSender = null;
                                     _savedEventArgs = null;
                                     _touchWithinSkillButton = false;
+                                    _touchWithinHealthOrb = false;
+                                    _touchWithinManaOrb = false;
 
                                     SKPoint prevloc = TouchDictionary[e.Id].Location;
                                     SKPoint curloc = e.Location;
@@ -6025,6 +6056,14 @@ namespace GnollHackClient.Pages.Game
                             if (_touchWithinSkillButton)
                             {
                                 GenericButton_Clicked(sender, e, (int)'S');
+                            }
+                            else if (_touchWithinHealthOrb)
+                            {
+                                ShowMaxHealthInOrb = !ShowMaxHealthInOrb;
+                            }
+                            else if (_touchWithinManaOrb)
+                            {
+                                ShowMaxManaInOrb = !ShowMaxManaInOrb;
                             }
                             else
                             {
@@ -7768,15 +7807,15 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[0, 3] = new GHCommandButtonItem("Sit", "GnollHackClient.Assets.UI.sit.png", GHUtils.Ctrl((int)'s'));
             _moreBtnMatrix[1, 3] = new GHCommandButtonItem("Yell", "GnollHackClient.Assets.UI.yell.png", GHUtils.Ctrl((int)'y'));
             _moreBtnMatrix[2, 3] = new GHCommandButtonItem("Dig", "GnollHackClient.Assets.UI.dig.png", GHUtils.Ctrl((int)'g'));
-            _moreBtnMatrix[3, 3] = new GHCommandButtonItem("Light", "GnollHackClient.Assets.Icons.light.png", GHUtils.Ctrl((int)'l'));
-            _moreBtnMatrix[4, 3] = new GHCommandButtonItem("Jump", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'j');
+            _moreBtnMatrix[3, 3] = new GHCommandButtonItem("Light", "GnollHackClient.Assets.UI.light.png", GHUtils.Ctrl((int)'l'));
+            _moreBtnMatrix[4, 3] = new GHCommandButtonItem("Jump", "GnollHackClient.Assets.UI.jump.png", (int)'j');
             _moreBtnMatrix[5, 3] = new GHCommandButtonItem("Fight", "GnollHackClient.Assets.UI.fight.png", (int)'F');
 
-            _moreBtnMatrix[0, 4] = new GHCommandButtonItem("Name", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'N');
+            _moreBtnMatrix[0, 4] = new GHCommandButtonItem("Name", "GnollHackClient.Assets.UI.name.png", (int)'N');
             _moreBtnMatrix[1, 4] = new GHCommandButtonItem("Pay", "GnollHackClient.Assets.UI.pay.png", (int)'p');
             _moreBtnMatrix[2, 4] = new GHCommandButtonItem("Loot", "GnollHackClient.Assets.UI.loot.png", (int)'l');
-            _moreBtnMatrix[3, 4] = new GHCommandButtonItem("Break", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'b'));
-            _moreBtnMatrix[4, 4] = new GHCommandButtonItem("Overview", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'o'));
+            _moreBtnMatrix[3, 4] = new GHCommandButtonItem("Break", "GnollHackClient.Assets.UI.break.png", GHUtils.Ctrl((int)'b'));
+            _moreBtnMatrix[4, 4] = new GHCommandButtonItem("Overview", "GnollHackClient.Assets.UI.overview.png", GHUtils.Ctrl((int)'o'));
             _moreBtnMatrix[5, 4] = new GHCommandButtonItem("Quiver", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'Q');
 
             _moreBtnMatrix[0, 5] = new GHCommandButtonItem("Abilities", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'A');
@@ -8389,7 +8428,7 @@ namespace GnollHackClient.Pages.Game
             canvas.DrawText(str, rect.Left + padding, ty + usedoffsety + (textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent) / 2 - textPaint.FontMetrics.Ascent, textPaint);
         }
 
-        private void DrawOrb(SKCanvas canvas, SKPaint textPaint, SKRect orbBorderDest, SKColor fillcolor, string val, string maxval, float orbfillpercentage)
+        private void DrawOrb(SKCanvas canvas, SKPaint textPaint, SKRect orbBorderDest, SKColor fillcolor, string val, string maxval, float orbfillpercentage, bool showmax)
         {
             float orbwidth = orbBorderDest.Width / 230.0f * 210.0f;
             float orbheight = orbBorderDest.Width / 230.0f * 210.0f;
@@ -8406,30 +8445,8 @@ namespace GnollHackClient.Pages.Game
             SKBitmap fillBitmap = fillcolor == SKColors.Red ? _orbFillBitmapRed : fillcolor == SKColors.Blue ? _orbFillBitmapBlue : _orbFillBitmap;
             SKRect orbFillSrc = new SKRect(0.0f, (float)fillBitmap.Height * (1.0f - orbfillpercentage), (float)fillBitmap.Width, (float)fillBitmap.Height);
             SKRect orbFillDest = new SKRect(orbDest.Left, orbDest.Top + orbDest.Height * (1.0f - orbfillpercentage), orbDest.Right, orbDest.Bottom);
-            //textPaint.Color = SKColors.White.WithAlpha(192);
-            //if (fillcolor == SKColors.Red)
-            //    textPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
-            //        {
-            //            -1.0f, 0,     0,    0, 255f,
-            //            0,     1.0f,  0,    0, 0,
-            //            0,     0,     1.0f, 0, 0,
-            //            0,     0,     0,    1, 0
-            //        });
-            //else if (fillcolor == SKColors.Blue)
-            //    textPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
-            //        {
-            //            1.0f,  0,      0,    0,   0,
-            //            0,     1.0f,   0,    0,   0,
-            //            0,     0,     -1.0f, 0,   255f,
-            //            0,     0,     0,     1,   0
-            //        });
-            //else
-            //    textPaint.ColorFilter = null;
             canvas.DrawBitmap(fillBitmap, orbFillSrc, orbFillDest, textPaint);
-            //textPaint.ColorFilter = null;
-            //textPaint.Color = SKColors.White;
             canvas.DrawBitmap(_orbGlassBitmap, orbDest, textPaint);
-
             if(val != null && val != "")
             {
                 textPaint.TextSize = 36;
@@ -8452,6 +8469,27 @@ namespace GnollHackClient.Pages.Game
                 canvas.DrawText(val, tx, ty, textPaint);
             }
 
+            if (showmax && maxval != null && maxval != "")
+            {
+                textPaint.TextSize = 36;
+                textPaint.Typeface = App.LatoBold;
+                SKRect bounds = new SKRect();
+                textPaint.MeasureText(maxval.Length > 4 ? maxval : "9999", ref bounds);
+                float scale = bounds.Width / orbwidth;
+                if (scale > 0)
+                    textPaint.TextSize = textPaint.TextSize * 0.50f / scale;
+
+                float strwidth = textPaint.MeasureText(maxval, ref bounds);
+                float tx = orbDest.Left + (orbDest.Width - strwidth) / 2;
+                float ty = orbDest.Bottom - 0.07f * orbDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) - textPaint.FontMetrics.Ascent;
+                textPaint.Style = SKPaintStyle.Stroke;
+                textPaint.StrokeWidth = textPaint.TextSize / 10;
+                textPaint.Color = SKColors.Black;
+                canvas.DrawText(maxval, tx, ty, textPaint);
+                textPaint.Style = SKPaintStyle.Fill;
+                textPaint.Color = SKColors.White;
+                canvas.DrawText(maxval, tx, ty, textPaint);
+            }
         }
     }
 

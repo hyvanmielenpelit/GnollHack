@@ -56,6 +56,14 @@ namespace GnollHackClient.Pages.Game
             Preferences.Set("ShowOrbs", OrbSwitch.IsToggled);
 
             if (_gamePage != null)
+                _gamePage.ShowMaxHealthInOrb = MaxHealthInOrbSwitch.IsToggled;
+            Preferences.Set("ShowMaxHealthInOrb", MaxHealthInOrbSwitch.IsToggled);
+
+            if (_gamePage != null)
+                _gamePage.ShowMaxManaInOrb = MaxManaInOrbSwitch.IsToggled;
+            Preferences.Set("ShowMaxManaInOrb", MaxManaInOrbSwitch.IsToggled);
+
+            if (_gamePage != null)
                 _gamePage.PlayerMark = PlayerMarkSwitch.IsToggled;
             Preferences.Set("PlayerMark", PlayerMarkSwitch.IsToggled);
 
@@ -106,7 +114,7 @@ namespace GnollHackClient.Pages.Game
             App.BackButtonPressed += BackButtonPressed;
 
             int cursor = 0, graphics = 0, msgnum = 0;
-            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, orbs = true, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", 1.0f);
@@ -127,6 +135,8 @@ namespace GnollHackClient.Pages.Game
                 ForceMaxMessageLabel.TextColor = Color.Gray;
                 hpbars = Preferences.Get("HitPointBars", false);
                 orbs = Preferences.Get("ShowOrbs", true);
+                orbmaxhp = Preferences.Get("ShowMaxHealthInOrb", false);
+                orbmaxmana = Preferences.Get("ShowMaxManaInOrb", false);
                 playermark = Preferences.Get("PlayerMark", false);
                 monstertargeting = Preferences.Get("MonsterTargeting", false);
                 walkarrows = Preferences.Get("WalkArrows", true);
@@ -144,6 +154,8 @@ namespace GnollHackClient.Pages.Game
                 ForceMaxMessageLabel.TextColor = Color.White;
                 hpbars = _gamePage.HitPointBars;
                 orbs = _gamePage.ShowOrbs;
+                orbmaxhp = _gamePage.ShowMaxHealthInOrb;
+                orbmaxmana = _gamePage.ShowMaxManaInOrb;
                 playermark = _gamePage.PlayerMark;
                 monstertargeting = _gamePage.MonsterTargeting;
                 walkarrows = _gamePage.WalkArrows;
@@ -156,6 +168,8 @@ namespace GnollHackClient.Pages.Game
             GridSwitch.IsToggled = mapgrid;
             HitPointBarSwitch.IsToggled = hpbars;
             OrbSwitch.IsToggled = orbs;
+            MaxHealthInOrbSwitch.IsToggled = orbmaxhp;
+            MaxManaInOrbSwitch.IsToggled = orbmaxmana;
             PlayerMarkSwitch.IsToggled = playermark;
             MonsterTargetingSwitch.IsToggled = monstertargeting;
             WalkArrowSwitch.IsToggled = walkarrows;

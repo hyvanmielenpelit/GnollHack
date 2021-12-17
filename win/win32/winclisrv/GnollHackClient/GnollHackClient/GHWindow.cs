@@ -58,6 +58,7 @@ namespace GnollHackClient
         public SKColor TextColor { get; set; }
         public float TextSize { get; set; }
         public float StrokeWidth { get; set; }
+        public bool HasShadow { get; set; }
         public SKColor BackgroundColor { get; set; }
         public int CursX { get; set; }
         public int CursY { get; set; }
@@ -220,7 +221,8 @@ namespace GnollHackClient
                     //BackgroundColor = TransparentBlack;
                     TextSize = 30;
                     Typeface = App.LatoRegular;
-                    StrokeWidth = 8.0f;
+                    StrokeWidth = 3.0f;
+                    HasShadow = true;
                     Left = 0;
                     Top = 0;
                     break;

@@ -136,7 +136,7 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="Hit point bars"
+                                    <Label Text="Hit Point Bars"
                                            FontFamily="Underwood" TextColor="White"
                                            FontSize="15"
                                            VerticalOptions="Center"
@@ -152,6 +152,26 @@
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
                                     <Switch x:Name="OrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text=" Show Max Hit Points"
+                                           FontFamily="Underwood" TextColor="White"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="MaxHealthInOrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text=" Show Max Mana"
+                                           FontFamily="Underwood" TextColor="White"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="MaxManaInOrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
                             <ViewCell>
