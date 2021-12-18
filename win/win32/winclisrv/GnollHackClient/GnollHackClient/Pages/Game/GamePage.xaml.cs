@@ -4511,6 +4511,10 @@ namespace GnollHackClient.Pages.Game
 
                                 if (_clientGame.Windows[i].WindowType == GHWinType.Message)
                                 {
+                                    lock(MapOffsetLock)
+                                    {
+                                        _messageSmallestTop = canvasheight;
+                                    }
                                     lock (msgHistoryLock)
                                     {
                                         if (_msgHistory != null)
@@ -4555,6 +4559,19 @@ namespace GnollHackClient.Pages.Game
                                                         continue;
                                                     tx = winRect.Left + _clientGame.Windows[i].Padding.Left;
                                                     ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
+                                                    if (ForceAllMessages)
+                                                    {
+                                                        lock(MapOffsetLock)
+                                                        {
+                                                            ty += _messageOffsetY;
+                                                            if(ty + textPaint.FontMetrics.Ascent < _messageSmallestTop)
+                                                                _messageSmallestTop = ty + textPaint.FontMetrics.Ascent;
+                                                        }
+                                                    }
+                                                    if (ty + textPaint.FontMetrics.Descent < 0)
+                                                        continue;
+                                                    if (ty - textPaint.FontMetrics.Ascent > canvasheight)
+                                                        continue;
                                                     textPaint.Style = SKPaintStyle.Stroke;
                                                     textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
                                                     textPaint.Color = SKColors.Black;
@@ -5865,6 +5882,8 @@ namespace GnollHackClient.Pages.Game
         public object MapOffsetLock = new object();
         public float _mapOffsetX = 0;
         public float _mapOffsetY = 0;
+        public float _messageOffsetY = 0;
+        public float _messageSmallestTop = 0;
         private bool _touchMoved = false;
         private bool _touchWithinSkillButton = false;
         private bool _touchWithinHealthOrb = false;
@@ -5979,15 +5998,35 @@ namespace GnollHackClient.Pages.Game
                                         {
                                             lock (MapOffsetLock)
                                             {
-                                                _mapOffsetX += diffX;
-                                                _mapOffsetY += diffY;
-                                                if (_mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * _mapWidth)
+                                                if(ForceAllMessages)
                                                 {
-                                                    _mapOffsetX = 10 * _mapWidth * Math.Sign(_mapOffsetX);
+                                                    if(diffY > 0)
+                                                    {
+                                                        if (_messageSmallestTop < 0)
+                                                        {
+                                                            _messageOffsetY += Math.Min(-_messageSmallestTop, diffY);
+                                                        }
+                                                    }
+                                                    else
+                                                        _messageOffsetY += diffY;
+
+                                                    if (_messageOffsetY < 0)
+                                                    {
+                                                        _messageOffsetY = 0;
+                                                    }
                                                 }
-                                                if (_mapHeight > 0 && Math.Abs(_mapOffsetY) > 10 * _mapHeight)
+                                                else
                                                 {
-                                                    _mapOffsetY = 10 * _mapHeight * Math.Sign(_mapOffsetY);
+                                                    _mapOffsetX += diffX;
+                                                    _mapOffsetY += diffY;
+                                                    if (_mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * _mapWidth)
+                                                    {
+                                                        _mapOffsetX = 10 * _mapWidth * Math.Sign(_mapOffsetX);
+                                                    }
+                                                    if (_mapHeight > 0 && Math.Abs(_mapOffsetY) > 10 * _mapHeight)
+                                                    {
+                                                        _mapOffsetY = 10 * _mapHeight * Math.Sign(_mapOffsetY);
+                                                    }
                                                 }
                                             }
                                             TouchDictionary[e.Id].Location = e.Location;
@@ -8092,6 +8131,10 @@ namespace GnollHackClient.Pages.Game
 
         private void ToggleMessageNumberButton_Clicked(object sender, EventArgs e)
         {
+            lock(MapOffsetLock)
+            {
+                _messageOffsetY = 0.0f;
+            }
             ForceAllMessages = !ForceAllMessages;
         }
 
