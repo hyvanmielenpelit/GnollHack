@@ -91,6 +91,7 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_FLAGS_COMMENTS_ON_REVIVAL       0x00000800UL
 #define NPC_FLAGS_QUANTUM_ITEMS             0x00001000UL
 #define NPC_FLAGS_NO_TITLE_ARTICLE          0x00002000UL
+#define NPC_FLAGS_MAJORITY_NORMAL_HELLO     0x00004000UL
 
 
 

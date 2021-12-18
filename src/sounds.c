@@ -986,7 +986,15 @@ register struct monst *mtmp;
     else if (mtmp->issmith)
         msound = MS_SMITH;
     else if (mtmp->isnpc)
-        msound = MS_NPC;
+    {
+        if (has_enpc(mtmp) && npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_MAJORITY_NORMAL_HELLO)
+        {
+            if(!rn2(3))
+                msound = MS_NPC;
+        }
+        else
+            msound = MS_NPC;
+    }
     else if (mtmp->ispriest)
         msound = MS_PRIEST;
 
@@ -1118,7 +1126,7 @@ register struct monst *mtmp;
             {
                 int npctype = ENPC(mtmp)->npc_typ;
                 play_monster_special_dialogue_line(mtmp, NPC_LINE_WELCOME_TO_MY_RESIDENCE_ADVENTURER);
-                Sprintf(verbuf, "Welcome to %s %s, adventurer!", (npc_subtype_definitions[npctype].general_flags& NPC_FLAGS_NO_MY) ? "the" : "my", npc_subtype_definitions[ENPC(mtmp)->npc_typ].room_name);
+                Sprintf(verbuf, "Welcome to %s %s, adventurer!", (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_NO_MY) ? "the" : "my", npc_subtype_definitions[ENPC(mtmp)->npc_typ].room_name);
                 chat_line = 0;
             }
             else
@@ -1647,8 +1655,8 @@ bark_here:
             const char* normal_msg[6] = { "discusses the Schroedinger equation.", 
                 "explains the benefits of Feynman diagrams.", 
                 "talks about the Heisenberg uncertainty principle.",
-                "tells how they achieved a quantum superposition on a cat.",
-                "explains that God does play dice with the universe after all.",
+                "discusses an experiment in which they achieved a quantum superposition on a cat.",
+                "explains that God plays dice with the universe, not unlike as in role-playing games.",
                 "wonders if the universe is just one big roguelike simulation."};
 
             int roll = rn2(6);
