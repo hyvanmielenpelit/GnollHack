@@ -3775,20 +3775,24 @@ short* novidx;
 
 
 static const char* const manual_names[MAX_MANUAL_TYPES] = {
-    "Wands 101", "Basics of Kicking"
+    "Wands 101", "Armor 101", "Weapons 101", "Gray Stones 101",
+    "Basics of Kicking", "Basics of Enchantment", "Basics of Eating and Drinking", "Introduction to Dangerous Monsters",
+    "Introduction to Blessed and Cursed Items", "Guide to Praying", "Essential Survival Tips",
+    /* Never randomly generated */
+    "Guide to Dragon Scale Mails", "Guide to Altars and Sacrifice"
 };
 
 const char*
 manualtitle(mnlidx)
 short* mnlidx;
 {
-    short j, k = SIZE(manual_names);
+    short j, k = MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS; /* Number of randomly generated manuals */ //SIZE(manual_names);
 
     j = (short)rn2((int)k);
     if (mnlidx) {
         if (*mnlidx == -1)
             *mnlidx = j;
-        else if (*mnlidx >= 0 && *mnlidx < k)
+        else if (*mnlidx >= 0 && *mnlidx < SIZE(manual_names))
             j = *mnlidx;
     }
     return manual_names[j];
@@ -3828,11 +3832,117 @@ struct obj* obj;
         putstr(datawin, 0, "7. You can zap a wand of digging downwards to create a hole to flee from a dangerous situation.");
         putstr(datawin, 0, "8. If you are engulfed by a monster, you can zap a wand of digging at it. It will spit you out and it is reduced to 1 HP.");
         putstr(datawin, 0, "9. A wand of create monster is useful for generating monsters for sacrificing at an altar.");
+        putstr(datawin, 0, "10. Wands make a good offensive ranged weapon choice for classes that can use them well.");
+        break;
+    case MANUAL_ARMOR_101:
+        putstr(datawin, 0, "1. Armor gives Armor Class (AC), which reduces the chance of a monster in hitting you. The lower the AC the better the armor.");
+        putstr(datawin, 0, "2. Total AC below 0 also reduces damage.");
+        putstr(datawin, 0, "3. Armor also gives Magic Cancellation (MC), which reduces the chance of touch-based special attacks, such as lycanthropy, from working. The higher the MC the better the protection.");
+        putstr(datawin, 0, "4. Robe is a special armor slot that does not stack with body armor. The game uses the superior AC and MC of the body armor and the robe.");
+        putstr(datawin, 0, "5. Armor may also give you spell casting penalty. Spell casting penalty reduces the chance of casting somatic spells (mainly some wizard spells). It does not affect non-somatic spells.");
+        putstr(datawin, 0, "6. A crystal plate mail gives you reflection.");
+        break;
+    case MANUAL_WEAPONS_101:
+        putstr(datawin, 0, "1. You can ready an alternate weapon by swapping weapons and then readying the alternate weapon.");
+        putstr(datawin, 0, "2. Switching between weapons by swapping two readied sets of weapons does not cost you a turn.");
+        putstr(datawin, 0, "3. You can also fight with two weapons at once, but this comes a penalty to hit and damage, which depends on your skill level.");
+        putstr(datawin, 0, "4. You gain weapon skill points by hitting with the weapon successfully.");
+        putstr(datawin, 0, "5. You gain two-weapon-fighting skill points when you it hit successfully with your off-hand weapon.");
+        putstr(datawin, 0, "6. Ranged weapons incur a -30 to hit penalty when thrown or fired in melee combat.");
+        putstr(datawin, 0, "7. Weapons may be enchanted to be flaming, freezing, and electrified, which all cost extra damage. The enchantment may dissipate upon hit.");
+        putstr(datawin, 0, "8. Glass and bone weapons can be enchanted to be death-magical, which slays the target instantly upon hit. The enchantment is consequently dispelled.");
+        putstr(datawin, 0, "9. Weapons may have exceptional, elite, and celestial/primordial/infernal qualities. Exceptional weapons do double base damage, elite weapons triple base damage, and celestial/primordial/infernal weapons quadruple base damage.");
+        putstr(datawin, 0, "10. Celestial weapons can only be used by lawful characters, primordial weapons can only be used by neutral characters, and infernal weapons can only be used by chaotic characters.");
+        break;
+    case MANUAL_GRAY_STONES_101:
+        putstr(datawin, 0, "1. You can identify any gem or stone by applying an uncursed or blessed touchstone (one of the gray stones) unto it.");
+        putstr(datawin, 0, "2. Beware of the cursed loadstone (one of the gray stones). It is cursed and you cannot drop it once you have picked it up. And it's very heavy.");
+        putstr(datawin, 0, "3. You can identify a loadstone by kicking it while on the floor. If it does not move, it is a loadstone.");
+        putstr(datawin, 0, "4. If you have unidentified gray stones in a container on the floor, you may pick it up and tip it so that its contents drop on the ground. This way you do not need to put its contents - and a possible loadstone - into your inventory.");
+        putstr(datawin, 0, "5. Beware of the cursed jinxstone. It will cause mishaps to happen and once you have picked it up, you cannot drop it.");
+        putstr(datawin, 0, "6. Jinxstones are best identified by letting your pet stand upon it. If the pet does not step upon the stone, it is cursed.");
+        putstr(datawin, 0, "7. A luckstone, one of the gray stones, increase your luck if kept in the open inventory.");
+        putstr(datawin, 0, "8. Luck will disappear over time, but a blessed luckstone will prevent this.");
         break;
     case MANUAL_BASICS_OF_KICKING:
         putstr(datawin, 0, "1. You can kick closed doors open.");
         putstr(datawin, 0, "2. Do not kick shop doors, or the shopkeeper will get angry.");
         putstr(datawin, 0, "3. You can break the locks of locked chest by kicking them. This may destroy glass items in the chest, though.");
+        break;
+    case MANUAL_BASICS_OF_ENCHANTMENT:
+        putstr(datawin, 0, "1. You can enchant weapons and armor to make them better.");
+        putstr(datawin, 0, "2. If you enchant an armor or a weapon too much, it may explode. You may examine a fully identified item to determine its maximum safe enchantable level.");
+        putstr(datawin, 0, "3. You can magically protect weapons and armor to prevent them from corroding.");
+        putstr(datawin, 0, "4. Mythic weapons and armor have one special power. The special powers are named as a prefix and suffix to the name of the weapon or armor.");
+        putstr(datawin, 0, "5. Legendary weapons and armor have two special powers, one prefix ability and one suffix ability.");
+        break;
+    case MANUAL_BASICS_OF_EATING_AND_DRINKING:
+        putstr(datawin, 0, "1. Do not eat too much, or you may choke to death.");
+        putstr(datawin, 0, "2. Corpses rot very fast. Do not eat rotten corpses or you will be food poisoned and die.");
+        putstr(datawin, 0, "3. Gnolls can smell which corpses are safe to eat and which are not.");
+        putstr(datawin, 0, "4. Some corpses may give you intrinsic abilities when eaten, or increase your ability scores.");
+        putstr(datawin, 0, "5. You should eat corpses that are safe to eat and which give good abilities. Do not eat dangerous corpses.");
+        putstr(datawin, 0, "6. Do not eat corpses left by undead creatures, except wraith corpses. Undead corpses are rotten, except for wraith corpses, which will give you an experience level.");
+        putstr(datawin, 0, "7. Some fruits give you ability score bonuses, when eaten.");
+        putstr(datawin, 0, "8. You can probe monsters and corpses with a wand of probe monster to determine what abilities they have and if the corpses are safe to eat.");
+        putstr(datawin, 0, "9. Rings and amulets consume nutrition periodically when worn. If you are low on food, it may be wise not to wear them.");
+        break;
+    case MANUAL_INTRODUCTION_TO_DANGEROUS_MONSTERS:
+        putstr(datawin, 0, "1. Hitting a floating eye in melee will paralyse you. Do not do it.");
+        putstr(datawin, 0, "2. Watch out for nymphs and harpies. They can steal your items.");
+        putstr(datawin, 0, "3. Leprechauns will steal your money that is in open inventory.");
+        putstr(datawin, 0, "4. There are many dangerous monsters that should be killed from far away. For example, werecreatures may bite you and cause you to contract lycanthropy.");
+        putstr(datawin, 0, "5. Mummies cause mummy rot on touch. It prevents you from healing over time and reduces your constitution and charisma slowly.");
+        putstr(datawin, 0, "6. Some snakes can constrict you. It is often a good idea to kill them from a distance.");
+        putstr(datawin, 0, "7. Some monsters, such as owlbears, can grab you. You need to kill the grabbed monster first before doing anything else.");
+        break;
+    case MANUAL_ESSENTIAL_SURVIVAL_TIPS:
+        putstr(datawin, 0, "1. You can cure a disease, such as mummy rot or food poisoning, by eating a fig. Also, a priest can cure your disease for a fee. Furthermore, praying can cure a disease as well.");
+        putstr(datawin, 0, "2. You can cure lycanthropy by drinking a potion of holy water or by eating a sprig of wolfsbane.");
+        putstr(datawin, 0, "3. Blessed potions of healing increase your maximum hit points if you drink them at full health.");
+        putstr(datawin, 0, "4. It is a good practice to drink many blessed potions of healing early on to maximise your hit points.");
+        putstr(datawin, 0, "5. You cannot swim. Do not try to enter deep water, such as moat, or you may drown.");
+        putstr(datawin, 0, "6. Monsters cannot engulf and digest you, if you are wearing a ring of slow digestion.");
+        putstr(datawin, 0, "7. Tentacled ones cannot eat your brain, if you are wearing a ring of sustain ability. They also cannot cause amnesia.");
+        break;
+    case MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS:
+        putstr(datawin, 0, "1. Items can be blessed, uncursed, or cursed. You cannot remove cursed items, if you equip them.");
+        putstr(datawin, 0, "2. You can remove a curse from an item, if you bless them item using a potion of holy water or by paying to a priest to do so. You can also do so by reading a blessed or uncursed scroll of remove curse.");
+        putstr(datawin, 0, "3. It is good practice to identify items before using them. At least you should make sure that the item is not cursed, when you equip it.");
+        putstr(datawin, 0, "4. An uncursed scroll of remove curse will remove curses from equipped items. A blessed scroll will remove curses from all items in the open inventory.");
+        putstr(datawin, 0, "5. Dropping items on the altar will reveal their blessed/uncursed/cursed status.");
+        putstr(datawin, 0, "6. Dipping items into holy water will make uncursed items blessed and cursed items uncursed.");
+        putstr(datawin, 0, "7. Dipping items into unholy water will make uncursed items cursed and blessed items uncursed.");
+        break;
+    case MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS:
+        putstr(datawin, 0, "1. If you polymorph while wearing a dragon scale mail, you will turn into a dragon and your dragon scale mail will revert to mere scales again.");
+        putstr(datawin, 0, "2. You can turn dragon scales into a dragon scale mail by enchanting them or by asking a smith to forge them into a mail.");
+        putstr(datawin, 0, "3. An orange dragon scale mail gives you sleep resistance and free action.");
+        putstr(datawin, 0, "4. A green dragon scale mail gives you poison resistance and sickness resistance.");
+        putstr(datawin, 0, "5. A yellow dragon scale mail gives you acid resistance and petrification resistance.");
+        putstr(datawin, 0, "6. A gray dragon scale mail gives you magic resistance.");
+        putstr(datawin, 0, "7. A silver dragon scale mail gives you reflection.");
+        putstr(datawin, 0, "8. A red dragon scale mail gives you full fire resistance.");
+        putstr(datawin, 0, "9. A white dragon scale mail gives you full cold resistance.");
+        putstr(datawin, 0, "10. A blue dragon scale mail gives you full shock resistance.");
+        putstr(datawin, 0, "11. A black dragon scale mail gives you disintegration resistance.");
+        break;
+    case MANUAL_GUIDE_TO_PRAYING:
+        putstr(datawin, 0, "1. You may pray on turn 301 earliest.");
+        putstr(datawin, 0, "2. Praying at low hit points or in a severe condition will heal you, if your God is not angry with you.");
+        putstr(datawin, 0, "3. After successfully praying, it is good practice to wait 1000 turns before praying again.");
+        putstr(datawin, 0, "4. If you pray too often, your God gets angry and your adventure is ruined.");
+        putstr(datawin, 0, "5. A blessed prayerstone will shimmer when it is safe to pray.");
+        putstr(datawin, 0, "6. You can make a prayerstone blessed by sacrificing on the altar while the stone is in open inventory.");
+        putstr(datawin, 0, "7. Praying does not work in Gehennom.");
+        break;
+    case MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE:
+        putstr(datawin, 0, "1. Dropping items on the altar will reveal their blessed/uncursed/cursed status.");
+        putstr(datawin, 0, "2. Sacrificing a corpse on the altar may increase your luck. The corpse needs to be a high level monster.");
+        putstr(datawin, 0, "3. Sacrificing a corpse on the altar may grant you an artifact.");
+        putstr(datawin, 0, "4. If you drop potions of water on the altar and pray, they will be converted into holy water.");
+        putstr(datawin, 0, "5. You can sacrifice on an altar of another god than yours to convert it to your deity. The success chance depends on your level.");
+        putstr(datawin, 0, "6. Do not sacrifice on an altar of another god than yours, if it is attended by a priest. Doing so will anger him or her.");
         break;
     default:
         putstr(datawin, 0, "(This manual seems impossible.)");

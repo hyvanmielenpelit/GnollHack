@@ -386,6 +386,22 @@ int mtype;
             {
                 (void)mpickobj(priest, mkobj(SPBOOK_CLASS, FALSE, FALSE));
             }
+
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(priest, otmp);
+
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_PRAYING, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(priest, otmp);
+
+            if (context.game_difficulty < 0)
+            {
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                if (otmp)
+                    (void)mpickobj(priest, otmp);
+            }
+
         }
 
         /* robe [via makemon()] */
@@ -522,6 +538,9 @@ int mtype;
         set_malign(smith); /* mpeaceful may have changed */
 
         (void)mongetsgold(smith, 3000L + (long)rn2(6) * 500L);
+        struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+        if (otmp)
+            (void)mpickobj(smith, otmp);
     }
 }
 

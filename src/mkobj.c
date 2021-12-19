@@ -265,7 +265,7 @@ unsigned long mkflags;
 
     struct obj* otmp;
 
-    otmp = mksobj_with_flags(otyp, init, artif, 0, mkflags);
+    otmp = mksobj_with_flags(otyp, init, artif, 0, 0, mkflags);
     if (otmp)
     {
         place_object(otmp, x, y);
@@ -342,7 +342,7 @@ unsigned long mkflags;
         else
             break;
     }
-    return mksobj_with_flags(i, TRUE, artif, mkobj_type, mkflags);
+    return mksobj_with_flags(i, TRUE, artif, mkobj_type, 0, mkflags);
 }
 
 int
@@ -1279,15 +1279,16 @@ boolean init;
 boolean artif;
 int mkobj_type;
 {
-    return mksobj_with_flags(otyp, init, artif, mkobj_type, 0UL);
+    return mksobj_with_flags(otyp, init, artif, mkobj_type, 0, 0UL);
 }
 
 struct obj *
-mksobj_with_flags(otyp, init, artif, mkobj_type, mkflags)
+mksobj_with_flags(otyp, init, artif, mkobj_type, param, mkflags)
 int otyp;
 boolean init;
 boolean artif;
 int mkobj_type;
+int param;
 unsigned long mkflags;
 {
     int mndx, tryct;
@@ -1973,12 +1974,18 @@ unsigned long mkflags;
         otmp->leashmon = 0; /* overloads corpsenm, which was set to NON_PM */
         break;
     case SPE_NOVEL:
-        otmp->novelidx = -1; /* "none of the above"; will be changed */
+        if(mkflags & MKOBJ_FLAGS_PARAM_IS_TITLE)
+            otmp->novelidx = (short)param;
+        else
+            otmp->novelidx = -1; /* "none of the above"; will be changed */
         otmp = oname(otmp, noveltitle(&otmp->novelidx));
         otmp->nknown = TRUE;
         break;
     case SPE_MANUAL:
-        otmp->manualidx = -1; /* "none of the above"; will be changed */
+        if (mkflags & MKOBJ_FLAGS_PARAM_IS_TITLE)
+            otmp->manualidx = (short)param;
+        else
+            otmp->manualidx = -1; /* "none of the above"; will be changed */
         otmp = oname(otmp, manualtitle(&otmp->manualidx));
         otmp->nknown = TRUE;
         break;
