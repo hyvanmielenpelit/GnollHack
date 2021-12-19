@@ -117,8 +117,8 @@ STATIC_DCL int FDECL(do_chat_smith_sell_ore, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_mechanic_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_observe_position, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_observe_speed, (struct monst*));
-STATIC_DCL int FDECL(do_chat_special_hints, (struct monst*));
-STATIC_DCL int FDECL(do_chat_sing_song, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_special_hints, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_sing_song, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
@@ -2608,7 +2608,7 @@ dochat()
         {
             /* Special hints about game mechanics */
             strcpy(available_chat_list[chatnum].name, "Ask to sing a song");
-            available_chat_list[chatnum].function_ptr = &do_chat_sing_song;
+            available_chat_list[chatnum].function_ptr = &do_chat_npc_sing_song;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
             any = zeroany;
@@ -2624,7 +2624,7 @@ dochat()
         {
             /* Special hints about game mechanics */
             strcpy(available_chat_list[chatnum].name, "Ask about advanced adventuring tactics");
-            available_chat_list[chatnum].function_ptr = &do_chat_special_hints;
+            available_chat_list[chatnum].function_ptr = &do_chat_npc_special_hints;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
             any = zeroany;
@@ -7082,7 +7082,7 @@ int npc_identification_type_index;
 }
 
 STATIC_OVL int
-do_chat_sing_song(mtmp)
+do_chat_npc_sing_song(mtmp)
 struct monst* mtmp;
 {
     if (!mtmp || !m_speak_check(mtmp) || !mtmp->isnpc || !has_enpc(mtmp))
@@ -7143,7 +7143,7 @@ struct monst* mtmp;
 }
 
 STATIC_OVL int
-do_chat_special_hints(mtmp)
+do_chat_npc_special_hints(mtmp)
 struct monst* mtmp;
 {
     if (!mtmp || !m_speak_check(mtmp) || !mtmp->isnpc || !has_enpc(mtmp))
