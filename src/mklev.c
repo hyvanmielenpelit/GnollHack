@@ -1183,6 +1183,13 @@ makelevel()
                 (void)add_to_container(stash, otmp);
             }
 
+            if (context.game_difficulty < 0)
+            {
+                otmp = mksobj(SPE_MANUAL, TRUE, FALSE, FALSE);
+                otmp->bknown = 1;
+                (void)add_to_container(stash, otmp);
+            }
+
 #if 0
             if (!carrying(AXE) && !carrying(BATTLE_AXE))
             {

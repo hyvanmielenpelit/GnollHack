@@ -4652,6 +4652,11 @@ boolean force;
             obj->novelidx = 0;
             free_oname(obj);
         }
+        else if (objects[obj->otyp].oc_subtyp == BOOKTYPE_MANUAL)
+        {
+            obj->manualidx = 0;
+            free_oname(obj);
+        }
 
         obj->otyp = SPE_BLANK_PAPER;
         obj->dknown = 0;

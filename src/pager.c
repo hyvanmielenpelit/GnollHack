@@ -793,7 +793,18 @@ char *supplemental_name;
             alt = ep + 7;
             if ((ap = strstri(dbase_str, " called ")) != 0 && ap < ep)
                 ep = ap; /* "named" is alt but truncate at "called" */
-        } else if ((ep = strstri(dbase_str, " called ")) != 0) {
+        } 
+        else if ((ep = strstri(dbase_str, " entitled ")) != 0) {
+            alt = ep + 10;
+            if ((ap = strstri(dbase_str, " called ")) != 0 && ap < ep)
+                ep = ap; /* "named" is alt but truncate at "called" */
+        }
+        else if ((ep = strstri(dbase_str, " labeled ")) != 0) {
+            alt = ep + 9;
+            if ((ap = strstri(dbase_str, " called ")) != 0 && ap < ep)
+                ep = ap; /* "named" is alt but truncate at "called" */
+        }
+        else if ((ep = strstri(dbase_str, " called ")) != 0) {
             copynchars(givenname, ep + 8, BUFSZ - 1);
             alt = givenname;
             if (supplemental_name && (sp = strstri(inp, " called ")) != 0)

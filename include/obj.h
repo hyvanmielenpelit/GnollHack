@@ -168,6 +168,7 @@ struct obj {
     int corpsenm;         /* type of corpse is mons[corpsenm] */
 #define leashmon corpsenm /* gets m_id of attached pet */
 #define novelidx corpsenm /* 3.6 tribute - the index of the novel title */
+#define manualidx special_quality /* the index of the manual title */
 #define keyotyp corpsenm  /* otyp of the key capable of locking / unlocking the chest (0 = SKELETON_KEY). Special_quality additionally defines the type of the key (its matching special_quality) */
     int usecount;           /* overloaded for various things that tally */
 #define spestudied usecount /* # of times a spellbook has been studied */
@@ -925,6 +926,14 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
 #define has_obj_mythic_return_to_hand(o)        has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_RETURN_TO_HAND_AFTER_THROW)
 #define has_obj_mythic_uncurseable(o)           has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_UNCURSEABLE)
 #define has_obj_mythic_great_strength(o)        has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_GREAT_STRENGTH)
+
+/* Manuals */
+enum manual_types
+{
+    MANUAL_WANDS_101 = 0,
+    MANUAL_BASICS_OF_KICKING,
+    MAX_MANUAL_TYPES
+};
 
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1

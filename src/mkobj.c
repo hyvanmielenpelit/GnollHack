@@ -1977,6 +1977,11 @@ unsigned long mkflags;
         otmp = oname(otmp, noveltitle(&otmp->novelidx));
         otmp->nknown = TRUE;
         break;
+    case SPE_MANUAL:
+        otmp->manualidx = -1; /* "none of the above"; will be changed */
+        otmp = oname(otmp, manualtitle(&otmp->manualidx));
+        otmp->nknown = TRUE;
+        break;
     }
 
     /* unique objects may have an associated artifact entry */

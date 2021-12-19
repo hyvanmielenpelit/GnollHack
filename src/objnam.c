@@ -221,7 +221,7 @@ register int otyp;
         break;
     case SPBOOK_CLASS:
         Strcpy(buf, book_type_names[objects[otyp].oc_subtyp]);
-        if (objects[otyp].oc_subtyp == BOOKTYPE_NOVEL)
+        if (objects[otyp].oc_subtyp == BOOKTYPE_NOVEL || objects[otyp].oc_subtyp == BOOKTYPE_MANUAL)
         {
             if(!nn)
                 Strcpy(buf, "book");
@@ -893,13 +893,13 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Sprintf(buf, "%s wand", dn);
         break;
     case SPBOOK_CLASS:
-        if (objects[typ].oc_subtyp == BOOKTYPE_NOVEL) { /* 3.6 tribute */
+        if (objects[typ].oc_subtyp == BOOKTYPE_NOVEL || objects[typ].oc_subtyp == BOOKTYPE_MANUAL) { /* 3.6 tribute */
             if (!dknown)
                 Strcpy(buf, "book");
             else if (nn)
                 Strcpy(buf, actualn);
             else if (un)
-                Sprintf(buf, "novel called %s", un);
+                Sprintf(buf, "%s called %s", book_type_names[objects[typ].oc_subtyp], un);
             else
                 Sprintf(buf, "%s book", dn);
             break;
@@ -944,7 +944,10 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 
     char anamebuf[BUFSZ] = "";
     if (has_oname(obj) && nknown && dknown) {
-        Strcat(buf, " named ");
+        if(obj->oclass == SPBOOK_CLASS)
+            Strcat(buf, " entitled ");
+        else
+            Strcat(buf, " named ");
         makeThelower = TRUE;
     nameit:
         strcpy(anamebuf, ONAME(obj));
@@ -2441,7 +2444,7 @@ const char *str;
         insert_the = TRUE;
     } else {
         /* Probably a proper name, might not need an article */
-        register char *tmp, *named, *called;
+        register char *tmp, *named, *called, *entitled, *labeled;
         int l;
 
         /* some objects have capitalized adjectives in their names */
@@ -2453,6 +2456,12 @@ const char *str;
             tmp = strstri(str, " of ");
             named = strstri(str, " named ");
             called = strstri(str, " called ");
+            entitled = strstri(str, " entitled ");
+            labeled = strstri(str, " labeled ");
+            if (!named && entitled)
+                named = entitled;
+            if (!named && labeled)
+                named = labeled;
             if (called && (!named || called < named))
                 named = called;
 
@@ -2767,7 +2776,7 @@ register const char *verb;
         spot = (const char *) 0;
         for (sp = subj; (sp = index(sp, ' ')) != 0; ++sp) {
             if (!strncmpi(sp, " of ", 4) || !strncmpi(sp, " from ", 6)
-                || !strncmpi(sp, " called ", 8) || !strncmpi(sp, " named ", 7)
+                || !strncmpi(sp, " called ", 8) || !strncmpi(sp, " named ", 7) || !strncmpi(sp, " entitled ", 10)
                 || !strncmpi(sp, " labeled ", 9)) {
                 if (sp != subj)
                     spot = sp - 1;
@@ -2965,7 +2974,7 @@ char *str;
     /* if new entries are added, be sure to keep compound_start[] in sync */
     static const char *const compounds[] =
         {
-          " of ",     " labeled ", " called ",
+          " of ",     " labeled ", " called ", " entitled ",
           " named ",  " above", /* lurkers above */
           " versus ", " from ",    " in ",
           " on ",     " a la ",    " with", /* " with "? */
@@ -4050,6 +4059,10 @@ boolean is_wiz_wish;
     if ((p = strstri(bp, " named ")) != 0) {
         *p = 0;
         name = p + 7;
+    }
+    if ((p = strstri(bp, " entitled ")) != 0) {
+        *p = 0;
+        name = p + 10;
     }
     if ((p = strstri(bp, " called ")) != 0) {
         *p = 0;
@@ -5261,8 +5274,19 @@ boolean is_wiz_wish;
             novelname = lookup_novel(name, &otmp->novelidx);
             if (novelname)
                 name = novelname;
+
+            otmp = oname(otmp, name);
         }
-        if(name == aname)
+        else if (objects[otmp->otyp].oc_subtyp == BOOKTYPE_MANUAL) {
+            const char* manualname;
+
+            manualname = lookup_manual(name, &otmp->manualidx);
+            if (manualname)
+                name = manualname;
+
+            otmp = oname(otmp, name);
+        }
+        else if(name == aname)
         {
             otmp = oname(otmp, name);
             /* name==aname => wished for artifact (otmp->oartifact => got it) */

@@ -1429,12 +1429,15 @@ void
 do_uoname(obj)
 register struct obj *obj;
 {
+    if (!obj)
+        return;
+
     char buf[BUFSZ] = DUMMY, qbuf[QBUFSZ];
     //char *bufp, buf[BUFSZ] = DUMMY, bufcpy[BUFSZ], qbuf[QBUFSZ];
     //short objtyp;
 
     /* Do this now because there's no point in even asking for a name */
-    if (obj->otyp == SPE_NOVEL) {
+    if (objects[obj->otyp].oc_subtyp == BOOKTYPE_NOVEL || objects[obj->otyp].oc_subtyp == BOOKTYPE_MANUAL) {
         pline("%s already has a published name.", Ysimple_name2(obj));
         return;
     }
@@ -3769,6 +3772,81 @@ int *novidx;
     return sir_Terry_novels[j];
 }
 
+
+
+static const char* const manual_names[MAX_MANUAL_TYPES] = {
+    "Wands 101", "Basics of Kicking"
+};
+
+const char*
+manualtitle(mnlidx)
+int* mnlidx;
+{
+    int j, k = SIZE(manual_names);
+
+    j = rn2(k);
+    if (mnlidx) {
+        if (*mnlidx == -1)
+            *mnlidx = j;
+        else if (*mnlidx >= 0 && *mnlidx < k)
+            j = *mnlidx;
+    }
+    return manual_names[j];
+}
+
+void
+read_manual(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return;
+
+    int mnlidx = obj->manualidx;
+
+    if (mnlidx < 0)
+    {
+        pline("%s unintelligibly scribbled.", Tobjnam(obj, "be"));
+        return;
+    }
+
+    u.uconduct.literate++;
+
+    winid datawin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_GENERAL, NO_GLYPH, zerocreatewindowinfo);
+    char buf[BUFSZ];
+
+    putstr(datawin, 0, "The manual contains several instructions:");
+    putstr(datawin, 0, "");
+    switch (mnlidx)
+    {
+    case MANUAL_WANDS_101:
+        putstr(datawin, 0, "You can apply wands to an item. It applies the wand's effect on to the item.");
+        putstr(datawin, 0, "For example, you can use a wand of cancellation to remove a curse from an item.");
+        putstr(datawin, 0, "If you put a wand of cancellation or a Rod of Disjunction in a bag of holding, it will explode.");
+        putstr(datawin, 0, "It is best to put wands of cancellation into ordinary bags.");
+        putstr(datawin, 0, "You can zap a wand of digging downwards to create a hole to flee from a dangerous situation.");
+        putstr(datawin, 0, "If you are engulfed by a monsters, you can zap a wand of digging at itand it will spit you outand the monster is reduced to 1 HP.");
+        putstr(datawin, 0, "A wand of create monster is useful for generating monsters for sacrificing at an altar.");
+        break;
+    case MANUAL_BASICS_OF_KICKING:
+        putstr(datawin, 0, "You can kick closed doors open.");
+        putstr(datawin, 0, "Do not kick shop doors, or the shopkeeper will get angry.");
+        putstr(datawin, 0, "You can break the locks of locked chest by kicking them. This may destroy glass items in the chest, though.");
+        break;
+    default:
+        putstr(datawin, 0, "(This manual seems impossible.)");
+        break;
+    }
+    putstr(datawin, 0, "");
+
+    Sprintf(buf, "[%s]", manual_names[mnlidx]);
+    putstr(datawin, 0, buf);
+    display_nhwindow(datawin, TRUE);
+    destroy_nhwindow(datawin);
+
+    putmsghistory(buf, FALSE);
+
+}
+
 const char *
 lookup_novel(lookname, idx)
 const char *lookname;
@@ -3793,6 +3871,28 @@ int *idx;
         return sir_Terry_novels[*idx];
 
     return (const char *) 0;
+}
+
+const char*
+lookup_manual(lookname, idx)
+const char* lookname;
+int* idx;
+{
+    int k;
+
+    for (k = 0; k < SIZE(manual_names); ++k) {
+        if (!strcmpi(lookname, manual_names[k])
+            || !strcmpi(The(lookname), manual_names[k])) {
+            if (idx)
+                *idx = k;
+            return manual_names[k];
+        }
+    }
+    /* name not found; if idx is already set, override the name */
+    if (idx && *idx >= 0 && *idx < SIZE(manual_names))
+        return manual_names[*idx];
+
+    return (const char*)0;
 }
 
 /*do_name.c*/

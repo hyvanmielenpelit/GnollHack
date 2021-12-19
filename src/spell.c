@@ -710,6 +710,11 @@ register struct obj *spellbook;
             }
             return 1;
         }
+        else if (objects[booktype].oc_subtyp == BOOKTYPE_MANUAL)
+        {
+            read_manual(spellbook);
+            return 1;
+        }
 
         context.spbook.delay = -min(8, max(1, (schar)(objects[booktype].oc_spell_level)))
             * objects[booktype].oc_delay;
