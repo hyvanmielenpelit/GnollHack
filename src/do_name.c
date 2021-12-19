@@ -3758,11 +3758,11 @@ static const char *const sir_Terry_novels[] = {
 
 const char *
 noveltitle(novidx)
-int *novidx;
+short* novidx;
 {
-    int j, k = SIZE(sir_Terry_novels);
+    short j, k = (short)SIZE(sir_Terry_novels);
 
-    j = rn2(k);
+    j = (short)rn2((int)k);
     if (novidx) {
         if (*novidx == -1)
             *novidx = j;
@@ -3780,11 +3780,11 @@ static const char* const manual_names[MAX_MANUAL_TYPES] = {
 
 const char*
 manualtitle(mnlidx)
-int* mnlidx;
+short* mnlidx;
 {
-    int j, k = SIZE(manual_names);
+    short j, k = SIZE(manual_names);
 
-    j = rn2(k);
+    j = (short)rn2((int)k);
     if (mnlidx) {
         if (*mnlidx == -1)
             *mnlidx = j;
@@ -3801,7 +3801,7 @@ struct obj* obj;
     if (!obj)
         return;
 
-    int mnlidx = obj->manualidx;
+    short mnlidx = obj->manualidx;
 
     if (mnlidx < 0)
     {
@@ -3819,18 +3819,20 @@ struct obj* obj;
     switch (mnlidx)
     {
     case MANUAL_WANDS_101:
-        putstr(datawin, 0, "You can apply wands to an item. It applies the wand's effect on to the item.");
-        putstr(datawin, 0, "For example, you can use a wand of cancellation to remove a curse from an item.");
-        putstr(datawin, 0, "If you put a wand of cancellation or a Rod of Disjunction in a bag of holding, it will explode.");
-        putstr(datawin, 0, "It is best to put wands of cancellation into ordinary bags.");
-        putstr(datawin, 0, "You can zap a wand of digging downwards to create a hole to flee from a dangerous situation.");
-        putstr(datawin, 0, "If you are engulfed by a monsters, you can zap a wand of digging at itand it will spit you outand the monster is reduced to 1 HP.");
-        putstr(datawin, 0, "A wand of create monster is useful for generating monsters for sacrificing at an altar.");
+        putstr(datawin, 0, "1. You can zap wands at monsters and items.");
+        putstr(datawin, 0, "2. You can zap wands even at yourself, as well as upwards and downwards.");
+        putstr(datawin, 0, "3. You can also apply wands to an item. It applies the wand's effect on to the item.");
+        putstr(datawin, 0, "4. For example, you can use a wand of cancellation to remove a curse from an item.");
+        putstr(datawin, 0, "5. If you put a wand of cancellation or a Rod of Disjunction in a bag of holding, it will explode.");
+        putstr(datawin, 0, "6. It is advisable to put wands of cancellation into ordinary bags to avoid putting them accidently into a magic bag.");
+        putstr(datawin, 0, "7. You can zap a wand of digging downwards to create a hole to flee from a dangerous situation.");
+        putstr(datawin, 0, "8. If you are engulfed by a monster, you can zap a wand of digging at it. It will spit you out and it is reduced to 1 HP.");
+        putstr(datawin, 0, "9. A wand of create monster is useful for generating monsters for sacrificing at an altar.");
         break;
     case MANUAL_BASICS_OF_KICKING:
-        putstr(datawin, 0, "You can kick closed doors open.");
-        putstr(datawin, 0, "Do not kick shop doors, or the shopkeeper will get angry.");
-        putstr(datawin, 0, "You can break the locks of locked chest by kicking them. This may destroy glass items in the chest, though.");
+        putstr(datawin, 0, "1. You can kick closed doors open.");
+        putstr(datawin, 0, "2. Do not kick shop doors, or the shopkeeper will get angry.");
+        putstr(datawin, 0, "3. You can break the locks of locked chest by kicking them. This may destroy glass items in the chest, though.");
         break;
     default:
         putstr(datawin, 0, "(This manual seems impossible.)");
@@ -3843,6 +3845,7 @@ struct obj* obj;
     display_nhwindow(datawin, TRUE);
     destroy_nhwindow(datawin);
 
+    Sprintf(buf, "[%s]", manual_names[mnlidx]);
     putmsghistory(buf, FALSE);
 
 }
@@ -3850,9 +3853,9 @@ struct obj* obj;
 const char *
 lookup_novel(lookname, idx)
 const char *lookname;
-int *idx;
+short* idx;
 {
-    int k;
+    short k;
 
     /* Take American or U.K. spelling of this one */
     if (!strcmpi(The(lookname), "The Color of Magic"))
@@ -3876,9 +3879,9 @@ int *idx;
 const char*
 lookup_manual(lookname, idx)
 const char* lookname;
-int* idx;
+short* idx;
 {
-    int k;
+    short k;
 
     for (k = 0; k < SIZE(manual_names); ++k) {
         if (!strcmpi(lookname, manual_names[k])

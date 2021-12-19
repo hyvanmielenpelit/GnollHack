@@ -678,10 +678,10 @@ E struct obj *FDECL(realloc_obj, (struct obj *, int, genericptr_t, int, const ch
 E char *FDECL(coyotename, (struct monst *, char *));
 E char *FDECL(rndorcname, (char *));
 E struct monst *FDECL(christen_orc, (struct monst *, const char *, const char *));
-E const char *FDECL(noveltitle, (int *));
-E const char* FDECL(manualtitle, (int*));
-E const char *FDECL(lookup_novel, (const char *, int *));
-E const char* FDECL(lookup_manual, (const char*, int*));
+E const char *FDECL(noveltitle, (short *));
+E const char* FDECL(manualtitle, (short*));
+E const char *FDECL(lookup_novel, (const char *, short*));
+E const char* FDECL(lookup_manual, (const char*, short*));
 E char* FDECL(randomize_dwarf_name, (char*));
 E char* FDECL(randomize_elf_name, (char*));
 E char* FDECL(randomize_gnome_name, (char*));
