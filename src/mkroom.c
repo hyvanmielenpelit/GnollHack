@@ -26,7 +26,6 @@ STATIC_DCL int FDECL(mkzoo, (int)), NDECL(mkswamp), NDECL(mkgarden), NDECL(mkdra
 STATIC_DCL int NDECL(mktemple);
 STATIC_DCL coord* FDECL(shrine_pos, (int));
 STATIC_DCL int NDECL(mksmithy);
-STATIC_DCL int NDECL(mknpcroom);
 STATIC_DCL coord* FDECL(anvil_pos, (int));
 STATIC_DCL struct permonst *NDECL(morguemon);
 STATIC_DCL struct permonst *FDECL(librarymon, (int));
@@ -95,7 +94,7 @@ int roomtype;
             return mksmithy();
             break;
         case NPCROOM:
-            return mknpcroom();
+            return mknpcroom(MAX_NPC_SUBTYPES);
             break;
         case LEPREHALL:
             return mkzoo(LEPREHALL);
@@ -1751,8 +1750,9 @@ mksmithy()
 }
 
 
-STATIC_OVL int
-mknpcroom()
+int
+mknpcroom(npctyp)
+int npctyp;
 {
     register struct mkroom* sroom;
 
@@ -1763,34 +1763,40 @@ mknpcroom()
 
     schar u_depth = depth(&u.uz);
     uchar npctype = NPC_ARTIFICER;
-
-    /* Select appropriate NPC */
-    int ok_npc_cnt = 0;
-    boolean is_npc_ok[MAX_NPC_SUBTYPES] = { 0 };
-    for (int i = 0; i < MAX_NPC_SUBTYPES; i++)
+    if (npctyp >= 0 && npctyp < MAX_NPC_SUBTYPES)
     {
-        is_npc_ok[i] = !(npc_subtype_definitions[i].general_flags & NPC_FLAGS_NO_GENERATION);
-        if(npc_subtype_definitions[i].min_appearance_depth > 0 && u_depth < npc_subtype_definitions[i].min_appearance_depth)
-            is_npc_ok[i] = FALSE;
-        if (npc_subtype_definitions[i].max_appearance_depth > 0 && u_depth > npc_subtype_definitions[i].max_appearance_depth)
-            is_npc_ok[i] = FALSE;
-
-        if (is_npc_ok[i])
-            ok_npc_cnt++;
+        npctype = (uchar)npctyp;
     }
-
-    if (ok_npc_cnt > 0)
+    else
     {
-        int cnt = -1;
-        int rndidx = (ok_npc_cnt == 1 ? 1 : rn2(ok_npc_cnt));
+        /* Select random NPC type */
+        int ok_npc_cnt = 0;
+        boolean is_npc_ok[MAX_NPC_SUBTYPES] = { 0 };
         for (int i = 0; i < MAX_NPC_SUBTYPES; i++)
         {
+            is_npc_ok[i] = !(npc_subtype_definitions[i].general_flags & NPC_FLAGS_NO_GENERATION);
+            if (npc_subtype_definitions[i].min_appearance_depth > 0 && u_depth < npc_subtype_definitions[i].min_appearance_depth)
+                is_npc_ok[i] = FALSE;
+            if (npc_subtype_definitions[i].max_appearance_depth > 0 && u_depth > npc_subtype_definitions[i].max_appearance_depth)
+                is_npc_ok[i] = FALSE;
+
             if (is_npc_ok[i])
-                cnt++;
-            if (cnt == rndidx)
+                ok_npc_cnt++;
+        }
+
+        if (ok_npc_cnt > 0)
+        {
+            int cnt = -1;
+            int rndidx = (ok_npc_cnt == 1 ? 1 : rn2(ok_npc_cnt));
+            for (int i = 0; i < MAX_NPC_SUBTYPES; i++)
             {
-                npctype = i;
-                break;
+                if (is_npc_ok[i])
+                    cnt++;
+                if (cnt == rndidx)
+                {
+                    npctype = i;
+                    break;
+                }
             }
         }
     }
@@ -1840,6 +1846,7 @@ mknpcroom()
 
     npcini(&u.uz, sroom, somex(sroom), somey(sroom), npctype, NON_PM);
     level.flags.has_npc_room = 1;
+    context.npc_made |= (1UL << (unsigned long)npctype);
 
     if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_LIGHTS_ON)
     {

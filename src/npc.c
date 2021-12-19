@@ -34,7 +34,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         6, 0,
         10, 1000, 15000,
         NPC_SERVICE_BUY_GEMS_AND_STONES | NPC_SERVICE_IDENTIFY_GEMS_AND_STONES,
-        NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_DOUBLE_MONEY_IN_HELL | NPC_FLAGS_GEOLOGIST_ITEMS
+        NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_DOUBLE_MONEY_IN_HELL | NPC_FLAGS_SPECIAL_NPC_ITEMS
     },
     {
         PM_MODRON_QUARTON,
@@ -109,10 +109,23 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         "Endicott Whateley",
         "We conduct delicate underground experiments within these mines.",
         (char*)0,
-        8, 0,
+        0, 0,
         5, 50, 500,
-        NPC_SERVICE_QUANTUM_HINTS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_QUANTUM_ITEMS | NPC_FLAGS_NO_TITLE_ARTICLE | NPC_FLAGS_MAJORITY_NORMAL_HELLO
+        NPC_SERVICE_SPECIAL_NPC_HINTS,
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_MALE | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_SPECIAL_NPC_ITEMS | NPC_FLAGS_NO_TITLE_ARTICLE | NPC_FLAGS_MAJORITY_NORMAL_HELLO
+    },
+    {
+        PM_ELF_LORD,
+        NPC_GEHENNOM_UNDEAD_SPELLCASTER,
+        "elven high bard",
+        "Dungeons of Doom in these dark times",
+        "Nimrodiel",
+        "I sing songs to great elven gods.",
+        (char*)0,
+        0, 0,
+        5, 10, 50,
+        NPC_SERVICE_SPECIAL_NPC_HINTS | NPC_SERVICE_SING_SONGS,
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_FEMALE | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_NO_MY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_SPECIAL_NPC_ITEMS
     },
 };
 
@@ -430,7 +443,7 @@ int mtype;
         }
     }
 
-    unsigned long extraflags = Inhell ? MM_MALE : 0UL; /* Since there is only one soundset for unusual creature types */
+    unsigned long extraflags = (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_FEMALE) != 0  ? MM_FEMALE : Inhell || (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_MALE) != 0 ? MM_MALE : 0UL; /* Since there is only one soundset for unusual creature types */
 
     npc = makemon_ex(&mons[npc_montype], npc_loc_x, npc_loc_y, MM_ENPC | extraflags, npctype);
     if(!npc)
@@ -457,42 +470,61 @@ int mtype;
             (void)mongetsgold(npc, npcmoney);
         }
 
-        if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_GEOLOGIST_ITEMS)
+        if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_SPECIAL_NPC_ITEMS)
         {
-            /* High chance of at least one ore of each type */
-            for (i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
+            switch (npctype)
             {
-                if(rn2(9))
-                    mongets(npc, i);
-            }
+            case NPC_GEOLOGIST:
+            {
+                /* High chance of at least one ore of each type */
+                for (i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
+                {
+                    if (rn2(9))
+                        mongets(npc, i);
+                }
 
-            /* Random ores */
-            for (i = 0; i < 24; i++)
-            {
-                mongets(npc, rnd_class(NUGGET_OF_IRON_ORE, NUGGET_OF_MITHRIL_ORE));
-            }
+                /* Random ores */
+                for (i = 0; i < 24; i++)
+                {
+                    mongets(npc, rnd_class(NUGGET_OF_IRON_ORE, NUGGET_OF_MITHRIL_ORE));
+                }
 
-            /* Random gems */
-            for (i = 0; i < 24; i++)
-            {
-                mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
+                /* Random gems */
+                for (i = 0; i < 24; i++)
+                {
+                    mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
+                }
+                break;
             }
-        }
+            case NPC_QUANTUM_MECHANIC:
+            {
+                int cnt = rnd(3);
+                for (i = 0; i < cnt; i++)
+                {
+                    mongets(npc, WAN_TOWN_PORTAL);
+                }
 
-        if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_QUANTUM_ITEMS)
-        {
-            int cnt = rnd(3);
-            for (i = 0; i < cnt; i++)
-            {
-                mongets(npc, WAN_TOWN_PORTAL);
+                cnt = rnd(3);
+                for (i = 0; i < cnt; i++)
+                {
+                    mongets(npc, WAN_TELEPORTATION);
+                }
+                mongets(npc, CUBIC_GATE);
+                break;
             }
-
-            cnt = rnd(3);
-            for (i = 0; i < cnt; i++)
+            case NPC_ELVEN_BARD:
             {
-                mongets(npc, WAN_TELEPORTATION);
+                int roll = rnd(3);
+                if(roll & 1)
+                    mongets(npc, !rn2(10) ? MAGIC_HARP : WOODEN_HARP);
+                if (roll & 2)
+                    mongets(npc, !rn2(10) ? MAGIC_FLUTE : WOODEN_FLUTE);
+                mongets(npc, ELVEN_WAYBREAD);
+                break;
             }
-            mongets(npc, CUBIC_GATE);
+            default:
+                break;
+            }
         }
 
         if (npc_subtype_definitions[npctype].service_flags & NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS)

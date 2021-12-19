@@ -243,6 +243,8 @@ struct context_info
 
     boolean reviving;
     boolean quit_pressed;
+
+    unsigned long npc_made;
 };
 
 extern NEARDATA struct context_info context;

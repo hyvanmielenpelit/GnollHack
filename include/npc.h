@@ -28,6 +28,7 @@ enum npc_subtypes {
     NPC_HERMIT3,
     NPC_ORC_HERMIT3,
     NPC_QUANTUM_MECHANIC,
+    NPC_ELVEN_BARD,
     MAX_NPC_SUBTYPES
 };
 
@@ -71,11 +72,12 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 /*free bit */
 /*free bit */
 #define NPC_SERVICE_TEACH_SPELLS_MASK                       0x000FF000UL
-#define NPC_SERVICE_GIVE_STARTING_QUESTS     0x00100000UL
-#define NPC_SERVICE_GIVE_ADVANCED_QUESTS     0x00200000UL
-#define NPC_SERVICE_GIVE_GNOMISH_QUESTS      0x00400000UL
-#define NPC_SERVICE_GIVE_ORCISH_QUESTS       0x00800000UL
-#define NPC_SERVICE_QUANTUM_HINTS            0x01000000UL
+#define NPC_SERVICE_GIVE_STARTING_QUESTS                    0x00100000UL
+#define NPC_SERVICE_GIVE_ADVANCED_QUESTS                    0x00200000UL
+#define NPC_SERVICE_GIVE_GNOMISH_QUESTS                     0x00400000UL
+#define NPC_SERVICE_GIVE_ORCISH_QUESTS                      0x00800000UL
+#define NPC_SERVICE_SPECIAL_NPC_HINTS                       0x01000000UL
+#define NPC_SERVICE_SING_SONGS                              0x02000000UL
 
 #define NPC_FLAGS_PARQUET_FLOOR             0x00000001UL
 #define NPC_FLAGS_MARBLE_FLOOR              0x00000002UL
@@ -83,15 +85,17 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_FLAGS_LIGHTS_ON                 0x00000008UL
 #define NPC_FLAGS_DOUBLE_MONEY_IN_HELL      0x00000010UL
 #define NPC_FLAGS_NO_GENERATION             0x00000020UL
-#define NPC_FLAGS_GEOLOGIST_ITEMS           0x00000040UL
+/* free flag */
 #define NPC_FLAGS_NO_MY                     0x00000080UL
 #define NPC_FLAGS_NO_ADVICE                 0x00000100UL
 #define NPC_FLAGS_NO_ITEMS                  0x00000200UL
 #define NPC_FLAGS_DISPLAY_NAME_ONLY         0x00000400UL /* When name is known */
 #define NPC_FLAGS_COMMENTS_ON_REVIVAL       0x00000800UL
-#define NPC_FLAGS_QUANTUM_ITEMS             0x00001000UL
+#define NPC_FLAGS_SPECIAL_NPC_ITEMS         0x00001000UL
 #define NPC_FLAGS_NO_TITLE_ARTICLE          0x00002000UL
 #define NPC_FLAGS_MAJORITY_NORMAL_HELLO     0x00004000UL
+#define NPC_FLAGS_MALE                      0x00008000UL
+#define NPC_FLAGS_FEMALE                    0x00010000UL
 
 
 

@@ -117,7 +117,8 @@ STATIC_DCL int FDECL(do_chat_smith_sell_ore, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_mechanic_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_observe_position, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_observe_speed, (struct monst*));
-STATIC_DCL int FDECL(do_chat_quantum_hints, (struct monst*));
+STATIC_DCL int FDECL(do_chat_special_hints, (struct monst*));
+STATIC_DCL int FDECL(do_chat_sing_song, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
@@ -2601,21 +2602,40 @@ dochat()
     }
 
 
-    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_QUANTUM_HINTS) != 0)
+    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp))
     {
-        /* Special hints about game mechanics */
-        strcpy(available_chat_list[chatnum].name, "Ask for hints about the reality");
-        available_chat_list[chatnum].function_ptr = &do_chat_quantum_hints;
-        available_chat_list[chatnum].charnum = 'a' + chatnum;
+        if ((npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_SING_SONGS) != 0)
+        {
+            /* Special hints about game mechanics */
+            strcpy(available_chat_list[chatnum].name, "Ask to sing a song");
+            available_chat_list[chatnum].function_ptr = &do_chat_sing_song;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
 
-        any = zeroany;
-        any.a_char = available_chat_list[chatnum].charnum;
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
 
-        add_menu(win, NO_GLYPH, &any,
-            any.a_char, 0, ATR_NONE,
-            available_chat_list[chatnum].name, MENU_UNSELECTED);
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
 
-        chatnum++;
+            chatnum++;
+        }
+        if ((npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_SPECIAL_NPC_HINTS) != 0)
+        {
+            /* Special hints about game mechanics */
+            strcpy(available_chat_list[chatnum].name, "Ask about advanced adventuring tactics");
+            available_chat_list[chatnum].function_ptr = &do_chat_special_hints;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
     }
 
     /* Tame dog and cat commands */
@@ -7062,19 +7082,102 @@ int npc_identification_type_index;
 }
 
 STATIC_OVL int
-do_chat_quantum_hints(mtmp)
+do_chat_sing_song(mtmp)
 struct monst* mtmp;
 {
-    if (!mtmp || !m_speak_check(mtmp))
+    if (!mtmp || !m_speak_check(mtmp) || !mtmp->isnpc || !has_enpc(mtmp))
         return 0;
 
-    const char* linearray[4] = {
-        "Bear always these rules about our reality in mind:",
-        "You can use a wand of teleportation to teleport monsters away. This works even on a non-teleport level, where you cannot teleport yourself.",
-        "You cannot level teleport while carrying the Amulet of Yendor.",
+    const char* linearray[2] = {
+        "Hear this song:",
         0 };
-
     hermit_talk(mtmp, linearray);
+
+    winid datawin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_GENERAL, NO_GLYPH, zerocreatewindowinfo);
+
+    putstr(datawin, 0, "O Elbereth Starkindler.");
+    putstr(datawin, 0, "white-glittering, slanting down sparkling like a jewel.");
+    putstr(datawin, 0, "the glory of the starry host!");
+    putstr(datawin, 0, "Having gazed far away");
+    putstr(datawin, 0, "from the tree-woven lands of Middle-earth,");
+    putstr(datawin, 0, "Everwhite, I will sing,");
+    putstr(datawin, 0, "on this side of the Sea, here on this side of the Ocean!");
+    putstr(datawin, 0, "");
+    putstr(datawin, 0, "O Elbereth Starkindler.");
+    putstr(datawin, 0, "from heaven gazing afar,");
+    putstr(datawin, 0, "to thee I cry now beneath the shadow of death!");
+    putstr(datawin, 0, "O look towards me, Everwhite!");
+
+    display_nhwindow(datawin, TRUE);
+    destroy_nhwindow(datawin);
+    putmsghistory("[Song to Elbereth Gilthoniel]", FALSE);
+
+    int distance = mtmp->m_lev * 3;
+    struct monst* mtmp2;
+    for (mtmp2 = fmon; mtmp2; mtmp2 = mtmp2->nmon) 
+    {
+        if (DEADMONSTER(mtmp2))
+            continue;
+        if (dist2(mtmp->mx, mtmp->my, mtmp2->mx, mtmp2->my) < distance && mtmp2->mcanmove)
+        {
+            if (mtmp2->data->mlet == S_NYMPH && mtmp2->mcanmove
+                && dist2(mtmp->mx, mtmp->my, mtmp2->mx, mtmp2->my) < distance)
+            {
+                mtmp2->msleeping = 0;
+                mtmp2->mpeaceful = 1;
+                mtmp2->mavenge = 0;
+                mtmp2->mstrategy &= ~STRAT_WAITMASK;
+                newsym(mtmp2->mx, mtmp2->my);
+                if (canseemon(mtmp2))
+                    pline(
+                        "%s listens cheerfully to the song, then seems quieter.",
+                        Monnam(mtmp2));
+            }
+            else if (!is_peaceful(mtmp2) && !is_tame(mtmp2) && mtmp2->data->mlet != S_HUMAN && !(mtmp2->data->geno & G_UNIQ))
+            {
+                monflee(mtmp2, 0, FALSE, TRUE);
+            }
+        }
+    }
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_special_hints(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !m_speak_check(mtmp) || !mtmp->isnpc || !has_enpc(mtmp))
+        return 0;
+
+    int npctyp = ENPC(mtmp)->npc_typ;
+    switch (npctyp)
+    {
+    case NPC_QUANTUM_MECHANIC:
+    {
+        const char* linearray[4] = {
+            "Bear always these tactics in mind:",
+            "You can use a wand of teleportation to teleport monsters away. This works even on a non-teleport level, where you cannot teleport yourself.",
+            "You cannot level teleport while carrying the Amulet of Yendor.",
+            0 };
+
+        hermit_talk(mtmp, linearray);
+        break;
+    }
+    case NPC_ELVEN_BARD:
+    {
+        const char* linearray[7] = {
+            "Like many before you, you will face unnameable perils in the Dungeons of Doom.",
+            "Know that you can call upon Elbereth Gilthoniel in the time of need.",
+            "Verily, engraving \"Elbereth\" on the ground will protect you from most monsters.",
+            "To do so takes but a round with finger, athame, or a wand.",
+            "Yet, such is her name that the engraving will disappear if you attack while standing on it.",
+            "Know, too, that Elbereth cannot assist you in the Under World and will not do so against humans or elves.",
+            0 };
+        
+        hermit_talk(mtmp, linearray);
+        break;
+    }
+    }
     return 1;
 }
 
