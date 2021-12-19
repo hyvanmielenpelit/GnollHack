@@ -3811,7 +3811,7 @@ struct obj* obj;
 
     u.uconduct.literate++;
 
-    winid datawin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_GENERAL, NO_GLYPH, zerocreatewindowinfo);
+    winid datawin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_KEEP_LINE_BREAKS, NO_GLYPH, zerocreatewindowinfo);
     char buf[BUFSZ];
 
     putstr(datawin, 0, "The manual contains several instructions:");

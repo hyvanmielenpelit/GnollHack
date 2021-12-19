@@ -84,8 +84,10 @@ namespace GnollHackClient
                     case GHWinType.Map:
                         break;
                     case GHWinType.Menu:
+                        res = true;
                         break;
                     case GHWinType.Text:
+                        res = true;
                         break;
                     case GHWinType.Base:
                         break;

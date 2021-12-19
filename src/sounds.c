@@ -7093,7 +7093,7 @@ struct monst* mtmp;
         0 };
     hermit_talk(mtmp, linearray);
 
-    winid datawin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_GENERAL, NO_GLYPH, zerocreatewindowinfo);
+    winid datawin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_KEEP_LINE_BREAKS, NO_GLYPH, zerocreatewindowinfo);
 
     putstr(datawin, 0, "O Elbereth Starkindler.");
     putstr(datawin, 0, "white-glittering, slanting down sparkling like a jewel.");

@@ -114,7 +114,7 @@ namespace GnollHackClient
                         return "Immortal";
                 }
 
-                if (_window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL
+                if (_window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_KEEP_LINE_BREAKS
                     || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER)
                     return "Immortal";
 
@@ -126,7 +126,7 @@ namespace GnollHackClient
         {
             get
             {
-                if (_window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL
+                if (_window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_KEEP_LINE_BREAKS
                     || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER)
                 {
                     double basesize = Math.Min(22, Math.Max(17, 17 * _gamePage.CurrentPageWidth * _gamePage.CurrentPageHeight / (600 * 360)));
