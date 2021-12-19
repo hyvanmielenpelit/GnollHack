@@ -1988,6 +1988,7 @@ unsigned long mkflags;
             otmp->manualidx = -1; /* "none of the above"; will be changed */
         otmp = oname(otmp, manualtitle(&otmp->manualidx));
         otmp->nknown = TRUE;
+        otmp->cursed = otmp->blessed = 0; /* Never blessed or cursed */
         break;
     }
 

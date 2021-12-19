@@ -60,7 +60,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         1, 100, 5,
         NPC_SERVICE_GIVE_STARTING_QUESTS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_MY | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_MY | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL | NPC_FLAGS_SPECIAL_NPC_ITEMS
     },
     {
         PM_HERMIT,
@@ -73,7 +73,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         1, 100, 5,
         NPC_SERVICE_GIVE_ADVANCED_QUESTS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL | NPC_FLAGS_SPECIAL_NPC_ITEMS
     }, 
     {
         PM_HERMIT,
@@ -86,7 +86,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         1, 100, 5,
         NPC_SERVICE_GIVE_GNOMISH_QUESTS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL | NPC_FLAGS_SPECIAL_NPC_ITEMS
     },
     {
         PM_ORC_SHAMAN,
@@ -99,7 +99,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         1, 100, 5,
         NPC_SERVICE_GIVE_ORCISH_QUESTS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL | NPC_FLAGS_SPECIAL_NPC_ITEMS
     },
     {
         PM_ELDER_QUANTUM_MECHANIC,
@@ -520,6 +520,18 @@ int mtype;
                 if (roll & 2)
                     mongets(npc, !rn2(10) ? MAGIC_FLUTE : WOODEN_FLUTE);
                 mongets(npc, ELVEN_WAYBREAD);
+                break;
+            }
+            case NPC_HERMIT:
+            case NPC_HERMIT2:
+            case NPC_HERMIT3:
+            case NPC_ORC_HERMIT3:
+            {
+                int cnt = 1 + rnd(2);
+                for (i = 0; i < cnt; i++)
+                {
+                    mongets(npc, SPE_MANUAL);
+                }
                 break;
             }
             default:

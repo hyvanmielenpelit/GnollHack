@@ -3012,7 +3012,7 @@ dochat()
     /* Peaceful monster with sellable items */
     if (is_peaceful(mtmp) && !(is_tame(mtmp) && !mtmp->ispartymember)
         && !mtmp->isgd
-        && !mtmp->ispriest
+        //&& !mtmp->ispriest
         && !is_watch(mtmp->data)
         && msound != MS_ORACLE
         && msound != MS_ARREST

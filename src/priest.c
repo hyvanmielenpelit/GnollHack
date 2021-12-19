@@ -382,10 +382,10 @@ int mtype;
             priest->mpeaceful = 1;
 
             /* 2 to 4 spellbooks */
-            for (cnt = rn1(3, 2); cnt > 0; --cnt) 
-            {
-                (void)mpickobj(priest, mkobj(SPBOOK_CLASS, FALSE, FALSE));
-            }
+            //for (cnt = rn1(3, 2); cnt > 0; --cnt) 
+            //{
+            //    (void)mpickobj(priest, mkobj(SPBOOK_CLASS, FALSE, FALSE));
+            //}
 
             otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
@@ -541,6 +541,16 @@ int mtype;
         struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS, MKOBJ_FLAGS_PARAM_IS_TITLE);
         if (otmp)
             (void)mpickobj(smith, otmp);
+
+        if (context.game_difficulty < 0)
+        {
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_ARMOR_101, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(smith, otmp);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_WEAPONS_101, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(smith, otmp);
+        }
     }
 }
 
