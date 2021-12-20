@@ -257,6 +257,7 @@ mythic_suffix	ST_RET(MYTHIC_SUFFIX_ID);
 enchantment	ST_RET(ENCHANTMENT_ID);
 charges	    ST_RET(CHARGES_ID);
 special_quality	ST_RET(SPECIAL_QUALITY_ID);
+manual_type	ST_RET(MANUAL_TYPE_ID);
 speflags	ST_RET(SPEFLAGS_ID);
 age	        ST_RET(AGE_ID);
 buried		ST_RET(BURIED_ID);
@@ -463,6 +464,7 @@ forest_islands { savetoken(yytext); yylval.i=FOREST_TYPE_ISLANDS; return FOREST_
 forest_undead { savetoken(yytext); yylval.i=FOREST_TYPE_UNDEAD; return FOREST_TYPE; }
 forest_gehennom { savetoken(yytext); yylval.i=FOREST_TYPE_GEHENNOM; return FOREST_TYPE; }
 forest_snowy { savetoken(yytext); yylval.i=FOREST_TYPE_SNOWY; return FOREST_TYPE; }
+manual_infernal_inhabitants { savetoken(yytext); yylval.i=MANUAL_INFERNAL_INHABITANTS_OF_GEHENNOM; return MANUAL_TYPE; }
 teleport_up    { savetoken(yytext); yylval.i=-1; return LEVEL_TELEPORT_DIRECTION_TYPE; }
 teleport_down  { savetoken(yytext); yylval.i=1; return LEVEL_TELEPORT_DIRECTION_TYPE; }
 matching_portal { savetoken(yytext); yylval.i=0; return LEVEL_TELEPORT_END_TYPE; }
