@@ -3778,8 +3778,11 @@ static const char* const manual_names[MAX_MANUAL_TYPES] = {
     "Wands 101", "Armor 101", "Weapons 101", "Gray Stones 101",
     "Basics of Kicking", "Basics of Enchantment", "Basics of Eating and Drinking", "Introduction to Dangerous Monsters",
     "Introduction to Blessed and Cursed Items", "Guide to Praying", "Essential Survival Tips",
+    "Assorted Tips and Tricks", "Introduction to Mechanics", "Principles of Magic", "Understanding Pets and Hirelings",
     /* Never randomly generated */
-    "Guide to Dragon Scale Mails", "Guide to Altars and Sacrifice"
+    "Guide to Dragon Scale Mails", "Guide to Altars and Sacrifice",
+    "Secrets of Scare Monster", "Gurathul's Guide to Ascension", "Master Class in Wands", "Infernal Inhabitants of Gehennom",
+    "Advanced Reading in Known Monsters"
 };
 
 const char*
@@ -3943,6 +3946,88 @@ struct obj* obj;
         putstr(datawin, 0, "4. If you drop potions of water on the altar and pray, they will be converted into holy water.");
         putstr(datawin, 0, "5. You can sacrifice on an altar of another god than yours to convert it to your deity. The success chance depends on your level.");
         putstr(datawin, 0, "6. Do not sacrifice on an altar of another god than yours, if it is attended by a priest. Doing so will anger him or her.");
+        break;
+    case MANUAL_ASSORTED_TIPS_AND_TRICKS:
+        putstr(datawin, 0, "1. You can dip potions twice into a fountain, moat, or a sink to dilute them into potions of water.");
+        putstr(datawin, 0, "2. You can write scrolls and spellbooks with a magic marker.");
+        putstr(datawin, 0, "3. You can wash scrolls and spellbooks clean by dipping them into a fountain, moat, or a sink.");
+        putstr(datawin, 0, "4. You can use a pick-axe or a similar tool to dig through walls. You can also dig through the floor.");
+        putstr(datawin, 0, "5. Disarming traps may generate useful items, such as darts or wands.");
+        putstr(datawin, 0, "6. Searching can reveal secret doors. But it does not succeed always, so you should do it several times.");
+        putstr(datawin, 0, "7. You can search chests for traps.");
+        putstr(datawin, 0, "8. Engraving with a dagger or another weapon will make it dull, that is, reduce its enchantment.");
+        putstr(datawin, 0, "9. Engraving a text with a wand may produce effects on bugs on the ground, which may help you identify the wand.");
+        putstr(datawin, 0, "10. Engraving text with fingers is not permanent. The text will disappear soon.");
+        putstr(datawin, 0, "11. Engraving with a dagger is a good way to make a permanent engraving. Just dispose the dagger afterwards.");
+        break;
+    case MANUAL_INTRODUCTION_TO_MECHANICS:
+        putstr(datawin, 0, "1. Your encumbrance limit is based on your strength and constitution.");
+        putstr(datawin, 0, "2. If you are burdened, your speed will drop by 25%.");
+        putstr(datawin, 0, "3. Your speed determines how fast you can move and attack.");
+        putstr(datawin, 0, "4. Skills increase your chance of hitting with an armor or casting a spell. You receive a skill slot for each level above 1.");
+        putstr(datawin, 0, "5. Most skills require you to spend 1/2/3/4/5 skill slots to increase it by a level when the skill at the Unskilled/Basic/Skilled/Expert/Master level.");
+        putstr(datawin, 0, "6. You can reassign your skill points if you read a scroll of retraining.");
+        putstr(datawin, 0, "7. High strength gives you bonus to hit and to damage and more carrying capacity.");
+        putstr(datawin, 0, "8. High dexterity gives you bonus to hit and to AC.");
+        putstr(datawin, 0, "9. High consitution gives you bonus hit points and more carrying capacity.");
+        putstr(datawin, 0, "10. High intelligence gives you more mana and helps you to cast some spells better.");
+        putstr(datawin, 0, "11. High wisdom gives you more mana and helps you to cast some spells better.");
+        putstr(datawin, 0, "12. High charisma allows you to get discount on sold items and services. It also helps you to cast some spells better.");
+        break;
+    case MANUAL_PRINCIPLES_OF_MAGIC:
+        putstr(datawin, 0, "1. You need to mix spells before you can cast them.");
+        putstr(datawin, 0, "2. Mixing spells requires material components, which you will find in the dungeon.");
+        putstr(datawin, 0, "3. Spells come in 14 levels: Minor cantrip (c), major cantrip (C), and levels 1-12. Higher level spells are more difficult to cast.");
+        putstr(datawin, 0, "4. To cast spells well, you need to put skill points into magic schools and acquire items that increase your chance of casting spells.");
+        break;
+    case MANUAL_UNDERSTANDING_PETS_AND_HIRELINGS:
+        putstr(datawin, 0, "1. Starting pets do not step voluntarily on cursed items. This is a great way to identify if an item is cursed or not.");
+        putstr(datawin, 0, "2. If a pet steps relucatantly on an item, that item is cursed.");
+        putstr(datawin, 0, "3. You can yell for your pet, if it is far away, and it will come to you.");
+        putstr(datawin, 0, "4. When you go up or down the stairs, your pet needs to be at your side or at most two squares away for it to join you.");
+        putstr(datawin, 0, "5. You can chat to your pet to give it commands or to feed it with food.");
+        putstr(datawin, 0, "6. You can hire some peaceful monsters to join your party for a fee.");
+        putstr(datawin, 0, "7. You can equip your hirelings with items by chatting to them.");
+        break;
+    case MANUAL_SECRETS_OF_SCARE_MONSTER:
+        putstr(datawin, 0, "1. You can stand on a scroll of scare monster and monsters cannot attack you.");
+        putstr(datawin, 0, "2. A cursed scroll of scare monster will turn to dust if picked up.");
+        putstr(datawin, 0, "3. A scroll of scare monster will lose one level of the blessed/uncursed/cursed status when dropped on the ground.");
+        putstr(datawin, 0, "4. If you attack while standing on a scroll of scare monster, the scroll will become cursed.");
+        putstr(datawin, 0, "5. It is good practice to bless scrolls of scare monster, so that you can drop them on the ground and pick up again.");
+        break;
+    case MANUAL_GURATHULS_GUIDE_TO_ASCENSION:
+        putstr(datawin, 0, "1. It is good practice to genocide dangerous monsters with a blessed scroll of genocide. This will prevent them appearing in the game in the future.");
+        putstr(datawin, 0, "2. You can create multiple monsters of your choice with a cursed scroll of genocide.");
+        putstr(datawin, 0, "3. Wizard of Yendor may replace your amulet with a cheap plastic imitation. It is good practice to name the real amulet as soon as you get it.");
+        putstr(datawin, 0, "4. You should get good protective items to survive. You need at least magic resistance, reflection, free action, sleep resistance, and death resistance to survive some nasty attacks.");
+        putstr(datawin, 0, "5. Magic resistance will protect you from polymorph traps and some spell caster spells.");
+        putstr(datawin, 0, "6. Reflection will protect you from rays.");
+        putstr(datawin, 0, "7. Free action will protect you from thrown potion of paralysis and paralysing monsters, such as gelatinous cube.");
+        putstr(datawin, 0, "8. Sleep resistance will protect you from sleep gas traps and thrown potions of sleep.");
+        putstr(datawin, 0, "9. Death resistance will protect you from some insta-death attacks of high level monsters, such as the touch of death of greater mummy high priest.");
+        break;
+    case MANUAL_MASTER_CLASS_IN_WANDS:
+        putstr(datawin, 0, "1. You can charge a wand of wishing only once.");
+        putstr(datawin, 0, "2. Be sure to use a blessed scroll of charging or a fully charging service on the wand to get maximum number of wishes.");
+        putstr(datawin, 0, "3. It is often useful to wish for a wand of disintegration, a wand of petrification, or a wand of death to deal with arch-devils and the Wizard of Yendor in Gehennom.");
+        putstr(datawin, 0, "4. If you are being slimed by a green slime, you can zap a wand of fire at yourself, and it will cure your sliming. Alternatively, you can use a scroll of fire.");
+        putstr(datawin, 0, "5. You can polymorph objects with a wand of polymorph. One charge affects 7/4/1 items based on the wand's blessed/uncursed/cursed status.");
+        break;
+    case MANUAL_INFERNAL_INHABITANTS_OF_GEHENNOM:
+        putstr(datawin, 0, "1. Demons and devils are immune to death attacks.");
+        putstr(datawin, 0, "2. Some devils can spawn with a bullwhip that can disarm you from your weapon. It is best to kill them from distance.");
+        putstr(datawin, 0, "3. Demons and devils can gate in more of their kind with their melee attack. It is often best to kill them from distance.");
+        break;
+    case MANUAL_ADVANCED_READING_IN_KNOWN_MONSTERS:
+        putstr(datawin, 0, "1. Some sea monsters, such as eels, can drown you. It is often a good idea to kill them from a distance.");
+        putstr(datawin, 0, "2. Some monsters, such as trolls, regenerate and revive after being killed. It is often best to use a tinning kit on them to get rid of their corpses. Eating the corpses is another possibility.");
+        putstr(datawin, 0, "3. If you are bare-handed and wearing no armor, nurses will heal you. They can also increase your maximum hit points.");
+        putstr(datawin, 0, "4. Cockatrices and chickatrices can petrify you if they touch you successfully.");
+        putstr(datawin, 0, "5. Touching bare-handed or eating a cockatrice or chickatrice corpse will stone you.");
+        putstr(datawin, 0, "6. Eating a lizard corpse or a dragon fruit will cure stoning. They will also grant 13-turn protection from further petrification.");
+        putstr(datawin, 0, "7. If you fall into a pit while holding a cockatrice or chickatrice corpse you will stone immediately.");
+        putstr(datawin, 0, "8. It is good practice to keep one lizard corpse or dragon fruit in open inventory in case you will start petrification.");
         break;
     default:
         putstr(datawin, 0, "(This manual seems impossible.)");

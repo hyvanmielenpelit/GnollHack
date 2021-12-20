@@ -167,7 +167,7 @@ struct obj {
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
 #define leashmon corpsenm /* gets m_id of attached pet */
-#define novelidx corpsenm /* 3.6 tribute - the index of the novel title */
+#define novelidx special_quality /* 3.6 tribute - the index of the novel title */
 #define manualidx special_quality /* the index of the manual title */
 #define keyotyp corpsenm  /* otyp of the key capable of locking / unlocking the chest (0 = SKELETON_KEY). Special_quality additionally defines the type of the key (its matching special_quality) */
     int usecount;           /* overloaded for various things that tally */
@@ -941,9 +941,18 @@ enum manual_types
     MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS,
     MANUAL_GUIDE_TO_PRAYING,
     MANUAL_ESSENTIAL_SURVIVAL_TIPS,
+    MANUAL_ASSORTED_TIPS_AND_TRICKS,
+    MANUAL_INTRODUCTION_TO_MECHANICS,
+    MANUAL_PRINCIPLES_OF_MAGIC,
+    MANUAL_UNDERSTANDING_PETS_AND_HIRELINGS,
     /* Non-randomly generated below */
     MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS,
     MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE,
+    MANUAL_SECRETS_OF_SCARE_MONSTER,
+    MANUAL_GURATHULS_GUIDE_TO_ASCENSION,
+    MANUAL_MASTER_CLASS_IN_WANDS,
+    MANUAL_INFERNAL_INHABITANTS_OF_GEHENNOM,
+    MANUAL_ADVANCED_READING_IN_KNOWN_MONSTERS,
     MAX_MANUAL_TYPES
 };
 

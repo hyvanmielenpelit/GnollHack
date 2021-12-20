@@ -327,7 +327,7 @@ namespace GnollHackClient.Pages.Game
             await LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear);
 
             _gnollHackService = DependencyService.Get<IGnollHackService>();
-            _gnollHackService.InitializeGnollHack(); /* In case the game data was factory-reset prior to start, otherwise InitializeGame would suffice */
+            _gnollHackService.InitializeGnollHack(null);
             UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
             NoGlyph = _gnollHackService.GetNoGlyph();
 

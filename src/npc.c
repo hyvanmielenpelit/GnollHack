@@ -34,7 +34,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         6, 0,
         10, 1000, 15000,
         NPC_SERVICE_BUY_GEMS_AND_STONES | NPC_SERVICE_IDENTIFY_GEMS_AND_STONES,
-        NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_DOUBLE_MONEY_IN_HELL | NPC_FLAGS_SPECIAL_NPC_ITEMS
+        NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_DOUBLE_MONEY_IN_HELL
     },
     {
         PM_MODRON_QUARTON,
@@ -60,7 +60,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         1, 100, 5,
         NPC_SERVICE_GIVE_STARTING_QUESTS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_MY | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL | NPC_FLAGS_SPECIAL_NPC_ITEMS
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_MY | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
     },
     {
         PM_HERMIT,
@@ -73,7 +73,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         1, 100, 5,
         NPC_SERVICE_GIVE_ADVANCED_QUESTS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL | NPC_FLAGS_SPECIAL_NPC_ITEMS
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
     }, 
     {
         PM_HERMIT,
@@ -86,7 +86,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         1, 100, 5,
         NPC_SERVICE_GIVE_GNOMISH_QUESTS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL | NPC_FLAGS_SPECIAL_NPC_ITEMS
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
     },
     {
         PM_ORC_SHAMAN,
@@ -99,7 +99,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         1, 100, 5,
         NPC_SERVICE_GIVE_ORCISH_QUESTS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL | NPC_FLAGS_SPECIAL_NPC_ITEMS
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL
     },
     {
         PM_ELDER_QUANTUM_MECHANIC,
@@ -112,7 +112,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         5, 50, 500,
         NPC_SERVICE_SPECIAL_NPC_HINTS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_MALE | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_SPECIAL_NPC_ITEMS | NPC_FLAGS_NO_TITLE_ARTICLE | NPC_FLAGS_MAJORITY_NORMAL_HELLO
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_MALE | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_TITLE_ARTICLE | NPC_FLAGS_MAJORITY_NORMAL_HELLO
     },
     {
         PM_ELF_LORD,
@@ -125,7 +125,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         5, 10, 50,
         NPC_SERVICE_SPECIAL_NPC_HINTS | NPC_SERVICE_SING_SONGS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_FEMALE | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_NO_MY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_SPECIAL_NPC_ITEMS
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_FEMALE | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_NO_MY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE
     },
 };
 
@@ -470,74 +470,107 @@ int mtype;
             (void)mongetsgold(npc, npcmoney);
         }
 
-        if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_SPECIAL_NPC_ITEMS)
+        switch (npctype)
         {
-            switch (npctype)
+        case NPC_GEOLOGIST:
+        {
+            /* High chance of at least one ore of each type */
+            for (i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
             {
-            case NPC_GEOLOGIST:
-            {
-                /* High chance of at least one ore of each type */
-                for (i = NUGGET_OF_IRON_ORE; i <= NUGGET_OF_MITHRIL_ORE; i++)
-                {
-                    if (rn2(9))
-                        mongets(npc, i);
-                }
+                if (rn2(9))
+                    mongets(npc, i);
+            }
 
-                /* Random ores */
-                for (i = 0; i < 24; i++)
-                {
-                    mongets(npc, rnd_class(NUGGET_OF_IRON_ORE, NUGGET_OF_MITHRIL_ORE));
-                }
+            /* Random ores */
+            for (i = 0; i < 24; i++)
+            {
+                mongets(npc, rnd_class(NUGGET_OF_IRON_ORE, NUGGET_OF_MITHRIL_ORE));
+            }
 
-                /* Random gems */
-                for (i = 0; i < 24; i++)
-                {
-                    mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
-                }
-                break;
-            }
-            case NPC_QUANTUM_MECHANIC:
+            /* Random gems */
+            for (i = 0; i < 24; i++)
             {
-                int cnt = rnd(3);
-                for (i = 0; i < cnt; i++)
-                {
-                    mongets(npc, WAN_TOWN_PORTAL);
-                }
-
-                cnt = rnd(3);
-                for (i = 0; i < cnt; i++)
-                {
-                    mongets(npc, WAN_TELEPORTATION);
-                }
-                mongets(npc, CUBIC_GATE);
-                break;
+                mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
             }
-            case NPC_ELVEN_BARD:
-            {
-                int roll = rnd(3);
-                if(roll & 1)
-                    mongets(npc, !rn2(10) ? MAGIC_HARP : WOODEN_HARP);
-                if (roll & 2)
-                    mongets(npc, !rn2(10) ? MAGIC_FLUTE : WOODEN_FLUTE);
-                mongets(npc, ELVEN_WAYBREAD);
-                break;
-            }
-            case NPC_HERMIT:
-            case NPC_HERMIT2:
-            case NPC_HERMIT3:
-            case NPC_ORC_HERMIT3:
-            {
-                int cnt = 1 + rnd(2);
-                for (i = 0; i < cnt; i++)
-                {
-                    mongets(npc, SPE_MANUAL);
-                }
-                break;
-            }
-            default:
-                break;
-            }
+            break;
         }
+        case NPC_QUANTUM_MECHANIC:
+        {
+            int cnt = rnd(3);
+            for (i = 0; i < cnt; i++)
+            {
+                mongets(npc, WAN_TOWN_PORTAL);
+            }
+
+            cnt = rnd(3);
+            for (i = 0; i < cnt; i++)
+            {
+                mongets(npc, WAN_TELEPORTATION);
+            }
+            mongets(npc, CUBIC_GATE);
+            break;
+        }
+        case NPC_ELVEN_BARD:
+        {
+            int roll = rnd(3);
+            if (roll & 1)
+                mongets(npc, !rn2(10) ? MAGIC_HARP : WOODEN_HARP);
+            if (roll & 2)
+                mongets(npc, !rn2(10) ? MAGIC_FLUTE : WOODEN_FLUTE);
+            mongets(npc, ELVEN_WAYBREAD);
+            break;
+        }
+        case NPC_HERMIT:
+        {
+            int cnt = 1 + rnd(2);
+            for (i = 0; i < cnt; i++)
+            {
+                mongets(npc, SPE_MANUAL);
+            }
+            break;
+        }
+        case NPC_HERMIT2:
+        {
+            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_GURATHULS_GUIDE_TO_ASCENSION, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+
+            int cnt = 1 + rnd(2);
+            for (i = 0; i < cnt; i++)
+            {
+                mongets(npc, SPE_MANUAL);
+            }
+            break;
+        }
+        case NPC_ORC_HERMIT3:
+        case NPC_HERMIT3:
+        {
+            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_ADVANCED_READING_IN_KNOWN_MONSTERS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+
+            int cnt = 1 + rnd(2);
+            for (i = 0; i < cnt; i++)
+            {
+                mongets(npc, SPE_MANUAL);
+            }
+            break;
+        }
+        case NPC_ARTIFICER:
+        {
+            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, depth(&u.uz) > depth(&medusa_level) ? MANUAL_SECRETS_OF_SCARE_MONSTER : MANUAL_MASTER_CLASS_IN_WANDS, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, MANUAL_PRINCIPLES_OF_MAGIC, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            if (otmp)
+                (void)mpickobj(npc, otmp);
+            break;
+        }
+        default:
+            break;
+        }
+
 
         if (npc_subtype_definitions[npctype].service_flags & NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS)
         {

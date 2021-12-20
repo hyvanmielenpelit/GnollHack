@@ -43,7 +43,7 @@
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <MandroidI18n />
-    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <AndroidPackageFormat>aab</AndroidPackageFormat>
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidKeyStore>false</AndroidKeyStore>
     <AndroidSigningKeyStore>
@@ -70,7 +70,7 @@
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidLinkMode>None</AndroidLinkMode>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
-    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <AndroidPackageFormat>aab</AndroidPackageFormat>
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <AndroidKeyStore>false</AndroidKeyStore>
@@ -138,6 +138,7 @@
     <AndroidAsset Include="gnh\xlogfile" />
     <AndroidAsset Include="gnh\defaults.gnh" />
     <AndroidAsset Include="gnh\xcredits" />
+    <AndroidAppBundleModules Include="assetpacks\assets.zip" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />

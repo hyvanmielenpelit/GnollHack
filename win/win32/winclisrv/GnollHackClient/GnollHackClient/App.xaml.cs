@@ -108,9 +108,37 @@ namespace GnollHackClient
                 Preferences.Set("ResetAtStart", false);
                 Preferences.Set("ResetExternalFiles", true);
             }
-            _mainGnollHackService.InitializeGnollHack();
+            ResetAcquiredFiles();
+            _mainGnollHackService.InitializeGnollHack(App.CurrentSecrets);
             _fmodService.InitializeFmod();
             _fmodService.LoadBanks();
+        }
+
+        private static void ResetAcquiredFiles()
+        {
+            string ghdir = _mainGnollHackService.GetGnollHackPath();
+            bool resetfiles = Preferences.Get("ResetExternalFiles", true);
+            if (resetfiles)
+            {
+                foreach (SecretsFile sf in App.CurrentSecrets.files)
+                {
+                    if (resetfiles)
+                    {
+                        string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory);
+                        string sfile = Path.Combine(sdir, sf.name);
+                        if (File.Exists(sfile))
+                        {
+                            FileInfo file = new FileInfo(sfile);
+                            file.Delete();
+                        }
+                        if (Preferences.ContainsKey("Verify_" + sf.id + "_Version"))
+                            Preferences.Remove("Verify_" + sf.id + "_Version");
+                        if (Preferences.ContainsKey("Verify_" + sf.id + "_LastWriteTime"))
+                            Preferences.Remove("Verify_" + sf.id + "_LastWriteTime");
+                    }
+                }
+                Preferences.Set("ResetExternalFiles", false);
+            }
         }
 
         private static bool _hideNavBar;

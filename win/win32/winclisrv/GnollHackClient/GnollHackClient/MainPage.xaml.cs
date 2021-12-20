@@ -146,7 +146,7 @@ namespace GnollHackClient
             if(prev_version != verid)
             {
                 App.GnollHackService.ClearCoreFiles();
-                App.GnollHackService.InitializeGnollHack();
+                App.GnollHackService.InitializeGnollHack(App.CurrentSecrets);
             }
             Preferences.Set("VersionId", verid);
 
@@ -160,7 +160,6 @@ namespace GnollHackClient
             exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
 
-            ResetAcquiredFiles();
             await AcquireAndCheckFiles();
             App.FmodService.LoadBanks();
 
@@ -471,34 +470,6 @@ namespace GnollHackClient
                 /* No top scores */
                 var topScorePage = new TopScorePage();
                 await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
-            }
-        }
-
-
-        private void ResetAcquiredFiles()
-        {
-            string ghdir = App.GnollHackService.GetGnollHackPath();
-            bool resetfiles = Preferences.Get("ResetExternalFiles", true);
-            if (resetfiles)
-            {
-                foreach (SecretsFile sf in App.CurrentSecrets.files)
-                {
-                    if (resetfiles)
-                    {
-                        string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory);
-                        string sfile = Path.Combine(sdir, sf.name);
-                        if (File.Exists(sfile))
-                        {
-                            FileInfo file = new FileInfo(sfile);
-                            file.Delete();
-                        }
-                        if (Preferences.ContainsKey("Verify_" + sf.id + "_Version"))
-                            Preferences.Remove("Verify_" + sf.id + "_Version");
-                        if (Preferences.ContainsKey("Verify_" + sf.id + "_LastWriteTime"))
-                            Preferences.Remove("Verify_" + sf.id + "_LastWriteTime");
-                    }
-                }
-                Preferences.Set("ResetExternalFiles", false);
             }
         }
 

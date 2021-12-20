@@ -2225,6 +2225,25 @@ struct mkroom *croom;
         otmp->special_quality = o->special_quality;
         if(is_obj_candelabrum(otmp) && otmp->special_quality > 0)
             otmp->age = CANDELABRUM_STARTING_AGE;
+        if (otmp->oclass == SPBOOK_CLASS && otmp->special_quality >= -1)
+        {
+            if (objects[otmp->otyp].oc_subtyp == BOOKTYPE_NOVEL)
+            {
+                const char* ntitle = noveltitle(&otmp->novelidx);
+                if (ntitle)
+                {
+                    otmp = oname(otmp, ntitle);
+                }
+            }
+            else if (objects[otmp->otyp].oc_subtyp == BOOKTYPE_MANUAL)
+            {
+                const char* mtitle = manualtitle(&otmp->manualidx);
+                if (mtitle)
+                {
+                    otmp = oname(otmp, mtitle);
+                }
+            }
+        }
     }
     if(o->indestructible)
         otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE;

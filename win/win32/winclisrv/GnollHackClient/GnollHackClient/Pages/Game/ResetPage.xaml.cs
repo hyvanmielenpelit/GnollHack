@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GnollHackCommon;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace GnollHackClient.Pages.Game
             if (answer)
             {
                 App.GnollHackService.ClearCoreFiles();
-                App.GnollHackService.InitializeGnollHack();
+                App.GnollHackService.InitializeGnollHack(null);
                 btnDeleteFiles.Text = "Done";
                 btnDeleteFiles.TextColor = Color.Red;
             }

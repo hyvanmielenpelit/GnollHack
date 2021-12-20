@@ -144,7 +144,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dlbdroid", "dlbdroid.vcxpro
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0} = {F8445183-52F2-45A0-BB4F-B433F3B721F0}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceFileTimeStamper", "SourceFileTimeStamper\SourceFileTimeStamper.csproj", "{3469E673-1318-4731-9168-23F32D98FB3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceFileTimeStamper", "SourceFileTimeStamper\SourceFileTimeStamper.csproj", "{3469E673-1318-4731-9168-23F32D98FB3E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -406,6 +406,7 @@ Global
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Debug|x64.ActiveCfg = Debug|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Debug|x64.Build.0 = Debug|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Release|Any CPU.ActiveCfg = Release|x64
+		{BE04E242-A1E9-4593-B95B-057F37330B76}.Release|Any CPU.Build.0 = Release|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Release|ARM.ActiveCfg = Release|Win32
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Release|ARM64.ActiveCfg = Release|Win32
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Release|iPhone.ActiveCfg = Release|Win32
@@ -427,6 +428,7 @@ Global
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Debug|x64.ActiveCfg = Debug|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Debug|x64.Build.0 = Debug|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Release|Any CPU.ActiveCfg = Release|x64
+		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Release|Any CPU.Build.0 = Release|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Release|ARM.ActiveCfg = Release|Win32
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Release|ARM64.ActiveCfg = Release|Win32
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Release|iPhone.ActiveCfg = Release|Win32

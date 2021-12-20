@@ -105,6 +105,7 @@ MONSTER:('z',"skeleton king"),(67,15)
 [50%]:OBJECT:')',(67,15)
 [50%]:OBJECT:'[',(67,15)
 [50%]:OBJECT:'9',(67,15)
+OBJECT:('+',"manual"),(69,15),special_quality:20
 
 OBJECT:('(',"sarcophagus"),(64,01)
 OBJECT:('(',"sarcophagus"),(70,15)

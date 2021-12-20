@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 using Android.Content.Res;
 using GnollHackClient;
 using GnollHackCommon;
+using Xamarin.Essentials;
 
 [assembly: Dependency(typeof(GnollHackClient.Droid.GnollHackService))]
 namespace GnollHackClient.Droid
@@ -323,7 +324,7 @@ namespace GnollHackClient.Droid
         }
 
 
-        public void InitializeGnollHack()
+        public void InitializeGnollHack(Secrets secrets)
         {
             /* Unpack GnollHack files */
             /* Add a check whether to unpack if there are existing files or not */
@@ -400,6 +401,131 @@ namespace GnollHackClient.Droid
                 using (BinaryWriter sw = new BinaryWriter(File.Open(fulltargetpath, FileMode.Create)))
                 {
                     sw.Write(data);
+                }
+            }
+
+            if(secrets != null)
+            {
+                foreach (SecretsDirectory sdir in secrets.directories)
+                {
+                    string fulldirepath = Path.Combine(filesdir, sdir.name);
+                    if (!Directory.Exists(fulldirepath))
+                    {
+                        Directory.CreateDirectory(fulldirepath);
+                    }
+                }
+                //int packfilemaxsize = 512 * 1024 * 1024;
+                foreach (SecretsFile sfile in secrets.files)
+                {
+                    string assetfile = sfile.name;
+                    string fullsourcepath = assetfile;
+
+                    try
+                    {
+                        string fulltargetpath = Path.Combine(filesdir, sfile.target_directory, assetfile);
+                        if (File.Exists(fulltargetpath))
+                        {
+                            FileInfo curfile = new FileInfo(fulltargetpath);
+                            long curlength = curfile.Length;
+                            string curfileversion = Preferences.Get("Verify_" + sfile.id + "_Version", "");
+                            DateTime moddate = Preferences.Get("Verify_" + sfile.id + "_LastWriteTime", DateTime.MinValue);
+
+                            if (curlength != sfile.length || curfileversion != sfile.version || moddate != curfile.LastWriteTimeUtc)
+                            {
+                                File.Delete(fulltargetpath);
+                                if (Preferences.ContainsKey("Verify_" + sfile.id + "_Version"))
+                                    Preferences.Remove("Verify_" + sfile.id + "_Version");
+                                if (Preferences.ContainsKey("Verify_" + sfile.id + "_LastWriteTime"))
+                                    Preferences.Remove("Verify_" + sfile.id + "_LastWriteTime");
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+
+                        using (Stream s = assets.Open(fullsourcepath))
+                        {
+                            if (s == null)
+                                continue;
+
+                            //bool createtemp = false;
+                            //long existinglength = 0;
+                            //if (File.Exists(fulltargetpath))
+                            //{
+                            //    createtemp = true;
+                            //    FileInfo file = new FileInfo(fulltargetpath);
+                            //    existinglength = file.Length;
+                            //}
+                            //if (createtemp)
+                            //{
+                            //    string temptargetpath = fulltargetpath + "temp";
+                            //    if (File.Exists(temptargetpath))
+                            //    {
+                            //        File.Delete(temptargetpath);
+                            //    }
+                            //    using (FileStream fs = new FileStream(temptargetpath, FileMode.Create))
+                            //    {
+                            //        s.CopyTo(fs);
+                            //    }
+                            //    FileInfo tempfile = new FileInfo(temptargetpath);
+                            //    long templength = tempfile.Length;
+
+                            //    if (templength == existinglength)
+                            //    {
+                            //        File.Delete(temptargetpath);
+                            //    }
+                            //    else
+                            //    {
+                            //        File.Delete(fulltargetpath);
+                            //        tempfile.MoveTo(fulltargetpath);
+                            //        if (tempfile.Exists && templength == sfile.length)
+                            //        {
+                            //            Preferences.Set("Verify_" + sfile.id + "_Version", sfile.version);
+                            //            Preferences.Set("Verify_" + sfile.id + "_LastWriteTime", tempfile.LastWriteTimeUtc);
+                            //        }
+                            //    }
+                            //}
+                            //else
+                            //{
+                                using (FileStream fs = new FileStream(fulltargetpath, FileMode.Create))
+                                {
+                                    s.CopyTo(fs);
+                                }
+                                FileInfo curfile = new FileInfo(fulltargetpath);
+                                if (curfile.Exists)
+                                {
+                                    long curlength = curfile.Length;
+                                    if (curlength == sfile.length)
+                                    {
+                                        Preferences.Set("Verify_" + sfile.id + "_Version", sfile.version);
+                                        Preferences.Set("Verify_" + sfile.id + "_LastWriteTime", curfile.LastWriteTimeUtc);
+                                    }
+                                //}
+                            }
+                        }
+                        //using (BinaryReader br = new BinaryReader(assets.Open(fullsourcepath)))
+                        //{
+                        //    data = br.ReadBytes(packfilemaxsize);
+                        //}
+
+                        //string fulltargetpath = Path.Combine(filesdir, "bank", assetfile);
+                        //if (File.Exists(fulltargetpath))
+                        //{
+                        //    /* Should check whether the current one is an up-to-date version; assume for now that it is not */
+                        //    File.Delete(fulltargetpath);
+                        //    //continue;
+                        //}
+
+                        //using (BinaryWriter sw = new BinaryWriter(File.Open(fulltargetpath, FileMode.Create)))
+                        //{
+                        //    sw.Write(data);
+                        //}
+                    }
+                    catch (Exception ex)
+                    {
+                        /* Likely asset at fullsourcepath did not exist */
+                    }
                 }
             }
         }
