@@ -321,7 +321,6 @@ int mtype;
 {
     struct monst *priest;
     struct obj *otmp;
-    int cnt;
 
     if (MON_AT(sx + 1, sy))
         (void) rloc(m_at(sx + 1, sy), FALSE); /* insurance */
@@ -382,6 +381,7 @@ int mtype;
             priest->mpeaceful = 1;
 
             /* 2 to 4 spellbooks */
+            //int cnt;
             //for (cnt = rn1(3, 2); cnt > 0; --cnt) 
             //{
             //    (void)mpickobj(priest, mkobj(SPBOOK_CLASS, FALSE, FALSE));

@@ -186,6 +186,9 @@
     <Link>
       <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
     </Link>
+    <PreBuildEvent>
+      <Command>copy c:\wsl-in\assetpack\assets.zip ..\winclisrv\GnollHackClient\GnollHackClient.Android\assetpacks</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
