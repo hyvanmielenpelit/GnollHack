@@ -191,7 +191,7 @@
       </Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>copy c:\wsl-in\assetpack\assets.zip ..\winclisrv\GnollHackClient\GnollHackClient.Android\assetpacks</Command>
+      <Command>..\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\copy-assetpack.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -207,7 +207,7 @@
       <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>copy c:\wsl-in\assetpack\assets.zip ..\winclisrv\GnollHackClient\GnollHackClient.Android\assetpacks</Command>
+      <Command>..\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\copy-assetpack.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
