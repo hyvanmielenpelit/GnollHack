@@ -160,7 +160,9 @@ namespace GnollHackClient
             exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
 
-            await AcquireAndCheckFiles();
+            GetFilesFromResources();
+
+            await DownloadAndCheckFiles();
             App.FmodService.LoadBanks();
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
@@ -473,6 +475,54 @@ namespace GnollHackClient
             }
         }
 
+        private void GetFilesFromResources()
+        {
+            string ghdir = App.GnollHackService.GetGnollHackPath();
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
+            foreach (SecretsFile f in App.CurrentSecrets.files)
+            {
+                try
+                {
+                    string sdir = string.IsNullOrWhiteSpace(f.target_directory) ? ghdir : Path.Combine(ghdir, f.target_directory);
+                    string sfile = Path.Combine(sdir, f.name);
+                    if(File.Exists(sfile))
+                    {
+                        FileInfo file = new FileInfo(sfile);
+                        DateTime moddate = Preferences.Get("Verify_" + f.id + "_LastWriteTime", DateTime.MinValue);
+                        if (moddate != file.LastWriteTimeUtc || file.Length != f.length)
+                        {
+                            File.Delete(sfile);
+                            if (Preferences.ContainsKey("Verify_" + f.id + "_Version"))
+                                Preferences.Remove("Verify_" + f.id + "_Version");
+                            if (Preferences.ContainsKey("Verify_" + f.id + "_LastWriteTime"))
+                                Preferences.Remove("Verify_" + f.id + "_LastWriteTime");
+                        }
+                    }
+
+                    if (!File.Exists(sfile))
+                    {
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets." + f.name))
+                        {
+                            if(stream != null)
+                            {
+                                using (var fileStream = File.Create(sfile))
+                                {
+                                    stream.CopyTo(fileStream);
+                                }
+                                FileInfo newfileinfo = new FileInfo(sfile);
+                                Preferences.Set("Verify_" + f.id + "_LastWriteTime", newfileinfo.LastWriteTimeUtc);
+                                Preferences.Set("Verify_" + f.id + "_Version", f.version);
+                            }
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    //Probably did not exist
+                }
+            }
+
+        }
 
         private object _downloadProgressLock = new object();
         private float _downloadProgressPercentage = 0.0f;
@@ -486,7 +536,7 @@ namespace GnollHackClient
         private string _verifyingFileDescription = "";
         private ConcurrentDictionary<SecretsFile, downloaded_file_check_results> _downloadResultConcurrentDictionary = new ConcurrentDictionary<SecretsFile, downloaded_file_check_results>();
 
-        private async Task AcquireAndCheckFiles()
+        private async Task DownloadAndCheckFiles()
         {
             string ghdir = App.GnollHackService.GetGnollHackPath();
             Assembly assembly = GetType().GetTypeInfo().Assembly;
@@ -517,15 +567,9 @@ namespace GnollHackClient
 
                 if ((sf.flags & (int)secrets_flags.IncludedInFullVersion) != 0 && !App.FullVersionMode)
                     continue;
-                
-                if (sf.source == "url")
-                {
-                    dltask = DownloadFileFromWebServer(assembly, sf, ghdir);
-                }
-                else if (sf.source == "resource")
-                {
-                    restask = DownloadFileFromResources(assembly, sf, ghdir);
-                }
+
+                // sf.source == "url" is deprecated
+                dltask = DownloadFileFromWebServer(assembly, sf, ghdir);
 
                 if(prev_sf != null)
                 {
@@ -781,7 +825,6 @@ namespace GnollHackClient
                         isfileok = await VerifyDownloadedFile(target_path, f.sha256, f.description);
                         if (isfileok)
                             Preferences.Set("Verify_" + f.id + "_LastWriteTime", file.LastWriteTimeUtc);
-
                     }
                 }
 
