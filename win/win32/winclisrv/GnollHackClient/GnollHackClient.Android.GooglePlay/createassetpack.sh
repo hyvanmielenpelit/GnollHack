@@ -11,6 +11,8 @@ if [ $# -gt 0 ]; then
   ASSETPACKNAME=$1
 fi
 
+TEMPASSETPACKNAME="temp-$1"
+
 CUSTOMPACKAGE="com.soundmindentertainment.gnollhack"
 if [ $# -gt 1 ]; then
 	echo "Using CUSTOMPACKAGE=$2"
@@ -46,13 +48,16 @@ mv ./AndroidManifest.xml manifest
 echo "Removing resources.pb file."
 rm ./resources.pb
 
-if test -f ../$ASSETPACKNAME; then
-	echo "Removing existing assetpack $ASSETPACKNAME."
-	rm ../$ASSETPACKNAME
+if test -f ../$TEMPASSETPACKNAME; then
+	echo "Removing existing assetpack $TEMPASSETPACKNAME."
+	rm ../$TEMPASSETPACKNAME
 fi
 
-echo "Zipping assets to $ASSETPACKNAME."
-zip -r ../$ASSETPACKNAME .
+echo "Zipping assets to $TEMPASSETPACKNAME."
+zip -r ../$TEMPASSETPACKNAME .
+
+echo "Copying $TEMPASSETPACKNAME to $ASSETPACKNAME."
+cp ../$TEMPASSETPACKNAME ../$ASSETPACKNAME
 
 if [ $# -gt 2 ]; then
   echo "Using output directory $3. Copying $ASSETPACKNAME there."

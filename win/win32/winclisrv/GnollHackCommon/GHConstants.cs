@@ -1001,11 +1001,7 @@ namespace GnollHackCommon
         public const string GnollHackWebPage = "https://gnollhack.com";
         public const string GnollHackWikiPage = "https://github.com/hyvanmielenpelit/GnollHack/wiki";
         public const string GnollHackSponsorPage = "https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english";
-#if DEBUG
-        public const string GHSettingsResourcePath = "GnollHackClient.Assets.ghsettings.debug.json";
-#else
-        public const string GHSettingsResourcePath = "GnollHackClient.Assets.ghsettings.release.json";
-#endif
+        public const string GHSettingsResourcePath = "GnollHackClient.Assets.ghsettings.json";
     }
 
 

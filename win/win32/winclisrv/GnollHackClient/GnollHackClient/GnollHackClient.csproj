@@ -39,8 +39,7 @@
     <None Remove="Assets\endor.ttf" />
     <None Remove="Assets\endr.ttf" />
     <None Remove="Assets\FMOD-Logo-192-White.png" />
-    <None Remove="Assets\ghsettings.debug.json" />
-    <None Remove="Assets\ghsettings.release.json" />
+    <None Remove="Assets\ghsettings.json" />
     <None Remove="Assets\gnollhack-logo-test-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits.png" />
@@ -148,7 +147,7 @@
     <EmbeddedResource Include="Assets\diablo_h.ttf" />
     <EmbeddedResource Include="Assets\endr.ttf" />
     <EmbeddedResource Include="Assets\FMOD-Logo-192-White.png" />
-    <EmbeddedResource Include="Assets\ghsettings.release.json" />
+    <EmbeddedResource Include="Assets\ghsettings.json" />
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
@@ -157,7 +156,6 @@
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />
     <EmbeddedResource Include="Assets\main-menu-portrait-snapshot.jpg" />
-    <EmbeddedResource Include="Assets\ghsettings.debug.json" />
     <EmbeddedResource Include="Assets\shxi.ttf" />
     <EmbeddedResource Include="Assets\tombstone.png" />
     <EmbeddedResource Include="Assets\UI\apply.png" />
