@@ -395,7 +395,7 @@ struct monst *mtmp;
         qt_pager(mtmp, QT_LASTLEADER);
         expulsion(TRUE); // Return FALSE for safety
     }
-    else
+    else if(!u.uevent.qcompleted)
         return chat_with_leader(mtmp);
 
     return FALSE;

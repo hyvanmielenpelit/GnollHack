@@ -330,6 +330,7 @@ MONSTER: ('s', "scorpion"), random, hostile
 
 MAZE: "Ran-filb" , ' '
 INIT_MAP: mines, ':' , ' ', true, true, random, true
+TILESET: gnomish_mines_tileset
 NOMAP
 #
 STAIR: random, up

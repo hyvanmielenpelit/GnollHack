@@ -4056,16 +4056,11 @@ struct monst* mtmp;
     }
     else if (mtmp->m_id == quest_status.leader_m_id && msound > MS_ANIMAL)
     {
-        switch (urole.rolenum)
-        {
-        case ROLE_ARCHAEOLOGIST:
-        case ROLE_BARBARIAN:
+        if (mtmp->data->mtitle && *mtmp->data->mtitle)
             Sprintf(ansbuf, "I am %s, %s.", mon_nam(mtmp), mtmp->data->mtitle);
-            break;
-        default:
+        else
             Sprintf(ansbuf, "I am %s, your quest leader.", mon_nam(mtmp));
-            break;
-        }
+    
         play_voice_quest_leader_whoareyou(mtmp);
         popup_talk_line(mtmp, ansbuf);
     }
