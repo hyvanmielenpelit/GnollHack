@@ -1887,7 +1887,7 @@ and weaken the power we have raised in this grove as a result!
 "Begone!  We renounce your %shood with us!  You are an outcast now!"
 %E [You are not sufficiently %a.  We renounce your %shood.]
 %Cc Ran 00019
-"%p, you are yet too inexperienced to withstand the demands of that
+"%pC, you are yet too inexperienced to withstand the demands of that
 which we need you to do.  %RA might just be able to do this thing.
 
 "Return to us when you have learned more, my %S."
@@ -1991,14 +1991,13 @@ Once again, you enter the distorted castle of %n.
 "Well, I shall keep that bauble.  It pleases me.  You, %c, shall die."
 %E [You have come to recover %o, but I shall keep %oh and you shall die.]
 %Cp Ran 00051
-"Back again, eh?  Well, a mere %r is no threat to me!  Die, %c!"
+"Back again, eh?  Well, a mere %c is no threat to me!  Die now!"
 %E
 %Cp Ran 00052
 "You haven't learned your lesson, %c.  You can't kill me!  You shall die now."
 %E
 %Cp Ran 00053
-"I shall have %o from you, %r.  Then I shall
-kill you."
+"I shall have %o from you, %c.  Then I shall kill you."
 %E
 %Cp Ran 00060
 "Your %d is nothing, %c.  You are mine now!"
@@ -2019,7 +2018,7 @@ kill you."
 "%d has abandoned you, %c.  You are doomed."
 %E
 %Cp Ran 00066
-"%rA?  %lC sends a mere %r against me?  Hah!"
+"%cA?  %lC sends a mere %c against me?  Hah!"
 %E
 %Cp Ran 00067
 "%lC has failed, %c.  %oC will never leave here."
@@ -2041,7 +2040,7 @@ on your speed.
 %Cc Ran 00080
 %nC collapses to the ground, cursing you and %l, then says:
 
-    "You have defeated me, %r!  But I curse you one final time, with
+    "You have defeated me, %c!  But I curse you one final time, with
     my dying breath!  You shall die before you leave my castle!"
 %E [%nC curses you as %nh dies.]
 %Cc Ran 00081
