@@ -418,7 +418,7 @@ namespace GnollHackClient.Droid
                 foreach (SecretsFile sfile in secrets.files)
                 {
                     string assetfile = sfile.name;
-                    string fullsourcepath = assetfile;
+                    string fullsourcepath = sfile.source_directory + "/" + assetfile;
 
                     try
                     {

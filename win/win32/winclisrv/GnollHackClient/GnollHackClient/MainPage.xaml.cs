@@ -501,7 +501,7 @@ namespace GnollHackClient
 
                     if (!File.Exists(sfile))
                     {
-                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets." + f.name))
+                        using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets." + f.source_directory + "." + f.name))
                         {
                             if(stream != null)
                             {
@@ -627,41 +627,41 @@ namespace GnollHackClient
             }
         }
 
-        public async Task<downloaded_file_check_results> DownloadFileFromResources(Assembly assembly, SecretsFile f, string ghdir)
-        {
-            if (f == null)
-                return downloaded_file_check_results.NoSecretsFile;
+        //public async Task<downloaded_file_check_results> DownloadFileFromResources(Assembly assembly, SecretsFile f, string ghdir)
+        //{
+        //    if (f == null)
+        //        return downloaded_file_check_results.NoSecretsFile;
 
-            downloaded_file_check_results dres = await VerifySecretsFile(assembly, f, ghdir);
-            if (dres == downloaded_file_check_results.OK)
-            {
-                _downloadResultConcurrentDictionary.TryAdd(f, dres);
-                return dres;
-            }
+        //    downloaded_file_check_results dres = await VerifySecretsFile(assembly, f, ghdir);
+        //    if (dres == downloaded_file_check_results.OK)
+        //    {
+        //        _downloadResultConcurrentDictionary.TryAdd(f, dres);
+        //        return dres;
+        //    }
 
-            string sdir = string.IsNullOrWhiteSpace(f.target_directory) ? ghdir : Path.Combine(ghdir, f.target_directory);
-            string sfile = Path.Combine(sdir, f.name);
+        //    string sdir = string.IsNullOrWhiteSpace(f.target_directory) ? ghdir : Path.Combine(ghdir, f.target_directory);
+        //    string sfile = Path.Combine(sdir, f.name);
 
-            if (!File.Exists(sfile))
-            {
-                using (Stream stream = assembly.GetManifestResourceStream(f.source_path))
-                {
-                    using (var fileStream = File.Create(sfile))
-                    {
-                        stream.CopyTo(fileStream);
-                    }
-                }
-                dres = downloaded_file_check_results.OK;
-                _downloadResultConcurrentDictionary.TryAdd(f, dres);
-                return dres;
-            }
-            else
-            {
-                dres = downloaded_file_check_results.FileAlreadyExists;
-                _downloadResultConcurrentDictionary.TryAdd(f, dres);
-                return dres;
-            }
-        }
+        //    if (!File.Exists(sfile))
+        //    {
+        //        using (Stream stream = assembly.GetManifestResourceStream(f.source_url))
+        //        {
+        //            using (var fileStream = File.Create(sfile))
+        //            {
+        //                stream.CopyTo(fileStream);
+        //            }
+        //        }
+        //        dres = downloaded_file_check_results.OK;
+        //        _downloadResultConcurrentDictionary.TryAdd(f, dres);
+        //        return dres;
+        //    }
+        //    else
+        //    {
+        //        dres = downloaded_file_check_results.FileAlreadyExists;
+        //        _downloadResultConcurrentDictionary.TryAdd(f, dres);
+        //        return dres;
+        //    }
+        //}
 
         private void CancelDownloadButton_Clicked(object sender, EventArgs e)
         {
@@ -690,7 +690,7 @@ namespace GnollHackClient
                 DownloadGrid.IsVisible = true;
             });
 
-            string url = f.source_path;
+            string url = f.source_url;
             string target_path = Path.Combine(ghdir, f.target_directory, f.name);
             lock (_downloadProgressLock)
             {

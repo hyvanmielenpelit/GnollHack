@@ -139,6 +139,9 @@
     <AndroidAsset Include="gnh\defaults.gnh" />
     <AndroidAsset Include="gnh\xcredits" />
     <AndroidAppBundleModules Include="assetpacks\assets.zip" />
+    <AndroidAsset Include="banks\Master.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+    <AndroidAsset Include="banks\Auxiliary.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+    <AndroidAsset Include="banks\Master.strings.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
