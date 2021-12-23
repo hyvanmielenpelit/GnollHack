@@ -488,19 +488,27 @@ namespace GnollHackClient.Droid
                             //}
                             //else
                             //{
-                                using (FileStream fs = new FileStream(fulltargetpath, FileMode.Create))
+                            using (FileStream fs = new FileStream(fulltargetpath, FileMode.Create))
+                            {
+                                s.CopyTo(fs);
+                            }
+                            FileInfo curfile = new FileInfo(fulltargetpath);
+                            if (curfile.Exists)
+                            {
+                                long curlength = curfile.Length;
+                                if (curlength == sfile.length)
                                 {
-                                    s.CopyTo(fs);
+                                    Preferences.Set("Verify_" + sfile.id + "_Version", sfile.version);
+                                    Preferences.Set("Verify_" + sfile.id + "_LastWriteTime", curfile.LastWriteTimeUtc);
                                 }
-                                FileInfo curfile = new FileInfo(fulltargetpath);
-                                if (curfile.Exists)
+                                else
                                 {
-                                    long curlength = curfile.Length;
-                                    if (curlength == sfile.length)
-                                    {
-                                        Preferences.Set("Verify_" + sfile.id + "_Version", sfile.version);
-                                        Preferences.Set("Verify_" + sfile.id + "_LastWriteTime", curfile.LastWriteTimeUtc);
-                                    }
+                                    File.Delete(fulltargetpath);
+                                    if (Preferences.ContainsKey("Verify_" + sfile.id + "_Version"))
+                                        Preferences.Remove("Verify_" + sfile.id + "_Version");
+                                    if (Preferences.ContainsKey("Verify_" + sfile.id + "_LastWriteTime"))
+                                        Preferences.Remove("Verify_" + sfile.id + "_LastWriteTime");
+                                }
                                 //}
                             }
                         }
