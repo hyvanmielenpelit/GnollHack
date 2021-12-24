@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:gnollhackclient="clr-namespace:GnollHackClient"
              Appearing="ContentPage_Appearing"
              Disappearing="ContentPage_Disappearing"
              x:Class="GnollHackClient.Pages.Game.NamePage">
@@ -9,6 +9,7 @@
         <Grid>
             <ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
                             Source ="resource://GnollHackClient.Assets.UI.menubackground.png" />
+            <!--<gnollhackclient:BackgroundView x:Name="BackgroundCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />-->
 
             <StackLayout Padding="10">
                 <Label Text="What is your name?" FontFamily="Diablo" FontSize="Large" Margin="0,10,0,30" TextColor="White"

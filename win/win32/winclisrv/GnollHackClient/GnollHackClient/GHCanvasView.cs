@@ -13,9 +13,7 @@ namespace GnollHackClient
 
     class GHCanvasView : SKCanvasView
     {
-        public ClientGame _clientGame;
         public GamePage _gamePage;
-        public int _glyph;
 
         public GHWindow GHWindow {get; set;}
         public ghmenu_styles MenuStyle { get; set; }
@@ -31,16 +29,10 @@ namespace GnollHackClient
         public SelectionMode SelectionHow { get; set; }
         public int SelectionIndex { get; set; }
 
-        private bool _responseSent = false;
-        private bool unselect_on_tap = false;
-
-
         public GHCanvasView() : base()
         {
 
         }
-
-
 
         public BindableProperty GeneralAnimationCounterProperty =
             BindableProperty.Create(nameof(GeneralAnimationCounter), typeof(long), typeof(GHCanvasView), 0L);

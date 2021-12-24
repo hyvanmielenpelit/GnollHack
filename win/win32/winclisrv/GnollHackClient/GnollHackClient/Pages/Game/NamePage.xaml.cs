@@ -28,7 +28,7 @@ namespace GnollHackClient.Pages.Game
 
         private async void btnOK_Clicked(object sender, EventArgs e)
         {
-            if(string.IsNullOrWhiteSpace(eName.Text))
+            if (string.IsNullOrWhiteSpace(eName.Text))
             {
                 lblError.TextColor = Color.Red;
                 lblError.Text = "Please enter a name.";
@@ -81,5 +81,6 @@ namespace GnollHackClient.Pages.Game
             App.BackButtonPressed -= BackButtonPressed;
 
         }
+
     }
 }

@@ -379,6 +379,21 @@ namespace GnollHackClient
             }
         }
 
+        public static SKBitmap MenuBackgroundBitmap { get; set; }
+        public static SKBitmap DarkMarbleBackgroundBitmap { get; set; }
+
+        public static void InitBitmaps(Assembly assembly)
+        {
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.menubackground.png"))
+            {
+                MenuBackgroundBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.darkmarble.png"))
+            {
+                DarkMarbleBackgroundBitmap = SKBitmap.Decode(stream);
+            }
+        }
+
         public static object ProfilingStopwatchLock = new object();
         private static Stopwatch _profilingStopwatch = new Stopwatch();
         public static Stopwatch ProfilingStopwatch { get { return _profilingStopwatch; } }

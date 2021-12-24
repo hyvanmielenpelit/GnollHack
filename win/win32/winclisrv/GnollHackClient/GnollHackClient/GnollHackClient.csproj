@@ -75,6 +75,7 @@
     <None Remove="Assets\UI\cast.png" />
     <None Remove="Assets\UI\chat.png" />
     <None Remove="Assets\UI\close.png" />
+    <None Remove="Assets\UI\darkmarble.png" />
     <None Remove="Assets\UI\dig.png" />
     <None Remove="Assets\UI\dip.png" />
     <None Remove="Assets\UI\dropmany.png" />
@@ -172,6 +173,7 @@
     <EmbeddedResource Include="Assets\UI\cast.png" />
     <EmbeddedResource Include="Assets\UI\chat.png" />
     <EmbeddedResource Include="Assets\UI\close.png" />
+    <EmbeddedResource Include="Assets\UI\darkmarble.png" />
     <EmbeddedResource Include="Assets\UI\dig.png" />
     <EmbeddedResource Include="Assets\UI\dip.png" />
     <EmbeddedResource Include="Assets\UI\dropmany.png" />

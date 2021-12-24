@@ -132,6 +132,7 @@ namespace GnollHackClient
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             App.InitializeServices();
             App.InitTypefaces(assembly);
+            App.InitBitmaps(assembly);
             App.IsModernAndroid = App.AppCloseService.IsModernAndroid();
             string verstr = App.GnollHackService.GetVersionString();
             string verid = App.GnollHackService.GetVersionId();
