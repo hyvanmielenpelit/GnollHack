@@ -9,4 +9,4 @@ if not exist ..\winclisrv\GnollHackClient\GnollHackClient.Android\banks mkdir ..
 copy ..\bank\Mobile\*.* c:\wsl-in\assetpack\Assets\banks
 del /Q ..\bank\Mobile\*.* ..\winclisrv\GnollHackClient.Android\banks\*.*
 copy ..\bank\Mobile\*.* ..\winclisrv\GnollHackClient\GnollHackClient.Android\banks
-copy ..\..\..\ext\android\aapt2 c:\wsl-in\assetpack
+copy ..\..\..\ext\android\linux-x64\aapt2 c:\wsl-in\assetpack
