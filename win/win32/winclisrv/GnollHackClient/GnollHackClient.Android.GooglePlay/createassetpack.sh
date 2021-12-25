@@ -3,7 +3,8 @@
 #Arguments
 #1st argument = (REQUIRED) asset pack name, such as assets.zip
 #2nd argument = (REQUIRED) Custom package name, such as com.soundmindentertainment.gnollhack
-#3rd argument = (OPTIONAL) Output directory, such as /mnt/c/outputdir
+#3rd argument = (OPTIONAL) Android package format file, such as androidpackageformat.txt
+#4th argument = (OPTIONAL) Output directory, such as /mnt/c/outputdir
 
 ASSETPACKNAME="assets.zip"
 if [ $# -gt 0 ]; then
@@ -19,13 +20,40 @@ if [ $# -gt 1 ]; then
 	CUSTOMPACKAGE=$2
 fi
 
+ANDROIDPACKAGEFORMATFILE=""
 if [ $# -gt 2 ]; then
-	if [ -d "$3" ]; then
-		echo "Output directory $3 exists. Good."
+	echo "Using ANDROIDPACKAGEFORMATFILE=$3"
+	ANDROIDPACKAGEFORMATFILE=$3
+fi
+
+OUTPUTDIR=""
+if [ $# -gt 3 ]; then
+	OUTPUTDIR=$4
+	if [ -d "$OUTPUTDIR" ]; then
+		echo "Output directory $OUTPUTDIR exists. Good."
 	else
-		echo "Output directory $3 does not exist. Bad."
+		echo "Output directory $OUTPUTDIR does not exist. Bad."
 		exit 1
   	fi
+fi
+
+ANDROIDPACKAGEFORMAT=""
+if [ -z "$ANDROIDPACKAGEFORMATFILE" ]; then
+	echo "No ANDROIDPACKAGEFORMATFILE specified. Assuming aab. Continuing the process."
+else
+	echo "ANDROIDPACKAGEFORMATFILE is specified as $ANDROIDPACKAGEFORMATFILE, checking if exists."
+	if test -f $ANDROIDPACKAGEFORMATFILE; then
+		echo "$ANDROIDPACKAGEFORMATFILE exists, checking contents."
+		ANDROIDPACKAGEFORMAT=`cat $ANDROIDPACKAGEFORMATFILE | tr -d '\n\r'`
+		if [ "$ANDROIDPACKAGEFORMAT" = "aab" ]; then
+			echo "Android package format is $ANDROIDPACKAGEFORMAT. Continuing the process."
+		else
+			echo "Android package format is $ANDROIDPACKAGEFORMAT. Quitting the process."
+			exit 0
+		fi
+	else
+		echo "$ANDROIDPACKAGEFORMATFILE does not exists. Continuing the process anyways."
+	fi
 fi
 
 if [ -d "aapt2output" ]; then
@@ -59,11 +87,11 @@ zip -r ../$TEMPASSETPACKNAME .
 echo "Copying $TEMPASSETPACKNAME to $ASSETPACKNAME."
 cp ../$TEMPASSETPACKNAME ../$ASSETPACKNAME
 
-if [ $# -gt 2 ]; then
-  echo "Using output directory $3. Copying $ASSETPACKNAME there."
-  cp ../$ASSETPACKNAME $3
-else
+if [ -z "$OUTPUTDIR" ]; then
   echo "No output directory. $ASSETPACKNAME not copied anywhere."
+else
+  echo "Using output directory $OUTPUTDIR. Copying $ASSETPACKNAME there."
+  cp ../$ASSETPACKNAME $OUTPUTDIR
 fi
 
 echo "Finished."
