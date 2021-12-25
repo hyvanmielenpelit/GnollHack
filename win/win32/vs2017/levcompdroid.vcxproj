@@ -45,32 +45,14 @@
     <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
+  <PropertyGroup>
     <RemoteRootDir>~/projects</RemoteRootDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
     <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
     <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
@@ -82,90 +64,7 @@
     <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
     <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)levcomp\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/levcomp</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)levcomp\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/levcomp</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)levcomp\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/levcomp</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)levcomp\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/levcomp</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)levcomp\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/levcomp</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)levcomp\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/levcomp</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)levcomp\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/levcomp</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
+
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared" />
@@ -186,19 +85,10 @@
       <PreprocessorDefinitions>NDEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetPath)</OutputFile>
+      <OutputFile>$(TargetPath)</OutputFile>
     </Link>
     <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd ../../../tools;./levcompdroid.out -des</Command>
-    </RemotePostBuildEvent>
-    <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">cd ../../../tools;./levcompdroid.out -des</Command>
-    </RemotePostBuildEvent>
-    <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">cd ../../../tools;./levcompdroid.out -des</Command>
-    </RemotePostBuildEvent>
-    <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">cd ../../../tools;./levcompdroid.out -des</Command>
+      <Command>cd ../../../tools;./levcompdroid.out -des</Command>
     </RemotePostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

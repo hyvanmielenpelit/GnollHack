@@ -45,122 +45,19 @@
     <LinuxProjectType>{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>Remote_GCC_1_0</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteRootDir>~/projects</RemoteRootDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)makedefs\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)makedefs\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)makedefs\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)makedefs\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)makedefs\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)makedefs\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
-    <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
-    <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
-    <RemoteCopySourceMethod>rsync</RemoteCopySourceMethod>
-    <OutDir>$(ProjectDir)..\..\..\tools\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ObjDir)makedefs\</IntDir>
-    <RemoteOutDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteOutDir>
-    <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/makedefs</RemoteIntDir>
-    <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/tools</RemoteDeployDir>
-    <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+  <PropertyGroup>
+    <RemoteRootDir>~/projects</RemoteRootDir>
     <IncludePath>$(IncDir);$(LibDroidDir)</IncludePath>
     <RemoteProjectDir>$(RemoteRootDir)/$(SolutionName)</RemoteProjectDir>
     <SourcePath>$(SrcDir);$(LibDroidDir);$(SourcePath)</SourcePath>
@@ -186,44 +83,14 @@
       <PreprocessorDefinitions>NDEBUG;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;NOMAIL;SAFEPROCS;NOTTYGRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetPath)</OutputFile>
+      <OutputFile>$(TargetPath)</OutputFile>
     </Link>
     <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/xcredits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/sysconf;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh /mnt/c/wsl-in/assetpack/;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml /mnt/c/wsl-in/assetpack/;cd /mnt/c/wsl-in/assetpack;./createassetpack.sh assets.zip com.soundmindentertainment.gnollhack</Command>
-    </RemotePostBuildEvent>
-    <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/xcredits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/sysconf;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh /mnt/c/wsl-in/assetpack/;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml /mnt/c/wsl-in/assetpack/;cd /mnt/c/wsl-in/assetpack;./createassetpack.sh assets.zip com.soundmindentertainment.gnollhack</Command>
-    </RemotePostBuildEvent>
-    <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/xcredits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/sysconf;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh /mnt/c/wsl-in/assetpack/;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml /mnt/c/wsl-in/assetpack/;cd /mnt/c/wsl-in/assetpack;./createassetpack.sh assets.zip com.soundmindentertainment.gnollhack</Command>
-    </RemotePostBuildEvent>
-    <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/xcredits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/sysconf;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh /mnt/c/wsl-in/assetpack/;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml /mnt/c/wsl-in/assetpack/;cd /mnt/c/wsl-in/assetpack;./createassetpack.sh assets.zip com.soundmindentertainment.gnollhack</Command>
-    </RemotePostBuildEvent>
-    <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/xcredits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/sysconf;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh /mnt/c/wsl-in/assetpack/;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml /mnt/c/wsl-in/assetpack/;cd /mnt/c/wsl-in/assetpack;./createassetpack.sh assets.zip com.soundmindentertainment.gnollhack</Command>
-    </RemotePostBuildEvent>
-    <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/xcredits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/sysconf;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh /mnt/c/wsl-in/assetpack/;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml /mnt/c/wsl-in/assetpack/;cd /mnt/c/wsl-in/assetpack;./createassetpack.sh assets.zip com.soundmindentertainment.gnollhack</Command>
-    </RemotePostBuildEvent>
-    <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/xcredits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/sysconf;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh /mnt/c/wsl-in/assetpack/;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml /mnt/c/wsl-in/assetpack/;cd /mnt/c/wsl-in/assetpack;./createassetpack.sh assets.zip com.soundmindentertainment.gnollhack</Command>
-    </RemotePostBuildEvent>
-    <RemotePostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x86'">cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/xcredits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/sysconf;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh /mnt/c/wsl-in/assetpack/;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml /mnt/c/wsl-in/assetpack/;cd /mnt/c/wsl-in/assetpack;./createassetpack.sh assets.zip com.soundmindentertainment.gnollhack</Command>
+      <Command>cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/xcredits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/defaults.gnh;dos2unix ../win/win32/winclisrv/GnollHackClient/gnollhackdroid/sysconf;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh;dos2unix ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/createassetpack.sh /mnt/c/wsl-in/assetpack/;cp ../win/win32/winclisrv/GnollHackClient/GnollHackClient.Android.GooglePlay/AndroidManifest.xml /mnt/c/wsl-in/assetpack/;cd /mnt/c/wsl-in/assetpack;./createassetpack.sh assets.zip com.soundmindentertainment.gnollhack</Command>
     </RemotePostBuildEvent>
     <PreBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\update-wsl-in.bat</Command>
+      <Command>..\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\update-wsl-in.bat</Command>
     </PreBuildEvent>
-    <PreBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\update-wsl-in.bat</Command>
-    </PreBuildEvent>
-	  <PreBuildEvent>
-		  <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">..\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\update-wsl-in.bat</Command>
-	  </PreBuildEvent>
-	  <PreBuildEvent>
-		  <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">..\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\update-wsl-in.bat</Command>
-	  </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)animdef.c" />
