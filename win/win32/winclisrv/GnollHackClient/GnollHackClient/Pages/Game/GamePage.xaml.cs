@@ -6154,8 +6154,11 @@ namespace GnollHackClient.Pages.Game
 
             if (ZoomMiniMode)
             {
-                offsetX -= _mapOffsetX;
-                offsetY -= _mapOffsetY;
+                lock (MapOffsetLock)
+                {
+                    offsetX -= _mapOffsetX;
+                    offsetY -= _mapOffsetY;
+                }
             }
             else
             {
@@ -6168,8 +6171,11 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
             }
-            offsetX += _mapOffsetX;
-            offsetY += _mapOffsetY + _mapFontAscent;
+            lock (MapOffsetLock)
+            {
+                offsetX += _mapOffsetX;
+                offsetY += _mapOffsetY + _mapFontAscent;
+            }
 
             if (_tileWidth > 0)
                 x = (int)((e.Location.X - offsetX) / _tileWidth);
@@ -6373,8 +6379,11 @@ namespace GnollHackClient.Pages.Game
                 else
                 {
                     _targetClipOn = true;
-                    _originMapOffsetWithNewClipX = _mapOffsetX + (float)(x - ClipX) * _tileWidth;
-                    _originMapOffsetWithNewClipY = _mapOffsetY + (float)(y - ClipY) * _tileHeight;
+                    lock (MapOffsetLock)
+                    {
+                        _originMapOffsetWithNewClipX = _mapOffsetX + (float)(x - ClipX) * _tileWidth;
+                        _originMapOffsetWithNewClipY = _mapOffsetY + (float)(y - ClipY) * _tileHeight;
+                    }
                     _targetClipStartCounterValue = curtimervalue;
                     _targetClipPanTime = GHConstants.DefaultPanTime;
                 }
