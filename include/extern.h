@@ -697,7 +697,7 @@ E char* FDECL(randomize_modron_name, (char*));
 #ifdef ANDROID
 E void FDECL(and_getlin_log, (const char*, char*));
 #endif
-
+E void FDECL(read_manual, (struct obj*));
 
 /* ### do_wear.c ### */
 
