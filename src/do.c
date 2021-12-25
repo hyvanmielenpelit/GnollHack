@@ -6281,15 +6281,22 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         if (slev)
             mptr = find_mapseen(&u.uz);
 
+        boolean special_lvl = FALSE;
         if (slev && mptr && mptr->flags.special_level_true_nature_known)
         {
             Sprintf(lvlbuf, "%s", slev->name);
+            special_lvl = TRUE;
         }
         else
         {
             Sprintf(lvlbuf, "Level %d", u.uz.dlevel);
         }
-        Sprintf(lvlbuf2, "Dungeon Level %d", depth(&u.uz));
+        int curdepth = (int)depth(&u.uz);
+        if(curdepth != (int)u.uz.dlevel || special_lvl)
+            Sprintf(lvlbuf2, "Dungeon Level %d", curdepth);
+        else
+            strcpy(lvlbuf2, "");
+
         display_screen_text(lvlbuf, dngbuf, lvlbuf2, SCREEN_TEXT_ENTER_DUNGEON_LEVEL, 0, 0, 0UL);
     }
 
