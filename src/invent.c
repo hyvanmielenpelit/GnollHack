@@ -1050,7 +1050,7 @@ boolean verbose;
         }
         else
         {
-            You("start flying.");
+            You1("start flying.");
         }
     }
 
@@ -1079,11 +1079,11 @@ boolean verbose;
         if (Hallucination && had_hallucination)
         {
             if (u.uroleplay.blind) {
-                pline("For the first time in your life, you can see, and oh wow, it is all so cosmic for sure!");
+                pline1("For the first time in your life, you can see, and oh wow, it is all so cosmic for sure!");
                 u.uroleplay.blind = FALSE;
             }
             else
-                pline("Far out!  Everything is all cosmic again!");
+                pline1("Far out!  Everything is all cosmic again!");
         }
         else
         {
@@ -1091,17 +1091,17 @@ boolean verbose;
                 /* this can only happen by putting on the Eyes of the Overworld;
                    that shouldn't actually produce a permanent cure, but we
                    can't let the "blind from birth" conduct remain intact */
-                pline("For the first time in your life, you can see!");
+                pline1("For the first time in your life, you can see!");
                 u.uroleplay.blind = FALSE;
             }
             else
             {
                 if (!Blindfolded && was_wearing_blindfold)
-                    You("can see again.");
+                    You1("can see again.");
                 else if (Blocks_Blindness || !was_blocking_blindness)
-                    You("can see!");
+                    You1("can see!");
                 else
-                    You("can see again.");
+                    You1("can see again.");
             }
         }
 
@@ -1152,7 +1152,7 @@ boolean verbose;
                 if (was_invisible)
                 {
                     newsym(u.ux, u.uy);
-                    pline("Suddenly you are transparent, but there!");
+                    pline1("Suddenly you are transparent, but there!");
                 }
                 else
                 {
@@ -1170,7 +1170,7 @@ boolean verbose;
             {
                 state_change_detected = TRUE;
                 newsym(u.ux, u.uy);
-                pline("Suddenly you cannot see yourself.");
+                pline1("Suddenly you cannot see yourself.");
             }
         }
         else if (Blocks_Invisibility && !was_blocking_invisibility && !Invis && was_invisible)
@@ -1331,36 +1331,36 @@ boolean verbose;
     else if (!Cancelled && was_cancelled)
     {
         state_change_detected = TRUE;
-        Your("voice returns!");
+        Your1("voice returns!");
     }
 
     /* Some spell powers */
     if (Magical_protection && !had_protection)
     {
         state_change_detected = TRUE;
-        You("feel protected!");
+        You1("feel protected!");
     }
     else if (!Magical_protection && had_protection)
     {
         state_change_detected = TRUE;
-        You("feel unprotected!");
+        You1("feel unprotected!");
     }
 
     if (Magical_shielding && !had_magical_shielding)
     {
         state_change_detected = TRUE;
-        You("feel shielded!");
+        You1("feel shielded!");
     }
     else if (!Magical_shielding && had_magical_shielding)
     {
         state_change_detected = TRUE;
-        You("feel unshielded!");
+        You1("feel unshielded!");
     }
 
     if (Magical_barkskin && !had_magical_barkskin)
     {
         state_change_detected = TRUE;
-        Your("skin thickens into bark!");
+        Your1("skin thickens into bark!");
     }
     else if (!Magical_barkskin && had_magical_barkskin)
     {
@@ -2669,8 +2669,40 @@ boolean (*validitemfunc)(struct obj*);
 
     if (!foo && !allowall && !allownone) 
     {
+        char endbuf[BUFSZ] = ".";
+        char unidbuf[BUFSZ] = "scrolls or spellbooks";
+        boolean writeendremark = FALSE;
+        if (!strcmp(word, "write on"))
+        {
+            struct obj* blankscroll = carrying(SCR_BLANK_PAPER);
+            struct obj* blankbook = carrying(SPE_BLANK_PAPER);
+            if(blankscroll || blankbook)
+            {
+                if (blankscroll && blankbook)
+                {
+                    strcpy(unidbuf, "scrolls or spellbooks");
+                }
+                else if (blankscroll)
+                {
+                    strcpy(unidbuf, "scrolls");
+                }
+                else if (blankbook)
+                {
+                    strcpy(unidbuf, "spellbooks");
+                }
+                else
+                {
+                    strcpy(unidbuf, "writable items");
+                }
+                Sprintf(endbuf, ", but maybe you have unidentified blank %s with you?", unidbuf);
+                writeendremark = TRUE;
+            }
+        }
+
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("don't have anything %sto %s.", foox ? "else " : "", word);
+        You("don't have anything %sto %s%s", foox ? "else " : "", word, endbuf);
+        if(writeendremark)
+            pline("(You cannot write on unidentified blank %s.)", unidbuf);
         return (struct obj *) 0;
     }
     
@@ -2705,7 +2737,7 @@ boolean (*validitemfunc)(struct obj*);
 
             if (!allowcnt) {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                pline("No count allowed with this command.");
+                pline1("No count allowed with this command.");
                 continue;
             }
             ilet = get_count(NULL, ilet, LARGEST_INT, &tmpcnt, TRUE);
@@ -2829,7 +2861,7 @@ boolean (*validitemfunc)(struct obj*);
            that's been moved above so that otmp can be checked earlier] */
         /* verify the chosen object */
         if (!otmp) {
-            You("don't have that object.");
+            You1("don't have that object.");
             if (in_doagain)
                 return (struct obj *) 0;
             continue;
@@ -3431,26 +3463,26 @@ int show_weights;
             if (index(extra_removeables, oc_of_sym)) {
                 ; /* skip rest of takeoff checks */
             } else if (!index(removeables, oc_of_sym)) {
-                pline("Not applicable.");
+                pline1("Not applicable.");
                 return 0;
             } else if (oc_of_sym == ARMOR_CLASS && !wearing_armor()) {
                 noarmor(FALSE);
                 return 0;
             } else if (oc_of_sym == WEAPON_CLASS && !uwep && !uarms && !uswapwep && !uswapwep2
                        && !uquiver) {
-                You("are not wielding anything.");
+                You1("are not wielding anything.");
                 return 0;
             } else if (oc_of_sym == RING_CLASS && !uright && !uleft) {
-                You("are not wearing rings.");
+                You1("are not wearing rings.");
                 return 0;
             } else if (oc_of_sym == AMULET_CLASS && !uamul) {
-                You("are not wearing an amulet.");
+                You1("are not wearing an amulet.");
                 return 0;
             } else if (oc_of_sym == MISCELLANEOUS_CLASS && !umisc && !umisc2 && !umisc3 && !umisc4 && !umisc5) {
-                You("are not wearing miscellaneous items.");
+                You1("are not wearing miscellaneous items.");
                 return 0;
             } else if (oc_of_sym == TOOL_CLASS && !ublindf) {
-                You("are not wearing a blindfold.");
+                You1("are not wearing a blindfold.");
                 return 0;
             }
         }
@@ -3655,9 +3687,9 @@ int FDECL((*fn), (OBJ_P)), FDECL((*ckfn), (OBJ_P));
         goto nextclass;
 
     if (!takeoff && (dud || cnt))
-        pline("That was all.");
+        pline1("That was all.");
     else if (!dud && !cnt)
-        pline("No applicable objects.");
+        pline1("No applicable objects.");
  ret:
     unsortloot(&sortedchn);
     bypass_objlist(*objchn, FALSE);
@@ -3740,7 +3772,7 @@ int id_limit;
         } 
         else if (n == -1)
         { /* no eligible items found */
-            pline("That was all.");
+            pline1("That was all.");
             break;
         }
         else if (!--tryct) { /* stop re-prompting */
@@ -3749,7 +3781,7 @@ int id_limit;
         } 
         else
         { /* try again */
-            pline("Choose an item; use ESC to decline.");
+            pline1("Choose an item; use ESC to decline.");
         }
     }
     return res;
@@ -4245,7 +4277,7 @@ dolastpickeditem()
     }
     else
     {
-        pline("There is no last picked object.");
+        pline1("There is no last picked object.");
         return 0;
     }
 }
@@ -5197,7 +5229,7 @@ dotypeinv()
     const char *prompt = "What type of object do you want an inventory of?";
 
     if (!invent && !billx) {
-        You("aren't carrying anything.");
+        You1("aren't carrying anything.");
         return 0;
     }
     unpaid_count = count_unpaid(invent);
@@ -5298,7 +5330,7 @@ dotypeinv()
         if (unpaid_count)
             dounpaid();
         else
-            You("are not carrying any unpaid objects.");
+            You1("are not carrying any unpaid objects.");
         return 0;
     }
     if (traditional) {
@@ -5597,7 +5629,7 @@ boolean picked_some;
 
         if (dfeature && !strncmp(dfeature, "altar ", 6)) {
             /* don't say "altar" twice, dfeature has more info */
-            You("try to feel what is here.");
+            You1("try to feel what is here.");
         } else {
             const char *where = (Blind && !can_reach_floor(TRUE))
                                     ? "lying beneath you"
@@ -5612,7 +5644,7 @@ boolean picked_some;
         if (dfeature && !drift && !strcmp(dfeature, surface(u.ux, u.uy)))
             dfeature = 0; /* ice already identified */
         if (!can_reach_floor(TRUE)) {
-            pline("But you can't reach it!");
+            pline1("But you can't reach it!");
             return 0;
         }
     }
@@ -6077,7 +6109,7 @@ noarmor(report_uskin)
 boolean report_uskin;
 {
     if (!uskin || !report_uskin) {
-        You("are not wearing any armor.");
+        You1("are not wearing any armor.");
     } else {
         char *p, *uskinname, buf[BUFSZ];
 
@@ -6139,7 +6171,7 @@ int
 doprring()
 {
     if (!uleft && !uright)
-        You("are not wearing any rings.");
+        You1("are not wearing any rings.");
     else {
         char lets[3];
         register int ct = 0;
@@ -6159,7 +6191,7 @@ int
 dopramulet()
 {
     if (!uamul)
-        You("are not wearing an amulet.");
+        You1("are not wearing an amulet.");
     else
         prinv((char *) 0, uamul, 0L);
     return 0;
@@ -6190,7 +6222,7 @@ doprtool()
             lets[ct++] = obj_to_let(otmp);
     lets[ct] = '\0';
     if (!ct)
-        You("are not using any tools.");
+        You1("are not using any tools.");
     else
         (void) display_inventory(lets, FALSE, 0);
     return 0;
@@ -6210,7 +6242,7 @@ doprinuse()
             lets[ct++] = obj_to_let(otmp);
     lets[ct] = '\0';
     if (!ct)
-        You("are not wearing or wielding anything.");
+        You1("are not wearing or wielding anything.");
     else
         (void) display_inventory(lets, FALSE, 0);
     return 0;
@@ -6431,7 +6463,7 @@ doorganize() /* inventory organizer by Del Lamb */
     boolean ever_mind = FALSE, collect;
 
     if (!invent) {
-        You("aren't carrying anything to adjust.");
+        You1("aren't carrying anything to adjust.");
         return 0;
     }
 
@@ -6539,7 +6571,7 @@ doorganize() /* inventory organizer by Del Lamb */
             break; /* got one */
         if (trycnt == 5)
             goto noadjust;
-        pline("Select an inventory slot letter."); /* else try again */
+        pline1("Select an inventory slot letter."); /* else try again */
     }
 
     collect = (let == obj->invlet);
