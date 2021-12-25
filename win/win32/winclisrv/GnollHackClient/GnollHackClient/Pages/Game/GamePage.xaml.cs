@@ -2887,10 +2887,18 @@ namespace GnollHackClient.Pages.Game
                 float offsetX = (canvaswidth - mapwidth) / 2;
                 float offsetY = (canvasheight - mapheight) / 2;
 
+                float usedOffsetX = 0;
+                float usedOffsetY = 0;
+                lock (MapOffsetLock)
+                {
+                    usedOffsetX = _mapOffsetX;
+                    usedOffsetY = _mapOffsetY;
+                }
+
                 if (ZoomMiniMode)
                 {
-                    offsetX -= _mapOffsetX;
-                    offsetY -= _mapOffsetY;
+                    offsetX -= usedOffsetX;
+                    offsetY -= usedOffsetY;
                 }
                 else
                 {
@@ -2928,8 +2936,8 @@ namespace GnollHackClient.Pages.Game
                             float sourcewidth = (float)(GHConstants.MapCols * GHConstants.TileWidth);
                             float sourceheight = (float)(GHConstants.MapRows * GHConstants.TileHeight);
                             SKRect sourcerect = new SKRect(0, 0, sourcewidth, sourceheight);
-                            tx = offsetX + _mapOffsetX;
-                            ty = offsetY + _mapOffsetY + _mapFontAscent;
+                            tx = offsetX + usedOffsetX;
+                            ty = offsetY + usedOffsetY + _mapFontAscent;
                             SKRect targetrect = new SKRect(tx, ty, tx + sourcewidth * width / (float)GHConstants.TileWidth, ty + sourceheight * height / GHConstants.TileHeight);
                             canvas.DrawBitmap(_mapBitmap, sourcerect, targetrect);
                         }
@@ -2951,8 +2959,8 @@ namespace GnollHackClient.Pages.Game
                                         {
                                             str = _mapData[mapx, mapy].Symbol;
                                             textPaint.Color = _mapData[mapx, mapy].Color;
-                                            tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                                            ty = (offsetY + _mapOffsetY + height * (float)mapy);
+                                            tx = (offsetX + usedOffsetX + width * (float)mapx);
+                                            ty = (offsetY + usedOffsetY + height * (float)mapy);
                                             if (CursorStyle == TTYCursorStyle.GreenBlock && _mapCursorX == mapx && _mapCursorY == mapy)
                                             {
                                                 textPaint.Style = SKPaintStyle.Fill;
@@ -2995,10 +3003,10 @@ namespace GnollHackClient.Pages.Game
                                             currentcountervalue = AnimationTimers.general_animation_counter;
                                         }
 
-                                        float altStartX = -(offsetX + _mapOffsetX) / width - 1;
-                                        float altEndX = (canvaswidth - (offsetX + _mapOffsetX)) / width;
-                                        float altStartY = -(offsetY + _mapOffsetY) / height - 1;
-                                        float altEndY = (canvasheight - (offsetY + _mapOffsetY)) / height;
+                                        float altStartX = -(offsetX + usedOffsetX) / width - 1;
+                                        float altEndX = (canvaswidth - (offsetX + usedOffsetX)) / width;
+                                        float altStartY = -(offsetY + usedOffsetY) / height - 1;
+                                        float altEndY = (canvasheight - (offsetY + usedOffsetY)) / height;
                                         altStartX -= 3;
                                         altEndX += 3;
                                         altStartY -= 1;
@@ -3061,8 +3069,8 @@ namespace GnollHackClient.Pages.Game
                                                             /* Grid */
                                                             if (MapGrid)
                                                             {
-                                                                tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                                                                ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+                                                                tx = (offsetX + usedOffsetX + width * (float)mapx);
+                                                                ty = (offsetY + usedOffsetY + _mapFontAscent + height * (float)mapy);
 
                                                                 textPaint.Style = SKPaintStyle.Stroke;
                                                                 textPaint.StrokeWidth = 2.0f;
@@ -3098,8 +3106,8 @@ namespace GnollHackClient.Pages.Game
                                                                 int tile_x = TileSheetX(ctile);
                                                                 int tile_y = TileSheetY(ctile);
 
-                                                                tx = (offsetX + _mapOffsetX + (loc_is_you ? base_move_offset_x : 0) + width * (float)mapx);
-                                                                ty = (offsetY + _mapOffsetY + (loc_is_you ? base_move_offset_y : 0) + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+                                                                tx = (offsetX + usedOffsetX + (loc_is_you ? base_move_offset_x : 0) + width * (float)mapx);
+                                                                ty = (offsetY + usedOffsetY + (loc_is_you ? base_move_offset_y : 0) + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
                                                                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                                                                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                                                                 canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
@@ -3107,8 +3115,8 @@ namespace GnollHackClient.Pages.Game
                                                             }
 
                                                             /* General tx, ty for all others, except cursors */
-                                                            tx = (offsetX + _mapOffsetX + base_move_offset_x + width * (float)mapx);
-                                                            ty = (offsetY + _mapOffsetY + base_move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
+                                                            tx = (offsetX + usedOffsetX + base_move_offset_x + width * (float)mapx);
+                                                            ty = (offsetY + usedOffsetY + base_move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)mapy);
 
                                                             if (HitPointBars)
                                                             {
@@ -4080,8 +4088,8 @@ namespace GnollHackClient.Pages.Game
                                                                                 opaqueness = 0.5f;
                                                                             }
 
-                                                                            tx = (offsetX + _mapOffsetX + move_offset_x + width * (float)draw_map_x);
-                                                                            ty = (offsetY + _mapOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
+                                                                            tx = (offsetX + usedOffsetX + move_offset_x + width * (float)draw_map_x);
+                                                                            ty = (offsetY + usedOffsetY + move_offset_y + scaled_y_height_change + _mapFontAscent + height * (float)draw_map_y);
 
                                                                             using (new SKAutoCanvasRestore(canvas, true))
                                                                             {
@@ -4148,8 +4156,8 @@ namespace GnollHackClient.Pages.Game
                                                                 paint.Color = color;
                                                                 SKBlendMode old_bm = paint.BlendMode;
                                                                 paint.BlendMode = blendMode;
-                                                                tx = (offsetX + _mapOffsetX + width * (float)mapx);
-                                                                ty = (offsetY + _mapOffsetY + _mapFontAscent + height * (float)mapy);
+                                                                tx = (offsetX + usedOffsetX + width * (float)mapx);
+                                                                ty = (offsetY + usedOffsetY + _mapFontAscent + height * (float)mapy);
                                                                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                                                                 canvas.DrawRect(targetrect, paint);
                                                                 paint.BlendMode = old_bm;
@@ -4171,8 +4179,8 @@ namespace GnollHackClient.Pages.Game
                             int cx = _mapCursorX, cy = _mapCursorY;
                             str = "_";
                             textPaint.Color = SKColors.White;
-                            tx = (offsetX + _mapOffsetX + width * (float)cx);
-                            ty = (offsetY + _mapOffsetY + height * (float)cy);
+                            tx = (offsetX + usedOffsetX + width * (float)cx);
+                            ty = (offsetY + usedOffsetY + height * (float)cy);
                             canvas.DrawText(str, tx, ty, textPaint);
                         }
                     }
@@ -4200,8 +4208,8 @@ namespace GnollHackClient.Pages.Game
                                 str = ft.GetText(AnimationTimers.general_animation_counter);
                             }
                             textPaint.MeasureText(str, ref textBounds);
-                            tx = (offsetX + _mapOffsetX + width * p.X - textBounds.Width / 2);
-                            ty = (offsetY + _mapOffsetY + height * p.Y - textBounds.Height / 2);
+                            tx = (offsetX + usedOffsetX + width * p.X - textBounds.Width / 2);
+                            ty = (offsetY + usedOffsetY + height * p.Y - textBounds.Height / 2);
                             if (relativestrokewidth > 0)
                             {
                                 textPaint.Style = SKPaintStyle.Stroke;
