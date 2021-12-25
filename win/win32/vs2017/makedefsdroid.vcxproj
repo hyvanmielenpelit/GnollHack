@@ -34,9 +34,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <PropertyGroup>
-    <AndroidPackageFormat>test</AndroidPackageFormat>
-  </PropertyGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{19c1c54d-60d5-44ab-820e-7d07b180f153}</ProjectGuid>
     <Keyword>Linux</Keyword>
