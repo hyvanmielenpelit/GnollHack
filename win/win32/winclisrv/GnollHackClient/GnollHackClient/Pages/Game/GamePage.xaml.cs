@@ -3079,8 +3079,7 @@ namespace GnollHackClient.Pages.Game
 
                                                             /* Cursor */
                                                             bool cannotseeself = (loc_is_you && !canspotself);
-                                                            if (loc_is_you
-                                                                && (cannotseeself || _show_cursor_on_u)
+                                                            if ((!loc_is_you || (loc_is_you && (cannotseeself || _show_cursor_on_u)))
                                                                 && (mapx == _mapCursorX && mapy == _mapCursorY)
                                                                 )
                                                             {
@@ -6349,6 +6348,12 @@ namespace GnollHackClient.Pages.Game
 
         public void SetTargetClip(int x, int y, bool immediate_pan)
         {
+            long curtimervalue = 0;
+            lock (AnimationTimerLock)
+            {
+                curtimervalue = AnimationTimers.general_animation_counter;
+            }
+
             lock (TargetClipLock)
             {
                 if (immediate_pan || GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii)
@@ -6362,11 +6367,10 @@ namespace GnollHackClient.Pages.Game
                     _targetClipOn = true;
                     _originMapOffsetWithNewClipX = _mapOffsetX + (float)(x - ClipX) * _tileWidth;
                     _originMapOffsetWithNewClipY = _mapOffsetY + (float)(y - ClipY) * _tileHeight;
-                    _targetClipStartCounterValue = AnimationTimers.general_animation_counter;
+                    _targetClipStartCounterValue = curtimervalue;
                     _targetClipPanTime = GHConstants.DefaultPanTime;
                 }
             }
-
             lock (ClipLock)
             {
                 _clipX = x;
