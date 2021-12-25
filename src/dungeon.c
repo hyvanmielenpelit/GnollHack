@@ -2801,7 +2801,6 @@ recalc_mapseen()
     }
 
     struct trap* t;
-    int cnt = 0;
     mptr->feat.nmagicportal = 0;
     mptr->feat.nvibratingsquare = 0;
     for (t = ftrap; t != 0; t = t->ntrap) {
