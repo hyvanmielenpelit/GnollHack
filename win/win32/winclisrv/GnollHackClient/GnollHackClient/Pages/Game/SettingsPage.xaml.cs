@@ -52,6 +52,10 @@ namespace GnollHackClient.Pages.Game
             Preferences.Set("HitPointBars", HitPointBarSwitch.IsToggled);
 
             if (_gamePage != null)
+                _gamePage.ClassicStatusBar = ClassicStatusBarSwitch.IsToggled;
+            Preferences.Set("ClassicStatusBar", ClassicStatusBarSwitch.IsToggled);
+
+            if (_gamePage != null)
                 _gamePage.ShowOrbs = OrbSwitch.IsToggled;
             Preferences.Set("ShowOrbs", OrbSwitch.IsToggled);
 
@@ -114,7 +118,7 @@ namespace GnollHackClient.Pages.Game
             App.BackButtonPressed += BackButtonPressed;
 
             int cursor = 0, graphics = 0, msgnum = 0;
-            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, statusbar = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", 1.0f);
@@ -134,6 +138,7 @@ namespace GnollHackClient.Pages.Game
                 ForceMaxMessageSwitch.IsEnabled = false;
                 ForceMaxMessageLabel.TextColor = Color.Gray;
                 hpbars = Preferences.Get("HitPointBars", false);
+                statusbar = Preferences.Get("ClassicStatusBar", true);
                 orbs = Preferences.Get("ShowOrbs", true);
                 orbmaxhp = Preferences.Get("ShowMaxHealthInOrb", false);
                 orbmaxmana = Preferences.Get("ShowMaxManaInOrb", false);
@@ -152,6 +157,7 @@ namespace GnollHackClient.Pages.Game
                 forcemaxmsg = _gamePage.ForceAllMessages;
                 ForceMaxMessageSwitch.IsEnabled = true;
                 ForceMaxMessageLabel.TextColor = Color.White;
+                statusbar = _gamePage.ClassicStatusBar;
                 hpbars = _gamePage.HitPointBars;
                 orbs = _gamePage.ShowOrbs;
                 orbmaxhp = _gamePage.ShowMaxHealthInOrb;
@@ -167,6 +173,7 @@ namespace GnollHackClient.Pages.Game
             GraphicsPicker.SelectedIndex = graphics;
             GridSwitch.IsToggled = mapgrid;
             HitPointBarSwitch.IsToggled = hpbars;
+            ClassicStatusBarSwitch.IsToggled = statusbar;
             OrbSwitch.IsToggled = orbs;
             MaxHealthInOrbSwitch.IsToggled = orbmaxhp;
             MaxManaInOrbSwitch.IsToggled = orbmaxmana;

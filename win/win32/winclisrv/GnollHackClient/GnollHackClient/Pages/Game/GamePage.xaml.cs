@@ -131,7 +131,7 @@ namespace GnollHackClient.Pages.Game
         public bool WalkArrows { get { lock (_walkArrowLock) { return _walkArrows; } } set { lock (_walkArrowLock) { _walkArrows = value; } } }
 
         private object _classicStatusBarLock = new object();
-        private bool _classicStatusBar = false;
+        private bool _classicStatusBar = true;
         public bool ClassicStatusBar { get { lock (_classicStatusBarLock) { return _classicStatusBar; } } set { lock (_classicStatusBarLock) { _classicStatusBar = value; } } }
 
         private bool _cursorIsOn;
@@ -153,6 +153,8 @@ namespace GnollHackClient.Pages.Game
         private SKBitmap _orbFillBitmapRed;
         private SKBitmap _orbFillBitmapBlue;
         private SKBitmap _orbGlassBitmap;
+        private SKBitmap _shieldACBitmap;
+        private SKBitmap _shieldMCBitmap;
 
         private object _skillRectLock = new object();
         private SKRect _skillRect = new SKRect();
@@ -165,6 +167,14 @@ namespace GnollHackClient.Pages.Game
         private object _manaRectLock = new object();
         private SKRect _manaRect = new SKRect();
         public SKRect ManaRect { get { SKRect val; lock (_manaRectLock) { val = _manaRect; } return val; } set { lock (_manaRectLock) { _manaRect = value; } } }
+        
+        private object _acRectLock = new object();
+        private SKRect _acRect = new SKRect();
+        public SKRect ACRect { get { SKRect val; lock (_acRectLock) { val = _acRect; } return val; } set { lock (_acRectLock) { _acRect = value; } } }
+
+        private object _mcRectLock = new object();
+        private SKRect _mcRect = new SKRect();
+        public SKRect MCRect { get { SKRect val; lock (_mcRectLock) { val = _mcRect; } return val; } set { lock (_mcRectLock) { _mcRect = value; } } }
 
         public object TargetClipLock = new object();
         public float _originMapOffsetWithNewClipX;
@@ -4403,6 +4413,9 @@ namespace GnollHackClient.Pages.Game
                                 _clientGame.Windows[i].WindowPrintStyle == GHWindowPrintLocations.PrintToMap
                                 || _clientGame.Windows[i].WindowPrintStyle == GHWindowPrintLocations.RawPrint))
                             {
+                                if (_clientGame.Windows[i].WindowType == GHWinType.Status && !ClassicStatusBar)
+                                    continue;
+
                                 textPaint.Typeface = _clientGame.Windows[i].Typeface;
                                 textPaint.TextSize = _clientGame.Windows[i].TextSize;
                                 textPaint.Color = _clientGame.Windows[i].TextColor;
@@ -4620,8 +4633,9 @@ namespace GnollHackClient.Pages.Game
                         skillbuttonok = StatusFields[(int)statusfields.BL_SKILL] != null && StatusFields[(int)statusfields.BL_SKILL].Text != null && StatusFields[(int)statusfields.BL_SKILL].Text == "Skill";
                     }
 
-                    float lastdrawnrecty = lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing;
+                    float abilitybuttonbottom = (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / canvasView.Height) * canvasheight;
                     float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
+                    float lastdrawnrecty = Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing);
                     tx = 5.0f;
                     ty = lastdrawnrecty;
                     /* HP and MP */
@@ -4692,6 +4706,41 @@ namespace GnollHackClient.Pages.Game
                         float text_y = skillDest.Bottom - textPaint.FontMetrics.Ascent;
                         canvas.DrawText("Skills", text_x, text_y, textPaint);
                         textPaint.TextAlign = SKTextAlign.Left;
+                    }
+
+                    if(!ClassicStatusBar)
+                    {
+                        float shieldleft = 5.0f + orbbordersize + 5.0f;
+                        float shieldtop = 5.0f;
+                        SKRect shieldDest = new SKRect(shieldleft, shieldtop, shieldleft + orbbordersize, shieldtop + orbbordersize);
+                        string valtext = "";
+                        string pcttext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_AC] != null && StatusFields[(int)statusfields.BL_AC].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_AC].Text;
+                            }
+                        }
+                        ACRect = shieldDest;
+                        DrawShield(canvas, textPaint, shieldDest, 0, valtext, "", false);
+
+                        valtext = "";
+                        shieldleft += orbbordersize + 5.0f;
+                        shieldDest = new SKRect(shieldleft, shieldtop, shieldleft + orbbordersize, shieldtop + orbbordersize);
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_MC_LVL] != null && StatusFields[(int)statusfields.BL_MC_LVL].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_MC_LVL].Text;
+                            }
+                            if (StatusFields[(int)statusfields.BL_MC_PCT] != null && StatusFields[(int)statusfields.BL_MC_PCT].Text != null)
+                            {
+                                pcttext = StatusFields[(int)statusfields.BL_MC_PCT].Text;
+                            }
+                        }
+                        MCRect = shieldDest;
+                        DrawShield(canvas, textPaint, shieldDest, 1, valtext, pcttext + "%", true);
                     }
                 }
 
@@ -7836,6 +7885,16 @@ namespace GnollHackClient.Pages.Game
             {
                 _orbGlassBitmap = SKBitmap.Decode(stream);
             }
+
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield1.png"))
+            {
+                _shieldACBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield2.png"))
+            {
+                _shieldMCBitmap = SKBitmap.Decode(stream);
+            }
+
         }
 
         public GHCommandButtonItem[,] _moreBtnMatrix = new GHCommandButtonItem[GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
@@ -8553,6 +8612,58 @@ namespace GnollHackClient.Pages.Game
                 textPaint.Style = SKPaintStyle.Fill;
                 textPaint.Color = SKColors.White;
                 canvas.DrawText(maxval, tx, ty, textPaint);
+            }
+        }
+
+        private void DrawShield(SKCanvas canvas, SKPaint textPaint, SKRect shieldDest, int shieldstyle, string val, string maxpct, bool showpct)
+        {
+            if (shieldDest.Width == 0)
+                return;
+
+            textPaint.Color = SKColors.White;
+            canvas.DrawBitmap(shieldstyle == 0 ? _shieldACBitmap : _shieldMCBitmap, shieldDest, textPaint);
+            if (val != null && val != "")
+            {
+                textPaint.TextSize = 36;
+                textPaint.Typeface = App.LatoBold;
+                SKRect bounds = new SKRect();
+                textPaint.MeasureText(val.Length > 4 ? val : "9999", ref bounds);
+                float scale = bounds.Width / shieldDest.Width;
+                if (scale > 0)
+                    textPaint.TextSize = textPaint.TextSize * 0.90f / scale;
+
+                float strwidth = textPaint.MeasureText(val, ref bounds);
+                float tx = shieldDest.Left + (shieldDest.Width - strwidth) / 2;
+                float ty = shieldDest.Top + (shieldDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2 - textPaint.FontMetrics.Ascent;
+                textPaint.Style = SKPaintStyle.Stroke;
+                textPaint.StrokeWidth = textPaint.TextSize / 10;
+                textPaint.Color = SKColors.Black;
+                canvas.DrawText(val, tx, ty, textPaint);
+                textPaint.Style = SKPaintStyle.Fill;
+                textPaint.Color = SKColors.White;
+                canvas.DrawText(val, tx, ty, textPaint);
+            }
+
+            if (showpct && maxpct != null && maxpct != "")
+            {
+                textPaint.TextSize = 36;
+                textPaint.Typeface = App.LatoBold;
+                SKRect bounds = new SKRect();
+                textPaint.MeasureText(maxpct.Length > 4 ? maxpct : "100%", ref bounds);
+                float scale = bounds.Width / shieldDest.Width;
+                if (scale > 0)
+                    textPaint.TextSize = textPaint.TextSize * 0.50f / scale;
+
+                float strwidth = textPaint.MeasureText(maxpct, ref bounds);
+                float tx = shieldDest.Left + (shieldDest.Width - strwidth) / 2;
+                float ty = shieldDest.Bottom - 0.07f * shieldDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) - textPaint.FontMetrics.Ascent;
+                textPaint.Style = SKPaintStyle.Stroke;
+                textPaint.StrokeWidth = textPaint.TextSize / 10;
+                textPaint.Color = SKColors.Black;
+                canvas.DrawText(maxpct, tx, ty, textPaint);
+                textPaint.Style = SKPaintStyle.Fill;
+                textPaint.Color = SKColors.White;
+                canvas.DrawText(maxpct, tx, ty, textPaint);
             }
         }
     }
