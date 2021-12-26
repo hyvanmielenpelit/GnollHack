@@ -7160,13 +7160,12 @@ struct monst* mtmp;
     }
     case NPC_ELVEN_BARD:
     {
-        const char* linearray[7] = {
-            "Like many before you, you will face unnameable perils in the Dungeons of Doom.",
-            "Know that you can call upon Elbereth Gilthoniel in the time of need.",
-            "Verily, engraving \"Elbereth\" on the ground will protect you from most monsters.",
-            "To do so takes but a round with finger, athame, or a wand.",
+        const char* linearray[6] = {
+            "Good adventurer, I bring you the protection of the great elven god Elbereth Gilthoniel.",
+            "Engrave \"Elbereth\" on the ground and she will protect you.",
+            "To do so takes but a mere round with finger, athame, or a wand.",
             "Yet, such is her name that the engraving will disappear if you attack while standing on it.",
-            "Know, too, that Elbereth cannot assist you in the Under World and will not do so against humans or elves.",
+            "However, she cannot assist you in the Under World and will not do so against humans or elves.",
             0 };
         
         hermit_talk(mtmp, linearray);

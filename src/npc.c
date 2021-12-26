@@ -117,15 +117,15 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
     {
         PM_ELF_LORD,
         NPC_GEHENNOM_UNDEAD_SPELLCASTER,
-        "elven high bard",
-        "Dungeons of Doom in these dark times",
+        "elven bard",
+        "practice hall",
         "Nimrodiel",
-        "I sing songs to great elven gods.",
+        "I sing elven songs to aid adventurers in these dark times.",
         (char*)0,
         0, 0,
         5, 10, 50,
         NPC_SERVICE_SPECIAL_NPC_HINTS | NPC_SERVICE_SING_SONGS,
-        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_FEMALE | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_NO_MY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_FEMALE | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE
     },
 };
 
