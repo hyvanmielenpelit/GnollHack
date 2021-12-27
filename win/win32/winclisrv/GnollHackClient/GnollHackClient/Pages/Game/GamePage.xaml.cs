@@ -272,6 +272,7 @@ namespace GnollHackClient.Pages.Game
             ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
             MapGrid = Preferences.Get("MapGrid", false);
             HitPointBars = Preferences.Get("HitPointBars", false);
+            ClassicStatusBar = Preferences.Get("ClassicStatusBar", GHConstants.IsDefaultStatusBarClassic);
             ShowOrbs = Preferences.Get("ShowOrbs", true);
             PlayerMark = Preferences.Get("PlayerMark", false);
             MonsterTargeting = Preferences.Get("MonsterTargeting", false);
@@ -4710,9 +4711,10 @@ namespace GnollHackClient.Pages.Game
 
                     if(!ClassicStatusBar)
                     {
-                        float shieldleft = 5.0f + orbbordersize + 5.0f;
+                        float shieldsidelength = orbbordersize * 0.75f;
+                        float shieldleft = 5.0f + shieldsidelength + 5.0f;
                         float shieldtop = 5.0f;
-                        SKRect shieldDest = new SKRect(shieldleft, shieldtop, shieldleft + orbbordersize, shieldtop + orbbordersize);
+                        SKRect shieldDest = new SKRect(shieldleft, shieldtop, shieldleft + shieldsidelength, shieldtop + shieldsidelength);
                         string valtext = "";
                         string pcttext = "";
                         lock (StatusFieldLock)
@@ -4726,8 +4728,8 @@ namespace GnollHackClient.Pages.Game
                         DrawShield(canvas, textPaint, shieldDest, 0, valtext, "", false);
 
                         valtext = "";
-                        shieldleft += orbbordersize + 5.0f;
-                        shieldDest = new SKRect(shieldleft, shieldtop, shieldleft + orbbordersize, shieldtop + orbbordersize);
+                        shieldleft += shieldsidelength + 5.0f;
+                        shieldDest = new SKRect(shieldleft, shieldtop, shieldleft + shieldsidelength, shieldtop + shieldsidelength);
                         lock (StatusFieldLock)
                         {
                             if (StatusFields[(int)statusfields.BL_MC_LVL] != null && StatusFields[(int)statusfields.BL_MC_LVL].Text != null)
@@ -8627,14 +8629,14 @@ namespace GnollHackClient.Pages.Game
                 textPaint.TextSize = 36;
                 textPaint.Typeface = App.LatoBold;
                 SKRect bounds = new SKRect();
-                textPaint.MeasureText(val.Length > 4 ? val : "9999", ref bounds);
+                textPaint.MeasureText(val.Length > 3 ? val : "999", ref bounds);
                 float scale = bounds.Width / shieldDest.Width;
                 if (scale > 0)
-                    textPaint.TextSize = textPaint.TextSize * 0.90f / scale;
+                    textPaint.TextSize = textPaint.TextSize * 0.65f / scale;
 
                 float strwidth = textPaint.MeasureText(val, ref bounds);
                 float tx = shieldDest.Left + (shieldDest.Width - strwidth) / 2;
-                float ty = shieldDest.Top + (shieldDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2 - textPaint.FontMetrics.Ascent;
+                float ty = shieldDest.Top + (shieldDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) * 0.4f - textPaint.FontMetrics.Ascent;
                 textPaint.Style = SKPaintStyle.Stroke;
                 textPaint.StrokeWidth = textPaint.TextSize / 10;
                 textPaint.Color = SKColors.Black;
@@ -8656,7 +8658,7 @@ namespace GnollHackClient.Pages.Game
 
                 float strwidth = textPaint.MeasureText(maxpct, ref bounds);
                 float tx = shieldDest.Left + (shieldDest.Width - strwidth) / 2;
-                float ty = shieldDest.Bottom - 0.07f * shieldDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) - textPaint.FontMetrics.Ascent;
+                float ty = shieldDest.Bottom - 0.15f * shieldDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) - textPaint.FontMetrics.Ascent;
                 textPaint.Style = SKPaintStyle.Stroke;
                 textPaint.StrokeWidth = textPaint.TextSize / 10;
                 textPaint.Color = SKColors.Black;

@@ -3778,7 +3778,7 @@ static const char* const manual_names[MAX_MANUAL_TYPES] = {
     "Wands 101", "Armor 101", "Weapons 101", "Gray Stones 101",
     "Basics of Kicking", "Basics of Enchantment", "Basics of Eating and Drinking", "Introduction to Dangerous Monsters",
     "Introduction to Blessed and Cursed Items", "Guide to Praying", "Essential Survival Tips",
-    "Assorted Tips and Tricks", "Introduction to Mechanics", "Principles of Magic", "Understanding Pets and Hirelings",
+    "Assorted Tips and Tricks", "Elementary Mechanics", "Principles of Magic", "Understanding Pets and Hirelings",
     /* Never randomly generated */
     "Guide to Dragon Scale Mails", "Guide to Altars and Sacrifice",
     "Secrets of Scare Monster", "Gurathul's Guide to Ascension", "Master Class in Wands", "Infernal Inhabitants of Gehennom",
@@ -3960,7 +3960,7 @@ struct obj* obj;
         putstr(datawin, 0, "10. Engraving text with fingers is not permanent. The text will disappear soon.");
         putstr(datawin, 0, "11. Engraving with a dagger is a good way to make a permanent engraving. Just dispose the dagger afterwards.");
         break;
-    case MANUAL_INTRODUCTION_TO_MECHANICS:
+    case MANUAL_ELEMENTARY_MECHANICS:
         putstr(datawin, 0, "1. Your encumbrance limit is based on your strength and constitution.");
         putstr(datawin, 0, "2. If you are burdened, your speed will drop by 25%.");
         putstr(datawin, 0, "3. Your speed determines how fast you can move and attack.");
