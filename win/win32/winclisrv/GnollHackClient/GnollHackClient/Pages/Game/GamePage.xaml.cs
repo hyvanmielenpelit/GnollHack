@@ -153,8 +153,15 @@ namespace GnollHackClient.Pages.Game
         private SKBitmap _orbFillBitmapRed;
         private SKBitmap _orbFillBitmapBlue;
         private SKBitmap _orbGlassBitmap;
+
         private SKBitmap _shieldACBitmap;
         private SKBitmap _shieldMCBitmap;
+        private SKBitmap _shieldMoveBitmap;
+        private SKBitmap _shieldWeaponBitmap;
+        private SKBitmap _shieldDungeonLevelBitmap;
+        private SKBitmap _shieldXPLevelBitmap;
+        private SKBitmap _shieldTurnBannerBitmap;
+        private SKBitmap _shieldGoldBannerBitmap;
 
         private object _skillRectLock = new object();
         private SKRect _skillRect = new SKRect();
@@ -175,6 +182,14 @@ namespace GnollHackClient.Pages.Game
         private object _mcRectLock = new object();
         private SKRect _mcRect = new SKRect();
         public SKRect MCRect { get { SKRect val; lock (_mcRectLock) { val = _mcRect; } return val; } set { lock (_mcRectLock) { _mcRect = value; } } }
+
+        private object _moveRectLock = new object();
+        private SKRect _moveRect = new SKRect();
+        public SKRect MoveRect { get { SKRect val; lock (_moveRectLock) { val = _moveRect; } return val; } set { lock (_moveRectLock) { _moveRect = value; } } }
+
+        private object _weaponRectLock = new object();
+        private SKRect _weaponRect = new SKRect();
+        public SKRect WeaponRect { get { SKRect val; lock (_weaponRectLock) { val = _weaponRect; } return val; } set { lock (_weaponRectLock) { _weaponRect = value; } } }
 
         public object TargetClipLock = new object();
         public float _originMapOffsetWithNewClipX;
@@ -333,7 +348,7 @@ namespace GnollHackClient.Pages.Game
             }
 
             InitializeArrowButtons(assembly);
-            InitializeOrbBitmaps(assembly);
+            InitializeUIBitmaps(assembly);
             InitializeMoreCommandButtons();
             await LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear);
 
@@ -4725,7 +4740,7 @@ namespace GnollHackClient.Pages.Game
                             }
                         }
                         ACRect = shieldDest;
-                        DrawShield(canvas, textPaint, shieldDest, 0, valtext, "", false);
+                        DrawShield(canvas, textPaint, shieldDest, UIShieldStyles.AC, valtext, "", false);
 
                         valtext = "";
                         shieldleft += shieldsidelength + 5.0f;
@@ -4742,7 +4757,39 @@ namespace GnollHackClient.Pages.Game
                             }
                         }
                         MCRect = shieldDest;
-                        DrawShield(canvas, textPaint, shieldDest, 1, valtext, pcttext + "%", true);
+                        DrawShield(canvas, textPaint, shieldDest, UIShieldStyles.MC, valtext, pcttext + "%", true);
+
+                        valtext = "";
+                        shieldleft += shieldsidelength + 5.0f;
+                        shieldDest = new SKRect(shieldleft, shieldtop, shieldleft + shieldsidelength, shieldtop + shieldsidelength);
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_MOVE] != null && StatusFields[(int)statusfields.BL_MOVE].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_MOVE].Text;
+                            }
+                        }
+                        MoveRect = shieldDest;
+                        DrawShield(canvas, textPaint, shieldDest, UIShieldStyles.Move, valtext, "", true);
+
+                        valtext = "";
+                        shieldleft += shieldsidelength + 5.0f;
+                        shieldDest = new SKRect(shieldleft, shieldtop, shieldleft + shieldsidelength, shieldtop + shieldsidelength);
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_UWEP].Text;
+                            }
+                            if (StatusFields[(int)statusfields.BL_UWEP2] != null && StatusFields[(int)statusfields.BL_UWEP2].Text != null)
+                            {
+                                if (valtext != "")
+                                    valtext += "/";
+                                valtext += StatusFields[(int)statusfields.BL_UWEP2].Text;
+                            }
+                        }
+                        WeaponRect = shieldDest;
+                        DrawShield(canvas, textPaint, shieldDest, UIShieldStyles.Weapon, valtext, "", true);
                     }
                 }
 
@@ -7840,7 +7887,7 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private void InitializeOrbBitmaps(Assembly assembly)
+        private void InitializeUIBitmaps(Assembly assembly)
         {
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.orb_border.png"))
             {
@@ -7895,6 +7942,30 @@ namespace GnollHackClient.Pages.Game
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield2.png"))
             {
                 _shieldMCBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield3.png"))
+            {
+                _shieldMoveBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield-weapon.png"))
+            {
+                _shieldWeaponBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield-dlevel.png"))
+            {
+                _shieldDungeonLevelBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield-xp.png"))
+            {
+                _shieldXPLevelBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.banner-turn.png"))
+            {
+                _shieldTurnBannerBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.banner-gold.png"))
+            {
+                _shieldGoldBannerBitmap = SKBitmap.Decode(stream);
             }
 
         }
@@ -8617,13 +8688,46 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private void DrawShield(SKCanvas canvas, SKPaint textPaint, SKRect shieldDest, int shieldstyle, string val, string maxpct, bool showpct)
+        public enum UIShieldStyles
+        {
+            AC = 0,
+            MC,
+            Move,
+            Weapon,
+            DungeonLevel,
+            XPLevel
+        }
+
+        private void DrawShield(SKCanvas canvas, SKPaint textPaint, SKRect shieldDest, UIShieldStyles shieldstyle, string val, string maxpct, bool showpct)
         {
             if (shieldDest.Width == 0)
                 return;
 
             textPaint.Color = SKColors.White;
-            canvas.DrawBitmap(shieldstyle == 0 ? _shieldACBitmap : _shieldMCBitmap, shieldDest, textPaint);
+            SKBitmap usedBitmap = _shieldACBitmap;
+            switch(shieldstyle)
+            {
+                case UIShieldStyles.AC:
+                    usedBitmap = _shieldACBitmap;
+                    break;
+                case UIShieldStyles.MC:
+                    usedBitmap = _shieldMCBitmap;
+                    break;
+                case UIShieldStyles.Move:
+                    usedBitmap = _shieldMoveBitmap;
+                    break;
+                case UIShieldStyles.Weapon:
+                    usedBitmap = _shieldWeaponBitmap;
+                    break;
+                case UIShieldStyles.DungeonLevel:
+                    usedBitmap = _shieldDungeonLevelBitmap;
+                    break;
+                case UIShieldStyles.XPLevel:
+                    usedBitmap = _shieldXPLevelBitmap;
+                    break;
+            }
+
+            canvas.DrawBitmap(usedBitmap, shieldDest, textPaint);
             if (val != null && val != "")
             {
                 textPaint.TextSize = 36;
