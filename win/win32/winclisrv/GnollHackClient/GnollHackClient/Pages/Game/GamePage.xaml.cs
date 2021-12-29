@@ -4630,6 +4630,13 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
 
+                float abilitybuttonbottom = (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / canvasView.Height) * canvasheight;
+                float escbuttonbottom = (float)((ESCButton.Y + ESCButton.Height) / canvasView.Height) * canvasheight;
+                if (canvasButtonRect.Top < escbuttonbottom)
+                    canvasButtonRect.Top = escbuttonbottom;
+                if (canvasButtonRect.Top < abilitybuttonbottom)
+                    canvasButtonRect.Top = abilitybuttonbottom;
+
                 SkillRect = new SKRect();
                 HealthRect = new SKRect();
                 ManaRect = new SKRect();
@@ -4649,7 +4656,6 @@ namespace GnollHackClient.Pages.Game
                         skillbuttonok = StatusFields[(int)statusfields.BL_SKILL] != null && StatusFields[(int)statusfields.BL_SKILL].Text != null && StatusFields[(int)statusfields.BL_SKILL].Text == "Skill";
                     }
 
-                    float abilitybuttonbottom = (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / canvasView.Height) * canvasheight;
                     float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
                     float lastdrawnrecty = Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing);
                     tx = 5.0f;
