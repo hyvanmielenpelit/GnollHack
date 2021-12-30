@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:gnollhackclient="clr-namespace:GnollHackClient"
              x:Class="GnollHackClient.Pages.Game.ResetPage">
     <ContentPage.Content>
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
-                            Source ="resource://GnollHackClient.Assets.UI.menubackground.png" />
+            <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <!--<ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
+                            Source ="resource://GnollHackClient.Assets.UI.menubackground.png" />-->
 
             <Grid BackgroundColor="Transparent" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
@@ -13,7 +14,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" x:Name="lblHeader" Text="Reset Menu" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="White"
+                <Label Grid.Row="0" x:Name="lblHeader" Text="Reset Menu" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,30" />
                 <TableView Grid.Row="1" x:Name="GameTableView" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent"
                            Intent="Menu">

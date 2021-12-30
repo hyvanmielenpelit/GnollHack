@@ -156,7 +156,7 @@ namespace GnollHackClient.Pages.Game
                 mapgrid = _gamePage.MapGrid;
                 forcemaxmsg = _gamePage.ForceAllMessages;
                 ForceMaxMessageSwitch.IsEnabled = true;
-                ForceMaxMessageLabel.TextColor = Color.White;
+                ForceMaxMessageLabel.TextColor = Color.Black;
                 statusbar = _gamePage.ClassicStatusBar;
                 hpbars = _gamePage.HitPointBars;
                 orbs = _gamePage.ShowOrbs;
