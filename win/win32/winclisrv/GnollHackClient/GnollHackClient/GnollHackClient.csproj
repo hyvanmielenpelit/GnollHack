@@ -80,7 +80,6 @@
     <None Remove="Assets\UI\arrow_upright.png" />
     <None Remove="Assets\UI\background-darkmarble.png" />
     <None Remove="Assets\UI\background-oldpaper.png" />
-    <None Remove="Assets\UI\background-scroll.png" />
     <None Remove="Assets\UI\break.png" />
     <None Remove="Assets\UI\cancel.png" />
     <None Remove="Assets\UI\cast.png" />
@@ -187,7 +186,6 @@
     <EmbeddedResource Include="Assets\UI\arrow_upleft.png" />
     <EmbeddedResource Include="Assets\UI\arrow_upright.png" />
     <EmbeddedResource Include="Assets\UI\background-oldpaper.png" />
-    <EmbeddedResource Include="Assets\UI\background-scroll.png" />
     <EmbeddedResource Include="Assets\UI\break.png" />
     <EmbeddedResource Include="Assets\UI\cancel.png" />
     <EmbeddedResource Include="Assets\UI\cast.png" />
@@ -294,9 +292,6 @@
     <EmbeddedResource Update="Pages\Game\GamePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\GetLinePage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="Pages\Game\GHTextCanvasPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -312,13 +307,7 @@
     <EmbeddedResource Update="Pages\Game\ResetPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\RoleSelection.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="Pages\Game\SettingsPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\Game\StorePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\Game\TopScorePage.xaml">

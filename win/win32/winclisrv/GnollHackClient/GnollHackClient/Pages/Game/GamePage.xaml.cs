@@ -6875,6 +6875,7 @@ namespace GnollHackClient.Pages.Game
 
 
         private SKColor _suffixTextColor = new SKColor(220, 220, 220);
+        private SKColor _suffixTextColorReverted = new SKColor(35, 35, 35);
         private SKColor _menuHighlightColor = new SKColor(0xFF, 0x88, 0x00, 0x88);
         private int _firstDrawnMenuItemIdx = -1;
         private int _lastDrawnMenuItemIdx = -1;
@@ -7082,7 +7083,7 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         /* Main text */
-                        textPaint.Color = ClientUtils.NHColor2SKColor(mi.NHColor);
+                        textPaint.Color = ClientUtils.NHColor2SKColorCore(mi.NHColor, MenuCanvas.RevertBlackAndWhite);
                         int split_idx_on_row = -1;
                         float start_x = x;
                         foreach (string split_str in split)
@@ -7114,7 +7115,7 @@ namespace GnollHackClient.Pages.Game
                         /* Suffix text */
                         if (mi.IsSuffixTextVisible)
                         {
-                            textPaint.Color = _suffixTextColor;
+                            textPaint.Color = MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
                             textPaint.TextSize = 0.8f * textPaint.TextSize;
                             fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                             y += fontspacingpadding;

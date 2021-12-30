@@ -16,7 +16,6 @@ namespace GnollHackClient
     {
         DarkMarble = 0,
         OldPaper,
-        Scroll,
         SmallDarkMenu,
         Custom
     }
@@ -70,9 +69,6 @@ namespace GnollHackClient
                     break;
                 case BackgroundBitmaps.OldPaper:
                     bmp = App.OldPaperBackgroundBitmap;
-                    break;
-                case BackgroundBitmaps.Scroll:
-                    bmp = App.ScrollBackgroundBitmap;
                     break;
                 case BackgroundBitmaps.SmallDarkMenu:
                     bmp = App.MenuBackgroundBitmap;

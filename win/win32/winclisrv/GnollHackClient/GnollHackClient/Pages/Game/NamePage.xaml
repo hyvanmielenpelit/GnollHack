@@ -7,8 +7,9 @@
              x:Class="GnollHackClient.Pages.Game.NamePage">
     <ContentPage.Content>
         <Grid>
-            <ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
-                            Source ="resource://GnollHackClient.Assets.UI.menubackground.png" />
+            <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <!--<ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
+                            Source ="resource://GnollHackClient.Assets.UI.menubackground.png" />-->
             <!--<gnollhackclient:BackgroundView x:Name="BackgroundCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />-->
 
             <StackLayout Padding="10">

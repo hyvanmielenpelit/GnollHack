@@ -275,17 +275,17 @@
             <Grid x:Name="MenuGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
                 <!--<ff:CachedImage x:Name="MenuBackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                             Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>-->
-                <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="SmallDarkMenu" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+                <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <StackLayout x:Name="menuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical"  BackgroundColor="Transparent">
                     <Label x:Name="MenuHeaderLabel"
-                       FontFamily="{Binding MenuHeaderFontFamily}" FontSize="{Binding MenuHeaderFontSize}" TextColor="White" FontAttributes="Bold" Margin="2,10,2,2" BackgroundColor="Transparent"
+                       FontFamily="{Binding MenuHeaderFontFamily}" FontSize="{Binding MenuHeaderFontSize}" TextColor="Black" FontAttributes="Bold" Margin="2,10,2,2" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
                         </Label.GestureRecognizers>
                     </Label>
                     <Label x:Name="MenuSubtitleLabel"
-                       FontFamily="{Binding MenuSubtitleFontFamily}" FontSize="{Binding MenuSubtitleFontSize}" TextColor="White" Margin="1,2,1,6" BackgroundColor="Transparent"
+                       FontFamily="{Binding MenuSubtitleFontFamily}" FontSize="{Binding MenuSubtitleFontSize}" TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
@@ -294,7 +294,7 @@
 
                     <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                         <ff:CachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="4" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
-                        <gnollhackclient:GHCanvasView x:Name="MenuCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
+                        <gnollhackclient:GHCanvasView x:Name="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
                     </Grid>
 
                     <Grid  BackgroundColor="Transparent" >
