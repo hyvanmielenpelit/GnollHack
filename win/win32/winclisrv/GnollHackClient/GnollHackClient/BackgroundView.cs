@@ -10,11 +10,13 @@ namespace GnollHackClient
     public enum BackgroundStyles
     {
         SeamlessBitmap = 0,
-        Borders
+        StretchedBitmap
     }
     public enum BackgroundBitmaps
     {
         DarkMarble = 0,
+        OldPaper,
+        Scroll,
         Custom
     }
     class BackgroundView : SKCanvasView
@@ -58,45 +60,66 @@ namespace GnollHackClient
             float scale = canvaswidth / (float)this.Width;
 
             canvas.Clear();
-            if(BackgroundStyle == BackgroundStyles.SeamlessBitmap)
+
+            SKBitmap bmp = null;
+            switch (BackgroundBitmap)
             {
-                SKBitmap bmp = null;
-                switch (BackgroundBitmap)
-                {
-                    case BackgroundBitmaps.DarkMarble:
-                        bmp = App.DarkMarbleBackgroundBitmap;
-                        break;
-                    case BackgroundBitmaps.Custom:
-                        bmp = SeamlessBitmap != null ? SeamlessBitmap : App.DarkMarbleBackgroundBitmap;
-                        break;
-                }
-                if(bmp != null)
-                {
-                    float bmpwidth = (float)bmp.Width;
-                    float bmpheight = (float)bmp.Height;
-                    if (bmpwidth > 0 && bmpheight > 0)
+                case BackgroundBitmaps.DarkMarble:
+                    bmp = App.DarkMarbleBackgroundBitmap;
+                    break;
+                case BackgroundBitmaps.OldPaper:
+                    bmp = App.OldPaperBackgroundBitmap;
+                    break;
+                case BackgroundBitmaps.Scroll:
+                    bmp = App.ScrollBackgroundBitmap;
+                    break;
+                case BackgroundBitmaps.Custom:
+                    bmp = SeamlessBitmap != null ? SeamlessBitmap : App.DarkMarbleBackgroundBitmap;
+                    break;
+            }
+
+            switch(BackgroundStyle)
+            {
+                case BackgroundStyles.SeamlessBitmap:
+                    if (bmp != null)
                     {
-                        int xtiles = (int)Math.Ceiling(canvaswidth / bmpwidth);
-                        int ytiles = (int)Math.Ceiling(canvasheight / bmpheight);
-                        SKRect source_rect = new SKRect();
-                        SKRect target_rect = new SKRect();
-                        for (int x = 0; x < xtiles; x++)
+                        float bmpwidth = (float)bmp.Width;
+                        float bmpheight = (float)bmp.Height;
+                        if (bmpwidth > 0 && bmpheight > 0)
                         {
-                            for (int y = 0; y < ytiles; y++)
+                            int xtiles = (int)Math.Ceiling(canvaswidth / bmpwidth);
+                            int ytiles = (int)Math.Ceiling(canvasheight / bmpheight);
+                            SKRect source_rect = new SKRect();
+                            SKRect target_rect = new SKRect();
+                            for (int x = 0; x < xtiles; x++)
                             {
-                                target_rect.Left = x * bmpwidth;
-                                target_rect.Top = y * bmpheight;
-                                target_rect.Right = Math.Min(canvaswidth, (x + 1) * bmpwidth);
-                                target_rect.Bottom = Math.Min(canvasheight, (y + 1) * bmpheight);
-                                source_rect.Left = 0;
-                                source_rect.Top = 0;
-                                source_rect.Right = target_rect.Width;
-                                source_rect.Bottom = target_rect.Height;
-                                canvas.DrawBitmap(bmp, source_rect, target_rect);
+                                for (int y = 0; y < ytiles; y++)
+                                {
+                                    target_rect.Left = x * bmpwidth;
+                                    target_rect.Top = y * bmpheight;
+                                    target_rect.Right = Math.Min(canvaswidth, (x + 1) * bmpwidth);
+                                    target_rect.Bottom = Math.Min(canvasheight, (y + 1) * bmpheight);
+                                    source_rect.Left = 0;
+                                    source_rect.Top = 0;
+                                    source_rect.Right = target_rect.Width;
+                                    source_rect.Bottom = target_rect.Height;
+                                    canvas.DrawBitmap(bmp, source_rect, target_rect);
+                                }
                             }
                         }
                     }
-                }
+                    break;
+                case BackgroundStyles.StretchedBitmap:
+                    if (bmp != null)
+                    {
+                        SKRect target_rect = new SKRect();
+                        target_rect.Left = 0;
+                        target_rect.Top = 0;
+                        target_rect.Right = canvaswidth;
+                        target_rect.Bottom = canvasheight;
+                        canvas.DrawBitmap(bmp, target_rect);
+                    }
+                    break;
             }
         }
 
