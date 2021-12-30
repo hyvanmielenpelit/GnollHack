@@ -25,7 +25,11 @@ namespace GnollHackClient
 
         public static SKColor NHColor2SKColor(int nhclr)
         {
-            SKColor res = SKColors.White;
+            return NHColor2SKColorCore(nhclr, false);
+        }
+        public static SKColor NHColor2SKColorCore(int nhclr, bool revertblackwhite)
+        {
+            SKColor res = revertblackwhite ? SKColors.Black : SKColors.White;
             if(nhclr < 0)
             {
                 switch (nhclr)
@@ -42,7 +46,7 @@ namespace GnollHackClient
                 switch ((nhcolor)nhclr)
                 {
                     case nhcolor.CLR_BLACK:
-                        res = GHDarkGray;
+                        res = revertblackwhite ? SKColors.White : GHDarkGray;
                         break;
                     case nhcolor.CLR_RED:
                         res = SKColors.Red;
@@ -86,7 +90,7 @@ namespace GnollHackClient
                         res = SKColors.LightCyan;
                         break;
                     case nhcolor.CLR_WHITE:
-                        res = SKColors.White;
+                        res = revertblackwhite ? SKColors.Black : SKColors.White;
                         break;
                     case nhcolor.CLR_MAX:
                         break;

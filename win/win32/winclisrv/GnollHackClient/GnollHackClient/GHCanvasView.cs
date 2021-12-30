@@ -29,6 +29,8 @@ namespace GnollHackClient
         public SelectionMode SelectionHow { get; set; }
         public int SelectionIndex { get; set; }
 
+        public bool RevertBlackAndWhite { get; set; }
+
         public GHCanvasView() : base()
         {
 
