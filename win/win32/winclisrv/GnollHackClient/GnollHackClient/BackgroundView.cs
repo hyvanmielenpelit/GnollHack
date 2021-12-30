@@ -17,6 +17,7 @@ namespace GnollHackClient
         DarkMarble = 0,
         OldPaper,
         Scroll,
+        SmallDarkMenu,
         Custom
     }
     class BackgroundView : SKCanvasView
@@ -72,6 +73,9 @@ namespace GnollHackClient
                     break;
                 case BackgroundBitmaps.Scroll:
                     bmp = App.ScrollBackgroundBitmap;
+                    break;
+                case BackgroundBitmaps.SmallDarkMenu:
+                    bmp = App.MenuBackgroundBitmap;
                     break;
                 case BackgroundBitmaps.Custom:
                     bmp = SeamlessBitmap != null ? SeamlessBitmap : App.DarkMarbleBackgroundBitmap;

@@ -273,9 +273,9 @@
             </Grid>
 
             <Grid x:Name="MenuGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
-                <ff:CachedImage x:Name="MenuBackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-                            Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>
-                <!--<gnollhackclient:BackgroundView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>-->
+                <!--<ff:CachedImage x:Name="MenuBackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+                            Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>-->
+                <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="SmallDarkMenu" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <StackLayout x:Name="menuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical"  BackgroundColor="Transparent">
                     <Label x:Name="MenuHeaderLabel"
                        FontFamily="{Binding MenuHeaderFontFamily}" FontSize="{Binding MenuHeaderFontSize}" TextColor="White" FontAttributes="Bold" Margin="2,10,2,2" BackgroundColor="Transparent"
@@ -382,7 +382,7 @@
                             Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>-->
                 <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <ff:CachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="4" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
-                <gnollhackclient:GHCanvasView x:Name="TextCanvas" RevertBlackAndWhite="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
+                <gnollhackclient:GHCanvasView x:Name="TextCanvas" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
             </Grid>
             <Grid x:Name="MoreCommandsGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#FF000000" IsVisible="False">
                 <gnollhackclient:GHCanvasView x:Name="CommandCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" EnableTouchEvents="True" />

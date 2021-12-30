@@ -30,6 +30,7 @@ namespace GnollHackClient
         public int SelectionIndex { get; set; }
 
         public bool RevertBlackAndWhite { get; set; }
+        public bool UseTextOutline { get; set; }
 
         public GHCanvasView() : base()
         {

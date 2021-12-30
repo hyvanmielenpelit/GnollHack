@@ -7735,7 +7735,19 @@ namespace GnollHackClient.Pages.Game
                                 }
 
                                 if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                                {
+                                    if(TextCanvas.UseTextOutline)
+                                    {
+                                        textPaint.Style = SKPaintStyle.Stroke;
+                                        textPaint.StrokeWidth = textPaint.TextSize / 10;
+                                        SKColor oldcolor = textPaint.Color;
+                                        textPaint.Color = TextCanvas.RevertBlackAndWhite ? SKColors.White : SKColors.Black;
+                                        canvas.DrawText(added_split_str, x, y, textPaint);
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        textPaint.Color = oldcolor;
+                                    }
                                     canvas.DrawText(added_split_str, x, y, textPaint);
+                                }
 
                                 x = endposition;
                                 idx++;
