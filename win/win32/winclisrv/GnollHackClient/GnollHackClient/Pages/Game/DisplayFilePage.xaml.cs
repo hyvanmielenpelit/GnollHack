@@ -69,6 +69,10 @@ namespace GnollHackClient.Pages.Game
                 double target_avgwidth = (Math.Min(width, MainGrid.WidthRequest) - MainGrid.Margin.Left - MainGrid.Margin.Right - MainGrid.Padding.Left - MainGrid.Padding.Right) / 82;
                 double newsize = 13 * target_avgwidth / avg_width;
                 TextEditor.FontSize = newsize;
+
+                HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                CloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
+
             }
         }
 

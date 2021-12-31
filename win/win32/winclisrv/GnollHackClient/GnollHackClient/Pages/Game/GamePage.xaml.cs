@@ -5870,17 +5870,8 @@ namespace GnollHackClient.Pages.Game
                     SwapWeaponButton.HeightRequest = gridsideheight;
 #endif
 
-                if(MenuBackground.BorderStyle > BorderStyles.None)
-                {
-                    double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
-                    double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
-                    double bordermargin = Math.Min(bordermarginx, bordermarginy);
-                    MenuHeaderLabel.Margin = new Thickness(bordermargin, MenuHeaderLabel.Margin.Top, bordermargin, MenuHeaderLabel.Margin.Bottom);
-                }
-                else
-                {
-                    MenuHeaderLabel.Margin = new Thickness(2.0, MenuHeaderLabel.Margin.Top, 2.0, MenuHeaderLabel.Margin.Bottom);
-                }
+                MenuHeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(MenuBackground.BorderStyle, width, height);
+                MenuCloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(MenuBackground.BorderStyle, width, height);
 
                 if (width > height)
                 {

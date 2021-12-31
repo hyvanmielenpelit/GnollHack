@@ -133,5 +133,20 @@ namespace GnollHackClient.Pages.Game
                 _gamePage.ShowGUITips(false);
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
+
+        private double _currentPageWidth = 0;
+        private double _currentPageHeight = 0;
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if (width != _currentPageWidth || height != _currentPageHeight)
+            {
+                _currentPageWidth = width;
+                _currentPageHeight = height;
+
+                lblHeader.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+            }
+        }
+
     }
 }

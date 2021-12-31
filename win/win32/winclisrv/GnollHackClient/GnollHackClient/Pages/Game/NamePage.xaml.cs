@@ -82,5 +82,19 @@ namespace GnollHackClient.Pages.Game
 
         }
 
+        private double _currentPageWidth = 0;
+        private double _currentPageHeight = 0;
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if (width != _currentPageWidth || height != _currentPageHeight)
+            {
+                _currentPageWidth = width;
+                _currentPageHeight = height;
+
+                WhatNameLabel.Margin = ClientUtils.GetHeaderMarginWithBorderWithBottom(bkgView.BorderStyle, width, height, 30.0);
+            }
+        }
+
     }
 }

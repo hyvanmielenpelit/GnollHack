@@ -110,6 +110,10 @@ namespace GnollHackClient.Pages.Game
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
+
+                HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                CloseGrid.Margin = ClientUtils.GetFooterMarginWithBorderWithTop(bkgView.BorderStyle, width, height, 20.0);
+
                 if (ScoresView.ItemsSource != null)
                 {
                     ScoresView.ItemsSource = null;

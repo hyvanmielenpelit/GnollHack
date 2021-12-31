@@ -126,5 +126,21 @@ namespace GnollHackClient.Pages.Game
             if(_registerChanges)
                 _textChanged = true;
         }
+
+        private double _currentPageWidth = 0;
+        private double _currentPageHeight = 0;
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if (width != _currentPageWidth || height != _currentPageHeight)
+            {
+                _currentPageWidth = width;
+                _currentPageHeight = height;
+
+                HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
+                CloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
+            }
+        }
+
     }
 }

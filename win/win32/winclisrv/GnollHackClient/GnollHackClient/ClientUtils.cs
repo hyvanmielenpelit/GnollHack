@@ -531,5 +531,49 @@ namespace GnollHackClient
             }
         }
 
+        public static Thickness GetHeaderMarginWithBorder(BorderStyles borderstyle, double width, double height)
+        {
+            return GetHeaderMarginWithBorderWithBottom(borderstyle, width, height, 2.0);
+        }
+
+        public static Thickness GetHeaderMarginWithBorderWithBottom(BorderStyles borderstyle, double width, double height, double bottom)
+        {
+            switch (borderstyle)
+            {
+                case BorderStyles.None:
+                    break;
+                case BorderStyles.Simple:
+                    double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
+                    double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
+                    double bordermargin = Math.Min(bordermarginx, bordermarginy);
+                    return new Thickness(bordermargin, Math.Min((double)App.SimpleFrameTopHorizontalBitmap.Height, bordermargin / GHConstants.BackgroundTopBorderExtraDivisor), bordermargin, bottom);
+                case BorderStyles.Custom:
+                    break;
+            }
+            return new Thickness(2.0, 10.0, 2.0, 2.0);
+        }
+
+        public static Thickness GetFooterMarginWithBorder(BorderStyles borderstyle, double width, double height)
+        {
+            return GetFooterMarginWithBorderWithTop(borderstyle, width, height, 2.0);
+        }
+
+        public static Thickness GetFooterMarginWithBorderWithTop(BorderStyles borderstyle, double width, double height, double top)
+        {
+            switch (borderstyle)
+            {
+                case BorderStyles.None:
+                    break;
+                case BorderStyles.Simple:
+                    double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
+                    double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
+                    double bordermargin = Math.Min(bordermarginx, bordermarginy);
+                    return new Thickness(bordermargin, top, bordermargin, Math.Min((double)App.SimpleFrameTopHorizontalBitmap.Height, bordermargin / GHConstants.BackgroundTopBorderExtraDivisor));
+                case BorderStyles.Custom:
+                    break;
+            }
+            return new Thickness(2.0, 2.0, 2.0, 10.0);
+        }
+
     }
 }
