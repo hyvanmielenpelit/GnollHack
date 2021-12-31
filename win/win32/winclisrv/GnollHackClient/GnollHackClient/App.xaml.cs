@@ -383,6 +383,10 @@ namespace GnollHackClient
         public static SKBitmap DarkMarbleBackgroundBitmap { get; set; }
         public static SKBitmap OldPaperBackgroundBitmap { get; set; }
 
+        public static SKBitmap SimpleFrameTopLeftCornerBitmap { get; set; }
+        public static SKBitmap SimpleFrameTopHorizontalBitmap { get; set; }
+        public static SKBitmap SimpleFrameLeftVerticalBitmap { get; set; }
+
         public static void InitBitmaps(Assembly assembly)
         {
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.menubackground.png"))
@@ -396,6 +400,18 @@ namespace GnollHackClient
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.background-oldpaper.png"))
             {
                 OldPaperBackgroundBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.frame-topleft.png"))
+            {
+                SimpleFrameTopLeftCornerBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.frame-horizontal.png"))
+            {
+                SimpleFrameTopHorizontalBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.frame-vertical.png"))
+            {
+                SimpleFrameLeftVerticalBitmap = SKBitmap.Decode(stream);
             }
         }
 

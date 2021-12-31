@@ -275,7 +275,7 @@
             <Grid x:Name="MenuGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
                 <!--<ff:CachedImage x:Name="MenuBackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                             Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>-->
-                <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+                <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <StackLayout x:Name="menuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical"  BackgroundColor="Transparent">
                     <Label x:Name="MenuHeaderLabel"
                        FontFamily="{Binding MenuHeaderFontFamily}" FontSize="{Binding MenuHeaderFontSize}" TextColor="Black" FontAttributes="Bold" Margin="2,10,2,2" BackgroundColor="Transparent"

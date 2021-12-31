@@ -19,18 +19,22 @@ namespace GnollHackClient
         SmallDarkMenu,
         Custom
     }
+    public enum BorderStyles
+    {
+        None = 0,
+        Simple,
+        Custom
+    }
     class BackgroundView : SKCanvasView
     {
         public BackgroundView() : base()
         {
             PaintSurface += Base_PaintSurface;
         }
-        public BackgroundView(SKBitmap bitmap) : base()
-        {
-            PaintSurface += Base_PaintSurface;
-            SeamlessBitmap = bitmap;
-        }
-        public SKBitmap SeamlessBitmap { get; set; }
+        public SKBitmap CustomBackgroundBitmap { get; set; }
+        public SKBitmap CustomBorderTopLeftCorner { get; set; }
+        public SKBitmap CustomBorderTopHorizontal { get; set; }
+        public SKBitmap CustomBorderLeftVertical { get; set; }
 
         public static readonly BindableProperty BackgroundStyleProperty = BindableProperty.Create(
             "BackgroundStyle", typeof(BackgroundStyles), typeof(BackgroundView), BackgroundStyles.SeamlessBitmap);
@@ -48,6 +52,15 @@ namespace GnollHackClient
         {
             get => (BackgroundBitmaps)GetValue(BackgroundBitmapProperty);
             set => SetValue(BackgroundBitmapProperty, value);
+        }
+
+        public static readonly BindableProperty BorderStyleProperty = BindableProperty.Create(
+            "BorderStyle", typeof(BorderStyles), typeof(BackgroundView), BorderStyles.None);
+
+        public BorderStyles BorderStyle
+        {
+            get => (BorderStyles)GetValue(BorderStyleProperty);
+            set => SetValue(BorderStyleProperty, value);
         }
 
         private void Base_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
@@ -74,11 +87,31 @@ namespace GnollHackClient
                     bmp = App.MenuBackgroundBitmap;
                     break;
                 case BackgroundBitmaps.Custom:
-                    bmp = SeamlessBitmap != null ? SeamlessBitmap : App.DarkMarbleBackgroundBitmap;
+                    bmp = CustomBackgroundBitmap != null ? CustomBackgroundBitmap : App.DarkMarbleBackgroundBitmap;
                     break;
             }
 
-            switch(BackgroundStyle)
+            SKBitmap bordertl = null;
+            SKBitmap borderhorizontal = null;
+            SKBitmap bordervertical = null;
+            switch (BorderStyle)
+            {
+                case BorderStyles.None:
+                    break;
+                case BorderStyles.Simple:
+                    bordertl = App.SimpleFrameTopLeftCornerBitmap; ;
+                    borderhorizontal = App.SimpleFrameTopHorizontalBitmap;
+                    bordervertical = App.SimpleFrameLeftVerticalBitmap; ;
+                    break;
+                case BorderStyles.Custom:
+                    bordertl = CustomBorderTopLeftCorner;
+                    borderhorizontal = CustomBorderTopHorizontal;
+                    bordervertical = CustomBorderLeftVertical;
+                    break;
+            }
+
+
+            switch (BackgroundStyle)
             {
                 case BackgroundStyles.SeamlessBitmap:
                     if (bmp != null)
@@ -120,6 +153,98 @@ namespace GnollHackClient
                         canvas.DrawBitmap(bmp, target_rect);
                     }
                     break;
+            }
+
+            if (BorderStyle > BorderStyles.None && bordertl != null && borderhorizontal != null && bordervertical != null)
+            {
+                float borderscalex = (canvaswidth / 12f) / bordertl.Width;
+                float borderscaley = (canvasheight / 12f) / bordertl.Height;
+                float borderscale = Math.Max(0.10f, Math.Min(1.0f, Math.Min(borderscalex, borderscaley)));
+                for (int i = 0; i < 4; i++)
+                {
+                    float tx = 0, ty = 0;
+                    bool hflip = false, vflip = false;
+                    using (SKAutoCanvasRestore res = new SKAutoCanvasRestore(canvas, true))
+                    {
+                        switch (i)
+                        {
+                            case 0:
+                                tx = 0;
+                                ty = 0;
+                                break;
+                            case 1:
+                                tx = canvaswidth - bordertl.Width * borderscale;
+                                ty = 0;
+                                hflip = true;
+                                break;
+                            case 2:
+                                tx = canvaswidth - bordertl.Width * borderscale;
+                                ty = canvasheight - bordertl.Height * borderscale;
+                                hflip = true;
+                                vflip = true;
+                                break;
+                            case 3:
+                                tx = 0;
+                                ty = canvasheight - bordertl.Height * borderscale;
+                                vflip = true;
+                                break;
+                            default:
+                                break;
+                        }
+                        SKRect target_rect = new SKRect();
+                        target_rect.Left = 0;
+                        target_rect.Top = 0;
+                        target_rect.Right = bordertl.Width * borderscale;
+                        target_rect.Bottom = bordertl.Height * borderscale;
+                        canvas.Translate(tx + (hflip ? target_rect.Width : 0), ty + (vflip ? target_rect.Height : 0));
+                        canvas.Scale(hflip ? -1 : 1, vflip ? -1 : 1, 0, 0);
+                        canvas.DrawBitmap(bordertl, target_rect);
+                    }
+                }
+
+                for (int i = 0; i < 2; i++)
+                {
+                    float tx = bordertl.Width * borderscale, ty = 0;
+                    bool hflip = false, vflip = false;
+                    using (SKAutoCanvasRestore res = new SKAutoCanvasRestore(canvas, true))
+                    {
+                        if(i == 1)
+                        {
+                            ty = canvasheight - borderhorizontal.Height * borderscale;
+                            vflip = true;
+                        }
+                        SKRect target_rect = new SKRect();
+                        target_rect.Left = 0;
+                        target_rect.Top = 0;
+                        target_rect.Right = canvaswidth - bordertl.Width * borderscale - tx;
+                        target_rect.Bottom = borderhorizontal.Height * borderscale;
+                        canvas.Translate(tx + (hflip ? target_rect.Width : 0), ty + (vflip ? target_rect.Height : 0));
+                        canvas.Scale(hflip ? -1 : 1, vflip ? -1 : 1, 0, 0);
+                        canvas.DrawBitmap(borderhorizontal, target_rect);
+                    }
+                }
+
+                for (int i = 0; i < 2; i++)
+                {
+                    float tx = 0, ty = bordertl.Height * borderscale;
+                    bool hflip = false, vflip = false;
+                    using (SKAutoCanvasRestore res = new SKAutoCanvasRestore(canvas, true))
+                    {
+                        if (i == 1)
+                        {
+                            tx = canvaswidth - bordervertical.Width * borderscale;
+                            hflip = true;
+                        }
+                        SKRect target_rect = new SKRect();
+                        target_rect.Left = 0;
+                        target_rect.Top = 0;
+                        target_rect.Right = bordervertical.Width * borderscale;
+                        target_rect.Bottom = canvasheight - bordertl.Height * borderscale - ty;
+                        canvas.Translate(tx + (hflip ? target_rect.Width : 0), ty + (vflip ? target_rect.Height : 0));
+                        canvas.Scale(hflip ? -1 : 1, vflip ? -1 : 1, 0, 0);
+                        canvas.DrawBitmap(bordervertical, target_rect);
+                    }
+                }
             }
         }
 
