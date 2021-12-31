@@ -5869,6 +5869,19 @@ namespace GnollHackClient.Pages.Game
                     ThrowQuiveredButton.HeightRequest = ApplyWieldedButton.HeightRequest = CastButton.HeightRequest = ZapButton.HeightRequest =
                     SwapWeaponButton.HeightRequest = gridsideheight;
 #endif
+
+                if(MenuBackground.BorderStyle > BorderStyles.None)
+                {
+                    double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
+                    double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
+                    double bordermargin = Math.Min(bordermarginx, bordermarginy);
+                    MenuHeaderLabel.Margin = new Thickness(bordermargin, MenuHeaderLabel.Margin.Top, bordermargin, MenuHeaderLabel.Margin.Bottom);
+                }
+                else
+                {
+                    MenuHeaderLabel.Margin = new Thickness(2.0, MenuHeaderLabel.Margin.Top, 2.0, MenuHeaderLabel.Margin.Bottom);
+                }
+
                 if (width > height)
                 {
                     /* Landscape */
@@ -6922,7 +6935,8 @@ namespace GnollHackClient.Pages.Game
                     curmenuoffset = _menuScrollOffset;
                 }
                 y += curmenuoffset;
-                double menuwidth = Math.Max(1, Math.Min(MenuCanvas.Width, ClientUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle)));
+                double menumarginx = 15.0;
+                double menuwidth = Math.Max(1, Math.Min(MenuCanvas.Width - menumarginx * 2, ClientUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle)));
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
@@ -6987,7 +7001,7 @@ namespace GnollHackClient.Pages.Game
 
                         if (first)
                         {
-                            accel_fixed_width = textPaint.FontMetrics.AverageCharacterWidth + 3 * textPaint.MeasureText(" ");
+                            accel_fixed_width = textPaint.FontMetrics.AverageCharacterWidth; // + 3 * textPaint.MeasureText(" ");
                             _firstDrawnMenuItemIdx = idx;
                             maintext_x_start = leftmenupadding + leftinnerpadding + (has_identifiers ? accel_fixed_width : 0) + (has_pictures ? picturepadding + picturewidth + picturepadding : textPaint.FontMetrics.AverageCharacterWidth);
                             first = false;
@@ -7052,6 +7066,7 @@ namespace GnollHackClient.Pages.Game
                             else
                                 str = mi.FormattedAccelerator;
                             textPaint.Color = SKColors.Gray;
+                            str = str.Trim();
                             if (!(y + singlelinepadding + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + singlelinepadding + textPaint.FontMetrics.Ascent >= canvasheight))
                                 canvas.DrawText(str, x, y + singlelinepadding, textPaint);
                             x += accel_fixed_width;

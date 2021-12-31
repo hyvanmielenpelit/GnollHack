@@ -996,6 +996,7 @@ namespace GnollHackCommon
         public const float MoveArrowButtonSize = 0.35f;
         public const int MoreButtonsPerRow = 6;
         public const int MoreButtonsPerColumn = 9;
+        public const float BackgroundBorderDivisor = 8.0f;
         public const bool DownloadFromWebInDebugMode = true;
         public const bool IsDefaultStatusBarClassic = true;
         public const string GnollHackGitHubPage = "https://github.com/hyvanmielenpelit/GnollHack";

@@ -5,11 +5,11 @@
              x:Class="GnollHackClient.Pages.Game.EditorPage">
     <ContentPage.Content>
         <Grid>
-            <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <!--<ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
                             Source ="resource://GnollHackClient.Assets.UI.menubackground.png" />-->
 
-            <Grid Padding="5,10" WidthRequest="1024" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+            <Grid Padding="5,20" WidthRequest="1024" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />

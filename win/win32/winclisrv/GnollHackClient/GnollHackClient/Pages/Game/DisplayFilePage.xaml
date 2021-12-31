@@ -4,11 +4,11 @@
              x:Class="GnollHackClient.Pages.Game.DisplayFilePage">
     <ContentPage.Content>
         <Grid>
-            <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <!--<ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
                             Source ="resource://GnollHackClient.Assets.UI.menubackground.png" />-->
 
-            <Grid x:Name="MainGrid" Padding="5,10" WidthRequest="900" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+            <Grid x:Name="MainGrid" Padding="5,15" WidthRequest="900" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
