@@ -67,7 +67,7 @@ namespace GnollHackClient
                         res = SKColors.Cyan;
                         break;
                     case nhcolor.CLR_GRAY:
-                        res = revertblackwhite ? SKColors.Gray : SKColors.LightGray;
+                        res = revertblackwhite ? GHDarkGray : SKColors.LightGray;
                         break;
                     case nhcolor.NO_COLOR:
                         break;
