@@ -56,7 +56,7 @@
                                     <Label WidthRequest="75" Text="{Binding Turns}" IsVisible="{Binding IsTurnsVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono"/>
                                     <Label WidthRequest="85" Text="{Binding BirthDate}" IsVisible="{Binding IsBirthDateVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono"/>
                                     <Label WidthRequest="25" Text="{Binding DifficultyString}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono"/>
-                                    <Grid WidthRequest="220" IsVisible="{Binding IsOutcomeVisible}" VerticalOptions="FillAndExpand" Padding="0" RowSpacing="0" ColumnSpacing="0" Margin="0" >
+                                    <Grid WidthRequest="170" IsVisible="{Binding IsOutcomeVisible}" VerticalOptions="FillAndExpand" Padding="0" RowSpacing="0" ColumnSpacing="0" Margin="0" >
                                         <Label Text="{Binding Outcome}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono"/>
                                     </Grid>
                                 </StackLayout>
