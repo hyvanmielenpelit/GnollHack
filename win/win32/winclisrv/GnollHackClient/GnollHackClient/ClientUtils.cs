@@ -575,5 +575,24 @@ namespace GnollHackClient
             return new Thickness(2.0, 2.0, 2.0, 10.0);
         }
 
+        public static double GetBorderScale(BorderStyles borderstyle, double width, double height)
+        {
+            double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
+            double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
+            double bordermargin = Math.Min(bordermarginx, bordermarginy);
+            double scale = Math.Max(0.1, Math.Min(1.0, bordermargin / (double)App.SimpleFrameTopLeftCornerBitmap.Height));
+            return scale;
+        }
+        public static double GetBorderWidth(BorderStyles borderstyle, double width, double height)
+        {
+            double scale = GetBorderScale(borderstyle, width, height);
+            return App.SimpleFrameTopHorizontalBitmap.Height * scale;
+        }
+        public static double GetBorderHeight(BorderStyles borderstyle, double width, double height)
+        {
+            double scale = GetBorderScale(borderstyle, width, height);
+            return App.SimpleFrameLeftVerticalBitmap.Width * scale;
+        }
+
     }
 }

@@ -113,6 +113,8 @@ namespace GnollHackClient.Pages.Game
 
                 HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseGrid.Margin = ClientUtils.GetFooterMarginWithBorderWithTop(bkgView.BorderStyle, width, height, 20.0);
+                double bordermargin = ClientUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
+                ScoresView.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
 
                 if (ScoresView.ItemsSource != null)
                 {
@@ -122,12 +124,14 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private double AvailableWidth { get { return Width - ScoresView.Margin.Left - ScoresView.Margin.Right; } }
+
         private bool _raceVisible = false;
         public bool IsRaceVisible
         {
             get
             {
-                bool newvalue = (Width >= 630);
+                bool newvalue = (AvailableWidth >= 630);
                 if (_raceVisible != newvalue)
                 {
                     _raceVisible = newvalue;
@@ -142,7 +146,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 690);
+                bool newvalue = (AvailableWidth >= 690);
                 if (_genderVisible != newvalue)
                 {
                     _genderVisible = newvalue;
@@ -157,7 +161,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 740);
+                bool newvalue = (AvailableWidth >= 740);
                 if (_alignmentVisible != newvalue)
                 {
                     _alignmentVisible = newvalue;
@@ -172,7 +176,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 840);
+                bool newvalue = (AvailableWidth >= 840);
                 if (_hpVisible != newvalue)
                 {
                     _hpVisible = newvalue;
@@ -187,7 +191,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 790);
+                bool newvalue = (AvailableWidth >= 790);
                 if (_hpMaxVisible != newvalue)
                 {
                     _hpMaxVisible = newvalue;
@@ -202,7 +206,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 915);
+                bool newvalue = (AvailableWidth >= 915);
                 if (_turnsVisible != newvalue)
                 {
                     _turnsVisible = newvalue;
@@ -217,7 +221,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 1000);
+                bool newvalue = (AvailableWidth >= 1000);
                 if (_birthDateVisible != newvalue)
                 {
                     _birthDateVisible = newvalue;
@@ -232,7 +236,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (Width >= 580);
+                bool newvalue = (AvailableWidth >= 580);
                 if (_outcomeVisible != newvalue)
                 {
                     _outcomeVisible = newvalue;

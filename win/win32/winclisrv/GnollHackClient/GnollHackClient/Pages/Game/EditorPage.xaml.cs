@@ -139,6 +139,8 @@ namespace GnollHackClient.Pages.Game
 
                 HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
+                double bordermargin = ClientUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
+                TextEditor.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
             }
         }
 
