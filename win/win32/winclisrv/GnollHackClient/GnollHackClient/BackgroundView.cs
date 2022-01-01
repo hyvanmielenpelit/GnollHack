@@ -24,6 +24,7 @@ namespace GnollHackClient
     {
         None = 0,
         Simple,
+        Small,
         Custom
     }
     class BackgroundView : SKCanvasView
@@ -101,6 +102,11 @@ namespace GnollHackClient
                     break;
                 case BorderStyles.Simple:
                     bordertl = App.SimpleFrameTopLeftCornerBitmap; ;
+                    borderhorizontal = App.SimpleFrameTopHorizontalBitmap;
+                    bordervertical = App.SimpleFrameLeftVerticalBitmap; ;
+                    break;
+                case BorderStyles.Small:
+                    bordertl = App.SimpleFrameSmallTopLeftCornerBitmap; ;
                     borderhorizontal = App.SimpleFrameTopHorizontalBitmap;
                     bordervertical = App.SimpleFrameLeftVerticalBitmap; ;
                     break;

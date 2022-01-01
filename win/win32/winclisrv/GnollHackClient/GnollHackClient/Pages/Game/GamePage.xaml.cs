@@ -5865,6 +5865,9 @@ namespace GnollHackClient.Pages.Game
 
                 MenuHeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(MenuBackground.BorderStyle, width, height);
                 MenuCloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(MenuBackground.BorderStyle, width, height);
+                Thickness smallthick = ClientUtils.GetSmallBorderThickness(width, height);
+                TextCanvas.Margin = smallthick;
+                TextWindowGlyphImage.Margin = smallthick;
 
                 if (width > height)
                 {

@@ -543,10 +543,17 @@ namespace GnollHackClient
                 case BorderStyles.None:
                     break;
                 case BorderStyles.Simple:
-                    double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
-                    double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
-                    double bordermargin = Math.Min(bordermarginx, bordermarginy);
-                    return new Thickness(bordermargin, Math.Min((double)App.SimpleFrameTopHorizontalBitmap.Height, bordermargin / GHConstants.BackgroundTopBorderExtraDivisor), bordermargin, bottom);
+                    {
+                        double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
+                        double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
+                        double bordermargin = Math.Min(bordermarginx, bordermarginy);
+                        return new Thickness(bordermargin, Math.Min((double)App.SimpleFrameTopHorizontalBitmap.Height, bordermargin / GHConstants.BackgroundTopBorderExtraDivisor), bordermargin, bottom);
+                    }
+                case BorderStyles.Small:
+                    {
+                        double bordermargin = GetSmallBorderMargin(width, height);
+                        return new Thickness(bordermargin, bordermargin, bordermargin, bottom);
+                    }
                 case BorderStyles.Custom:
                     break;
             }
@@ -565,14 +572,34 @@ namespace GnollHackClient
                 case BorderStyles.None:
                     break;
                 case BorderStyles.Simple:
-                    double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
-                    double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
-                    double bordermargin = Math.Min(bordermarginx, bordermarginy);
-                    return new Thickness(bordermargin, top, bordermargin, Math.Min((double)App.SimpleFrameTopHorizontalBitmap.Height, bordermargin / GHConstants.BackgroundTopBorderExtraDivisor));
+                    {
+                        double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
+                        double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
+                        double bordermargin = Math.Min(bordermarginx, bordermarginy);
+                        return new Thickness(bordermargin, top, bordermargin, Math.Min((double)App.SimpleFrameTopHorizontalBitmap.Height, bordermargin / GHConstants.BackgroundTopBorderExtraDivisor));
+                    }
+                case BorderStyles.Small:
+                    {
+                        double bordermargin = GetSmallBorderMargin(width, height);
+                        return new Thickness(bordermargin, top, bordermargin, bordermargin);
+                    }
                 case BorderStyles.Custom:
                     break;
             }
             return new Thickness(2.0, 2.0, 2.0, 10.0);
+        }
+
+        public static double GetSmallBorderMargin(double width, double height)
+        {
+            double bordermarginx = (width / (GHConstants.BackgroundBorderDivisor * GHConstants.BackgroundTopBorderExtraDivisor));
+            double bordermarginy = (height / (GHConstants.BackgroundBorderDivisor * GHConstants.BackgroundTopBorderExtraDivisor));
+            return Math.Min(bordermarginx, bordermarginy);
+        }
+
+        public static Thickness GetSmallBorderThickness(double width, double height)
+        {
+            double bordermargin = GetSmallBorderMargin(width, height);
+            return new Thickness(bordermargin, bordermargin, bordermargin, bordermargin);
         }
 
         public static double GetBorderScale(BorderStyles borderstyle, double width, double height)
@@ -580,7 +607,8 @@ namespace GnollHackClient
             double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
             double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
             double bordermargin = Math.Min(bordermarginx, bordermarginy);
-            double scale = Math.Max(0.1, Math.Min(1.0, bordermargin / (double)App.SimpleFrameTopLeftCornerBitmap.Height));
+            SKBitmap cornerbitmap = borderstyle == BorderStyles.Simple ? App.SimpleFrameTopLeftCornerBitmap : borderstyle == BorderStyles.Small ? App.SimpleFrameSmallTopLeftCornerBitmap : App.SimpleFrameTopLeftCornerBitmap;
+            double scale = Math.Max(0.1, Math.Min(1.0, bordermargin / (double)cornerbitmap.Height));
             return scale;
         }
         public static double GetBorderWidth(BorderStyles borderstyle, double width, double height)
