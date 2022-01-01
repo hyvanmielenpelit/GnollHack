@@ -224,10 +224,9 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHARACTER:
-                    res = 880;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
-                    res = 1024;
+                    res = 660;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_SKILLS:
                     res = 1024;
