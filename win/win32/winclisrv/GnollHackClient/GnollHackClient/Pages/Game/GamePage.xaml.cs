@@ -1490,9 +1490,10 @@ namespace GnollHackClient.Pages.Game
 
             if (menuinfo.Header == null)
             {
-                MenuHeaderLabel.IsVisible = false;
-                MenuHeaderLabel.Text = "";
-
+                MenuHeaderLabel.IsVisible = true;
+                MenuHeaderLabel.Text = " ";
+                MenuHeaderLabel.FontFamily = ClientUtils.MenuHeaderFontFamily(MenuCanvas.MenuStyle);
+                MenuHeaderLabel.FontSize = ClientUtils.MenuHeaderFontSize(MenuCanvas.MenuStyle);
             }
             else
             {
@@ -7307,6 +7308,9 @@ namespace GnollHackClient.Pages.Game
             }
 
             if (selectedidx < 0)
+                return;
+
+            if (MenuCanvas.SelectionHow == SelectionMode.None)
                 return;
 
             if (MenuCanvas.MenuItems[selectedidx].Identifier == 0)

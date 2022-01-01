@@ -2930,8 +2930,8 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
 
     /* title */
     enlght_out(buf, ATR_TITLE); /* "Conan the Archaeologist" */
-    Sprintf(buf, "Attributes");
-    enlght_out(buf, ATR_SUBTITLE); /* "Attributes" */
+//    Sprintf(buf, "Attributes");
+//    enlght_out(buf, ATR_SUBTITLE); /* "Attributes" */
 #else
     Sprintf(buf, "%s the %s's attributes:", tmpbuf,
             ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
@@ -2967,8 +2967,11 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
         display_nhwindow(en_win, TRUE);
     } else {
         menu_item *selected = 0;
-
+#ifdef GNH_ANDROID
+        end_menu(en_win, "Attributes");
+#else
         end_menu(en_win, (char *) 0);
+#endif
         if (select_menu(en_win, PICK_NONE, &selected) > 0)
             free((genericptr_t) selected);
         en_via_menu = FALSE;
