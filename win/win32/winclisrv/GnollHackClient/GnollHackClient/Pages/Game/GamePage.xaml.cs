@@ -1079,13 +1079,6 @@ namespace GnollHackClient.Pages.Game
             }
             ShowWindowCanvas(window, strs);
         }
-        private async void ShowWindowPage(GHWindow window, List<GHPutStrItem> strs)
-        {
-            //var cpage = new GHTextPage(this, window, strs);
-            //await App.Current.MainPage.Navigation.PushModalAsync(cpage, false);
-            var cpage = new GHTextCanvasPage(this, window, strs);
-            await App.Current.MainPage.Navigation.PushModalAsync(cpage, false);
-        }
 
         private void ShowWindowCanvas(GHWindow window, List<GHPutStrItem> strs)
         {
