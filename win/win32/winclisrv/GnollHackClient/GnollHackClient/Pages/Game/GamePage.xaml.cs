@@ -34,7 +34,7 @@ namespace GnollHackClient.Pages.Game
         private float _statusbar_vmargin = 5.0f;
         private float _statusbar_rowmargin = 5.0f;
         private float _statusbar_basefontsize = 42f;
-        private float _statusbar_shieldfontsize = 36f;
+        private float _statusbar_shieldfontsize = 32f;
         private float _statusbar_diffontsize = 28f;
 
 
@@ -4969,8 +4969,8 @@ namespace GnollHackClient.Pages.Game
                         if (valtext != "")
                         {
                             string printtext;
-                            if (valtext.Substring(0, 1) == "\\" && valtext.Length > 10)
-                                printtext = valtext.Substring(10);
+                            if (valtext.Substring(0, 1) == "\\" && valtext.Length > 11)
+                                printtext = valtext.Substring(11);
                             else
                                 printtext = valtext;
 
