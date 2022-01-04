@@ -30,6 +30,15 @@ namespace GnollHackClient.Pages.Game
         private SKColor _cursorDefaultGreen = new SKColor(0, 255, 0);
         private SKRect canvasButtonRect = new SKRect(0, 0, 0, 0);
 
+        private float _statusbar_hmargin = 5.0f;
+        private float _statusbar_vmargin = 5.0f;
+        private float _statusbar_rowmargin = 5.0f;
+        private float _statusbar_basefontsize = 42f;
+        private float _statusbar_shieldfontsize = 36f;
+        private float _statusbar_diffontsize = 28f;
+
+
+
         Boolean _connectionAttempted = false;
         private HubConnection _connection;
         private string _connection_status = "";
@@ -160,8 +169,29 @@ namespace GnollHackClient.Pages.Game
         private SKBitmap _shieldWeaponBitmap;
         private SKBitmap _shieldDungeonLevelBitmap;
         private SKBitmap _shieldXPLevelBitmap;
-        private SKBitmap _shieldTurnBannerBitmap;
-        private SKBitmap _shieldGoldBannerBitmap;
+
+        private SKBitmap _statusWizardBitmap;
+        private SKBitmap _statusModernBitmap;
+
+        private SKBitmap _statusDifficultyBitmap;
+        private SKBitmap _statusDifficultyVeryEasyBitmap;
+        private SKBitmap _statusDifficultyEasyBitmap;
+        private SKBitmap _statusDifficultyAverageBitmap;
+        private SKBitmap _statusDifficultyHardBitmap;
+        private SKBitmap _statusDifficultyExpertBitmap;
+        private SKBitmap _statusDifficultyMasterBitmap;
+        private SKBitmap _statusDifficultyGrandMasterBitmap;
+
+        private SKBitmap _statusXPLevelBitmap;
+        private SKBitmap _statusACBitmap;
+        private SKBitmap _statusMCBitmap;
+        private SKBitmap _statusMoveBitmap;
+        private SKBitmap _statusWeaponStyleBitmap;
+
+        private SKBitmap _statusGoldBitmap;
+        private SKBitmap _statusTurnsBitmap;
+
+        private SKBitmap _statusDungeonLevelBitmap;
 
         private object _skillRectLock = new object();
         private SKRect _skillRect = new SKRect();
@@ -442,6 +472,7 @@ namespace GnollHackClient.Pages.Game
             _animationStopwatch.Start();
 
             canvasView._gamePage = this;
+
             uint timeToAnimate = 2000;
             Xamarin.Forms.Animation animation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
             animation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: 25, repeat: () => true);
@@ -481,6 +512,15 @@ namespace GnollHackClient.Pages.Game
                         MenuCanvas.InvalidateSurface();
                 }
 
+                if(!StartingPositionsSet && !canvasView.CanvasSize.IsEmpty)
+                {
+                    double statusbarheight = GetStatusBarHeight();
+                    lAbilitiesButton.HeightRequest = statusbarheight;
+                    lWornItemsButton.HeightRequest = statusbarheight;
+                    UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
+                    StartingPositionsSet = true;
+                }
+
                 pollRequestQueue();
 
                 return true;
@@ -497,8 +537,9 @@ namespace GnollHackClient.Pages.Game
             });
 
             await LoadingProgressBar.ProgressTo(1.0, 20, Easing.Linear);
-
         }
+
+        private bool StartingPositionsSet { get; set; }
 
         private bool _useUnifromAnimationInterval = false;
         public long GetAnimationCounterIncrement()
@@ -4642,6 +4683,362 @@ namespace GnollHackClient.Pages.Game
 
                 if (statusfieldsok && !ForceAllMessages)
                 {
+                    float statusbarheight = 0;
+                    if (!ClassicStatusBar)
+                    {
+                        float hmargin = _statusbar_hmargin;
+                        float vmargin = _statusbar_vmargin;
+                        float rowmargin = _statusbar_rowmargin;
+                        float basefontsize = _statusbar_basefontsize;
+                        float shieldfontsize = _statusbar_shieldfontsize;
+                        float diffontsize = _statusbar_diffontsize;
+
+                        float curx = hmargin;
+                        float cury = vmargin;
+                        textPaint.TextSize = basefontsize;
+                        textPaint.Color = SKColors.Black.WithAlpha(128);
+                        float rowheight = textPaint.FontSpacing;
+                        float stdspacing = rowheight / 3;
+                        float innerspacing = rowheight / 20;
+                        statusbarheight = rowheight * 2 + vmargin * 2 + rowmargin;
+                        SKRect darkenrect = new SKRect(0, 0, canvaswidth, statusbarheight);
+                        canvas.DrawRect(darkenrect, textPaint);
+                        textPaint.Color = SKColors.White;
+                        textPaint.TextAlign = SKTextAlign.Left;
+                        textPaint.Typeface = App.LatoRegular;
+                        float target_scale = rowheight / _statusWizardBitmap.Height; // All are 64px high
+
+                        string valtext;
+                        SKRect statusDest;
+                        SKRect bounds = new SKRect();
+
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_MODE] != null && StatusFields[(int)statusfields.BL_MODE].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_MODE].Text;
+                            }
+                        }
+
+                        float target_width = 0;
+                        float target_height = 0;
+                        if (valtext.StartsWith("W"))
+                        {
+                            target_width = target_scale * _statusWizardBitmap.Width;
+                            target_height = target_scale * _statusWizardBitmap.Height;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusWizardBitmap, statusDest, textPaint);
+                            curx += target_width;
+                            curx += innerspacing;
+                        }
+                        else if (valtext.StartsWith("M"))
+                        {
+                            target_width = target_scale * _statusModernBitmap.Width;
+                            target_height = target_scale * _statusModernBitmap.Height;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusModernBitmap, statusDest, textPaint);
+                            curx += target_width;
+                            curx += innerspacing;
+                        }
+
+
+                        target_width = target_scale * _statusDifficultyBitmap.Width;
+                        target_height = target_scale * _statusDifficultyBitmap.Height;
+                        statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                        string diftext = "";
+                        if (valtext.Contains("E"))
+                        {
+                            diftext = "E";
+                        }
+                        else if (valtext.Contains("e"))
+                        {
+                            diftext = "e";
+                        }
+                        else if (valtext.Contains("a"))
+                        {
+                            diftext = "a";
+                        }
+                        else if (valtext.Contains("h"))
+                        {
+                            diftext = "h";
+                        }
+                        else if (valtext.Contains("x"))
+                        {
+                            diftext = "x";
+                        }
+                        else if (valtext.Contains("m"))
+                        {
+                            diftext = "m";
+                        }
+                        else if (valtext.Contains("G"))
+                        {
+                            diftext = "G";
+                        }
+
+                        if (diftext != "")
+                        {
+                            target_width = target_scale * _statusDifficultyBitmap.Width;
+                            target_height = target_scale * _statusDifficultyBitmap.Height;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusDifficultyBitmap, statusDest, textPaint);
+                            textPaint.MeasureText(diftext, ref bounds);
+                            textPaint.TextAlign = SKTextAlign.Center;
+                            textPaint.Color = SKColors.Black;
+                            textPaint.TextSize = diffontsize;
+                            canvas.DrawText(diftext, curx + target_width / 2, cury + (rowheight - (textPaint.FontSpacing)) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                            curx += target_width;
+                            curx += stdspacing;
+                            textPaint.TextAlign = SKTextAlign.Left;
+                            textPaint.Color = SKColors.White;
+                            textPaint.TextSize = basefontsize;
+                        }
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_XP] != null && StatusFields[(int)statusfields.BL_XP].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_XP].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            target_width = target_scale * _statusXPLevelBitmap.Width;
+                            target_height = target_scale * _statusXPLevelBitmap.Height;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusXPLevelBitmap, statusDest, textPaint);
+                            curx += target_width;
+                            curx += innerspacing;
+                            float print_width = textPaint.MeasureText(valtext);
+                            canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                            curx += print_width + stdspacing;
+                        }
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_AC] != null && StatusFields[(int)statusfields.BL_AC].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_AC].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            target_width = target_scale * _statusACBitmap.Width;
+                            target_height = target_scale * _statusACBitmap.Height;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusACBitmap, statusDest, textPaint);
+                            textPaint.TextAlign = SKTextAlign.Center;
+                            textPaint.Color = SKColors.Black;
+                            textPaint.TextSize = shieldfontsize;
+                            canvas.DrawText(valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                            curx += target_width;
+                            curx += stdspacing;
+                            textPaint.TextAlign = SKTextAlign.Left;
+                            textPaint.Color = SKColors.White;
+                            textPaint.TextSize = basefontsize;
+                        }
+
+                        valtext = "";
+                        string valtext2 = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_MC_LVL] != null && StatusFields[(int)statusfields.BL_MC_LVL].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_MC_LVL].Text;
+                                valtext2 = StatusFields[(int)statusfields.BL_MC_PCT].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            target_width = target_scale * _statusMCBitmap.Width;
+                            target_height = target_scale * _statusMCBitmap.Height;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusMCBitmap, statusDest, textPaint);
+                            textPaint.TextAlign = SKTextAlign.Center;
+                            textPaint.Color = SKColors.Black;
+                            textPaint.TextSize = shieldfontsize;
+                            canvas.DrawText(valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                            curx += target_width;
+                            curx += innerspacing;
+                            textPaint.TextAlign = SKTextAlign.Left;
+                            textPaint.Color = SKColors.White;
+                            textPaint.TextSize = basefontsize;
+                            string printtext = valtext2 + "%";
+                            float print_width = textPaint.MeasureText(printtext);
+                            canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                            curx += print_width + stdspacing;
+                        }
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_MOVE] != null && StatusFields[(int)statusfields.BL_MOVE].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_MOVE].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            target_width = target_scale * _statusMoveBitmap.Width;
+                            target_height = target_scale * _statusMoveBitmap.Height;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusMoveBitmap, statusDest, textPaint);
+                            curx += target_width;
+                            curx += innerspacing;
+                            float print_width = textPaint.MeasureText(valtext);
+                            canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                            curx += print_width + stdspacing;
+                        }
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_UWEP].Text;
+                            }
+                            if (StatusFields[(int)statusfields.BL_UWEP2] != null && StatusFields[(int)statusfields.BL_UWEP2].Text != null)
+                            {
+                                valtext2 = StatusFields[(int)statusfields.BL_UWEP2].Text;
+                            }
+                        }
+                        if (valtext != "" || valtext2 != "")
+                        {
+                            target_width = target_scale * _statusWeaponStyleBitmap.Width;
+                            target_height = target_scale * _statusWeaponStyleBitmap.Height;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusWeaponStyleBitmap, statusDest, textPaint);
+                            curx += target_width;
+                            curx += innerspacing;
+                            float print_width = 0;
+                            if (valtext != "")
+                            {
+                                print_width = textPaint.MeasureText(valtext);
+                                canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                curx += print_width;
+                            }
+                            if (valtext2 != "")
+                            {
+                                string printtext = "/" + valtext2;
+                                print_width = textPaint.MeasureText(printtext);
+                                canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                curx += print_width;
+                            }
+                            curx += stdspacing;
+                        }
+
+                        /* Right aligned */
+                        float turnsleft = canvaswidth - hmargin;
+
+                        /* Turns */
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_TIME] != null && StatusFields[(int)statusfields.BL_TIME].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_TIME].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            target_width = target_scale * _statusTurnsBitmap.Width;
+                            target_height = target_scale * _statusTurnsBitmap.Height;
+                            float print_width = textPaint.MeasureText(valtext);
+                            curx = canvaswidth - hmargin - print_width - innerspacing - target_width;
+                            turnsleft = curx;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusTurnsBitmap, statusDest, textPaint);
+                            curx += target_width;
+                            curx += innerspacing;
+                            canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                            curx += print_width;
+                        }
+
+                        /* Gold */
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_GOLD] != null && StatusFields[(int)statusfields.BL_GOLD].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_GOLD].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            string printtext;
+                            if (valtext.Substring(0, 1) == "\\" && valtext.Length > 10)
+                                printtext = valtext.Substring(10);
+                            else
+                                printtext = valtext;
+
+                            target_width = target_scale * _statusGoldBitmap.Width;
+                            target_height = target_scale * _statusGoldBitmap.Height;
+                            float print_width = textPaint.MeasureText(printtext);
+                            curx = turnsleft - stdspacing - print_width - innerspacing - target_width;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusGoldBitmap, statusDest, textPaint);
+                            curx += target_width;
+                            curx += innerspacing;
+                            canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                            curx += print_width;
+                        }
+
+
+                        /* Second row */
+                        curx = hmargin;
+                        cury += rowheight + rowmargin;
+
+                        /* Title */
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_TITLE] != null && StatusFields[(int)statusfields.BL_TITLE].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_TITLE].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                            float textprint_length = textPaint.MeasureText(valtext);
+                            curx += textprint_length;
+                            curx += stdspacing;
+                        }
+
+
+                        /* Dungeon level */
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_LEVELDESC] != null && StatusFields[(int)statusfields.BL_LEVELDESC].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_LEVELDESC].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            string printtext;
+                            if (valtext.Substring(0, 3) == "DL:" && valtext.Length > 3)
+                                printtext = valtext.Substring(3);
+                            else
+                                printtext = valtext;
+
+                            target_width = target_scale * _statusDungeonLevelBitmap.Width;
+                            target_height = target_scale * _statusDungeonLevelBitmap.Height;
+                            float print_width = textPaint.MeasureText(printtext);
+                            curx = canvaswidth - hmargin - print_width - innerspacing - target_width;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusDungeonLevelBitmap, statusDest, textPaint);
+                            curx += target_width;
+                            curx += innerspacing;
+                            canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                            curx += print_width;
+                        }
+                    }
+
                     bool orbsok = false;
                     bool skillbuttonok = false;
                     lock (StatusFieldLock)
@@ -4651,11 +5048,11 @@ namespace GnollHackClient.Pages.Game
                     }
 
                     float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
-                    float lastdrawnrecty = Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing);
+                    float lastdrawnrecty = ClassicStatusBar ? Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing) : statusbarheight;
                     tx = 5.0f;
-                    ty = lastdrawnrecty;
+                    ty = lastdrawnrecty + 5.0f;
                     /* HP and MP */
-                    if (ShowOrbs && orbsok)
+                    if ((ShowOrbs | !ClassicStatusBar) && orbsok)
                     {
                         float orbfillpercentage = 0.0f;
                         string valtext = "";
@@ -4722,74 +5119,6 @@ namespace GnollHackClient.Pages.Game
                         float text_y = skillDest.Bottom - textPaint.FontMetrics.Ascent;
                         canvas.DrawText("Skills", text_x, text_y, textPaint);
                         textPaint.TextAlign = SKTextAlign.Left;
-                    }
-
-                    if(!ClassicStatusBar)
-                    {
-                        float shieldsidelength = orbbordersize * 0.75f;
-                        float shieldleft = 5.0f + shieldsidelength + 5.0f;
-                        float shieldtop = 5.0f;
-                        SKRect shieldDest = new SKRect(shieldleft, shieldtop, shieldleft + shieldsidelength, shieldtop + shieldsidelength);
-                        string valtext = "";
-                        string pcttext = "";
-                        lock (StatusFieldLock)
-                        {
-                            if (StatusFields[(int)statusfields.BL_AC] != null && StatusFields[(int)statusfields.BL_AC].Text != null)
-                            {
-                                valtext = StatusFields[(int)statusfields.BL_AC].Text;
-                            }
-                        }
-                        ACRect = shieldDest;
-                        DrawShield(canvas, textPaint, shieldDest, UIShieldStyles.AC, valtext, "", false);
-
-                        valtext = "";
-                        shieldleft += shieldsidelength + 5.0f;
-                        shieldDest = new SKRect(shieldleft, shieldtop, shieldleft + shieldsidelength, shieldtop + shieldsidelength);
-                        lock (StatusFieldLock)
-                        {
-                            if (StatusFields[(int)statusfields.BL_MC_LVL] != null && StatusFields[(int)statusfields.BL_MC_LVL].Text != null)
-                            {
-                                valtext = StatusFields[(int)statusfields.BL_MC_LVL].Text;
-                            }
-                            if (StatusFields[(int)statusfields.BL_MC_PCT] != null && StatusFields[(int)statusfields.BL_MC_PCT].Text != null)
-                            {
-                                pcttext = StatusFields[(int)statusfields.BL_MC_PCT].Text;
-                            }
-                        }
-                        MCRect = shieldDest;
-                        DrawShield(canvas, textPaint, shieldDest, UIShieldStyles.MC, valtext, pcttext + "%", true);
-
-                        valtext = "";
-                        shieldleft += shieldsidelength + 5.0f;
-                        shieldDest = new SKRect(shieldleft, shieldtop, shieldleft + shieldsidelength, shieldtop + shieldsidelength);
-                        lock (StatusFieldLock)
-                        {
-                            if (StatusFields[(int)statusfields.BL_MOVE] != null && StatusFields[(int)statusfields.BL_MOVE].Text != null)
-                            {
-                                valtext = StatusFields[(int)statusfields.BL_MOVE].Text;
-                            }
-                        }
-                        MoveRect = shieldDest;
-                        DrawShield(canvas, textPaint, shieldDest, UIShieldStyles.Move, valtext, "", true);
-
-                        valtext = "";
-                        shieldleft += shieldsidelength + 5.0f;
-                        shieldDest = new SKRect(shieldleft, shieldtop, shieldleft + shieldsidelength, shieldtop + shieldsidelength);
-                        lock (StatusFieldLock)
-                        {
-                            if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].Text != null)
-                            {
-                                valtext = StatusFields[(int)statusfields.BL_UWEP].Text;
-                            }
-                            if (StatusFields[(int)statusfields.BL_UWEP2] != null && StatusFields[(int)statusfields.BL_UWEP2].Text != null)
-                            {
-                                if (valtext != "")
-                                    valtext += "/";
-                                valtext += StatusFields[(int)statusfields.BL_UWEP2].Text;
-                            }
-                        }
-                        WeaponRect = shieldDest;
-                        DrawShield(canvas, textPaint, shieldDest, UIShieldStyles.Weapon, valtext, "", true);
                     }
                 }
 
@@ -5835,8 +6164,12 @@ namespace GnollHackClient.Pages.Game
                 //AbilitiesImg.HeightRequest = SkillImg.HeightRequest = imgsideheight;
                 /* AbilitiesLbl */
                 //SkillLbl.FontSize = fontsize_larger;
+                double statusbarheight = GetStatusBarHeight();
                 lAbilitiesButton.SetSideSize(width, height);
+                lAbilitiesButton.HeightRequest = statusbarheight;
+                lWornItemsButton.HeightRequest = statusbarheight;
                 lSkillButton.SetSideSize(width, height);
+                UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
 
                 foreach (View v in UpperCmdGrid.Children)
                 {
@@ -5893,6 +6226,26 @@ namespace GnollHackClient.Pages.Game
                     UpperCmdLayout.Orientation = StackOrientation.Horizontal;
                 }
             }
+        }
+
+        public double GetStatusBarHeight()
+        {
+            double sb_xheight;
+            float statusbarheight;
+            using (SKPaint textPaint = new SKPaint())
+            {
+                textPaint.Typeface = App.LatoRegular;
+                textPaint.TextSize = _statusbar_basefontsize;
+                float rowheight = textPaint.FontSpacing;
+                statusbarheight = rowheight * 2 + _statusbar_vmargin * 2 + _statusbar_rowmargin;
+            }
+
+            if (canvasView.CanvasSize.Width <= 0 || canvasView.CanvasSize.Height <= 0)
+                return 0;
+
+            double scale = Math.Sqrt(canvasView.Width / (double)canvasView.CanvasSize.Width * canvasView.Height / (double)canvasView.CanvasSize.Height);
+            sb_xheight = scale * (double)statusbarheight;
+            return sb_xheight;
         }
 
         protected void ConnectToServer()
@@ -7986,13 +8339,80 @@ namespace GnollHackClient.Pages.Game
             {
                 _shieldXPLevelBitmap = SKBitmap.Decode(stream);
             }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.banner-turn.png"))
+
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-wizard-mode.png"))
             {
-                _shieldTurnBannerBitmap = SKBitmap.Decode(stream);
+                _statusWizardBitmap = SKBitmap.Decode(stream);
             }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.banner-gold.png"))
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-modern-mode.png"))
             {
-                _shieldGoldBannerBitmap = SKBitmap.Decode(stream);
+                _statusModernBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-difficulty.png"))
+            {
+                _statusDifficultyBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-difficulty-very-easy.png"))
+            {
+                _statusDifficultyVeryEasyBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-difficulty-easy.png"))
+            {
+                _statusDifficultyEasyBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-difficulty-average.png"))
+            {
+                _statusDifficultyAverageBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-difficulty-hard.png"))
+            {
+                _statusDifficultyHardBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-difficulty-expert.png"))
+            {
+                _statusDifficultyExpertBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-difficulty-master.png"))
+            {
+                _statusDifficultyMasterBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-difficulty-grand-master.png"))
+            {
+                _statusDifficultyGrandMasterBitmap = SKBitmap.Decode(stream);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-xp-level.png"))
+            {
+                _statusXPLevelBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-ac.png"))
+            {
+                _statusACBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-mc.png"))
+            {
+                _statusMCBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-move.png"))
+            {
+                _statusMoveBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-weapon-style.png"))
+            {
+                _statusWeaponStyleBitmap = SKBitmap.Decode(stream);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-gold.png"))
+            {
+                _statusGoldBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-turns.png"))
+            {
+                _statusTurnsBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-dungeon-level.png"))
+            {
+                _statusDungeonLevelBitmap = SKBitmap.Decode(stream);
             }
 
         }
@@ -8725,34 +9145,34 @@ namespace GnollHackClient.Pages.Game
             XPLevel
         }
 
-        private void DrawShield(SKCanvas canvas, SKPaint textPaint, SKRect shieldDest, UIShieldStyles shieldstyle, string val, string maxpct, bool showpct)
+        private void DrawShield(SKCanvas canvas, SKPaint textPaint, SKRect shieldDest, SKBitmap usedBitmap, string val, string maxpct, bool showpct)
         {
             if (shieldDest.Width == 0)
                 return;
 
             textPaint.Color = SKColors.White;
-            SKBitmap usedBitmap = _shieldACBitmap;
-            switch(shieldstyle)
-            {
-                case UIShieldStyles.AC:
-                    usedBitmap = _shieldACBitmap;
-                    break;
-                case UIShieldStyles.MC:
-                    usedBitmap = _shieldMCBitmap;
-                    break;
-                case UIShieldStyles.Move:
-                    usedBitmap = _shieldMoveBitmap;
-                    break;
-                case UIShieldStyles.Weapon:
-                    usedBitmap = _shieldWeaponBitmap;
-                    break;
-                case UIShieldStyles.DungeonLevel:
-                    usedBitmap = _shieldDungeonLevelBitmap;
-                    break;
-                case UIShieldStyles.XPLevel:
-                    usedBitmap = _shieldXPLevelBitmap;
-                    break;
-            }
+            //SKBitmap usedBitmap = _shieldACBitmap;
+            //switch(shieldstyle)
+            //{
+            //    case UIShieldStyles.AC:
+            //        usedBitmap = _shieldACBitmap;
+            //        break;
+            //    case UIShieldStyles.MC:
+            //        usedBitmap = _shieldMCBitmap;
+            //        break;
+            //    case UIShieldStyles.Move:
+            //        usedBitmap = _shieldMoveBitmap;
+            //        break;
+            //    case UIShieldStyles.Weapon:
+            //        usedBitmap = _shieldWeaponBitmap;
+            //        break;
+            //    case UIShieldStyles.DungeonLevel:
+            //        usedBitmap = _shieldDungeonLevelBitmap;
+            //        break;
+            //    case UIShieldStyles.XPLevel:
+            //        usedBitmap = _shieldXPLevelBitmap;
+            //        break;
+            //}
 
             canvas.DrawBitmap(usedBitmap, shieldDest, textPaint);
             if (val != null && val != "")
