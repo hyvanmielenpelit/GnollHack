@@ -35,7 +35,7 @@ namespace GnollHackClient.Pages.Game
         private float _statusbar_rowmargin = 5.0f;
         private float _statusbar_basefontsize = 42f;
         private float _statusbar_shieldfontsize = 32f;
-        private float _statusbar_diffontsize = 28f;
+        private float _statusbar_diffontsize = 24f;
 
 
 
@@ -4746,30 +4746,35 @@ namespace GnollHackClient.Pages.Game
 
                         SKBitmap difbmp = _statusDifficultyBitmap;
                         string diftext = "";
-                        if (valtext.Contains("E"))
+                        if (valtext.Contains("v"))
                         {
-                            diftext = "E";
+                            diftext = "v";
                             difbmp = _statusDifficultyVeryEasyBitmap;
                         }
                         else if (valtext.Contains("e"))
                         {
                             diftext = "e";
+                            difbmp = _statusDifficultyEasyBitmap;
                         }
                         else if (valtext.Contains("a"))
                         {
                             diftext = "a";
+                            difbmp = _statusDifficultyAverageBitmap;
                         }
                         else if (valtext.Contains("h"))
                         {
                             diftext = "h";
+                            difbmp = _statusDifficultyHardBitmap;
                         }
                         else if (valtext.Contains("x"))
                         {
                             diftext = "x";
+                            difbmp = _statusDifficultyExpertBitmap;
                         }
                         else if (valtext.Contains("m"))
                         {
                             diftext = "m";
+                            difbmp = _statusDifficultyMasterBitmap;
                         }
                         else if (valtext.Contains("g"))
                         {

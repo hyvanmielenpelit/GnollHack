@@ -1111,7 +1111,7 @@ int dif_level;
     switch (dif_level)
     {
     case -4:
-        return "E";
+        return "v";
     case -3:
         return "e";
     case -2:
