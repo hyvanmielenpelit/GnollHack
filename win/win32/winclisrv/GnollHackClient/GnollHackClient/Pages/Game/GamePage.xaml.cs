@@ -4744,14 +4744,12 @@ namespace GnollHackClient.Pages.Game
                             curx += innerspacing;
                         }
 
-
-                        target_width = target_scale * _statusDifficultyBitmap.Width;
-                        target_height = target_scale * _statusDifficultyBitmap.Height;
-                        statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                        SKBitmap difbmp = _statusDifficultyBitmap;
                         string diftext = "";
                         if (valtext.Contains("E"))
                         {
                             diftext = "E";
+                            difbmp = _statusDifficultyVeryEasyBitmap;
                         }
                         else if (valtext.Contains("e"))
                         {
@@ -4773,17 +4771,18 @@ namespace GnollHackClient.Pages.Game
                         {
                             diftext = "m";
                         }
-                        else if (valtext.Contains("G"))
+                        else if (valtext.Contains("g"))
                         {
-                            diftext = "G";
+                            diftext = "g";
+                            difbmp = _statusDifficultyGrandMasterBitmap;
                         }
 
                         if (diftext != "")
                         {
-                            target_width = target_scale * _statusDifficultyBitmap.Width;
-                            target_height = target_scale * _statusDifficultyBitmap.Height;
+                            target_width = target_scale * difbmp.Width;
+                            target_height = target_scale * difbmp.Height;
                             statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                            canvas.DrawBitmap(_statusDifficultyBitmap, statusDest, textPaint);
+                            canvas.DrawBitmap(difbmp, statusDest, textPaint);
                             textPaint.MeasureText(diftext, ref bounds);
                             textPaint.TextAlign = SKTextAlign.Center;
                             textPaint.Color = SKColors.Black;
