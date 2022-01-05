@@ -183,6 +183,7 @@ namespace GnollHackClient.Pages.Game
         private SKBitmap _statusDifficultyGrandMasterBitmap;
 
         private SKBitmap _statusXPLevelBitmap;
+        private SKBitmap _statusHDBitmap;
         private SKBitmap _statusACBitmap;
         private SKBitmap _statusMCBitmap;
         private SKBitmap _statusMoveBitmap;
@@ -4716,7 +4717,7 @@ namespace GnollHackClient.Pages.Game
                         valtext = "";
                         lock (StatusFieldLock)
                         {
-                            if (StatusFields[(int)statusfields.BL_MODE] != null && StatusFields[(int)statusfields.BL_MODE].Text != null)
+                            if (StatusFields[(int)statusfields.BL_MODE] != null && StatusFields[(int)statusfields.BL_MODE].IsEnabled && StatusFields[(int)statusfields.BL_MODE].Text != null)
                             {
                                 valtext = StatusFields[(int)statusfields.BL_MODE].Text;
                             }
@@ -4798,7 +4799,7 @@ namespace GnollHackClient.Pages.Game
                         valtext = "";
                         lock (StatusFieldLock)
                         {
-                            if (StatusFields[(int)statusfields.BL_XP] != null && StatusFields[(int)statusfields.BL_XP].Text != null)
+                            if (StatusFields[(int)statusfields.BL_XP] != null && StatusFields[(int)statusfields.BL_XP].IsEnabled && StatusFields[(int)statusfields.BL_XP].Text != null)
                             {
                                 valtext = StatusFields[(int)statusfields.BL_XP].Text;
                             }
@@ -4819,7 +4820,28 @@ namespace GnollHackClient.Pages.Game
                         valtext = "";
                         lock (StatusFieldLock)
                         {
-                            if (StatusFields[(int)statusfields.BL_AC] != null && StatusFields[(int)statusfields.BL_AC].Text != null)
+                            if (StatusFields[(int)statusfields.BL_HD] != null && StatusFields[(int)statusfields.BL_HD].IsEnabled && StatusFields[(int)statusfields.BL_HD].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_HD].Text;
+                            }
+                        }
+                        if (valtext != "")
+                        {
+                            target_width = target_scale * _statusHDBitmap.Width;
+                            target_height = target_scale * _statusHDBitmap.Height;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusHDBitmap, statusDest, textPaint);
+                            curx += target_width;
+                            curx += innerspacing;
+                            float print_width = textPaint.MeasureText(valtext);
+                            canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                            curx += print_width + stdspacing;
+                        }
+
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_AC] != null && StatusFields[(int)statusfields.BL_AC].IsEnabled && StatusFields[(int)statusfields.BL_AC].Text != null)
                             {
                                 valtext = StatusFields[(int)statusfields.BL_AC].Text;
                             }
@@ -4845,9 +4867,12 @@ namespace GnollHackClient.Pages.Game
                         string valtext2 = "";
                         lock (StatusFieldLock)
                         {
-                            if (StatusFields[(int)statusfields.BL_MC_LVL] != null && StatusFields[(int)statusfields.BL_MC_LVL].Text != null)
+                            if (StatusFields[(int)statusfields.BL_MC_LVL] != null && StatusFields[(int)statusfields.BL_MC_LVL].IsEnabled && StatusFields[(int)statusfields.BL_MC_LVL].Text != null)
                             {
                                 valtext = StatusFields[(int)statusfields.BL_MC_LVL].Text;
+                            }
+                            if (StatusFields[(int)statusfields.BL_MC_PCT] != null && StatusFields[(int)statusfields.BL_MC_PCT].IsEnabled && StatusFields[(int)statusfields.BL_MC_PCT].Text != null)
+                            {
                                 valtext2 = StatusFields[(int)statusfields.BL_MC_PCT].Text;
                             }
                         }
@@ -4875,7 +4900,7 @@ namespace GnollHackClient.Pages.Game
                         valtext = "";
                         lock (StatusFieldLock)
                         {
-                            if (StatusFields[(int)statusfields.BL_MOVE] != null && StatusFields[(int)statusfields.BL_MOVE].Text != null)
+                            if (StatusFields[(int)statusfields.BL_MOVE] != null && StatusFields[(int)statusfields.BL_MOVE].IsEnabled && StatusFields[(int)statusfields.BL_MOVE].Text != null)
                             {
                                 valtext = StatusFields[(int)statusfields.BL_MOVE].Text;
                             }
@@ -4894,13 +4919,14 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         valtext = "";
+                        valtext2 = "";
                         lock (StatusFieldLock)
                         {
-                            if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].Text != null)
+                            if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].IsEnabled && StatusFields[(int)statusfields.BL_UWEP].Text != null)
                             {
                                 valtext = StatusFields[(int)statusfields.BL_UWEP].Text;
                             }
-                            if (StatusFields[(int)statusfields.BL_UWEP2] != null && StatusFields[(int)statusfields.BL_UWEP2].Text != null)
+                            if (StatusFields[(int)statusfields.BL_UWEP2] != null && StatusFields[(int)statusfields.BL_UWEP2].IsEnabled && StatusFields[(int)statusfields.BL_UWEP2].Text != null)
                             {
                                 valtext2 = StatusFields[(int)statusfields.BL_UWEP2].Text;
                             }
@@ -4937,7 +4963,7 @@ namespace GnollHackClient.Pages.Game
                         valtext = "";
                         lock (StatusFieldLock)
                         {
-                            if (StatusFields[(int)statusfields.BL_TIME] != null && StatusFields[(int)statusfields.BL_TIME].Text != null)
+                            if (StatusFields[(int)statusfields.BL_TIME] != null && StatusFields[(int)statusfields.BL_TIME].IsEnabled && StatusFields[(int)statusfields.BL_TIME].Text != null)
                             {
                                 valtext = StatusFields[(int)statusfields.BL_TIME].Text;
                             }
@@ -4961,7 +4987,7 @@ namespace GnollHackClient.Pages.Game
                         valtext = "";
                         lock (StatusFieldLock)
                         {
-                            if (StatusFields[(int)statusfields.BL_GOLD] != null && StatusFields[(int)statusfields.BL_GOLD].Text != null)
+                            if (StatusFields[(int)statusfields.BL_GOLD] != null && StatusFields[(int)statusfields.BL_GOLD].IsEnabled && StatusFields[(int)statusfields.BL_GOLD].Text != null)
                             {
                                 valtext = StatusFields[(int)statusfields.BL_GOLD].Text;
                             }
@@ -4995,7 +5021,7 @@ namespace GnollHackClient.Pages.Game
                         valtext = "";
                         lock (StatusFieldLock)
                         {
-                            if (StatusFields[(int)statusfields.BL_TITLE] != null && StatusFields[(int)statusfields.BL_TITLE].Text != null)
+                            if (StatusFields[(int)statusfields.BL_TITLE] != null && StatusFields[(int)statusfields.BL_TITLE].IsEnabled && StatusFields[(int)statusfields.BL_TITLE].Text != null)
                             {
                                 valtext = StatusFields[(int)statusfields.BL_TITLE].Text;
                             }
@@ -5013,7 +5039,7 @@ namespace GnollHackClient.Pages.Game
                         valtext = "";
                         lock (StatusFieldLock)
                         {
-                            if (StatusFields[(int)statusfields.BL_LEVELDESC] != null && StatusFields[(int)statusfields.BL_LEVELDESC].Text != null)
+                            if (StatusFields[(int)statusfields.BL_LEVELDESC] != null && StatusFields[(int)statusfields.BL_LEVELDESC].IsEnabled && StatusFields[(int)statusfields.BL_LEVELDESC].Text != null)
                             {
                                 valtext = StatusFields[(int)statusfields.BL_LEVELDESC].Text;
                             }
@@ -8384,6 +8410,10 @@ namespace GnollHackClient.Pages.Game
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-xp-level.png"))
             {
                 _statusXPLevelBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-hd.png"))
+            {
+                _statusHDBitmap = SKBitmap.Decode(stream);
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-ac.png"))
             {

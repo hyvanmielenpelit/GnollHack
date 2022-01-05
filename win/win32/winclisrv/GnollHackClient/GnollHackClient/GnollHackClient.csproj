@@ -137,6 +137,7 @@
     <None Remove="Assets\UI\status-difficulty.png" />
     <None Remove="Assets\UI\status-dungeon-level.png" />
     <None Remove="Assets\UI\status-gold.png" />
+    <None Remove="Assets\UI\status-hd.png" />
     <None Remove="Assets\UI\status-mc.png" />
     <None Remove="Assets\UI\status-modern-mode.png" />
     <None Remove="Assets\UI\status-move.png" />
@@ -264,6 +265,7 @@
     <EmbeddedResource Include="Assets\UI\status-difficulty.png" />
     <EmbeddedResource Include="Assets\UI\status-dungeon-level.png" />
     <EmbeddedResource Include="Assets\UI\status-gold.png" />
+    <EmbeddedResource Include="Assets\UI\status-hd.png" />
     <EmbeddedResource Include="Assets\UI\status-mc.png" />
     <EmbeddedResource Include="Assets\UI\status-modern-mode.png" />
     <EmbeddedResource Include="Assets\UI\status-move.png" />
