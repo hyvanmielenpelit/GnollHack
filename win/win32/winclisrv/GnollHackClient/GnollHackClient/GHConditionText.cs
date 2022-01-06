@@ -93,7 +93,7 @@ namespace GnollHackClient
                 default:
                     break;
             }
-            return 0.5f;
+            return 0.65f;
         }
         public SKTypeface GetTypeface(long counter_value)
         {

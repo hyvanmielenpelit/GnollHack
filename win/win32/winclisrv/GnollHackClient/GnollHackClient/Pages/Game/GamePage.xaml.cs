@@ -626,6 +626,15 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
 
+                lock (_conditionTextLock)
+                {
+                    for (i = _conditionTexts.Count - 1; i >= 0; i--)
+                    {
+                        if (_conditionTexts[i].IsFinished(AnimationTimers.general_animation_counter))
+                            _conditionTexts.RemoveAt(i);
+                    }
+                }
+
                 lock (_screenTextLock)
                 {
                     if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))

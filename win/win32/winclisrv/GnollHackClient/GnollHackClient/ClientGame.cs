@@ -673,7 +673,7 @@ namespace GnollHackClient
                             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                             {
                                 DisplayConditionTextData data = new DisplayConditionTextData();
-                                data.text = text;
+                                data.text = text.Trim();
                                 data.style = 0;
                                 data.color = color;
                                 data.filterstyle = 0;
