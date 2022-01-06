@@ -691,6 +691,15 @@ namespace GnollHackClient
                             ConcurrentQueue<GHRequest> queue;
                             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                             {
+                                int arraysize = (int)nhcolor.CLR_MAX + 5;
+                                long[] condcolormasks = new long[arraysize];
+                                bool condcolorset = false;
+                                if (colormasksptr != null)
+                                {
+                                    Marshal.Copy(colormasksptr, condcolormasks, 0, arraysize);
+                                    condcolorset = true;
+                                }
+
                                 for (int i = 0; i < (int)bl_conditions.NUM_BL_CONDITIONS; i++)
                                 {
                                     long bit = 1L << i;
@@ -699,10 +708,25 @@ namespace GnollHackClient
 
                                     if (has_bit && !had_bit)
                                     {
+                                        int condcolor = color;
+                                        if (condcolorset)
+                                        {
+                                            for(int c = 0; c < (int)nhcolor.CLR_MAX; c++)
+                                            {
+                                                long cbit = 1L << c;
+                                                bool has_cbit = (condcolormasks[c] & cbit) != 0;
+                                                if (has_cbit)
+                                                {
+                                                    condcolor = c;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
                                         DisplayConditionTextData data = new DisplayConditionTextData();
                                         data.text = ClientGame.cond_names_long[i];
                                         data.style = 0;
-                                        data.color = color;
+                                        data.color = condcolor;
                                         data.filterstyle = 0;
                                         data.filtercolor = 0;
                                         data.tflags = 0UL;
