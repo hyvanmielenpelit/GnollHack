@@ -617,12 +617,28 @@ namespace GnollHackClient
                 }
             }
         }
+
+        static public string[] cond_names_short = new string[(int)bl_conditions.NUM_BL_CONDITIONS] {
+            "Stone", "Slime", "Strngl", "Suffoc", "FoodPois", "TermIll", "Blind",
+            "Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral", 
+            "Fear", "Sleep", "Cancl", "Silent", "Grab", "Rot", "Lyca"
+        };
+
+        static public string[] cond_names_long = new string[(int)bl_conditions.NUM_BL_CONDITIONS] {
+            "Petrifying", "Slimed", "Being Strangled", "Suffocating", "Food Poisoned", "Terminally Ill", "Blind",
+            "Deaf", "Stunned", "Confused", "Hallucinating", "Levitating", "Flying", "Riding", "Slowed", "Paralyzed", 
+            "Frightened", "Sleeping", "Cancelled", "Silenced", "Grabbed", "Mummy Rot", "Lycanthropy"
+        };
+
         public void ClientCallback_StatusUpdate(int fieldidx, string text, long condbits, int cng, int percent, int color, IntPtr colormasksptr)
         {
+            long oldbits = 0L;
             if (fieldidx >= 0 && fieldidx < (int)statusfields.MAXBLSTATS)
             {
                 lock (_gamePage.StatusFieldLock)
                 {
+                    oldbits = _gamePage.StatusFields[fieldidx].Bits;
+
                     _gamePage.StatusFields[fieldidx].Text = text;
                     _gamePage.StatusFields[fieldidx].Bits = condbits;
                     _gamePage.StatusFields[fieldidx].Change = cng;
@@ -648,21 +664,51 @@ namespace GnollHackClient
                         }
                         break;
                     }
+                case (int)statusfields.BL_CAP:
                 case (int)statusfields.BL_HUNGER:
                     {
-                        if(cng != 0)
+                        if(cng != 0 && text != null && text != "")
                         {
                             ConcurrentQueue<GHRequest> queue;
                             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                             {
                                 DisplayConditionTextData data = new DisplayConditionTextData();
                                 data.text = text;
-                                data.style = 1;
-                                data.color = 0;
-                                data.filterstyle = 1;
+                                data.style = 0;
+                                data.color = color;
+                                data.filterstyle = 0;
                                 data.filtercolor = 0;
                                 data.tflags = 0UL;
                                 queue.Enqueue(new GHRequest(this, GHRequestType.DisplayConditionText, data));
+                            }
+                        }
+                        break;
+                    }
+                case (int)statusfields.BL_CONDITION:
+                    {
+                        if (cng != 0 && condbits != 0)
+                        {
+                            ConcurrentQueue<GHRequest> queue;
+                            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                            {
+                                for (int i = 0; i < (int)bl_conditions.NUM_BL_CONDITIONS; i++)
+                                {
+                                    long bit = 1L << i;
+                                    bool has_bit = (condbits & bit) != 0;
+                                    bool had_bit = (oldbits & bit) != 0;
+
+                                    if (has_bit && !had_bit)
+                                    {
+                                        DisplayConditionTextData data = new DisplayConditionTextData();
+                                        data.text = ClientGame.cond_names_long[i];
+                                        data.style = 0;
+                                        data.color = color;
+                                        data.filterstyle = 0;
+                                        data.filtercolor = 0;
+                                        data.tflags = 0UL;
+                                        queue.Enqueue(new GHRequest(this, GHRequestType.DisplayConditionText, data));
+                                    }
+                                }
                             }
                         }
                         break;

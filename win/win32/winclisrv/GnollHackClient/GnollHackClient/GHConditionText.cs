@@ -18,21 +18,13 @@ namespace GnollHackClient
 
         public long CreatedAt { get { return _created_at_count; } }
 
-        public SKPoint GetInitialPoint()
-        {
-            return new SKPoint(0.5f, 0.25f);
-        }
-        public SKPoint GetVelocity(long counter_value)
-        {
-            return new SKPoint(0.0f, -2.0f);
-        }
         public float GetFinishTime()
         {
-            return 0.75f;
+            return 2.0f;
         }
         public float GetFadeOutTime()
         {
-            return 0.5f;
+            return 1.75f;
         }
         public float GetFadeInTime()
         {
@@ -55,6 +47,11 @@ namespace GnollHackClient
             return ((float)(counter_value - _created_at_count)) / 40.0f;
         }
 
+        public long GetFinishCounterValue()
+        {
+            return (long)(GetFinishTime() * 40.0f) + _created_at_count;
+        }
+
         public bool IsVisible(long counter_value)
         {
             if (counter_value < _created_at_count || IsFinished(counter_value))
@@ -75,19 +72,24 @@ namespace GnollHackClient
                 return false;
         }
 
+
         public string GetText(long counter_value)
         {
             return _data.text;
         }
-        public float GetRelativeTextSize(long counter_value)
+        public string GetSampleText()
         {
             switch (_data.style)
             {
-                case 1:
-                case 2:
-                case 5:
-                case 6:
-                    return 0.6f;
+                default:
+                    break;
+            }
+            return "Terminally Ill";
+        }
+        public float GetRelativeSampleTextSize(long counter_value)
+        {
+            switch (_data.style)
+            {
                 default:
                     break;
             }
@@ -95,7 +97,7 @@ namespace GnollHackClient
         }
         public SKTypeface GetTypeface(long counter_value)
         {
-            return App.LatoBold;
+            return App.ImmortalTypeface;
         }
         public SKColor GetBaseColor(long counter_value)
         {
@@ -103,30 +105,6 @@ namespace GnollHackClient
             {
                 case 0:
                     return ClientUtils.NHColor2SKColor(_data.color);
-                case 1:
-                    return SKColors.Green;
-                case 2:
-                    return SKColors.Red;
-                case 3:
-                    return SKColors.Gold;
-                case 4:
-                    return SKColors.Orange;
-                case 5:
-                    return SKColors.Blue;
-                case 6:
-                    return SKColors.Magenta;
-                case 7:
-                    return SKColors.LightGreen;
-                case 8:
-                    return SKColors.LightPink;
-                case 9:
-                    return SKColors.Cyan;
-                case 10:
-                    return SKColors.Crimson;
-                case 11:
-                    return SKColors.GreenYellow;
-                case 12:
-                    return SKColors.OrangeRed;
                 default:
                     break;
             }

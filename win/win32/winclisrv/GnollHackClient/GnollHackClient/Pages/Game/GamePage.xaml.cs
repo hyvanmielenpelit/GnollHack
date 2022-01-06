@@ -890,18 +890,15 @@ namespace GnollHackClient.Pages.Game
 
         public void DisplayConditionText(DisplayConditionTextData data)
         {
-            lock (_floatingTextLock)
+            lock (_conditionTextLock)
             {
-                bool foundanother = false;
                 long highestcounter = 0;
-                SKPoint speedvector = new SKPoint(0, -1);
                 foreach (GHConditionText fl in _conditionTexts)
                 {
-                    foundanother = true;
-                    if (fl.CreatedAt > highestcounter)
+                    long finishcount = fl.GetFinishCounterValue();
+                    if (finishcount > highestcounter)
                     {
-                        highestcounter = fl.CreatedAt;
-                        speedvector = fl.GetVelocity(highestcounter);
+                        highestcounter = finishcount;
                     }
                 }
 
@@ -911,15 +908,9 @@ namespace GnollHackClient.Pages.Game
                     counter = AnimationTimers.general_animation_counter;
                 }
 
-                if (foundanother)
+                if (highestcounter > 0 && highestcounter > counter)
                 {
-                    float YSpeed = Math.Abs(speedvector.Y);
-                    float secs = 0.5f / YSpeed;
-                    long ticks = (long)(secs * 40);
-                    if (counter - highestcounter >= -ticks * 10 && counter - highestcounter < ticks)
-                    {
-                        counter += ticks - (counter - highestcounter);
-                    }
+                    counter = highestcounter;
                 }
 
                 _conditionTexts.Add(new GHConditionText(data, counter));
@@ -4467,6 +4458,52 @@ namespace GnollHackClient.Pages.Game
                             }
                         }
                     }
+                    lock (_conditionTextLock)
+                    {
+                        foreach (GHConditionText ft in _conditionTexts)
+                        {
+                            double scale = GetCanvasScale();
+                            float invscale = scale == 0 ? 0.0f : 1.0f / (float)scale;
+                            float relativestrokewidth = 0.0f;
+                            SKColor strokecolor = SKColors.White;
+                            SKColor fillcolor = SKColors.White;
+                            float relativetoscreenwidth = 0.0f;
+                            string sampletext = "";
+                            lock (AnimationTimerLock)
+                            {
+                                fillcolor = ft.GetColor(AnimationTimers.general_animation_counter);
+                                textPaint.Typeface = ft.GetTypeface(AnimationTimers.general_animation_counter);
+                                relativetoscreenwidth = ft.GetRelativeSampleTextSize(AnimationTimers.general_animation_counter);
+                                relativestrokewidth = ft.GetRelativeOutlineWidth(AnimationTimers.general_animation_counter);
+                                strokecolor = ft.GetOutlineColor(AnimationTimers.general_animation_counter);
+                                str = ft.GetText(AnimationTimers.general_animation_counter);
+                            }
+
+                            textPaint.TextSize = UsedFontSize;
+                            sampletext = ft.GetSampleText();
+                            textPaint.MeasureText(sampletext, ref textBounds);
+                            if (textBounds.Width > 0)
+                            {
+                                float relativesize = relativetoscreenwidth * canvaswidth / textBounds.Width;
+                                textPaint.TextSize = UsedFontSize * relativesize;
+                            }
+
+                            textPaint.TextAlign = SKTextAlign.Center;
+                            tx = canvaswidth / 2;
+                            ty = GetStatusBarSkiaHeight() + 1.5f * invscale * (float)ESCButton.Height - textPaint.FontMetrics.Ascent;
+                            if (relativestrokewidth > 0)
+                            {
+                                textPaint.Style = SKPaintStyle.Stroke;
+                                textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
+                                textPaint.Color = strokecolor;
+                                canvas.DrawText(str, tx, ty, textPaint);
+                            }
+                            textPaint.Style = SKPaintStyle.Fill;
+                            textPaint.Color = fillcolor;
+                            canvas.DrawText(str, tx, ty, textPaint);
+                            textPaint.TextAlign = SKTextAlign.Left;
+                        }
+                    }
                 }
 
                 /* Look mode rectangle */
@@ -6301,9 +6338,8 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        public double GetStatusBarHeight()
+        public float GetStatusBarSkiaHeight()
         {
-            double sb_xheight;
             float statusbarheight;
             using (SKPaint textPaint = new SKPaint())
             {
@@ -6312,11 +6348,19 @@ namespace GnollHackClient.Pages.Game
                 float rowheight = textPaint.FontSpacing;
                 statusbarheight = rowheight * 2 + _statusbar_vmargin * 2 + _statusbar_rowmargin;
             }
-
+            return statusbarheight;
+        }
+        public double GetCanvasScale()
+        {
             if (canvasView.CanvasSize.Width <= 0 || canvasView.CanvasSize.Height <= 0)
                 return 0;
-
-            double scale = Math.Sqrt(canvasView.Width / (double)canvasView.CanvasSize.Width * canvasView.Height / (double)canvasView.CanvasSize.Height);
+            return Math.Sqrt(canvasView.Width / (double)canvasView.CanvasSize.Width * canvasView.Height / (double)canvasView.CanvasSize.Height);
+        }
+        public double GetStatusBarHeight()
+        {
+            double sb_xheight;
+            float statusbarheight = GetStatusBarSkiaHeight();
+            double scale = GetCanvasScale();
             sb_xheight = scale * (double)statusbarheight;
             return sb_xheight;
         }
