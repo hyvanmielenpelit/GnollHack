@@ -675,7 +675,7 @@ namespace GnollHackClient
                                 DisplayConditionTextData data = new DisplayConditionTextData();
                                 data.text = text.Trim();
                                 data.style = 0;
-                                data.color = color;
+                                data.color = (int)(color & 15);
                                 data.filterstyle = 0;
                                 data.filtercolor = 0;
                                 data.tflags = 0UL;
@@ -708,7 +708,7 @@ namespace GnollHackClient
 
                                     if (has_bit && !had_bit)
                                     {
-                                        int condcolor = color;
+                                        int condcolor = (color & 15);
                                         if (condcolorset)
                                         {
                                             for(int c = 0; c < (int)nhcolor.CLR_MAX; c++)
@@ -740,12 +740,6 @@ namespace GnollHackClient
                 default:
                     break;
             }
-
-            //Int32[] colormasks = new Int32[(int)bl_conditions.NUM_BL_CONDITIONS];
-            //if(colormasksptr != null)
-            //{
-            //    Marshal.Copy(colormasksptr, colormasks, 0, (int)bl_conditions.NUM_BL_CONDITIONS);
-            //}
         }
 
         private int _msgIndex = 0;
