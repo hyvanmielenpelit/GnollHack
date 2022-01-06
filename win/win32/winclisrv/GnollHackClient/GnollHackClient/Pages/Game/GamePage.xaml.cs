@@ -299,6 +299,8 @@ namespace GnollHackClient.Pages.Game
         public List<GHFloatingText> _floatingTexts = new List<GHFloatingText>();
         public object _screenTextLock = new object();
         public GHScreenText _screenText = null;
+        public object _conditionTextLock = new object();
+        public List<GHConditionText> _conditionTexts = new List<GHConditionText>();
 
         public bool EnableWizardMode { get; set; }
 
@@ -886,6 +888,44 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        public void DisplayConditionText(DisplayConditionTextData data)
+        {
+            lock (_floatingTextLock)
+            {
+                bool foundanother = false;
+                long highestcounter = 0;
+                SKPoint speedvector = new SKPoint(0, -1);
+                foreach (GHConditionText fl in _conditionTexts)
+                {
+                    foundanother = true;
+                    if (fl.CreatedAt > highestcounter)
+                    {
+                        highestcounter = fl.CreatedAt;
+                        speedvector = fl.GetVelocity(highestcounter);
+                    }
+                }
+
+                long counter = 0;
+                lock (AnimationTimerLock)
+                {
+                    counter = AnimationTimers.general_animation_counter;
+                }
+
+                if (foundanother)
+                {
+                    float YSpeed = Math.Abs(speedvector.Y);
+                    float secs = 0.5f / YSpeed;
+                    long ticks = (long)(secs * 40);
+                    if (counter - highestcounter >= -ticks * 10 && counter - highestcounter < ticks)
+                    {
+                        counter += ticks - (counter - highestcounter);
+                    }
+                }
+
+                _conditionTexts.Add(new GHConditionText(data, counter));
+            }
+        }
+
         private Color _titleGoldColor = new Color((double)0xD4 / 255, (double)0xA0 / 255, (double)0x17 / 255);
         private Color _popupTransparentBlackColor = new Color(0, 0, 0, (double)0x66 / 255);
         private Color _popupDarkerTransparentBlackColor = new Color(0, 0, 0, (double)0xAA / 255);
@@ -1090,6 +1130,9 @@ namespace GnollHackClient.Pages.Game
                                 break;
                             case GHRequestType.ShowGUITips:
                                 ShowGUITips(true);
+                                break;
+                            case GHRequestType.DisplayConditionText:
+                                DisplayConditionText(req.ConditionTextData);
                                 break;
                         }
                     }

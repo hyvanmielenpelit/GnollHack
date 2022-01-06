@@ -631,20 +631,44 @@ namespace GnollHackClient
                 }
             }
 
-            if (fieldidx == (int)statusfields.BL_SKILL)
+            switch(fieldidx)
             {
-                GHRequestType rtype;
-                if (text != null && text == "Skill")
-                    rtype = GHRequestType.ShowSkillButton;
-                else
-                    rtype = GHRequestType.HideSkillButton;
+                case (int)statusfields.BL_SKILL:
+                    {
+                        GHRequestType rtype;
+                        if (text != null && text == "Skill")
+                            rtype = GHRequestType.ShowSkillButton;
+                        else
+                            rtype = GHRequestType.HideSkillButton;
 
-                ConcurrentQueue<GHRequest> queue;
-                if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
-                {
-                    queue.Enqueue(new GHRequest(this, rtype));
-                }
-
+                        ConcurrentQueue<GHRequest> queue;
+                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, rtype));
+                        }
+                        break;
+                    }
+                case (int)statusfields.BL_HUNGER:
+                    {
+                        if(cng != 0)
+                        {
+                            ConcurrentQueue<GHRequest> queue;
+                            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                            {
+                                DisplayConditionTextData data = new DisplayConditionTextData();
+                                data.text = text;
+                                data.style = 1;
+                                data.color = 0;
+                                data.filterstyle = 1;
+                                data.filtercolor = 0;
+                                data.tflags = 0UL;
+                                queue.Enqueue(new GHRequest(this, GHRequestType.DisplayConditionText, data));
+                            }
+                        }
+                        break;
+                    }
+                default:
+                    break;
             }
 
             //Int32[] colormasks = new Int32[(int)bl_conditions.NUM_BL_CONDITIONS];

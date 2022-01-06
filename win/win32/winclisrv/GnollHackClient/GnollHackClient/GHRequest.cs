@@ -36,6 +36,7 @@ namespace GnollHackClient
         FadeToBlack,
         FadeFromBlack,
         ShowGUITips,
+        DisplayConditionText,
     }
 
     public struct AddContextMenuData
@@ -73,6 +74,16 @@ namespace GnollHackClient
         public ulong tflags;
     }
 
+    public struct DisplayConditionTextData
+    {
+        public string text;
+        public int style;
+        public int color;
+        public int filterstyle;
+        public int filtercolor;
+        public ulong tflags;
+    }
+
     public class GHRequest
     {
         public ClientGame RequestingClientGame { get; }
@@ -97,6 +108,7 @@ namespace GnollHackClient
         public AddContextMenuData ContextMenuData { get; set; }
         public DisplayFloatingTextData FloatingTextData { get; set; }
         public DisplayScreenTextData ScreenTextData { get; set; }
+        public DisplayConditionTextData ConditionTextData { get; set; }
 
         public GHRequest()
         {
@@ -149,6 +161,15 @@ namespace GnollHackClient
             RequestType = requesttype;
             RequestString = requeststring;
         }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring, int requestint, int requestint2)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            RequestString = requeststring;
+            RequestInt = requestint;
+            RequestInt2 = requestint2;
+        }
+
         public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring, uint attributes)
         {
             RequestingClientGame = clientgame;
@@ -193,6 +214,12 @@ namespace GnollHackClient
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             ScreenTextData = data;
+        }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, DisplayConditionTextData data)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            ConditionTextData = data;
         }
     }
 }
