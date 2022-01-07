@@ -2837,6 +2837,10 @@ unsigned long layer_flags;
             //if (!loc_is_you && data->map[i][j].layer_flags & LFLAGS_O_PILE)
             //    display_this_status_mark = TRUE;
             break;
+        case STATUS_MARK_SATIATED:
+            if (loc_is_you && u.uhs == SATIATED)
+                display_this_status_mark = TRUE;
+            break;
         case STATUS_MARK_HUNGRY:
             if ((loc_is_you && u.uhs == HUNGRY)
                 || (!loc_is_you && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty == 0)

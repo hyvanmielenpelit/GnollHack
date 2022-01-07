@@ -4529,7 +4529,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int ct_y = TILEBMP_Y(mtile);
                             int tiles_per_row = tileWidth / ui_tile_component_array[STATUS_MARKS].width;
                             int max_fitted_rows = (tileHeight - 4) / (ui_tile_component_array[STATUS_MARKS].height + 2);
-                            enum game_ui_status_mark_types statusmarkorder[MAX_STATUS_MARKS] = { STATUS_MARK_TOWNGUARD_PEACEFUL, STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+                            enum game_ui_status_mark_types statusmarkorder[MAX_STATUS_MARKS] = { STATUS_MARK_TOWNGUARD_PEACEFUL, STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
 
                             for (int statusorder_idx = STATUS_MARK_PET; statusorder_idx < SIZE(statusmarkorder); statusorder_idx++)
                             {
@@ -4561,6 +4561,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 case STATUS_MARK_PILE:
                                     //if (!loc_is_you && data->map[i][j].layer_flags & LFLAGS_O_PILE)
                                     //    display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_SATIATED:
+                                    if (loc_is_you && u.uhs == SATIATED)
+                                        display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_HUNGRY:
                                     if ((loc_is_you && u.uhs == HUNGRY)
