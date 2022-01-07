@@ -630,7 +630,7 @@ namespace GnollHackClient
             "Frightened", "Sleeping", "Cancelled", "Silenced", "Grabbed", "Mummy Rot", "Lycanthropy"
         };
 
-        public void ClientCallback_StatusUpdate(int fieldidx, string text, long condbits, int cng, int percent, int color, IntPtr colormasksptr)
+        public void ClientCallback_StatusUpdate(int fieldidx, string text, long condbits, int cng, int percent, int color, IntPtr condcolorptr)
         {
             long oldbits = 0L;
             if (fieldidx >= 0 && fieldidx < (int)statusfields.MAXBLSTATS)
@@ -691,12 +691,12 @@ namespace GnollHackClient
                             ConcurrentQueue<GHRequest> queue;
                             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                             {
-                                int arraysize = (int)nhcolor.CLR_MAX + 5;
-                                long[] condcolormasks = new long[arraysize];
+                                int arraysize = (int)bl_conditions.NUM_BL_CONDITIONS; // (int)nhcolor.CLR_MAX + 5;
+                                short[] condcolors = new short[arraysize];
                                 bool condcolorset = false;
-                                if (colormasksptr != null)
+                                if (condcolorptr != null)
                                 {
-                                    Marshal.Copy(colormasksptr, condcolormasks, 0, arraysize);
+                                    Marshal.Copy(condcolorptr, condcolors, 0, arraysize);
                                     condcolorset = true;
                                 }
 
@@ -711,16 +711,17 @@ namespace GnollHackClient
                                         int condcolor = (color & 15);
                                         if (condcolorset)
                                         {
-                                            for(int c = 0; c < (int)nhcolor.CLR_MAX; c++)
-                                            {
-                                                long cbit = 1L << c;
-                                                bool has_cbit = (condcolormasks[c] & cbit) != 0;
-                                                if (has_cbit)
-                                                {
-                                                    condcolor = c;
-                                                    break;
-                                                }
-                                            }
+                                            condcolor = (int)condcolors[i];
+                                            //for(int c = 0; c < (int)nhcolor.CLR_MAX; c++)
+                                            //{
+                                            //    long cbit = 1L << c;
+                                            //    bool has_cbit = (condcolormasks[c] & cbit) != 0;
+                                            //    if (has_cbit)
+                                            //    {
+                                            //        condcolor = c;
+                                            //        break;
+                                            //    }
+                                            //}
                                         }
 
                                         DisplayConditionTextData data = new DisplayConditionTextData();

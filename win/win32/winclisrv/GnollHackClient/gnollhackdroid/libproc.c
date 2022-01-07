@@ -657,6 +657,9 @@ void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, BOOLE
     genl_status_enablefield(fieldidx, nm, fmt, enable);
 }
 
+
+static short condcolors[NUM_BL_CONDITIONS] = { 0 };
+
 void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks)
 {
     __lib_status_update(idx, ptr, chg, percent, color, colormasks);
@@ -674,7 +677,18 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
         }
     }
 
-    lib_callbacks.callback_status_update(idx, txt, condbits, chg, percent, color, colormasks);
+    if (idx == BL_CONDITION)
+    {
+        int i;
+        for (i = 0; i < NUM_BL_CONDITIONS; i++)
+        {
+            int cond_mask = 1 << i;
+            short color = get_condition_color(cond_mask);
+            condcolors[i] = color;
+        }
+    }
+
+    lib_callbacks.callback_status_update(idx, txt, condbits, chg, percent, color, !colormasks ? NULL : condcolors);
 }
 
 
@@ -715,6 +729,9 @@ void lib_bot_updated()
 
 int get_condition_color(int cond_mask)
 {
+    if (!cond_hilites)
+        return CLR_WHITE;
+
     int i;
     for (i = 0; i < CLR_MAX; i++)
         if (cond_hilites[i] & cond_mask)

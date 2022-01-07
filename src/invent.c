@@ -1496,9 +1496,11 @@ boolean verbose;
         makeknown(otmp->otyp);
     }
 
-    if(state_change_detected || condition_change)
+    if (state_change_detected || condition_change)
+    {
         context.botl = context.botlx = TRUE;
-
+        force_redraw_at(u.ux, u.uy);
+    }
 }
 
 /*
