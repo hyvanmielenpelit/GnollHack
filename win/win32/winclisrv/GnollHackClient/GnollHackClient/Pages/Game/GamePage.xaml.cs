@@ -307,6 +307,8 @@ namespace GnollHackClient.Pages.Game
         public GHScreenText _screenText = null;
         public object _conditionTextLock = new object();
         public List<GHConditionText> _conditionTexts = new List<GHConditionText>();
+        public object _screenFilterLock = new object();
+        public List<GHScreenFilter> _screenFilters = new List<GHScreenFilter>();
 
         public bool EnableWizardMode { get; set; }
 
@@ -641,6 +643,15 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
 
+                lock (_screenFilterLock)
+                {
+                    for (i = _screenFilters.Count - 1; i >= 0; i--)
+                    {
+                        if (_screenFilters[i].IsFinished(AnimationTimers.general_animation_counter))
+                            _screenFilters.RemoveAt(i);
+                    }
+                }
+
                 lock (_screenTextLock)
                 {
                     if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))
@@ -932,6 +943,35 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        public void DisplayScreenFilter(DisplayScreenFilterData data)
+        {
+            lock (_screenFilterLock)
+            {
+                long highestcounter = 0;
+                foreach (GHScreenFilter fl in _screenFilters)
+                {
+                    long finishcount = fl.GetFinishCounterValue();
+                    if (finishcount > highestcounter)
+                    {
+                        highestcounter = finishcount;
+                    }
+                }
+
+                long counter = 0;
+                lock (AnimationTimerLock)
+                {
+                    counter = AnimationTimers.general_animation_counter;
+                }
+
+                if (highestcounter > 0 && highestcounter > counter)
+                {
+                    counter = highestcounter;
+                }
+
+                _screenFilters.Add(new GHScreenFilter(data, counter));
+            }
+        }
+
         private Color _titleGoldColor = new Color((double)0xD4 / 255, (double)0xA0 / 255, (double)0x17 / 255);
         private Color _popupTransparentBlackColor = new Color(0, 0, 0, (double)0x66 / 255);
         private Color _popupDarkerTransparentBlackColor = new Color(0, 0, 0, (double)0xAA / 255);
@@ -1139,6 +1179,9 @@ namespace GnollHackClient.Pages.Game
                                 break;
                             case GHRequestType.DisplayConditionText:
                                 DisplayConditionText(req.ConditionTextData);
+                                break;
+                            case GHRequestType.DisplayScreenFilter:
+                                DisplayScreenFilter(req.ScreenFilterData);
                                 break;
                         }
                     }
@@ -4293,6 +4336,24 @@ namespace GnollHackClient.Pages.Game
                             ty = (offsetY + usedOffsetY + height * (float)cy);
                             canvas.DrawText(str, tx, ty, textPaint);
                         }
+                    }
+                }
+
+                /* Screen Filter */
+                lock (_screenFilterLock)
+                {
+                    foreach (GHScreenFilter ft in _screenFilters)
+                    {
+                        SKColor fillcolor = SKColors.White;
+                        lock (AnimationTimerLock)
+                        {
+                            fillcolor = ft.GetColor(AnimationTimers.general_animation_counter);
+                        }
+
+                        textPaint.Style = SKPaintStyle.Fill;
+                        textPaint.Color = fillcolor;
+                        SKRect filterrect = new SKRect(0, 0, canvaswidth, canvasheight);
+                        canvas.DrawRect(filterrect, textPaint);
                     }
                 }
 

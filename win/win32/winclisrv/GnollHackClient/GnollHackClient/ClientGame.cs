@@ -676,8 +676,6 @@ namespace GnollHackClient
                                 data.text = text.Trim();
                                 data.style = 0;
                                 data.color = (int)(color & 15);
-                                data.filterstyle = 0;
-                                data.filtercolor = 0;
                                 data.tflags = 0UL;
                                 queue.Enqueue(new GHRequest(this, GHRequestType.DisplayConditionText, data));
                             }
@@ -728,10 +726,41 @@ namespace GnollHackClient
                                         data.text = ClientGame.cond_names_long[i];
                                         data.style = 0;
                                         data.color = condcolor;
-                                        data.filterstyle = 0;
-                                        data.filtercolor = 0;
                                         data.tflags = 0UL;
                                         queue.Enqueue(new GHRequest(this, GHRequestType.DisplayConditionText, data));
+
+                                        int filtercolor = (int)nhcolor.CLR_MAX;
+                                        switch(i)
+                                        {
+                                            case (int)bl_conditions.BL_COND_STONE:
+                                                filtercolor = (int)nhcolor.CLR_BROWN;
+                                                break;
+                                            case (int)bl_conditions.BL_COND_SLIME:
+                                                filtercolor = (int)nhcolor.CLR_BRIGHT_GREEN;
+                                                break;
+                                            case (int)bl_conditions.BL_COND_STRNGL:
+                                                filtercolor = (int)nhcolor.CLR_RED;
+                                                break;
+                                            case (int)bl_conditions.BL_COND_SUFFOC:
+                                                filtercolor = (int)nhcolor.CLR_RED;
+                                                break;
+                                            case (int)bl_conditions.BL_COND_FOODPOIS:
+                                                filtercolor = (int)nhcolor.CLR_MAGENTA;
+                                                break;
+                                            case (int)bl_conditions.BL_COND_TERMILL:
+                                                filtercolor = (int)nhcolor.CLR_MAGENTA;
+                                                break;
+                                        }
+
+                                        if(filtercolor != (int)nhcolor.CLR_MAX)
+                                        {
+                                            DisplayScreenFilterData fdata = new DisplayScreenFilterData();
+                                            fdata.style = 0;
+                                            fdata.color = filtercolor;
+                                            fdata.fflags = 0UL;
+                                            queue.Enqueue(new GHRequest(this, GHRequestType.DisplayScreenFilter, fdata));
+                                            break;
+                                        }
                                     }
                                 }
                             }

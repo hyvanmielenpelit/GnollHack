@@ -37,6 +37,7 @@ namespace GnollHackClient
         FadeFromBlack,
         ShowGUITips,
         DisplayConditionText,
+        DisplayScreenFilter,
     }
 
     public struct AddContextMenuData
@@ -79,9 +80,14 @@ namespace GnollHackClient
         public string text;
         public int style;
         public int color;
-        public int filterstyle;
-        public int filtercolor;
         public ulong tflags;
+    }
+
+    public struct DisplayScreenFilterData
+    {
+        public int style;
+        public int color;
+        public ulong fflags;
     }
 
     public class GHRequest
@@ -109,6 +115,7 @@ namespace GnollHackClient
         public DisplayFloatingTextData FloatingTextData { get; set; }
         public DisplayScreenTextData ScreenTextData { get; set; }
         public DisplayConditionTextData ConditionTextData { get; set; }
+        public DisplayScreenFilterData ScreenFilterData { get; set; }
 
         public GHRequest()
         {
@@ -220,6 +227,12 @@ namespace GnollHackClient
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             ConditionTextData = data;
+        }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, DisplayScreenFilterData data)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            ScreenFilterData = data;
         }
     }
 }
