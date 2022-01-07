@@ -469,7 +469,7 @@ Shield_on(VOID_ARGS)
 
 #ifdef STATUS_HILITES
     if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_ONLY);
+        status_initialize(REASSESS_NO_UPDATE_ALL);
 #endif
 
     return 0;
@@ -488,7 +488,7 @@ Shield_off(VOID_ARGS)
 
 #ifdef STATUS_HILITES
     if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_ONLY);
+        status_initialize(REASSESS_NO_UPDATE_ALL);
 #endif
 
     return 0;

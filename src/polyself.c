@@ -151,7 +151,7 @@ set_uasmon()
 
 #ifdef STATUS_HILITES
     if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_ONLY);
+        status_initialize(REASSESS_NO_UPDATE_ALL);
 #endif
 }
 

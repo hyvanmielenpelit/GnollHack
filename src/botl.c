@@ -1377,7 +1377,8 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
                    : initblstats[i].fldfmt;
         status_enablefield(fld, fieldname, fieldfmt, fldenabl);
     }
-    update_all = TRUE;
+    if(reassessment < REASSESS_NO_UPDATE_ALL)
+        update_all = TRUE;
 }
 
 void

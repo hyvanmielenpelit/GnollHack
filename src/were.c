@@ -46,8 +46,12 @@ register struct monst *mon;
     } else if (!rn2(30) || Protection_from_shape_changers) {
         new_were(mon); /* change back into human form */
     }
-    /* update innate intrinsics (mainly Drain_resistance) */
-    set_uasmon(); /* new_were() doesn't do this */
+
+    if (mon == &youmonst)
+    {
+        /* update innate intrinsics (mainly Drain_resistance) */
+        set_uasmon(); /* new_were() doesn't do this */
+    }
 }
 
 int

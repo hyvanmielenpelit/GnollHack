@@ -611,7 +611,7 @@ dowield()
 
 #ifdef STATUS_HILITES
     if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_ONLY);
+        status_initialize(REASSESS_NO_UPDATE_ALL);
 #endif
 
     return result;
@@ -750,7 +750,7 @@ long mask;
 
 #ifdef STATUS_HILITES
     if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_ONLY);
+        status_initialize(REASSESS_NO_UPDATE_ALL);
 #endif
 
     //Do not take a turn
@@ -1042,7 +1042,7 @@ doswapweapon()
 
 #ifdef STATUS_HILITES
     if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_ONLY);
+        status_initialize(REASSESS_NO_UPDATE_ALL);
 #endif
 
     //Do not take a turn
@@ -1615,7 +1615,7 @@ dotwoweapon()
     update_inventory();
 #ifdef STATUS_HILITES
     if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_ONLY);
+        status_initialize(REASSESS_NO_UPDATE_ALL);
 #endif
     return 0;
 }
@@ -1640,7 +1640,7 @@ uwepgone()
         update_inventory();
 #ifdef STATUS_HILITES
         if (VIA_WINDOWPORT())
-            status_initialize(REASSESS_ONLY);
+            status_initialize(REASSESS_NO_UPDATE_ALL);
 #endif
     }
 }
@@ -1659,7 +1659,7 @@ uwep2gone()
         update_inventory();
 #ifdef STATUS_HILITES
         if (VIA_WINDOWPORT())
-            status_initialize(REASSESS_ONLY);
+            status_initialize(REASSESS_NO_UPDATE_ALL);
 #endif
     }
 }
