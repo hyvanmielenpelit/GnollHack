@@ -64,8 +64,14 @@ namespace GnollHackClient.Pages.Game
         private object _mapDataLock = new object();
         private int _mapCursorX;
         private int _mapCursorY;
+
+        private object _uLock = new object();
         private int _ux = 0;
         private int _uy = 0;
+        private ulong _u_condition_bits = 0;
+        private ulong _u_status_bits = 0;
+        private ulong[] _u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
+        private int[] _statusmarkorder = { (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_PEACEFUL, (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 
         private object _forceAsciiLock = new object();
         private bool _forceAscii = false;
@@ -3331,14 +3337,13 @@ namespace GnollHackClient.Pages.Game
                                                                 ulong status_bits = _mapData[mapx, mapy].Layers.status_bits;
                                                                 if (status_bits != 0)
                                                                 {
-                                                                    int[] statusmarkorder = { (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_PEACEFUL, (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
                                                                     int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
                                                                     int mglyph = (int)game_ui_tile_types.STATUS_MARKS + UITileOff;
                                                                     int mtile = Glyph2Tile[mglyph];
                                                                     int sheet_idx = TileSheetIdx(mtile);
                                                                     int tile_x = TileSheetX(mtile);
                                                                     int tile_y = TileSheetY(mtile);
-                                                                    foreach (int status_mark in statusmarkorder)
+                                                                    foreach (int status_mark in _statusmarkorder)
                                                                     {
                                                                         if (status_count >= max_fitted_rows)
                                                                             break;
@@ -5119,6 +5124,7 @@ namespace GnollHackClient.Pages.Game
                                 valtext = StatusFields[(int)statusfields.BL_TITLE].Text;
                             }
                         }
+                        valtext = valtext.Trim();
                         if (valtext != "")
                         {
                             canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
@@ -5127,6 +5133,133 @@ namespace GnollHackClient.Pages.Game
                             curx += stdspacing;
                         }
 
+                        /* Condition, status and buff marks */
+                        float marksize = rowheight * 0.80f;
+                        float markpadding = marksize / 8;
+                        ulong status_bits = _u_status_bits;
+                        if (status_bits != 0)
+                        {
+                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                            int mglyph = (int)game_ui_tile_types.STATUS_MARKS + UITileOff;
+                            int mtile = Glyph2Tile[mglyph];
+                            int sheet_idx = TileSheetIdx(mtile);
+                            int tile_x = TileSheetX(mtile);
+                            int tile_y = TileSheetY(mtile);
+                            foreach (int status_mark in _statusmarkorder)
+                            {
+                                ulong statusbit = 1UL << status_mark;
+                                if ((status_bits & statusbit) != 0)
+                                {
+                                    int within_tile_x = status_mark % tiles_per_row;
+                                    int within_tile_y = status_mark / tiles_per_row;
+                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                    SKRect source_rt = new SKRect();
+                                    source_rt.Left = c_x;
+                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                    source_rt.Top = c_y;
+                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                    SKRect target_rt = new SKRect();
+                                    target_rt.Left = curx;
+                                    target_rt.Right = target_rt.Left + marksize;
+                                    target_rt.Top = cury + (rowheight - marksize) / 2;
+                                    target_rt.Bottom = target_rt.Top + marksize;
+
+                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                    curx += marksize;
+                                    curx += markpadding;
+                                }
+                            }
+                        }
+
+                        ulong condition_bits = _u_condition_bits;
+                        if (condition_bits != 0)
+                        {
+                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                            int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + UITileOff;
+                            int mtile = Glyph2Tile[mglyph];
+                            int sheet_idx = TileSheetIdx(mtile);
+                            int tile_x = TileSheetX(mtile);
+                            int tile_y = TileSheetY(mtile);
+                            for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
+                            {
+                                ulong conditionbit = 1UL << condition_mark;
+                                if ((condition_bits & conditionbit) != 0)
+                                {
+                                    int within_tile_x = condition_mark % tiles_per_row;
+                                    int within_tile_y = condition_mark / tiles_per_row;
+                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                    SKRect source_rt = new SKRect();
+                                    source_rt.Left = c_x;
+                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                    source_rt.Top = c_y;
+                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                    SKRect target_rt = new SKRect();
+                                    target_rt.Left = curx;
+                                    target_rt.Right = target_rt.Left + marksize;
+                                    target_rt.Top = cury + (rowheight - marksize) / 2;
+                                    target_rt.Bottom = target_rt.Top + marksize;
+
+                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                    curx += marksize;
+                                    curx += markpadding;
+                                }
+                            }
+                        }
+
+                        for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
+                        {
+                            ulong buff_bits = _u_buff_bits[buff_ulong];
+                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                            if (buff_bits != 0)
+                            {
+                                for (int buff_idx = 0; buff_idx < 32; buff_idx++)
+                                {
+                                    ulong buffbit = 1UL << buff_idx;
+                                    if ((buff_bits & buffbit) != 0)
+                                    {
+                                        int propidx = buff_ulong * 32 + buff_idx;
+                                        if (propidx > GHConstants.LAST_PROP)
+                                            break;
+                                        int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + BuffTileOff;
+                                        int mtile = Glyph2Tile[mglyph];
+                                        int sheet_idx = TileSheetIdx(mtile);
+                                        int tile_x = TileSheetX(mtile);
+                                        int tile_y = TileSheetY(mtile);
+
+                                        int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
+                                        int within_tile_x = buff_mark % tiles_per_row;
+                                        int within_tile_y = buff_mark / tiles_per_row;
+                                        int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                        int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                        SKRect source_rt = new SKRect();
+                                        source_rt.Left = c_x;
+                                        source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                        source_rt.Top = c_y;
+                                        source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                        SKRect target_rt = new SKRect();
+                                        target_rt.Left = curx;
+                                        target_rt.Right = target_rt.Left + marksize;
+                                        target_rt.Top = cury + (rowheight - marksize) / 2;
+                                        target_rt.Bottom = target_rt.Top + marksize;
+
+                                        canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                        curx += marksize;
+                                        curx += markpadding;
+                                    }
+                                }
+                            }
+                        }
 
                         /* Dungeon level */
                         valtext = "";
@@ -6810,23 +6943,25 @@ namespace GnollHackClient.Pages.Game
                         resp = -6; // ch = "l";
                     else
                     {
-                        if (_showDirections && GHUtils.isok(_ux, _uy) && GHUtils.isok(x, y))
+                        lock (_uLock)
                         {
-                            int dx = x - _ux;
-                            int dy = y - _uy;
-
-                            if (Math.Abs(x - _ux) <= 1 && Math.Abs(y - _uy) <= 1)
+                            if (_showDirections && GHUtils.isok(_ux, _uy) && GHUtils.isok(x, y))
                             {
-                                resp = -1 * (5 + dx - 3 * dy);
-                                if (resp == 5)
-                                    resp = 46; /* '.', or self */
+                                int dx = x - _ux;
+                                int dy = y - _uy;
+                                if (Math.Abs(x - _ux) <= 1 && Math.Abs(y - _uy) <= 1)
+                                {
+                                    resp = -1 * (5 + dx - 3 * dy);
+                                    if (resp == 5)
+                                        resp = 46; /* '.', or self */
+                                }
+                                else
+                                    return;
                             }
                             else
-                                return;
+                                resp = ShowNumberPad ? -5 : 46; /* '.', or self */
                         }
-                        else
-                            resp = ShowNumberPad ? -5 : 46; /* '.', or self */
-                    }
+                }
 
                     if (ShowNumberPad)
                         resp -= 10;
@@ -6869,8 +7004,20 @@ namespace GnollHackClient.Pages.Game
                 }
                 if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
                 {
-                    _ux = x;
-                    _uy = y;
+                    lock(_uLock)
+                    {
+                        _ux = x;
+                        _uy = y;
+                        _u_condition_bits = layers.condition_bits;
+                        _u_status_bits = layers.status_bits;
+                        if(layers.buff_bits != null)
+                        {
+                            for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
+                            {
+                                _u_buff_bits[i] = layers.buff_bits[i];
+                            }
+                        }
+                    }
                 }
                 if (layers.o_id != 0 && layers.o_id != _mapData[x, y].Layers.o_id)
                 {
