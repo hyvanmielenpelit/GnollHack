@@ -711,7 +711,7 @@ namespace GnollHackClient
                                         int condcolor = (color & 15);
                                         if (condcolorset)
                                         {
-                                            condcolor = (int)condcolors[i];
+                                            condcolor = ((int)condcolors[i] & 15);
                                             //for(int c = 0; c < (int)nhcolor.CLR_MAX; c++)
                                             //{
                                             //    long cbit = 1L << c;
