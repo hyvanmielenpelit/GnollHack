@@ -1335,6 +1335,29 @@ unsigned long mkflags;
     if ((objects[otmp->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && (mkflags & MKOBJ_FLAGS_OPEN_COFFIN))
         otmp->speflags |= SPEFLAGS_LID_OPENED;
 
+    /* Change type before init if need be*/
+    if (mkobj_type == 0 && (In_mines(&u.uz) || level_difficulty() < 10))
+    {
+        if (otyp == FROST_HORN || otyp == FIRE_HORN)
+            otmp->otyp = !rn2(3) ? HORN_OF_CHAOS : !rn2(2) ? BRASS_HORN : TOOLED_HORN;
+        else if (otmp->otyp == WAN_COLD || otmp->otyp == WAN_FIRE || otmp->otyp == WAN_LIGHTNING)
+            otmp->otyp = !rn2(3) ? WAN_STRIKING : !rn2(2) ? WAN_DIGGING : WAN_SPEED_MONSTER;
+    }
+    
+    if (mkobj_type == 0)
+    {
+        if (otmp->otyp == WAN_DEATH || otmp->otyp == WAN_DISINTEGRATION || otmp->otyp == WAN_PETRIFICATION)
+            otmp->otyp = !rn2(2) ? WAN_LIGHTNING : WAN_FIRE;
+
+    }
+
+    if (mkobj_type < 2 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || level_difficulty() < 5))
+    {
+        if (otmp->otyp == WAN_WISHING)
+            otmp->otyp = WAN_POLYMORPH;
+    }
+
+    /* Initialize */
     if (init) 
     {
         /* quantity */
@@ -1731,23 +1754,6 @@ unsigned long mkflags;
             }
             break;
         case WAND_CLASS:
-            if (mkobj_type == 0)
-            {
-                if (otmp->otyp == WAN_DEATH || otmp->otyp == WAN_DISINTEGRATION || otmp->otyp == WAN_PETRIFICATION)
-                    otmp->otyp = !rn2(2) ? WAN_LIGHTNING : WAN_FIRE;
-
-            }
-            if (mkobj_type == 0 && (In_mines(&u.uz) || level_difficulty() < 10))
-            {
-                if (otmp->otyp == WAN_COLD || otmp->otyp == WAN_FIRE || otmp->otyp == WAN_LIGHTNING)
-                    otmp->otyp = !rn2(3) ? WAN_STRIKING : !rn2(2) ? WAN_DIGGING : WAN_SPEED_MONSTER;
-
-            }
-            if (mkobj_type < 2 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || level_difficulty() < 5))
-            {
-                if (otmp->otyp == WAN_WISHING)
-                    otmp->otyp = WAN_POLYMORPH;
-            }
             otmp->charges = get_obj_init_charge(otmp);
             blessorcurse(otmp, 17);
             otmp->recharged = 0; /* used to control recharging */
