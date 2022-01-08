@@ -5625,16 +5625,16 @@ namespace GnollHackClient.Pages.Game
                     textPaint.Typeface = App.UnderwoodTypeface;
                     textPaint.Color = SKColors.Black;
                     textPaint.TextSize = 36;
-                    SKRect tbounds = new SKRect();
 
-                    float twidth = textPaint.MeasureText("Strength", ref tbounds);
-                    float theight = tbounds.Height;
-                    float tscale = Math.Min((bkgrect.Width / 4) / twidth, (bkgrect.Height / 15) / theight);
-                    textPaint.TextSize = textPaint.TextSize * tscale;
+                    float twidth = textPaint.MeasureText("Strength");
+                    float theight = textPaint.FontSpacing;
+                    float tscale =  Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 18) / theight));
+                    float basefontsize = textPaint.TextSize * tscale;
+                    textPaint.TextSize = basefontsize;
                     float strwidth = twidth * tscale;
-                    float indentation = strwidth * 2;
+                    float indentation = strwidth * 20f / 8f;
 
-                    string valtext;
+                    string valtext, valtext2;
                     ty = bkgrect.Top + bkgrect.Height / 8.5f - textPaint.FontMetrics.Ascent;
                     float box_bottom_draw_threshold = box_bottom - bkgrect.Height / 8.5f;
 
@@ -5648,10 +5648,14 @@ namespace GnollHackClient.Pages.Game
                     }
                     if (valtext != "")
                     {
+                        textPaint.Typeface = App.ImmortalTypeface;
+                        textPaint.TextSize = basefontsize * 1.1f;
                         tx = (bkgrect.Left + bkgrect.Right) / 2;
                         textPaint.TextAlign = SKTextAlign.Center;
                         canvas.DrawText(valtext, tx, ty, textPaint);
                         textPaint.TextAlign = SKTextAlign.Left;
+                        textPaint.Typeface = App.UnderwoodTypeface;
+                        textPaint.TextSize = basefontsize;
                         tx = bkgrect.Left + bkgrect.Width / 12.6f;
                         ty += textPaint.FontSpacing;
                         ty += textPaint.FontSpacing * 0.5f;
@@ -5681,14 +5685,14 @@ namespace GnollHackClient.Pages.Game
                     valtext = "";
                     lock (StatusFieldLock)
                     {
-                        if (StatusFields[(int)statusfields.BL_ALIGN] != null && StatusFields[(int)statusfields.BL_ALIGN].IsEnabled && StatusFields[(int)statusfields.BL_ALIGN].Text != null)
+                        if (StatusFields[(int)statusfields.BL_XP] != null && StatusFields[(int)statusfields.BL_XP].IsEnabled && StatusFields[(int)statusfields.BL_XP].Text != null)
                         {
-                            valtext = StatusFields[(int)statusfields.BL_ALIGN].Text;
+                            valtext = StatusFields[(int)statusfields.BL_XP].Text;
                         }
                     }
                     if (valtext != "" && ty < box_bottom_draw_threshold)
                     {
-                        canvas.DrawText("Alignment:", tx, ty, textPaint);
+                        canvas.DrawText("Level:", tx, ty, textPaint);
                         canvas.DrawText(valtext, tx + indentation, ty, textPaint);
                         ty += textPaint.FontSpacing;
                     }
@@ -5711,6 +5715,36 @@ namespace GnollHackClient.Pages.Game
                     valtext = "";
                     lock (StatusFieldLock)
                     {
+                        if (StatusFields[(int)statusfields.BL_HD] != null && StatusFields[(int)statusfields.BL_HD].IsEnabled && StatusFields[(int)statusfields.BL_HD].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_HD].Text;
+                        }
+                    }
+                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    {
+                        canvas.DrawText("Hit dice:", tx, ty, textPaint);
+                        canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                        ty += textPaint.FontSpacing;
+                    }
+
+                    valtext = "";
+                    lock (StatusFieldLock)
+                    {
+                        if (StatusFields[(int)statusfields.BL_ALIGN] != null && StatusFields[(int)statusfields.BL_ALIGN].IsEnabled && StatusFields[(int)statusfields.BL_ALIGN].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_ALIGN].Text;
+                        }
+                    }
+                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    {
+                        canvas.DrawText("Alignment:", tx, ty, textPaint);
+                        canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                        ty += textPaint.FontSpacing;
+                    }
+
+                    valtext = "";
+                    lock (StatusFieldLock)
+                    {
                         if (StatusFields[(int)statusfields.BL_SCORE] != null && StatusFields[(int)statusfields.BL_SCORE].IsEnabled && StatusFields[(int)statusfields.BL_SCORE].Text != null)
                         {
                             valtext = StatusFields[(int)statusfields.BL_SCORE].Text;
@@ -5722,7 +5756,123 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText(valtext, tx + indentation, ty, textPaint);
                         ty += textPaint.FontSpacing;
                     }
+
+                    ty += textPaint.FontSpacing * 0.5f;
+
+                    valtext = "";
+                    lock (StatusFieldLock)
+                    {
+                        if (StatusFields[(int)statusfields.BL_AC] != null && StatusFields[(int)statusfields.BL_AC].IsEnabled && StatusFields[(int)statusfields.BL_AC].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_AC].Text;
+                        }
+                    }
+                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    {
+                        canvas.DrawText("Armor class:", tx, ty, textPaint);
+                        canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                        ty += textPaint.FontSpacing;
+                    }
+
+                    valtext = "";
+                    valtext2 = "";
+                    lock (StatusFieldLock)
+                    {
+                        if (StatusFields[(int)statusfields.BL_MC_LVL] != null && StatusFields[(int)statusfields.BL_MC_LVL].IsEnabled && StatusFields[(int)statusfields.BL_MC_LVL].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_AC].Text;
+                        }
+                        if (StatusFields[(int)statusfields.BL_MC_PCT] != null && StatusFields[(int)statusfields.BL_MC_PCT].IsEnabled && StatusFields[(int)statusfields.BL_MC_PCT].Text != null)
+                        {
+                            valtext2 = StatusFields[(int)statusfields.BL_MC_PCT].Text;
+                        }
+                    }
+                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    {
+                        canvas.DrawText("Magic cancellation:", tx, ty, textPaint);
+                        string printtext = valtext2 != "" ? valtext + "/" + valtext2 +"%" : valtext;
+                        canvas.DrawText(printtext, tx + indentation, ty, textPaint);
+                        ty += textPaint.FontSpacing;
+                    }
+
+                    valtext = "";
+                    lock (StatusFieldLock)
+                    {
+                        if (StatusFields[(int)statusfields.BL_MOVE] != null && StatusFields[(int)statusfields.BL_MOVE].IsEnabled && StatusFields[(int)statusfields.BL_MOVE].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_MOVE].Text;
+                        }
+                    }
+                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    {
+                        canvas.DrawText("Move:", tx, ty, textPaint);
+                        canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                        ty += textPaint.FontSpacing;
+                    }
+
+                    valtext = "";
+                    valtext2 = "";
+                    lock (StatusFieldLock)
+                    {
+                        if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].IsEnabled && StatusFields[(int)statusfields.BL_UWEP].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_UWEP].Text;
+                        }
+                        if (StatusFields[(int)statusfields.BL_UWEP2] != null && StatusFields[(int)statusfields.BL_UWEP2].IsEnabled && StatusFields[(int)statusfields.BL_UWEP2].Text != null)
+                        {
+                            valtext2 = StatusFields[(int)statusfields.BL_UWEP2].Text;
+                        }
+                    }
+                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    {
+                        canvas.DrawText("Weapon style:", tx, ty, textPaint);
+                        string printtext = valtext2 != "" ? valtext + "/" + valtext2 : valtext;
+                        canvas.DrawText(printtext, tx + indentation, ty, textPaint);
+                        ty += textPaint.FontSpacing;
+                    }
+
+                    ty += textPaint.FontSpacing * 0.5f;
+
+                    valtext = "";
+                    lock (StatusFieldLock)
+                    {
+                        if (StatusFields[(int)statusfields.BL_GOLD] != null && StatusFields[(int)statusfields.BL_GOLD].IsEnabled && StatusFields[(int)statusfields.BL_GOLD].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_GOLD].Text;
+                        }
+                    }
+                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    {
+                        string printtext;
+                        if (valtext.Substring(0, 1) == "\\" && valtext.Length > 11)
+                            printtext = valtext.Substring(11);
+                        else
+                            printtext = valtext;
+
+                        canvas.DrawText("Gold:", tx, ty, textPaint);
+                        canvas.DrawText(printtext, tx + indentation, ty, textPaint);
+                        ty += textPaint.FontSpacing;
+                    }
+
+                    valtext = "";
+                    lock (StatusFieldLock)
+                    {
+                        if (StatusFields[(int)statusfields.BL_TIME] != null && StatusFields[(int)statusfields.BL_TIME].IsEnabled && StatusFields[(int)statusfields.BL_TIME].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_TIME].Text;
+                        }
+                    }
+                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    {
+                        canvas.DrawText("Turns:", tx, ty, textPaint);
+                        canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                        ty += textPaint.FontSpacing;
+                    }
+
+
                 }
+
+
 
                 if (ShowWaitIcon)
                 {
@@ -6789,6 +6939,8 @@ namespace GnollHackClient.Pages.Game
         public float _mapOffsetY = 0;
         public float _messageOffsetY = 0;
         public float _messageSmallestTop = 0;
+        public float _statusOffsetY = 0;
+        public float _statusSmallestTop = 0;
         private bool _touchMoved = false;
         private bool _touchWithinSkillButton = false;
         private bool _touchWithinHealthOrb = false;
@@ -6909,7 +7061,24 @@ namespace GnollHackClient.Pages.Game
                                         {
                                             lock (MapOffsetLock)
                                             {
-                                                if(ForceAllMessages)
+                                                if (ShowExtendedStatusBar)
+                                                {
+                                                    if (diffY > 0)
+                                                    {
+                                                        if (_statusSmallestTop < 0)
+                                                        {
+                                                            _statusOffsetY += Math.Min(-_statusSmallestTop, diffY);
+                                                        }
+                                                    }
+                                                    else
+                                                        _statusOffsetY += diffY;
+
+                                                    if (_statusOffsetY < 0)
+                                                    {
+                                                        _statusOffsetY = 0;
+                                                    }
+                                                }
+                                                else if (ForceAllMessages)
                                                 {
                                                     if(diffY > 0)
                                                     {
@@ -7019,6 +7188,10 @@ namespace GnollHackClient.Pages.Game
                             else if (_touchWithinStatusBar)
                             {
                                 ShowExtendedStatusBar = !ShowExtendedStatusBar;
+                                lock(MapOffsetLock)
+                                {
+                                    _statusOffsetY = 0.0f;
+                                }
                             }
                             else
                             {
@@ -7029,7 +7202,13 @@ namespace GnollHackClient.Pages.Game
                                 if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_touchMoved)
                                 {
                                     if (ShowExtendedStatusBar)
+                                    {
                                         ShowExtendedStatusBar = false;
+                                        lock (MapOffsetLock)
+                                        {
+                                            _statusOffsetY = 0.0f;
+                                        }
+                                    }
                                     else if (ForceAllMessages)
                                         ToggleMessageNumberButton_Clicked(sender, e);
                                     else
