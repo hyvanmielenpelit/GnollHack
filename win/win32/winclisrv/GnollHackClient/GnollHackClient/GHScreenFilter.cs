@@ -24,15 +24,15 @@ namespace GnollHackClient
         }
         public float GetFadeOutEndTime()
         {
-            return 0.45f;
+            return 0.35f;
         }
         public float GetFadeOutTime()
         {
-            return 0.25f;
+            return 0.20f;
         }
         public float GetFadeInTime()
         {
-            return 0.20f;
+            return 0.15f;
         }
         public float GetFadeInLength()
         {
@@ -81,11 +81,11 @@ namespace GnollHackClient
             switch (_data.style)
             {
                 case 0:
-                    return ClientUtils.NHColor2SKColor(_data.color).WithAlpha(144);
+                    return ClientUtils.NHColor2SKColor(_data.color).WithAlpha(128);
                 default:
                     break;
             }
-            return SKColors.Red.WithAlpha(144);
+            return SKColors.Red.WithAlpha(128);
         }
 
         public SKColor GetColor(long counter_value)
