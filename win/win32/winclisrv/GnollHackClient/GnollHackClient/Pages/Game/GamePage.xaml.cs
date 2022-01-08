@@ -5615,31 +5615,114 @@ namespace GnollHackClient.Pages.Game
                     float box_bottom = canvasheight - 1.25f * inverse_canvas_scale * (float)ButtonRowStack.Height;
                     if (box_bottom < box_top)
                         box_bottom = box_top;
-                    textPaint.Style = SKPaintStyle.Stroke;
-                    textPaint.StrokeWidth = 2;
-                    textPaint.Color = SKColors.Gold;
-                    canvas.DrawRect(box_left, box_top, box_right - box_left, box_bottom - box_top, textPaint);
+
+                    /* Window Background */
+                    textPaint.Color = SKColors.Black;
+                    SKRect bkgrect = new SKRect(box_left, box_top, box_right, box_bottom);
+                    canvas.DrawBitmap(App.ScrollBitmap, bkgrect, textPaint);
 
                     textPaint.Style = SKPaintStyle.Fill;
-                    textPaint.Color = SKColors.White;
+                    textPaint.Typeface = App.UnderwoodTypeface;
+                    textPaint.Color = SKColors.Black;
                     textPaint.TextSize = 36;
+                    SKRect tbounds = new SKRect();
 
-                    string valtext = "";
+                    float twidth = textPaint.MeasureText("Strength", ref tbounds);
+                    float theight = tbounds.Height;
+                    float tscale = Math.Min((bkgrect.Width / 4) / twidth, (bkgrect.Height / 15) / theight);
+                    textPaint.TextSize = textPaint.TextSize * tscale;
+                    float strwidth = twidth * tscale;
+                    float indentation = strwidth * 2;
+
+                    string valtext;
+                    ty = bkgrect.Top + bkgrect.Height / 8.5f - textPaint.FontMetrics.Ascent;
+                    float box_bottom_draw_threshold = box_bottom - bkgrect.Height / 8.5f;
+
+                    valtext = "";
                     lock (StatusFieldLock)
                     {
-                        if (StatusFields[(int)statusfields.BL_STR] != null && StatusFields[(int)statusfields.BL_STR].IsEnabled && StatusFields[(int)statusfields.BL_STR].Text != null)
+                        if (StatusFields[(int)statusfields.BL_TITLE] != null && StatusFields[(int)statusfields.BL_TITLE].IsEnabled && StatusFields[(int)statusfields.BL_TITLE].Text != null)
                         {
-                            valtext = StatusFields[(int)statusfields.BL_STR].Text;
+                            valtext = StatusFields[(int)statusfields.BL_TITLE].Text.Trim();
                         }
                     }
                     if (valtext != "")
                     {
-                        string printtext = "Strength: " + valtext;
-                        canvas.DrawText(printtext, box_left + 10, box_top + 10 - textPaint.FontMetrics.Ascent, textPaint);
+                        tx = (bkgrect.Left + bkgrect.Right) / 2;
+                        textPaint.TextAlign = SKTextAlign.Center;
+                        canvas.DrawText(valtext, tx, ty, textPaint);
+                        textPaint.TextAlign = SKTextAlign.Left;
+                        tx = bkgrect.Left + bkgrect.Width / 12.6f;
+                        ty += textPaint.FontSpacing;
+                        ty += textPaint.FontSpacing * 0.5f;
                     }
 
-                }
+                    for (int i = 0; i < 6; i++)
+                    {
+                        valtext = "";
+                        lock (StatusFieldLock)
+                        {
+                            if (StatusFields[(int)statusfields.BL_STR + i] != null && StatusFields[(int)statusfields.BL_STR + i].IsEnabled && StatusFields[(int)statusfields.BL_STR + i].Text != null)
+                            {
+                                valtext = StatusFields[(int)statusfields.BL_STR + i].Text;
+                            }
+                        }
+                        if (valtext != "" && ty < box_bottom_draw_threshold)
+                        {
+                            string[] statstring = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
+                            string printtext = statstring[i] + ":";
+                            canvas.DrawText(printtext, tx, ty, textPaint);
+                            canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                            ty += textPaint.FontSpacing;
+                        }
+                    }
+                    ty += textPaint.FontSpacing * 0.5f;
 
+                    valtext = "";
+                    lock (StatusFieldLock)
+                    {
+                        if (StatusFields[(int)statusfields.BL_ALIGN] != null && StatusFields[(int)statusfields.BL_ALIGN].IsEnabled && StatusFields[(int)statusfields.BL_ALIGN].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_ALIGN].Text;
+                        }
+                    }
+                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    {
+                        canvas.DrawText("Alignment:", tx, ty, textPaint);
+                        canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                        ty += textPaint.FontSpacing;
+                    }
+
+                    valtext = "";
+                    lock (StatusFieldLock)
+                    {
+                        if (StatusFields[(int)statusfields.BL_EXP] != null && StatusFields[(int)statusfields.BL_EXP].IsEnabled && StatusFields[(int)statusfields.BL_EXP].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_EXP].Text;
+                        }
+                    }
+                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    {
+                        canvas.DrawText("Experience:", tx, ty, textPaint);
+                        canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                        ty += textPaint.FontSpacing;
+                    }
+
+                    valtext = "";
+                    lock (StatusFieldLock)
+                    {
+                        if (StatusFields[(int)statusfields.BL_SCORE] != null && StatusFields[(int)statusfields.BL_SCORE].IsEnabled && StatusFields[(int)statusfields.BL_SCORE].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_SCORE].Text;
+                        }
+                    }
+                    if (valtext != "" && ty < box_bottom_draw_threshold)
+                    {
+                        canvas.DrawText("Score:", tx, ty, textPaint);
+                        canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                        ty += textPaint.FontSpacing;
+                    }
+                }
 
                 if (ShowWaitIcon)
                 {

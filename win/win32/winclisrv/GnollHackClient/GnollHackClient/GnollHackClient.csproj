@@ -119,6 +119,7 @@
     <None Remove="Assets\UI\read.png" />
     <None Remove="Assets\UI\repeat.png" />
     <None Remove="Assets\UI\rightring.png" />
+    <None Remove="Assets\UI\scroll.png" />
     <None Remove="Assets\UI\search.png" />
     <None Remove="Assets\UI\search20.png" />
     <None Remove="Assets\UI\search200.png" />
@@ -247,6 +248,7 @@
     <EmbeddedResource Include="Assets\UI\read.png" />
     <EmbeddedResource Include="Assets\UI\repeat.png" />
     <EmbeddedResource Include="Assets\UI\rightring.png" />
+    <EmbeddedResource Include="Assets\UI\scroll.png" />
     <EmbeddedResource Include="Assets\UI\search.png" />
     <EmbeddedResource Include="Assets\UI\search20.png" />
     <EmbeddedResource Include="Assets\UI\search200.png" />

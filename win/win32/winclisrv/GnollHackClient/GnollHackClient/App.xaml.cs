@@ -388,6 +388,8 @@ namespace GnollHackClient
         public static SKBitmap SimpleFrameTopHorizontalBitmap { get; set; }
         public static SKBitmap SimpleFrameLeftVerticalBitmap { get; set; }
 
+        public static SKBitmap ScrollBitmap { get; set; }
+
         public static void InitBitmaps(Assembly assembly)
         {
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.menubackground.png"))
@@ -418,6 +420,11 @@ namespace GnollHackClient
             {
                 SimpleFrameLeftVerticalBitmap = SKBitmap.Decode(stream);
             }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.scroll.png"))
+            {
+                ScrollBitmap = SKBitmap.Decode(stream);
+            }
+
         }
 
         public static object ProfilingStopwatchLock = new object();
