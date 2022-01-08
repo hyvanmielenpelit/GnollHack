@@ -111,6 +111,8 @@ namespace GnollHackClient.Pages.Game
             if (_gamePage != null)
                 _gamePage.ForceAllMessages = ForceMaxMessageSwitch.IsToggled;
 
+            if (_gamePage != null)
+                _gamePage.ShowExtendedStatusBar = ShowExtendedStatusBarSwitch.IsToggled;
         }
 
         private void ContentPage_Appearing(object sender, EventArgs e)
@@ -119,7 +121,7 @@ namespace GnollHackClient.Pages.Game
 
             int cursor = 0, graphics = 0, msgnum = 0;
             bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
-            bool forcemaxmsg = false;
+            bool forcemaxmsg = false, showexstatus = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", 1.0f);
             musicVolume = Preferences.Get("MusicVolume", 0.5f);
@@ -134,9 +136,13 @@ namespace GnollHackClient.Pages.Game
                 cursor = Preferences.Get("CursorStyle", 1);
                 graphics = Preferences.Get("GraphicsStyle", 1);
                 mapgrid = Preferences.Get("MapGrid", false);
+
                 forcemaxmsg = false; /* Always starts as false */
                 ForceMaxMessageSwitch.IsEnabled = false;
                 ForceMaxMessageLabel.TextColor = Color.Gray;
+                showexstatus = false; /* Always starts as false */
+                ShowExtendedStatusBarSwitch.IsEnabled = false;
+                ShowExtendedStatusBarLabel.TextColor = Color.Gray;
                 hpbars = Preferences.Get("HitPointBars", false);
                 statusbar = Preferences.Get("ClassicStatusBar", GHConstants.IsDefaultStatusBarClassic);
                 orbs = Preferences.Get("ShowOrbs", true);
@@ -157,6 +163,9 @@ namespace GnollHackClient.Pages.Game
                 forcemaxmsg = _gamePage.ForceAllMessages;
                 ForceMaxMessageSwitch.IsEnabled = true;
                 ForceMaxMessageLabel.TextColor = Color.Black;
+                showexstatus = _gamePage.ShowExtendedStatusBar;
+                ShowExtendedStatusBarSwitch.IsEnabled = true;
+                ShowExtendedStatusBarLabel.TextColor = Color.Black;
                 statusbar = _gamePage.ClassicStatusBar;
                 hpbars = _gamePage.HitPointBars;
                 orbs = _gamePage.ShowOrbs;
@@ -200,6 +209,7 @@ namespace GnollHackClient.Pages.Game
                 }
             }
             ForceMaxMessageSwitch.IsToggled = forcemaxmsg;
+            ShowExtendedStatusBarSwitch.IsToggled = showexstatus;
 
             _doChangeVolume = _gamePage == null ? true : !_gamePage.MuteSounds;
         }

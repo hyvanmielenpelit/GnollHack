@@ -81,6 +81,10 @@ namespace GnollHackClient.Pages.Game
         private bool _forceAllMessages = false;
         public bool ForceAllMessages { get { lock (_forceAllMessagesLock) { return _forceAllMessages; } } set { lock (_forceAllMessagesLock) { _forceAllMessages = value; } } }
 
+        private object _showExtendedStatusBarLock = new object();
+        private bool _showExtendedStatusBar = false;
+        public bool ShowExtendedStatusBar { get { lock (_showExtendedStatusBarLock) { return _showExtendedStatusBar; } } set { lock (_showExtendedStatusBarLock) { _showExtendedStatusBar = value; } } }
+
         private object _muteSoundsLock = new object();
         private bool _muteSounds = false;
         public bool MuteSounds { get { lock (_muteSoundsLock) { return _muteSounds; } } set { lock (_muteSoundsLock) { _muteSounds = value; } } }
@@ -211,22 +215,10 @@ namespace GnollHackClient.Pages.Game
         private object _manaRectLock = new object();
         private SKRect _manaRect = new SKRect();
         public SKRect ManaRect { get { SKRect val; lock (_manaRectLock) { val = _manaRect; } return val; } set { lock (_manaRectLock) { _manaRect = value; } } }
-        
-        private object _acRectLock = new object();
-        private SKRect _acRect = new SKRect();
-        public SKRect ACRect { get { SKRect val; lock (_acRectLock) { val = _acRect; } return val; } set { lock (_acRectLock) { _acRect = value; } } }
 
-        private object _mcRectLock = new object();
-        private SKRect _mcRect = new SKRect();
-        public SKRect MCRect { get { SKRect val; lock (_mcRectLock) { val = _mcRect; } return val; } set { lock (_mcRectLock) { _mcRect = value; } } }
-
-        private object _moveRectLock = new object();
-        private SKRect _moveRect = new SKRect();
-        public SKRect MoveRect { get { SKRect val; lock (_moveRectLock) { val = _moveRect; } return val; } set { lock (_moveRectLock) { _moveRect = value; } } }
-
-        private object _weaponRectLock = new object();
-        private SKRect _weaponRect = new SKRect();
-        public SKRect WeaponRect { get { SKRect val; lock (_weaponRectLock) { val = _weaponRect; } return val; } set { lock (_weaponRectLock) { _weaponRect = value; } } }
+        private object _statusBarRectLock = new object();
+        private SKRect _statusBarRect = new SKRect();
+        public SKRect StatusBarRect { get { SKRect val; lock (_statusBarRectLock) { val = _statusBarRect; } return val; } set { lock (_statusBarRectLock) { _statusBarRect = value; } } }
 
         public object TargetClipLock = new object();
         public float _originMapOffsetWithNewClipX;
@@ -2915,6 +2907,8 @@ namespace GnollHackClient.Pages.Game
             SKCanvas canvas = surface.Canvas;
 
             canvas.Clear(SKColors.Black);
+            double canvas_scale = GetCanvasScale();
+            float inverse_canvas_scale = canvas_scale == 0 ? 0.0f : 1.0f / (float)canvas_scale;
 
             using (SKPaint textPaint = new SKPaint())
             {
@@ -4537,8 +4531,6 @@ namespace GnollHackClient.Pages.Game
                     {
                         foreach (GHConditionText ft in _conditionTexts)
                         {
-                            double scale = GetCanvasScale();
-                            float invscale = scale == 0 ? 0.0f : 1.0f / (float)scale;
                             float relativestrokewidth = 0.0f;
                             SKColor strokecolor = SKColors.White;
                             SKColor fillcolor = SKColors.White;
@@ -4565,7 +4557,7 @@ namespace GnollHackClient.Pages.Game
 
                             textPaint.TextAlign = SKTextAlign.Center;
                             tx = canvaswidth / 2;
-                            ty = GetStatusBarSkiaHeight() + 1.5f * invscale * (float)ESCButton.Height - textPaint.FontMetrics.Ascent;
+                            ty = GetStatusBarSkiaHeight() + 1.5f * inverse_canvas_scale * (float)ESCButton.Height - textPaint.FontMetrics.Ascent;
                             if (relativestrokewidth > 0)
                             {
                                 textPaint.Style = SKPaintStyle.Stroke;
@@ -4831,6 +4823,7 @@ namespace GnollHackClient.Pages.Game
                 SkillRect = new SKRect();
                 HealthRect = new SKRect();
                 ManaRect = new SKRect();
+                StatusBarRect = new SKRect();
                 bool statusfieldsok = false;
                 lock (StatusFieldLock)
                 {
@@ -4858,6 +4851,7 @@ namespace GnollHackClient.Pages.Game
                         float innerspacing = rowheight / 20;
                         statusbarheight = rowheight * 2 + vmargin * 2 + rowmargin;
                         SKRect darkenrect = new SKRect(0, 0, canvaswidth, statusbarheight);
+                        StatusBarRect = darkenrect;
                         canvas.DrawRect(darkenrect, textPaint);
                         textPaint.Color = SKColors.White;
                         textPaint.TextAlign = SKTextAlign.Left;
@@ -5197,7 +5191,11 @@ namespace GnollHackClient.Pages.Game
                         /* Condition, status and buff marks */
                         float marksize = rowheight * 0.80f;
                         float markpadding = marksize / 8;
-                        ulong status_bits = _u_status_bits;
+                        ulong status_bits;
+                        lock (_uLock)
+                        {
+                            status_bits = _u_status_bits;
+                        }                        
                         if (status_bits != 0)
                         {
                             int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
@@ -5236,7 +5234,11 @@ namespace GnollHackClient.Pages.Game
                             }
                         }
 
-                        ulong condition_bits = _u_condition_bits;
+                        ulong condition_bits;
+                        lock(_uLock)
+                        {
+                            condition_bits = _u_condition_bits;
+                        }
                         if (condition_bits != 0)
                         {
                             int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
@@ -5275,9 +5277,13 @@ namespace GnollHackClient.Pages.Game
                             }
                         }
 
+                        ulong buff_bits;
                         for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
                         {
-                            ulong buff_bits = _u_buff_bits[buff_ulong];
+                            lock (_uLock)
+                            {
+                                buff_bits = _u_buff_bits[buff_ulong];
+                            }
                             int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
                             if (buff_bits != 0)
                             {
@@ -5590,6 +5596,51 @@ namespace GnollHackClient.Pages.Game
                     textPaint.Style = SKPaintStyle.Fill;
                 }
 
+
+                /* Extended Status Bar Window */
+                if (ShowExtendedStatusBar)
+                {
+                    textPaint.Style = SKPaintStyle.Fill;
+                    textPaint.Color = SKColors.Black.WithAlpha(200);
+                    canvas.DrawRect(0, 0, canvaswidth, canvasheight, textPaint);
+                    textPaint.Color = SKColors.White;
+
+                    float box_left = canvaswidth < canvasheight ? 1.25f * inverse_canvas_scale * (float)ESCButton.Width :
+                        2.25f * inverse_canvas_scale * (float)ESCButton.Width;
+                    float box_right = canvaswidth - box_left;
+                    if (box_right < box_left)
+                        box_right = box_left;
+                    float box_top = canvaswidth < canvasheight ? GetStatusBarSkiaHeight() + 1.25f * inverse_canvas_scale * (float)ESCButton.Height :
+                        GetStatusBarSkiaHeight() + 0.25f * inverse_canvas_scale * (float)ESCButton.Height;
+                    float box_bottom = canvasheight - 1.25f * inverse_canvas_scale * (float)ButtonRowStack.Height;
+                    if (box_bottom < box_top)
+                        box_bottom = box_top;
+                    textPaint.Style = SKPaintStyle.Stroke;
+                    textPaint.StrokeWidth = 2;
+                    textPaint.Color = SKColors.Gold;
+                    canvas.DrawRect(box_left, box_top, box_right - box_left, box_bottom - box_top, textPaint);
+
+                    textPaint.Style = SKPaintStyle.Fill;
+                    textPaint.Color = SKColors.White;
+                    textPaint.TextSize = 36;
+
+                    string valtext = "";
+                    lock (StatusFieldLock)
+                    {
+                        if (StatusFields[(int)statusfields.BL_STR] != null && StatusFields[(int)statusfields.BL_STR].IsEnabled && StatusFields[(int)statusfields.BL_STR].Text != null)
+                        {
+                            valtext = StatusFields[(int)statusfields.BL_STR].Text;
+                        }
+                    }
+                    if (valtext != "")
+                    {
+                        string printtext = "Strength: " + valtext;
+                        canvas.DrawText(printtext, box_left + 10, box_top + 10 - textPaint.FontMetrics.Ascent, textPaint);
+                    }
+
+                }
+
+
                 if (ShowWaitIcon)
                 {
                     SKRect targetrect;
@@ -5597,20 +5648,6 @@ namespace GnollHackClient.Pages.Game
                     targetrect = new SKRect(canvaswidth / 2 - size / 2, canvasheight / 2 - size / 2, canvaswidth / 2 + size / 2, canvasheight / 2 + size / 2);
                     canvas.DrawBitmap(_logoBitmap, targetrect);
                 }
-
-                /* RawPrint */
-                /*
-                lock(MessageLock)
-                {
-                    str = Message;
-                }
-
-                textPaint.Typeface = App.DiabloTypeface;
-                textPaint.TextSize = 36;
-                textPaint.Color = SKColors.White;
-                yText = 50;
-                canvas.DrawText(str, xText, yText, textPaint);
-                */
             }
 
         }
@@ -6673,6 +6710,7 @@ namespace GnollHackClient.Pages.Game
         private bool _touchWithinSkillButton = false;
         private bool _touchWithinHealthOrb = false;
         private bool _touchWithinManaOrb = false;
+        private bool _touchWithinStatusBar = false;
         private object _savedSender = null;
         private SKTouchEventArgs _savedEventArgs = null;
 
@@ -6714,6 +6752,7 @@ namespace GnollHackClient.Pages.Game
                         _touchWithinSkillButton = false;
                         _touchWithinHealthOrb = false;
                         _touchWithinManaOrb = false;
+                        _touchWithinStatusBar = false;
 
                         if (TouchDictionary.ContainsKey(e.Id))
                             TouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
@@ -6734,7 +6773,11 @@ namespace GnollHackClient.Pages.Game
                         {
                             _touchWithinManaOrb = true;
                         }
-                        else if (!MapLookMode && !MapTravelMode && !ForceAllMessages)
+                        else if (StatusBarRect.Contains(e.Location))
+                        {
+                            _touchWithinStatusBar = true;
+                        }
+                        else if (!MapLookMode && !MapTravelMode && !ForceAllMessages && !ShowExtendedStatusBar)
                         {
                             _savedSender = sender;
                             _savedEventArgs = e;
@@ -6764,11 +6807,11 @@ namespace GnollHackClient.Pages.Game
 
                                 if (TouchDictionary.Count == 1)
                                 {
-                                    if (_touchWithinSkillButton || _touchWithinHealthOrb || _touchWithinManaOrb)
+                                    if (_touchWithinSkillButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar)
                                     {
                                         /* Do nothing */
                                     }
-                                    else if (!MapLookMode && !MapTravelMode && !ForceAllMessages)
+                                    else if (!MapLookMode && !MapTravelMode && !ForceAllMessages && !ShowExtendedStatusBar)
                                     {
                                         /* Move the save location */
                                         _savedSender = sender;
@@ -6827,6 +6870,7 @@ namespace GnollHackClient.Pages.Game
                                     _touchWithinSkillButton = false;
                                     _touchWithinHealthOrb = false;
                                     _touchWithinManaOrb = false;
+                                    _touchWithinStatusBar = false;
 
                                     SKPoint prevloc = TouchDictionary[e.Id].Location;
                                     SKPoint curloc = e.Location;
@@ -6889,6 +6933,10 @@ namespace GnollHackClient.Pages.Game
                             {
                                 ShowMaxManaInOrb = !ShowMaxManaInOrb;
                             }
+                            else if (_touchWithinStatusBar)
+                            {
+                                ShowExtendedStatusBar = !ShowExtendedStatusBar;
+                            }
                             else
                             {
                                 TouchEntry entry;
@@ -6897,7 +6945,9 @@ namespace GnollHackClient.Pages.Game
 
                                 if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_touchMoved)
                                 {
-                                    if (ForceAllMessages)
+                                    if (ShowExtendedStatusBar)
+                                        ShowExtendedStatusBar = false;
+                                    else if (ForceAllMessages)
                                         ToggleMessageNumberButton_Clicked(sender, e);
                                     else
                                         IssueNHCommandViaTouch(sender, e);
