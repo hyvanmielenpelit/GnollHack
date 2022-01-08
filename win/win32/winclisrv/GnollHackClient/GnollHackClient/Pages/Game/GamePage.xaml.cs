@@ -5780,7 +5780,7 @@ namespace GnollHackClient.Pages.Game
                     {
                         if (StatusFields[(int)statusfields.BL_MC_LVL] != null && StatusFields[(int)statusfields.BL_MC_LVL].IsEnabled && StatusFields[(int)statusfields.BL_MC_LVL].Text != null)
                         {
-                            valtext = StatusFields[(int)statusfields.BL_AC].Text;
+                            valtext = StatusFields[(int)statusfields.BL_MC_LVL].Text;
                         }
                         if (StatusFields[(int)statusfields.BL_MC_PCT] != null && StatusFields[(int)statusfields.BL_MC_PCT].IsEnabled && StatusFields[(int)statusfields.BL_MC_PCT].Text != null)
                         {
