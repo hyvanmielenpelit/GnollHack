@@ -158,7 +158,7 @@
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label x:Name="ShowExtendedStatusBarLabel"
-                                           Text="Show Extended Status Bar"
+                                           Text="Show Status Screen"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
