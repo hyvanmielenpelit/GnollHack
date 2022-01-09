@@ -5725,7 +5725,7 @@ namespace GnollHackClient.Pages.Game
 
                     using(SKAutoCanvasRestore res = new SKAutoCanvasRestore(canvas))
                     {
-                        SKRect cliprect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, bkgrect.Right - bkgrect.Width / 12.6f, bkgrect.Bottom - bkgrect.Height / 8.5f);
+                        SKRect cliprect = new SKRect(0, ty + textPaint.FontMetrics.Ascent, canvaswidth, bkgrect.Bottom - bkgrect.Height / 8.5f);
                         canvas.ClipRect(cliprect);
 
                         ty += _statusOffsetY;
@@ -6131,6 +6131,9 @@ namespace GnollHackClient.Pages.Game
                                         if (propidx > GHConstants.LAST_PROP)
                                             break;
                                         string propname = App.GnollHackService.GetPropertyName(propidx);
+                                        if (propname != null && propname.Length > 0)
+                                            propname = propname[0].ToString().ToUpper() + (propname.Length == 1 ? "" : propname.Substring(1));
+
                                         int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + BuffTileOff;
                                         int mtile = Glyph2Tile[mglyph];
                                         int sheet_idx = TileSheetIdx(mtile);
@@ -6150,7 +6153,7 @@ namespace GnollHackClient.Pages.Game
                                         source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
 
                                         SKRect target_rt = new SKRect();
-                                        target_rt.Left = icon_tx;
+                                        target_rt.Left = tx;
                                         target_rt.Right = target_rt.Left + marksize;
                                         target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                                         target_rt.Bottom = target_rt.Top + marksize;
