@@ -5689,6 +5689,7 @@ namespace GnollHackClient.Pages.Game
 
                     string valtext, valtext2;
                     ty = bkgrect.Top + bkgrect.Height / 8.5f - textPaint.FontMetrics.Ascent;
+                    float base_ty = ty;
                     float box_bottom_draw_threshold = box_bottom - bkgrect.Height / 8.5f;
                     float icon_height = textPaint.FontSpacing * 0.85f;
                     float icon_max_width = icon_height * 2f;
@@ -5722,6 +5723,7 @@ namespace GnollHackClient.Pages.Game
                         ty += textPaint.FontSpacing * 0.5f;
                     }
 
+                    base_ty = ty;
                     for (int i = 0; i < 6; i++)
                     {
                         valtext = "";
@@ -5757,7 +5759,7 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText(valtext, tx + indentation, ty, textPaint);
                         icon_width = icon_height * (float)_statusXPLevelBitmap.Width / (float)_statusXPLevelBitmap.Height;
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                        icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
                         canvas.DrawBitmap(_statusXPLevelBitmap, icon_rect);
                         ty += textPaint.FontSpacing;
@@ -5792,7 +5794,7 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText(valtext, tx + indentation, ty, textPaint);
                         icon_width = icon_height * (float)_statusHDBitmap.Width / (float)_statusHDBitmap.Height;
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                        icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
                         canvas.DrawBitmap(_statusHDBitmap, icon_rect);
                         ty += textPaint.FontSpacing;
@@ -5844,7 +5846,7 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText(valtext, tx + indentation, ty, textPaint);
                         icon_width = icon_height * (float)_statusACBitmap.Width / (float)_statusACBitmap.Height;
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                        icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
                         canvas.DrawBitmap(_statusACBitmap, icon_rect);
                         ty += textPaint.FontSpacing;
@@ -5870,7 +5872,7 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText(printtext, tx + indentation, ty, textPaint);
                         icon_width = icon_height * (float)_statusMCBitmap.Width / (float)_statusMCBitmap.Height;
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                        icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
                         canvas.DrawBitmap(_statusMCBitmap, icon_rect);
                         ty += textPaint.FontSpacing;
@@ -5890,7 +5892,7 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText(valtext, tx + indentation, ty, textPaint);
                         icon_width = icon_height * (float)_statusMoveBitmap.Width / (float)_statusMoveBitmap.Height;
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                        icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
                         canvas.DrawBitmap(_statusMoveBitmap, icon_rect);
                         ty += textPaint.FontSpacing;
@@ -5916,7 +5918,7 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText(printtext, tx + indentation, ty, textPaint);
                         icon_width = icon_height * (float)_statusWeaponStyleBitmap.Width / (float)_statusWeaponStyleBitmap.Height;
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                        icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
                         canvas.DrawBitmap(_statusWeaponStyleBitmap, icon_rect);
                         ty += textPaint.FontSpacing;
@@ -5944,7 +5946,7 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText(printtext, tx + indentation, ty, textPaint);
                         icon_width = icon_height * (float)_statusGoldBitmap.Width / (float)_statusGoldBitmap.Height;
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                        icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
                         canvas.DrawBitmap(_statusGoldBitmap, icon_rect);
                         ty += textPaint.FontSpacing;
@@ -5964,7 +5966,7 @@ namespace GnollHackClient.Pages.Game
                         canvas.DrawText(valtext, tx + indentation, ty, textPaint);
                         icon_width = icon_height * (float)_statusTurnsBitmap.Width / (float)_statusTurnsBitmap.Height;
                         icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
-                        icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
+                        icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
                         icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
                         canvas.DrawBitmap(_statusTurnsBitmap, icon_rect);
                         ty += textPaint.FontSpacing;
@@ -5973,8 +5975,14 @@ namespace GnollHackClient.Pages.Game
                     ty += textPaint.FontSpacing * 0.5f;
 
                     /* Condition, status and buff marks */
+                    if(bkgrect.Width - bkgrect.Width * 2f / 12.6f >= indentation * 2.5f)
+                    {
+                        tx += indentation * 1.75f;
+                        ty = base_ty;
+                    }
+
                     float marksize = textPaint.FontSpacing * 0.85f;
-                    float markpadding = marksize / 8;
+                    float markpadding = marksize / 4;
                     ulong status_bits;
                     lock (_uLock)
                     {
@@ -6010,7 +6018,7 @@ namespace GnollHackClient.Pages.Game
                                 SKRect target_rt = new SKRect();
                                 target_rt.Left = tx;
                                 target_rt.Right = target_rt.Left + marksize;
-                                target_rt.Top = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - marksize) / 2;
+                                target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                                 target_rt.Bottom = target_rt.Top + marksize;
 
                                 canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
@@ -6057,7 +6065,7 @@ namespace GnollHackClient.Pages.Game
                                 SKRect target_rt = new SKRect();
                                 target_rt.Left = tx;
                                 target_rt.Right = target_rt.Left + marksize;
-                                target_rt.Top = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - marksize) / 2;
+                                target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                                 target_rt.Bottom = target_rt.Top + marksize;
 
                                 canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
@@ -6113,7 +6121,7 @@ namespace GnollHackClient.Pages.Game
                                     SKRect target_rt = new SKRect();
                                     target_rt.Left = icon_tx;
                                     target_rt.Right = target_rt.Left + marksize;
-                                    target_rt.Top = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - marksize) / 2;
+                                    target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                                     target_rt.Bottom = target_rt.Top + marksize;
 
                                     canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
