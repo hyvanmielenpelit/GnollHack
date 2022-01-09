@@ -9734,6 +9734,8 @@ namespace GnollHackClient.Pages.Game
                 float target_scale_canvas = 1.0f;
                 float mult_canvas = 1.0f;
                 float prev_bottom = 0;
+                float sbheight = GetStatusBarSkiaHeight();
+                SKRect statusBarRect = new SKRect(canvaswidth / 2 - sbheight / 2, 0, canvaswidth / 2 + sbheight / 2, sbheight);
 
                 switch (ShownTip)
                 {
@@ -9799,21 +9801,24 @@ namespace GnollHackClient.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0);
                         break;
                     case 7:
-                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Some commands do not have buttons.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
+                        PaintTipButtonByRect(canvas, textPaint, statusBarRect, "Tap to open the status screen.", "Status Bar", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
                         break;
                     case 8:
-                        PaintTipButton(canvas, textPaint, lWornItemsButton, "They are placed in corners.", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, 2.0f);
+                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Some commands do not have buttons.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
                         break;
                     case 9:
-                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "This is the last special location.", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
+                        PaintTipButton(canvas, textPaint, lWornItemsButton, "", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, 2.0f);
                         break;
                     case 10:
-                        PaintTipButtonByRect(canvas, textPaint, HealthRect, "This orb shows your hit points.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
                         break;
                     case 11:
-                        PaintTipButtonByRect(canvas, textPaint, ManaRect, "And this one your mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        PaintTipButtonByRect(canvas, textPaint, HealthRect, "This orb shows your hit points.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
                         break;
                     case 12:
+                        PaintTipButtonByRect(canvas, textPaint, ManaRect, "And this one your mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        break;
+                    case 13:
                         textPaint.TextSize = 36;
                         textPaint.Typeface = App.ARChristyTypeface;
                         str = "You are all set";
@@ -9879,12 +9884,12 @@ namespace GnollHackClient.Pages.Game
                     break;
                 case SKTouchAction.Released:
                     ShownTip++;
-                    if(ShownTip == 10 && HealthRect.Width == 0)
+                    if(ShownTip == 11 && HealthRect.Width == 0)
                         ShownTip++;
-                    if (ShownTip == 11 && ManaRect.Width == 0)
+                    if (ShownTip == 12 && ManaRect.Width == 0)
                         ShownTip++;
                     TipView.InvalidateSurface();
-                    if (ShownTip >= 13 - (_blockingTipView ? 0 : 1))
+                    if (ShownTip >= 14 - (_blockingTipView ? 0 : 1))
                     {
                         TipView.IsVisible = false;
                         ShownTip = -1;
