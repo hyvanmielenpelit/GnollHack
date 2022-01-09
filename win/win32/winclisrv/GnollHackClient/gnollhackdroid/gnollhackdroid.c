@@ -228,6 +228,12 @@ const char* LibGetVersionId()
     return VERSION_ID;
 }
 
+const char* LibGetPropertyName(prop_index)
+int prop_index;
+{
+    return get_property_name(prop_index);
+}
+
 char _dumplogbuf[BUFSZ];
 
 char* LibDumplogDateString(startdate)

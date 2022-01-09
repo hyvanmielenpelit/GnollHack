@@ -39,6 +39,7 @@ namespace GnollHackClient
 
         string GetVersionString();
         string GetVersionId();
+        string GetPropertyName(int prop_index);
         string DumplogDateString(long startdate);
         void SwitchDemoVersion(bool active);
 

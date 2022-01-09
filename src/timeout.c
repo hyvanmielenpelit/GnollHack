@@ -3624,7 +3624,8 @@ boolean ghostly;
 const char* get_property_name(prop_index)
 int prop_index;
 {
-    for (int idx = 0; propertynames[idx].prop_num; idx++)
+    int idx;
+    for (idx = 0; propertynames[idx].prop_num; idx++)
     {
         if (propertynames[idx].prop_num == prop_index)
         {

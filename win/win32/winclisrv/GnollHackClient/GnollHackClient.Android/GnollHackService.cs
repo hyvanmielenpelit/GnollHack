@@ -172,6 +172,8 @@ namespace GnollHackClient.Droid
         [DllImport(@"libgnollhackdroid.so")]
         public static extern IntPtr LibGetVersionId();
         [DllImport(@"libgnollhackdroid.so")]
+        public static extern IntPtr LibGetPropertyName(int prop_index);
+        [DllImport(@"libgnollhackdroid.so")]
         public static extern IntPtr LibDumplogDateString(long startdate);
 
         [DllImport(@"libgnollhackdroid.so")]
@@ -669,6 +671,12 @@ namespace GnollHackClient.Droid
         public string GetVersionId()
         {
             IntPtr resptr = LibGetVersionId();
+            string ret = Marshal.PtrToStringAnsi(resptr);
+            return ret;
+        }
+        public string GetPropertyName(int prop_index)
+        {
+            IntPtr resptr = LibGetPropertyName(prop_index);
             string ret = Marshal.PtrToStringAnsi(resptr);
             return ret;
         }

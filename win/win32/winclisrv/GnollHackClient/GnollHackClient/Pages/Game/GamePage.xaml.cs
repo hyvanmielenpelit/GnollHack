@@ -72,6 +72,59 @@ namespace GnollHackClient.Pages.Game
         private ulong _u_status_bits = 0;
         private ulong[] _u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
         private int[] _statusmarkorder = { (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_PEACEFUL, (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+        public string[] _condition_names = new string[(int)bl_conditions.NUM_BL_CONDITIONS] {
+            "Petrifying",
+            "Slimed",
+            "Being Strangled",
+            "Suffocating",
+            "Food Poisoned",
+            "Terminally Ill",
+            "Blind",
+            "Deaf",
+            "Stun",
+            "Confused",
+            "Hallucinating",
+            "Levitating",
+            "Flying",
+            "Riding",
+            "Slowed",
+            "Paralyzed",
+            "Frightened",
+            "Sleeping",
+            "Cancelled",
+            "Silenced",
+            "Grabbed",
+            "Mummy Rot",
+            "Lycanthropy",
+        };
+
+        public string[] _status_names = new string[(int)game_ui_status_mark_types.MAX_STATUS_MARKS] {
+            "Pet",
+            "Peaceful",
+            "Detected",
+            "Object Pile",
+            "Satiated",
+            "Hungry",
+            "Weak",
+            "Fainting",
+            "Burdended",
+            "Stressed",
+            "Strained",
+            "Overtaxed",
+            "Overloaded",
+            "Two-weapon fighting",
+            "Skill available",
+            "Saddled",
+            "Low Hit Points",
+            "Critical Hit Points",
+            "Cooldown",
+            "Trapped",
+            "Grabber",
+            "Carrying Object",
+            "Peaceful Townguard",
+            "Hostile Townguard",
+        };
+
 
         private object _forceAsciiLock = new object();
         private bool _forceAscii = false;
@@ -5917,6 +5970,163 @@ namespace GnollHackClient.Pages.Game
                         ty += textPaint.FontSpacing;
                     }
 
+                    ty += textPaint.FontSpacing * 0.5f;
+
+                    /* Condition, status and buff marks */
+                    float marksize = textPaint.FontSpacing * 0.85f;
+                    float markpadding = marksize / 8;
+                    ulong status_bits;
+                    lock (_uLock)
+                    {
+                        status_bits = _u_status_bits;
+                    }
+                    if (status_bits != 0)
+                    {
+                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                        int mglyph = (int)game_ui_tile_types.STATUS_MARKS + UITileOff;
+                        int mtile = Glyph2Tile[mglyph];
+                        int sheet_idx = TileSheetIdx(mtile);
+                        int tile_x = TileSheetX(mtile);
+                        int tile_y = TileSheetY(mtile);
+                        foreach (int status_mark in _statusmarkorder)
+                        {
+                            if (ty >= box_bottom_draw_threshold)
+                                break;
+                            ulong statusbit = 1UL << status_mark;
+                            if ((status_bits & statusbit) != 0)
+                            {
+                                string statusname = _status_names[status_mark];
+                                int within_tile_x = status_mark % tiles_per_row;
+                                int within_tile_y = status_mark / tiles_per_row;
+                                int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                SKRect source_rt = new SKRect();
+                                source_rt.Left = c_x;
+                                source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                source_rt.Top = c_y;
+                                source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                SKRect target_rt = new SKRect();
+                                target_rt.Left = tx;
+                                target_rt.Right = target_rt.Left + marksize;
+                                target_rt.Top = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - marksize) / 2;
+                                target_rt.Bottom = target_rt.Top + marksize;
+
+                                canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                canvas.DrawText(statusname, tx + marksize + markpadding, ty, textPaint);
+                                ty += textPaint.FontSpacing;
+                                //curx += marksize;
+                                //curx += markpadding;
+                            }
+                        }
+                    }
+
+                    ulong condition_bits;
+                    lock (_uLock)
+                    {
+                        condition_bits = _u_condition_bits;
+                    }
+                    if (condition_bits != 0)
+                    {
+                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                        int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + UITileOff;
+                        int mtile = Glyph2Tile[mglyph];
+                        int sheet_idx = TileSheetIdx(mtile);
+                        int tile_x = TileSheetX(mtile);
+                        int tile_y = TileSheetY(mtile);
+                        for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
+                        {
+                            if (ty >= box_bottom_draw_threshold)
+                                break;
+                            ulong conditionbit = 1UL << condition_mark;
+                            if ((condition_bits & conditionbit) != 0)
+                            {
+                                string conditionname = _condition_names[condition_mark];
+                                int within_tile_x = condition_mark % tiles_per_row;
+                                int within_tile_y = condition_mark / tiles_per_row;
+                                int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                SKRect source_rt = new SKRect();
+                                source_rt.Left = c_x;
+                                source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                source_rt.Top = c_y;
+                                source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                SKRect target_rt = new SKRect();
+                                target_rt.Left = tx;
+                                target_rt.Right = target_rt.Left + marksize;
+                                target_rt.Top = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - marksize) / 2;
+                                target_rt.Bottom = target_rt.Top + marksize;
+
+                                canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                canvas.DrawText(conditionname, tx + marksize + markpadding, ty, textPaint);
+                                ty += textPaint.FontSpacing;
+                                //curx += marksize;
+                                //curx += markpadding;
+                            }
+                        }
+                    }
+
+                    ulong buff_bits;
+                    for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
+                    {
+                        if (ty >= box_bottom_draw_threshold)
+                            break;
+                        lock (_uLock)
+                        {
+                            buff_bits = _u_buff_bits[buff_ulong];
+                        }
+                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                        if (buff_bits != 0)
+                        {
+                            for (int buff_idx = 0; buff_idx < 32; buff_idx++)
+                            {
+                                if (ty >= box_bottom_draw_threshold)
+                                    break;
+                                ulong buffbit = 1UL << buff_idx;
+                                if ((buff_bits & buffbit) != 0)
+                                {
+                                    int propidx = buff_ulong * 32 + buff_idx;
+                                    if (propidx > GHConstants.LAST_PROP)
+                                        break;
+                                    string propname = App.GnollHackService.GetPropertyName(propidx);
+                                    int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + BuffTileOff;
+                                    int mtile = Glyph2Tile[mglyph];
+                                    int sheet_idx = TileSheetIdx(mtile);
+                                    int tile_x = TileSheetX(mtile);
+                                    int tile_y = TileSheetY(mtile);
+
+                                    int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
+                                    int within_tile_x = buff_mark % tiles_per_row;
+                                    int within_tile_y = buff_mark / tiles_per_row;
+                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                    SKRect source_rt = new SKRect();
+                                    source_rt.Left = c_x;
+                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                    source_rt.Top = c_y;
+                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                    SKRect target_rt = new SKRect();
+                                    target_rt.Left = icon_tx;
+                                    target_rt.Right = target_rt.Left + marksize;
+                                    target_rt.Top = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - marksize) / 2;
+                                    target_rt.Bottom = target_rt.Top + marksize;
+
+                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                    if(propname != null)
+                                        canvas.DrawText(propname, tx + marksize + markpadding, ty, textPaint);
+                                    ty += textPaint.FontSpacing;
+
+                                    //curx += marksize;
+                                    //curx += markpadding;
+                                }
+                            }
+                        }
+                    }
 
                 }
 
