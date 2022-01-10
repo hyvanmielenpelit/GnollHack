@@ -170,5 +170,5 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void SendObjectDataCallback(int x, int y, obj otmp, int cmdtype, int where, objclassdata otypdata, ulong oflags);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void SendMonsterDataCallback(int cmdtype, int x, int y, monsterdata monster_data, ulong oflags);
+    public delegate void SendMonsterDataCallback(int cmdtype, int x, int y, monst_info monster_data, ulong oflags);
 }

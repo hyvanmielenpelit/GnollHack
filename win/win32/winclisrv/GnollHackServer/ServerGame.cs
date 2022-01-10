@@ -364,7 +364,7 @@ namespace GnollHackServer
         {
 
         }
-        public void GameCallback_SendMonsterData(int cmdtype, int x, int y, monsterdata monster_data, ulong oflags)
+        public void GameCallback_SendMonsterData(int cmdtype, int x, int y, monst_info monster_data, ulong oflags)
         {
 
         }

@@ -157,6 +157,9 @@ namespace GnollHackClient.Pages.Game
         private ObjectData[,] _objectData = new ObjectData[GHConstants.MapCols, GHConstants.MapRows];
         private object _objectDataLock = new object();
 
+        private object _petDataLock = new object();
+        private List<monst_info> _petData = new List<monst_info>();
+
         private bool _useMapBitmap = false;
 
         private int _shownMessageRows = GHConstants.DefaultMessageRows;
@@ -5410,6 +5413,15 @@ namespace GnollHackClient.Pages.Game
                             canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
                             curx += print_width;
                         }
+
+                        /* Pets */
+                        lock(_petDataLock)
+                        {
+                            foreach(monst_info mi in _petData)
+                            {
+                                /* Draw pets */
+                            }
+                        }
                     }
 
                     bool orbsok = false;
@@ -7885,12 +7897,18 @@ namespace GnollHackClient.Pages.Game
 
         public void ClearPetData()
         {
-
+            lock(_petDataLock)
+            {
+                _petData.Clear();
+            }
         }
 
-        public void AddPetData(monsterdata monster_data, ulong oflags)
+        public void AddPetData(monst_info monster_data, ulong oflags)
         {
-
+            lock (_petDataLock)
+            {
+                _petData.Add(monster_data);
+            }
         }
 
         public void FadeToBlack(uint milliseconds)

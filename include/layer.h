@@ -147,4 +147,22 @@ struct layer_info {
 #define MISSILE_FLAGS_POISONABLE    0x00000020UL
 #define MISSILE_FLAGS_TETHERED      0x00000040UL /* Missile is tethered */
 
+
+struct monst_info {
+    int glyph; /* For ascii compatibility */
+    int gui_glyph; /* For ascii compatibility */
+
+    char name[BUFSZ];
+    unsigned m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
+
+    int mhp;
+    int mhpmax;
+
+    unsigned long status_bits;
+    unsigned long condition_bits;
+    unsigned long buff_bits[NUM_BUFF_BIT_ULONGS];
+
+    unsigned long monster_flags;
+};
+
 #endif /* LAYER_H */

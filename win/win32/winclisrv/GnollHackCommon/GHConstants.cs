@@ -765,16 +765,23 @@ namespace GnollHackCommon
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct monsterdata
+    public struct monst_info
     {
+        int glyph;
+        int gui_glyph;
+
         public string name;
         public int m_id;
-        public int hp;
-        public int hpmax;
+        
+        public int mhp;
+        public int mhpmax;
+        
         public ulong status_bits;
         public ulong condition_bits;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.NUM_BUFF_BIT_ULONGS)]
         public ulong[] buff_bits;
+
+        public ulong monster_flags;
     }
 
     [Flags]
@@ -886,6 +893,7 @@ namespace GnollHackCommon
         INIT_GLYPH_LOAD_VIDEOS,
         INIT_GLYPH_MUTE_SOUNDS,
         INIT_GLYPH_UNMUTE_SOUNDS,
+        INIT_GLYPH_PETS,
         INIT_GLYPH_PROGRAM_FINISH,
     }
 

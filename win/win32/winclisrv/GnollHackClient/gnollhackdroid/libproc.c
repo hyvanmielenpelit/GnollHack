@@ -76,6 +76,7 @@ struct callback_procs lib_callbacks = { 0 }; /* To be set by RunGnollHack in gno
 
 char convert_gnhch(int ch);
 void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks);
+struct monst_info* monst_to_info(struct monst*, struct monst_info*);
 
 /* Function definitions */
 void lib_init_nhwindows(int* argc, char** argv)
@@ -449,6 +450,22 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 void lib_init_print_glyph(int initid)
 {
     lib_callbacks.callback_init_print_glyph(initid);
+
+    if (initid == INIT_GLYPH_PETS)
+    {
+        struct monst_info mi = { 0 };
+        lib_callbacks.callback_send_monster_data(0, 0, 0, mi, 0UL); /* Clear */
+
+        struct monst* mtmp;
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+        {
+            if (!DEADMONSTER(mtmp) && is_tame(mtmp))
+            {
+                //struct monst_info* mi_ptr = monst_to_info(mtmp, &mi);
+                lib_callbacks.callback_send_monster_data(1, 0, 0, mi, 0UL); /* Add a pet */
+            }
+        }
+    }
 }
 
 void lib_raw_print(const char* str)
@@ -691,6 +708,51 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
     lib_callbacks.callback_status_update(idx, txt, condbits, chg, percent, color, !colormasks ? NULL : condcolors);
 }
 
+struct monst_info* monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
+{
+    if (!mtmp || !mi_ptr)
+        return mi_ptr;
+
+    mi_ptr->glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
+    mi_ptr->gui_glyph = maybe_get_replaced_glyph(mi_ptr->glyph, mtmp->mx, mtmp->my, data_to_replacement_info(mi_ptr->glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL));
+
+    char tempbuf[BUFSIZ] = "";
+    if (mtmp->mextra && MNAME(mtmp))
+    {
+        char umnbuf[BUFSIZ];
+        strcpy(umnbuf, UMNAME(mtmp));
+        umnbuf[16] = '\0'; /* Limit the length of the name */
+        strcat(tempbuf, umnbuf);
+    }
+    else if (mtmp->mextra && MNAME(mtmp) && mtmp->u_know_mname)
+    {
+        char mnbuf[BUFSIZ];
+        strcpy(mnbuf, MNAME(mtmp));
+        mnbuf[16] = '\0'; /* Limit the length of the name */
+        strcat(tempbuf, mnbuf);
+    }
+    else
+    {
+        char buf[BUFSZ];
+        strcpy(buf, mon_monster_name(mtmp));
+        *buf = highc(*buf);
+        strcat(tempbuf, buf);
+    }
+    strncpy(mi_ptr->name, tempbuf, BUFSZ - 1);
+    mi_ptr->name[BUFSZ - 1] = '\0';
+
+    mi_ptr->m_id = mtmp->m_id;
+    mi_ptr->mhp = mtmp->mhp;
+    mi_ptr->mhpmax = mtmp->mhpmax;
+
+    mi_ptr->status_bits = get_m_status_bits(mtmp, FALSE, is_tame(mtmp), is_peaceful(mtmp) && !is_tame(mtmp), FALSE);
+    mi_ptr->condition_bits = get_m_condition_bits(mtmp);
+    get_m_buff_bits(mtmp, mi_ptr->buff_bits, FALSE);
+
+    mi_ptr->monster_flags = 0UL;
+
+    return mi_ptr;
+}
 
 int hl_attridx_to_attrmask(int idx)
 {

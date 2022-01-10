@@ -276,7 +276,9 @@ E boolean NDECL(status_hilite_menu);
 #endif
 E const char* FDECL(get_condition_name, (unsigned long));
 E unsigned long NDECL(get_u_condition_bits);
+E unsigned long FDECL(get_m_status_bits, (struct monst*, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E unsigned long FDECL(get_m_condition_bits, (struct monst*));
+E void FDECL(get_m_buff_bits, (struct monst*, unsigned long*, BOOLEAN_P));
 
 /* ### cmd.c ### */
 
