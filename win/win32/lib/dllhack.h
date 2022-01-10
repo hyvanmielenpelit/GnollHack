@@ -139,7 +139,8 @@ DLL int RunGnollHack(
     OutRipEndCallback callback_outrip_end,
 
     FreeMemoryCallback callback_free_memory,
-    SendObjectDataCallback callback_send_object_data
+    SendObjectDataCallback callback_send_object_data,
+    SendMonsterDataCallback callback_send_monster_data
 );
 
 DLL int RunGnollHackSimple(

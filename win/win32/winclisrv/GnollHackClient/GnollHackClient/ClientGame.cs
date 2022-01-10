@@ -974,6 +974,18 @@ namespace GnollHackClient
             _gamePage.AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
         }
 
+        public void ClientCallback_SendMonsterData(int cmdtype, int x, int y, monsterdata monster_data, ulong oflags)
+        {
+            switch(cmdtype)
+            {
+                case 0:
+                    _gamePage.ClearPetData();
+                    break;
+                case 1:
+                    _gamePage.AddPetData(monster_data, oflags);
+                    break;
+            }
+        }
 
         public string ClientCallback_getlin(int attr, int color, string query)
         {

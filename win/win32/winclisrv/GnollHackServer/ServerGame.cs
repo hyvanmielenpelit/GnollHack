@@ -110,7 +110,8 @@ namespace GnollHackServer
             VoidIntCallback callback_outrip_end,
 
             FreeMemoryCallback callback_free_memory,
-            SendObjectDataCallback callback_send_object_data
+            SendObjectDataCallback callback_send_object_data,
+            SendMonsterDataCallback callback_send_monster_data
         );
 
         [DllImport(@"gnollhacklib.dll")]
@@ -265,7 +266,8 @@ namespace GnollHackServer
                 GameCallback_VoidIntDummy,
                 GameCallback_VoidIntDummy,
                 GameCallback_FreeMemory,
-                GameCallback_SendObjectData
+                GameCallback_SendObjectData,
+                GameCallback_SendMonsterData
             );
         }
 
@@ -359,6 +361,10 @@ namespace GnollHackServer
 
         }
         public void GameCallback_SendObjectData(int x, int y, obj otmp, int cmdtype, int where, objclassdata otypdata, ulong oflags)
+        {
+
+        }
+        public void GameCallback_SendMonsterData(int cmdtype, int x, int y, monsterdata monster_data, ulong oflags)
         {
 
         }

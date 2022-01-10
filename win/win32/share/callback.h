@@ -150,6 +150,7 @@ typedef VoidIntCallback OutRipBeginCallback;
 typedef VoidIntCallback OutRipEndCallback;
 typedef void(__callconv* FreeMemoryCallback)(long long**);
 typedef void(__callconv* SendObjectDataCallback)(int, int, struct obj, int, int, struct objclassdata, unsigned long);
+typedef void(__callconv* SendMonsterDataCallback)(int, int, int, struct monsterdata, unsigned long);
 
 struct callback_procs {
     InitWindowsCallback callback_init_nhwindows;
@@ -245,6 +246,7 @@ struct callback_procs {
 
     FreeMemoryCallback callback_free_memory;
     SendObjectDataCallback callback_send_object_data;
+    SendMonsterDataCallback callback_send_monster_data;
 };
 
 

@@ -4715,7 +4715,7 @@ namespace GnollHackClient.Pages.Game
                                     if (winPaint.Color != SKColors.Transparent)
                                         canvas.DrawRect(winRect, winPaint);
 
-                                    if (i == _clientGame.StatusWindowId)
+                                    if (i == _clientGame.StatusWindowId && ClassicStatusBar)
                                         canvasButtonRect.Top = winRect.Bottom;
                                     else if (i == _clientGame.MessageWindowId)
                                         canvasButtonRect.Bottom = winRect.Top;
@@ -4905,6 +4905,7 @@ namespace GnollHackClient.Pages.Game
                         statusbarheight = rowheight * 2 + vmargin * 2 + rowmargin;
                         SKRect darkenrect = new SKRect(0, 0, canvaswidth, statusbarheight);
                         StatusBarRect = darkenrect;
+                        canvasButtonRect.Top = StatusBarRect.Bottom + 1.25f * inverse_canvas_scale * (float)ESCButton.Width;
                         canvas.DrawRect(darkenrect, textPaint);
                         textPaint.Color = SKColors.White;
                         textPaint.TextAlign = SKTextAlign.Left;
@@ -7880,6 +7881,16 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
             }
+        }
+
+        public void ClearPetData()
+        {
+
+        }
+
+        public void AddPetData(monsterdata monster_data, ulong oflags)
+        {
+
         }
 
         public void FadeToBlack(uint milliseconds)

@@ -566,9 +566,6 @@ namespace GnollHackClient
                 Task restask = null;
                 Task checktask = null;
 
-                if ((sf.flags & (int)secrets_flags.IncludedInFullVersion) != 0 && !App.FullVersionMode)
-                    continue;
-
                 // sf.source == "url" is deprecated
                 dltask = DownloadFileFromWebServer(assembly, sf, ghdir);
 

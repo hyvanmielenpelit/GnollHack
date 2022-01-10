@@ -764,6 +764,19 @@ namespace GnollHackCommon
         NOBJ_STATES = 9
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct monsterdata
+    {
+        public string name;
+        public int m_id;
+        public int hp;
+        public int hpmax;
+        public ulong status_bits;
+        public ulong condition_bits;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.NUM_BUFF_BIT_ULONGS)]
+        public ulong[] buff_bits;
+    }
+
     [Flags]
     public enum speflag_types : ulong
     {
@@ -918,11 +931,7 @@ namespace GnollHackCommon
     [Flags]
     public enum secrets_flags : int
     {
-        None = 0x00,
-        IncludedInFullVersion = 0x01,
-        Reserved1 = 0x02,
-        Reserved2 = 0x04,
-        Reserved3 = 0x08,
+        None = 0x00
     }
 
 
@@ -1000,7 +1009,7 @@ namespace GnollHackCommon
         public const float BackgroundBorderDivisor = 8.0f;
         public const float BackgroundTopBorderExtraDivisor = 4.0f;
         public const bool DownloadFromWebInDebugMode = true;
-        public const bool IsDefaultStatusBarClassic = true;
+        public const bool IsDefaultStatusBarClassic = false;
         public const string GnollHackGitHubPage = "https://github.com/hyvanmielenpelit/GnollHack";
         public const string GnollHackWebPage = "https://gnollhack.com";
         public const string GnollHackWikiPage = "https://github.com/hyvanmielenpelit/GnollHack/wiki";
