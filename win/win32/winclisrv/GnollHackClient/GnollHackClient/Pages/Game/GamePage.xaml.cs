@@ -5449,12 +5449,12 @@ namespace GnollHackClient.Pages.Game
                                     float pet_scale = Math.Min(gis.Width == 0 ? 1.0f : pet_target_width / gis.Width , gis.Height == 0 ? 1.0f : pet_target_height / gis.Height);
                                     petpicturewidth = pet_scale * gis.Width;
                                     petpictureheight = pet_scale * gis.Height;
-                                    canvas.Translate(tx + (pet_target_width - petpicturewidth) / 2, ty + (pet_target_height - petpictureheight) / 2);
+                                    canvas.Translate(tx + (pet_target_width - petpicturewidth) / 2, ty + (pet_target_height - petpictureheight));
                                     canvas.Scale(pet_scale);
                                     gis.DrawOnCanvas(canvas);
                                 }
 
-                                float curpety = ty + petpictureheight + 2.0f;
+                                float curpety = ty + pet_target_height + 2.0f;
                                 float barpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                                 SKRect petHPRect = new SKRect(tx, curpety, tx + pet_target_width, curpety + petHPHeight);
                                 float petpct = mi.mhpmax <= 0 ? 0.0f : (float)mi.mhp / (float)mi.mhpmax;
