@@ -978,11 +978,8 @@ namespace GnollHackClient
         {
             switch(cmdtype)
             {
-                case 0:
-                    _gamePage.ClearPetData();
-                    break;
-                case 1:
-                    _gamePage.AddPetData(monster_data, oflags);
+                case 0: /* Add Pet */
+                    _gamePage.AddPetData(monster_data);
                     break;
             }
         }
@@ -1260,12 +1257,6 @@ namespace GnollHackClient
         public void ClientCallback_InitPrintGlyph(int cmdtype)
         {
             ConcurrentQueue<GHRequest> queue;
-            float generalVolume = Preferences.Get("GeneralVolume", 1.0f);
-            float musicVolume = Preferences.Get("MusicVolume", 0.5f);
-            float ambientVolume = Preferences.Get("AmbientVolume", 0.5f);
-            float dialogueVolume = Preferences.Get("DialogueVolume", 0.5f);
-            float effectsVolume = Preferences.Get("EffectsVolume", 0.5f);
-            float UIVolume = Preferences.Get("UIVolume", 0.5f);
             switch (cmdtype)
             {
                 case (int)init_print_glyph_stages.INIT_GLYPH_LOAD_GLYPHS:
@@ -1321,10 +1312,21 @@ namespace GnollHackClient
                     App.FmodService.AdjustVolumes(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
                     break;
                 case (int)init_print_glyph_stages.INIT_GLYPH_UNMUTE_SOUNDS:
-                    _gamePage.MuteSounds = false;
-                    App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
-                    break;
+                    {
+                        float generalVolume = Preferences.Get("GeneralVolume", 1.0f);
+                        float musicVolume = Preferences.Get("MusicVolume", 0.5f);
+                        float ambientVolume = Preferences.Get("AmbientVolume", 0.5f);
+                        float dialogueVolume = Preferences.Get("DialogueVolume", 0.5f);
+                        float effectsVolume = Preferences.Get("EffectsVolume", 0.5f);
+                        float UIVolume = Preferences.Get("UIVolume", 0.5f);
+                        _gamePage.MuteSounds = false;
+                        App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
+                        break;
+                    }
                 case (int)init_print_glyph_stages.INIT_GLYPH_LOAD_VIDEOS:
+                    break;
+                case (int)init_print_glyph_stages.INIT_GLYPH_PETS:
+                    _gamePage.ClearPetData();
                     break;
                 default:
                     break;

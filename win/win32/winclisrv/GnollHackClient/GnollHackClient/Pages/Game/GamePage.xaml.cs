@@ -4880,6 +4880,9 @@ namespace GnollHackClient.Pages.Game
                 HealthRect = new SKRect();
                 ManaRect = new SKRect();
                 StatusBarRect = new SKRect();
+                float orbleft = 5.0f;
+                float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
+
                 bool statusfieldsok = false;
                 lock (StatusFieldLock)
                 {
@@ -5415,13 +5418,73 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         /* Pets */
-                        lock(_petDataLock)
+                        lock (_petDataLock)
                         {
-                            foreach(monst_info mi in _petData)
+                            textPaint.Color = SKColors.White;
+                            textPaint.Typeface = App.LatoRegular;
+                            textPaint.TextSize = 36;
+                            textPaint.TextAlign = SKTextAlign.Center;
+                            float pet_target_width = (inverse_canvas_scale * (float)ESCButton.Width);
+                            float pet_target_height = (inverse_canvas_scale * (float)ESCButton.Height * 0.75f);
+                            string pet_test_text = "Large Dog";
+                            float pet_test_text_width = textPaint.MeasureText(pet_test_text);
+                            textPaint.TextSize = textPaint.TextSize * pet_target_width / pet_test_text_width;
+                            float petHPHeight = textPaint.FontSpacing;
+
+                            tx = orbleft + orbbordersize * 1.1f;
+                            ty = statusbarheight + 5.0f;
+
+                            foreach (monst_info mi in _petData)
                             {
                                 /* Draw pets */
+                                float petpicturewidth = 0f;
+                                float petpictureheight = 0f;
+                                using (new SKAutoCanvasRestore(canvas, true))
+                                {
+                                    GlyphImageSource gis = new GlyphImageSource();
+                                    gis.ReferenceGamePage = this;
+                                    gis.AutoSize = true;
+                                    gis.Glyph = Math.Abs(mi.gui_glyph);
+                                    gis.DoAutoSize();
+                                    float pet_scale = Math.Min(gis.Width == 0 ? 1.0f : pet_target_width / gis.Width , gis.Height == 0 ? 1.0f : pet_target_height / gis.Height);
+                                    petpicturewidth = pet_scale * gis.Width;
+                                    petpictureheight = pet_scale * gis.Height;
+                                    canvas.Translate(tx + (pet_target_width - petpicturewidth) / 2, ty + (pet_target_height - petpictureheight) / 2);
+                                    canvas.Scale(pet_scale);
+                                    gis.DrawOnCanvas(canvas);
+                                }
+
+                                float curpety = ty + petpictureheight + 2.0f;
+                                float barpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                                SKRect petHPRect = new SKRect(tx, curpety, tx + pet_target_width, curpety + petHPHeight);
+                                float petpct = mi.mhpmax <= 0 ? 0.0f : (float)mi.mhp / (float)mi.mhpmax;
+                                SKRect petHPFill = new SKRect(tx, curpety, tx + pet_target_width * petpct, curpety + petHPHeight);
+                                textPaint.Color = SKColors.Red.WithAlpha(144);
+                                canvas.DrawRect(petHPFill, textPaint);
+                                SKRect petHPNonFill = new SKRect(tx + pet_target_width * petpct, curpety, tx + pet_target_width, curpety + petHPHeight);
+                                textPaint.Color = SKColors.Gray.WithAlpha(144);
+                                canvas.DrawRect(petHPNonFill, textPaint);
+                                textPaint.Color = SKColors.Black.WithAlpha(144);
+                                textPaint.Style = SKPaintStyle.Stroke;
+                                textPaint.StrokeWidth = 2;
+                                canvas.DrawRect(petHPRect, textPaint);
+
+                                curpety += barpadding - textPaint.FontMetrics.Ascent;
+                                textPaint.Style = SKPaintStyle.Fill;
+                                textPaint.Color = SKColors.White;
+                                canvas.DrawText(mi.mhp + "(" + mi.mhpmax + ")", tx + pet_target_width / 2, curpety, textPaint);
+
+                                curpety += textPaint.FontSpacing;
+                                textPaint.Color = SKColors.White;
+                                canvas.DrawText(mi.name, tx + pet_target_width / 2, curpety, textPaint);
+
+                                tx += pet_target_width * 1.2f;
                             }
+
+                            textPaint.TextAlign = SKTextAlign.Left;
+
                         }
+
                     }
 
                     bool orbsok = false;
@@ -5432,9 +5495,8 @@ namespace GnollHackClient.Pages.Game
                         skillbuttonok = StatusFields[(int)statusfields.BL_SKILL] != null && StatusFields[(int)statusfields.BL_SKILL].Text != null && StatusFields[(int)statusfields.BL_SKILL].Text == "Skill";
                     }
 
-                    float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
                     float lastdrawnrecty = ClassicStatusBar ? Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing) : statusbarheight;
-                    tx = 5.0f;
+                    tx = orbleft;
                     ty = lastdrawnrecty + 5.0f;
                     /* HP and MP */
                     if ((ShowOrbs | !ClassicStatusBar) && orbsok)
@@ -7903,7 +7965,7 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        public void AddPetData(monst_info monster_data, ulong oflags)
+        public void AddPetData(monst_info monster_data)
         {
             lock (_petDataLock)
             {

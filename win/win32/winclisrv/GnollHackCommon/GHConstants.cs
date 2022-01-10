@@ -767,9 +767,10 @@ namespace GnollHackCommon
     [StructLayout(LayoutKind.Sequential)]
     public struct monst_info
     {
-        int glyph;
-        int gui_glyph;
+        public int glyph;
+        public int gui_glyph;
 
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = GHConstants.BUFSZ)]
         public string name;
         public int m_id;
         
@@ -946,6 +947,7 @@ namespace GnollHackCommon
     public class GHConstants
     {
         public const int InputBufferLength = 32;
+        public const int BUFSZ = 256;
         public const int MaxGHWindows = 32;
         public const int PollingInterval = 25;
         public const int MapCols = 80;

@@ -76,7 +76,7 @@ struct callback_procs lib_callbacks = { 0 }; /* To be set by RunGnollHack in gno
 
 char convert_gnhch(int ch);
 void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks);
-struct monst_info* monst_to_info(struct monst*, struct monst_info*);
+void monst_to_info(struct monst*, struct monst_info*);
 
 /* Function definitions */
 void lib_init_nhwindows(int* argc, char** argv)
@@ -454,15 +454,13 @@ void lib_init_print_glyph(int initid)
     if (initid == INIT_GLYPH_PETS)
     {
         struct monst_info mi = { 0 };
-        lib_callbacks.callback_send_monster_data(0, 0, 0, mi, 0UL); /* Clear */
-
         struct monst* mtmp;
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         {
             if (!DEADMONSTER(mtmp) && is_tame(mtmp))
             {
-                //struct monst_info* mi_ptr = monst_to_info(mtmp, &mi);
-                lib_callbacks.callback_send_monster_data(1, 0, 0, mi, 0UL); /* Add a pet */
+                monst_to_info(mtmp, &mi);
+                lib_callbacks.callback_send_monster_data(0, 0, 0, mi, 0UL); /* Add a pet */
             }
         }
     }
@@ -708,16 +706,16 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
     lib_callbacks.callback_status_update(idx, txt, condbits, chg, percent, color, !colormasks ? NULL : condcolors);
 }
 
-struct monst_info* monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
+void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
 {
     if (!mtmp || !mi_ptr)
-        return mi_ptr;
+        return;
 
     mi_ptr->glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
     mi_ptr->gui_glyph = maybe_get_replaced_glyph(mi_ptr->glyph, mtmp->mx, mtmp->my, data_to_replacement_info(mi_ptr->glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL));
 
     char tempbuf[BUFSIZ] = "";
-    if (mtmp->mextra && MNAME(mtmp))
+    if (mtmp->mextra && UMNAME(mtmp))
     {
         char umnbuf[BUFSIZ];
         strcpy(umnbuf, UMNAME(mtmp));
@@ -750,8 +748,6 @@ struct monst_info* monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
     get_m_buff_bits(mtmp, mi_ptr->buff_bits, FALSE);
 
     mi_ptr->monster_flags = 0UL;
-
-    return mi_ptr;
 }
 
 int hl_attridx_to_attrmask(int idx)
