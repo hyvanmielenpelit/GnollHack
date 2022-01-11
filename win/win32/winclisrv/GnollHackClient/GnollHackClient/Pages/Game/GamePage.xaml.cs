@@ -209,6 +209,10 @@ namespace GnollHackClient.Pages.Game
         private bool _classicStatusBar = true;
         public bool ClassicStatusBar { get { lock (_classicStatusBarLock) { return _classicStatusBar; } } set { lock (_classicStatusBarLock) { _classicStatusBar = value; } } }
 
+        private object _showPetsLock = new object();
+        private bool _showPets = false;
+        public bool ShowPets { get { lock (_showPetsLock) { return _showPets; } } set { lock (_showPetsLock) { _showPets = value; } } }
+
         private bool _cursorIsOn;
         private bool _showDirections = false;
         private bool _showNumberPad = false;
@@ -378,6 +382,7 @@ namespace GnollHackClient.Pages.Game
             HitPointBars = Preferences.Get("HitPointBars", false);
             ClassicStatusBar = Preferences.Get("ClassicStatusBar", GHConstants.IsDefaultStatusBarClassic);
             ShowOrbs = Preferences.Get("ShowOrbs", true);
+            ShowPets = Preferences.Get("ShowPets", true);
             PlayerMark = Preferences.Get("PlayerMark", false);
             MonsterTargeting = Preferences.Get("MonsterTargeting", false);
             NumDisplayedMessages = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
@@ -5420,209 +5425,124 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         /* Pets */
-                        lock (_petDataLock)
+                        if(ShowPets)
                         {
-                            textPaint.Color = SKColors.White;
-                            textPaint.Typeface = App.LatoRegular;
-                            textPaint.TextSize = 36;
-                            float pet_target_height = inverse_canvas_scale * (float)ESCButton.Height;
-                            //float pet_name_target_height = pet_target_height * 0.4f;
-                            float pet_picture_target_height = pet_target_height * 0.56f;
-                            float pet_hp_target_height = pet_target_height * 0.24f;
-                            float pet_status_target_height = pet_target_height * 0.2f;
-                            //float pet_name_size = textPaint.TextSize * pet_name_target_height / textPaint.FontSpacing;
-                            float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing; //pet_name_size * pet_hp_target_height / pet_name_target_height;
-                            //textPaint.TextSize = pet_name_size;
-                            //string pet_test_text = "Large Dog";
-                            //float pet_target_width = textPaint.MeasureText(pet_test_text);
-                            //pet_target_width += textPaint.FontSpacing; // For picture
-                            float pet_target_width = inverse_canvas_scale * (float)ESCButton.Width;
-
-                            SKRect menubuttonrect = GetViewScreenRect(GameMenuButton);
-                            float menu_button_left = menubuttonrect.Left;
-                            float pet_tx_start = orbleft + orbbordersize * 1.1f;
-                            tx = pet_tx_start;
-                            ty = statusbarheight + 5.0f;
-
-
-                            foreach (monst_info mi in _petData)
+                            lock (_petDataLock)
                             {
-                                using (new SKAutoCanvasRestore(canvas, true))
-                                {
-                                    canvas.ClipRect(new SKRect(tx - 1, ty - 1, tx + pet_target_width + 1, ty + pet_target_height + 2));
+                                textPaint.Color = SKColors.White;
+                                textPaint.Typeface = App.LatoRegular;
+                                textPaint.TextSize = 36;
+                                float pet_target_height = inverse_canvas_scale * (float)ESCButton.Height;
+                                //float pet_name_target_height = pet_target_height * 0.4f;
+                                float pet_picture_target_height = pet_target_height * 0.56f;
+                                float pet_hp_target_height = pet_target_height * 0.24f;
+                                float pet_status_target_height = pet_target_height * 0.2f;
+                                //float pet_name_size = textPaint.TextSize * pet_name_target_height / textPaint.FontSpacing;
+                                float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing; //pet_name_size * pet_hp_target_height / pet_name_target_height;
+                                                                                                                       //textPaint.TextSize = pet_name_size;
+                                                                                                                       //string pet_test_text = "Large Dog";
+                                                                                                                       //float pet_target_width = textPaint.MeasureText(pet_test_text);
+                                                                                                                       //pet_target_width += textPaint.FontSpacing; // For picture
+                                float pet_target_width = inverse_canvas_scale * (float)ESCButton.Width;
 
-                                    float petpicturewidth = 0f;
-                                    float petpictureheight = 0f;
+                                SKRect menubuttonrect = GetViewScreenRect(GameMenuButton);
+                                float menu_button_left = menubuttonrect.Left;
+                                float pet_tx_start = orbleft + orbbordersize * 1.1f;
+                                tx = pet_tx_start;
+                                ty = statusbarheight + 5.0f;
+
+
+                                foreach (monst_info mi in _petData)
+                                {
                                     using (new SKAutoCanvasRestore(canvas, true))
                                     {
-                                        GlyphImageSource gis = new GlyphImageSource();
-                                        gis.ReferenceGamePage = this;
-                                        gis.AutoSize = true;
-                                        gis.Glyph = Math.Abs(mi.gui_glyph);
-                                        gis.DoAutoSize();
-                                        float pet_scale = Math.Min(gis.Width == 0 ? 1.0f : pet_target_width / gis.Width , gis.Height == 0 ? 1.0f : pet_picture_target_height / gis.Height);
-                                        petpicturewidth = pet_scale * gis.Width;
-                                        petpictureheight = pet_scale * gis.Height;
-                                        canvas.Translate(tx + (pet_target_width - petpicturewidth) / 2, ty + (pet_picture_target_height - petpictureheight));
-                                        canvas.Scale(pet_scale);
-                                        gis.DrawOnCanvas(canvas);
-                                    }
+                                        canvas.ClipRect(new SKRect(tx - 1, ty - 1, tx + pet_target_width + 1, ty + pet_target_height + 2));
 
-                                    //textPaint.TextSize = pet_name_size;
-                                    //float curpety = ty; // + pet_target_height + 2.0f;
-                                    //                    //tx += petpicturewidth + pet_target_width / 16;
-                                    //float curpetx = tx + petpicturewidth + pet_picture_target_height / 8;
-                                    //curpety -= textPaint.FontMetrics.Ascent;
-
-                                    //textPaint.TextAlign = SKTextAlign.Left;
-                                    //textPaint.Style = SKPaintStyle.Fill;
-                                    //textPaint.Color = SKColors.Black;
-                                    //textPaint.MaskFilter = _blur;
-                                    //float shadow_offset = textPaint.TextSize / 15;
-                                    //textPaint.Style = SKPaintStyle.Fill;
-                                    //canvas.DrawText(mi.name, curpetx + shadow_offset, curpety + shadow_offset, textPaint);
-                                    //textPaint.MaskFilter = null;
-
-                                    //textPaint.Style = SKPaintStyle.Fill;
-                                    //textPaint.Color = SKColors.White;
-                                    //canvas.DrawText(mi.name, curpetx, curpety, textPaint);
-                                    //curpety += textPaint.FontMetrics.Descent + 2.0f;
-
-                                    float curpety = ty + petpictureheight;
-                                    textPaint.TextSize = pet_hp_size;
-                                    textPaint.TextAlign = SKTextAlign.Center;
-                                    float petHPHeight = textPaint.FontSpacing;
-                                    float barpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                                    SKRect petHPRect = new SKRect(tx, curpety, tx + pet_target_width, curpety + petHPHeight);
-                                    float petpct = mi.mhpmax <= 0 ? 0.0f : (float)mi.mhp / (float)mi.mhpmax;
-                                    SKRect petHPFill = new SKRect(tx, curpety, tx + pet_target_width * petpct, curpety + petHPHeight);
-                                    textPaint.Color = SKColors.Red.WithAlpha(144);
-                                    canvas.DrawRect(petHPFill, textPaint);
-                                    SKRect petHPNonFill = new SKRect(tx + pet_target_width * petpct, curpety, tx + pet_target_width, curpety + petHPHeight);
-                                    textPaint.Color = SKColors.Gray.WithAlpha(144);
-                                    canvas.DrawRect(petHPNonFill, textPaint);
-                                    textPaint.Color = SKColors.Black.WithAlpha(144);
-                                    textPaint.Style = SKPaintStyle.Stroke;
-                                    textPaint.StrokeWidth = 2;
-                                    canvas.DrawRect(petHPRect, textPaint);
-
-                                    curpety += barpadding - textPaint.FontMetrics.Ascent;
-                                    textPaint.Style = SKPaintStyle.Fill;
-                                    textPaint.Color = SKColors.White;
-                                    canvas.DrawText(mi.mhp + "(" + mi.mhpmax + ")", tx + pet_target_width / 2, curpety, textPaint);
-
-                                    {
-                                        /* Condition, status and buff marks */
-                                        curx = tx;
-                                        cury = petHPRect.Bottom;
-                                        rowheight = pet_status_target_height;
-
-                                        float marksize = rowheight * 0.95f;
-                                        float markpadding = marksize / 8;
-                                        ulong status_bits;
-                                        status_bits = mi.status_bits;
-                                        if (status_bits != 0)
+                                        float petpicturewidth = 0f;
+                                        float petpictureheight = 0f;
+                                        using (new SKAutoCanvasRestore(canvas, true))
                                         {
-                                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                            int mglyph = (int)game_ui_tile_types.STATUS_MARKS + UITileOff;
-                                            int mtile = Glyph2Tile[mglyph];
-                                            int sheet_idx = TileSheetIdx(mtile);
-                                            int tile_x = TileSheetX(mtile);
-                                            int tile_y = TileSheetY(mtile);
-                                            foreach (int status_mark in _statusmarkorder)
-                                            {
-                                                ulong statusbit = 1UL << status_mark;
-                                                if ((status_bits & statusbit) != 0)
-                                                {
-                                                    int within_tile_x = status_mark % tiles_per_row;
-                                                    int within_tile_y = status_mark / tiles_per_row;
-                                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                                    SKRect source_rt = new SKRect();
-                                                    source_rt.Left = c_x;
-                                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                                    source_rt.Top = c_y;
-                                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                                    SKRect target_rt = new SKRect();
-                                                    target_rt.Left = curx;
-                                                    target_rt.Right = target_rt.Left + marksize;
-                                                    target_rt.Top = cury + (rowheight - marksize) / 2;
-                                                    target_rt.Bottom = target_rt.Top + marksize;
-
-                                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
-
-                                                    curx += marksize;
-                                                    curx += markpadding;
-                                                }
-                                            }
+                                            GlyphImageSource gis = new GlyphImageSource();
+                                            gis.ReferenceGamePage = this;
+                                            gis.AutoSize = true;
+                                            gis.Glyph = Math.Abs(mi.gui_glyph);
+                                            gis.DoAutoSize();
+                                            float pet_scale = Math.Min(gis.Width == 0 ? 1.0f : pet_target_width / gis.Width, gis.Height == 0 ? 1.0f : pet_picture_target_height / gis.Height);
+                                            petpicturewidth = pet_scale * gis.Width;
+                                            petpictureheight = pet_scale * gis.Height;
+                                            canvas.Translate(tx + (pet_target_width - petpicturewidth) / 2, ty + (pet_picture_target_height - petpictureheight));
+                                            canvas.Scale(pet_scale);
+                                            gis.DrawOnCanvas(canvas);
                                         }
 
-                                        ulong condition_bits;
-                                        condition_bits = mi.condition_bits;
-                                        if (condition_bits != 0)
+                                        //textPaint.TextSize = pet_name_size;
+                                        //float curpety = ty; // + pet_target_height + 2.0f;
+                                        //                    //tx += petpicturewidth + pet_target_width / 16;
+                                        //float curpetx = tx + petpicturewidth + pet_picture_target_height / 8;
+                                        //curpety -= textPaint.FontMetrics.Ascent;
+
+                                        //textPaint.TextAlign = SKTextAlign.Left;
+                                        //textPaint.Style = SKPaintStyle.Fill;
+                                        //textPaint.Color = SKColors.Black;
+                                        //textPaint.MaskFilter = _blur;
+                                        //float shadow_offset = textPaint.TextSize / 15;
+                                        //textPaint.Style = SKPaintStyle.Fill;
+                                        //canvas.DrawText(mi.name, curpetx + shadow_offset, curpety + shadow_offset, textPaint);
+                                        //textPaint.MaskFilter = null;
+
+                                        //textPaint.Style = SKPaintStyle.Fill;
+                                        //textPaint.Color = SKColors.White;
+                                        //canvas.DrawText(mi.name, curpetx, curpety, textPaint);
+                                        //curpety += textPaint.FontMetrics.Descent + 2.0f;
+
+                                        float curpety = ty + petpictureheight;
+                                        textPaint.TextSize = pet_hp_size;
+                                        textPaint.TextAlign = SKTextAlign.Center;
+                                        float petHPHeight = textPaint.FontSpacing;
+                                        float barpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                                        SKRect petHPRect = new SKRect(tx, curpety, tx + pet_target_width, curpety + petHPHeight);
+                                        float petpct = mi.mhpmax <= 0 ? 0.0f : (float)mi.mhp / (float)mi.mhpmax;
+                                        SKRect petHPFill = new SKRect(tx, curpety, tx + pet_target_width * petpct, curpety + petHPHeight);
+                                        textPaint.Color = SKColors.Red.WithAlpha(144);
+                                        canvas.DrawRect(petHPFill, textPaint);
+                                        SKRect petHPNonFill = new SKRect(tx + pet_target_width * petpct, curpety, tx + pet_target_width, curpety + petHPHeight);
+                                        textPaint.Color = SKColors.Gray.WithAlpha(144);
+                                        canvas.DrawRect(petHPNonFill, textPaint);
+                                        textPaint.Color = SKColors.Black.WithAlpha(144);
+                                        textPaint.Style = SKPaintStyle.Stroke;
+                                        textPaint.StrokeWidth = 2;
+                                        canvas.DrawRect(petHPRect, textPaint);
+
+                                        curpety += barpadding - textPaint.FontMetrics.Ascent;
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        textPaint.Color = SKColors.White;
+                                        canvas.DrawText(mi.mhp + "(" + mi.mhpmax + ")", tx + pet_target_width / 2, curpety, textPaint);
+
                                         {
-                                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                            int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + UITileOff;
-                                            int mtile = Glyph2Tile[mglyph];
-                                            int sheet_idx = TileSheetIdx(mtile);
-                                            int tile_x = TileSheetX(mtile);
-                                            int tile_y = TileSheetY(mtile);
-                                            for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
+                                            /* Condition, status and buff marks */
+                                            curx = tx;
+                                            cury = petHPRect.Bottom;
+                                            rowheight = pet_status_target_height;
+
+                                            float marksize = rowheight * 0.95f;
+                                            float markpadding = marksize / 8;
+                                            ulong status_bits;
+                                            status_bits = mi.status_bits;
+                                            if (status_bits != 0)
                                             {
-                                                ulong conditionbit = 1UL << condition_mark;
-                                                if ((condition_bits & conditionbit) != 0)
+                                                int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                int mglyph = (int)game_ui_tile_types.STATUS_MARKS + UITileOff;
+                                                int mtile = Glyph2Tile[mglyph];
+                                                int sheet_idx = TileSheetIdx(mtile);
+                                                int tile_x = TileSheetX(mtile);
+                                                int tile_y = TileSheetY(mtile);
+                                                foreach (int status_mark in _statusmarkorder)
                                                 {
-                                                    int within_tile_x = condition_mark % tiles_per_row;
-                                                    int within_tile_y = condition_mark / tiles_per_row;
-                                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                                    SKRect source_rt = new SKRect();
-                                                    source_rt.Left = c_x;
-                                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                                    source_rt.Top = c_y;
-                                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                                    SKRect target_rt = new SKRect();
-                                                    target_rt.Left = curx;
-                                                    target_rt.Right = target_rt.Left + marksize;
-                                                    target_rt.Top = cury + (rowheight - marksize) / 2;
-                                                    target_rt.Bottom = target_rt.Top + marksize;
-
-                                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
-
-                                                    curx += marksize;
-                                                    curx += markpadding;
-                                                }
-                                            }
-                                        }
-
-                                        ulong buff_bits;
-                                        for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
-                                        {
-                                            buff_bits = mi.buff_bits[buff_ulong];
-                                            int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                            if (buff_bits != 0)
-                                            {
-                                                for (int buff_idx = 0; buff_idx < 32; buff_idx++)
-                                                {
-                                                    ulong buffbit = 1UL << buff_idx;
-                                                    if ((buff_bits & buffbit) != 0)
+                                                    ulong statusbit = 1UL << status_mark;
+                                                    if ((status_bits & statusbit) != 0)
                                                     {
-                                                        int propidx = buff_ulong * 32 + buff_idx;
-                                                        if (propidx > GHConstants.LAST_PROP)
-                                                            break;
-                                                        int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + BuffTileOff;
-                                                        int mtile = Glyph2Tile[mglyph];
-                                                        int sheet_idx = TileSheetIdx(mtile);
-                                                        int tile_x = TileSheetX(mtile);
-                                                        int tile_y = TileSheetY(mtile);
-
-                                                        int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
-                                                        int within_tile_x = buff_mark % tiles_per_row;
-                                                        int within_tile_y = buff_mark / tiles_per_row;
+                                                        int within_tile_x = status_mark % tiles_per_row;
+                                                        int within_tile_y = status_mark / tiles_per_row;
                                                         int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
                                                         int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
 
@@ -5645,24 +5565,111 @@ namespace GnollHackClient.Pages.Game
                                                     }
                                                 }
                                             }
+
+                                            ulong condition_bits;
+                                            condition_bits = mi.condition_bits;
+                                            if (condition_bits != 0)
+                                            {
+                                                int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + UITileOff;
+                                                int mtile = Glyph2Tile[mglyph];
+                                                int sheet_idx = TileSheetIdx(mtile);
+                                                int tile_x = TileSheetX(mtile);
+                                                int tile_y = TileSheetY(mtile);
+                                                for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
+                                                {
+                                                    ulong conditionbit = 1UL << condition_mark;
+                                                    if ((condition_bits & conditionbit) != 0)
+                                                    {
+                                                        int within_tile_x = condition_mark % tiles_per_row;
+                                                        int within_tile_y = condition_mark / tiles_per_row;
+                                                        int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                        int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                        SKRect source_rt = new SKRect();
+                                                        source_rt.Left = c_x;
+                                                        source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                        source_rt.Top = c_y;
+                                                        source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                        SKRect target_rt = new SKRect();
+                                                        target_rt.Left = curx;
+                                                        target_rt.Right = target_rt.Left + marksize;
+                                                        target_rt.Top = cury + (rowheight - marksize) / 2;
+                                                        target_rt.Bottom = target_rt.Top + marksize;
+
+                                                        canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                                        curx += marksize;
+                                                        curx += markpadding;
+                                                    }
+                                                }
+                                            }
+
+                                            ulong buff_bits;
+                                            for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
+                                            {
+                                                buff_bits = mi.buff_bits[buff_ulong];
+                                                int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                if (buff_bits != 0)
+                                                {
+                                                    for (int buff_idx = 0; buff_idx < 32; buff_idx++)
+                                                    {
+                                                        ulong buffbit = 1UL << buff_idx;
+                                                        if ((buff_bits & buffbit) != 0)
+                                                        {
+                                                            int propidx = buff_ulong * 32 + buff_idx;
+                                                            if (propidx > GHConstants.LAST_PROP)
+                                                                break;
+                                                            int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + BuffTileOff;
+                                                            int mtile = Glyph2Tile[mglyph];
+                                                            int sheet_idx = TileSheetIdx(mtile);
+                                                            int tile_x = TileSheetX(mtile);
+                                                            int tile_y = TileSheetY(mtile);
+
+                                                            int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
+                                                            int within_tile_x = buff_mark % tiles_per_row;
+                                                            int within_tile_y = buff_mark / tiles_per_row;
+                                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                            SKRect source_rt = new SKRect();
+                                                            source_rt.Left = c_x;
+                                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                            source_rt.Top = c_y;
+                                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                            SKRect target_rt = new SKRect();
+                                                            target_rt.Left = curx;
+                                                            target_rt.Right = target_rt.Left + marksize;
+                                                            target_rt.Top = cury + (rowheight - marksize) / 2;
+                                                            target_rt.Bottom = target_rt.Top + marksize;
+
+                                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+
+                                                            curx += marksize;
+                                                            curx += markpadding;
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
+
+                                        /* Next pet */
+                                        tx += pet_target_width;
+                                        if (tx + pet_target_width * 1.1f > menu_button_left)
+                                        {
+                                            tx = pet_tx_start;
+                                            ty += pet_target_height + textPaint.FontSpacing / 2;
+                                        }
+                                        else
+                                            tx += pet_target_width * 0.1f;
                                     }
 
-                                    /* Next pet */
-                                    tx += pet_target_width;
-                                    if (tx + pet_target_width * 1.1f > menu_button_left)
-                                    {
-                                        tx = pet_tx_start;
-                                        ty += pet_target_height + textPaint.FontSpacing / 2;
-                                    }
-                                    else
-                                        tx += pet_target_width * 0.1f;
+                                    textPaint.TextAlign = SKTextAlign.Left;
                                 }
-
-                                textPaint.TextAlign = SKTextAlign.Left;
                             }
                         }
-
                     }
 
                     bool orbsok = false;

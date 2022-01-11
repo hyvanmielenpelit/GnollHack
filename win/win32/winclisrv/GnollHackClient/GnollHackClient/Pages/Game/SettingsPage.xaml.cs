@@ -56,6 +56,10 @@ namespace GnollHackClient.Pages.Game
             Preferences.Set("ClassicStatusBar", ClassicStatusBarSwitch.IsToggled);
 
             if (_gamePage != null)
+                _gamePage.ShowPets = PetSwitch.IsToggled;
+            Preferences.Set("ShowPets", PetSwitch.IsToggled);
+
+            if (_gamePage != null)
                 _gamePage.ShowOrbs = OrbSwitch.IsToggled;
             Preferences.Set("ShowOrbs", OrbSwitch.IsToggled);
 
@@ -120,7 +124,7 @@ namespace GnollHackClient.Pages.Game
             App.BackButtonPressed += BackButtonPressed;
 
             int cursor = 0, graphics = 0, msgnum = 0;
-            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", 1.0f);
@@ -145,6 +149,7 @@ namespace GnollHackClient.Pages.Game
                 ShowExtendedStatusBarLabel.TextColor = Color.Gray;
                 hpbars = Preferences.Get("HitPointBars", false);
                 statusbar = Preferences.Get("ClassicStatusBar", GHConstants.IsDefaultStatusBarClassic);
+                pets = Preferences.Get("ShowPets", true);
                 orbs = Preferences.Get("ShowOrbs", true);
                 orbmaxhp = Preferences.Get("ShowMaxHealthInOrb", false);
                 orbmaxmana = Preferences.Get("ShowMaxManaInOrb", false);
@@ -168,6 +173,7 @@ namespace GnollHackClient.Pages.Game
                 ShowExtendedStatusBarLabel.TextColor = Color.Black;
                 statusbar = _gamePage.ClassicStatusBar;
                 hpbars = _gamePage.HitPointBars;
+                pets = _gamePage.ShowPets;
                 orbs = _gamePage.ShowOrbs;
                 orbmaxhp = _gamePage.ShowMaxHealthInOrb;
                 orbmaxmana = _gamePage.ShowMaxManaInOrb;
@@ -183,6 +189,7 @@ namespace GnollHackClient.Pages.Game
             GridSwitch.IsToggled = mapgrid;
             HitPointBarSwitch.IsToggled = hpbars;
             ClassicStatusBarSwitch.IsToggled = statusbar;
+            PetSwitch.IsToggled = pets;
             OrbSwitch.IsToggled = orbs;
             MaxHealthInOrbSwitch.IsToggled = orbmaxhp;
             MaxManaInOrbSwitch.IsToggled = orbmaxmana;
