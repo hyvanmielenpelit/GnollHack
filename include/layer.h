@@ -149,11 +149,11 @@ struct layer_info {
 
 
 struct monst_info {
-    int glyph; /* For ascii compatibility */
-    int gui_glyph; /* For ascii compatibility */
+    int glyph;
+    int gui_glyph;
 
     char name[BUFSZ];
-    unsigned m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
+    unsigned m_id;
 
     int mhp;
     int mhpmax;

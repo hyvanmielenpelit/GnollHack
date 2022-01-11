@@ -772,7 +772,7 @@ namespace GnollHackCommon
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = GHConstants.BUFSZ)]
         public string name;
-        public int m_id;
+        public uint m_id;
         
         public int mhp;
         public int mhpmax;

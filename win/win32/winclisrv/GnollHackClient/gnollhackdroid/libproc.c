@@ -743,7 +743,7 @@ void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
     mi_ptr->mhp = mtmp->mhp;
     mi_ptr->mhpmax = mtmp->mhpmax;
 
-    mi_ptr->status_bits = get_m_status_bits(mtmp, FALSE, is_tame(mtmp), is_peaceful(mtmp) && !is_tame(mtmp), FALSE);
+    mi_ptr->status_bits = get_m_status_bits(mtmp, FALSE, is_peaceful(mtmp) && !is_tame(mtmp), is_tame(mtmp), FALSE);
     mi_ptr->condition_bits = get_m_condition_bits(mtmp);
     get_m_buff_bits(mtmp, mi_ptr->buff_bits, FALSE);
 
