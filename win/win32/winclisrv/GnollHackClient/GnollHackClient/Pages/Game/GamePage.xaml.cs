@@ -5432,18 +5432,18 @@ namespace GnollHackClient.Pages.Game
                                 textPaint.Color = SKColors.White;
                                 textPaint.Typeface = App.LatoRegular;
                                 textPaint.TextSize = 36;
-                                float pet_target_height = inverse_canvas_scale * (float)ESCButton.Height;
+                                float pet_target_height = inverse_canvas_scale * (float)(ESCButton.Height + lAbilitiesButton.Width) / 2;
                                 //float pet_name_target_height = pet_target_height * 0.4f;
                                 float pet_picture_target_height = pet_target_height * 0.56f;
                                 float pet_hp_target_height = pet_target_height * 0.24f;
                                 float pet_status_target_height = pet_target_height * 0.2f;
                                 //float pet_name_size = textPaint.TextSize * pet_name_target_height / textPaint.FontSpacing;
                                 float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing; //pet_name_size * pet_hp_target_height / pet_name_target_height;
-                                                                                                                       //textPaint.TextSize = pet_name_size;
-                                                                                                                       //string pet_test_text = "Large Dog";
-                                                                                                                       //float pet_target_width = textPaint.MeasureText(pet_test_text);
-                                                                                                                       //pet_target_width += textPaint.FontSpacing; // For picture
-                                float pet_target_width = inverse_canvas_scale * (float)ESCButton.Width;
+                                //textPaint.TextSize = pet_name_size;
+                                //string pet_test_text = "Large Dog";
+                                //float pet_target_width = textPaint.MeasureText(pet_test_text);
+                                //pet_target_width += textPaint.FontSpacing; // For picture
+                                float pet_target_width = pet_target_height; // inverse_canvas_scale * (float)ESCButton.Width;
 
                                 SKRect menubuttonrect = GetViewScreenRect(GameMenuButton);
                                 float menu_button_left = menubuttonrect.Left;

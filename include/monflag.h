@@ -320,10 +320,10 @@
 #define M5_FEMALE_TILE                 0x00008000UL
 
 /* Some special tile flags */
-#define M5_FULL_SIZED_CORPSE_TILE        0x00010000UL
-#define M5_FULL_SIZED_FEMALE_CORPSE_TILE 0x00020000UL
-#define M5_HALF_SIZED_MONSTER_TILE       0x00040000UL /* Upper half of the tile is empty, so one can draw in menus just the lower half */
-/* free bit */
+#define M5_FULL_SIZED_CORPSE_TILE           0x00010000UL
+#define M5_FULL_SIZED_FEMALE_CORPSE_TILE    0x00020000UL
+#define M5_HALF_SIZED_MONSTER_TILE          0x00040000UL /* Upper half of the tile is empty, so one can draw in menus just the lower half */
+#define M5_TWO_WIDE_CENTERED_MONSTER_TILE   0x00080000UL /* The monster covers three tiles, but is in fact only two tiles wide, leaving half tile from left and right empty, so one can draw just the center tile, right half of left tile, and left half of right tile. */
 
 /* Remaining bits are normal monster flags */
 #define M5_ESCHEWS_CURSED_ITEMS     0x00100000UL
