@@ -207,6 +207,7 @@ namespace GnollHackCommon
         GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE = 0x08,
         GLYPH_TILE_FLAG_HALF_SIZED_TILE = 0x10,
         GLYPH_TILE_FLAG_HAS_FLOOR_TILE = 0x20,
+        GLYPH_TILE_FLAG_TWO_WIDE_CENTERED = 0x40,
     }
 
     [StructLayout(LayoutKind.Sequential)]

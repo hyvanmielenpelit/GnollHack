@@ -19,6 +19,13 @@ namespace GnollHackClient
 
         }
 
+        private int _canvasWidth = 0;
+        private int _canvasHeight = 0;
+
+        public int CanvasWidth { get { return _canvasWidth == 0 ? Width :_canvasWidth; } set { _canvasWidth = value; } }
+        public int CanvasHeight { get { return _canvasHeight == 0 ? Height :_canvasHeight; } set { _canvasHeight = value; } }
+        public int CanvasXStart { get; set; }
+
         public override bool IsEmpty => (ReferenceGamePage == null || Glyph == 0 || Glyph >= ReferenceGamePage.Glyph2Tile.Length);
 
         protected override void OnPropertyChanged(string propertyName)
@@ -146,6 +153,8 @@ namespace GnollHackClient
             {
                 if (AutoSize)
                 {
+                    CanvasWidth = 1;
+                    CanvasHeight = 1;
                     Width = 1;
                     Height = 1;
                 }
@@ -181,11 +190,12 @@ namespace GnollHackClient
                 int signed_glyph = Glyph;
                 int abs_glyph = Math.Abs(signed_glyph);
 
+                CanvasXStart = 0;
                 bool tileflag_halfsize = (ReferenceGamePage.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
                 if (tileflag_halfsize)
                 {
-                    Width = GHConstants.TileWidth;
-                    Height = GHConstants.TileHeight / 2;
+                    CanvasWidth = Width = GHConstants.TileWidth;
+                    CanvasHeight = Height = GHConstants.TileHeight / 2;
                 }
                 else
                 {
@@ -194,13 +204,22 @@ namespace GnollHackClient
 
                     if (enlargement == 0)
                     {
-                        Width = GHConstants.TileWidth;
-                        Height = GHConstants.TileHeight;
+                        CanvasWidth = Width = GHConstants.TileWidth;
+                        CanvasHeight = Height = GHConstants.TileHeight;
                     }
                     else
                     {
-                        Width = GHConstants.TileWidth * ReferenceGamePage.Enlargements[enlargement].width_in_tiles;
-                        Height = GHConstants.TileHeight * ReferenceGamePage.Enlargements[enlargement].height_in_tiles;
+                        CanvasWidth = GHConstants.TileWidth * ReferenceGamePage.Enlargements[enlargement].width_in_tiles;
+                        Height = CanvasHeight = GHConstants.TileHeight * ReferenceGamePage.Enlargements[enlargement].height_in_tiles;
+                        if(CanvasWidth == 3 * GHConstants.TileWidth && (ReferenceGamePage.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_TWO_WIDE_CENTERED) != 0)
+                        {
+                            CanvasXStart = GHConstants.TileWidth / 2;
+                            Width = 2 * GHConstants.TileWidth;
+                        }
+                        else
+                        {
+                            Width = CanvasWidth;
+                        }
                     }
                 }
             }
@@ -211,10 +230,11 @@ namespace GnollHackClient
             int signed_glyph = Glyph;
             int abs_glyph = Math.Abs(signed_glyph);
 
-            if (ReferenceGamePage != null && abs_glyph > 0 && Width > 0 && Height > 0 && abs_glyph < ReferenceGamePage.Glyph2Tile.Length)
+            if (ReferenceGamePage != null && abs_glyph > 0 && CanvasWidth > 0 && CanvasHeight > 0 && abs_glyph < ReferenceGamePage.Glyph2Tile.Length)
             {
-                bool tileflag_halfsize = (ReferenceGamePage.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
-                bool tileflag_fullsizeditem = (ReferenceGamePage.GlyphTileFlags[abs_glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
+                byte glyphflags = ReferenceGamePage.GlyphTileFlags[abs_glyph];
+                bool tileflag_halfsize = (glyphflags & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
+                bool tileflag_fullsizeditem = (glyphflags & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
                 int ntile = ReferenceGamePage.Glyph2Tile[abs_glyph];
                 int autodraw = ReferenceGamePage.Tile2Autodraw[ntile];
                 int anim_frame_idx = 0, main_tile_idx = 0;
@@ -250,12 +270,12 @@ namespace GnollHackClient
 
                     if (enlargement_idx == 0)
                     {
-                        float scale = Width / (float)GHConstants.TileWidth;
-                        float tileWidth = Width;
-                        float tileHeight = Height;
+                        float scale = CanvasWidth / (float)GHConstants.TileWidth;
+                        float tileWidth = CanvasWidth;
+                        float tileHeight = CanvasHeight;
                         float xpadding = 0;
                         float ypadding = 0;
-                        float scaled_tile_height = Height;
+                        float scaled_tile_height = CanvasHeight;
                         SKRect sourcerect;
                         if (tileflag_halfsize)
                         {
@@ -269,13 +289,13 @@ namespace GnollHackClient
                         SKRect targetrect;
                         if (tileflag_halfsize)
                         {
-                            targetrect = new SKRect(0, 0, Width, Height);
+                            targetrect = new SKRect(0, 0, CanvasWidth, CanvasHeight);
                         }
                         else
                         {
                             float fullsizewidth = Height / (float)GHConstants.TileHeight * (float)GHConstants.TileWidth;
-                            float fullsizepadding = Math.Max(0, Width - fullsizewidth) / 2;
-                            targetrect = new SKRect(fullsizepadding, 0, fullsizepadding + fullsizewidth, Height);
+                            float fullsizepadding = Math.Max(0, CanvasWidth - fullsizewidth) / 2;
+                            targetrect = new SKRect(fullsizepadding - CanvasXStart, 0, fullsizepadding + fullsizewidth - CanvasXStart, Height);
                             xpadding = fullsizepadding;
                             tileWidth = fullsizewidth;
                             scale = tileWidth / GHConstants.TileWidth;
@@ -297,16 +317,16 @@ namespace GnollHackClient
 
                         int width = GHConstants.TileWidth * enl_width;
                         int height = GHConstants.TileHeight * enl_height;
-                        float relsizex = width / Width;
-                        float relsizey = height / Height;
+                        float relsizex = width / CanvasWidth;
+                        float relsizey = height / CanvasHeight;
                         float scale = Math.Min(1 / relsizex, 1 / relsizey);
                         float targetimagewidth = scale * width;
                         float targetimageheight = scale * height;
                         float tileWidth = scale * GHConstants.TileWidth;
                         float tileHeight = scale * GHConstants.TileHeight;
-                        float xpadding = Math.Max(0, (Width - targetimagewidth) / 2);
-                        float ypadding = Math.Max(0, (Height - targetimageheight) / 2);
-                        float t_x = xpadding + enl_x * tileWidth;
+                        float xpadding = Math.Max(0, (CanvasWidth - targetimagewidth) / 2);
+                        float ypadding = Math.Max(0, (CanvasHeight - targetimageheight) / 2);
+                        float t_x = xpadding + enl_x * tileWidth - CanvasXStart;
                         float t_y = ypadding + tileHeight * (enl_height - 1);
                         int n_sheet_idx = sheet_idx;
 
@@ -377,7 +397,7 @@ namespace GnollHackClient
                                         target_x = idx == 0 || idx == 3 ? 0 : idx == 1 ? tileWidth : 2 * tileWidth;
                                 }
 
-                                target_x += xpadding;
+                                target_x += xpadding - CanvasXStart;
                                 target_y += ypadding;
 
                                 using (new SKAutoCanvasRestore(canvas, true))

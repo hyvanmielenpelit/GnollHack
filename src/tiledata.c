@@ -134,6 +134,10 @@ uchar* tilemapflags;
                 {
                     gtflags |= GLYPH_TILE_FLAG_HALF_SIZED_TILE;
                 }
+                if (spset >= ACTION_TILE_NO_ACTION && spset < MAX_ACTION_TILES && (mons[i].mflags5 & M5_TWO_WIDE_CENTERED_MONSTER_TILE))
+                {
+                    gtflags |= GLYPH_TILE_FLAG_TWO_WIDE_CENTERED_TILE;
+                }
 
                 if (gender == 1)
                 {
