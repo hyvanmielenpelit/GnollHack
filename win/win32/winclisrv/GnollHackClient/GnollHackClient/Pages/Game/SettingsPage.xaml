@@ -35,6 +35,7 @@
                                             FontSize="17"
                                             TextColor="Black"
                                             TitleColor="Black"
+                                            HorizontalTextAlignment="End"
                                             BackgroundColor="Transparent"
                                             WidthRequest="200"
                                             VerticalOptions="Center"
@@ -61,6 +62,7 @@
                                             FontSize="17"
                                             TextColor="Black"
                                             TitleColor="Black"
+                                            HorizontalTextAlignment="End"
                                             WidthRequest="200"
                                             BackgroundColor="Transparent"
                                             VerticalOptions="Center"
@@ -86,7 +88,8 @@
                                             FontFamily="Underwood" 
                                             FontSize="17"
                                             TextColor="Black"
-                                            TitleColor="Black"
+                                            TitleColor="Black" 
+                                            HorizontalTextAlignment="End"
                                             BackgroundColor="Transparent"
                                             WidthRequest="200"
                                             VerticalOptions="Center"
@@ -168,7 +171,7 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="Show Pet Stats"
+                                    <Label Text="Show Pets"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
@@ -177,6 +180,35 @@
                                 </StackLayout>
                             </ViewCell>
                             <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Pet Rows"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Picker x:Name="PetRowPicker"
+                                            Title="Select the number of pet rows"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="200"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                        <Picker.ItemsSource>
+                                            <x:Array Type="{x:Type x:String}">
+                                                <x:String>1</x:String>
+                                                <x:String>2</x:String>
+                                                <x:String>3</x:String>
+                                                <x:String>4</x:String>
+                                                <x:String>Maximum</x:String>
+                                            </x:Array>
+                                        </Picker.ItemsSource>
+                                    </Picker>
+                                </StackLayout>
+                            </ViewCell>                            <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Orbs"
                                            FontFamily="Underwood" TextColor="Black"

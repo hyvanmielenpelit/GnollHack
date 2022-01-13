@@ -100,8 +100,8 @@ namespace GnollHackClient.Pages.Game
             if(_gamePage == null || !_gamePage.MuteSounds)
                 App.FmodService.AdjustVolumes((float)GeneralVolumeSlider.Value, (float)MusicVolumeSlider.Value, (float)AmbientVolumeSlider.Value, (float)DialogueVolumeSlider.Value, (float)EffectsVolumeSlider.Value, (float)UIVolumeSlider.Value);
 
-            int res = 4, tryres = 0;
-            string str = MessageLengthPicker.SelectedItem.ToString();
+            int res = GHConstants.DefaultMessageRows, tryres = 0;
+            string str = MessageLengthPicker.SelectedItem == null ? res.ToString() : MessageLengthPicker.SelectedItem.ToString();
             if (int.TryParse(str, out tryres))
                 res = tryres;
 
@@ -115,6 +115,23 @@ namespace GnollHackClient.Pages.Game
             if (_gamePage != null)
                 _gamePage.ForceAllMessages = ForceMaxMessageSwitch.IsToggled;
 
+            res = GHConstants.DefaultPetRows;
+            tryres = 0;
+            str = PetRowPicker.SelectedItem == null ? res.ToString() : PetRowPicker.SelectedItem.ToString();
+            if (str.Length >= 3 && str.Substring(0, 3) == "Max")
+                res = 99;
+            else if (int.TryParse(str, out tryres))
+                res = tryres;
+
+            if (res > 0)
+            {
+                if (_gamePage != null)
+                    _gamePage.NumDisplayedPetRows = res;
+                Preferences.Set("NumDisplayedPetRows", res);
+            }
+
+
+
             if (_gamePage != null)
                 _gamePage.ShowExtendedStatusBar = ShowExtendedStatusBarSwitch.IsToggled;
         }
@@ -123,7 +140,7 @@ namespace GnollHackClient.Pages.Game
         {
             App.BackButtonPressed += BackButtonPressed;
 
-            int cursor = 0, graphics = 0, msgnum = 0;
+            int cursor = 0, graphics = 0, msgnum = 0, petrows = 0;
             bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
@@ -159,6 +176,7 @@ namespace GnollHackClient.Pages.Game
                 mem = Preferences.Get("ShowMemoryUsage", false);
                 fps = Preferences.Get("ShowFPS", false);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
+                petrows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
             }
             else
             {
@@ -183,6 +201,7 @@ namespace GnollHackClient.Pages.Game
                 mem = _gamePage.ShowMemoryUsage;
                 fps = _gamePage.ShowFPS;
                 msgnum = _gamePage.NumDisplayedMessages;
+                petrows = _gamePage.NumDisplayedPetRows;
             }
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
@@ -212,6 +231,20 @@ namespace GnollHackClient.Pages.Game
                 if (int.TryParse(MessageLengthPicker.Items[i].ToString(), out tryint) && tryint > 0 && tryint == msgnum)
                 {
                     MessageLengthPicker.SelectedIndex = i;
+                    break;
+                }
+            }
+            for (int i = 0; i < PetRowPicker.Items.Count; i++)
+            {
+                int tryint = 0;
+                if(petrows == 99 && PetRowPicker.Items[i].ToString().Length >= 3 && PetRowPicker.Items[i].ToString().Substring(0,3) == "Max")
+                {
+                    PetRowPicker.SelectedIndex = i;
+                    break;
+                }
+                else if (int.TryParse(PetRowPicker.Items[i].ToString(), out tryint) && tryint > 0 && tryint == petrows)
+                {
+                    PetRowPicker.SelectedIndex = i;
                     break;
                 }
             }

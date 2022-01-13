@@ -165,6 +165,10 @@ namespace GnollHackClient.Pages.Game
         private int _shownMessageRows = GHConstants.DefaultMessageRows;
         public int NumDisplayedMessages { get { return _shownMessageRows; } set { _shownMessageRows = value; } }
         public int ActualDisplayedMessages { get { return ForceAllMessages ? GHConstants.AllMessageRows : NumDisplayedMessages; } }
+
+        private int _shownPetRows = GHConstants.DefaultPetRows;
+        public int NumDisplayedPetRows { get { return _shownPetRows; } set { _shownPetRows = value; } }
+
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
         public bool ShowMemoryUsage { get; set; }
@@ -386,6 +390,7 @@ namespace GnollHackClient.Pages.Game
             PlayerMark = Preferences.Get("PlayerMark", false);
             MonsterTargeting = Preferences.Get("MonsterTargeting", false);
             NumDisplayedMessages = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
+            NumDisplayedPetRows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
             MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", deffontsize * GHConstants.MapFontRelativeAlternateSize);
@@ -5450,7 +5455,7 @@ namespace GnollHackClient.Pages.Game
                                 float pet_tx_start = orbleft + orbbordersize * 1.1f;
                                 tx = pet_tx_start;
                                 ty = statusbarheight + 5.0f;
-
+                                int petrownum = 0;
 
                                 foreach (monst_info mi in _petData)
                                 {
@@ -5661,6 +5666,9 @@ namespace GnollHackClient.Pages.Game
                                         {
                                             tx = pet_tx_start;
                                             ty += pet_target_height + textPaint.FontSpacing / 2;
+                                            petrownum++;
+                                            if (petrownum >= NumDisplayedPetRows)
+                                                break;
                                         }
                                         else
                                             tx += pet_target_width * 0.1f;
@@ -9690,13 +9698,13 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[2, 4] = new GHCommandButtonItem("Loot", "GnollHackClient.Assets.UI.loot.png", (int)'l');
             _moreBtnMatrix[3, 4] = new GHCommandButtonItem("Break", "GnollHackClient.Assets.UI.break.png", GHUtils.Ctrl((int)'b'));
             _moreBtnMatrix[4, 4] = new GHCommandButtonItem("Overview", "GnollHackClient.Assets.UI.overview.png", GHUtils.Ctrl((int)'o'));
-            _moreBtnMatrix[5, 4] = new GHCommandButtonItem("Quiver", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'Q');
+            _moreBtnMatrix[5, 4] = new GHCommandButtonItem("Quiver", "GnollHackClient.Assets.UI.quiver.png", (int)'Q');
 
-            _moreBtnMatrix[0, 5] = new GHCommandButtonItem("Abilities", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'A');
+            _moreBtnMatrix[0, 5] = new GHCommandButtonItem("Abilities", "GnollHackClient.Assets.UI.abilities.png", (int)'A');
             _moreBtnMatrix[1, 5] = new GHCommandButtonItem("Skills", "GnollHackClient.Assets.UI.skill.png", (int)'S');
-            _moreBtnMatrix[2, 5] = new GHCommandButtonItem("Commands", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'c'));
-            _moreBtnMatrix[3, 5] = new GHCommandButtonItem("Spells", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'+');
-            _moreBtnMatrix[4, 5] = new GHCommandButtonItem("Mix", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'X');
+            _moreBtnMatrix[2, 5] = new GHCommandButtonItem("Commands", "GnollHackClient.Assets.UI.commands.png", GHUtils.Meta((int)'c'));
+            _moreBtnMatrix[3, 5] = new GHCommandButtonItem("Spells", "GnollHackClient.Assets.UI.spells.png", (int)'+');
+            _moreBtnMatrix[4, 5] = new GHCommandButtonItem("Mix", "GnollHackClient.Assets.UI.mix.png", (int)'X');
             _moreBtnMatrix[5, 5] = new GHCommandButtonItem("Dip", "GnollHackClient.Assets.UI.dip.png", GHUtils.Meta((int)'d'));
 
             _moreBtnMatrix[0, 6] = new GHCommandButtonItem("Wield", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'w');

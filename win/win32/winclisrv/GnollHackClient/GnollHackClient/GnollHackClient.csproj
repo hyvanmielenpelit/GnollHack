@@ -67,6 +67,7 @@
     <None Remove="Assets\test1.m4a" />
     <None Remove="Assets\test2.mp3" />
     <None Remove="Assets\tombstone.png" />
+    <None Remove="Assets\UI\abilities.png" />
     <None Remove="Assets\UI\apply.png" />
     <None Remove="Assets\UI\arrow_down.png" />
     <None Remove="Assets\UI\arrow_downleft.png" />
@@ -83,6 +84,7 @@
     <None Remove="Assets\UI\cast.png" />
     <None Remove="Assets\UI\chat.png" />
     <None Remove="Assets\UI\close.png" />
+    <None Remove="Assets\UI\commands.png" />
     <None Remove="Assets\UI\dig.png" />
     <None Remove="Assets\UI\dip.png" />
     <None Remove="Assets\UI\dropmany.png" />
@@ -103,6 +105,7 @@
     <None Remove="Assets\UI\lookhere.png" />
     <None Remove="Assets\UI\loot.png" />
     <None Remove="Assets\UI\menubackground.png" />
+    <None Remove="Assets\UI\mix.png" />
     <None Remove="Assets\UI\more.png" />
     <None Remove="Assets\UI\name.png" />
     <None Remove="Assets\UI\no.png" />
@@ -116,6 +119,7 @@
     <None Remove="Assets\UI\pickup.png" />
     <None Remove="Assets\UI\pray.png" />
     <None Remove="Assets\UI\quaff.png" />
+    <None Remove="Assets\UI\quiver.png" />
     <None Remove="Assets\UI\read.png" />
     <None Remove="Assets\UI\repeat.png" />
     <None Remove="Assets\UI\rightring.png" />
@@ -125,6 +129,7 @@
     <None Remove="Assets\UI\search200.png" />
     <None Remove="Assets\UI\sit.png" />
     <None Remove="Assets\UI\skill.png" />
+    <None Remove="Assets\UI\spells.png" />
     <None Remove="Assets\UI\stairs-down.png" />
     <None Remove="Assets\UI\stairs-up.png" />
     <None Remove="Assets\UI\status-ac.png" />
@@ -196,6 +201,7 @@
     <EmbeddedResource Include="Assets\main-menu-portrait-snapshot.jpg" />
     <EmbeddedResource Include="Assets\shxi.ttf" />
     <EmbeddedResource Include="Assets\tombstone.png" />
+    <EmbeddedResource Include="Assets\UI\abilities.png" />
     <EmbeddedResource Include="Assets\UI\apply.png" />
     <EmbeddedResource Include="Assets\UI\arrow_down.png" />
     <EmbeddedResource Include="Assets\UI\arrow_downleft.png" />
@@ -212,6 +218,7 @@
     <EmbeddedResource Include="Assets\UI\chat.png" />
     <EmbeddedResource Include="Assets\UI\close.png" />
     <EmbeddedResource Include="Assets\UI\background-darkmarble.png" />
+    <EmbeddedResource Include="Assets\UI\commands.png" />
     <EmbeddedResource Include="Assets\UI\dig.png" />
     <EmbeddedResource Include="Assets\UI\dip.png" />
     <EmbeddedResource Include="Assets\UI\dropmany.png" />
@@ -232,6 +239,7 @@
     <EmbeddedResource Include="Assets\UI\lookhere.png" />
     <EmbeddedResource Include="Assets\UI\loot.png" />
     <EmbeddedResource Include="Assets\UI\menubackground.png" />
+    <EmbeddedResource Include="Assets\UI\mix.png" />
     <EmbeddedResource Include="Assets\UI\more.png" />
     <EmbeddedResource Include="Assets\UI\name.png" />
     <EmbeddedResource Include="Assets\UI\no.png" />
@@ -245,6 +253,7 @@
     <EmbeddedResource Include="Assets\UI\pickup.png" />
     <EmbeddedResource Include="Assets\UI\pray.png" />
     <EmbeddedResource Include="Assets\UI\quaff.png" />
+    <EmbeddedResource Include="Assets\UI\quiver.png" />
     <EmbeddedResource Include="Assets\UI\read.png" />
     <EmbeddedResource Include="Assets\UI\repeat.png" />
     <EmbeddedResource Include="Assets\UI\rightring.png" />
@@ -254,6 +263,7 @@
     <EmbeddedResource Include="Assets\UI\search200.png" />
     <EmbeddedResource Include="Assets\UI\sit.png" />
     <EmbeddedResource Include="Assets\UI\skill.png" />
+    <EmbeddedResource Include="Assets\UI\spells.png" />
     <EmbeddedResource Include="Assets\UI\stairs-down.png" />
     <EmbeddedResource Include="Assets\UI\stairs-up.png" />
     <EmbeddedResource Include="Assets\UI\status-ac.png" />
