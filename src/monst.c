@@ -5855,7 +5855,7 @@ struct permonst _mons2[] = {
         M3_CLOSE | M3_INFRAVISIBLE | M3_SPEAKING, 
         M4_NONE, M5_NONE, M6_BOSS_MONSTER, M7_ROGUE, M8_NONE,
         20, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("Lord Sato", "Head of the Taro Clan, mighty daimyo", None, None, None, S_HUMAN, LVL(20, 12, 0, 0, 30, 20), (G_NOGEN | G_UNIQ),
+    MON("Lord Sato", "Head of the Taro Clan", None, None, None, S_HUMAN, LVL(20, 12, 0, 0, 30, 20), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 8, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_LEADER, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(STR18(100), 18, 18, 18, 18, 18), MR_CHARM, MR2_NONE, MC_NONE,

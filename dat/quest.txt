@@ -2365,7 +2365,7 @@ the kami of %H before you return again.
 "You have brought our clan and %l much honor."
 %E
 %Cp Sam 00013
-"Please %r, sit for a while and tell us how you overcame the Ninja."
+"Please %c, sit for a while and tell us how you overcame the Ninja."
 %E
 %Cp Sam 00014
 "%lC still lives!  You have saved us from becoming ronin."
@@ -2392,13 +2392,13 @@ to figure out what I need from a samurai?"
 become a monk.  Your fief and family are forfeit.  Wakarimasu ka?"
 %E [Leave and do not come back.]
 %Cc Sam 00019
-"%p-san, you have learned well and honored your family.
+"%pC-san, you have learned well and honored your family.
 I require the skills of %Ra in order to defeat %n.
 Go and seek out teachers.  Learn what they have learned.  When you
 are ready, return to me."
 %E ["I require %Ra to defeat %n.  Return when you are ready."]
 %Cc Sam 00020
-"%p-san, you would do better to join the kyokaku.
+"%pC-san, you would do better to join the kyokaku.
 
 "You have skills, but until you can call upon the bushido to know when and
 how to use them you are not samurai.  When you can think %a and
@@ -2567,7 +2567,7 @@ through the magic portal that transported you here so that you may
 achieve the destiny which awaits you."
 %E [Take %o, return to %Z, and recover the Amulet.]
 %Cp Sam 00090
-%lC bows.  "%p-sama, tell us of your search for the Amulet."
+%lC bows.  "%pC-sama, tell us of your search for the Amulet."
 %E
 # [Sam 00091: most other roles give more explicit directions for the
 #  feedback here, so this summary does that too.]
