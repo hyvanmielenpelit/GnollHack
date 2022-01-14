@@ -7278,13 +7278,20 @@ namespace GnollHackClient.Pages.Game
                 if (TipView.IsVisible)
                     TipView.InvalidateSurface();
 
-                double sidesize = Math.Min(Math.Min(80.0, Math.Max(45.0, width / 8)), Math.Min(80.0, Math.Max(45.0, height / 8)));
-                GameMenuButton.WidthRequest = ESCButton.HeightRequest = sidesize;
-                ESCButton.WidthRequest = ESCButton.HeightRequest = sidesize;
-                LookModeButton.WidthRequest = LookModeButton.HeightRequest = sidesize;
-                ToggleModeButton.WidthRequest = ToggleModeButton.HeightRequest = sidesize;
-                ToggleZoomMiniButton.WidthRequest = ToggleZoomMiniButton.HeightRequest = sidesize;
-                ToggleZoomAlternateButton.WidthRequest = ToggleZoomAlternateButton.HeightRequest = sidesize;
+                //double sidesize = Math.Min(Math.Min(80.0, Math.Max(45.0, width / 8)), Math.Min(80.0, Math.Max(45.0, height / 8)));
+                //GameMenuButton.WidthRequest = ESCButton.HeightRequest = sidesize;
+                //ESCButton.WidthRequest = ESCButton.HeightRequest = sidesize;
+                //LookModeButton.WidthRequest = LookModeButton.HeightRequest = sidesize;
+                //ToggleModeButton.WidthRequest = ToggleModeButton.HeightRequest = sidesize;
+                //ToggleZoomMiniButton.WidthRequest = ToggleZoomMiniButton.HeightRequest = sidesize;
+                //ToggleZoomAlternateButton.WidthRequest = ToggleZoomAlternateButton.HeightRequest = sidesize;
+
+                GameMenuButton.SetSideSize(width, height);
+                ESCButton.SetSideSize(width, height);
+                LookModeButton.SetSideSize(width, height);
+                ToggleModeButton.SetSideSize(width, height);
+                ToggleZoomMiniButton.SetSideSize(width, height);
+                ToggleZoomAlternateButton.SetSideSize(width, height);
 
                 //sidesize = Math.Min(Math.Min(80.0, Math.Max(40.0, width / 6)), Math.Min(80.0, Math.Max(40.0, height / 6)));
                 //ZeroButton.WidthRequest = ZeroButton.HeightRequest = sidesize;
@@ -8302,11 +8309,13 @@ namespace GnollHackClient.Pages.Game
             MapTravelMode = !MapTravelMode;
             if (MapTravelMode)
             {
-                ToggleModeImg.Source = travelmode_on_source;
+                ToggleModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-travel-on.png";
+                //ToggleModeImg.Source = travelmode_on_source;
             }
             else
             {
-                ToggleModeImg.Source = travelmode_off_source;
+                ToggleModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-travel-off.png";
+                //ToggleModeImg.Source = travelmode_off_source;
             }
         }
         private EmbeddedResourceImageSource lookmode_on_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-look-on.png"));
@@ -8317,11 +8326,13 @@ namespace GnollHackClient.Pages.Game
             MapLookMode = !MapLookMode;
             if (MapLookMode)
             {
-                LookModeImg.Source = lookmode_on_source;
+                LookModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-look-on.png";
+                //LookModeImg.Source = lookmode_on_source;
             }
             else
             {
-                LookModeImg.Source = lookmode_off_source;
+                LookModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-look-off.png";
+                //LookModeImg.Source = lookmode_off_source;
             }
         }
         private void NoClipButton_Clicked(object sender, EventArgs e)
@@ -8411,12 +8422,14 @@ namespace GnollHackClient.Pages.Game
             ZoomMiniMode = !ZoomMiniMode;
             if (ZoomMiniMode)
             {
-                ToggleZoomMiniImg.Source = minimap_on_source;
+                ToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-minimap-on.png";
+                //ToggleZoomMiniImg.Source = minimap_on_source;
                 //ToggleZoomMiniButton.BackgroundColor = Color.Green;
             }
             else
             {
-                ToggleZoomMiniImg.Source = minimap_off_source;
+                ToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-minimap-off.png";
+                //ToggleZoomMiniImg.Source = minimap_off_source;
                 //ToggleZoomMiniButton.BackgroundColor = Color.DarkBlue;
             }
         }
@@ -8429,12 +8442,14 @@ namespace GnollHackClient.Pages.Game
             ZoomAlternateMode = !ZoomAlternateMode;
             if (ZoomAlternateMode)
             {
-                ToggleZoomAlternateImg.Source = altmap_on_source;
+                ToggleZoomAlternateButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-altmap-on.png";
+                //ToggleZoomAlternateImg.Source = altmap_on_source;
                 //ToggleZoomAlternateButton.BackgroundColor = Color.Green;
             }
             else
             {
-                ToggleZoomAlternateImg.Source = altmap_off_source;
+                ToggleZoomAlternateButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-altmap-off.png";
+                //ToggleZoomAlternateImg.Source = altmap_off_source;
                 //ToggleZoomAlternateButton.BackgroundColor = Color.DarkBlue;
             }
 

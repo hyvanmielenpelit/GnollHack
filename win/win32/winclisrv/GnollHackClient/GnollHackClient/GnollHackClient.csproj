@@ -328,6 +328,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Controls\SimpleImageButton.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Controls\LabeledImageButton.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -378,6 +381,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\SimpleImageButton.xaml.cs">
+      <DependentUpon>SimpleImageButton.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Pages\Login\WebViewPage.xaml.cs">
       <DependentUpon>WebViewPage.xaml</DependentUpon>
     </Compile>

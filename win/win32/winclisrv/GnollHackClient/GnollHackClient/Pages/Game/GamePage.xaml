@@ -58,42 +58,48 @@
                             HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
                             <!--<Button Text="&#x2261;" x:Name="GameMenuButton" Clicked="GameMenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />
                             <Button Text="&#x2205;" x:Name="ESCButton" Clicked="ESCButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />-->
-                            <Grid x:Name="GameMenuGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
+                            <controls:SimpleImageButton x:Name="GameMenuButton" HeightRequest="45" WidthRequest="45" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-menu.png" BtnClicked="GameMenuButton_Clicked"/>
+                            <controls:SimpleImageButton x:Name="ESCButton" HeightRequest="45" WidthRequest="45" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-cancel.png" BtnClicked="ESCButton_Clicked"/>
+                            <!--<Grid x:Name="GameMenuGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
                                 <ff:CachedImage x:Name="GameMenuImg" Source="resource://GnollHackClient.Assets.UI.stone-menu.png" HeightRequest="45" WidthRequest="45" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
                                 <Button x:Name="GameMenuButton" Clicked="GameMenuButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                            </Grid>
-                            <Grid x:Name="ESCGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
+                            </Grid>-->
+                            <!--<Grid x:Name="ESCGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
                                 <ff:CachedImage x:Name="ESCImg" Source="resource://GnollHackClient.Assets.UI.stone-cancel.png" HeightRequest="45" WidthRequest="45" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
                                 <Button x:Name="ESCButton" Clicked="ESCButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                            </Grid>
+                            </Grid>-->
                         </StackLayout>
                         <StackLayout x:Name="ModeLayout" Padding="0" Orientation="Vertical"
                             HorizontalOptions="End" BackgroundColor="Transparent" >
                             <StackLayout x:Name="ModeSubLayout1" Padding="0" Orientation="Vertical"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
                                 <!--<Button Text="m" x:Name="ToggleZoomMiniButton" Clicked="ToggleZoomMiniButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />-->
-                                <Grid x:Name="ToggleZoomMiniGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
+                                <controls:SimpleImageButton x:Name="ToggleZoomMiniButton" HeightRequest="45" WidthRequest="45" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-minimap-off.png" BtnClicked="ToggleZoomMiniButton_Clicked"/>
+                                <controls:SimpleImageButton x:Name="ToggleZoomAlternateButton" HeightRequest="45" WidthRequest="45" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-altmap-off.png" BtnClicked="ToggleZoomAlternateButton_Clicked"/>
+                                <!--<Grid x:Name="ToggleZoomMiniGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
                                     <ff:CachedImage x:Name="ToggleZoomMiniImg" Source="resource://GnollHackClient.Assets.UI.stone-minimap-off.png" HeightRequest="45" WidthRequest="45" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
                                     <Button x:Name="ToggleZoomMiniButton" Clicked="ToggleZoomMiniButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                                </Grid>
+                                </Grid>-->
                                 <!--<Button Text="a" x:Name="ToggleZoomAlternateButton" Clicked="ToggleZoomAlternateButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />-->
-                                <Grid x:Name="ToggleZoomAlternateGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
+                                <!--<Grid x:Name="ToggleZoomAlternateGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
                                     <ff:CachedImage x:Name="ToggleZoomAlternateImg" Source="resource://GnollHackClient.Assets.UI.stone-altmap-off.png" HeightRequest="45" WidthRequest="45" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
                                     <Button x:Name="ToggleZoomAlternateButton" Clicked="ToggleZoomAlternateButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                                </Grid>
+                                </Grid>-->
                             </StackLayout>
                             <StackLayout x:Name="ModeSubLayout2" Padding="0" Orientation="Vertical"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
                                 <!--<Button Text="&#x2699;" x:Name="LookModeButton" Clicked="LookModeButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />
                                 <Button Text="&#x265C;" x:Name="ToggleModeButton" Clicked="ToggleModeButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />-->
-                                <Grid x:Name="LookModeGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
+                                <controls:SimpleImageButton x:Name="LookModeButton" HeightRequest="45" WidthRequest="45" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-look-off.png" BtnClicked="LookModeButton_Clicked"/>
+                                <controls:SimpleImageButton x:Name="ToggleModeButton" HeightRequest="45" WidthRequest="45" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-travel-off.png" BtnClicked="ToggleModeButton_Clicked"/>
+                                <!--<Grid x:Name="LookModeGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
                                     <ff:CachedImage x:Name="LookModeImg" Source="resource://GnollHackClient.Assets.UI.stone-look-off.png" HeightRequest="45" WidthRequest="45" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
                                     <Button x:Name="LookModeButton" Clicked="LookModeButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                                </Grid>
-                                <Grid x:Name="ToggleModeGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
+                                </Grid>-->
+                                <!--<Grid x:Name="ToggleModeGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
                                     <ff:CachedImage x:Name="ToggleModeImg" Source="resource://GnollHackClient.Assets.UI.stone-travel-off.png" HeightRequest="45" WidthRequest="45" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
                                     <Button x:Name="ToggleModeButton" Clicked="ToggleModeButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                                </Grid>
+                                </Grid>-->
                             </StackLayout>
                         </StackLayout>
                     </StackLayout>
