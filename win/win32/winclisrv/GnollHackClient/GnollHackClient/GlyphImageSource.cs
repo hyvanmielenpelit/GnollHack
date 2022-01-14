@@ -144,6 +144,99 @@ namespace GnollHackClient
 
         }
 
+        public SKRect MeasureBitmapCroppingRect(SKBitmap bitmap)
+        {
+            byte[] bytes = bitmap.Bytes;
+            int bytesperpixel = bitmap.BytesPerPixel;
+            int bytesperrow = bitmap.RowBytes;
+            int left = 0, right = 0, top = 0, bottom = 0;
+
+            bool nonzero = false;
+            for(int y = 0; y < bitmap.Height; y++)
+            {
+
+                for (int x = 0; x < bitmap.Width; x++)
+                {
+                    if (bytes[y * bytesperrow + x * bytesperpixel] != 0)
+                    {
+                        nonzero = true;
+                        break;
+                    }
+                }
+                if (nonzero)
+                {
+                    top = y;
+                    break;
+                }
+            }
+            if (!nonzero)
+                top = 0;
+
+            nonzero = false;
+            for (int y = bitmap.Height - 1; y >= 0; y--)
+            {
+
+                for (int x = 0; x < bitmap.Width; x++)
+                {
+                    if (bytes[y * bytesperrow + x * bytesperpixel] != 0)
+                    {
+                        nonzero = true;
+                        break;
+                    }
+                }
+                if (nonzero)
+                {
+                    bottom = y;
+                    break;
+                }
+            }
+            if (!nonzero)
+                bottom = bitmap.Height - 1;
+
+            nonzero = false;
+            for (int x = 0; x < bitmap.Width; x++)
+            {
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+
+                    if (bytes[y * bytesperrow + x * bytesperpixel] != 0)
+                    {
+                        nonzero = true;
+                        break;
+                    }
+                }
+                if (nonzero)
+                {
+                    left = x;
+                    break;
+                }
+            }
+            if (!nonzero)
+                right = 0;
+
+            nonzero = false;
+            for (int x = bitmap.Width - 1; x >= 0; x--)
+            {
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    if (bytes[y * bytesperrow + x * bytesperpixel] != 0)
+                    {
+                        nonzero = true;
+                        break;
+                    }
+                }
+                if (nonzero)
+                {
+                    right = x;
+                    break;
+                }
+            }
+            if (!nonzero)
+                right = bitmap.Width - 1;
+
+            return new SKRect((float)left, (float)top, (float)right, (float)bottom);
+        }
+
         private Stream Draw()
         {
             int signed_glyph = Glyph;

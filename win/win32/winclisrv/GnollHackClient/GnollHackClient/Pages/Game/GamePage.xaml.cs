@@ -5662,7 +5662,7 @@ namespace GnollHackClient.Pages.Game
 
                                         /* Next pet */
                                         tx += pet_target_width;
-                                        if (tx + pet_target_width * 1.1f > menu_button_left)
+                                        if (tx + pet_target_width * 1.08f > menu_button_left)
                                         {
                                             tx = pet_tx_start;
                                             ty += pet_target_height + textPaint.FontSpacing / 2;
@@ -5671,7 +5671,7 @@ namespace GnollHackClient.Pages.Game
                                                 break;
                                         }
                                         else
-                                            tx += pet_target_width * 0.1f;
+                                            tx += pet_target_width * 0.08f;
                                     }
 
                                     textPaint.TextAlign = SKTextAlign.Left;
