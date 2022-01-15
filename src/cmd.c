@@ -5246,7 +5246,7 @@ struct ext_func_tab extcmdlist[] = {
     { M('w'), "wipe", "wipe off your face", dowipe, AUTOCOMPLETE | INCMDMENU },
     { 'x', "swap", "swap wielded and secondary weapons", doswapweapon_right_or_both, INCMDMENU },
     { M('x'), "examine", "describe an item", doitemdescriptions, IFBURIED | AUTOCOMPLETE | SINGLE_OBJ_CMD_INFO, 0, getobj_allobj, "examine" },
-    { '\0', "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE },
+    { '}', "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE },
     { C('y'), "yell", "yell for your companions",
             doyell, IFBURIED | AUTOCOMPLETE | INCMDMENU },
     { 'z', "zap", "zap a wand", dozap, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_zap_syms, "zap" },

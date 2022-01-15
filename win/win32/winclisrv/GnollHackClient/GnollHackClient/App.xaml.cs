@@ -389,6 +389,7 @@ namespace GnollHackClient
         public static SKBitmap SimpleFrameLeftVerticalBitmap { get; set; }
 
         public static SKBitmap ScrollBitmap { get; set; }
+        public static SKBitmap YouBitmap { get; set; }
 
         public static void InitBitmaps(Assembly assembly)
         {
@@ -423,6 +424,10 @@ namespace GnollHackClient
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.scroll.png"))
             {
                 ScrollBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.you.png"))
+            {
+                YouBitmap = SKBitmap.Decode(stream);
             }
 
         }

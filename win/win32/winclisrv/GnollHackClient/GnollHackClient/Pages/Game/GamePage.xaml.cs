@@ -284,6 +284,10 @@ namespace GnollHackClient.Pages.Game
         private SKRect _statusBarRect = new SKRect();
         public SKRect StatusBarRect { get { SKRect val; lock (_statusBarRectLock) { val = _statusBarRect; } return val; } set { lock (_statusBarRectLock) { _statusBarRect = value; } } }
 
+        private object _youRectLock = new object();
+        private SKRect _youRect = new SKRect();
+        public SKRect YouRect { get { SKRect val; lock (_youRectLock) { val = _youRect; } return val; } set { lock (_youRectLock) { _youRect = value; } } }
+
         public object TargetClipLock = new object();
         public float _originMapOffsetWithNewClipX;
         public float _originMapOffsetWithNewClipY;
@@ -4890,6 +4894,7 @@ namespace GnollHackClient.Pages.Game
                 HealthRect = new SKRect();
                 ManaRect = new SKRect();
                 StatusBarRect = new SKRect();
+                YouRect = new SKRect();
                 float orbleft = 5.0f;
                 float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
 
@@ -5944,6 +5949,12 @@ namespace GnollHackClient.Pages.Game
                     SKRect bkgrect = new SKRect(box_left, box_top, box_right, box_bottom);
                     canvas.DrawBitmap(App.ScrollBitmap, bkgrect, textPaint);
 
+                    float youmargin = Math.Min((box_right - box_left), (box_bottom - box_top)) / 14;
+                    float yousize = Math.Min((box_right - box_left), (box_bottom - box_top)) / 12;
+                    SKRect urect = new SKRect(box_right - youmargin - yousize, box_top + youmargin, box_right - youmargin, box_top + youmargin + yousize);
+                    canvas.DrawBitmap(App.YouBitmap, urect, textPaint);
+                    YouRect = urect;
+
                     textPaint.Style = SKPaintStyle.Fill;
                     textPaint.Typeface = App.UnderwoodTypeface;
                     textPaint.Color = SKColors.Black;
@@ -5993,7 +6004,7 @@ namespace GnollHackClient.Pages.Game
                         ty += textPaint.FontSpacing * 0.5f;
                     }
 
-                    using(SKAutoCanvasRestore res = new SKAutoCanvasRestore(canvas))
+                    using(new SKAutoCanvasRestore(canvas, true))
                     {
                         SKRect cliprect = new SKRect(0, ty + textPaint.FontMetrics.Ascent, canvaswidth, bkgrect.Bottom - bkgrect.Height / 8.5f);
                         canvas.ClipRect(cliprect);
@@ -7533,6 +7544,7 @@ namespace GnollHackClient.Pages.Game
         private bool _touchWithinManaOrb = false;
         private bool _touchWithinStatusBar = false;
         private uint _touchWithinPet = 0;
+        private bool _touchWithinYouButton = false;
         private object _savedSender = null;
         private SKTouchEventArgs _savedEventArgs = null;
 
@@ -7576,6 +7588,7 @@ namespace GnollHackClient.Pages.Game
                         _touchWithinManaOrb = false;
                         _touchWithinStatusBar = false;
                         _touchWithinPet = 0;
+                        _touchWithinYouButton = false;
 
                         if (TouchDictionary.ContainsKey(e.Id))
                             TouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
@@ -7622,6 +7635,13 @@ namespace GnollHackClient.Pages.Game
                             }
 
                         }
+                        else if (ShowExtendedStatusBar)
+                        {
+                            if (YouRect.Contains(e.Location))
+                            {
+                                _touchWithinYouButton = true;
+                            }
+                        }
                         e.Handled = true;
                         break;
                     case SKTouchAction.Moved:
@@ -7638,7 +7658,7 @@ namespace GnollHackClient.Pages.Game
 
                                 if (TouchDictionary.Count == 1)
                                 {
-                                    if (_touchWithinSkillButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !_showDirections && !_showNumberPad))
+                                    if (_touchWithinSkillButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !_showDirections && !_showNumberPad) || _touchWithinYouButton)
                                     {
                                         /* Do nothing */
                                     }
@@ -7720,6 +7740,7 @@ namespace GnollHackClient.Pages.Game
                                     _touchWithinManaOrb = false;
                                     _touchWithinStatusBar = false;
                                     _touchWithinPet = 0;
+                                    _touchWithinYouButton = false;
 
                                     SKPoint prevloc = TouchDictionary[e.Id].Location;
                                     SKPoint curloc = e.Location;
@@ -7789,6 +7810,10 @@ namespace GnollHackClient.Pages.Game
                                 {
                                     _statusOffsetY = 0.0f;
                                 }
+                            }
+                            else if (_touchWithinYouButton)
+                            {
+                                GenericButton_Clicked(sender, e, (int)'}');
                             }
                             else if (_touchWithinPet > 0 && !_showDirections && !_showNumberPad)
                             {
