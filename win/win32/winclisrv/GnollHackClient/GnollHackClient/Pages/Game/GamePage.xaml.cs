@@ -7813,6 +7813,7 @@ namespace GnollHackClient.Pages.Game
                             }
                             else if (_touchWithinYouButton)
                             {
+                                ShowExtendedStatusBar = false;
                                 GenericButton_Clicked(sender, e, (int)'}');
                             }
                             else if (_touchWithinPet > 0 && !_showDirections && !_showNumberPad)
