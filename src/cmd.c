@@ -5270,6 +5270,10 @@ struct ext_func_tab extcmdlist[] = {
     { C(','), "zoomhalf", "zoom map out to 50% of normal",
             dozoomhalf, IFBURIED | AUTOCOMPLETE },
 #endif
+#ifdef GNH_ANDROID
+    { '{', "viewpet", "view currently active pet",
+            doviewpet, IFBURIED },
+#endif
 
 #ifdef DEBUG
     { '\0', "wizbury", "bury objs under and around you",
@@ -8294,7 +8298,6 @@ dozoomhalf(VOID_ARGS)
     return 0;
 }
 
-
 void
 zoomtoscale(scale)
 double scale;
@@ -8302,6 +8305,26 @@ double scale;
     flags.screen_scale_adjustment = scale;
     stretch_window();
 }
+
+int
+doviewpet(VOID_ARGS)
+{
+    if (context.view_pet_mid > 0)
+    {
+        struct monst* mtmp;
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+        {
+            if (mtmp->m_id == context.view_pet_mid && is_tame(mtmp))
+            {
+                doviewpetstatistics(mtmp);
+                break;
+            }
+        }
+    }
+
+    return 0;
+}
+
 
 STATIC_PTR int
 dolight(VOID_ARGS)

@@ -38,6 +38,7 @@ namespace GnollHackClient
         ShowGUITips,
         DisplayConditionText,
         DisplayScreenFilter,
+        SetPetMID,
     }
 
     public struct AddContextMenuData

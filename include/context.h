@@ -245,6 +245,7 @@ struct context_info
     boolean quit_pressed;
 
     unsigned long npc_made;
+    unsigned int view_pet_mid;
 };
 
 extern NEARDATA struct context_info context;

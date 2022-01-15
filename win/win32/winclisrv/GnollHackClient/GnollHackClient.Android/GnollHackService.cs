@@ -210,6 +210,8 @@ namespace GnollHackClient.Droid
         public static extern int LibZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir);
         [DllImport(@"libgnollhackdroid.so")]
         public static extern void LibSwitchDemoVersion(int state);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern void LibSetPetMID(uint m_id);
 
         private void LoadNativeLibrary(string libName)
         {
@@ -691,6 +693,11 @@ namespace GnollHackClient.Droid
         public void SwitchDemoVersion(bool active)
         {
             LibSwitchDemoVersion(active ? 1 : 0);
+        }
+
+        public void SetPetMID(uint m_id)
+        {
+            LibSetPetMID(m_id);
         }
 
         public int StartGnollHack(ClientGame clientGame)

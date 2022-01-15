@@ -42,6 +42,7 @@ namespace GnollHackClient
         string GetPropertyName(int prop_index);
         string DumplogDateString(long startdate);
         void SwitchDemoVersion(bool active);
+        void SetPetMID(uint m_id);
 
         int StartGnollHack(ClientGame clientGame);
     }

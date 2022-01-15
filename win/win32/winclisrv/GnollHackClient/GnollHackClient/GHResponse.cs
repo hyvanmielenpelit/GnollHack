@@ -9,6 +9,7 @@ namespace GnollHackClient
         public GHRequestType RequestType { get; set; }
         public string ResponseStringValue { get; set; }
         public int ResponseIntValue { get; set; }
+        public uint ResponseUIntValue { get; set; }
         public List<GHMenuItem> SelectedMenuItems { get; set; }
         public ClientGame RequestingClientGame { get; }
         public GHWindow RequestingGHWindow { get; }
@@ -37,6 +38,12 @@ namespace GnollHackClient
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             ResponseIntValue = responseintvalue;
+        }
+        public GHResponse(ClientGame clientgame, GHRequestType requesttype, uint responseuintvalue)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            ResponseUIntValue = responseuintvalue;
         }
         public GHResponse(ClientGame clientgame, GHRequestType requesttype, GHWindow window, List<GHMenuItem> responselist)
         {

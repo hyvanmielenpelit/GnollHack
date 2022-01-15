@@ -366,6 +366,7 @@ E int NDECL(dozoomhalf);
 E void FDECL(zoomtoscale, (double));
 E void NDECL(update_bindings_list);
 E void NDECL(create_context_menu);
+E int NDECL(doviewpet);
 
 /* ### dbridge.c ### */
 

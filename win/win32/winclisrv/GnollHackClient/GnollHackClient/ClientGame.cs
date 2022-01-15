@@ -111,6 +111,10 @@ namespace GnollHackClient
                         case GHRequestType.DisplayScreenText:
                             _screenTextSet = true;
                             break;
+                        case GHRequestType.SetPetMID:
+                            if(_gamePage != null)
+                                _gamePage.GnollHackService.SetPetMID(response.ResponseUIntValue);
+                            break;
                         default:
                             break;
                     }

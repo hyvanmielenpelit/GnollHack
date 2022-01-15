@@ -228,6 +228,11 @@ const char* LibGetVersionId()
     return VERSION_ID;
 }
 
+void LibSetPetMID(unsigned int m_id)
+{
+    context.view_pet_mid = m_id;
+}
+
 const char* LibGetPropertyName(prop_index)
 int prop_index;
 {

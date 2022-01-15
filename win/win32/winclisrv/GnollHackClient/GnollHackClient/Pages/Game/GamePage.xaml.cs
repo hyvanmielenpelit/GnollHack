@@ -158,7 +158,7 @@ namespace GnollHackClient.Pages.Game
         private object _objectDataLock = new object();
 
         private object _petDataLock = new object();
-        private List<monst_info> _petData = new List<monst_info>();
+        private List<GHPetDataItem> _petData = new List<GHPetDataItem>();
 
         private bool _useMapBitmap = false;
 
@@ -5457,11 +5457,13 @@ namespace GnollHackClient.Pages.Game
                                 ty = statusbarheight + 5.0f;
                                 int petrownum = 0;
 
-                                foreach (monst_info mi in _petData)
+                                foreach (GHPetDataItem pdi in _petData)
                                 {
+                                    monst_info mi = pdi.Data;
                                     using (new SKAutoCanvasRestore(canvas, true))
                                     {
                                         canvas.ClipRect(new SKRect(tx - 1, ty - 1, tx + pet_target_width + 1, ty + pet_target_height + 2));
+                                        pdi.Rect = new SKRect(tx, ty, tx + pet_target_width, ty + pet_target_height);
 
                                         float petpicturewidth = 0f;
                                         float petpictureheight = 0f;
@@ -7530,6 +7532,7 @@ namespace GnollHackClient.Pages.Game
         private bool _touchWithinHealthOrb = false;
         private bool _touchWithinManaOrb = false;
         private bool _touchWithinStatusBar = false;
+        private uint _touchWithinPet = 0;
         private object _savedSender = null;
         private SKTouchEventArgs _savedEventArgs = null;
 
@@ -7572,6 +7575,7 @@ namespace GnollHackClient.Pages.Game
                         _touchWithinHealthOrb = false;
                         _touchWithinManaOrb = false;
                         _touchWithinStatusBar = false;
+                        _touchWithinPet = 0;
 
                         if (TouchDictionary.ContainsKey(e.Id))
                             TouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
@@ -7580,36 +7584,44 @@ namespace GnollHackClient.Pages.Game
 
                         if (TouchDictionary.Count > 1)
                             _touchMoved = true;
-                        else if (SkillRect.Contains(e.Location))
+                        else if (!ForceAllMessages && !ShowExtendedStatusBar)
                         {
-                            _touchWithinSkillButton = true;
-                        }
-                        else if (HealthRect.Contains(e.Location))
-                        {
-                            _touchWithinHealthOrb = true;
-                        }
-                        else if (ManaRect.Contains(e.Location))
-                        {
-                            _touchWithinManaOrb = true;
-                        }
-                        else if (StatusBarRect.Contains(e.Location))
-                        {
-                            _touchWithinStatusBar = true;
-                        }
-                        else if (!MapLookMode && !MapTravelMode && !ForceAllMessages && !ShowExtendedStatusBar)
-                        {
-                            _savedSender = sender;
-                            _savedEventArgs = e;
-                            Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MoveByHoldingDownThreshold), () =>
+                            uint m_id = 0;
+                            if (SkillRect.Contains(e.Location))
                             {
-                                if (_savedSender == null || _savedEventArgs == null)
-                                    return false;
+                                _touchWithinSkillButton = true;
+                            }
+                            else if (HealthRect.Contains(e.Location))
+                            {
+                                _touchWithinHealthOrb = true;
+                            }
+                            else if (ManaRect.Contains(e.Location))
+                            {
+                                _touchWithinManaOrb = true;
+                            }
+                            else if (StatusBarRect.Contains(e.Location))
+                            {
+                                _touchWithinStatusBar = true;
+                            }
+                            else if (!_showDirections && !_showNumberPad && (m_id = PetRectContains(e.Location)) != 0)
+                            {
+                                _touchWithinPet = m_id;
+                            }
+                            else if (!MapLookMode && !MapTravelMode)
+                            {
+                                _savedSender = sender;
+                                _savedEventArgs = e;
+                                Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MoveByHoldingDownThreshold), () =>
+                                {
+                                    if (_savedSender == null || _savedEventArgs == null)
+                                        return false;
 
-                                IssueNHCommandViaTouch(_savedSender, _savedEventArgs);
-                                return true; /* Continue until cancelled */
-                            });
+                                    IssueNHCommandViaTouch(_savedSender, _savedEventArgs);
+                                    return true; /* Continue until cancelled */
+                                });
+                            }
+
                         }
-
                         e.Handled = true;
                         break;
                     case SKTouchAction.Moved:
@@ -7626,7 +7638,7 @@ namespace GnollHackClient.Pages.Game
 
                                 if (TouchDictionary.Count == 1)
                                 {
-                                    if (_touchWithinSkillButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar)
+                                    if (_touchWithinSkillButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !_showDirections && !_showNumberPad))
                                     {
                                         /* Do nothing */
                                     }
@@ -7707,6 +7719,7 @@ namespace GnollHackClient.Pages.Game
                                     _touchWithinHealthOrb = false;
                                     _touchWithinManaOrb = false;
                                     _touchWithinStatusBar = false;
+                                    _touchWithinPet = 0;
 
                                     SKPoint prevloc = TouchDictionary[e.Id].Location;
                                     SKPoint curloc = e.Location;
@@ -7777,6 +7790,15 @@ namespace GnollHackClient.Pages.Game
                                     _statusOffsetY = 0.0f;
                                 }
                             }
+                            else if (_touchWithinPet > 0 && !_showDirections && !_showNumberPad)
+                            {
+                                ConcurrentQueue<GHResponse> queue;
+                                if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+                                {
+                                    queue.Enqueue(new GHResponse(_clientGame, GHRequestType.SetPetMID, _touchWithinPet));
+                                    queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetChar, (int)'{'));
+                                }
+                            }
                             else
                             {
                                 TouchEntry entry;
@@ -7816,6 +7838,19 @@ namespace GnollHackClient.Pages.Game
                         break;
                 }
             }
+        }
+
+        public uint PetRectContains(SKPoint p)
+        {
+            lock(_petDataLock)
+            {
+                foreach (GHPetDataItem pdi in _petData)
+                {
+                    if (pdi.Rect.Contains(p))
+                        return pdi.Data.m_id;
+                }
+            }
+            return 0;
         }
 
         public void IssueNHCommandViaTouch(object sender, SKTouchEventArgs e)
@@ -8169,7 +8204,7 @@ namespace GnollHackClient.Pages.Game
         {
             lock (_petDataLock)
             {
-                _petData.Add(monster_data);
+                _petData.Add(new GHPetDataItem(monster_data));
             }
         }
 
