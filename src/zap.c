@@ -1646,7 +1646,7 @@ struct monst* mtmp;
             abilcnt++;
             Sprintf(buf, " %2d - %s%s", abilcnt, namebuf, endbuf2);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
     }
 
@@ -1686,7 +1686,7 @@ struct monst* mtmp;
                     abilcnt++;
                     Sprintf(buf, " %2d - %s", abilcnt, descbuf);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
             }
         }
@@ -1721,7 +1721,7 @@ struct monst* mtmp;
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, headbuf);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     if (!abilcnt)
@@ -1743,7 +1743,7 @@ struct monst* mtmp;
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to silver weapons");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     if (mon_hates_blessed(mtmp))
@@ -1751,7 +1751,7 @@ struct monst* mtmp;
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to blessed weapons");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     if (mon_hates_cursed(mtmp))
@@ -1759,7 +1759,7 @@ struct monst* mtmp;
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to cursed weapons");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     if (mon_hates_light(mtmp))
@@ -1767,20 +1767,20 @@ struct monst* mtmp;
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to lit weapons");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     abilcnt++;
     Sprintf(buf, " %2d - %s", abilcnt, mon_eschews_cursed(mtmp) ? "Eschews cursed items" : "Does not eschew cursed items");
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
     if (mon_eschews_silver(mtmp))
     {
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Eschews silver items");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     if (mon_eschews_blessed(mtmp))
@@ -1788,7 +1788,7 @@ struct monst* mtmp;
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Eschews blessed items");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     if (mon_eschews_light(mtmp))
@@ -1796,7 +1796,7 @@ struct monst* mtmp;
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Eschews lit items");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     if (is_hell_hound(mtmp->data))
@@ -1804,7 +1804,7 @@ struct monst* mtmp;
         abilcnt++;
         Sprintf(buf, " %2d - %s", abilcnt, "Loves cursed food");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     int zombietype = mon_to_zombie(mtmp->mnum);
@@ -1817,7 +1817,7 @@ struct monst* mtmp;
             zombietype > NON_PM && mummytype > NON_PM ? "Zombifiable and mummifiable corpse" : 
             zombietype > NON_PM ? "Zombifiable corpse" : "Mummifiable corpse");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     if (!abilcnt)

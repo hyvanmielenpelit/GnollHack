@@ -1,6 +1,6 @@
 /*
  * libproc.c  
- * Copyright (c) Janne Gustafsson, 2021 
+ * Copyright (c) Janne Gustafsson, 2022
  */
 
 #include "hack.h"

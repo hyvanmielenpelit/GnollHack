@@ -156,7 +156,7 @@ namespace GnollHackClient
                     || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN
                     || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_CHARACTER_SCREEN
                     || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN)
-                        return 15;
+                        return 14.5;
 
 
                 return 15.5;
@@ -226,5 +226,41 @@ namespace GnollHackClient
                 return res;
             }
         }
+
+        public string GetIndentationString()
+        {
+            if (Text == null || Text == "")
+                return "";
+
+            string str = Text;
+            if (InstructionList != null && InstructionList.Count > 0)
+            {
+                if ((InstructionList[0].Attributes & (((int)MenuItemAttributes.IndentDash) | (int)MenuItemAttributes.IndentColon | (int)MenuItemAttributes.IndentAstr)) != 0)
+                {
+                    string cstr = " ";
+                    if ((InstructionList[0].Attributes & (int)MenuItemAttributes.IndentDash) == (int)MenuItemAttributes.IndentDash)
+                        cstr = "-";
+                    else if ((InstructionList[0].Attributes & (int)MenuItemAttributes.IndentColon) == (int)MenuItemAttributes.IndentColon)
+                        cstr = ":";
+                    else if ((InstructionList[0].Attributes & (int)MenuItemAttributes.IndentAstr) == (int)MenuItemAttributes.IndentAstr)
+                        cstr = "*";
+
+                    int idx = str.IndexOf(cstr[0]);
+                    if(idx >= 0)
+                    {
+                        int spacepos = idx + 1;
+                        if(spacepos < str.Length)
+                        {
+                            string searchstr = str.Substring(spacepos);
+                            int numberOfSpaces = searchstr.TakeWhile(c => c == ' ').Count();
+                            if (spacepos + numberOfSpaces < str.Length)
+                                return str.Substring(0, spacepos + numberOfSpaces);
+                        }
+                    }
+                }
+            }
+            return "";
+        }
+
     }
 }

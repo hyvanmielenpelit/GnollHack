@@ -5268,7 +5268,7 @@ boolean is_wiz_wish;
             name = aname;
 
         /* 3.6 tribute - fix up novel */
-        if (objects[otmp->otyp].oc_subtyp == BOOKTYPE_NOVEL) {
+        if (objects[otmp->otyp].oc_class == SPBOOK_CLASS && objects[otmp->otyp].oc_subtyp == BOOKTYPE_NOVEL) {
             const char *novelname;
 
             novelname = lookup_novel(name, &otmp->novelidx);
@@ -5277,7 +5277,7 @@ boolean is_wiz_wish;
 
             otmp = oname(otmp, name);
         }
-        else if (objects[otmp->otyp].oc_subtyp == BOOKTYPE_MANUAL) {
+        else if (objects[otmp->otyp].oc_class == SPBOOK_CLASS && objects[otmp->otyp].oc_subtyp == BOOKTYPE_MANUAL) {
             const char* manualname;
 
             manualname = lookup_manual(name, &otmp->manualidx);

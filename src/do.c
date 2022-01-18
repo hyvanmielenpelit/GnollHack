@@ -88,16 +88,16 @@ docharacterstatistics()
     else
         Sprintf(buf, "Race:              %s", buf2);
 
+    txt = buf;
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
+
     /* Gender */
     if (Upolyd && u.mfemale != flags.female)
     {
         Sprintf(buf, "Original gender:   %s", u.mfemale ? "Female" : "Male");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
-
-    txt = buf;
-    putstr(datawin, 0, txt);
 
     if (Upolyd)
     {
@@ -105,7 +105,7 @@ docharacterstatistics()
         *buf2 = highc(*buf2);
         Sprintf(buf, "Polymorphed into:  %s", buf2);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
 
@@ -115,7 +115,7 @@ docharacterstatistics()
     else
         Sprintf(buf, "Gender:            %s", buf2);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     /* Alignment */
     Strcpy(buf2, (u.ualign.type == A_CHAOTIC)
@@ -126,12 +126,12 @@ docharacterstatistics()
     *buf2 = highc(*buf2);
     Sprintf(buf, "Alignment:         %s", buf2);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     /* God */
     Sprintf(buf, "God:               %s", u_gname());
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     /* Experience */
     Sprintf(buf, "Experience:        %ld", u.uexp);
@@ -144,14 +144,14 @@ docharacterstatistics()
         Sprintf(eos(buf), " / %ld", exp_for_nxt_lvl);
     }
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     /* Max level */
     if (u.ulevel != u.ulevelmax)
     {
         Sprintf(buf, "Maximum level:     %d", u.ulevelmax);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     /* Empty line */
@@ -200,7 +200,7 @@ docharacterstatistics()
 
             Sprintf(buf, " %2d - %s (Race)", trait_count, dbuf);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
         }
         else
@@ -219,7 +219,7 @@ docharacterstatistics()
 
             Sprintf(buf, " %2d - %s (Role)", trait_count, dbuf);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         else
             break;
@@ -230,7 +230,7 @@ docharacterstatistics()
         trait_count++;
         Sprintf(buf, " %2d - Loses telepathy and luck if commits murder (Alignment)", trait_count);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     if (u.ualign.type == A_CHAOTIC)
@@ -238,7 +238,7 @@ docharacterstatistics()
         trait_count++;
         Sprintf(buf, " %2d - Can sacrifice own race (Alignment)", trait_count);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     if (trait_count == 0)
@@ -317,7 +317,7 @@ docharacterstatistics()
 
             Sprintf(buf, " %2d - %s (%s)", intrinsic_count, dbuf2, dbuf3);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
 
         }
@@ -355,7 +355,7 @@ docharacterstatistics()
 
                     Sprintf(buf, " Level %2d - %s", intrinsic_ability[table_index].ulevel, dbuf2);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 table_index++;
             }
@@ -1153,7 +1153,7 @@ register struct obj* obj;
 
     Sprintf(buf, "Weight:                 %s", buf2);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     if(stats_known)
     {
@@ -1165,7 +1165,7 @@ register struct obj* obj;
 
         Sprintf(buf, "Base value:             %s", buf2);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
         /* Nutritinal value */
         if (is_edible(obj))
@@ -1174,7 +1174,7 @@ register struct obj* obj;
 
             Sprintf(buf, "Nutritional value:      %s", buf2);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
         if (stats_known && is_obj_normally_edible(obj))
         {
@@ -1209,7 +1209,7 @@ register struct obj* obj;
                 }
                 Sprintf(buf, "Comestible type:        %s", buf2);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
             if (objects[obj->otyp].oc_edible_effect != EDIBLEFX_NO_EFFECT
                 && objects[obj->otyp].oc_edible_effect != EDIBLEFX_APPLE
@@ -1275,7 +1275,7 @@ register struct obj* obj;
                 }
                 Sprintf(buf, "Comestible effect:      %s", buf2);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
         }
     }
@@ -1285,14 +1285,14 @@ register struct obj* obj;
     *buf2 = highc(*buf2);
     Sprintf(buf, "Material:               %s", buf2);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     if (objects[obj->otyp].oc_name_known && obj->oartifact == 0 && !objects[obj->otyp].oc_unique && (objects[obj->otyp].oc_class == SPBOOK_CLASS || objects[obj->otyp].oc_class == SCROLL_CLASS))
     {
         int ink = ink_cost(obj);
         Sprintf(buf, "Base write cost:        %d charge%s", ink, plur(ink));
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     if (is_obj_candelabrum(obj))
@@ -1300,12 +1300,12 @@ register struct obj* obj;
         int max_candles = objects[obj->otyp].oc_special_quality;
         Sprintf(buf, "Attachable items:       Up to %d candle%s", max_candles, plur(max_candles));
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
         int cur_candles = (int)obj->special_quality;
         Sprintf(buf, "Currently attached:     %d candle%s", cur_candles, plur(cur_candles));
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     boolean weapon_stats_shown = FALSE;
@@ -1326,7 +1326,7 @@ register struct obj* obj;
 
             Sprintf(buf, "Hands to use:           %s", buf2);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
             if (is_appliable_weapon(obj))
             {
@@ -1354,7 +1354,7 @@ register struct obj* obj;
 
                 Sprintf(buf, "Appliable:              %s", buf2);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
         }
 
@@ -1365,7 +1365,7 @@ register struct obj* obj;
             *buf2 = highc(*buf2);
             Sprintf(buf, "Skill:                  %s", buf2);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
 
 
@@ -1388,7 +1388,7 @@ register struct obj* obj;
             */
 
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
 
         /* Ammunition range */
@@ -1398,7 +1398,7 @@ register struct obj* obj;
 
             Sprintf(buf, "Ammunition range:       %d'", max(1, baserange) * 5);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
 
 
@@ -1424,7 +1424,7 @@ register struct obj* obj;
             else
                 Sprintf(buf, "Range when fired:       %s'", buf2);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
         }
 
@@ -1444,7 +1444,7 @@ register struct obj* obj;
             exceptionality_multiplier = get_exceptionality_multiplier(obj->exceptionality);
 
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
 
         /* Add mythic base damage now here if mknown */
@@ -1499,7 +1499,7 @@ register struct obj* obj;
             }
 
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
         }
 
@@ -1550,7 +1550,7 @@ register struct obj* obj;
             }
 
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
 
         wep_avg_dmg += 0.5 * ((double)objects[otyp].oc_wsdice * (double)exceptionality_multiplier * (1.0 + (double)objects[otyp].oc_wsdam) / 2.0 + (double)objects[otyp].oc_wsdmgplus * (double)exceptionality_multiplier
@@ -1569,7 +1569,7 @@ register struct obj* obj;
             {
                 Sprintf(buf, "Damage type:            %s", dmgttext);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
         }
 
@@ -1612,7 +1612,7 @@ register struct obj* obj;
             }
 
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
             wep_avg_dmg += (double)objects[otyp].oc_wedice * (1.0 + (double)objects[otyp].oc_wedam) / 2.0 + (double)objects[otyp].oc_wedmgplus;
             if (wep_avg_dmg < 0)
@@ -1628,7 +1628,7 @@ register struct obj* obj;
                 {
                     Sprintf(buf, "Extra damage type:      %s", dmgttext);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_COLON, txt);
                 }
             }
         }
@@ -1650,7 +1650,7 @@ register struct obj* obj;
             Sprintf(plusbuf, "%dd%d", 1, 20);
             Strcat(buf, plusbuf);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
 
         /* Fixed damage bonus */
@@ -1660,7 +1660,7 @@ register struct obj* obj;
             Sprintf(buf, "Fixed damage bonus:     %s%d (instead of strength)", 
                 objects[otyp].oc_fixed_damage_bonus >= 0 ? "+" : "", objects[otyp].oc_fixed_damage_bonus);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
             wep_avg_dmg += (double)objects[otyp].oc_fixed_damage_bonus;
             if (wep_avg_dmg < 0)
@@ -1689,7 +1689,7 @@ register struct obj* obj;
                 Sprintf(buf, "To hit bonus:           %d", objects[otyp].oc_hitbonus);
 
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
     }
     else
@@ -1707,7 +1707,7 @@ register struct obj* obj;
             Sprintf(buf, "Target MC adjustment:   %d", mcadj);
 
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
 
@@ -1728,7 +1728,7 @@ register struct obj* obj;
         Sprintf(buf2, "%ld", 10L - objects[otyp].oc_armor_class);
         Sprintf(buf, "Base armor class:       %s", buf2);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     if(affectsmc)
@@ -1741,7 +1741,7 @@ register struct obj* obj;
         Sprintf(buf2, "%s%d", mc >= 0 ? "+" : "", mc);
         Sprintf(buf, "Magic cancellation:     %s", buf2);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     if (stats_known)
@@ -1779,7 +1779,7 @@ register struct obj* obj;
                 Sprintf(eos(buf), " (%.1fx, %s in %s)", dicemult, slnbuf, skill_name(P_WAND, TRUE));
 
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
             }
             if (objects[otyp].oc_spell_dur_dice > 0 || objects[otyp].oc_spell_dur_diesize > 0 || objects[otyp].oc_spell_dur_plus != 0)
@@ -1810,19 +1810,19 @@ register struct obj* obj;
                 Strcat(buf, plusbuf);
 
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
             if (objects[otyp].oc_spell_range > 0)
             {
                 Sprintf(buf, "Wand effect range:      %ld'", objects[otyp].oc_spell_range * 5L);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
             if (objects[otyp].oc_spell_radius > 0)
             {
                 Sprintf(buf, "Wand effect radius:     %ld'", objects[otyp].oc_spell_radius * 5L);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
             /* Flags */
             if (objects[otyp].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
@@ -1832,7 +1832,7 @@ register struct obj* obj;
                 else
                     Sprintf(buf, "Other:                  %s", "Bypasses magic resistance for non-unique monsters");
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
         }
 
@@ -1848,7 +1848,7 @@ register struct obj* obj;
                 Sprintf(buf, "Spell casting penalty:  %s (somatic spells only)", buf2);
 
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
 
         if (objects[otyp].oc_charged)
@@ -1857,24 +1857,24 @@ register struct obj* obj;
             {
                 Sprintf(buf, "Charges left:           %d", obj->charges);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
             else
             {
                 Sprintf(buf, "Charges:                %s", "Yes");
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
 
             Sprintf(buf, "Maximum charges:        %d", get_obj_max_charge(obj));
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
             if (obj->known)
             {
                 Sprintf(buf, "Rechargings before:     %d", (int)obj->recharged);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
 
             char rechargebuf[BUFSZ];
@@ -1883,7 +1883,7 @@ register struct obj* obj;
 
             Sprintf(buf, "Recharging type:        %s", rechargebuf);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
 
         if (objects[otyp].oc_enchantable)
@@ -1941,20 +1941,20 @@ register struct obj* obj;
 
                 Sprintf(buf, "Enchantment status:     %s%d%s", obj->enchantment >= 0 ? "+" : "", obj->enchantment, bonusbuf);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
             }
             else
             {
                 Sprintf(buf, "Enchantable:            %s", "Yes");
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
 
             int max_ench = get_obj_max_enchantment(obj);
             Sprintf(buf, "Safe enchantable level: %s%d or below", max_ench >= 0 ? "+" : "", max_ench);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
     }
 
@@ -1987,7 +1987,7 @@ register struct obj* obj;
         Sprintf(buf, "Erosion status:         %s%s", erodebuf, penaltybuf);
 
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     /* Mythic status */
@@ -1996,20 +1996,20 @@ register struct obj* obj;
         Sprintf(buf, "Mythic status:          %s", (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
 
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
     if (obj->bknown)
     {
         Sprintf(buf, "Blessing status:        %s", obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
     if (obj->opoisoned)
     {
         Sprintf(buf, "Poisoned status:        Poisoned (+2d6 poison damage)");
         wep_avg_dmg += 7.0;
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     if (obj->elemental_enchantment)
@@ -2026,7 +2026,7 @@ register struct obj* obj;
             obj->elemental_enchantment == DEATH_ENCHANTMENT ? 0.0 : 0.0;
 
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     /* Identification status */
@@ -2034,20 +2034,20 @@ register struct obj* obj;
     {
         Sprintf(buf, "Identification status:  %s", stats_known ? (not_fully_identified(obj) ? "Known" : "Fully known") : "Unidentified");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     if (stats_known && objects[obj->otyp].oc_item_cooldown > 0)
     {
         Sprintf(buf, "Cooldown time:          %d rounds", objects[obj->otyp].oc_item_cooldown);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
         if (obj->cooldownleft > 0)
         {
             Sprintf(buf, "Cooldown left:          %d rounds", obj->cooldownleft);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
     }
 
@@ -2055,14 +2055,14 @@ register struct obj* obj;
     {
         Sprintf(buf, "Repowering time left:   %d rounds", obj->repowerleft);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     if (stats_known && obj->invokeon)
     {
         Sprintf(buf, "Invoked ability:        Activated");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     /* Extra info is a non-spell-type item is known */
@@ -2376,7 +2376,7 @@ register struct obj* obj;
                                 Sprintf(buf3, " %2d - ", powercnt);
                                 Sprintf(buf, "%s%s%s", buf3, buf2, pwbuf);
                                 txt = buf;
-                                putstr(datawin, 0, txt);
+                                putstr(datawin, ATR_INDENT_AT_DASH, txt);
                             }
 
                         }
@@ -2388,7 +2388,7 @@ register struct obj* obj;
                         {
                             Sprintf(buf, "%s%s%s", buf3, buf2, pwbuf);
                             txt = buf;
-                            putstr(datawin, 0, txt);
+                            putstr(datawin, ATR_INDENT_AT_DASH, txt);
                         }
                     }
                 }
@@ -2413,7 +2413,7 @@ register struct obj* obj;
                 powercnt++;
                 Sprintf(buf, " %2d - Confers luck%s", powercnt, pwbuf);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_pflags & P1_CONFERS_UNLUCK)
             {
@@ -2433,35 +2433,35 @@ register struct obj* obj;
                 powercnt++;
                 Sprintf(buf, " %2d - Confers bad luck%s", powercnt, pwbuf);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Deals double damage on hit", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_SVB_MASK) == A1_VORPAL)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Beheads target on hit", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_SVB_MASK) == A1_BISECT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Bisects target on hit", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_SVB_MASK) == A1_SHARPNESS)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - %d%% chance of damage equal to %d%% of target's maximum hit points", powercnt, SHARPNESS_PERCENTAGE_CHANCE, SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_CRITICAL_STRIKE) && (objects[otyp].oc_aflags & A1_CRITICAL_STRIKE_IS_DEADLY))
             {
@@ -2484,56 +2484,56 @@ register struct obj* obj;
                         get_damage_type_text((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE) ? objects[otyp].oc_extra_damagetype : AD_PHYS),
                         critchance < 100 ? chancebuf : "");
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_LEVEL_DRAIN))
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Drains a level on hit", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_LIFE_LEECH))
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Transfers hit points to the wielder on hit", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_WOUNDING))
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Reduces hit points permanently on hit", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags3 & O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Prevents revival of permitted targets", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags3 & O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Prevents summoning by permitted targets", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags4 & O4_EXTENDED_POLEARM_REACH)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Extended reach", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags3 & O3_DOUBLE_DIGGING_EFFORT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Double digging or cutting speed", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
 
             if (powercnt == 0)
@@ -2559,168 +2559,168 @@ register struct obj* obj;
                     powercnt++;
                     Sprintf(buf, " %2d - Archaeologists", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_BARBARIAN)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Barbarians", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_CAVEMAN)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Cavemen and cavewomen", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_HEALER)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Healers", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_KNIGHT)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Knights", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_MONK)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Monks", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Priests and priestesses", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_RANGER)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Rangers", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_ROGUE)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Rogues", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_SAMURAI)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Samurais", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_TOURIST)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Tourists", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_VALKYRIE)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Valkyries", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_WIZARD)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Wizards", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_RACE_DWARF)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Dwarves", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_RACE_ELF)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Elves", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOLL)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Gnolls", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOME)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Gnomes", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_RACE_HUMAN)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Humans", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_RACE_ORC)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Orcs", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_GENDER_FEMALE)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Females", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_GENDER_MALE)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Males", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_CHAOTIC)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Chaotic", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_LAWFUL)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Lawful", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_NEUTRAL)
                 {
                     powercnt++;
                     Sprintf(buf, " %2d - Neutral", powercnt);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
                 if (powercnt == 0)
                 {
@@ -2775,7 +2775,7 @@ register struct obj* obj;
                                 powercnt++;
                                 Sprintf(buf, " %2d - %s", powercnt, flagbuf);
                                 txt = buf;
-                                putstr(datawin, 0, txt);
+                                putstr(datawin, ATR_INDENT_AT_DASH, txt);
                             }
                         }
                     }
@@ -2789,7 +2789,7 @@ register struct obj* obj;
                     powercnt++;
                     Sprintf(buf, " %2d - %s", powercnt, monsymbuf);
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
             }
 
@@ -2798,21 +2798,21 @@ register struct obj* obj;
                 powercnt++;
                 Sprintf(buf, " %2d - Chaotic creatures", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_NEUTRAL)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Neutral creatures", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_LAWFUL)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Lawful creatures", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (powercnt == 0)
             {
@@ -2855,7 +2855,7 @@ register struct obj* obj;
                         powercnt++;
                         Sprintf(buf, " %2d - %s", powercnt, mythic_prefix_powers[i].description);
                         txt = buf;
-                        putstr(datawin, 0, txt);
+                        putstr(datawin, ATR_INDENT_AT_DASH, txt);
                     }
                     if (!mythic_prefix_powers[i].description)
                         break;
@@ -2871,7 +2871,7 @@ register struct obj* obj;
                         powercnt++;
                         Sprintf(buf, " %2d - %s", powercnt, mythic_suffix_powers[i].description);
                         txt = buf;
-                        putstr(datawin, 0, txt);
+                        putstr(datawin, ATR_INDENT_AT_DASH, txt);
                     }
                     if (!mythic_suffix_powers[i].description)
                         break;
@@ -2904,154 +2904,154 @@ register struct obj* obj;
                 powercnt++;
                 Sprintf(buf, " %2d - Becomes cursed when picked up", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Becomes cursed when worn", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Undroppable when cursed", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_COLD_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Cold resistant", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_CORROSION_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Corrosion resistant", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_DISINTEGRATION_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Disintegration resistant", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_FIRE_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Fire resistant", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_INDESTRUCTIBLE)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Indestructible", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_LIGHTNING_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Lightning resistant", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_NOT_CURSEABLE)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Cannot be cursed", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_POLYMORPH_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Polymorph resistant", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_RUST_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Rust-proof", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_ROT_RESISTANT)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Rot-resistant", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Is armor when wielded", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Is weapon when wielded", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags5 & O5_IS_WEAPON_WHEN_WORN)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Is weapon when worn", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (otyp_shines_magical_light(otyp))
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Shines magical light when wielded", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (is_otyp_special_praying_item(otyp))
             {
                 powercnt++;
                 Sprintf(buf, " %2d - If blessed, shimmers when it is safe to pray", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (otyp_consumes_nutrition_every_20_rounds(otyp))
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Consumes nutrition every 20 rounds when worn", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (is_death_enchantable(obj))
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Death-magically enchantable", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Destroys magic bags if put in", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (objects[otyp].oc_flags5 & O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Strips magic bag destroying items of charges; does not explode", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
 
 #if 0
@@ -3060,7 +3060,7 @@ register struct obj* obj;
                 powercnt++;
                 Sprintf(buf, " %2d - Can be elemental-enchanted", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
 #endif
             if (powercnt == 0)
@@ -3087,21 +3087,21 @@ register struct obj* obj;
                 powercnt++;
                 Sprintf(buf, " %2d - Zombifiable", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (mon_to_mummy(obj->corpsenm) > NON_PM)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Mummifiable", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (touch_petrifies(&mons[obj->corpsenm]))
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Touching petrifies", powercnt);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (powercnt == 0)
             {
@@ -3124,14 +3124,14 @@ register struct obj* obj;
         powercnt++;
         Sprintf(buf, " %2d - Alignment is %s", powercnt, alingstr);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
         if (artilist[obj->oartifact].role > NON_PM)
         {
             powercnt++;
             Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, makeplural(pm_common_name(&mons[artilist[obj->oartifact].role])));
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
 
         if (artilist[obj->oartifact].race > NON_PM)
@@ -3139,7 +3139,7 @@ register struct obj* obj;
             powercnt++;
             Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, makeplural(pm_common_name(&mons[artilist[obj->oartifact].race])));
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
 
         if (artilist[obj->oartifact].attk.damn != 0 || artilist[obj->oartifact].attk.damd != 0 || artilist[obj->oartifact].attk.damp != 0)
@@ -3150,7 +3150,7 @@ register struct obj* obj;
             powercnt++;
             Sprintf(buf, " %2d - Artifact damage type is %s damage", powercnt, dmgttext);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
 
         if (artilist[obj->oartifact].tohit_dice != 0 || artilist[obj->oartifact].tohit_diesize != 0 || artilist[obj->oartifact].tohit_plus != 0)
@@ -3170,7 +3170,7 @@ register struct obj* obj;
             powercnt++;
             Sprintf(buf, " %2d - %s", powercnt, tohitbuf);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
 
         if (artilist[obj->oartifact].attk.damn != 0 || artilist[obj->oartifact].attk.damd != 0 || artilist[obj->oartifact].attk.damp != 0)
@@ -3206,7 +3206,7 @@ register struct obj* obj;
             powercnt++;
             Sprintf(buf, " %2d - %s", powercnt, dmgbuf);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
 
         if (artilist[obj->oartifact].worn_prop > 0)
@@ -3221,7 +3221,7 @@ register struct obj* obj;
             else
                 Sprintf(buf, " %2d - %s when worn", powercnt, defensetext);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (artilist[obj->oartifact].carried_prop > 0)
         {
@@ -3232,7 +3232,7 @@ register struct obj* obj;
             powercnt++;
             Sprintf(buf, " %2d - %s when carried", powercnt, defensetext);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (artilist[obj->oartifact].inv_prop > 0)
         {
@@ -3255,7 +3255,7 @@ register struct obj* obj;
             powercnt++;
             Sprintf(buf, " %2d - %s when invoked", powercnt, invoketext);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
             if (artilist[obj->oartifact].inv_prop <= LAST_PROP /* switchable property */
                 ||
@@ -3283,49 +3283,49 @@ register struct obj* obj;
                         Sprintf(buf, "      * Effect duration is %s", plusbuf);
                 }
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_ASTR, txt);
             }
 
             if (artilist[obj->oartifact].inv_mana_cost > 0)
             {
                 Sprintf(buf, "      * Mana cost is %d", artilist[obj->oartifact].inv_mana_cost);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_ASTR, txt);
             }
 
             if (artilist[obj->oartifact].aflags & AF_INVOKE_EXPENDS_CHARGE)
             {
                 Sprintf(buf, "      * Expends one charge");
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_ASTR, txt);
             }
 
             if (artilist[obj->oartifact].aflags & AF_INVOKE_REQUIRES_WORN)
             {
                 Sprintf(buf, "      * Has to be worn for invocation");
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_ASTR, txt);
             }
 
             if (artilist[obj->oartifact].aflags & AF_INVOKE_MAY_DRAIN_ENERGY)
             {
                 Sprintf(buf, "      * May drain energy upon invocation");
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_ASTR, txt);
             }
 
             if (artilist[obj->oartifact].aflags & AF_INVOKE_MAY_DRAIN_LIFE)
             {
                 Sprintf(buf, "      * May drain experience levels upon invocation");
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_ASTR, txt);
             }
 
             if (artilist[obj->oartifact].repower_time > 0)
             {
                 Sprintf(buf, "      * Repowers over %d round%s", artilist[obj->oartifact].repower_time, plur(artilist[obj->oartifact].repower_time));
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_ASTR, txt);
             }
 
         }
@@ -3339,28 +3339,28 @@ register struct obj* obj;
             powercnt++;
             Sprintf(buf, " %2d - May behead target on hit", powercnt);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags & AF_BISECT)
         {
             powercnt++;
             Sprintf(buf, " %2d - May bisect target on hit", powercnt);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags & AF_HITS_ADJACENT_SQUARES)
         {
             powercnt++;
             Sprintf(buf, " %2d - Hits also adjacent squares", powercnt);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags & AF_BLOODTHIRSTY)
         {
             powercnt++;
             Sprintf(buf, " %2d - Bloodthirsty", powercnt);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags & AF_PREVENTS_REVIVAL_OF_MON)
         {
@@ -3378,7 +3378,7 @@ register struct obj* obj;
                 ((aflags & AF_DCLAS) && mtype == S_DRAGON) ? "dragons" :
                 "a specific type of monsters");
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags & AF_PREVENTS_SUMMONING_OF_MON)
         {
@@ -3396,56 +3396,56 @@ register struct obj* obj;
                 ((aflags & AF_DCLAS) && mtype == S_DRAGON) ? "dragons" :
                 "a specific type of monsters");
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags & AF_MAGIC_ABSORBING)
         {
             powercnt++;
             Sprintf(buf, " %2d - Magic absorbing", powercnt);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags & AF_MONSTERS_CAN_TRACK_ARTIFACT)
         {
             powercnt++;
             Sprintf(buf, " %2d - Monsters can track the artifact", powercnt);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags & AF_ANGERS_DEMONS)
         {
             powercnt++;
             Sprintf(buf, " %2d - Angers demons on sight", powercnt);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags & AF_INTEL)
         {
             powercnt++;
             Sprintf(buf, " %2d - Intelligent", powercnt);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags & AF_SPEAK)
         {
             powercnt++;
             Sprintf(buf, " %2d - Speaking", powercnt);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags & AF_DRLI)
         {
             powercnt++;
             Sprintf(buf, " %2d - Drains life levels on hit", powercnt);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags2 & AF2_APPLICABLE_AS_AXE)
         {
             powercnt++;
             Sprintf(buf, " %2d - Can be applied as an axe", powercnt);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
 
 
@@ -3494,7 +3494,7 @@ register struct obj* obj;
                         powercnt++;
                         Sprintf(buf, " %2d - %s %s", powercnt, propbuf, endbuf);
                         txt = buf;
-                        putstr(datawin, 0, txt);
+                        putstr(datawin, ATR_INDENT_AT_DASH, txt);
                     }
                 }
             }
@@ -3509,7 +3509,7 @@ register struct obj* obj;
                     : (context.warntype.obj & M2_ANGEL) ? "angels"
                     : (context.warntype.obj & M2_DEMON) ? "demons" : something, endbuf);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
 
             if (specialeffect & SPFX_LUCK)
@@ -3517,56 +3517,56 @@ register struct obj* obj;
                 powercnt++;
                 Sprintf(buf, " %2d - Confers luck %s", powercnt, endbuf);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (specialeffect & SPFX_UNLUCK)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Confers bad luck %s", powercnt, endbuf);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (specialeffect & SPFX_STR_25)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Raises strength to 25 %s", powercnt, endbuf);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (specialeffect & SPFX_DEX_25)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Raises dexterity to 25 %s", powercnt, endbuf);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (specialeffect & SPFX_CON_25)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Raises constitution to 25 %s", powercnt, endbuf);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (specialeffect & SPFX_INT_25)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Raises intelligence to 25 %s", powercnt, endbuf);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (specialeffect & SPFX_WIS_25)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Raises wisdom to 25 %s", powercnt, endbuf);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
             if (specialeffect & SPFX_CHA_25)
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Raises charisma to 25 %s", powercnt, endbuf);
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
             }
         }
 
@@ -3636,7 +3636,7 @@ register struct obj* obj;
             powercnt++;
             Sprintf(buf, " %2d - Attack bonus applies to %s", powercnt, endbuf);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
     }
 
@@ -3670,7 +3670,7 @@ register struct obj* obj;
                     *sbuf = highc(*sbuf);
                     Sprintf(buf, " %2d - %s%s%s", compcnt, splres >= 2 ? "Maybe: " : "", sbuf, splres == 2 ? " (blessedness unknown)" : "");
                     txt = buf;
-                    putstr(datawin, 0, txt);
+                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
                 }
             }
         }
@@ -3802,7 +3802,7 @@ register struct obj* obj;
         powercnt++;
         Sprintf(buf, " %2d - You have 50%% chance to hit AC %d and 5%% AC %d", powercnt, ac_with_50_chance, ac_with_5_chance);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
 #if 0
         int ac_with_95_chance = diff_to_95_from_ac0 / 5;
@@ -3810,7 +3810,7 @@ register struct obj* obj;
         powercnt++;
         Sprintf(buf, " %2d - You have 95%% chance to hit AC %d", powercnt, ac_with_95_chance);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
 #endif
 
         double average_multi_shot_times = 1.0;
@@ -3827,7 +3827,7 @@ register struct obj* obj;
         else
             Sprintf(buf, " %2d - You %s an average of %.1f time%s per round", powercnt, applicable_verb, average_multi_shot_times, plur(average_multi_shot_times));
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
         wep_avg_dmg += (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE);
         if (wep_avg_dmg < 0)
@@ -3837,7 +3837,7 @@ register struct obj* obj;
         powercnt++;
         Sprintf(buf, " %2d - Your basic average damage is %.1f per round", powercnt, wep_avg_dmg);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
     }
 
@@ -3983,15 +3983,15 @@ register struct monst* mon;
 
     Sprintf(buf, "Hit dice:               %d%s", relevant_level, buf2);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     Sprintf(buf, "Hit points:             %d (%d)", relevant_hp, relevant_hpmax);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     Sprintf(buf, "Move:                   %d\"", ptr->mmove);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     strcpy(buf2, "");
     int ac = is_you ? u.uac : find_mac(mon);
@@ -4002,7 +4002,7 @@ register struct monst* mon;
 
     Sprintf(buf, "Armor class:            %d%s", ac, buf2);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     strcpy(buf2, "");
     int mc = magic_negation(mon);
@@ -4013,21 +4013,21 @@ register struct monst* mon;
 
     Sprintf(buf, "Magic cancellation:     %d%s (%d%%)", mc, buf2, magic_negation_percentage(mc));
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     Sprintf(buf, "Magic resistance:       %d%%", ptr->mr);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     Sprintf(buf, "Alignment:              %s", ptr->maligntyp > 0 ? "Lawful" : ptr->maligntyp < 0 ? "Chaotic" : "Neutral");
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     if (!is_neuter(ptr))
     {
         Sprintf(buf, "Gender:                 %s", mon->female ? "Female" : "Male");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     strcpy(buf2, get_monster_size_text(ptr->msize));
@@ -4035,7 +4035,7 @@ register struct monst* mon;
 
     Sprintf(buf, "Size:                   %s", buf2);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     int number_of_attacks = 0;
     int i;
@@ -4049,7 +4049,7 @@ register struct monst* mon;
 
     Sprintf(buf, "Number of attacks:      %d", number_of_attacks);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     for (i = 0; i < number_of_attacks; i++)
     {
@@ -4119,7 +4119,7 @@ register struct monst* mon;
 
         Sprintf(buf, " %2d - %s%s%s%s", i + 1, attypebuf, adtypebuf, damagebuf, specialbuf);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
     }
 

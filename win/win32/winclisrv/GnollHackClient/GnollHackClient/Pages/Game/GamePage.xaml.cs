@@ -7359,20 +7359,9 @@ namespace GnollHackClient.Pages.Game
                 UpperCmdGrid.HeightRequest = firstchild.GridHeight;
                 LowerCmdGrid.HeightRequest = firstchild.GridHeight;
 
-#if false
-                InventoryGrid.WidthRequest = SearchGrid.WidthRequest = WaitGrid.WidthRequest = DropManyGrid.WidthRequest = ChatGrid.WidthRequest = gridsidewidth;
-                InventoryGrid.HeightRequest = SearchGrid.HeightRequest = WaitGrid.HeightRequest = DropManyGrid.HeightRequest = ChatGrid.HeightRequest = gridsideheight;
-                InventoryImg.WidthRequest = SearchImg.WidthRequest = WaitImg.WidthRequest = DropManyImg.WidthRequest = ChatImg.WidthRequest = imgsidewidth;
-                InventoryImg.HeightRequest = SearchImg.HeightRequest = WaitImg.HeightRequest = DropManyImg.HeightRequest = ChatImg.HeightRequest = imgsideheight;
-                InventoryLbl.FontSize = SearchLbl.FontSize = WaitLbl.FontSize = DropManyLbl.FontSize = ChatLbl.FontSize = fontsize;
-                ChatButton.HeightRequest = /*RepeatButton.HeightRequest =*/ MenuButton.HeightRequest = KickButton.HeightRequest = FireButton.HeightRequest =
-                    ThrowQuiveredButton.HeightRequest = ApplyWieldedButton.HeightRequest = CastButton.HeightRequest = ZapButton.HeightRequest =
-                    SwapWeaponButton.HeightRequest = gridsideheight;
-#endif
-
                 MenuHeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(MenuBackground.BorderStyle, width, height);
                 MenuCloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(MenuBackground.BorderStyle, width, height);
-                Thickness smallthick = ClientUtils.GetSmallBorderThickness(width, height);
+                Thickness smallthick = ClientUtils.GetSmallBorderThickness(width, height, 1.5);
                 TextCanvas.Margin = smallthick;
                 TextWindowGlyphImage.Margin = smallthick;
 
@@ -9372,6 +9361,12 @@ namespace GnollHackClient.Pages.Game
                         y += fontspacingpadding;
                         y -= textPaint.FontMetrics.Ascent;
                         float start_x = x;
+                        string indentstr = putstritem.GetIndentationString();
+                        if(indentstr != "")
+                        {
+                            start_x += textPaint.MeasureText(indentstr);
+                        }
+
                         foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                         {
                             if (putstritem.Text == null)

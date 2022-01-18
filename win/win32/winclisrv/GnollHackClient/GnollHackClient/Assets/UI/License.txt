@@ -1,5 +1,5 @@
 GnollHack User Interface Button Icons
-Copyright (c) Janne Gustafsson, 2021
+Copyright (c) Janne Gustafsson, 2021-2022
 
 GNOLLHACK USER INTERFACE ICON GENERAL PUBLIC LICENSE
 ("License Agreement")

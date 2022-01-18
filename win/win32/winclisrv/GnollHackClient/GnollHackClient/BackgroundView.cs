@@ -15,8 +15,7 @@ namespace GnollHackClient
     }
     public enum BackgroundBitmaps
     {
-        DarkMarble = 0,
-        OldPaper,
+        OldPaper = 0,
         SmallDarkMenu,
         Custom
     }
@@ -48,7 +47,7 @@ namespace GnollHackClient
         }
 
         public static readonly BindableProperty BackgroundBitmapProperty = BindableProperty.Create(
-            "BackgroundBitmap", typeof(BackgroundBitmaps), typeof(BackgroundView), BackgroundBitmaps.DarkMarble);
+            "BackgroundBitmap", typeof(BackgroundBitmaps), typeof(BackgroundView), BackgroundBitmaps.OldPaper);
 
         public BackgroundBitmaps BackgroundBitmap
         {
@@ -79,9 +78,6 @@ namespace GnollHackClient
             SKBitmap bmp = null;
             switch (BackgroundBitmap)
             {
-                case BackgroundBitmaps.DarkMarble:
-                    bmp = App.DarkMarbleBackgroundBitmap;
-                    break;
                 case BackgroundBitmaps.OldPaper:
                     bmp = App.OldPaperBackgroundBitmap;
                     break;
@@ -89,7 +85,7 @@ namespace GnollHackClient
                     bmp = App.MenuBackgroundBitmap;
                     break;
                 case BackgroundBitmaps.Custom:
-                    bmp = CustomBackgroundBitmap != null ? CustomBackgroundBitmap : App.DarkMarbleBackgroundBitmap;
+                    bmp = CustomBackgroundBitmap != null ? CustomBackgroundBitmap : App.OldPaperBackgroundBitmap;
                     break;
             }
 

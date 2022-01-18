@@ -595,9 +595,9 @@ namespace GnollHackClient
             return Math.Min(bordermarginx, bordermarginy);
         }
 
-        public static Thickness GetSmallBorderThickness(double width, double height)
+        public static Thickness GetSmallBorderThickness(double width, double height, double scaling_factor)
         {
-            double bordermargin = GetSmallBorderMargin(width, height);
+            double bordermargin = GetSmallBorderMargin(width, height) * scaling_factor;
             return new Thickness(bordermargin, bordermargin, bordermargin, bordermargin);
         }
 

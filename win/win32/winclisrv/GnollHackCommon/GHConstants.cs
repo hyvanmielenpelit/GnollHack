@@ -50,6 +50,9 @@ namespace GnollHackCommon
         Title =     0x00000100,
         Heading =   0x00000200,
         Sub =       0x00000400,
+        IndentDash =  0x00000800,
+        IndentColon = 0x00001000,
+        IndentAstr =  0x00002000,
     }
 
     [Flags]
