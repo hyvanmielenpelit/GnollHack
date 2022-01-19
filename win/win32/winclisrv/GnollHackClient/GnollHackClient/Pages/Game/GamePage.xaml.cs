@@ -7340,6 +7340,7 @@ namespace GnollHackClient.Pages.Game
                 double statusbarheight = GetStatusBarHeight();
                 lAbilitiesButton.SetSideSize(width, height);
                 lAbilitiesButton.HeightRequest = statusbarheight;
+                lWornItemsButton.SetSideSize(width, height);
                 lWornItemsButton.HeightRequest = statusbarheight;
                 lSkillButton.SetSideSize(width, height);
                 UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
@@ -10156,7 +10157,7 @@ namespace GnollHackClient.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0);
                         break;
                     case 7:
-                        PaintTipButtonByRect(canvas, textPaint, statusBarRect, "Tap to open the status screen.", "Status Bar", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
+                        PaintTipButtonByRect(canvas, textPaint, statusBarRect, "You can tap the status bar.", "Tap to open the status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
                         break;
                     case 8:
                         PaintTipButton(canvas, textPaint, lAbilitiesButton, "Some commands do not have buttons.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
