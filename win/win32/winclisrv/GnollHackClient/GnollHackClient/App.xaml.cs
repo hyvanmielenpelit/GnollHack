@@ -111,8 +111,15 @@ namespace GnollHackClient
             }
             ResetAcquiredFiles();
             _mainGnollHackService.InitializeGnollHack(App.CurrentSecrets);
-            _fmodService.InitializeFmod();
-            _fmodService.LoadBanks();
+            try
+            {
+                _fmodService.InitializeFmod();
+                _fmodService.LoadBanks();
+            }
+            catch(Exception ex)
+            {
+
+            }
         }
 
         private static void ResetAcquiredFiles()
@@ -477,11 +484,19 @@ namespace GnollHackClient
         {
             if(_fmodService != null)
             {
-                string[] parameterNames = new string[1];
-                float[] parameterValues = new float[1];
+                try
+                {
+                    string[] parameterNames = new string[1];
+                    float[] parameterValues = new float[1];
 
-                _fmodService.PlayImmediateSound(GHConstants.ButtonClickGHSound, GHConstants.ButtonClickEventPath, GHConstants.ButtonClickBankId, GHConstants.ButtonClickVolume,
-                    1.0f, parameterNames, parameterValues, 0, 0, 0, 0);
+                    _fmodService.PlayImmediateSound(GHConstants.ButtonClickGHSound, GHConstants.ButtonClickEventPath, GHConstants.ButtonClickBankId, GHConstants.ButtonClickVolume,
+                        1.0f, parameterNames, parameterValues, 0, 0, 0, 0);
+                }
+                catch (Exception ex)
+                {
+
+                }
+
             }
         }
 

@@ -164,7 +164,14 @@ namespace GnollHackClient
             GetFilesFromResources();
 
             await DownloadAndCheckFiles();
-            App.FmodService.LoadBanks();
+            try
+            {
+                App.FmodService.LoadBanks();
+            }
+            catch (Exception ex)
+            {
+
+            }
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", 1.0f);
@@ -173,9 +180,15 @@ namespace GnollHackClient
             dialogueVolume = Preferences.Get("DialogueVolume", 0.5f);
             effectsVolume = Preferences.Get("EffectsVolume", 0.5f);
             UIVolume = Preferences.Get("UIVolume", 0.5f);
-            App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
-            App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
-            //App.PlayIntroMusic();
+            try
+            {
+                App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
+                App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+            }
+            catch(Exception ex)
+            {
+
+            }
         }
 
         private object _abortLock = new object();
@@ -262,9 +275,14 @@ namespace GnollHackClient
             videoView.IsVisible = true;
             videoView.Play();
             StillImage.IsVisible = false;
+            try
+            {
+                App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+            }
+            catch(Exception ex)
+            {
 
-            App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
-            //App.PlayIntroMusic();
+            }
         }
 
         private async Task StartFadeLogoIn()
