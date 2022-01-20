@@ -249,13 +249,15 @@ namespace GnollHackClient
                     if(idx >= 0)
                     {
                         int spacepos = idx + 1;
-                        if(spacepos < str.Length)
+                        if (spacepos < str.Length)
                         {
                             string searchstr = str.Substring(spacepos);
                             int numberOfSpaces = searchstr.TakeWhile(c => c == ' ').Count();
                             if (spacepos + numberOfSpaces < str.Length)
                                 return str.Substring(0, spacepos + numberOfSpaces);
+
                         }
+                        return str;
                     }
                 }
             }
