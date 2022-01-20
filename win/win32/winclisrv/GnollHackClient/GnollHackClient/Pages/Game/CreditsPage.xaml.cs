@@ -199,7 +199,7 @@ namespace GnollHackClient.Pages.Game
                 string archive_file = "";
                 try
                 {
-                    archive_file = CreateGameZipArchive();
+                    archive_file = App.CreateGameZipArchive();
                 }
                 catch(Exception ex)
                 {
@@ -220,73 +220,6 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private string CreateGameZipArchive()
-        {
-            string ghdir = App.GnollHackService.GetGnollHackPath();
-            string targetpath = Path.Combine(ghdir, "archive");
-
-            if (!Directory.Exists(targetpath))
-                Directory.CreateDirectory(targetpath);
-
-            string filepath = Path.Combine(targetpath, "crash_report.zip");
-            if (File.Exists(filepath))
-                File.Delete(filepath);
-
-            string zipFile = filepath;
-            string[] files = Directory.GetFiles(ghdir);
-
-            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
-            {
-                foreach (var fPath in files)
-                {
-                    archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
-                }
-                string[] ghsubdirlist = { "save", "dumplog" };
-                foreach (string ghsubdir in ghsubdirlist)
-                {
-                    string subdirpath = Path.Combine(ghdir, ghsubdir);
-                    string[] subfiles = Directory.GetFiles(subdirpath);
-                    foreach (var fPath in subfiles)
-                    {
-                        archive.CreateEntryFromFile(fPath, Path.Combine(ghsubdir, Path.GetFileName(fPath)));
-                    }
-                }
-
-            }
-            return zipFile;
-        }
-
-        private string CreateDumplogZipArchive()
-        {
-            string ghdir = App.GnollHackService.GetGnollHackPath();
-            string targetpath = Path.Combine(ghdir, "archive");
-
-            if (!Directory.Exists(targetpath))
-                Directory.CreateDirectory(targetpath);
-
-            string filepath = Path.Combine(targetpath, "dumplogs.zip");
-            if (File.Exists(filepath))
-                File.Delete(filepath);
-
-            string zipFile = filepath;
-            string[] files = Directory.GetFiles(ghdir);
-
-            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
-            {
-                string[] ghsubdirlist = { "dumplog" };
-                foreach (string ghsubdir in ghsubdirlist)
-                {
-                    string subdirpath = Path.Combine(ghdir, ghsubdir);
-                    string[] subfiles = Directory.GetFiles(subdirpath);
-                    foreach (var fPath in subfiles)
-                    {
-                        archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
-                    }
-                }
-
-            }
-            return zipFile;
-        }
 
         private async void ShareFile(string filename, string title)
         {
@@ -308,7 +241,7 @@ namespace GnollHackClient.Pages.Game
             string archive_file = "";
             try
             {
-                archive_file = CreateDumplogZipArchive();
+                archive_file = App.CreateDumplogZipArchive();
             }
             catch (Exception ex)
             {

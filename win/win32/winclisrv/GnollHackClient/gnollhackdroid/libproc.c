@@ -451,7 +451,9 @@ void lib_init_print_glyph(int initid)
 {
     lib_callbacks.callback_init_print_glyph(initid);
 
-    if (initid == INIT_GLYPH_PETS)
+    switch (initid)
+    {
+    case INIT_GLYPH_PETS:
     {
         struct monst_info mi = { 0 };
         struct monst* mtmp;
@@ -463,6 +465,15 @@ void lib_init_print_glyph(int initid)
                 lib_callbacks.callback_send_monster_data(0, 0, 0, mi, 0UL); /* Add a pet */
             }
         }
+        break;
+    }
+    case INIT_GLYPH_GAME_START:
+    {
+        lib_callbacks.callback_report_player_name(plname);
+        break;
+    }
+    default:
+        break;
     }
 }
 

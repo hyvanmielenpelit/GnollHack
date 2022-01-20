@@ -875,6 +875,7 @@ E boolean NDECL(authorize_wizard_mode);
 
 #if defined(UNIX) && defined(GNH_ANDROID)
 E void NDECL(getlock);
+E void NDECL(check_crash);
 #endif /* UNIX && GNH_ANDROID */
 
 /* ### dungeon.c ### */

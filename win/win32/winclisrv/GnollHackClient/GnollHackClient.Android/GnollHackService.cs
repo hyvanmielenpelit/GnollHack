@@ -26,6 +26,8 @@ namespace GnollHackClient.Droid
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
+            [MarshalAs(UnmanagedType.LPStr)] string preset_player_name,
+            [MarshalAs(UnmanagedType.LPStr)] string recovery_name,
             ulong runflags,
             ulong wincaps1,
             ulong wincaps2,
@@ -120,6 +122,7 @@ namespace GnollHackClient.Droid
             VoidIntCallback callback_outrip_end,
 
             FreeMemoryCallback callback_free_memory,
+            ReportPlayerNameCallback callback_report_player_name,
             SendObjectDataCallback callback_send_object_data,
             SendMonsterDataCallback callback_send_monster_data
         );
@@ -706,10 +709,13 @@ namespace GnollHackClient.Droid
             ulong runflags = (ulong)(clientGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
                 (ulong)(App.FullVersionMode ? RunGnollHackFlags.FullVersion : 0) |
                 (ulong)(App.BeginnerMode ? RunGnollHackFlags.BeginnerMode : 0);
+            string lastusedplname = Preferences.Get("LastUsedPlayerName", "");
 
             return RunGnollHack(
                 filesdir,
                 "",
+                "",
+                lastusedplname,
                 runflags,
                 0,
                 0,
@@ -804,6 +810,7 @@ namespace GnollHackClient.Droid
                 clientGame.ClientCallback_VoidIntDummy,
 
                 clientGame.ClientCallback_FreeMemory,
+                clientGame.ClientCallback_ReportPlayerName,
                 clientGame.ClientCallback_SendObjectData,
                 clientGame.ClientCallback_SendMonsterData
                 );

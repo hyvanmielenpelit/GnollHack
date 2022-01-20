@@ -103,3 +103,50 @@ dosh()
 {
 	return 0;
 }
+
+void
+check_crash()
+{
+	if (!recovery_plname || !*recovery_plname)
+		return;
+
+	char recover_lock[BUFSIZ] = "";
+
+	if (!lock_file(HLOCK, LOCKPREFIX, 10))
+	{
+		wait_synch();
+		error("%s", "");
+	}
+
+	if (!wizard)
+		Sprintf(recover_lock, "%d%s", (int)getuid(), recovery_plname);
+
+	register int fd;
+	const char* fq_lock;
+
+	regularize(recover_lock);
+	set_levelfile_name(recover_lock, 0);
+
+	fq_lock = fqname(recover_lock, LEVELPREFIX, 0);
+	if ((fd = open(fq_lock, 0)) == -1)
+	{
+		if (errno == ENOENT)
+			goto nofilefound;    /* no such file */
+		perror(fq_lock);
+		unlock_file(HLOCK);
+		error("Cannot open %s", fq_lock);
+	}
+	(void)close(fd);
+
+	struct special_view_info info = { 0 };
+	info.viewtype = SPECIAL_VIEW_CRASH_DETECTED;
+	open_special_view(info);
+
+	/* Use recover_plname instead */
+	if(!wizard)
+		strcpy(plname, recovery_plname);
+
+nofilefound:
+	unlock_file(HLOCK);
+}
+

@@ -973,6 +973,12 @@ namespace GnollHackClient
             Marshal.FreeHGlobal(issame ? ptr : _outGoingIntPtr);
         }
 
+        public void ClientCallback_ReportPlayerName(string used_player_name)
+        {
+            if(used_player_name != null && used_player_name != "")
+                Preferences.Set("LastUsedPlayerName", used_player_name);
+        }
+
         public void ClientCallback_SendObjectData(int x, int y, obj otmp, int cmdtype, int where, objclassdata otypdata, ulong oflags)
         {
             _gamePage.AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
@@ -1394,6 +1400,8 @@ namespace GnollHackClient
                     }
 
                     int res = ClientCallback_nhgetch();
+                    break;
+                case (int)special_view_types.SPECIAL_VIEW_CRASH_DETECTED:
                     break;
                 default:
                     break;

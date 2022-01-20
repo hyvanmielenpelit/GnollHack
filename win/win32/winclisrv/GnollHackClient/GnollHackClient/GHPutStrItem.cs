@@ -216,7 +216,7 @@ namespace GnollHackClient
                     if ((InstructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title))
                         res.Top = 0;
                     else if ((InstructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Heading)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Heading))
-                        res.Top = 5;
+                        res.Top = 10;
                     else if ((InstructionList[0].Attributes & (int)MenuItemAttributes.Title) == (int)MenuItemAttributes.Title)
                         res.Top = 0;
                     else if ((InstructionList[0].Attributes & (int)MenuItemAttributes.Heading) == (int)MenuItemAttributes.Heading)

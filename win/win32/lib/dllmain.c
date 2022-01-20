@@ -27,6 +27,8 @@ extern int FDECL(GnollHackStart, (char*));
 DLL int WINAPI RunGnollHack(
     char* gnhdir,
     char* cmdlineargs,
+    char* preset_player_name,
+    char* recovery_name,
     unsigned long wincap1,
     unsigned long wincap2,
     InitWindowsCallback callback_init_nhwindows,
@@ -123,6 +125,7 @@ DLL int WINAPI RunGnollHack(
     OutRipEndCallback callback_outrip_end,
 
     FreeMemoryCallback callback_free_memory,
+    ReportPlayerNameCallback callback_report_player_name,
     SendObjectDataCallback callback_send_object_data,
     SendMonsterDataCallback callback_send_monster_data
 )
@@ -221,6 +224,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_outrip_end = callback_outrip_end;
 
     dll_callbacks.callback_free_memory = callback_free_memory;
+    dll_callbacks.callback_report_player_name = callback_report_player_name;
     dll_callbacks.callback_send_object_data = callback_send_object_data;
     dll_callbacks.callback_send_monster_data = callback_send_monster_data;
 

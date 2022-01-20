@@ -16,6 +16,8 @@ namespace GnollHackServer
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
+            [MarshalAs(UnmanagedType.LPStr)] string preset_player_name,
+            [MarshalAs(UnmanagedType.LPStr)] string recovery_name,
             ulong runflags,
             ulong wincaps1,
             ulong wincaps2,
@@ -110,6 +112,7 @@ namespace GnollHackServer
             VoidIntCallback callback_outrip_end,
 
             FreeMemoryCallback callback_free_memory,
+            ReportPlayerNameCallback callback_report_player_name,
             SendObjectDataCallback callback_send_object_data,
             SendMonsterDataCallback callback_send_monster_data
         );
@@ -172,6 +175,8 @@ namespace GnollHackServer
 
             RunGnollHack(
                 curdir,
+                "",
+                "",
                 "",
                 (ulong)(WizardMode ? RunGnollHackFlags.WizardMode : 0),
                 0,
@@ -266,6 +271,7 @@ namespace GnollHackServer
                 GameCallback_VoidIntDummy,
                 GameCallback_VoidIntDummy,
                 GameCallback_FreeMemory,
+                GameCallback_ReportPlayerName,
                 GameCallback_SendObjectData,
                 GameCallback_SendMonsterData
             );
@@ -360,6 +366,12 @@ namespace GnollHackServer
         {
 
         }
+
+        protected void GameCallback_ReportPlayerName(string used_player_name)
+        {
+
+        }
+
         public void GameCallback_SendObjectData(int x, int y, obj otmp, int cmdtype, int where, objclassdata otypdata, ulong oflags)
         {
 

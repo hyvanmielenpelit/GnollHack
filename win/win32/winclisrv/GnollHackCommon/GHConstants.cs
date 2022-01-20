@@ -899,6 +899,7 @@ namespace GnollHackCommon
         INIT_GLYPH_MUTE_SOUNDS,
         INIT_GLYPH_UNMUTE_SOUNDS,
         INIT_GLYPH_PETS,
+        INIT_GLYPH_GAME_START,
         INIT_GLYPH_PROGRAM_FINISH,
     }
 
@@ -927,6 +928,7 @@ namespace GnollHackCommon
         SPECIAL_VIEW_CHAT_MESSAGE,
         SPECIAL_VIEW_SHOW_SPECIAL_EFFECT,
         SPECIAL_VIEW_GUI_TIPS,
+        SPECIAL_VIEW_CRASH_DETECTED,
         MAX_SPECIAL_VIEW_TYPES
     }
 

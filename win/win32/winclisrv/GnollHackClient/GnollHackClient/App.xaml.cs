@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Collections;
 using Plugin.SimpleAudioPlayer;
+using System.IO.Compression;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 [assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
@@ -526,6 +527,73 @@ namespace GnollHackClient
                 _fmodService.PlayImmediateSound(GHConstants.MenuSelectGHSound, GHConstants.MenuSelectEventPath, GHConstants.MenuSelectBankId, GHConstants.MenuSelectVolume,
                     1.0f, parameterNames, parameterValues, 0, 0, 0, 0);
             }
+        }
+        public static string CreateGameZipArchive()
+        {
+            string ghdir = App.GnollHackService.GetGnollHackPath();
+            string targetpath = Path.Combine(ghdir, "archive");
+
+            if (!Directory.Exists(targetpath))
+                Directory.CreateDirectory(targetpath);
+
+            string filepath = Path.Combine(targetpath, "crash_report.zip");
+            if (File.Exists(filepath))
+                File.Delete(filepath);
+
+            string zipFile = filepath;
+            string[] files = Directory.GetFiles(ghdir);
+
+            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+            {
+                foreach (var fPath in files)
+                {
+                    archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
+                }
+                string[] ghsubdirlist = { "save", "dumplog" };
+                foreach (string ghsubdir in ghsubdirlist)
+                {
+                    string subdirpath = Path.Combine(ghdir, ghsubdir);
+                    string[] subfiles = Directory.GetFiles(subdirpath);
+                    foreach (var fPath in subfiles)
+                    {
+                        archive.CreateEntryFromFile(fPath, Path.Combine(ghsubdir, Path.GetFileName(fPath)));
+                    }
+                }
+
+            }
+            return zipFile;
+        }
+
+        public static string CreateDumplogZipArchive()
+        {
+            string ghdir = App.GnollHackService.GetGnollHackPath();
+            string targetpath = Path.Combine(ghdir, "archive");
+
+            if (!Directory.Exists(targetpath))
+                Directory.CreateDirectory(targetpath);
+
+            string filepath = Path.Combine(targetpath, "dumplogs.zip");
+            if (File.Exists(filepath))
+                File.Delete(filepath);
+
+            string zipFile = filepath;
+            string[] files = Directory.GetFiles(ghdir);
+
+            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+            {
+                string[] ghsubdirlist = { "dumplog" };
+                foreach (string ghsubdir in ghsubdirlist)
+                {
+                    string subdirpath = Path.Combine(ghdir, ghsubdir);
+                    string[] subfiles = Directory.GetFiles(subdirpath);
+                    foreach (var fPath in subfiles)
+                    {
+                        archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
+                    }
+                }
+
+            }
+            return zipFile;
         }
 
     }

@@ -53,6 +53,7 @@ NEARDATA struct kinfo killer = DUMMY;
 NEARDATA long done_money = 0;
 const char *nomovemsg = 0;
 NEARDATA char plname[PL_NSIZ] = DUMMY; /* player name */
+NEARDATA char recovery_plname[PL_NSIZ] = DUMMY;  /* Set at program start to check for recoverable games before ask_name */
 NEARDATA char pl_character[PL_CSIZ] = DUMMY;
 NEARDATA char pl_race = '\0';
 

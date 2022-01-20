@@ -21,6 +21,8 @@ int FDECL(GnollHackStart, (char*));
 int RunGnollHack(
     char* gnhdir,
     char* cmdlineargs,
+    char* preset_player_name,
+    char* recovery_name,
     unsigned long runflags,
     unsigned long wincap1,
     unsigned long wincap2,
@@ -118,6 +120,7 @@ int RunGnollHack(
     OutRipEndCallback callback_outrip_end,
 
     FreeMemoryCallback callback_free_memory,
+    ReportPlayerNameCallback callback_report_player_name,
     SendObjectDataCallback callback_send_object_data,
     SendMonsterDataCallback callback_send_monster_data
 );

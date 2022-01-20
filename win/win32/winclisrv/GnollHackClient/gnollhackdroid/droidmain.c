@@ -138,7 +138,7 @@ int GnollHackMain(int argc, char** argv)
 //#ifdef MAIL
 //	getmailstatus();
 //#endif
-
+	check_crash();
 	plnamesuffix(); /* strip suffix from name; calls askname() */
 					/* again if suffix was whole name */
 					/* accepts any suffix */
@@ -237,6 +237,7 @@ int GnollHackMain(int argc, char** argv)
 		wd_message();
 	}
 
+	init_print_glyph(INIT_GLYPH_GAME_START);
 	moveloop(resuming);
     exit(EXIT_SUCCESS);
 
@@ -422,6 +423,7 @@ sys_random_seed()
     }
     return seed;
 }
+
 
 int DoSomeHackDroid()
 {

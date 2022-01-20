@@ -266,6 +266,7 @@ E NEARDATA const char getobj_zap_syms[];
 
 E long done_money;
 E NEARDATA char plname[PL_NSIZ];
+E NEARDATA char recovery_plname[PL_NSIZ];
 E NEARDATA char dogname[];
 E NEARDATA char catname[];
 E NEARDATA char horsename[];

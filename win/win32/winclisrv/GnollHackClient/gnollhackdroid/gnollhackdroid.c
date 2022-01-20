@@ -342,6 +342,8 @@ extern struct callback_procs lib_callbacks;
 int RunGnollHack(
     char* gnhdir,
     char* cmdlineargs,
+    char* preset_player_name,
+    char* recovery_name, /* Player name for which recovery is tested first; effectively should be the last used player name */
     unsigned long runflags,
     unsigned long wincap1,
     unsigned long wincap2,
@@ -439,6 +441,7 @@ int RunGnollHack(
     OutRipEndCallback callback_outrip_end,
 
     FreeMemoryCallback callback_free_memory,
+    ReportPlayerNameCallback callback_report_player_name,
     SendObjectDataCallback callback_send_object_data,
     SendMonsterDataCallback callback_send_monster_data
 )
@@ -446,6 +449,18 @@ int RunGnollHack(
     /* Set wincaps */
     if(runflags & GHRUNFLAGS_SET_WINCAPS)
         set_wincaps(wincap1, wincap2);
+
+    /* Set names */
+    if (preset_player_name && strcmp(preset_player_name, ""))
+    {
+        strncpy(plname, preset_player_name, PL_NSIZ - 1);
+        plname[PL_NSIZ - 1] = '\0';
+    }
+    if (recovery_name && strcmp(recovery_name, ""))
+    {
+        strncpy(recovery_plname, recovery_name, PL_NSIZ - 1);
+        recovery_plname[PL_NSIZ - 1] = '\0';
+    }
 
     /* Authorize wizard mode */
     if (runflags & GHRUNFLAGS_WIZARD_MODE)
@@ -554,6 +569,7 @@ int RunGnollHack(
     lib_callbacks.callback_outrip_end = callback_outrip_end;
 
     lib_callbacks.callback_free_memory = callback_free_memory;
+    lib_callbacks.callback_report_player_name = callback_report_player_name;
     lib_callbacks.callback_send_object_data = callback_send_object_data;
     lib_callbacks.callback_send_monster_data = callback_send_monster_data;
 
