@@ -1239,6 +1239,9 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.ShowGUITips:
                                 ShowGUITips(true);
                                 break;
+                            case GHRequestType.CrashReport:
+                                ReportCrashDetected();
+                                break;
                             case GHRequestType.DisplayConditionText:
                                 DisplayConditionText(req.ConditionTextData);
                                 break;
@@ -10539,6 +10542,50 @@ namespace GnollHackClient.Pages.Game
                 canvas.DrawText(maxpct, tx, ty, textPaint);
             }
         }
+
+        public async void ReportCrashDetected()
+        {
+            bool answer = await DisplayAlert("Crash Detected", "A crashed game has been detected. GnollHack will attempt to restore this game. Also, do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
+            if (answer)
+            {
+                string archive_file = "";
+                try
+                {
+                    archive_file = App.CreateGameZipArchive();
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a crash report archive: " + ex.Message, "OK");
+                    return;
+                }
+                try
+                {
+                    if (archive_file != "")
+                        ShareFile(archive_file, "GnollHack Crash Report");
+
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Share File Failure", "GnollHack failed to share a crash report archive: " + ex.Message, "OK");
+                    return;
+                }
+            }
+
+        }
+        private async void ShareFile(string filename, string title)
+        {
+            if (!File.Exists(filename))
+            {
+                await DisplayAlert("File Sharing Failure", "GnollHack cannot find file \'" + filename + "\'", "OK");
+                return;
+            }
+            await Share.RequestAsync(new ShareFileRequest
+            {
+                Title = title,
+                File = new ShareFile(filename)
+            });
+        }
+
     }
 
     public class ColorConverter : IValueConverter

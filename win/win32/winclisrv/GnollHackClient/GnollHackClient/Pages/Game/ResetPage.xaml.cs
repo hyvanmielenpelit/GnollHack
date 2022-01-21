@@ -57,6 +57,18 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private async void btnDeleteAllMainFiles_Clicked(object sender, EventArgs e)
+        {
+            App.PlayButtonClickedSound();
+            bool answer = await DisplayAlert("Delete All Main Files?", "Are you sure to delete all files in the main directory?", "Yes", "No");
+            if (answer)
+            {
+                App.GnollHackService.ClearAllFilesInMainDirectory();
+                btnDeleteAllMainFiles.Text = "Done";
+                btnDeleteAllMainFiles.TextColor = Color.Red;
+            }
+        }
+
         private async void btnDeleteDownloads_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();

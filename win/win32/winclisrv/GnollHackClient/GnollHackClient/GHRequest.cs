@@ -36,6 +36,7 @@ namespace GnollHackClient
         FadeToBlack,
         FadeFromBlack,
         ShowGUITips,
+        CrashReport,
         DisplayConditionText,
         DisplayScreenFilter,
         SetPetMID,

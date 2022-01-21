@@ -110,8 +110,9 @@ check_crash()
 	if (!recovery_plname || !*recovery_plname)
 		return;
 
-	char recover_lock[BUFSIZ] = "";
+	//list_files();
 
+	char recover_lock[BUFSIZ] = "";
 	if (!lock_file(HLOCK, LOCKPREFIX, 10))
 	{
 		wait_synch();

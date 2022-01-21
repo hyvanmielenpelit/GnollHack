@@ -303,6 +303,7 @@ E int NDECL(doattributes);
 E int NDECL(dopolyformstatistics);
 E int NDECL(doviewpetstatistics);
 E int NDECL(wiz_detect);
+E int NDECL(wiz_files);
 E int NDECL(wiz_genesis);
 E int NDECL(wiz_identify);
 E int NDECL(wiz_level_tele);
@@ -1165,6 +1166,7 @@ E boolean FDECL(debugcore, (const char *, BOOLEAN_P));
 E boolean FDECL(read_tribute, (const char *, const char *, int,
                                char *, int, unsigned));
 E boolean FDECL(Death_quote, (char *, int));
+E void NDECL(list_files);
 
 
 /* ### fountain.c ### */

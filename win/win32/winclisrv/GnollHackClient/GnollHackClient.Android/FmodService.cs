@@ -214,7 +214,7 @@ namespace GnollHackClient.Droid
         public int PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid)
         {
             if (!FMODup())
-                return 0;
+                return 1;
 
             FMOD.Studio.EventDescription eventDescription;
             RESULT res = _system.getEvent(eventPath, out eventDescription);
@@ -325,7 +325,7 @@ namespace GnollHackClient.Droid
         public int StopAllSounds(ulong flags, uint dialogue_mid)
         {
             if (!FMODup())
-                return 0;
+                return 1;
 
             RESULT res = 0;
             if (flags == 0)
@@ -383,7 +383,7 @@ namespace GnollHackClient.Droid
         public int PlayMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             if (!FMODup())
-                return 0;
+                return 1;
 
             RESULT res;
             //lock (eventInstanceLock)
@@ -436,7 +436,7 @@ namespace GnollHackClient.Droid
         public int PlayLevelAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             if (!FMODup())
-                return 0;
+                return 1;
 
             RESULT res;
 
@@ -516,7 +516,7 @@ namespace GnollHackClient.Droid
         public int PlayEnvironmentAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
         {
             if (!FMODup())
-                return 0;
+                return 1;
 
             RESULT res;
 
@@ -606,6 +606,13 @@ namespace GnollHackClient.Droid
 
         public int AddAmbientSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, out UInt64 soundSourceId)
         {
+            if (!FMODup())
+            {
+                soundSourceId = 0;
+                return 1;
+            }
+
+
             RESULT res = RESULT.OK;
 
             if (eventPath == null || eventPath == "")
@@ -646,6 +653,9 @@ namespace GnollHackClient.Droid
         }
         public int DeleteAmbientSound(UInt64 soundSourceId)
         {
+            if (!FMODup())
+                return 1;
+
             if (soundSourceId == 0)
                 return 1;
 
@@ -679,6 +689,9 @@ namespace GnollHackClient.Droid
         }
         public int SetAmbientSoundVolume(UInt64 soundSourceId, float soundVolume)
         {
+            if (!FMODup())
+                return 1;
+
             if (soundSourceId == 0)
                 return 1;
 
@@ -719,7 +732,7 @@ namespace GnollHackClient.Droid
         public int AdjustVolumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_dialogue_volume, float new_general_sfx_volume, float new_general_ui_volume)
         {
             if (!FMODup())
-                return 0;
+                return 1;
 
             _generalVolume = new_general_volume;
             _musicVolume = new_general_music_volume;

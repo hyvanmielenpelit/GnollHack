@@ -241,14 +241,47 @@ namespace GnollHackClient.Droid
             ClearDumplogs();
         }
 
+        public void ClearAllFilesInMainDirectory()
+        {
+            string filesdir = GetGnollHackPath();
+            DirectoryInfo di = new DirectoryInfo(filesdir);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+        }
+
         public void ClearCoreFiles()
         {
             string filesdir = GetGnollHackPath();
             DirectoryInfo di = new DirectoryInfo(filesdir);
             foreach (FileInfo file in di.GetFiles())
             {
-                if(file.Name != "logfile" && file.Name != "xlogfile")
-                    file.Delete();
+                bool found = false;
+                foreach(string txtfile in _txtfileslist)
+                {
+                    if(file.Name == txtfile)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found)
+                {
+                    foreach (string binfile in _binfileslist)
+                    {
+                        if (file.Name == binfile)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (found)
+                {
+                    if (file.Name != "logfile" && file.Name != "xlogfile")
+                        file.Delete();
+                }
             }
         }
 
@@ -332,6 +365,9 @@ namespace GnollHackClient.Droid
         }
 
 
+        private string[] _txtfileslist = { "credits", "xcredits", "license", "logfile", "perm", "record", "recover", "symbols", "sysconf", "xlogfile", "defaults.gnh" };
+        private string[] _binfileslist = { "nhdat" };
+
         public void InitializeGnollHack(Secrets secrets)
         {
             /* Unpack GnollHack files */
@@ -364,9 +400,8 @@ namespace GnollHackClient.Droid
             AssetManager assets = MainActivity.StaticAssets;
 
             string assetsourcedir = "gnh";
-            string[] txtfileslist = { "credits", "xcredits", "license", "logfile", "perm", "record", "recover", "symbols", "sysconf", "xlogfile", "defaults.gnh" };
 
-            foreach (string txtfile in txtfileslist)
+            foreach (string txtfile in _txtfileslist)
             {
                 string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
                 using (StreamReader sr = new StreamReader(assets.Open(fullsourcepath)))
@@ -386,10 +421,9 @@ namespace GnollHackClient.Droid
                 }
             }
 
-            string[] binfileslist = { "nhdat" };
             byte[] data;
             int maxsize = 2048 * 1024;
-            foreach (string binfile in binfileslist)
+            foreach (string binfile in _binfileslist)
             {
                 string fullsourcepath = Path.Combine(assetsourcedir, binfile);
 

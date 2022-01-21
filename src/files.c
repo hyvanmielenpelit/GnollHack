@@ -4476,4 +4476,37 @@ int bufsz;
 
 /* ----------  END TRIBUTE ----------- */
 
+void
+list_files()
+{
+#if defined(UNIX) && (defined(QT_GRAPHICS) || defined(ANDROID) || defined(GNH_ANDROID))
+    char fileslist[BUFSIZ * 5] = "";
+    char savelist[BUFSIZ * 5] = "";
+
+    DIR* d;
+    struct dirent* dir;
+    d = opendir(".");
+    if (d) {
+        while ((dir = readdir(d)) != NULL) {
+            char* endptr = eos(fileslist);
+            if (endptr + strlen(dir->d_name) - fileslist >= BUFSIZ * 5)
+                break;
+            Sprintf(endptr, "%s\n", dir->d_name);
+        }
+        closedir(d);
+    }
+    d = opendir("./save");
+    if (d) {
+        while ((dir = readdir(d)) != NULL) {
+            char* endptr = eos(savelist);
+            if (endptr + strlen(dir->d_name) - savelist >= BUFSIZ * 5)
+                break;
+            Sprintf(endptr, "%s\n", dir->d_name);
+        }
+        closedir(d);
+    }
+#endif
+    return;
+}
+
 /*files.c*/

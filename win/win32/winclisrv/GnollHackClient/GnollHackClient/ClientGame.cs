@@ -1390,19 +1390,28 @@ namespace GnollHackClient
                     }
                     break;
                 case (int)special_view_types.SPECIAL_VIEW_GUI_TIPS:
-                    if (Preferences.Get("GUITipsShown", false))
-                        break;
-
-                    ConcurrentQueue<GHRequest> queue;
-                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowGUITips));
-                    }
+                        if (Preferences.Get("GUITipsShown", false))
+                            break;
 
-                    int res = ClientCallback_nhgetch();
-                    break;
+                        ConcurrentQueue<GHRequest> queue;
+                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, GHRequestType.ShowGUITips));
+                        }
+
+                        int res = ClientCallback_nhgetch();
+                        break;
+                    }
                 case (int)special_view_types.SPECIAL_VIEW_CRASH_DETECTED:
-                    break;
+                    {
+                        ConcurrentQueue<GHRequest> queue;
+                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, GHRequestType.CrashReport));
+                        }
+                        break;
+                    }
                 default:
                     break;
             }

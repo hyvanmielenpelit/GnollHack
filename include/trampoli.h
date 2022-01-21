@@ -27,6 +27,7 @@
 #define timed_occupation() timed_occupation_()
 #define wiz_attributes() wiz_attributes_()
 #define wiz_detect() wiz_detect_()
+#define wiz_files() wiz_files_()
 #define wiz_genesis() wiz_genesis_()
 #define wiz_identify() wiz_identify_()
 #define wiz_level_tele() wiz_level_tele_()

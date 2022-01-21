@@ -153,6 +153,7 @@ STATIC_PTR int NDECL(wiz_identify);
 STATIC_PTR int NDECL(wiz_intrinsic);
 STATIC_PTR int NDECL(wiz_map);
 STATIC_PTR int NDECL(wiz_makemap);
+STATIC_PTR int NDECL(wiz_files);
 STATIC_PTR int NDECL(wiz_genesis);
 STATIC_PTR int NDECL(wiz_where);
 STATIC_PTR int NDECL(wiz_detect);
@@ -1557,6 +1558,16 @@ wiz_where(VOID_ARGS)
         (void) print_dungeon(FALSE, (schar *) 0, (xchar *) 0);
     else
         pline(unavailcmd, visctrl((int) cmd_from_func(wiz_where)));
+    return 0;
+}
+
+STATIC_PTR int
+wiz_files(VOID_ARGS)
+{
+    if (wizard)
+        list_files();
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_files)));
     return 0;
 }
 
@@ -5313,6 +5324,8 @@ struct ext_func_tab extcmdlist[] = {
             wiz_save_quest_texts, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizcrown", "make the god crown you",
             wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizfiles", "browse through files in current directory",
+            wiz_files, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizrumorcheck", "verify rumor boundaries",
             wiz_rumor_check, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsmell", "smell monster",
