@@ -10548,7 +10548,8 @@ namespace GnollHackClient.Pages.Game
             bool answer = await DisplayAlert("Crash Detected", "A crashed game has been detected. GnollHack will attempt to restore this game. Also, do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
             if (answer)
             {
-                await CheckAndRequestLocationPermission();
+                await CheckAndRequestWritePermission();
+                await CheckAndRequestReadPermission();
                 string archive_file = "";
                 try
                 {
@@ -10586,7 +10587,7 @@ namespace GnollHackClient.Pages.Game
                 File = new ShareFile(filename)
             });
         }
-        public async Task<PermissionStatus> CheckAndRequestLocationPermission()
+        public async Task<PermissionStatus> CheckAndRequestWritePermission()
         {
             var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
 
@@ -10607,6 +10608,30 @@ namespace GnollHackClient.Pages.Game
             }
 
             status = await Permissions.RequestAsync<Permissions.StorageWrite>();
+
+            return status;
+        }
+        public async Task<PermissionStatus> CheckAndRequestReadPermission()
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+
+            if (status == PermissionStatus.Granted)
+                return status;
+
+            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                // Prompt the user to turn on in settings
+                // On iOS once a permission has been denied it may not be requested again from the application
+                await DisplayAlert("Permission Needed", "GnollHack needs the file read permission to work with a zip file. Please turn it on in Settings.", "OK");
+                return status;
+            }
+
+            if (Permissions.ShouldShowRationale<Permissions.StorageRead>())
+            {
+                await DisplayAlert("Permission Needed", "GnollHack needs the file read permission to work with a zip file.", "OK");
+            }
+
+            status = await Permissions.RequestAsync<Permissions.StorageRead>();
 
             return status;
         }
