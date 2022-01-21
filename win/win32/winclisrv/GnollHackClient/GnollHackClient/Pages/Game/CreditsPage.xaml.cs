@@ -196,6 +196,7 @@ namespace GnollHackClient.Pages.Game
             bool answer = await DisplayAlert("Send Crash Report?", "This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
             if (answer)
             {
+                await CheckAndRequestLocationPermission();
                 string archive_file = "";
                 try
                 {
@@ -235,9 +236,34 @@ namespace GnollHackClient.Pages.Game
             });
         }
 
+        public async Task<PermissionStatus> CheckAndRequestLocationPermission()
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
+
+            if (status == PermissionStatus.Granted)
+                return status;
+
+            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                // Prompt the user to turn on in settings
+                // On iOS once a permission has been denied it may not be requested again from the application
+                await DisplayAlert("Permission Needed", "GnollHack needs the file write permission to create a zip file. Please turn it on in Settings.", "OK");
+                return status;
+            }
+
+            if (Permissions.ShouldShowRationale<Permissions.StorageWrite>())
+            {
+                await DisplayAlert("Permission Needed", "GnollHack needs the file write permission to create a zip file.", "OK");
+            }
+
+            status = await Permissions.RequestAsync<Permissions.StorageWrite>();
+
+            return status;
+        }
         private async void btnDumplogs_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
+            await CheckAndRequestLocationPermission();
             string archive_file = "";
             try
             {

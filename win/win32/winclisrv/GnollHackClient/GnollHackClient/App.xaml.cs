@@ -611,6 +611,7 @@ namespace GnollHackClient
             return zipFile;
         }
 
+
     }
 
     class SecretsFileSizeComparer : IComparer<SecretsFile>
