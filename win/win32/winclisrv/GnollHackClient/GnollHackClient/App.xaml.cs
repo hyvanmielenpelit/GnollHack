@@ -548,7 +548,7 @@ namespace GnollHackClient
             string ghdir = App.GnollHackService.GetGnollHackPath();
             string targetpath = Path.Combine(ghdir, "archive");
 
-            App.CheckDirectory(targetpath);
+            App.CheckCreateDirectory(targetpath);
 
             string filepath = Path.Combine(targetpath, "crash_report.zip");
             if (File.Exists(filepath))
@@ -583,7 +583,7 @@ namespace GnollHackClient
             string ghdir = App.GnollHackService.GetGnollHackPath();
             string targetpath = Path.Combine(ghdir, "archive");
 
-            App.CheckDirectory(targetpath);
+            App.CheckCreateDirectory(targetpath);
 
             string filepath = Path.Combine(targetpath, "dumplogs.zip");
             if (File.Exists(filepath))
@@ -609,7 +609,7 @@ namespace GnollHackClient
             return zipFile;
         }
 
-        public static void CheckDirectory(string targetpath)
+        public static void CheckCreateDirectory(string targetpath)
         {
             if (!Directory.Exists(targetpath))
                 Directory.CreateDirectory(targetpath);

@@ -388,10 +388,7 @@ namespace GnollHackClient.Droid
             foreach (string ghdir in ghdirlist)
             {
                 string fulldirepath = Path.Combine(filesdir, ghdir);
-                if (!Directory.Exists(fulldirepath))
-                {
-                    Directory.CreateDirectory(fulldirepath);
-                }
+                App.CheckCreateDirectory(fulldirepath);
             }
 
 

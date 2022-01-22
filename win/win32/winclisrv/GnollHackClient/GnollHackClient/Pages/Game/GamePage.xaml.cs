@@ -10558,7 +10558,7 @@ namespace GnollHackClient.Pages.Game
                 catch (Exception ex)
                 {
                     await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a crash report archive: " + ex.Message, "OK");
-                    return;
+                    goto finished;
                 }
                 try
                 {
@@ -10569,11 +10569,18 @@ namespace GnollHackClient.Pages.Game
                 catch (Exception ex)
                 {
                     await DisplayAlert("Share File Failure", "GnollHack failed to share a crash report archive: " + ex.Message, "OK");
-                    return;
+                    goto finished;
                 }
             }
 
+        finished:
+            ConcurrentQueue<GHResponse> queue;
+            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.CrashReport));
+            }
         }
+
         private async void ShareFile(string filename, string title)
         {
             if (!File.Exists(filename))

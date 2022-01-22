@@ -23,6 +23,7 @@ namespace GnollHackClient
         private int _inputBufferLocation = -1;
         private string _getLineString = null;
         private bool _screenTextSet = false;
+        private bool _crashReportFinished = false;
         private string _characterName = "";
         private object _characterNameLock = new object();
         private GamePage _gamePage;
@@ -114,6 +115,9 @@ namespace GnollHackClient
                         case GHRequestType.SetPetMID:
                             if(_gamePage != null)
                                 _gamePage.GnollHackService.SetPetMID(response.ResponseUIntValue);
+                            break;
+                        case GHRequestType.CrashReport:
+                            _crashReportFinished = true;
                             break;
                         default:
                             break;
@@ -1406,10 +1410,18 @@ namespace GnollHackClient
                 case (int)special_view_types.SPECIAL_VIEW_CRASH_DETECTED:
                     {
                         ConcurrentQueue<GHRequest> queue;
+                        _crashReportFinished = false;
                         if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                         {
                             queue.Enqueue(new GHRequest(this, GHRequestType.CrashReport));
                         }
+
+                        while (!_crashReportFinished)
+                        {
+                            Thread.Sleep(25);
+                            pollResponseQueue();
+                        }
+
                         break;
                     }
                 default:
