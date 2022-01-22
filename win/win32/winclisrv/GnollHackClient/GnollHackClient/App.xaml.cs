@@ -548,8 +548,7 @@ namespace GnollHackClient
             string ghdir = App.GnollHackService.GetGnollHackPath();
             string targetpath = Path.Combine(ghdir, "archive");
 
-            if (!Directory.Exists(targetpath))
-                Directory.CreateDirectory(targetpath);
+            App.CheckDirectory(targetpath);
 
             string filepath = Path.Combine(targetpath, "crash_report.zip");
             if (File.Exists(filepath))
@@ -584,8 +583,7 @@ namespace GnollHackClient
             string ghdir = App.GnollHackService.GetGnollHackPath();
             string targetpath = Path.Combine(ghdir, "archive");
 
-            if (!Directory.Exists(targetpath))
-                Directory.CreateDirectory(targetpath);
+            App.CheckDirectory(targetpath);
 
             string filepath = Path.Combine(targetpath, "dumplogs.zip");
             if (File.Exists(filepath))
@@ -611,6 +609,61 @@ namespace GnollHackClient
             return zipFile;
         }
 
+        public static void CheckDirectory(string targetpath)
+        {
+            if (!Directory.Exists(targetpath))
+                Directory.CreateDirectory(targetpath);
+
+            //DirectoryInfo dinfo = new DirectoryInfo(targetpath);
+            bool writesuccessful = false;
+            string testfilepath = Path.Combine(targetpath, "test.txt");
+            try
+            {
+                if (File.Exists(testfilepath))
+                    File.Delete(testfilepath);
+
+                File.WriteAllText(testfilepath, "Hello World!");
+
+                writesuccessful = true;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            try
+            {
+                if (File.Exists(testfilepath))
+                    File.Delete(testfilepath);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            if (!writesuccessful)
+            {
+                try
+                {
+                    if (Directory.Exists(targetpath))
+                    {
+                        foreach(string subfilename in Directory.GetFiles(targetpath))
+                        {
+                            string subfilepath = Path.Combine(targetpath, subfilename);
+                            File.Delete(subfilepath);
+                        }
+                        Directory.Delete(targetpath);
+                    }
+                    if (!Directory.Exists(targetpath))
+                        Directory.CreateDirectory(targetpath);
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+            }
+        }
 
     }
 
