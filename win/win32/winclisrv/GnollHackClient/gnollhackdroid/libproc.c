@@ -430,13 +430,13 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
                 {
                     unsigned long coflags = 0UL;
                     if (is_obj_drawn_in_front(otmp)) /* otmp to find the right object chain */
-                        oflags |= OBJDATA_FLAGS_DRAWN_IN_FRONT;
+                        coflags |= OBJDATA_FLAGS_DRAWN_IN_FRONT;
                     if (Hallucination)
-                        oflags |= OBJDATA_FLAGS_HALLUCINATION;
+                        coflags |= OBJDATA_FLAGS_HALLUCINATION;
                     if (uchain && cotmp == uchain)
-                        oflags |= OBJDATA_FLAGS_UCHAIN;
+                        coflags |= OBJDATA_FLAGS_UCHAIN;
                     if (uball && cotmp == uball)
-                        oflags |= OBJDATA_FLAGS_UBALL;
+                        coflags |= OBJDATA_FLAGS_UBALL;
 
                     set_obj_glyph(cotmp);
 
