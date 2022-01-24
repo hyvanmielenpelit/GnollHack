@@ -8,7 +8,7 @@
 #ifndef DROIDCONF_H
 #define DROIDCONF_H
 
-//#define error debuglog
+#define error debuglog
 
 #define NO_FILE_LINKS /* if no hard links */
 #define LOCKDIR "." /* where to put locks */ 

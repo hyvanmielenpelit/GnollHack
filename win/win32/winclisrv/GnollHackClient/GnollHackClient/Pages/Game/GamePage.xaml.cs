@@ -9381,6 +9381,7 @@ namespace GnollHackClient.Pages.Game
                                 str = putstritem.Text.Substring(pos, putstritem.Text.Length - pos);
                             else
                                 str = "";
+
                             pos += str.Length;
 
                             textPaint.Color = ClientUtils.NHColor2SKColorCore(
@@ -9388,23 +9389,20 @@ namespace GnollHackClient.Pages.Game
                                 TextCanvas.RevertBlackAndWhite);
 
                             string[] split = str.Split(' ');
-                            int split_idx_on_row = -1;
                             int idx = 0;
                             foreach (string split_str in split)
                             {
                                 bool nowrap = false;
                                 if (string.IsNullOrWhiteSpace(split_str))
                                     nowrap = true;
-                                split_idx_on_row++;
                                 string added_split_str = split_str + (idx == split.Length - 1 ? "" : " ");
                                 float printlength = textPaint.MeasureText(added_split_str);
                                 float endposition = x + printlength;
                                 bool pastend = endposition > canvaswidth - rightmenupadding - (float)putstritem.RightPaddingWidth * scale;
-                                if (pastend && split_idx_on_row > 0 && !nowrap)
+                                if (pastend && x > start_x && !nowrap)
                                 {
                                     x = start_x;
                                     y += textPaint.FontSpacing;
-                                    split_idx_on_row = 0;
                                     endposition = x + printlength;
                                 }
 

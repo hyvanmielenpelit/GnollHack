@@ -1342,3 +1342,25 @@ char convert_gnhch(int ch)
 
     return key;
 }
+
+void debuglog(const char* fmt, ...)
+{
+    char buf[256];
+
+    if (fmt != 0)
+    {
+        va_list args;
+        va_start(args, fmt);
+        vsnprintf(buf, sizeof(buf), fmt, args);
+        va_end(args);
+    }
+    else
+    {
+        strcpy(buf, "(null)");
+    }
+
+    if (lib_callbacks.callback_raw_print)
+        lib_raw_print(buf);
+}
+
+

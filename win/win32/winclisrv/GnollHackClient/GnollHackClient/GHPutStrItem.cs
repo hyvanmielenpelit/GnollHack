@@ -23,10 +23,10 @@ namespace GnollHackClient
             set 
             { 
                 _text = value; 
-                if (_instructionList.Count < _text.Length)
-                {
-                    _instructionList.Add(new GHPutStrInstructions(0, (int)nhcolor.CLR_WHITE, _text.Length - _instructionList.Count));
-                }
+                //if (_instructionList.Count < _text.Length)
+                //{
+                //    _instructionList.Add(new GHPutStrInstructions(0, (int)nhcolor.CLR_WHITE, _text.Length - _instructionList.Count));
+                //}
             }
         }
         private List<GHPutStrInstructions> _instructionList;

@@ -465,7 +465,7 @@ init_linux_cons()
 }
 #endif /* __linux__ */
 
-#if !defined(__begui__) && !defined(ANDROID) /* the Be GUI will define its own error proc */
+#if !defined(__begui__) && !defined(ANDROID) && !defined(GNH_ANDROID) /* the Be GUI will define its own error proc */
 /* fatal error */
 /*VARARGS1*/
 void error
@@ -474,9 +474,9 @@ VA_DECL(const char *, s)
     VA_START(s);
     VA_INIT(s, const char *);
     if (settty_needed)
-        settty((char *) 0);
+        settty((char*)0);
     Vprintf(s, VA_ARGS);
-    (void) putchar('\n');
+    (void)putchar('\n');
     VA_END();
     exit(EXIT_FAILURE);
 }

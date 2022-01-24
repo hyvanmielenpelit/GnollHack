@@ -183,6 +183,7 @@ int GnollHackMain(int argc, char** argv)
 	vision_init();
 
 	display_gamewindows();
+	init_print_glyph(INIT_GLYPH_GAME_START);
 
 	if((fd = restore_saved_game()) >= 0)
 	{
@@ -237,7 +238,6 @@ int GnollHackMain(int argc, char** argv)
 		wd_message();
 	}
 
-	init_print_glyph(INIT_GLYPH_GAME_START);
 	moveloop(resuming);
     exit(EXIT_SUCCESS);
 

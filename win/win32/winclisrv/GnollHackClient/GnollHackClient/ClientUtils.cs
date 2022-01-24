@@ -497,8 +497,9 @@ namespace GnollHackClient
                     }
 
                     int spacecnt = 0;
-                    foreach (char ch in psi.Text)
+                    for(int i = 0; i < psi.Text.Length; i++)
                     {
+                        char ch = psi.Text[i];
                         if (ch == ' ')
                             spacecnt++;
                         else
