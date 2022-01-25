@@ -133,7 +133,7 @@ namespace GnollHackClient
             App.InitializeServices();
             App.InitTypefaces(assembly);
             App.InitBitmaps(assembly);
-            App.IsModernAndroid = App.AppCloseService.IsModernAndroid();
+            App.IsModernAndroid = App.PlatformService.IsModernAndroid();
             string verstr = App.GnollHackService.GetVersionString();
             string verid = App.GnollHackService.GetVersionId();
             string path = App.GnollHackService.GetGnollHackPath();
@@ -379,7 +379,7 @@ namespace GnollHackClient
         {
             UpperButtonGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
-            App.AppCloseService.CloseApplication();
+            App.PlatformService.CloseApplication();
             Thread.Sleep(50);
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }

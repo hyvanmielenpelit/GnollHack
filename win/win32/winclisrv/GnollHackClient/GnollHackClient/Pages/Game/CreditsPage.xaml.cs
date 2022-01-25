@@ -151,7 +151,7 @@ namespace GnollHackClient.Pages.Game
 
             try
             {
-                App.AppCloseService.SaveFileToDownloads(data, sourcesf.name);
+                App.PlatformService.SaveFileToDownloads(data, sourcesf.name);
             }
             catch (Exception ex)
             {

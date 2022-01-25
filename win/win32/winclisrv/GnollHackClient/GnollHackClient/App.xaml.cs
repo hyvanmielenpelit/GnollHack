@@ -97,7 +97,7 @@ namespace GnollHackClient
             _mainGnollHackService.LoadLibrary();
             _mainGnollHackService.Test();
             _fmodService = DependencyService.Get<IFmodService>();
-            _appCloseService = DependencyService.Get<IAppCloseService>();
+            _platformService = DependencyService.Get<IPlatformService>();
         }
 
         public static void InitializeServices()
@@ -192,8 +192,8 @@ namespace GnollHackClient
         public static IGnollHackService GnollHackService { get { return _mainGnollHackService; } }
         private static IFmodService _fmodService = null;
         public static IFmodService FmodService { get { return _fmodService; } }
-        private static IAppCloseService _appCloseService = null;
-        public static IAppCloseService AppCloseService { get { return _appCloseService; } }
+        private static IPlatformService _platformService = null;
+        public static IPlatformService PlatformService { get { return _platformService; } }
 
         public static async Task<bool> OnBackButtonPressed()
         {

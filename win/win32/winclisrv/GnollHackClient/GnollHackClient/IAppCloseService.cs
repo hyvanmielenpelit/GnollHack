@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GnollHackClient
 {
-    public interface IAppCloseService
+    public interface IPlatformService
     {
         void CloseApplication();
         bool IsModernAndroid();

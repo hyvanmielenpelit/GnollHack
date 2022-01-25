@@ -14,10 +14,10 @@ using GnollHackClient;
 using Android;
 using Java.IO;
 
-[assembly: Dependency(typeof(GnollHackClient.Droid.AppCloseService))]
+[assembly: Dependency(typeof(GnollHackClient.Droid.PlatformService))]
 namespace GnollHackClient.Droid
 {
-    public class AppCloseService : IAppCloseService
+    public class PlatformService : IPlatformService
     {
         public void CloseApplication()
         {
