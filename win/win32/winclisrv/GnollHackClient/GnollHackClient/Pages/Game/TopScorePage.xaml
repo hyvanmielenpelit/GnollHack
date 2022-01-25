@@ -24,7 +24,7 @@
                     <CollectionView.Header>
                         <StackLayout Orientation="Horizontal" Spacing="0" Padding="0" Margin="0">
                             <Label WidthRequest="35" Text="#" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
-                            <Label WidthRequest="165" Text="Name" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="155" Text="Name" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                             <Label WidthRequest="80" Text="Points" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                             <Label WidthRequest="50" Text="Role" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                             <Label WidthRequest="50" Text="Race" IsVisible="{Binding IsRaceVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
@@ -43,8 +43,8 @@
                             <Grid Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0" >
                                 <StackLayout Orientation="Horizontal" Spacing="0" Padding="0" Margin="0" VerticalOptions="Center" >
                                     <Label WidthRequest="35" Text="{Binding Rank}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono"/>
-                                    <Grid WidthRequest="165" Padding="0" RowSpacing="0" ColumnSpacing="0" Margin="0" VerticalOptions="FillAndExpand">
-                                        <Label WidthRequest="165" Text="{Binding Name}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono"/>
+                                    <Grid WidthRequest="155" Padding="0" RowSpacing="0" ColumnSpacing="0" Margin="0" VerticalOptions="FillAndExpand">
+                                        <Label WidthRequest="155" Text="{Binding Name}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono"/>
                                     </Grid>
                                     <Label WidthRequest="80" Text="{Binding Score}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono"/>
                                     <Label WidthRequest="50" Text="{Binding Role}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono"/>

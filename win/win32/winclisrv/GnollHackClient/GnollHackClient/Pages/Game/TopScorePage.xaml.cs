@@ -131,7 +131,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (AvailableWidth >= 630);
+                bool newvalue = (AvailableWidth >= 620);
                 if (_raceVisible != newvalue)
                 {
                     _raceVisible = newvalue;
@@ -146,7 +146,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (AvailableWidth >= 690);
+                bool newvalue = (AvailableWidth >= 680);
                 if (_genderVisible != newvalue)
                 {
                     _genderVisible = newvalue;
@@ -161,7 +161,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (AvailableWidth >= 740);
+                bool newvalue = (AvailableWidth >= 730);
                 if (_alignmentVisible != newvalue)
                 {
                     _alignmentVisible = newvalue;
@@ -191,7 +191,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (AvailableWidth >= 790);
+                bool newvalue = (AvailableWidth >= 780);
                 if (_hpMaxVisible != newvalue)
                 {
                     _hpMaxVisible = newvalue;
@@ -206,7 +206,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (AvailableWidth >= 915);
+                bool newvalue = (AvailableWidth >= 905);
                 if (_turnsVisible != newvalue)
                 {
                     _turnsVisible = newvalue;
@@ -221,7 +221,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (AvailableWidth >= 1000);
+                bool newvalue = (AvailableWidth >= 990);
                 if (_birthDateVisible != newvalue)
                 {
                     _birthDateVisible = newvalue;
@@ -236,7 +236,7 @@ namespace GnollHackClient.Pages.Game
         {
             get
             {
-                bool newvalue = (AvailableWidth >= 580);
+                bool newvalue = (AvailableWidth >= 570);
                 if (_outcomeVisible != newvalue)
                 {
                     _outcomeVisible = newvalue;
