@@ -1593,7 +1593,8 @@ int spell;
         {
             strcpy(buf2, "");
             strcpy(buf3, "Effect");
-            for(int j = 0; propertynames[j].prop_num; j++)
+            int j;
+            for(j = 0; propertynames[j].prop_num; j++)
             { 
                 if (propertynames[j].prop_num == objects[booktype].oc_dir_subtype)
                 {
@@ -1758,7 +1759,8 @@ int spell;
         txt = buf;
         putstr(datawin, 0, txt);
 
-        for (int j = 0; matlists[objects[booktype].oc_material_components].matcomp[j].objectid[0] > 0; j++)
+        int j;
+        for (j = 0; matlists[objects[booktype].oc_material_components].matcomp[j].objectid[0] > 0; j++)
         {
             Sprintf(buf, " %2d - %s%s", (j + 1), domatcompname(&matlists[objects[booktype].oc_material_components].matcomp[j]),
                 ((matlists[objects[booktype].oc_material_components].matcomp[j].flags & MATCOMP_NOT_SPENT) ? " as a catalyst": ""));
@@ -3534,7 +3536,8 @@ boolean addemptyline;
 
     char spacebuf[BUFSZ] = "";
 
-    for (int i = 0; i < extraspaces; i++)
+    int i;
+    for (i = 0; i < extraspaces; i++)
         Strcat(spacebuf, " ");
 
     if (!iflags.menu_tab_sep)
@@ -3986,8 +3989,8 @@ dospellmanagemenu()
     if (i == '\0')
         return 0;
 
-    int res = 0;
-    for (int j = 0; j < selnum; j++)
+    int res = 0, j;
+    for (j = 0; j < selnum; j++)
     {
         if (available_selection_item[j].charnum == i)
         {
@@ -4042,7 +4045,8 @@ int spell;
             selected_hotkey = answerchar - '0';
 
         /* clear the existing hotkey */
-        for (int n = 0; n < MAXSPELL; n++)
+        int n;
+        for (n = 0; n < MAXSPELL; n++)
         {
             if(spl_book[n].sp_hotkey == selected_hotkey)
             {
@@ -4075,7 +4079,8 @@ int spell;
     if (ynq_ex(ATR_NONE, CLR_MSG_WARNING, (char*)0, qbuf) == 'y')
     {
         struct spell empty_spell = { 0 };
-        for (int n = spell + 1; n <= MAXSPELL; n++)
+        int n;
+        for (n = spell + 1; n <= MAXSPELL; n++)
         {
             if (n == MAXSPELL)
                 spl_book[n - 1] = empty_spell;
@@ -4329,7 +4334,8 @@ int otyp;
     if (objects[otyp].oc_class != SPBOOK_CLASS)
         return FALSE;
 
-    for (int i = 0; i < MAXSPELL; i++)
+    int i;
+    for (i = 0; i < MAXSPELL; i++)
         if (spellid(i) == NO_SPELL)
             break;
         else if (spellid(i) == otyp)
@@ -4428,7 +4434,6 @@ int spell;
     //Start assuming components are ok, unless we find otherwise below
     int result = 1;
 
-
     if (*u.ushops)
         sellobj_state(SELL_DELIBERATE);
 
@@ -4506,7 +4511,8 @@ int spell;
 
         //int quan_mult = mc->amount > 0 ? otmp->quan / mc->amount : 1;
         boolean previous_found = FALSE;
-        for (int k = 0; k < difmatcnt; k++)
+        int k;
+        for (k = 0; k < difmatcnt; k++)
         {
             if (difcomps[k] == selcomps[j])
             {
@@ -4551,7 +4557,8 @@ int spell;
     int selected_multiplier = 1;
     int lowest_multiplier = 999;
     int quan_mult = 0;
-    for (int k = 0; k < difmatcnt; k++)
+    int k;
+    for (k = 0; k < difmatcnt; k++)
     {
         if (difcomps[k] && difcomp_req_amt[k] > 0)
         {
@@ -4636,7 +4643,8 @@ int spell;
             int used_amount = (failure ? 1 : selected_multiplier) * mc->amount;
             if(otmp->quan >= used_amount)
             {
-                for (int i = 0; i < used_amount; i++)
+                int i;
+                for (i = 0; i < used_amount; i++)
                     useup(otmp);
             }
             else
@@ -4719,7 +4727,8 @@ count_matcomp_alternatives(mc)
 struct materialcomponent* mc;
 {
     int cnt = 0;
-    for (int i = 0; i < MAX_MATCOMP_ALTERNATIVES; i++)
+    int i;
+    for (i = 0; i < MAX_MATCOMP_ALTERNATIVES; i++)
     {
         if (mc->objectid[i] == STRANGE_OBJECT)
             break;
@@ -4737,7 +4746,8 @@ is_acceptable_component_object_type(mc, otyp)
 struct materialcomponent *mc;
 int otyp;
 {
-    for (int i = 0; i < MAX_MATCOMP_ALTERNATIVES; i++)
+    int i;
+    for (i = 0; i < MAX_MATCOMP_ALTERNATIVES; i++)
     {
         if (mc->objectid[i] == STRANGE_OBJECT)
             break;
@@ -4754,7 +4764,8 @@ is_acceptable_component_monster_type(mc, mnum)
 struct materialcomponent* mc;
 int mnum;
 {
-    for (int i = 0; i < MAX_MATCOMP_MONSTER_ALTERNATIVES; i++)
+    int i;
+    for (i = 0; i < MAX_MATCOMP_MONSTER_ALTERNATIVES; i++)
     {
         if (mc->monsterid[i] == NOT_APPLICABLE)
             break;
