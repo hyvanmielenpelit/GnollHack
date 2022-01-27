@@ -1003,10 +1003,11 @@ boolean loc_is_you, ispeaceful, ispet, isdetected;
     unsigned long status_bits = 0UL;
 
     /* Status bits*/
-    boolean issteed = (mtmp == u.usteed);
+    //boolean issteed = (mtmp == u.usteed);
 
     status_bits = 0UL;
-    for (int status_mark = STATUS_MARK_PET; status_mark < MAX_STATUS_MARKS; status_mark++)
+    int status_mark;
+    for (status_mark = STATUS_MARK_PET; status_mark < MAX_STATUS_MARKS; status_mark++)
     {
         boolean display_this_status_mark = FALSE;
         switch (status_mark)
@@ -1154,7 +1155,8 @@ boolean loc_is_you;
 
     int ulongidx = 0;
     unsigned long buffbit = 0UL;
-    for (int propidx = 1; propidx <= LAST_PROP; propidx++)
+    int propidx;
+    for (propidx = 1; propidx <= LAST_PROP; propidx++)
     {
         if (!property_definitions[propidx].show_buff)
             continue;
