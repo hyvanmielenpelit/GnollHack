@@ -117,6 +117,7 @@ typedef struct mi {
 #define ATR_INDENT_AT_DASH  0x0800 /* With automatic wrap, indents at the first dash (-) + spaces after it */
 #define ATR_INDENT_AT_COLON 0x1000 /* With automatic wrap, indents at the first colon (:) + spaces after it */
 #define ATR_INDENT_AT_ASTR  0x2000 /* With automatic wrap, indents at the first asterisk (*) + spaces after it */
+#define ATR_ALIGN_CENTER    0x4000
 
 /* nh_poskey() modifier types */
 #define CLICK_1 1

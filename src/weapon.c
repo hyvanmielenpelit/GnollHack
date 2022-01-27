@@ -1959,7 +1959,7 @@ enhance_weapon_skill()
             Sprintf(buf, "Skill slot%s available: %d",
                 plur(u.weapon_slots), u.weapon_slots);
 
-            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf,
+            add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS | ATR_ALIGN_CENTER, buf,
                 MENU_UNSELECTED);
 
             strcpy(buf, "");
