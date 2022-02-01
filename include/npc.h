@@ -43,6 +43,7 @@ struct npc_subtype_definition {
     const char* npc_fixed_name;
     const char* npc_fixed_explanation;
     const char* revival_line;
+    const char* distant_line[3];
     schar min_appearance_depth;
     schar max_appearance_depth;
     int start_money_d, start_money_n, start_money_p;
@@ -96,6 +97,11 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_FLAGS_MAJORITY_NORMAL_HELLO     0x00004000UL
 #define NPC_FLAGS_MALE                      0x00008000UL
 #define NPC_FLAGS_FEMALE                    0x00010000UL
+#define NPC_FLAGS_HAS_DISTANT_SOUND_1       0x00020000UL
+#define NPC_FLAGS_HAS_DISTANT_SOUND_2       0x00040000UL
+#define NPC_FLAGS_HAS_DISTANT_SOUND_3       0x00040000UL
+#define NPC_FLAGS_HAS_STANDARD_DISTANT_SOUNDS       (NPC_FLAGS_HAS_DISTANT_SOUND_1 | NPC_FLAGS_HAS_DISTANT_SOUND_2)
+#define NPC_FLAGS_HAS_ALL_DISTANT_SOUNDS            (NPC_FLAGS_HAS_DISTANT_SOUND_1 | NPC_FLAGS_HAS_DISTANT_SOUND_2 | NPC_FLAGS_HAS_DISTANT_SOUND_3)
 
 
 

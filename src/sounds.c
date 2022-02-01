@@ -686,15 +686,34 @@ dosounds()
                 SFX_LEVEL_SOMEONE_MUMBLING, SFX_LEVEL_DISTANT_CHITCHAT, SFX_LEVEL_FOOTSTEPS_AT_DISTANCE,
             };
             int roll = rn2(3);
-            if (roll == 2 || has_enpc(mtmp))
+            if (!has_enpc(mtmp))
+            {
                 play_sfx_sound(npc_sound[roll]);
+                You_hear1(npc_msg[roll]);
+            }
             else
             {
-                context.global_minimum_volume = 0.15f;
-                play_monster_special_dialogue_line(mtmp, roll == 0 ? NPC_LINE_DISTANT_SOUND_MUMBLING : NPC_LINE_DISTANT_SOUND_CHITCHAT);
-                context.global_minimum_volume = 0.0f;
+                boolean has_distant_sound_1 = (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_HAS_DISTANT_SOUND_1) != 0;
+                boolean has_distant_sound_2 = (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_HAS_DISTANT_SOUND_2) != 0;
+                boolean has_distant_sound_3 = (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_HAS_DISTANT_SOUND_3) != 0;
+                boolean has_this_distant_sound = roll == 2 ? has_distant_sound_3 : roll == 0 ? has_distant_sound_1 : has_distant_sound_2;
+
+                if (!has_this_distant_sound)
+                {
+                    play_sfx_sound(npc_sound[roll]);
+                    You_hear1(npc_msg[roll]);
+                }
+                else
+                {
+                    context.global_minimum_volume = 0.15f;
+                    play_monster_special_dialogue_line(mtmp, roll == 2 ? NPC_LINE_NPC_ROOM_3 : roll == 0 ? NPC_LINE_NPC_ROOM_1 : NPC_LINE_NPC_ROOM_2);
+                    context.global_minimum_volume = 0.0f;
+                    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].distant_line == 0 || npc_subtype_definitions[ENPC(mtmp)->npc_typ].distant_line[roll] == 0)
+                        You_hear1(npc_msg[roll]);
+                    else
+                        You_hear1(npc_subtype_definitions[ENPC(mtmp)->npc_typ].distant_line[roll]);
+                }
             }
-            You_hear1(npc_msg[roll]);
             return;
         }
     }
@@ -7084,28 +7103,53 @@ struct monst* mtmp;
         return 0;
 
     const char* linearray[2] = {
-        "Hear this song:",
+        "Hear this song to Elbereth Gilthoniel:",
         0 };
+
     hermit_talk(mtmp, linearray);
+
+    pline("%s magically summons a large elven harp, and then starts playing.", Monnam(mtmp));
+
+    struct stop_all_info sainfo = { 0 };
+    stop_all_sounds(sainfo);
+
+    struct ghsound_immediate_info immediateinfo = { 0 };
+    immediateinfo.ghsound = GHSOUND_SONG_A_ELBERETH_GILTHONIEL;
+    immediateinfo.volume = 1.0f;
+    immediateinfo.dialogue_mid = mtmp->m_id;
+    immediateinfo.sound_type = IMMEDIATE_SOUND_DIALOGUE;
+    immediateinfo.play_group = SOUND_PLAY_GROUP_LONG;
+
+    play_immediate_ghsound(immediateinfo);
 
     winid datawin = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_PAGER_KEEP_LINE_BREAKS, NO_GLYPH, zerocreatewindowinfo);
 
-    putstr(datawin, 0, "O Elbereth Starkindler.");
-    putstr(datawin, 0, "white-glittering, slanting down sparkling like a jewel.");
-    putstr(datawin, 0, "the glory of the starry host!");
-    putstr(datawin, 0, "Having gazed far away");
-    putstr(datawin, 0, "from the tree-woven lands of Middle-earth,");
-    putstr(datawin, 0, "Everwhite, I will sing,");
-    putstr(datawin, 0, "on this side of the Sea, here on this side of the Ocean!");
+    putstr(datawin, 0, "A Elbereth Gilthoniel");
+    putstr(datawin, 0, "silivren penna miriel");
+    putstr(datawin, 0, "o menel aglar elenath");
+    putstr(datawin, 0, "Gilthoniel, A Elbereth");
     putstr(datawin, 0, "");
-    putstr(datawin, 0, "O Elbereth Starkindler.");
-    putstr(datawin, 0, "from heaven gazing afar,");
-    putstr(datawin, 0, "to thee I cry now beneath the shadow of death!");
-    putstr(datawin, 0, "O look towards me, Everwhite!");
+    putstr(datawin, 0, "A Elbereth Gilthoniel");
+    putstr(datawin, 0, "We still remember we who dwell");
+    putstr(datawin, 0, "In this far land beneath the trees");
+    putstr(datawin, 0, "The starlight on the Western Seas");
+    putstr(datawin, 0, "");
+    putstr(datawin, 0, "A Elbereth Gilthoniel");
+    putstr(datawin, 0, "o menel palan-diriel");
+    putstr(datawin, 0, "le nallon si di'n guruthos!");
+    putstr(datawin, 0, "A tiro nin, Fanuilos!");
+    putstr(datawin, 0, "");
+    putstr(datawin, 0, "A Elbereth Gilthoniel");
+    putstr(datawin, 0, "We still remember we who dwell");
+    putstr(datawin, 0, "In this far land beneath the trees");
+    putstr(datawin, 0, "The starlight on the Western Seas");
 
     display_nhwindow(datawin, TRUE);
     destroy_nhwindow(datawin);
     putmsghistory("[Song to Elbereth Gilthoniel]", FALSE);
+
+    stop_all_sounds(sainfo);
+    update_game_music();
 
     int distance = mtmp->m_lev * 3;
     struct monst* mtmp2;

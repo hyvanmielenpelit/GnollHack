@@ -1492,6 +1492,8 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Throne Room/By Thine Imperious Order Sire", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Throne Room/Curse Upon Thee", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Throne Room/Thank You for Your Contribution", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Music/Elven Bard/A Elbereth Gilthoniel", 1.0f },
 };
 
 
