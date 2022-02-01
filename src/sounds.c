@@ -7146,7 +7146,7 @@ struct monst* mtmp;
 
     display_nhwindow(datawin, TRUE);
     destroy_nhwindow(datawin);
-    putmsghistory("[Song to Elbereth Gilthoniel]", FALSE);
+    putmsghistory("[A Elbereth Gilthoniel]", FALSE);
 
     stop_all_sounds(sainfo);
     update_game_music();
