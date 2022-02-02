@@ -9742,7 +9742,7 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[1, 0] = new GHCommandButtonItem("Reveal", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'f'));
             _moreBtnMatrix[2, 0] = new GHCommandButtonItem("Genesis", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Meta((int)'m'));
             _moreBtnMatrix[3, 0] = new GHCommandButtonItem("Levelport", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'v'));
-            _moreBtnMatrix[4, 0] = new GHCommandButtonItem("Identify", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'i'));
+            _moreBtnMatrix[4, 0] = new GHCommandButtonItem("Identify", "GnollHackClient.Assets.UI.identify.png", GHUtils.Ctrl((int)'i'));
             _moreBtnMatrix[5, 0] = new GHCommandButtonItem("Teleport", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'t'));
 
             _moreBtnMatrix[0, 1] = new GHCommandButtonItem("Go Down", "GnollHackClient.Assets.UI.stairs-down.png", (int)'>');
@@ -9794,11 +9794,11 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[4, 7] = new GHCommandButtonItem("Pick Up", "GnollHackClient.Assets.UI.pickup.png", (int)',');
             _moreBtnMatrix[5, 7] = new GHCommandButtonItem("Look Here", "GnollHackClient.Assets.UI.lookhere.png", (int)':');
 
-            _moreBtnMatrix[0, 8] = new GHCommandButtonItem("What Is", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'/');
-            _moreBtnMatrix[1, 8] = new GHCommandButtonItem("Look Far", "GnollHackClient.Assets.Icons.missing_icon.png", (int)';');
-            _moreBtnMatrix[2, 8] = new GHCommandButtonItem("Travel", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'_');
-            _moreBtnMatrix[3, 8] = new GHCommandButtonItem("Extended", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'#');
-            _moreBtnMatrix[4, 8] = new GHCommandButtonItem("Help", "GnollHackClient.Assets.Icons.missing_icon.png", (int)'?'); // "Menu", "GnollHackClient.Assets.Icons.missing_icon.png", -4);
+            _moreBtnMatrix[0, 8] = new GHCommandButtonItem("What Is", "GnollHackClient.Assets.UI.whatis.png", (int)'/');
+            _moreBtnMatrix[1, 8] = new GHCommandButtonItem("Look Far", "GnollHackClient.Assets.UI.lookfar.png", (int)';');
+            _moreBtnMatrix[2, 8] = new GHCommandButtonItem("Travel", "GnollHackClient.Assets.UI.travel.png", (int)'_');
+            _moreBtnMatrix[3, 8] = new GHCommandButtonItem("Extended", "GnollHackClient.Assets.UI.extended.png", (int)'#');
+            _moreBtnMatrix[4, 8] = new GHCommandButtonItem("Help", "GnollHackClient.Assets.UI.help.png", (int)'?'); // "Menu", "GnollHackClient.Assets.Icons.missing_icon.png", -4);
             _moreBtnMatrix[5, 8] = new GHCommandButtonItem("Back to Game", "GnollHackClient.Assets.UI.more.png", -1);
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
