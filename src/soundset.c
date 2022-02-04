@@ -1494,6 +1494,14 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Throne Room/Thank You for Your Contribution", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Music/Elven Bard/A Elbereth Gilthoniel", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Hermits/Hermit1/Dungeons", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Hermits/Hermit1/Quests", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Hermits/Hermit1/Gnomish Mines", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Hermits/Hermit1/Castle", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Hermits/Hermit1/Gehennom", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Hermits/Hermit1/Wizard of Yendor", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Hermits/Hermit1/Further Advice", 1.0f },
 };
 
 
@@ -15296,6 +15304,7 @@ double minimum_volume;
     play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, "MsgIndex");
 }
 
+
 void
 play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, index_name)
 struct monst* mtmp;
@@ -15465,6 +15474,38 @@ struct monst* mtmp;
         return isfemale ? mtmp->data->female_soundset : mtmp->data->soundset;
 }
 
+void
+play_hermit_dialogue_line(mtmp, soundid, lineid)
+struct monst* mtmp;
+enum ghsound_types soundid;
+int lineid;
+{
+    if (!mtmp || Deaf)
+        return;
+
+    struct ghsound_immediate_info info = { 0 };
+    float volume = 1.0f;
+    info.ghsound = soundid;
+    info.parameter_names[0] = "LineIndex";
+    info.parameter_values[0] = (float)lineid;
+    info.parameter_names[1] = (char*)0;
+
+    if (isok(mtmp->mx, mtmp->my))
+    {
+        float hearing = hearing_array[mtmp->mx][mtmp->my];
+        volume = max(0.30f, max((float)context.global_minimum_volume, volume * hearing));
+    }
+    else
+        return;
+
+    info.volume = min(1.0f, volume);
+    info.play_group = SOUND_PLAY_GROUP_LONG;
+    info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
+    info.dialogue_mid = mtmp->m_id;
+
+    if (info.ghsound > GHSOUND_NONE)
+        play_immediate_ghsound(info);
+}
 
 void
 play_voice_god_simple_line_at(x, y, line_id)

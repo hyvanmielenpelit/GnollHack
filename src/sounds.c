@@ -17,7 +17,7 @@ STATIC_DCL int NDECL(dochat);
 STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
 
-STATIC_DCL void FDECL(hermit_talk, (struct monst*, const char**));
+STATIC_DCL void FDECL(hermit_talk, (struct monst*, const char**, enum ghsound_types));
 
 STATIC_DCL int FDECL(do_chat_hermit_dungeons, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_quests, (struct monst*));
@@ -7106,7 +7106,7 @@ struct monst* mtmp;
         "Hear this song to Elbereth Gilthoniel:",
         0 };
 
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     pline("%s magically summons a large elven harp, and then starts playing.", Monnam(mtmp));
 
@@ -7199,7 +7199,7 @@ struct monst* mtmp;
             "You cannot level teleport while carrying the Amulet of Yendor.",
             0 };
 
-        hermit_talk(mtmp, linearray);
+        hermit_talk(mtmp, linearray, GHSOUND_NONE);
         break;
     }
     case NPC_ELVEN_BARD:
@@ -7212,7 +7212,7 @@ struct monst* mtmp;
             "However, she cannot assist you in the Under World and will not do so against humans or elves.",
             0 };
         
-        hermit_talk(mtmp, linearray);
+        hermit_talk(mtmp, linearray, GHSOUND_NONE);
         break;
     }
     }
@@ -8024,7 +8024,7 @@ popup_talk_lines(mtmp, linearray)
 struct monst* mtmp;
 const char** linearray;
 {
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 }
 
 void
@@ -8034,7 +8034,7 @@ const char* line;
 {
     const char* linearray[2] = { 0, 0 };
     linearray[0] = line;
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 }
 
 void
@@ -8050,9 +8050,10 @@ boolean know_mname;
 }
 
 STATIC_OVL void
-hermit_talk(mtmp, linearray)
+hermit_talk(mtmp, linearray, soundid)
 struct monst* mtmp;
 const char** linearray;
+enum ghsound_types soundid;
 {
     if (!mtmp || !linearray)
         return;
@@ -8068,6 +8069,8 @@ const char** linearray;
         if (linearray[idx])
         {
             hermit_txt = linearray[idx];
+            if (soundid != GHSOUND_NONE)
+                play_hermit_dialogue_line(mtmp, soundid, idx);
             verbalize1(hermit_txt);
             display_popup_text(hermit_txt, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, POPUP_FLAGS_ADD_QUOTES);
         }
@@ -8090,7 +8093,7 @@ struct monst* mtmp;
         "The Dungeons also feature Sokoban, a maze-like underground tower erected by one of the local mad wizards.",
         0 };
 
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_HERMIT1_DUNGEONS);
     mtmp->hermit_told_dungeon = 1;
     return 1;
 }
@@ -8107,7 +8110,7 @@ struct monst* mtmp;
         "To get there, you will need to descend to the bottom of this dungeon and find an underground castle there.",
         "From there, you can access the Under World, just as the Wizard of Yendor himself once did.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_HERMIT1_QUESTS);
 
     mtmp->hermit_told_quests = 1;
     return 1;
@@ -8125,7 +8128,7 @@ struct monst* mtmp;
         "There is also a trading outpost, called Mine Town, which is located somewhere in the middle of the complex.",
         "Seek out Herbert Reed there. He knows more about the gnomes and their mysterious artifact.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_HERMIT1_GNOMISH_MINES);
 
     mtmp->hermit_told_gnomish_mines = 1;
     return 1;
@@ -8143,7 +8146,7 @@ struct monst* mtmp;
         "These mines have been inhabited by the Gnomes of Yendor as long as I can remember.",
         "Their most precious treasures, including the famed Gladstone, are located on the bottom level of the complex, a few levels down from here.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     mtmp->hermit3_told_gnomish_mines = 1;
     return 1;
@@ -8162,7 +8165,7 @@ struct monst* mtmp;
         "It has been worshipped by the gnomes as long as anyone can remember, and they will jealously guard it from anyone attempting to take it from them.",
         "However, such a powerful artifact can greatly help you in your quest for the Amulet of Yendor.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     return 1;
 }
@@ -8179,7 +8182,7 @@ struct monst* mtmp;
         "So far we have just been able to overrun this town; the human guards were but mere weaklings and faltered to our horde with little resistance.",
         "However, the gnomes are putting up a fierce fight on the bottom level of the complex, and we have been unable to take the Gladstone from them.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     mtmp->hermit3_told_gnomish_mines = 1;
     return 1;
@@ -8197,7 +8200,7 @@ struct monst* mtmp;
         "They also say that it can may grant protection from poison and heal the bearer upon invocation.",
         "It still angers me that our warriors have failed to bring such a great artifact to me for closer examination.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     return 1;
 }
@@ -8215,7 +8218,7 @@ struct monst* mtmp;
         "Great treasures have been promised to the one who can solve the wizard's puzzles.",
         "They say that the wizard will gift either an amulet of reflection or a bag of holding to whomever passes the tests.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_HERMIT1_SOKOBAN);
 
     mtmp->hermit_told_sokoban = 1;
     return 1;
@@ -8251,7 +8254,7 @@ struct monst* mtmp;
     "However, it has been overrun by monstrous forces loyal to the Wizard of Yendor.",
     "Only from there, and with the right tune they say, you can track down the Wizard and the Amulet you seek.",
     0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_HERMIT1_CASTLE);
 
     return 1;
 }
@@ -8266,7 +8269,7 @@ struct monst* mtmp;
     "Gehennom, the Under World, can be accessed through the castle at the bottom of the dungeon.",
     "Seek out a hermit, Eduard, at the castle. He knows more about the Under World and what you must do.",
     0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_HERMIT1_GEHENNOM);
 
     return 1;
 }
@@ -8281,7 +8284,7 @@ struct monst* mtmp;
         "The Wizard of Yendor is a great magician who stepped into the Under World to study the secrets of life and death.",
         "He is said to possess vast arcane powers and be almost immortal.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_HERMIT1_WIZARD_OF_YENDOR);
 
     mtmp->hermit_told_wizard_of_yendor = 1;
     return 1;
@@ -8298,7 +8301,7 @@ struct monst* mtmp;
         "This castle was built to honor the dead kings of Yendor.",
         "Their remains are held in the Tomb of the Kings, just behind this castle.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     mtmp->hermit2_told_castle = 1;
     return 1;
@@ -8316,7 +8319,7 @@ struct monst* mtmp;
     "Trap doors in the castle will lead you straight there, as does the blocked entrance at the Tomb of the Kings.",
     "There, you must track down the Wizard of Yendor and find the Vlad the Impaler, the Lord of the Vampires.",
     0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     mtmp->hermit2_told_gehennom = 1;
     return 1;
@@ -8334,7 +8337,7 @@ struct monst* mtmp;
     "You must defeat him and take the Candelabrum of Invocation from him.",
     "The Candelabrum will light your way to Moloch's Sanctum, where the Amulet is hidden.",
     0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     mtmp->hermit2_told_vampire_lord = 1;
     return 1;
@@ -8351,7 +8354,7 @@ struct monst* mtmp;
         "You must defeat him and obtain his grimoire.",
         "Only its tenebrous words are powerful enough to crack open the hidden passage to the sanctum where Moloch's minions guard the Amulet.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     mtmp->hermit2_told_wizard_of_yendor = 1;
     return 1;
@@ -8374,7 +8377,7 @@ struct monst* mtmp;
         linearray[1] = 0;
     }
 
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     mtmp->hermit2_told_silver_bell = 1;
     return 1;
@@ -8390,7 +8393,7 @@ struct monst* mtmp;
     "The Candelabrum of Invocation is a powerful artifact that can light your way to Moloch's Sanctum.",
     "It is held by Vlad the Impaler, the Lord of the Vampires, at his tower in Gehennom.",
     0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     mtmp->hermit2_told_candelabrum = 1;
     return 1;
@@ -8406,7 +8409,7 @@ struct monst* mtmp;
         "The Book of the Dead is a terrible tome of great power that can even raise the dead.",
         "The Wizard of Yendor has been studying it to learn the secrets of life and death in his quest for immortality.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     mtmp->hermit2_told_book_of_the_dead = 1;
     return 1;
@@ -8423,7 +8426,7 @@ struct monst* mtmp;
         "These are the Candelabrum of Invocation, the Silver Bell, and the Book of the Dead.",
         "How and where these must be used, you must find out. Perhaps the Oracle of Delphi can see what must be done.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
 
     mtmp->hermit2_told_ritual = 1;
     return 1;
@@ -8440,7 +8443,7 @@ struct monst* mtmp;
         "Also, Izchak and Herbert at the Mine Town may be able to help you.",
         "Finally, if you reach the bottom of this dungeon, speak with Eduard, who is confined at the castle there.",
         0 };
-    hermit_talk(mtmp, linearray);
+    hermit_talk(mtmp, linearray, GHSOUND_HERMIT1_FURTHER_ADVICE);
 
     mtmp->hermit_told_further_advice = 1;
     return 1;

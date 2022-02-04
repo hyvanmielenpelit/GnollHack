@@ -142,7 +142,8 @@ schar
 min_npc_appearance_depth()
 {
     schar minlvl = -1;
-    for (int i = 0; i < MAX_NPC_SUBTYPES; i++)
+    int i;
+    for (i = 0; i < MAX_NPC_SUBTYPES; i++)
     {
         if (!(npc_subtype_definitions[i].general_flags & NPC_FLAGS_NO_GENERATION) && (minlvl < 0 || npc_subtype_definitions[i].min_appearance_depth < minlvl))
             minlvl = npc_subtype_definitions[i].min_appearance_depth;

@@ -3152,6 +3152,8 @@ E void FDECL(play_voice_quest_leader_whoareyou, (struct monst*));
 E void FDECL(play_voice_god_simple_line_at, (XCHAR_P, XCHAR_P, enum god_simple_lines));
 E void FDECL(play_voice_god_simple_line_by_align, (ALIGNTYP_P, enum god_simple_lines));
 E void FDECL(play_voice_oracle_major_consultation, (struct monst*, int));
+E void FDECL(play_hermit_dialogue_line, (struct monst*, enum ghsound_types, int));
+
 
 /* ### sys.c ### */
 
