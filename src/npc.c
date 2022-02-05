@@ -127,7 +127,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         NPC_GEHENNOM_UNDEAD_SPELLCASTER,
         "elven bard",
         "practice hall",
-        "Nimrodiel",
+        "Lindisse",
         "I sing elven songs to aid adventurers in these dark times.",
         (char*)0,
         {"somebody singing.", "somebody praising elven gods.", "somebody playing a musical instrument."},
