@@ -7208,7 +7208,7 @@ struct monst* mtmp;
             "Brave adventurer, I seek to convey to you a great word of protection.",
             "If you engrave the name of the great elven goddess Elbereth, the Starkindler, on the ground, you shall be under her protection.",
             "It takes but a mere round to engrave her name with a finger, athame, or wand.",
-            "But be warned: Her name will vanish should you disrespect it by attacking others.",
+            "But be warned: The protection provided by her name will vanish should you attack others.",
             "Also, so great is the power of Moloch in the Under World that she cannot assist you during your journeys there, nor is she willing to grant her protection against elves or humans.",
             0 };
         
