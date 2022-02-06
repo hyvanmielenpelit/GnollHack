@@ -13611,7 +13611,7 @@ int dnum;
     else if (dnum == bovine_dnum)
         res = GHSOUND_BOVINE_MUSIC_NORMAL;
     else if (dnum == large_circular_dgn_dnum)
-        res = GHSOUND_GNOMISH_MINES_MUSIC_NORMAL;
+        res = GHSOUND_LARGE_CIRCULAR_DUNGEON_MUSIC_NORMAL;
     else if (Inhell)
         res = GHSOUND_GEHENNOM_MUSIC_NORMAL;
     else if (In_endgame(&u.uz))
