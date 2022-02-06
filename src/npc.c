@@ -123,12 +123,12 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         NPC_FLAGS_NO_GENERATION | NPC_FLAGS_MALE | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_TITLE_ARTICLE | NPC_FLAGS_MAJORITY_NORMAL_HELLO | NPC_FLAGS_HAS_STANDARD_DISTANT_SOUNDS
     },
     {
-        PM_ELF_LORD,
+        PM_ELVEN_BARD,
         NPC_GEHENNOM_UNDEAD_SPELLCASTER,
         "elven bard",
         "practice hall",
         "Lindisse",
-        "I sing elven songs to aid adventurers in these dark times.",
+        "I sing old elven songs to aid adventurers in these dark times.",
         (char*)0,
         {"somebody singing.", "somebody praising elven gods.", "somebody playing a musical instrument."},
         0, 0,
@@ -518,6 +518,12 @@ int mtype;
                 mongets(npc, WAN_TELEPORTATION);
             }
             mongets(npc, CUBIC_GATE);
+            mongets(npc, SPE_TELEPORT_MONSTER);
+            mongets(npc, SPE_TELEPORT_SELF);
+            if(!rn2(2))
+                mongets(npc, SPE_SPHERE_OF_ANNIHILATION);
+            if (!rn2(2))
+                mongets(npc, SPE_BLACK_BLADE_OF_DISASTER);
             break;
         }
         case NPC_ELVEN_BARD:

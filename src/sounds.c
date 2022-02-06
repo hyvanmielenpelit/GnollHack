@@ -7205,14 +7205,14 @@ struct monst* mtmp;
     case NPC_ELVEN_BARD:
     {
         const char* linearray[6] = {
-            "Good adventurer, I bring you the protection of the great elven god Elbereth Gilthoniel.",
-            "Engrave \"Elbereth\" on the ground and she will protect you.",
-            "To do so takes but a mere round with finger, athame, or a wand.",
-            "Yet, such is her name that the engraving will disappear if you attack while standing on it.",
-            "However, she cannot assist you in the Under World and will not do so against humans or elves.",
+            "Brave adventurer, I seek to convey to you a great word of protection.",
+            "If you engrave the name of the great elven goddess Elbereth, the Starkindler, on the ground, you shall be under her protection.",
+            "It takes but a mere round to engrave her name with a finger, athame, or wand.",
+            "But be warned: Her name will vanish should you disrespect it by attacking others.",
+            "Also, so great is the power of Moloch in the Under World that she cannot assist you during your journeys there, nor is she willing to grant her protection against elves or humans.",
             0 };
         
-        hermit_talk(mtmp, linearray, GHSOUND_NONE);
+        hermit_talk(mtmp, linearray, GHSOUND_ELVEN_BARD_ELBERETH);
         break;
     }
     }
