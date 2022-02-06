@@ -1112,6 +1112,7 @@ dlb_yup : dlb
 	-$(RM) $(GAMEDIR)\baalz.lev
 	-$(RM) $(GAMEDIR)\bigrm-?.lev
 	-$(RM) $(GAMEDIR)\bovine?.lev
+	-$(RM) $(GAMEDIR)\quantum?.lev
 	-$(RM) $(GAMEDIR)\castle.lev
 	-$(RM) $(GAMEDIR)\fakewiz?.lev
 	-$(RM) $(GAMEDIR)\jubilex.lev

@@ -1318,6 +1318,7 @@ spotless: clean
 	if exist $(DAT)\baalz.lev	 del $(DAT)\baalz.lev
 	if exist $(DAT)\bigrm-*.lev	 del $(DAT)\bigrm-*.lev
 	if exist $(DAT)\bovine?.lev	 del $(DAT)\bovine?.lev
+	if exist $(DAT)\quantum?.lev	 del $(DAT)\quantum?.lev
 	if exist $(DAT)\castle.lev	 del $(DAT)\castle.lev
 	if exist $(DAT)\data		 del $(DAT)\data
 	if exist $(DAT)\dungeon		 del $(DAT)\dungeon

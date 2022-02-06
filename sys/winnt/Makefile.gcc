@@ -1271,6 +1271,7 @@ ifneq "$(W_DAT)" ""
 	if exist $(W_DAT)\baalz.lev	   del $(W_DAT)\baalz.lev
 	if exist $(W_DAT)\bigrm-*.lev	   del $(W_DAT)\bigrm-*.lev
 	if exist $(W_DAT)\bovine?.lev	   del $(W_DAT)\bovine?.lev
+	if exist $(W_DAT)\quantum?.lev	   del $(W_DAT)\quantum?.lev
 	if exist $(W_DAT)\castle.lev	   del $(W_DAT)\castle.lev
 	if exist $(W_DAT)\data		   del $(W_DAT)\data
 	if exist $(W_DAT)\dungeon          del $(W_DAT)\dungeon
