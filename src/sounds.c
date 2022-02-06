@@ -63,6 +63,11 @@ STATIC_DCL int FDECL(do_chat_orc_hermit3_luckstone, (struct monst*));
 
 #define hermit3_told_gnomish_mines special_talk_flag1
 
+STATIC_DCL int FDECL(do_chat_quantum_experiments, (struct monst*));
+STATIC_DCL int FDECL(do_chat_quantum_large_circular_dungeon, (struct monst*));
+
+#define quantum_told_experiments special_talk_flag1
+
 STATIC_DCL int FDECL(do_chat_pet_sit, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_givepaw, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_pet, (struct monst*));
@@ -2282,6 +2287,42 @@ dochat()
                 strcpy(available_chat_list[chatnum].name, mtmp->told_rumor ? "Ask for further adventuring advice" : "Ask for adventuring advice");
 
             available_chat_list[chatnum].function_ptr = &do_chat_rumors;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+    }
+
+    if (is_speaking_monster(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_QUANTUM_QUESTS) != 0)
+    {
+        /* Endicott - Quantum Quests */
+        if (mtmp->u_know_mname)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about experiments");
+            available_chat_list[chatnum].function_ptr = &do_chat_quantum_experiments;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
+        if (mtmp->quantum_told_experiments)
+        {
+            strcpy(available_chat_list[chatnum].name, "Ask about the Large Circular Dungeon");
+            available_chat_list[chatnum].function_ptr = &do_chat_quantum_large_circular_dungeon;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
             any = zeroany;
@@ -8077,6 +8118,40 @@ enum ghsound_types soundid;
         idx++;
     }
 
+}
+
+STATIC_OVL int
+do_chat_quantum_experiments(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !m_speak_check(mtmp))
+        return 0;
+
+    const char* linearray[4] = {
+        "Deep underneath this town, my colleagues are conducting delicate quantum experiments in the Large Circular Dungeon.",
+        "But beware, it takes but a minuscule disturbance to ruin their carefully constructed entanglements.",
+        0 };
+
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
+    mtmp->quantum_told_experiments = 1;
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_quantum_large_circular_dungeon(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !m_speak_check(mtmp))
+        return 0;
+
+    const char* linearray[4] = {
+        "The Large Circular Dungeon is massive circular hallway constructed to conduct our most demanding experiments.",
+        "It was built several years ago using special tunneling techniques involving the use of violet funguses to summon purple worms.",
+        "Since its completion, it has provided us with invaluable insights into teleportation and formation of planar rifts, among other discoveries.",
+        0 };
+
+    hermit_talk(mtmp, linearray, GHSOUND_NONE);
+    return 1;
 }
 
 

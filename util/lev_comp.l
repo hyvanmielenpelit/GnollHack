@@ -343,6 +343,7 @@ m_object	{ savetoken(yytext); yylval.i= M_AP_OBJECT;    return MON_APPEARANCE; }
 sanctum		{ savetoken(yytext); yylval.i=2; return ALTAR_TYPE; }
 shrine		{ savetoken(yytext); yylval.i=1; return ALTAR_TYPE; }
 altar		{ savetoken(yytext); yylval.i=0; return ALTAR_TYPE; }
+notele		{ savetoken(yytext); yylval.i=2; return UP_OR_DOWN; }
 up		    { savetoken(yytext); yylval.i=1; return UP_OR_DOWN; }
 down		{ savetoken(yytext); yylval.i=0; return UP_OR_DOWN; }
 active		{ savetoken(yytext); yylval.i=1; return ACTIVE_OR_INACTIVE; }

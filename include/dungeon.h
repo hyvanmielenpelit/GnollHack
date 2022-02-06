@@ -50,7 +50,8 @@ enum level_region_types {
     LR_UPTELE,
     LR_DOWNTELE,
     LR_SPECIAL_MAP_SEEN,
-    LR_SPECIAL_MAP_NAME_REVEALED
+    LR_SPECIAL_MAP_NAME_REVEALED,
+    LR_NOTELE,
 };
 
 typedef struct dest_area { /* non-stairway level change identifier */
@@ -144,6 +145,7 @@ typedef struct branch {
 #define Is_secundus_modron_level(x) (on_level(x, &secundus_modron_level))
 #define Is_primus_modron_level(x) (on_level(x, &primus_modron_level))
 #define Is_bovine_level(x) (on_level(x, &bovine_level))
+#define Is_quantum_level(x) (on_level(x, &quantum_level))
 #define Is_minetown_level(x) (on_level(x, &minetown_level))
 #define Is_mineend_level(x) (on_level(x, &mineend_level))
 #define Is_sokoend_level(x) (on_level(x, &sokoend_level))
@@ -275,6 +277,7 @@ typedef struct mapseen {
         Bitfield(quest_summons, 1); /* heard summons from leader */
         Bitfield(modron_hint_shown, 1); /* received hint for the modron level */
         Bitfield(yacc_hint_shown, 1); /* received hint for the Hellish Pastures level */
+        Bitfield(quantum_hint_shown, 1); /* received hint for the Large Circular Dungeon level */
         Bitfield(questing, 1); /* quest leader has unlocked quest stairs */
     } flags;
     /* custom naming */

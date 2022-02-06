@@ -5873,6 +5873,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     /* the special level code may override these */
     (void) memset((genericptr_t) &updest, 0, sizeof updest);
     (void) memset((genericptr_t) &dndest, 0, sizeof dndest);
+    (void) memset((genericptr_t) &noteledest, 0, sizeof noteledest);
 
     if (!(level_info[new_ledger].flags & LFILE_EXISTS)) 
     {
@@ -6166,6 +6167,9 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     if (In_bovine_level(&u.uz))
         u.uevent.hellish_pastures_entered = 1;
 
+    if (In_large_circular_dgn_level(&u.uz))
+        u.uevent.large_circular_dgn_entered = 1;
+
     if (familiar) 
     {
         static const char *const fam_msgs[4] = {
@@ -6261,6 +6265,12 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         {
             u.uevent.bovine_portal_hint = 1;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you think you hear distant grunting and bellowing, but then the noises are gone.");
+        }
+
+        if (!Is_quantum_level(&u.uz0) && !u.uevent.quantum_portal_hint && at_dgn_entrance("Large Circular Dungeon"))
+        {
+            u.uevent.quantum_portal_hint = 1;
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you feel as if the fabric of reality stretches back and forth a bit, but then the sensation passes.");
         }
     }
 

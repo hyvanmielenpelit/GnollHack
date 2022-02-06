@@ -237,7 +237,7 @@ all :	$(INCL)\date.h	$(INCL)\onames.h $(INCL)\pm.h $(INCL)\animoff.h $(INCL)\ani
 	$(SWINCE)\keypad.bmp $(SWINCE)\menubar.bmp
 	@echo Done!
 
-$(O)sp_lev.tag:  $(DAT)\bigroom.des  $(DAT)\bovine.des  $(DAT)\castle.des \
+$(O)sp_lev.tag:  $(DAT)\bigroom.des  $(DAT)\bovine.des  $(DAT)\quantum.des  $(DAT)\castle.des \
 	$(DAT)\endgame.des $(DAT)\gehennom.des $(DAT)\knox.des  $(DAT)\main.des \
 	$(DAT)\medusa.des  $(DAT)\modron.des  $(DAT)\oracle.des   $(DAT)\tower.des  \
 	$(DAT)\yendor.des  $(DAT)\arch.des     $(DAT)\barb.des   \
@@ -248,6 +248,7 @@ $(O)sp_lev.tag:  $(DAT)\bigroom.des  $(DAT)\bovine.des  $(DAT)\castle.des \
 	cd $(DAT)
 	$(U)lev_comp bigroom.des
 	$(U)lev_comp bovine.des
+	$(U)lev_comp quantum.des
 	$(U)lev_comp castle.des
 	$(U)lev_comp endgame.des
 	$(U)lev_comp gehennom.des

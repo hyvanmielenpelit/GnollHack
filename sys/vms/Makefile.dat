@@ -34,7 +34,7 @@ X11TILES= x11tiles.;
 QUESTLEVS = Arch.des Barb.des Caveman.des Healer.des Knight.des \
 	Monk.des Priest.des Ranger.des Rogue.des Samurai.des Tourist.des \
 	Valkyrie.des Wizard.des
-SPECLEVS  = bigroom.des bovine.des castle.des endgame.des gehennom.des knox.des \
+SPECLEVS  = bigroom.des bovine.des quantum.des castle.des endgame.des gehennom.des knox.des \
 	main.des medusa.des mines.des modron.des oracle.des sokoban.des tower.des yendor.des
 
 all :	$(VARDAT) $(DUNGEON) $(MARKERS) $(DLB)

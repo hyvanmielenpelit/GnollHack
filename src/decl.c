@@ -128,6 +128,7 @@ NEARDATA stairway upladder = { 0, 0, { 0, 0 }, 0 },
 NEARDATA stairway sstairs = { 0, 0, { 0, 0 }, 0 };
 NEARDATA dest_area updest = { 0, 0, 0, 0, 0, 0, 0, 0 };
 NEARDATA dest_area dndest = { 0, 0, 0, 0, 0, 0, 0, 0 };
+NEARDATA dest_area noteledest = { 0, 0, 0, 0, 0, 0, 0, 0 };
 NEARDATA coord inv_pos = { 0, 0 };
 
 NEARDATA boolean defer_see_monsters = FALSE;

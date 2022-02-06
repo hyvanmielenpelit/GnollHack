@@ -104,6 +104,8 @@ struct u_event {
     Bitfield(modron_plane_entered, 1); /* entered the modron plane */
     Bitfield(bovine_portal_hint, 1); /* bovine portal hint given */
     Bitfield(hellish_pastures_entered, 1); /* entered the Hellish Pastures */
+    Bitfield(quantum_portal_hint, 1); /* quantum portal hint given */
+    Bitfield(large_circular_dgn_entered, 1); /* entered the Large Circular Dungeon */
     Bitfield(uhand_of_elbereth, 2); /* became Hand of Elbereth */
     Bitfield(udemigod, 1);          /* killed the wiz */
     Bitfield(uvibrated, 1);         /* stepped on "vibrating square" */

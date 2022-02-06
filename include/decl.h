@@ -88,6 +88,8 @@ E struct dgn_topology { /* special dungeon levels for speed */
     xchar d_modron_dnum;
     d_level d_bovine_level;
     xchar d_bovine_dnum;
+    d_level d_quantum_level;
+    xchar d_large_circular_dgn_dnum;
     d_level d_minetown_level;
     d_level d_mineend_level;
     d_level d_sokoend_level;
@@ -137,6 +139,8 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define modron_dnum             (dungeon_topology.d_modron_dnum)
 #define bovine_level            (dungeon_topology.d_bovine_level)
 #define bovine_dnum             (dungeon_topology.d_bovine_dnum)
+#define quantum_level           (dungeon_topology.d_quantum_level)
+#define large_circular_dgn_dnum (dungeon_topology.d_large_circular_dgn_dnum)
 #define minetown_level          (dungeon_topology.d_minetown_level)
 #define mineend_level           (dungeon_topology.d_mineend_level)
 #define sokoend_level           (dungeon_topology.d_sokoend_level)
@@ -157,6 +161,7 @@ E NEARDATA stairway dnladder, upladder; /* ladders up and down */
 E NEARDATA stairway sstairs;
 
 E NEARDATA dest_area updest, dndest; /* level-change destination areas */
+E NEARDATA dest_area noteledest; /* no teleport area in the level */
 
 E NEARDATA coord inv_pos;
 E NEARDATA dungeon dungeons[];

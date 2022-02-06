@@ -697,7 +697,7 @@ recover: $(U)recover.exe
 	if exist $(U)recover.exe copy $(U)recover.exe  $(GAMEDIR)
 	if exist $(DOC)\recover.txt copy $(DOC)\recover.txt $(GAMEDIR)\recover.txt
 
-$(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\bovine.des  $(DAT)\castle.des \
+$(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\bovine.des  $(DAT)\quantum.des  $(DAT)\castle.des \
 	$(DAT)\endgame.des $(DAT)\gehennom.des $(DAT)\knox.des  $(DAT)\main.des \
 	$(DAT)\medusa.des  $(DAT)\modron.des  $(DAT)\oracle.des   $(DAT)\tower.des  \
 	$(DAT)\yendor.des  $(DAT)\arch.des     $(DAT)\barb.des   \
@@ -707,6 +707,7 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\bovine.des  $(DAT)\ca
 	$(DAT)\tourist.des $(DAT)\valkyrie.des $(DAT)\wizard.des
 	cd $(DAT)
 	$(U)levcomp bovine.des
+	$(U)levcomp quantum.des
 	$(U)levcomp bigroom.des
 	$(U)levcomp castle.des
 	$(U)levcomp endgame.des

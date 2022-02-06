@@ -1128,28 +1128,28 @@ static const yytype_uint16 yyrline[] =
     1791,  1796,  1801,  1806,  1820,  1826,  1831,  1836,  1841,  1846,
     1851,  1856,  1861,  1866,  1871,  1876,  1881,  1886,  1891,  1896,
     1901,  1906,  1911,  1918,  1924,  1953,  1958,  1966,  1972,  1976,
-    1984,  1991,  1998,  2008,  2018,  2033,  2044,  2047,  2053,  2059,
-    2065,  2069,  2075,  2082,  2088,  2096,  2102,  2107,  2112,  2117,
-    2122,  2128,  2134,  2139,  2144,  2149,  2154,  2159,  2166,  2166,
-    2166,  2166,  2169,  2175,  2181,  2186,  2193,  2200,  2204,  2210,
-    2216,  2222,  2227,  2234,  2240,  2250,  2257,  2256,  2288,  2291,
-    2297,  2302,  2307,  2312,  2318,  2322,  2328,  2334,  2338,  2344,
-    2348,  2354,  2358,  2363,  2370,  2374,  2381,  2385,  2390,  2397,
-    2401,  2406,  2414,  2420,  2427,  2431,  2438,  2446,  2449,  2459,
-    2463,  2466,  2472,  2476,  2483,  2487,  2491,  2498,  2501,  2507,
-    2514,  2517,  2523,  2530,  2534,  2541,  2542,  2545,  2546,  2549,
-    2550,  2551,  2557,  2558,  2559,  2565,  2566,  2569,  2578,  2583,
-    2590,  2601,  2607,  2611,  2615,  2622,  2632,  2639,  2643,  2649,
-    2653,  2661,  2665,  2672,  2682,  2695,  2699,  2706,  2716,  2725,
-    2736,  2740,  2747,  2757,  2768,  2777,  2787,  2793,  2797,  2804,
-    2814,  2825,  2834,  2844,  2848,  2855,  2856,  2862,  2866,  2870,
-    2874,  2882,  2891,  2895,  2899,  2903,  2907,  2911,  2914,  2921,
-    2930,  2963,  2964,  2967,  2968,  2971,  2975,  2982,  2989,  3000,
-    3003,  3011,  3015,  3019,  3023,  3027,  3032,  3036,  3040,  3045,
-    3050,  3055,  3059,  3064,  3069,  3073,  3077,  3082,  3086,  3093,
-    3099,  3103,  3109,  3116,  3117,  3120,  3121,  3122,  3125,  3129,
-    3133,  3137,  3143,  3144,  3147,  3148,  3151,  3152,  3155,  3156,
-    3159,  3163,  3189
+    1984,  1991,  1998,  2008,  2018,  2034,  2045,  2048,  2054,  2060,
+    2066,  2070,  2076,  2083,  2089,  2097,  2103,  2108,  2113,  2118,
+    2123,  2129,  2135,  2140,  2145,  2150,  2155,  2160,  2167,  2167,
+    2167,  2167,  2170,  2176,  2182,  2187,  2194,  2201,  2205,  2211,
+    2217,  2223,  2228,  2235,  2241,  2251,  2258,  2257,  2289,  2292,
+    2298,  2303,  2308,  2313,  2319,  2323,  2329,  2335,  2339,  2345,
+    2349,  2355,  2359,  2364,  2371,  2375,  2382,  2386,  2391,  2398,
+    2402,  2407,  2415,  2421,  2428,  2432,  2439,  2447,  2450,  2460,
+    2464,  2467,  2473,  2477,  2484,  2488,  2492,  2499,  2502,  2508,
+    2515,  2518,  2524,  2531,  2535,  2542,  2543,  2546,  2547,  2550,
+    2551,  2552,  2558,  2559,  2560,  2566,  2567,  2570,  2579,  2584,
+    2591,  2602,  2608,  2612,  2616,  2623,  2633,  2640,  2644,  2650,
+    2654,  2662,  2666,  2673,  2683,  2696,  2700,  2707,  2717,  2726,
+    2737,  2741,  2748,  2758,  2769,  2778,  2788,  2794,  2798,  2805,
+    2815,  2826,  2835,  2845,  2849,  2856,  2857,  2863,  2867,  2871,
+    2875,  2883,  2892,  2896,  2900,  2904,  2908,  2912,  2915,  2922,
+    2931,  2964,  2965,  2968,  2969,  2972,  2976,  2983,  2990,  3001,
+    3004,  3012,  3016,  3020,  3024,  3028,  3033,  3037,  3041,  3046,
+    3051,  3056,  3060,  3065,  3070,  3074,  3078,  3083,  3087,  3094,
+    3100,  3104,  3110,  3117,  3118,  3121,  3122,  3123,  3126,  3130,
+    3134,  3138,  3144,  3145,  3148,  3149,  3152,  3153,  3156,  3157,
+    3160,  3164,  3190
 };
 #endif
 
@@ -5356,6 +5356,7 @@ yyreduce:
 		      case -1: rtyp = LR_TELE; break;
 		      case  0: rtyp = LR_DOWNTELE; break;
 		      case  1: rtyp = LR_UPTELE; break;
+		      case  2: rtyp = LR_NOTELE; break;
 		      }
 		      add_opvars(splev, "iiiii iiiii iiso",
 				 VA_PASS14((yyvsp[(3) - (6)].lregn).x1, (yyvsp[(3) - (6)].lregn).y1, (yyvsp[(3) - (6)].lregn).x2, (yyvsp[(3) - (6)].lregn).y2, (yyvsp[(3) - (6)].lregn).area,
@@ -5367,7 +5368,7 @@ yyreduce:
   case 305:
 
 /* Line 1455 of yacc.c  */
-#line 2034 "lev_comp.y"
+#line 2035 "lev_comp.y"
     {
 		      add_opvars(splev, "iiiii iiiii iiso",
 				 VA_PASS14((yyvsp[(3) - (5)].lregn).x1, (yyvsp[(3) - (5)].lregn).y1, (yyvsp[(3) - (5)].lregn).x2, (yyvsp[(3) - (5)].lregn).y2, (yyvsp[(3) - (5)].lregn).area,
@@ -5380,7 +5381,7 @@ yyreduce:
   case 306:
 
 /* Line 1455 of yacc.c  */
-#line 2044 "lev_comp.y"
+#line 2045 "lev_comp.y"
     {
 			(yyval.i) = -1;
 		  ;}
@@ -5389,7 +5390,7 @@ yyreduce:
   case 307:
 
 /* Line 1455 of yacc.c  */
-#line 2048 "lev_comp.y"
+#line 2049 "lev_comp.y"
     {
 			(yyval.i) = (yyvsp[(2) - (2)].i);
 		  ;}
@@ -5398,7 +5399,7 @@ yyreduce:
   case 308:
 
 /* Line 1455 of yacc.c  */
-#line 2054 "lev_comp.y"
+#line 2055 "lev_comp.y"
     {
 		      add_opvars(splev, "io", VA_PASS2((int)(yyvsp[(5) - (5)].i), SPO_FOUNTAIN));
 		  ;}
@@ -5407,7 +5408,7 @@ yyreduce:
   case 309:
 
 /* Line 1455 of yacc.c  */
-#line 2060 "lev_comp.y"
+#line 2061 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_THRONE));
 		  ;}
@@ -5416,7 +5417,7 @@ yyreduce:
   case 310:
 
 /* Line 1455 of yacc.c  */
-#line 2066 "lev_comp.y"
+#line 2067 "lev_comp.y"
     {
 		      add_opvars(splev, "iio", VA_PASS3((int) (yyvsp[(9) - (11)].i), (int) (yyvsp[(11) - (11)].i), SPO_MODRON_PORTAL));
 		  ;}
@@ -5425,7 +5426,7 @@ yyreduce:
   case 311:
 
 /* Line 1455 of yacc.c  */
-#line 2070 "lev_comp.y"
+#line 2071 "lev_comp.y"
     {
 		      add_opvars(splev, "iiiio", VA_PASS5((int) (yyvsp[(7) - (13)].i), (int) (yyvsp[(9) - (13)].i), (int) (yyvsp[(11) - (13)].i), (int) (yyvsp[(13) - (13)].i), SPO_MODRON_LEVEL_TELEPORTER));
 		  ;}
@@ -5434,7 +5435,7 @@ yyreduce:
   case 312:
 
 /* Line 1455 of yacc.c  */
-#line 2076 "lev_comp.y"
+#line 2077 "lev_comp.y"
     {
 		      add_opvars(splev, "io", VA_PASS2((int) (yyvsp[(5) - (6)].i), SPO_LEVER));
 		  ;}
@@ -5443,7 +5444,7 @@ yyreduce:
   case 313:
 
 /* Line 1455 of yacc.c  */
-#line 2082 "lev_comp.y"
+#line 2083 "lev_comp.y"
     {
 		      struct opvar *stopit = New(struct opvar);
 		      set_opvar_int(stopit, SP_L_V_END);
@@ -5455,7 +5456,7 @@ yyreduce:
   case 314:
 
 /* Line 1455 of yacc.c  */
-#line 2089 "lev_comp.y"
+#line 2090 "lev_comp.y"
     {
 		      if (( (yyvsp[(1) - (3)].i) & (yyvsp[(3) - (3)].i) ))
 			  lc_error("LEVER extra info '%s' defined twice.", curr_token);
@@ -5466,7 +5467,7 @@ yyreduce:
   case 315:
 
 /* Line 1455 of yacc.c  */
-#line 2097 "lev_comp.y"
+#line 2098 "lev_comp.y"
     {	
 		      add_opvars(splev, "ii",
 				 VA_PASS2((int) (yyvsp[(1) - (1)].i), SP_L_V_ACTIVE));
@@ -5477,7 +5478,7 @@ yyreduce:
   case 316:
 
 /* Line 1455 of yacc.c  */
-#line 2103 "lev_comp.y"
+#line 2104 "lev_comp.y"
     {
 		      add_opvars(splev, "i", VA_PASS1(SP_L_V_MONSTER));
 		      (yyval.i) = 0x0002;
@@ -5487,7 +5488,7 @@ yyreduce:
   case 317:
 
 /* Line 1455 of yacc.c  */
-#line 2108 "lev_comp.y"
+#line 2109 "lev_comp.y"
     {
 		      add_opvars(splev, "i", VA_PASS1(SP_L_V_OBJECT));
 		      (yyval.i) = 0x0004;
@@ -5497,7 +5498,7 @@ yyreduce:
   case 318:
 
 /* Line 1455 of yacc.c  */
-#line 2113 "lev_comp.y"
+#line 2114 "lev_comp.y"
     {
 		      add_opvars(splev, "ii", VA_PASS2((int)(yyvsp[(3) - (3)].terr).ter, SP_L_V_TERRAIN));
 		      (yyval.i) = 0x0008;
@@ -5507,7 +5508,7 @@ yyreduce:
   case 319:
 
 /* Line 1455 of yacc.c  */
-#line 2118 "lev_comp.y"
+#line 2119 "lev_comp.y"
     {
 		      add_opvars(splev, "ii", VA_PASS2((int)(yyvsp[(3) - (3)].terr).ter, SP_L_V_TERRAIN2));
 		      (yyval.i) = 0x0010;
@@ -5517,7 +5518,7 @@ yyreduce:
   case 320:
 
 /* Line 1455 of yacc.c  */
-#line 2123 "lev_comp.y"
+#line 2124 "lev_comp.y"
     {	
 		      add_opvars(splev, "ii",
 				 VA_PASS2(1, SP_L_V_SWITCHABLE));
@@ -5528,7 +5529,7 @@ yyreduce:
   case 321:
 
 /* Line 1455 of yacc.c  */
-#line 2129 "lev_comp.y"
+#line 2130 "lev_comp.y"
     {	
 		      add_opvars(splev, "ii",
 				 VA_PASS2(1, SP_L_V_CONTINUOUS));
@@ -5539,7 +5540,7 @@ yyreduce:
   case 322:
 
 /* Line 1455 of yacc.c  */
-#line 2135 "lev_comp.y"
+#line 2136 "lev_comp.y"
     {
 		      add_opvars(splev, "i", VA_PASS1(SP_L_V_COORD));
 		      (yyval.i) = 0x0080;
@@ -5549,7 +5550,7 @@ yyreduce:
   case 323:
 
 /* Line 1455 of yacc.c  */
-#line 2140 "lev_comp.y"
+#line 2141 "lev_comp.y"
     {
 		      add_opvars(splev, "ii", VA_PASS2((yyvsp[(3) - (3)].i), SP_L_V_TRAP));
 		      (yyval.i) = 0x0100;
@@ -5559,7 +5560,7 @@ yyreduce:
   case 324:
 
 /* Line 1455 of yacc.c  */
-#line 2145 "lev_comp.y"
+#line 2146 "lev_comp.y"
     {
 		      add_opvars(splev, "ii", VA_PASS2((yyvsp[(3) - (3)].i), SP_L_V_SUBTYPE));
 		      (yyval.i) = 0x0200;
@@ -5569,7 +5570,7 @@ yyreduce:
   case 325:
 
 /* Line 1455 of yacc.c  */
-#line 2150 "lev_comp.y"
+#line 2151 "lev_comp.y"
     {
 		      add_opvars(splev, "ii", VA_PASS2((yyvsp[(3) - (3)].i), SP_L_V_FLOOR_SUBTYPE));
 		      (yyval.i) = 0x0400;
@@ -5579,7 +5580,7 @@ yyreduce:
   case 326:
 
 /* Line 1455 of yacc.c  */
-#line 2155 "lev_comp.y"
+#line 2156 "lev_comp.y"
     {
 		      add_opvars(splev, "ii", VA_PASS2((yyvsp[(3) - (3)].i), SP_L_V_EFFECT_FLAG));
 		      (yyval.i) = 0x0800;
@@ -5589,7 +5590,7 @@ yyreduce:
   case 327:
 
 /* Line 1455 of yacc.c  */
-#line 2160 "lev_comp.y"
+#line 2161 "lev_comp.y"
     {
 		      add_opvars(splev, "ii", VA_PASS2((yyvsp[(3) - (3)].i), SP_L_V_SPECIAL_QUALITY));
 		      (yyval.i) = 0x1000;
@@ -5599,7 +5600,7 @@ yyreduce:
   case 332:
 
 /* Line 1455 of yacc.c  */
-#line 2170 "lev_comp.y"
+#line 2171 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_SINK));
 		  ;}
@@ -5608,7 +5609,7 @@ yyreduce:
   case 333:
 
 /* Line 1455 of yacc.c  */
-#line 2176 "lev_comp.y"
+#line 2177 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_POOL));
 		  ;}
@@ -5617,7 +5618,7 @@ yyreduce:
   case 334:
 
 /* Line 1455 of yacc.c  */
-#line 2182 "lev_comp.y"
+#line 2183 "lev_comp.y"
     {
 		      (yyval.terr).lit = -2;
 		      (yyval.terr).ter = what_map_char((char) (yyvsp[(1) - (1)].i));
@@ -5627,7 +5628,7 @@ yyreduce:
   case 335:
 
 /* Line 1455 of yacc.c  */
-#line 2187 "lev_comp.y"
+#line 2188 "lev_comp.y"
     {
 		      (yyval.terr).lit = (yyvsp[(4) - (5)].i);
 		      (yyval.terr).ter = what_map_char((char) (yyvsp[(2) - (5)].i));
@@ -5637,7 +5638,7 @@ yyreduce:
   case 336:
 
 /* Line 1455 of yacc.c  */
-#line 2194 "lev_comp.y"
+#line 2195 "lev_comp.y"
     {
 		      add_opvars(splev, "io",
 				 VA_PASS2((yyvsp[(9) - (9)].i), SPO_REPLACETERRAIN));
@@ -5647,7 +5648,7 @@ yyreduce:
   case 337:
 
 /* Line 1455 of yacc.c  */
-#line 2201 "lev_comp.y"
+#line 2202 "lev_comp.y"
     {
 		     add_opvars(splev, "io", VA_PASS2(-1, SPO_TERRAIN));
 		 ;}
@@ -5656,7 +5657,7 @@ yyreduce:
   case 338:
 
 /* Line 1455 of yacc.c  */
-#line 2205 "lev_comp.y"
+#line 2206 "lev_comp.y"
     {
 		     add_opvars(splev, "io", VA_PASS2((yyvsp[(7) - (7)].i), SPO_TERRAIN));
 		 ;}
@@ -5665,7 +5666,7 @@ yyreduce:
   case 339:
 
 /* Line 1455 of yacc.c  */
-#line 2211 "lev_comp.y"
+#line 2212 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_NON_DIGGABLE));
 		  ;}
@@ -5674,7 +5675,7 @@ yyreduce:
   case 340:
 
 /* Line 1455 of yacc.c  */
-#line 2217 "lev_comp.y"
+#line 2218 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_NON_PASSWALL));
 		  ;}
@@ -5683,7 +5684,7 @@ yyreduce:
   case 341:
 
 /* Line 1455 of yacc.c  */
-#line 2223 "lev_comp.y"
+#line 2224 "lev_comp.y"
     {
 		      add_opvars(splev, "Miso", VA_PASS4(-1, (yyvsp[(5) - (5)].i), (yyvsp[(3) - (5)].map), SPO_NAMING));
 		      Free((yyvsp[(3) - (5)].map));
@@ -5693,7 +5694,7 @@ yyreduce:
   case 342:
 
 /* Line 1455 of yacc.c  */
-#line 2228 "lev_comp.y"
+#line 2229 "lev_comp.y"
     {
 		      add_opvars(splev, "iso", VA_PASS3((yyvsp[(5) - (9)].i), (yyvsp[(3) - (9)].map), SPO_NAMING));
 		      Free((yyvsp[(3) - (9)].map));
@@ -5703,7 +5704,7 @@ yyreduce:
   case 343:
 
 /* Line 1455 of yacc.c  */
-#line 2235 "lev_comp.y"
+#line 2236 "lev_comp.y"
     {
 		      add_opvars(splev, "io", VA_PASS2((yyvsp[(5) - (5)].i), SPO_SPECIAL_REGION));
 		  ;}
@@ -5712,7 +5713,7 @@ yyreduce:
   case 344:
 
 /* Line 1455 of yacc.c  */
-#line 2241 "lev_comp.y"
+#line 2242 "lev_comp.y"
     {
 		      add_opvars(splev, "iiiii iiiii iiso",
 				 VA_PASS14((yyvsp[(3) - (5)].lregn).x1, (yyvsp[(3) - (5)].lregn).y1, (yyvsp[(3) - (5)].lregn).x2, (yyvsp[(3) - (5)].lregn).y2, (yyvsp[(3) - (5)].lregn).area,
@@ -5725,7 +5726,7 @@ yyreduce:
   case 345:
 
 /* Line 1455 of yacc.c  */
-#line 2251 "lev_comp.y"
+#line 2252 "lev_comp.y"
     {
 		      add_opvars(splev, "io", VA_PASS2((yyvsp[(5) - (5)].i), SPO_SPECIAL_TILESET));
 		  ;}
@@ -5734,7 +5735,7 @@ yyreduce:
   case 346:
 
 /* Line 1455 of yacc.c  */
-#line 2257 "lev_comp.y"
+#line 2258 "lev_comp.y"
     {
 		      long irr;
 		      long rt = (yyvsp[(7) - (11)].i);
@@ -5758,7 +5759,7 @@ yyreduce:
   case 347:
 
 /* Line 1455 of yacc.c  */
-#line 2276 "lev_comp.y"
+#line 2277 "lev_comp.y"
     {
 		      break_stmt_end(splev);
 			  add_opcode(splev, SPO_ENDROOM, NULL);
@@ -5773,7 +5774,7 @@ yyreduce:
   case 348:
 
 /* Line 1455 of yacc.c  */
-#line 2288 "lev_comp.y"
+#line 2289 "lev_comp.y"
     {
 		      (yyval.i) = 0;
 		  ;}
@@ -5782,7 +5783,7 @@ yyreduce:
   case 349:
 
 /* Line 1455 of yacc.c  */
-#line 2292 "lev_comp.y"
+#line 2293 "lev_comp.y"
     {
 		      (yyval.i) = (yyvsp[(1) - (1)].i);
 		  ;}
@@ -5791,7 +5792,7 @@ yyreduce:
   case 350:
 
 /* Line 1455 of yacc.c  */
-#line 2298 "lev_comp.y"
+#line 2299 "lev_comp.y"
     {
 		      add_opvars(splev, "Miiio",
 				 VA_PASS5(-1, 0, (long)(yyvsp[(7) - (7)].i), (long)(yyvsp[(5) - (7)].i), SPO_ALTAR));
@@ -5801,7 +5802,7 @@ yyreduce:
   case 351:
 
 /* Line 1455 of yacc.c  */
-#line 2303 "lev_comp.y"
+#line 2304 "lev_comp.y"
     {
 		      add_opvars(splev, "iiio",
 				 VA_PASS4(0, (long)(yyvsp[(7) - (11)].i), (long)(yyvsp[(5) - (11)].i), SPO_ALTAR));
@@ -5811,7 +5812,7 @@ yyreduce:
   case 352:
 
 /* Line 1455 of yacc.c  */
-#line 2308 "lev_comp.y"
+#line 2309 "lev_comp.y"
     {
 		      add_opvars(splev, "Miiio",
 				 VA_PASS5(-1, (long)(yyvsp[(9) - (9)].i), (long)(yyvsp[(7) - (9)].i), (long)(yyvsp[(5) - (9)].i), SPO_ALTAR));
@@ -5821,7 +5822,7 @@ yyreduce:
   case 353:
 
 /* Line 1455 of yacc.c  */
-#line 2313 "lev_comp.y"
+#line 2314 "lev_comp.y"
     {
 		      add_opvars(splev, "iiio",
 				 VA_PASS4((long)(yyvsp[(9) - (13)].i), (long)(yyvsp[(7) - (13)].i), (long)(yyvsp[(5) - (13)].i), SPO_ALTAR));
@@ -5831,7 +5832,7 @@ yyreduce:
   case 354:
 
 /* Line 1455 of yacc.c  */
-#line 2319 "lev_comp.y"
+#line 2320 "lev_comp.y"
     {
 		      add_opvars(splev, "Mo", VA_PASS2(-1, SPO_ANVIL));
 		  ;}
@@ -5840,7 +5841,7 @@ yyreduce:
   case 355:
 
 /* Line 1455 of yacc.c  */
-#line 2323 "lev_comp.y"
+#line 2324 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_ANVIL));
 		  ;}
@@ -5849,7 +5850,7 @@ yyreduce:
   case 356:
 
 /* Line 1455 of yacc.c  */
-#line 2329 "lev_comp.y"
+#line 2330 "lev_comp.y"
     {
 		      add_opvars(splev, "iio", VA_PASS3((int)(yyvsp[(7) - (7)].i), (int)(yyvsp[(5) - (7)].i), SPO_FLOOR));
 		  ;}
@@ -5858,7 +5859,7 @@ yyreduce:
   case 357:
 
 /* Line 1455 of yacc.c  */
-#line 2335 "lev_comp.y"
+#line 2336 "lev_comp.y"
     {
 		      add_opvars(splev, "iio", VA_PASS3((int)(yyvsp[(5) - (5)].i), -1, SPO_SUBTYPE));
 		  ;}
@@ -5867,7 +5868,7 @@ yyreduce:
   case 358:
 
 /* Line 1455 of yacc.c  */
-#line 2339 "lev_comp.y"
+#line 2340 "lev_comp.y"
     {
 		      add_opvars(splev, "iio", VA_PASS3((int)(yyvsp[(7) - (7)].i), (int)(yyvsp[(5) - (7)].i), SPO_SUBTYPE));
 		  ;}
@@ -5876,7 +5877,7 @@ yyreduce:
   case 359:
 
 /* Line 1455 of yacc.c  */
-#line 2345 "lev_comp.y"
+#line 2346 "lev_comp.y"
     {
 		      add_opvars(splev, "Mio", VA_PASS3(-1, (int)(yyvsp[(3) - (5)].i), SPO_NPC));
 		  ;}
@@ -5885,7 +5886,7 @@ yyreduce:
   case 360:
 
 /* Line 1455 of yacc.c  */
-#line 2349 "lev_comp.y"
+#line 2350 "lev_comp.y"
     {
 		      add_opvars(splev, "io", VA_PASS2((int)(yyvsp[(3) - (9)].i), SPO_NPC));
 		  ;}
@@ -5894,7 +5895,7 @@ yyreduce:
   case 361:
 
 /* Line 1455 of yacc.c  */
-#line 2355 "lev_comp.y"
+#line 2356 "lev_comp.y"
     {
 		      add_opvars(splev, "io", VA_PASS2(2, SPO_GRAVE));
 		  ;}
@@ -5903,7 +5904,7 @@ yyreduce:
   case 362:
 
 /* Line 1455 of yacc.c  */
-#line 2359 "lev_comp.y"
+#line 2360 "lev_comp.y"
     {
 		      add_opvars(splev, "sio",
 				 VA_PASS3((char *)0, 1, SPO_GRAVE));
@@ -5913,7 +5914,7 @@ yyreduce:
   case 363:
 
 /* Line 1455 of yacc.c  */
-#line 2364 "lev_comp.y"
+#line 2365 "lev_comp.y"
     {
 		      add_opvars(splev, "sio",
 				 VA_PASS3((char *)0, 0, SPO_GRAVE));
@@ -5923,7 +5924,7 @@ yyreduce:
   case 364:
 
 /* Line 1455 of yacc.c  */
-#line 2371 "lev_comp.y"
+#line 2372 "lev_comp.y"
     {
 		      add_opvars(splev, "iio", VA_PASS3((int)(yyvsp[(7) - (7)].i), (int)(yyvsp[(5) - (7)].i), SPO_BRAZIER));
 		  ;}
@@ -5932,7 +5933,7 @@ yyreduce:
   case 365:
 
 /* Line 1455 of yacc.c  */
-#line 2375 "lev_comp.y"
+#line 2376 "lev_comp.y"
     {
 		      add_opvars(splev, "iio",
 				 VA_PASS3(1, 0, SPO_BRAZIER));
@@ -5942,7 +5943,7 @@ yyreduce:
   case 366:
 
 /* Line 1455 of yacc.c  */
-#line 2382 "lev_comp.y"
+#line 2383 "lev_comp.y"
     {
 		      add_opvars(splev, "iio", VA_PASS3(2, (int)(yyvsp[(5) - (7)].i), SPO_SIGNPOST));
 		  ;}
@@ -5951,7 +5952,7 @@ yyreduce:
   case 367:
 
 /* Line 1455 of yacc.c  */
-#line 2386 "lev_comp.y"
+#line 2387 "lev_comp.y"
     {
 		      add_opvars(splev, "siio",
 				 VA_PASS4((char *)0, 1, (int)(yyvsp[(5) - (7)].i), SPO_SIGNPOST));
@@ -5961,7 +5962,7 @@ yyreduce:
   case 368:
 
 /* Line 1455 of yacc.c  */
-#line 2391 "lev_comp.y"
+#line 2392 "lev_comp.y"
     {
 		      add_opvars(splev, "sio",
 				 VA_PASS4((char *)0, 0, 0, SPO_SIGNPOST));
@@ -5971,7 +5972,7 @@ yyreduce:
   case 369:
 
 /* Line 1455 of yacc.c  */
-#line 2398 "lev_comp.y"
+#line 2399 "lev_comp.y"
     {
 		      add_opvars(splev, "iio", VA_PASS3(-1, (int)(yyvsp[(5) - (5)].i), SPO_TREE));
 		  ;}
@@ -5980,7 +5981,7 @@ yyreduce:
   case 370:
 
 /* Line 1455 of yacc.c  */
-#line 2402 "lev_comp.y"
+#line 2403 "lev_comp.y"
     {
 		      add_opvars(splev, "iio",
 				 VA_PASS3((int)(yyvsp[(5) - (5)].i), -1, SPO_TREE));
@@ -5990,7 +5991,7 @@ yyreduce:
   case 371:
 
 /* Line 1455 of yacc.c  */
-#line 2407 "lev_comp.y"
+#line 2408 "lev_comp.y"
     {
 		      add_opvars(splev, "iio",
 				 VA_PASS3(-1, -1, SPO_TREE));
@@ -6000,7 +6001,7 @@ yyreduce:
   case 372:
 
 /* Line 1455 of yacc.c  */
-#line 2415 "lev_comp.y"
+#line 2416 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_GOLD));
 		  ;}
@@ -6009,7 +6010,7 @@ yyreduce:
   case 373:
 
 /* Line 1455 of yacc.c  */
-#line 2421 "lev_comp.y"
+#line 2422 "lev_comp.y"
     {
 		      add_opvars(splev, "io",
 				 VA_PASS2((long)(yyvsp[(5) - (7)].i), SPO_ENGRAVING));
@@ -6019,7 +6020,7 @@ yyreduce:
   case 374:
 
 /* Line 1455 of yacc.c  */
-#line 2428 "lev_comp.y"
+#line 2429 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_MINERALIZE));
 		  ;}
@@ -6028,7 +6029,7 @@ yyreduce:
   case 375:
 
 /* Line 1455 of yacc.c  */
-#line 2432 "lev_comp.y"
+#line 2433 "lev_comp.y"
     {
 		      add_opvars(splev, "iiiio",
 				 VA_PASS5(-1L, -1L, -1L, -1L, SPO_MINERALIZE));
@@ -6038,7 +6039,7 @@ yyreduce:
   case 376:
 
 /* Line 1455 of yacc.c  */
-#line 2439 "lev_comp.y"
+#line 2440 "lev_comp.y"
     {
 			int token = get_trap_type((yyvsp[(1) - (1)].map));
 			if (token == ERR)
@@ -6051,7 +6052,7 @@ yyreduce:
   case 378:
 
 /* Line 1455 of yacc.c  */
-#line 2450 "lev_comp.y"
+#line 2451 "lev_comp.y"
     {
 			int token = get_room_type((yyvsp[(1) - (1)].map));
 			if (token == ERR) {
@@ -6066,7 +6067,7 @@ yyreduce:
   case 380:
 
 /* Line 1455 of yacc.c  */
-#line 2463 "lev_comp.y"
+#line 2464 "lev_comp.y"
     {
 			(yyval.i) = -1;
 		  ;}
@@ -6075,7 +6076,7 @@ yyreduce:
   case 381:
 
 /* Line 1455 of yacc.c  */
-#line 2467 "lev_comp.y"
+#line 2468 "lev_comp.y"
     {
 			(yyval.i) = (yyvsp[(2) - (2)].i);
 		  ;}
@@ -6084,7 +6085,7 @@ yyreduce:
   case 382:
 
 /* Line 1455 of yacc.c  */
-#line 2473 "lev_comp.y"
+#line 2474 "lev_comp.y"
     {
 			(yyval.i) = (yyvsp[(1) - (1)].i);
 		  ;}
@@ -6093,7 +6094,7 @@ yyreduce:
   case 383:
 
 /* Line 1455 of yacc.c  */
-#line 2477 "lev_comp.y"
+#line 2478 "lev_comp.y"
     {
 			(yyval.i) = (yyvsp[(1) - (3)].i) | (yyvsp[(3) - (3)].i);
 		  ;}
@@ -6102,7 +6103,7 @@ yyreduce:
   case 384:
 
 /* Line 1455 of yacc.c  */
-#line 2484 "lev_comp.y"
+#line 2485 "lev_comp.y"
     {
 		      (yyval.i) = ((yyvsp[(1) - (1)].i) << 0);
 		  ;}
@@ -6111,7 +6112,7 @@ yyreduce:
   case 385:
 
 /* Line 1455 of yacc.c  */
-#line 2488 "lev_comp.y"
+#line 2489 "lev_comp.y"
     {
 		      (yyval.i) = ((yyvsp[(1) - (1)].i) << 1);
 		  ;}
@@ -6120,7 +6121,7 @@ yyreduce:
   case 386:
 
 /* Line 1455 of yacc.c  */
-#line 2492 "lev_comp.y"
+#line 2493 "lev_comp.y"
     {
 		      (yyval.i) = ((yyvsp[(1) - (1)].i) << 2);
 		  ;}
@@ -6129,7 +6130,7 @@ yyreduce:
   case 387:
 
 /* Line 1455 of yacc.c  */
-#line 2498 "lev_comp.y"
+#line 2499 "lev_comp.y"
     {
 			(yyval.i) = -1;
 		  ;}
@@ -6138,7 +6139,7 @@ yyreduce:
   case 388:
 
 /* Line 1455 of yacc.c  */
-#line 2502 "lev_comp.y"
+#line 2503 "lev_comp.y"
     {
 			(yyval.i) = (yyvsp[(3) - (3)].i);
 		  ;}
@@ -6147,7 +6148,7 @@ yyreduce:
   case 389:
 
 /* Line 1455 of yacc.c  */
-#line 2508 "lev_comp.y"
+#line 2509 "lev_comp.y"
     {
 		      (yyval.i) = (yyvsp[(1) - (1)].i);
 		  ;}
@@ -6156,7 +6157,7 @@ yyreduce:
   case 390:
 
 /* Line 1455 of yacc.c  */
-#line 2514 "lev_comp.y"
+#line 2515 "lev_comp.y"
     {
 			(yyval.i) = -1;
 		  ;}
@@ -6165,7 +6166,7 @@ yyreduce:
   case 391:
 
 /* Line 1455 of yacc.c  */
-#line 2518 "lev_comp.y"
+#line 2519 "lev_comp.y"
     {
 			(yyval.i) = (yyvsp[(3) - (3)].i);
 		  ;}
@@ -6174,7 +6175,7 @@ yyreduce:
   case 392:
 
 /* Line 1455 of yacc.c  */
-#line 2524 "lev_comp.y"
+#line 2525 "lev_comp.y"
     {
 		      (yyval.i) = (yyvsp[(1) - (1)].i);
 		  ;}
@@ -6183,7 +6184,7 @@ yyreduce:
   case 393:
 
 /* Line 1455 of yacc.c  */
-#line 2530 "lev_comp.y"
+#line 2531 "lev_comp.y"
     {
 			add_opvars(splev, "M", VA_PASS1(-1));
 			(yyval.i) = -1;
@@ -6193,7 +6194,7 @@ yyreduce:
   case 394:
 
 /* Line 1455 of yacc.c  */
-#line 2535 "lev_comp.y"
+#line 2536 "lev_comp.y"
     {
 			(yyval.i) = (yyvsp[(3) - (3)].i);
 		  ;}
@@ -6202,7 +6203,7 @@ yyreduce:
   case 401:
 
 /* Line 1455 of yacc.c  */
-#line 2552 "lev_comp.y"
+#line 2553 "lev_comp.y"
     {
 			(yyval.i) = - MAX_REGISTERS - 1;
 		  ;}
@@ -6211,7 +6212,7 @@ yyreduce:
   case 404:
 
 /* Line 1455 of yacc.c  */
-#line 2560 "lev_comp.y"
+#line 2561 "lev_comp.y"
     {
 			(yyval.i) = - MAX_REGISTERS - 1;
 		  ;}
@@ -6220,7 +6221,7 @@ yyreduce:
   case 407:
 
 /* Line 1455 of yacc.c  */
-#line 2570 "lev_comp.y"
+#line 2571 "lev_comp.y"
     {
 			if ( (yyvsp[(3) - (4)].i) >= 3 )
 				lc_error("Register Index overflow!");
@@ -6232,7 +6233,7 @@ yyreduce:
   case 408:
 
 /* Line 1455 of yacc.c  */
-#line 2579 "lev_comp.y"
+#line 2580 "lev_comp.y"
     {
 		      add_opvars(splev, "s", VA_PASS1((yyvsp[(1) - (1)].map)));
 		      Free((yyvsp[(1) - (1)].map));
@@ -6242,7 +6243,7 @@ yyreduce:
   case 409:
 
 /* Line 1455 of yacc.c  */
-#line 2584 "lev_comp.y"
+#line 2585 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (1)].map), SPOVAR_STRING);
 		      vardef_used(vardefs, (yyvsp[(1) - (1)].map));
@@ -6254,7 +6255,7 @@ yyreduce:
   case 410:
 
 /* Line 1455 of yacc.c  */
-#line 2591 "lev_comp.y"
+#line 2592 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (4)].map),
                                         SPOVAR_STRING | SPOVAR_ARRAY);
@@ -6267,7 +6268,7 @@ yyreduce:
   case 411:
 
 /* Line 1455 of yacc.c  */
-#line 2602 "lev_comp.y"
+#line 2603 "lev_comp.y"
     {
 		      /* nothing */
 		  ;}
@@ -6276,7 +6277,7 @@ yyreduce:
   case 412:
 
 /* Line 1455 of yacc.c  */
-#line 2608 "lev_comp.y"
+#line 2609 "lev_comp.y"
     {
 		      add_opvars(splev, "c", VA_PASS1((yyvsp[(1) - (1)].i)));
 		  ;}
@@ -6285,7 +6286,7 @@ yyreduce:
   case 413:
 
 /* Line 1455 of yacc.c  */
-#line 2612 "lev_comp.y"
+#line 2613 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_SEL_RNDCOORD));
 		  ;}
@@ -6294,7 +6295,7 @@ yyreduce:
   case 414:
 
 /* Line 1455 of yacc.c  */
-#line 2616 "lev_comp.y"
+#line 2617 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (1)].map), SPOVAR_COORD);
 		      vardef_used(vardefs, (yyvsp[(1) - (1)].map));
@@ -6306,7 +6307,7 @@ yyreduce:
   case 415:
 
 /* Line 1455 of yacc.c  */
-#line 2623 "lev_comp.y"
+#line 2624 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (4)].map),
                                         SPOVAR_COORD | SPOVAR_ARRAY);
@@ -6319,7 +6320,7 @@ yyreduce:
   case 416:
 
 /* Line 1455 of yacc.c  */
-#line 2633 "lev_comp.y"
+#line 2634 "lev_comp.y"
     {
 		      if ((yyvsp[(2) - (5)].i) < 0 || (yyvsp[(4) - (5)].i) < 0 || (yyvsp[(2) - (5)].i) >= COLNO || (yyvsp[(4) - (5)].i) >= ROWNO)
                           lc_error("Coordinates (%li,%li) out of map range!",
@@ -6331,7 +6332,7 @@ yyreduce:
   case 417:
 
 /* Line 1455 of yacc.c  */
-#line 2640 "lev_comp.y"
+#line 2641 "lev_comp.y"
     {
 		      (yyval.i) = SP_COORD_PACK_RANDOM(0);
 		  ;}
@@ -6340,7 +6341,7 @@ yyreduce:
   case 418:
 
 /* Line 1455 of yacc.c  */
-#line 2644 "lev_comp.y"
+#line 2645 "lev_comp.y"
     {
 		      (yyval.i) = SP_COORD_PACK_RANDOM((yyvsp[(2) - (3)].i));
 		  ;}
@@ -6349,7 +6350,7 @@ yyreduce:
   case 419:
 
 /* Line 1455 of yacc.c  */
-#line 2650 "lev_comp.y"
+#line 2651 "lev_comp.y"
     {
 		      (yyval.i) = (yyvsp[(1) - (1)].i);
 		  ;}
@@ -6358,7 +6359,7 @@ yyreduce:
   case 420:
 
 /* Line 1455 of yacc.c  */
-#line 2654 "lev_comp.y"
+#line 2655 "lev_comp.y"
     {
 		      if (((yyvsp[(1) - (3)].i) & (yyvsp[(3) - (3)].i)))
 			  lc_warning("Humidity flag used twice.");
@@ -6369,7 +6370,7 @@ yyreduce:
   case 421:
 
 /* Line 1455 of yacc.c  */
-#line 2662 "lev_comp.y"
+#line 2663 "lev_comp.y"
     {
 		      /* nothing */
 		  ;}
@@ -6378,7 +6379,7 @@ yyreduce:
   case 422:
 
 /* Line 1455 of yacc.c  */
-#line 2666 "lev_comp.y"
+#line 2667 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (1)].map), SPOVAR_REGION);
 		      vardef_used(vardefs, (yyvsp[(1) - (1)].map));
@@ -6390,7 +6391,7 @@ yyreduce:
   case 423:
 
 /* Line 1455 of yacc.c  */
-#line 2673 "lev_comp.y"
+#line 2674 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (4)].map),
                                         SPOVAR_REGION | SPOVAR_ARRAY);
@@ -6403,7 +6404,7 @@ yyreduce:
   case 424:
 
 /* Line 1455 of yacc.c  */
-#line 2683 "lev_comp.y"
+#line 2684 "lev_comp.y"
     {
 		      long r = SP_REGION_PACK((yyvsp[(2) - (9)].i), (yyvsp[(4) - (9)].i), (yyvsp[(6) - (9)].i), (yyvsp[(8) - (9)].i));
 
@@ -6419,7 +6420,7 @@ yyreduce:
   case 425:
 
 /* Line 1455 of yacc.c  */
-#line 2696 "lev_comp.y"
+#line 2697 "lev_comp.y"
     {
 		      add_opvars(splev, "m", VA_PASS1((yyvsp[(1) - (1)].i)));
 		  ;}
@@ -6428,7 +6429,7 @@ yyreduce:
   case 426:
 
 /* Line 1455 of yacc.c  */
-#line 2700 "lev_comp.y"
+#line 2701 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (1)].map), SPOVAR_MAPCHAR);
 		      vardef_used(vardefs, (yyvsp[(1) - (1)].map));
@@ -6440,7 +6441,7 @@ yyreduce:
   case 427:
 
 /* Line 1455 of yacc.c  */
-#line 2707 "lev_comp.y"
+#line 2708 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (4)].map),
                                         SPOVAR_MAPCHAR | SPOVAR_ARRAY);
@@ -6453,7 +6454,7 @@ yyreduce:
   case 428:
 
 /* Line 1455 of yacc.c  */
-#line 2717 "lev_comp.y"
+#line 2718 "lev_comp.y"
     {
 		      if (what_map_char((char) (yyvsp[(1) - (1)].i)) != INVALID_TYPE)
 			  (yyval.i) = SP_MAPCHAR_PACK(what_map_char((char) (yyvsp[(1) - (1)].i)), -2);
@@ -6467,7 +6468,7 @@ yyreduce:
   case 429:
 
 /* Line 1455 of yacc.c  */
-#line 2726 "lev_comp.y"
+#line 2727 "lev_comp.y"
     {
 		      if (what_map_char((char) (yyvsp[(2) - (5)].i)) != INVALID_TYPE)
 			  (yyval.i) = SP_MAPCHAR_PACK(what_map_char((char) (yyvsp[(2) - (5)].i)), (yyvsp[(4) - (5)].i));
@@ -6481,7 +6482,7 @@ yyreduce:
   case 430:
 
 /* Line 1455 of yacc.c  */
-#line 2737 "lev_comp.y"
+#line 2738 "lev_comp.y"
     {
 		      add_opvars(splev, "M", VA_PASS1((yyvsp[(1) - (1)].i)));
 		  ;}
@@ -6490,7 +6491,7 @@ yyreduce:
   case 431:
 
 /* Line 1455 of yacc.c  */
-#line 2741 "lev_comp.y"
+#line 2742 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (1)].map), SPOVAR_MONST);
 		      vardef_used(vardefs, (yyvsp[(1) - (1)].map));
@@ -6502,7 +6503,7 @@ yyreduce:
   case 432:
 
 /* Line 1455 of yacc.c  */
-#line 2748 "lev_comp.y"
+#line 2749 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (4)].map),
                                         SPOVAR_MONST | SPOVAR_ARRAY);
@@ -6515,7 +6516,7 @@ yyreduce:
   case 433:
 
 /* Line 1455 of yacc.c  */
-#line 2758 "lev_comp.y"
+#line 2759 "lev_comp.y"
     {
                       long m = get_monster_id((yyvsp[(1) - (1)].map), (char)0);
                       if (m == ERR) {
@@ -6531,7 +6532,7 @@ yyreduce:
   case 434:
 
 /* Line 1455 of yacc.c  */
-#line 2769 "lev_comp.y"
+#line 2770 "lev_comp.y"
     {
                         if (check_monster_char((char) (yyvsp[(1) - (1)].i)))
                             (yyval.i) = SP_MONST_PACK(-1, (yyvsp[(1) - (1)].i));
@@ -6545,7 +6546,7 @@ yyreduce:
   case 435:
 
 /* Line 1455 of yacc.c  */
-#line 2778 "lev_comp.y"
+#line 2779 "lev_comp.y"
     {
                       long m = get_monster_id((yyvsp[(4) - (5)].map), (char) (yyvsp[(2) - (5)].i));
                       if (m == ERR) {
@@ -6560,7 +6561,7 @@ yyreduce:
   case 436:
 
 /* Line 1455 of yacc.c  */
-#line 2788 "lev_comp.y"
+#line 2789 "lev_comp.y"
     {
                       (yyval.i) = -1;
                   ;}
@@ -6569,7 +6570,7 @@ yyreduce:
   case 437:
 
 /* Line 1455 of yacc.c  */
-#line 2794 "lev_comp.y"
+#line 2795 "lev_comp.y"
     {
 		      add_opvars(splev, "O", VA_PASS1((yyvsp[(1) - (1)].i)));
 		  ;}
@@ -6578,7 +6579,7 @@ yyreduce:
   case 438:
 
 /* Line 1455 of yacc.c  */
-#line 2798 "lev_comp.y"
+#line 2799 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (1)].map), SPOVAR_OBJ);
 		      vardef_used(vardefs, (yyvsp[(1) - (1)].map));
@@ -6590,7 +6591,7 @@ yyreduce:
   case 439:
 
 /* Line 1455 of yacc.c  */
-#line 2805 "lev_comp.y"
+#line 2806 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (4)].map),
                                         SPOVAR_OBJ | SPOVAR_ARRAY);
@@ -6603,7 +6604,7 @@ yyreduce:
   case 440:
 
 /* Line 1455 of yacc.c  */
-#line 2815 "lev_comp.y"
+#line 2816 "lev_comp.y"
     {
 		      long m = get_object_id((yyvsp[(1) - (1)].map), (char)0);
 		      if (m == ERR) {
@@ -6619,7 +6620,7 @@ yyreduce:
   case 441:
 
 /* Line 1455 of yacc.c  */
-#line 2826 "lev_comp.y"
+#line 2827 "lev_comp.y"
     {
 			if (check_object_char((char) (yyvsp[(1) - (1)].i)))
 			    (yyval.i) = SP_OBJ_PACK(-1, (yyvsp[(1) - (1)].i));
@@ -6633,7 +6634,7 @@ yyreduce:
   case 442:
 
 /* Line 1455 of yacc.c  */
-#line 2835 "lev_comp.y"
+#line 2836 "lev_comp.y"
     {
 		      long m = get_object_id((yyvsp[(4) - (5)].map), (char) (yyvsp[(2) - (5)].i));
 		      if (m == ERR) {
@@ -6648,7 +6649,7 @@ yyreduce:
   case 443:
 
 /* Line 1455 of yacc.c  */
-#line 2845 "lev_comp.y"
+#line 2846 "lev_comp.y"
     {
 		      (yyval.i) = OBJECT_SPECIAL_CREATE_TYPE_RANDOM;
 		  ;}
@@ -6657,7 +6658,7 @@ yyreduce:
   case 444:
 
 /* Line 1455 of yacc.c  */
-#line 2849 "lev_comp.y"
+#line 2850 "lev_comp.y"
     {
   			  (yyval.i) = (yyvsp[(1) - (1)].i);
 		  ;}
@@ -6666,14 +6667,14 @@ yyreduce:
   case 445:
 
 /* Line 1455 of yacc.c  */
-#line 2855 "lev_comp.y"
+#line 2856 "lev_comp.y"
     { ;}
     break;
 
   case 446:
 
 /* Line 1455 of yacc.c  */
-#line 2857 "lev_comp.y"
+#line 2858 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_MATH_ADD));
 		  ;}
@@ -6682,7 +6683,7 @@ yyreduce:
   case 447:
 
 /* Line 1455 of yacc.c  */
-#line 2863 "lev_comp.y"
+#line 2864 "lev_comp.y"
     {
 		      add_opvars(splev, "i", VA_PASS1((yyvsp[(1) - (1)].i)));
 		  ;}
@@ -6691,7 +6692,7 @@ yyreduce:
   case 448:
 
 /* Line 1455 of yacc.c  */
-#line 2867 "lev_comp.y"
+#line 2868 "lev_comp.y"
     {
 		      is_inconstant_number = 1;
 		  ;}
@@ -6700,7 +6701,7 @@ yyreduce:
   case 449:
 
 /* Line 1455 of yacc.c  */
-#line 2871 "lev_comp.y"
+#line 2872 "lev_comp.y"
     {
 		      add_opvars(splev, "i", VA_PASS1((yyvsp[(2) - (3)].i)));
 		  ;}
@@ -6709,7 +6710,7 @@ yyreduce:
   case 450:
 
 /* Line 1455 of yacc.c  */
-#line 2875 "lev_comp.y"
+#line 2876 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (1)].map), SPOVAR_INT);
 		      vardef_used(vardefs, (yyvsp[(1) - (1)].map));
@@ -6722,7 +6723,7 @@ yyreduce:
   case 451:
 
 /* Line 1455 of yacc.c  */
-#line 2883 "lev_comp.y"
+#line 2884 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (4)].map),
 					SPOVAR_INT | SPOVAR_ARRAY);
@@ -6736,7 +6737,7 @@ yyreduce:
   case 452:
 
 /* Line 1455 of yacc.c  */
-#line 2892 "lev_comp.y"
+#line 2893 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_MATH_ADD));
 		  ;}
@@ -6745,7 +6746,7 @@ yyreduce:
   case 453:
 
 /* Line 1455 of yacc.c  */
-#line 2896 "lev_comp.y"
+#line 2897 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_MATH_SUB));
 		  ;}
@@ -6754,7 +6755,7 @@ yyreduce:
   case 454:
 
 /* Line 1455 of yacc.c  */
-#line 2900 "lev_comp.y"
+#line 2901 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_MATH_MUL));
 		  ;}
@@ -6763,7 +6764,7 @@ yyreduce:
   case 455:
 
 /* Line 1455 of yacc.c  */
-#line 2904 "lev_comp.y"
+#line 2905 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_MATH_DIV));
 		  ;}
@@ -6772,7 +6773,7 @@ yyreduce:
   case 456:
 
 /* Line 1455 of yacc.c  */
-#line 2908 "lev_comp.y"
+#line 2909 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_MATH_MOD));
 		  ;}
@@ -6781,14 +6782,14 @@ yyreduce:
   case 457:
 
 /* Line 1455 of yacc.c  */
-#line 2911 "lev_comp.y"
+#line 2912 "lev_comp.y"
     { ;}
     break;
 
   case 458:
 
 /* Line 1455 of yacc.c  */
-#line 2915 "lev_comp.y"
+#line 2916 "lev_comp.y"
     {
 		      if (!strcmp("int", (yyvsp[(1) - (1)].map)) || !strcmp("integer", (yyvsp[(1) - (1)].map))) {
 			  (yyval.i) = (int)'i';
@@ -6800,7 +6801,7 @@ yyreduce:
   case 459:
 
 /* Line 1455 of yacc.c  */
-#line 2922 "lev_comp.y"
+#line 2923 "lev_comp.y"
     {
 		      if (!strcmp("str", (yyvsp[(1) - (1)].map)) || !strcmp("string", (yyvsp[(1) - (1)].map))) {
 			  (yyval.i) = (int)'s';
@@ -6812,7 +6813,7 @@ yyreduce:
   case 460:
 
 /* Line 1455 of yacc.c  */
-#line 2931 "lev_comp.y"
+#line 2932 "lev_comp.y"
     {
 		      struct lc_funcdefs_parm *tmp = New(struct lc_funcdefs_parm);
 
@@ -6848,7 +6849,7 @@ yyreduce:
   case 465:
 
 /* Line 1455 of yacc.c  */
-#line 2972 "lev_comp.y"
+#line 2973 "lev_comp.y"
     {
 			      (yyval.i) = (int)'i';
 			  ;}
@@ -6857,7 +6858,7 @@ yyreduce:
   case 466:
 
 /* Line 1455 of yacc.c  */
-#line 2976 "lev_comp.y"
+#line 2977 "lev_comp.y"
     {
 			      (yyval.i) = (int)'s';
 			  ;}
@@ -6866,7 +6867,7 @@ yyreduce:
   case 467:
 
 /* Line 1455 of yacc.c  */
-#line 2983 "lev_comp.y"
+#line 2984 "lev_comp.y"
     {
 			      char tmpbuf[2];
 			      tmpbuf[0] = (char) (yyvsp[(1) - (1)].i);
@@ -6878,7 +6879,7 @@ yyreduce:
   case 468:
 
 /* Line 1455 of yacc.c  */
-#line 2990 "lev_comp.y"
+#line 2991 "lev_comp.y"
     {
 			      long len = strlen( (yyvsp[(1) - (3)].map) );
 			      char *tmp = (char *) alloc(len + 2);
@@ -6891,7 +6892,7 @@ yyreduce:
   case 469:
 
 /* Line 1455 of yacc.c  */
-#line 3000 "lev_comp.y"
+#line 3001 "lev_comp.y"
     {
 			      (yyval.map) = strdup("");
 			  ;}
@@ -6900,7 +6901,7 @@ yyreduce:
   case 470:
 
 /* Line 1455 of yacc.c  */
-#line 3004 "lev_comp.y"
+#line 3005 "lev_comp.y"
     {
 			      char *tmp = strdup( (yyvsp[(1) - (1)].map) );
 			      Free( (yyvsp[(1) - (1)].map) );
@@ -6911,7 +6912,7 @@ yyreduce:
   case 471:
 
 /* Line 1455 of yacc.c  */
-#line 3012 "lev_comp.y"
+#line 3013 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_SEL_POINT));
 		  ;}
@@ -6920,7 +6921,7 @@ yyreduce:
   case 472:
 
 /* Line 1455 of yacc.c  */
-#line 3016 "lev_comp.y"
+#line 3017 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_SEL_RECT));
 		  ;}
@@ -6929,7 +6930,7 @@ yyreduce:
   case 473:
 
 /* Line 1455 of yacc.c  */
-#line 3020 "lev_comp.y"
+#line 3021 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_SEL_FILLRECT));
 		  ;}
@@ -6938,7 +6939,7 @@ yyreduce:
   case 474:
 
 /* Line 1455 of yacc.c  */
-#line 3024 "lev_comp.y"
+#line 3025 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_SEL_LINE));
 		  ;}
@@ -6947,7 +6948,7 @@ yyreduce:
   case 475:
 
 /* Line 1455 of yacc.c  */
-#line 3028 "lev_comp.y"
+#line 3029 "lev_comp.y"
     {
 		      /* randline (x1,y1),(x2,y2), roughness */
 		      add_opvars(splev, "o", VA_PASS1(SPO_SEL_RNDLINE));
@@ -6957,7 +6958,7 @@ yyreduce:
   case 476:
 
 /* Line 1455 of yacc.c  */
-#line 3033 "lev_comp.y"
+#line 3034 "lev_comp.y"
     {
 		      add_opvars(splev, "io", VA_PASS2(W_ANY, SPO_SEL_GROW));
 		  ;}
@@ -6966,7 +6967,7 @@ yyreduce:
   case 477:
 
 /* Line 1455 of yacc.c  */
-#line 3037 "lev_comp.y"
+#line 3038 "lev_comp.y"
     {
 		      add_opvars(splev, "io", VA_PASS2((yyvsp[(3) - (6)].i), SPO_SEL_GROW));
 		  ;}
@@ -6975,7 +6976,7 @@ yyreduce:
   case 478:
 
 /* Line 1455 of yacc.c  */
-#line 3041 "lev_comp.y"
+#line 3042 "lev_comp.y"
     {
 		      add_opvars(splev, "iio",
 			     VA_PASS3((yyvsp[(3) - (6)].i), SPOFILTER_PERCENT, SPO_SEL_FILTER));
@@ -6985,7 +6986,7 @@ yyreduce:
   case 479:
 
 /* Line 1455 of yacc.c  */
-#line 3046 "lev_comp.y"
+#line 3047 "lev_comp.y"
     {
 		      add_opvars(splev, "io",
 			       VA_PASS2(SPOFILTER_SELECTION, SPO_SEL_FILTER));
@@ -6995,7 +6996,7 @@ yyreduce:
   case 480:
 
 /* Line 1455 of yacc.c  */
-#line 3051 "lev_comp.y"
+#line 3052 "lev_comp.y"
     {
 		      add_opvars(splev, "io",
 				 VA_PASS2(SPOFILTER_MAPCHAR, SPO_SEL_FILTER));
@@ -7005,7 +7006,7 @@ yyreduce:
   case 481:
 
 /* Line 1455 of yacc.c  */
-#line 3056 "lev_comp.y"
+#line 3057 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_SEL_FLOOD));
 		  ;}
@@ -7014,7 +7015,7 @@ yyreduce:
   case 482:
 
 /* Line 1455 of yacc.c  */
-#line 3060 "lev_comp.y"
+#line 3061 "lev_comp.y"
     {
 		      add_opvars(splev, "oio",
 				 VA_PASS3(SPO_COPY, 1, SPO_SEL_ELLIPSE));
@@ -7024,7 +7025,7 @@ yyreduce:
   case 483:
 
 /* Line 1455 of yacc.c  */
-#line 3065 "lev_comp.y"
+#line 3066 "lev_comp.y"
     {
 		      add_opvars(splev, "oio",
 				 VA_PASS3(SPO_COPY, (yyvsp[(7) - (8)].i), SPO_SEL_ELLIPSE));
@@ -7034,7 +7035,7 @@ yyreduce:
   case 484:
 
 /* Line 1455 of yacc.c  */
-#line 3070 "lev_comp.y"
+#line 3071 "lev_comp.y"
     {
 		      add_opvars(splev, "io", VA_PASS2(1, SPO_SEL_ELLIPSE));
 		  ;}
@@ -7043,7 +7044,7 @@ yyreduce:
   case 485:
 
 /* Line 1455 of yacc.c  */
-#line 3074 "lev_comp.y"
+#line 3075 "lev_comp.y"
     {
 		      add_opvars(splev, "io", VA_PASS2((yyvsp[(9) - (10)].i), SPO_SEL_ELLIPSE));
 		  ;}
@@ -7052,7 +7053,7 @@ yyreduce:
   case 486:
 
 /* Line 1455 of yacc.c  */
-#line 3078 "lev_comp.y"
+#line 3079 "lev_comp.y"
     {
 		      add_opvars(splev, "iio",
 				 VA_PASS3((yyvsp[(9) - (14)].i), (yyvsp[(3) - (14)].i), SPO_SEL_GRADIENT));
@@ -7062,7 +7063,7 @@ yyreduce:
   case 487:
 
 /* Line 1455 of yacc.c  */
-#line 3083 "lev_comp.y"
+#line 3084 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_SEL_COMPLEMENT));
 		  ;}
@@ -7071,7 +7072,7 @@ yyreduce:
   case 488:
 
 /* Line 1455 of yacc.c  */
-#line 3087 "lev_comp.y"
+#line 3088 "lev_comp.y"
     {
 		      check_vardef_type(vardefs, (yyvsp[(1) - (1)].map), SPOVAR_SEL);
 		      vardef_used(vardefs, (yyvsp[(1) - (1)].map));
@@ -7083,7 +7084,7 @@ yyreduce:
   case 489:
 
 /* Line 1455 of yacc.c  */
-#line 3094 "lev_comp.y"
+#line 3095 "lev_comp.y"
     {
 		      /* nothing */
 		  ;}
@@ -7092,7 +7093,7 @@ yyreduce:
   case 490:
 
 /* Line 1455 of yacc.c  */
-#line 3100 "lev_comp.y"
+#line 3101 "lev_comp.y"
     {
 		      /* nothing */
 		  ;}
@@ -7101,7 +7102,7 @@ yyreduce:
   case 491:
 
 /* Line 1455 of yacc.c  */
-#line 3104 "lev_comp.y"
+#line 3105 "lev_comp.y"
     {
 		      add_opvars(splev, "o", VA_PASS1(SPO_SEL_ADD));
 		  ;}
@@ -7110,7 +7111,7 @@ yyreduce:
   case 492:
 
 /* Line 1455 of yacc.c  */
-#line 3110 "lev_comp.y"
+#line 3111 "lev_comp.y"
     {
 		      add_opvars(splev, "iio",
 				 VA_PASS3((yyvsp[(1) - (1)].dice).num, (yyvsp[(1) - (1)].dice).die, SPO_DICE));
@@ -7120,7 +7121,7 @@ yyreduce:
   case 498:
 
 /* Line 1455 of yacc.c  */
-#line 3126 "lev_comp.y"
+#line 3127 "lev_comp.y"
     {
 		      add_opvars(splev, "i", VA_PASS1((yyvsp[(1) - (1)].i)));
 		  ;}
@@ -7129,7 +7130,7 @@ yyreduce:
   case 499:
 
 /* Line 1455 of yacc.c  */
-#line 3130 "lev_comp.y"
+#line 3131 "lev_comp.y"
     {
 		      add_opvars(splev, "i", VA_PASS1((yyvsp[(1) - (1)].i)));
 		  ;}
@@ -7138,7 +7139,7 @@ yyreduce:
   case 500:
 
 /* Line 1455 of yacc.c  */
-#line 3134 "lev_comp.y"
+#line 3135 "lev_comp.y"
     {
 		      add_opvars(splev, "i", VA_PASS1((yyvsp[(1) - (1)].i)));
 		  ;}
@@ -7147,7 +7148,7 @@ yyreduce:
   case 501:
 
 /* Line 1455 of yacc.c  */
-#line 3138 "lev_comp.y"
+#line 3139 "lev_comp.y"
     {
 		      /* nothing */
 		  ;}
@@ -7156,7 +7157,7 @@ yyreduce:
   case 510:
 
 /* Line 1455 of yacc.c  */
-#line 3160 "lev_comp.y"
+#line 3161 "lev_comp.y"
     {
 			(yyval.lregn) = (yyvsp[(1) - (1)].lregn);
 		  ;}
@@ -7165,7 +7166,7 @@ yyreduce:
   case 511:
 
 /* Line 1455 of yacc.c  */
-#line 3164 "lev_comp.y"
+#line 3165 "lev_comp.y"
     {
 			if ((yyvsp[(3) - (10)].i) <= 0 || (yyvsp[(3) - (10)].i) >= COLNO)
 			    lc_error(
@@ -7194,7 +7195,7 @@ yyreduce:
   case 512:
 
 /* Line 1455 of yacc.c  */
-#line 3190 "lev_comp.y"
+#line 3191 "lev_comp.y"
     {
 /* This series of if statements is a hack for MSC 5.1.  It seems that its
    tiny little brain cannot compile if these are all one big if statement. */
@@ -7225,7 +7226,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 7229 "lev_comp.tab.c"
+#line 7230 "lev_comp.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -7437,7 +7438,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 3218 "lev_comp.y"
+#line 3219 "lev_comp.y"
 
 
 /*lev_comp.y*/

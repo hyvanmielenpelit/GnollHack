@@ -251,12 +251,12 @@ mksobj_at(otyp, x, y, init, artif)
 int otyp, x, y;
 boolean init, artif;
 {
-    return mksobj_at_with_flags(otyp, x, y, init, artif, 0UL);
+    return mksobj_at_with_flags(otyp, x, y, init, artif, 0, 0UL);
 }
 
 struct obj*
-mksobj_at_with_flags(otyp, x, y, init, artif, mkflags)
-int otyp, x, y;
+mksobj_at_with_flags(otyp, x, y, init, artif, mkobj_type, mkflags)
+int otyp, x, y, mkobj_type;
 boolean init, artif;
 unsigned long mkflags;
 {
@@ -265,7 +265,7 @@ unsigned long mkflags;
 
     struct obj* otmp;
 
-    otmp = mksobj_with_flags(otyp, init, artif, 0, 0, mkflags);
+    otmp = mksobj_with_flags(otyp, init, artif, mkobj_type, 0, mkflags);
     if (otmp)
     {
         place_object(otmp, x, y);
@@ -1287,7 +1287,7 @@ mksobj_with_flags(otyp, init, artif, mkobj_type, param, mkflags)
 int otyp;
 boolean init;
 boolean artif;
-int mkobj_type;
+int mkobj_type; /* 0 = floor, 1 = box, 2 = wishing, -1 = special level preset item */
 int param;
 unsigned long mkflags;
 {
@@ -1344,14 +1344,13 @@ unsigned long mkflags;
             otmp->otyp = !rn2(3) ? WAN_STRIKING : !rn2(2) ? WAN_DIGGING : WAN_SPEED_MONSTER;
     }
     
-    if (mkobj_type == 0)
+    if (mkobj_type == 0 && !Inhell) /* No instadeath wands on floor ever, except in Gehennom */
     {
         if (otmp->otyp == WAN_DEATH || otmp->otyp == WAN_DISINTEGRATION || otmp->otyp == WAN_PETRIFICATION)
             otmp->otyp = !rn2(2) ? WAN_LIGHTNING : WAN_FIRE;
-
     }
 
-    if (mkobj_type < 2 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || level_difficulty() < 5))
+    if (mkobj_type >= 0 && mkobj_type < 2 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || level_difficulty() < 5))
     {
         if (otmp->otyp == WAN_WISHING)
             otmp->otyp = WAN_POLYMORPH;

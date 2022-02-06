@@ -79,6 +79,7 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_SERVICE_GIVE_ORCISH_QUESTS                      0x00800000UL
 #define NPC_SERVICE_SPECIAL_NPC_HINTS                       0x01000000UL
 #define NPC_SERVICE_SING_SONGS                              0x02000000UL
+#define NPC_SERVICE_GIVE_QUANTUM_QUESTS                     0x04000000UL
 
 #define NPC_FLAGS_PARQUET_FLOOR             0x00000001UL
 #define NPC_FLAGS_MARBLE_FLOOR              0x00000002UL

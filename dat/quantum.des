@@ -1,0 +1,97 @@
+# GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14
+
+# GnollHack 4.0	quantum.des	$NHDT-Date: 1548631704 2019/01/27 23:28:24 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.30 $
+#	Copyright (c) 2022 by Janne Gustafsson
+# GnollHack may be freely redistributed.  See license for details.
+#
+
+
+# 
+# "Quantum Experiments"
+#
+MAZE: "quantum1", ' '
+FLAGS:fountain_on_ground,tree_on_ground,hardfloor
+GEOMETRY:center,center
+#         1         2         3         4         5         6         7   
+#12345678901234567890123456789012345678901234567890123456789012345678901234567890
+MAP
+                                                                           
+                          :::::::::::::::::::::::::                        
+                 :::::::::::::::::::::::::::::::::::::::::::               
+           :::::::::::::::|-----------S-----------|:::::::::::::::        
+         ::::::::|--------|          |:|          |--------|::::::::       
+        :::|-----|                   |:|                   |-----|:::      
+       :::|-                       ---+---                       -|:::     
+      :::|-                        |.....|                        -|:::    
+      ::|--------------------------|.....|--------------------------|::    
+      ::S::::::::::::::::::::::::::+.....+::::::::::::::::::::::::::S::    
+      ::|--------------------------|.....|--------------------------|::    
+      :::|-                        |.....|                        -|:::    
+       :::|-                       ---+---                       -|:::     
+        :::|-----|                   |:|                   |-----|:::      
+         ::::::::|--------|          |:|          |--------|::::::::        
+           :::::::::::::::|-----------S-----------|:::::::::::::::         
+                 ::::::::::::::::::::::::::::::::::::::::::                
+                          :::::::::::::::::::::::::                        
+                                                                           
+ENDMAP
+
+MONSTER_GENERATION: 78, ('Q', "quantum mechanic") 
+MONSTER_GENERATION: 15, ('y', "yellow light") 
+MONSTER_GENERATION: 5, ('y', "black light") 
+MONSTER_GENERATION: 2, ('Q', "elder quantum mechanic") 
+
+## Portal arrival point; just about anywhere on the right hand side of the map
+BRANCH:(42,00,74,06),(0,0,0,0)
+TELEPORT_REGION:(42,00,74,06),(0,0,0,0)
+TELEPORT_REGION:(09,04,67,14),(0,0,0,0),notele
+
+# Non diggable walls
+NON_DIGGABLE:(00,00,74,18)
+
+DOOR:locked,(35,09)
+DOOR:locked,(41,09)
+DOOR:locked,(38,06)
+DOOR:locked,(38,12)
+
+SIGNPOST: (38,04), signpost_normal,"Danger! Keep Out!"
+SIGNPOST: (38,14), signpost_normal,"Danger! Keep Out!"
+SIGNPOST: (09,09), signpost_normal,"Danger! Keep Out!"
+SIGNPOST: (67,09), signpost_normal,"Danger! Keep Out!"
+
+BRAZIER:(37,09)
+BRAZIER:(39,09)
+BRAZIER:(38,08)
+BRAZIER:(38,10)
+
+MONSTER: ('q',"wumpus"),(38,09),hostile,asleep
+CONTAINER:('(',"chest"),not_trapped,no_pickup,locked,(38,09) {
+    OBJECT:('/',"disintegration")
+}
+
+MONSTER: ('Q',"elder quantum mechanic"),(39,09),hostile,waitforu
+{
+  OBJECT:('+',"sphere of annihilation")
+  OBJECT:('[',"cloak of displacement")
+  [25%]:OBJECT:('(', "cubic gate")
+}
+
+MONSTER: ('Q',"quantum mechanic"),random,hostile
+MONSTER: ('Q',"quantum mechanic"),random,hostile
+MONSTER: ('Q',"quantum mechanic"),random,hostile
+MONSTER: ('Q',"quantum mechanic"),random,hostile
+MONSTER: ('Q',"quantum mechanic"),random,hostile
+MONSTER: ('Q',"quantum mechanic"),random,hostile
+MONSTER: ('Q',"quantum mechanic"),random,hostile
+MONSTER: ('Q',"quantum mechanic"),random,hostile
+MONSTER: ('y',"yellow light"),random,hostile
+MONSTER: ('y',"yellow light"),random,hostile
+MONSTER: ('y',"yellow light"),random,hostile
+MONSTER: ('y',"yellow light"),random,hostile
+MONSTER: ('y',"yellow light"),random,hostile
+MONSTER: ('y',"yellow light"),random,hostile
+MONSTER: ('y',"black light"),random,hostile
+MONSTER: ('y',"black light"),random,hostile
+MONSTER: ('y',"black light"),random,hostile
+
+# end quantum.des

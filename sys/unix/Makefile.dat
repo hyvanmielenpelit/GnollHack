@@ -129,10 +129,11 @@ options:	../util/makedefs
 
 
 spec_levs: ../util/lev_comp \
-	bigroom.des bovine.des castle.des endgame.des gehennom.des knox.des main.des medusa.des \
+	bigroom.des bovine.des quantum.des castle.des endgame.des gehennom.des knox.des main.des medusa.des \
 	mines.des modron.des oracle.des sokoban.des tower.des yendor.des
 	../util/lev_comp bigroom.des
 	../util/lev_comp bovine.des
+	../util/lev_comp quantum.des
 	../util/lev_comp castle.des
 	../util/lev_comp endgame.des
 	../util/lev_comp gehennom.des

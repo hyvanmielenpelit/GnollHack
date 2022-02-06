@@ -8,7 +8,7 @@
 #include "hack.h"
 
 STATIC_DCL boolean FDECL(tele_jump_ok, (int, int, int, int, BOOLEAN_P));
-STATIC_DCL boolean FDECL(teleok, (int, int, BOOLEAN_P));
+STATIC_DCL boolean FDECL(teleok, (int, int, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL void NDECL(vault_tele);
 STATIC_DCL boolean FDECL(rloc_pos_ok, (int, int, struct monst *));
 STATIC_DCL void FDECL(mvault_tele, (struct monst *));
@@ -246,13 +246,20 @@ boolean isyou;
                                    updest.nhy))
             return (isyou && wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
     }
+    if (noteledest.lx > 0) { /* ditto */
+        if (within_bounded_area(x2, y2, noteledest.lx, noteledest.ly, noteledest.hx,
+            noteledest.hy)
+            && !within_bounded_area(x2, y2, noteledest.nlx, noteledest.nly,
+                noteledest.nhx, noteledest.nhy))
+            return (isyou && wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
+    }
     return TRUE;
 }
 
 STATIC_OVL boolean
-teleok(x, y, trapok)
+teleok(x, y, trapok, verbose)
 register int x, y;
-boolean trapok;
+boolean trapok, verbose;
 {
     if (!trapok) 
     {
@@ -264,7 +271,7 @@ boolean trapok;
     }
     if (!goodpos(x, y, &youmonst, 0))
         return FALSE;
-    if (!tele_jump_ok(u.ux, u.uy, x, y, TRUE))
+    if (!tele_jump_ok(u.ux, u.uy, x, y, verbose))
         return FALSE;
     if (!in_out_region(x, y))
         return FALSE;
@@ -441,7 +448,7 @@ boolean allow_drag, keep_effect_glyphs;
     do {
         nux = rnd(COLNO - 1);
         nuy = rn2(ROWNO);
-    } while (!teleok(nux, nuy, (boolean) (tcnt > 200)) && ++tcnt <= 400);
+    } while (!teleok(nux, nuy, (boolean) (tcnt > 200), FALSE) && ++tcnt <= 400);
 
     if (tcnt <= 400) {
         teleds(nux, nuy, allow_drag, keep_effect_glyphs);
@@ -472,7 +479,7 @@ vault_tele()
     register struct mkroom *croom = search_special(VAULT);
     coord c;
 
-    if (croom && somexy(croom, &c) && teleok(c.x, c.y, FALSE)) {
+    if (croom && somexy(croom, &c) && teleok(c.x, c.y, FALSE, FALSE)) {
         teleds_with_effects(c.x, c.y, FALSE, TRUE);
         return;
     }
@@ -587,7 +594,7 @@ boolean iscontrolled;
                 return TRUE; /* abort */
             /* possible extensions: introduce a small error if
                magic power is low; allow transfer to solid rock */
-            if (teleok(cc.x, cc.y, FALSE)) 
+            if (teleok(cc.x, cc.y, FALSE, TRUE)) 
             {
                 /* for scroll, discover it regardless of destination */
                 if (scroll)
@@ -732,7 +739,7 @@ struct monst* mtmp;
             y = u.uy + 1;
         }
         int nux = x, nuy = y;
-        if(isyou ? !teleok(x, y, FALSE) : !rloc_pos_ok(x, y, mtmp))
+        if(isyou ? !teleok(x, y, FALSE, FALSE) : !rloc_pos_ok(x, y, mtmp))
         {
             do {
                 if (tcnt < 50)
@@ -745,7 +752,7 @@ struct monst* mtmp;
                     nux = x - 2 + rn2(5);
                     nuy = y - 2 + rn2(5);
                 }
-            } while ((isyou ? !teleok(x, y, (tcnt >= 200)) : !rloc_pos_ok(x, y, mtmp)) && ++tcnt <= 400);
+            } while ((isyou ? !teleok(x, y, (tcnt >= 200), FALSE) : !rloc_pos_ok(x, y, mtmp)) && ++tcnt <= 400);
         }
 
         if (tcnt <= 400)

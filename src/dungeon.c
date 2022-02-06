@@ -703,6 +703,7 @@ struct level_map {
                   { "baalz", &baalzebub_level },
                   { "bigrm", &bigroom_level },
                   { "bovine", &bovine_level },
+                  { "quantum", &quantum_level },
                   { "castle", &stronghold_level },
                   { "earth", &earth_level },
                   { "fakewiz1", &portal_level },
@@ -1016,6 +1017,7 @@ init_dungeons()
     tower_dnum = dname_to_dnum("Vlad's Tower");
     modron_dnum = dname_to_dnum("Plane of the Modron");
     bovine_dnum = dname_to_dnum("Hellish Pastures");
+    large_circular_dgn_dnum = dname_to_dnum("Large Circular Dungeon");
     endgame_dnum = dname_to_dnum("The Elemental Planes");
     
     /* one special fixup for dummy surface level */
@@ -1497,6 +1499,14 @@ In_bovine_level(lev)
 d_level* lev;
 {
     return (boolean)(lev->dnum == bovine_dnum);
+}
+
+/* are you in the large circular dungeon level? */
+boolean
+In_large_circular_dgn_level(lev)
+d_level* lev;
+{
+    return (boolean)(lev->dnum == large_circular_dgn_dnum);
 }
 
 /*
@@ -2091,7 +2101,7 @@ xchar *rdgn;
         else if (Is_earthlevel(&u.uz) || Is_waterlevel(&u.uz)
                  || Is_firelevel(&u.uz) || Is_airlevel(&u.uz)
                  || Is_qstart(&u.uz) || at_dgn_entrance("The Quest") 
-                 || at_dgn_entrance("Plane of the Modron") || at_dgn_entrance("Hellish Pastures")
+                 || at_dgn_entrance("Plane of the Modron") || at_dgn_entrance("Hellish Pastures") || at_dgn_entrance("Large Circular Dungeon")
                  || Is_knox(&u.uz))
             Strcpy(buf, "No portal found.");
 
@@ -2485,7 +2495,7 @@ mapseen *mptr;
     if (mptr->flags.oracle || mptr->flags.bigroom || mptr->flags.roguelevel
         || mptr->flags.castle || mptr->flags.valley || mptr->flags.msanctum || mptr->flags.special_level
         || mptr->flags.quest_summons || mptr->flags.questing
-        || mptr->flags.modron_hint_shown || mptr->flags.yacc_hint_shown)
+        || mptr->flags.modron_hint_shown || mptr->flags.yacc_hint_shown || mptr->flags.quantum_hint_shown)
         return TRUE;
     /* when in Sokoban, list all sokoban levels visited; when not in it,
        list any visited Sokoban level which remains unsolved (will usually
@@ -2571,6 +2581,7 @@ recalc_mapseen()
                             && quest_status.got_quest);
     mptr->flags.modron_hint_shown = (at_dgn_entrance("Plane of the Modron") && u.uevent.modron_portal_hint && !u.uevent.modron_plane_entered);
     mptr->flags.yacc_hint_shown = (at_dgn_entrance("Hellish Pastures") && u.uevent.bovine_portal_hint && !u.uevent.hellish_pastures_entered);
+    mptr->flags.quantum_hint_shown = (at_dgn_entrance("Large Circular Dungeon") && u.uevent.quantum_portal_hint && !u.uevent.large_circular_dgn_entered);
 
     /* track rooms the hero is in */
     for (i = 0; i < SIZE(u.urooms); ++i) {

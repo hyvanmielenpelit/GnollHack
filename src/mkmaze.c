@@ -557,6 +557,16 @@ fixup_special()
             }
             /* place_lregion gets called from goto_level() */
             break;
+        case LR_NOTELE:
+            noteledest.lx = r->inarea.x1;
+            noteledest.ly = r->inarea.y1;
+            noteledest.hx = r->inarea.x2;
+            noteledest.hy = r->inarea.y2;
+            noteledest.nlx = r->delarea.x1;
+            noteledest.nly = r->delarea.y1;
+            noteledest.nhx = r->delarea.x2;
+            noteledest.nhy = r->delarea.y2;
+            break;
         case LR_SPECIAL_MAP_SEEN:
             create_simple_permanent_region(r->inarea.x1, r->inarea.y1, r->inarea.x2, r->inarea.y2, REGION_SPECIAL_LEVEL_SEEN);
             break;

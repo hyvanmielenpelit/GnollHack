@@ -2022,6 +2022,7 @@ teleprt_region	: TELEPRT_ID ':' lev_region ',' lev_region teleprt_detail
 		      case -1: rtyp = LR_TELE; break;
 		      case  0: rtyp = LR_DOWNTELE; break;
 		      case  1: rtyp = LR_UPTELE; break;
+		      case  2: rtyp = LR_NOTELE; break;
 		      }
 		      add_opvars(splev, "iiiii iiiii iiso",
 				 VA_PASS14($3.x1, $3.y1, $3.x2, $3.y2, $3.area,

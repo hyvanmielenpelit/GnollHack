@@ -172,6 +172,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Vlad-Tower-Normal", 0.08f },
     { SOUND_BANK_MASTER, "event:/Music/Modron-Normal", 0.08f },
     { SOUND_BANK_MASTER, "event:/Music/Bovine-Normal", 0.06f },
+    { SOUND_BANK_MASTER, "event:/Music/Large-Circular-Dungeon-Normal", 0.07f },
     { SOUND_BANK_MASTER, "event:/Music/End Game/Normal", 0.08f },
     { SOUND_BANK_MASTER, "event:/Music/End Game/Earth", 0.08f },
     { SOUND_BANK_MASTER, "event:/Music/End Game/Air", 0.08f },
@@ -13609,6 +13610,8 @@ int dnum;
         res = GHSOUND_MODRON_MUSIC_NORMAL;
     else if (dnum == bovine_dnum)
         res = GHSOUND_BOVINE_MUSIC_NORMAL;
+    else if (dnum == large_circular_dgn_dnum)
+        res = GHSOUND_GNOMISH_MINES_MUSIC_NORMAL;
     else if (Inhell)
         res = GHSOUND_GEHENNOM_MUSIC_NORMAL;
     else if (In_endgame(&u.uz))
