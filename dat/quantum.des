@@ -11,6 +11,7 @@
 #
 MAZE: "quantum1", ' '
 FLAGS:fountain_on_ground,tree_on_ground,hardfloor
+NAMING:"A circular dungeon", name_revealed_on_arrival
 GEOMETRY:center,center
 #         1         2         3         4         5         6         7   
 #12345678901234567890123456789012345678901234567890123456789012345678901234567890
