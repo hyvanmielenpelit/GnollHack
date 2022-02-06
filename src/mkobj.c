@@ -251,12 +251,12 @@ mksobj_at(otyp, x, y, init, artif)
 int otyp, x, y;
 boolean init, artif;
 {
-    return mksobj_at_with_flags(otyp, x, y, init, artif, 0, 0UL);
+    return mksobj_at_with_flags(otyp, x, y, init, artif, 0, 0, 0UL);
 }
 
 struct obj*
-mksobj_at_with_flags(otyp, x, y, init, artif, mkobj_type, mkflags)
-int otyp, x, y, mkobj_type;
+mksobj_at_with_flags(otyp, x, y, init, artif, mkobj_type, param, mkflags)
+int otyp, x, y, mkobj_type, param;
 boolean init, artif;
 unsigned long mkflags;
 {
@@ -265,7 +265,7 @@ unsigned long mkflags;
 
     struct obj* otmp;
 
-    otmp = mksobj_with_flags(otyp, init, artif, mkobj_type, 0, mkflags);
+    otmp = mksobj_with_flags(otyp, init, artif, mkobj_type, param, mkflags);
     if (otmp)
     {
         place_object(otmp, x, y);
