@@ -1541,6 +1541,14 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Elven Bard/Special Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Elven Bard/Item Trading", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Elven Bard/Death", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Teleportation", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Quantum Experiments", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Large Circular Dungeon", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Special Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Item Trading", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Death", 1.0f },
 };
 /*
 
@@ -4327,7 +4335,62 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
+    {
+        "Professor of Quantum Mechanics",
+        MONSTER_SOUNDSET_HUMAN_MALE,
+        {
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_AMBIENT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SWALLOW_AMBIENT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION_WITH_GOD_NAME */
+            {GHSOUND_QUANTUM_ITEM_TRADING, 1.0f}, /* MONSTER_SOUND_TYPE_ITEM_TRADING */
+            {GHSOUND_QUANTUM_STANDARD_DIALOGUE, 1.0f}, /* MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE */
+            {GHSOUND_QUANTUM_SPECIAL_DIALOGUE, 1.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CREATION */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_COUGH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_UNHAPPY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_1 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_2 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_3 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_OUCH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_FLOUNDER */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_4 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_5 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_6 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_BUMP_INTO */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SEARCH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CAST */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_HAPPY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_LAUGHTER */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RANDOM_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_7 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CURSE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MUMBLED_CURSE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_YELL */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CHAT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_START_ATTACK */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SHUDDER */
+            {GHSOUND_QUANTUM_DEATH, 5.0f} /* MONSTER_SOUND_TYPE_DEATH */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OBJECT_SOUNDSET_HUMAN_BAREHANDED,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_HUMAN_BAREFOOTED
+        }
+    },
 };
 
 NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS] =
@@ -15807,6 +15870,12 @@ struct monst* mtmp;
             break;
         case NPC_ORC_HERMIT3:
             return MONSTER_SOUNDSET_ORC_HERMIT3;
+            break;
+        case NPC_ELVEN_BARD:
+            return MONSTER_SOUNDSET_ELVEN_BARD;
+            break;
+        case NPC_QUANTUM_MECHANIC:
+            return MONSTER_SOUNDSET_PROFESSOR_OF_QUANTUM_MECHANICS;
             break;
         case NPC_WARP_ENGINEER:
             break;

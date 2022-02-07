@@ -7240,7 +7240,7 @@ struct monst* mtmp;
             "You cannot level teleport while carrying the Amulet of Yendor.",
             0 };
 
-        hermit_talk(mtmp, linearray, GHSOUND_NONE);
+        hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_TELEPORTATION);
         break;
     }
     case NPC_ELVEN_BARD:
@@ -8132,7 +8132,7 @@ struct monst* mtmp;
         "But beware, it takes but a minuscule disturbance to ruin their carefully constructed entanglements.",
         0 };
 
-    hermit_talk(mtmp, linearray, GHSOUND_NONE);
+    hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_EXPERIMENTS);
     mtmp->quantum_told_experiments = 1;
     return 1;
 }
@@ -8145,12 +8145,12 @@ struct monst* mtmp;
         return 0;
 
     const char* linearray[4] = {
-        "The Large Circular Dungeon is massive circular hallway constructed to conduct our most demanding experiments.",
-        "It was built several years ago using special tunneling techniques involving the use of violet funguses to summon purple worms.",
+        "The Large Circular Dungeon is massive circular hallway constructed to conduct our most demanding quantum experiments.",
+        "It was built several years ago using special tunneling techniques involving, for example, violet fungi to attract purple worms.",
         "Since its completion, it has provided us with invaluable insights into teleportation and formation of planar rifts, among other discoveries.",
         0 };
 
-    hermit_talk(mtmp, linearray, GHSOUND_NONE);
+    hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_LARGE_CIRCULAR_DUNGEON);
     return 1;
 }
 

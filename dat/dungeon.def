@@ -151,7 +151,7 @@ DUNGEON:	"Large Circular Dungeon" "C" (1, 0)
 TILESET:    gnomish_mines_tileset
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
-LEVEL:		"Quantum Experiments" "quantum1" "none" @ (-1, 0)
+LEVEL:		"Quantum Tunnel" "quantum1" "none" @ (-1, 0)
 
 
 #
