@@ -88,6 +88,15 @@ RNDLEVEL:	"Mine's End" "minend" "E" @ (-1, 0) 3
 CHAINBRANCH:	"Large Circular Dungeon" "minetn" + (1, 1) portal
 
 #
+#	Large Circular Dungeon
+#
+DUNGEON:	"Large Circular Dungeon" "C" (1, 0)
+TILESET:    gnomish_mines_tileset
+DESCRIPTION:	mazelike
+ALIGNMENT:	unaligned
+LEVEL:		"Quantum Tunnel" "quantum1" "none" @ (-1, 0)
+
+#
 #	The Questdungeon
 #
 #	This is a proto-dungeon.  The level file names will be prepended with
@@ -143,16 +152,6 @@ DESCRIPTION:	mazelike
 DESCRIPTION:	hellish
 ALIGNMENT:	chaotic
 LEVEL:		"Barn from Hell" "bovine1" "none" @ (-1, 0)
-
-#
-#	Large Circular Dungeon
-#
-DUNGEON:	"Large Circular Dungeon" "C" (1, 0)
-TILESET:    gnomish_mines_tileset
-DESCRIPTION:	mazelike
-ALIGNMENT:	unaligned
-LEVEL:		"Quantum Tunnel" "quantum1" "none" @ (-1, 0)
-
 
 #
 #	Vlad's Tower
