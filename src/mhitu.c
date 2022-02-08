@@ -1129,7 +1129,10 @@ register struct monst *mtmp;
                                     || m_carrying(mtmp, SILVER_FLAIL) || m_carrying(mtmp, RUNED_FLAIL)))
                                 pline("%s swings his flail commandingly.", Monnam(mtmp));
                             else if (!Deaf)
+                            {
+                                play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_GROWLS);
                                 pline("%s growls menacingly.", Monnam(mtmp));
+                            }
                         }
                     }
                 }
@@ -1150,9 +1153,15 @@ register struct monst *mtmp;
                         else if(!is_silenced(mtmp) && !Deaf)
                         {
                             if (!rn2(2))
+                            {
+                                play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_BLOOD_CURDLING_HOWL);
                                 pline("%s lets loose a blood-curdling howl!", Monnam(mtmp));
+                            }
                             else
+                            {
+                                play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_HOWLS);
                                 pline("%s howls!", Monnam(mtmp));
+                            }
                         }
                     }
                 }

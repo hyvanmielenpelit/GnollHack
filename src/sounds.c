@@ -4289,6 +4289,7 @@ struct monst* mtmp;
         if (mtmp->data->mtitle && strcmp(mtmp->data->mtitle, ""))
             Sprintf(titlebuf, ", %s", mtmp->data->mtitle);
 
+        play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_ANSWER_WHO_ARE_YOU);
         Sprintf(ansbuf, "I am %s%s.", mon_monster_name(mtmp), titlebuf);
         popup_talk_line(mtmp, ansbuf);
     }

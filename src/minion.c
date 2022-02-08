@@ -790,6 +790,7 @@ struct monst *mtmp;
             || ((uwep && uwep->oartifact == ART_HOWLING_FLAIL) || (uarms && uarms->oartifact == ART_HOWLING_FLAIL)))
         {
             struct monst tmpmon = *mtmp; /* Save Yeenaghu's data */
+            play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_PLEASED);
             verbalize("You have pleased me, my minion. I will grant one wish!");
             /* give a wish and discard the monster (mtmp set to null) */
             mongrantswish(&mtmp);
@@ -800,12 +801,14 @@ struct monst *mtmp;
         }
         if (u.ualign.type != A_LAWFUL)
         {
+            play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_NOT_PLEASED);
             verbalize("You have not pleased me! Prove your allegiance to the Abyss, and you shall be rewarded.");
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
             pline("%s scowls at you, then vanishes.", Amonnam(mtmp));
         }
         else
         {
+            play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_DISPLEASE);
             verbalize("Your ways displease me. Follow the path of the Abyss, and you shall be rewarded.");
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
             pline("%s scowls at you menacingly, then vanishes.", Amonnam(mtmp));
