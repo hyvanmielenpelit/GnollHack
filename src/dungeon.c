@@ -3149,9 +3149,9 @@ boolean printdun;
                     depthstart,
                     depthstart + dungeons[dnum].dunlev_ureached - 1);
 #ifdef GNH_ANDROID
-        putstr(win, !final ? ATR_TITLE : 0, dungeons[dnum].dname);
+        putstr(win, !final ? ATR_TITLE | ATR_ALIGN_CENTER : 0, dungeons[dnum].dname);
         if(strcmp(dbuf, ""))
-            putstr(win, !final ? ATR_SUBTITLE : 0, dbuf);
+            putstr(win, !final ? ATR_SUBTITLE | ATR_ALIGN_CENTER : 0, dbuf);
 #else
         Sprintf(buf, "%s: %s", dungeons[dnum].dname, dbuf);
         putstr(win, !final ? ATR_INVERSE | ATR_TITLE : 0, buf);
