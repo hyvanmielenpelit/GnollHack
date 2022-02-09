@@ -59,7 +59,7 @@ MAXPLAYERS=10
 
 # Uncomment the next line to disable the SEDUCE option, causing succubi and
 # incubi to use nymphs' charm behavior rather than their own seduce behavior.
-#SEDUCE=0
+SEDUCE=0
 
 # Uncomment to disable savefile UID checking.
 #CHECK_SAVE_UID=0
