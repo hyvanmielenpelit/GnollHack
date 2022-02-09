@@ -3133,21 +3133,29 @@ boolean printdun;
     else
         depthstart = dungeons[dnum].depth_start;
 
-    if (printdun) {
+    if (printdun) 
+    {
+        char dbuf[BUFSIZ];
         if (dungeons[dnum].dunlev_ureached == dungeons[dnum].entry_lev
             /* suppress the negative numbers in the endgame */
             || In_endgame(&mptr->lev))
-            Sprintf(buf, "%s:", dungeons[dnum].dname);
+            Sprintf(dbuf, "%s", "");
         else if (builds_up(&mptr->lev))
-            Sprintf(buf, "%s: levels %d up to %d",
-                    dungeons[dnum].dname,
+            Sprintf(dbuf, "Levels %d up to %d",
                     depthstart + dungeons[dnum].entry_lev - 1,
                     depthstart + dungeons[dnum].dunlev_ureached - 1);
         else
-            Sprintf(buf, "%s: levels %d to %d",
-                    dungeons[dnum].dname, depthstart,
+            Sprintf(dbuf, "Levels %d to %d",
+                    depthstart,
                     depthstart + dungeons[dnum].dunlev_ureached - 1);
-        putstr(win, !final ? ATR_INVERSE : 0, buf);
+#ifdef GNH_ANDROID
+        putstr(win, !final ? ATR_TITLE : 0, dungeons[dnum].dname);
+        if(strcmp(dbuf, ""))
+            putstr(win, !final ? ATR_SUBTITLE : 0, dbuf);
+#else
+        Sprintf(buf, "%s: %s", dungeons[dnum].dname, dbuf);
+        putstr(win, !final ? ATR_INVERSE | ATR_TITLE : 0, buf);
+#endif
     }
 
     /* calculate level number */
@@ -3172,7 +3180,7 @@ boolean printdun;
                 (!final || (final == 1 && how == ASCENDED)) ? "are"
                   : (final == 1 && how == ESCAPED) ? "left from"
                     : "were");
-    putstr(win, !final ? ATR_BOLD : 0, buf);
+    putstr(win, !final ? ATR_BOLD | ATR_HEADING : 0, buf);
 
     if (mptr->flags.forgot)
         return;
@@ -3237,7 +3245,7 @@ boolean printdun;
         buf[i] = highc(buf[i]);
         /* capitalizing it makes it a sentence; terminate with '.' */
         Strcat(buf, ".");
-        putstr(win, 0, buf);
+        putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
 
     /* we assume that these are mutually exclusive */
@@ -3283,19 +3291,19 @@ boolean printdun;
     }
 
     if (*buf)
-        putstr(win, 0, buf);
+        putstr(win, ATR_INDENT_AT_SPACE, buf);
     /* quest entrance is not mutually-exclusive with bigroom or rogue level */
     if (mptr->flags.quest_summons) {
         Sprintf(buf, "%sSummoned by %s.", PREFIX, ldrname());
-        putstr(win, 0, buf);
+        putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
     if(mptr->flags.modron_hint_shown) {
         Sprintf(buf, "%sHad a sensation of unusually straight angles.", PREFIX);
-        putstr(win, 0, buf);
+        putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
     if (mptr->flags.yacc_hint_shown) {
         Sprintf(buf, "%sHeard distant grunting and bellowing.", PREFIX);
-        putstr(win, 0, buf);
+        putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
 
     /* print out branches */
@@ -3310,7 +3318,7 @@ boolean printdun;
         if (mptr->br->end1_up && !In_endgame(&(mptr->br->end2)))
             Sprintf(eos(buf), ", level %d", depth(&(mptr->br->end2)));
         Strcat(buf, ".");
-        putstr(win, 0, buf);
+        putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
 
     /* maybe print out bones details */
@@ -3323,7 +3331,7 @@ boolean printdun;
                 ++kncnt;
         if (kncnt) {
             Sprintf(buf, "%s%s", PREFIX, "Final resting place for");
-            putstr(win, 0, buf);
+            putstr(win, ATR_INDENT_AT_SPACE, buf);
             if (died_here) {
                 /* disclosure occurs before bones creation, so listing dead
                    hero here doesn't give away whether bones are produced */
@@ -3335,13 +3343,13 @@ boolean printdun;
                 (void) strsubst(tmpbuf, " her ", " your ");
                 Sprintf(buf, "%s%syou, %s%c", PREFIX, TAB, tmpbuf,
                         --kncnt ? ',' : '.');
-                putstr(win, 0, buf);
+                putstr(win, ATR_INDENT_AT_SPACE, buf);
             }
             for (bp = mptr->final_resting_place; bp; bp = bp->next) {
                 if (bp->bonesknown || wizard || final) {
                     Sprintf(buf, "%s%s%s, %s%c", PREFIX, TAB, bp->who,
                             bp->how, --kncnt ? ',' : '.');
-                    putstr(win, 0, buf);
+                    putstr(win, ATR_INDENT_AT_SPACE, buf);
                 }
             }
         }

@@ -53,6 +53,8 @@ namespace GnollHackCommon
         IndentDash =  0x00000800,
         IndentColon = 0x00001000,
         IndentAstr =  0x00002000,
+        IndentSpace = 0x00004000,
+        IndentPeriod = 0x00001800,
     }
 
     [Flags]

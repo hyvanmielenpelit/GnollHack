@@ -235,15 +235,19 @@ namespace GnollHackClient
             string str = Text;
             if (InstructionList != null && InstructionList.Count > 0)
             {
-                if ((InstructionList[0].Attributes & (((int)MenuItemAttributes.IndentDash) | (int)MenuItemAttributes.IndentColon | (int)MenuItemAttributes.IndentAstr)) != 0)
+                if ((InstructionList[0].Attributes & (((int)MenuItemAttributes.IndentDash) | (int)MenuItemAttributes.IndentColon | (int)MenuItemAttributes.IndentAstr | (int)MenuItemAttributes.IndentSpace)) != 0)
                 {
                     string cstr = " ";
-                    if ((InstructionList[0].Attributes & (int)MenuItemAttributes.IndentDash) == (int)MenuItemAttributes.IndentDash)
+                    if ((InstructionList[0].Attributes & (int)MenuItemAttributes.IndentPeriod) == (int)MenuItemAttributes.IndentPeriod)
+                        cstr = ".";
+                    else if ((InstructionList[0].Attributes & (int)MenuItemAttributes.IndentDash) == (int)MenuItemAttributes.IndentDash)
                         cstr = "-";
                     else if ((InstructionList[0].Attributes & (int)MenuItemAttributes.IndentColon) == (int)MenuItemAttributes.IndentColon)
                         cstr = ":";
                     else if ((InstructionList[0].Attributes & (int)MenuItemAttributes.IndentAstr) == (int)MenuItemAttributes.IndentAstr)
                         cstr = "*";
+                    else if ((InstructionList[0].Attributes & (int)MenuItemAttributes.IndentSpace) == (int)MenuItemAttributes.IndentSpace)
+                        cstr = " ";
 
                     int idx = str.IndexOf(cstr[0]);
                     if(idx >= 0)

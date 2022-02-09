@@ -117,7 +117,8 @@ typedef struct mi {
 #define ATR_INDENT_AT_DASH  0x0800 /* With automatic wrap, indents at the first dash (-) + spaces after it */
 #define ATR_INDENT_AT_COLON 0x1000 /* With automatic wrap, indents at the first colon (:) + spaces after it */
 #define ATR_INDENT_AT_ASTR  0x2000 /* With automatic wrap, indents at the first asterisk (*) + spaces after it */
-/* Free bit for one more indent */
+#define ATR_INDENT_AT_SPACE 0x4000 /* With automatic wrap, indents at the first space ( ) + spaces after it */
+#define ATR_INDENT_AT_PERIOD (ATR_INDENT_AT_DASH | ATR_INDENT_AT_COLON) /* With automatic wrap, indents at the first space (.) + spaces after it */
 #define ATR_ALIGN_CENTER    0x00010000
 #define ATR_ALIGN_RIGHT     0x00020000
 #define ATR_CARD_FORMAT     0x00040000
