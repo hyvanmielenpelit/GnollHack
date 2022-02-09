@@ -129,7 +129,7 @@ namespace GnollHackClient
                 if (_window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_KEEP_LINE_BREAKS
                     || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER)
                 {
-                    double basesize = Math.Min(22, Math.Max(15.5, 15.5 * _gamePage.CurrentPageWidth * _gamePage.CurrentPageHeight / (600 * 360)));
+                    double basesize = Math.Min(22, Math.Min(15.5 * _gamePage.CurrentPageWidth / 300, Math.Max(15.5, 15.5 * _gamePage.CurrentPageWidth * _gamePage.CurrentPageHeight / (600 * 360))));
                     if (InstructionList != null && InstructionList.Count > 0)
                     {
                         if ((InstructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title))
