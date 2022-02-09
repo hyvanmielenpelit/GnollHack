@@ -803,6 +803,7 @@ struct monst *mtmp;
         {
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_NOT_PLEASED);
             verbalize("You have not pleased me! Prove your allegiance to the Abyss, and you shall be rewarded.");
+            play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_SCOWLS);
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
             pline("%s scowls at you, then vanishes.", Amonnam(mtmp));
         }
@@ -810,6 +811,7 @@ struct monst *mtmp;
         {
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_DISPLEASE);
             verbalize("Your ways displease me. Follow the path of the Abyss, and you shall be rewarded.");
+            play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_SCOWLS);
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
             pline("%s scowls at you menacingly, then vanishes.", Amonnam(mtmp));
         }
@@ -819,8 +821,8 @@ struct monst *mtmp;
         //Demon lords and princes get angry for all but devout (and some random less devout) chaotic characters
         if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !rnl(4))))
         {
-            play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
+            play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
             pline("%s laughs menacingly, then vanishes.",
                 Amonnam(mtmp));
         } 
