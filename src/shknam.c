@@ -307,7 +307,7 @@ const struct shclass shtypes[] = {
       { { 80, FOOD_CLASS },
         { 2, POTION_CLASS },
         { 4, -POT_FRUIT_JUICE },
-        { 4, -POT_BOOZE },
+        { 4, -POT_ELVEN_HERBAL_BREW },
         { 5, -POT_WATER },
         { 3, -ICE_BOX },
         { 2, -BAG_OF_THE_GLUTTON },

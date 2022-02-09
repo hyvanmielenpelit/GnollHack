@@ -1558,7 +1558,7 @@ register struct trobj *trop;
                    || otyp == POT_HALLUCINATION
                    || otyp == POT_ACID
                    || otyp == POT_URINE
-                   || (otyp == POT_DWARVEN_STOUT && !Race_if(PM_DWARF))
+                   || (otyp == POT_DWARVEN_MUSHROOM_BREW && !Race_if(PM_DWARF))
                    || (otyp == SPE_PROTECTION_FROM_LYCANTHROPY && Race_if(PM_GNOLL))
                    || (otyp == SPE_PROTECTION_FROM_POISON && Race_if(PM_ORC))
                    || (otyp == SPE_PROTECTION_FROM_POISON && Role_if(PM_BARBARIAN))

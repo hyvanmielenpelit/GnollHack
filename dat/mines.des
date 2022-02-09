@@ -1230,14 +1230,14 @@ NON_DIGGABLE:(61,15,61,16)
 # the Trespassers sign is a long-running joke
 ENGRAVING:(12,03),engrave,"You are now entering the Gnome King's wine cellar."
 ENGRAVING:(12,04),engrave,"Trespassers will be persecuted!"
-OBJECT:('!',"booze"),(10,07)
-OBJECT:('!',"booze"),(10,07)
+OBJECT:('!',"elven herbal brew"),(10,07)
+OBJECT:('!',"dwarven mushroom brew"),(10,07)
 OBJECT:'!',(10,07)
-OBJECT:('!',"booze"),(10,08)
-OBJECT:('!',"booze"),(10,08)
+OBJECT:('!',"elven herbal brew"),(10,08)
+OBJECT:('!',"dwarven mushroom brew"),(10,08)
 OBJECT:'!',(10,08)
-OBJECT:('!',"booze"),(10,09)
-OBJECT:('!',"booze"),(10,09)
+OBJECT:('!',"elven herbal brew"),(10,09)
+OBJECT:('!',"dwarven mushroom brew"),(10,09)
 OBJECT:('!',"object detection"),(10,09)
 # Objects
 # The Treasure chamber...

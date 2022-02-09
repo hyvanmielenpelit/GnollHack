@@ -1660,9 +1660,9 @@ register struct monst *mtmp;
             if (!rn2(4))
                 (void)mongets(mtmp, CRAM_RATION);
             if (!rn2(4))
-                (void)mongets(mtmp, POT_DWARVEN_STOUT);
+                (void)mongets(mtmp, POT_DWARVEN_MUSHROOM_BREW);
             if (!rn2(12))
-                (void)mongets(mtmp, POT_DWARVEN_STOUT);
+                (void)mongets(mtmp, POT_DWARVEN_MUSHROOM_BREW);
 
         }
 

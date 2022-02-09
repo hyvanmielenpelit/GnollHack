@@ -2501,7 +2501,7 @@ POTION("greater energy",     "greenish", None, 1, NO_POWER, NO_POWER, NO_POWER, 
 POTION("full energy",          "silvery", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 300, 0, 0, 0, 0, 24, 6, 500, 0, 0, 0, 0, 0, 3, 0, 0, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 POTION("sleeping",       "effervescent", None, 1, NO_POWER, NO_POWER, NO_POWER, 30, 100, 3, 4, 0, 0, 5, 4, 0, 0, 0, 0, 0, 0, 0, -1, -2, CLR_GRAY, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 POTION("polymorph",            "golden", None, 1, NO_POWER, NO_POWER, NO_POWER, 10, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_YELLOW, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-POTION("booze",                 "brown", None, 0, NO_POWER, NO_POWER, NO_POWER, 20,  50, 1, 5, 0, 0, 3, 8, 0, 0, 0, 0, 20, -10, 15, 0, 0, CLR_BROWN, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+POTION("elven herbal brew",     "brown", None, 0, NO_POWER, NO_POWER, NO_POWER, 20,  50, 1, 5, 0, 0, 3, 8, 0, 0, 0, 0, 20, -10, 15, 0, 0, CLR_BROWN, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 POTION("sickness",              "fizzy", None, 0, NO_POWER, NO_POWER, NO_POWER, 20,  50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 POTION("fruit juice",            "dark", None, 0, NO_POWER, NO_POWER, NO_POWER, 20,  50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, -10, 0, 0, 0, CLR_BLACK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 POTION("acid",                  "white", None, 0, NO_POWER, NO_POWER, NO_POWER, 15, 250, 0, 0, 0, 0, 6, 8, 0, 0, 0, 0, 0, 0, 0, 0, -2, CLR_WHITE, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
@@ -2510,7 +2510,7 @@ POTION("poison",             "sapphire", None, 0, NO_POWER, NO_POWER, NO_POWER, 
 /* fixed description
  */
 POTION("water",                 "clear", None, 0, NO_POWER, NO_POWER, NO_POWER, 80, 100, 0, 0, 0, 0, 2, 6, 0, 0, 1, 10, 0, 0, 0, 0, 0, CLR_CYAN, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), /* MARKER FOR FIRST NON-SHUFFLED */
-POTION("dwarven stout",     "dark ruby", None, 0, NO_POWER, NO_POWER, NO_POWER, 10,   5, 0, 0, 0, 0, 1, 4, 3, -3, 0, 0, 20, 0, 0, 0, 0, CLR_BLACK, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+POTION("dwarven mushroom brew","dark ruby", None, 0, NO_POWER, NO_POWER, NO_POWER, 10,   5, 0, 0, 0, 0, 1, 4, 3, -3, 0, 0, 20, 0, 0, 0, 0, CLR_BLACK, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 POTION("urine",           "pale yellow", None, 0, NO_POWER, NO_POWER, NO_POWER, 15,   5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_YELLOW, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 #undef POTION
 

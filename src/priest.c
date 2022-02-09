@@ -1045,7 +1045,7 @@ register struct monst *priest;
             {
                 play_monster_special_dialogue_line(priest, (pmoney == 1L) ? PRIEST_SPECIAL_DIALOGUE_TAKE_THIS_HAVE_ALE : PRIEST_SPECIAL_DIALOGUE_TAKE_THESE_HAVE_ALE);
                 /* Note: two bits is actually 25 cents.  Hmm. */
-                pline("%s gives you %s for an ale.", Monnam(priest),
+                pline("%s gives you %s for an ale. (A ginger ale, to be exact.)", Monnam(priest),
                       (pmoney == 1L) ? "one bit" : "two bits");
                 money2u(priest, pmoney > 1L ? 2 : 1);
             }

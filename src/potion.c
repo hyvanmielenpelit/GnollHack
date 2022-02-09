@@ -1035,7 +1035,7 @@ struct obj *otmp;
             }
         }
         break;
-    case POT_BOOZE:
+    case POT_ELVEN_HERBAL_BREW:
         unkn++;
         pline("Ooph!  This tastes like %s%s!",
               otmp->odiluted ? "watered down " : "",
@@ -1063,7 +1063,7 @@ struct obj *otmp;
         unkn++;
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ooph!  This tastes like %s%s!",
             otmp->odiluted ? "watered down " : "",
-            Hallucination ? "dwarven ale" : objects[POT_URINE].oc_name_known ? "pee" : "urine sample");
+            Hallucination ? "dwarven mushroom brew" : objects[POT_URINE].oc_name_known ? "pee" : "urine sample");
         break;
     case POT_ENLIGHTENMENT:
         if (otmp->cursed)
@@ -1159,21 +1159,21 @@ struct obj *otmp;
         }
         break;
     }
-    case POT_DWARVEN_STOUT:
+    case POT_DWARVEN_MUSHROOM_BREW:
         unkn++;
-        const char* hallubeertypes[6] = { "ale", "bitter", "pale lager", "pale ale", "imperial stout" };
+        const char* halludrinktypes[6] = { "lemonade", "soda", "tea", "infusion", "drink" };
         const char* halluflavors[6] = { "a rusty", "a strange crunchy", "an odd mineral", "a marked sweet", "a dry" };
 
-        const char* beertype = Hallucination ? hallubeertypes[rn2(6)] : "stout";
+        const char* drinktype = Hallucination ? halludrinktypes[rn2(6)] : "stout";
         const char* flavortype = Hallucination ? halluflavors[rn2(6)] : "a nasty metallic";
 
         if (otmp->cursed)
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Yecch!  This tastes like %s%s, but it has %s flavor.", otmp->odiluted ? "particularly light " : "finely brewed ", beertype, flavortype);
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Yecch!  This tastes like %s%s, but it has %s flavor.", otmp->odiluted ? "particularly light " : "finely brewed ", drinktype, flavortype);
         else
-            pline("This tastes like %s%s.", otmp->odiluted ? "particularly light " : "", beertype);
+            pline("This tastes like %s%s.", otmp->odiluted ? "particularly light " : "", drinktype);
 
         if (otmp->cursed)
-            pline("Nevertheless, you feel refreshed%s.", !otmp->odiluted ? " although somewhat intoxicated" : "");
+            pline("Nevertheless, you feel refreshed%s.", !otmp->odiluted ? " although somewhat confused" : "");
         else
             You_ex(ATR_NONE, CLR_MSG_POSITIVE, "feel refreshed.");
 
@@ -2319,11 +2319,11 @@ do_illness: /* Pestilence's potion of healing effect */
             if (canseemon(mon) && !is_incorporeal(mon->data))
                 pline("%s looks concerened of %s body odor.", Monnam(mon), mhis(mon));
             break;
-        case POT_DWARVEN_STOUT:
+        case POT_DWARVEN_MUSHROOM_BREW:
             if (canseemon(mon))
                 pline("%s looks unharmed.", Monnam(mon));
             break;
-        case POT_BOOZE:
+        case POT_ELVEN_HERBAL_BREW:
             if (!check_ability_resistance_success(mon, A_CON, objects[obj->otyp].oc_mc_adjustment))
                 increase_mon_property_verbosely(mon, CONFUSION, duration);
             break;
@@ -2616,7 +2616,7 @@ struct obj *obj;
     case POT_HALLUCINATION:
         You("have a momentary vision.");
         break;
-    case POT_BOOZE:
+    case POT_ELVEN_HERBAL_BREW:
         if (!Confusion)
         {
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
@@ -2628,9 +2628,9 @@ struct obj *obj;
         if (!has_innate_breathless(youmonst.data))
             pline("Ooph!  That potion smells like urine!");
         break;
-    case POT_DWARVEN_STOUT:
+    case POT_DWARVEN_MUSHROOM_BREW:
         if (!has_innate_breathless(youmonst.data))
-            pline("That smells finely brewed alcoholic beverage!");
+            pline("That smells like finely brewed non-alcoholic beverage!");
         break;
     case POT_CONFUSION:
         if (!Confusion)
@@ -2858,14 +2858,14 @@ struct obj *o1, *o2;
             return POT_WATER;
         }
         break;
-    case AMETHYST: /* "a-methyst" == "not intoxicated" */
-        if (o2->otyp == POT_BOOZE)
+    case AMETHYST:
+        if (o2->otyp == POT_ELVEN_HERBAL_BREW)
             return POT_FRUIT_JUICE;
         break;
     case POT_GAIN_LEVEL:
         switch (o2->otyp) {
         case POT_CONFUSION:
-            return (rn2(3) ? POT_BOOZE : POT_ENLIGHTENMENT);
+            return (rn2(3) ? POT_ELVEN_HERBAL_BREW : POT_ENLIGHTENMENT);
         case POT_HEALING:
         case POT_EXTRA_HEALING:
         case POT_GREATER_HEALING:
@@ -2873,14 +2873,14 @@ struct obj *o1, *o2;
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
             return POT_SEE_INVISIBLE;
-        case POT_BOOZE:
+        case POT_ELVEN_HERBAL_BREW:
             return POT_HALLUCINATION;
         }
         break;
     case POT_GAIN_ENERGY:
         switch (o2->otyp) {
         case POT_CONFUSION:
-            return (rn2(3) ? POT_BOOZE : POT_ENLIGHTENMENT);
+            return (rn2(3) ? POT_ELVEN_HERBAL_BREW : POT_ENLIGHTENMENT);
         case POT_HEALING:
             return POT_EXTRA_HEALING;
         case POT_EXTRA_HEALING:
@@ -2891,14 +2891,14 @@ struct obj *o1, *o2;
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
             return POT_SEE_INVISIBLE;
-        case POT_BOOZE:
+        case POT_ELVEN_HERBAL_BREW:
             return POT_HALLUCINATION;
         }
         break;
     case POT_GREATER_ENERGY:
         switch (o2->otyp) {
         case POT_CONFUSION:
-            return (rn2(3) ? POT_BOOZE : POT_ENLIGHTENMENT);
+            return (rn2(3) ? POT_ELVEN_HERBAL_BREW : POT_ENLIGHTENMENT);
         case POT_HEALING:
             return POT_GREATER_HEALING;
         case POT_EXTRA_HEALING:
@@ -2909,14 +2909,14 @@ struct obj *o1, *o2;
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
             return POT_SEE_INVISIBLE;
-        case POT_BOOZE:
+        case POT_ELVEN_HERBAL_BREW:
             return POT_HALLUCINATION;
         }
         break;
     case POT_FULL_ENERGY:
         switch (o2->otyp) {
         case POT_CONFUSION:
-            return (rn2(3) ? POT_BOOZE : POT_ENLIGHTENMENT);
+            return (rn2(3) ? POT_ELVEN_HERBAL_BREW : POT_ENLIGHTENMENT);
         case POT_HEALING:
             return POT_FULL_HEALING;
         case POT_EXTRA_HEALING:
@@ -2927,7 +2927,7 @@ struct obj *o1, *o2;
             return POT_GAIN_ABILITY;
         case POT_FRUIT_JUICE:
             return POT_SEE_INVISIBLE;
-        case POT_BOOZE:
+        case POT_ELVEN_HERBAL_BREW:
             return POT_HALLUCINATION;
         }
         break;
@@ -2937,7 +2937,7 @@ struct obj *o1, *o2;
             return POT_SICKNESS;
         case POT_ENLIGHTENMENT:
         case POT_SPEED:
-            return POT_BOOZE;
+            return POT_ELVEN_HERBAL_BREW;
         case POT_GAIN_LEVEL:
         case POT_GAIN_ENERGY:
             return POT_SEE_INVISIBLE;
@@ -2950,8 +2950,8 @@ struct obj *o1, *o2;
                 return POT_GAIN_LEVEL;
             break;
         case POT_FRUIT_JUICE:
-            return POT_BOOZE;
-        case POT_BOOZE:
+            return POT_ELVEN_HERBAL_BREW;
+        case POT_ELVEN_HERBAL_BREW:
             return POT_CONFUSION;
         }
         break;

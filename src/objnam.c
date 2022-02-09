@@ -146,7 +146,6 @@ STATIC_OVL struct Jitem Japanese_items[] = { { SHORT_SWORD, "wakizashi" },
                                              { HELMET, "kabuto" },
                                              { LEATHER_GLOVES, "yugake" },
                                              { FOOD_RATION, "gunyoki" },
-                                             { POT_BOOZE, "sake" },
                                              { 0, "" } };
 
 STATIC_DCL const char *FDECL(Japanese_item_name, (int i));
@@ -3962,7 +3961,8 @@ boolean is_wiz_wish;
         else
         {
             boolean anythingfound = FALSE;
-            for (int mythic_idx = 1; mythic_idx < MAX_MYTHIC_PREFIXES; mythic_idx++)
+            int mythic_idx;
+            for (mythic_idx = 1; mythic_idx < MAX_MYTHIC_PREFIXES; mythic_idx++)
             {
                 if (!strncmpi(bp, mythic_prefix_qualities[mythic_idx].mythic_affix, l = (int)strlen(mythic_prefix_qualities[mythic_idx].mythic_affix)))
                 {
@@ -4088,7 +4088,8 @@ boolean is_wiz_wish;
         contents = CONTAINER_SPINACH;
     }
 
-    for (int mythic_idx = 1; mythic_idx < MAX_MYTHIC_SUFFIXES; mythic_idx++)
+    int mythic_idx;
+    for (mythic_idx = 1; mythic_idx < MAX_MYTHIC_SUFFIXES; mythic_idx++)
     {
         if ((p = strstri(bp, mythic_suffix_qualities[mythic_idx].mythic_affix)) != 0) 
         {
@@ -5184,7 +5185,8 @@ boolean is_wiz_wish;
         if (mythic_suffix < 0)
             mythic_suffix = 0;
         
-        for (uchar affix_idx = 0; affix_idx <= 1; affix_idx++)
+        uchar affix_idx;
+        for (affix_idx = 0; affix_idx <= 1; affix_idx++)
         {
             struct mythic_definition* mythic_definitions = (affix_idx == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
             int mythic_quality = (affix_idx == 0 ? mythic_prefix : mythic_suffix);
@@ -5637,7 +5639,8 @@ int *otyp_ptr, *sq_ptr;
     if (strstr(inbuf, " key") == 0)
         return FALSE;
 
-    for (int i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
+    int i;
+    for (i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
     {
         char buf[BUFSZ];
         size_t ln = 0;
@@ -5658,7 +5661,8 @@ const char*
 get_key_special_quality_description_by_otyp(otyp, sq)
 int otyp, sq;
 {
-    for (int i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
+    int i;
+    for (i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
         if (key_special_descriptions[i].otyp == otyp && key_special_descriptions[i].special_quality == sq)
             return key_special_descriptions[i].description;
 
@@ -5689,7 +5693,8 @@ boolean normally_without_lock;
 
     if (sq > 0)
     {
-        for (int i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
+        int i;
+        for (i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
             if (key_special_descriptions[i].otyp == otyp && key_special_descriptions[i].special_quality == sq)
                 return key_special_descriptions[i].lock_description;
 

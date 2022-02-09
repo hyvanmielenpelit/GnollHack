@@ -115,7 +115,7 @@ long amount;
 /*
  *  Transfer money from monster to inventory.
  *  Used when the shopkeeper pay for items, and when
- *  the priest gives you money for an ale.
+ *  the priest gives you money for a ginger ale.
  */
 void
 money2u(mon, amount)
