@@ -7,6 +7,7 @@ using SkiaSharp;
 using System.IO;
 using GnollHackClient.Pages.Game;
 using GnollHackCommon;
+using System.Linq;
 
 namespace GnollHackClient
 {
@@ -402,6 +403,7 @@ namespace GnollHackClient
                 return _fontSize; 
             }
         }
+
         public bool Equals(GHMenuItem other)
         {
             if (other == null) 

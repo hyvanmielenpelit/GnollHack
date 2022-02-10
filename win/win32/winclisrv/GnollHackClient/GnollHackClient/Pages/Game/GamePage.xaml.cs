@@ -8657,7 +8657,8 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         int maintextrows = 1;
-                        string[] split = mi.MainText.Split(' ');
+                        string trimmed_maintext = mi.MainText.Trim();
+                        string[] split = trimmed_maintext.Split(' ');
                         float maintextspace = canvaswidth - rightmenupadding - maintext_x_start;
                         float calc_x_start = maintext_x_start;
                         int rowidx = -1;
@@ -8750,6 +8751,11 @@ namespace GnollHackClient.Pages.Game
                         textPaint.Color = ClientUtils.NHColor2SKColorCore(mi.NHColor, MenuCanvas.RevertBlackAndWhite);
                         int split_idx_on_row = -1;
                         float start_x = x;
+                        string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.Attributes);
+                        if (indentstr != "")
+                        {
+                            start_x += textPaint.MeasureText(indentstr);
+                        }
                         foreach (string split_str in split)
                         {
                             bool nowrap = false;

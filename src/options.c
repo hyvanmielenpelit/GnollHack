@@ -5165,7 +5165,7 @@ int indexoffset;    /* value to add to index in compopt[], or zero
                 value);
     else
         Sprintf(buf, fmtstr_doset_tab, option, value);
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, buf, MENU_UNSELECTED);
 }
 
 STATIC_OVL void
@@ -5189,7 +5189,7 @@ int nset;
                 name, buf2);
     else
         Sprintf(buf, fmtstr_doset_tab, name, buf2);
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, buf, MENU_UNSELECTED);
 }
 
 int
@@ -5302,7 +5302,7 @@ doset() /* changing options via menu by Per Liboriussen */
                 else
                     Sprintf(buf, fmtstr_doset_tab,
                             name, *bool_p ? "true" : "false");
-                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
+                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, buf,
                          MENU_UNSELECTED);
             }
 
