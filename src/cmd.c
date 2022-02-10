@@ -4867,7 +4867,7 @@ int cmdflag;
 #endif
         Sprintf(buf, "%s  %s%s", cmdbuf, descbuf, shortcutbuf);
 
-        add_menu(menuwin, NO_GLYPH, &any, cmdchar, 0, ATR_NONE,
+        add_menu(menuwin, NO_GLYPH, &any, cmdchar, 0, ATR_INDENT_AT_SPACE,
             buf, MENU_UNSELECTED);
         n++;
     }
