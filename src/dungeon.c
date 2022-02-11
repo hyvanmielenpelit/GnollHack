@@ -3180,7 +3180,7 @@ boolean printdun;
                 (!final || (final == 1 && how == ASCENDED)) ? "are"
                   : (final == 1 && how == ESCAPED) ? "left from"
                     : "were");
-    putstr(win, !final ? ATR_BOLD | ATR_HEADING : 0, buf);
+    putstr(win, !final ? ATR_BOLD | ATR_HEADING | ATR_INDENT_AT_COLON : 0, buf);
 
     if (mptr->flags.forgot)
         return;
