@@ -9744,12 +9744,12 @@ namespace GnollHackClient.Pages.Game
 
         private void InitializeMoreCommandButtons()
         {
-            _moreBtnMatrix[0, 0] = new GHCommandButtonItem("Wish", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'w'));
-            _moreBtnMatrix[1, 0] = new GHCommandButtonItem("Reveal", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'f'));
-            _moreBtnMatrix[2, 0] = new GHCommandButtonItem("Genesis", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Meta((int)'m'));
-            _moreBtnMatrix[3, 0] = new GHCommandButtonItem("Levelport", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'v'));
+            _moreBtnMatrix[0, 0] = new GHCommandButtonItem("Wish", "GnollHackClient.Assets.UI.wish.png", GHUtils.Ctrl((int)'w'));
+            _moreBtnMatrix[1, 0] = new GHCommandButtonItem("Reveal", "GnollHackClient.Assets.UI.reveal.png", GHUtils.Ctrl((int)'f'));
+            _moreBtnMatrix[2, 0] = new GHCommandButtonItem("Genesis", "GnollHackClient.Assets.UI.genesis.png", GHUtils.Meta((int)'m'));
+            _moreBtnMatrix[3, 0] = new GHCommandButtonItem("Levelport", "GnollHackClient.Assets.UI.levelport.png", GHUtils.Ctrl((int)'v'));
             _moreBtnMatrix[4, 0] = new GHCommandButtonItem("Identify", "GnollHackClient.Assets.UI.identify.png", GHUtils.Ctrl((int)'i'));
-            _moreBtnMatrix[5, 0] = new GHCommandButtonItem("Teleport", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Ctrl((int)'t'));
+            _moreBtnMatrix[5, 0] = new GHCommandButtonItem("Teleport", "GnollHackClient.Assets.UI.teleport.png", GHUtils.Ctrl((int)'t'));
 
             _moreBtnMatrix[0, 1] = new GHCommandButtonItem("Go Down", "GnollHackClient.Assets.UI.stairs-down.png", (int)'>');
             _moreBtnMatrix[1, 1] = new GHCommandButtonItem("Go Up", "GnollHackClient.Assets.UI.stairs-up.png", (int)'<');
@@ -9763,7 +9763,7 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[2, 2] = new GHCommandButtonItem("Put On", "GnollHackClient.Assets.UI.puton.png", (int)'P');
             _moreBtnMatrix[3, 2] = new GHCommandButtonItem("Take Off", "GnollHackClient.Assets.UI.takeoff.png", (int)'T');
             _moreBtnMatrix[4, 2] = new GHCommandButtonItem("Remove", "GnollHackClient.Assets.UI.remove.png", (int)'R');
-            _moreBtnMatrix[5, 2] = new GHCommandButtonItem("Remove Many", "GnollHackClient.Assets.UI.takeoffmany.png", GHUtils.Meta((int)'t'));
+            _moreBtnMatrix[5, 2] = new GHCommandButtonItem("Take Off Many", "GnollHackClient.Assets.UI.takeoffmany.png", GHUtils.Meta((int)'t'));
 
             _moreBtnMatrix[0, 3] = new GHCommandButtonItem("Eat", "GnollHackClient.Assets.UI.eat.png", (int)'e');
             _moreBtnMatrix[1, 3] = new GHCommandButtonItem("Quaff", "GnollHackClient.Assets.UI.quaff.png", (int)'q');
@@ -9802,9 +9802,9 @@ namespace GnollHackClient.Pages.Game
 
             _moreBtnMatrix[0, 8] = new GHCommandButtonItem("Pick Up", "GnollHackClient.Assets.UI.pickup.png", (int)',');
             _moreBtnMatrix[1, 8] = new GHCommandButtonItem("Drop Types", "GnollHackClient.Assets.UI.dropmany.png", (int)'D');
-            _moreBtnMatrix[2, 8] = new GHCommandButtonItem("Commands", "GnollHackClient.Assets.UI.commands.png", GHUtils.Meta((int)'c'));
+            _moreBtnMatrix[2, 8] = new GHCommandButtonItem("Help", "GnollHackClient.Assets.UI.help.png", (int)'?'); // "Menu", "GnollHackClient.Assets.Icons.missing_icon.png", -4);
             _moreBtnMatrix[3, 8] = new GHCommandButtonItem("Extended", "GnollHackClient.Assets.UI.extended.png", (int)'#');
-            _moreBtnMatrix[4, 8] = new GHCommandButtonItem("Help", "GnollHackClient.Assets.UI.help.png", (int)'?'); // "Menu", "GnollHackClient.Assets.Icons.missing_icon.png", -4);
+            _moreBtnMatrix[4, 8] = new GHCommandButtonItem("Commands", "GnollHackClient.Assets.UI.commands.png", GHUtils.Meta((int)'c'));
             _moreBtnMatrix[5, 8] = new GHCommandButtonItem("Back to Game", "GnollHackClient.Assets.UI.more.png", -1);
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
