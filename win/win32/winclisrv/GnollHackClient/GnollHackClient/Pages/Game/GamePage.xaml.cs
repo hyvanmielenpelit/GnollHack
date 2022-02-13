@@ -5954,9 +5954,12 @@ namespace GnollHackClient.Pages.Game
 
                     float youmargin = Math.Min((box_right - box_left), (box_bottom - box_top)) / 14;
                     float yousize = Math.Min((box_right - box_left), (box_bottom - box_top)) / 12;
+                    float youtouchsize = Math.Min((box_right - box_left), (box_bottom - box_top)) / 6;
+                    float youtouchmargin = Math.Max(0, (youtouchsize - yousize) / 2);
                     SKRect urect = new SKRect(box_right - youmargin - yousize, box_top + youmargin, box_right - youmargin, box_top + youmargin + yousize);
+                    SKRect utouchrect = new SKRect(urect.Left - youtouchmargin, urect.Top - youtouchmargin, urect.Right + youtouchmargin, urect.Bottom + youtouchmargin);
                     canvas.DrawBitmap(App.YouBitmap, urect, textPaint);
-                    YouRect = urect;
+                    YouRect = utouchrect;
 
                     textPaint.Style = SKPaintStyle.Fill;
                     textPaint.Typeface = App.UnderwoodTypeface;
