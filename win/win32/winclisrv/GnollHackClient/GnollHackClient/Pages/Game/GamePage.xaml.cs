@@ -237,13 +237,6 @@ namespace GnollHackClient.Pages.Game
         private SKBitmap _orbFillBitmapBlue;
         private SKBitmap _orbGlassBitmap;
 
-        private SKBitmap _shieldACBitmap;
-        private SKBitmap _shieldMCBitmap;
-        private SKBitmap _shieldMoveBitmap;
-        private SKBitmap _shieldWeaponBitmap;
-        private SKBitmap _shieldDungeonLevelBitmap;
-        private SKBitmap _shieldXPLevelBitmap;
-
         private SKBitmap _statusWizardBitmap;
         private SKBitmap _statusModernBitmap;
 
@@ -9636,31 +9629,6 @@ namespace GnollHackClient.Pages.Game
                 _orbGlassBitmap = SKBitmap.Decode(stream);
             }
 
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield1.png"))
-            {
-                _shieldACBitmap = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield2.png"))
-            {
-                _shieldMCBitmap = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield3.png"))
-            {
-                _shieldMoveBitmap = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield-weapon.png"))
-            {
-                _shieldWeaponBitmap = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield-dlevel.png"))
-            {
-                _shieldDungeonLevelBitmap = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Icons.shield-xp.png"))
-            {
-                _shieldXPLevelBitmap = SKBitmap.Decode(stream);
-            }
-
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-wizard-mode.png"))
             {
                 _statusWizardBitmap = SKBitmap.Decode(stream);
@@ -10473,81 +10441,6 @@ namespace GnollHackClient.Pages.Game
             Weapon,
             DungeonLevel,
             XPLevel
-        }
-
-        private void DrawShield(SKCanvas canvas, SKPaint textPaint, SKRect shieldDest, SKBitmap usedBitmap, string val, string maxpct, bool showpct)
-        {
-            if (shieldDest.Width == 0)
-                return;
-
-            textPaint.Color = SKColors.White;
-            //SKBitmap usedBitmap = _shieldACBitmap;
-            //switch(shieldstyle)
-            //{
-            //    case UIShieldStyles.AC:
-            //        usedBitmap = _shieldACBitmap;
-            //        break;
-            //    case UIShieldStyles.MC:
-            //        usedBitmap = _shieldMCBitmap;
-            //        break;
-            //    case UIShieldStyles.Move:
-            //        usedBitmap = _shieldMoveBitmap;
-            //        break;
-            //    case UIShieldStyles.Weapon:
-            //        usedBitmap = _shieldWeaponBitmap;
-            //        break;
-            //    case UIShieldStyles.DungeonLevel:
-            //        usedBitmap = _shieldDungeonLevelBitmap;
-            //        break;
-            //    case UIShieldStyles.XPLevel:
-            //        usedBitmap = _shieldXPLevelBitmap;
-            //        break;
-            //}
-
-            canvas.DrawBitmap(usedBitmap, shieldDest, textPaint);
-            if (val != null && val != "")
-            {
-                textPaint.TextSize = 36;
-                textPaint.Typeface = App.LatoBold;
-                SKRect bounds = new SKRect();
-                textPaint.MeasureText(val.Length > 3 ? val : "999", ref bounds);
-                float scale = bounds.Width / shieldDest.Width;
-                if (scale > 0)
-                    textPaint.TextSize = textPaint.TextSize * 0.65f / scale;
-
-                float strwidth = textPaint.MeasureText(val, ref bounds);
-                float tx = shieldDest.Left + (shieldDest.Width - strwidth) / 2;
-                float ty = shieldDest.Top + (shieldDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) * 0.4f - textPaint.FontMetrics.Ascent;
-                textPaint.Style = SKPaintStyle.Stroke;
-                textPaint.StrokeWidth = textPaint.TextSize / 10;
-                textPaint.Color = SKColors.Black;
-                canvas.DrawText(val, tx, ty, textPaint);
-                textPaint.Style = SKPaintStyle.Fill;
-                textPaint.Color = SKColors.White;
-                canvas.DrawText(val, tx, ty, textPaint);
-            }
-
-            if (showpct && maxpct != null && maxpct != "")
-            {
-                textPaint.TextSize = 36;
-                textPaint.Typeface = App.LatoBold;
-                SKRect bounds = new SKRect();
-                textPaint.MeasureText(maxpct.Length > 4 ? maxpct : "100%", ref bounds);
-                float scale = bounds.Width / shieldDest.Width;
-                if (scale > 0)
-                    textPaint.TextSize = textPaint.TextSize * 0.50f / scale;
-
-                float strwidth = textPaint.MeasureText(maxpct, ref bounds);
-                float tx = shieldDest.Left + (shieldDest.Width - strwidth) / 2;
-                float ty = shieldDest.Bottom - 0.15f * shieldDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) - textPaint.FontMetrics.Ascent;
-                textPaint.Style = SKPaintStyle.Stroke;
-                textPaint.StrokeWidth = textPaint.TextSize / 10;
-                textPaint.Color = SKColors.Black;
-                canvas.DrawText(maxpct, tx, ty, textPaint);
-                textPaint.Style = SKPaintStyle.Fill;
-                textPaint.Color = SKColors.White;
-                canvas.DrawText(maxpct, tx, ty, textPaint);
-            }
         }
 
         public async void ReportCrashDetected()
