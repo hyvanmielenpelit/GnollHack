@@ -1024,6 +1024,7 @@ namespace GnollHackCommon
         public const float ArrowButtonSize = 0.25f;
         public const float NumberButtonSize = 0.3f;
         public const float MoveArrowButtonSize = 0.35f;
+        public const int MoreButtonPages = 3;
         public const int MoreButtonsPerRow = 6;
         public const int MoreButtonsPerColumn = 9;
         public const float BackgroundBorderDivisor = 8.0f;
