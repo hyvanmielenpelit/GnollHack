@@ -352,7 +352,8 @@ namespace GnollHackServer
         }
 
         protected void GameCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color, int maxcount,
-            UInt64 oid, UInt64 mid, char heading_group_accel, char special_mark, ulong menu_flags, byte dataflags, obj otmpdata, objclassdata otypdata)
+            UInt64 oid, UInt64 mid, char heading_group_accel, char special_mark, ulong menu_flags, byte dataflags, int style, obj otmpdata, objclassdata otypdata,
+            skill_menu_info skill_data, spell_menu_info spell_data)
         {
 
         }

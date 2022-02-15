@@ -273,7 +273,8 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct
 
     lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str ? buf : 0, presel, color, (info.object && !(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? info.object->quan : 0),
         (unsigned long long)(info.object ? info.object->o_id : 0), (unsigned long long)(info.monster ? info.monster->m_id : 0), info.heading_for_group_accelerator, info.special_mark, info.menu_flags,
-        (info.object ? 1 : 0) | (info.monster ? 2 : 0) | (Hallucination ? 4 : 0) | (info.monster && info.monster->female ? 8 : 0), info.object ? *(info.object) : zeroobj, get_objclassdata(info.object));
+        (info.object ? 1 : 0) | (info.monster ? 2 : 0) | (Hallucination ? 4 : 0) | (info.monster && info.monster->female ? 8 : 0), info.style, 
+        info.object ? *(info.object) : zeroobj, get_objclassdata(info.object), info.skill_data, info.spell_data);
 }
 
 void lib_end_menu_ex(winid wid, const char* prompt, const char* subtitle)

@@ -138,7 +138,7 @@ struct replacement_info {
 
 struct skill_menu_info
 {
-    const char* skillname;
+    char skillname[64];
     unsigned char skill_id;
     unsigned char skilltype;
     unsigned char current_level;
@@ -164,8 +164,8 @@ struct skill_menu_info
 
 struct spell_menu_info
 {
-    const char* spellname;
-    const char* schoolname;
+    char spellname[64];
+    char schoolname[64];
     short spell_id;
     unsigned char school_id;
     short level;
@@ -175,7 +175,7 @@ struct spell_menu_info
     short cooldown_rounds;
     short casts;
     short adds;
-    const char* description;
+    char description[64];
     char hotkey;
 };
 
