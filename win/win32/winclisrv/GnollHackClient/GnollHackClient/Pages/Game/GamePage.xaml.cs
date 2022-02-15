@@ -9834,6 +9834,7 @@ namespace GnollHackClient.Pages.Game
         private SKTouchEventArgs _savedCommandEventArgs = null;
         private DateTime _savedCommandTimeStamp;
         private bool _commandTouchMoved = false;
+        private bool _commandChangedPage = false;
         private void CommandCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             SKImageInfo info = e.Info;
@@ -9843,7 +9844,7 @@ namespace GnollHackClient.Pages.Game
             float canvasheight = CommandCanvas.CanvasSize.Height;
             float scale = canvaswidth / (float)CommandCanvas.Width;
             bool isLandscape = canvaswidth > canvasheight;
-            int used_btnHeight = GHConstants.MoreButtonsPerColumn - (EnableWizardMode ? 0 : 1);
+            int used_btnHeight = GHConstants.MoreButtonsPerColumn;
             int usedButtonsPerRow = isLandscape ? used_btnHeight : GHConstants.MoreButtonsPerRow;
             int usedButtonsPerColumn = isLandscape ? GHConstants.MoreButtonsPerRow : used_btnHeight;
             float btnAreaWidth = canvaswidth / usedButtonsPerRow;
@@ -9869,7 +9870,7 @@ namespace GnollHackClient.Pages.Game
                 for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
                 {
                     int pos_j = 0;
-                    for (int j = (EnableWizardMode ? 0 : 1); j < GHConstants.MoreButtonsPerColumn; j++)
+                    for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
                     {
                         if (_moreBtnMatrix[page, i, j] != null && _moreBtnBitmaps[page, i, j] != null)
                         {
@@ -9916,6 +9917,7 @@ namespace GnollHackClient.Pages.Game
                         {
                             _savedCommandSender = sender;
                             _savedCommandEventArgs = e;
+                            _commandChangedPage = false;
                         }
 
                         e.Handled = true;
@@ -9924,24 +9926,38 @@ namespace GnollHackClient.Pages.Game
                         {
                             TouchEntry entry;
                             bool res = CommandTouchDictionary.TryGetValue(e.Id, out entry);
-                            if (res)
+                            if (res && !_commandChangedPage)
                             {
                                 SKPoint anchor = entry.Location;
 
                                 float diffX = e.Location.X - anchor.X;
                                 float diffY = e.Location.Y - anchor.Y;
-                                float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
+                                //float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
+                                float xdist = (float)Math.Abs(diffX);
 
                                 if (CommandTouchDictionary.Count == 1)
                                 {
-                                    if ((dist > 25 ||
+                                    if ((xdist > 25 ||
                                         (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond > GHConstants.MoveOrPressTimeThreshold
                                            ))
                                     {
                                         /* Just one finger */
                                         if (diffX != 0 || diffY != 0)
                                         {
-                                            /* Do something here on swipe */
+                                            if(diffX > 25)
+                                            {
+                                                if (MoreCmdPage > (EnableWizardMode ? 0 : 1))
+                                                    MoreCmdPage -= 1;
+
+                                                _commandChangedPage = true;
+                                            }
+                                            else if (diffX < -25)
+                                            {
+                                                if(MoreCmdPage < GHConstants.MoreButtonPages - 1)
+                                                    MoreCmdPage += 1;
+
+                                                _commandChangedPage = true;
+                                            }
 
                                             CommandTouchDictionary[e.Id].Location = e.Location;
                                             _commandTouchMoved = true;
@@ -9958,6 +9974,7 @@ namespace GnollHackClient.Pages.Game
                             _savedCommandSender = null;
                             _savedCommandEventArgs = null;
                             _savedCommandTimeStamp = DateTime.Now;
+                            _commandChangedPage = false;
 
                             TouchEntry entry;
                             bool res = CommandTouchDictionary.TryGetValue(e.Id, out entry);
@@ -9970,7 +9987,7 @@ namespace GnollHackClient.Pages.Game
                                 float canvaswidth = CommandCanvas.CanvasSize.Width;
                                 float canvasheight = CommandCanvas.CanvasSize.Height;
                                 bool isLandscape = canvaswidth > canvasheight;
-                                int used_btnHeight = GHConstants.MoreButtonsPerColumn - (EnableWizardMode ? 0 : 1);
+                                int used_btnHeight = GHConstants.MoreButtonsPerColumn;
                                 int usedButtonsPerRow = isLandscape ? used_btnHeight : GHConstants.MoreButtonsPerRow;
                                 int usedButtonsPerColumn = isLandscape ? GHConstants.MoreButtonsPerRow : used_btnHeight;
                                 float btnAreaWidth = canvaswidth / usedButtonsPerRow;
@@ -9991,8 +10008,7 @@ namespace GnollHackClient.Pages.Game
                                         i = btnX;
                                         j = btnY;
                                     }
-                                    if (!EnableWizardMode)
-                                        j++;
+
                                     GHCommandButtonItem cbi = _moreBtnMatrix[MoreCmdPage, i, j];
                                     if (cbi != null)
                                     {
