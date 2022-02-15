@@ -136,14 +136,60 @@ struct replacement_info {
     unsigned long layer_flags;
 };
 
+struct skill_menu_info
+{
+    const char* skillname;
+    unsigned char skill_id;
+    unsigned char skilltype;
+    unsigned char current_level;
+    unsigned char advance_flags;
+    unsigned char skill_points_needed_to_advance;
+    unsigned char max_level;
+    const char* curlevelname;
+    const char* nextlevelname;
+    const char* maxlevelname;
+    unsigned char bonus1_type;
+    float curbonus1;
+    float nextbonus1;
+    unsigned char bonus2_type;
+    float curbonus2;
+    float nextbonus2;
+    unsigned char bonus3_type;
+    float curbonus3;
+    float nextbonus3;
+    unsigned char bonus4_type;
+    float curbonus4;
+    float nextbonus4;
+};
+
+struct spell_menu_info
+{
+    const char* spellname;
+    const char* schoolname;
+    short spell_id;
+    unsigned char school_id;
+    short level;
+    float mana_cost;
+    char stats[8];
+    short fail_percentage;
+    short cooldown_rounds;
+    short casts;
+    short adds;
+    const char* description;
+    char hotkey;
+};
+
 struct extended_menu_info {
     struct obj* object;
     struct monst* monster;
     char heading_for_group_accelerator;
     int color;
-    int item_subtype; /* Generic subtype if needed */
+    int style; /* Generic style or subtype; used in menu data */
     char special_mark;
     unsigned long menu_flags;
+
+    struct skill_menu_info skill_data;
+    struct spell_menu_info spell_data;
 };
 
 struct extended_create_window_info {
@@ -157,6 +203,8 @@ struct extended_create_window_info {
 #define MENU_FLAGS_IS_GROUP_HEADING             0x00000002
 #define MENU_FLAGS_MONOSPACE_FONT_REQUESTED     0x00000004
 #define MENU_FLAGS_COUNT_DISALLOWED             0x00000008
+#define MENU_FLAGS_USE_SKILL_MENU_DATA          0x00000010
+#define MENU_FLAGS_USE_SPELL_MENU_DATA          0x00000020
 
 enum obj_material_types {
     MAT_NONE = 0,

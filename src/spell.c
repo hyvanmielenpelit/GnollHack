@@ -3382,7 +3382,7 @@ int *spell_no;
                 Sprintf(buf, fmt, shortenedname, hotkeychar, descbuf);
 
             any.a_int = splnum + 1; /* must be non-zero */
-            add_menu(tmpwin, NO_GLYPH, &any, 0 /*spellet(splnum)*/, 0, ATR_NONE, buf,
+            add_menu(tmpwin, NO_GLYPH, &any, 0 /*spellet(splnum)*/, 0, ATR_INDENT_AT_DOUBLE_SPACE, buf,
                 (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
         }
