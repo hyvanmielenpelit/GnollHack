@@ -1014,6 +1014,7 @@ namespace GnollHackCommon
         public const int MaxMessageHistoryLength = 256;
         public const float MoveDistanceThreshold = 25.0f;
         public const long MoveOrPressTimeThreshold = 200; /* Milliseconds */
+        public const long SwipeTimeThreshold = 300; /* Milliseconds */
         public const double MoveByHoldingDownThreshold = 0.20; /* Seconds */
         public const double LongMenuTapThreshold = 0.75; /* Seconds */
         public const int TileWidth = 64;
