@@ -56,50 +56,20 @@
                         AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent">
                         <StackLayout x:Name="ZoomLayout" Padding="0" Orientation="Horizontal"
                             HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
-                            <!--<Button Text="&#x2261;" x:Name="GameMenuButton" Clicked="GameMenuButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />
-                            <Button Text="&#x2205;" x:Name="ESCButton" Clicked="ESCButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />-->
                             <controls:SimpleImageButton x:Name="GameMenuButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-menu.png" BtnClicked="GameMenuButton_Clicked"/>
                             <controls:SimpleImageButton x:Name="ESCButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-cancel.png" BtnClicked="ESCButton_Clicked"/>
-                            <!--<Grid x:Name="GameMenuGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
-                                <ff:CachedImage x:Name="GameMenuImg" Source="resource://GnollHackClient.Assets.UI.stone-menu.png" HeightRequest="45" WidthRequest="45" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                                <Button x:Name="GameMenuButton" Clicked="GameMenuButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                            </Grid>-->
-                            <!--<Grid x:Name="ESCGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
-                                <ff:CachedImage x:Name="ESCImg" Source="resource://GnollHackClient.Assets.UI.stone-cancel.png" HeightRequest="45" WidthRequest="45" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                                <Button x:Name="ESCButton" Clicked="ESCButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                            </Grid>-->
                         </StackLayout>
                         <StackLayout x:Name="ModeLayout" Padding="0" Orientation="Vertical"
                             HorizontalOptions="End" BackgroundColor="Transparent" >
                             <StackLayout x:Name="ModeSubLayout1" Padding="0" Orientation="Vertical"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
-                                <!--<Button Text="m" x:Name="ToggleZoomMiniButton" Clicked="ToggleZoomMiniButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />-->
                                 <controls:SimpleImageButton x:Name="ToggleZoomMiniButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-minimap-off.png" BtnClicked="ToggleZoomMiniButton_Clicked"/>
                                 <controls:SimpleImageButton x:Name="ToggleZoomAlternateButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-altmap-off.png" BtnClicked="ToggleZoomAlternateButton_Clicked"/>
-                                <!--<Grid x:Name="ToggleZoomMiniGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
-                                    <ff:CachedImage x:Name="ToggleZoomMiniImg" Source="resource://GnollHackClient.Assets.UI.stone-minimap-off.png" HeightRequest="45" WidthRequest="45" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                                    <Button x:Name="ToggleZoomMiniButton" Clicked="ToggleZoomMiniButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                                </Grid>-->
-                                <!--<Button Text="a" x:Name="ToggleZoomAlternateButton" Clicked="ToggleZoomAlternateButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />-->
-                                <!--<Grid x:Name="ToggleZoomAlternateGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
-                                    <ff:CachedImage x:Name="ToggleZoomAlternateImg" Source="resource://GnollHackClient.Assets.UI.stone-altmap-off.png" HeightRequest="45" WidthRequest="45" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                                    <Button x:Name="ToggleZoomAlternateButton" Clicked="ToggleZoomAlternateButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                                </Grid>-->
                             </StackLayout>
                             <StackLayout x:Name="ModeSubLayout2" Padding="0" Orientation="Vertical"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
-                                <!--<Button Text="&#x2699;" x:Name="LookModeButton" Clicked="LookModeButton_Clicked" CornerRadius="10" FontFamily="DejaVuSansMono" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />
-                                <Button Text="&#x265C;" x:Name="ToggleModeButton" Clicked="ToggleModeButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="45" WidthRequest="45" />-->
                                 <controls:SimpleImageButton x:Name="LookModeButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-look-off.png" BtnClicked="LookModeButton_Clicked"/>
                                 <controls:SimpleImageButton x:Name="ToggleModeButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-travel-off.png" BtnClicked="ToggleModeButton_Clicked"/>
-                                <!--<Grid x:Name="LookModeGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
-                                    <ff:CachedImage x:Name="LookModeImg" Source="resource://GnollHackClient.Assets.UI.stone-look-off.png" HeightRequest="45" WidthRequest="45" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                                    <Button x:Name="LookModeButton" Clicked="LookModeButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                                </Grid>-->
-                                <!--<Grid x:Name="ToggleModeGrid" HeightRequest="45" WidthRequest="45" IsVisible="true" >
-                                    <ff:CachedImage x:Name="ToggleModeImg" Source="resource://GnollHackClient.Assets.UI.stone-travel-off.png" HeightRequest="45" WidthRequest="45" BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
-                                    <Button x:Name="ToggleModeButton" Clicked="ToggleModeButton_Clicked" Text="" BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                                </Grid>-->
                             </StackLayout>
                         </StackLayout>
                     </StackLayout>
@@ -152,7 +122,7 @@
                             <controls:LabeledImageButton Grid.Column="3" x:Name="lDropManyButton" LblText="Drop Items" BtnLetter="%" ImgSourcePath="resource://GnollHackClient.Assets.UI.dropmany.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="4" x:Name="lChatButton" LblText="Chat" BtnLetter="C" ImgSourcePath="resource://GnollHackClient.Assets.UI.chat.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="5" x:Name="lRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackClient.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
-                            <controls:LabeledImageButton Grid.Column="6" x:Name="lMoreButton" LblText="More" ImgSourcePath="resource://GnollHackClient.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
+                            <controls:LabeledImageButton Grid.Column="6" x:Name="lSwapWeaponButton" LblText="Swap" BtnLetter="x" ImgSourcePath="resource://GnollHackClient.Assets.UI.swap.png" BtnClicked="GHButton_Clicked" />
                         </Grid>
                         <Grid x:Name="LowerCmdGrid" HeightRequest="60" HorizontalOptions="CenterAndExpand">
                             <Grid.RowDefinitions>
@@ -173,16 +143,7 @@
                             <controls:LabeledImageButton Grid.Column="3" x:Name="lApplyButton" LblText="Apply" BtnLetter="a" ImgSourcePath="resource://GnollHackClient.Assets.UI.apply.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="4" x:Name="lCastButton" LblText="Cast" BtnLetter="Z" ImgSourcePath="resource://GnollHackClient.Assets.UI.cast.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="5" x:Name="lZapButton" LblText="Zap" BtnLetter="z" ImgSourcePath="resource://GnollHackClient.Assets.UI.zap.png" BtnClicked="GHButton_Clicked" />
-                            <controls:LabeledImageButton Grid.Column="6" x:Name="lSwapWeaponButton" LblText="Swap" BtnLetter="x" ImgSourcePath="resource://GnollHackClient.Assets.UI.swap.png" BtnClicked="GHButton_Clicked" />
-                            <!--
-                        <Button Grid.Column="0" Text="k" x:Name="KickButton" Clicked="KickButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
-                        <Button Grid.Column="1" Text="f" x:Name="FireButton" Clicked="FireButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
-                        <Button Grid.Column="2" Text="t" x:Name="ThrowQuiveredButton" Clicked="ThrowQuiveredButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
-                        <Button Grid.Column="3" Text="a" x:Name="ApplyWieldedButton" Clicked="ApplyWieldedButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
-                        <Button Grid.Column="4" Text="Z" x:Name="CastButton" Clicked="CastButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
-                        <Button Grid.Column="5" Text="z" x:Name="ZapButton" Clicked="ZapButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
-                        <Button Grid.Column="6" Text="x" x:Name="SwapWeaponButton" Clicked="SwapWeaponButton_Clicked" CornerRadius="10" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="80" />
-                        -->
+                            <controls:LabeledImageButton Grid.Column="6" x:Name="lMoreButton" LblText="More" ImgSourcePath="resource://GnollHackClient.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
                         </Grid>
                     </StackLayout>
                 </Grid>
@@ -241,13 +202,6 @@
                                 <controls:LabeledImageButton x:Name="SecondButton" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True" />
                                 <controls:LabeledImageButton x:Name="ThirdButton" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5"  LargerFont="True" />
                                 <controls:LabeledImageButton x:Name="FourthButton" ImgSourcePath="resource://GnollHackClient.Assets.Icons.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True" />
-
-                                <!--<Button Text="?" x:Name="ZeroButton" Clicked="ZeroButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
-                                <Button Text="?" x:Name="FirstButton" Clicked="FirstButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
-                                <Button Text="?" x:Name="SecondButton" Clicked="SecondButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
-                                <Button Text="?" x:Name="ThirdButton" Clicked="ThirdButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
-                                <Button Text="?" x:Name="FourthButton" Clicked="FourthButton_Clicked" FontFamily="Immortal" FontSize="20" TextColor="White" BackgroundColor="DarkBlue" HeightRequest="60" WidthRequest="60" IsVisible="false" CornerRadius="5"  />
-                                 -->
                             </StackLayout>
                         </StackLayout>
                     </Frame>
