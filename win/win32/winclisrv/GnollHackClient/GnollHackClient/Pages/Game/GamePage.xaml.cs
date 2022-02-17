@@ -9732,7 +9732,7 @@ namespace GnollHackClient.Pages.Game
         public int MoreCmdPage { get { lock (_moreCmdLock) { return _moreCmdPage; } } set { lock (_moreCmdLock) { _moreCmdPage = value; } } }
         public float MoreCmdOffsetX { get { lock (_moreCmdLock) { return _moreCmdOffsetX; } } set { lock (_moreCmdLock) { _moreCmdOffsetX = value; } } }
         public float MoreCmdOffsetY { get { lock (_moreCmdLock) { return _moreCmdOffsetY; } } set { lock (_moreCmdLock) { _moreCmdOffsetY = value; } } }
-        private float _moreCmdOffsetAutoSpeed = 0.4f; /* Screen widths per second */
+        private float _moreCmdOffsetAutoSpeed = 0.5f; /* Screen widths per second */
 
 
         private void InitializeMoreCommandButtons()
@@ -9893,7 +9893,7 @@ namespace GnollHackClient.Pages.Game
                 textPaint.Color = SKColors.White;
 
                 float btnMatrixEnd = canvasheight - dotmargin * 2 - largedotheight;
-                float titlesize = Math.Min(24f, 15f * canvaswidth / 800.0f) * scale;
+                float titlesize = Math.Min(48f * scale, 18f * 3.0f * Math.Min(canvaswidth, canvasheight) / 1080f);
 
                 for (int page = pagemin; page <= pagemax; page++)
                 {
@@ -10055,7 +10055,7 @@ namespace GnollHackClient.Pages.Game
                             TouchEntry entry;
                             bool res = CommandTouchDictionary.TryGetValue(e.Id, out entry);
                             long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
-                            float swipelengththreshold = Math.Min(50f * scale, Math.Max(25f, Math.Min(CommandCanvas.CanvasSize.Width, CommandCanvas.CanvasSize.Height) / 10));
+                            float swipelengththreshold = 30;
 
                             SKPoint origanchor = entry.OriginalLocation;
 
@@ -10125,14 +10125,15 @@ namespace GnollHackClient.Pages.Game
                                                     break;
                                             }
                                         }
-                                    }
-                                }
 
-                                /* Hide the canvas */
-                                MoreCommandsGrid.IsVisible = false;
-                                lock (RefreshScreenLock)
-                                {
-                                    RefreshScreen = true;
+                                        /* Hide the canvas */
+                                        MoreCommandsGrid.IsVisible = false;
+                                        lock (RefreshScreenLock)
+                                        {
+                                            RefreshScreen = true;
+                                        }
+                                    }
+
                                 }
                             }
                             else if (elapsedms <= GHConstants.SwipeTimeThreshold && Math.Abs(origdiffX) > swipelengththreshold)
