@@ -809,7 +809,7 @@ doability(VOID_ARGS)
         abilitynum++;
     }
 
-
+#ifndef GNH_ANDROID
     /* SKILL-BASED ABILITIES */
     any = zeroany;
     add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
@@ -843,7 +843,7 @@ doability(VOID_ARGS)
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
     abilitynum++;
-
+#endif
 
     /* Monster abilities */
     if (can_breathe(youmonst.data)
