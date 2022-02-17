@@ -64,6 +64,7 @@ namespace GnollHackClient
                 if (refresh)
                     InvalidateSurface();
 
+                _gamePage.UpdateOtherCanvases();
             }
         }
     }

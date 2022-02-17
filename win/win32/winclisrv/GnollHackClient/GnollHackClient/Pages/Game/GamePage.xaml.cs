@@ -548,47 +548,6 @@ namespace GnollHackClient.Pages.Game
                 if (_useMapBitmap)
                     UpdateMap();
 
-                bool refresh = false;
-
-                lock (RefreshScreenLock)
-                {
-                    refresh = RefreshScreen;
-                }
-
-                //IncrementCounters();
-
-                //if (refresh)
-                //    canvasView.InvalidateSurface();
-
-                if (MoreCommandsGrid.IsVisible)
-                {
-                    CommandCanvas.InvalidateSurface();
-                    float offx = MoreCmdOffsetX;
-                    if (offx != 0 && (CommandTouchDictionary.Count == 0 || _commandChangedPage))
-                    {
-                        float delta = -1 * Math.Sign(offx) * CommandCanvas.CanvasSize.Width * _moreCmdOffsetAutoSpeed;
-                        if (offx > 0 && offx + delta < 0)
-                            MoreCmdOffsetX = 0;
-                        else if (offx < 0 && offx + delta > 0)
-                            MoreCmdOffsetX = 0;
-                        else
-                            MoreCmdOffsetX = offx + delta;
-                    }
-                }
-                else if (TextGrid.IsVisible)
-                {
-                    TextCanvas.InvalidateSurface();
-                }
-                else if (MenuGrid.IsVisible)
-                {
-                    lock (_menuDrawOnlyLock)
-                    {
-                        refresh = _menuRefresh;
-                    }
-                    if (refresh)
-                        MenuCanvas.InvalidateSurface();
-                }
-
                 if(!StartingPositionsSet && !canvasView.CanvasSize.IsEmpty)
                 {
                     double statusbarheight = GetStatusBarHeight();
@@ -614,6 +573,45 @@ namespace GnollHackClient.Pages.Game
             });
 
             await LoadingProgressBar.ProgressTo(1.0, 20, Easing.Linear);
+        }
+
+        public void UpdateOtherCanvases()
+        {
+            bool refresh = false;
+
+            lock (RefreshScreenLock)
+            {
+                refresh = RefreshScreen;
+            }
+
+            if (MoreCommandsGrid.IsVisible)
+            {
+                CommandCanvas.InvalidateSurface();
+                float offx = MoreCmdOffsetX;
+                if (offx != 0 && (CommandTouchDictionary.Count == 0 || _commandChangedPage))
+                {
+                    float delta = -1 * Math.Sign(offx) * CommandCanvas.CanvasSize.Width * _moreCmdOffsetAutoSpeed / 40;
+                    if (offx > 0 && offx + delta < 0)
+                        MoreCmdOffsetX = 0;
+                    else if (offx < 0 && offx + delta > 0)
+                        MoreCmdOffsetX = 0;
+                    else
+                        MoreCmdOffsetX = offx + delta;
+                }
+            }
+            else if (TextGrid.IsVisible)
+            {
+                TextCanvas.InvalidateSurface();
+            }
+            else if (MenuGrid.IsVisible)
+            {
+                lock (_menuDrawOnlyLock)
+                {
+                    refresh = _menuRefresh;
+                }
+                if (refresh)
+                    MenuCanvas.InvalidateSurface();
+            }
         }
 
         private bool StartingPositionsSet { get; set; }
@@ -1767,6 +1765,7 @@ namespace GnollHackClient.Pages.Game
             if (MoreCommandsGrid.IsVisible)
             {
                 MoreCommandsGrid.IsVisible = false;
+                MainGrid.IsVisible = true;
                 lock (RefreshScreenLock)
                 {
                     RefreshScreen = true;
@@ -8318,6 +8317,7 @@ namespace GnollHackClient.Pages.Game
             }
 
             MoreCommandsGrid.IsVisible = true;
+            MainGrid.IsVisible = false;
         }
 
         private void YnButton_Clicked(object sender, EventArgs e)
@@ -9732,7 +9732,7 @@ namespace GnollHackClient.Pages.Game
         public int MoreCmdPage { get { lock (_moreCmdLock) { return _moreCmdPage; } } set { lock (_moreCmdLock) { _moreCmdPage = value; } } }
         public float MoreCmdOffsetX { get { lock (_moreCmdLock) { return _moreCmdOffsetX; } } set { lock (_moreCmdLock) { _moreCmdOffsetX = value; } } }
         public float MoreCmdOffsetY { get { lock (_moreCmdLock) { return _moreCmdOffsetY; } } set { lock (_moreCmdLock) { _moreCmdOffsetY = value; } } }
-        private float _moreCmdOffsetAutoSpeed = 0.5f; /* Screen widths per second */
+        private float _moreCmdOffsetAutoSpeed = 5.0f; /* Screen widths per second */
 
 
         private void InitializeMoreCommandButtons()
@@ -9958,6 +9958,48 @@ namespace GnollHackClient.Pages.Game
                         }
                     }
                 }
+
+                if (ShowFPS)
+                {
+                    if (!_stopWatch.IsRunning)
+                    {
+                        _stopWatch.Restart();
+                    }
+                    else
+                    {
+                        _stopWatch.Stop();
+                        string str;
+                        float textWidth, xText, yText;
+                        TimeSpan ts = _stopWatch.Elapsed;
+                        long _currentGeneralCounterValue = 0L;
+                        lock (AnimationTimerLock)
+                        {
+                            _currentGeneralCounterValue = AnimationTimers.general_animation_counter;
+                        }
+                        long diff = _currentGeneralCounterValue - _previousGeneralCounterValue;
+                        _previousGeneralCounterValue = _currentGeneralCounterValue;
+                        lock (_fpslock)
+                        {
+                            _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : 1000.0 / ts.TotalMilliseconds;
+                            str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + diff;
+                        }
+                        textPaint.Typeface = App.LatoBold;
+                        textPaint.TextSize = 26;
+                        textPaint.Color = SKColors.Yellow;
+                        textWidth = textPaint.MeasureText(str);
+                        yText = -textPaint.FontMetrics.Ascent + 5;
+                        xText = canvaswidth - textWidth - 5;
+                        canvas.DrawText(str, xText, yText, textPaint);
+
+                        _stopWatch.Restart();
+                    }
+                }
+                else
+                {
+                    if (_stopWatch.IsRunning)
+                        _stopWatch.Stop();
+                }
+
             }
         }
 
@@ -10128,6 +10170,7 @@ namespace GnollHackClient.Pages.Game
 
                                         /* Hide the canvas */
                                         MoreCommandsGrid.IsVisible = false;
+                                        MainGrid.IsVisible = true;
                                         lock (RefreshScreenLock)
                                         {
                                             RefreshScreen = true;
