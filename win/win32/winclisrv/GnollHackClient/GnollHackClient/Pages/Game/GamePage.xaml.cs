@@ -9893,7 +9893,7 @@ namespace GnollHackClient.Pages.Game
                 textPaint.Color = SKColors.White;
 
                 float btnMatrixEnd = canvasheight - dotmargin * 2 - largedotheight;
-                float titlesize = Math.Min(48f * scale, 18f * 3.0f * Math.Min(canvaswidth, canvasheight) / 1080f);
+                float titlesize = Math.Min(48f * scale, 19f * 3.0f * Math.Min(canvaswidth, canvasheight) / 1080f);
 
                 for (int page = pagemin; page <= pagemax; page++)
                 {
