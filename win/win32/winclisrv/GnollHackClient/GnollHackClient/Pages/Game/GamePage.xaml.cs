@@ -9873,8 +9873,8 @@ namespace GnollHackClient.Pages.Game
                 int pagemax = cmdOffsetX < 0 ? Math.Min(GHConstants.MoreButtonPages - 1, curpage + 1) : curpage;
                 SKRect screenRect = new SKRect(0, 0, canvaswidth, canvasheight);
 
-                float smalldotheight = Math.Min(canvaswidth, canvasheight) / 40;
-                float largedotheight = Math.Min(canvaswidth, canvasheight) / 20;
+                float smalldotheight = Math.Min(canvaswidth, canvasheight) / 120 * scale;
+                float largedotheight = smalldotheight * 2;
                 float dotmargin = smalldotheight;
 
                 textPaint.Style = SKPaintStyle.Fill;
@@ -9893,19 +9893,21 @@ namespace GnollHackClient.Pages.Game
                 textPaint.Color = SKColors.White;
 
                 float btnMatrixEnd = canvasheight - dotmargin * 2 - largedotheight;
-
+                float titlesize = Math.Min(24f, 15f * canvaswidth / 800.0f) * scale;
 
                 for (int page = pagemin; page <= pagemax; page++)
                 {
+                    float btnOffsetX = cmdOffsetX + canvaswidth * (page - curpage);
+
                     textPaint.Color = SKColors.White;
                     textPaint.Typeface = App.ImmortalTypeface;
-                    textPaint.TextSize = Math.Min(20f, 15f * canvaswidth / 360.0f) * scale;
+                    textPaint.TextSize = titlesize;
                     textPaint.TextAlign = SKTextAlign.Center;
 
-                    string titlestr = _moreButtonPageTitle[MoreCmdPage];
+                    string titlestr = _moreButtonPageTitle[page];
                     float titletopmargin = 5f * scale;
                     float titley = titletopmargin + textPaint.FontSpacing - textPaint.FontMetrics.Descent;
-                    canvas.DrawText(titlestr, new SKPoint(canvaswidth / 2 + cmdOffsetX, titley), textPaint);
+                    canvas.DrawText(titlestr, new SKPoint(canvaswidth / 2 + btnOffsetX, titley), textPaint);
 
                     float btnMatrixStart = titletopmargin * 2 + textPaint.FontSpacing;
 
@@ -9920,18 +9922,17 @@ namespace GnollHackClient.Pages.Game
                     float btnAreaWidth = btnMatrixAreaWidth / usedButtonsPerRow;
                     float btnAreaHeight = btnMatrixAreaHeight / usedButtonsPerColumn;
 
-                    float btnImgRawWidth = Math.Min(btnAreaWidth, 80 * scale);
+                    float btnImgRawWidth = Math.Min(256, Math.Min(btnAreaWidth * 0.925f, 128 * scale));
 
                     textPaint.Color = SKColors.White;
                     textPaint.Typeface = App.LatoRegular;
-                    textPaint.TextSize = 9.5f * 3.0f * btnImgRawWidth / 180.0f;
+                    textPaint.TextSize = 12.0f * 3.0f * btnImgRawWidth / 256.0f;
                     textPaint.TextAlign = SKTextAlign.Center;
 
-                    float btnImgRawHeight = Math.Min(btnAreaHeight - textPaint.FontSpacing, 80 * scale);
+                    float btnImgRawHeight = Math.Min(256, Math.Min(btnAreaHeight * 0.925f - textPaint.FontSpacing, 128 * scale));
 
                     float btnImgWidth = Math.Min(btnImgRawWidth, btnImgRawHeight);
                     float btnImgHeight = btnImgWidth;
-                    float btnOffsetX = cmdOffsetX + canvaswidth * (page - curpage);
 
                     for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
                     {
@@ -9967,6 +9968,10 @@ namespace GnollHackClient.Pages.Game
             float btnMatrixEnd = btnRect.Bottom;
             float btnMatrixWidth = btnRect.Width;
             float btnMatrixHeight = btnRect.Height;
+            float canvaswidth = CommandCanvas.CanvasSize.Width;
+            float canvasheight = CommandCanvas.CanvasSize.Height;
+            float scale = canvaswidth / (float)CommandCanvas.Width;
+            bool isLandscape = canvaswidth > canvasheight;
 
             lock (CommandButtonLock)
             {
@@ -10006,80 +10011,29 @@ namespace GnollHackClient.Pages.Game
 
                                 float diffX = e.Location.X - anchor.X;
                                 float diffY = e.Location.Y - anchor.Y;
-                                float origdiffX = e.Location.X - origanchor.X;
-                                float origdiffY = e.Location.Y - origanchor.Y;
                                 //float dist = (float)Math.Sqrt((Math.Pow(diffX, 2) + Math.Pow(diffY, 2)));
                                 float xdist = (float)Math.Abs(diffX);
-                                long milliseconds = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+                                long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+                                int cmdPage = MoreCmdPage;
+                                float cmdOffset = MoreCmdOffsetX;
 
                                 if (CommandTouchDictionary.Count == 1)
                                 {
-                                    if (xdist > 25 || milliseconds > GHConstants.MoveOrPressTimeThreshold)
+                                    if (xdist > 25 || elapsedms > GHConstants.MoveOrPressTimeThreshold)
                                     {
                                         /* Just one finger */
-                                        int cmdPage = MoreCmdPage;
-                                        float cmdOffset = MoreCmdOffsetX;
-                                        float swipethreshold = Math.Max(25f, Math.Min(CommandCanvas.CanvasSize.Width, CommandCanvas.CanvasSize.Height) / 10);
                                         if (diffX != 0 || diffY != 0)
                                         {
-                                            if(milliseconds <= GHConstants.SwipeTimeThreshold && Math.Abs(origdiffX) > swipethreshold)
-                                            {
-                                                /* It is a swipe */
-                                                if (origdiffX > swipethreshold)
-                                                {
-                                                    if (cmdPage > (EnableWizardMode ? 0 : 1))
-                                                    {
-                                                        MoreCmdPage = cmdPage - 1;
-                                                        MoreCmdOffsetX = cmdOffset + diffX - btnMatrixWidth;
-                                                    }
+                                            int minpage = EnableWizardMode ? 0 : 1;
+                                            int maxpage = GHConstants.MoreButtonPages - 1;
+                                            cmdOffset += diffX;
+                                            if(cmdPage == minpage && cmdOffset > 0)
+                                                MoreCmdOffsetX = cmdOffset = 0;
+                                            else if (cmdPage == maxpage && cmdOffset < 0)
+                                                MoreCmdOffsetX = cmdOffset = 0;
+                                            else
+                                                MoreCmdOffsetX = cmdOffset;
 
-                                                    _commandChangedPage = true;
-                                                }
-                                                else if (origdiffX < -swipethreshold)
-                                                {
-                                                    if (cmdPage < GHConstants.MoreButtonPages - 1)
-                                                    {
-                                                        MoreCmdPage = cmdPage + 1;
-                                                        MoreCmdOffsetX = cmdOffset + diffX + btnMatrixWidth;
-                                                    }
-
-                                                    _commandChangedPage = true;
-                                                }
-                                            }
-                                            else if (milliseconds > GHConstants.SwipeTimeThreshold)
-                                            {
-                                                /* It is a drag */
-                                                int minpage = EnableWizardMode ? 0 : 1;
-                                                int maxpage = GHConstants.MoreButtonPages - 1;
-                                                cmdOffset += diffX;
-                                                if(cmdPage == minpage && cmdOffset > 0)
-                                                    MoreCmdOffsetX = cmdOffset = 0;
-                                                else if (cmdPage == maxpage && cmdOffset < 0)
-                                                    MoreCmdOffsetX = cmdOffset = 0;
-                                                else
-                                                    MoreCmdOffsetX = cmdOffset;
-
-                                                if (cmdOffset > btnMatrixWidth / 2)
-                                                {
-                                                    if (cmdPage > (EnableWizardMode ? 0 : 1))
-                                                    {
-                                                        MoreCmdPage = cmdPage - 1;
-                                                        MoreCmdOffsetX = cmdOffset + diffX - btnMatrixWidth;
-                                                    }
-
-                                                    _commandChangedPage = true;
-                                                }
-                                                else if (cmdOffset < -btnMatrixWidth / 2)
-                                                {
-                                                    if (cmdPage < GHConstants.MoreButtonPages - 1)
-                                                    {
-                                                        MoreCmdPage = cmdPage + 1;
-                                                        MoreCmdOffsetX = cmdOffset + diffX + btnMatrixWidth;
-                                                    }
-
-                                                    _commandChangedPage = true;
-                                                }
-                                            }
 
                                             CommandTouchDictionary[e.Id].Location = e.Location;
                                             _commandTouchMoved = true;
@@ -10101,14 +10055,19 @@ namespace GnollHackClient.Pages.Game
                             TouchEntry entry;
                             bool res = CommandTouchDictionary.TryGetValue(e.Id, out entry);
                             long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+                            float swipelengththreshold = Math.Min(50f * scale, Math.Max(25f, Math.Min(CommandCanvas.CanvasSize.Width, CommandCanvas.CanvasSize.Height) / 10));
+
+                            SKPoint origanchor = entry.OriginalLocation;
+
+                            float origdiffX = e.Location.X - origanchor.X;
+                            float origdiffY = e.Location.Y - origanchor.Y;
+                            int cmdPage = MoreCmdPage;
+                            float cmdOffset = MoreCmdOffsetX;
 
                             if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_commandTouchMoved)
                             {
                                 /* Normal click */
                                 /* Select command here*/
-                                float canvaswidth = CommandCanvas.CanvasSize.Width;
-                                float canvasheight = CommandCanvas.CanvasSize.Height;
-                                bool isLandscape = canvaswidth > canvasheight;
                                 int used_btnHeight = GHConstants.MoreButtonsPerColumn;
                                 int usedButtonsPerRow = isLandscape ? used_btnHeight : GHConstants.MoreButtonsPerRow;
                                 int usedButtonsPerColumn = isLandscape ? GHConstants.MoreButtonsPerRow : used_btnHeight;
@@ -10176,6 +10135,54 @@ namespace GnollHackClient.Pages.Game
                                     RefreshScreen = true;
                                 }
                             }
+                            else if (elapsedms <= GHConstants.SwipeTimeThreshold && Math.Abs(origdiffX) > swipelengththreshold)
+                            {
+                                /* It is a swipe */
+                                if (origdiffX > swipelengththreshold)
+                                {
+                                    if (cmdPage > (EnableWizardMode ? 0 : 1))
+                                    {
+                                        MoreCmdPage = cmdPage - 1;
+                                        MoreCmdOffsetX = cmdOffset - btnMatrixWidth;
+                                    }
+
+                                    _commandChangedPage = true;
+                                }
+                                else if (origdiffX < -swipelengththreshold)
+                                {
+                                    if (cmdPage < GHConstants.MoreButtonPages - 1)
+                                    {
+                                        MoreCmdPage = cmdPage + 1;
+                                        MoreCmdOffsetX = cmdOffset + btnMatrixWidth;
+                                    }
+
+                                    _commandChangedPage = true;
+                                }
+                            }
+                            else
+                            {
+                                if (cmdOffset > btnMatrixWidth / 2)
+                                {
+                                    if (cmdPage > (EnableWizardMode ? 0 : 1))
+                                    {
+                                        MoreCmdPage = cmdPage - 1;
+                                        MoreCmdOffsetX = cmdOffset - btnMatrixWidth;
+                                    }
+
+                                    _commandChangedPage = true;
+                                }
+                                else if (cmdOffset < -btnMatrixWidth / 2)
+                                {
+                                    if (cmdPage < GHConstants.MoreButtonPages - 1)
+                                    {
+                                        MoreCmdPage = cmdPage + 1;
+                                        MoreCmdOffsetX = cmdOffset + btnMatrixWidth;
+                                    }
+
+                                    _commandChangedPage = true;
+                                }
+                            }
+
                             if (CommandTouchDictionary.ContainsKey(e.Id))
                                 CommandTouchDictionary.Remove(e.Id);
                             if (CommandTouchDictionary.Count == 0)
