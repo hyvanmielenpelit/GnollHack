@@ -45,7 +45,7 @@ enum p_skills {
     P_DAGGER             =  1,
     P_AXE                =  2,
     P_PICK_AXE           =  3,
-    P_SWORD                 =  4,
+    P_SWORD              =  4,
     P_BLUDGEONING_WEAPON =  5, /* Heavy-shafted bludgeon */
     P_FLAIL              =  6, /* Two pieces hinged or chained together */
     P_QUARTERSTAFF       =  7, /* Long-shafted bludgeon */
@@ -59,27 +59,27 @@ enum p_skills {
 
     /* Spell Skills added by Larry Stewart-Zerba */
     P_ARCANE_SPELL       = 15,
-    P_CLERIC_SPELL         = 16,
+    P_CLERIC_SPELL       = 16,
     P_HEALING_SPELL      = 17,
     P_DIVINATION_SPELL   = 18,
-    P_ABJURATION_SPELL     = 19,
+    P_ABJURATION_SPELL   = 19,
     P_MOVEMENT_SPELL     = 20,
     P_TRANSMUTATION_SPELL= 21,
     P_ENCHANTMENT_SPELL  = 22,
     P_CONJURATION_SPELL  = 23,
     P_CELESTIAL_SPELL    = 24,
     P_NATURE_SPELL       = 25,
-    P_NECROMANCY_SPELL     = 26,
+    P_NECROMANCY_SPELL   = 26,
 
     /* Other types of combat */
     P_BARE_HANDED_COMBAT = 27, /* actually weaponless; gloves are ok */
-    P_MARTIAL_ARTS         = 28, /* actually weaponless; gloves are ok */
+    P_MARTIAL_ARTS       = 28, /* actually weaponless; gloves are ok */
     P_TWO_WEAPON_COMBAT  = 29, /* pair of weapons, one in each hand */
     P_WAND               = 30, /* shooting rays with wands */
 
     /* Non-combat skills */
     P_RIDING             = 31,    /* how well you control your steed */
-    P_DISARM_TRAP         = 32,    /* disarming traps */
+    P_DISARM_TRAP        = 32,    /* disarming traps */
     
     P_NUM_SKILLS         = 33
 };
