@@ -1214,8 +1214,8 @@ doability(VOID_ARGS)
 
     /* Your pets' statistics */
     int petcount = 0;
-
-    for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    struct monst* mtmp;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
         if (!DEADMONSTER(mtmp) && is_tame(mtmp))
         {
@@ -1231,7 +1231,7 @@ doability(VOID_ARGS)
             "Companion Statistics                ", MENU_UNSELECTED);
 
         int pet_index = 0;
-        for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         {
             if (!DEADMONSTER(mtmp) && is_tame(mtmp))
             {
@@ -2134,7 +2134,8 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
 #else
         fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
 #endif
-        for (int i = 0; i < MAX_GLYPH; i++)
+        int i;
+        for (i = 0; i < MAX_GLYPH; i++)
         {
             const char* header = "";
             const char* special = "";
@@ -4836,7 +4837,8 @@ int cmdflag;
         cmdlen = strlen(cmdbuf);
         if (cmdlen < maxcommandlength)
         {
-            for (size_t i = 0; i < (maxcommandlength - cmdlen); i++)
+            size_t i;
+            for (i = 0; i < (maxcommandlength - cmdlen); i++)
                 Sprintf(eos(cmdbuf), " ");
         }
 
@@ -5357,7 +5359,8 @@ const char* command;
     if (!command)
         return '\0';
 
-    for (int i = 0; i < 256; ++i)
+    int i;
+    for (i = 0; i < 256; ++i)
         if (Cmd.commands[i] && Cmd.commands[i]->ef_txt && !strcmp(Cmd.commands[i]->ef_txt, command))
             return (uchar)i;
 
@@ -5371,7 +5374,8 @@ const char* ext_command;
     if (!ext_command)
         return -1;
 
-    for (int i = 0; extcmdlist[i].ef_txt != 0; i++)
+    int i;
+    for (i = 0; extcmdlist[i].ef_txt != 0; i++)
         if (!strcmp(extcmdlist[i].ef_txt, ext_command))
             return i;
 
@@ -6443,7 +6447,8 @@ update_bindings_list()
             continue;
         }
 
-        for (int i = 0; i < 256; i++)
+        int i;
+        for (i = 0; i < 256; i++)
         {
             if (Cmd.commands[i] == efp)
             {
