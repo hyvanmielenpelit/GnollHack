@@ -1952,6 +1952,7 @@ enhance_weapon_skill()
 
         /* start with a legend if any entries will be annotated
            with "*" or "#" below */
+#ifndef GNH_ANDROID
         if (!speedy)
         {
             any = zeroany;
@@ -1965,10 +1966,7 @@ enhance_weapon_skill()
             strcpy(buf, "");
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
                 MENU_UNSELECTED);
-        }
 
-        if (!speedy)
-        {
             boolean disarmtrapslast = (P_SKILL_LEVEL(P_DISARM_TRAP) > P_ISRESTRICTED);
             boolean wandsshown = (P_SKILL_LEVEL(P_WAND) > P_ISRESTRICTED);
             boolean martialartsshown = (P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_ISRESTRICTED);
@@ -2006,6 +2004,7 @@ enhance_weapon_skill()
             }
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
         }
+#endif
 
         if (eventually_advance > 0 || maxxed_cnt > 0)
         {
@@ -2384,7 +2383,21 @@ enhance_weapon_skill()
         }
         Strcpy(buf, (to_advance > 0) ? "Pick a skill to advance:"
                                      : "Current skills:");
-        end_menu(win, buf);
+
+#ifdef GNH_ANDROID
+        if (!speedy)
+        {
+            char subbuf[BUFSZ] = "";
+            Sprintf(subbuf, "%d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
+            end_menu_ex(win, buf, subbuf);
+        }
+        else
+        {
+            end_menu(win, buf);
+        }
+#else
+            end_menu(win, buf);
+#endif
         n = select_menu(win, to_advance ? PICK_ONE : PICK_NONE, &selected);
         destroy_nhwindow(win);
         if (n > 0) 
