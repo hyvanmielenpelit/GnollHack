@@ -337,6 +337,8 @@ namespace GnollHackClient.Pages.Game
         public int GeneralTileOff { get; set; }
         public int HitTileOff { get; set; }
         public int UITileOff { get; set; }
+        public int SpellTileOff { get; set; }
+        public int SkillTileOff { get; set; }
         public int BuffTileOff { get; set; }
         public int CursorOff { get; set; }
 
@@ -453,8 +455,8 @@ namespace GnollHackClient.Pages.Game
             UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
             NoGlyph = _gnollHackService.GetNoGlyph();
 
-            int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, buff_tile_off, cursor_off;
-            _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out buff_tile_off,
+            int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, buff_tile_off, cursor_off;
+            _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out buff_tile_off,
                 out cursor_off);
             AnimationOff = animoff;
             EnlargementOff = enloff;
@@ -462,6 +464,8 @@ namespace GnollHackClient.Pages.Game
             GeneralTileOff = general_tile_off;
             HitTileOff = hit_tile_off;
             UITileOff = ui_tile_off;
+            SpellTileOff = spell_tile_off;
+            SkillTileOff = skill_tile_off;
             BuffTileOff = buff_tile_off;
             CursorOff = cursor_off;
             await LoadingProgressBar.ProgressTo(0.7, 100, Easing.Linear);

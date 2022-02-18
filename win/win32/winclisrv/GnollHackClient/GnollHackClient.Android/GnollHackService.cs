@@ -164,6 +164,10 @@ namespace GnollHackClient.Droid
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibGetUITileOff();
         [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetSpellTileOff();
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibGetSkillTileOff();
+        [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibGetBuffTileOff();
         [DllImport(@"libgnollhackdroid.so")]
         public static extern int LibGetCursorOff();
@@ -605,7 +609,7 @@ namespace GnollHackClient.Droid
             return LibGetNoGlyph();
         }
 
-        public void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile, out int ui_tile, out int buff_tile, out int cursor_off)
+        public void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile, out int ui_tile, out int spell_tile, out int skill_tile, out int buff_tile, out int cursor_off)
         {
             a = LibGetAnimationOff();
             e = LibGetEnlargementOff();
@@ -613,6 +617,8 @@ namespace GnollHackClient.Droid
             gen_tile = LibGetGeneralTileOff();
             hit_tile = LibGetHitTileOff();
             ui_tile = LibGetUITileOff();
+            spell_tile = LibGetSpellTileOff();
+            skill_tile = LibGetSkillTileOff();
             buff_tile = LibGetBuffTileOff();
             cursor_off = LibGetCursorOff();
         }

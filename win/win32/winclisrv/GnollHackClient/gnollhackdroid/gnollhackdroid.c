@@ -203,6 +203,16 @@ int LibGetUITileOff()
     return GLYPH_UI_TILE_OFF;
 }
 
+int LibGetSpellTileOff()
+{
+    return GLYPH_SPELL_TILE_OFF;
+}
+
+int LibGetSkillTileOff()
+{
+    return GLYPH_SKILL_TILE_OFF;
+}
+
 int LibGetBuffTileOff()
 {
     return GLYPH_BUFF_OFF;

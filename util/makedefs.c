@@ -2861,6 +2861,7 @@ do_objs()
     char last_amulet_buf[BUFSZ] = "";
     char first_misc_buf[BUFSZ] = "";
     char last_misc_buf[BUFSZ] = "";
+    char first_spell_buf[BUFSZ] = "";
     char prev_objnam_buf[BUFSZ] = "";
 
     filename[0] = '\0';
@@ -2926,6 +2927,9 @@ do_objs()
                 strcpy(first_misc_buf, objnam);
             if (prev_class == MISCELLANEOUS_CLASS)
                 strcpy(last_misc_buf, prev_objnam_buf);
+
+            if (class == SPBOOK_CLASS)
+                Sprintf(first_spell_buf, "SPE_%s", objnam);
 
             prev_class = class;
         }
@@ -3002,6 +3006,8 @@ do_objs()
         Fprintf(ofp, "#define\tFIRST_MISCITEM\t(%s)\n", limit(first_misc_buf, 0));
     if (strcmp(last_misc_buf, ""))
         Fprintf(ofp, "#define\tLAST_MISCITEM\t(%s)\n", limit(last_misc_buf, 0));
+    if (strcmp(first_spell_buf, ""))
+        Fprintf(ofp, "#define\tFIRST_SPELL\t(%s)\n", limit(first_spell_buf, 0));
     Fprintf(ofp, "#define\tMAXSPELL\t%d\n", nspell + 1);
     Fprintf(ofp, "#define\tNUM_OBJECTS\t%d\n", i);
 

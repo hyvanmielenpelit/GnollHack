@@ -2895,6 +2895,22 @@ short animidx;
             return glyph2tile[i + GLYPH_UI_TILE_OFF];
     }
 
+    /* Spell tiles */
+    for (i = 0; i < MAXSPELL; i++)
+    {
+        /* Currently spell tiles do not have animations */
+        break;
+        //return glyph2tile[i + GLYPH_SPELL_TILE_OFF];
+    }
+
+    /* Skill tiles */
+    for (i = 0; i < P_NUM_SKILLS; i++)
+    {
+        /* Currently skill tiles do not have animations */
+        break;
+        //return glyph2tile[i + GLYPH_SKILL_TILE_OFF];
+    }
+
     /* Replacement */
     for (i = 1; i < MAX_REPLACEMENTS; i++)
     {
@@ -3018,6 +3034,21 @@ short enlidx, enl_anim_tile_idx;
             return glyph2tile[i + GLYPH_UI_TILE_OFF];
     }
 
+    /* Spell tiles */
+    for (i = 0; i < MAXSPELL; i++)
+    {
+        /* Currently spell tiles do not have enlargements */
+        break;
+        //return glyph2tile[i + GLYPH_SPELL_TILE_OFF];
+    }
+
+    /* Skill tiles */
+    for (i = 0; i < P_NUM_SKILLS; i++)
+    {
+        /* Currently skill tiles do not have enlargements */
+        break;
+        //return glyph2tile[i + GLYPH_SKILL_TILE_OFF];
+    }
 
     /* Replacement */
     for (i = 1; i < MAX_REPLACEMENTS; i++)
@@ -3166,6 +3197,22 @@ short replacement_idx;
     {
         if (ui_tile_component_array[i].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_UI_TILE_OFF];
+    }
+
+    /* Spell tiles */
+    for (i = 0; i < MAXSPELL; i++)
+    {
+        /* Currently spell tiles do not have replacements */
+        break;
+        //return glyph2tile[i + GLYPH_SPELL_TILE_OFF];
+    }
+
+    /* Skill tiles */
+    for (i = 0; i < P_NUM_SKILLS; i++)
+    {
+        /* Currently skill tiles do not have replacements */
+        break;
+        //return glyph2tile[i + GLYPH_SKILL_TILE_OFF];
     }
 
     return -1;

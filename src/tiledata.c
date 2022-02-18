@@ -53,6 +53,22 @@ enum action_tile_types action;
     return TRUE;
 }
 
+void
+replace_char(buf, search_ch, repl_ch)
+char* buf;
+char search_ch, repl_ch;
+{
+    if (!buf)
+        return;
+
+    char* p = buf;
+    while (*p)
+    {
+        if (*p == search_ch)
+            *p = repl_ch;
+        p++;
+    }
+}
 
 void
 init_tiledata()
@@ -1836,6 +1852,55 @@ uchar* tilemapflags;
         tile_count++;
     }
 
+    const char* spellskill_subtile_names[2] = { "active" , "inactive" };
+    set_name = "spell-tile";
+    for (i = 0; i < MAXSPELL; i++)
+    {
+        if (process_style == 0)
+        {
+            char namebuf[BUFSZ] = "";
+            strcpy(namebuf, OBJ_NAME(objects[FIRST_SPELL + i]));
+            replace_char(namebuf, ' ', '-');
+            Sprintf(buf, "%s,%s,%s,%d,%d,%d", tile_section_name, set_name, namebuf, 2, 64, 48);
+            for (j = 0; j < 2; j++)
+            {
+                Sprintf(eos(buf), ",%s", spellskill_subtile_names[j]);
+            }
+            Sprintf(eos(buf), "\n");
+            (void)write(fd, buf, strlen(buf));
+        }
+        else if (process_style == 1)
+        {
+            glyph_offset = GLYPH_SPELL_TILE_OFF;
+            tilemaparray[i + GLYPH_SPELL_TILE_OFF] = tile_count;
+        }
+        tile_count++;
+    }
+
+    set_name = "skill-tile";
+    for (i = 0; i < P_NUM_SKILLS; i++)
+    {
+        if (process_style == 0)
+        {
+            char namebuf[BUFSZ] = "";
+            strcpy(namebuf, skill_name(i, FALSE));
+            replace_char(namebuf, ' ', '-');
+            Sprintf(buf, "%s,%s,%s,%d,%d,%d", tile_section_name, set_name, namebuf, 2, 64, 48);
+            for (j = 0; j < 2; j++)
+            {
+                Sprintf(eos(buf), ",%s", spellskill_subtile_names[j]);
+            }
+            Sprintf(eos(buf), "\n");
+            (void)write(fd, buf, strlen(buf));
+        }
+        else if (process_style == 1)
+        {
+            glyph_offset = GLYPH_SKILL_TILE_OFF;
+            tilemaparray[i + GLYPH_SKILL_TILE_OFF] = tile_count;
+        }
+        tile_count++;
+    }
+
     set_name = "buff";
     for (i = 0; i < MAX_BUFF_TILES; i++)
     {
@@ -2577,6 +2642,8 @@ uchar* tilemapflags;
             }
         }
 
+        /* Spell tiles have no replacements currently */
+        /* Skill tiles have no replacements currently */
         /* Buffs have no replacements currently */
 
 
@@ -2859,6 +2926,8 @@ uchar* tilemapflags;
             }
         }
 
+        /* Spell tiles have no animations currently */
+        /* Skill tiles have no animations currently */
         /* Buffs have no animations currently */
 
 
@@ -3075,6 +3144,8 @@ uchar* tilemapflags;
             }
         }
 
+        /* Spell tiles have no enlargements currently */
+        /* Skill tiles have no enlargements currently */
         /* Buffs have no enlargements */
 
 
