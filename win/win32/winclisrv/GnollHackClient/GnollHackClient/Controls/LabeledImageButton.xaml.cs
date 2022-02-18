@@ -107,7 +107,7 @@ namespace GnollHackClient.Controls
                 imgsidewidth = Math.Min(80.0, Math.Max(40.0, canvaswidth / Math.Max(1, PortraitButtonsInRow)));
 
             double imgsideheight = imgsidewidth;
-            double fontsize = 9.0 * imgsidewidth / 50.0;
+            double fontsize = 8.5 * imgsidewidth / 50.0;
             double fontsize_larger = 9.5 * imgsidewidth / 50.0;
             double gridsidewidth = imgsidewidth;
             double gridsideheight = imgsideheight + fontsize + 2;

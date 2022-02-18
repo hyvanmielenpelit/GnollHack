@@ -7300,14 +7300,6 @@ namespace GnollHackClient.Pages.Game
                 if (TipView.IsVisible)
                     TipView.InvalidateSurface();
 
-                //double sidesize = Math.Min(Math.Min(80.0, Math.Max(45.0, width / 8)), Math.Min(80.0, Math.Max(45.0, height / 8)));
-                //GameMenuButton.WidthRequest = ESCButton.HeightRequest = sidesize;
-                //ESCButton.WidthRequest = ESCButton.HeightRequest = sidesize;
-                //LookModeButton.WidthRequest = LookModeButton.HeightRequest = sidesize;
-                //ToggleModeButton.WidthRequest = ToggleModeButton.HeightRequest = sidesize;
-                //ToggleZoomMiniButton.WidthRequest = ToggleZoomMiniButton.HeightRequest = sidesize;
-                //ToggleZoomAlternateButton.WidthRequest = ToggleZoomAlternateButton.HeightRequest = sidesize;
-
                 GameMenuButton.SetSideSize(width, height);
                 ESCButton.SetSideSize(width, height);
                 LookModeButton.SetSideSize(width, height);
@@ -7315,37 +7307,12 @@ namespace GnollHackClient.Pages.Game
                 ToggleZoomMiniButton.SetSideSize(width, height);
                 ToggleZoomAlternateButton.SetSideSize(width, height);
 
-                //sidesize = Math.Min(Math.Min(80.0, Math.Max(40.0, width / 6)), Math.Min(80.0, Math.Max(40.0, height / 6)));
-                //ZeroButton.WidthRequest = ZeroButton.HeightRequest = sidesize;
-                //FirstButton.WidthRequest = FirstButton.HeightRequest = sidesize;
-                //SecondButton.WidthRequest = SecondButton.HeightRequest = sidesize;
-                //ThirdButton.WidthRequest = ThirdButton.HeightRequest = sidesize;
-                //FourthButton.WidthRequest = FourthButton.HeightRequest = sidesize;
                 ZeroButton.SetSideSize(width, height);
                 FirstButton.SetSideSize(width, height);
                 SecondButton.SetSideSize(width, height);
                 ThirdButton.SetSideSize(width, height);
                 FourthButton.SetSideSize(width, height);
 
-                //double imgsidewidth = 0;
-                //if (width > height)
-                //    imgsidewidth = Math.Min(80.0, Math.Max(40.0, width / 14));
-                //else
-                //    imgsidewidth = Math.Min(Math.Min(80.0, Math.Max(40.0, width / 7)), Math.Min(80.0, Math.Max(40.0, height / 7)));
-
-                //double imgsideheight = imgsidewidth;
-                //double fontsize = 9.0 * imgsidewidth / 50.0;
-                //double fontsize_larger = 9.5 * imgsidewidth / 50.0;
-                //double gridsidewidth = imgsidewidth;
-                //double gridsideheight = imgsideheight + fontsize + 2;
-                //double gridsideheight_larger = imgsideheight + fontsize_larger + 2;
-
-                //AbilitiesGrid.WidthRequest = SkillGrid.WidthRequest = gridsidewidth;
-                //AbilitiesGrid.HeightRequest = SkillGrid.HeightRequest = gridsideheight_larger;
-                //AbilitiesImg.WidthRequest = SkillImg.WidthRequest = imgsidewidth;
-                //AbilitiesImg.HeightRequest = SkillImg.HeightRequest = imgsideheight;
-                /* AbilitiesLbl */
-                //SkillLbl.FontSize = fontsize_larger;
                 double statusbarheight = GetStatusBarHeight();
                 lAbilitiesButton.SetSideSize(width, height);
                 lAbilitiesButton.HeightRequest = statusbarheight;

@@ -3353,6 +3353,7 @@ containerdone:
         if (current_container)
             current_container->cknown = 1;
         update_inventory();
+        force_redraw_at(u.ux, u.uy);
     }
 
     *objp = current_container; /* might have become null */
