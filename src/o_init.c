@@ -789,7 +789,7 @@ dodiscovered() /* free after Robert Viduya */
     winid tmpwin;
 
     tmpwin = create_nhwindow(NHW_MENU);
-    putstr(tmpwin, 0, "Discoveries");
+    putstr(tmpwin, ATR_TITLE, "Discoveries");
     putstr(tmpwin, 0, "");
 
     /* gather "unique objects" into a pseudo-class; note that they'll
@@ -797,7 +797,7 @@ dodiscovered() /* free after Robert Viduya */
     for (i = dis = 0; i < SIZE(uniq_objs); i++)
         if (objects[uniq_objs[i]].oc_name_known) {
             if (!dis++)
-                putstr(tmpwin, iflags.menu_headings, "Unique items");
+                putstr(tmpwin, iflags.menu_headings | ATR_HEADING, "Unique items");
             Sprintf(buf, "  %s", OBJ_NAME(objects[uniq_objs[i]]));
             putstr(tmpwin, 0, buf);
             ++ct;
@@ -825,7 +825,7 @@ dodiscovered() /* free after Robert Viduya */
                 Sprintf(buf, "%s %s",
                         (objects[dis].oc_pre_discovered ? "*" : " "),
                         obj_typename(dis));
-                putstr(tmpwin, 0, buf);
+                putstr(tmpwin, objects[dis].oc_pre_discovered ? ATR_INDENT_AT_ASTR : ATR_INDENT_AT_SPACE, buf);
             }
         }
     }

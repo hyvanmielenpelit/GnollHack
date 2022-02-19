@@ -1244,7 +1244,7 @@ int spell;
     strcpy(buf, spellname(spell));
     *buf = highc(*buf);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_TITLE, txt);
 
     /* Level & category*/
     if (objects[booktype].oc_spell_level == -1)
@@ -1255,7 +1255,7 @@ int spell;
         Sprintf(buf, "Level %ld %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
 
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_SUBTITLE, txt);
 
     /* One empty line here */
     strcpy(buf, "");
@@ -1318,7 +1318,7 @@ int spell;
 
         Sprintf(buf, "Attributes:       %s", statbuf);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     /* Mana cost*/
@@ -1334,7 +1334,7 @@ int spell;
     }
     Sprintf(buf, "Mana cost:        %s", buf2);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     /* Casting time*/
     if(objects[booktype].oc_spell_flags & S1_DOES_NOT_TAKE_A_TURN)
@@ -1344,7 +1344,7 @@ int spell;
 
     Sprintf(buf, "Casting time:     %s", buf2);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     /* Cooldown */
     if (objects[booktype].oc_spell_cooldown > 0)
@@ -1359,7 +1359,7 @@ int spell;
 
     Sprintf(buf, "Cooldown:         %s", buf2);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     /* DirType */
     if (objects[booktype].oc_dir > 0)
@@ -1401,7 +1401,7 @@ int spell;
             break;
         }
         Sprintf(buf, "Targeting:        %s", buf2);
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     /* Range */
@@ -1417,7 +1417,7 @@ int spell;
     {
         Sprintf(buf, "Radius:           %ld'", objects[booktype].oc_spell_radius * 5L);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     /* Damage or Healing */
@@ -1460,7 +1460,7 @@ int spell;
         }
 
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
         /* Per level */
         if ((objects[booktype].oc_spell_flags & S1_LDMG_IS_PER_LEVEL_DMG_INCREASE) && objects[booktype].oc_spell_per_level_step > 0)
@@ -1492,7 +1492,7 @@ int spell;
                 Sprintf(eos(buf), " per %ld caster levels", objects[booktype].oc_spell_per_level_step);
 
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
             int max_level = get_maximum_applicable_spell_damage_level(booktype, &youmonst);
             used_level = min(max_level, u.ulevel);
@@ -1511,7 +1511,7 @@ int spell;
                 Sprintf(buf, "Level limit:      %d (%s at %s)", max_level, skilllevelnamebuf, skillnamebuf);
 
                 txt = buf;
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
         }
     }
@@ -1527,7 +1527,7 @@ int spell;
         {
             Sprintf(buf, "Damage type:      %s", dmgttext);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
     }
     
@@ -1587,7 +1587,7 @@ int spell;
                 break;
             }
             Sprintf(buf, "%s type:  %s", buf3, buf2);
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
         else if (objects[booktype].oc_dir == NODIR)
         {
@@ -1606,7 +1606,7 @@ int spell;
             if (strcmp(buf2, "") != 0) // Something else than ""
             {
                 Sprintf(buf, "%s type:      %s", buf3, buf2);
-                putstr(datawin, 0, txt);
+                putstr(datawin, ATR_INDENT_AT_COLON, txt);
             }
         }
 
@@ -1641,7 +1641,7 @@ int spell;
         Strcat(buf, plusbuf);
 
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     /* Saving throw adjustment */
@@ -1668,7 +1668,7 @@ int spell;
         Sprintf(buf, "Saving throw:     Against %s", vsbuf);
 
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
         char baseadjbuf[BUFSZ];
         int baseadj = objects[booktype].oc_spell_saving_throw_adjustment;
@@ -1690,7 +1690,7 @@ int spell;
         Sprintf(buf, "Save adjustment:  %s (%s base, %s %s skill)", totaladjbuf, baseadjbuf, skilladjbuf, skill_level_namebuf);
 
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     /* Magic resistance */
@@ -1702,13 +1702,13 @@ int spell;
             (objects[booktype].oc_spell_flags & S1_FLAGS_EFFECT_DOES_NOT_USE_MAGIC_RESISTANCE) ? "Unaffected" : "Unknown if affected");
 
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     /* Skill chance */
     Sprintf(buf, "Train chance:     %ld%%", objects[booktype].oc_spell_skill_chance);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     /* Flags */
     if (objects[booktype].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
@@ -1718,7 +1718,7 @@ int spell;
         else
             Sprintf(buf, "Other:            %s", "Bypasses magic resistance for non-unique monsters");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
     strcpy(buf2, "");
@@ -1746,7 +1746,7 @@ int spell;
 
     Sprintf(buf, "Components:       %s", buf2);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
 
     /* Material components */
@@ -1765,7 +1765,7 @@ int spell;
             Sprintf(buf, " %2d - %s%s", (j + 1), domatcompname(&matlists[objects[booktype].oc_material_components].matcomp[j]),
                 ((matlists[objects[booktype].oc_material_components].matcomp[j].flags & MATCOMP_NOT_SPENT) ? " as a catalyst": ""));
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
 
     }
@@ -1783,7 +1783,7 @@ int spell;
             double avg = baseavg + perlevelavg * ((double)used_bonuses);
             Sprintf(buf, "  %d - Average damage is %.1f", cnt, avg);
             txt = buf;
-            putstr(datawin, 0, txt);
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
             cnt++;
         }
     }
@@ -1799,7 +1799,7 @@ int spell;
 #endif
         strcpy(buf, "Description:");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_INDENT_AT_DOUBLE_SPACE, txt);
         Sprintf(buf, "  %s", OBJ_ITEM_DESC(booktype));
         txt = buf;
         putstr(datawin, 0, txt);

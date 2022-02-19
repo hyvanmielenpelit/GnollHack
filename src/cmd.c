@@ -2934,17 +2934,7 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
     *tmpbuf = highc(*tmpbuf); /* same adjustment as bottom line */
     /* as in background_enlightenment, when poly'd we need to use the saved
        gender in u.mfemale rather than the current you-as-monster gender */
-#ifdef GNH_ANDROID
-    Sprintf(buf, "%s the %s", tmpbuf,
-        ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
-        ? urole.name.f
-        : urole.name.m);
-
-    /* title */
-    enlght_out(buf, ATR_TITLE); /* "Conan the Archaeologist" */
-//    Sprintf(buf, "Attributes");
-//    enlght_out(buf, ATR_SUBTITLE); /* "Attributes" */
-#else
+#ifndef GNH_ANDROID
     Sprintf(buf, "%s the %s's attributes:", tmpbuf,
             ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
                 ? urole.name.f
@@ -2980,7 +2970,17 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
     } else {
         menu_item *selected = 0;
 #ifdef GNH_ANDROID
-        end_menu(en_win, "Attributes");
+        Sprintf(buf, "%s the %s", tmpbuf,
+            ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
+            ? urole.name.f
+            : urole.name.m);
+
+        /* title */
+        //enlght_out(buf, ATR_TITLE); /* "Conan the Archaeologist" */
+    //    Sprintf(buf, "Attributes");
+    //    enlght_out(buf, ATR_SUBTITLE); /* "Attributes" */
+
+        end_menu_ex(en_win, "Attributes", buf);
 #else
         end_menu(en_win, (char *) 0);
 #endif
@@ -4954,7 +4954,7 @@ int final;
 
     /* Create the conduct window */
     en_win = create_nhwindow(NHW_MENU);
-    putstr(en_win, 0, "Voluntary challenges:");
+    putstr(en_win, ATR_HEADING, "Voluntary challenges:");
 
     if (u.uroleplay.blind)
         you_have_been("blind from birth");
