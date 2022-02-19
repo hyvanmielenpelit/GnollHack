@@ -56,6 +56,9 @@ namespace GnollHackCommon
         IndentSpace = 0x00004000,
         IndentPeriod = 0x00001800,
         IndentDoubleSpace = 0x00004800,
+        AlignCenter = 0x00010000,
+        AlignRight = 0x00020000,
+        Inactive = 0x00040000,
     }
 
     [Flags]
