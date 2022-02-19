@@ -4355,6 +4355,7 @@ boolean is_wiz_wish;
         && strncmpi(bp, "serpent ring of set", 19)
         && strncmpi(bp, "Ring of Conflict", 16)
         && strncmpi(bp, "ring of conflict", 16)
+        && strncmpi(bp, "oracular toadstool", 18)
         && strncmpi(bp, "meat ring", 9))
         for (i = 0; i < (int) (sizeof wrpsym); i++)
         {
