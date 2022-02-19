@@ -1328,7 +1328,7 @@ mkgarden()
                         quan = rnd(2);
                         break;
                     case 12:
-                        itemtype = MAGIC_MUSHROOM;
+                        itemtype = ORACULAR_TOADSTOOL;
                         quan = rnd(2);
                         break;
                     case 13:

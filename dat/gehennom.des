@@ -323,7 +323,7 @@ LOOP [4 + 1d4] {
           IF [40%] {
             OBJECT: ('%', "death cap"), random
           } ELSE {
-            OBJECT: ('%', "magic mushroom"), random
+            OBJECT: ('%', "oracular toadstool"), random
           }
         }
       }
@@ -1251,7 +1251,7 @@ LOOP [1d3] {
         IF [75%] {
           OBJECT: ('%', "death cap"), random
         } ELSE {
-          OBJECT: ('%', "magic mushroom"), random
+          OBJECT: ('%', "oracular toadstool"), random
         }
     }
 LOOP [1d4] {

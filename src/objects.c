@@ -2374,7 +2374,7 @@ FOOD("healing mushroom", "orange mushroom", "Confers temporary regeneration", FO
 FOOD("panther cap", "gray mushroom", "Confers blind telepathy", FOODTYPE_MUSHROOM, 0,
     3, MULTIGEN_1D2, 1, 3, 0, MAT_VEGGY, EDIBLETYPE_NORMAL, BLIND_TELEPATHY, 100, 0, 0, 0, 
     100, CLR_GRAY, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES | O3_BURIED_SEARCHABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-FOOD("magic mushroom", "green mushroom", "Hallucinogenic mushroom", FOODTYPE_MUSHROOM, 0,
+FOOD("oracular toadstool", "green mushroom", "Hallucinogenic mushroom", FOODTYPE_MUSHROOM, 0,
     5, MULTIGEN_1D2, 1, 3, 0, MAT_VEGGY, EDIBLETYPE_HALLUCINATING, EDIBLEFX_NO_EFFECT, 0, 1, 100, 100, 
     100, CLR_GREEN, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_EATING_IDENTIFIES | O3_BURIED_SEARCHABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 /* end of suffled mushrooms */

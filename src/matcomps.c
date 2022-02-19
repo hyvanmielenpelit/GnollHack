@@ -739,12 +739,12 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_CHARM_MONSTER,
-        "Magic mushroom",
+        "Oracular toadstool",
         STRANGE_OBJECT,
         10,
         {
             {
-                {MAGIC_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
+                {ORACULAR_TOADSTOOL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
                 NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS
             },
             NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP, NO_MATCOMP
@@ -752,12 +752,12 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_SPHERE_OF_CHARMING,
-        "Magic mushroom, sporal powder",
+        "Oracular toadstool, sporal powder",
         STRANGE_OBJECT,
         5,
         {
             {
-                {MAGIC_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
+                {ORACULAR_TOADSTOOL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
                 NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS
             },
             {
@@ -767,12 +767,12 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_MASS_CHARM,
-        "Magic mushroom, 2 sporal powder",
+        "Oracular toadstool, 2 sporal powder",
         STRANGE_OBJECT,
         3,
         {
             {
-                {MAGIC_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
+                {ORACULAR_TOADSTOOL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
                 NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS
             },
             {
@@ -784,12 +784,12 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_DOMINATE_MONSTER,
-        "Magic mushroom, wolfsbane",
+        "Oracular toadstool, wolfsbane",
         STRANGE_OBJECT,
         7,
         {
             {
-                {MAGIC_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
+                {ORACULAR_TOADSTOOL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
                 NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS
             },
             {
@@ -801,12 +801,12 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_SPHERE_OF_DOMINATION,
-        "Magic mushroom, wolfsbane, powder",
+        "Oracular toadstool, wolfsbane, powder",
         STRANGE_OBJECT,
         4,
         {
             {
-                {MAGIC_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
+                {ORACULAR_TOADSTOOL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
                 NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS
             },
             {
@@ -822,12 +822,12 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_MASS_DOMINATION,
-        "Magic mushroom, wolfsbane, 2 powder",
+        "Oracular toadstool, wolfsbane, 2 powder",
         STRANGE_OBJECT,
         2,
         {
             {
-                {MAGIC_MUSHROOM, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
+                {ORACULAR_TOADSTOOL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
                 NO_MATCOMP_MONSTER_ALTERNATIVES, NO_DESC, 1, MATCOMP_NO_FLAGS
             },
             {

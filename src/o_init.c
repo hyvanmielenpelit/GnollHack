@@ -542,8 +542,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
             *lo_p = GOGGLES_OF_NIGHT, * hi_p = GOGGLES_OF_EYE_PROTECTION;
         break;
     case FOOD_CLASS:
-        if (otyp >= CHAMPIGNON && otyp <= MAGIC_MUSHROOM)
-            *lo_p = CHAMPIGNON, * hi_p = MAGIC_MUSHROOM;
+        if (otyp >= CHAMPIGNON && otyp <= ORACULAR_TOADSTOOL)
+            *lo_p = CHAMPIGNON, * hi_p = ORACULAR_TOADSTOOL;
         break;
     case POTION_CLASS:
         /* potion of water has the only fixed description */

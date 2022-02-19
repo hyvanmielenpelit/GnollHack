@@ -52,7 +52,7 @@ IF [75%] {
           IF [40%] {
             OBJECT: ('%', "death cap"), random
           } ELSE {
-            OBJECT: ('%', "magic mushroom"), random
+            OBJECT: ('%', "oracular toadstool"), random
           }
         }
       }
@@ -1104,8 +1104,8 @@ OBJECT:'*',random
 OBJECT:'*',random
 OBJECT:'(',random
 OBJECT:'(',random
-OBJECT:('%', "magic mushroom"),random
-[25%]: OBJECT:('%', "magic mushroom"),random
+OBJECT:('%', "oracular toadstool"),random
+[25%]: OBJECT:('%', "oracular toadstool"),random
 [50%]: OBJECT:('%', "champignon"),random
 [25%]: OBJECT:('%', "champignon"),random
 OBJECT:('%', "death cap"),random
@@ -1271,8 +1271,8 @@ OBJECT:'(',random
 OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
-OBJECT:('%', "magic mushroom"),random
-[25%]: OBJECT:('%', "magic mushroom"),random
+OBJECT:('%', "oracular toadstool"),random
+[25%]: OBJECT:('%', "oracular toadstool"),random
 [50%]: OBJECT:('%', "champignon"),random
 [25%]: OBJECT:('%', "champignon"),random
 OBJECT:('%', "death cap"),random
@@ -1390,8 +1390,8 @@ OBJECT:'+',random
 OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
-OBJECT:('%', "magic mushroom"),random
-[25%]: OBJECT:('%', "magic mushroom"),random
+OBJECT:('%', "oracular toadstool"),random
+[25%]: OBJECT:('%', "oracular toadstool"),random
 [50%]: OBJECT:('%', "champignon"),random
 [25%]: OBJECT:('%', "champignon"),random
 OBJECT:('%', "death cap"),random

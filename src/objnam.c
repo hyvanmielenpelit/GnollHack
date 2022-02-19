@@ -3478,7 +3478,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "goggles", MISCELLANEOUS_CLASS, GOGGLES_OF_NIGHT, GOGGLES_OF_EYE_PROTECTION },
     { "gray stone", GEM_CLASS, LUCKSTONE, FLINT },
     { "grey stone", GEM_CLASS, LUCKSTONE, FLINT },
-    { "mushroom", FOOD_CLASS, CHAMPIGNON, MAGIC_MUSHROOM },
+    { "mushroom", FOOD_CLASS, CHAMPIGNON, ORACULAR_TOADSTOOL },
     { "whistle", TOOL_CLASS, TIN_WHISTLE, MAGIC_WHISTLE },
     { "flute", TOOL_CLASS, WOODEN_FLUTE, MAGIC_FLUTE },
     { "harp", TOOL_CLASS, WOODEN_HARP, MAGIC_HARP },
