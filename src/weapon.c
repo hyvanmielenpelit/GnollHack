@@ -2381,8 +2381,8 @@ enhance_weapon_skill()
                     MENU_UNSELECTED);
             }
         }
-        Strcpy(buf, (to_advance > 0) ? "Pick a skill to advance:"
-                                     : "Current skills:");
+        Strcpy(buf, (to_advance > 0) ? "Pick a skill to advance"
+                                     : "Current skills");
 
 #ifdef GNH_ANDROID
         if (!speedy)
