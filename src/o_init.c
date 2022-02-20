@@ -69,6 +69,11 @@ NEARDATA struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFIXES] =
         MYTHIC_PREFIX_POWER_LEVEL_DRAIN | MYTHIC_PREFIX_POWER_MANA_GAIN_25 | MYTHIC_PREFIX_POWER_HP_GAIN_25,
         MYTHIC_FLAG_NO_CELESTIAL_WEAPONS | MYTHIC_FLAG_NO_THROWN_OR_AMMO | MYTHIC_FLAG_RACIAL_PREFIX
     },
+    {
+        "sorcerer's", "sorcerer's ", "", 20,  MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
+        MYTHIC_PREFIX_POWER_SORCERY,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED | MYTHIC_FLAG_NO_LOW_SPELLCASTING_PENALTY_ITEMS | MYTHIC_FLAG_NO_OTHER_SORCERY
+    },
 };
 
 NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_PREFIX_POWERS] =
@@ -87,6 +92,7 @@ NEARDATA struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_PREFIX_P
     { "Improved enchantability", "Increases maximum enchantable level by 50%", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
     { "Uncurseable", "Cannot be cursed", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
     { "Great power", "Raises strength to 18/00 plus enchantment bonus", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NONE },
+    { "Sorcery", "Incurs no spellcasting penalty", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
 };
 
 
@@ -102,7 +108,7 @@ NEARDATA struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
     { 
         "sorcery", " of sorcery", "", 20,  MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_SUFFIX_POWER_SORCERY,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED | MYTHIC_FLAG_NO_LOW_SPELLCASTING_PENALTY_ITEMS
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED | MYTHIC_FLAG_NO_LOW_SPELLCASTING_PENALTY_ITEMS | MYTHIC_FLAG_NO_OTHER_SORCERY
     },
     {
         "troll slaying", " of troll slaying", "", 20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
@@ -1277,6 +1283,8 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_ELVEN_ITEMS) && is_elven_obj(obj))
         return FALSE;
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_DEMONIC_ITEMS) && is_demon_obj(obj))
+        return FALSE;
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_OTHER_SORCERY) && (affix_type == 0 ? (obj->mythic_suffix == MYTHIC_SUFFIX_SORCERY) : (obj->mythic_prefix == MYTHIC_PREFIX_SORCERERS)))
         return FALSE;
 
     return TRUE;

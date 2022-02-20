@@ -699,6 +699,7 @@ struct mythic_definition {
 #define MYTHIC_FLAG_NO_ORCISH_ITEMS             0x00200000UL
 #define MYTHIC_FLAG_NO_ELVEN_ITEMS              0x00400000UL
 #define MYTHIC_FLAG_NO_DEMONIC_ITEMS            0x00800000UL
+#define MYTHIC_FLAG_NO_OTHER_SORCERY            0x01000000UL
 
 #define MYTHIC_FLAG_SLASHING_WEAPONS_ONLY    (MYTHIC_FLAG_NO_PIERCING_WEAPONS | MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS)
 #define MYTHIC_FLAG_PIERCING_WEAPONS_ONLY    (MYTHIC_FLAG_NO_BLUDGEONING_WEAPONS | MYTHIC_FLAG_NO_SLASHING_WEAPONS)
@@ -718,6 +719,7 @@ enum mythic_prefix_types {
     MYTHIC_PREFIX_RADIANT,
     MYTHIC_PREFIX_HALLOWED,
     MYTHIC_PREFIX_WITCH_KINGS,
+    MYTHIC_PREFIX_SORCERERS,
     MAX_MYTHIC_PREFIXES
 };
 
@@ -796,6 +798,7 @@ enum mythic_prefix_power_types {
     MYTHIC_PREFIX_POWER_INDEX_ADDED_ENCHANTABILITY,
     MYTHIC_PREFIX_POWER_INDEX_UNCURSEABLE,
     MYTHIC_PREFIX_POWER_INDEX_GREAT_STRENGTH,
+    MYTHIC_PREFIX_POWER_INDEX_SORCERY,
     MAX_MYTHIC_PREFIX_POWERS
 };
 
@@ -814,6 +817,7 @@ enum mythic_prefix_power_types {
 #define MYTHIC_PREFIX_POWER_ADDED_ENCHANTABILITY    (1UL << MYTHIC_PREFIX_POWER_INDEX_ADDED_ENCHANTABILITY)
 #define MYTHIC_PREFIX_POWER_UNCURSEABLE             (1UL << MYTHIC_PREFIX_POWER_INDEX_UNCURSEABLE)
 #define MYTHIC_PREFIX_POWER_GREAT_STRENGTH          (1UL << MYTHIC_PREFIX_POWER_INDEX_GREAT_STRENGTH)
+#define MYTHIC_PREFIX_POWER_SORCERY                 (1UL << MYTHIC_PREFIX_POWER_INDEX_SORCERY)
 
 enum mythic_suffix_power_types {
     MYTHIC_SUFFIX_POWER_INDEX_LIGHTNESS = 0,
@@ -908,7 +912,7 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
     ((mythic_suffix_qualities[(o)->mythic_suffix].mythic_powers & (1UL << (pwrindex))) != 0 && mythic_power_applies_to_obj(o, mythic_suffix_powers[(pwrindex)].power_flags))
 
 #define has_obj_mythic_lightness(o)             has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_LIGHTNESS)
-#define has_obj_mythic_spellcasting(o)          has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_SORCERY)
+#define has_obj_mythic_spellcasting(o)          (has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_SORCERY) || has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_SORCERY))
 #define has_obj_mythic_level_drain(o)           has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_LEVEL_DRAIN)
 #define has_obj_mythic_mana_gain_25(o)          has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_MANA_GAIN_25)
 #define has_obj_mythic_hp_gain_25(o)            has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_HP_GAIN_25)
