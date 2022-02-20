@@ -174,6 +174,7 @@ namespace GnollHackClient.Pages.Game
         public bool ShowMemoryUsage { get; set; }
         public bool ShowFPS { get; set; }
         private double _fps;
+        private long _counterValueDiff;
         private long _previousGeneralCounterValue;
         private object _fpslock = new object();
         private Stopwatch _stopWatch = new Stopwatch();
@@ -572,6 +573,36 @@ namespace GnollHackClient.Pages.Game
                     _cursorIsOn = !_cursorIsOn;
                 else
                     _cursorIsOn = false;
+
+                if (ShowFPS)
+                {
+                    if (!_stopWatch.IsRunning)
+                    {
+                        _stopWatch.Restart();
+                    }
+                    else
+                    {
+                        _stopWatch.Stop();
+                        TimeSpan ts = _stopWatch.Elapsed;
+                        lock (_fpslock)
+                        {
+                            long currentGeneralCounterValue = 0L;
+                            lock (AnimationTimerLock)
+                            {
+                                currentGeneralCounterValue = AnimationTimers.general_animation_counter;
+                            }
+                            _counterValueDiff = currentGeneralCounterValue - _previousGeneralCounterValue;
+                            _previousGeneralCounterValue = currentGeneralCounterValue;
+                            _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : _counterValueDiff / (ts.TotalMilliseconds / 1000.0);
+                        }
+                        _stopWatch.Restart();
+                    }
+                }
+                else
+                {
+                    if (_stopWatch.IsRunning)
+                        _stopWatch.Stop();
+                }
 
                 return true;
             });
@@ -2935,41 +2966,17 @@ namespace GnollHackClient.Pages.Game
 
                 if (ShowFPS)
                 {
-                    if (!_stopWatch.IsRunning)
+                    lock (_fpslock)
                     {
-                        _stopWatch.Restart();
+                        str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + _counterValueDiff;
                     }
-                    else
-                    {
-                        _stopWatch.Stop();
-                        TimeSpan ts = _stopWatch.Elapsed;
-                        long _currentGeneralCounterValue = 0L;
-                        lock (AnimationTimerLock)
-                        {
-                            _currentGeneralCounterValue = AnimationTimers.general_animation_counter;
-                        }
-                        long diff = _currentGeneralCounterValue - _previousGeneralCounterValue;
-                        _previousGeneralCounterValue = _currentGeneralCounterValue;
-                        lock (_fpslock)
-                        {
-                            _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : 1000.0 / ts.TotalMilliseconds;
-                            str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + diff;
-                        }
-                        textPaint.Typeface = App.LatoBold;
-                        textPaint.TextSize = 26;
-                        textPaint.Color = SKColors.Yellow;
-                        textWidth = textPaint.MeasureText(str, ref textBounds);
-                        yText = -textPaint.FontMetrics.Ascent + 5;
-                        xText = canvaswidth - textWidth - 5;
-                        canvas.DrawText(str, xText, yText, textPaint);
-
-                        _stopWatch.Restart();
-                    }
-                }
-                else
-                {
-                    if (_stopWatch.IsRunning)
-                        _stopWatch.Stop();
+                    textPaint.Typeface = App.LatoBold;
+                    textPaint.TextSize = 26;
+                    textPaint.Color = SKColors.Yellow;
+                    textWidth = textPaint.MeasureText(str, ref textBounds);
+                    yText = -textPaint.FontMetrics.Ascent + 5;
+                    xText = canvaswidth - textWidth - 5;
+                    canvas.DrawText(str, xText, yText, textPaint);
                 }
             }
 
@@ -9932,43 +9939,20 @@ namespace GnollHackClient.Pages.Game
 
                 if (ShowFPS)
                 {
-                    if (!_stopWatch.IsRunning)
-                    {
-                        _stopWatch.Restart();
-                    }
-                    else
-                    {
-                        _stopWatch.Stop();
-                        string str;
-                        float textWidth, xText, yText;
-                        TimeSpan ts = _stopWatch.Elapsed;
-                        long _currentGeneralCounterValue = 0L;
-                        lock (AnimationTimerLock)
-                        {
-                            _currentGeneralCounterValue = AnimationTimers.general_animation_counter;
-                        }
-                        long diff = _currentGeneralCounterValue - _previousGeneralCounterValue;
-                        _previousGeneralCounterValue = _currentGeneralCounterValue;
-                        lock (_fpslock)
-                        {
-                            _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : 1000.0 / ts.TotalMilliseconds;
-                            str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + diff;
-                        }
-                        textPaint.Typeface = App.LatoBold;
-                        textPaint.TextSize = 26;
-                        textPaint.Color = SKColors.Yellow;
-                        textWidth = textPaint.MeasureText(str);
-                        yText = -textPaint.FontMetrics.Ascent + 5;
-                        xText = canvaswidth - textWidth - 5;
-                        canvas.DrawText(str, xText, yText, textPaint);
+                    string str;
+                    float textWidth, xText, yText;
 
-                        _stopWatch.Restart();
+                    lock (_fpslock)
+                    {
+                        str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + _counterValueDiff;
                     }
-                }
-                else
-                {
-                    if (_stopWatch.IsRunning)
-                        _stopWatch.Stop();
+                    textPaint.Typeface = App.LatoBold;
+                    textPaint.TextSize = 26;
+                    textPaint.Color = SKColors.Yellow;
+                    textWidth = textPaint.MeasureText(str);
+                    yText = -textPaint.FontMetrics.Ascent + 5;
+                    xText = canvaswidth - textWidth - 5;
+                    canvas.DrawText(str, xText, yText, textPaint);
                 }
 
             }
