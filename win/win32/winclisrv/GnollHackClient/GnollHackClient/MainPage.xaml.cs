@@ -379,6 +379,29 @@ namespace GnollHackClient
         {
             UpperButtonGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
+            bool hideautoupdatealert = Preferences.Get("HideAutoUpdateAlert", false);
+            bool isandroid = Device.RuntimePlatform == Device.Android;
+            bool isfromgoogleplay = true;
+            if(!hideautoupdatealert)
+            {
+                _popupStyle = popup_style.DisableAutoUpdate;
+                PopupCheckBoxLayout.IsVisible = true;
+                PopupTitleLabel.TextColor = Color.Red;
+                PopupTitleLabel.Text = "Auto-Update Warning";
+                if (isandroid && isfromgoogleplay)
+                    PopupLabel.Text = "Updating GnollHack may cause your save games to become invalid. We recommend that you turn off Auto-Update from Google Play Store for GnollHack and manually apply updates, when you have no saved games.";
+                else 
+                    PopupLabel.Text = "Updating GnollHack may render your saved games invalid. We recommend that you disable automatic updates in your device settings.";
+                PopupGrid.IsVisible = true;
+            }
+            else
+            {
+                CloseApp();
+            }
+        }
+
+        private void CloseApp()
+        {
             App.PlatformService.CloseApplication();
             Thread.Sleep(50);
             System.Diagnostics.Process.GetCurrentProcess().Kill();
@@ -1168,13 +1191,33 @@ namespace GnollHackClient
             }
         }
 
-        private void PopupOkButton_Clicked(object sender, EventArgs e)
+        private enum popup_style
         {
+            GeneralDialog = 0,
+            DisableAutoUpdate
+        }
+
+        private popup_style _popupStyle = popup_style.GeneralDialog;
+        private async void PopupOkButton_Clicked(object sender, EventArgs e)
+        {
+            if(_popupStyle == popup_style.DisableAutoUpdate)
+            {
+                if (PopupNoAgainCheckBox.IsChecked)
+                {
+                    Preferences.Set("HideAutoUpdateAlert", true);
+                    await Task.Delay(25);
+                }
+
+                CloseApp();
+            }
             PopupGrid.IsVisible = false;
         }
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
+            _popupStyle = popup_style.GeneralDialog;
+            PopupCheckBoxLayout.IsVisible = false;
+            PopupTitleLabel.TextColor = Color.White;
             PopupTitleLabel.Text = "Modern Mode";
             PopupLabel.Text = "In the Modern Mode, whenever you die, your god will revive you at the starting altar, or at another special location.";
             PopupGrid.IsVisible = true;
@@ -1182,6 +1225,9 @@ namespace GnollHackClient
 
         private void WizTapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
+            _popupStyle = popup_style.GeneralDialog;
+            PopupCheckBoxLayout.IsVisible = false;
+            PopupTitleLabel.TextColor = Color.White;
             PopupTitleLabel.Text = "Wizard Mode";
             PopupLabel.Text = "Wizard Mode is a debug mode that makes you immortal and enables you to issue special wizard mode commands.";
             PopupGrid.IsVisible = true;
@@ -1198,6 +1244,11 @@ namespace GnollHackClient
             {
                 beginnerModeSwitch.IsEnabled = true;
             }
+        }
+
+        private void PopupLabelTapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            PopupNoAgainCheckBox.IsChecked = !PopupNoAgainCheckBox.IsChecked;
         }
     }
 
