@@ -2279,7 +2279,7 @@ NEARDATA struct permonst mons[] = {
         18, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
         ACTION_INFO(ROC_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ROC_STATUE_ENLARGEMENT, 0, 0),
         ACTION_INFO(ROC_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ROC_STATUE_ENLARGEMENT, 0, 0)),
-    MON("hell bat", None, "very fast powerful flying mammal found in Gehennom", None, None, S_BAT, LVL(16, 28, 5, 7, 0, -10), (G_HELL | G_GENO | 2),
+    ENLARGED_MON("hell bat", None, "very fast powerful flying mammal found in Gehennom", None, None, S_BAT, LVL(16, 28, 5, 7, 0, -10), (G_HELL | G_GENO | 2),
         A(ATTK(AT_BITE, AD_PHYS, 8, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(30, 30, MS_SQEEK, MZ_SMALL, 1, 0, MAT_FLESH), STATS(15, 22, 17, 7, 7, 2), 
@@ -2288,7 +2288,9 @@ NEARDATA struct permonst mons[] = {
         M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_WANDER | M2_HOSTILE, M3_INFRAVISIBLE,
         M4_BRAVE | M4_BAT, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
-        32, CLR_ORANGE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        32, CLR_ORANGE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(HELL_BAT_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HELL_BAT_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(HELL_BAT_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HELL_BAT_STATUE_ENLARGEMENT, 0, 0)),
 
     /*
      * Centaurs
