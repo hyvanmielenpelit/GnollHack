@@ -2104,7 +2104,7 @@ with %l.
 "You're back?  Even the Twain don't come back anymore."
 %E
 %Cp Rog 00007
-"Can you spare an old cutpurse a zorkmid for some grog?"
+"Can you spare an old cutpurse a piece of gold for some ginger ale?"
 %E
 %Cp Rog 00008
 "Fritz tried to join the other side, and now he's hell-hound chow."
@@ -2121,7 +2121,7 @@ life and lost my lock pick in the process."
 "You're back?  Even the Twain don't come back anymore."
 %E
 %Cp Rog 00012
-"Can you spare an old cutpurse a zorkmid for some grog?"
+"Can you spare an old cutpurse a piece of gold for some ginger ale?"
 %E
 %Cp Rog 00013
 "Fritz tried to join the other side, and now he's hell-hound chow."
@@ -2148,7 +2148,7 @@ think me as stupid as your behavior.  I warn you not to try my patience."
 %E
 %Cc Rog 00018
 "Well %gp, it looks like our friend has forgotten who is the boss
-around here.  Our friend seems to think that %rp have been put in
+around here.  Our friend seems to think that petty thieves have been put in
 charge.  Wrong.  DEAD WRONG!"
 
 Your sudden shift in surroundings prevents you from hearing the end
@@ -2156,7 +2156,7 @@ of %ls curse.
 %E [You must go.]
 %Cc Rog 00019
 "In the time that you've been gone you've only been able to master the
-arts of %ra?  I've trained ten times again as many %Rp
+arts of a petty thief?  I've trained ten times again as many %Rp
 in that time.  Maybe I should send one of them, no?  Where would that
 leave you, %p?  Oh yeah, I remember, I was going to kill you!"
 %E [%rA is not adequately trained to handle this job.]
@@ -2191,7 +2191,7 @@ it."
 "How would you like a scar necklace?  I'm just the jeweler to do it!"
 %E
 %Cp Rog 00029
-"Lazy S.O.B.  Maybe I should call up someone else..."
+"Lazy idiot.  Maybe I should call up someone else..."
 %E
 %Cp Rog 00030
 "Maybe I should open your skull and see if my instructions are inside?"
@@ -2284,7 +2284,7 @@ You sit and wait for death to come for %n, and then you
 brace yourself for your next meeting with %l!
 %E [Before dying, %n tells you to use the %o wisely.]
 %Cc Rog 00081
-"Well, I'll be damned.  You got it.  I am proud of you, a fine %r
+"Well, I'll be damned.  You got it.  I am proud of you, a fine %c
 you've turned out to be.
 
 "While you were gone I got to thinking, you and %o
