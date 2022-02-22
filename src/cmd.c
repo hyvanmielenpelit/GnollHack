@@ -5127,7 +5127,7 @@ struct ext_func_tab extcmdlist[] = {
             dodiscovered, IFBURIED | GENERALCMD },
     { '`', "knownclass", "show discovered types for one class of objects",
             doclassdisco, IFBURIED | GENERALCMD },
-    { '\0', "levelchange", "change experience level",
+    { M(0), "levelchange", "change experience level", /* Special hotkey lauchable from GUI */
             wiz_level_change, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { C('l'), "light", "light or snuff out something around you", dolight, AUTOCOMPLETE | INCMDMENU },
     { ':', "look", "look at what is here", dolook, IFBURIED },
@@ -5157,7 +5157,7 @@ struct ext_func_tab extcmdlist[] = {
             wiz_panic, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { 'p', "pay", "pay your shopping bill", dopay },
     { ',', "pickup", "pick up things at the current location", dopickup },
-    { '\0', "polyself", "polymorph self",
+    { M(1), "polyself", "polymorph self", /* Special hotkey lauchable from GUI */
             wiz_polyself, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('p'), "pray", "pray to the gods for help",
             dopray, IFBURIED | AUTOCOMPLETE | INCMDMENU },

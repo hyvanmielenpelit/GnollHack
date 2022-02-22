@@ -9720,8 +9720,8 @@ namespace GnollHackClient.Pages.Game
 
             _moreBtnMatrix[0, 0, 1] = new GHCommandButtonItem("Identify", "GnollHackClient.Assets.UI.identify.png", GHUtils.Ctrl((int)'i'));
             _moreBtnMatrix[0, 1, 1] = new GHCommandButtonItem("Teleport", "GnollHackClient.Assets.UI.teleport.png", GHUtils.Ctrl((int)'t'));
-            _moreBtnMatrix[0, 2, 1] = new GHCommandButtonItem("Level Change", "GnollHackClient.Assets.UI.levelchange.png", 0);
-            _moreBtnMatrix[0, 3, 1] = new GHCommandButtonItem("Polymorph Self", "GnollHackClient.Assets.UI.polymorph.png", 0);
+            _moreBtnMatrix[0, 2, 1] = new GHCommandButtonItem("Level Change", "GnollHackClient.Assets.UI.levelchange.png", GHUtils.Meta(0));
+            _moreBtnMatrix[0, 3, 1] = new GHCommandButtonItem("Polymorph Self", "GnollHackClient.Assets.UI.polymorph.png", GHUtils.Meta(1));
 
             _moreBtnMatrix[0, 2, 5] = new GHCommandButtonItem("Extended", "GnollHackClient.Assets.UI.extended.png", (int)'#');
             _moreBtnMatrix[0, 3, 5] = new GHCommandButtonItem("Back to Game", "GnollHackClient.Assets.UI.more.png", -1);
