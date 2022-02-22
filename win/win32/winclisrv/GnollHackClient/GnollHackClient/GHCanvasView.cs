@@ -46,25 +46,36 @@ namespace GnollHackClient
             set { SetValue(GeneralAnimationCounterProperty, value); }
         }
 
-
+        private int _tickCount = 0;
         protected override void OnPropertyChanged(string propertyName = null)
         {
             base.OnPropertyChanged(propertyName);
 
             if(_gamePage != null)
             {
-                bool refresh = true;
-                lock (_gamePage.RefreshScreenLock)
+                if(true) //_tickCount % 3 == 0)
                 {
-                    refresh = _gamePage.RefreshScreen;
+                    bool refresh = true;
+                    lock (_gamePage.RefreshScreenLock)
+                    {
+                        refresh = _gamePage.RefreshScreen;
+                    }
+
+                    _gamePage.IncrementCounters();
+
+                    if (refresh)
+                        InvalidateSurface();
+
+                    _gamePage.UpdateMenuAndTextCanvases();
                 }
 
-                _gamePage.IncrementCounters();
+                if (true) //_tickCount % 2 == 0)
+                {
+                    _gamePage.UpdateCommandCanvas();
+                }
 
-                if (refresh)
-                    InvalidateSurface();
-
-                _gamePage.UpdateOtherCanvases();
+                _tickCount++;
+                _tickCount = _tickCount % 120;
             }
         }
     }

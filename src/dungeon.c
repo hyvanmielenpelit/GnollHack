@@ -1017,7 +1017,7 @@ init_dungeons()
     tower_dnum = dname_to_dnum("Vlad's Tower");
     modron_dnum = dname_to_dnum("Plane of the Modron");
     bovine_dnum = dname_to_dnum("Hellish Pastures");
-    large_circular_dgn_dnum = dname_to_dnum("Large Circular Dungeon");
+    large_circular_dgn_dnum = dname_to_dnum("The Large Circular Dungeon");
     endgame_dnum = dname_to_dnum("The Elemental Planes");
     
     /* one special fixup for dummy surface level */
@@ -2101,7 +2101,7 @@ xchar *rdgn;
         else if (Is_earthlevel(&u.uz) || Is_waterlevel(&u.uz)
                  || Is_firelevel(&u.uz) || Is_airlevel(&u.uz)
                  || Is_qstart(&u.uz) || at_dgn_entrance("The Quest") 
-                 || at_dgn_entrance("Plane of the Modron") || at_dgn_entrance("Hellish Pastures") || at_dgn_entrance("Large Circular Dungeon")
+                 || at_dgn_entrance("Plane of the Modron") || at_dgn_entrance("Hellish Pastures") || at_dgn_entrance("The Large Circular Dungeon")
                  || Is_knox(&u.uz))
             Strcpy(buf, "No portal found.");
 
@@ -2581,7 +2581,7 @@ recalc_mapseen()
                             && quest_status.got_quest);
     mptr->flags.modron_hint_shown = (at_dgn_entrance("Plane of the Modron") && u.uevent.modron_portal_hint && !u.uevent.modron_plane_entered);
     mptr->flags.yacc_hint_shown = (at_dgn_entrance("Hellish Pastures") && u.uevent.bovine_portal_hint && !u.uevent.hellish_pastures_entered);
-    mptr->flags.quantum_hint_shown = (at_dgn_entrance("Large Circular Dungeon") && u.uevent.quantum_portal_hint && !u.uevent.large_circular_dgn_entered);
+    mptr->flags.quantum_hint_shown = (at_dgn_entrance("The Large Circular Dungeon") && u.uevent.quantum_portal_hint && !u.uevent.large_circular_dgn_entered);
 
     /* track rooms the hero is in */
     for (i = 0; i < SIZE(u.urooms); ++i) {

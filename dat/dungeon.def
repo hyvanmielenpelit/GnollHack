@@ -85,12 +85,12 @@ DESCRIPTION:	mazelike
 RNDLEVEL:	"Mine Town" "minetn" "T" @ (3, 2) 7
 LEVELDESC:	town
 RNDLEVEL:	"Mine's End" "minend" "E" @ (-1, 0) 3
-CHAINBRANCH:	"Large Circular Dungeon" "minetn" + (1, 1) portal
+CHAINBRANCH:	"The Large Circular Dungeon" "minetn" + (1, 1) portal
 
 #
-#	Large Circular Dungeon
+#	The Large Circular Dungeon
 #
-DUNGEON:	"Large Circular Dungeon" "C" (1, 0)
+DUNGEON:	"The Large Circular Dungeon" "C" (1, 0)
 TILESET:    gnomish_mines_tileset
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned

@@ -610,15 +610,8 @@ namespace GnollHackClient.Pages.Game
             await LoadingProgressBar.ProgressTo(1.0, 20, Easing.Linear);
         }
 
-        public void UpdateOtherCanvases()
+        public void UpdateCommandCanvas()
         {
-            bool refresh = false;
-
-            lock (RefreshScreenLock)
-            {
-                refresh = RefreshScreen;
-            }
-
             if (MoreCommandsGrid.IsVisible)
             {
                 CommandCanvas.InvalidateSurface();
@@ -634,7 +627,12 @@ namespace GnollHackClient.Pages.Game
                         MoreCmdOffsetX = offx + delta;
                 }
             }
-            else if (TextGrid.IsVisible)
+        }
+
+        public void UpdateMenuAndTextCanvases()
+        {
+            bool refresh = false;
+            if (TextGrid.IsVisible)
             {
                 TextCanvas.InvalidateSurface();
             }
@@ -9720,6 +9718,8 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[0, 2, 0] = new GHCommandButtonItem("Genesis", "GnollHackClient.Assets.UI.genesis.png", GHUtils.Meta((int)'m'));
             _moreBtnMatrix[0, 3, 0] = new GHCommandButtonItem("Levelport", "GnollHackClient.Assets.UI.levelport.png", GHUtils.Ctrl((int)'v'));
             _moreBtnMatrix[0, 0, 1] = new GHCommandButtonItem("Identify", "GnollHackClient.Assets.UI.identify.png", GHUtils.Ctrl((int)'i'));
+            _moreBtnMatrix[0, 1, 1] = new GHCommandButtonItem("Teleport", "GnollHackClient.Assets.UI.teleport.png", GHUtils.Ctrl((int)'t'));
+            _moreBtnMatrix[0, 2, 5] = new GHCommandButtonItem("Extended", "GnollHackClient.Assets.UI.extended.png", (int)'#');
             _moreBtnMatrix[0, 3, 5] = new GHCommandButtonItem("Back to Game", "GnollHackClient.Assets.UI.more.png", -1);
 
             _moreBtnMatrix[1, 0, 0] = new GHCommandButtonItem("Go Down", "GnollHackClient.Assets.UI.stairs-down.png", (int)'>');

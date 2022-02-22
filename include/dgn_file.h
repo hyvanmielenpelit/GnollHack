@@ -7,9 +7,7 @@
 #ifndef DGN_FILE_H
 #define DGN_FILE_H
 
-#ifndef ALIGN_H
 #include "align.h"
-#endif
 
 /*
  * Structures manipulated by the dungeon loader & compiler
@@ -20,7 +18,7 @@ struct couple {
 };
 
 struct tmpdungeon {
-    char name[24], protoname[24];
+    char name[MAX_DGN_NAME_LENGTH], protoname[MAX_PROTO_NAME_LENGTH];
     struct couple lev;
     int flags, chance, levels, branches,
         entry_lev; /* entry level for this dungeon */
@@ -30,15 +28,15 @@ struct tmpdungeon {
 };
 
 struct tmplevel {
-    char name[64];
-    char protoname[24];
+    char name[MAX_LVL_NAME_LENGTH];
+    char protoname[MAX_DGN_NAME_LENGTH];
     struct couple lev;
     int chance, rndlevs, chain, flags;
     char boneschar;
 };
 
 struct tmpbranch {
-    char name[24]; /* destination dungeon name */
+    char name[MAX_DGN_NAME_LENGTH]; /* destination dungeon name */
     struct couple lev;
     int chain; /* index into tmplevel array (chained branch)*/
     int type;  /* branch type (see below) */

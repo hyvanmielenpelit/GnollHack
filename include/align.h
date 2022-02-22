@@ -42,4 +42,9 @@ typedef struct align { /* alignment & record */
 #define Align2amask(x) \
     (((x) == A_NONE) ? AM_NONE : ((x) == A_LAWFUL) ? AM_LAWFUL : (x) + 2)
 
+/* For the lack of better place */
+#define MAX_DGN_NAME_LENGTH 48
+#define MAX_LVL_NAME_LENGTH 64
+#define MAX_PROTO_NAME_LENGTH 15
+
 #endif /* ALIGN_H */

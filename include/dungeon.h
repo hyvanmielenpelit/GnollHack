@@ -8,6 +8,8 @@
 #ifndef DUNGEON_H
 #define DUNGEON_H
 
+#include "align.h"
+
 typedef struct d_flags {     /* dungeon/level type flags */
     uchar tileset;
     Bitfield(has_tileset, 1); 
@@ -27,8 +29,8 @@ typedef struct d_level { /* basic dungeon level element */
 typedef struct s_level { /* special dungeon level element */
     struct s_level *next;
     d_level dlevel; /* dungeon & level numbers */
-    char name[64]; /* Name displayed whenever relevant */
-    char proto[15]; /* name of prototype file (eg. "tower") */
+    char name[MAX_LVL_NAME_LENGTH]; /* Name displayed whenever relevant */
+    char proto[MAX_PROTO_NAME_LENGTH]; /* name of prototype file (eg. "tower") */
     char boneid;    /* character to id level in bones files */
     uchar rndlevs;  /* no. of randomly available similar levels */
     d_flags flags;  /* type flags */
@@ -62,8 +64,8 @@ typedef struct dest_area { /* non-stairway level change identifier */
 } dest_area;
 
 typedef struct dungeon {   /* basic dungeon identifier */
-    char dname[24];        /* name of the dungeon (eg. "Hell") */
-    char proto[15];        /* name of prototype file (eg. "tower") */
+    char dname[MAX_DGN_NAME_LENGTH];        /* name of the dungeon (eg. "Hell") */
+    char proto[MAX_PROTO_NAME_LENGTH];        /* name of prototype file (eg. "tower") */
     char boneid;           /* character to id dungeon in bones files */
     d_flags flags;         /* dungeon flags */
     xchar entry_lev;       /* entry level */
