@@ -100,6 +100,7 @@
     <None Remove="Assets\UI\kick.png" />
     <None Remove="Assets\UI\lastitem.png" />
     <None Remove="Assets\UI\leftring.png" />
+    <None Remove="Assets\UI\levelchange.png" />
     <None Remove="Assets\UI\levelport.png" />
     <None Remove="Assets\UI\light.png" />
     <None Remove="Assets\UI\lookfar.png" />
@@ -118,6 +119,7 @@
     <None Remove="Assets\UI\overview.png" />
     <None Remove="Assets\UI\pay.png" />
     <None Remove="Assets\UI\pickup.png" />
+    <None Remove="Assets\UI\polymorph.png" />
     <None Remove="Assets\UI\pray.png" />
     <None Remove="Assets\UI\puton.png" />
     <None Remove="Assets\UI\quaff.png" />
@@ -126,6 +128,7 @@
     <None Remove="Assets\UI\remove.png" />
     <None Remove="Assets\UI\repeat.png" />
     <None Remove="Assets\UI\reveal.png" />
+    <None Remove="Assets\UI\ride.png" />
     <None Remove="Assets\UI\rightring.png" />
     <None Remove="Assets\UI\scroll.png" />
     <None Remove="Assets\UI\search.png" />
@@ -172,6 +175,7 @@
     <None Remove="Assets\UI\throw.png" />
     <None Remove="Assets\UI\travel.png" />
     <None Remove="Assets\UI\twoweap.png" />
+    <None Remove="Assets\UI\untrap.png" />
     <None Remove="Assets\UI\wait.png" />
     <None Remove="Assets\UI\wear.png" />
     <None Remove="Assets\UI\whatis.png" />
@@ -247,6 +251,7 @@
     <EmbeddedResource Include="Assets\UI\kick.png" />
     <EmbeddedResource Include="Assets\UI\lastitem.png" />
     <EmbeddedResource Include="Assets\UI\leftring.png" />
+    <EmbeddedResource Include="Assets\UI\levelchange.png" />
     <EmbeddedResource Include="Assets\UI\levelport.png" />
     <EmbeddedResource Include="Assets\UI\light.png" />
     <EmbeddedResource Include="Assets\UI\lookfar.png" />
@@ -265,6 +270,7 @@
     <EmbeddedResource Include="Assets\UI\overview.png" />
     <EmbeddedResource Include="Assets\UI\pay.png" />
     <EmbeddedResource Include="Assets\UI\pickup.png" />
+    <EmbeddedResource Include="Assets\UI\polymorph.png" />
     <EmbeddedResource Include="Assets\UI\pray.png" />
     <EmbeddedResource Include="Assets\UI\puton.png" />
     <EmbeddedResource Include="Assets\UI\quaff.png" />
@@ -273,6 +279,7 @@
     <EmbeddedResource Include="Assets\UI\remove.png" />
     <EmbeddedResource Include="Assets\UI\repeat.png" />
     <EmbeddedResource Include="Assets\UI\reveal.png" />
+    <EmbeddedResource Include="Assets\UI\ride.png" />
     <EmbeddedResource Include="Assets\UI\rightring.png" />
     <EmbeddedResource Include="Assets\UI\scroll.png" />
     <EmbeddedResource Include="Assets\UI\search.png" />
@@ -319,6 +326,7 @@
     <EmbeddedResource Include="Assets\UI\throw.png" />
     <EmbeddedResource Include="Assets\UI\travel.png" />
     <EmbeddedResource Include="Assets\UI\twoweap.png" />
+    <EmbeddedResource Include="Assets\UI\untrap.png" />
     <EmbeddedResource Include="Assets\UI\wait.png" />
     <EmbeddedResource Include="Assets\UI\wear.png" />
     <EmbeddedResource Include="Assets\UI\whatis.png" />
