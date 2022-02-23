@@ -18,6 +18,11 @@ namespace GnollHackClient
 
         public long CreatedAt { get { return _created_at_count; } }
 
+        public bool IsPermanent()
+        {
+            return (_data.tflags & 4) != 0;
+        }
+
         public float GetFinishTime()
         {
             return 2.0f;
@@ -62,6 +67,9 @@ namespace GnollHackClient
 
         public bool IsFinished(long counter_value)
         {
+            if (IsPermanent())
+                return false;
+
             if (counter_value < 5)
                 return true; //Assume counter has exceeded max value and reverted to 0
 
@@ -126,7 +134,7 @@ namespace GnollHackClient
                 SKColor clr = new SKColor(baseclr.Red, baseclr.Green, baseclr.Blue, val);
                 return clr;
             }
-            else if (vsecs >= GetFadeOutTime())
+            else if (!IsPermanent() && vsecs >= GetFadeOutTime())
             {
                 byte val = (byte)(baseclr.Alpha * Math.Max(0.0f, Math.Min(1.0f, (GetFinishTime() - vsecs) / GetFadeOutLength())));
                 SKColor clr = new SKColor(baseclr.Red, baseclr.Green, baseclr.Blue, val);

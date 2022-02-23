@@ -424,7 +424,7 @@ int how;
 
     if(how == STONING)
         play_sfx_sound(SFX_PETRIFY);
-    You((how == STONING) ? "turn to stone..." : "die...");
+    You1((how == STONING) ? "turn to stone..." : "die...");
     mark_synch(); /* flush buffered screen output */
     buf[0] = '\0';
     killer.format = KILLED_BY_AN;
@@ -1131,7 +1131,7 @@ int how;
             killer.name[0] = '\0';
         }
         if (wizard) {
-            You("are a very tricky wizard, it seems.");
+            You1("are a very tricky wizard, it seems.");
             killer.format = KILLED_BY_AN; /* reset to 0 */
             return;
         }
@@ -1218,7 +1218,7 @@ int how;
         {
             You("feel the invisible hand of %s around you.", u_gname());
             if (how == CHOKING)
-                You("vomit ...");
+                You1("vomit ...");
             You_feel("much better!");
             u.uprops[LIFESAVED].intrinsic = u.uprops[LIFESAVED].intrinsic & ~TIMEOUT; //Set timeout to 0
         }
@@ -1229,7 +1229,7 @@ int how;
                 makeknown(AMULET_OF_LIFE_SAVING);
                 Your("medallion %s!", !Blind ? "begins to glow" : "feels warm");
                 if (how == CHOKING)
-                    You("vomit ...");
+                    You1("vomit ...");
                 You_feel("much better!");
                 play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
                 pline_The("medallion crumbles to dust!");
@@ -1243,7 +1243,7 @@ int how;
                 {
                     pline("%s %s!", Yname2(lifesaver), !Blind ? "begins to glow" : "feels warm");
                     if (how == CHOKING)
-                        You("vomit ...");
+                        You1("vomit ...");
                     You_feel("much better!");
                     play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
                     pline_The("%s crumbles to dust!", cxname(lifesaver));
@@ -1367,6 +1367,7 @@ int how;
 
     const char* endtext = 0;
     int screentextstyle = 0;
+    int clr = NO_COLOR;
     switch (how)
     {
     case DIED:
@@ -1387,26 +1388,32 @@ int how;
     case GENOCIDED:
         endtext = "You are dead.";
         screentextstyle = SCREEN_TEXT_DEAD;
+        clr = CLR_RED;
         break;
     case TURNED_SLIME:
         endtext = "You have turned into slime.";
         screentextstyle = SCREEN_TEXT_DEAD;
+        clr = CLR_BRIGHT_GREEN;
         break;
     case PANICKED:
         endtext = "Panic!";
         screentextstyle = SCREEN_TEXT_SPECIAL_END;
+        clr = CLR_RED;
         break;
     case TRICKED:
         endtext = "Trickery!";
         screentextstyle = SCREEN_TEXT_SPECIAL_END;
+        clr = CLR_RED;
         break;
     case ESCAPED:
         endtext = "You escaped the dungeon.";
         screentextstyle = SCREEN_TEXT_ESCAPED;
+        clr = CLR_YELLOW;
         break;
     case ASCENDED:
         endtext = "You have ascended!";
         screentextstyle = SCREEN_TEXT_ASCENDED;
+        clr = CLR_MAGENTA;
         break;
     case QUIT:
     default:
@@ -1414,7 +1421,7 @@ int how;
     }
  
     if(endtext)
-        display_screen_text(endtext, (const char*)0, (const char*)0, screentextstyle, ATR_NONE, NO_COLOR, 0UL);
+        display_screen_text(endtext, (const char*)0, (const char*)0, screentextstyle, ATR_NONE, clr, 0UL);
 
     /* might have been killed while using a disposable item, so make sure
        it's gone prior to inventory disclosure and creation of bones data */

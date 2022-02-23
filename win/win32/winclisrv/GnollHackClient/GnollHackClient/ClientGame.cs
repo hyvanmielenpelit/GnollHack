@@ -1131,15 +1131,28 @@ namespace GnollHackClient
             ConcurrentQueue<GHRequest> queue;
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
-                DisplayScreenTextData data = new DisplayScreenTextData();
-                data.text = text;
-                data.supertext = supertext;
-                data.subtext = subtext;
-                data.style = style;
-                data.attr = attr;
-                data.color = color;
-                data.tflags = tflags;
-                queue.Enqueue(new GHRequest(this, GHRequestType.DisplayScreenText, data));
+                if((tflags & 2UL) != 0)
+                {
+                    DisplayConditionTextData data = new DisplayConditionTextData();
+                    data.text = text.Trim();
+                    data.style = style;
+                    data.attr = attr;
+                    data.color = color;
+                    data.tflags = tflags;
+                    queue.Enqueue(new GHRequest(this, GHRequestType.DisplayConditionText, data));
+                }
+                else
+                {
+                    DisplayScreenTextData data = new DisplayScreenTextData();
+                    data.text = text;
+                    data.supertext = supertext;
+                    data.subtext = subtext;
+                    data.style = style;
+                    data.attr = attr;
+                    data.color = color;
+                    data.tflags = tflags;
+                    queue.Enqueue(new GHRequest(this, GHRequestType.DisplayScreenText, data));
+                }
             }
 
             if((tflags & 1UL) != 0)

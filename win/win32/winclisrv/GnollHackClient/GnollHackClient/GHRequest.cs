@@ -81,6 +81,7 @@ namespace GnollHackClient
     {
         public string text;
         public int style;
+        public int attr;
         public int color;
         public ulong tflags;
     }
