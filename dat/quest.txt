@@ -2601,7 +2601,7 @@ Things appear to have become so bad that you fear that soon
 %H will not be here to return to.
 %E
 %Cp Tou 00005
-"Gehennom on 5 zorkmids a day -- more like 500 a day if you ask me."
+"Gehennom on 5 gold pieces a day -- more like 500 a day if you ask me."
 %E
 %Cp Tou 00006
 "Do you know where I could find some nice postcards of The Gnomish Mines?"
@@ -2616,7 +2616,7 @@ Things appear to have become so bad that you fear that soon
 "They told me that this was the off season!"
 %E
 %Cp Tou 00010
-"Gehennom on 5 zorkmids a day -- more like 500 a day if you ask me."
+"Gehennom on 5 gold pieces a day -- more like 500 a day if you ask me."
 %E
 %Cp Tou 00011
 "Do you know where I could find some nice postcards of The Gnomish Mines?"
@@ -2732,7 +2732,7 @@ You have returned to %ns lair.
 "So, %p, %l thinks that you can wrest
 %o from me!
 
-"It only proves how desperate he has become that he sends %ra to
+"It only proves how desperate he has become that he sends a mere %c to
 try and defeat me.  When this day is over, I will have you enslaved
 in the mines where you will rue the day that you ever entered
 %i."
@@ -2771,7 +2771,7 @@ will rule %H.  But do so now, as my patience grows thin."
 "Vengeance is mine at last, %p."
 %E
 %Cp Tou 00065
-"I only wish that %l had a more worthy %r to send against me."
+"I only wish that %l had a more worthy %c to send against me."
 %E
 %Cp Tou 00066
 "With %o in my possession you cannot
@@ -2784,7 +2784,7 @@ hope to defeat me."
 "Are you truly the best %H has to send against me?  I pity %l."
 %E
 %Cp Tou 00069
-"How do you spell %p?  I want to ensure the marker on your grave is
+"How do you spell your name?  I want to ensure the marker on your grave is
 correct as a warning to your %sp."
 %E
 %Cc Tou 00070
