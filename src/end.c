@@ -350,7 +350,7 @@ done2()
         }
         return 0;
     }
-#if (defined(UNIX) || defined(VMS) || defined(LATTICE))
+#if ((defined(UNIX) || defined(VMS) || defined(LATTICE)) && !defined(GNH_ANDROID))
     if (wizard) {
         int c;
 #ifdef VMS

@@ -1537,6 +1537,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Hermits/OrcHermit3/Death", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Elven Bard/Elbereth", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Elven Bard/Hear This Song", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Elven Bard/Standard Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Elven Bard/Special Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Elven Bard/Item Trading", 1.0f },
