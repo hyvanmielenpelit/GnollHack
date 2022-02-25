@@ -7148,7 +7148,7 @@ struct monst* mtmp;
         "Hear this song to Elbereth Gilthoniel:",
         0 };
 
-    hermit_talk(mtmp, linearray, GHSOUND_NONE);
+    hermit_talk(mtmp, linearray, GHSOUND_ELVEN_BARD_HEAR_THIS_SONG);
 
     pline("%s magically summons a large elven harp, and then starts playing.", Monnam(mtmp));
 
