@@ -103,6 +103,7 @@ namespace GnollHackServer
             DisplayFloatingTextCallback callback_display_floating_text,
             DisplayScreenTextCallback callback_display_screen_text,
             DisplayPopupTextCallback callback_display_popup_text,
+            DisplayGUIEffectCallback callback_display_gui_effect,
             UpdateCursorCallback callback_update_cursor,
             UIHasInputCallback callback_ui_has_input,
             VoidIntCallback callback_exit_hack,
@@ -263,6 +264,7 @@ namespace GnollHackServer
                 GameCallback_DisplayFloatingText,
                 GameCallback_DisplayScreenText,
                 GameCallback_DisplayPopupText,
+                GameCallback_DisplayGUIEffect,
                 GameCallback_UpdateCursor,
                 GameCallback_UIHasInput,
                 GameCallback_ExitHack,
@@ -333,6 +335,11 @@ namespace GnollHackServer
         }
 
         public void GameCallback_DisplayPopupText(string text, string title, int style, int attr, int color, int glyph, ulong tflags)
+        {
+
+        }
+
+        public void GameCallback_DisplayGUIEffect(int x, int y, int style, ulong tflags)
         {
 
         }

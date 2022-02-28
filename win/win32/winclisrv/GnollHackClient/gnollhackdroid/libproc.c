@@ -67,6 +67,7 @@ struct window_procs lib_procs = {
     lib_display_floating_text,
     lib_display_screen_text,
     lib_display_popup_text,
+    lib_display_gui_effect,
     lib_update_cursor,
     lib_ui_has_input,
     lib_exit_hack,
@@ -1210,6 +1211,12 @@ void
 lib_display_popup_text(const char* text, const char* title, int style, int attr, int color, int glyph, unsigned long tflags)
 {
     lib_callbacks.callback_display_popup_text(text, title, style, attr, color, glyph, tflags);
+}
+
+void
+lib_display_gui_effect(int x, int y, int style, unsigned long tflags)
+{
+    lib_callbacks.callback_display_gui_effect(x, y, style, tflags);
 }
 
 void

@@ -441,6 +441,7 @@ int RunGnollHack(
     DisplayFloatingTextCallback callback_display_floating_text,
     DisplayScreenTextCallback callback_display_screen_text,
     DisplayPopupTextCallback callback_display_popup_text,
+    DisplayGUIEffectCallback callback_display_gui_effect,
     UpdateCursorCallback callback_update_cursor,
     UIHasInputCallback callback_ui_has_input,
     ExitHackCallback callback_exit_hack,
@@ -570,6 +571,7 @@ int RunGnollHack(
     lib_callbacks.callback_display_floating_text = callback_display_floating_text;
     lib_callbacks.callback_display_screen_text = callback_display_screen_text;
     lib_callbacks.callback_display_popup_text = callback_display_popup_text;
+    lib_callbacks.callback_display_gui_effect = callback_display_gui_effect;
     lib_callbacks.callback_update_cursor = callback_update_cursor;
     lib_callbacks.callback_ui_has_input = callback_ui_has_input;
     lib_callbacks.callback_exit_hack = callback_exit_hack;

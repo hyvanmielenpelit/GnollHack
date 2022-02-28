@@ -381,6 +381,12 @@ genl_display_popup_text(const char* text UNUSED, const char* title UNUSED, int s
 }
 
 void
+genl_display_gui_effect(int x UNUSED, int y UNUSED, int style UNUSED, unsigned long tflags UNUSED)
+{
+    return;
+}
+
+void
 genl_update_cursor(int style UNUSED, int force_paint UNUSED, int show_on_u UNUSED)
 {
     return;

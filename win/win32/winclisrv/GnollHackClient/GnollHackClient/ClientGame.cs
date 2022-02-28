@@ -1206,6 +1206,11 @@ namespace GnollHackClient
             int val = ClientCallback_nhgetch();
         }
 
+        public void ClientCallback_DisplayGUIEffect(int x, int y, int style, ulong tflags)
+        {
+
+        }
+
         public void ClientCallback_UpdateCursor(int style, int force_paint, int show_on_u)
         {
             _gamePage.UpdateCursor(style, force_paint, show_on_u);

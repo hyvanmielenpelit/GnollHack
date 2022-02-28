@@ -125,6 +125,7 @@ struct window_procs safe_procs = {
     safe_display_floating_text,
     safe_display_screen_text,
     safe_display_popup_text,
+    safe_display_gui_effect,
     safe_update_cursor,
     safe_ui_has_input,
     safe_exit_hack,
@@ -583,6 +584,12 @@ safe_display_screen_text(const char* text UNUSED, const char* supertext UNUSED, 
 
 void
 safe_display_popup_text(const char* text UNUSED, const char* title UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, int glyph UNUSED, unsigned long tflags UNUSED)
+{
+    return;
+}
+
+void
+safe_display_gui_effect(int x UNUSED, int y UNUSED, int style UNUSED, unsigned long tflags UNUSED)
 {
     return;
 }

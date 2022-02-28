@@ -539,6 +539,10 @@ enum popup_text_types {
     POPUP_TEXT_REVIVAL,
 };
 
+enum gui_effect_types {
+    GUI_EFFECT_SEARCH = 0,
+};
+
 #define POPUP_FLAGS_NONE        0x00000000UL
 #define POPUP_FLAGS_ADD_QUOTES  0x00000001UL
 

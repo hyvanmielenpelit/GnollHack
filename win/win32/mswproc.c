@@ -145,6 +145,7 @@ struct window_procs mswin_procs = {
     mswin_display_floating_text,
     mswin_display_screen_text,
     mswin_display_popup_text,
+    mswin_display_gui_effect,
     mswin_update_cursor,
     mswin_ui_has_input,
     mswin_exit_hack,
@@ -3812,6 +3813,12 @@ mswin_display_screen_text(const char* text, const char* supertext, const char* s
 
 void
 mswin_display_popup_text(const char* text, const char* title, int style, int attr, int color, int glyph, unsigned long tflags)
+{
+
+}
+
+void
+mswin_display_gui_effect(int x, int y, int style, unsigned long tflags)
 {
 
 }

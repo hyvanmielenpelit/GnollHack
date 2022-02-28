@@ -1971,11 +1971,14 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
     if (u.uswallow) 
     {
         if (!aflag)
+        {
+            play_sfx_sound(SFX_GENERAL_THATS_SILLY);
             pline("What are you looking for?  The exit?");
+        }
     }
     else 
     {
-        if (flags.search_box_traps && aflag == 0 && check_all_box_traps(FALSE) == 1)
+        if (flags.search_box_traps && !aflag && check_all_box_traps(FALSE) == 1)
             return 1;
 
         int fund = 0;
@@ -1994,6 +1997,14 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
 
         if (!itemsfound)
         {
+            if (!aflag)
+            {
+                play_simple_player_sound(MONSTER_SOUND_TYPE_SEARCH);
+                display_gui_effect(u.ux, u.uy, GUI_EFFECT_SEARCH, 0UL);
+                if (iflags.using_gui_sounds)
+                    delay_output_milliseconds(10 * ANIMATION_FRAME_INTERVAL);
+            }
+
             for (x = u.ux - 1; x <= u.ux + 1; x++)
             {
                 for (y = u.uy - 1; y <= u.uy + 1; y++) 

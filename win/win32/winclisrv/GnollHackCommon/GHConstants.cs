@@ -969,6 +969,11 @@ namespace GnollHackCommon
         POPUP_TEXT_REVIVAL
     }
 
+    public enum gui_effect_types
+    {
+        GUI_EFFECT_SEARCH = 0,
+    }
+
     public enum yn_function_styles
     {
         YN_STYLE_GENERAL = 0,

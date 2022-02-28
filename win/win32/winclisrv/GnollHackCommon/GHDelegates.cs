@@ -166,6 +166,8 @@ namespace GnollHackCommon
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void DisplayPopupTextCallback(string text, string title, int style, int attr, int color, int glyph, ulong tflags);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void DisplayGUIEffectCallback(int x, int y, int style, ulong tflags);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void UpdateCursorCallback(int style, int force_paint, int show_on_u);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void OpenSpecialViewCallback(int viewtype, [MarshalAs(UnmanagedType.LPStr)] string text, int param1, int param2);

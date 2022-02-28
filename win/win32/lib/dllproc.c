@@ -118,6 +118,7 @@ struct window_procs dll_procs = {
     dll_display_floating_text,
     dll_display_screen_text,
     dll_display_popup_text,
+    dll_display_gui_effect,
     dll_update_cursor,
     dll_ui_has_input,
     dll_exit_hack,
@@ -2915,6 +2916,12 @@ void
 dll_display_popup_text(const char* text, const char* title, int style, int attr, int color, int glyph, unsigned long tflags)
 {
 
+}
+
+void
+dll_display_gui_effect(int x, int y, int style, unsigned long tflags)
+{
+    return;
 }
 
 void

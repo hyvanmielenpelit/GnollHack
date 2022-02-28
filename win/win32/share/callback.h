@@ -140,6 +140,7 @@ typedef void(__callconv* ToggleAnimationTimerCallback)(int, int, int, int, int, 
 typedef void(__callconv* DisplayFloatingTextCallback)(int, int, const char*, int, int, int, unsigned long);
 typedef void(__callconv* DisplayScreenTextCallback)(const char*, const char*, const char*, int, int, int, unsigned long);
 typedef void(__callconv* DisplayPopupTextCallback)(const char*, const char*, int, int, int, int, unsigned long);
+typedef void(__callconv* DisplayGUIEffectCallback)(int, int, int, unsigned long);
 typedef void(__callconv* UpdateCursorCallback)(int, int, int);
 typedef int(__callconv* UIHasInputCallback)(void);
 typedef void(__callconv* ExitHackCallback)(int);
@@ -236,6 +237,7 @@ struct callback_procs {
     DisplayFloatingTextCallback callback_display_floating_text;
     DisplayScreenTextCallback callback_display_screen_text;
     DisplayPopupTextCallback callback_display_popup_text;
+    DisplayGUIEffectCallback callback_display_gui_effect;
     UpdateCursorCallback callback_update_cursor;
     UIHasInputCallback callback_ui_has_input;
     ExitHackCallback callback_exit_hack;
