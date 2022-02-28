@@ -1236,12 +1236,11 @@ namespace GnollHackClient
         {
             if (wizardModeSwitch.IsToggled)
             {
-                classicModeSwitch.IsEnabled = false;
                 classicModeSwitch.IsToggled = true;
             }
             else
             {
-                classicModeSwitch.IsEnabled = true;
+
             }
         }
 
