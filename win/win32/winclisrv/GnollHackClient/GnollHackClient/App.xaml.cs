@@ -42,7 +42,7 @@ namespace GnollHackClient
             App.HideAndroidNavigatioBar = Preferences.Get("HideAndroidNavigationBar", false);
             App.DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
             App.FullVersionMode = true; // Preferences.Get("FullVersion", true);
-            App.BeginnerMode = Preferences.Get("BeginnerMode", false);
+            App.ClassicMode = Preferences.Get("ClassicMode", false);
             App.SponsorButtonVisited = Preferences.Get("SponsorButtonVisited", false);
             App.ShowSpecialEffect = Preferences.Get("ShowSpecialEffect", false);
             App.ReadSecrets();
@@ -170,7 +170,7 @@ namespace GnollHackClient
         public static bool IsModernAndroid { get; set; }
         public static bool DeveloperMode { get; set; }
         public static bool FullVersionMode { get; set; }
-        public static bool BeginnerMode { get; set; }
+        public static bool ClassicMode { get; set; }
         public static bool ServerGameAvailable { get; set; }
 
         public static string GHVersionId { get; set; }

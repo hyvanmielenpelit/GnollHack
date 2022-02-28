@@ -90,7 +90,7 @@ namespace GnollHackClient
             OptionsGrid.IsVisible = App.DeveloperMode;
             StartServerGrid.IsVisible = App.ServerGameAvailable;
 
-            beginnerModeSwitch.IsToggled = App.BeginnerMode;
+            classicModeSwitch.IsToggled = App.ClassicMode;
 
             UpdateSponsor();
 
@@ -1176,18 +1176,17 @@ namespace GnollHackClient
             AndroidLabel.Text = "Android Version";
         }
 
-        private void BeginnerModeSwitch_Toggled(object sender, ToggledEventArgs e)
+        private void ClassicModeSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            App.BeginnerMode = beginnerModeSwitch.IsToggled;
-            Preferences.Set("BeginnerMode", App.BeginnerMode);
-            if(beginnerModeSwitch.IsToggled)
+            App.ClassicMode = classicModeSwitch.IsToggled;
+            Preferences.Set("ClassicMode", App.ClassicMode);
+            if(classicModeSwitch.IsToggled)
             {
-                wizardModeSwitch.IsToggled = false;
-                wizardModeSwitch.IsEnabled = false;
+
             }
             else
             {
-                wizardModeSwitch.IsEnabled = true;
+                wizardModeSwitch.IsToggled = false;
             }
         }
 
@@ -1218,8 +1217,8 @@ namespace GnollHackClient
             _popupStyle = popup_style.GeneralDialog;
             PopupCheckBoxLayout.IsVisible = false;
             PopupTitleLabel.TextColor = Color.White;
-            PopupTitleLabel.Text = "Modern Mode";
-            PopupLabel.Text = "In the Modern Mode, whenever you die, your god will revive you at the starting altar, or at another special location.";
+            PopupTitleLabel.Text = "Classic Mode";
+            PopupLabel.Text = "In the Classic Mode, death is permanent. Otherwise, your god will revive you at the starting altar, or at another special location.";
             PopupGrid.IsVisible = true;
         }
 
@@ -1237,12 +1236,12 @@ namespace GnollHackClient
         {
             if (wizardModeSwitch.IsToggled)
             {
-                beginnerModeSwitch.IsToggled = false;
-                beginnerModeSwitch.IsEnabled = false;
+                classicModeSwitch.IsEnabled = false;
+                classicModeSwitch.IsToggled = true;
             }
             else
             {
-                beginnerModeSwitch.IsEnabled = true;
+                classicModeSwitch.IsEnabled = true;
             }
         }
 

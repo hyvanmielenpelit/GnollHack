@@ -1083,13 +1083,13 @@ int dif_level;
     switch (dif_level)
     {
     case -4:
-        return "very easy";
+        return "standard";
     case -3:
-        return "easy";
+        return "experienced";
     case -2:
-        return "average";
+        return "adept";
     case -1:
-        return "hard";
+        return "veteran";
     case 0:
         return "expert";
     case 1:
@@ -1111,13 +1111,13 @@ int dif_level;
     switch (dif_level)
     {
     case -4:
-        return "v";
+        return "s";
     case -3:
         return "e";
     case -2:
         return "a";
     case -1:
-        return "h";
+        return "v";
     case 0:
         return "x";
     case 1:

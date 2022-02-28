@@ -5042,9 +5042,9 @@ namespace GnollHackClient.Pages.Game
 
                         SKBitmap difbmp = _statusDifficultyBitmap;
                         string diftext = "";
-                        if (valtext.Contains("v"))
+                        if (valtext.Contains("s"))
                         {
-                            diftext = "v";
+                            diftext = "s";
                             difbmp = _statusDifficultyVeryEasyBitmap;
                         }
                         else if (valtext.Contains("e"))
@@ -5057,9 +5057,9 @@ namespace GnollHackClient.Pages.Game
                             diftext = "a";
                             difbmp = _statusDifficultyAverageBitmap;
                         }
-                        else if (valtext.Contains("h"))
+                        else if (valtext.Contains("v"))
                         {
-                            diftext = "h";
+                            diftext = "v";
                             difbmp = _statusDifficultyHardBitmap;
                         }
                         else if (valtext.Contains("x"))

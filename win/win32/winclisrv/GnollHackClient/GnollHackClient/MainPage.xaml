@@ -113,7 +113,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid x:Name="beginnerModeGrid" IsVisible="True" Grid.Row="0" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+            <Grid x:Name="classicModeGrid" IsVisible="True" Grid.Row="0" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -121,12 +121,12 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="beginnerModeLabel" Text="Modern Mode" TextColor="White" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
+                <Label x:Name="classicModeLabel" Text="Classic Mode" TextColor="White" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                     </Label.GestureRecognizers>
                 </Label>
-                <Switch x:Name="beginnerModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="BeginnerModeSwitch_Toggled"  />
+                <Switch x:Name="classicModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="ClassicModeSwitch_Toggled"  />
             </Grid>
             <Grid x:Name="wizardModeGrid" Grid.Row="1" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>

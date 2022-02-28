@@ -42,7 +42,7 @@ namespace GnollHackClient
                 switch (Difficulty)
                 {
                     case -4:
-                        res += "v";
+                        res += "s";
                         break;
                     case -3:
                         res += "e";
@@ -51,7 +51,7 @@ namespace GnollHackClient
                         res += "a";
                         break;
                     case -1:
-                        res += "h";
+                        res += "v";
                         break;
                     case 0:
                         res += "x";
