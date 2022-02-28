@@ -30,6 +30,7 @@ namespace GnollHackClient
         DisplayFloatingText,
         DisplayScreenText,
         DisplayPopupText,
+        DisplayGUIEffect,
         ShowSkillButton,
         HideSkillButton,
         ShowOutRipPage,
@@ -62,6 +63,14 @@ namespace GnollHackClient
         public int style;
         public int attr;
         public int color;
+        public ulong tflags;
+    }
+
+    public struct DisplayGUIEffectData
+    {
+        public int x;
+        public int y;
+        public int style;
         public ulong tflags;
     }
 
@@ -119,6 +128,7 @@ namespace GnollHackClient
         public DisplayScreenTextData ScreenTextData { get; set; }
         public DisplayConditionTextData ConditionTextData { get; set; }
         public DisplayScreenFilterData ScreenFilterData { get; set; }
+        public DisplayGUIEffectData GUIEffectData { get; set; }
 
         public GHRequest()
         {
@@ -236,6 +246,12 @@ namespace GnollHackClient
             RequestingClientGame = clientgame;
             RequestType = requesttype;
             ScreenFilterData = data;
+        }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, DisplayGUIEffectData data)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            GUIEffectData = data;
         }
     }
 }

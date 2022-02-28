@@ -365,6 +365,8 @@ namespace GnollHackClient.Pages.Game
         public List<GHConditionText> _conditionTexts = new List<GHConditionText>();
         public object _screenFilterLock = new object();
         public List<GHScreenFilter> _screenFilters = new List<GHScreenFilter>();
+        public object _guiEffectLock = new object();
+        public List<GHGUIEffect> _guiEffects = new List<GHGUIEffect>();
 
         public bool EnableWizardMode { get; set; }
 
@@ -749,6 +751,16 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
 
+                lock (_guiEffectLock)
+                {
+                    for (i = _guiEffects.Count - 1; i >= 0; i--)
+                    {
+                        if (_guiEffects[i].IsFinished(AnimationTimers.general_animation_counter))
+                            _guiEffects.RemoveAt(i);
+                    }
+                }
+
+
                 lock (_screenTextLock)
                 {
                     if (_screenText != null && _screenText.IsFinished(AnimationTimers.general_animation_counter))
@@ -1069,6 +1081,48 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        public void DisplayGUIEffect(DisplayGUIEffectData data)
+        {
+            lock (_guiEffectLock)
+            {
+                bool foundanother = false;
+                long highestcounter = 0;
+                SKPoint speedvector = new SKPoint(0, -1);
+                foreach (GHGUIEffect fl in _guiEffects)
+                {
+                    if (fl.X == data.x && fl.Y == data.y)
+                    {
+                        foundanother = true;
+                        if (fl.CreatedAt > highestcounter)
+                        {
+                            highestcounter = fl.CreatedAt;
+                            speedvector = fl.GetVelocity(highestcounter);
+                        }
+                    }
+                }
+
+                long counter = 0;
+                lock (AnimationTimerLock)
+                {
+                    counter = AnimationTimers.general_animation_counter;
+                }
+
+                if (foundanother)
+                {
+                    float YSpeed = Math.Abs(speedvector.Y);
+                    float secs = 0.5f / YSpeed;
+                    long ticks = (long)(secs * 40);
+                    if (counter - highestcounter >= -ticks * 10 && counter - highestcounter < ticks)
+                    {
+                        counter += ticks - (counter - highestcounter);
+                    }
+                }
+
+                _guiEffects.Add(new GHGUIEffect(data, counter));
+            }
+        }
+
+
         private Color _titleGoldColor = new Color((double)0xD4 / 255, (double)0xA0 / 255, (double)0x17 / 255);
         private Color _popupTransparentBlackColor = new Color(0, 0, 0, (double)0x66 / 255);
         private Color _popupDarkerTransparentBlackColor = new Color(0, 0, 0, (double)0xAA / 255);
@@ -1258,6 +1312,9 @@ namespace GnollHackClient.Pages.Game
                                 break;
                             case GHRequestType.DisplayPopupText:
                                 DisplayPopupText(req.ScreenTextData);
+                                break;
+                            case GHRequestType.DisplayGUIEffect:
+                                DisplayGUIEffect(req.GUIEffectData);
                                 break;
                             case GHRequestType.ShowSkillButton:
                                 //lSkillButton.IsVisible = true;

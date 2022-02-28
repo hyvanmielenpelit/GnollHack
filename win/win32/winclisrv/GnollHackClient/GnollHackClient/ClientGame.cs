@@ -1122,7 +1122,6 @@ namespace GnollHackClient
                 floatingTextData.tflags = tflags;
                 queue.Enqueue(new GHRequest(this, GHRequestType.DisplayFloatingText, floatingTextData));
             }
-
         }
 
         public void ClientCallback_DisplayScreenText(string text, string supertext, string subtext, int style, int attr, int color, ulong tflags)
@@ -1208,7 +1207,16 @@ namespace GnollHackClient
 
         public void ClientCallback_DisplayGUIEffect(int x, int y, int style, ulong tflags)
         {
-
+            ConcurrentQueue<GHRequest> queue;
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                DisplayGUIEffectData effectData = new DisplayGUIEffectData();
+                effectData.x = x;
+                effectData.y = y;
+                effectData.style = style;
+                effectData.tflags = tflags;
+                queue.Enqueue(new GHRequest(this, GHRequestType.DisplayGUIEffect, effectData));
+            }
         }
 
         public void ClientCallback_UpdateCursor(int style, int force_paint, int show_on_u)
