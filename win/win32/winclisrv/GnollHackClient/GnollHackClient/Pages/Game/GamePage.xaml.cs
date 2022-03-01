@@ -262,6 +262,8 @@ namespace GnollHackClient.Pages.Game
 
         private SKBitmap _statusDungeonLevelBitmap;
 
+        private SKBitmap _searchBitmap;
+
         private object _skillRectLock = new object();
         private SKRect _skillRect = new SKRect();
         public SKRect SkillRect { get { SKRect val; lock (_skillRectLock) { val = _skillRect; } return val;  } set { lock (_skillRectLock) { _skillRect = value; } } }
@@ -1085,19 +1087,12 @@ namespace GnollHackClient.Pages.Game
         {
             lock (_guiEffectLock)
             {
-                bool foundanother = false;
-                long highestcounter = 0;
-                SKPoint speedvector = new SKPoint(0, -1);
-                foreach (GHGUIEffect fl in _guiEffects)
+                foreach (GHGUIEffect eff in _guiEffects)
                 {
-                    if (fl.X == data.x && fl.Y == data.y)
+                    if (eff.X == data.x && eff.Y == data.y)
                     {
-                        foundanother = true;
-                        if (fl.CreatedAt > highestcounter)
-                        {
-                            highestcounter = fl.CreatedAt;
-                            speedvector = fl.GetVelocity(highestcounter);
-                        }
+                        _guiEffects.Remove(eff);
+                        break;
                     }
                 }
 
@@ -1105,17 +1100,6 @@ namespace GnollHackClient.Pages.Game
                 lock (AnimationTimerLock)
                 {
                     counter = AnimationTimers.general_animation_counter;
-                }
-
-                if (foundanother)
-                {
-                    float YSpeed = Math.Abs(speedvector.Y);
-                    float secs = 0.5f / YSpeed;
-                    long ticks = (long)(secs * 40);
-                    if (counter - highestcounter >= -ticks * 10 && counter - highestcounter < ticks)
-                    {
-                        counter += ticks - (counter - highestcounter);
-                    }
                 }
 
                 _guiEffects.Add(new GHGUIEffect(data, counter));
@@ -4711,6 +4695,37 @@ namespace GnollHackClient.Pages.Game
                             textPaint.Color = fillcolor;
                             canvas.DrawText(str, tx, ty, textPaint);
                             textPaint.TextAlign = SKTextAlign.Left;
+                        }
+                    }
+                    lock (_guiEffectLock)
+                    {
+                        foreach (GHGUIEffect eff in _guiEffects)
+                        {
+                            SKPoint p;
+                            SKColor effcolor;
+                            lock (AnimationTimerLock)
+                            {
+                                p = eff.GetPosition(AnimationTimers.general_animation_counter);
+                                effcolor = eff.GetColor(AnimationTimers.general_animation_counter);
+                            }
+                            tx = offsetX + usedOffsetX + width * p.X;
+                            ty = offsetY + usedOffsetY + height * p.Y + _mapFontAscent;
+                            textPaint.Color = effcolor;
+                            for(int search_x = -1; search_x <= 1; search_x++)
+                            {
+                                for (int search_y = -1; search_y <= 1; search_y++)
+                                {
+                                    if (search_x == 0 && search_y == 0)
+                                        continue;
+                                    float rectsize = Math.Min(width, height);
+                                    float rectxmargin = (width - rectsize) / 2;
+                                    float rectymargin = (height - rectsize) / 2;
+                                    float rectleft = tx + search_x * width + rectxmargin;
+                                    float recttop = ty + search_y * height + rectymargin;
+                                    SKRect effRect = new SKRect(rectleft, recttop, rectleft + rectsize, recttop + rectsize);
+                                    canvas.DrawBitmap(_searchBitmap, effRect, textPaint);
+                                }
+                            }
                         }
                     }
                 }
@@ -9752,6 +9767,10 @@ namespace GnollHackClient.Pages.Game
                 _statusDungeonLevelBitmap = SKBitmap.Decode(stream);
             }
 
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.search.png"))
+            {
+                _searchBitmap = SKBitmap.Decode(stream);
+            }
         }
 
         public GHCommandButtonItem[,,] _moreBtnMatrix = new GHCommandButtonItem[GHConstants.MoreButtonPages, GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];

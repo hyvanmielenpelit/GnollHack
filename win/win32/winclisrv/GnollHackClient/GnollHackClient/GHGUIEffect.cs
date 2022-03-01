@@ -20,14 +20,6 @@ namespace GnollHackClient
         public int Y { get { return _data.y; } }
         public long CreatedAt { get { return _created_at_count; } }
 
-        public SKPoint GetInitialPoint()
-        {
-            return new SKPoint(0.5f, 0.25f);
-        }
-        public SKPoint GetVelocity(long counter_value)
-        {
-            return new SKPoint(0.0f, -2.0f);
-        }
         public float GetFinishTime()
         {
             return 0.75f;
@@ -79,12 +71,9 @@ namespace GnollHackClient
 
         public SKPoint GetPosition(long counter_value)
         {
-            SKPoint i = GetInitialPoint();
-            SKPoint v = GetVelocity(counter_value);
-            float vsecs = GetVSecs(counter_value);
             SKPoint p = new SKPoint();
-            p.X = _data.x + i.X + v.X * vsecs;
-            p.Y = _data.y + i.Y + v.Y * vsecs;
+            p.X = _data.x;
+            p.Y = _data.y;
             return p;
         }
         public SKColor GetBaseColor(long counter_value)
@@ -122,10 +111,6 @@ namespace GnollHackClient
             }
             else
                 return baseclr;
-        }
-        public float GetRelativeOutlineWidth(long counter_value)
-        {
-            return 1f / 10f;
         }
     }
 }
