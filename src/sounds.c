@@ -5456,7 +5456,14 @@ struct monst* mtmp;
     }
 
     /* Finish the menu */
-    end_menu(win, "What do you want to buy?");
+    char moneybuf[BUFSZ];
+    long umoney = money_cnt(invent);
+    Sprintf(moneybuf, "You have %ld %s.", umoney, currency(umoney));
+    char* txt = 0;
+#ifdef GNH_ANDROID
+    txt = moneybuf;
+#endif
+    end_menu_ex(win, "What do you want to buy?", txt);
 
 
     if (sellable_item_count <= 0)
