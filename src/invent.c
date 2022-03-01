@@ -3770,6 +3770,8 @@ int id_limit;
         } 
         else if (n == -2)
         { /* player used ESC to quit menu */
+            if (first)
+                return -1;
             break;
         } 
         else if (n == -1)
@@ -3855,7 +3857,12 @@ boolean learning_id; /* true if we just read unknown identify scroll */
         }
 
         if (n == 0 || n < -1)
-            res += menu_identify(id_limit);
+        {
+            int idres = menu_identify(id_limit);
+            if (idres == -1)
+                return 0;
+            res += idres;
+        }
     }
     update_inventory();
     return res;

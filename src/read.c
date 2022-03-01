@@ -441,7 +441,7 @@ doread()
 
         /* a few scroll feedback messages describe something happening
            to the scroll itself, so avoid "it disappears" for those */
-        nodisappear = (scroll->otyp == SCR_FIRE
+        nodisappear = (scroll->otyp == SCR_FIRE || scroll->otyp == SCR_IDENTIFY
                        || (scroll->otyp == SCR_REMOVE_CURSE
                            && scroll->cursed));
 
@@ -489,7 +489,7 @@ doread()
                 docall(scroll);
         }
         scroll->in_use = FALSE;
-        if (scroll->otyp != SCR_BLANK_PAPER)
+        if (scroll->otyp != SCR_BLANK_PAPER && scroll->otyp != SCR_IDENTIFY)
         {
             useup(scroll);
             gone = TRUE;
@@ -2684,33 +2684,57 @@ boolean *effect_happened_ptr;
         /* known = TRUE; -- handled inline here */
         /* use up the scroll first, before makeknown() performs a
            perm_invent update; also simplifies empty invent check */
-        useup(sobj);
-        sobj = 0; /* it's gone */
         if (confused)
+        {
+            play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
             You("identify this as an identify scroll.");
+        }
         else if (!already_known || !invent)
+        {
             /* force feedback now if invent became
                empty after using up this scroll */
             pline("This is an identify scroll.");
+        }
+
         if (!already_known)
             (void) learnscrolltyp(SCR_IDENTIFY);
-        /*FALLTHRU*/
-    case SPE_IDENTIFY:
-        cval = (otyp == SPE_IDENTIFY ? 1 : sblessed ? 3 : scursed ? 1 : 2);
-#if 0
-        if (sblessed || (!scursed && !rn2(5)))
+
+        if (confused)
         {
-            cval = rnd(3); //rn2(5);
-            /* note: if cval==0, identify all items */
-            if (cval == 1 && sblessed && Luck > 0)
-                ++cval;
+            pline("The scroll disappears.");
+            useup(sobj);
+            sobj = 0; /* it's gone */
+            break;
         }
-#endif
-        if (invent && !confused)
+
+        cval = sblessed ? 3 : scursed ? 1 : 2;
+        if (invent)
+        {
+            int res = identify_pack(cval, !already_known);
+            if (res > 0)
+            {
+                pline("The scroll disappears.");
+                useup(sobj);
+                sobj = 0; /* it's gone */
+            }
+        }
+        else
+        {
+            pline("You're not carrying anything to be identified.");
+        }
+        break;
+    case SPE_IDENTIFY:
+        cval = 1;
+        if (confused)
+        {
+            play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+            You("identify this as a spell of identify.");
+        }
+        else if (invent)
         {
             (void)identify_pack(cval, !already_known);
         } 
-        else if (otyp == SPE_IDENTIFY) 
+        else
         {
             /* when casting a spell we know we're not confused,
                so inventory must be empty (another message has
