@@ -1997,7 +1997,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
 
         if (!itemsfound)
         {
-            if (!aflag)
+            if (!aflag && (context.first_time_cmd || !occupation))
             {
                 play_simple_player_sound(MONSTER_SOUND_TYPE_SEARCH);
                 display_gui_effect(u.ux, u.uy, GUI_EFFECT_SEARCH, 0UL);

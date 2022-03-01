@@ -6819,9 +6819,11 @@ register char *cmd;
                 func = ((struct ext_func_tab *) tlist)->ef_funct;
                 if (func)
                 {
+                    context.first_time_cmd = TRUE;
                     if (tlist->f_text && !occupation && multi)
                         set_occupation(func, tlist->f_text, 0, 0, 0, multi);
                     res = (*func)(); /* perform the command */
+                    context.first_time_cmd = FALSE;
                 }
             }
             if (!res)
