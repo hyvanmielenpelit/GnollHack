@@ -119,7 +119,7 @@ namespace GnollHackCommon
         SetWinCaps =    0x00000001,
         WizardMode =    0x00000002,
         FullVersion =   0x00000004,
-        BeginnerMode =  0x00000008,
+        ModernMode =  0x00000008,
     }
 
     [Flags]

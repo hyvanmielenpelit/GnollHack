@@ -1261,9 +1261,10 @@ int how;
             survive = TRUE;
         }
     }
-    /* explore and wizard modes offer player the option to keep playing */
+    /* explore, modern, and wizard modes offer player the option to keep playing */
     if (!survive && how <= GENOCIDED)
     {
+        u.utruemortality++;
         if (wizard || discover)
         {
             if (!paranoid_query_ex(ATR_NONE, NO_COLOR, ParanoidDie, (char*)0, "Die?"))
@@ -1273,7 +1274,7 @@ int how;
                 survive = TRUE;
             }
         }
-        else if (BeginnerMode)
+        else if (ModernMode)
         {
             savelife(how);
             survive = TRUE;
@@ -1443,7 +1444,7 @@ int how;
     dump_open_log(endtime);
 
     You("were playing on %s difficulty%s.", get_game_difficulty_text(context.game_difficulty),
-        wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : BeginnerMode ? " in modern mode" : "");
+        wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : ModernMode ? " in modern mode" : "");
 
     /* Sometimes you die on the first move.  Life's not fair.
      * On those rare occasions you get hosed immediately, go out
@@ -1495,6 +1496,7 @@ int how;
         {
             how = DIED;
             u.umortality++; /* skipped above when how==QUIT */
+            u.utruemortality++; /* skipped above when how==QUIT */
             Strcpy(killer.name, "quit while already on Charon's boat");
         }
     }
@@ -1867,7 +1869,7 @@ int how;
             plur(umoney), moves, plur(moves));
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
     Sprintf(pbuf, "You played on %s difficulty%s.", get_game_difficulty_text(context.game_difficulty),
-        wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : BeginnerMode ? " in modern mode" : "");
+        wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : ModernMode ? " in modern mode" : "");
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
     Sprintf(pbuf,
             "You were level %d with a maximum of %d hit point%s when you %s.",
@@ -2682,9 +2684,11 @@ get_current_game_score()
     double Turn_Count_Multiplier = sqrt(50000.0) / sqrt((double)max(1L, moves));
     double Ascension_Multiplier = u.uachieve.ascended ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;
     double Difficulty_Multiplier = pow(10.0, 0.5 * (double)context.game_difficulty);
-    double Beginner_Multiplier = BeginnerMode ? pow(10.0, -0.5 * (MAX_DIFFICULTY_LEVEL - MIN_DIFFICULTY_LEVEL)) : 1.0;
+    double mortexp = (double)(u.utruemortality > 6 ? 7 : u.utruemortality + 1);
+    double mortmult = (double)(u.utruemortality > 6 ? u.utruemortality - 5 : 1);
+    double Modern_Multiplier = ModernMode ? 1.0 / (pow(3, mortexp) * mortmult) : 1.0;
 
-    utotal = (long)(round((double)Base_Score * Ascension_Multiplier * Difficulty_Multiplier * Beginner_Multiplier));
+    utotal = (long)(round((double)Base_Score * Ascension_Multiplier * Difficulty_Multiplier * Modern_Multiplier));
     return utotal;
 }
 

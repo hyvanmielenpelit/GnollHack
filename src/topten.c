@@ -389,7 +389,7 @@ int how;
             aligns[1 - u.ualignbase[A_ORIGINAL]].filecode);
     Fprintf(rfile, "%cflags=0x%lx", XLOG_SEP, encodexlogflags());
     Fprintf(rfile, "%cdifficulty=%d", XLOG_SEP, (int)context.game_difficulty);
-    Fprintf(rfile, "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : BeginnerMode ? "modern" : "normal");
+    Fprintf(rfile, "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : ModernMode ? "modern" : "normal");
     Fprintf(rfile, "%cdemo=%d", XLOG_SEP, In_Demo ? 1 : 0);
     Fprintf(rfile, "\n");
 #undef XLOG_SEP
@@ -406,7 +406,7 @@ encodexlogflags()
         e |= 1L << 1;
     if (!u.uroleplay.numbones)
         e |= 1L << 2;
-    if (BeginnerMode)
+    if (ModernMode)
         e |= 1L << 3;
     if (In_Demo)
         e |= 1L << 4;

@@ -148,8 +148,8 @@ struct flag {
     int sound_volume_dialogue;   /* user set preference for dialogue volume 1...100 */
     int sound_volume_ui;        /* user set preference for user interface sound volume 1...100 */
 
-    boolean beginner_mode;  /* in beginner mode */
-#define BeginnerMode flags.beginner_mode
+    boolean modern_mode;  /* in modern mode */
+#define ModernMode flags.modern_mode
 
     int end_top, end_around; /* describe desired score list */
     unsigned moonphase;

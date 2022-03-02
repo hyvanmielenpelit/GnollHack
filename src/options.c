@@ -3366,7 +3366,7 @@ boolean tinitial, tfrom_file;
         } else if (!strncmpi(op, "debug", 5) || !strncmpi(op, "wizard", 6)) {
             wizard = TRUE, discover = FALSE;
         } else if (!strncmpi(op, "modern", 6)) {
-            BeginnerMode = TRUE, wizard = FALSE, discover = FALSE;
+            ModernMode = TRUE, wizard = FALSE, discover = FALSE;
         } else {
             config_error_add("Invalid value for \"%s\":%s", fullname, op);
             return FALSE;
@@ -6614,7 +6614,7 @@ char *buf;
     } else if (!strcmp(optname, "pile_limit")) {
         Sprintf(buf, "%d", flags.pile_limit);
     } else if (!strcmp(optname, "playmode")) {
-        Strcpy(buf, wizard ? "debug" : discover ? "explore" : BeginnerMode ? "modern" : "normal");
+        Strcpy(buf, wizard ? "debug" : discover ? "explore" : ModernMode ? "modern" : "normal");
     } else if (!strcmp(optname, "preferred_screen_scale")) {
         if (flags.preferred_screen_scale)
             Sprintf(buf, "%d", flags.preferred_screen_scale);

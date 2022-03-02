@@ -487,7 +487,7 @@ int RunGnollHack(
 
     if (!wizard && !discover && (runflags & GHRUNFLAGS_BEGINNER))
     {
-        BeginnerMode = TRUE;
+        ModernMode = TRUE;
     }
 
     /* Set callback function pointers here */

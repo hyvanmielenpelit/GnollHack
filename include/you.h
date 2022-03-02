@@ -291,7 +291,7 @@ struct Gender {
     const char *him;      /* him/her/it */
     const char *his;      /* his/her/its */
     const char *filecode; /* file code */
-    unsigned long allow;          /* equivalent ROLE_ mask */
+    unsigned long allow;  /* equivalent ROLE_ mask */
 };
 #define ROLE_GENDERS 2    /* number of permitted player genders
                              increment to 3 if you allow neuter roles */
@@ -315,7 +315,7 @@ struct Align {
     const char *noun;     /* law/balance/chaos */
     const char *adj;      /* lawful/neutral/chaotic */
     const char *filecode; /* file code */
-    unsigned long allow;          /* equivalent ROLE_ mask */
+    unsigned long allow;  /* equivalent ROLE_ mask */
     aligntyp value;       /* equivalent A_ value */
 };
 #define ROLE_ALIGNS 3     /* number of permitted player alignments */
@@ -408,7 +408,7 @@ struct you {
     struct u_roleplay uroleplay;
     struct attribs acurr,       /* your current attributes (eg. str)*/
                     aexe,       /* for gain/loss via "exercise" */
-                    abonus,       /* your bonus attributes (eg. str) */
+                    abonus,     /* your bonus attributes (eg. str) */
                     afixmin,    /* your fixed min attributes (eg. str), set by an item */
                     afixmax,    /* your fixed max attributes (eg. str), set by an item */
                     amin,       /* your max attributes (eg. str) */
@@ -421,7 +421,7 @@ struct you {
 #define A_CURRENT  0
     aligntyp ualignbase[CONVERT]; /* for ualign conversion record */
     schar uluck;
-    long moreluck;        /* luck and luck bonus */
+    long moreluck;    /* luck and luck bonus */
     boolean luck_does_not_timeout, unluck_does_not_timeout;
 #define LUCKADD    3  /* value of u.moreluck when carrying luck stone;
                          + when blessed or uncursed, - when cursed */
@@ -448,7 +448,7 @@ struct you {
     int uhp_fraction, uen_fraction, mh_fraction;
     int ugangr;              /* if the gods are angry at you */
     int ugifts;              /* number of artifacts bestowed */
-    int ublessed;             /* amount of permanent divine protection bestowed upon you */
+    int ublessed;            /* amount of permanent divine protection bestowed upon you */
     int uprayer_timeout;     /* duration from #pray */
     long umoney0;
     long uspare1;
@@ -461,9 +461,10 @@ struct you {
     long ugallop;            /* turns steed will run after being kicked */
     int urideturns;          /* time spent riding, for skill advancement */
     int umortality;          /* how many times you died */
-    int ugrave_arise;    /* you die and become something aside from a ghost */
+    int utruemortality;      /* how many times you truly died without counting life saving, just revives due to wizard, explore, and modern mode */
+    int ugrave_arise;        /* you die and become something aside from a ghost */
     int weapon_slots;        /* unused skill slots */
-    int max_weapon_slots;        /* max skill slots */
+    int max_weapon_slots;    /* max skill slots */
     int skills_advanced;     /* # of advances made so far */
     xchar skill_record[P_SKILL_LIMIT]; /* skill advancements */
     struct skills weapon_skills[P_NUM_SKILLS];
