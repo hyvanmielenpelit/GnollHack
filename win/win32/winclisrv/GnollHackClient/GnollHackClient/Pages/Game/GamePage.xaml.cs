@@ -175,7 +175,7 @@ namespace GnollHackClient.Pages.Game
         public bool ShowFPS { get; set; }
         private double _fps;
         private long _counterValueDiff;
-        private long _previousGeneralCounterValue;
+        private long _previousCounterValue;
         private object _fpslock = new object();
         private Stopwatch _stopWatch = new Stopwatch();
 
@@ -534,7 +534,7 @@ namespace GnollHackClient.Pages.Game
             _stopWatch.Start();
             lock (AnimationTimerLock)
             {
-                _previousGeneralCounterValue = AnimationTimers.general_animation_counter;
+                _previousCounterValue = AnimationTimers.general_animation_counter;
             }
 
             //lock(_mapBitmapLock)
@@ -552,11 +552,7 @@ namespace GnollHackClient.Pages.Game
 
             uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * 80;
             Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
-            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => true);
-
-            uint commandTimeToAnimate = GHConstants.CommandCanvasAnimationInterval * 80;
-            Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, 80);
-            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: GHConstants.CommandCanvasAnimationInterval, repeat: () => true);
+            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => MainGrid.IsVisible);
 
             Device.StartTimer(TimeSpan.FromSeconds(1f / GHConstants.PollingFrequency), () =>
             {
@@ -596,13 +592,23 @@ namespace GnollHackClient.Pages.Game
                         TimeSpan ts = _stopWatch.Elapsed;
                         lock (_fpslock)
                         {
-                            long currentGeneralCounterValue = 0L;
-                            lock (AnimationTimerLock)
+                            long currentCounterValue = 0L;
+                            if(CommandCanvas.IsVisible)
                             {
-                                currentGeneralCounterValue = AnimationTimers.general_animation_counter;
+                                lock(_commandCounterLock)
+                                {
+                                    currentCounterValue = _commandCounterValue;
+                                }
                             }
-                            _counterValueDiff = currentGeneralCounterValue - _previousGeneralCounterValue;
-                            _previousGeneralCounterValue = currentGeneralCounterValue;
+                            else
+                            {
+                                lock (AnimationTimerLock)
+                                {
+                                    currentCounterValue = AnimationTimers.general_animation_counter;
+                                }
+                            }
+                            _counterValueDiff = currentCounterValue - _previousCounterValue;
+                            _previousCounterValue = currentCounterValue;
                             _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : _counterValueDiff / (ts.TotalMilliseconds / 1000.0);
                         }
                         _stopWatch.Restart();
@@ -1850,6 +1856,10 @@ namespace GnollHackClient.Pages.Game
                 {
                     RefreshScreen = true;
                 }
+                uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * 80;
+                Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
+                canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => MainGrid.IsVisible);
+
             }
             else if (GetLineGrid.IsVisible)
             {
@@ -8390,6 +8400,10 @@ namespace GnollHackClient.Pages.Game
 
             MoreCommandsGrid.IsVisible = true;
             MainGrid.IsVisible = false;
+
+            uint commandTimeToAnimate = GHConstants.CommandCanvasAnimationInterval * 80;
+            Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, 80);
+            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: GHConstants.CommandCanvasAnimationInterval, repeat: () => MoreCommandsGrid.IsVisible);
         }
 
         private void YnButton_Clicked(object sender, EventArgs e)
@@ -9938,6 +9952,9 @@ namespace GnollHackClient.Pages.Game
         private SKRect _cmdBtnMatrixRect = new SKRect();
         public SKRect CmdBtnMatrixRect { get { SKRect val; lock (_cmdBtnMatrixRectLock) { val = _cmdBtnMatrixRect; } return val; } set { lock (_cmdBtnMatrixRectLock) { _cmdBtnMatrixRect = value; } } }
 
+        private object _commandCounterLock = new object();
+        private long _commandCounterValue = 0;
+
         private void CommandCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             SKImageInfo info = e.Info;
@@ -10063,6 +10080,12 @@ namespace GnollHackClient.Pages.Game
                     canvas.DrawText(str, xText, yText, textPaint);
                 }
 
+            }
+            lock (_commandCounterLock)
+            {
+                _commandCounterValue++;
+                if (_commandCounterValue >= 0xFFFFFFFC)
+                    _commandCounterValue = 0;
             }
         }
 
@@ -10238,6 +10261,9 @@ namespace GnollHackClient.Pages.Game
                                         {
                                             RefreshScreen = true;
                                         }
+                                        uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * 80;
+                                        Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
+                                        canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => MainGrid.IsVisible);
                                     }
 
                                 }
