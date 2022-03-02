@@ -972,6 +972,7 @@ namespace GnollHackCommon
     public enum gui_effect_types
     {
         GUI_EFFECT_SEARCH = 0,
+        GUI_EFFECT_WAIT,
     }
 
     public enum yn_function_styles

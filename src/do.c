@@ -6684,6 +6684,11 @@ long timeout UNUSED;
 int
 donull()
 {
+    if (context.first_time_cmd || !occupation)
+    {
+        display_gui_effect(u.ux, u.uy, GUI_EFFECT_WAIT, 0UL);
+    }
+
     return 1; /* Do nothing, but let other things happen */
 }
 

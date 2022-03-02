@@ -541,6 +541,7 @@ enum popup_text_types {
 
 enum gui_effect_types {
     GUI_EFFECT_SEARCH = 0,
+    GUI_EFFECT_WAIT,
 };
 
 #define POPUP_FLAGS_NONE        0x00000000UL

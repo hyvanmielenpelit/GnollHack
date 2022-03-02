@@ -19,6 +19,7 @@ namespace GnollHackClient
         public int X { get { return _data.x; } }
         public int Y { get { return _data.y; } }
         public long CreatedAt { get { return _created_at_count; } }
+        public int Style { get { return _data.style; } }
 
         public float GetFinishTime()
         {

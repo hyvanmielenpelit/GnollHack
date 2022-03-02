@@ -263,6 +263,7 @@ namespace GnollHackClient.Pages.Game
         private SKBitmap _statusDungeonLevelBitmap;
 
         private SKBitmap _searchBitmap;
+        private SKBitmap _waitBitmap;
 
         private object _skillRectLock = new object();
         private SKRect _skillRect = new SKRect();
@@ -4711,20 +4712,38 @@ namespace GnollHackClient.Pages.Game
                             tx = offsetX + usedOffsetX + width * p.X;
                             ty = offsetY + usedOffsetY + height * p.Y + _mapFontAscent;
                             textPaint.Color = effcolor;
-                            for(int search_x = -1; search_x <= 1; search_x++)
+                            switch(eff.Style)
                             {
-                                for (int search_y = -1; search_y <= 1; search_y++)
-                                {
-                                    if (search_x == 0 && search_y == 0)
-                                        continue;
-                                    float rectsize = Math.Min(width, height);
-                                    float rectxmargin = (width - rectsize) / 2;
-                                    float rectymargin = (height - rectsize) / 2;
-                                    float rectleft = tx + search_x * width + rectxmargin;
-                                    float recttop = ty + search_y * height + rectymargin;
-                                    SKRect effRect = new SKRect(rectleft, recttop, rectleft + rectsize, recttop + rectsize);
-                                    canvas.DrawBitmap(_searchBitmap, effRect, textPaint);
-                                }
+                                case (int)gui_effect_types.GUI_EFFECT_SEARCH:
+                                    for (int search_x = -1; search_x <= 1; search_x++)
+                                    {
+                                        for (int search_y = -1; search_y <= 1; search_y++)
+                                        {
+                                            if (search_x == 0 && search_y == 0)
+                                                continue;
+                                            float rectsize = Math.Min(width, height);
+                                            float rectxmargin = (width - rectsize) / 2;
+                                            float rectymargin = (height - rectsize) / 2;
+                                            float rectleft = tx + search_x * width + rectxmargin;
+                                            float recttop = ty + search_y * height + rectymargin;
+                                            SKRect effRect = new SKRect(rectleft, recttop, rectleft + rectsize, recttop + rectsize);
+                                            canvas.DrawBitmap(_searchBitmap, effRect, textPaint);
+                                        }
+                                    }
+                                    break;
+                                case (int)gui_effect_types.GUI_EFFECT_WAIT:
+                                    {
+                                        float rectsize = Math.Min(width, height);
+                                        float rectxmargin = (width - rectsize) / 2;
+                                        float rectymargin = (height - rectsize) / 2;
+                                        float rectleft = tx + rectxmargin;
+                                        float recttop = ty + rectymargin;
+                                        SKRect effRect = new SKRect(rectleft, recttop, rectleft + rectsize, recttop + rectsize);
+                                        canvas.DrawBitmap(_waitBitmap, effRect, textPaint);
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
                         }
                     }
@@ -9770,6 +9789,10 @@ namespace GnollHackClient.Pages.Game
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.search.png"))
             {
                 _searchBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.wait.png"))
+            {
+                _waitBitmap = SKBitmap.Decode(stream);
             }
         }
 
