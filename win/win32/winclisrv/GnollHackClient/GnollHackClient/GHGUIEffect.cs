@@ -23,11 +23,11 @@ namespace GnollHackClient
 
         public float GetFinishTime()
         {
-            return 0.75f;
+            return 0.5f;
         }
         public float GetFadeOutTime()
         {
-            return 0.5f;
+            return 0.3f;
         }
         public float GetFadeInTime()
         {
