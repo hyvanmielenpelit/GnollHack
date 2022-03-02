@@ -548,12 +548,17 @@ namespace GnollHackClient.Pages.Game
             _animationStopwatch.Start();
 
             canvasView._gamePage = this;
+            CommandCanvas._gamePage = this;
 
-            uint timeToAnimate = 2000;
-            Xamarin.Forms.Animation animation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
-            animation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: 25, repeat: () => true);
+            uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * 80;
+            Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
+            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => true);
 
-            Device.StartTimer(TimeSpan.FromSeconds(1f / 40), () =>
+            uint commandTimeToAnimate = GHConstants.CommandCanvasAnimationInterval * 80;
+            Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, 80);
+            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: GHConstants.CommandCanvasAnimationInterval, repeat: () => true);
+
+            Device.StartTimer(TimeSpan.FromSeconds(1f / GHConstants.PollingFrequency), () =>
             {
                 if (_useMapBitmap)
                     UpdateMap();
@@ -623,7 +628,7 @@ namespace GnollHackClient.Pages.Game
                 float offx = MoreCmdOffsetX;
                 if (offx != 0 && (CommandTouchDictionary.Count == 0 || _commandChangedPage))
                 {
-                    float delta = -1 * Math.Sign(offx) * CommandCanvas.CanvasSize.Width * _moreCmdOffsetAutoSpeed / 40;
+                    float delta = -1 * Math.Sign(offx) * CommandCanvas.CanvasSize.Width * _moreCmdOffsetAutoSpeed / GHConstants.CommandCanvasAnimationFrequency;
                     if (offx > 0 && offx + delta < 0)
                         MoreCmdOffsetX = 0;
                     else if (offx < 0 && offx + delta > 0)

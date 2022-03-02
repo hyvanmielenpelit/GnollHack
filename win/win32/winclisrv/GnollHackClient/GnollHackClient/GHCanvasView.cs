@@ -10,6 +10,13 @@ using Xamarin.Forms;
 
 namespace GnollHackClient
 {
+    public enum CanvasTypes
+    {
+        General = 0,
+        MainCanvas,
+        CommandCanvas,
+        Other
+    }
 
     class GHCanvasView : SKCanvasView
     {
@@ -32,6 +39,8 @@ namespace GnollHackClient
         public bool RevertBlackAndWhite { get; set; }
         public bool UseTextOutline { get; set; }
 
+        public CanvasTypes CanvasType { get; set; }
+
         public GHCanvasView() : base()
         {
 
@@ -46,36 +55,38 @@ namespace GnollHackClient
             set { SetValue(GeneralAnimationCounterProperty, value); }
         }
 
-        private int _tickCount = 0;
         protected override void OnPropertyChanged(string propertyName = null)
         {
             base.OnPropertyChanged(propertyName);
 
             if(_gamePage != null)
             {
-                if(true) //_tickCount % 3 == 0)
+                switch(CanvasType)
                 {
-                    bool refresh = true;
-                    lock (_gamePage.RefreshScreenLock)
-                    {
-                        refresh = _gamePage.RefreshScreen;
-                    }
+                    case CanvasTypes.MainCanvas:
+                        {
+                            bool refresh = true;
+                            lock (_gamePage.RefreshScreenLock)
+                            {
+                                refresh = _gamePage.RefreshScreen;
+                            }
 
-                    _gamePage.IncrementCounters();
+                            _gamePage.IncrementCounters();
 
-                    if (refresh)
-                        InvalidateSurface();
+                            if (refresh)
+                                InvalidateSurface();
 
-                    _gamePage.UpdateMenuAndTextCanvases();
+                            _gamePage.UpdateMenuAndTextCanvases();
+                            break;
+                        }
+                    case CanvasTypes.CommandCanvas:
+                        {
+                            _gamePage.UpdateCommandCanvas();
+                            break;
+                        }
+                    default:
+                        break;
                 }
-
-                if (true) //_tickCount % 2 == 0)
-                {
-                    _gamePage.UpdateCommandCanvas();
-                }
-
-                _tickCount++;
-                _tickCount = _tickCount % 120;
             }
         }
     }

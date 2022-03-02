@@ -36,12 +36,13 @@
                 </Grid.ColumnDefinitions>
                 <AbsoluteLayout Grid.Row="0" x:Name="GameLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                     <gnollhackclient:GHCanvasView x:Name="canvasView"
-                            EnableTouchEvents="True"
-                            PaintSurface="canvasView_PaintSurface" 
-                            Touch="canvasView_Touch"
-                            AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
-                            AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
-                    </gnollhackclient:GHCanvasView>
+                                                  CanvasType="MainCanvas"
+                                                  EnableTouchEvents="True"
+                                                  PaintSurface="canvasView_PaintSurface" 
+                                                  Touch="canvasView_Touch"
+                                                  AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
+                                                  AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
+                     </gnollhackclient:GHCanvasView>
 
                     <StackLayout x:Name="WornItemsLayout" Padding="0,2"
                         HorizontalOptions="End"
@@ -254,7 +255,7 @@
 
                     <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                         <ff:CachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15,15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
-                        <gnollhackclient:GHCanvasView x:Name="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
+                        <gnollhackclient:GHCanvasView x:Name="MenuCanvas" CanvasType="Other" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
                     </Grid>
 
                     <Grid x:Name="MenuCloseGrid" BackgroundColor="Transparent" >
@@ -342,17 +343,18 @@
                             Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>-->
                 <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Small" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <ff:CachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
-                <gnollhackclient:GHCanvasView x:Name="TextCanvas" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
+                <gnollhackclient:GHCanvasView x:Name="TextCanvas" CanvasType="Other" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
             </Grid>
             <Grid x:Name="MoreCommandsGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#FF000000" IsVisible="False">
-                <gnollhackclient:GHCanvasView x:Name="CommandCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" EnableTouchEvents="True" />
+                <gnollhackclient:GHCanvasView x:Name="CommandCanvas" CanvasType="CommandCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" EnableTouchEvents="True" />
             </Grid>
             <gnollhackclient:GHCanvasView x:Name="TipView" IsVisible="false"
-                            EnableTouchEvents="True"
-                            PaintSurface="TipView_PaintSurface" 
-                            Touch="TipView_Touch"
-                            AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
-                            AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional"/>
-        </Grid>
+                                          CanvasType="Other"
+                                          EnableTouchEvents="True"
+                                          PaintSurface="TipView_PaintSurface" 
+                                          Touch="TipView_Touch"
+                                          AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
+                                          AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional"/>
+             </Grid>
     </ContentPage.Content>
 </ContentPage>

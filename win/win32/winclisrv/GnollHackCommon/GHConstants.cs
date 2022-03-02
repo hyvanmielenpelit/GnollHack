@@ -1095,6 +1095,11 @@ namespace GnollHackCommon
         public const string GnollHackWikiPage = "https://github.com/hyvanmielenpelit/GnollHack/wiki";
         public const string GnollHackSponsorPage = "https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english";
         public const string GHSettingsResourcePath = "GnollHackClient.Assets.ghsettings.json";
+        public const int MainCanvasAnimationFrequency = 40;
+        public const int MainCanvasAnimationInterval = 25;
+        public const int CommandCanvasAnimationFrequency = 60;
+        public const int CommandCanvasAnimationInterval = 16;
+        public const int PollingFrequency = 40;
     }
 
 
