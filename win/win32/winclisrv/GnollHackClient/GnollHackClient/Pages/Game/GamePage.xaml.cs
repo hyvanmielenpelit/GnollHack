@@ -593,7 +593,7 @@ namespace GnollHackClient.Pages.Game
                         lock (_fpslock)
                         {
                             long currentCounterValue = 0L;
-                            if(CommandCanvas.IsVisible)
+                            if(MoreCommandsGrid.IsVisible)
                             {
                                 lock(_commandCounterLock)
                                 {
@@ -610,6 +610,11 @@ namespace GnollHackClient.Pages.Game
                             _counterValueDiff = currentCounterValue - _previousCounterValue;
                             _previousCounterValue = currentCounterValue;
                             _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : _counterValueDiff / (ts.TotalMilliseconds / 1000.0);
+                            if (_fps < 0.0f || _fps > 500.0f) /* Counter value may be temporarily off due to changing between counters */
+                            {
+                                _fps = 0.0;
+                                _counterValueDiff = 0;
+                            }
                         }
                         _stopWatch.Restart();
                     }
@@ -3027,10 +3032,14 @@ namespace GnollHackClient.Pages.Game
                     }
                     textPaint.Typeface = App.LatoBold;
                     textPaint.TextSize = 26;
-                    textPaint.Color = SKColors.Yellow;
                     textWidth = textPaint.MeasureText(str, ref textBounds);
-                    yText = -textPaint.FontMetrics.Ascent + 5;
-                    xText = canvaswidth - textWidth - 5;
+                    yText = -textPaint.FontMetrics.Ascent + 5.0f;
+                    xText = canvaswidth - textWidth - 5.0f;
+                    textPaint.Color = SKColors.Black.WithAlpha(128);
+                    float textmargin = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                    SKRect bkrect = new SKRect(xText - textmargin, 5.0f - textmargin, xText + textWidth + textmargin, 5.0f - textmargin + textPaint.FontSpacing);
+                    canvas.DrawRect(bkrect, textPaint);
+                    textPaint.Color = SKColors.Yellow;
                     canvas.DrawText(str, xText, yText, textPaint);
                 }
             }
