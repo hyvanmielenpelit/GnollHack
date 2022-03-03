@@ -153,7 +153,42 @@ namespace GnollHackClient.Droid
         public List<GHSoundInstance> ambientList = new List<GHSoundInstance>();
 
 
-        public static RESULT GNHEventCallback(EVENT_CALLBACK_TYPE type, EventInstance _event, IntPtr parameters)
+        public static RESULT GNHImmediateEventCallback(EVENT_CALLBACK_TYPE type, EventInstance _event, IntPtr parameters)
+        {
+            FmodService service = _latestService;
+
+            if (service == null)
+                return RESULT.ERR_UNSUPPORTED;
+
+            if (type == EVENT_CALLBACK_TYPE.STOPPED || type == EVENT_CALLBACK_TYPE.START_FAILED)
+            {
+                for (int i = 0; i < GHConstants.MaxNormalImmediateSoundInstances; i++)
+                {
+                    if (i >= service.immediateInstances.Count)
+                        break;
+
+                    if (service.immediateInstances[i].instance.handle == _event.handle)
+                    {
+                        service.immediateInstances[i].stopped = true;
+                        return RESULT.OK;
+                    }
+                }
+                for (int i = 0; i < GHConstants.MaxLongImmediateSoundInstances; i++)
+                {
+                    if (i >= service.longImmediateInstances.Count)
+                        break;
+
+                    if (service.longImmediateInstances[i].instance.handle == _event.handle)
+                    {
+                        service.longImmediateInstances[i].stopped = true;
+                        return RESULT.OK;
+                    }
+                }
+            }
+            return RESULT.OK;
+        }
+
+        public static RESULT GNHDialogueEventCallback(EVENT_CALLBACK_TYPE type, EventInstance _event, IntPtr parameters)
         {
             RESULT result;
             FmodService service = _latestService;
@@ -173,15 +208,22 @@ namespace GnollHackClient.Droid
                         if (service.immediateInstances[i].instance.handle == _event.handle)
                         {
                             service.immediateInstances[i].stopped = true;
-                            for (int j = i - 1; j >= 0; j--)
+                            if (service.immediateInstances[i].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
                             {
-                                if (service.immediateInstances[j].queued)
+                                for (int j = i - 1; j >= 0; j--)
                                 {
-                                    service.immediateInstances[j].queued = false;
-                                    result = service.immediateInstances[j].instance.start();
-                                    result = _system.update();
-                                    return RESULT.OK;
+                                    if (service.immediateInstances[j].queued)
+                                    {
+                                        service.immediateInstances[j].queued = false;
+                                        result = service.immediateInstances[j].instance.start();
+                                        result = _system.update();
+                                        return RESULT.OK;
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                break;
                             }
                         }
                     }
@@ -211,10 +253,23 @@ namespace GnollHackClient.Droid
         }
 
 
-        public int PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid)
+        public int PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, ulong play_flags)
         {
             if (!FMODup())
                 return 1;
+
+            /* Decline to play if no play play_flag is set and the sound is playing */
+            if ((play_flags & (ulong)playing_flags.PlayOnlyIfNotAlreadyPlaying) != 0)
+            {
+                List<GHSoundInstance> soundlist = play_group == (int)sound_play_groups.SOUND_PLAY_GROUP_LONG ? longImmediateInstances : immediateInstances;
+                foreach (GHSoundInstance ghsi in soundlist)
+                {
+                    if (!ghsi.stopped && ghsi.normalSoundVolume > 0.0f && ghsi.ghsound == ghsound && ghsi.dialogue_mid == dialogue_mid && (int)ghsi.sound_type == sound_type)
+                    {
+                        return 0;
+                    }
+                }
+            }
 
             FMOD.Studio.EventDescription eventDescription;
             RESULT res = _system.getEvent(eventPath, out eventDescription);
@@ -242,7 +297,9 @@ namespace GnollHackClient.Droid
                     longImmediateInstances.Insert(0, ghinstance);
 
                     if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
-                        res = longImmediateInstances[0].instance.setCallback(GNHEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
+                        res = longImmediateInstances[0].instance.setCallback(GNHDialogueEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
+                    else
+                        res = longImmediateInstances[0].instance.setCallback(GNHImmediateEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
 
                     /* Fallback if queued for too long */
                     if (longImmediateInstances.Count >= GHConstants.MaxLongImmediateSoundInstances && longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].queued && !longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].stopped)
@@ -258,7 +315,9 @@ namespace GnollHackClient.Droid
                     immediateInstances.Insert(0, ghinstance);
 
                     if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
-                        res = immediateInstances[0].instance.setCallback(GNHEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
+                        res = immediateInstances[0].instance.setCallback(GNHDialogueEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
+                    else
+                        res = immediateInstances[0].instance.setCallback(GNHImmediateEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
 
                     /* Fallback if queued for too long */
                     if (immediateInstances.Count >= GHConstants.MaxNormalImmediateSoundInstances && immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].queued && !immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].stopped)

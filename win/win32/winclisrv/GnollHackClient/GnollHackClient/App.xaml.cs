@@ -490,7 +490,7 @@ namespace GnollHackClient
                     float[] parameterValues = new float[1];
 
                     _fmodService.PlayImmediateSound(GHConstants.ButtonClickGHSound, GHConstants.ButtonClickEventPath, GHConstants.ButtonClickBankId, GHConstants.ButtonClickVolume,
-                        1.0f, parameterNames, parameterValues, 0, 0, 0, 0);
+                        1.0f, parameterNames, parameterValues, 0, 0, 0, 0, 0UL);
                 }
                 catch (Exception ex)
                 {
@@ -540,7 +540,7 @@ namespace GnollHackClient
                 float[] parameterValues = new float[1];
 
                 _fmodService.PlayImmediateSound(GHConstants.MenuSelectGHSound, GHConstants.MenuSelectEventPath, GHConstants.MenuSelectBankId, GHConstants.MenuSelectVolume,
-                    1.0f, parameterNames, parameterValues, 0, 0, 0, 0);
+                    1.0f, parameterNames, parameterValues, 0, 0, 0, 0, 0UL);
             }
         }
         public static string CreateGameZipArchive()

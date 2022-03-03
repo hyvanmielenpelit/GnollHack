@@ -918,6 +918,13 @@ namespace GnollHackCommon
         OBJDATA_FLAGS_UBALL =           0x00000008UL,
     }
 
+    [Flags]
+    public enum playing_flags : ulong
+    {
+        None = 0x00000000UL,
+        PlayOnlyIfNotAlreadyPlaying = 0x00000001UL,
+    }
+
     public enum elemental_enchantment_types
     {
         None = 0,

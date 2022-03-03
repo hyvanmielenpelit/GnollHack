@@ -11615,6 +11615,14 @@ void
 play_simple_player_sound(sound_type)
 enum monster_sound_types sound_type;
 {
+    play_simple_player_sound_with_flags(sound_type, 0UL);
+}
+
+void
+play_simple_player_sound_with_flags(sound_type, play_flags)
+enum monster_sound_types sound_type;
+unsigned long play_flags;
+{
     /* Do not use for hit sounds */
 
     if (Deaf)
@@ -11652,6 +11660,7 @@ enum monster_sound_types sound_type;
     immediateinfo.volume = min(1.0f, max((float)context.global_minimum_volume, volume));
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = SOUND_PLAY_GROUP_NORMAL;
+    immediateinfo.play_flags = play_flags;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -11766,6 +11775,15 @@ play_simple_monster_sound(mon, sound_type)
 struct monst* mon;
 enum monster_sound_types sound_type;
 {
+    play_simple_monster_sound_with_flags(mon, sound_type, 0UL);
+}
+
+void
+play_simple_monster_sound_with_flags(mon, sound_type, play_flags)
+struct monst* mon;
+enum monster_sound_types sound_type;
+unsigned long play_flags;
+{
     /* Do not use for hit sounds */
     boolean isyou = (mon == &youmonst);
 
@@ -11822,6 +11840,7 @@ enum monster_sound_types sound_type;
     immediateinfo.sound_type = sfxtype;
     immediateinfo.play_group = playgroup;
     immediateinfo.dialogue_mid = mon->m_id;
+    immediateinfo.play_flags = play_flags;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -12282,6 +12301,14 @@ void
 play_sfx_sound(sfx_sound_id)
 enum sfx_sound_types sfx_sound_id;
 {
+    play_sfx_sound_with_flags(sfx_sound_id, 0UL);
+}
+
+void
+play_sfx_sound_with_flags(sfx_sound_id, play_flags)
+enum sfx_sound_types sfx_sound_id;
+unsigned long play_flags;
+{
     if (sfx_sound_id < 0 || sfx_sound_id >= MAX_SFX_SOUND_TYPES)
         return;
 
@@ -12299,6 +12326,7 @@ enum sfx_sound_types sfx_sound_id;
     immediateinfo.volume = volume;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
     immediateinfo.play_group = sfx_sounds[sfx_sound_id].play_group;
+    immediateinfo.play_flags = play_flags;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);

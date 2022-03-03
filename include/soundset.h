@@ -2044,7 +2044,11 @@ struct ghsound_immediate_info {
     enum immediate_sound_types sound_type;
     enum sound_play_groups play_group;
     unsigned int dialogue_mid; /* Monster who's speaking, if any */
+    unsigned long play_flags;
 };
+
+#define PLAY_FLAGS_NONE                         0x00000000UL
+#define PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING   0x00000001UL
 
 struct ghsound_music_info {
     enum ghsound_types ghsound;
