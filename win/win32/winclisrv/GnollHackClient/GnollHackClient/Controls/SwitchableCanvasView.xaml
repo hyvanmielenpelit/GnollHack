@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Name="this"
+             xmlns:gnhcli="clr-namespace:GnollHackClient" 
+             xmlns:controls="clr-namespace:GnollHackClient.Controls" 
+             x:Class="GnollHackClient.Controls.SwitchableCanvasView">
+  <ContentView.Content>
+      <Grid>
+          <gnhcli:GHCanvasView x:Name="internalCanvasView" IsVisible="true" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+          <gnhcli:GHGLView x:Name="internalGLView" IsVisible="false" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+      </Grid>
+  </ContentView.Content>
+</ContentView>
