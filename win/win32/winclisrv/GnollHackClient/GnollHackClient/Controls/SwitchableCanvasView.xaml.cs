@@ -26,9 +26,9 @@ namespace GnollHackClient.Controls
                 lock(glLock)
                 {
                     _useGL = value;
-                    internalCanvasView.IsVisible = !_useGL;
-                    internalGLView.IsVisible = _useGL;
                 }
+                internalCanvasView.IsVisible = !value;
+                internalGLView.IsVisible = value;
             }
         }
 

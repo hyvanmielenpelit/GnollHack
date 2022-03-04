@@ -38,7 +38,7 @@
                 </Grid.ColumnDefinitions>
                 <AbsoluteLayout Grid.Row="0" x:Name="GameLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                     <controls:SwitchableCanvasView x:Name="canvasView"
-                                                   UseGL="True"
+                                                   UseGL="False"
                                                   CanvasType="MainCanvas"
                                                   EnableTouchEvents="True"
                                                   PaintSurface="canvasView_PaintSurface" 
