@@ -4,11 +4,12 @@
              x:Name="this"
              xmlns:gnhcli="clr-namespace:GnollHackClient" 
              xmlns:controls="clr-namespace:GnollHackClient.Controls" 
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              x:Class="GnollHackClient.Controls.SwitchableCanvasView">
   <ContentView.Content>
       <Grid>
-          <gnhcli:GHCanvasView x:Name="internalCanvasView" IsVisible="true" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
-          <gnhcli:GHGLView x:Name="internalGLView" IsVisible="false" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+          <skia:SKCanvasView x:Name="internalCanvasView" IsVisible="true" PaintSurface="internalCanvasView_PaintSurface" Touch="internalCanvasView_Touch" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+          <skia:SKGLView x:Name="internalGLView" IsVisible="false" PaintSurface="internalGLView_PaintSurface" Touch="internalGLView_Touch" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
       </Grid>
   </ContentView.Content>
 </ContentView>

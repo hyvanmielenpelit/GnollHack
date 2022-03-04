@@ -4,6 +4,7 @@ using System.Text;
 using SkiaSharp;
 using Xamarin.Forms;
 using GnollHackCommon;
+using Xamarin.Essentials;
 
 namespace GnollHackClient
 {
@@ -622,5 +623,23 @@ namespace GnollHackClient
             return App.SimpleFrameLeftVerticalBitmap.Width * scale;
         }
 
+        public static uint GetCommandCanvasAnimationInterval()
+        {
+            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 120)
+                return 8;
+            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 90)
+                return 12;
+            else
+                return 16;
+        }
+        public static int GetCommandCanvasAnimationFrequency()
+        {
+            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 120)
+                return 120;
+            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 90)
+                return 90;
+            else
+                return 60;
+        }
     }
 }

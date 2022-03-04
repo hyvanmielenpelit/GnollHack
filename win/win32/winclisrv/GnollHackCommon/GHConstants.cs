@@ -1104,8 +1104,6 @@ namespace GnollHackCommon
         public const string GHSettingsResourcePath = "GnollHackClient.Assets.ghsettings.json";
         public const int MainCanvasAnimationFrequency = 40;
         public const int MainCanvasAnimationInterval = 25;
-        public const int CommandCanvasAnimationFrequency = 60;
-        public const int CommandCanvasAnimationInterval = 16;
         public const int PollingFrequency = 40;
     }
 
@@ -1116,4 +1114,14 @@ namespace GnollHackCommon
         public IntPtr Identifier;
         public int Count;
     }
+
+    public enum CanvasTypes
+    {
+        General = 0,
+        MainCanvas,
+        CommandCanvas,
+        Other
+    }
+
+
 }

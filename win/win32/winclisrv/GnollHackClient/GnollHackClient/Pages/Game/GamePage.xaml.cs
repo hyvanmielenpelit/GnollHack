@@ -639,7 +639,7 @@ namespace GnollHackClient.Pages.Game
                 float offx = MoreCmdOffsetX;
                 if (offx != 0 && (CommandTouchDictionary.Count == 0 || _commandChangedPage))
                 {
-                    float delta = -1 * Math.Sign(offx) * CommandCanvas.CanvasSize.Width * _moreCmdOffsetAutoSpeed / GHConstants.CommandCanvasAnimationFrequency;
+                    float delta = -1 * Math.Sign(offx) * CommandCanvas.CanvasSize.Width * _moreCmdOffsetAutoSpeed / ClientUtils.GetCommandCanvasAnimationFrequency();
                     if (offx > 0 && offx + delta < 0)
                         MoreCmdOffsetX = 0;
                     else if (offx < 0 && offx + delta > 0)
@@ -7896,7 +7896,7 @@ namespace GnollHackClient.Pages.Game
                             else if (_touchWithinStatusBar)
                             {
                                 ShowExtendedStatusBar = !ShowExtendedStatusBar;
-                                lock(MapOffsetLock)
+                                lock (MapOffsetLock)
                                 {
                                     _statusOffsetY = 0.0f;
                                 }
@@ -7919,27 +7919,30 @@ namespace GnollHackClient.Pages.Game
                             {
                                 TouchEntry entry;
                                 bool res = TouchDictionary.TryGetValue(e.Id, out entry);
-                                long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
-
-                                if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_touchMoved)
+                                if (res)
                                 {
-                                    if (ShowExtendedStatusBar)
+                                    long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+
+                                    if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_touchMoved)
                                     {
-                                        ShowExtendedStatusBar = false;
-                                        lock (MapOffsetLock)
+                                        if (ShowExtendedStatusBar)
                                         {
-                                            _statusOffsetY = 0.0f;
+                                            ShowExtendedStatusBar = false;
+                                            lock (MapOffsetLock)
+                                            {
+                                                _statusOffsetY = 0.0f;
+                                            }
                                         }
+                                        else if (ForceAllMessages)
+                                            ToggleMessageNumberButton_Clicked(sender, e);
+                                        else
+                                            IssueNHCommandViaTouch(sender, e);
                                     }
-                                    else if (ForceAllMessages)
-                                        ToggleMessageNumberButton_Clicked(sender, e);
-                                    else
-                                        IssueNHCommandViaTouch(sender, e);
+                                    if (TouchDictionary.ContainsKey(e.Id))
+                                        TouchDictionary.Remove(e.Id);
+                                    if (TouchDictionary.Count == 0)
+                                        _touchMoved = false;
                                 }
-                                if (TouchDictionary.ContainsKey(e.Id))
-                                    TouchDictionary.Remove(e.Id);
-                                if (TouchDictionary.Count == 0)
-                                    _touchMoved = false;
                             }
                             e.Handled = true;
                         }
@@ -8410,9 +8413,9 @@ namespace GnollHackClient.Pages.Game
             MoreCommandsGrid.IsVisible = true;
             MainGrid.IsVisible = false;
 
-            uint commandTimeToAnimate = GHConstants.CommandCanvasAnimationInterval * 80;
+            uint commandTimeToAnimate = ClientUtils.GetCommandCanvasAnimationInterval() * 80;
             Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, 80);
-            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: GHConstants.CommandCanvasAnimationInterval, repeat: () => MoreCommandsGrid.IsVisible);
+            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: ClientUtils.GetCommandCanvasAnimationInterval(), repeat: () => MoreCommandsGrid.IsVisible);
         }
 
         private void YnButton_Clicked(object sender, EventArgs e)
@@ -8651,7 +8654,7 @@ namespace GnollHackClient.Pages.Game
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-            GHCanvasView referenceCanvasView = MenuCanvas;
+            SwitchableCanvasView referenceCanvasView = MenuCanvas;
             float canvaswidth = referenceCanvasView.CanvasSize.Width;
             float canvasheight = referenceCanvasView.CanvasSize.Height;
             float x = 0, y = 0;
@@ -9036,16 +9039,19 @@ namespace GnollHackClient.Pages.Game
 
                         TouchEntry entry;
                         bool res = MenuTouchDictionary.TryGetValue(e.Id, out entry);
-                        long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
-
-                        if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && MenuCanvas.SelectionHow != SelectionMode.None)
+                        if (res)
                         {
-                            MenuCanvas_NormalClickRelease(sender, e);
+                            long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+
+                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && MenuCanvas.SelectionHow != SelectionMode.None)
+                            {
+                                MenuCanvas_NormalClickRelease(sender, e);
+                            }
+                            if (MenuTouchDictionary.ContainsKey(e.Id))
+                                MenuTouchDictionary.Remove(e.Id);
+                            if (MenuTouchDictionary.Count == 0)
+                                _menuTouchMoved = false;
                         }
-                        if (MenuTouchDictionary.ContainsKey(e.Id))
-                            MenuTouchDictionary.Remove(e.Id);
-                        if (MenuTouchDictionary.Count == 0)
-                            _menuTouchMoved = false;
                         e.Handled = true;
                     }
                     break;
@@ -9616,22 +9622,25 @@ namespace GnollHackClient.Pages.Game
 
                             TouchEntry entry;
                             bool res = TextTouchDictionary.TryGetValue(e.Id, out entry);
-                            long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
-
-                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_textTouchMoved)
+                            if (res)
                             {
-                                /* Normal click -- Hide the canvas */
-                                GenericButton_Clicked(sender, e, 27);
-                                TextGrid.IsVisible = false;
-                                lock (RefreshScreenLock)
+                                long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+
+                                if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_textTouchMoved)
                                 {
-                                    RefreshScreen = true;
+                                    /* Normal click -- Hide the canvas */
+                                    GenericButton_Clicked(sender, e, 27);
+                                    TextGrid.IsVisible = false;
+                                    lock (RefreshScreenLock)
+                                    {
+                                        RefreshScreen = true;
+                                    }
                                 }
+                                if (TextTouchDictionary.ContainsKey(e.Id))
+                                    TextTouchDictionary.Remove(e.Id);
+                                if (TextTouchDictionary.Count == 0)
+                                    _textTouchMoved = false;
                             }
-                            if (TextTouchDictionary.ContainsKey(e.Id))
-                                TextTouchDictionary.Remove(e.Id);
-                            if (TextTouchDictionary.Count == 0)
-                                _textTouchMoved = false;
                             e.Handled = true;
                         }
                         break;
@@ -10191,144 +10200,147 @@ namespace GnollHackClient.Pages.Game
 
                             TouchEntry entry;
                             bool res = CommandTouchDictionary.TryGetValue(e.Id, out entry);
-                            long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
-                            float swipelengththreshold = 30;
-
-                            SKPoint origanchor = entry.OriginalLocation;
-
-                            float origdiffX = e.Location.X - origanchor.X;
-                            float origdiffY = e.Location.Y - origanchor.Y;
-                            int cmdPage = MoreCmdPage;
-                            float cmdOffset = MoreCmdOffsetX;
-
-                            if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_commandTouchMoved)
+                            if (res)
                             {
-                                /* Normal click */
-                                /* Select command here*/
-                                int used_btnHeight = GHConstants.MoreButtonsPerColumn;
-                                int usedButtonsPerRow = isLandscape ? used_btnHeight : GHConstants.MoreButtonsPerRow;
-                                int usedButtonsPerColumn = isLandscape ? GHConstants.MoreButtonsPerRow : used_btnHeight;
-                                float btnAreaWidth = btnMatrixWidth / usedButtonsPerRow;
-                                float btnAreaHeight = btnMatrixHeight / usedButtonsPerColumn;
-                                int btnX = (int)((e.Location.X - MoreCmdOffsetX) / btnAreaWidth);
-                                int btnY = (int)((e.Location.Y - btnMatrixStart) / btnAreaHeight);
+                                long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
+                                float swipelengththreshold = 30;
 
-                                if (e.Location.Y >= btnMatrixStart && e.Location.Y <= btnMatrixEnd
-                                    && e.Location.X - MoreCmdOffsetX >= 0 && e.Location.X - MoreCmdOffsetX <= canvaswidth
-                                    && btnX >= 0 && btnX < usedButtonsPerRow && btnY >= 0 && btnY < usedButtonsPerColumn)
+                                SKPoint origanchor = entry.OriginalLocation;
+
+                                float origdiffX = e.Location.X - origanchor.X;
+                                float origdiffY = e.Location.Y - origanchor.Y;
+                                int cmdPage = MoreCmdPage;
+                                float cmdOffset = MoreCmdOffsetX;
+
+                                if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_commandTouchMoved)
                                 {
-                                    int i, j;
-                                    if (isLandscape)
-                                    {
-                                        i = btnY;
-                                        j = btnX;
-                                    }
-                                    else
-                                    {
-                                        i = btnX;
-                                        j = btnY;
-                                    }
+                                    /* Normal click */
+                                    /* Select command here*/
+                                    int used_btnHeight = GHConstants.MoreButtonsPerColumn;
+                                    int usedButtonsPerRow = isLandscape ? used_btnHeight : GHConstants.MoreButtonsPerRow;
+                                    int usedButtonsPerColumn = isLandscape ? GHConstants.MoreButtonsPerRow : used_btnHeight;
+                                    float btnAreaWidth = btnMatrixWidth / usedButtonsPerRow;
+                                    float btnAreaHeight = btnMatrixHeight / usedButtonsPerColumn;
+                                    int btnX = (int)((e.Location.X - MoreCmdOffsetX) / btnAreaWidth);
+                                    int btnY = (int)((e.Location.Y - btnMatrixStart) / btnAreaHeight);
 
-                                    GHCommandButtonItem cbi = _moreBtnMatrix[MoreCmdPage, i, j];
-                                    if (cbi != null)
+                                    if (e.Location.Y >= btnMatrixStart && e.Location.Y <= btnMatrixEnd
+                                        && e.Location.X - MoreCmdOffsetX >= 0 && e.Location.X - MoreCmdOffsetX <= canvaswidth
+                                        && btnX >= 0 && btnX < usedButtonsPerRow && btnY >= 0 && btnY < usedButtonsPerColumn)
                                     {
-                                        if (cbi.Command >= 0)
-                                            GenericButton_Clicked(CommandCanvas, e, cbi.Command);
+                                        int i, j;
+                                        if (isLandscape)
+                                        {
+                                            i = btnY;
+                                            j = btnX;
+                                        }
                                         else
                                         {
-                                            switch (cbi.Command)
-                                            {
-                                                case -2:
-                                                    GenericButton_Clicked(sender, e, 'n');
-                                                    GenericButton_Clicked(sender, e, -12);
-                                                    GenericButton_Clicked(sender, e, -10);
-                                                    GenericButton_Clicked(sender, e, 's');
-                                                    break;
-                                                case -3:
-                                                    GenericButton_Clicked(sender, e, 'n');
-                                                    GenericButton_Clicked(sender, e, -12);
-                                                    GenericButton_Clicked(sender, e, -10);
-                                                    GenericButton_Clicked(sender, e, -10);
-                                                    GenericButton_Clicked(sender, e, 's');
-                                                    break;
-                                                case -4:
-                                                    GameMenuButton_Clicked(sender, e);
-                                                    break;
-                                                case -5:
-                                                    GenericButton_Clicked(sender, e, 'n');
-                                                    DoShowNumberPad();
-                                                    break;
-                                                default:
-                                                    break;
-                                            }
+                                            i = btnX;
+                                            j = btnY;
                                         }
 
-                                        /* Hide the canvas */
-                                        MoreCommandsGrid.IsVisible = false;
-                                        MainGrid.IsVisible = true;
-                                        lock (RefreshScreenLock)
+                                        GHCommandButtonItem cbi = _moreBtnMatrix[MoreCmdPage, i, j];
+                                        if (cbi != null)
                                         {
-                                            RefreshScreen = true;
+                                            if (cbi.Command >= 0)
+                                                GenericButton_Clicked(CommandCanvas, e, cbi.Command);
+                                            else
+                                            {
+                                                switch (cbi.Command)
+                                                {
+                                                    case -2:
+                                                        GenericButton_Clicked(sender, e, 'n');
+                                                        GenericButton_Clicked(sender, e, -12);
+                                                        GenericButton_Clicked(sender, e, -10);
+                                                        GenericButton_Clicked(sender, e, 's');
+                                                        break;
+                                                    case -3:
+                                                        GenericButton_Clicked(sender, e, 'n');
+                                                        GenericButton_Clicked(sender, e, -12);
+                                                        GenericButton_Clicked(sender, e, -10);
+                                                        GenericButton_Clicked(sender, e, -10);
+                                                        GenericButton_Clicked(sender, e, 's');
+                                                        break;
+                                                    case -4:
+                                                        GameMenuButton_Clicked(sender, e);
+                                                        break;
+                                                    case -5:
+                                                        GenericButton_Clicked(sender, e, 'n');
+                                                        DoShowNumberPad();
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            }
+
+                                            /* Hide the canvas */
+                                            MoreCommandsGrid.IsVisible = false;
+                                            MainGrid.IsVisible = true;
+                                            lock (RefreshScreenLock)
+                                            {
+                                                RefreshScreen = true;
+                                            }
+                                            uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * 80;
+                                            Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
+                                            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => MainGrid.IsVisible);
                                         }
-                                        uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * 80;
-                                        Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
-                                        canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => MainGrid.IsVisible);
-                                    }
 
+                                    }
                                 }
+                                else if (elapsedms <= GHConstants.SwipeTimeThreshold && Math.Abs(origdiffX) > swipelengththreshold)
+                                {
+                                    /* It is a swipe */
+                                    if (origdiffX > swipelengththreshold)
+                                    {
+                                        if (cmdPage > (EnableWizardMode ? 0 : 1))
+                                        {
+                                            MoreCmdPage = cmdPage - 1;
+                                            MoreCmdOffsetX = cmdOffset - btnMatrixWidth;
+                                        }
+
+                                        _commandChangedPage = true;
+                                    }
+                                    else if (origdiffX < -swipelengththreshold)
+                                    {
+                                        if (cmdPage < GHConstants.MoreButtonPages - 1)
+                                        {
+                                            MoreCmdPage = cmdPage + 1;
+                                            MoreCmdOffsetX = cmdOffset + btnMatrixWidth;
+                                        }
+
+                                        _commandChangedPage = true;
+                                    }
+                                }
+                                else
+                                {
+                                    if (cmdOffset > btnMatrixWidth / 2)
+                                    {
+                                        if (cmdPage > (EnableWizardMode ? 0 : 1))
+                                        {
+                                            MoreCmdPage = cmdPage - 1;
+                                            MoreCmdOffsetX = cmdOffset - btnMatrixWidth;
+                                        }
+
+                                        _commandChangedPage = true;
+                                    }
+                                    else if (cmdOffset < -btnMatrixWidth / 2)
+                                    {
+                                        if (cmdPage < GHConstants.MoreButtonPages - 1)
+                                        {
+                                            MoreCmdPage = cmdPage + 1;
+                                            MoreCmdOffsetX = cmdOffset + btnMatrixWidth;
+                                        }
+
+                                        _commandChangedPage = true;
+                                    }
+                                }
+
+                                if (CommandTouchDictionary.ContainsKey(e.Id))
+                                    CommandTouchDictionary.Remove(e.Id);
+                                if (CommandTouchDictionary.Count == 0)
+                                    _commandTouchMoved = false;
                             }
-                            else if (elapsedms <= GHConstants.SwipeTimeThreshold && Math.Abs(origdiffX) > swipelengththreshold)
-                            {
-                                /* It is a swipe */
-                                if (origdiffX > swipelengththreshold)
-                                {
-                                    if (cmdPage > (EnableWizardMode ? 0 : 1))
-                                    {
-                                        MoreCmdPage = cmdPage - 1;
-                                        MoreCmdOffsetX = cmdOffset - btnMatrixWidth;
-                                    }
-
-                                    _commandChangedPage = true;
-                                }
-                                else if (origdiffX < -swipelengththreshold)
-                                {
-                                    if (cmdPage < GHConstants.MoreButtonPages - 1)
-                                    {
-                                        MoreCmdPage = cmdPage + 1;
-                                        MoreCmdOffsetX = cmdOffset + btnMatrixWidth;
-                                    }
-
-                                    _commandChangedPage = true;
-                                }
-                            }
-                            else
-                            {
-                                if (cmdOffset > btnMatrixWidth / 2)
-                                {
-                                    if (cmdPage > (EnableWizardMode ? 0 : 1))
-                                    {
-                                        MoreCmdPage = cmdPage - 1;
-                                        MoreCmdOffsetX = cmdOffset - btnMatrixWidth;
-                                    }
-
-                                    _commandChangedPage = true;
-                                }
-                                else if (cmdOffset < -btnMatrixWidth / 2)
-                                {
-                                    if (cmdPage < GHConstants.MoreButtonPages - 1)
-                                    {
-                                        MoreCmdPage = cmdPage + 1;
-                                        MoreCmdOffsetX = cmdOffset + btnMatrixWidth;
-                                    }
-
-                                    _commandChangedPage = true;
-                                }
-                            }
-
-                            if (CommandTouchDictionary.ContainsKey(e.Id))
-                                CommandTouchDictionary.Remove(e.Id);
-                            if (CommandTouchDictionary.Count == 0)
-                                _commandTouchMoved = false;
                             e.Handled = true;
                         }
                         break;

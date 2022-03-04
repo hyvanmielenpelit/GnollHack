@@ -15,7 +15,7 @@ namespace GnollHackClient
         private int _counter = 0;
 
         public BindableProperty AnimationCounterProperty =
-            BindableProperty.Create(nameof(AnimationCounter), typeof(long), typeof(GHCanvasView), 0L);
+            BindableProperty.Create(nameof(AnimationCounter), typeof(long), typeof(AnimatedButton), 0L);
 
         public long AnimationCounter
         {
