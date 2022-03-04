@@ -17,14 +17,18 @@ namespace GnollHackClient.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SwitchableCanvasView : ContentView
     {
+        private object glLock = new object();
         private bool _useGL = false;
         public bool UseGL 
-        {   get { return _useGL; }
+        {   get { lock (glLock) { return _useGL; } }
             set
             {
-                _useGL = value;
-                internalCanvasView.IsVisible = !_useGL;
-                internalGLView.IsVisible = _useGL;
+                lock(glLock)
+                {
+                    _useGL = value;
+                    internalCanvasView.IsVisible = !_useGL;
+                    internalGLView.IsVisible = _useGL;
+                }
             }
         }
 
