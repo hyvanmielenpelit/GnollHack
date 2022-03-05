@@ -17,6 +17,7 @@ STATIC_DCL boolean FDECL(could_advance, (int));
 STATIC_DCL boolean FDECL(peaked_skill, (int));
 STATIC_DCL int FDECL(slots_required, (int));
 STATIC_DCL void FDECL(skill_advance, (int));
+STATIC_DCL void FDECL(open_skill_cmd_menu, (int, BOOLEAN_P));
 
 /* Categories whose names don't come from OBJ_NAME(objects[type])
  */
@@ -1908,12 +1909,178 @@ static const struct skill_range {
 int
 doskill()
 {
-    return enhance_weapon_skill(); //doskill_core();
+#ifdef GNH_ANDROID
+    return doskill_core();
+#else
+    return enhance_weapon_skill();
+#endif
 }
 
 int
 doskill_core()
 {
+    int pass, i, n;
+    int to_advance, eventually_advance, maxxed_cnt;
+    int color = CLR_WHITE;
+    boolean speedy = FALSE;
+    menu_item* selected;
+    anything any;
+    winid win;
+    char buf[BUFSZ], skilllevelbuf[BUFSZ], furtherbuf[BUFSZ] = "";
+    char skillmaxbuf[BUFSZ];
+    char skillnamebuf[BUFSZ];
+
+    if (wizard && yn_query("Advance skills without practice?") == 'y')
+        speedy = TRUE;
+
+    do
+    {
+        to_advance = eventually_advance = maxxed_cnt = 0;
+        for (i = 0; i < P_NUM_SKILLS; i++)
+        {
+            if (P_RESTRICTED(i))
+                continue;
+            if (can_advance(i, speedy))
+                to_advance++;
+            else if (could_advance(i))
+                eventually_advance++;
+            else if (peaked_skill(i))
+                maxxed_cnt++;
+        }
+
+        win = create_nhwindow(NHW_MENU);
+        start_menu_ex(win, GHMENU_STYLE_SKILLS_ALTERNATE);
+
+        for (pass = 0; pass < SIZE(skill_ranges); pass++)
+        {
+            int sorted_skills[P_NUM_SKILLS] = { 0 };
+            int num_skills = 0;
+            for (i = skill_ranges[pass].first; i <= skill_ranges[pass].last; i++)
+            {
+                const char* skillname1 = P_NAME(i);
+                boolean found = FALSE;
+                for (int j = 0; j < num_skills; j++)
+                {
+                    const char* skillname2 = P_NAME(sorted_skills[j]);
+                    if (strcmp(skillname1, skillname2) < 0)
+                    {
+                        num_skills++;
+                        for (int k = num_skills; k >= j; k--)
+                        {
+                            sorted_skills[k + 1] = sorted_skills[k];
+                        }
+                        sorted_skills[j] = i;
+                        found = TRUE;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    sorted_skills[num_skills] = i;
+                    num_skills++;
+                }
+            }
+
+            for (int idx = 0; idx < num_skills; idx++)
+            {
+                i = sorted_skills[idx];
+                any = zeroany;
+                if (idx == 0)
+                {
+                    int skillcount = 0;
+                    for (int j = 0; j < num_skills; j++)
+                    {
+                        if (!P_RESTRICTED(sorted_skills[j]))
+                            skillcount++;
+                    }
+                    if (skillcount > 0)
+                    {
+                        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
+                            skill_ranges[pass].name, MENU_UNSELECTED);
+                    }
+                }
+                if (P_RESTRICTED(i))
+                    continue;
+
+                strcpy(furtherbuf, "");
+                if (can_advance(i, speedy))
+                {
+                    color = CLR_GREEN;
+                }
+                else if (could_advance(i))
+                {
+                    color = CLR_YELLOW;
+                }
+                else if (peaked_skill(i))
+                {
+                    color = CLR_BLUE;
+                }
+                else
+                {
+                    color = CLR_WHITE;
+                }
+
+                (void)skill_level_name(i, skilllevelbuf, FALSE);
+                (void)skill_level_name(i, skillmaxbuf, TRUE);
+                strcpy(skillnamebuf, P_NAME(i));
+                *skillnamebuf = highc(*skillnamebuf);
+
+                Sprintf(buf, "%s (%s / %s%s)", skillnamebuf, skilllevelbuf, skillmaxbuf, furtherbuf);
+
+                any.a_int = can_advance(i, speedy) ? i + 1 : 0;
+                struct extended_menu_info info = { 0 };
+                info.color = color;
+
+                add_extended_menu(win, i + GLYPH_SKILL_TILE_OFF, &any, info, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+
+            }
+
+        }
+
+        Strcpy(buf, "Skills");
+
+        if (!speedy)
+        {
+            char subbuf[BUFSZ] = "";
+            Sprintf(subbuf, "%d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
+            end_menu_ex(win, buf, subbuf);
+        }
+        else
+        {
+            end_menu(win, buf);
+        }
+
+        n = select_menu(win, to_advance ? PICK_ONE : PICK_NONE, &selected);
+        destroy_nhwindow(win);
+        if (n > 0)
+        {
+            n = selected[0].item.a_int - 1; /* get item selected */
+            free((genericptr_t)selected);
+            open_skill_cmd_menu(n, speedy);
+        }
+
+    } while (speedy && n > 0);
+
+}
+
+STATIC_OVL void
+open_skill_cmd_menu(n, speedy)
+int n;
+boolean speedy;
+{
+    int i;
+    skill_advance(n);
+    /* check for more skills able to advance, if so then .. */
+    for (n = i = 0; i < P_NUM_SKILLS; i++)
+    {
+        if (can_advance(i, speedy))
+        {
+            if (!speedy)
+                You_feel("you could be more dangerous!");
+            n++;
+            break;
+        }
+    }
 
 }
 
@@ -1946,7 +2113,8 @@ enhance_weapon_skill()
     {
         /* find longest available skill name, count those that can advance */
         to_advance = eventually_advance = maxxed_cnt = 0;
-        for (longest = 0, i = 0; i < P_NUM_SKILLS; i++)
+        longest = 0;
+        for (i = 0; i < P_NUM_SKILLS; i++)
         {
             if (P_RESTRICTED(i))
                 continue;

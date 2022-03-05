@@ -110,6 +110,7 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                     case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
                     case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                    case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                         res = 1;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
@@ -214,6 +215,7 @@ namespace GnollHackClient
                         case ghmenu_styles.GHMENU_STYLE_GENERAL:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                        case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                             break;
@@ -274,6 +276,7 @@ namespace GnollHackClient
                         case ghmenu_styles.GHMENU_STYLE_GENERAL:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                        case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                             break;
@@ -348,6 +351,7 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_GENERAL:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                    case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                         break;
