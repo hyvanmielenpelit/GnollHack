@@ -946,7 +946,7 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 search_func = doability;
                 break;
             case IDM_COMMAND_SKILLS:
-                search_func = enhance_weapon_skill;
+                search_func = doskill;
                 break;
             case IDM_COMMAND_SPELLS:
                 search_func = dospellmainmenu;

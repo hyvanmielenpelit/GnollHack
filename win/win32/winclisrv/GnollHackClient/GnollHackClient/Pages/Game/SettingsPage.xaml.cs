@@ -44,6 +44,10 @@ namespace GnollHackClient.Pages.Game
             Preferences.Set("ShowFPS", FPSSwitch.IsToggled);
 
             if (_gamePage != null)
+                _gamePage.UseMainGLCanvas = GPUSwitch.IsToggled;
+            Preferences.Set("UseMainGLCanvas", GPUSwitch.IsToggled);
+
+            if (_gamePage != null)
                 _gamePage.MapGrid = GridSwitch.IsToggled;
             Preferences.Set("MapGrid", GridSwitch.IsToggled);
 
@@ -141,7 +145,7 @@ namespace GnollHackClient.Pages.Game
             App.BackButtonPressed += BackButtonPressed;
 
             int cursor = 0, graphics = 0, msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, navbar = false, devmode = false, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool mem = false, fps = false, gpu = false, navbar = false, devmode = false, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", 1.0f);
@@ -175,6 +179,7 @@ namespace GnollHackClient.Pages.Game
                 walkarrows = Preferences.Get("WalkArrows", true);
                 mem = Preferences.Get("ShowMemoryUsage", false);
                 fps = Preferences.Get("ShowFPS", false);
+                gpu = Preferences.Get("UseMainGLCanvas", false);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
                 petrows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
             }
@@ -200,6 +205,7 @@ namespace GnollHackClient.Pages.Game
                 walkarrows = _gamePage.WalkArrows;
                 mem = _gamePage.ShowMemoryUsage;
                 fps = _gamePage.ShowFPS;
+                gpu = _gamePage.UseMainGLCanvas;
                 msgnum = _gamePage.NumDisplayedMessages;
                 petrows = _gamePage.NumDisplayedPetRows;
             }
@@ -217,6 +223,7 @@ namespace GnollHackClient.Pages.Game
             WalkArrowSwitch.IsToggled = walkarrows;
             MemorySwitch.IsToggled = mem;
             FPSSwitch.IsToggled = fps;
+            GPUSwitch.IsToggled = gpu;
             NavBarSwitch.IsToggled = navbar;
             DeveloperSwitch.IsToggled = devmode;
             GeneralVolumeSlider.Value = (double)generalVolume;

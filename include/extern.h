@@ -3729,6 +3729,8 @@ E char *FDECL(skill_level_name, (int, char *, BOOLEAN_P));
 E const char *FDECL(skill_name, (int, BOOLEAN_P));
 E boolean FDECL(can_advance, (int, BOOLEAN_P));
 E void NDECL(update_can_advance_any_skill);
+E int NDECL(doskill);
+E int NDECL(doskill_core);
 E int NDECL(enhance_weapon_skill);
 E void FDECL(unrestrict_weapon_skill, (enum p_skills));
 E void FDECL(add_weapon_skill_maximum_by_one, (enum p_skills));

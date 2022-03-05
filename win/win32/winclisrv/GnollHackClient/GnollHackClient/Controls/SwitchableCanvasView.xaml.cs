@@ -38,8 +38,7 @@ namespace GnollHackClient.Controls
             get { return UseGL ? false : internalCanvasView.IgnorePixelScaling; }
             set
             {
-                if (!UseGL)
-                    internalCanvasView.IgnorePixelScaling = value;
+                internalCanvasView.IgnorePixelScaling = value;
             }
         }
         public bool EnableTouchEvents 
@@ -47,10 +46,8 @@ namespace GnollHackClient.Controls
             get { return UseGL ? internalGLView.EnableTouchEvents : internalCanvasView.EnableTouchEvents; } 
             set 
             {
-                if (UseGL)
-                    internalGLView.EnableTouchEvents = value;
-                else
-                    internalCanvasView.EnableTouchEvents = value;
+                internalGLView.EnableTouchEvents = value;
+                internalCanvasView.EnableTouchEvents = value;
             }
         }
         public event EventHandler<SKPaintSurfaceEventArgs> PaintSurface;

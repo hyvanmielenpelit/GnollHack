@@ -780,7 +780,7 @@ doability(VOID_ARGS)
     abilitynum++;
 
     strcpy(available_ability_list[abilitynum].name, "Skills");
-    available_ability_list[abilitynum].function_ptr = &enhance_weapon_skill;
+    available_ability_list[abilitynum].function_ptr = &doskill;
 
     any = zeroany;
     any.a_int = abilitynum + 1;
@@ -5177,7 +5177,7 @@ struct ext_func_tab extcmdlist[] = {
     { 's', "search", "search for traps and secret doors",
             dosearch, IFBURIED, "searching" },
     { 'S', "skill", "view and advance skills",
-            enhance_weapon_skill, IFBURIED | AUTOCOMPLETE },
+            doskill, IFBURIED | AUTOCOMPLETE },
     { M('s'), "save", "save the game and exit", dosave, IFBURIED | AUTOCOMPLETE | GENERALCMD },
     { '*', "seeall", "show all equipment in use", doprinuse, IFBURIED },
     { AMULET_SYM, "seeamulet", "show the amulet currently worn",

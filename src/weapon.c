@@ -1904,6 +1904,19 @@ static const struct skill_range {
     { P_FIRST_NONCOMBAT, P_LAST_NONCOMBAT, "Non-Combat Skills" },
 };
 
+/* 'S' command  */
+int
+doskill()
+{
+    return enhance_weapon_skill(); //doskill_core();
+}
+
+int
+doskill_core()
+{
+
+}
+
 /*
  * The `#enhance' extended command.  What we _really_ would like is
  * to keep being able to pick things to advance until we couldn't any

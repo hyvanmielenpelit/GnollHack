@@ -172,6 +172,7 @@ namespace GnollHackClient.Pages.Game
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
         public bool ShowMemoryUsage { get; set; }
+        public bool UseMainGLCanvas { get { return canvasView.UseGL; } set { canvasView.UseGL = value; } }
         public bool ShowFPS { get; set; }
         private double _fps;
         private long _counterValueDiff;
@@ -386,6 +387,7 @@ namespace GnollHackClient.Pages.Game
             CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
             GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
             ShowFPS = Preferences.Get("ShowFPS", false);
+            UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", false);
             ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
             MapGrid = Preferences.Get("MapGrid", false);
             HitPointBars = Preferences.Get("HitPointBars", false);
