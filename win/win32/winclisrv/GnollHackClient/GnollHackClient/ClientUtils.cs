@@ -623,20 +623,29 @@ namespace GnollHackClient
             return App.SimpleFrameLeftVerticalBitmap.Width * scale;
         }
 
-        public static uint GetCommandCanvasAnimationInterval()
+        public static uint GetMainCanvasAnimationInterval()
         {
-            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 120)
+            return GHConstants.MainCanvasAnimationInterval;
+        }
+        public static int GetMainCanvasAnimationFrequency()
+        {
+            return GHConstants.MainCanvasAnimationFrequency;
+        }
+
+        public static uint GetAuxiliaryCanvasAnimationInterval()
+        {
+            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 120.0f)
                 return 8;
-            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 90)
+            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 90.0f)
                 return 12;
             else
                 return 16;
         }
-        public static int GetCommandCanvasAnimationFrequency()
+        public static int GetAuxiliaryCanvasAnimationFrequency()
         {
-            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 120)
+            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 120.0f)
                 return 120;
-            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 90)
+            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 90.0f)
                 return 90;
             else
                 return 60;

@@ -549,10 +549,11 @@ namespace GnollHackClient.Pages.Game
 
             canvasView._gamePage = this;
             CommandCanvas._gamePage = this;
+            MenuCanvas._gamePage = this;
+            TextCanvas._gamePage = this;
+            TipView._gamePage = this;
 
-            uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * 80;
-            Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
-            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => MainGrid.IsVisible);
+            StartMainCanvasAnimation();
 
             Device.StartTimer(TimeSpan.FromSeconds(1f / GHConstants.PollingFrequency), () =>
             {
@@ -639,7 +640,7 @@ namespace GnollHackClient.Pages.Game
                 float offx = MoreCmdOffsetX;
                 if (offx != 0 && (CommandTouchDictionary.Count == 0 || _commandChangedPage))
                 {
-                    float delta = -1 * Math.Sign(offx) * CommandCanvas.CanvasSize.Width * _moreCmdOffsetAutoSpeed / ClientUtils.GetCommandCanvasAnimationFrequency();
+                    float delta = -1 * Math.Sign(offx) * CommandCanvas.CanvasSize.Width * _moreCmdOffsetAutoSpeed / ClientUtils.GetAuxiliaryCanvasAnimationFrequency();
                     if (offx > 0 && offx + delta < 0)
                         MoreCmdOffsetX = 0;
                     else if (offx < 0 && offx + delta > 0)
@@ -650,14 +651,10 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        public void UpdateMenuAndTextCanvases()
+        public void UpdateMenuCanvas()
         {
             bool refresh = false;
-            if (TextGrid.IsVisible)
-            {
-                TextCanvas.InvalidateSurface();
-            }
-            else if (MenuGrid.IsVisible)
+            if (MenuGrid.IsVisible)
             {
                 lock (_menuDrawOnlyLock)
                 {
@@ -666,6 +663,41 @@ namespace GnollHackClient.Pages.Game
                 if (refresh)
                     MenuCanvas.InvalidateSurface();
             }
+        }
+
+        public void UpdateTextCanvas()
+        {
+            if (TextGrid.IsVisible)
+            {
+                TextCanvas.InvalidateSurface();
+            }
+        }
+
+        private void StartMainCanvasAnimation()
+        {
+            uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * 80;
+            Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
+            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => MainGrid.IsVisible);
+        }
+
+        private void StartCommandCanvasAnimation()
+        {
+            uint commandTimeToAnimate = ClientUtils.GetAuxiliaryCanvasAnimationInterval() * 80;
+            Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, 80);
+            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => MoreCommandsGrid.IsVisible);
+        }
+
+        private void StartMenuCanvasAnimation()
+        {
+            uint commandTimeToAnimate = ClientUtils.GetAuxiliaryCanvasAnimationInterval() * 80;
+            Animation commandAnimation = new Animation(v => MenuCanvas.GeneralAnimationCounter = (long)v, 1, 80);
+            commandAnimation.Commit(MenuCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => MenuGrid.IsVisible);
+        }
+        private void StartTextCanvasAnimation()
+        {
+            uint commandTimeToAnimate = ClientUtils.GetAuxiliaryCanvasAnimationInterval() * 80;
+            Animation commandAnimation = new Animation(v => TextCanvas.GeneralAnimationCounter = (long)v, 1, 80);
+            commandAnimation.Commit(TextCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => TextGrid.IsVisible);
         }
 
         private bool StartingPositionsSet { get; set; }
@@ -1413,6 +1445,8 @@ namespace GnollHackClient.Pages.Game
             }
 
             TextGrid.IsVisible = true;
+            MainGrid.IsVisible = false;
+            StartTextCanvasAnimation();
         }
 
 
@@ -1830,6 +1864,8 @@ namespace GnollHackClient.Pages.Game
             }
 
             MenuGrid.IsVisible = true;
+            MainGrid.IsVisible = false;
+            StartMenuCanvasAnimation();
             //lock (_canvasPageLock)
             //{
             //    _canvasPage = canvas_page_types.MenuPage;
@@ -1861,10 +1897,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     RefreshScreen = true;
                 }
-                uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * 80;
-                Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
-                canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => MainGrid.IsVisible);
-
+                StartMainCanvasAnimation();
             }
             else if (GetLineGrid.IsVisible)
             {
@@ -1893,10 +1926,12 @@ namespace GnollHackClient.Pages.Game
             {
                 GenericButton_Clicked(sender, e, 27);
                 TextGrid.IsVisible = false;
+                MainGrid.IsVisible = true;
                 lock (RefreshScreenLock)
                 {
                     RefreshScreen = true;
                 }
+                StartMainCanvasAnimation();
             }
             else if (MenuGrid.IsVisible)
             {
@@ -1906,10 +1941,12 @@ namespace GnollHackClient.Pages.Game
                     queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>()));
                 }
                 MenuGrid.IsVisible = false;
+                MainGrid.IsVisible = true;
                 lock (RefreshScreenLock)
                 {
                     RefreshScreen = true;
                 }
+                StartMainCanvasAnimation();
             }
             else
             {
@@ -8413,9 +8450,7 @@ namespace GnollHackClient.Pages.Game
             MoreCommandsGrid.IsVisible = true;
             MainGrid.IsVisible = false;
 
-            uint commandTimeToAnimate = ClientUtils.GetCommandCanvasAnimationInterval() * 80;
-            Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, 80);
-            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: ClientUtils.GetCommandCanvasAnimationInterval(), repeat: () => MoreCommandsGrid.IsVisible);
+            StartCommandCanvasAnimation();
         }
 
         private void YnButton_Clicked(object sender, EventArgs e)
@@ -9282,6 +9317,7 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 MenuGrid.IsVisible = false;
+                MainGrid.IsVisible = true;
 
                 lock (_canvasPageLock)
                 {
@@ -9291,6 +9327,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     RefreshScreen = true;
                 }
+                StartMainCanvasAnimation();
 
                 return false;
             });
@@ -9631,10 +9668,12 @@ namespace GnollHackClient.Pages.Game
                                     /* Normal click -- Hide the canvas */
                                     GenericButton_Clicked(sender, e, 27);
                                     TextGrid.IsVisible = false;
+                                    MainGrid.IsVisible = true;
                                     lock (RefreshScreenLock)
                                     {
                                         RefreshScreen = true;
                                     }
+                                    StartMainCanvasAnimation();
                                 }
                                 if (TextTouchDictionary.ContainsKey(e.Id))
                                     TextTouchDictionary.Remove(e.Id);
@@ -10281,9 +10320,7 @@ namespace GnollHackClient.Pages.Game
                                             {
                                                 RefreshScreen = true;
                                             }
-                                            uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * 80;
-                                            Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
-                                            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => MainGrid.IsVisible);
+                                            StartMainCanvasAnimation();
                                         }
 
                                     }

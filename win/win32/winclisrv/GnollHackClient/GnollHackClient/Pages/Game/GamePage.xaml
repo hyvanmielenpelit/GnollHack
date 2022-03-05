@@ -258,7 +258,7 @@
 
                     <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                         <ff:CachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15,15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
-                        <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="True" CanvasType="Other" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
+                        <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="True" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
                     </Grid>
 
                     <Grid x:Name="MenuCloseGrid" BackgroundColor="Transparent" >
@@ -346,13 +346,13 @@
                             Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>-->
                 <gnollhackclient:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Small" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <ff:CachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
-                <controls:SwitchableCanvasView x:Name="TextCanvas" UseGL="true" CanvasType="Other" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
+                <controls:SwitchableCanvasView x:Name="TextCanvas" UseGL="True" CanvasType="TextCanvas" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
             </Grid>
             <Grid x:Name="MoreCommandsGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#FF000000" IsVisible="False">
-                <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="true" CanvasType="CommandCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" EnableTouchEvents="True" />
+                <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="True" CanvasType="CommandCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" EnableTouchEvents="True" />
             </Grid>
             <controls:SwitchableCanvasView x:Name="TipView" IsVisible="false"
-                                          CanvasType="Other"
+                                          CanvasType="TipCanvas"
                                           EnableTouchEvents="True"
                                           PaintSurface="TipView_PaintSurface" 
                                           Touch="TipView_Touch"

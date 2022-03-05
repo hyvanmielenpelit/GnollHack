@@ -129,12 +129,17 @@ namespace GnollHackClient.Controls
             set { SetValue(GeneralAnimationCounterProperty, value); }
         }
 
+        private long _tickCounter = 0L;
+
         protected override void OnPropertyChanged(string propertyName = null)
         {
             base.OnPropertyChanged(propertyName);
-
             if (_gamePage != null)
             {
+                _tickCounter++;
+                _tickCounter = _tickCounter % GHConstants.MaxRefreshRate;
+                int auxRefreshRate = ClientUtils.GetMainCanvasAnimationFrequency();
+                int divisor = Math.Max(1, (int)Math.Round((double)auxRefreshRate / (double)GHConstants.GameAnimationRefreshRate, 0));
                 switch (CanvasType)
                 {
                     case CanvasTypes.MainCanvas:
@@ -149,13 +154,27 @@ namespace GnollHackClient.Controls
 
                             if (refresh)
                                 InvalidateSurface();
-
-                            _gamePage.UpdateMenuAndTextCanvases();
                             break;
                         }
                     case CanvasTypes.CommandCanvas:
                         {
                             _gamePage.UpdateCommandCanvas();
+                            break;
+                        }
+                    case CanvasTypes.MenuCanvas:
+                        {
+                            if (_tickCounter % divisor == 0)
+                                _gamePage.IncrementCounters();
+
+                            _gamePage.UpdateMenuCanvas();
+                            break;
+                        }
+                    case CanvasTypes.TextCanvas:
+                        {
+                            if (_tickCounter % divisor == 0)
+                                _gamePage.IncrementCounters();
+
+                            _gamePage.UpdateTextCanvas();
                             break;
                         }
                     default:
