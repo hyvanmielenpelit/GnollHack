@@ -32,6 +32,12 @@ namespace GnollHackClient.Controls
             }
         }
 
+        public SwitchableCanvasView()
+        {
+            InitializeComponent();
+            UseGL = GHConstants.IsGPUDefault;
+        }
+
         public SKSize CanvasSize { get { return UseGL ? internalGLView.CanvasSize : internalCanvasView.CanvasSize; } }
         public bool IgnorePixelScaling
         {
@@ -62,11 +68,6 @@ namespace GnollHackClient.Controls
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
             return new SizeRequest();
-        }
-
-        public SwitchableCanvasView()
-        {
-            InitializeComponent();
         }
 
         private void internalCanvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)

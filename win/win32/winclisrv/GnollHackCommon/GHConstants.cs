@@ -1109,6 +1109,7 @@ namespace GnollHackCommon
         public const int PollingFrequency = 40;
         public const int GameAnimationRefreshRate = 40;
         public const int MaxRefreshRate = 120;
+        public const bool IsGPUDefault = true;
     }
 
 

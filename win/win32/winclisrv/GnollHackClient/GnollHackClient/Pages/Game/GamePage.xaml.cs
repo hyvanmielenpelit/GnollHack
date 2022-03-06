@@ -387,7 +387,7 @@ namespace GnollHackClient.Pages.Game
             CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
             GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
             ShowFPS = Preferences.Get("ShowFPS", false);
-            UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", false);
+            UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHConstants.IsGPUDefault);
             ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
             MapGrid = Preferences.Get("MapGrid", false);
             HitPointBars = Preferences.Get("HitPointBars", false);
@@ -561,8 +561,6 @@ namespace GnollHackClient.Pages.Game
             TextCanvas._parentGrid = TextGrid;
             TipView._parentGrid = null;
 
-            StartMainCanvasAnimation();
-
             Device.StartTimer(TimeSpan.FromSeconds(1f / GHConstants.PollingFrequency), () =>
             {
                 if(!StartingPositionsSet && !canvasView.CanvasSize.IsEmpty)
@@ -585,6 +583,12 @@ namespace GnollHackClient.Pages.Game
                     _cursorIsOn = !_cursorIsOn;
                 else
                     _cursorIsOn = false;
+
+                //if (MainGrid.IsVisible)
+                //    StartingCounter = 100;
+
+                //if (StartingCounter < 100)
+                //    StartingCounter++;
 
                 if (ShowFPS)
                 {
@@ -678,34 +682,42 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private uint _animationLength = 10;
         private void StartMainCanvasAnimation()
         {
-            uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * 80;
-            Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, 80);
+            uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * _animationLength;
+            Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, _animationLength);
             canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => MainGrid.IsVisible);
         }
 
         private void StartCommandCanvasAnimation()
         {
-            uint commandTimeToAnimate = ClientUtils.GetAuxiliaryCanvasAnimationInterval() * 80;
-            Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, 80);
-            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => MoreCommandsGrid.IsVisible);
+            uint interval = ClientUtils.GetAuxiliaryCanvasAnimationInterval();
+            uint commandTimeToAnimate = interval * _animationLength;
+            Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, _animationLength);
+            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: interval, repeat: () => MoreCommandsGrid.IsVisible);
         }
 
         private void StartMenuCanvasAnimation()
         {
-            uint commandTimeToAnimate = ClientUtils.GetAuxiliaryCanvasAnimationInterval() * 80;
-            Animation commandAnimation = new Animation(v => MenuCanvas.GeneralAnimationCounter = (long)v, 1, 80);
-            commandAnimation.Commit(MenuCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => MenuGrid.IsVisible);
+            uint interval = ClientUtils.GetAuxiliaryCanvasAnimationInterval();
+            uint commandTimeToAnimate = interval * _animationLength;
+            Animation commandAnimation = new Animation(v => MenuCanvas.GeneralAnimationCounter = (long)v, 1, _animationLength);
+            commandAnimation.Commit(MenuCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: interval, repeat: () => MenuGrid.IsVisible);
         }
         private void StartTextCanvasAnimation()
         {
-            uint commandTimeToAnimate = ClientUtils.GetAuxiliaryCanvasAnimationInterval() * 80;
-            Animation commandAnimation = new Animation(v => TextCanvas.GeneralAnimationCounter = (long)v, 1, 80);
-            commandAnimation.Commit(TextCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => TextGrid.IsVisible);
+            uint interval = ClientUtils.GetAuxiliaryCanvasAnimationInterval();
+            uint commandTimeToAnimate = interval * _animationLength;
+            Animation commandAnimation = new Animation(v => TextCanvas.GeneralAnimationCounter = (long)v, 1, _animationLength);
+            commandAnimation.Commit(TextCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: interval, repeat: () => TextGrid.IsVisible);
         }
 
         private bool StartingPositionsSet { get; set; }
+
+        //private object _startingLock = new object();
+        //private int _starting_counter = 0;
+        //public int StartingCounter { get { lock (_startingLock) { return _starting_counter; } } set { lock (_startingLock) { _starting_counter = value; } } }
 
         private bool _useUnifromAnimationInterval = false;
         public long GetAnimationCounterIncrement()
@@ -849,6 +861,7 @@ namespace GnollHackClient.Pages.Game
         {
             LoadingGrid.IsVisible = false;
             MainGrid.IsVisible = true;
+            StartMainCanvasAnimation();
         }
 
         public void ClearContextMenu()
