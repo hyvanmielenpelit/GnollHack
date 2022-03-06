@@ -1115,7 +1115,7 @@ boolean verbose;
     if (Hallucination && !had_hallucination)
     {
         state_change_detected = TRUE;
-        pline("Oh wow! Everything %s so cosmic!", (!Blind) ? "looks" : "feels");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Oh wow! Everything %s so cosmic!", (!Blind) ? "looks" : "feels");
     }
     else if (!Hallucination && had_hallucination)
     {

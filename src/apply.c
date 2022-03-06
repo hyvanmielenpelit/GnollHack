@@ -3936,11 +3936,11 @@ struct obj *tstone;
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
         
         if (Blind)
-            pline("You feel something shatter.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You feel something shatter.");
         else if (Hallucination)
-            pline("Oh, wow, look at the pretty shards.");
+            pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Oh, wow, look at the pretty shards.");
         else
-            pline("A sharp crack shatters %s%s.",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A sharp crack shatters %s%s.",
                   (obj->quan > 1L) ? "one of " : "", the(xname(obj)));
         useup(obj);
         return;
@@ -3953,7 +3953,7 @@ struct obj *tstone;
     } 
     else if (Hallucination)
     {
-        pline("Oh wow, man: Fractals!");
+        pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Oh wow, man: Fractals!");
         return;
     }
 

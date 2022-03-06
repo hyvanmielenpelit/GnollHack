@@ -3808,7 +3808,7 @@ cleanup:
 
     if (is_unicorn(mdat) && sgn(u.ualign.type) == sgn(mdat->maligntyp)) 
     {
-        You_feel("guilty...");
+        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "guilty...");
         luck_change += -5;
     }
 

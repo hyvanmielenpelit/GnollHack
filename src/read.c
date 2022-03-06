@@ -3300,7 +3300,7 @@ boolean *effect_happened_ptr;
         known = TRUE;
         if (confused || sblessed) {
             play_sfx_sound(SFX_MALIGNANT_AURA_RESISTED);
-            You_feel("guilty.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "guilty.");
             break;
         }
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);

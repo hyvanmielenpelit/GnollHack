@@ -1266,7 +1266,7 @@ struct obj **optr;
         if (!obj->charges)
         {
             play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
-            pline("All you see is funky %s haze.", hcolor((char *) 0));
+            pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "All you see is funky %s haze.", hcolor((char *) 0));
         } 
         else 
         {
@@ -1274,25 +1274,25 @@ struct obj **optr;
             switch (rnd(6))
             {
             case 1:
-                You("grok some groovy globs of incandescent lava.");
+                You_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "grok some groovy globs of incandescent lava.");
                 break;
             case 2:
-                pline("Whoa!  Psychedelic colors, %s!",
+                pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Whoa!  Psychedelic colors, %s!",
                       poly_gender() == 1 ? "babe" : "dude");
                 break;
             case 3:
-                pline_The("crystal pulses with sinister %s light!",
+                pline_The_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "crystal pulses with sinister %s light!",
                           hcolor((char *) 0));
                 break;
             case 4:
-                You_see("goldfish swimming above fluorescent rocks.");
+                You_see_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "goldfish swimming above fluorescent rocks.");
                 break;
             case 5:
-                You_see(
+                You_see_ex(ATR_NONE, CLR_MSG_HALLUCINATED,
                     "tiny snowflakes spinning around a miniature farmhouse.");
                 break;
             default:
-                pline("Oh wow... like a kaleidoscope!");
+                pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Oh wow... like a kaleidoscope!");
                 break;
             }
             consume_obj_charge(obj, TRUE);

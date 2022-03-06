@@ -1413,7 +1413,7 @@ int pm;
 
         if (has_hallucinating_corpse(ptr))
         {
-            pline("Oh wow!  Great stuff!");
+            pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Oh wow!  Great stuff!");
             play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
             (void)make_hallucinated((HHallucination & TIMEOUT) + 200L, FALSE,
                 0L);
@@ -1551,17 +1551,17 @@ int pm;
         else if (tmp > 0)
             givit(tmp, ptr);
         else if (conveys_STR && !rn2(3))
-            You_feel("momentarily pumped up, but then the feeling passes.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "momentarily pumped up, but then the feeling passes.");
         else if (conveys_DEX && !rn2(3))
-            You_feel("more flexible for a moment, but then the feeling passes.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "more flexible for a moment, but then the feeling passes.");
         else if (conveys_CON && !rn2(3))
-            You_feel("your stamina is momentarily increased, but then the feeling passes.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "your stamina is momentarily increased, but then the feeling passes.");
         else if (conveys_INT && !rn2(3))
-            pline("That made your brain work a bit faster for a moment.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That made your brain work a bit faster for a moment.");
         else if (conveys_WIS && !rn2(3))
-            You_feel("that flavor gave you more perspective on the world for a moment.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "that flavor gave you more perspective on the world for a moment.");
         else if (conveys_CHA && !rn2(3))
-            You_feel("that had beneficial effect on your skin.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "that had beneficial effect on your skin.");
 
     } /* check_intrinsics */
 
@@ -1577,7 +1577,7 @@ violated_vegetarian()
 {
     u.uconduct.unvegetarian++;
     if (Role_if(PM_MONK)) {
-        You_feel("guilty.");
+        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "guilty.");
         adjalign(-1);
     }
     return;

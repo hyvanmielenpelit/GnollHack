@@ -863,14 +863,14 @@ int *fail_reason;
                                 FALSE);
 
         if (historic) {
-            You_feel("guilty %s.", historic_statue_is_gone);
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "guilty %s.", historic_statue_is_gone);
             adjalign(-1);
         }
     } 
     else 
     {
         if (historic && cansee(x, y))
-            You_feel("regret %s.", historic_statue_is_gone);
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "regret %s.", historic_statue_is_gone);
         /* no alignment penalty */
     }
 
