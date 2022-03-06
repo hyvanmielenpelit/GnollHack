@@ -96,6 +96,7 @@ namespace GnollHackClient.Controls
 
 
         public GamePage _gamePage;
+        public Grid _parentGrid;
 
         public GHWindow GHWindow { get; set; }
         public ghmenu_styles MenuStyle { get; set; }
@@ -131,6 +132,8 @@ namespace GnollHackClient.Controls
         protected override void OnPropertyChanged(string propertyName = null)
         {
             base.OnPropertyChanged(propertyName);
+            if (!IsVisible || (_parentGrid != null && !_parentGrid.IsVisible))
+                return;
             if (_gamePage != null)
             {
                 _tickCounter++;

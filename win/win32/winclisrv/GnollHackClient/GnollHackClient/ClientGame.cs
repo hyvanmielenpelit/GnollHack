@@ -1164,17 +1164,20 @@ namespace GnollHackClient
                 }
 
                 int cnt = 0;
+                long countervalue;
                 do
                 {
+                    lock (_gamePage.AnimationTimerLock)
+                    {
+                        countervalue = _gamePage.AnimationTimers.general_animation_counter;
+                    }
+
                     lock (_gamePage._screenTextLock)
                     {
                         if (_gamePage._screenText != null)
                         {
-                            lock (_gamePage.AnimationTimerLock)
-                            {
-                                if (_gamePage._screenText.IsFinished(_gamePage.AnimationTimers.general_animation_counter))
-                                    break;
-                            }
+                            if (_gamePage._screenText.IsFinished(countervalue))
+                                break;
                         }
                         else
                             break;
