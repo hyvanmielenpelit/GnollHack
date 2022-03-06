@@ -1224,6 +1224,7 @@ namespace GnollHackClient.Pages.Game
             if (data.glyph != 0 && data.glyph != NoGlyph)
             {
                 _popupImageSource.ReferenceGamePage = this;
+                _popupImageSource.UseUpperSide = (data.tflags & 1) != 0;
                 _popupImageSource.Glyph = data.glyph;
                 _popupImageSource.AutoSize = true;
                 PopupImage.Source = _popupImageSource;
@@ -1447,6 +1448,7 @@ namespace GnollHackClient.Pages.Game
             _textGlyphImageSource.AutoSize = true;
             _textGlyphImageSource.ObjData = window.ObjData;
             _textGlyphImageSource.Glyph = window.Glyph;
+            _textGlyphImageSource.UseUpperSide = window.UseUpperSide;
 
             TextWindowGlyphImage.Source = TextGlyphImage;
             TextWindowGlyphImage.IsVisible = IsTextGlyphVisible;
@@ -1547,6 +1549,7 @@ namespace GnollHackClient.Pages.Game
             {
                 YnTitleLayout.HorizontalOptions = LayoutOptions.StartAndExpand;
                 _ynImageSource.ReferenceGamePage = this;
+                _ynImageSource.UseUpperSide = (ynflags & 1) != 0;
                 _ynImageSource.Glyph = glyph;
                 _ynImageSource.AutoSize = true;
                 YnImage.Source = _ynImageSource;
@@ -1813,6 +1816,7 @@ namespace GnollHackClient.Pages.Game
             _menuGlyphImageSource.AutoSize = true;
             _menuGlyphImageSource.ObjData = ghwindow.ObjData;
             _menuGlyphImageSource.Glyph = ghwindow.Glyph;
+            _menuGlyphImageSource.UseUpperSide = ghwindow.UseUpperSide;
 
             MenuWindowGlyphImage.Source = MenuGlyphImage;
             MenuWindowGlyphImage.IsVisible = IsMenuGlyphVisible;
@@ -4670,6 +4674,7 @@ namespace GnollHackClient.Pages.Game
                                         {
                                             GlyphImageSource gis = new GlyphImageSource();
                                             gis.ReferenceGamePage = this;
+                                            gis.UseUpperSide = false; /* Monsters are generally full-sized */
                                             gis.AutoSize = true;
                                             gis.Glyph = Math.Abs(mi.gui_glyph);
                                             gis.DoAutoSize();

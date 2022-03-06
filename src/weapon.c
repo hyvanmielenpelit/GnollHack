@@ -2027,9 +2027,12 @@ doskill_core()
 
                 Sprintf(buf, "%s (%s / %s%s)", skillnamebuf, skilllevelbuf, skillmaxbuf, furtherbuf);
 
-                any.a_int = can_advance(i, speedy) ? i + 1 : 0;
+                boolean canadv = can_advance(i, speedy);
+                any.a_int = canadv ? i + 1 : 0;
                 struct extended_menu_info info = { 0 };
                 info.color = color;
+                if(canadv)
+                    info.menu_flags |= MENU_FLAGS_ACTIVE;
 
                 add_extended_menu(win, i + GLYPH_SKILL_TILE_OFF, &any, info, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
 

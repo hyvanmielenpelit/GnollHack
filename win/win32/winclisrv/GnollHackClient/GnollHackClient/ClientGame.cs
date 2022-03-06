@@ -233,7 +233,7 @@ namespace GnollHackClient
                 return 0;
 
             int handle = _lastWindowHandle;
-            GHWindow ghwin = new GHWindow((GHWinType)wintype, (ghwindow_styles)style, glyph,
+            GHWindow ghwin = new GHWindow((GHWinType)wintype, (ghwindow_styles)style, glyph, (dataflags & 8) != 0,
                 (dataflags & 1) == 0 ? null : new ObjectDataItem(objdata, otypdata, (dataflags & 4) != 0), _gamePage, handle);
 
             lock(_ghWindowsLock)
@@ -847,7 +847,8 @@ namespace GnollHackClient
                     mi.SpecialMark = special_mark;
                     mi.Attributes = attributes;
                     mi.Glyph = glyph;
-                    if((dataflags & 1) != 0)
+                    mi.UseUpperSide = (dataflags & 8) != 0;
+                    if ((dataflags & 1) != 0)
                     {
                         ObjectDataItem odi = new ObjectDataItem(otmpdata, otypdata, (dataflags & 4) != 0);
                         mi.ObjData = odi;

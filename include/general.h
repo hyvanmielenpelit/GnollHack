@@ -198,6 +198,9 @@ struct extended_create_window_info {
     unsigned long create_flags;
 };
 
+#define WINDOW_CREATE_FLAGS_NONE                0x00000000
+#define WINDOW_CREATE_FLAGS_ACTIVE              0x00000001
+
 #define MENU_FLAGS_NONE                         0x00000000
 #define MENU_FLAGS_IS_HEADING                   0x00000001
 #define MENU_FLAGS_IS_GROUP_HEADING             0x00000002
@@ -205,6 +208,7 @@ struct extended_create_window_info {
 #define MENU_FLAGS_COUNT_DISALLOWED             0x00000008
 #define MENU_FLAGS_USE_SKILL_MENU_DATA          0x00000010
 #define MENU_FLAGS_USE_SPELL_MENU_DATA          0x00000020
+#define MENU_FLAGS_ACTIVE                       0x00000040
 
 enum obj_material_types {
     MAT_NONE = 0,

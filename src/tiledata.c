@@ -1873,6 +1873,7 @@ uchar* tilemapflags;
         {
             glyph_offset = GLYPH_SPELL_TILE_OFF;
             tilemaparray[i + GLYPH_SPELL_TILE_OFF] = tile_count;
+            tilemapflags[i + GLYPH_SPELL_TILE_OFF] |= GLYPH_TILE_FLAG_HALF_SIZED_TILE;
         }
         tile_count++;
     }
@@ -1897,6 +1898,7 @@ uchar* tilemapflags;
         {
             glyph_offset = GLYPH_SKILL_TILE_OFF;
             tilemaparray[i + GLYPH_SKILL_TILE_OFF] = tile_count;
+            tilemapflags[i + GLYPH_SKILL_TILE_OFF] |= GLYPH_TILE_FLAG_HALF_SIZED_TILE;
         }
         tile_count++;
     }

@@ -53,6 +53,15 @@ namespace GnollHackClient
             set => SetValue(GlyphProperty, value);
         }
 
+        public static readonly BindableProperty UseUpperSideProperty = BindableProperty.Create(
+            "UseUpperSide", typeof(bool), typeof(GlyphImageSource));
+
+        public bool UseUpperSide
+        {
+            get => (bool)GetValue(UseUpperSideProperty);
+            set => SetValue(UseUpperSideProperty, value);
+        }
+
         public static readonly BindableProperty GrayedProperty = BindableProperty.Create(
             "Grayed", typeof(bool), typeof(GlyphImageSource));
 
@@ -372,7 +381,10 @@ namespace GnollHackClient
                         SKRect sourcerect;
                         if (tileflag_halfsize)
                         {
-                            sourcerect = new SKRect(tile_x, tile_y + (float)GHConstants.TileHeight / 2, tile_x + (float)GHConstants.TileWidth, tile_y + (float)GHConstants.TileHeight);
+                            if (UseUpperSide)
+                                sourcerect = new SKRect(tile_x, tile_y, tile_x + (float)GHConstants.TileWidth, tile_y + (float)GHConstants.TileHeight / 2);
+                            else
+                                sourcerect = new SKRect(tile_x, tile_y + (float)GHConstants.TileHeight / 2, tile_x + (float)GHConstants.TileWidth, tile_y + (float)GHConstants.TileHeight);
                         }
                         else
                         {

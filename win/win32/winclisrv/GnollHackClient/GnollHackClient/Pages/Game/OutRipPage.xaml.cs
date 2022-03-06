@@ -26,6 +26,7 @@ namespace GnollHackClient.Pages.Game
             PointsLabel.Text = outripinfo.Points + " points";
             KillerLabel.Text = outripinfo.Killer;
             _glyphImageSource.ReferenceGamePage = gamePage;
+            _glyphImageSource.UseUpperSide = false;
             _glyphImageSource.AutoSize = true;
             _glyphImageSource.Grayed = true;
             _glyphImageSource.Opacity = 0.5f;

@@ -194,6 +194,7 @@ namespace GnollHackClient
 
         private int _glyph;
         public int Glyph { get { return _glyph; } set { _glyph = value; _glyphImageSource.Glyph = value; } }
+        public bool UseUpperSide { get { return _glyphImageSource.UseUpperSide; } set { _glyphImageSource.UseUpperSide = value; } }
         private ObjectDataItem _objData = null;
         public ObjectDataItem ObjData { get { return _objData; } set { _objData = value; _glyphImageSource.ObjData = value; } }
         public int NHColor { get; set; }
@@ -424,6 +425,7 @@ namespace GnollHackClient
             _noGlyph = noGlyph;
             _gamePage = gamePage;
             _glyphImageSource.ReferenceGamePage = gamePage;
+            _glyphImageSource.UseUpperSide = false;
             _glyphImageSource.Width = GHConstants.TileWidth;
             _glyphImageSource.Height = GHConstants.TileHeight / 2;
             EntryTextColor = Color.White;

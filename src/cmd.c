@@ -8101,7 +8101,7 @@ yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, yn
 int style, attr, color, glyph;
 const char *title, *query, *resp, *resp_desc;
 char def;
-unsigned long ynflags;
+unsigned long ynflags; /* 1 means use upper side for half-sized tile */
 {
     char res, qbuf[QBUFSZ];
 #ifdef DUMPLOG
