@@ -520,7 +520,8 @@ struct layer_info* linfo;
     linfo->rider_glyph = NO_GLYPH;
     linfo->status_bits = 0UL;
     linfo->condition_bits = 0UL;
-    for(int i = 0; i < NUM_BUFF_BIT_ULONGS; i++)
+    int i;
+    for(i = 0; i < NUM_BUFF_BIT_ULONGS; i++)
         linfo->buff_bits[i] = 0UL;
     linfo->wsegdir = 0;
     linfo->reverse_prev_wsegdir = 0;
@@ -1074,7 +1075,8 @@ void
 clear_object_glyphs_at(x, y)
 int x, y;
 {
-    for (struct obj* otmp = vobj_at(x, y); otmp; otmp = otmp->nexthere)
+    struct obj* otmp;
+    for (otmp = vobj_at(x, y); otmp; otmp = otmp->nexthere)
     {
         otmp->glyph = NO_GLYPH;
         otmp->gui_glyph = NO_GLYPH;
@@ -1254,7 +1256,8 @@ int hit_tile_id, damage_shown;
             if (carrying_leashed_leash())
             {
                 extra_flags |= LFLAGS_U_TETHERED;
-                for (struct monst* leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon)
+                struct monst* leashed_mon;
+                for (leashed_mon = fmon; leashed_mon; leashed_mon = leashed_mon->nmon)
                 {
                     if (leashed_mon->mleashed)
                     {
@@ -1382,7 +1385,8 @@ int hit_tile_id, damage_shown;
             add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
 
             /* Floor to environment, monster layer replaced below, if needed */
-            for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_ENVIRONMENT; layer_idx++)
+            enum layer_types layer_idx;
+            for (layer_idx = LAYER_FLOOR; layer_idx <= LAYER_ENVIRONMENT; layer_idx++)
             {
                 show_glyph_on_layer(x, y, lev->hero_memory_layers.layer_glyphs[layer_idx], layer_idx);
             }
@@ -2190,7 +2194,8 @@ docrt()
                 show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
                 add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
                 add_glyph_buffer_layer_flags(x, y, lev->hero_memory_layers.layer_flags);
-                for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_GENERAL_UI; layer_idx++)
+                enum layer_types layer_idx;
+                for (layer_idx = LAYER_FLOOR; layer_idx <= LAYER_GENERAL_UI; layer_idx++)
                     show_glyph_on_layer(x, y, lev->hero_memory_layers.layer_glyphs[layer_idx], layer_idx);
             }
     }
@@ -2210,7 +2215,8 @@ docrt()
 void
 clear_memory_object_detection_marks()
 {
-    for (struct obj* otmp = memoryobjs; otmp; otmp = otmp->nobj)
+    struct obj* otmp;
+    for (otmp = memoryobjs; otmp; otmp = otmp->nobj)
     {
         otmp->speflags &= ~SPEFLAGS_DETECTED;
     }
@@ -2286,7 +2292,8 @@ struct layer_info layers;
         show_glyph_ascii(x, y, layers.glyph);
 
         boolean layer_glyph_different = FALSE;
-        for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
+        enum layer_types layer_idx;
+        for (layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
         {
             int layer_glyph_before = gbuf[y][x].layers.layer_glyphs[layer_idx];
             gbuf[y][x].layers.layer_glyphs[layer_idx] = layers.layer_glyphs[layer_idx];
@@ -2388,7 +2395,8 @@ xchar ux, uy;
 
         if (isok(mx, my))
         {
-            for (int i = 0; i < MAXLEASHED; i++)
+            int i;
+            for (i = 0; i < MAXLEASHED; i++)
             {
                 if (gbuf[y][x].layers.leash_mon_x[i] == 0 && gbuf[y][x].layers.leash_mon_y[i] == 0)
                 {
@@ -3286,9 +3294,10 @@ cls()
 void
 show_memory_everywhere()
 {
-    for (int x = 1; x < COLNO; x++) 
+    int x, y;
+    for (x = 1; x < COLNO; x++) 
     {
-        for (int y = 0; y < ROWNO; y++)
+        for (y = 0; y < ROWNO; y++)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
     }
 
@@ -3297,9 +3306,10 @@ show_memory_everywhere()
 void
 show_detection_everywhere()
 {
-    for (int x = 1; x < COLNO; x++)
+    int x, y;
+    for (x = 1; x < COLNO; x++)
     {
-        for (int y = 0; y < ROWNO; y++)
+        for (y = 0; y < ROWNO; y++)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_DETECTION);
     }
 
@@ -3308,9 +3318,10 @@ show_detection_everywhere()
 void
 show_memory_and_detection_everywhere()
 {
-    for (int x = 1; x < COLNO; x++)
+    int x, y;
+    for (x = 1; x < COLNO; x++)
     {
-        for (int y = 0; y < ROWNO; y++)
+        for (y = 0; y < ROWNO; y++)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY | LFLAGS_SHOWING_DETECTION);
     }
 
@@ -3358,7 +3369,8 @@ int cursor_on_u;
         {
             if (gptr->isnew)
             {
-                for (int dir = 0; dir < 4; dir++)
+                int dir;
+                for (dir = 0; dir < 4; dir++)
                 {
                     int rx = 0;
                     int ry = 0;

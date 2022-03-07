@@ -1374,7 +1374,7 @@ boolean *valsetlist;
     if (idxmax >= 0)
         chgmax = compare_blstats(curr, &blstats[idx][idxmax]);
 
-    chg = update_all ? 0 : (compare_blstats(prev, curr) || chgmax);
+    chg = update_all ? 0 : compare_blstats(prev, curr);
 
 #ifndef ANDROID
     /* Temporary? hack: moveloop()'s prolog for a new game sets
@@ -1407,7 +1407,7 @@ boolean *valsetlist;
 
     reset = FALSE;
 #ifdef STATUS_HILITES
-    if (!update_all && !chg && curr->time) {
+    if (!update_all && !chg && !chgmax && curr->time) {
         reset = hilite_reset_needed(prev, bl_hilite_moves);
         if (reset)
             curr->time = prev->time = 0L;
@@ -1423,7 +1423,7 @@ boolean *valsetlist;
          *  ought to force the windowport to treat current HP as changed
          *  if hitpointbar is On, in order for that to be re-rendered.
          */
-    if (update_all || chg || reset) 
+    if (update_all || chg || chgmax || reset)
     {
         pc = 0;
         if(idxmax >= 0)
@@ -1436,7 +1436,7 @@ boolean *valsetlist;
 
         if (anytype != ANY_MASK32) {
 #ifdef STATUS_HILITES
-            if (chg || *curr->val) {
+            if (chg || chgmax || *curr->val) {
                 curr->hilite_rule = get_hilite(idx, fld,
                                                (genericptr_t) &curr->a,
                                                chg, pc, &color);
