@@ -4601,6 +4601,40 @@ namespace GnollHackClient.Pages.Game
                                     }
                                 }
                             }
+
+                            bool colorfound = false;
+                            for (int i = (int)nhcolor.CLR_BLACK + 1; i < (int)nhcolor.CLR_WHITE; i++)
+                            {
+                                if (i == (int)nhcolor.NO_COLOR || i == (int)nhcolor.CLR_GRAY)
+                                    continue;
+
+                                colorfound = false;
+                                for (int j = 0; j < 6; j++)
+                                {
+                                    lock (StatusFieldLock)
+                                    {
+                                        if (StatusFields[(int)statusfields.BL_STR + j] != null && StatusFields[(int)statusfields.BL_STR + j].IsEnabled && StatusFields[(int)statusfields.BL_STR + j].Text != null)
+                                        {
+                                            if (StatusFields[(int)statusfields.BL_STR + j].Color == i)
+                                            {
+                                                colorfound = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (colorfound)
+                                {
+                                    SKColor dotcolor = ClientUtils.NHColor2SKColorCore(i, true);
+                                    SKPoint dotpoint = new SKPoint(curx + marksize / 4, cury + (rowheight - marksize) / 2 + marksize / 2);
+                                    float dotradius = marksize / 8;
+                                    textPaint.Color = dotcolor;
+                                    textPaint.Style = SKPaintStyle.Fill;
+                                    canvas.DrawCircle(dotpoint, dotradius, textPaint);
+                                    curx += marksize / 2;
+                                    curx += markpadding;
+                                }
+                            }
                         }
 
                         /* Dungeon level */
@@ -5182,6 +5216,7 @@ namespace GnollHackClient.Pages.Game
                     icon_ty = ty + textPaint.FontMetrics.Ascent + (textPaint.FontSpacing - icon_height) / 2;
                     float icon_width = icon_height;
                     SKRect icon_rect = new SKRect(tx, ty, tx + icon_width, ty + icon_height);
+                    int valcolor = (int)nhcolor.CLR_WHITE;
 
                     valtext = "";
                     lock (StatusFieldLock)
@@ -5226,6 +5261,7 @@ namespace GnollHackClient.Pages.Game
                                 if (StatusFields[(int)statusfields.BL_STR + i] != null && StatusFields[(int)statusfields.BL_STR + i].IsEnabled && StatusFields[(int)statusfields.BL_STR + i].Text != null)
                                 {
                                     valtext = StatusFields[(int)statusfields.BL_STR + i].Text;
+                                    valcolor = StatusFields[(int)statusfields.BL_STR + i].Color;
                                 }
                             }
                             if (valtext != "" && ty < box_bottom_draw_threshold)
@@ -5233,7 +5269,9 @@ namespace GnollHackClient.Pages.Game
                                 string[] statstring = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
                                 string printtext = statstring[i] + ":";
                                 canvas.DrawText(printtext, tx, ty, textPaint);
+                                textPaint.Color = ClientUtils.NHColor2SKColorCore(valcolor, true);
                                 canvas.DrawText(valtext, tx + indentation, ty, textPaint);
+                                textPaint.Color = SKColors.Black;
                                 ty += textPaint.FontSpacing;
                             }
                         }
