@@ -3835,37 +3835,62 @@ int num;
 
     debugpline1("lesshungry(%d)", num);
     u.uhunger += num;
-    if (u.uhunger >= 2000) {
-        if (!iseating || context.victual.canchoke) {
-            if (iseating) {
+    if (u.uhunger >= 2000)
+    {
+        if (!iseating || context.victual.canchoke) 
+        {
+            if (iseating) 
+            {
                 choke(context.victual.piece);
                 reset_eat();
-            } else
+            } 
+            else
                 choke(occupation == opentin ? context.tin.tin
                                             : (struct obj *) 0);
             /* no reset_eat() */
         }
-    } else {
+    }
+    else 
+    {
         /* Have lesshungry() report when you're nearly full so all eating
          * warns when you're about to choke.
          */
-        if (u.uhunger >= 1500) {
+        if (u.uhunger >= 1500) 
+        {
             if (!context.victual.eating
-                || (context.victual.eating && !context.victual.fullwarn)) {
-                pline("You're having a hard time getting all of it down.");
+                || (context.victual.eating && !context.victual.fullwarn)) 
+            {
+                const char* hardtimetxt = "You're having a hard time getting all of it down.";
                 nomovemsg = "You're finally finished.";
-                if (!context.victual.eating) {
+                if (!context.victual.eating) 
+                {
+                    pline1(hardtimetxt);
                     multi = -2;
-                } else {
+                } 
+                else 
+                {
                     context.victual.fullwarn = TRUE;
                     if (context.victual.canchoke
-                        && context.victual.reqtime > 1) {
+                        && context.victual.reqtime > 1) 
+                    {
+                        const char* conteattxt = "Continue eating?";
+                        char buf[BUFSZ];
+#ifdef GNH_ANDROID
+                        Sprintf(buf, "%s %s", hardtimetxt, conteattxt);
+#else
+                        pline1(hardtimetxt);
+                        Sprintf(buf, "%s", conteattxt);
+#endif
                         /* a one-gulp food will not survive a stop */
-                        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_WARNING, (const char*)0, "Continue eating?", ynchars, 'n', yndescs)
-                            != 'y') {
+                        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_WARNING, "Choking Warning", buf, ynchars, 'n', yndescs) != 'y') 
+                        {
                             reset_eat();
                             nomovemsg = (char *) 0;
                         }
+                    }
+                    else
+                    {
+                        pline1(hardtimetxt);
                     }
                 }
             }

@@ -108,7 +108,7 @@ namespace GnollHackClient.Controls
 
             double imgsideheight = imgsidewidth;
             double fontsize = 8.5 * imgsidewidth / 50.0;
-            double fontsize_larger = 9.5 * imgsidewidth / 50.0;
+            double fontsize_larger = 9.0 * imgsidewidth / 50.0;
             double gridsidewidth = imgsidewidth;
             double gridsideheight = imgsideheight + fontsize + 2;
             double gridsideheight_larger = imgsideheight + fontsize_larger + 2;

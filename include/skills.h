@@ -21,26 +21,8 @@ enum p_skills {
  * Positive values denote hand-to-hand weapons or launchers.
  * Negative values denote ammunition or missiles.
  * Update weapon.c if you amend any skills.
- * Also used for oc_subtyp.
+ * Also used for oc_skill.
  */
- /*
-    P_KNIFE              =  2,
-    P_SHORT_SWORD        =  5,
-    P_BROAD_SWORD        =  6,
-    P_LONG_SWORD         =  7,
-    P_TWO_HANDED_SWORD   =  8,
-    P_SCIMITAR           =  9,
-    P_SABER              = 10,
-    P_MACE               = 12,
-    P_MORNING_STAR       = 13,
-    P_HAMMER             = 15,
-    P_TRIDENT            = 19,
-    P_LANCE              = 20,
-    P_DART               = 24,
-    P_SHURIKEN             = 25,
-    P_BOOMERANG             = 26,
-    P_UNICORN_HORN       = 28,
-    */
 
     P_DAGGER             =  1,
     P_AXE                =  2,

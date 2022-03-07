@@ -412,62 +412,62 @@ struct objclass {
 
     /* 3 free bits */
 
-    schar oc_subtyp;         /* armors: armor category, weapons: weapon category, miscellaneous magic items: subclass, etc.*/
-    schar oc_skill;             /* Skills of weapons, spellbooks, tools, gems */
+    schar oc_subtyp;             /* armors: armor category, weapons: weapon category, miscellaneous magic items: subclass, etc.*/
+    schar oc_skill;              /* Skills of weapons, spellbooks, tools, gems */
     uchar oc_oprop, oc_oprop2, oc_oprop3; /* properties (invis, &c.) conveyed */
     unsigned long oc_pflags;     /* Power and property flags */
 
 #define P1_NONE                                                    0x00000000UL
-#define P1_POWER_1_APPLIES_TO_ALL_CHARACTERS                    0x00000001UL  
+#define P1_POWER_1_APPLIES_TO_ALL_CHARACTERS                       0x00000001UL  
 #define P1_POWER_1_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY        0x00000002UL  
 #define P1_POWER_1_APPLIES_WHEN_CARRIED                            0x00000004UL 
-#define P1_POWER_2_APPLIES_TO_ALL_CHARACTERS                    0x00000008UL  
+#define P1_POWER_2_APPLIES_TO_ALL_CHARACTERS                       0x00000008UL  
 #define P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY        0x00000010UL  
 #define P1_POWER_2_APPLIES_WHEN_CARRIED                            0x00000020UL  
-#define P1_POWER_3_APPLIES_TO_ALL_CHARACTERS                    0x00000040UL  
+#define P1_POWER_3_APPLIES_TO_ALL_CHARACTERS                       0x00000040UL  
 #define P1_POWER_3_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY        0x00000080UL  
 #define P1_POWER_3_APPLIES_WHEN_CARRIED                            0x00000100UL  
-#define P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS                    0x00000200UL  
-#define P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY    0x00000400UL  
-#define P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS        0x00000800UL  
-#define P1_HP_BONUS_APPLIES_WHEN_CARRIED                        0x00001000UL  
+#define P1_HP_BONUS_APPLIES_TO_ALL_CHARACTERS                      0x00000200UL  
+#define P1_HP_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY       0x00000400UL  
+#define P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS           0x00000800UL  
+#define P1_HP_BONUS_APPLIES_WHEN_CARRIED                           0x00001000UL  
 #define P1_MANA_BONUS_APPLIES_TO_ALL_CHARACTERS                    0x00002000UL  
-#define P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY    0x00004000UL  
-#define P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS        0x00008000UL  
-#define P1_MANA_BONUS_APPLIES_WHEN_CARRIED                        0x00010000UL  
-#define P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS            0x00020000UL 
-#define P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY    0x00040000UL  
+#define P1_MANA_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY     0x00004000UL  
+#define P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS         0x00008000UL  
+#define P1_MANA_BONUS_APPLIES_WHEN_CARRIED                         0x00010000UL  
+#define P1_ATTRIBUTE_BONUS_APPLIES_TO_ALL_CHARACTERS               0x00020000UL 
+#define P1_ATTRIBUTE_BONUS_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY 0x00040000UL  
 #define P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS    0x00080000UL  
 #define P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED                    0x00100000UL  
-#define P1_LUCK_APPLIES_TO_ALL_CHARACTERS                        0x00200000UL 
-#define P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY        0x00400000UL  
-#define P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS            0x00800000UL  
-#define P1_LUCK_APPLIES_WHEN_CARRIED                            0x01000000UL  
+#define P1_LUCK_APPLIES_TO_ALL_CHARACTERS                          0x00200000UL 
+#define P1_LUCK_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY           0x00400000UL  
+#define P1_LUCK_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS               0x00800000UL  
+#define P1_LUCK_APPLIES_WHEN_CARRIED                               0x01000000UL  
 /* free bit */
 /* free bit */
-#define P1_CURSED_ITEM_YIELDS_NEGATIVE                            0x08000000UL  
+#define P1_CURSED_ITEM_YIELDS_NEGATIVE                             0x08000000UL  
 #define P1_CONFERS_LUCK                                            0x10000000UL            /* Adds one positive luck bonus; these need to be flags instead of props because they stack */
-#define P1_CONFERS_UNLUCK                                        0x20000000UL            /* Adds one negative luck bonus (the same as cursed luckstone) */
-#define P1_MANA_PERCENTAGE_BONUS                                0x40000000UL
-#define P1_HP_PERCENTAGE_BONUS                                    0x80000000UL
+#define P1_CONFERS_UNLUCK                                          0x20000000UL            /* Adds one negative luck bonus (the same as cursed luckstone) */
+#define P1_MANA_PERCENTAGE_BONUS                                   0x40000000UL
+#define P1_HP_PERCENTAGE_BONUS                                     0x80000000UL
 
 
     char  oc_class; /* object class (enum obj_class_types) */
     schar oc_delay; /* delay when using such an object */
     uchar oc_color; /* color of the object */
 
-    short oc_prob;            /* probability, used in mkobj() */
-    unsigned int oc_weight; /* encumbrance (1 oz = 1/16 lb.) previously (1 cn = 0.1 lb.) */
+    short oc_prob;             /* probability, used in mkobj() */
+    unsigned int oc_weight;    /* encumbrance (1 oz = 1/16 lb.) previously (1 cn = 0.1 lb.) */
     unsigned int oc_nutrition; /* food value */
 
-    long oc_cost;            /* base cost in shops */
+    long oc_cost;              /* base cost in shops */
     
     /* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */
     short oc_damagetype;                        /* Type of damage caused by the (magic) weapon, the same as for monster attacks */
     short oc_wsdice, oc_wsdam, oc_wsdmgplus;    /* small monster damage, also used for spell damage */
     short oc_wldice, oc_wldam, oc_wldmgplus;    /* large monster damage, also used for duration for spells */
-    short oc_extra_damagetype;                    /* Type of extra damage caused by the (magic) weapon */
+    short oc_extra_damagetype;                  /* Type of extra damage caused by the (magic) weapon */
     short oc_wedice, oc_wedam, oc_wedmgplus;    /* extra damage used as a special effect influenced by target permissions mask */
     unsigned long oc_aflags, oc_aflags2;        /* attack related flags, e.g. whether the attack is vorpal */
 
@@ -495,14 +495,14 @@ struct objclass {
 #define A1_LIFE_LEECH_DISRESPECTS_TARGETS                            0x00002000UL  
 #define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS                         0x00004000UL  
 
-#define A1_SHARPNESS                                                 0x00008000UL    /* 3/20 chance of the monster losing 15% of maximum hit points */
-#define A1_VORPAL                                                    0x00010000UL    /* 1/20 chance of the monster being beheaded */
+#define A1_SHARPNESS                                                 0x00008000UL   /* 3/20 chance of the monster losing 15% of maximum hit points */
+#define A1_VORPAL                                                    0x00010000UL   /* 1/20 chance of the monster being beheaded */
 #define A1_BISECT (A1_SHARPNESS | A1_VORPAL)                                        /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
 #define A1_SVB_MASK (A1_SHARPNESS | A1_VORPAL)
 #define A1_VORPAL_LIKE_DISRESPECTS_TARGETS                           0x00020000UL
 #define A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS                        0x00040000UL
 
-#define A1_LEVEL_DRAIN                                               0x00080000UL  /* drains a level from monsters */
+#define A1_LEVEL_DRAIN                                               0x00080000UL   /* drains a level from monsters */
 #define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS                           0x00100000UL  
 #define A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS                        0x00200000UL  
 /* free bit */
@@ -510,10 +510,10 @@ struct objclass {
 
 /* General */
 #define A1_MAGIC_RESISTANCE_PROTECTS                                 0x01000000UL
-#define A1_BYPASSES_MC                                               0x02000000UL    /* No MC check */  
+#define A1_BYPASSES_MC                                               0x02000000UL  /* No MC check */  
 #define A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS                          0x04000000UL  
 #define A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS                       0x08000000UL  
-#define A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA                          0x10000000UL /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
+#define A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA                          0x10000000UL  /* abilities such as wounding and life leech are based on full caused damage, not just extra damage */
 #define A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS                  0x20000000UL
 #define A1_ITEM_VANISHES_ON_HIT                                      0x40000000UL
 #define A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET                    0x80000000UL
