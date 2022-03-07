@@ -1372,7 +1372,7 @@ boolean *valsetlist;
     idxmax = curr->idxmax;
     idxcurr = curr->idxcurr;
     if (idxmax >= 0)
-        chgmax = compare_blstats(curr, &blstats[idx][idxmax]);
+        chgmax = update_all ? 0 : compare_blstats(curr, &blstats[idx][idxmax]);
 
     chg = update_all ? 0 : compare_blstats(prev, curr);
 
