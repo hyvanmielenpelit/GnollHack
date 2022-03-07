@@ -4635,6 +4635,7 @@ namespace GnollHackClient.Pages.Game
                                     curx += markpadding;
                                 }
                             }
+                            textPaint.Color = SKColors.White;
                         }
 
                         /* Dungeon level */
