@@ -6673,14 +6673,12 @@ register char *cmd;
             break;
         (void) ddoinv(); /* a convenience borrowed from the PC */
         context.move = FALSE;
-        multi = 0;
         return;
     case NHKF_DOSEEWORN:
         if (!Cmd.num_pad)
             break;
         (void)doseeworn();
         context.move = FALSE;
-        multi = 0;
         return;
     case NHKF_CLICKLOOK:
         if (iflags.clicklook) {
