@@ -2080,7 +2080,7 @@ doskill_core()
             end_menu(win, buf);
         }
 
-        n = select_menu(win, to_advance ? PICK_ONE : PICK_NONE, &selected);
+        n = select_menu(win, PICK_ONE, &selected);
         destroy_nhwindow(win);
         if (n > 0)
         {
