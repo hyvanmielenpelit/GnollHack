@@ -1431,6 +1431,26 @@ namespace GnollHackClient.Pages.Game
 
         private void ShowWindowCanvas(GHWindow window, List<GHPutStrItem> strs)
         {
+            /* Cancel delayed text hide */
+            lock(_delayedTextHideLock)
+            {
+                _delayedTextHideCancelled = true;
+            }
+
+            /* Cancel delayed menu hide */
+            bool dohidemenu = false;
+            lock(_menuHideCancelledLock)
+            {
+                if (_menuHideOn)
+                {
+                    _menuHideCancelled = true;
+                    dohidemenu = true;
+                }
+            }
+            if(dohidemenu)
+            {
+                MenuGrid.IsVisible = false;
+            }
 
             lock (RefreshScreenLock)
             {
@@ -1790,9 +1810,25 @@ namespace GnollHackClient.Pages.Game
 
         private void ShowMenuCanvas(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
+            /* Cancel delayed menu hide */
             lock (_menuHideCancelledLock)
             {
                 _menuHideCancelled = true;
+            }
+
+            /* Cancel delayed text hide */
+            bool dohidetext = false;
+            lock(_delayedTextHideLock)
+            {
+                if(_delayedTextHideOn)
+                {
+                    _delayedTextHideCancelled = true;
+                    dohidetext = true;
+                }
+            }
+            if(dohidetext)
+            {
+                TextGrid.IsVisible = false;
             }
 
             lock (RefreshScreenLock)
@@ -8311,6 +8347,7 @@ namespace GnollHackClient.Pages.Game
 
         private object _menuHideCancelledLock = new object();
         private bool _menuHideCancelled = false;
+        private bool _menuHideOn = false;
         private void MenuOKButton_Clicked(object sender, EventArgs e)
         {
             lock (_menuDrawOnlyLock)
@@ -8320,7 +8357,6 @@ namespace GnollHackClient.Pages.Game
             }
 
             _menuScrollOffset = 0;
-            _menuHideCancelled = false;
 
             ConcurrentQueue<GHResponse> queue;
             List<GHMenuItem> resultlist = new List<GHMenuItem>();
@@ -8379,12 +8415,21 @@ namespace GnollHackClient.Pages.Game
 
         private void DelayedMenuHide()
         {
-            Device.StartTimer(TimeSpan.FromSeconds(3f / 40), () =>
+            lock(_menuHideCancelledLock)
+            {
+                _menuHideCancelled = false;
+                _menuHideOn = true;
+            }
+            Device.StartTimer(TimeSpan.FromSeconds(3f / GHConstants.PollingFrequency), () =>
             {
                 lock (_menuHideCancelledLock)
                 {
+                    _menuHideOn = false;
                     if (_menuHideCancelled)
+                    {
+                        _menuHideCancelled = false;
                         return false;
+                    }
                 }
 
                 MenuGrid.IsVisible = false;
@@ -8400,6 +8445,38 @@ namespace GnollHackClient.Pages.Game
                 }
                 StartMainCanvasAnimation();
 
+                return false;
+            });
+        }
+
+        private object _delayedTextHideLock = new object();
+        private bool _delayedTextHideOn = false;
+        private bool _delayedTextHideCancelled = false;
+        private void DelayedTextHide()
+        {
+            lock (_delayedTextHideLock)
+            {
+                _delayedTextHideOn = true;
+                _delayedTextHideCancelled = false;
+            }
+            Device.StartTimer(TimeSpan.FromSeconds(3f / GHConstants.PollingFrequency), () =>
+            {
+                lock(_delayedTextHideLock)
+                {
+                    _delayedTextHideOn = false;
+                    if (_delayedTextHideCancelled)
+                    {
+                        _delayedTextHideCancelled = false;
+                        return false;
+                    }
+                }
+                TextGrid.IsVisible = false;
+                MainGrid.IsVisible = true;
+                lock (RefreshScreenLock)
+                {
+                    RefreshScreen = true;
+                }
+                StartMainCanvasAnimation();
                 return false;
             });
         }
@@ -8738,13 +8815,7 @@ namespace GnollHackClient.Pages.Game
                                 {
                                     /* Normal click -- Hide the canvas */
                                     GenericButton_Clicked(sender, e, 27);
-                                    TextGrid.IsVisible = false;
-                                    MainGrid.IsVisible = true;
-                                    lock (RefreshScreenLock)
-                                    {
-                                        RefreshScreen = true;
-                                    }
-                                    StartMainCanvasAnimation();
+                                    DelayedTextHide();
                                 }
                                 if (TextTouchDictionary.ContainsKey(e.Id))
                                     TextTouchDictionary.Remove(e.Id);
