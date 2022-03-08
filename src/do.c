@@ -3757,7 +3757,7 @@ register struct obj* obj;
                 else if (applicable_launcher)
                 {
                     roll_to_hit += weapon_to_hit_value(applicable_launcher, &youmonst, &youmonst, 2);
-                    roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE, FALSE);
+                    roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE, FALSE, 0);
 
                     if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI))
                         && (!Upolyd || your_race(youmonst.data))
@@ -3781,7 +3781,7 @@ register struct obj* obj;
                 if (throwing_weapon(obj)) /* meant to be thrown */
                     roll_to_hit += 2;
 
-                roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE);
+                roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, 0);
             }
         }
         else
@@ -3829,7 +3829,7 @@ register struct obj* obj;
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
-        wep_avg_dmg += (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE);
+        wep_avg_dmg += (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, 0);
         if (wep_avg_dmg < 0)
             wep_avg_dmg = 0;
         wep_avg_dmg *= average_multi_shot_times;

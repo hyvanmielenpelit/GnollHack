@@ -1402,13 +1402,14 @@ STATIC_OVL
 void
 add_school_specific_spellbooks()
 {
-    for (int skill = P_FIRST_SPELL; skill <= P_LAST_SPELL; skill++)
+    int skill;
+    for (skill = P_FIRST_SPELL; skill <= P_LAST_SPELL; skill++)
     {
         if (P_SKILL_LEVEL(skill) >= P_BASIC)
         {
             int cnt = max(0, P_SKILL_LEVEL(skill) - 1);
-
-            for (int i = 0; i < cnt; i++)
+            int i;
+            for (i = 0; i < cnt; i++)
             {
                 struct obj* obj = mkobj(SPBOOK_CLASS, FALSE, FALSE);
                 int otyp = obj->otyp;
@@ -1643,7 +1644,8 @@ register struct trobj *trop;
                the 'if (otyp != UNDEF_TYP) { }' block above, but then
                substitutions didn't occur for randomly generated items
                (particularly food) which have racial substitutes */
-            for (int i = 0; inv_subs[i].race_pm != NON_PM; ++i)
+            int i;
+            for (i = 0; inv_subs[i].race_pm != NON_PM; ++i)
                 if (inv_subs[i].race_pm == urace.monsternum
                     && otyp == inv_subs[i].item_otyp)
                 {
@@ -1863,7 +1865,8 @@ register struct trobj *trop;
                 (void)mk_obj_in_container_known(obj, GINSENG_ROOT);
 
                 int n = rnd(3); //1...3
-                for (int i = 0; i < n; i++)
+                int i;
+                for (i = 0; i < n; i++)
                 {
                     struct obj* otmp = mkobj(REAGENT_CLASS, FALSE, TRUE);
                     otmp->bknown = 1;
