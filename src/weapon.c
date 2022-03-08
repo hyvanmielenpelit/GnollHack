@@ -16,9 +16,11 @@ STATIC_DCL void FDECL(give_may_advance_msg, (int));
 STATIC_DCL boolean FDECL(could_advance, (int));
 STATIC_DCL boolean FDECL(peaked_skill, (int));
 STATIC_DCL int FDECL(slots_required, (int));
+STATIC_DCL int FDECL(slots_required_core, (int, int));
 STATIC_DCL void FDECL(skill_advance, (int));
 STATIC_DCL void FDECL(open_skill_cmd_menu, (int, BOOLEAN_P));
 STATIC_DCL void FDECL(doskilldescription, (int));
+STATIC_DCL const char* FDECL(get_skill_range_name, (int, BOOLEAN_P));
 
 /* Categories whose names don't come from OBJ_NAME(objects[type])
  */
@@ -1793,12 +1795,18 @@ int skill_level;
     return percentage;
 }
 
-/* return the # of slots required to advance the skill */
 STATIC_OVL int
 slots_required(skill)
 int skill;
 {
-    int tmp = P_SKILL_LEVEL(skill);
+    return slots_required_core(skill, 0);
+}
+    /* return the # of slots required to advance the skill */
+STATIC_OVL int
+slots_required_core(skill, lvl)
+int skill, lvl;
+{
+    int tmp = lvl > 0 ? lvl : P_SKILL_LEVEL(skill);
 
     /* The more difficult the training, the more slots it takes.
      *  unskilled -> basic      1
@@ -1912,11 +1920,12 @@ int skill;
 static const struct skill_range {
     short first, last;
     const char *name;
+    const char* singular;
 } skill_ranges[] = {
-    { P_FIRST_H_TO_H, P_LAST_H_TO_H, "Combat Skills" },
-    { P_FIRST_WEAPON, P_LAST_WEAPON, "Weapon Skills" },
-    { P_FIRST_SPELL, P_LAST_SPELL, "Spell Casting Skills" },
-    { P_FIRST_NONCOMBAT, P_LAST_NONCOMBAT, "Non-Combat Skills" },
+    { P_FIRST_H_TO_H, P_LAST_H_TO_H, "Combat Skills", "Combat Skill"},
+    { P_FIRST_WEAPON, P_LAST_WEAPON, "Weapon Skills", "Weapon Skill" },
+    { P_FIRST_SPELL, P_LAST_SPELL, "Spell Casting Skills", "Spell Casting Skill" },
+    { P_FIRST_NONCOMBAT, P_LAST_NONCOMBAT, "Non-Combat Skills", "Non-Combat Skill" },
 };
 
 /* 'S' command  */
@@ -2204,7 +2213,6 @@ int skill_id;
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SKILL_DESCRIPTION_SCREEN, glyph, info);
 
     char buf[BUFSZ];
-    char subbuf[BUFSZ];
     char skillnamebufC[BUFSZ];
     char skilllevelbuf[BUFSZ];
     char skillmaxbuf[BUFSZ];
@@ -2212,15 +2220,14 @@ int skill_id;
     const char* emptytxt = "";
     int skill_slots_needed = slots_required(skill_id);
 
-    strcpy(skillnamebufC, P_NAME(skill_id));
-    *skillnamebufC = highc(*skillnamebufC);
+    strcpy_capitalized_for_title(skillnamebufC, P_NAME(skill_id));
     (void)skill_level_name(skill_id, skilllevelbuf, FALSE);
     (void)skill_level_name(skill_id, skillmaxbuf, TRUE);
     (void)skill_level_name(skill_id, skillnextbuf, 2);
-    Sprintf(subbuf, "%d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
 
     putstr(win, ATR_TITLE, skillnamebufC);
-    putstr(win, ATR_SUBTITLE, subbuf);
+    const char* skill_class_txt = get_skill_range_name(skill_id, TRUE);
+    putstr(win, ATR_SUBTITLE, skill_class_txt);
     putstr(win, 0, emptytxt);
     Sprintf(buf, "Current level:           %s", skilllevelbuf);
     putstr(win, ATR_INDENT_AT_COLON, buf);
@@ -2232,6 +2239,8 @@ int skill_id;
         putstr(win, ATR_INDENT_AT_COLON, buf);
         Sprintf(buf, "Skill slots to advance:  %d", skill_slots_needed);
         putstr(win, ATR_INDENT_AT_COLON, buf);
+        Sprintf(buf, "Skill slots available:   %d", u.weapon_slots);
+        putstr(win, ATR_INDENT_AT_COLON, buf);
         Sprintf(buf, "Next level:              %s", skillnextbuf);
         putstr(win, ATR_INDENT_AT_COLON, buf);
     }
@@ -2239,43 +2248,48 @@ int skill_id;
     putstr(win, ATR_INDENT_AT_COLON, buf);
     if (can_advance(skill_id, FALSE))
     {
-        Sprintf(buf, "Notable:                 %s", "Can be advanced");
+        Sprintf(buf, "Advanceable:             %s", "Yes");
         putstr(win, ATR_INDENT_AT_COLON, buf);
     }
     else if (could_advance(skill_id))
     {
-        Sprintf(buf, "Notable:                 %s", "More slots needed for advance");
+        Sprintf(buf, "Advanceable:             %s", "Slots needed");
         putstr(win, ATR_INDENT_AT_COLON, buf);
     }
     else if (peaked_skill(skill_id))
     {
-        Sprintf(buf, "Notable:                 %s", "Peaked");
+        Sprintf(buf, "Advanceable:             %s", "Peaked");
         putstr(win, ATR_INDENT_AT_COLON, buf);
     }
-
+    else
+    {
+        Sprintf(buf, "Advanceable:             %s", "No");
+        putstr(win, ATR_INDENT_AT_COLON, buf);
+    }
 
     if (P_MAX_SKILL_LEVEL(skill_id) > P_ISRESTRICTED)
     {
         putstr(win, 0, emptytxt);
         if (skill_id == P_BARE_HANDED_COMBAT && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
         {
-            strcpy(buf, "Bonuses (from Martial Arts):");
+            strcpy(buf, "Levels (bonuses from Martial Arts):");
         }
         else
         {
-            strcpy(buf, "Bonuses:");
+            strcpy(buf, "Levels:");
         }
         putstr(win, ATR_HEADING, buf);
 
         int lvl;
         int lvlcnt = 0;
-        for (lvl = P_SKILL_LEVEL(skill_id); lvl < P_MAX_SKILL_LEVEL(skill_id); lvl++)
+        for (lvl = P_SKILL_LEVEL(skill_id); lvl <= P_MAX_SKILL_LEVEL(skill_id); lvl++)
         {
             char hbuf[BUFSZ] = "";
             char dbuf[BUFSZ] = "";
             char mbuf[BUFSZ] = "";
             char cbuf[BUFSZ] = "";
             char succbuf[BUFSZ] = "";
+            char lvlsuccbuf[BUFSZ] = "";
             char discbuf[BUFSZ] = "";
             char arrowbuf[BUFSZ] = "";
             char magicbuf[BUFSZ] = "";
@@ -2285,6 +2299,22 @@ int skill_id;
             const char* lvlname = skill_level_name_core(lvl);
             Sprintf(buf, " %2d - %s", lvlcnt, lvlname);
             putstr_ex(win, ATR_SUBHEADING, buf, 0 , color);
+
+            if (lvl > P_SKILL_LEVEL(skill_id))
+            {
+                int slots = slots_required_core(skill_id, lvl - 1);
+                Sprintf(buf, "    * %d skill slot%s to advance", slots, plur(slots));
+                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+
+                Sprintf(buf, "    * %d training to advance", practice_needed_to_advance(skill_id, lvl - 1));
+                putstr(win, ATR_INDENT_AT_ASTR, buf);
+
+                if (urole.skill_advance_levels[skill_id][lvl] > 0)
+                {
+                    Sprintf(buf, "    * Always advanceable at level %d", urole.skill_advance_levels[skill_id][lvl]);
+                    putstr(win, ATR_INDENT_AT_ASTR, buf);
+                }
+            }
 
             if (skill_id == P_WAND)
             {
@@ -2335,10 +2365,11 @@ int skill_id;
             else if (skill_id >= P_FIRST_SPELL && skill_id <= P_LAST_SPELL)
             {
                 int successbonus = spell_skill_success_bonus(lvl);
+                int levelsuccessbonus = (lvl + 1) * u.ulevel;
                 int costdiscount = (int)((spell_skill_mana_cost_multiplier(lvl) - 1.0) * 100.0);
                 Sprintf(succbuf, "%s%d%%", successbonus >= 0 ? "+" : "", successbonus);
+                Sprintf(lvlsuccbuf, "%s%d%%", levelsuccessbonus >= 0 ? "+" : "", levelsuccessbonus);
                 Sprintf(discbuf, "%s%d%%", costdiscount >= 0 ? "+" : "", costdiscount);
-
             }
             else if (skill_id == P_DISARM_TRAP)
             {
@@ -2373,6 +2404,11 @@ int skill_id;
                 Sprintf(buf, "    * Spell success bonus %s", succbuf);
                 putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
             }
+            if (strcmp(lvlsuccbuf, ""))
+            {
+                Sprintf(buf, "    * Spell success from level %s", lvlsuccbuf);
+                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+            }
             if (strcmp(discbuf, ""))
             {
                 Sprintf(buf, "    * Spell cost discount %s", discbuf);
@@ -2395,6 +2431,23 @@ int skill_id;
     win = WIN_ERR;
 
 }
+
+STATIC_OVL const char*
+get_skill_range_name(skill_id, singular)
+int skill_id;
+boolean singular;
+{
+    int i;
+    for (i = 0; i < SIZE(skill_ranges); i++)
+    {
+        if (skill_id >= skill_ranges[i].first && skill_id <= skill_ranges[i].last)
+        {
+            return singular ? skill_ranges[i].singular : skill_ranges[i].name;
+        }
+    }
+    return singular ? "General Skill" : "General Skills";
+}
+
 
 /*
  * The `#enhance' extended command.  What we _really_ would like is
