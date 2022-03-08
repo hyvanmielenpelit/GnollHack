@@ -3725,7 +3725,7 @@ E int FDECL(dexterity_ranged_tohit_bonus, (int));
 E double FDECL(constitution_hp_bonus, (int));
 E void FDECL(wet_a_towel, (struct obj *, int, BOOLEAN_P));
 E void FDECL(dry_a_towel, (struct obj *, int, BOOLEAN_P));
-E char *FDECL(skill_level_name, (int, char *, BOOLEAN_P));
+E char *FDECL(skill_level_name, (int, char *, UCHAR_P));
 E const char *FDECL(skill_name, (int, BOOLEAN_P));
 E boolean FDECL(can_advance, (int, BOOLEAN_P));
 E void NDECL(update_can_advance_any_skill);

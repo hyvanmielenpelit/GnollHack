@@ -210,6 +210,9 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHAT:
                     break;
@@ -271,6 +274,9 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHAT:
                     break;
@@ -325,6 +331,9 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHAT:
                     break;
@@ -379,6 +388,9 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHAT:
                     break;
@@ -433,6 +445,9 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHAT:
                     break;

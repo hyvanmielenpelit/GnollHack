@@ -118,6 +118,11 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
                         res = 1;
                         break;
+                    case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
+                    case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
+                    case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
+                        res = 1;
+                        break;
                     case ghmenu_styles.GHMENU_STYLE_CHAT:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
@@ -227,6 +232,9 @@ namespace GnollHackClient
                         case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                        case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
+                        case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
+                        case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
                             res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHAT:
@@ -288,6 +296,9 @@ namespace GnollHackClient
                         case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                        case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
+                        case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
+                        case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHAT:
                             break;
@@ -363,6 +374,9 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                    case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
+                    case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
+                    case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHAT:
                         break;

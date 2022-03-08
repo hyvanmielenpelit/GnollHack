@@ -18,6 +18,7 @@ STATIC_DCL boolean FDECL(peaked_skill, (int));
 STATIC_DCL int FDECL(slots_required, (int));
 STATIC_DCL void FDECL(skill_advance, (int));
 STATIC_DCL void FDECL(open_skill_cmd_menu, (int, BOOLEAN_P));
+STATIC_DCL void FDECL(doskilldescription, (int));
 
 /* Categories whose names don't come from OBJ_NAME(objects[type])
  */
@@ -502,7 +503,8 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
 
             double mythic_multiplier = get_mythic_dmg_multiplier(otmp, mon, mattacker);
             int tmp2 = 0;
-            for (int exp_round = 0; exp_round < exceptionality_rounds; exp_round++)
+            int exp_round;
+            for (exp_round = 0; exp_round < exceptionality_rounds; exp_round++)
             {
                 if (bigmonst(ptr)) 
                 {
@@ -972,9 +974,10 @@ register struct monst *mtmp;
     /* NO_WEAPON_WANTED means we already tried to wield and failed */
     mweponly = (mwelded(mwep, mtmp) && mtmp->weapon_strategy == NO_WEAPON_WANTED);
     if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 13
-        && couldsee(mtmp->mx, mtmp->my)) 
+        && couldsee(mtmp->mx, mtmp->my))
     {
-        for (int exc = MAX_EXCEPTIONALITY_TYPES; exc >= 0; exc--)
+        int exc;
+        for (exc = MAX_EXCEPTIONALITY_TYPES; exc >= 0; exc--)
         {
             for (i = 0; i < SIZE(pwep); i++) 
             {
@@ -1003,7 +1006,8 @@ register struct monst *mtmp;
      * other than these two specific cases, always select the
      * most potent ranged weapon to hand.
      */
-    for (int exc = MAX_EXCEPTIONALITY_TYPES; exc >= 0; exc--)
+    int exc;
+    for (exc = MAX_EXCEPTIONALITY_TYPES; exc >= 0; exc--)
     {
         for (i = 0; i < SIZE(rwep); i++)
         {
@@ -1148,7 +1152,8 @@ register struct monst *mtmp;
     /* only strong monsters can wield big (esp. long) weapons */
     /* big weapon is basically the same as bimanual */
     /* all monsters can wield the remaining weapons */
-    for (int exc = MAX_EXCEPTIONALITY_TYPES - 1; exc >= 0; exc--)
+    int exc;
+    for (exc = MAX_EXCEPTIONALITY_TYPES - 1; exc >= 0; exc--)
     {
         for (i = 0; i < SIZE(hwep); i++) {
             if (hwep[i] == CORPSE && !(mtmp->worn_item_flags & W_ARMG)
@@ -1194,7 +1199,8 @@ int handindex;
             && !(objects[otmp->otyp].oc_material == MAT_SILVER && mon_hates_silver(mtmp)) && otmp->otyp != CORPSE)
         {
             //Suitable weapons are in hwep array
-            for (int i = 0; i < SIZE(hwep); i++) {
+            int i;
+            for (i = 0; i < SIZE(hwep); i++) {
                 if (otmp->otyp == hwep[i])
                 {
                     //Suitable weapon found
@@ -1690,14 +1696,15 @@ boolean verbose;
 
 /* copy the skill level name into the given buffer */
 char *
-skill_level_name(skill, buf, ismax)
+skill_level_name(skill, buf, style)
 int skill;
 char *buf;
-boolean ismax;
+uchar style; /* 0 = normal, 1 = max, 2 = next level */
 {
     const char *ptr;
+    int lvl = style == 1 ? P_MAX_SKILL_LEVEL(skill) : style == 2 ? min(P_MAX_SKILL_LEVEL(skill), P_SKILL_LEVEL(skill) + 1) : P_SKILL_LEVEL(skill);
 
-    switch (ismax ? P_MAX_SKILL_LEVEL(skill) : P_SKILL_LEVEL(skill)) {
+    switch (lvl) {
     case P_ISRESTRICTED:
     case P_UNSKILLED:
         ptr = "Unskilled";
@@ -1959,13 +1966,15 @@ doskill_core()
             {
                 const char* skillname1 = P_NAME(i);
                 boolean found = FALSE;
-                for (int j = 0; j < num_skills; j++)
+                int j;
+                for (j = 0; j < num_skills; j++)
                 {
                     const char* skillname2 = P_NAME(sorted_skills[j]);
                     if (strcmp(skillname1, skillname2) < 0)
                     {
                         num_skills++;
-                        for (int k = num_skills; k >= j; k--)
+                        int k;
+                        for (k = num_skills; k >= j; k--)
                         {
                             sorted_skills[k + 1] = sorted_skills[k];
                         }
@@ -1981,14 +1990,16 @@ doskill_core()
                 }
             }
 
-            for (int idx = 0; idx < num_skills; idx++)
+            int idx;
+            for (idx = 0; idx < num_skills; idx++)
             {
                 i = sorted_skills[idx];
                 any = zeroany;
                 if (idx == 0)
                 {
                     int skillcount = 0;
-                    for (int j = 0; j < num_skills; j++)
+                    int j;
+                    for (j = 0; j < num_skills; j++)
                     {
                         if (!P_RESTRICTED(sorted_skills[j]))
                             skillcount++;
@@ -2062,29 +2073,122 @@ doskill_core()
             open_skill_cmd_menu(n, speedy);
         }
 
-    } while (speedy && n > 0);
+    } while (/*speedy &&*/ n > 0);
 
 }
 
 STATIC_OVL void
-open_skill_cmd_menu(n, speedy)
-int n;
+open_skill_cmd_menu(skill_id, speedy)
+int skill_id;
 boolean speedy;
 {
-    int i;
-    skill_advance(n);
-    /* check for more skills able to advance, if so then .. */
-    for (n = i = 0; i < P_NUM_SKILLS; i++)
+    int cmd_idx;
+    menu_item* pick_list = (menu_item*)0;
+    winid win;
+    anything any;
+    boolean canadv = can_advance(skill_id, speedy);
+    char buf[BUFSZ];
+    char headerbuf[BUFSZ];
+    char subbuf[BUFSZ] = "";
+    char skillnamebuf[BUFSZ];
+    char skillnamebufC[BUFSZ];
+    char skilllevelbuf[BUFSZ];
+    char nextlevelbuf[BUFSZ];
+
+    strcpy(skillnamebuf, P_NAME(skill_id));
+    strcpy(skillnamebufC, P_NAME(skill_id));
+    *skillnamebufC = highc(*skillnamebufC);
+    (void)skill_level_name(skill_id, skilllevelbuf, FALSE);
+    (void)skill_level_name(skill_id, nextlevelbuf, 2);
+    int skill_slots_needed = slots_required(skill_id);
+    int actioncount = 0;
+
+    struct extended_create_window_info info = { 0 };
+    if(canadv)
+        info.create_flags |= WINDOW_CREATE_FLAGS_ACTIVE;
+
+    any = zeroany;
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SKILL_COMMAND_MENU, GLYPH_SKILL_TILE_OFF + skill_id, info);
+    start_menu_ex(win, GHMENU_STYLE_SKILL_COMMAND);
+
+    /* Skill description */
+    strcpy(buf, "View skill information");
+    any = zeroany;
+    any.a_int = 1;
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        buf, MENU_UNSELECTED);
+    actioncount++;
+
+    /* Advance skill */
+    if (canadv)
     {
-        if (can_advance(i, speedy))
-        {
-            if (!speedy)
-                You_feel("you could be more dangerous!");
-            n++;
-            break;
-        }
+        Sprintf(buf, "Advance to %s (%d skill slot%s from %s)", nextlevelbuf, skill_slots_needed, plur(skill_slots_needed), skilllevelbuf);
+        any = zeroany;
+        any.a_int = 2;
+        add_menu(win, NO_GLYPH, &any,
+            0, 0, ATR_NONE,
+            buf, MENU_UNSELECTED);
+        actioncount++;
     }
 
+    Sprintf(headerbuf, "What do you want to do with %s?", skillnamebuf);
+    Sprintf(subbuf, "%d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
+
+    end_menu_ex(win, headerbuf, subbuf);
+
+
+    if (actioncount <= 0)
+    {
+        You("can't take any actions with the %s.", skillnamebuf);
+        destroy_nhwindow(win);
+        return;
+    }
+    else if (actioncount == 1)
+    {
+        cmd_idx = 1;
+    }
+    else if (select_menu(win, PICK_ONE, &pick_list) > 0)
+    {
+        cmd_idx = pick_list->item.a_int;
+        free((genericptr_t)pick_list);
+    }
+    destroy_nhwindow(win);
+
+    if (cmd_idx < 1)
+        return;
+
+    switch (cmd_idx)
+    {
+    case 1:
+    {
+        doskilldescription(skill_id);
+        break;
+    }
+    case 2:
+    {
+        skill_advance(skill_id);
+        /* check for more skills able to advance, if so then .. */
+        int i;
+        for (i = 0; i < P_NUM_SKILLS; i++)
+        {
+            if (can_advance(i, speedy))
+            {
+                if (!speedy)
+                    You_feel("you could be more dangerous!");
+                break;
+            }
+        }
+        break;
+    }
+    }
+}
+
+STATIC_OVL void
+doskilldescription(skill_id)
+int skill_id;
+{
+    
 }
 
 /*
@@ -2260,13 +2364,15 @@ enhance_weapon_skill()
             {
                 const char* skillname1 = P_NAME(i);
                 boolean found = FALSE;
-                for (int j = 0; j < num_skills; j++)
+                int j;
+                for (j = 0; j < num_skills; j++)
                 {
                     const char* skillname2 = P_NAME(sorted_skills[j]);
                     if (strcmp(skillname1, skillname2) < 0)
                     {
                         num_skills++;
-                        for (int k = num_skills; k >= j; k--)
+                        int k;
+                        for (k = num_skills; k >= j; k--)
                         {
                             sorted_skills[k + 1] = sorted_skills[k];
                         }
@@ -2282,7 +2388,8 @@ enhance_weapon_skill()
                 }
             }
 
-            for (int idx = 0; idx < num_skills; idx++) //(i = skill_ranges[pass].first; i <= skill_ranges[pass].last; i++)
+            int idx;
+            for (idx = 0; idx < num_skills; idx++) //(i = skill_ranges[pass].first; i <= skill_ranges[pass].last; i++)
             {
                 i = sorted_skills[idx];
                 /* Print headings for skill types */
@@ -2290,7 +2397,8 @@ enhance_weapon_skill()
                 if (idx == 0) //skill_ranges[pass].first)
                 {
                     int skillcount = 0;
-                    for (int j = 0; j < num_skills; j++) //int j = skill_ranges[pass].first; j <= skill_ranges[pass].last; j++)
+                    int j;
+                    for (j = 0; j < num_skills; j++) //int j = skill_ranges[pass].first; j <= skill_ranges[pass].last; j++)
                     {
                         if (!P_RESTRICTED(sorted_skills[j]))
                             skillcount++;

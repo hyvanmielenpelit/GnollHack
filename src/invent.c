@@ -2034,7 +2034,8 @@ otyp_in_objchn(otyp, objchn)
 int otyp;
 struct obj* objchn;
 {
-    for (struct obj* otmp = objchn; otmp; otmp = otmp->nobj)
+    struct obj* otmp;
+    for (otmp = objchn; otmp; otmp = otmp->nobj)
         if (otmp->otyp == otyp)
             return otmp;
         else if (Is_container(otmp))
@@ -3990,7 +3991,8 @@ ddoinv()
     }
     else
     {
-        for (struct obj* invobj = invent; invobj; invobj = invobj->nobj)
+        struct obj* invobj;
+        for (invobj = invent; invobj; invobj = invobj->nobj)
             if (invobj->invlet == invlet)
             {
                 (void)itemdescription(invobj);
@@ -4017,7 +4019,8 @@ doseeworn()
     }
     else
     {
-        for (struct obj* invobj = invent; invobj; invobj = invobj->nobj)
+        struct obj* invobj;
+        for (invobj = invent; invobj; invobj = invobj->nobj)
             if (invobj->invlet == invlet)
             {
                 (void)itemdescription(invobj);
@@ -4034,7 +4037,8 @@ char invlet;
 long pickcnt;
 {
     struct obj* otmp = 0;
-    for (struct obj* otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
+    struct obj* otmp2;
+    for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
         if (otmp2->invlet == invlet)
             otmp = otmp2;
 
@@ -4139,7 +4143,8 @@ long pickcnt;
         if (!iflags.menu_tab_sep)
         {
             slen = (int)strlen(headings[j]);
-            for (int k = 0; k < max(longest_len_header, longest_len + 10) - slen; k++)
+            int k;
+            for (k = 0; k < max(longest_len_header, longest_len + 10) - slen; k++)
                 Sprintf(eos(catbuf), "%s", " ");
         }
 
@@ -4195,7 +4200,8 @@ long pickcnt;
             {
                 strcpy(tabbuf, "");
                 slen = (int)strlen(cmdbuf);
-                for (int k = 0; k < longest_len + 2 - slen; k++)
+                int k;
+                for (k = 0; k < longest_len + 2 - slen; k++)
                     Sprintf(eos(tabbuf), "%s", " ");
             }
 
@@ -4268,7 +4274,8 @@ dolastpickeditem()
     struct obj* selobj = 0;
     if (context.last_picked_obj_oid > 0)
     {
-        for (struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+        struct obj* otmp;
+        for (otmp = invent; otmp; otmp = otmp->nobj)
         {
             if (otmp->o_id == context.last_picked_obj_oid)
             {
@@ -5685,7 +5692,8 @@ boolean picked_some;
 
     /* we know there is something here */
     int total_count = 0;
-    for (struct obj* otmp_cnt = otmp; otmp_cnt; otmp_cnt = otmp_cnt->nexthere)
+    struct obj* otmp_cnt;
+    for (otmp_cnt = otmp; otmp_cnt; otmp_cnt = otmp_cnt->nexthere)
         total_count++;
 
     if (skip_objects)
@@ -6885,7 +6893,8 @@ const char* dfeature;
 struct obj* first_obj_here;
 {
     int total_count = 0;
-    for (struct obj* otmp_cnt = first_obj_here; otmp_cnt; otmp_cnt = otmp_cnt->nexthere)
+    struct obj* otmp_cnt;
+    for (otmp_cnt = first_obj_here; otmp_cnt; otmp_cnt = otmp_cnt->nexthere)
         total_count++;
 
     if (total_count == 0 && !dfeature)
