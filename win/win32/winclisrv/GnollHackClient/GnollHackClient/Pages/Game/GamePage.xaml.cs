@@ -9153,7 +9153,7 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[2, 2, 0] = new GHCommandButtonItem("Overview", "GnollHackClient.Assets.UI.overview.png", GHUtils.Ctrl((int)'o'));
             _moreBtnMatrix[2, 3, 0] = new GHCommandButtonItem("Discoveries", "GnollHackClient.Assets.UI.discoveries.png", (int)'\\');
 
-            _moreBtnMatrix[2, 0, 1] = new GHCommandButtonItem("Spells", "GnollHackClient.Assets.UI.spells.png", (int)'+');
+            _moreBtnMatrix[2, 0, 1] = new GHCommandButtonItem("View Spell", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Meta((int)'z'));
             _moreBtnMatrix[2, 1, 1] = new GHCommandButtonItem("Mix", "GnollHackClient.Assets.UI.mix.png", (int)'X');
             _moreBtnMatrix[2, 2, 1] = new GHCommandButtonItem("Tip", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Meta((int)'T'));
             _moreBtnMatrix[2, 3, 1] = new GHCommandButtonItem("Take Off Many", "GnollHackClient.Assets.UI.takeoffmany.png", GHUtils.Meta((int)'t'));
@@ -9186,6 +9186,7 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[3, 0, 1] = new GHCommandButtonItem("Loot", "GnollHackClient.Assets.UI.loot.png", (int)'l');
             _moreBtnMatrix[3, 1, 1] = new GHCommandButtonItem("Dip", "GnollHackClient.Assets.UI.dip.png", GHUtils.Meta((int)'d'));
             _moreBtnMatrix[3, 2, 1] = new GHCommandButtonItem("Offer", "GnollHackClient.Assets.UI.offer.png", GHUtils.Meta((int)'o'));
+            _moreBtnMatrix[3, 3, 1] = new GHCommandButtonItem("Spells", "GnollHackClient.Assets.UI.spells.png", (int)'+');
 
             _moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Help", "GnollHackClient.Assets.UI.help.png", (int)'?'); // "Menu", "GnollHackClient.Assets.Icons.missing_icon.png", -4);
             _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Extended", "GnollHackClient.Assets.UI.extended.png", (int)'#');
