@@ -7866,8 +7866,10 @@ namespace GnollHackClient.Pages.Game
                         idx++;
                         x = leftmenupadding;
                         mi.DrawBounds.Left = x;
+                        float mainfontsize = (float)mi.FontSize * scale;
+                        float suffixfontsize = 0.8f * mainfontsize;
                         textPaint.Typeface = App.GetTypefaceByName(mi.FontFamily);
-                        textPaint.TextSize = (float)mi.FontSize * scale;
+                        textPaint.TextSize = mainfontsize;
                         textPaint.TextAlign = SKTextAlign.Left;
 
                         /* Bottom Padding */
@@ -7905,11 +7907,11 @@ namespace GnollHackClient.Pages.Game
 
                         int maintextrows = 1;
                         string trimmed_maintext = mi.MainText.Trim();
-                        string[] split = trimmed_maintext.Split(' ');
+                        string[] maintextsplit = trimmed_maintext.Split(' ');
                         float maintextspace = canvaswidth - rightmenupadding - maintext_x_start;
                         float calc_x_start = maintext_x_start;
                         int rowidx = -1;
-                        foreach (string s in split)
+                        foreach (string s in maintextsplit)
                         {
                             bool nowrap = false;
                             if (string.IsNullOrWhiteSpace(s))
@@ -7931,13 +7933,43 @@ namespace GnollHackClient.Pages.Game
                             }
                         }
 
+                        textPaint.TextSize = suffixfontsize;
+                        int suffixtextrows = 1;
+                        string trimmed_suffixtext = mi.SuffixText.Trim();
+                        string[] suffixtextsplit = trimmed_suffixtext.Split(' ');
+                        float suffixtextspace = canvaswidth - rightmenupadding - maintext_x_start;
+                        calc_x_start = maintext_x_start;
+                        rowidx = -1;
+                        foreach (string s in suffixtextsplit)
+                        {
+                            bool nowrap = false;
+                            if (string.IsNullOrWhiteSpace(s))
+                                nowrap = true;
+                            rowidx++;
+                            string added_split_str = s + " ";
+                            float printlength = textPaint.MeasureText(added_split_str);
+                            float endposition = calc_x_start + printlength;
+                            bool pastend = endposition > canvaswidth - rightmenupadding;
+                            if (pastend && rowidx > 0 & !nowrap)
+                            {
+                                suffixtextrows++;
+                                calc_x_start = maintext_x_start;
+                                rowidx = -1;
+                            }
+                            else
+                            {
+                                calc_x_start = endposition;
+                            }
+                        }
+                        textPaint.TextSize = mainfontsize;
+
                         fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                        float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontSpacing) * ((float)maintextrows + (mi.IsSuffixTextVisible ? 0.8f : 0.0f))) / 2);
+                        float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontSpacing) * ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? 0.8f : 0.0f) + (mi.IsSuffix2TextVisible ? 0.8f : 0.0f))) / 2);
 
                         bool isselected = referenceCanvasView.SelectionHow == SelectionMode.Multiple ? mi.Selected :
                             referenceCanvasView.SelectionHow == SelectionMode.Single ? idx == referenceCanvasView.SelectionIndex : false;
 
-                        float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + (mi.IsSuffixTextVisible ? 0.8f : 0.0f) + (mi.IsSuffix2TextVisible ? 0.8f : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
+                        float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? 0.8f : 0.0f) + (mi.IsSuffix2TextVisible ? 0.8f : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
                         float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
 
                         /* Selection rectangle */
@@ -8007,7 +8039,7 @@ namespace GnollHackClient.Pages.Game
                         {
                             start_x += textPaint.MeasureText(indentstr);
                         }
-                        foreach (string split_str in split)
+                        foreach (string split_str in maintextsplit)
                         {
                             bool nowrap = false;
                             if (string.IsNullOrWhiteSpace(split_str))
@@ -8034,7 +8066,6 @@ namespace GnollHackClient.Pages.Game
                         x = start_x;
 
                         /* Suffix text */
-                        float suffixfontsize = 0.8f * textPaint.TextSize;
                         if (mi.IsSuffixTextVisible)
                         {
                             textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
@@ -8042,9 +8073,34 @@ namespace GnollHackClient.Pages.Game
                             fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                             y += fontspacingpadding;
                             y -= textPaint.FontMetrics.Ascent;
-                            if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                                canvas.DrawText(mi.SuffixText, x, y, textPaint);
+                            split_idx_on_row = 1;
+                            foreach (string split_str in suffixtextsplit)
+                            {
+                                bool nowrap = false;
+                                if (string.IsNullOrWhiteSpace(split_str))
+                                    nowrap = true;
+                                split_idx_on_row++;
+                                string added_split_str = split_str + " ";
+                                float printlength = textPaint.MeasureText(added_split_str);
+                                float endposition = x + printlength;
+                                bool pastend = endposition > canvaswidth - rightmenupadding;
+                                if (pastend && split_idx_on_row > 0 && !nowrap)
+                                {
+                                    x = start_x;
+                                    y += textPaint.FontSpacing;
+                                    split_idx_on_row = 0;
+                                    endposition = x + printlength;
+                                }
+
+                                if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                                    canvas.DrawText(added_split_str, x, y, textPaint);
+
+                                x = endposition;
+                            }
+                            //if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                            //    canvas.DrawText(mi.SuffixText, x, y, textPaint);
                             y += textPaint.FontMetrics.Descent + fontspacingpadding;
+                            x = start_x;
                         }
 
                         /* Suffix 2 text */
@@ -8061,6 +8117,7 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         y += generallinepadding;
+                        x = start_x;
 
                         y += bottomPadding;
                         mi.DrawBounds.Bottom = y;

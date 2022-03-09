@@ -27,6 +27,7 @@
     ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))  /* Obsolete! Do not use! */
 #define has_spell_tile(spell) ((objects[spellid(spell)].oc_flags5 & O5_HAS_SPELL_TILE) != 0)
 
+STATIC_DCL void FDECL(print_spell_level_text, (char*, int, UCHAR_P));
 STATIC_DCL int FDECL(spell_let_to_idx, (CHAR_P));
 STATIC_DCL boolean FDECL(cursed_book, (struct obj * bp));
 STATIC_DCL boolean FDECL(confused_book, (struct obj *));
@@ -603,6 +604,39 @@ check_added_to_your_bill_here:
 
 }
 
+STATIC_OVL
+void
+print_spell_level_text(buf, booktype, capitalize_style)
+char* buf;
+int booktype;
+uchar capitalize_style;
+{
+    char lvlbuf[BUFSZ];
+    if (objects[booktype].oc_spell_level == -1)
+        Sprintf(lvlbuf, "minor %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
+    else if (objects[booktype].oc_spell_level == 0)
+        Sprintf(lvlbuf, "major %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
+    else if (objects[booktype].oc_spell_level > 0)
+        Sprintf(lvlbuf, "level %ld %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
+    else
+        strcpy(lvlbuf, "spell of inappropriate level");
+
+    switch(capitalize_style)
+    {
+    case 1:
+        *lvlbuf = highc(*lvlbuf);
+        /*Fall through*/
+    default:
+    case 0:
+        strcpy(buf, lvlbuf);
+        break;
+    case 2:
+        strcpy_capitalized_for_title(buf, lvlbuf);
+        break;
+    }
+
+}
+
 int
 study_book(spellbook)
 register struct obj *spellbook;
@@ -628,12 +662,7 @@ register struct obj *spellbook;
         strcpy(Namebuf2, OBJ_NAME(objects[booktype]));
         *Namebuf2 = highc(*Namebuf2);
 
-        if(objects[booktype].oc_spell_level == -1)
-            Sprintf(lvlbuf, "minor %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
-        else if (objects[booktype].oc_spell_level == 0)
-            Sprintf(lvlbuf, "major %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
-        else if (objects[booktype].oc_spell_level > 0)
-            Sprintf(lvlbuf, "level %ld %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
+        print_spell_level_text(lvlbuf, booktype, FALSE);
 
         if (!confused && !hallucinated)
         {
@@ -1432,12 +1461,7 @@ int spell;
     putstr(datawin, ATR_TITLE, txt);
 
     /* Level & category*/
-    if (objects[booktype].oc_spell_level == -1)
-        Sprintf(buf, "Minor %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
-    else if (objects[booktype].oc_spell_level == 0)
-        Sprintf(buf, "Major %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
-    else if (objects[booktype].oc_spell_level > 0)
-        Sprintf(buf, "Level %ld %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
+    print_spell_level_text(buf, booktype, TRUE);
 
     txt = buf;
     putstr(datawin, ATR_SUBTITLE, txt);
@@ -3906,14 +3930,7 @@ int splaction;
         glyph = objnum_to_glyph(spellid(splnum));
     }
 
-    if (spellev(splnum) < -1)
-        strcpy(levelbuf, "Unknown level");
-    else if (spellev(splnum) == -1)
-        strcpy(levelbuf, "Minor cantrip");
-    else if (spellev(splnum) == 0)
-        strcpy(levelbuf, "Major cantrip");
-    else
-        Sprintf(levelbuf, "Level %d", spellev(splnum));
+    print_spell_level_text(levelbuf, spellid(splnum), TRUE);
 
     if (spellamount(splnum) >= 0)
         Sprintf(availablebuf, "%d", spellamount(splnum));
@@ -3931,7 +3948,7 @@ int splaction;
     {
         char extrabuf[BUFSZ] = "";
         if (spellcooldownleft(splnum) > 0)
-            Sprintf(extrabuf, ", cooldown for %d round%s", spellcooldownleft(splnum), plur(spellcooldownleft(splnum)));
+            Sprintf(extrabuf, ", cooling %d", spellcooldownleft(splnum));
         Sprintf(buf, "%s (%s%s) {Fail %d%% Mana %.1f Cool %d Casts %s}", fullname, levelbuf, extrabuf,
             100 - percent_success(splnum),
             displayed_manacost,

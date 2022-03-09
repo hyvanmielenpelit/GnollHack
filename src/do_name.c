@@ -3828,7 +3828,7 @@ struct obj* obj;
     case MANUAL_WANDS_101:
         putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can zap wands at monsters and items.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can zap wands even at yourself, as well as upwards and downwards.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can also apply wands to an item. It applies the wand's effect on to the item.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can also apply wands on an item. It applies the wand's effect on to the item.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "4. For example, you can use a wand of cancellation to remove a curse from an item.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "5. If you put a wand of cancellation or a Rod of Disjunction in a bag of holding, it will explode.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "6. It is advisable to put wands of cancellation into ordinary bags to avoid putting them accidently into a magic bag.");
