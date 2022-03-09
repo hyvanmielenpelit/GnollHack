@@ -7937,16 +7937,16 @@ namespace GnollHackClient.Pages.Game
                         bool isselected = referenceCanvasView.SelectionHow == SelectionMode.Multiple ? mi.Selected :
                             referenceCanvasView.SelectionHow == SelectionMode.Single ? idx == referenceCanvasView.SelectionIndex : false;
 
-                        float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + (mi.IsSuffixTextVisible ? 0.8f : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
+                        float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + (mi.IsSuffixTextVisible ? 0.8f : 0.0f) + (mi.IsSuffix2TextVisible ? 0.8f : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
                         float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
 
                         /* Selection rectangle */
+                        SKRect selectionrect = new SKRect(x, y, x + totalRowWidth, y + totalRowHeight);
                         if (isselected && !(y + totalRowHeight <= 0 || y >= canvasheight))
                         {
-                            SKRect fillrect = new SKRect(x, y, x + totalRowWidth, y + totalRowHeight);
                             textPaint.Color = _menuHighlightColor;
                             textPaint.Style = SKPaintStyle.Fill;
-                            canvas.DrawRect(fillrect, textPaint);
+                            canvas.DrawRect(selectionrect, textPaint);
                         }
 
                         float singlelinepadding = Math.Max(0.0f, ((float)(maintextrows - 1) * (textPaint.FontSpacing)) / 2);
@@ -7964,8 +7964,11 @@ namespace GnollHackClient.Pages.Game
                                 str = mi.FormattedAccelerator;
                             textPaint.Color = SKColors.Gray;
                             str = str.Trim();
+                            float identifier_y = 
+                                mi.IsSuffixTextVisible || mi.IsSuffix2TextVisible ? (selectionrect.Top + selectionrect.Bottom) / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent
+                                : y + singlelinepadding;
                             if (!(y + singlelinepadding + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + singlelinepadding + textPaint.FontMetrics.Ascent >= canvasheight))
-                                canvas.DrawText(str, x, y + singlelinepadding, textPaint);
+                                canvas.DrawText(str, x, identifier_y, textPaint);
                             x += accel_fixed_width;
                         }
 
@@ -8030,15 +8033,29 @@ namespace GnollHackClient.Pages.Game
                         x = start_x;
 
                         /* Suffix text */
+                        float suffixfontsize = 0.8f * textPaint.TextSize;
                         if (mi.IsSuffixTextVisible)
                         {
                             textPaint.Color = MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
-                            textPaint.TextSize = 0.8f * textPaint.TextSize;
+                            textPaint.TextSize = suffixfontsize;
                             fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                             y += fontspacingpadding;
                             y -= textPaint.FontMetrics.Ascent;
                             if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
                                 canvas.DrawText(mi.SuffixText, x, y, textPaint);
+                            y += textPaint.FontMetrics.Descent + fontspacingpadding;
+                        }
+
+                        /* Suffix 2 text */
+                        if (mi.IsSuffix2TextVisible)
+                        {
+                            textPaint.Color = MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
+                            textPaint.TextSize = suffixfontsize;
+                            fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                            y += fontspacingpadding;
+                            y -= textPaint.FontMetrics.Ascent;
+                            if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                                canvas.DrawText(mi.Suffix2Text, x, y, textPaint);
                             y += textPaint.FontMetrics.Descent + fontspacingpadding;
                         }
 

@@ -200,6 +200,7 @@ namespace GnollHackClient
                     break;
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                     break;
@@ -263,6 +264,7 @@ namespace GnollHackClient
                     break;
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                     res = "Diablo";
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
@@ -321,6 +323,7 @@ namespace GnollHackClient
                     break;
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                     break;
@@ -378,6 +381,7 @@ namespace GnollHackClient
                     break;
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                     break;
@@ -435,6 +439,7 @@ namespace GnollHackClient
                     break;
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                     break;

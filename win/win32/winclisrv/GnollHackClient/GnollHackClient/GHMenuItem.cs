@@ -72,6 +72,7 @@ namespace GnollHackClient
         private string _text;
         private string _mainText;
         private string _suffixText;
+        private string _suffix2Text;
         public string Text
         {
             get { return _text; }
@@ -92,9 +93,15 @@ namespace GnollHackClient
                     _mainText = "";
 
                 if (first_parenthesis_open > 0 && !(_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND))  /* Ignore cases where the entire row is in parentheses */
-                    _suffixText = ParseSuffixText(value);
+                {
+                    _suffixText = ParseSuffixText(value, false);
+                    _suffix2Text = ParseSuffixText(value, true);
+                }
                 else
+                {
                     _suffixText = "";
+                    _suffix2Text = "";
+                }
             }
         }
         public int SuffixParseStyle
@@ -111,6 +118,7 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
                     case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
                     case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
+                    case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                         res = 1;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
@@ -158,17 +166,21 @@ namespace GnollHackClient
         public string MainText { get { return _mainText; } }
         public string SuffixText { get { return _suffixText; } }
         public bool IsSuffixTextVisible { get { return (SuffixText != null && SuffixText != ""); } }
-        private string ParseSuffixText(string text)
+        public string Suffix2Text { get { return _suffix2Text; } }
+        public bool IsSuffix2TextVisible { get { return (Suffix2Text != null && Suffix2Text != ""); } }
+        private string ParseSuffixText(string text, bool issuffix2)
         {
             string str = text;
             string res = "";
-            while(!string.IsNullOrWhiteSpace(str))
+            char startchar = issuffix2 ? '{' : '(';
+            char endchar = issuffix2 ? '}' : ')';
+            while (!string.IsNullOrWhiteSpace(str))
             {
-                int poidx = str.IndexOf('(');
+                int poidx = str.IndexOf(startchar);
                 if (poidx < 0 || poidx >= str.Length - 1)
                     break;
                 string searchstr = str.Substring(poidx + 1);
-                int pcidx = searchstr.IndexOf(')');
+                int pcidx = searchstr.IndexOf(endchar);
                 if (pcidx < 0)
                     break;
 
@@ -222,6 +234,7 @@ namespace GnollHackClient
                             break;
                         case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                         case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
+                        case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                             break;
@@ -286,6 +299,7 @@ namespace GnollHackClient
                             break;
                         case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                         case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
+                        case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                             break;
@@ -364,6 +378,7 @@ namespace GnollHackClient
                         break;
                     case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                     case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
+                    case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                         break;

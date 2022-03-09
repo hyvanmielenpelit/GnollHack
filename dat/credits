@@ -6,12 +6,13 @@ Programming:     Janne Gustafsson (GnollHack)
                  Tommi Gustafsson (Tileset Compiler, Dgamelaunch mod)
 Tile Graphics:   Riikka Laakkonen (Players, monsters, various graphics)
                  Markus Turunen (Animations, traps, various graphics)
-                 Anu Kogger (Tilesets for base dungeon and undead areas)
-                 Janne Rajamäki (Gehennom tilesets, various graphics)
+                 Janne Rajamäki (Tilesets, various graphics)
+                 Anu Kogger (Tilesets, various graphics)
                  Jenni Berg (Additional monster graphics)
                  Marianne Bekker (Monster and environment graphics)
-                 Joona Korhonen (Additional monster graphics)
                  Laura Hölttä (Additional monster graphics)
+                 Heta Kohonen (Additional monster graphics)
+                 Joona Korhonen (Additional monster graphics)
                  Miro Pääkkönen (Additional monster graphics)
                  Milo Uusitalo (Additional monster and item graphics)
                  Janne Gustafsson (Additional graphics)
@@ -22,7 +23,7 @@ Voicing:         Tommi Gustafsson (Project management)
                  Krista Rusanen (Voice file editing)
                  Jessika Suvanto (Voice file editing)
 Playtesting:     Tommi Gustafsson
-
+                 Janne Rajamäki
 
                               EXTERNAL SOFTWARE
 
@@ -35,7 +36,7 @@ Sound system:  FMOD Studio by Firelight Technologies Pty Ltd.
 
 
                                    MUSIC
-A Elbereth Gilthoniel       Yolanda Mott (www.yolandamott.com)
+A Elbereth Gilthoniel         Yolanda Mott (www.yolandamott.com)
 (YouTube: https://www.youtube.com/channel/UCDBi17csnWqzshvwFHhjB8Q )
 Zapsplat
 Eric Matyas, soundimage.org
@@ -44,11 +45,12 @@ Eric Matyas, soundimage.org
                                SOUND EFFECTS
 
 Zapsplat
-Eric Matyas, soundimage.org
+Eric Matyas, soundimage.org   Varius game musics
 [Specify]
 
 
                                VOICE ACTORS
 
+Yolanda Mott                  Lindisse, elven bard
 [Specify]
 

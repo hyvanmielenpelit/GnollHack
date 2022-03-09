@@ -25,6 +25,7 @@
 #define spellname(spell) OBJ_NAME(objects[spellid(spell)])
 #define spellet(spell) \
     ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))  /* Obsolete! Do not use! */
+#define has_spell_tile(spell) ((objects[spellid(spell)].oc_flags5 & O5_HAS_SPELL_TILE) != 0)
 
 STATIC_DCL int FDECL(spell_let_to_idx, (CHAR_P));
 STATIC_DCL boolean FDECL(cursed_book, (struct obj * bp));
@@ -40,6 +41,7 @@ STATIC_PTR int FDECL(CFDECLSPEC spell_cmp, (const genericptr,
 STATIC_DCL void NDECL(sortspells);
 STATIC_DCL boolean NDECL(spellsortmenu);
 STATIC_DCL boolean FDECL(dospellmenu, (const char *, int, int *));
+STATIC_DCL boolean FDECL(doaltspellmenu, (const char*, int, int*));
 STATIC_DCL int FDECL(percent_success, (int));
 STATIC_DCL int FDECL(attribute_value_for_spellbook, (int));
 #if 0
@@ -54,6 +56,8 @@ STATIC_DCL void FDECL(add_spell_cast_menu_item, (winid, int, int, int, char*, in
 STATIC_DCL void FDECL(add_spell_cast_menu_heading, (winid, int, BOOLEAN_P));
 STATIC_DCL void FDECL(add_spell_prepare_menu_item, (winid, int, int, int, int, BOOLEAN_P));
 STATIC_DCL void FDECL(add_spell_prepare_menu_heading, (winid, int, int, BOOLEAN_P));
+STATIC_DCL void FDECL(add_alt_spell_cast_menu_item, (winid, int, int));
+STATIC_DCL void FDECL(add_alt_spell_prepare_menu_item, (winid, int, int));
 STATIC_DCL boolean FDECL(is_acceptable_component_object_type, (struct materialcomponent*, int));
 STATIC_DCL boolean FDECL(is_acceptable_component_monster_type, (struct materialcomponent*, int));
 STATIC_DCL uchar FDECL(is_obj_acceptable_component, (struct materialcomponent*, struct obj* otmp, BOOLEAN_P));
@@ -61,6 +65,37 @@ STATIC_DCL int FDECL(count_matcomp_alternatives, (struct materialcomponent*));
 
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
 static const char explodes[] = "radiates explosive energy";
+
+
+enum spl_sort_types {
+    SORTBY_LETTER = 0,
+    SORTBY_ALPHA,
+    SORTBY_LVL_LO,
+    SORTBY_LVL_HI,
+    SORTBY_SKL_AL,
+    SORTBY_SKL_LO,
+    SORTBY_SKL_HI,
+    SORTBY_CURRENT,
+    SORTRETAINORDER,
+
+    NUM_SPELL_SORTBY
+};
+
+static const char* spl_sortchoices[NUM_SPELL_SORTBY] = {
+    "by casting letter",
+    "alphabetically",
+    "by level, low to high",
+    "by level, high to low",
+    "by skill group, alphabetized within each group",
+    "by skill group, low to high level within group",
+    "by skill group, high to low level within group",
+    "maintain current ordering",
+    /* a menu choice rather than a sort choice */
+    "reassign casting letters to retain current order",
+};
+static int spl_sortmode = 0;   /* index into spl_sortchoices[] */
+static int* spl_orderindx = 0; /* array of spl_book[] indices */
+
 
 /* convert a letter into a number in the range 0..51, or -1 if not a letter */
 STATIC_OVL int
@@ -945,6 +980,7 @@ int spell;
     return FALSE;
 }
 
+#define MAX_SPELL_LIST_TYPES 6
 /*
  * Return TRUE if a spell was picked, with the spell index in the return
  * parameter.  Otherwise return FALSE.
@@ -954,18 +990,35 @@ getspell(spell_no, spell_list_type)
 int *spell_no;
 int spell_list_type;
 {
+    if (spell_list_type < 0 || spell_list_type >= MAX_SPELL_LIST_TYPES)
+        return FALSE;
+
     int nspells, idx;
     char ilet, lets[BUFSZ], qbuf[QBUFSZ];
+    const char* const verbs[MAX_SPELL_LIST_TYPES] = { "cast", "prepare", "manage", "view", "set a hotkey for", "forget" };
+    char titlebuf[BUFSZ];
+    char verbbufC[BUFSZ];
+    char verbtitlebufC[BUFSZ];
+    strcpy(verbbufC, verbs[spell_list_type]);
+    *verbbufC = highc(*verbbufC);
+    strcpy_capitalized_for_title(verbtitlebufC, verbs[spell_list_type]);
+    Sprintf(titlebuf, "Choose a Spell to %s", verbtitlebufC);
 
-    if (spellid(0) == NO_SPELL) {
+    if (spellid(0) == NO_SPELL) 
+    {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You("don't know any spells right now.");
         return FALSE;
     }
+
     if (rejectcasting())
         return FALSE; /* no spell chosen */
 
-    if (flags.menu_style == MENU_TRADITIONAL) {
+#ifdef GNH_ANDROID
+    return doaltspellmenu(titlebuf, (spell_list_type >= 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST), spell_no);
+#else
+    if (flags.menu_style == MENU_TRADITIONAL)
+    {
         /* we know there is at least 1 known spell */
         for (nspells = 1; nspells < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(nspells) != NO_SPELL;
              nspells++)
@@ -981,9 +1034,10 @@ int spell_list_type;
         else
             Sprintf(lets, "a-zA-%c", 'A' + nspells - 27);
 
-        for (;;) {
+        for (;;) 
+        {
             Sprintf(qbuf, "%s which spell? [%s *?]", 
-                (spell_list_type == 5 ? "Forget" : spell_list_type == 4 ? "Set a hotkey for" : spell_list_type == 3 ? "Manage" : spell_list_type == 2 ? "View" : spell_list_type == 1 ? "Prepare" : "Cast"), lets);
+                verbbufC, lets);
             ilet = yn_function(qbuf, (char *)0, '\0', (char *)0);
             if (ilet == '*' || ilet == '?')
                 break; /* use menu mode */
@@ -991,7 +1045,8 @@ int spell_list_type;
                 return FALSE;
 
             idx = spell_let_to_idx(ilet);
-            if (idx < 0 || idx >= nspells) {
+            if (idx < 0 || idx >= nspells) 
+            {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("don't know that spell.");
                 continue; /* ask again */
@@ -1000,10 +1055,137 @@ int spell_list_type;
             return TRUE;
         }
     }
-    return dospellmenu((spell_list_type == 5 ? "Choose a spell to forget" : spell_list_type == 4 ? "Choose a spell to set a hotkey for" : spell_list_type == 3 ? "Choose a spell to view" : spell_list_type == 2 ? "Choose a spell to manage" : spell_list_type == 1 ? "Choose a spell to prepare" : "Choose a spell to cast"),
-        (spell_list_type >= 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST),
-                       spell_no);
+    return dospellmenu(titlebuf, (spell_list_type >= 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST), spell_no);
+#endif
 }
+
+
+/* an alternative implementation of the '+' command, designed to work better on mobile phones */
+STATIC_OVL boolean
+doaltspellmenu(prompt, splaction, spell_no)
+const char* prompt;
+int splaction; /* SPELLMENU_CAST, SPELLMENU_VIEW, or spl_book[] index */
+int* spell_no;
+{
+    winid tmpwin;
+    int i, j, n, how, splnum;
+    char buf[BUFSZ], descbuf[BUFSZ];
+    menu_item* selected;
+    anything any;
+    const char* nodesc = "(No short description)";
+
+    tmpwin = create_nhwindow(NHW_MENU);
+    start_menu_ex(tmpwin, GHMENU_STYLE_SPELLS_ALTERNATE);
+    any = zeroany; /* zero out all bits */
+
+    if (splaction == SPELLMENU_DETAILS || splaction == SPELLMENU_VIEW || splaction == SPELLMENU_SORT || splaction >= 0)
+    {
+        char spacebuf[BUFSZ] = "";
+
+        for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) 
+        {
+            splnum = !spl_orderindx ? i : spl_orderindx[i];
+            int glyph = NO_GLYPH;
+            if (has_spell_tile(splnum))
+            {
+                glyph = spellid(splnum) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
+            }
+            else
+            {
+                glyph = objnum_to_glyph(spellid(splnum));
+            }
+
+            char fullname[BUFSZ] = "";
+            Sprintf(fullname, "%s", spellname(splnum));
+            *fullname = highc(*fullname);
+
+            if (OBJ_ITEM_DESC(spellid(splnum)))
+            {
+                strcpy(descbuf, OBJ_ITEM_DESC(spellid(splnum)));
+            }
+            else
+                strcpy(descbuf, nodesc);
+
+            struct extended_menu_info info = { 0 };
+            if (spellknow(splnum) <= 0)
+            {
+                Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
+                info.color = CLR_GRAY;
+            }
+            else
+            {
+                Sprintf(buf, "%s (%s)", fullname, descbuf);
+                info.color = NO_COLOR;
+                if (has_spell_tile(splnum))
+                    info.menu_flags |= MENU_FLAGS_ACTIVE;
+            }
+            any.a_int = splnum + 1; /* must be non-zero */
+            add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, buf,
+                (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
+        }
+    }
+    else if (splaction == SPELLMENU_PREPARE)
+    {
+        for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+        {
+            add_alt_spell_prepare_menu_item(tmpwin, i, splaction);
+        }
+    }
+    else
+    {
+        for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+        {
+            add_alt_spell_cast_menu_item(tmpwin, i, splaction);
+        }
+    }
+
+    how = PICK_ONE;
+    if (splaction == SPELLMENU_VIEW) 
+    {
+        if (spellid(1) == NO_SPELL) 
+        {
+            /* only one spell => nothing to swap with */
+            how = PICK_NONE;
+        }
+        else 
+        {
+            /* more than 1 spell, add an extra menu entry */
+            any.a_int = SPELLMENU_SORT + 1;
+            add_menu(tmpwin, NO_GLYPH, &any, '+', 0, ATR_NONE,
+                "[sort spells]", MENU_UNSELECTED);
+        }
+    }
+    end_menu(tmpwin, prompt);
+
+    //Show menu
+    n = select_menu(tmpwin, how, &selected);
+    destroy_nhwindow(tmpwin);
+
+    if (n > 0) 
+    {
+        *spell_no = selected[0].item.a_int - 1;
+        /* menu selection for `PICK_ONE' does not
+           de-select any preselected entry */
+        if (n > 1 && *spell_no == splaction)
+            *spell_no = selected[1].item.a_int - 1;
+        free((genericptr_t)selected);
+        /* default selection of preselected spell means that
+           user chose not to swap it with anything */
+        if (*spell_no == splaction)
+            return FALSE;
+        return TRUE;
+    }
+    else if (splaction >= 0) 
+    {
+        /* explicit de-selection of preselected spell means that
+           user is still swapping but not for the current spell */
+        *spell_no = splaction;
+        return TRUE;
+    }
+    return FALSE; 
+}
+
+
 
 
 static int docast_spell_no = -1;
@@ -3009,34 +3191,6 @@ losespells()
  *      are learned, they get inserted into sorted order rather than be
  *      appended to the end of the list?
  */
-enum spl_sort_types {
-    SORTBY_LETTER = 0,
-    SORTBY_ALPHA,
-    SORTBY_LVL_LO,
-    SORTBY_LVL_HI,
-    SORTBY_SKL_AL,
-    SORTBY_SKL_LO,
-    SORTBY_SKL_HI,
-    SORTBY_CURRENT,
-    SORTRETAINORDER,
-
-    NUM_SPELL_SORTBY
-};
-
-static const char *spl_sortchoices[NUM_SPELL_SORTBY] = {
-    "by casting letter",
-    "alphabetically",
-    "by level, low to high",
-    "by level, high to low",
-    "by skill group, alphabetized within each group",
-    "by skill group, low to high level within group",
-    "by skill group, high to low level within group",
-    "maintain current ordering",
-    /* a menu choice rather than a sort choice */
-    "reassign casting letters to retain current order",
-};
-static int spl_sortmode = 0;   /* index into spl_sortchoices[] */
-static int *spl_orderindx = 0; /* array of spl_book[] indices */
 
 /* qsort callback routine */
 STATIC_PTR int CFDECLSPEC
@@ -3723,6 +3877,141 @@ boolean addemptyline;
     add_extended_menu(tmpwin, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings, buf,
         MENU_UNSELECTED);
 
+}
+
+STATIC_OVL
+void
+add_alt_spell_cast_menu_item(tmpwin, i, splaction)
+winid tmpwin;
+int i;
+int splaction;
+{
+    int splnum = !spl_orderindx ? i : spl_orderindx[i];
+    char buf[BUFSZ], availablebuf[BUFSZ], levelbuf[BUFSZ];
+    char fullname[BUFSZ] = "";
+    anything any = zeroany;
+    strcpy(fullname, spellname(splnum));
+    *fullname = highc(*fullname);
+
+    int glyph = NO_GLYPH;
+    if (has_spell_tile(splnum))
+    {
+        glyph = spellid(splnum) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
+    }
+    else
+    {
+        glyph = objnum_to_glyph(spellid(splnum));
+    }
+
+    //Spell level
+    if (spellev(splnum) < -1)
+        strcpy(levelbuf, "Unknown level");
+    else if (spellev(splnum) == -1)
+        strcpy(levelbuf, "Minor cantrip");
+    else if (spellev(splnum) == 0)
+        strcpy(levelbuf, "Major cantrip");
+    else
+        Sprintf(levelbuf, "Level %d", spellev(splnum));
+
+    if (spellamount(splnum) >= 0)
+        Sprintf(availablebuf, "%d", spellamount(splnum));
+    else
+        strcpy(availablebuf, "Inf.");
+
+    double spellmanacost = get_spell_mana_cost(splnum);
+    double displayed_manacost = ceil(10 * spellmanacost) / 10;
+
+    //Category
+    if (spellknow(splnum) <= 0)
+    {
+        Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
+    }
+    else
+    {
+        Sprintf(buf, "%s (%s) {Fail %d%% Mana %.1f Cool %d Casts %s}", fullname, levelbuf,
+            100 - percent_success(splnum),
+            displayed_manacost,
+            spellcooldownleft(splnum) > 0 ? spellcooldownleft(splnum) : getspellcooldown(splnum),
+            availablebuf);
+    }
+    any.a_int = splnum + 1; /* must be non-zero */
+
+    struct extended_menu_info info = { 0 };
+    if (spellcooldownleft(splnum) > 0 || spellknow(splnum) <= 0)
+    {
+        info.color = CLR_GRAY;
+    }
+    else
+    {
+        info.color = NO_COLOR;
+    }
+
+    add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, buf,
+        (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
+
+}
+
+STATIC_OVL
+void
+add_alt_spell_prepare_menu_item(tmpwin, i, splaction)
+winid tmpwin;
+int i;
+int splaction;
+{
+    int splnum = !spl_orderindx ? i : spl_orderindx[i];
+    char buf[BUFSZ], availablebuf[BUFSZ], matcompbuf[BUFSZ], fmt[BUFSZ];
+    anything any = zeroany;
+    char fullname[BUFSZ];
+    char addsbuf[BUFSZ];
+    strcpy(fullname, spellname(splnum));
+    *fullname = highc(*fullname);
+
+    int glyph = NO_GLYPH;
+    if (has_spell_tile(splnum))
+    {
+        glyph = spellid(splnum) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
+    }
+    else
+    {
+        glyph = objnum_to_glyph(spellid(splnum));
+    }
+
+    //Print spell amount
+    if (spellamount(splnum) >= 0)
+        Sprintf(availablebuf, "%d", spellamount(splnum));
+    else
+        strcpy(availablebuf, "Inf.");
+
+    //Print spells gained
+    if (spellmatcomp(splnum) > 0)
+        Sprintf(addsbuf, "%d", matlists[spellmatcomp(splnum)].spellsgained);
+    else
+        strcpy(addsbuf, "N/A");
+
+    char fullmatcompdesc[BUFSZ];
+    strcpy(fullmatcompdesc, matlists[spellmatcomp(splnum)].description_short);
+
+    if (spellmatcomp(splnum))
+        strcpy(matcompbuf, fullmatcompdesc);
+    else
+        strcpy(matcompbuf, "No components");
+
+    struct extended_menu_info info = { 0 };
+    if (spellknow(splnum) <= 0)
+    {
+        Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
+        info.color = CLR_GRAY;
+    }
+    else
+    {
+        Sprintf(buf, "%s (%s) {Casts %s, Adds %s}", fullname, matcompbuf,
+            availablebuf, addsbuf);
+        info.color = NO_COLOR;
+    }
+
+    any.a_int = splnum + 1; /* must be non-zero */
+    add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, buf,
+        (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 }
 
 STATIC_OVL
