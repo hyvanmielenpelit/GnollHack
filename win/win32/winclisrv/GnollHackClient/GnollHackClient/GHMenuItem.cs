@@ -212,6 +212,7 @@ namespace GnollHackClient
         private int _glyph;
         public int Glyph { get { return _glyph; } set { _glyph = value; _glyphImageSource.Glyph = value; } }
         public bool UseUpperSide { get { return _glyphImageSource.UseUpperSide; } set { _glyphImageSource.UseUpperSide = value; } }
+        public bool UseColorForSuffixes { get; set; }
         private ObjectDataItem _objData = null;
         public ObjectDataItem ObjData { get { return _objData; } set { _objData = value; _glyphImageSource.ObjData = value; } }
         public int NHColor { get; set; }

@@ -848,6 +848,7 @@ namespace GnollHackClient
                     mi.Attributes = attributes;
                     mi.Glyph = glyph;
                     mi.UseUpperSide = (dataflags & 8) != 0;
+                    mi.UseColorForSuffixes = (dataflags & 16) != 0;                    
                     if ((dataflags & 1) != 0)
                     {
                         ObjectDataItem odi = new ObjectDataItem(otmpdata, otypdata, (dataflags & 4) != 0);

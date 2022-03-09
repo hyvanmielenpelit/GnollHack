@@ -1106,11 +1106,14 @@ int* spell_no;
             else
                 strcpy(descbuf, nodesc);
 
+            boolean inactive = FALSE;
             struct extended_menu_info info = { 0 };
             if (spellknow(splnum) <= 0)
             {
                 Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
                 info.color = CLR_GRAY;
+                info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
+                inactive = TRUE;
             }
             else
             {
@@ -1119,7 +1122,7 @@ int* spell_no;
                 if (has_spell_tile(splnum))
                     info.menu_flags |= MENU_FLAGS_ACTIVE;
             }
-            any.a_int = splnum + 1; /* must be non-zero */
+            any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
             add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, buf,
                 (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
         }
@@ -3903,7 +3906,6 @@ int splaction;
         glyph = objnum_to_glyph(spellid(splnum));
     }
 
-    //Spell level
     if (spellev(splnum) < -1)
         strcpy(levelbuf, "Unknown level");
     else if (spellev(splnum) == -1)
@@ -3921,30 +3923,35 @@ int splaction;
     double spellmanacost = get_spell_mana_cost(splnum);
     double displayed_manacost = ceil(10 * spellmanacost) / 10;
 
-    //Category
     if (spellknow(splnum) <= 0)
     {
         Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
     }
     else
     {
-        Sprintf(buf, "%s (%s) {Fail %d%% Mana %.1f Cool %d Casts %s}", fullname, levelbuf,
+        char extrabuf[BUFSZ] = "";
+        if (spellcooldownleft(splnum) > 0)
+            Sprintf(extrabuf, ", cooldown for %d round%s", spellcooldownleft(splnum), plur(spellcooldownleft(splnum)));
+        Sprintf(buf, "%s (%s%s) {Fail %d%% Mana %.1f Cool %d Casts %s}", fullname, levelbuf, extrabuf,
             100 - percent_success(splnum),
             displayed_manacost,
-            spellcooldownleft(splnum) > 0 ? spellcooldownleft(splnum) : getspellcooldown(splnum),
+            getspellcooldown(splnum),
             availablebuf);
     }
-    any.a_int = splnum + 1; /* must be non-zero */
 
+    boolean inactive = FALSE;
     struct extended_menu_info info = { 0 };
     if (spellcooldownleft(splnum) > 0 || spellknow(splnum) <= 0)
     {
         info.color = CLR_GRAY;
+        info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
+        inactive = TRUE;
     }
     else
     {
         info.color = NO_COLOR;
     }
+    any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
 
     add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
@@ -3996,11 +4003,14 @@ int splaction;
     else
         strcpy(matcompbuf, "No components");
 
+    boolean inactive = FALSE;
     struct extended_menu_info info = { 0 };
     if (spellknow(splnum) <= 0)
     {
         Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
         info.color = CLR_GRAY;
+        info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
+        inactive = TRUE;
     }
     else
     {
@@ -4009,7 +4019,7 @@ int splaction;
         info.color = NO_COLOR;
     }
 
-    any.a_int = splnum + 1; /* must be non-zero */
+    any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
     add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 }
@@ -4220,6 +4230,7 @@ dospellmanagemenu()
     selnum++;
 #endif
 
+#ifndef GNH_ANDROID
     strcpy(available_selection_item[selnum].name, "Set or clear a hotkey for a spell");
     //available_selection_item[selnum].function_ptr = &setspellhotkey;
     available_selection_item[selnum].action = 4;
@@ -4233,7 +4244,7 @@ dospellmanagemenu()
         available_selection_item[selnum].name, MENU_UNSELECTED);
 
     selnum++;
-
+#endif
 
     /* Forget spell */
     strcpy(available_selection_item[selnum].name, "Forget a spell");

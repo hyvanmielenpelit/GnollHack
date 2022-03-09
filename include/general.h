@@ -209,6 +209,7 @@ struct extended_create_window_info {
 #define MENU_FLAGS_USE_SKILL_MENU_DATA          0x00000010
 #define MENU_FLAGS_USE_SPELL_MENU_DATA          0x00000020
 #define MENU_FLAGS_ACTIVE                       0x00000040
+#define MENU_FLAGS_USE_COLOR_FOR_SUFFIXES       0x00000080
 
 enum obj_material_types {
     MAT_NONE = 0,

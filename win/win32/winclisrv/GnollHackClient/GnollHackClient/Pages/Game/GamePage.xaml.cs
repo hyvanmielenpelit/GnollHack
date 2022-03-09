@@ -7998,7 +7998,8 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         /* Main text */
-                        textPaint.Color = ClientUtils.NHColor2SKColorCore(mi.NHColor, MenuCanvas.RevertBlackAndWhite);
+                        SKColor maincolor = ClientUtils.NHColor2SKColorCore(mi.NHColor, MenuCanvas.RevertBlackAndWhite);
+                        textPaint.Color = maincolor;
                         int split_idx_on_row = -1;
                         float start_x = x;
                         string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.Attributes);
@@ -8036,7 +8037,7 @@ namespace GnollHackClient.Pages.Game
                         float suffixfontsize = 0.8f * textPaint.TextSize;
                         if (mi.IsSuffixTextVisible)
                         {
-                            textPaint.Color = MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
+                            textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
                             textPaint.TextSize = suffixfontsize;
                             fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                             y += fontspacingpadding;
@@ -8049,7 +8050,7 @@ namespace GnollHackClient.Pages.Game
                         /* Suffix 2 text */
                         if (mi.IsSuffix2TextVisible)
                         {
-                            textPaint.Color = MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
+                            textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
                             textPaint.TextSize = suffixfontsize;
                             fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                             y += fontspacingpadding;
