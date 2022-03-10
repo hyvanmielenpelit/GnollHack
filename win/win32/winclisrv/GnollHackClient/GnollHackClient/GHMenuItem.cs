@@ -450,6 +450,8 @@ namespace GnollHackClient
                 switch(_menuInfo.Style)
                 {
                     case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
+                        res = 0.75;
+                        break;
                     case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                         res = 0.7;
                         break;

@@ -7962,6 +7962,35 @@ namespace GnollHackClient.Pages.Game
                                 calc_x_start = endposition;
                             }
                         }
+
+                        int suffix2textrows = 1;
+                        string trimmed_suffix2text = mi.Suffix2Text.Trim();
+                        string[] suffix2textsplit = trimmed_suffix2text.Split(' ');
+                        float suffix2textspace = canvaswidth - rightmenupadding - maintext_x_start;
+                        calc_x_start = maintext_x_start;
+                        rowidx = -1;
+                        foreach (string s in suffix2textsplit)
+                        {
+                            bool nowrap = false;
+                            if (string.IsNullOrWhiteSpace(s))
+                                nowrap = true;
+                            rowidx++;
+                            string added_split_str = s + " ";
+                            float printlength = textPaint.MeasureText(added_split_str);
+                            float endposition = calc_x_start + printlength;
+                            bool pastend = endposition > canvaswidth - rightmenupadding;
+                            if (pastend && rowidx > 0 & !nowrap)
+                            {
+                                suffix2textrows++;
+                                calc_x_start = maintext_x_start;
+                                rowidx = -1;
+                            }
+                            else
+                            {
+                                calc_x_start = endposition;
+                            }
+                        }
+
                         textPaint.TextSize = mainfontsize;
 
                         fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
@@ -8112,13 +8141,37 @@ namespace GnollHackClient.Pages.Game
                             fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                             y += fontspacingpadding;
                             y -= textPaint.FontMetrics.Ascent;
-                            if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                                canvas.DrawText(mi.Suffix2Text, x, y, textPaint);
+                            split_idx_on_row = 1;
+                            foreach (string split_str in suffix2textsplit)
+                            {
+                                bool nowrap = false;
+                                if (string.IsNullOrWhiteSpace(split_str))
+                                    nowrap = true;
+                                split_idx_on_row++;
+                                string added_split_str = split_str + " ";
+                                float printlength = textPaint.MeasureText(added_split_str);
+                                float endposition = x + printlength;
+                                bool pastend = endposition > canvaswidth - rightmenupadding;
+                                if (pastend && split_idx_on_row > 0 && !nowrap)
+                                {
+                                    x = start_x;
+                                    y += textPaint.FontSpacing;
+                                    split_idx_on_row = 0;
+                                    endposition = x + printlength;
+                                }
+
+                                if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                                    canvas.DrawText(added_split_str, x, y, textPaint);
+
+                                x = endposition;
+                            }
+                            //if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                            //    canvas.DrawText(mi.Suffix2Text, x, y, textPaint);
                             y += textPaint.FontMetrics.Descent + fontspacingpadding;
+                            x = start_x;
                         }
 
                         y += generallinepadding;
-                        x = start_x;
 
                         y += bottomPadding;
                         mi.DrawBounds.Bottom = y;
