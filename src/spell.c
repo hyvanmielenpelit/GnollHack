@@ -3959,7 +3959,7 @@ int splaction;
         if (spellcooldownleft(splnum) > 0)
             Sprintf(extrabuf, "%d/", spellcooldownleft(splnum));
         const char* fmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ? 
-            "%s (%s) {&success;%d%% &mana;%.1f &cool;%s%d &casts;%s}" : "%s (%s) {Success %d%% Mana %.1f Cool %s%d Casts %s}";
+            "%s (%s) {&success; %d%% &mana; %.1f &cool; %s%d &casts; %s}" : "%s (%s) {Success %d%% Mana %.1f Cool %s%d Casts %s}";
         Sprintf(buf, fmt, fullname, levelbuf,
             percent_success(splnum),
             displayed_manacost,
@@ -4047,7 +4047,7 @@ int splaction;
     }
     else
     {
-        const char* fmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ? "%s (%s) {&casts;%s &adds;%s}" : "%s (%s) {Casts %s Adds %s}";
+        const char* fmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ? "%s (%s) {&casts; %s &adds; %s}" : "%s (%s) {Casts %s Adds %s}";
         Sprintf(buf, fmt, fullname, matcompbuf,
             availablebuf, addsbuf);
         info.color = NO_COLOR;

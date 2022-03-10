@@ -266,6 +266,12 @@ namespace GnollHackClient.Pages.Game
         private SKBitmap _searchBitmap;
         private SKBitmap _waitBitmap;
 
+        private SKBitmap _successBitmap;
+        private SKBitmap _manaBitmap;
+        private SKBitmap _cooldownBitmap;
+        private SKBitmap _castsBitmap;
+        private SKBitmap _addsBitmap;
+
         private object _skillRectLock = new object();
         private SKRect _skillRect = new SKRect();
         public SKRect SkillRect { get { SKRect val; lock (_skillRectLock) { val = _skillRect; } return val;  } set { lock (_skillRectLock) { _skillRect = value; } } }
@@ -6609,6 +6615,10 @@ namespace GnollHackClient.Pages.Game
                 Thickness smallthick = ClientUtils.GetSmallBorderThickness(width, height, 1.5);
                 TextCanvas.Margin = smallthick;
                 TextWindowGlyphImage.Margin = smallthick;
+                Thickness subthick = smallthick;
+                subthick.Top = MenuSubtitleLabel.Margin.Top;
+                subthick.Bottom = MenuSubtitleLabel.Margin.Bottom;
+                MenuSubtitleLabel.Margin = subthick;
 
                 lock (MapOffsetLock)
                 {
@@ -7908,16 +7918,16 @@ namespace GnollHackClient.Pages.Game
 
                         string trimmed_maintext = mi.MainText.Trim();
                         string[] maintextsplit = trimmed_maintext.Split(' ');
-                        int maintextrows = CountTextSplitRows(maintextsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint);
+                        int maintextrows = CountTextSplitRows(maintextsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint, mi.UseSpecialSymbols);
 
                         textPaint.TextSize = suffixfontsize;
                         string trimmed_suffixtext = mi.SuffixText.Trim();
                         string[] suffixtextsplit = trimmed_suffixtext.Split(' ');
-                        int suffixtextrows = CountTextSplitRows(suffixtextsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint);
+                        int suffixtextrows = CountTextSplitRows(suffixtextsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint, mi.UseSpecialSymbols);
 
                         string trimmed_suffix2text = mi.Suffix2Text.Trim();
                         string[] suffix2textsplit = trimmed_suffix2text.Split(' ');
-                        int suffix2textrows = CountTextSplitRows(suffix2textsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint);
+                        int suffix2textrows = CountTextSplitRows(suffix2textsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint, mi.UseSpecialSymbols);
 
                         textPaint.TextSize = mainfontsize;
 
@@ -7990,75 +8000,25 @@ namespace GnollHackClient.Pages.Game
                         /* Main text */
                         SKColor maincolor = ClientUtils.NHColor2SKColorCore(mi.NHColor, MenuCanvas.RevertBlackAndWhite);
                         textPaint.Color = maincolor;
-                        int split_idx_on_row = -1;
+                        //int split_idx_on_row = -1;
                         float start_x = x;
                         string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.Attributes);
                         if (indentstr != "")
                         {
                             start_x += textPaint.MeasureText(indentstr);
                         }
-                        foreach (string split_str in maintextsplit)
-                        {
-                            bool nowrap = false;
-                            if (string.IsNullOrWhiteSpace(split_str))
-                                nowrap = true;
-                            split_idx_on_row++;
-                            string added_split_str = split_str + " ";
-                            float printlength = textPaint.MeasureText(added_split_str);
-                            float endposition = x + printlength;
-                            bool pastend = endposition > canvaswidth - rightmenupadding;
-                            if (pastend && split_idx_on_row > 0 && !nowrap)
-                            {
-                                x = start_x;
-                                y += textPaint.FontSpacing;
-                                split_idx_on_row = 0;
-                                endposition = x + printlength;
-                            }
-
-                            if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                                canvas.DrawText(added_split_str, x, y, textPaint);
-
-                            x = endposition;
-                        }
+                        DrawTextSplit(canvas, maintextsplit, ref x, ref y, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols);
                         y += textPaint.FontMetrics.Descent + fontspacingpadding;
-                        x = start_x;
 
                         /* Suffix text */
                         if (mi.IsSuffixTextVisible)
                         {
                             textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite ? _suffixTextColorReverted : _suffixTextColor;
                             textPaint.TextSize = suffixfontsize;
-                            fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                             y += fontspacingpadding;
                             y -= textPaint.FontMetrics.Ascent;
-                            split_idx_on_row = 1;
-                            foreach (string split_str in suffixtextsplit)
-                            {
-                                bool nowrap = false;
-                                if (string.IsNullOrWhiteSpace(split_str))
-                                    nowrap = true;
-                                split_idx_on_row++;
-                                string added_split_str = split_str + " ";
-                                float printlength = textPaint.MeasureText(added_split_str);
-                                float endposition = x + printlength;
-                                bool pastend = endposition > canvaswidth - rightmenupadding;
-                                if (pastend && split_idx_on_row > 0 && !nowrap)
-                                {
-                                    x = start_x;
-                                    y += textPaint.FontSpacing;
-                                    split_idx_on_row = 0;
-                                    endposition = x + printlength;
-                                }
-
-                                if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                                    canvas.DrawText(added_split_str, x, y, textPaint);
-
-                                x = endposition;
-                            }
-                            //if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                            //    canvas.DrawText(mi.SuffixText, x, y, textPaint);
+                            DrawTextSplit(canvas, suffixtextsplit, ref x, ref y, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols);
                             y += textPaint.FontMetrics.Descent + fontspacingpadding;
-                            x = start_x;
                         }
 
                         /* Suffix 2 text */
@@ -8069,34 +8029,8 @@ namespace GnollHackClient.Pages.Game
                             fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                             y += fontspacingpadding;
                             y -= textPaint.FontMetrics.Ascent;
-                            split_idx_on_row = 1;
-                            foreach (string split_str in suffix2textsplit)
-                            {
-                                bool nowrap = false;
-                                if (string.IsNullOrWhiteSpace(split_str))
-                                    nowrap = true;
-                                split_idx_on_row++;
-                                string added_split_str = split_str + " ";
-                                float printlength = textPaint.MeasureText(added_split_str);
-                                float endposition = x + printlength;
-                                bool pastend = endposition > canvaswidth - rightmenupadding;
-                                if (pastend && split_idx_on_row > 0 && !nowrap)
-                                {
-                                    x = start_x;
-                                    y += textPaint.FontSpacing;
-                                    split_idx_on_row = 0;
-                                    endposition = x + printlength;
-                                }
-
-                                if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                                    canvas.DrawText(added_split_str, x, y, textPaint);
-
-                                x = endposition;
-                            }
-                            //if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                            //    canvas.DrawText(mi.Suffix2Text, x, y, textPaint);
+                            DrawTextSplit(canvas, suffix2textsplit, ref x, ref y, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols);
                             y += textPaint.FontMetrics.Descent + fontspacingpadding;
-                            x = start_x;
                         }
 
                         y += generallinepadding;
@@ -8134,7 +8068,7 @@ namespace GnollHackClient.Pages.Game
             //DebugWriteProfilingStopwatchTime("Draw Menu Canvas End");
         }
 
-        private int CountTextSplitRows(string[] textsplit, float x_start, float canvaswidth, float rightmenupadding, SKPaint textPaint)
+        private int CountTextSplitRows(string[] textsplit, float x_start, float canvaswidth, float rightmenupadding, SKPaint textPaint, bool usespecialsymbols)
         {
             int rows = 1;
             float calc_x_start = x_start;
@@ -8145,9 +8079,21 @@ namespace GnollHackClient.Pages.Game
                 if (string.IsNullOrWhiteSpace(s))
                     nowrap = true;
                 rowidx++;
-                string added_split_str = s + " ";
-                float printlength = textPaint.MeasureText(added_split_str);
-                float endposition = calc_x_start + printlength;
+                float endposition = calc_x_start;
+                SKBitmap symbolbitmap = null;
+                if (usespecialsymbols && (symbolbitmap = GetSpecialSymbol(s)) != null)
+                {
+                    float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
+                    float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
+                    float bmpmargin = bmpheight / 8;
+                    endposition = calc_x_start + bmpwidth + bmpmargin;
+                }
+                else
+                {
+                    string added_split_str = s + " ";
+                    float printlength = textPaint.MeasureText(added_split_str);
+                    endposition = calc_x_start + printlength;
+                }
                 bool pastend = endposition > canvaswidth - rightmenupadding;
                 if (pastend && rowidx > 0 & !nowrap)
                 {
@@ -8163,7 +8109,88 @@ namespace GnollHackClient.Pages.Game
             return rows;
         }
 
+        private void DrawTextSplit(SKCanvas canvas, string[] textsplit, ref float x, ref float y, float start_x, float canvaswidth, float canvasheight, float rightmenupadding, SKPaint textPaint, bool usespecialsymbols)
+        {
+            int split_idx_on_row = -1;
+            x = start_x;
+            foreach (string split_str in textsplit)
+            {
+                bool nowrap = false;
+                if (string.IsNullOrWhiteSpace(split_str))
+                    nowrap = true;
+                split_idx_on_row++;
+                float endposition = x;
+                SKBitmap symbolbitmap = null;
+                if(usespecialsymbols && (symbolbitmap = GetSpecialSymbol(split_str)) != null)
+                {
+                    float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
+                    float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
+                    float bmpmargin = bmpheight / 8;
+                    endposition = x + bmpwidth + bmpmargin;
+                    bool pastend = endposition > canvaswidth - rightmenupadding;
+                    if (pastend && split_idx_on_row > 0 && !nowrap)
+                    {
+                        x = start_x;
+                        y += textPaint.FontSpacing;
+                        split_idx_on_row = 0;
+                        endposition = x + bmpwidth + bmpmargin;
+                    }
+                    if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                    {
+                        float bmpx = x;
+                        float bmpy = y + textPaint.FontMetrics.Ascent;
+                        SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
+                        canvas.DrawBitmap(symbolbitmap, bmptargetrect, textPaint);
+                    }
+                }
+                else
+                {
+                    string added_split_str = split_str + " ";
+                    float printlength = textPaint.MeasureText(added_split_str);
+                    endposition = x + printlength;
+                    bool pastend = endposition > canvaswidth - rightmenupadding;
+                    if (pastend && split_idx_on_row > 0 && !nowrap)
+                    {
+                        x = start_x;
+                        y += textPaint.FontSpacing;
+                        split_idx_on_row = 0;
+                        endposition = x + printlength;
+                    }
 
+                    if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                        canvas.DrawText(added_split_str, x, y, textPaint);
+                }
+
+                x = endposition;
+            }
+            x = start_x;
+        }
+
+        private SKBitmap GetSpecialSymbol(string str)
+        {
+            string trimmed_str = str.Trim();
+            if(trimmed_str == "&success;")
+            {
+                return _successBitmap;
+            }
+            else if (trimmed_str == "&mana;")
+            {
+                return _manaBitmap;
+            }
+            else if (trimmed_str == "&cool;")
+            {
+                return _cooldownBitmap;
+            }
+            else if (trimmed_str == "&casts;")
+            {
+                return _castsBitmap;
+            }
+            else if (trimmed_str == "&adds;")
+            {
+                return _addsBitmap;
+            }
+            return null;
+        }
 
         private object MenuScrollLock = new object();
         private float _menuScrollOffset = 0;
@@ -9100,6 +9127,29 @@ namespace GnollHackClient.Pages.Game
             {
                 _waitBitmap = SKBitmap.Decode(stream);
             }
+
+            /* Replaceable menu symbols */
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-success.png"))
+            {
+                _successBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-mana.png"))
+            {
+                _manaBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-cooldown.png"))
+            {
+                _cooldownBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-casts.png"))
+            {
+                _castsBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-adds.png"))
+            {
+                _addsBitmap = SKBitmap.Decode(stream);
+            }
+
         }
 
         public GHCommandButtonItem[,,] _moreBtnMatrix = new GHCommandButtonItem[GHConstants.MoreButtonPages, GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
