@@ -7874,7 +7874,7 @@ namespace GnollHackClient.Pages.Game
                         textPaint.TextAlign = SKTextAlign.Left;
 
                         /* Bottom Padding */
-                        if (((ulong)mi.MenuFlags & (ulong)MenuFlags.IsHeading) != 0)
+                        if (((ulong)mi.MenuFlags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
                         {
                             bottomPadding = 3 * scale;
                         }
@@ -7884,7 +7884,7 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         /* Top Padding */
-                        if (((ulong)mi.MenuFlags & (ulong)MenuFlags.IsHeading) != 0)
+                        if (((ulong)mi.MenuFlags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
                         {
                             topPadding = 12 * scale;
                         }
@@ -8425,7 +8425,7 @@ namespace GnollHackClient.Pages.Game
                         GHMenuItem mi = MenuCanvas.MenuItems[idx];
                         if (mi.Identifier == 0)
                         {
-                            if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.MenuFlags & (ulong)MenuFlags.IsGroupHeading) != 0)
+                            if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.MenuFlags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0)
                             {
                                 foreach (GHMenuItem o in MenuCanvas.MenuItems)
                                 {

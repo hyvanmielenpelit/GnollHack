@@ -275,7 +275,7 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct
 
     lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str ? buf : 0, presel, color, (info.object && !(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? info.object->quan : 0),
         (unsigned long long)(info.object ? info.object->o_id : 0), (unsigned long long)(info.monster ? info.monster->m_id : 0), info.heading_for_group_accelerator, info.special_mark, info.menu_flags,
-        (info.object ? 1 : 0) | (info.monster ? 2 : 0) | (Hallucination ? 4 : 0) | (info.menu_flags & MENU_FLAGS_ACTIVE ? 8 : 0) | (info.menu_flags & MENU_FLAGS_USE_COLOR_FOR_SUFFIXES ? 16 : 0) | (info.menu_flags & MENU_FLAGS_USE_SPECIAL_SYMBOLS ? 32 : 0) | (info.monster && info.monster->female ? 64 : 0),
+        (info.object ? MENU_DATAFLAGS_HAS_OBJECT_DATA : 0) | (info.monster ? MENU_DATAFLAGS_HAS_MONSTER_DATA : 0) | (Hallucination ? MENU_DATAFLAGS_HALLUCINATED : 0) | (info.monster && info.monster->female ? MENU_DATAFLAGS_FEMALE : 0),
         info.style, info.object ? *(info.object) : zeroobj, get_objclassdata(info.object), info.skill_data, info.spell_data);
 }
 

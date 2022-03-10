@@ -212,6 +212,11 @@ struct extended_create_window_info {
 #define MENU_FLAGS_USE_COLOR_FOR_SUFFIXES       0x00000080
 #define MENU_FLAGS_USE_SPECIAL_SYMBOLS          0x00000100
 
+#define MENU_DATAFLAGS_HAS_OBJECT_DATA          0x01
+#define MENU_DATAFLAGS_HAS_MONSTER_DATA         0x02
+#define MENU_DATAFLAGS_HALLUCINATED             0x04
+#define MENU_DATAFLAGS_FEMALE                   0x08
+
 enum obj_material_types {
     MAT_NONE = 0,
     MAT_LIQUID = 1, /* currently only for venom */  /* Organics start here */

@@ -847,12 +847,12 @@ namespace GnollHackClient
                     mi.SpecialMark = special_mark;
                     mi.Attributes = attributes;
                     mi.Glyph = glyph;
-                    mi.UseUpperSide = (dataflags & 8) != 0;
-                    mi.UseColorForSuffixes = (dataflags & 16) != 0;
-                    mi.UseSpecialSymbols = (dataflags & 32) != 0;
-                    if ((dataflags & 1) != 0)
+                    mi.UseUpperSide = (menuflags & (ulong)MenuFlags.MENU_FLAGS_ACTIVE) != 0;
+                    mi.UseColorForSuffixes = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_COLOR_FOR_SUFFIXES) != 0;
+                    mi.UseSpecialSymbols = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_SPECIAL_SYMBOLS) != 0;
+                    if ((dataflags & (byte)MenuDataFlags.MENU_DATAFLAGS_HAS_OBJECT_DATA) != 0)
                     {
-                        ObjectDataItem odi = new ObjectDataItem(otmpdata, otypdata, (dataflags & 4) != 0);
+                        ObjectDataItem odi = new ObjectDataItem(otmpdata, otypdata, (dataflags & (byte)MenuDataFlags.MENU_DATAFLAGS_HALLUCINATED) != 0);
                         mi.ObjData = odi;
                     }
                     mi.Text = text;

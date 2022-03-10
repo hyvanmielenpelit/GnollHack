@@ -83,10 +83,29 @@ namespace GnollHackCommon
     [Flags]
     public enum MenuFlags : ulong
     {
-        None =              0x00000000,
-        IsHeading =         0x00000001,
-        IsGroupHeading =    0x00000002,
+        MENU_FLAGS_NONE =                       0x00000000,
+        MENU_FLAGS_IS_HEADING =                 0x00000001,
+        MENU_FLAGS_IS_GROUP_HEADING =           0x00000002,
+        MENU_FLAGS_MONOSPACE_FONT_REQUESTED =   0x00000004,
+        MENU_FLAGS_COUNT_DISALLOWED =           0x00000008,
+        MENU_FLAGS_USE_SKILL_MENU_DATA =        0x00000010,
+        MENU_FLAGS_USE_SPELL_MENU_DATA =        0x00000020,
+        MENU_FLAGS_ACTIVE =                     0x00000040,
+        MENU_FLAGS_USE_COLOR_FOR_SUFFIXES =     0x00000080,
+        MENU_FLAGS_USE_SPECIAL_SYMBOLS =        0x00000100,
     }
+
+    [Flags]
+    public enum MenuDataFlags : byte
+    {
+        None = 0x00,
+        MENU_DATAFLAGS_HAS_OBJECT_DATA = 0x01,
+        MENU_DATAFLAGS_HAS_MONSTER_DATA = 0x02,
+        MENU_DATAFLAGS_HALLUCINATED = 0x04,
+        MENU_DATAFLAGS_FEMALE = 0x08,
+    }
+
+
     public enum TTYCursorStyle
     {
         BlinkingUnderline = 0,
