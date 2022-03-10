@@ -212,6 +212,7 @@ namespace GnollHackClient
         private int _glyph;
         public int Glyph { get { return _glyph; } set { _glyph = value; _glyphImageSource.Glyph = value; } }
         public bool UseUpperSide { get { return _glyphImageSource.UseUpperSide; } set { _glyphImageSource.UseUpperSide = value; } }
+        public bool UseSpecialSymbols { get; set; }
         public bool UseColorForSuffixes { get; set; }
         private ObjectDataItem _objData = null;
         public ObjectDataItem ObjData { get { return _objData; } set { _objData = value; _glyphImageSource.ObjData = value; } }
@@ -450,10 +451,10 @@ namespace GnollHackClient
                 switch(_menuInfo.Style)
                 {
                     case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
-                        res = 0.75;
+                        res = 0.77;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
-                        res = 0.7;
+                        res = 0.73;
                         break;
                     default:
                         break;

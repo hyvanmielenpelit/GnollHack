@@ -26,6 +26,7 @@
 #define spellet(spell) \
     ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))  /* Obsolete! Do not use! */
 #define has_spell_tile(spell) ((objects[spellid(spell)].oc_flags5 & O5_HAS_SPELL_TILE) != 0)
+#define spell_to_glyph(spell) (has_spell_tile(spell) ? (spellid(spell) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF) : (objnum_to_glyph(spellid(spell))))
 
 STATIC_DCL void FDECL(print_spell_level_text, (char*, int, UCHAR_P));
 STATIC_DCL int FDECL(spell_let_to_idx, (CHAR_P));
@@ -63,6 +64,7 @@ STATIC_DCL boolean FDECL(is_acceptable_component_object_type, (struct materialco
 STATIC_DCL boolean FDECL(is_acceptable_component_monster_type, (struct materialcomponent*, int));
 STATIC_DCL uchar FDECL(is_obj_acceptable_component, (struct materialcomponent*, struct obj* otmp, BOOLEAN_P));
 STATIC_DCL int FDECL(count_matcomp_alternatives, (struct materialcomponent*));
+STATIC_DCL struct extended_create_window_info FDECL(extended_create_window_info_from_spell, (int, BOOLEAN_P));
 
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
 static const char explodes[] = "radiates explosive energy";
@@ -97,6 +99,16 @@ static const char* spl_sortchoices[NUM_SPELL_SORTBY] = {
 static int spl_sortmode = 0;   /* index into spl_sortchoices[] */
 static int* spl_orderindx = 0; /* array of spl_book[] indices */
 
+STATIC_OVL struct extended_create_window_info
+extended_create_window_info_from_spell(spell_id, active)
+int spell_id;
+boolean active;
+{
+    struct extended_create_window_info info = { 0 };
+    if (has_spell_tile(spell_id) && active)
+        info.create_flags |= WINDOW_CREATE_FLAGS_ACTIVE;
+    return info;
+}
 
 /* convert a letter into a number in the range 0..51, or -1 if not a letter */
 STATIC_OVL int
@@ -1119,16 +1131,7 @@ int* spell_no;
         for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) 
         {
             splnum = !spl_orderindx ? i : spl_orderindx[i];
-            int glyph = NO_GLYPH;
-            if (has_spell_tile(splnum))
-            {
-                glyph = spellid(splnum) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
-            }
-            else
-            {
-                glyph = objnum_to_glyph(spellid(splnum));
-            }
-
+            int glyph = spell_to_glyph(splnum);
             char fullname[BUFSZ] = "";
             Sprintf(fullname, "%s", spellname(splnum));
             *fullname = highc(*fullname);
@@ -1142,6 +1145,7 @@ int* spell_no;
 
             boolean inactive = FALSE;
             struct extended_menu_info info = { 0 };
+            info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
             if (spellknow(splnum) <= 0)
             {
                 Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
@@ -1156,6 +1160,9 @@ int* spell_no;
                 if (has_spell_tile(splnum))
                     info.menu_flags |= MENU_FLAGS_ACTIVE;
             }
+            if (has_spell_tile(splnum) && !inactive)
+                info.menu_flags |= MENU_FLAGS_ACTIVE;
+
             any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
             add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, buf,
                 (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
@@ -1444,8 +1451,8 @@ int spell;
 
 
     winid datawin = WIN_ERR;
-
-    datawin = create_nhwindow(NHW_MENU);
+    int glyph = spell_to_glyph(spell);
+    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SPELL_DESCRIPTION_SCREEN, glyph, extended_create_window_info_from_spell(spell, TRUE));
 
     int booktype = spellid(spell);
     char buf[BUFSZ];
@@ -1534,6 +1541,12 @@ int spell;
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
+
+    /* Success percentage */
+    int successpct = percent_success(spell);
+    Sprintf(buf, "Success chance:   %d%%", successpct);
+    txt = buf;
+    putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
     /* Mana cost*/
     double manacost = get_spellbook_adjusted_mana_cost(booktype);
@@ -3925,16 +3938,7 @@ int splaction;
     strcpy(fullname, spellname(splnum));
     *fullname = highc(*fullname);
 
-    int glyph = NO_GLYPH;
-    if (has_spell_tile(splnum))
-    {
-        glyph = spellid(splnum) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
-    }
-    else
-    {
-        glyph = objnum_to_glyph(spellid(splnum));
-    }
-
+    int glyph = spell_to_glyph(splnum);
     print_spell_level_text(levelbuf, spellid(splnum), TRUE);
 
     if (spellamount(splnum) >= 0)
@@ -3963,6 +3967,7 @@ int splaction;
 
     boolean inactive = FALSE;
     struct extended_menu_info info = { 0 };
+    info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
     if (spellcooldownleft(splnum) > 0 || spellknow(splnum) <= 0)
     {
         info.color = CLR_GRAY;
@@ -3973,6 +3978,9 @@ int splaction;
     {
         info.color = NO_COLOR;
     }
+    if(has_spell_tile(splnum) && !inactive)
+        info.menu_flags |= MENU_FLAGS_ACTIVE;
+
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
 
     add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, buf,
@@ -4027,6 +4035,7 @@ int splaction;
 
     boolean inactive = FALSE;
     struct extended_menu_info info = { 0 };
+    info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
     if (spellknow(splnum) <= 0)
     {
         Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
@@ -4040,6 +4049,8 @@ int splaction;
             availablebuf, addsbuf);
         info.color = NO_COLOR;
     }
+    if (has_spell_tile(splnum) && !inactive)
+        info.menu_flags |= MENU_FLAGS_ACTIVE;
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
     add_extended_menu(tmpwin, glyph, &any, info, 0, 0, ATR_NONE, buf,
