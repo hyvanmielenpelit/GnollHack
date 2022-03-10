@@ -3957,11 +3957,13 @@ int splaction;
     {
         char extrabuf[BUFSZ] = "";
         if (spellcooldownleft(splnum) > 0)
-            Sprintf(extrabuf, ", cooling %d", spellcooldownleft(splnum));
-        Sprintf(buf, "%s (%s%s) {Fail %d%% Mana %.1f Cool %d Casts %s}", fullname, levelbuf, extrabuf,
-            100 - percent_success(splnum),
+            Sprintf(extrabuf, "%d/", spellcooldownleft(splnum));
+        const char* fmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ? 
+            "%s (%s) {&success;%d%% &mana;%.1f &cool;%s%d &casts;%s}" : "%s (%s) {Success %d%% Mana %.1f Cool %s%d Casts %s}";
+        Sprintf(buf, fmt, fullname, levelbuf,
+            percent_success(splnum),
             displayed_manacost,
-            getspellcooldown(splnum),
+            extrabuf, getspellcooldown(splnum),
             availablebuf);
     }
 
@@ -4045,7 +4047,8 @@ int splaction;
     }
     else
     {
-        Sprintf(buf, "%s (%s) {Casts %s, Adds %s}", fullname, matcompbuf,
+        const char* fmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ? "%s (%s) {&casts;%s &adds;%s}" : "%s (%s) {Casts %s Adds %s}";
+        Sprintf(buf, fmt, fullname, matcompbuf,
             availablebuf, addsbuf);
         info.color = NO_COLOR;
     }

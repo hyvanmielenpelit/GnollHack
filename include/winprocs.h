@@ -309,6 +309,8 @@ extern
 #define WC2_PLAY_GHSOUNDS           0x00100000UL /* 21 windowing system can play ghsounds */
 #define WC2_VOLUME_CONTROLS         0x00200000UL /* 22 volume controls are shown in options */
 #define WC2_SPECIAL_GUI_COLORS      0x00400000UL /* 23 handles special negative color values */
+#define WC2_SPECIAL_SYMBOLS         0x00800000UL /* 24 handles special symbols in text of the type &symbol_name; */
+#define WC2_MENU_SUFFIXES           0x01000000UL /* 25 supports placing text in parentheses on a different line in menus */
 
 /* 8 free bits */
 

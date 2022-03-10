@@ -7906,90 +7906,18 @@ namespace GnollHackClient.Pages.Game
                             first = false;
                         }
 
-                        int maintextrows = 1;
                         string trimmed_maintext = mi.MainText.Trim();
                         string[] maintextsplit = trimmed_maintext.Split(' ');
-                        float maintextspace = canvaswidth - rightmenupadding - maintext_x_start;
-                        float calc_x_start = maintext_x_start;
-                        int rowidx = -1;
-                        foreach (string s in maintextsplit)
-                        {
-                            bool nowrap = false;
-                            if (string.IsNullOrWhiteSpace(s))
-                                nowrap = true;
-                            rowidx++;
-                            string added_split_str = s + " ";
-                            float printlength = textPaint.MeasureText(added_split_str);
-                            float endposition = calc_x_start + printlength;
-                            bool pastend = endposition > canvaswidth - rightmenupadding;
-                            if (pastend && rowidx > 0 & !nowrap)
-                            {
-                                maintextrows++;
-                                calc_x_start = maintext_x_start;
-                                rowidx = -1;
-                            }
-                            else
-                            {
-                                calc_x_start = endposition;
-                            }
-                        }
+                        int maintextrows = CountTextSplitRows(maintextsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint);
 
                         textPaint.TextSize = suffixfontsize;
-                        int suffixtextrows = 1;
                         string trimmed_suffixtext = mi.SuffixText.Trim();
                         string[] suffixtextsplit = trimmed_suffixtext.Split(' ');
-                        float suffixtextspace = canvaswidth - rightmenupadding - maintext_x_start;
-                        calc_x_start = maintext_x_start;
-                        rowidx = -1;
-                        foreach (string s in suffixtextsplit)
-                        {
-                            bool nowrap = false;
-                            if (string.IsNullOrWhiteSpace(s))
-                                nowrap = true;
-                            rowidx++;
-                            string added_split_str = s + " ";
-                            float printlength = textPaint.MeasureText(added_split_str);
-                            float endposition = calc_x_start + printlength;
-                            bool pastend = endposition > canvaswidth - rightmenupadding;
-                            if (pastend && rowidx > 0 & !nowrap)
-                            {
-                                suffixtextrows++;
-                                calc_x_start = maintext_x_start;
-                                rowidx = -1;
-                            }
-                            else
-                            {
-                                calc_x_start = endposition;
-                            }
-                        }
+                        int suffixtextrows = CountTextSplitRows(suffixtextsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint);
 
-                        int suffix2textrows = 1;
                         string trimmed_suffix2text = mi.Suffix2Text.Trim();
                         string[] suffix2textsplit = trimmed_suffix2text.Split(' ');
-                        float suffix2textspace = canvaswidth - rightmenupadding - maintext_x_start;
-                        calc_x_start = maintext_x_start;
-                        rowidx = -1;
-                        foreach (string s in suffix2textsplit)
-                        {
-                            bool nowrap = false;
-                            if (string.IsNullOrWhiteSpace(s))
-                                nowrap = true;
-                            rowidx++;
-                            string added_split_str = s + " ";
-                            float printlength = textPaint.MeasureText(added_split_str);
-                            float endposition = calc_x_start + printlength;
-                            bool pastend = endposition > canvaswidth - rightmenupadding;
-                            if (pastend && rowidx > 0 & !nowrap)
-                            {
-                                suffix2textrows++;
-                                calc_x_start = maintext_x_start;
-                                rowidx = -1;
-                            }
-                            else
-                            {
-                                calc_x_start = endposition;
-                            }
-                        }
+                        int suffix2textrows = CountTextSplitRows(suffix2textsplit, maintext_x_start, canvaswidth, rightmenupadding, textPaint);
 
                         textPaint.TextSize = mainfontsize;
 
@@ -8205,6 +8133,37 @@ namespace GnollHackClient.Pages.Game
 
             //DebugWriteProfilingStopwatchTime("Draw Menu Canvas End");
         }
+
+        private int CountTextSplitRows(string[] textsplit, float x_start, float canvaswidth, float rightmenupadding, SKPaint textPaint)
+        {
+            int rows = 1;
+            float calc_x_start = x_start;
+            int rowidx = -1;
+            foreach (string s in textsplit)
+            {
+                bool nowrap = false;
+                if (string.IsNullOrWhiteSpace(s))
+                    nowrap = true;
+                rowidx++;
+                string added_split_str = s + " ";
+                float printlength = textPaint.MeasureText(added_split_str);
+                float endposition = calc_x_start + printlength;
+                bool pastend = endposition > canvaswidth - rightmenupadding;
+                if (pastend && rowidx > 0 & !nowrap)
+                {
+                    rows++;
+                    calc_x_start = x_start;
+                    rowidx = -1;
+                }
+                else
+                {
+                    calc_x_start = endposition;
+                }
+            }
+            return rows;
+        }
+
+
 
         private object MenuScrollLock = new object();
         private float _menuScrollOffset = 0;
