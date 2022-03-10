@@ -263,9 +263,11 @@ static struct Bool_Opt {
     { "show_weapon_style", &flags.show_weapon_style, TRUE, SET_IN_GAME },
     { "show_weight_summary", &flags.show_weight_summary, TRUE, SET_IN_GAME },
     { "silent", &flags.silent, TRUE, SET_IN_GAME },
+    { "skill_table_format", &iflags.skill_table_format, TRUE, SET_IN_GAME },
     { "softkeyboard", &iflags.wc2_softkeyboard, FALSE, SET_IN_FILE }, /*WC2*/
     { "sortpack", &flags.sortpack, TRUE, SET_IN_GAME },
     { "sparkle", &flags.sparkle, TRUE, SET_IN_GAME },
+    { "spell_table_format", &iflags.spell_table_format, TRUE, SET_IN_GAME },
     { "splash_screen", &iflags.wc_splash_screen, TRUE, DISP_IN_GAME }, /*WC*/
     { "standout", &flags.standout, FALSE, SET_IN_GAME },
     { "status_updates", &iflags.status_updates, TRUE, DISP_IN_GAME },

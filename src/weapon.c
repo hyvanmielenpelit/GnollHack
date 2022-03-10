@@ -1932,11 +1932,10 @@ static const struct skill_range {
 int
 doskill()
 {
-#ifdef GNH_ANDROID
-    return doskill_core();
-#else
-    return enhance_weapon_skill();
-#endif
+    if(iflags.skill_table_format)
+        return enhance_weapon_skill();
+    else
+        return doskill_core();
 }
 
 int
@@ -2498,7 +2497,6 @@ enhance_weapon_skill()
 
         /* start with a legend if any entries will be annotated
            with "*" or "#" below */
-#ifndef GNH_ANDROID
         if (!speedy)
         {
             any = zeroany;
@@ -2550,7 +2548,6 @@ enhance_weapon_skill()
             }
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
         }
-#endif
 
         if (eventually_advance > 0 || maxxed_cnt > 0)
         {

@@ -7867,7 +7867,8 @@ namespace GnollHackClient.Pages.Game
                         x = leftmenupadding;
                         mi.DrawBounds.Left = x;
                         float mainfontsize = (float)mi.FontSize * scale;
-                        float suffixfontsize = 0.8f * mainfontsize;
+                        float relsuffixsize = (float)mi.RelativeSuffixFontSize;
+                        float suffixfontsize = relsuffixsize * mainfontsize;
                         textPaint.Typeface = App.GetTypefaceByName(mi.FontFamily);
                         textPaint.TextSize = mainfontsize;
                         textPaint.TextAlign = SKTextAlign.Left;
@@ -7964,12 +7965,12 @@ namespace GnollHackClient.Pages.Game
                         textPaint.TextSize = mainfontsize;
 
                         fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                        float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontSpacing) * ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? 0.8f : 0.0f) + (mi.IsSuffix2TextVisible ? 0.8f : 0.0f))) / 2);
+                        float generallinepadding = Math.Max(0.0f, (minrowheight - (textPaint.FontSpacing) * ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f))) / 2);
 
                         bool isselected = referenceCanvasView.SelectionHow == SelectionMode.Multiple ? mi.Selected :
                             referenceCanvasView.SelectionHow == SelectionMode.Single ? idx == referenceCanvasView.SelectionIndex : false;
 
-                        float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? 0.8f : 0.0f) + (mi.IsSuffix2TextVisible ? 0.8f : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
+                        float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
                         float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
 
                         /* Selection rectangle */

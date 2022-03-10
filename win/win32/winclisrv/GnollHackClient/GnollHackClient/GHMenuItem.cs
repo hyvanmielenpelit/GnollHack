@@ -360,26 +360,28 @@ namespace GnollHackClient
         {
             get
             {
-                double res = 15;
+                double res = 15.0;
                 if (((int)Attributes & ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Title)) == ((int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Title))
                 {
                     res = 18.5;
                 }
                 else if (((int)Attributes & ((int)MenuItemAttributes.Title)) == ((int)MenuItemAttributes.Title))
                 {
-                    res = 20;
+                    res = 20.0;
                 }
                 else if (((int)Attributes & ((int)MenuItemAttributes.Bold | (int)MenuItemAttributes.Heading)) != 0)
                 {
-                    res = 18;
+                    res = 18.0;
                 }
                 switch (_menuInfo.Style)
                 {
                     case ghmenu_styles.GHMENU_STYLE_GENERAL:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                        break;
                     case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                     case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                        res = res * 17.0 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                         break;
@@ -403,13 +405,13 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
-                        res = 17;
+                        res = res * 17.0 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
-                        res = 18;
+                        res = res * 18.0 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
-                        res = 20;
+                        res = res * 20.0 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHARACTER:
                         break;
@@ -436,6 +438,30 @@ namespace GnollHackClient
                     OnPropertyChanged("FontSize");
                 }
                 return _fontSize; 
+            }
+        }
+
+        private double _relativeSuffixFontSize = 0;
+        public double RelativeSuffixFontSize
+        {
+            get
+            {
+                double res = 0.8;
+                switch(_menuInfo.Style)
+                {
+                    case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
+                    case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                        res = 0.7;
+                        break;
+                    default:
+                        break;
+                }
+                if (res != _relativeSuffixFontSize)
+                {
+                    _relativeSuffixFontSize = res;
+                    OnPropertyChanged("RelativeSuffixFontSize");
+                }
+                return _relativeSuffixFontSize;
             }
         }
 

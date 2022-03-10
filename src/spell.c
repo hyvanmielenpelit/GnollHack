@@ -1043,14 +1043,11 @@ int spell_list_type;
     if (rejectcasting())
         return FALSE; /* no spell chosen */
 
-#ifdef GNH_ANDROID
-    return doaltspellmenu(titlebuf, (spell_list_type >= 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST), spell_no);
-#else
     if (flags.menu_style == MENU_TRADITIONAL)
     {
         /* we know there is at least 1 known spell */
         for (nspells = 1; nspells < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(nspells) != NO_SPELL;
-             nspells++)
+            nspells++)
             continue;
 
         if (nspells == 1)
@@ -1063,18 +1060,18 @@ int spell_list_type;
         else
             Sprintf(lets, "a-zA-%c", 'A' + nspells - 27);
 
-        for (;;) 
+        for (;;)
         {
-            Sprintf(qbuf, "%s which spell? [%s *?]", 
+            Sprintf(qbuf, "%s which spell? [%s *?]",
                 verbbufC, lets);
-            ilet = yn_function(qbuf, (char *)0, '\0', (char *)0);
+            ilet = yn_function(qbuf, (char*)0, '\0', (char*)0);
             if (ilet == '*' || ilet == '?')
                 break; /* use menu mode */
             if (index(quitchars, ilet))
                 return FALSE;
 
             idx = spell_let_to_idx(ilet);
-            if (idx < 0 || idx >= nspells) 
+            if (idx < 0 || idx >= nspells)
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("don't know that spell.");
@@ -1084,8 +1081,16 @@ int spell_list_type;
             return TRUE;
         }
     }
-    return dospellmenu(titlebuf, (spell_list_type >= 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST), spell_no);
-#endif
+
+    int splaction = (spell_list_type >= 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST);
+    if (iflags.spell_table_format)
+    {
+        return dospellmenu(titlebuf, splaction, spell_no);
+    }
+    else
+    {
+        return doaltspellmenu(titlebuf, splaction, spell_no);
+    }
 }
 
 

@@ -358,6 +358,8 @@ struct instance_flags {
     boolean menu_requested;   /* Flag for overloaded use of 'm' prefix
                                * on some non-move commands */
     boolean menu_tab_sep;     /* Use tabs to separate option menu fields */
+    boolean skill_table_format; /* use table format for skill menu */
+    boolean spell_table_format; /* use table format for spell menu */
     boolean news;             /* print news */
     boolean num_pad;          /* use numbers for movement commands */
     boolean enablettyarrowkeys;  /* experimental: enable tty arrow keys but comes with drawvback of double ESC */
