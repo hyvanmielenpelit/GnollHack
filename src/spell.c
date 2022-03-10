@@ -1114,7 +1114,7 @@ int splaction; /* SPELLMENU_CAST, SPELLMENU_VIEW, or spl_book[] index */
 int* spell_no;
 {
     winid tmpwin;
-    int i, j, n, how, splnum;
+    int i, n, how, splnum;
     char buf[BUFSZ], descbuf[BUFSZ];
     menu_item* selected;
     anything any;
@@ -1126,8 +1126,6 @@ int* spell_no;
 
     if (splaction == SPELLMENU_DETAILS || splaction == SPELLMENU_VIEW || splaction == SPELLMENU_SORT || splaction >= 0)
     {
-        char spacebuf[BUFSZ] = "";
-
         for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) 
         {
             splnum = !spl_orderindx ? i : spl_orderindx[i];
@@ -3998,7 +3996,7 @@ int i;
 int splaction;
 {
     int splnum = !spl_orderindx ? i : spl_orderindx[i];
-    char buf[BUFSZ], availablebuf[BUFSZ], matcompbuf[BUFSZ], fmt[BUFSZ];
+    char buf[BUFSZ], availablebuf[BUFSZ], matcompbuf[BUFSZ];
     anything any = zeroany;
     char fullname[BUFSZ];
     char addsbuf[BUFSZ];

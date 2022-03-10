@@ -5505,15 +5505,14 @@ struct monst* mtmp;
         if (pick_count > 1)
             itemized = (yn_query("Itemized billing?") == 'y');
 
-        for (int i = 0; i < pick_count; i++)
+        int i;
+        for (i = 0; i < pick_count; i++)
         {
             struct obj* item_to_buy = pick_list[i].item.a_obj;
             long quan = pick_list[i].count == -1 ? item_to_buy->quan : min(item_to_buy->quan, pick_list[i].count);
             if (item_to_buy && quan > 0)
             {
                 long item_cost = quan * get_cost_of_monster_item(item_to_buy, mtmp);
-                
-                long umoney = money_cnt(invent);
                 char qbuf[QBUFSZ];
                 boolean bought = FALSE;
                 char ibuf[QBUFSZ];

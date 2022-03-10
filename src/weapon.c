@@ -2089,7 +2089,7 @@ doskill_core()
         }
 
     } while (/*speedy &&*/ n > 0);
-
+    return 0;
 }
 
 STATIC_OVL void
