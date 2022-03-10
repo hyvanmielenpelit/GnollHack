@@ -381,8 +381,10 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
-                    case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                         res = res * 17.0 / 15.0;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                        res = res * 17.5 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                         break;
@@ -451,10 +453,10 @@ namespace GnollHackClient
                 switch(_menuInfo.Style)
                 {
                     case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
-                        res = 0.77;
+                        res = 0.8;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
-                        res = 0.73;
+                        res = 0.775;
                         break;
                     default:
                         break;

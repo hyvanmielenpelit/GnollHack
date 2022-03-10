@@ -7890,8 +7890,12 @@ namespace GnollHackClient.Pages.Game
                         }
                         else
                         {
-                            bottomPadding = 3 * scale;
+                            if (mi.IsSuffixTextVisible && mi.IsSuffix2TextVisible)
+                                bottomPadding = 6 * scale;
+                            else
+                                bottomPadding = 3 * scale;
                         }
+
 
                         /* Top Padding */
                         if (((ulong)mi.MenuFlags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
@@ -7900,7 +7904,10 @@ namespace GnollHackClient.Pages.Game
                         }
                         else
                         {
-                            topPadding = 3 * scale;
+                            if (mi.IsSuffixTextVisible && mi.IsSuffix2TextVisible)
+                                topPadding = 6 * scale;
+                            else
+                                topPadding = 3 * scale;
                         }
 
 
