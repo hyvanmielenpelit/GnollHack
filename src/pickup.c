@@ -1883,7 +1883,7 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
     if (cobj->otyp == BAG_OF_TRICKS) {
         play_sfx_sound(SFX_SURPRISE_ATTACK);
         You("carefully open %s...", the(xname(cobj)));
-        pline("It develops a huge set of teeth and bites you!");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "It develops a huge set of teeth and bites you!");
         losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "carnivorous bag", KILLED_BY_AN);
         makeknown(BAG_OF_TRICKS);
         abort_looting = TRUE;
