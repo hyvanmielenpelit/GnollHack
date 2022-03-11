@@ -4097,7 +4097,7 @@ register struct monst* mon;
         }
         else if (mon->data->mattk[i].aatyp == AT_MAGC && mon->data->mattk[i].mlevel > 0)
         {
-            Sprintf(specialbuf1, "as %d level caster", mon->data->mattk[i].mlevel);
+            Sprintf(specialbuf1, "as level %d caster", mon->data->mattk[i].mlevel);
         }
         
         strcpy(specialbuf2, "");
