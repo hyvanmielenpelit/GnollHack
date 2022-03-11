@@ -396,6 +396,8 @@ namespace GnollHackClient
                         break;
                     case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
                     case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
+                        res = res * 16.0 / 15.0;
+                        break;
                     case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
                     case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
                         break;

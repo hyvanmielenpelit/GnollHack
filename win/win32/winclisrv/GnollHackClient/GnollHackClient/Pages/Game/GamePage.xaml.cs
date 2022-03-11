@@ -8772,6 +8772,9 @@ namespace GnollHackClient.Pages.Game
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
                 float topPadding = 0;
+                float glyphpadding = scale * (float)Math.Max(0.0, TextCanvas.X + TextCanvas.Width - TextWindowGlyphImage.X);
+                float glyphystart = scale * (float)Math.Max(0.0, TextWindowGlyphImage.Y - TextCanvas.Y);
+                float glyphyend = scale * (float)Math.Max(0.0, TextWindowGlyphImage.Y + TextWindowGlyphImage.Height - TextCanvas.Y);
 
                 lock (TextCanvas.TextItemLock)
                 {
@@ -8818,15 +8821,26 @@ namespace GnollHackClient.Pages.Game
                                 bool nowrap = false;
                                 if (string.IsNullOrWhiteSpace(split_str))
                                     nowrap = true;
-                                string added_split_str = split_str + (idx == split.Length - 1 ? "" : " ");
-                                float printlength = textPaint.MeasureText(added_split_str);
+                                string added_str = (idx == split.Length - 1 ? "" : " ");
+                                string added_split_str = split_str + added_str;
+                                float printlength = textPaint.MeasureText(split_str);
+                                float spaceprintlength = (added_str != "") ? textPaint.MeasureText(added_str) : 0.0f;
                                 float endposition = x + printlength;
-                                bool pastend = endposition > canvaswidth - rightmenupadding - (float)putstritem.RightPaddingWidth * scale;
+                                float endposition_with_space = x + printlength + spaceprintlength;
+                                float usedglyphpadding = 0.0f;
+
+                                if (TextWindowGlyphImage.IsVisible
+                                    && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0
+                                    && y - curmenuoffset + textPaint.FontMetrics.Ascent <= glyphyend 
+                                    && y - curmenuoffset + textPaint.FontMetrics.Descent >= glyphystart)
+                                    usedglyphpadding = glyphpadding;
+
+                                bool pastend = endposition > canvaswidth - usedglyphpadding - rightmenupadding - (float)putstritem.RightPaddingWidth * scale;
                                 if (pastend && x > start_x && !nowrap)
                                 {
                                     x = start_x;
                                     y += textPaint.FontSpacing;
-                                    endposition = x + printlength;
+                                    endposition_with_space = x + printlength + spaceprintlength;
                                 }
 
                                 if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
@@ -8844,7 +8858,7 @@ namespace GnollHackClient.Pages.Game
                                     canvas.DrawText(added_split_str, x, y, textPaint);
                                 }
 
-                                x = endposition;
+                                x = endposition_with_space;
                                 idx++;
                             }
                         }
