@@ -378,7 +378,9 @@ namespace GnollHackClient.Pages.Game
         public object _guiEffectLock = new object();
         public List<GHGUIEffect> _guiEffects = new List<GHGUIEffect>();
 
-        public bool EnableWizardMode { get; set; }
+        private object _enableWizardModeLock = new object();
+        private bool _enableWizardMode = false;
+        public bool EnableWizardMode { get { lock (_enableWizardModeLock) { return _enableWizardMode; } } set { lock (_enableWizardModeLock) { _enableWizardMode = value; } } }
 
         private List<AddContextMenuData> _contextMenuData = new List<AddContextMenuData>();
 

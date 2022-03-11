@@ -238,6 +238,9 @@ int GnollHackMain(int argc, char** argv)
 		wd_message();
 	}
 
+	if(wizard)
+		init_print_glyph(INIT_GLYPH_ENABLE_WIZARD_MODE); /* Notification may be needed if loaded a wizard mode saved game */
+
 	moveloop(resuming);
     exit(EXIT_SUCCESS);
 

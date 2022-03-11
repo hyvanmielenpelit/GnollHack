@@ -1378,6 +1378,9 @@ namespace GnollHackClient
                     }
                 case (int)init_print_glyph_stages.INIT_GLYPH_LOAD_VIDEOS:
                     break;
+                case (int)init_print_glyph_stages.INIT_GLYPH_ENABLE_WIZARD_MODE:
+                    _gamePage.EnableWizardMode = true;
+                    break;
                 case (int)init_print_glyph_stages.INIT_GLYPH_PETS:
                     _gamePage.ClearPetData();
                     break;
