@@ -1438,7 +1438,6 @@ int skill_level;
     return multiplier;
 }
 
-
 int
 spelldescription(spell)
 int spell;
@@ -1461,12 +1460,6 @@ int spell;
     char buf2[BUFSZ];
     char buf3[BUFSZ];
     const char* txt;
-
-    extern const struct propname {
-        int prop_num;
-        const char* prop_name;
-        const char* prop_noun;
-    } propertynames[]; /* timeout.c */
 
     /* Name */
     strcpy(buf, spellname(spell));

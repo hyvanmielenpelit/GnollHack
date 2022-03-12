@@ -2510,12 +2510,8 @@ wiz_smell(VOID_ARGS)
 STATIC_PTR int
 wiz_intrinsic(VOID_ARGS)
 {
-    if (wizard) {
-        extern const struct propname {
-            int prop_num;
-            const char *prop_name;
-            const char* prop_noun;
-        } propertynames[]; /* timeout.c */
+    if (wizard) 
+    {
         static const char wizintrinsic[] = "#wizintrinsic";
         static const char fmt[] = "You are%s %s.";
         winid win;
@@ -2529,16 +2525,19 @@ wiz_intrinsic(VOID_ARGS)
         any = zeroany;
         win = create_nhwindow(NHW_MENU);
         start_menu(win);
-        for (i = 0; (propname = propertynames[i].prop_name) != 0; ++i) {
+        for (i = 0; (propname = propertynames[i].prop_name) != 0; ++i) 
+        {
             p = propertynames[i].prop_num;
-            if (p == HALLUC_RES) {
+            if (p == HALLUC_RES) 
+            {
                 /* Grayswandir vs hallucination; ought to be redone to
                    use u.uprops[HALLUC].blocked instead of being treated
                    as a separate property; letting in be manually toggled
                    even only in wizard mode would be asking for trouble... */
                 continue;
             }
-            if (p == FIRE_IMMUNITY) {
+            if (p == FIRE_IMMUNITY) 
+            {
                 any.a_int = 0;
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "--", FALSE);
             }
@@ -2555,12 +2554,14 @@ wiz_intrinsic(VOID_ARGS)
         destroy_nhwindow(win);
 
         amt = 30; /* TODO: prompt for duration */
-        for (j = 0; j < n; ++j) {
+        for (j = 0; j < n; ++j) 
+        {
             i = pick_list[j].item.a_int - 1; /* -1: reverse +1 above */
             p = propertynames[i].prop_num;
             oldtimeout = u.uprops[p].intrinsic & TIMEOUT;
             newtimeout = oldtimeout + (long) amt;
-            switch (p) {
+            switch (p) 
+            {
             case SICK:
             case FOOD_POISONED:
             case MUMMY_ROT:
@@ -2571,7 +2572,8 @@ wiz_intrinsic(VOID_ARGS)
                 break;
             }
 
-            switch (p) {
+            switch (p) 
+            {
             case BLINDED:
                 make_blinded(newtimeout, TRUE);
                 break;
@@ -2637,8 +2639,10 @@ wiz_intrinsic(VOID_ARGS)
         if (n >= 1)
             free((genericptr_t) pick_list);
         doredraw();
-    } else
+    } 
+    else
         pline(unavailcmd, visctrl((int) cmd_from_func(wiz_intrinsic)));
+
     return 0;
 }
 

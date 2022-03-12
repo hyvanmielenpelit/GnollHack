@@ -7,12 +7,6 @@
 #ifndef PROP_H
 #define PROP_H
 
-/*** What the properties are ***
- *
- * note:  propertynames[] array in timeout.c has string values for these.
- *        Property #0 is not used.
- */
-
 #define NO_POWER 0
 
 /* Resistances to troubles */
@@ -320,8 +314,13 @@ extern struct prop_info property_definitions[MAX_PROPS];
 #define WORN_MISCELLANEOUS5 W_MISC5
 #define CARRIED_ITEM W_CARRIED
 
+struct propname {
+    int prop_num;
+    const char* prop_name;
+    const char* prop_noun;
+};
 
-
+extern const struct propname propertynames[];
 
 
 #endif /* PROP_H */
