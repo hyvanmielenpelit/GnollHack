@@ -4785,7 +4785,7 @@ namespace GnollHackClient.Pages.Game
                                         //canvas.DrawText(mi.name, curpetx, curpety, textPaint);
                                         //curpety += textPaint.FontMetrics.Descent + 2.0f;
 
-                                        float curpety = ty + petpictureheight;
+                                        float curpety = ty + pet_picture_target_height;
                                         textPaint.TextSize = pet_hp_size;
                                         textPaint.TextAlign = SKTextAlign.Center;
                                         float petHPHeight = textPaint.FontSpacing;
@@ -10063,6 +10063,7 @@ namespace GnollHackClient.Pages.Game
                 orbBorderDest.Left + (orbBorderDest.Width - orbwidth) / 2 + orbwidth,
                 orbBorderDest.Top + (orbBorderDest.Height - orbheight) / 2 + orbheight);
             textPaint.Color = SKColors.White;
+            textPaint.TextAlign = SKTextAlign.Center;
             canvas.DrawBitmap(_orbBorderBitmap, orbBorderDest, textPaint);
             if (orbfillpercentage < 0)
                 orbfillpercentage = 0;
@@ -10083,8 +10084,7 @@ namespace GnollHackClient.Pages.Game
                 if (scale > 0)
                     textPaint.TextSize = textPaint.TextSize * 0.90f / scale;
 
-                float strwidth = textPaint.MeasureText(val, ref bounds);
-                float tx = orbDest.Left + (orbDest.Width - strwidth) / 2;
+                float tx = orbDest.Left + orbDest.Width / 2;
                 float ty = orbDest.Top + (orbDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2 - textPaint.FontMetrics.Ascent;
                 textPaint.Style = SKPaintStyle.Stroke;
                 textPaint.StrokeWidth = textPaint.TextSize / 10;
@@ -10105,8 +10105,7 @@ namespace GnollHackClient.Pages.Game
                 if (scale > 0)
                     textPaint.TextSize = textPaint.TextSize * 0.50f / scale;
 
-                float strwidth = textPaint.MeasureText(maxval, ref bounds);
-                float tx = orbDest.Left + (orbDest.Width - strwidth) / 2;
+                float tx = orbDest.Left + orbDest.Width / 2;
                 float ty = orbDest.Bottom - 0.07f * orbDest.Height - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) - textPaint.FontMetrics.Ascent;
                 textPaint.Style = SKPaintStyle.Stroke;
                 textPaint.StrokeWidth = textPaint.TextSize / 10;
@@ -10116,6 +10115,7 @@ namespace GnollHackClient.Pages.Game
                 textPaint.Color = SKColors.White;
                 canvas.DrawText(maxval, tx, ty, textPaint);
             }
+            textPaint.TextAlign = SKTextAlign.Left;
         }
 
         public enum UIShieldStyles
