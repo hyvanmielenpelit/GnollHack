@@ -7991,12 +7991,15 @@ namespace GnollHackClient.Pages.Game
                             {
                                 using (new SKAutoCanvasRestore(canvas, true))
                                 {
-                                    canvas.Translate(x, glyph_start_y);
                                     mi.GlyphImageSource.AutoSize = true;
                                     mi.GlyphImageSource.DoAutoSize();
                                     if (mi.GlyphImageSource.Height > 0)
+                                    {
+                                        float glyphxcenterpadding = (picturewidth - minrowheight * mi.GlyphImageSource.Width / mi.GlyphImageSource.Height) / 2;
+                                        canvas.Translate(x + glyphxcenterpadding, glyph_start_y);
                                         canvas.Scale(minrowheight / mi.GlyphImageSource.Height);
-                                    mi.GlyphImageSource.DrawOnCanvas(canvas);
+                                        mi.GlyphImageSource.DrawOnCanvas(canvas);
+                                    }
                                 }
                             }
                             x += picturewidth + picturepadding;
