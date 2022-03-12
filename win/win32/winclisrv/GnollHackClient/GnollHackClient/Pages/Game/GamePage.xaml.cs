@@ -8767,7 +8767,8 @@ namespace GnollHackClient.Pages.Game
                     curmenuoffset = _textScrollOffset;
                 }
                 y += curmenuoffset;
-                double menuwidth = Math.Max(1, Math.Min(TextCanvas.Width, 600));
+                double canvasmaxwidth = TextCanvas.GHWindow != null ? TextCanvas.GHWindow.TextWindowMaximumWidth : GHConstants.DefaultTextWindowMaxWidth;
+                double menuwidth = Math.Max(1, Math.Min(TextCanvas.Width, canvasmaxwidth));
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;

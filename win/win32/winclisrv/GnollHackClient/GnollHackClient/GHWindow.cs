@@ -456,5 +456,29 @@ namespace GnollHackClient
                 _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
             }
         }
+
+        public double TextWindowMaximumWidth
+        {
+            get
+            {
+                switch(_winStyle)
+                {
+                    case ghwindow_styles.GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN:
+                    case ghwindow_styles.GHWINDOW_STYLE_SEMI_WIDE_LIST:
+                    case ghwindow_styles.GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN:
+                    case ghwindow_styles.GHWINDOW_STYLE_OBJECT_DESCRIPTION_SCREEN:
+                        return 520.0;
+                    case ghwindow_styles.GHWINDOW_STYLE_CHARACTER_SCREEN:
+                    case ghwindow_styles.GHWINDOW_STYLE_SPELL_DESCRIPTION_SCREEN:
+                    case ghwindow_styles.GHWINDOW_STYLE_MEDIUM_WIDE_LIST:
+                        return 440.0;
+                    case ghwindow_styles.GHWINDOW_STYLE_NARROW_LIST:
+                    case ghwindow_styles.GHWINDOW_STYLE_SKILL_DESCRIPTION_SCREEN:
+                        return 360.0;
+                    default:
+                        return 600.0;
+                }
+            }
+        }
     }
 }

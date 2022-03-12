@@ -442,7 +442,9 @@ namespace GnollHackCommon
         GHWINDOW_STYLE_SPELL_DESCRIPTION_SCREEN,
         GHWINDOW_STYLE_SKILL_COMMAND_MENU,
         GHWINDOW_STYLE_SPELL_COMMAND_MENU,
-        MAX_GHWINDOW_STYLES
+        GHWINDOW_STYLE_NARROW_LIST,
+        GHWINDOW_STYLE_MEDIUM_WIDE_LIST,
+        GHWINDOW_STYLE_SEMI_WIDE_LIST, MAX_GHWINDOW_STYLES
     }
 
     /* GHMenu styles */
@@ -1137,6 +1139,7 @@ namespace GnollHackCommon
         public const int GameAnimationRefreshRate = 40;
         public const int MaxRefreshRate = 120;
         public const bool IsGPUDefault = true;
+        public const double DefaultTextWindowMaxWidth = 600.0;
     }
 
 

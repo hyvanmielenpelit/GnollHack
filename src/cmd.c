@@ -4953,7 +4953,7 @@ int final;
     int ngenocided;
 
     /* Create the conduct window */
-    en_win = create_nhwindow(NHW_MENU);
+    en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SEMI_WIDE_LIST, NO_GLYPH, zerocreatewindowinfo);
     putstr(en_win, ATR_HEADING, "Voluntary challenges:");
 
     if (u.uroleplay.blind)
