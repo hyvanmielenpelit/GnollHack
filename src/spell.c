@@ -1052,7 +1052,7 @@ int spell_list_type;
         return FALSE;
     }
 
-    if (rejectcasting())
+    if (spell_list_type == 0 && rejectcasting())
         return FALSE; /* no spell chosen */
 
     if (flags.menu_style == MENU_TRADITIONAL)
@@ -1276,9 +1276,13 @@ int
 dospellview()
 {
     int spell_no;
-
-    if (getspell(&spell_no, 3))
-        return spelldescription(spell_no);
+    boolean didselect = FALSE;
+    do
+    { 
+        didselect = getspell(&spell_no, 3);
+        if(didselect)
+            (void)spelldescription(spell_no);
+    } while (didselect);
     return 0;
 }
 
