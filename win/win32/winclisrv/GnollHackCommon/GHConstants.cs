@@ -1136,7 +1136,7 @@ namespace GnollHackCommon
         public const uint MainCanvasAnimationInterval = 25;
         public const int GameAnimationRefreshRate = 40;
         public const int MaxRefreshRate = 120;
-        public const int PollingFrequency = 67;
+        public const int PollingFrequency = 60;
         public const int PollingInterval = 15;
         public const bool IsGPUDefault = true;
         public const double DefaultTextWindowMaxWidth = 600.0;
