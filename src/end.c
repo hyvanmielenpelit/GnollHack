@@ -59,8 +59,8 @@ STATIC_DCL void FDECL(savelife, (int));
 STATIC_PTR int FDECL(CFDECLSPEC vanqsort_cmp, (const genericptr,
                                                const genericptr));
 STATIC_DCL int NDECL(set_vanq_order);
-STATIC_DCL void FDECL(list_vanquished, (CHAR_P, BOOLEAN_P));
-STATIC_DCL void FDECL(list_genocided, (CHAR_P, BOOLEAN_P));
+STATIC_DCL void FDECL(list_vanquished, (CHAR_P, BOOLEAN_P, BOOLEAN_P));
+STATIC_DCL void FDECL(list_genocided, (CHAR_P, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL boolean FDECL(should_query_disclose_option, (int, char *));
 #ifdef DUMPLOG
 STATIC_DCL void NDECL(dump_plines);
@@ -788,9 +788,9 @@ time_t when; /* date+time at end of game */
     enlightenment((BASICENLIGHTENMENT | MAGICENLIGHTENMENT),
                   (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(0, 0, "");
-    list_vanquished('d', FALSE); /* 'd' => 'y' */
+    list_vanquished('d', FALSE, TRUE); /* 'd' => 'y' */
     putstr(0, 0, "");
-    list_genocided('d', FALSE); /* 'd' => 'y' */
+    list_genocided('d', FALSE, TRUE); /* 'd' => 'y' */
     putstr(0, 0, "");
     show_conduct((how >= PANICKED) ? 1 : 2);
     putstr(0, 0, "");
@@ -886,12 +886,12 @@ boolean taken;
 
     if (!done_stopprint) {
         ask = should_query_disclose_option('v', &defquery);
-        list_vanquished(defquery, ask);
+        list_vanquished(defquery, ask, TRUE);
     }
 
     if (!done_stopprint) {
         ask = should_query_disclose_option('g', &defquery);
-        list_genocided(defquery, ask);
+        list_genocided(defquery, ask, TRUE);
     }
 
     if (!done_stopprint) {
@@ -2184,7 +2184,7 @@ set_vanq_order()
 int
 dovanquished()
 {
-    list_vanquished('a', FALSE);
+    list_vanquished('a', FALSE, FALSE);
     return 0;
 }
 
@@ -2192,7 +2192,7 @@ dovanquished()
 int
 dokilledmonsters()
 {
-    list_vanquished('b', FALSE);
+    list_vanquished('b', FALSE, FALSE);
     return 0;
 }
 
@@ -2200,7 +2200,7 @@ dokilledmonsters()
 int
 dogenocidedmonsters()
 {
-    list_genocided('a', FALSE);
+    list_genocided('a', FALSE, FALSE);
     return 0;
 }
 
@@ -2209,9 +2209,9 @@ dogenocidedmonsters()
                                && mndx != PM_HIGH_PRIEST)
 
 STATIC_OVL void
-list_vanquished(defquery, ask)
+list_vanquished(defquery, ask, isend)
 char defquery;
-boolean ask;
+boolean ask, isend;
 {
     register int i;
     int pfx, nkilled;
@@ -2228,7 +2228,8 @@ boolean ask;
 
     /* get totals first */
     ntypes = 0;
-    for (i = LOW_PM; i < NUM_MONSTERS; i++) {
+    for (i = LOW_PM; i < NUM_MONSTERS; i++) 
+    {
         if ((nkilled = (int) mvitals[i].died) == 0)
             continue;
         mindx[ntypes++] = i;
@@ -2238,7 +2239,8 @@ boolean ask;
     /* vanquished creatures list;
      * includes all dead monsters, not just those killed by the player
      */
-    if (ntypes != 0) {
+    if (ntypes != 0) 
+    {
         char mlet, prev_mlet = 0; /* used as small integer, not character */
         boolean class_header, uniq_header, was_uniq = FALSE;
 
@@ -2248,8 +2250,10 @@ boolean ask;
                 : defquery;
         if (c == 'q')
             done_stopprint++;
-        if (c == 'y' || c == 'a' || c == 'b') {
-            if (c == 'a') { /* ask player to choose sort order */
+        if (c == 'y' || c == 'a' || c == 'b') 
+        {
+            if (c == 'a') 
+            { /* ask player to choose sort order */
                 /* choose value for vanq_sortmode via menu; ESC cancels list
                    of vanquished monsters but does not set 'done_stopprint' */
                 if (set_vanq_order() < 0)
@@ -2265,22 +2269,27 @@ boolean ask;
                 putstr(klwin, 0, "");
 
             qsort((genericptr_t) mindx, ntypes, sizeof *mindx, vanqsort_cmp);
-            for (ni = 0; ni < ntypes; ni++) {
+            for (ni = 0; ni < ntypes; ni++) 
+            {
                 i = mindx[ni];
                 nkilled = mvitals[i].died;
                 mlet = mons[i].mlet;
-                if (class_header && mlet != prev_mlet) {
+                if (class_header && mlet != prev_mlet) 
+                {
                     Strcpy(buf, def_monsyms[(int) mlet].name);
                     putstr(klwin, ask ? 0 : iflags.menu_headings,
                            upstart(buf));
                     prev_mlet = mlet;
                 }
-                if (UniqCritterIndx(i)) {
+                if (UniqCritterIndx(i)) 
+                {
                     Sprintf(buf, "%s%s",
                             !is_mname_proper_name(&mons[i]) ? "the " : "",
                             pm_common_name(&mons[i]));
-                    if (nkilled > 1) {
-                        switch (nkilled) {
+                    if (nkilled > 1) 
+                    {
+                        switch (nkilled) 
+                        {
                         case 2:
                             Sprintf(eos(buf), " (twice)");
                             break;
@@ -2293,8 +2302,11 @@ boolean ask;
                         }
                     }
                     was_uniq = TRUE;
-                } else {
-                    if (uniq_header && was_uniq) {
+                } 
+                else
+                {
+                    if (uniq_header && was_uniq)
+                    {
                         putstr(klwin, 0, "");
                         was_uniq = FALSE;
                     }
@@ -2320,7 +2332,8 @@ boolean ask;
              * if (Hallucination)
              *     putstr(klwin, 0, "and a partridge in a pear tree");
              */
-            if (ntypes > 1) {
+            if (ntypes > 1) 
+            {
                 if (!dumping)
                     putstr(klwin, 0, "");
                 Sprintf(buf, "%ld creatures vanquished.", total_killed);
@@ -2329,13 +2342,18 @@ boolean ask;
             display_nhwindow(klwin, TRUE);
             destroy_nhwindow(klwin);
         }
-    } else if (defquery == 'a' || defquery == 'b') {
+    } 
+    else if (defquery == 'a' || defquery == 'b') 
+    {
         /* #dovanquished or #killed rather than final disclosure, so pline() is ok */
         const char* nomsg = "No creatures have been vanquished.";
         pline1(nomsg);
-        display_popup_text(nomsg, "No Vanquished Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
+        if (!isend)
+            display_popup_text(nomsg, "No Vanquished Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
 #ifdef DUMPLOG
-    } else if (dumping) {
+    }
+    else if (dumping)
+    {
         putstr(0, 0, "No creatures were vanquished."); /* not pline() */
 #endif
     }
@@ -2373,9 +2391,9 @@ num_extinct()
 }
 
 STATIC_OVL void
-list_genocided(defquery, ask)
+list_genocided(defquery, ask, isend)
 char defquery;
-boolean ask;
+boolean ask, isend;
 {
     register int i;
     int ngenocided, nextinct;
@@ -2460,7 +2478,8 @@ boolean ask;
     {
         const char* nomsg = "No species have been genocided or become extinct.";
         pline1(nomsg); /* Game is still ongoing, so pline is ok */
-        display_popup_text(nomsg, "No Genocided Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
+        if(!isend)
+            display_popup_text(nomsg, "No Genocided Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
 #ifdef DUMPLOG
     } 
     else if (dumping) 
