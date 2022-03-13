@@ -8,7 +8,8 @@
 #include <math.h>
 
 STATIC_DCL boolean FDECL(mon_is_gecko, (struct monst *));
-STATIC_DCL int FDECL(domonnoise, (struct monst *));
+STATIC_DCL int FDECL(domonnoise, (struct monst *, BOOLEAN_P));
+STATIC_DCL int FDECL(domonnoise_with_popup, (struct monst*));
 STATIC_DCL boolean NDECL(speak_check);
 STATIC_DCL boolean NDECL(yell_check);
 STATIC_DCL boolean FDECL(m_speak_check, (struct monst*));
@@ -938,7 +939,7 @@ register struct monst *mtmp;
 
     /* presumably nearness and soundok checks have already been made */
     if (!is_silent(mtmp->data) && mtmp->data->msound <= MS_ANIMAL)
-        (void) domonnoise(mtmp);
+        (void) domonnoise(mtmp, FALSE);
     else if (mtmp->data->msound >= MS_HUMANOID) {
         if (!canspotmon(mtmp))
             map_invisible(mtmp->mx, mtmp->my);
@@ -967,8 +968,16 @@ struct monst *mon;
 }
 
 STATIC_OVL int
-domonnoise(mtmp)
+domonnoise_with_popup(mtmp)
+register struct monst* mtmp;
+{
+    domonnoise(mtmp, TRUE);
+}
+
+STATIC_OVL int
+domonnoise(mtmp, dopopup)
 register struct monst *mtmp;
+boolean dopopup;
 {
     char verbuf[BUFSZ];
     register const char *pline_msg = 0, /* Monnam(mtmp) will be prepended */
@@ -1876,15 +1885,19 @@ bark_here:
 
     if (pline_msg) 
     {
-        //pline("%s %s", Monnam(mtmp), pline_msg);
         char pbuf[BUFSZ];
         Sprintf(pbuf, "%s %s", Monnam(mtmp), pline_msg);
-        popup_talk_line_no_quotes(mtmp, pbuf);
+        if(dopopup)
+            popup_talk_line_no_quotes(mtmp, pbuf);
+        else
+            pline1(pbuf);
     }
     else if (is_cancelled(mtmp) && verbl_msg_mcan)
     {
-        //verbalize1(verbl_msg_mcan);
-        popup_talk_line(mtmp, verbl_msg_mcan);
+        if (dopopup)
+            popup_talk_line(mtmp, verbl_msg_mcan);
+        else
+            verbalize1(verbl_msg_mcan);
     }
     else if (verbl_msg) 
     {
@@ -1895,8 +1908,10 @@ bark_here:
                and without quotation marks */
             char tmpbuf[BUFSZ] = "";
             (void)ucase(strcpy(tmpbuf, verbl_msg));
-            //pline1(tmpbuf);
-            popup_talk_line_no_quotes(mtmp, tmpbuf);
+            if(dopopup)
+                popup_talk_line_no_quotes(mtmp, tmpbuf);
+            else
+                pline1(tmpbuf);
         }
         else 
         {
@@ -2094,7 +2109,7 @@ dochat()
             pline("%s seems not to notice you.", Monnam(u.usteed));
             return 1;
         } else
-            return domonnoise(u.usteed);
+            return domonnoise(u.usteed, FALSE);
     }
 
     if (u.dz)
@@ -2248,7 +2263,7 @@ dochat()
         anything any;
 
         any = zeroany;
-        win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_MENU, !canspotmon(mtmp) ? GLYPH_INVISIBLE : any_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
+        win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_MENU, any_seen_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
         start_menu_ex(win, GHMENU_STYLE_CHAT);
 
         struct available_chat_item available_chat_list[MAXCHATNUM] = { {0} };
@@ -2258,7 +2273,7 @@ dochat()
 
         /* Hello! This is the old chat, i.e., domonnoise function */
         strcpy(available_chat_list[chatnum].name, "\"Hello there!\"");
-        available_chat_list[chatnum].function_ptr = &domonnoise;
+        available_chat_list[chatnum].function_ptr = &domonnoise_with_popup;
         available_chat_list[chatnum].charnum = 'a' + chatnum;
 
         any = zeroany;
@@ -4539,7 +4554,7 @@ struct monst* mtmp;
             mtmp->isfaithful = 1;
     }
     else if(rn2(4) && mon_can_move(mtmp))
-        domonnoise(mtmp);
+        domonnoise(mtmp, FALSE);
     else
         pline("%s does not seem to react to your words.", Monnam(mtmp));
 
@@ -4614,7 +4629,7 @@ struct monst* mtmp;
             mtmp->isfaithful = 1;
     }
     else if(rn2(4) && mon_can_move(mtmp))
-        domonnoise(mtmp);
+        domonnoise(mtmp, FALSE);
     else
         pline("%s does not seem to react to your gesture.", Monnam(mtmp));
 
@@ -5463,7 +5478,7 @@ struct monst* mtmp;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, !canspotmon(mtmp) ? GLYPH_INVISIBLE : any_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, any_seen_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
     start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
 
     
@@ -5706,7 +5721,7 @@ struct monst* mtmp;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, !canspotmon(mtmp) ? GLYPH_INVISIBLE : any_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, any_seen_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
     start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
 
 
@@ -6815,7 +6830,7 @@ struct monst* mtmp;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, !canspotmon(mtmp) ? GLYPH_INVISIBLE : any_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, any_seen_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
     start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
 
     any = zeroany;
@@ -6923,7 +6938,7 @@ struct monst* mtmp;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, 0, !canspotmon(mtmp) ? GLYPH_INVISIBLE : any_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
+    win = create_nhwindow_ex(NHW_MENU, 0, any_seen_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
     start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
 
 
@@ -8213,7 +8228,7 @@ boolean addquotes;
     if (!mtmp || !linearray)
         return;
 
-    int glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
+    int glyph = any_seen_mon_to_glyph(mtmp, rn2_on_display_rng);
     const char* hermit_txt = 0;
     char namebuf[BUFSZ];
     strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
@@ -9295,7 +9310,7 @@ int* spell_otyps;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, !canspotmon(mtmp) ? GLYPH_INVISIBLE : any_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, any_seen_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
     start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
 
     for(spell_otyp_ptr = spell_otyps; spell_otyp_ptr && *spell_otyp_ptr > STRANGE_OBJECT; spell_otyp_ptr++)
