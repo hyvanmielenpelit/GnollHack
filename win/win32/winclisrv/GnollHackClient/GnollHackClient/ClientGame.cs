@@ -351,7 +351,7 @@ namespace GnollHackClient
                 queue.Enqueue(new GHRequest(this, GHRequestType.AskName));
                 while (string.IsNullOrEmpty(CharacterName))
                 {
-                    Thread.Sleep(25);
+                    Thread.Sleep(GHConstants.PollingInterval);
                     pollResponseQueue();
                 }
                 return CharacterName;
@@ -922,7 +922,7 @@ namespace GnollHackClient
                 if (!continuepolling)
                     break;
 
-                Thread.Sleep(25);
+                Thread.Sleep(GHConstants.PollingInterval);
                 pollResponseQueue();
             }
 
@@ -1162,7 +1162,7 @@ namespace GnollHackClient
                 /* Blocking call */
                 while (!_screenTextSet)
                 {
-                    Thread.Sleep(25);
+                    Thread.Sleep(GHConstants.PollingInterval);
                     pollResponseQueue();
                 }
 
@@ -1185,7 +1185,7 @@ namespace GnollHackClient
                         else
                             break;
                     }
-                    Thread.Sleep(25);
+                    Thread.Sleep(GHConstants.PollingInterval);
                     cnt++;
                 } while (cnt < 2000);
             }
@@ -1449,7 +1449,7 @@ namespace GnollHackClient
 
                         while (!_guiTipsFinished)
                         {
-                            Thread.Sleep(25);
+                            Thread.Sleep(GHConstants.PollingInterval);
                             pollResponseQueue();
                         }
                         break;
@@ -1465,7 +1465,7 @@ namespace GnollHackClient
 
                         while (!_crashReportFinished)
                         {
-                            Thread.Sleep(25);
+                            Thread.Sleep(GHConstants.PollingInterval);
                             pollResponseQueue();
                         }
 

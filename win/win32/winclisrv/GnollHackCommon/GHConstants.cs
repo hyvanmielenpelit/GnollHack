@@ -1000,7 +1000,7 @@ namespace GnollHackCommon
     {
         POPUP_TEXT_GENERAL = 0,
         POPUP_TEXT_IDENTIFY,
-        POPUP_TEXT_NO_GENOCIDED_LIST,
+        POPUP_TEXT_NO_MONSTERS_IN_LIST,
         POPUP_TEXT_DIALOGUE,
         POPUP_TEXT_ADVICE,
         POPUP_TEXT_MESSAGE,
@@ -1054,7 +1054,6 @@ namespace GnollHackCommon
         public const int InputBufferLength = 32;
         public const int BUFSZ = 256;
         public const int MaxGHWindows = 32;
-        public const int PollingInterval = 25;
         public const int MapCols = 80;
         public const int MapRows = 21;
         public const int DefaultAnimationInterval = 25;
@@ -1135,11 +1134,13 @@ namespace GnollHackCommon
         public const string GHSettingsResourcePath = "GnollHackClient.Assets.ghsettings.json";
         public const int MainCanvasAnimationFrequency = 40;
         public const uint MainCanvasAnimationInterval = 25;
-        public const int PollingFrequency = 40;
         public const int GameAnimationRefreshRate = 40;
         public const int MaxRefreshRate = 120;
+        public const int PollingFrequency = 67;
+        public const int PollingInterval = 15;
         public const bool IsGPUDefault = true;
         public const double DefaultTextWindowMaxWidth = 600.0;
+        public const double WindowHideIntervals = 3.0;
     }
 
 

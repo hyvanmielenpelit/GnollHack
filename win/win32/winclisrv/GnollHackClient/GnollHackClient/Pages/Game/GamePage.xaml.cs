@@ -568,7 +568,7 @@ namespace GnollHackClient.Pages.Game
             TextCanvas._parentGrid = TextGrid;
             TipView._parentGrid = null;
 
-            Device.StartTimer(TimeSpan.FromSeconds(1f / GHConstants.PollingFrequency), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(1.0 / GHConstants.PollingFrequency), () =>
             {
                 if(!StartingPositionsSet && !canvasView.CanvasSize.IsEmpty)
                 {
@@ -584,18 +584,12 @@ namespace GnollHackClient.Pages.Game
                 return true;
             });
 
-            Device.StartTimer(TimeSpan.FromSeconds(1f / 2), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
             {
                 if (ClientGame != null)
                     _cursorIsOn = !_cursorIsOn;
                 else
                     _cursorIsOn = false;
-
-                //if (MainGrid.IsVisible)
-                //    StartingCounter = 100;
-
-                //if (StartingCounter < 100)
-                //    StartingCounter++;
 
                 if (ShowFPS)
                 {
@@ -8365,7 +8359,7 @@ namespace GnollHackClient.Pages.Game
                 _menuHideCancelled = false;
                 _menuHideOn = true;
             }
-            Device.StartTimer(TimeSpan.FromSeconds(3f / GHConstants.PollingFrequency), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(GHConstants.WindowHideIntervals / GHConstants.GameAnimationRefreshRate), () =>
             {
                 lock (_menuHideCancelledLock)
                 {
@@ -8404,7 +8398,7 @@ namespace GnollHackClient.Pages.Game
                 _delayedTextHideOn = true;
                 _delayedTextHideCancelled = false;
             }
-            Device.StartTimer(TimeSpan.FromSeconds(3f / GHConstants.PollingFrequency), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(GHConstants.WindowHideIntervals / GHConstants.GameAnimationRefreshRate), () =>
             {
                 lock(_delayedTextHideLock)
                 {

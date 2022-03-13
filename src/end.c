@@ -2331,7 +2331,9 @@ boolean ask;
         }
     } else if (defquery == 'a' || defquery == 'b') {
         /* #dovanquished or #killed rather than final disclosure, so pline() is ok */
-        pline("No creatures have been vanquished.");
+        const char* nomsg = "No creatures have been vanquished.";
+        pline1(nomsg);
+        display_popup_text(nomsg, "No Vanquished Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
 #ifdef DUMPLOG
     } else if (dumping) {
         putstr(0, 0, "No creatures were vanquished."); /* not pline() */
@@ -2458,7 +2460,7 @@ boolean ask;
     {
         const char* nomsg = "No species have been genocided or become extinct.";
         pline1(nomsg); /* Game is still ongoing, so pline is ok */
-        display_popup_text(nomsg, "No Genocided Monsters", POPUP_TEXT_NO_GENOCIDED_LIST, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
+        display_popup_text(nomsg, "No Genocided Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
 #ifdef DUMPLOG
     } 
     else if (dumping) 
