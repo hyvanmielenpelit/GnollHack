@@ -8524,6 +8524,9 @@ create_context_menu(VOID_ARGS)
         add_context_menu('>', cmd_from_func(dodown), 0, cmap_to_glyph(S_dnstair), "Downstairs",
             "Stairs", 0, NO_COLOR);
 
+        add_context_menu('.', cmd_from_func(donull), 0, NO_GLYPH, "Select",
+            "Selection", 0, NO_COLOR);
+
         return;
     }
 

@@ -926,8 +926,13 @@ namespace GnollHackClient.Pages.Game
                 case 'r':
                     icon_string = "GnollHackClient.Assets.UI.read.png";
                     break;
-                case '.': /* Self */
-                    icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                case '.':
+                    if (data.target_text == "Selection") /* E.g., select position in getpos */
+                        icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                    else if (data.target_text == "Direction") /* Self */
+                        icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                    else
+                        icon_string = "GnollHackClient.Assets.UI.wait.png";
                     break;
                 default:
                     if (data.cmd_def_char == LastPickedCmd)
