@@ -2097,7 +2097,7 @@ open_skill_cmd_menu(skill_id, speedy)
 int skill_id;
 boolean speedy;
 {
-    int cmd_idx;
+    int cmd_idx = 0;
     menu_item* pick_list = (menu_item*)0;
     winid win;
     anything any;
