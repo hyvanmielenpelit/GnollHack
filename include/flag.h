@@ -328,6 +328,7 @@ struct instance_flags {
     boolean mon_polycontrol; /* debug: control monster polymorphs */
     boolean in_dumplog;    /* doing the dumplog right now? */
     boolean in_parse;      /* is a command being parsed? */
+    boolean in_getdir;     /* in_getdir */
 
     /* stuff that is related to options and/or user or platform preferences
      */

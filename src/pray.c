@@ -3248,6 +3248,35 @@ aligntyp alignment;
     return gnam;
 }
 
+const char*
+align_gdesc(alignment)
+aligntyp alignment;
+{
+    const char* result;
+    boolean isfemale = align_gfemale(alignment);
+
+    switch (alignment)
+    {
+    case A_NONE:
+        result = isfemale ? "the Lady of Evil" : "the Lord of Evil";
+        break;
+    case A_LAWFUL:
+        result = isfemale ? "the Lady of Law" : "the Lord of Law";
+        break;
+    case A_NEUTRAL:
+        result = isfemale ? "the Lady of Balance" : "the Lord of Balance";
+        break;
+    case A_CHAOTIC:
+        result = isfemale ? "the Lady of Chaos" : "the Lord of Chaos";
+        break;
+    default:
+        result = "the God of Unknown Alignment";
+        break;
+    }
+
+    return result;
+}
+
 static const char *hallu_gods[] = {
     "the Flying Spaghetti Monster", /* Church of the FSM */
     "Eris",                         /* Discordianism */

@@ -6994,6 +6994,8 @@ const char *s;
     int is_mov;
 
 retry:
+    iflags.in_getdir = TRUE;
+    create_context_menu();
     escape_sequence_key_start_allowed = 1;
     if (in_doagain || *readchar_queue)
         dirsym = readchar();
@@ -7005,21 +7007,26 @@ retry:
     /* remove the prompt string so caller won't have to */
     clear_nhwindow(WIN_MESSAGE);
 
-    if (redraw_cmd(dirsym)) { /* ^R */
+    if (redraw_cmd(dirsym)) 
+    { /* ^R */
         docrt();              /* redraw */
         goto retry;
     }
     savech(dirsym);
 
     if (dirsym == Cmd.spkeys[NHKF_GETDIR_SELF]
-        || dirsym == Cmd.spkeys[NHKF_GETDIR_SELF2]) {
+        || dirsym == Cmd.spkeys[NHKF_GETDIR_SELF2])
+    {
         u.dx = u.dy = u.dz = 0;
-    } else if (!(is_mov = movecmd(dirsym)) && !u.dz) {
+    } else if (!(is_mov = movecmd(dirsym)) && !u.dz) 
+    {
         boolean did_help = FALSE, help_requested;
 
-        if (!index(quitchars, dirsym)) {
+        if (!index(quitchars, dirsym))
+        {
             help_requested = (dirsym == Cmd.spkeys[NHKF_GETDIR_HELP]);
-            if (help_requested || iflags.cmdassist) {
+            if (help_requested || iflags.cmdassist) 
+            {
                 did_help = help_dir((s && *s == '^') ? dirsym : '\0',
                                     NHKF_ESC,
                                     help_requested ? (const char *) 0
@@ -7030,13 +7037,22 @@ retry:
             if (!did_help)
                 pline("What a strange direction!");
         }
+        iflags.in_getdir = FALSE;
+        create_context_menu();
         return 0;
-    } else if (is_mov && !dxdy_moveok()) {
+    } 
+    else if (is_mov && !dxdy_moveok()) 
+    {
         You_cant("orient yourself that direction.");
+        iflags.in_getdir = FALSE;
+        create_context_menu();
         return 0;
     }
     if (!u.dz && (Stunned || (Confusion && !rn2(5))))
         confdir();
+
+    iflags.in_getdir = FALSE;
+    create_context_menu();
     return 1;
 }
 
@@ -8068,12 +8084,14 @@ dotravel(VOID_ARGS)
         cc.y = u.uy;
     }
     iflags.getloc_travelmode = TRUE;
+    create_context_menu();
     if (iflags.menu_requested) {
         int gf = iflags.getloc_filter;
         iflags.getloc_filter = GFILTER_VIEW;
         if (!getpos_menu(&cc, GLOC_INTERESTING)) {
             iflags.getloc_filter = gf;
             iflags.getloc_travelmode = FALSE;
+            create_context_menu();
             return 0;
         }
         iflags.getloc_filter = gf;
@@ -8082,6 +8100,7 @@ dotravel(VOID_ARGS)
         if (getpos(&cc, TRUE, "the desired destination", CURSOR_STYLE_TRAVEL_CURSOR) < 0) {
             /* user pressed ESC */
             iflags.getloc_travelmode = FALSE;
+            create_context_menu();
             return 0;
         }
     }
@@ -8090,6 +8109,7 @@ dotravel(VOID_ARGS)
     iflags.travelcc.y = u.ty = cc.y;
     cmd[0] = Cmd.spkeys[NHKF_TRAVEL];
     readchar_queue = cmd;
+    create_context_menu();
     return 0;
 }
 
@@ -8496,6 +8516,32 @@ create_context_menu(VOID_ARGS)
 {
     clear_context_menu();
 
+    if (iflags.getloc_travelmode)
+    {
+        add_context_menu('<', cmd_from_func(doup), 0, cmap_to_glyph(S_upstair), "Upstairs",
+            "Stairs", 0, NO_COLOR);
+
+        add_context_menu('>', cmd_from_func(dodown), 0, cmap_to_glyph(S_dnstair), "Downstairs",
+            "Stairs", 0, NO_COLOR);
+
+        return;
+    }
+
+    if (iflags.in_getdir)
+    {
+        add_context_menu('<', cmd_from_func(doup), 0, cmap_to_glyph(S_upstair), "Upwards",
+            "Direction", 0, NO_COLOR);
+
+        add_context_menu('>', cmd_from_func(dodown), 0, cmap_to_glyph(S_dnstair), "Downwards",
+            "Direction", 0, NO_COLOR);
+
+        add_context_menu('.', cmd_from_func(donull), 0, u_to_glyph(), "Self",
+            "Direction", 0, NO_COLOR);
+
+        return;
+    }
+
+    /* Normal context menu */
     if (!isok(u.ux, u.uy))
         return;
 

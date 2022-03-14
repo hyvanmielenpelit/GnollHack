@@ -411,6 +411,9 @@ char c;
     case 'D':
         str = align_gname(A_LAWFUL);
         break;
+    case 'f':
+        str = align_gdesc(u.ualignbase[A_ORIGINAL]);
+        break;
     case 'e':
         str = align_gname(u.ualign.type);
         break;
@@ -776,7 +779,8 @@ int fd, msgnum;
     strcpy(prev_outline, "");
 
     int rounds = flags.initrole == ROLE_PRIEST ? NUM_ROLES : 1;
-    for (int k = 0; k < rounds; k++)
+    int k;
+    for (k = 0; k < rounds; k++)
     {
         if (k == ROLE_PRIEST)
             continue;
@@ -784,7 +788,8 @@ int fd, msgnum;
         if (flags.initrole == ROLE_PRIEST)
             flags.pantheon = k;
 
-        for (int j = A_CHAOTIC + 1; j <= A_LAWFUL + 1; j++)
+        int j;
+        for (j = A_CHAOTIC + 1; j <= A_LAWFUL + 1; j++)
         {
             flags.initalign = j;
             if (!validalign(flags.initrole, flags.initrace, flags.initalign))
@@ -859,7 +864,7 @@ void
 write_quest_texts(fd)
 int fd;
 {
-    int n_classes, i;
+    int n_classes, i, j, k;
     char qt_classes[N_HDR][LEN_HDR];
     long qt_offsets[N_HDR];
     
@@ -899,7 +904,7 @@ int fd;
     int original_alignbase = u.ualignbase[A_ORIGINAL];
     int ualigntype = u.ualign.type;
 
-    for (int j = 0; j < NUM_ROLES; j++)
+    for (j = 0; j < NUM_ROLES; j++)
     {
         const char* role_filecode = roles[j].filecode;
 #if 0 /* UNUSED but available */
@@ -936,7 +941,7 @@ int fd;
             {
                 Sprintf(buf, "-- Common --\n");
                 (void)write(fd, buf, strlen(buf));
-                for (int k = 1; k <= 60; k++)
+                for (k = 1; k <= 60; k++)
                 {
                     file_write_pager(msg_file2, temp_qt_list.common, fd, k);
                 }
@@ -944,7 +949,7 @@ int fd;
             }
             Sprintf(buf, "-- %s Quest --\n", roles[j].name.m);
             (void)write(fd, buf, strlen(buf));
-            for (int k = 1; k <= 91; k++)
+            for (k = 1; k <= 91; k++)
             {
                 file_write_pager(msg_file2, temp_qt_list.chrole, fd, k);
             }

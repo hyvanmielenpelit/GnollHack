@@ -1592,7 +1592,7 @@ Again you face %H.  Your intuition hints that this may be
 the final time you come here.
 %E
 %Cp Pri 00005
-"Greetings, honored %r.  It is good to see you."
+"Greetings, honored %c.  It is good to see you."
 %E
 %Cp Pri 00006
 "Ah, %p!  Surely you can help us in our hour of need."
@@ -1601,13 +1601,13 @@ the final time you come here.
 "Greetings, %s.  %lC has great need of your help."
 %E
 %Cp Pri 00008
-"Alas, it seems as if even %d has deserted us."
+"Alas, it seems as if even %f has deserted us."
 %E
 %Cp Pri 00009
-"May %d be with you, %s."
+"May %f be with you, %s."
 %E
 %Cp Pri 00010
-"Greetings, %r.  It is good to see you again."
+"Greetings, %c.  It is good to see you again."
 %E
 %Cp Pri 00011
 "Ah, %p!  Our deepest gratitude for all of your help."
@@ -1616,10 +1616,10 @@ the final time you come here.
 "Welcome back, %s!  With %o, no undead can stand against us."
 %E
 %Cp Pri 00013
-"Praise be to %d, for delivering us from %n."
+"Praise be to %f, for delivering us from %n."
 %E
 %Cp Pri 00014
-"May %d be with you, %s."
+"May %f be with you, %s."
 %E
 %Cc Pri 00015
 "Ah, %p, my %S.  You have returned to us at last.
@@ -1634,9 +1634,9 @@ great challenge."
 "Once more, %p, you stand within the sanctum.  Are you ready now?"
 %E
 %Cc Pri 00018
-"You are a heretic, %p!  How can you, %ra, deviate so from the
-teachings of %d?  Begone from this temple.  You are no longer
-%sa to this order.  We will pray to %d for other assistance,
+"You are a heretic, %p!  How can you, %ca, deviate so from the
+teachings of %f?  Begone from this temple.  You are no longer
+%sa to this order.  We will pray to %f for other assistance,
 as you have failed us utterly."
 %E [You are a heretic who has deviated from the teachings of %d.]
 %Cc Pri 00019
@@ -1646,10 +1646,10 @@ when you have attained the post of %R."
 %E [%rA cannot withstand %n.  Come back when you are %Ra.]
 %Cc Pri 00020
 "This is terrible, %p.  You have deviated from the true path!
-You know that %d requires the most strident devotion of this
+You know that %f requires the most strident devotion of this
 order.  The %shood must stand for utmost piety.
 
-"Go from here, atone for your sins against %d.  Return only when
+"Go from here, atone for your sins against %f.  Return only when
 you have purified yourself."
 %E [You have deviated from the path.  Return when you have purified yourself.]
 %Cc Pri 00021
@@ -1669,10 +1669,10 @@ to %ns lair.  If you can manage to defeat %n and return
 %o here, we can then drive off the legions of
 undead that befoul the land.
 
-"Go with %d as your guide, %p."
+"Go with %f as your guide, %p."
 %E [%nC invaded %H and captured %o.  Defeat %ni and retrieve %oh.]
 %Cp Pri 00025
-"You can prevail, if you rely on %d."
+"You can prevail, if you rely on %f."
 %E
 %Cp Pri 00026
 "Remember that %n has great magic at his command."
@@ -1691,7 +1691,7 @@ undead that befoul the land.
 against %n."
 %E
 %Cp Pri 00031
-"Call upon %d when your need is greatest.  You will be answered."
+"Call upon %f when your need is greatest.  You will be answered."
 %E
 %Cp Pri 00032
 "The undead legions are weakest during the daylight hours."
@@ -1727,17 +1727,17 @@ Again, you have invaded %ns domain.
 %o.
 
 "No, I see you are no %gC.  Perhaps I shall have some fun today
-after all.  Prepare to die, %r!  You shall never regain
+after all.  Prepare to die, %c!  You shall never regain
 %o."
 %E [%lC has sent you, but you are no %gC.  I shall destroy you.]
 %Cp Pri 00051
-"So, %r.  Again you challenge me."
+"So, %c.  Again you challenge me."
 %E
 %Cp Pri 00052
-"Die now, %r.  %d has no power here to aid you."
+"Die now, %c.  %f has no power here to aid you."
 %E
 %Cp Pri 00053
-"You shall die, %r, and I will have %o back."
+"You shall die, %c, and I will have %o back."
 %E
 %Cp Pri 00060
 "Submit to my will, %c, and I shall spare you."
@@ -1749,7 +1749,7 @@ after all.  Prepare to die, %r!  You shall never regain
 "I shall have you turned into a zombie for my pleasure!"
 %E
 %Cp Pri 00063
-"Despair now, %r.  %d cannot help you."
+"Despair now, %c.  %fC cannot help you."
 %E
 %Cp Pri 00064
 "I shall feast upon your soul for many days, %c."
@@ -1764,18 +1764,18 @@ after all.  Prepare to die, %r!  You shall never regain
 "Your precious %lt will be my next victim."
 %E
 %Cp Pri 00068
-"I feel your powers failing you, %r.  You shall die now."
+"I feel your powers failing you, %c.  You shall die now."
 %E
 %Cp Pri 00069
 "With %o, nothing can stand in my way."
 %E
 %Cc Pri 00070
 As you pick up %o, you feel the essence of
-%d fill your soul.  You know now why %n stole it from
-%H, for with it, %ca of %d could
+%f fill your soul.  You know now why %n stole it from
+%H, for with it, %ca of %f could
 easily defeat his plans.
 
-You sense a message from %d.  Though not verbal, you
+You sense a message from %f.  Though not verbal, you
 get the impression that you must return to %l as soon
 as possible.
 %E [You feel %d as you pick up %o; return %oh to %l.]
@@ -1785,7 +1785,7 @@ into a cloud of noxious gas.
 
 Suddenly, a voice booms out:
 
-    "Thou hast defeated the least of my minions, %r.
+    "Thou hast defeated the least of my minions, %c.
     Know now that Moloch is aware of thy presence.
     As for thee, %n, I shall deal with thy failure
     at my leisure."
@@ -1797,11 +1797,11 @@ You then hear the voice of %n, screaming in terror...
 Congratulations.
 
 "I have been in meditation, and have received direction from
-a minion of %d.  %d commands that you retain
+a minion of %f.  %fC commands that you retain
 %o.  With it, you must recover the Amulet
 of Yendor.
 
-"Go forth, and let %d guide your steps."
+"Go forth, and let %f guide your steps."
 %E [Congratulations, %p.  Keep %o; go and recover the Amulet.]
 %Cc Pri 00082
 %lC reiterates that %o is yours now.
@@ -1814,10 +1814,10 @@ that brought you here."
 "Welcome back, %p.  How is your quest for the Amulet going?"
 %E
 %Cc Pri 00091
-"You have prevailed, %p!  %d is surely with you.  Now,
-you must take the amulet, and sacrifice it on %ds altar on
+"You have prevailed, %p!  %fC is surely with you.  Now,
+you must take the amulet, and sacrifice it on %fs altar on
 the Astral Plane.  I suspect that I shall never see you again in this
-life, but I hope to at %ds feet."
+life, but I hope to at %fs feet."
 %E [Take the Amulet to the Astral Plane and offer it on %ds altar.]
 #
 #	Ranger

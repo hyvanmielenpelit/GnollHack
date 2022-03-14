@@ -906,10 +906,16 @@ namespace GnollHackClient.Pages.Game
                     icon_string = "GnollHackClient.Assets.UI.pickup.png";
                     break;
                 case '<':
-                    icon_string = "GnollHackClient.Assets.UI.stairs-up.png";
+                    if (data.target_text == "Direction") /* Upwards */
+                        icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                    else
+                        icon_string = "GnollHackClient.Assets.UI.stairs-up.png";
                     break;
                 case '>':
-                    icon_string = "GnollHackClient.Assets.UI.stairs-down.png";
+                    if (data.target_text == "Direction") /* Downwards */
+                        icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                    else
+                        icon_string = "GnollHackClient.Assets.UI.stairs-down.png";
                     break;
                 case ':':
                     icon_string = "GnollHackClient.Assets.UI.lookhere.png";
@@ -919,6 +925,9 @@ namespace GnollHackClient.Pages.Game
                     break;
                 case 'r':
                     icon_string = "GnollHackClient.Assets.UI.read.png";
+                    break;
+                case '.': /* Self */
+                    icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
                     break;
                 default:
                     if (data.cmd_def_char == LastPickedCmd)

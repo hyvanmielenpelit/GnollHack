@@ -14470,7 +14470,9 @@ boolean via_pline;
     info.parameter_values[1] = (float)msgnum;
     info.parameter_names[2] = "OriginalAlignmentIndex";
     info.parameter_values[2] = (float)u.ualignbase[A_ORIGINAL];
-    info.parameter_names[3] = (char*)0;
+    info.parameter_names[3] = "OriginalGodGenderIndex";
+    info.parameter_values[3] = (float)align_gfemale(u.ualignbase[A_ORIGINAL]);
+    info.parameter_names[4] = (char*)0;
 
     play_immediate_ghsound(info);
 }
@@ -14503,7 +14505,9 @@ boolean via_pline;
     info.parameter_values[6] = (float)flags.female;
     info.parameter_names[7] = "YouBlind";
     info.parameter_values[7] = (float)Blind;
-    info.parameter_names[8] = (char*)0;
+    info.parameter_names[8] = "OriginalGodGenderIndex";
+    info.parameter_values[8] = (float)align_gfemale(u.ualignbase[A_ORIGINAL]);
+    info.parameter_names[9] = (char*)0;
 
     if (via_pline)
     {
