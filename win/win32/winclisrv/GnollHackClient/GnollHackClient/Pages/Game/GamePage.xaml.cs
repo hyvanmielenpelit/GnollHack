@@ -949,7 +949,7 @@ namespace GnollHackClient.Pages.Game
 
             LabeledImageButton lib = new LabeledImageButton();
             lib.ImgSourcePath = "resource://" + icon_string;
-            lib.LargerFont = true;
+            lib.LargerFont = false;
             lib.LblText = data.cmd_text;
             lib.SetSideSize(_currentPageWidth, _currentPageHeight);
             lib.BtnCommand = data.cmd_cur_char;
