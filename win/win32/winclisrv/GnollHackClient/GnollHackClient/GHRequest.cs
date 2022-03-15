@@ -47,7 +47,7 @@ namespace GnollHackClient
     {
         public int cmd_def_char;
         public int cmd_cur_char;
-        public int dir;
+        public int style;
         public int glyph;
         public string cmd_text;
         public string target_text;

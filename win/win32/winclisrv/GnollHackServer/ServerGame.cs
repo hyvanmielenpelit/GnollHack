@@ -309,7 +309,7 @@ namespace GnollHackServer
 
         }
 
-        public void GameCallback_AddContextMenu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, string cmd_text, string target_text, int attr, int color)
+        public void GameCallback_AddContextMenu(int cmd_def_char, int cmd_cur_char, int style, int glyph, string cmd_text, string target_text, int attr, int color)
         {
 
         }

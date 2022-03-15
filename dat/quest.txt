@@ -3499,6 +3499,7 @@ Go now!  You are banished from this place.
  %A:	return(Alignnam(u.ualign.type));
  %d:	return((char *)align_gname(u.ualignbase[1]));
  %D:	return((char *)align_gname(A_LAWFUL));
+ %f:	return((char *)align_gdesc(u.ualignbase[1]));
  %C:	return("chaotic");
  %N:	return("neutral");
  %L:	return("lawful");

@@ -1031,6 +1031,14 @@ namespace GnollHackCommon
         MAX_SPECIAL_VIEW_TYPES
     }
 
+    public enum context_menu_styles
+    {
+        CONTEXT_MENU_STYLE_GENERAL = 0,
+        CONTEXT_MENU_STYLE_DIRECTION,
+        CONTEXT_MENU_STYLE_SELECTION,
+    }
+
+
     public enum downloaded_file_check_results
     {
         OK = 0,

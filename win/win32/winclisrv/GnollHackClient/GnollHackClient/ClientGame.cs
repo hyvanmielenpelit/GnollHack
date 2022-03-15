@@ -1042,7 +1042,7 @@ namespace GnollHackClient
             }
         }
 
-        public void ClientCallback_AddContextMenu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, string cmd_text, string target_text, int attr, int color)
+        public void ClientCallback_AddContextMenu(int cmd_def_char, int cmd_cur_char, int style, int glyph, string cmd_text, string target_text, int attr, int color)
         {
             ConcurrentQueue<GHRequest> queue;
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
@@ -1050,7 +1050,7 @@ namespace GnollHackClient
                 AddContextMenuData data = new AddContextMenuData();
                 data.cmd_def_char = cmd_def_char;
                 data.cmd_cur_char = cmd_cur_char;
-                data.dir = dir;
+                data.style = style;
                 data.glyph = glyph;
                 data.cmd_text = cmd_text;
                 data.target_text = target_text;

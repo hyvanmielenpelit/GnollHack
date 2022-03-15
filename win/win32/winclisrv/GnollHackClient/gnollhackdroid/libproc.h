@@ -80,7 +80,7 @@ void lib_add_ambient_ghsound(struct soundsource_t* soundsource);
 void lib_delete_ambient_ghsound(struct soundsource_t* soundsource);
 void lib_set_ambient_ghsound_volume(struct soundsource_t* soundsource);
 void lib_clear_context_menu(VOID_ARGS);
-void lib_add_context_menu(int cmd_def_char, int cmd_cur_char, int dir, int glyph, const char* cmd_text, const char* target_text, int attr, int color);
+void lib_add_context_menu(int cmd_def_char, int cmd_cur_char, int style, int glyph, const char* cmd_text, const char* target_text, int attr, int color);
 void lib_update_status_button(int cmd, int btn, int val, unsigned long bflags);
 void lib_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, unsigned long tflags);
 void lib_display_floating_text(int x, int y, const char* text, int style, int attr, int color, unsigned long tflags);

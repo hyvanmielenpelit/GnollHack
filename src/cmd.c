@@ -6558,7 +6558,7 @@ register char *cmd;
     boolean prefix_seen, bad_command,
         firsttime = (cmd == 0);
 
-    create_context_menu();
+    create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
     update_here_window();
     init_print_glyph(INIT_GLYPH_PETS);
 
@@ -6994,8 +6994,7 @@ const char *s;
     int is_mov;
 
 retry:
-    iflags.in_getdir = TRUE;
-    create_context_menu();
+    create_context_menu(CREATE_CONTEXT_MENU_IN_GETDIR);
     escape_sequence_key_start_allowed = 1;
     if (in_doagain || *readchar_queue)
         dirsym = readchar();
@@ -7037,22 +7036,19 @@ retry:
             if (!did_help)
                 pline("What a strange direction!");
         }
-        iflags.in_getdir = FALSE;
-        create_context_menu();
+        create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
         return 0;
     } 
     else if (is_mov && !dxdy_moveok()) 
     {
         You_cant("orient yourself that direction.");
-        iflags.in_getdir = FALSE;
-        create_context_menu();
+        create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
         return 0;
     }
     if (!u.dz && (Stunned || (Confusion && !rn2(5))))
         confdir();
 
-    iflags.in_getdir = FALSE;
-    create_context_menu();
+    create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
     return 1;
 }
 
@@ -8084,14 +8080,14 @@ dotravel(VOID_ARGS)
         cc.y = u.uy;
     }
     iflags.getloc_travelmode = TRUE;
-    create_context_menu();
+    create_context_menu(CREATE_CONTEXT_MENU_IN_GETPOS_TRAVEL_MODE);
     if (iflags.menu_requested) {
         int gf = iflags.getloc_filter;
         iflags.getloc_filter = GFILTER_VIEW;
         if (!getpos_menu(&cc, GLOC_INTERESTING)) {
             iflags.getloc_filter = gf;
             iflags.getloc_travelmode = FALSE;
-            create_context_menu();
+            create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
             return 0;
         }
         iflags.getloc_filter = gf;
@@ -8100,7 +8096,7 @@ dotravel(VOID_ARGS)
         if (getpos(&cc, TRUE, "the desired destination", CURSOR_STYLE_TRAVEL_CURSOR) < 0) {
             /* user pressed ESC */
             iflags.getloc_travelmode = FALSE;
-            create_context_menu();
+            create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
             return 0;
         }
     }
@@ -8109,7 +8105,7 @@ dotravel(VOID_ARGS)
     iflags.travelcc.y = u.ty = cc.y;
     cmd[0] = Cmd.spkeys[NHKF_TRAVEL];
     readchar_queue = cmd;
-    create_context_menu();
+    create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
     return 0;
 }
 
@@ -8512,118 +8508,120 @@ dolight(VOID_ARGS)
 }
 
 void
-create_context_menu(VOID_ARGS)
+create_context_menu(menu_type)
+enum create_context_menu_types menu_type;
 {
     clear_context_menu();
 
-    if (iflags.getloc_travelmode)
+    switch (menu_type)
     {
-        add_context_menu('<', cmd_from_func(doup), 0, cmap_to_glyph(S_upstair), "Upstairs",
+    case CREATE_CONTEXT_MENU_IN_GETPOS_TRAVEL_MODE:
+        add_context_menu('<', cmd_from_func(doup), CONTEXT_MENU_STYLE_GENERAL, cmap_to_glyph(S_upstair), "Upstairs",
             "Stairs", 0, NO_COLOR);
 
-        add_context_menu('>', cmd_from_func(dodown), 0, cmap_to_glyph(S_dnstair), "Downstairs",
+        add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_GENERAL, cmap_to_glyph(S_dnstair), "Downstairs",
             "Stairs", 0, NO_COLOR);
 
-        add_context_menu('.', cmd_from_func(donull), 0, NO_GLYPH, "Select",
-            "Selection", 0, NO_COLOR);
+        add_context_menu('.', cmd_from_func(donull), CONTEXT_MENU_STYLE_SELECTION, NO_GLYPH, "Select",
+            0, 0, NO_COLOR);
+        break;
+    case CREATE_CONTEXT_MENU_IN_GETDIR:
+        add_context_menu('<', cmd_from_func(doup), CONTEXT_MENU_STYLE_DIRECTION, cmap_to_glyph(S_upstair), "Upwards",
+            0, 0, NO_COLOR);
 
-        return;
-    }
+        add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_DIRECTION, cmap_to_glyph(S_dnstair), "Downwards",
+            0, 0, NO_COLOR);
 
-    if (iflags.in_getdir)
+        add_context_menu('.', cmd_from_func(donull), CONTEXT_MENU_STYLE_DIRECTION, u_to_glyph(), "Self",
+            0, 0, NO_COLOR);
+        break;
+    default:
+    case CREATE_CONTEXT_MENU_NORMAL:
     {
-        add_context_menu('<', cmd_from_func(doup), 0, cmap_to_glyph(S_upstair), "Upwards",
-            "Direction", 0, NO_COLOR);
 
-        add_context_menu('>', cmd_from_func(dodown), 0, cmap_to_glyph(S_dnstair), "Downwards",
-            "Direction", 0, NO_COLOR);
+        /* Normal context menu */
+        if (!isok(u.ux, u.uy))
+            return;
 
-        add_context_menu('.', cmd_from_func(donull), 0, u_to_glyph(), "Self",
-            "Direction", 0, NO_COLOR);
-
-        return;
-    }
-
-    /* Normal context menu */
-    if (!isok(u.ux, u.uy))
-        return;
-
-    struct obj* otmp = level.objects[u.ux][u.uy];
-    struct rm* lev = &levl[u.ux][u.uy];
-    if (IS_ALTAR(lev->typ))
-    {
-        add_context_menu(M('o'), cmd_from_func(dosacrifice), 0, back_to_glyph(u.ux, u.uy), "Offer", 0, 0, NO_COLOR);
-        add_context_menu(M('p'), cmd_from_func(dopray), 0, back_to_glyph(u.ux, u.uy), "Pray", 0, 0, NO_COLOR);
-    }
-    else if (IS_FOUNTAIN(lev->typ) || IS_SINK(lev->typ))
-    {
-        add_context_menu('q', cmd_from_func(dodrink), 0, back_to_glyph(u.ux, u.uy), "Drink", 0, 0, NO_COLOR);
-        add_context_menu(M('d'), cmd_from_func(dodip), 0, back_to_glyph(u.ux, u.uy), "Dip", 0, 0, NO_COLOR);
-    }
-    else if (IS_THRONE(lev->typ))
-    {
-        add_context_menu(C('s'), cmd_from_func(dosit), 0, back_to_glyph(u.ux, u.uy), "Sit", "on Throne", 0, NO_COLOR);
-    }
-    else if ((u.ux == xupstair && u.uy == yupstair)
-        || (u.ux == sstairs.sx && u.uy == sstairs.sy && sstairs.up)
-        || (u.ux == xupladder && u.uy == yupladder)) 
-    {
-        add_context_menu('<', cmd_from_func(doup), 0, back_to_glyph(u.ux, u.uy), "Go Up", 
-            (u.ux == xupladder && u.uy == yupladder) ? "Ladder" : "Stairs", 0, NO_COLOR);
-    }
-    else if ((u.ux == xdnstair && u.uy == ydnstair)
-        || (u.ux == sstairs.sx && u.uy == sstairs.sy && !sstairs.up)
-        || (u.ux == xdnladder && u.uy == ydnladder)) 
-    {
-        add_context_menu('>', cmd_from_func(dodown), 0, back_to_glyph(u.ux, u.uy), "Go Down",
-            (u.ux == xdnladder && u.uy == ydnladder) ? "Ladder" : "Stairs", 0, NO_COLOR);
-    }
-
-    struct monst* shkp = can_pay_to_shkp();
-    if (shkp && has_eshk(shkp))
-    {
-        struct eshk* eshkp = ESHK(shkp);
-        if (eshkp->robbed || eshkp->debit || eshkp->billct)
+        struct obj* otmp = level.objects[u.ux][u.uy];
+        struct rm* lev = &levl[u.ux][u.uy];
+        if (IS_ALTAR(lev->typ))
         {
-            add_context_menu('p', cmd_from_func(dopay), 0, any_mon_to_glyph(shkp, rn2_on_display_rng), "Pay", 0, 0, NO_COLOR);
+            add_context_menu(M('o'), cmd_from_func(dosacrifice), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Offer", 0, 0, NO_COLOR);
+            add_context_menu(M('p'), cmd_from_func(dopray), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Pray", 0, 0, NO_COLOR);
         }
-    }
-
-    if (otmp)
-    {
-        add_context_menu(',', cmd_from_func(dopickup), 0, iflags.using_gui_tiles ? otmp->gui_glyph : otmp->glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
-        struct obj* otmp_here;
-        boolean eat_added = FALSE;
-        boolean loot_added = FALSE;
-        for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
+        else if (IS_FOUNTAIN(lev->typ) || IS_SINK(lev->typ))
         {
-            if (!eat_added && is_edible(otmp_here))
-            {
-                add_context_menu('e', cmd_from_func(doeat), 0, iflags.using_gui_tiles ? otmp_here->gui_glyph : otmp_here->glyph, "Eat", cxname(otmp_here), 0, NO_COLOR);
-                eat_added = TRUE;
-            }
+            add_context_menu('q', cmd_from_func(dodrink), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Drink", 0, 0, NO_COLOR);
+            add_context_menu(M('d'), cmd_from_func(dodip), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Dip", 0, 0, NO_COLOR);
+        }
+        else if (IS_THRONE(lev->typ))
+        {
+            add_context_menu(C('s'), cmd_from_func(dosit), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Sit", "on Throne", 0, NO_COLOR);
+        }
+        else if ((u.ux == xupstair && u.uy == yupstair)
+            || (u.ux == sstairs.sx && u.uy == sstairs.sy && sstairs.up)
+            || (u.ux == xupladder && u.uy == yupladder))
+        {
+            add_context_menu('<', cmd_from_func(doup), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Go Up",
+                (u.ux == xupladder && u.uy == yupladder) ? "Ladder" : "Stairs", 0, NO_COLOR);
+        }
+        else if ((u.ux == xdnstair && u.uy == ydnstair)
+            || (u.ux == sstairs.sx && u.uy == sstairs.sy && !sstairs.up)
+            || (u.ux == xdnladder && u.uy == ydnladder))
+        {
+            add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Go Down",
+                (u.ux == xdnladder && u.uy == ydnladder) ? "Ladder" : "Stairs", 0, NO_COLOR);
+        }
 
-            if (!loot_added && Is_container(otmp_here))
+        struct monst* shkp = can_pay_to_shkp();
+        if (shkp && has_eshk(shkp))
+        {
+            struct eshk* eshkp = ESHK(shkp);
+            if (eshkp->robbed || eshkp->debit || eshkp->billct)
             {
-                add_context_menu('l', cmd_from_func(doloot), 0, iflags.using_gui_tiles ? otmp_here->gui_glyph : otmp_here->glyph, "Loot", cxname(otmp_here), 0, NO_COLOR);
-                loot_added = TRUE;
+                add_context_menu('p', cmd_from_func(dopay), CONTEXT_MENU_STYLE_GENERAL, any_mon_to_glyph(shkp, rn2_on_display_rng), "Pay", 0, 0, NO_COLOR);
             }
         }
+
+        if (otmp)
+        {
+            add_context_menu(',', cmd_from_func(dopickup), CONTEXT_MENU_STYLE_GENERAL, iflags.using_gui_tiles ? otmp->gui_glyph : otmp->glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
+            struct obj* otmp_here;
+            boolean eat_added = FALSE;
+            boolean loot_added = FALSE;
+            for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
+            {
+                if (!eat_added && is_edible(otmp_here))
+                {
+                    add_context_menu('e', cmd_from_func(doeat), CONTEXT_MENU_STYLE_GENERAL, iflags.using_gui_tiles ? otmp_here->gui_glyph : otmp_here->glyph, "Eat", cxname(otmp_here), 0, NO_COLOR);
+                    eat_added = TRUE;
+                }
+
+                if (!loot_added && Is_container(otmp_here))
+                {
+                    add_context_menu('l', cmd_from_func(doloot), CONTEXT_MENU_STYLE_GENERAL, iflags.using_gui_tiles ? otmp_here->gui_glyph : otmp_here->glyph, "Loot", cxname(otmp_here), 0, NO_COLOR);
+                    loot_added = TRUE;
+                }
+            }
+        }
+
+        const char* dfeature = adjusted_dfeature_at(u.ux, u.uy);
+        int displ_style = here_window_display_style(dfeature, otmp);
+
+        if (Blind || displ_style == 2)
+        {
+            add_context_menu(':', cmd_from_func(dolook), CONTEXT_MENU_STYLE_GENERAL, NO_GLYPH, "Look Here", "", 0, NO_COLOR);
+        }
+
+        if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration_left > 0)
+        {
+            struct obj* lpobj;
+            if ((lpobj = o_on(context.last_picked_obj_oid, invent)) != 0)
+                add_context_menu(M('<'), cmd_from_func(dolastpickeditem), CONTEXT_MENU_STYLE_GENERAL, lpobj ? (iflags.using_gui_tiles ? lpobj->gui_glyph : lpobj->glyph) : 0, "Last Item", lpobj ? cxname(lpobj) : "", 0, NO_COLOR);
+        }
+        break;
     }
-
-    const char* dfeature = adjusted_dfeature_at(u.ux, u.uy);
-    int displ_style = here_window_display_style(dfeature, otmp);
-
-    if (Blind || displ_style == 2)
-    {
-        add_context_menu(':', cmd_from_func(dolook), 0, NO_GLYPH, "Look Here", "", 0, NO_COLOR);
-    }
-
-    if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration_left > 0)
-    {
-        struct obj* lpobj;
-        if ((lpobj = o_on(context.last_picked_obj_oid, invent)) != 0)
-            add_context_menu(M('<'), cmd_from_func(dolastpickeditem), 0, lpobj ? (iflags.using_gui_tiles ? lpobj->gui_glyph : lpobj->glyph) : 0, "Last Item", lpobj ? cxname(lpobj) : "", 0, NO_COLOR);
     }
 }
 

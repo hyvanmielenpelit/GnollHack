@@ -906,16 +906,28 @@ namespace GnollHackClient.Pages.Game
                     icon_string = "GnollHackClient.Assets.UI.pickup.png";
                     break;
                 case '<':
-                    if (data.target_text == "Direction") /* Upwards */
-                        icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
-                    else
-                        icon_string = "GnollHackClient.Assets.UI.stairs-up.png";
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_DIRECTION: /* Downwards */
+                            icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            break;
+                        default:
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
+                            icon_string = "GnollHackClient.Assets.UI.stairs-up.png";
+                            break;
+                    }
                     break;
                 case '>':
-                    if (data.target_text == "Direction") /* Downwards */
-                        icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
-                    else
-                        icon_string = "GnollHackClient.Assets.UI.stairs-down.png";
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_DIRECTION: /* Downwards */
+                            icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            break;
+                        default:
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
+                            icon_string = "GnollHackClient.Assets.UI.stairs-down.png";
+                            break;
+                    }
                     break;
                 case ':':
                     icon_string = "GnollHackClient.Assets.UI.lookhere.png";
@@ -927,12 +939,19 @@ namespace GnollHackClient.Pages.Game
                     icon_string = "GnollHackClient.Assets.UI.read.png";
                     break;
                 case '.':
-                    if (data.target_text == "Selection") /* E.g., select position in getpos */
-                        icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
-                    else if (data.target_text == "Direction") /* Self */
-                        icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
-                    else
-                        icon_string = "GnollHackClient.Assets.UI.wait.png";
+                    switch(data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_SELECTION: /* E.g., select position in getpos */
+                            icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            break;
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_DIRECTION:
+                            icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            break;
+                        default:
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
+                            icon_string = "GnollHackClient.Assets.UI.wait.png";
+                            break;
+                    }
                     break;
                 default:
                     if (data.cmd_def_char == LastPickedCmd)
