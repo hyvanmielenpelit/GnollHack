@@ -93,9 +93,11 @@
     <None Remove="Assets\UI\frame-topleft.png" />
     <None Remove="Assets\UI\frame-vertical.png" />
     <None Remove="Assets\UI\genesis.png" />
+    <None Remove="Assets\UI\handedness.png" />
     <None Remove="Assets\UI\help.png" />
     <None Remove="Assets\UI\identify.png" />
     <None Remove="Assets\UI\inventory.png" />
+    <None Remove="Assets\UI\invoke.png" />
     <None Remove="Assets\UI\jump.png" />
     <None Remove="Assets\UI\kick.png" />
     <None Remove="Assets\UI\lastitem.png" />
@@ -130,6 +132,7 @@
     <None Remove="Assets\UI\reveal.png" />
     <None Remove="Assets\UI\ride.png" />
     <None Remove="Assets\UI\rightring.png" />
+    <None Remove="Assets\UI\rub.png" />
     <None Remove="Assets\UI\scroll.png" />
     <None Remove="Assets\UI\search.png" />
     <None Remove="Assets\UI\search20.png" />
@@ -178,6 +181,7 @@
     <None Remove="Assets\UI\takeoffmany.png" />
     <None Remove="Assets\UI\teleport.png" />
     <None Remove="Assets\UI\throw.png" />
+    <None Remove="Assets\UI\tip.png" />
     <None Remove="Assets\UI\travel.png" />
     <None Remove="Assets\UI\twoweap.png" />
     <None Remove="Assets\UI\untrap.png" />
@@ -185,6 +189,7 @@
     <None Remove="Assets\UI\wear.png" />
     <None Remove="Assets\UI\whatis.png" />
     <None Remove="Assets\UI\wield.png" />
+    <None Remove="Assets\UI\wipe.png" />
     <None Remove="Assets\UI\wish.png" />
     <None Remove="Assets\UI\yell.png" />
     <None Remove="Assets\UI\yes.png" />
@@ -249,9 +254,11 @@
     <EmbeddedResource Include="Assets\UI\frame-topleft.png" />
     <EmbeddedResource Include="Assets\UI\frame-vertical.png" />
     <EmbeddedResource Include="Assets\UI\genesis.png" />
+    <EmbeddedResource Include="Assets\UI\handedness.png" />
     <EmbeddedResource Include="Assets\UI\help.png" />
     <EmbeddedResource Include="Assets\UI\identify.png" />
     <EmbeddedResource Include="Assets\UI\inventory.png" />
+    <EmbeddedResource Include="Assets\UI\invoke.png" />
     <EmbeddedResource Include="Assets\UI\jump.png" />
     <EmbeddedResource Include="Assets\UI\kick.png" />
     <EmbeddedResource Include="Assets\UI\lastitem.png" />
@@ -286,6 +293,7 @@
     <EmbeddedResource Include="Assets\UI\reveal.png" />
     <EmbeddedResource Include="Assets\UI\ride.png" />
     <EmbeddedResource Include="Assets\UI\rightring.png" />
+    <EmbeddedResource Include="Assets\UI\rub.png" />
     <EmbeddedResource Include="Assets\UI\scroll.png" />
     <EmbeddedResource Include="Assets\UI\search.png" />
     <EmbeddedResource Include="Assets\UI\search20.png" />
@@ -334,6 +342,7 @@
     <EmbeddedResource Include="Assets\UI\takeoffmany.png" />
     <EmbeddedResource Include="Assets\UI\teleport.png" />
     <EmbeddedResource Include="Assets\UI\throw.png" />
+    <EmbeddedResource Include="Assets\UI\tip.png" />
     <EmbeddedResource Include="Assets\UI\travel.png" />
     <EmbeddedResource Include="Assets\UI\twoweap.png" />
     <EmbeddedResource Include="Assets\UI\untrap.png" />
@@ -341,6 +350,7 @@
     <EmbeddedResource Include="Assets\UI\wear.png" />
     <EmbeddedResource Include="Assets\UI\whatis.png" />
     <EmbeddedResource Include="Assets\UI\wield.png" />
+    <EmbeddedResource Include="Assets\UI\wipe.png" />
     <EmbeddedResource Include="Assets\UI\wish.png" />
     <EmbeddedResource Include="Assets\UI\yell.png" />
     <EmbeddedResource Include="Assets\UI\yes.png" />
