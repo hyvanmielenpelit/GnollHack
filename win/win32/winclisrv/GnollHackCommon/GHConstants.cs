@@ -1149,6 +1149,8 @@ namespace GnollHackCommon
         public const bool IsGPUDefault = true;
         public const double DefaultTextWindowMaxWidth = 600.0;
         public const double WindowHideIntervals = 3.0;
+        public const uint MainCanvasAnimationTime = 250;
+        public const uint AuxiliaryCanvasAnimationTime = 240;
     }
 
 

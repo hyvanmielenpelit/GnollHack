@@ -683,43 +683,36 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private uint _animationLength = 10;
+        private uint _mainAnimationLength = GHConstants.MainCanvasAnimationTime / ClientUtils.GetMainCanvasAnimationInterval();
+        private uint _auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / ClientUtils.GetAuxiliaryCanvasAnimationInterval();
         private void StartMainCanvasAnimation()
         {
-            uint timeToAnimate = GHConstants.MainCanvasAnimationInterval * _animationLength;
-            Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, _animationLength);
-            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: timeToAnimate, rate: GHConstants.MainCanvasAnimationInterval, repeat: () => MainGrid.IsVisible);
+            Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, _mainAnimationLength);
+            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: GHConstants.MainCanvasAnimationTime, 
+                rate: ClientUtils.GetMainCanvasAnimationInterval(), repeat: () => MainGrid.IsVisible);
         }
 
         private void StartCommandCanvasAnimation()
         {
-            uint interval = ClientUtils.GetAuxiliaryCanvasAnimationInterval();
-            uint commandTimeToAnimate = interval * _animationLength;
-            Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, _animationLength);
-            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: interval, repeat: () => MoreCommandsGrid.IsVisible);
+            Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
+            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
+                rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => MoreCommandsGrid.IsVisible);
         }
 
         private void StartMenuCanvasAnimation()
         {
-            uint interval = ClientUtils.GetAuxiliaryCanvasAnimationInterval();
-            uint commandTimeToAnimate = interval * _animationLength;
-            Animation commandAnimation = new Animation(v => MenuCanvas.GeneralAnimationCounter = (long)v, 1, _animationLength);
-            commandAnimation.Commit(MenuCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: interval, repeat: () => MenuGrid.IsVisible);
+            Animation commandAnimation = new Animation(v => MenuCanvas.GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
+            commandAnimation.Commit(MenuCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
+                rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => MenuGrid.IsVisible);
         }
         private void StartTextCanvasAnimation()
         {
-            uint interval = ClientUtils.GetAuxiliaryCanvasAnimationInterval();
-            uint commandTimeToAnimate = interval * _animationLength;
-            Animation commandAnimation = new Animation(v => TextCanvas.GeneralAnimationCounter = (long)v, 1, _animationLength);
-            commandAnimation.Commit(TextCanvas, "GeneralAnimationCounter", length: commandTimeToAnimate, rate: interval, repeat: () => TextGrid.IsVisible);
+            Animation commandAnimation = new Animation(v => TextCanvas.GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
+            commandAnimation.Commit(TextCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
+                rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => TextGrid.IsVisible);
         }
 
         private bool StartingPositionsSet { get; set; }
-
-        //private object _startingLock = new object();
-        //private int _starting_counter = 0;
-        //public int StartingCounter { get { lock (_startingLock) { return _starting_counter; } } set { lock (_startingLock) { _starting_counter = value; } } }
-
         private bool _useUnifromAnimationInterval = false;
         public long GetAnimationCounterIncrement()
         {

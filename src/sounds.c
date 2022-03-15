@@ -19,7 +19,7 @@ STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
 
 STATIC_DCL void FDECL(hermit_talk, (struct monst*, const char**, enum ghsound_types));
-STATIC_DCL void FDECL(popup_talk, (struct monst*, const char**, enum ghsound_types, BOOLEAN_P, BOOLEAN_P));
+STATIC_DCL void FDECL(popup_talk, (struct monst*, const char**, enum ghsound_types, int, int, BOOLEAN_P, BOOLEAN_P));
 
 STATIC_DCL int FDECL(do_chat_hermit_dungeons, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_quests, (struct monst*));
@@ -1888,7 +1888,7 @@ bark_here:
         char pbuf[BUFSZ];
         Sprintf(pbuf, "%s %s", Monnam(mtmp), pline_msg);
         if(dopopup)
-            popup_talk_line_no_quotes(mtmp, pbuf);
+            popup_talk_line_ex(mtmp, pbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         else
             pline1(pbuf);
     }
@@ -1909,7 +1909,7 @@ bark_here:
             char tmpbuf[BUFSZ] = "";
             (void)ucase(strcpy(tmpbuf, verbl_msg));
             if(dopopup)
-                popup_talk_line_no_quotes(mtmp, tmpbuf);
+                popup_talk_line_ex(mtmp, tmpbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
             else
                 pline1(tmpbuf);
         }
@@ -4482,14 +4482,22 @@ STATIC_OVL int
 do_chat_pet_sit(mtmp)
 struct monst* mtmp;
 {
+    if (!mtmp)
+        return 0;
+
+    char pbuf[BUFSZ] = "";
     if (mtmp->mtame > 5 || (mtmp->mtame > 0 && rn2(mtmp->mtame + 1)))
     {
-        pline("%s sits down!", Monnam(mtmp));
+        Sprintf(pbuf, "%s sits down!", Monnam(mtmp));
         mtmp->mstaying = 2 + rn2(5);
         mtmp->mwantstomove = 0;
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
     }
     else
-        pline("%s stares at you but does nothing.", Monnam(mtmp));
+    {
+        Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
+    }
 
     return 1;
 }
@@ -4505,14 +4513,19 @@ struct monst* mtmp;
     boolean givepawsuccess = FALSE;
     givepawsuccess = mtmp->mtame > 1 ? rn2(mtmp->mtame) : FALSE;
 
+    char pbuf[BUFSZ] = "";
     if (givepawsuccess)
     {
-        pline("%s gives you the paw!", Monnam(mtmp));
+        Sprintf(pbuf, "%s gives you the paw!", Monnam(mtmp));
         if (mtmp->mtame > 0 && mtmp->mtame < 20 && !rn2(mtmp->mtame + 20))
             mtmp->mtame++;
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
     }
     else
-        pline("%s stares at you but does nothing.", Monnam(mtmp));
+    {
+        Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
+    }
 
     return 1;
 }
@@ -4524,6 +4537,7 @@ struct monst* mtmp;
     if (!mtmp)
         return 0;
 
+    char pbuf[BUFSZ] = "";
     if (is_animal(mtmp->data) && mtmp->mtame > 2 && rn2(mtmp->mtame) && mon_can_move(mtmp) && (!has_edog(mtmp) || (has_edog(mtmp) && (EDOG(mtmp)->abuse <= 0 || !rn2(EDOG(mtmp)->abuse + 2)))))
     {
         play_monster_happy_sound(mtmp, MONSTER_HAPPY_SOUND_NORMAL);
@@ -4531,19 +4545,19 @@ struct monst* mtmp;
         switch (mtmp->data->msound)
         {
         case MS_BARK:
-            pline("%s woofs.", Monnam(mtmp));
+            Sprintf(pbuf, "%s woofs.", Monnam(mtmp));
             break;
         case MS_MEW:
-            pline("%s mews softly.", Monnam(mtmp));
+            Sprintf(pbuf, "%s mews softly.", Monnam(mtmp));
             break;
         case MS_NEIGH:
-            pline("%s snorts.", Monnam(mtmp));
+            Sprintf(pbuf, "%s snorts.", Monnam(mtmp));
             break;
         case MS_BLEAT:
-            pline("%s baas.", Monnam(mtmp));
+            Sprintf(pbuf, "%s baas.", Monnam(mtmp));
             break;
         default:
-            pline("%s seems to appreciate your kind words!", Monnam(mtmp));
+            Sprintf(pbuf, "%s seems to appreciate your kind words!", Monnam(mtmp));
             break;
         }
 
@@ -4552,12 +4566,16 @@ struct monst* mtmp;
 
         if (mtmp->mtame >= 15 && !mtmp->isfaithful && !rn2(max(2, 25 - mtmp->mtame)))
             mtmp->isfaithful = 1;
+
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
     }
     else if(rn2(4) && mon_can_move(mtmp))
         domonnoise(mtmp, FALSE);
     else
-        pline("%s does not seem to react to your words.", Monnam(mtmp));
-
+    {
+        Sprintf(pbuf, "%s does not seem to react to your words.", Monnam(mtmp));
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
+    }
     return 1;
 }
 
@@ -4568,15 +4586,23 @@ struct monst* mtmp;
     if (!mtmp)
         return 0;
 
+    char pbuf[BUFSZ] = "";
     if (is_animal(mtmp->data) && !is_peaceful(mtmp))
     {
+        int color = NO_COLOR;
         if (!rn2(is_domestic(mtmp->data) ? 20 : 200) && !(mtmp->data->mflags2 & M2_HOSTILE) && !(mtmp->data->geno & G_UNIQ) && !mtmp->iswiz && mtmp->cham < LOW_PM)
         {
             mtmp->mpeaceful = 1;
-            pline("%s seems to appreciate your gesture!", Monnam(mtmp));
+            Sprintf(pbuf, "%s seems to appreciate your gesture!", Monnam(mtmp));
+            color = CLR_MSG_POSITIVE;
         }
         else
-            pline("%s does not seem to appreciate your gesture!", Monnam(mtmp));
+        {
+            Sprintf(pbuf, "%s does not seem to appreciate your gesture!", Monnam(mtmp));
+            color = CLR_MSG_NEGATIVE;
+        }
+
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, color, TRUE, FALSE);
     }
     else if (is_animal(mtmp->data) && is_peaceful(mtmp) && !is_tame(mtmp))
     {
@@ -4584,18 +4610,21 @@ struct monst* mtmp;
         {
             mtmp->mpeaceful = 1;
             tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, FALSE);
-            pline("%s seems to appreciate your gesture!", Monnam(mtmp));
+            Sprintf(pbuf, "%s seems to appreciate your gesture!", Monnam(mtmp));
+            popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
         }
         else
         {
             if (!rn2(is_domestic(mtmp->data) ? 40 : 10) && !(mtmp->data->mflags2 & M2_PEACEFUL))
             {
-                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s does not seem to appreciate your gesture!", Monnam(mtmp));
+                Sprintf(pbuf, "%s does not seem to appreciate your gesture!", Monnam(mtmp));
                 setmangry(mtmp, FALSE);
+                popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_NEGATIVE, TRUE, FALSE);
             }
             else
             {
-                pline("%s seems to ignore your gesture!", Monnam(mtmp));
+                Sprintf(pbuf, "%s seems to ignore your gesture!", Monnam(mtmp));
+                popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
             }
         }
     }
@@ -4606,19 +4635,19 @@ struct monst* mtmp;
         switch (mtmp->data->msound)
         {
         case MS_BARK:
-            pline("%s grunts softly in appreciation!", Monnam(mtmp));
+            Sprintf(pbuf, "%s grunts softly in appreciation!", Monnam(mtmp));
             break;
         case MS_MEW:
-            pline("%s purrs in appreciation!", Monnam(mtmp));
+            Sprintf(pbuf, "%s purrs in appreciation!", Monnam(mtmp));
             break;
         case MS_NEIGH:
-            pline("%s snorts in appreciation!", Monnam(mtmp));
+            Sprintf(pbuf, "%s snorts in appreciation!", Monnam(mtmp));
             break;
         case MS_BLEAT:
-            pline("%s baas in appreciation!", Monnam(mtmp));
+            Sprintf(pbuf, "%s baas in appreciation!", Monnam(mtmp));
             break;
         default:
-            pline("%s seems to appreciate your gesture!", Monnam(mtmp));
+            Sprintf(pbuf, "%s seems to appreciate your gesture!", Monnam(mtmp));
             break;
         }
 
@@ -4627,12 +4656,16 @@ struct monst* mtmp;
 
         if (mtmp->mtame >= 15 && !mtmp->isfaithful && !rn2(max(2, 25 - mtmp->mtame)))
             mtmp->isfaithful = 1;
+
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
     }
     else if(rn2(4) && mon_can_move(mtmp))
         domonnoise(mtmp, FALSE);
     else
-        pline("%s does not seem to react to your gesture.", Monnam(mtmp));
-
+    {
+        Sprintf(pbuf, "%s does not seem to react to your gesture.", Monnam(mtmp));
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
+    }
     newsym(mtmp->mx, mtmp->my);
     flush_screen(1);
 
@@ -4644,22 +4677,28 @@ STATIC_OVL int
 do_chat_pet_stay(mtmp)
 struct monst* mtmp;
 {
+    if (!mtmp)
+        return 0;
+
+    char pbuf[BUFSZ] = "";
     if (mtmp->mtame > 5 || (mtmp->mtame > 0 && rn2(mtmp->mtame + 1)))
     {
         if (is_steed(mtmp->data))
-            pline("%s looks determined not to move anywhere.", Monnam(mtmp));
+            Sprintf(pbuf, "%s looks determined not to move anywhere.", Monnam(mtmp));
         else if is_animal(mtmp->data)
-            pline("%s sits down and looks determined not to move anywhere.", Monnam(mtmp));
+            Sprintf(pbuf, "%s sits down and looks determined not to move anywhere.", Monnam(mtmp));
         else if (is_speaking_monster(mtmp->data))
-            pline("%s starts to hold its position.", Monnam(mtmp));
+            Sprintf(pbuf, "%s starts to hold its position.", Monnam(mtmp));
         else
-            pline("%s starts to hold its position.", Monnam(mtmp));
+            Sprintf(pbuf, "%s starts to hold its position.", Monnam(mtmp));
 
         mtmp->mstaying = 25 + rn2(20);
         mtmp->mwantstomove = 0;
     }
     else
-        pline("%s stares at you but does nothing.", Monnam(mtmp));
+        Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+
+    popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
 
     return 1;
 }
@@ -4669,22 +4708,28 @@ STATIC_OVL int
 do_chat_pet_standup(mtmp)
 struct monst* mtmp;
 {
+    if (!mtmp)
+        return 0;
+
+    char pbuf[BUFSZ] = "";
     if (mtmp->mtame > 0 && mtmp->mstaying)
     {
         if (is_steed(mtmp->data))
-            pline("%s stops staying put.", Monnam(mtmp));
+            Sprintf(pbuf, "%s stops staying put.", Monnam(mtmp));
         else if is_animal(mtmp->data)
-            pline("%s stands up.", Monnam(mtmp));
+            Sprintf(pbuf, "%s stands up.", Monnam(mtmp));
         else if (is_speaking_monster(mtmp->data))
-            pline("%s stops holding its position.", Monnam(mtmp));
+            Sprintf(pbuf, "%s stops holding its position.", Monnam(mtmp));
         else
-            pline("%s stops holding its position.", Monnam(mtmp));
+            Sprintf(pbuf, "%s stops holding its position.", Monnam(mtmp));
 
         mtmp->mstaying = 0;
         mtmp->mwantstomove = 1;
     }
     else
-        pline("%s stares at you but does nothing.", Monnam(mtmp));
+        Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+
+    popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
 
     return 1;
 }
@@ -4698,15 +4743,18 @@ struct monst* mtmp;
 
     if (speak_check())
     {
+        char pbuf[BUFSZ] = "";
         short oldvalue = mtmp->mcomingtou;
         mtmp->mcomingtou = 100 + rnd(50);
         mtmp->yell_x = u.ux;
         mtmp->yell_y = u.uy;
 
         if (mtmp->mcomingtou > oldvalue)
-            pline("%s is now following you more closely.", Monnam(mtmp));
+            Sprintf(pbuf, "%s is now following you more closely.", Monnam(mtmp));
         else
-            pline("%s %s.", Monnam(mtmp), has_head(mtmp->data) ? "nods" : "looks perplexed");
+            Sprintf(pbuf, "%s %s.", Monnam(mtmp), has_head(mtmp->data) ? "nods" : "looks perplexed");
+
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
 
         return 1;
     }
@@ -4722,15 +4770,18 @@ struct monst* mtmp;
 
     if (speak_check())
     {
+        char pbuf[BUFSZ] = "";
         short oldvalue = mtmp->mcomingtou;
         mtmp->mcomingtou = 0;
         mtmp->yell_x = 0;
         mtmp->yell_y = 0;
 
         if (oldvalue > 0)
-            pline("%s stops following you.", Monnam(mtmp));
+            Sprintf(pbuf, "%s stops following you.", Monnam(mtmp));
         else
-            pline("%s looks perplexed.", Monnam(mtmp));
+            Sprintf(pbuf, "%s looks perplexed.", Monnam(mtmp));
+
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
 
         return 1;
     }
@@ -4779,7 +4830,9 @@ struct monst* mtmp;
     }
     else
     {
-        pline("%s stares at you but does nothing.", Monnam(mtmp));
+        char pbuf[BUFSZ] = "";
+        Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
     }
 
 
@@ -4795,6 +4848,7 @@ struct monst* mtmp;
 
     struct edog* edog = (struct edog*)0;
     boolean has_edog = !mtmp->isminion;
+    char pbuf[BUFSZ] = "";
 
     int omx = mtmp->mx;
     int omy = mtmp->my;
@@ -4838,12 +4892,14 @@ struct monst* mtmp;
         }
         if(itemspicked == 0 && shkpreaction != 2)
         {
-            pline("%s stares at you but does nothing.", Monnam(mtmp));
+            Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+            popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
         }
     }
     else
     {
-        pline("%s stares at you but does nothing.", Monnam(mtmp));
+        Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
     }
 
 
@@ -4956,7 +5012,6 @@ struct monst* mtmp;
     long cnt;
     struct obj* otmp, * otmp2;
     menu_item* pick_list;
-
     char qbuf[BUFSIZ] = "";
     Sprintf(qbuf, "What would you like to feed to %s?", mon_nam(mtmp));
 
@@ -8187,13 +8242,15 @@ const char* line;
 }
 
 void
-popup_talk_line_no_quotes(mtmp, line)
+popup_talk_line_ex(mtmp, line, attr, color, printtext, addquotes)
 struct monst* mtmp;
 const char* line;
+int attr, color;
+boolean printtext, addquotes;
 {
     const char* linearray[2] = { 0, 0 };
     linearray[0] = line;
-    popup_talk(mtmp, linearray, GHSOUND_NONE, TRUE, FALSE);
+    popup_talk(mtmp, linearray, GHSOUND_NONE, attr, color, printtext, addquotes);
 }
 
 void
@@ -8214,14 +8271,15 @@ struct monst* mtmp;
 const char** linearray;
 enum ghsound_types soundid;
 {
-    popup_talk(mtmp, linearray, soundid, TRUE, TRUE);
+    popup_talk(mtmp, linearray, soundid, ATR_NONE, NO_COLOR, TRUE, TRUE);
 }
 
 STATIC_OVL void
-popup_talk(mtmp, linearray, soundid, printtext, addquotes)
+popup_talk(mtmp, linearray, soundid, attr, color, printtext, addquotes)
 struct monst* mtmp;
 const char** linearray;
 enum ghsound_types soundid;
+int attr, color;
 boolean printtext;
 boolean addquotes;
 {
@@ -8248,7 +8306,7 @@ boolean addquotes;
                 else
                     pline1(hermit_txt);
             }
-            display_popup_text(hermit_txt, namebuf, POPUP_TEXT_DIALOGUE, 0, 0, glyph, addquotes ? POPUP_FLAGS_ADD_QUOTES : 0);
+            display_popup_text(hermit_txt, namebuf, POPUP_TEXT_DIALOGUE, attr, color, glyph, addquotes ? POPUP_FLAGS_ADD_QUOTES : 0);
         }
         idx++;
     }
