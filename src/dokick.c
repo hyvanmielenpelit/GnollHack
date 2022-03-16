@@ -785,6 +785,8 @@ boolean is_golf_swing;
         {
             if (!trap->tseen)
                 find_trap(trap);
+
+            play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
             You_cant("%s %s that's in a %s!", 
                 verb,
                 something,
@@ -807,6 +809,7 @@ boolean is_golf_swing;
     {
         if (is_golf_swing)
         {
+            play_sfx_sound(SFX_THUMP_HIT);
             pline("Thump!");
             return 1;
         }
@@ -911,6 +914,7 @@ boolean is_golf_swing;
     {
         if (is_golf_swing)
         {
+            play_sfx_sound(SFX_THUMP_HIT);
             pline("Thump!");
             return 1;
         }
@@ -918,7 +922,10 @@ boolean is_golf_swing;
         boolean otrp = kickedobj->otrapped;
 
         if (range < 2)
+        {
+            play_sfx_sound(SFX_THUMP_HIT);
             pline("THUD!");
+        }
         container_impact_dmg(kickedobj, x, y);
         if (kickedobj->olocked) {
             if (!rn2(5) || (martial() && !rn2(2))) {
@@ -952,6 +959,7 @@ boolean is_golf_swing;
     }
     else if (Is_container(kickedobj) && (objects[kickedobj->otyp].oc_flags4 & O4_CONTAINER_MAY_CONTAIN_MONSTER))
     {
+        play_sfx_sound(SFX_THUMP_HIT);
         pline("THUD!");
         container_impact_dmg(kickedobj, x, y);
         if (maybe_disturb_container_monster(kickedobj))
@@ -970,7 +978,10 @@ boolean is_golf_swing;
      */
     if (range < 2) {
         if (!Is_box(kickedobj))
+        {
+            play_sfx_sound(SFX_THUMP_HIT);
             pline("Thump!");
+        }
         return (!rn2(3) || martial());
     }
 
@@ -991,7 +1002,9 @@ boolean is_golf_swing;
                 newsym(x, y);
                 return 1;
             }
-            if (kickedobj->quan > 300L) {
+            if (kickedobj->quan > 300L) 
+            {
+                play_sfx_sound(SFX_THUMP_HIT);
                 pline("Thump!");
                 return (!rn2(3) || martial());
             }

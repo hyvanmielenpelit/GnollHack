@@ -801,6 +801,7 @@ enum ghsound_types {
     GHSOUND_FILL_OIL_UP,
     GHSOUND_GENERIC_ITEM_GIVE,
     GHSOUND_CAN_OF_GREASE_APPLY,
+    GHSOUND_THUMP_HIT,
 
     GHSOUND_INTRO_TEXT,
     GHSOUND_COM_PAGER,
@@ -2022,6 +2023,7 @@ enum sfx_sound_types {
     SFX_RUB,
     SFX_APPLY_TINNING_KIT,
     SFX_FILL_OIL_UP,
+    SFX_THUMP_HIT,
     MAX_SFX_SOUND_TYPES
 };
 
@@ -2273,7 +2275,7 @@ enum object_sound_types {
     OBJECT_SOUND_TYPE_EROSION_BURNT,     /* Sound upon item erosion by burn */
     OBJECT_SOUND_TYPE_EROSION_CORRODES,  /* Sound upon item erosion by corrosion */
     OBJECT_SOUND_TYPE_EROSION_ROTS,      /* Sound upon item erosion by rotting */
-    OBJECT_SOUND_TYPE_GENERAL_EFFECT,    /* Sound upon general effect 1 - E.g., Discarding a tin */
+    OBJECT_SOUND_TYPE_GENERAL_EFFECT,    /* Sound upon general effect 1 - E.g., for weapon, a thump sound, otherwise, discarding a tin */
     OBJECT_SOUND_TYPE_GENERAL_EFFECT2,   /* Sound when general effect 2 - E.g., for axe, when you hit and sparks fly, or a glob coalesces */
     OBJECT_SOUND_TYPE_PUSH,              /* Sound upon pushing the item on the ground */
     OBJECT_SOUND_TYPE_BUMP_INTO,         /* Sound upon bumping into the item, especially boulder */

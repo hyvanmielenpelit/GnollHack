@@ -54,10 +54,25 @@
                         <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" />
                     </StackLayout>
 
-                    <StackLayout x:Name="UpperCmdLayout" Orientation="Horizontal" InputTransparent="true" CascadeInputTransparent="false"
-                        HorizontalOptions="End"
-                        AbsoluteLayout.LayoutBounds="1.0, 0.0, AutoSize, AutoSize" 
-                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent">
+                    <StackLayout x:Name="AbilityLayout" Padding="0,2"
+                        HorizontalOptions="Start"
+                        AbsoluteLayout.LayoutBounds="0.0, 0.0, AutoSize, AutoSize" 
+                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" >
+                        <controls:LabeledImageButton x:Name="lAbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" />
+                    </StackLayout>
+                </AbsoluteLayout>
+
+                <Grid Grid.Row="0" InputTransparent="True" CascadeInputTransparent="False"
+                      HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackLayout Grid.Row="0" x:Name="UpperCmdLayout" Orientation="Horizontal" InputTransparent="true" CascadeInputTransparent="false"
+                        HorizontalOptions="End">
+                        <!--AbsoluteLayout.LayoutBounds="1.0, 0.0, AutoSize, AutoSize" 
+                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent"-->
                         <StackLayout x:Name="ZoomLayout" Padding="0" Orientation="Horizontal"
                             HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
                             <controls:SimpleImageButton x:Name="GameMenuButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-menu.png" BtnClicked="GameMenuButton_Clicked"/>
@@ -77,35 +92,14 @@
                             </StackLayout>
                         </StackLayout>
                     </StackLayout>
-
-                    <StackLayout x:Name="AbilityLayout" Padding="0,2"
-                        HorizontalOptions="Start"
-                        AbsoluteLayout.LayoutBounds="0.0, 0.0, AutoSize, AutoSize" 
-                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" >
-                        <controls:LabeledImageButton x:Name="lAbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" />
-                    </StackLayout>
-                    <StackLayout x:Name="StatusLayout" Padding="0,2"
-                        HorizontalOptions="Start"
-                        AbsoluteLayout.LayoutBounds="0.0, 0.5, AutoSize, AutoSize" 
-                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" >
-                        <controls:LabeledImageButton x:Name="lSkillButton" LblText="Skill" BtnLetter="S" LargerFont="True" IsVisible="False" ImgSourcePath="resource://GnollHackClient.Assets.UI.skill.png" BtnClicked="GHButton_Clicked" />
-                    </StackLayout>
-                </AbsoluteLayout>
-
-                <Grid Grid.Row="0" InputTransparent="True" CascadeInputTransparent="False"
-                      HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <StackLayout Grid.Row="0" x:Name="ContextGrid" Padding="0,2"
-                        HorizontalOptions="End" VerticalOptions="End">
-                    </StackLayout>
-                    <StackLayout Grid.Row="0" x:Name="MessageNumberGrid" Padding="0,2"
+                    <FlexLayout Grid.Row="1" x:Name="ContentFlexLayout" InputTransparent="True" CascadeInputTransparent="False" Padding="0,2" Direction="Column" Wrap="Reverse" 
+                                JustifyContent="End" AlignItems="End" AlignContent="Start" HorizontalOptions="End" VerticalOptions="End" >
+                    </FlexLayout>
+                    <StackLayout Grid.Row="1" x:Name="MessageNumberGrid" Padding="0,2"
                         HorizontalOptions="Start" VerticalOptions="End">
                         <Button x:Name="ToggleMessageNumberButton" Text="" Clicked="ToggleMessageNumberButton_Clicked" HeightRequest="60" WidthRequest="60" BackgroundColor="Transparent" />
                     </StackLayout>
-                    <StackLayout Grid.Row="1" x:Name="ButtonRowStack" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical"
+                    <StackLayout Grid.Row="2" x:Name="ButtonRowStack" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical"
                         BackgroundColor="#66000000">
                         <Grid x:Name="UpperCmdGrid" HeightRequest="60" HorizontalOptions="CenterAndExpand" >
                             <Grid.RowDefinitions>

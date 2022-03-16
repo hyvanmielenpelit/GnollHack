@@ -8516,10 +8516,10 @@ enum create_context_menu_types menu_type;
     switch (menu_type)
     {
     case CREATE_CONTEXT_MENU_IN_GETPOS_TRAVEL_MODE:
-        add_context_menu('<', cmd_from_func(doup), CONTEXT_MENU_STYLE_GENERAL, cmap_to_glyph(S_upstair), "Upstairs",
+        add_context_menu('<', cmd_from_func(doup), CONTEXT_MENU_STYLE_GENERAL, cmap_to_glyph(S_upstair), "Stairs Up",
             "Stairs", 0, NO_COLOR);
 
-        add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_GENERAL, cmap_to_glyph(S_dnstair), "Downstairs",
+        add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_GENERAL, cmap_to_glyph(S_dnstair), "Stairs Down",
             "Stairs", 0, NO_COLOR);
 
         add_context_menu('.', cmd_from_func(donull), CONTEXT_MENU_STYLE_SELECTION, NO_GLYPH, "Select",

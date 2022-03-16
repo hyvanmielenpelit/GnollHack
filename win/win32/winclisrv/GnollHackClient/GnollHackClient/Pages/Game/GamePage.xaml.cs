@@ -860,9 +860,9 @@ namespace GnollHackClient.Pages.Game
 
         public void ClearContextMenu()
         {
-            ContextGrid.Children.Clear();
+            ContentFlexLayout.Children.Clear();
             _contextMenuData.Clear();
-            ContextGrid.IsVisible = false;
+            ContentFlexLayout.IsVisible = false;
         }
         public void AddContextMenu(AddContextMenuData data)
         {
@@ -971,8 +971,8 @@ namespace GnollHackClient.Pages.Game
             lib.SetSideSize(_currentPageWidth, _currentPageHeight);
             lib.BtnCommand = data.cmd_cur_char;
             lib.BtnClicked += GHButton_Clicked;
-            ContextGrid.IsVisible = true;
-            ContextGrid.Children.Add(lib);
+            ContentFlexLayout.IsVisible = true;
+            ContentFlexLayout.Children.Add(lib);
         }
 
         public void DisplayFloatingText(DisplayFloatingTextData data)
@@ -1180,9 +1180,9 @@ namespace GnollHackClient.Pages.Game
         private void ContextButton_Clicked(object sender, EventArgs e)
         {
             int idx = 0;
-            idx = ContextGrid.Children.IndexOf((Xamarin.Forms.View)sender);
+            idx = ContentFlexLayout.Children.IndexOf((Xamarin.Forms.View)sender);
             if (idx < 0)
-                idx = ContextGrid.Children.IndexOf((Xamarin.Forms.View)((Xamarin.Forms.View)sender).Parent);
+                idx = ContentFlexLayout.Children.IndexOf((Xamarin.Forms.View)((Xamarin.Forms.View)sender).Parent);
 
             if (idx >= 0 && idx < _contextMenuData.Count)
             {
@@ -6432,7 +6432,7 @@ namespace GnollHackClient.Pages.Game
                 lAbilitiesButton.HeightRequest = statusbarheight;
                 lWornItemsButton.SetSideSize(width, height);
                 lWornItemsButton.HeightRequest = statusbarheight;
-                lSkillButton.SetSideSize(width, height);
+                //lSkillButton.SetSideSize(width, height);
                 UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
 
                 foreach (View v in UpperCmdGrid.Children)

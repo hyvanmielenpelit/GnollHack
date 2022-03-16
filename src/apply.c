@@ -4828,6 +4828,7 @@ struct obj *obj;
                Note:  we only do this when a statue is displayed here,
                because the player is probably attempting to attack it;
                other statues obscured by anything are just ignored. */
+            play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
             pline("Thump!  Your blow bounces harmlessly off the statue.");
             wake_nearto(bhitpos.x, bhitpos.y, 25);
         }
@@ -6175,6 +6176,7 @@ struct obj* obj;
         if (maploc->typ == SDOOR) 
         {
             cvt_sdoor_to_door(x, y); /* ->typ = DOOR */
+            play_sfx_sound(SFX_THUMP_HIT);
             pline("Thump!  Your swing uncovers a secret door!");
             return 1;
         }
@@ -6275,6 +6277,7 @@ struct obj* obj;
     if (Blind)
         feel_location(x, y); /* we know we hit it */
 thump:
+    play_sfx_sound(SFX_THUMP_HIT);
     pline("Thump!");
     return 1;
 }

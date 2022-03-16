@@ -82,7 +82,8 @@ STATIC_PTR int
 picklock(VOID_ARGS)
 {
     boolean key_found = FALSE;
-    for(struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+    struct obj* otmp;
+    for(otmp = invent; otmp; otmp = otmp->nobj)
         if (otmp == xlock.key)
         {
             key_found = TRUE;
@@ -315,7 +316,8 @@ struct obj *box;
 boolean destroyit;
 {
     int x = box->ox, y = box->oy;
-    if (!destroyit) { /* bill for the box but not for its contents */
+    if (!destroyit) 
+    { /* bill for the box but not for its contents */
         struct obj *hide_contents = box->cobj;
 
         box->cobj = 0;
@@ -325,7 +327,9 @@ boolean destroyit;
         box->obroken = 1;
         box->lknown = 1;
         newsym(box->ox, box->oy);
-    } else { /* #force has destroyed this box (at <u.ux,u.uy>) */
+    }
+    else 
+    { /* #force has destroyed this box (at <u.ux,u.uy>) */
         struct obj *otmp;
         struct monst *shkp = (*u.ushops && costly_spot(u.ux, u.uy))
                                  ? shop_keeper(*u.ushops)
@@ -334,15 +338,18 @@ boolean destroyit;
                 peaceful_shk = costly && is_peaceful(shkp);
         long loss = 0L;
 
-        pline("In fact, you've totally destroyed %s.", the(xname(box)));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "In fact, you've totally destroyed %s.", the(xname(box)));
         /* Put the contents on ground at the hero's feet. */
-        while ((otmp = box->cobj) != 0) {
+        while ((otmp = box->cobj) != 0) 
+        {
             obj_extract_self(otmp);
-            if (!rn2(3) || otmp->oclass == POTION_CLASS) {
+            if (!rn2(3) || otmp->oclass == POTION_CLASS) 
+            {
                 chest_shatter_msg(otmp, x, y);
                 if (costly)
                     loss += stolen_value(otmp, u.ux, u.uy, peaceful_shk, TRUE);
-                if (otmp->quan == 1L) {
+                if (otmp->quan == 1L) 
+                {
                     obfree(otmp, (struct obj *) 0);
                     continue;
                 }
@@ -350,7 +357,8 @@ boolean destroyit;
                    otherwise it would fail since otmp is not in inventory */
                 useup(otmp);
             }
-            if (box->otyp == ICE_BOX && otmp->otyp == CORPSE) {
+            if (box->otyp == ICE_BOX && otmp->otyp == CORPSE) 
+            {
                 otmp->age = monstermoves - otmp->age; /* actual age */
                 start_corpse_timeout(otmp);
             }
@@ -374,31 +382,37 @@ forcelock(VOID_ARGS)
 
     if (xlock.box->keyotyp == NUM_OBJECTS)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s has no observable lock to force.", The(cxname(xlock.box)));
         return ((xlock.usedtime = 0));
     }
 
-    if (xlock.usedtime++ >= 50 || !uwep || (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data))) {
-        You("give up your attempt to force the lock.");
+    if (xlock.usedtime++ >= 50 || !uwep || (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data))) 
+    {
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "give up your attempt to force the lock.");
         if (xlock.usedtime >= 50) /* you made the effort */
             exercise((xlock.picktyp) ? A_DEX : A_STR, TRUE);
         return ((xlock.usedtime = 0));
     }
 
-    if (xlock.picktyp) { /* blade */
+    if (xlock.picktyp) 
+    { /* blade */
         if (rn2(1000 - (int) uwep->enchantment) > (992 - greatest_erosion(uwep) * 10)
-            && !uwep->cursed && !obj_resists(uwep, 0, 99)) {
+            && !uwep->cursed && !obj_resists(uwep, 0, 99))
+        {
             /* for a +0 weapon, probability that it survives an unsuccessful
              * attempt to force the lock is (.992)^50 = .67
              */
-            pline("%sour %s broke!", (uwep->quan > 1L) ? "One of y" : "Y",
+            play_simple_object_sound(uwep, OBJECT_SOUND_TYPE_BREAK);
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%sour %s broke!", (uwep->quan > 1L) ? "One of y" : "Y",
                   xname(uwep));
             useup(uwep);
-            You("give up your attempt to force the lock.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "give up your attempt to force the lock.");
             exercise(A_DEX, TRUE);
             return ((xlock.usedtime = 0));
         }
-    } else             /* blunt */
+    }
+    else             /* blunt */
         wake_nearby(); /* due to hammering on the container */
 
     if (rn2(100) >= xlock.chance)
@@ -410,15 +424,17 @@ forcelock(VOID_ARGS)
     }
     else if (xlock.box->keyotyp != xlock.key->otyp || xlock.box->special_quality != xlock.key->special_quality)
     {
+        play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         if (xlock.box->keyotyp == MAGIC_KEY)
-            You("fail to force the magic lock on the %s.", cxname(xlock.box));
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "fail to force the magic lock on the %s.", cxname(xlock.box));
         else
-            You("fail to force the lock on the %s.", cxname(xlock.box));
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "fail to force the lock on the %s.", cxname(xlock.box));
 
         return 0;
     }
 
-    You("succeed in forcing the lock.");
+    play_simple_container_sound(xlock.box, CONTAINER_SOUND_TYPE_BREAK_LOCK);
+    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "succeed in forcing the lock.");
     exercise(xlock.picktyp ? A_DEX : A_STR, TRUE);
     /* breakchestlock() might destroy xlock.box; if so, xlock context will
        be cleared (delobj -> obfree -> maybe_reset_pick); but it might not,

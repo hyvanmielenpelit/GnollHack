@@ -3853,26 +3853,26 @@ size_t bufsize;
     for (bp = buf; *bp && bp < bp + bufsize && wp < copybuf + sizeof(copybuf); bp++)
     {
         uc = (uchar)(*bp);
-        if (uc >= 0x80)
+        if (uc >= (uchar)0x80)
         {
-            if (uc == 0xc3) /* A replaceble character */
+            if (uc == (uchar)0xc3) /* A replaceble character */
             {
                 bp++;
                 uc = (uchar)(*bp);
                 if (0xa5 == uc)
-                    *wp = 'å'; /* å */
+                    *wp = (char)'å'; /* å */
                 else if (0xa4 == uc)
-                    *wp = 'ä';  /* ä */
+                    *wp = (char)'ä';  /* ä */
                 else if (0xb6 == uc)
-                    *wp = 'ö'; /* ö */
+                    *wp = (char)'ö'; /* ö */
                 else if (0x85 == uc)
-                    *wp = 'Å'; /* Å */
+                    *wp = (char)'Å'; /* Å */
                 else if (0x84 == uc)
-                    *wp = 'Ä'; /* Ä */
+                    *wp = (char)'Ä'; /* Ä */
                 else if (0x96 == uc)
-                    *wp = 'Ö'; /* Ö */
+                    *wp = (char)'Ö'; /* Ö */
                 else
-                    *wp = '?';
+                    *wp = (char)'?';
 
                 wp++;
             }
@@ -3880,7 +3880,7 @@ size_t bufsize;
             {
                 if (!was_unicode)
                 {
-                    *wp = '?';
+                    *wp = (char)'?';
                     wp++;
                 }
             }
@@ -3896,9 +3896,9 @@ size_t bufsize;
     }
 
     if (wp < copybuf + sizeof(copybuf))
-        *wp = '\0';
+        *wp = (char)'\0';
     else
-        copybuf[sizeof(copybuf) - 1] = '\0';
+        copybuf[sizeof(copybuf) - 1] = (char)'\0';
 
     strcpy(buf, copybuf);
 }
