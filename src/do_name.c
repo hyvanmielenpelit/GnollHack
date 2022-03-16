@@ -3779,6 +3779,7 @@ static const char* const manual_names[MAX_MANUAL_TYPES] = {
     "Basics of Kicking", "Basics of Enchantment", "Basics of Eating and Drinking", "Introduction to Dangerous Monsters",
     "Introduction to Blessed and Cursed Items", "Guide to Praying", "Essential Survival Tips",
     "Assorted Tips and Tricks", "Elementary Mechanics", "Principles of Magic", "Understanding Pets and Hirelings",
+    "Item Identification 101", "Item Identification 102",
     /* Never randomly generated */
     "Guide to Dragon Scale Mails", "Guide to Altars and Sacrifice",
     "Secrets of Scare Monster", "Gurathul's Guide to Ascension", "Master Class in Wands", "Infernal Inhabitants of Gehennom",
@@ -3909,8 +3910,8 @@ struct obj* obj;
         putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Tentacled ones cannot eat your brain, if you are wearing a ring of sustain ability. They also cannot cause amnesia.");
         break;
     case MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS:
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Items can be blessed, uncursed, or cursed. You cannot remove cursed items, if you equip them.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can remove a curse from an item, if you bless them item using a potion of holy water or by paying to a priest to do so. You can also do so by reading a blessed or uncursed scroll of remove curse.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Items can be blessed, uncursed, or cursed. You cannot remove cursed items if you equip them.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can remove a curse from an item if you bless them item using a potion of holy water or by paying to a priest to do so. You can also do so by reading a blessed or uncursed scroll of remove curse.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "3. It is good practice to identify items before using them. At least you should make sure that the item is not cursed, when you equip it.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "4. An uncursed scroll of remove curse will remove curses from equipped items. A blessed scroll will remove curses from all items in the open inventory.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Dropping items on the altar will reveal their blessed/uncursed/cursed status.");
@@ -3988,6 +3989,28 @@ struct obj* obj;
         putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You can chat to your pet to give it commands or to feed it with food.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "6. You can hire some peaceful monsters to join your party for a fee.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can equip your hirelings with items by chatting to them.");
+        break;
+    case MANUAL_ITEM_IDENTIFICATION_101:
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You need to identify items before you know what they do.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. The items can be blessed, uncursed, or cursed. Blessed items usually grant some additional bonus. Uncursed items are normal. Cursed items have adverse effects and you cannot remove them once equipped.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Equipment can also have positive or negative enchantment bonuses. Equipment with positive enchantment bonuses work better while equipment with negative enchantment bonuses give adverse effects.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You can read a scroll of identify to identify 1-3 items; 3 if the scroll is blessed, 2 if uncursed, and 1 if cursed.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You can drop items on an altar to identify their blessed/uncursed/cursed status.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Some pets do not step on cursed items.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can talk to shopkeepers to identify items for a fee.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. You can talk to many NPCs, such as artificers, to identify some item classes for a fee.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. You can talk to the Oracle to identify items for a fee.");
+        break;
+    case MANUAL_ITEM_IDENTIFICATION_102:
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can use a touchstone to identify gems.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. You can use a wand of identify to identify items, 1 per charge.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can cast the Identify spell to identify items.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You can cast the Detect Blessedness spell to determine the blessed/uncursed/cursed status of an item.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You can try to kick a gray stone, to see if it moves. If not, it is a cursed loadstone.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. You can engrave with a wand a single letter on the ground, to see what it does.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can see what the price of an item is in a shop and then try to figure it out, what the item is.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. You can equip blessed and uncursed items to see what they do. Sometimes it is not obvious.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. You can zap a wand of probing at corpses to see what they do when eaten.");
         break;
     case MANUAL_SECRETS_OF_SCARE_MONSTER:
         putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can stand on a scroll of scare monster and monsters cannot attack you.");
