@@ -71,8 +71,6 @@
                     </Grid.RowDefinitions>
                     <StackLayout Grid.Row="0" x:Name="UpperCmdLayout" Orientation="Horizontal" InputTransparent="true" CascadeInputTransparent="false"
                         HorizontalOptions="End">
-                        <!--AbsoluteLayout.LayoutBounds="1.0, 0.0, AutoSize, AutoSize" 
-                        AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent"-->
                         <StackLayout x:Name="ZoomLayout" Padding="0" Orientation="Horizontal"
                             HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
                             <controls:SimpleImageButton x:Name="GameMenuButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-menu.png" BtnClicked="GameMenuButton_Clicked"/>
@@ -231,8 +229,6 @@
             </Grid>
 
             <Grid x:Name="MenuGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
-                <!--<ff:CachedImage x:Name="MenuBackgroundImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-                            Source="resource://GnollHackClient.Assets.UI.menubackground.png"/>-->
                 <gnollhackclient:BackgroundView x:Name="MenuBackground" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <StackLayout x:Name="menuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical"  BackgroundColor="Transparent">
                     <Label x:Name="MenuHeaderLabel"
@@ -352,6 +348,6 @@
                                           Touch="TipView_Touch"
                                           AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
                                           AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional"/>
-             </Grid>
+         </Grid>
     </ContentPage.Content>
 </ContentPage>
