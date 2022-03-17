@@ -7853,12 +7853,13 @@ namespace GnollHackClient.Pages.Game
                         textPaint.Color = maincolor;
                         //int split_idx_on_row = -1;
                         float start_x = x;
+                        float indent_start_x = start_x;
                         string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.Attributes);
                         if (indentstr != "")
                         {
-                            start_x += textPaint.MeasureText(indentstr);
+                            indent_start_x += textPaint.MeasureText(indentstr);
                         }
-                        DrawTextSplit(canvas, maintextsplit, ref x, ref y, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols);
+                        DrawTextSplit(canvas, maintextsplit, ref x, ref y, start_x, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols);
                         y += textPaint.FontMetrics.Descent + fontspacingpadding;
 
                         /* Suffix text */
@@ -7868,7 +7869,7 @@ namespace GnollHackClient.Pages.Game
                             textPaint.TextSize = suffixfontsize;
                             y += fontspacingpadding;
                             y -= textPaint.FontMetrics.Ascent;
-                            DrawTextSplit(canvas, suffixtextsplit, ref x, ref y, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols);
+                            DrawTextSplit(canvas, suffixtextsplit, ref x, ref y, start_x, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols);
                             y += textPaint.FontMetrics.Descent + fontspacingpadding;
                         }
 
@@ -7880,7 +7881,7 @@ namespace GnollHackClient.Pages.Game
                             fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                             y += fontspacingpadding;
                             y -= textPaint.FontMetrics.Ascent;
-                            DrawTextSplit(canvas, suffix2textsplit, ref x, ref y, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols);
+                            DrawTextSplit(canvas, suffix2textsplit, ref x, ref y, start_x, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols);
                             y += textPaint.FontMetrics.Descent + fontspacingpadding;
                         }
 
@@ -7960,7 +7961,7 @@ namespace GnollHackClient.Pages.Game
             return rows;
         }
 
-        private void DrawTextSplit(SKCanvas canvas, string[] textsplit, ref float x, ref float y, float start_x, float canvaswidth, float canvasheight, float rightmenupadding, SKPaint textPaint, bool usespecialsymbols)
+        private void DrawTextSplit(SKCanvas canvas, string[] textsplit, ref float x, ref float y, float start_x, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, SKPaint textPaint, bool usespecialsymbols)
         {
             int split_idx_on_row = -1;
             x = start_x;
@@ -7981,7 +7982,7 @@ namespace GnollHackClient.Pages.Game
                     bool pastend = endposition > canvaswidth - rightmenupadding;
                     if (pastend && split_idx_on_row > 0 && !nowrap)
                     {
-                        x = start_x;
+                        x = indent_start_x;
                         y += textPaint.FontSpacing;
                         split_idx_on_row = 0;
                         endposition = x + bmpwidth + bmpmargin;
@@ -8002,7 +8003,7 @@ namespace GnollHackClient.Pages.Game
                     bool pastend = endposition > canvaswidth - rightmenupadding;
                     if (pastend && split_idx_on_row > 0 && !nowrap)
                     {
-                        x = start_x;
+                        x = indent_start_x;
                         y += textPaint.FontSpacing;
                         split_idx_on_row = 0;
                         endposition = x + printlength;
@@ -9118,8 +9119,8 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[3, 3, 1] = new GHCommandButtonItem("Spells", "GnollHackClient.Assets.UI.spells.png", (int)'+');
 
             _moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Help", "GnollHackClient.Assets.UI.help.png", (int)'?'); // "Menu", "GnollHackClient.Assets.Icons.missing_icon.png", -4);
-            _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Extended", "GnollHackClient.Assets.UI.extended.png", (int)'#');
-            _moreBtnMatrix[3, 2, 5] = new GHCommandButtonItem("Commands", "GnollHackClient.Assets.UI.commands.png", GHUtils.Meta((int)'c'));
+            _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Commands", "GnollHackClient.Assets.UI.commands.png", GHUtils.Meta((int)'c'));
+            _moreBtnMatrix[3, 2, 5] = new GHCommandButtonItem("Extended", "GnollHackClient.Assets.UI.extended.png", (int)'#');
             _moreBtnMatrix[3, 3, 5] = new GHCommandButtonItem("Back to Game", "GnollHackClient.Assets.UI.more.png", -1);
 
 
