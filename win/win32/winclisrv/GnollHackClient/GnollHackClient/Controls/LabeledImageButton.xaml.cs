@@ -19,6 +19,7 @@ namespace GnollHackClient.Controls
         public static readonly BindableProperty ImgSourcePathProperty = BindableProperty.Create(nameof(ImgSourcePath), typeof(string), typeof(LabeledImageButton), string.Empty);
         public static readonly BindableProperty GridWidthProperty = BindableProperty.Create(nameof(GridWidth), typeof(double), typeof(LabeledImageButton), 50.0);
         public static readonly BindableProperty GridHeightProperty = BindableProperty.Create(nameof(GridHeight), typeof(double), typeof(LabeledImageButton), 60.0);
+        public static readonly BindableProperty GridMarginProperty = BindableProperty.Create(nameof(GridMargin), typeof(Thickness), typeof(LabeledImageButton), new Thickness());
         public static readonly BindableProperty ImgWidthProperty = BindableProperty.Create(nameof(ImgWidth), typeof(double), typeof(LabeledImageButton), 50.0);
         public static readonly BindableProperty ImgHeightProperty = BindableProperty.Create(nameof(ImgHeight), typeof(double), typeof(LabeledImageButton), 50.0);
         public static readonly BindableProperty BtnLetterProperty = BindableProperty.Create(nameof(BtnLetter), typeof(char), typeof(LabeledImageButton), (char)0);
@@ -84,6 +85,11 @@ namespace GnollHackClient.Controls
         {
             get => (double)GetValue(LabeledImageButton.GridHeightProperty);
             set => SetValue(LabeledImageButton.GridHeightProperty, value);
+        }
+        public Thickness GridMargin
+        {
+            get => (Thickness)GetValue(LabeledImageButton.GridMarginProperty);
+            set => SetValue(LabeledImageButton.GridMarginProperty, value);
         }
 
         public int GHCommand

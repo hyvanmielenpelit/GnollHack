@@ -969,6 +969,7 @@ namespace GnollHackClient.Pages.Game
             lib.LargerFont = false;
             lib.LblText = data.cmd_text;
             lib.SetSideSize(_currentPageWidth, _currentPageHeight);
+            lib.GridMargin = new Thickness(lib.ImgWidth / 15, lib.ImgWidth / 30);
             lib.BtnCommand = data.cmd_cur_char;
             lib.BtnClicked += GHButton_Clicked;
             ContextLayout.IsVisible = true;

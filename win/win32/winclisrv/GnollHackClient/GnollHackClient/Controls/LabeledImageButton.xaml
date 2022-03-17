@@ -13,7 +13,7 @@
     </ContentView.Resources>
 
     <ContentView.Content>
-        <Grid x:Name="ViewGrid" BindingContext="{x:Reference this}" WidthRequest="{Binding GridWidth, FallbackValue='50'}" HeightRequest="{Binding GridHeight, FallbackValue='60'}" >
+        <Grid x:Name="ViewGrid" BindingContext="{x:Reference this}" Margin="{Binding GridMargin}" WidthRequest="{Binding GridWidth, FallbackValue='50'}" HeightRequest="{Binding GridHeight, FallbackValue='60'}" >
             <ff:CachedImage x:Name="ViewImage" Source="{Binding ImgSourcePath, Converter={StaticResource imageSource}}"
                             WidthRequest="{Binding ImgWidth, FallbackValue='50'}" HeightRequest="{Binding ImgHeight, FallbackValue='50'}" 
                             BackgroundColor="Transparent" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" InputTransparent="True" />
