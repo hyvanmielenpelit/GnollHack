@@ -860,9 +860,9 @@ namespace GnollHackClient.Pages.Game
 
         public void ClearContextMenu()
         {
-            ContentFlexLayout.Children.Clear();
+            ContextLayout.Children.Clear();
             _contextMenuData.Clear();
-            ContentFlexLayout.IsVisible = false;
+            ContextLayout.IsVisible = false;
         }
         public void AddContextMenu(AddContextMenuData data)
         {
@@ -971,8 +971,8 @@ namespace GnollHackClient.Pages.Game
             lib.SetSideSize(_currentPageWidth, _currentPageHeight);
             lib.BtnCommand = data.cmd_cur_char;
             lib.BtnClicked += GHButton_Clicked;
-            ContentFlexLayout.IsVisible = true;
-            ContentFlexLayout.Children.Add(lib);
+            ContextLayout.IsVisible = true;
+            ContextLayout.Children.Add(lib);
         }
 
         public void DisplayFloatingText(DisplayFloatingTextData data)
@@ -1180,9 +1180,9 @@ namespace GnollHackClient.Pages.Game
         private void ContextButton_Clicked(object sender, EventArgs e)
         {
             int idx = 0;
-            idx = ContentFlexLayout.Children.IndexOf((Xamarin.Forms.View)sender);
+            idx = ContextLayout.Children.IndexOf((Xamarin.Forms.View)sender);
             if (idx < 0)
-                idx = ContentFlexLayout.Children.IndexOf((Xamarin.Forms.View)((Xamarin.Forms.View)sender).Parent);
+                idx = ContextLayout.Children.IndexOf((Xamarin.Forms.View)((Xamarin.Forms.View)sender).Parent);
 
             if (idx >= 0 && idx < _contextMenuData.Count)
             {
