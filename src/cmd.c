@@ -8080,14 +8080,12 @@ dotravel(VOID_ARGS)
         cc.y = u.uy;
     }
     iflags.getloc_travelmode = TRUE;
-    create_context_menu(CREATE_CONTEXT_MENU_IN_GETPOS_TRAVEL_MODE);
     if (iflags.menu_requested) {
         int gf = iflags.getloc_filter;
         iflags.getloc_filter = GFILTER_VIEW;
         if (!getpos_menu(&cc, GLOC_INTERESTING)) {
             iflags.getloc_filter = gf;
             iflags.getloc_travelmode = FALSE;
-            create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
             return 0;
         }
         iflags.getloc_filter = gf;
@@ -8096,7 +8094,6 @@ dotravel(VOID_ARGS)
         if (getpos(&cc, TRUE, "the desired destination", CURSOR_STYLE_TRAVEL_CURSOR) < 0) {
             /* user pressed ESC */
             iflags.getloc_travelmode = FALSE;
-            create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
             return 0;
         }
     }
@@ -8105,7 +8102,6 @@ dotravel(VOID_ARGS)
     iflags.travelcc.y = u.ty = cc.y;
     cmd[0] = Cmd.spkeys[NHKF_TRAVEL];
     readchar_queue = cmd;
-    create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
     return 0;
 }
 
@@ -8515,24 +8511,40 @@ enum create_context_menu_types menu_type;
 
     switch (menu_type)
     {
+    case CREATE_CONTEXT_MENU_IN_GETPOS_GENERAL:
+        add_context_menu('a', Cmd.spkeys[NHKF_GETPOS_INTERESTING_NEXT], CONTEXT_MENU_STYLE_GETPOS, NO_GLYPH, "Next",
+            0, 0, NO_COLOR);
+
+        add_context_menu('A', Cmd.spkeys[NHKF_GETPOS_INTERESTING_PREV], CONTEXT_MENU_STYLE_GETPOS, NO_GLYPH, "Previous",
+            0, 0, NO_COLOR);
+
+        add_context_menu('.', Cmd.spkeys[NHKF_GETPOS_PICK], CONTEXT_MENU_STYLE_GETPOS, NO_GLYPH, "Select",
+            0, 0, NO_COLOR);
+        break;
     case CREATE_CONTEXT_MENU_IN_GETPOS_TRAVEL_MODE:
-        add_context_menu('<', cmd_from_func(doup), CONTEXT_MENU_STYLE_GENERAL, cmap_to_glyph(S_upstair), "Stairs Up",
+        add_context_menu('a', Cmd.spkeys[NHKF_GETPOS_INTERESTING_NEXT], CONTEXT_MENU_STYLE_GETPOS, NO_GLYPH, "Next",
+            0, 0, NO_COLOR);
+
+        add_context_menu('A', Cmd.spkeys[NHKF_GETPOS_INTERESTING_PREV], CONTEXT_MENU_STYLE_GETPOS, NO_GLYPH, "Previous",
+            0, 0, NO_COLOR);
+
+        add_context_menu('<', cmd_from_func(doup), CONTEXT_MENU_STYLE_GETPOS, cmap_to_glyph(S_upstair), "Stairs Up",
             "Stairs", 0, NO_COLOR);
 
-        add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_GENERAL, cmap_to_glyph(S_dnstair), "Stairs Down",
+        add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_GETPOS, cmap_to_glyph(S_dnstair), "Stairs Down",
             "Stairs", 0, NO_COLOR);
 
-        add_context_menu('.', cmd_from_func(donull), CONTEXT_MENU_STYLE_SELECTION, NO_GLYPH, "Select",
+        add_context_menu('.', Cmd.spkeys[NHKF_GETPOS_PICK], CONTEXT_MENU_STYLE_GETPOS, NO_GLYPH, "Select",
             0, 0, NO_COLOR);
         break;
     case CREATE_CONTEXT_MENU_IN_GETDIR:
-        add_context_menu('<', cmd_from_func(doup), CONTEXT_MENU_STYLE_DIRECTION, cmap_to_glyph(S_upstair), "Upwards",
+        add_context_menu('<', cmd_from_func(doup), CONTEXT_MENU_STYLE_GETDIR, cmap_to_glyph(S_upstair), "Upwards",
             0, 0, NO_COLOR);
 
-        add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_DIRECTION, cmap_to_glyph(S_dnstair), "Downwards",
+        add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_GETDIR, cmap_to_glyph(S_dnstair), "Downwards",
             0, 0, NO_COLOR);
 
-        add_context_menu('.', cmd_from_func(donull), CONTEXT_MENU_STYLE_DIRECTION, u_to_glyph(), "Self",
+        add_context_menu('.', Cmd.spkeys[NHKF_GETDIR_SELF], CONTEXT_MENU_STYLE_GETDIR, u_to_glyph(), "Self",
             0, 0, NO_COLOR);
         break;
     default:

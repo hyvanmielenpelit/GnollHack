@@ -992,6 +992,8 @@ namespace GnollHackCommon
         INIT_GLYPH_UNMUTE_SOUNDS,
         INIT_GLYPH_ENABLE_WIZARD_MODE,
         INIT_GLYPH_PETS,
+        INIT_GLYPH_SAVE_AND_DISABLE_TRAVEL_MODE,
+        INIT_GLYPH_RESTORE_TRAVEL_MODE,
         INIT_GLYPH_GAME_START,
         INIT_GLYPH_PROGRAM_FINISH,
     }
@@ -1034,8 +1036,8 @@ namespace GnollHackCommon
     public enum context_menu_styles
     {
         CONTEXT_MENU_STYLE_GENERAL = 0,
-        CONTEXT_MENU_STYLE_DIRECTION,
-        CONTEXT_MENU_STYLE_SELECTION,
+        CONTEXT_MENU_STYLE_GETDIR,
+        CONTEXT_MENU_STYLE_GETPOS,
     }
 
 

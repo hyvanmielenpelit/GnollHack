@@ -304,7 +304,12 @@ namespace GnollHackClient.Pages.Game
         public int ClipY { get { return _clipY; } set { _clipY = value; lock (MapOffsetLock) { _mapOffsetY = 0; } } }
         public bool MapNoClipMode { get; set; }
         public bool MapLookMode { get; set; }
-        public bool MapTravelMode { get; set; }
+
+        private bool _savedMapTravelMode = false;
+        private object _mapTravelModeLock = new object();
+        private bool _mapTravelMode = false;
+        public bool MapTravelMode { get { lock (_mapTravelModeLock) { return _mapTravelMode; } } set { lock (_mapTravelModeLock) { _mapTravelMode = value; } } }
+
         public bool MapWalkMode { get { return (!MapTravelMode && !MapLookMode); } }
         public bool ZoomMiniMode { get; set; }
         public bool ZoomAlternateMode { get; set; }
@@ -886,6 +891,28 @@ namespace GnollHackClient.Pages.Game
 
             switch ((char)data.cmd_def_char)
             {
+                case 'a':
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Next interesting */
+                            icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            break;
+                        default:
+                            icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            break;
+                    }
+                    break;
+                case 'A':
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Previous interesting */
+                            icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            break;
+                        default:
+                            icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            break;
+                    }
+                    break;
                 case 'e':
                     icon_string = "GnollHackClient.Assets.UI.eat.png";
                     break;
@@ -901,8 +928,11 @@ namespace GnollHackClient.Pages.Game
                 case '<':
                     switch (data.style)
                     {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_DIRECTION: /* Downwards */
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Upwards */
                             icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            break;
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS:
+                            icon_string = "GnollHackClient.Assets.UI.stairs-up.png";
                             break;
                         default:
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
@@ -913,8 +943,11 @@ namespace GnollHackClient.Pages.Game
                 case '>':
                     switch (data.style)
                     {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_DIRECTION: /* Downwards */
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Downwards */
                             icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            break;
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS:
+                            icon_string = "GnollHackClient.Assets.UI.stairs-down.png";
                             break;
                         default:
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
@@ -934,10 +967,10 @@ namespace GnollHackClient.Pages.Game
                 case '.':
                     switch(data.style)
                     {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_SELECTION: /* E.g., select position in getpos */
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Pick position in getpos */
                             icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
                             break;
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_DIRECTION:
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Self in getdir */
                             icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
                             break;
                         default:
@@ -1336,6 +1369,15 @@ namespace GnollHackClient.Pages.Game
                                 break;
                             case GHRequestType.DisplayScreenFilter:
                                 DisplayScreenFilter(req.ScreenFilterData);
+                                break;
+                            case GHRequestType.SaveAndDisableTravelMode:
+                                _savedMapTravelMode = MapTravelMode;
+                                if (MapTravelMode)
+                                    ToggleModeButton_Clicked(ToggleModeButton, new EventArgs());
+                                break;
+                            case GHRequestType.RestoreTravelMode:
+                                if (MapTravelMode != _savedMapTravelMode)
+                                    ToggleModeButton_Clicked(ToggleModeButton, new EventArgs());
                                 break;
                         }
                     }

@@ -41,6 +41,8 @@ namespace GnollHackClient
         DisplayConditionText,
         DisplayScreenFilter,
         SetPetMID,
+        SaveAndDisableTravelMode,
+        RestoreTravelMode,
     }
 
     public struct AddContextMenuData

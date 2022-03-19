@@ -1306,7 +1306,6 @@ namespace GnollHackClient
             return 1;
         }
 
-
         public void ClientCallback_InitPrintGlyph(int cmdtype)
         {
             ConcurrentQueue<GHRequest> queue;
@@ -1383,6 +1382,18 @@ namespace GnollHackClient
                     break;
                 case (int)init_print_glyph_stages.INIT_GLYPH_PETS:
                     _gamePage.ClearPetData();
+                    break;
+                case (int)init_print_glyph_stages.INIT_GLYPH_SAVE_AND_DISABLE_TRAVEL_MODE:
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.SaveAndDisableTravelMode));
+                    }
+                    break;
+                case (int)init_print_glyph_stages.INIT_GLYPH_RESTORE_TRAVEL_MODE:
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.RestoreTravelMode));
+                    }
                     break;
                 default:
                     break;

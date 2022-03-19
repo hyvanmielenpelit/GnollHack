@@ -692,6 +692,7 @@ enum game_cursor_types cursor_style;
     flags.force_paint_at_cursor = TRUE;
     flags.active_cursor_style = cursor_style;
     update_cursor(flags.active_cursor_style, flags.show_cursor_on_u, flags.show_cursor_on_u);
+    create_context_menu(iflags.getloc_travelmode ? CREATE_CONTEXT_MENU_IN_GETPOS_TRAVEL_MODE : CREATE_CONTEXT_MENU_IN_GETPOS_GENERAL);
 
     for (i = 0; i < SIZE(pick_chars_def); i++)
         pick_chars[i] = Cmd.spkeys[pick_chars_def[i].nhkf];
@@ -723,6 +724,7 @@ enum game_cursor_types cursor_style;
 #endif
     curs(WIN_MAP, cx, cy);
     flush_screen(0);
+    init_print_glyph(INIT_GLYPH_SAVE_AND_DISABLE_TRAVEL_MODE);
 #if defined(MAC) || defined(ANDROID)
     lock_mouse_cursor(TRUE);
 #endif
@@ -1037,6 +1039,7 @@ enum game_cursor_types cursor_style;
                             } /* column */
                         }     /* row */
                     }         /* pass */
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
                     pline("Can't find dungeon feature '%c'.", c);
                     msg_given = TRUE;
                     goto nxtc;
@@ -1090,6 +1093,8 @@ enum game_cursor_types cursor_style;
     flags.force_paint_at_cursor = TRUE;
     flags.active_cursor_style = CURSOR_STYLE_GENERIC_CURSOR;
     update_cursor(flags.active_cursor_style, flags.force_paint_at_cursor, flags.show_cursor_on_u);
+    init_print_glyph(INIT_GLYPH_RESTORE_TRAVEL_MODE);
+    create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
 
     return result;
 }
