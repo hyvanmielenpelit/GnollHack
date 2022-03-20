@@ -1268,6 +1268,37 @@ namespace GnollHackClient
 
             return 1;
         }
+
+        public int ClientCallback_PlayOccupationAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
+        {
+            if (App.FmodService != null)
+            {
+                return App.FmodService.PlayOccupationAmbient(ghsound, eventPath, bankid, (float)eventVolume, (float)soundVolume);
+            }
+
+            return 1;
+        }
+
+        public int ClientCallback_PlayEffectAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
+        {
+            if (App.FmodService != null)
+            {
+                return App.FmodService.PlayEffectAmbient(ghsound, eventPath, bankid, (float)eventVolume, (float)soundVolume);
+            }
+
+            return 1;
+        }
+
+        public int ClientCallback_SetEffectAmbientVolume(double soundVolume)
+        {
+            if (App.FmodService != null)
+            {
+                return App.FmodService.SetEffectAmbientVolume((float)soundVolume);
+            }
+
+            return 1;
+        }
+
         public int ClientCallback_AddAmbientSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, out UInt64 soundSourceId)
         {
             if (App.FmodService != null)

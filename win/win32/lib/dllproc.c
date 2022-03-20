@@ -2761,19 +2761,23 @@ dll_play_immediate_ghsound(struct ghsound_immediate_info info)
 void
 dll_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
 {
+#if 0
     if (!dll_callbacks.callback_play_ghsound_occupation_ambient(info.ghsound, (double)info.volume))
     {
         impossible("Cannot play occupation ambient sound!");
     }
+#endif
 }
 
 void
 dll_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
 {
+#if 0
     if (!dll_callbacks.callback_play_ghsound_effect_ambient(info.ghsound, (double)info.volume))
     {
         impossible("Cannot play effect ambient sound!");
     }
+#endif
 }
 
 void

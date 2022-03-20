@@ -96,6 +96,24 @@ namespace GnollHackCommon
         double soundVolume);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate int PlayOccupationAmbientCallback(
+        int ghsound,
+        [MarshalAs(UnmanagedType.LPStr)] string eventPath,
+        int bankid, double eventVolume,
+        double soundVolume);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate int PlayEffectAmbientCallback(
+        int ghsound,
+        [MarshalAs(UnmanagedType.LPStr)] string eventPath,
+        int bankid, double eventVolume,
+        double soundVolume);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate int SetEffectAmbientVolumeCallback(
+        double soundVolume);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int PlayEnvironmentAmbientCallback(
         int ghsound,
         [MarshalAs(UnmanagedType.LPStr)] string eventPath,

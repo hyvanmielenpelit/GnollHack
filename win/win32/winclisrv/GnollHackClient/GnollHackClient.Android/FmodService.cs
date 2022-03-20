@@ -150,6 +150,8 @@ namespace GnollHackClient.Droid
         public List<GHSoundInstance> longImmediateInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> levelAmbientInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> environmentAmbientInstances = new List<GHSoundInstance>();
+        public List<GHSoundInstance> occupationAmbientInstances = new List<GHSoundInstance>();
+        public List<GHSoundInstance> effectAmbientInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> ambientList = new List<GHSoundInstance>();
 
 
@@ -650,6 +652,191 @@ namespace GnollHackClient.Droid
 
             res = _system.update();
             return (int)res;
+        }
+
+        public int PlayOccupationAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        {
+            if (!FMODup())
+                return 1;
+
+            RESULT res;
+
+            if (ghsound <= 0)
+            {
+                if (occupationAmbientInstances.Count > 0 && occupationAmbientInstances[0].stopped == false)
+                {
+                    /* Stop ambient sound */
+                    occupationAmbientInstances[0].stopped = true;
+                    res = occupationAmbientInstances[0].instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                    if (res != RESULT.OK)
+                        return (int)res;
+                    res = _system.update();
+                    return (int)res;
+                }
+
+                /* Nothing to do */
+                return (int)RESULT.OK;
+            }
+
+            /* Check if the ambient is the same as before */
+            if (occupationAmbientInstances.Count > 0 && occupationAmbientInstances[0].ghsound == ghsound && occupationAmbientInstances[0].stopped == false)
+            {
+                /* Check if the volume is different */
+                if (occupationAmbientInstances[0].normalSoundVolume != soundVolume)
+                {
+                    res = occupationAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+                    occupationAmbientInstances[0].normalSoundVolume = soundVolume;
+                    res = _system.update();
+                    return (int)res;
+                }
+                return (int)RESULT.OK;
+            }
+
+            /* Different ambient; stop the previous one */
+            if (occupationAmbientInstances.Count > 0)
+            {
+                if (occupationAmbientInstances[0].stopped == false)
+                {
+                    occupationAmbientInstances[0].stopped = true;
+                    occupationAmbientInstances[0].instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                }
+            }
+
+            EventDescription eventDescription;
+            res = _system.getEvent(eventPath, out eventDescription);
+            EventInstance eventInstance;
+            res = eventDescription.createInstance(out eventInstance);
+
+            GHSoundInstance ghinstance = new GHSoundInstance();
+            ghinstance.instance = eventInstance;
+            ghinstance.ghsound = ghsound;
+            ghinstance.normalEventVolume = eventVolume;
+            ghinstance.normalSoundVolume = soundVolume;
+            ghinstance.sound_type = 0;
+            ghinstance.dialogue_mid = 0;
+
+            occupationAmbientInstances.Insert(0, ghinstance);
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+
+            if (occupationAmbientInstances.Count >= 2)
+            {
+                GHSoundInstance ghsi = occupationAmbientInstances[occupationAmbientInstances.Count - 1];
+                if (ghsi.stopped == false)
+                {
+                    ghsi.stopped = true;
+                    ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                }
+                occupationAmbientInstances.RemoveAt(occupationAmbientInstances.Count - 1);
+            }
+            res = eventInstance.start();
+
+            res = _system.update();
+            return (int)res;
+        }
+
+        public int PlayEffectAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        {
+            if (!FMODup())
+                return 1;
+
+            RESULT res;
+
+            if (ghsound <= 0)
+            {
+                if (effectAmbientInstances.Count > 0 && effectAmbientInstances[0].stopped == false)
+                {
+                    /* Stop ambient sound */
+                    effectAmbientInstances[0].stopped = true;
+                    res = effectAmbientInstances[0].instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                    if (res != RESULT.OK)
+                        return (int)res;
+                    res = _system.update();
+                    return (int)res;
+                }
+
+                /* Nothing to do */
+                return (int)RESULT.OK;
+            }
+
+            /* Check if the ambient is the same as before */
+            if (effectAmbientInstances.Count > 0 && effectAmbientInstances[0].ghsound == ghsound && effectAmbientInstances[0].stopped == false)
+            {
+                /* Check if the volume is different */
+                if (effectAmbientInstances[0].normalSoundVolume != soundVolume)
+                {
+                    res = effectAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+                    effectAmbientInstances[0].normalSoundVolume = soundVolume;
+                    res = _system.update();
+                    return (int)res;
+                }
+                return (int)RESULT.OK;
+            }
+
+            /* Different ambient; stop the previous one */
+            if (effectAmbientInstances.Count > 0)
+            {
+                if (effectAmbientInstances[0].stopped == false)
+                {
+                    effectAmbientInstances[0].stopped = true;
+                    effectAmbientInstances[0].instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                }
+            }
+
+            EventDescription eventDescription;
+            res = _system.getEvent(eventPath, out eventDescription);
+            EventInstance eventInstance;
+            res = eventDescription.createInstance(out eventInstance);
+
+            GHSoundInstance ghinstance = new GHSoundInstance();
+            ghinstance.instance = eventInstance;
+            ghinstance.ghsound = ghsound;
+            ghinstance.normalEventVolume = eventVolume;
+            ghinstance.normalSoundVolume = soundVolume;
+            ghinstance.sound_type = 0;
+            ghinstance.dialogue_mid = 0;
+
+            effectAmbientInstances.Insert(0, ghinstance);
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+
+            if (effectAmbientInstances.Count >= 2)
+            {
+                GHSoundInstance ghsi = effectAmbientInstances[effectAmbientInstances.Count - 1];
+                if (ghsi.stopped == false)
+                {
+                    ghsi.stopped = true;
+                    ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                }
+                effectAmbientInstances.RemoveAt(effectAmbientInstances.Count - 1);
+            }
+            res = eventInstance.start();
+
+            res = _system.update();
+            return (int)res;
+        }
+
+
+        public int SetEffectAmbientVolume(float soundVolume)
+        {
+            if (!FMODup())
+                return 1;
+
+            /* Check if the ambient is the same as before */
+            if (effectAmbientInstances.Count > 0 && effectAmbientInstances[0].stopped == false)
+            {
+                RESULT res;
+                /* Check if the volume is different */
+                if (effectAmbientInstances[0].normalSoundVolume != soundVolume)
+                {
+                    float eventVolume = effectAmbientInstances[0].normalEventVolume;
+                    res = effectAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+                    effectAmbientInstances[0].normalSoundVolume = soundVolume;
+                    res = _system.update();
+                    return (int)res;
+                }
+                return (int)RESULT.OK;
+            }
+
+            return (int)RESULT.OK;
         }
 
         private UInt64 _lastAmbientId = 0;

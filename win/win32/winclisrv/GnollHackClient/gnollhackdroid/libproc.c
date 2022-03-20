@@ -1065,17 +1065,38 @@ void lib_play_immediate_ghsound(struct ghsound_immediate_info info)
 
 void lib_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
 {
-    return;
+    int ghsound = info.ghsound;
+    const char* eventPath = ghsound2event[info.ghsound].eventPath;
+    int eventBank = ghsound2event[info.ghsound].bank_id;
+    double eventVolume = (double)ghsound2event[info.ghsound].volume;
+    double soundVolume = (double)info.volume;
+
+    if (lib_callbacks.callback_play_ghsound_occupation_ambient(ghsound, eventPath, eventBank, eventVolume, soundVolume) != 0)
+    {
+        /* Error */
+    }
 }
 
 void lib_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
 {
-    return;
+    int ghsound = info.ghsound;
+    const char* eventPath = ghsound2event[info.ghsound].eventPath;
+    int eventBank = ghsound2event[info.ghsound].bank_id;
+    double eventVolume = (double)ghsound2event[info.ghsound].volume;
+    double soundVolume = (double)info.volume;
+
+    if (lib_callbacks.callback_play_ghsound_effect_ambient(ghsound, eventPath, eventBank, eventVolume, soundVolume) != 0)
+    {
+        /* Error */
+    }
 }
 
 void lib_set_effect_ambient_volume(struct effect_ambient_volume_info info)
 {
-    return;
+    if (lib_callbacks.callback_set_effect_ambient_volume((double)info.volume) != 0)
+    {
+        /* Error */
+    }
 }
 
 void lib_play_ghsound_music(struct ghsound_music_info info)

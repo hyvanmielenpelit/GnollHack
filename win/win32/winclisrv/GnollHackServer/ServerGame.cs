@@ -86,9 +86,9 @@ namespace GnollHackServer
             OpenSpecialViewCallback callback_open_special_view,
             StopAllSoundsCallback callback_stop_all_sounds,
             PlayImmediateSoundCallback callback_play_immediate_ghsound,
-            BooleanIntDoubleCallback callback_play_ghsound_occupation_ambient,
-            BooleanIntDoubleCallback callback_play_ghsound_effect_ambient,
-            BooleanDoubleCallback callback_set_effect_ambient_volume,
+            PlayOccupationAmbientCallback callback_play_ghsound_occupation_ambient,
+            PlayEffectAmbientCallback callback_play_ghsound_effect_ambient,
+            SetEffectAmbientVolumeCallback callback_set_effect_ambient_volume,
             PlayMusicCallback callback_play_ghsound_music,
             PlayLevelAmbientCallback callback_play_ghsound_level_ambient,
             PlayEnvironmentAmbientCallback callback_play_ghsound_environment_ambient,
@@ -247,9 +247,9 @@ namespace GnollHackServer
                 GameCallback_OpenSpecialView,
                 GameCallback_StopAllSounds,
                 GameCallback_PlayImmediateSound,
-                GameCallback_BooleanIntDoubleDummy,
-                GameCallback_BooleanIntDoubleDummy,
-                GameCallback_BooleanDoubleDummy,
+                GameCallback_PlayOccupationAmbient,
+                GameCallback_PlayEffectAmbient,
+                GameCallback_SetEffectAmbientVolume,
                 GameCallback_PlayMusic,
                 GameCallback_PlayLevelAmbient,
                 GameCallback_PlayEnvironmentAmbient,
@@ -420,6 +420,19 @@ namespace GnollHackServer
             return 0;
         }
         public int GameCallback_PlayEnvironmentAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
+        {
+            return 0;
+        }
+        public int GameCallback_PlayOccupationAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
+        {
+            return 0;
+        }
+        public int GameCallback_PlayEffectAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
+        {
+            return 0;
+        }
+
+        public int GameCallback_SetEffectAmbientVolume(double soundVolume)
         {
             return 0;
         }
