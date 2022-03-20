@@ -1311,7 +1311,7 @@ namespace GnollHackClient
             ConcurrentQueue<GHRequest> queue;
             switch (cmdtype)
             {
-                case (int)gnh_gui_command_types.GUI_CMD_LOAD_GLYPHS:
+                case (int)gui_command_types.GUI_CMD_LOAD_GLYPHS:
                     /* Reinitialize  glyph2tile after object shuffling */
                     IntPtr gl2ti_ptr;
                     int gl2ti_size;
@@ -1335,35 +1335,35 @@ namespace GnollHackClient
                         }
                     }
                     break;
-                case (int)gnh_gui_command_types.GUI_CMD_BEFORE_COLLECT:
+                case (int)gui_command_types.GUI_CMD_BEFORE_COLLECT:
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.FadeToBlack, 200));
                         Thread.Sleep(325);
                     }
                     break;
-                case (int)gnh_gui_command_types.GUI_CMD_COLLECT_GARBAGE:
+                case (int)gui_command_types.GUI_CMD_COLLECT_GARBAGE:
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                     GC.Collect();
                     break;
-                case (int)gnh_gui_command_types.GUI_CMD_AFTER_COLLECT:
+                case (int)gui_command_types.GUI_CMD_AFTER_COLLECT:
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.FadeFromBlack, 200));
                     }
                     break;
-                case (int)gnh_gui_command_types.GUI_CMD_FORCE_ASCII:
+                case (int)gui_command_types.GUI_CMD_FORCE_ASCII:
                     _gamePage.ForceAscii = true;
                     break;
-                case (int)gnh_gui_command_types.GUI_CMD_UNFORCE_ASCII:
+                case (int)gui_command_types.GUI_CMD_UNFORCE_ASCII:
                     _gamePage.ForceAscii = false;
                     break;
-                case (int)gnh_gui_command_types.GUI_CMD_MUTE_SOUNDS:
+                case (int)gui_command_types.GUI_CMD_MUTE_SOUNDS:
                     _gamePage.MuteSounds = true;
                     App.FmodService.AdjustVolumes(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
                     break;
-                case (int)gnh_gui_command_types.GUI_CMD_UNMUTE_SOUNDS:
+                case (int)gui_command_types.GUI_CMD_UNMUTE_SOUNDS:
                     {
                         float generalVolume = Preferences.Get("GeneralVolume", 1.0f);
                         float musicVolume = Preferences.Get("MusicVolume", 0.5f);
@@ -1375,21 +1375,21 @@ namespace GnollHackClient
                         App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
                         break;
                     }
-                case (int)gnh_gui_command_types.GUI_CMD_LOAD_VIDEOS:
+                case (int)gui_command_types.GUI_CMD_LOAD_VIDEOS:
                     break;
-                case (int)gnh_gui_command_types.GUI_CMD_ENABLE_WIZARD_MODE:
+                case (int)gui_command_types.GUI_CMD_ENABLE_WIZARD_MODE:
                     _gamePage.EnableWizardMode = true;
                     break;
-                case (int)gnh_gui_command_types.GUI_CMD_PETS:
+                case (int)gui_command_types.GUI_CMD_PETS:
                     _gamePage.ClearPetData();
                     break;
-                case (int)gnh_gui_command_types.GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE:
+                case (int)gui_command_types.GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE:
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.SaveAndDisableTravelMode));
                     }
                     break;
-                case (int)gnh_gui_command_types.GUI_CMD_RESTORE_TRAVEL_MODE:
+                case (int)gui_command_types.GUI_CMD_RESTORE_TRAVEL_MODE:
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.RestoreTravelMode));

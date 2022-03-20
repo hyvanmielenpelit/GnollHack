@@ -686,8 +686,8 @@ enum context_menu_styles {
 #define TRAVP_GUESS  1
 #define TRAVP_VALID  2
 
-/* gnh_gui_command_types */
-enum gnh_gui_command_types {
+/* gui_command_types */
+enum gui_command_types {
     GUI_CMD_PROGRAM_START = 0,
     GUI_CMD_PREFERENCE_SET,
     GUI_CMD_LOAD_GLYPHS,
@@ -709,7 +709,6 @@ enum gnh_gui_command_types {
     GUI_CMD_PROGRAM_FINISH,
 };
 
-/* gnh_gui_command_types */
 enum takeoff_wear_commands {
     TAKEOFF_WEAR_CMD_TAKEOFF = 0,
     TAKEOFF_WEAR_CMD_TAKEOFF_AND_WEAR,

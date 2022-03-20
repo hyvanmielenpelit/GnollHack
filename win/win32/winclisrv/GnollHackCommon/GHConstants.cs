@@ -975,7 +975,7 @@ namespace GnollHackCommon
         MAX_EXCEPTIONALITY_TYPES
     }
 
-    public enum gnh_gui_command_types
+    public enum gui_command_types
     {
         GUI_CMD_PROGRAM_START = 0,
         GUI_CMD_PREFERENCE_SET,
