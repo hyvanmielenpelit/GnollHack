@@ -44,7 +44,7 @@ struct window_procs amii_procs = {
 #ifdef POSITIONBAR
     donull,
 #endif
-    amii_print_glyph, amii_init_print_glyph, amii_raw_print, amii_raw_print_bold, amii_nhgetch,
+    amii_print_glyph, amii_issue_gui_command, amii_raw_print, amii_raw_print_bold, amii_nhgetch,
     amii_nh_poskey, amii_bell, amii_doprev_message, amii_yn_function_ex,
     amii_getlin_ex, amii_get_ext_cmd, amii_number_pad, amii_delay_output, amii_delay_output_milliseconds, amii_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */

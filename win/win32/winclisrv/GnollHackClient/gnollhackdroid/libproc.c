@@ -33,7 +33,7 @@ struct window_procs lib_procs = {
 #ifdef POSITIONBAR
     donull,
 #endif
-    lib_print_glyph, lib_init_print_glyph, lib_raw_print, lib_raw_print_bold, lib_nhgetch,
+    lib_print_glyph, lib_issue_gui_command, lib_raw_print, lib_raw_print_bold, lib_nhgetch,
     lib_nh_poskey, lib_nhbell, lib_doprev_message, lib_yn_function_ex,
     lib_getlin_ex, lib_get_ext_cmd, lib_number_pad, lib_delay_output, lib_delay_output_milliseconds, lib_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
@@ -450,13 +450,13 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     }
 }
 
-void lib_init_print_glyph(int initid)
+void lib_issue_gui_command(int initid)
 {
-    lib_callbacks.callback_init_print_glyph(initid);
+    lib_callbacks.callback_issue_gui_command(initid);
 
     switch (initid)
     {
-    case INIT_GLYPH_PETS:
+    case GUI_CMD_PETS:
     {
         struct monst_info mi = { 0 };
         struct monst* mtmp;
@@ -470,7 +470,7 @@ void lib_init_print_glyph(int initid)
         }
         break;
     }
-    case INIT_GLYPH_GAME_START:
+    case GUI_CMD_GAME_START:
     {
         lib_callbacks.callback_report_player_name(plname);
         break;

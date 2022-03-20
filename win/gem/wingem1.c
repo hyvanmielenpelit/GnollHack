@@ -2942,7 +2942,7 @@ int x, y;
 }
 
 void
-mar_init_print_glyph(initid)
+mar_issue_gui_command(initid)
 int initid
 {
     return;

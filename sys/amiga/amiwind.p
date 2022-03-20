@@ -25,7 +25,7 @@ void FDECL( Abort, (long ));
 #endif
 void FDECL( flush_glyph_buffer, (struct Window *));
 void FDECL( amiga_print_glyph, (winid , int , int ));
-void FDECL( amiga_init_print_glyph, (int));
+void FDECL( amiga_issue_gui_command, (int));
 void FDECL( start_glyphout, (winid ));
 void FDECL( amii_end_glyphout, (winid ));
 #ifdef	INTUI_NEW_LOOK

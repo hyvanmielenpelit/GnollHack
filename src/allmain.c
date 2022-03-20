@@ -1228,7 +1228,7 @@ newgame()
 
     encounter_init();        /* initialize encounters and force linkage */
 
-    init_print_glyph(INIT_GLYPH_LOAD_GLYPHS);
+    issue_gui_command(GUI_CMD_LOAD_GLYPHS);
 
 #ifndef NO_SIGNAL
     (void) signal(SIGINT, (SIG_RET_TYPE) done1);

@@ -7,7 +7,7 @@
 ; Overlay tuning level: 0
 ;
 functions:0 _main _dosave0 _moveloop _bwrite _random _rn2 _newsym _show_glyph _on_level _txt_gotoxy _txt_get_cursor
-functions:0 _xputc _txt_xputc _t_at _tty_curs _acurr _dist2 _tty_print_glyph _tty_init_print_glyph _isok _back_to_glyph
+functions:0 _xputc _txt_xputc _t_at _tty_curs _acurr _dist2 _tty_print_glyph _tty_issue_gui_command _isok _back_to_glyph
 functions:0 _show_map_spot _adjust_cursor_flags _lowc _g_putch _has_color _is_pool _mread
 functions:0 _is_lava _welded _magic_map_background _end_glyphout _visible_region_at _domove 
 functions:0 _engr_at _rnd _run_regions _mcalcmove _depth _done _distmin _does_block _eos 

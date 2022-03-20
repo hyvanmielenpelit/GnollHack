@@ -72,7 +72,7 @@ static void FDECL(display_cursor, (struct xwindow *));
 /* Global functions ======================================================= */
 
 void
-X11_init_print_glyph(initid)
+X11_issue_gui_command(initid)
 int initid;
 {
     return;

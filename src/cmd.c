@@ -6560,7 +6560,7 @@ register char *cmd;
 
     create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
     update_here_window();
-    init_print_glyph(INIT_GLYPH_PETS);
+    issue_gui_command(GUI_CMD_PETS);
 
     //reset_all_monster_origin_coordinates();
     check_gui_special_effect();

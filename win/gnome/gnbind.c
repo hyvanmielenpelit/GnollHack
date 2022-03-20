@@ -41,7 +41,7 @@ struct window_procs Gnome_procs = {
 #ifdef POSITIONBAR
     donull,
 #endif
-    gnome_print_glyph, gnome_init_print_glyph, gnome_raw_print, gnome_raw_print_bold, gnome_nhgetch,
+    gnome_print_glyph, gnome_issue_gui_command, gnome_raw_print, gnome_raw_print_bold, gnome_nhgetch,
     gnome_nh_poskey, gnome_nhbell, gnome_doprev_message, gnome_yn_function_ex,
     gnome_getlin_ex, gnome_get_ext_cmd, gnome_number_pad, gnome_delay_output, gnome_delay_output_milliseconds, gnome_delay_output_intervals,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
@@ -890,7 +890,7 @@ gnome_cliparound_proper(winid wid, int x, int y)
 }
 
 void
-gnome_init_print_glyph(int initid)
+gnome_issue_gui_command(int initid)
 {
     return;
 }

@@ -41,7 +41,7 @@ static void FDECL(and_cliparound, (int, int, BOOLEAN_P));
 static void FDECL(and_update_positionbar, (char *));
 #endif
 static void FDECL(and_print_glyph, (winid,XCHAR_P,XCHAR_P,struct layer_info));
-static void FDECL(and_init_print_glyph, (int));
+static void FDECL(and_issue_gui_command, (int));
 static void FDECL(and_raw_print, (const char *));
 static void FDECL(and_raw_print_bold, (const char *));
 static int NDECL(and_nhgetch);
@@ -107,7 +107,7 @@ struct window_procs and_procs = {
 	and_update_positionbar,
 #endif
 	and_print_glyph,
-	and_init_print_glyph,
+	and_issue_gui_command,
 	and_raw_print,
 	and_raw_print_bold,
 	and_nhgetch,
@@ -1415,7 +1415,7 @@ void and_update_positionbar(char *features)
 //		   port wants (symbol, font, color, attributes, ...there's
 //		   a 1-1 map between glyphs and distinct things on the map).
 
-void and_init_print_glyph(int initid)
+void and_issue_gui_command(int initid)
 {
 	return;
 }

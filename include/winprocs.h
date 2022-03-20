@@ -54,7 +54,7 @@ struct window_procs {
     void FDECL((*win_update_positionbar), (char *));
 #endif
     void FDECL((*win_print_glyph), (winid, XCHAR_P, XCHAR_P, struct layer_info));
-    void FDECL((*win_init_print_glyph), (int));
+    void FDECL((*win_issue_gui_command), (int));
     void FDECL((*win_raw_print), (const char *));
     void FDECL((*win_raw_print_bold), (const char *));
     int NDECL((*win_nhgetch));
@@ -166,7 +166,7 @@ extern
 #define update_positionbar (*windowprocs.win_update_positionbar)
 #endif
 #define print_glyph (*windowprocs.win_print_glyph)
-#define init_print_glyph (*windowprocs.win_init_print_glyph)
+#define issue_gui_command (*windowprocs.win_issue_gui_command)
 #define raw_print (*windowprocs.win_raw_print)
 #define raw_print_bold (*windowprocs.win_raw_print_bold)
 #define nhgetch (*windowprocs.win_nhgetch)
@@ -431,7 +431,7 @@ struct chain_procs {
     void FDECL((*win_update_positionbar), (CARGS, char *));
 #endif
     void FDECL((*win_print_glyph), (CARGS, winid, XCHAR_P, XCHAR_P, struct layer_info));
-    void FDECL((*win_init_print_glyph), (int));
+    void FDECL((*win_issue_gui_command), (int));
     void FDECL((*win_raw_print), (CARGS, const char *));
     void FDECL((*win_raw_print_bold), (CARGS, const char *));
     int FDECL((*win_nhgetch), (CARGS));
@@ -536,7 +536,7 @@ extern void FDECL(safe_cliparound, (int, int, BOOLEAN_P));
 extern void FDECL(safe_update_positionbar, (char *));
 #endif
 extern void FDECL(safe_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
-extern void FDECL(safe_init_print_glyph, (int));
+extern void FDECL(safe_issue_gui_command, (int));
 extern void FDECL(safe_raw_print, (const char *));
 extern void FDECL(safe_raw_print_bold, (const char *));
 extern int NDECL(safe_nhgetch);

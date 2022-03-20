@@ -797,7 +797,7 @@ unsigned int *stuckid, *steedid;
     relink_sound_sources(FALSE);
     /* inventory display is now viable */
     iflags.perm_invent = defer_perm_invent;
-    init_print_glyph(INIT_GLYPH_LOAD_GLYPHS);
+    issue_gui_command(GUI_CMD_LOAD_GLYPHS);
 
     return TRUE;
 }

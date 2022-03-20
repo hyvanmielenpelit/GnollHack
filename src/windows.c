@@ -730,7 +730,7 @@ static void FDECL(hup_add_extended_menu, (winid, int, const anything*, struct ex
 static void FDECL(hup_end_menu_ex, (winid, const char *, const char*));
 static void FDECL(hup_putstr_ex, (winid, int, const char *, int, int));
 static void FDECL(hup_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
-static void FDECL(hup_init_print_glyph, (int));
+static void FDECL(hup_issue_gui_command, (int));
 static void FDECL(hup_outrip, (winid, int, time_t));
 static void FDECL(hup_curs, (winid, int, int));
 static void FDECL(hup_display_nhwindow, (winid, BOOLEAN_P));
@@ -777,7 +777,7 @@ static struct window_procs hup_procs = {
                                                       /* update_positionbar */
 #endif
     hup_print_glyph,
-    hup_init_print_glyph,
+    hup_issue_gui_command,
     hup_void_fdecl_constchar_p,                       /* raw_print */
     hup_void_fdecl_constchar_p,                       /* raw_print_bold */
     hup_nhgetch, hup_nh_poskey, hup_void_ndecl,       /* nhbell  */
@@ -985,7 +985,7 @@ struct layer_info layers UNUSED;
 
 /*ARGSUSED*/
 static void
-hup_init_print_glyph(initid)
+hup_issue_gui_command(initid)
 int initid UNUSED;
 {
     return;

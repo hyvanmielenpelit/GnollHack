@@ -1940,7 +1940,7 @@ port_help()
  */
 
 void
-amii_init_print_glyph(initid)
+amii_issue_gui_command(initid)
 int initid;
 {
     return;

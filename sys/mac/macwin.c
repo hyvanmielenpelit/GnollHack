@@ -3296,7 +3296,7 @@ struct window_procs mac_procs = {
 #ifdef POSITIONBAR
     donull,
 #endif
-    tty_print_glyph, tty_init_print_glyph, tty_raw_print, tty_raw_print_bold, mac_nhgetch,
+    tty_print_glyph, tty_issue_gui_command, tty_raw_print, tty_raw_print_bold, mac_nhgetch,
     mac_nh_poskey, tty_nhbell, mac_doprev_message, mac_yn_function_ex,
     mac_getlin_ex, mac_get_ext_cmd, mac_number_pad, mac_delay_output, mac_delay_output_milliseconds, mac_delay_output_intervals,
 #ifdef CHANGE_COLOR

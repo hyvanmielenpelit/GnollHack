@@ -183,7 +183,7 @@ int GnollHackMain(int argc, char** argv)
 	vision_init();
 
 	display_gamewindows();
-	init_print_glyph(INIT_GLYPH_GAME_START);
+	issue_gui_command(GUI_CMD_GAME_START);
 
 	if((fd = restore_saved_game()) >= 0)
 	{
@@ -239,7 +239,7 @@ int GnollHackMain(int argc, char** argv)
 	}
 
 	if(wizard)
-		init_print_glyph(INIT_GLYPH_ENABLE_WIZARD_MODE); /* Notification may be needed if loaded a wizard mode saved game */
+		issue_gui_command(GUI_CMD_ENABLE_WIZARD_MODE); /* Notification may be needed if loaded a wizard mode saved game */
 
 	moveloop(resuming);
     exit(EXIT_SUCCESS);

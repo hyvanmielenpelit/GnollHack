@@ -565,7 +565,7 @@ static boolean need_update_inventory; /* for doset() */
 static boolean need_set_animation_timer_interval;
 static boolean need_update_space_binding;
 static boolean need_status_initialize;
-static boolean need_init_print_glyph;
+static boolean need_issue_gui_command;
 static boolean need_stretch_map;
 static boolean need_here_window;
 
@@ -4826,7 +4826,7 @@ boolean tinitial, tfrom_file;
             else if (boolopt[i].addr == &flags.ibm2utf8)
             {
                     need_redraw = TRUE;
-                    need_init_print_glyph = TRUE;
+                    need_issue_gui_command = TRUE;
             }
             else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors)
             {
@@ -5464,9 +5464,9 @@ doset() /* changing options via menu by Per Liboriussen */
         }
     }
 
-    if (need_init_print_glyph)
+    if (need_issue_gui_command)
     {
-        init_print_glyph(INIT_GLYPH_PREFERENCE_SET);
+        issue_gui_command(GUI_CMD_PREFERENCE_SET);
     }
 
     if (need_stretch_map)
@@ -6347,7 +6347,7 @@ boolean setinitial, setfromfile;
         } else if (!rogueflag)
             assign_graphics(PRIMARY);
         preference_update("symset");
-        need_init_print_glyph = TRUE;
+        need_issue_gui_command = TRUE;
         need_stretch_map = TRUE;
         need_redraw = TRUE;
 

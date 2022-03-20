@@ -78,7 +78,7 @@ DLL int RunGnollHack(
     UpdatePositionBarCallback callback_update_positionbar,
 
     PrintGlyphCallback callback_print_glyph,
-    InitPrintGlyphCallback callback_init_print_glyph,
+    IssueGuiCommandCallback callback_issue_gui_command,
     RawPrintCallback callback_raw_print,
     RawPrintBoldCallback callback_raw_print_bold,
     GetChCallback callback_nhgetch,

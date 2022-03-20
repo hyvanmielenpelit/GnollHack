@@ -58,7 +58,7 @@ struct window_procs Gem_procs = {
 #ifdef POSITIONBAR
     Gem_update_positionbar,
 #endif
-    Gem_print_glyph, Gem_init_print_glyph, Gem_raw_print, Gem_raw_print_bold, Gem_nhgetch,
+    Gem_print_glyph, Gem_issue_gui_command, Gem_raw_print, Gem_raw_print_bold, Gem_nhgetch,
     Gem_nh_poskey, Gem_nhbell, Gem_doprev_message, Gem_yn_function_ex,
     Gem_getlin_ex, Gem_get_ext_cmd, Gem_number_pad, Gem_delay_output, Gem_delay_output_milliseconds, Gem_delay_output_intervals,
 #ifdef CHANGE_COLOR /* the Mac uses a palette device */ 
@@ -917,7 +917,7 @@ extern int mar_set_rogue(int);
 extern void mar_add_pet_sign(winid, int, int);
 
 void
-Gem_init_print_glyph(initid)
+Gem_issue_gui_command(initid)
 int initid;
 {
     return;

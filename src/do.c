@@ -5775,7 +5775,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         return;
 
     /* Fade to black */
-    init_print_glyph(INIT_GLYPH_BEFORE_COLLECT);
+    issue_gui_command(GUI_CMD_BEFORE_COLLECT);
 
     /* discard context which applies to the level we're leaving;
        for lock-picking, container may be carried, in which case we
@@ -5867,7 +5867,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     reset_rndmonst(NON_PM); /* u.uz change affects monster generation */
 
     /* It is a good time for the garbage collector to function */
-    init_print_glyph(INIT_GLYPH_COLLECT_GARBAGE);
+    issue_gui_command(GUI_CMD_COLLECT_GARBAGE);
 
     /* set default level change destination areas */
     /* the special level code may override these */
@@ -6109,7 +6109,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
      */
 
      /* Fade back from black */
-    init_print_glyph(INIT_GLYPH_AFTER_COLLECT);
+    issue_gui_command(GUI_CMD_AFTER_COLLECT);
 
 
     if (play_arrival_teleport_effect)

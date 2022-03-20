@@ -82,7 +82,7 @@ struct window_procs safe_procs = {
 #ifdef POSITIONBAR
     safe_update_positionbar,
 #endif
-    safe_print_glyph, safe_init_print_glyph, safe_raw_print, safe_raw_print_bold, safe_nhgetch,
+    safe_print_glyph, safe_issue_gui_command, safe_raw_print, safe_raw_print_bold, safe_nhgetch,
     safe_nh_poskey, safe_nhbell, safe_doprev_message, safe_yn_function_ex,
     safe_getlin_ex, safe_get_ext_cmd, safe_number_pad, safe_delay_output, safe_delay_output_milliseconds, safe_delay_output_intervals,
 #ifdef CHANGE_COLOR /* the Mac uses a palette device */
@@ -354,7 +354,7 @@ boolean force;
 #endif /* CLIPPING */
 
 void
-safe_init_print_glyph(initid)
+safe_issue_gui_command(initid)
 int initid;
 {
     return;

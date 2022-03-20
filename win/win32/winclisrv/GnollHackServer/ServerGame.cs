@@ -50,7 +50,7 @@ namespace GnollHackServer
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
             PrintGlyphCallback callback_print_glyph,
-            VoidIntCallback callback_init_print_glyph,
+            VoidIntCallback callback_issue_gui_command,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
             IntVoidCallback callback_nhgetch,

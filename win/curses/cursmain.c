@@ -59,7 +59,7 @@ struct window_procs curses_procs = {
     donull,
 #endif
     curses_print_glyph,
-    curses_init_print_glyph,
+    curses_issue_gui_command,
     curses_raw_print,
     curses_raw_print_bold,
     curses_nhgetch,
@@ -152,7 +152,7 @@ curses_init_nhwindows(int *argcp UNUSED,
 #ifdef PDCURSES
     char window_title[BUFSZ];
 #endif
-    curses_init_print_glyph(1);
+    curses_issue_gui_command(1);
 #ifdef XCURSES
     base_term = Xinitscr(*argcp, argv);
 #else
@@ -658,7 +658,7 @@ curses_cliparound(int x, int y, BOOLEAN_P force UNUSED)
 }
 
 void
-curses_init_print_glyph(int initid)
+curses_issue_gui_command(int initid)
 {
     if (initid == 1)
     {

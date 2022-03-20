@@ -60,7 +60,7 @@ namespace GnollHackClient.Droid
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
             PrintGlyphCallback callback_print_glyph,
-            VoidIntCallback callback_init_print_glyph,
+            VoidIntCallback callback_issue_gui_command,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
             IntVoidCallback callback_nhgetch,
@@ -786,7 +786,7 @@ namespace GnollHackClient.Droid
                 /* If positionbar is on */
                 clientGame.ClientCallback_VoidCharDummy,
                 clientGame.ClientCallback_PrintGlyph,
-                clientGame.ClientCallback_InitPrintGlyph,
+                clientGame.ClientCallback_IssueGuiCommand,
                 clientGame.ClientCallback_RawPrint,
                 clientGame.ClientCallback_RawPrintBold,
                 clientGame.ClientCallback_nhgetch,
