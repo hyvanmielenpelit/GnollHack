@@ -863,7 +863,8 @@ int *fail_reason;
                                 FALSE);
 
         if (historic) {
-            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "guilty %s.", historic_statue_is_gone);
+            play_sfx_sound(SFX_GUILTY);
+            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "guilty %s.", historic_statue_is_gone);
             adjalign(-1);
         }
     } 

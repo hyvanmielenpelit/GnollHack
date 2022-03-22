@@ -1577,7 +1577,8 @@ violated_vegetarian()
 {
     u.uconduct.unvegetarian++;
     if (Role_if(PM_MONK)) {
-        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "guilty.");
+        play_sfx_sound(SFX_GUILTY);
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "guilty.");
         adjalign(-1);
     }
     return;

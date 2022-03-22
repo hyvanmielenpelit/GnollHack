@@ -3299,8 +3299,8 @@ boolean *effect_happened_ptr;
     case SCR_PUNISHMENT:
         known = TRUE;
         if (confused || sblessed) {
-            play_sfx_sound(SFX_MALIGNANT_AURA_RESISTED);
-            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "guilty.");
+            play_sfx_sound(SFX_GUILTY);
+            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "guilty.");
             break;
         }
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);

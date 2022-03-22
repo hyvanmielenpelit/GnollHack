@@ -3808,7 +3808,8 @@ cleanup:
 
     if (is_unicorn(mdat) && sgn(u.ualign.type) == sgn(mdat->maligntyp)) 
     {
-        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "guilty...");
+        play_sfx_sound(SFX_GUILTY);
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "guilty...");
         luck_change += -5;
     }
 

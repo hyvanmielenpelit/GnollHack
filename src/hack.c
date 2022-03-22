@@ -2309,7 +2309,8 @@ domove_core()
                  */
                 if (rn2(4)) 
                 {
-                    You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "guilty about losing your pet like this.");
+                    play_sfx_sound(SFX_GUILTY);
+                    You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "guilty about losing your pet like this.");
                     u.ugangr++;
                     adjalign(-15);
                 }

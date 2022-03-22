@@ -10163,7 +10163,8 @@ register struct obj *obj;
     }
     if (by_you && Role_if(PM_ARCHAEOLOGIST) && (obj->speflags & SPEFLAGS_STATUE_HISTORIC))
     {
-        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "guilty about damaging such a historic statue.");
+        play_sfx_sound(SFX_GUILTY);
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "guilty about damaging such a historic statue.");
         adjalign(-1);
     }
     obj->speflags &= ~SPEFLAGS_STATUE_HISTORIC;
