@@ -88,6 +88,7 @@
     <None Remove="Assets\UI\extended.png" />
     <None Remove="Assets\UI\fight.png" />
     <None Remove="Assets\UI\fire.png" />
+    <None Remove="Assets\UI\forcelock.png" />
     <None Remove="Assets\UI\frame-horizontal.png" />
     <None Remove="Assets\UI\frame-topleft-small.png" />
     <None Remove="Assets\UI\frame-topleft.png" />
@@ -137,6 +138,7 @@
     <None Remove="Assets\UI\search.png" />
     <None Remove="Assets\UI\search20.png" />
     <None Remove="Assets\UI\search200.png" />
+    <None Remove="Assets\UI\select.png" />
     <None Remove="Assets\UI\sit.png" />
     <None Remove="Assets\UI\skill.png" />
     <None Remove="Assets\UI\spells.png" />
@@ -179,12 +181,16 @@
     <None Remove="Assets\UI\symbol-success.png" />
     <None Remove="Assets\UI\takeoff.png" />
     <None Remove="Assets\UI\takeoffmany.png" />
+    <None Remove="Assets\UI\target-downwards.png" />
+    <None Remove="Assets\UI\target-self.png" />
+    <None Remove="Assets\UI\target-upwards.png" />
     <None Remove="Assets\UI\teleport.png" />
     <None Remove="Assets\UI\throw.png" />
     <None Remove="Assets\UI\tip.png" />
     <None Remove="Assets\UI\travel.png" />
     <None Remove="Assets\UI\twoweap.png" />
     <None Remove="Assets\UI\untrap.png" />
+    <None Remove="Assets\UI\viewspell.png" />
     <None Remove="Assets\UI\wait.png" />
     <None Remove="Assets\UI\wear.png" />
     <None Remove="Assets\UI\whatis.png" />
@@ -249,6 +255,7 @@
     <EmbeddedResource Include="Assets\UI\extended.png" />
     <EmbeddedResource Include="Assets\UI\fight.png" />
     <EmbeddedResource Include="Assets\UI\fire.png" />
+    <EmbeddedResource Include="Assets\UI\forcelock.png" />
     <EmbeddedResource Include="Assets\UI\frame-horizontal.png" />
     <EmbeddedResource Include="Assets\UI\frame-topleft-small.png" />
     <EmbeddedResource Include="Assets\UI\frame-topleft.png" />
@@ -298,6 +305,7 @@
     <EmbeddedResource Include="Assets\UI\search.png" />
     <EmbeddedResource Include="Assets\UI\search20.png" />
     <EmbeddedResource Include="Assets\UI\search200.png" />
+    <EmbeddedResource Include="Assets\UI\select.png" />
     <EmbeddedResource Include="Assets\UI\sit.png" />
     <EmbeddedResource Include="Assets\UI\skill.png" />
     <EmbeddedResource Include="Assets\UI\spells.png" />
@@ -340,12 +348,16 @@
     <EmbeddedResource Include="Assets\UI\symbol-success.png" />
     <EmbeddedResource Include="Assets\UI\takeoff.png" />
     <EmbeddedResource Include="Assets\UI\takeoffmany.png" />
+    <EmbeddedResource Include="Assets\UI\target-downwards.png" />
+    <EmbeddedResource Include="Assets\UI\target-self.png" />
+    <EmbeddedResource Include="Assets\UI\target-upwards.png" />
     <EmbeddedResource Include="Assets\UI\teleport.png" />
     <EmbeddedResource Include="Assets\UI\throw.png" />
     <EmbeddedResource Include="Assets\UI\tip.png" />
     <EmbeddedResource Include="Assets\UI\travel.png" />
     <EmbeddedResource Include="Assets\UI\twoweap.png" />
     <EmbeddedResource Include="Assets\UI\untrap.png" />
+    <EmbeddedResource Include="Assets\UI\viewspell.png" />
     <EmbeddedResource Include="Assets\UI\wait.png" />
     <EmbeddedResource Include="Assets\UI\wear.png" />
     <EmbeddedResource Include="Assets\UI\whatis.png" />

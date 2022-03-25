@@ -929,7 +929,7 @@ namespace GnollHackClient.Pages.Game
                     switch (data.style)
                     {
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Upwards */
-                            icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            icon_string = "GnollHackClient.Assets.UI.target-upwards.png";
                             break;
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS:
                             icon_string = "GnollHackClient.Assets.UI.stairs-up.png";
@@ -944,7 +944,7 @@ namespace GnollHackClient.Pages.Game
                     switch (data.style)
                     {
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Downwards */
-                            icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            icon_string = "GnollHackClient.Assets.UI.target-downwards.png";
                             break;
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS:
                             icon_string = "GnollHackClient.Assets.UI.stairs-down.png";
@@ -968,10 +968,10 @@ namespace GnollHackClient.Pages.Game
                     switch(data.style)
                     {
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Pick position in getpos */
-                            icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            icon_string = "GnollHackClient.Assets.UI.select.png";
                             break;
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETDIR: /* Self in getdir */
-                            icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
+                            icon_string = "GnollHackClient.Assets.UI.target-self.png";
                             break;
                         default:
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_GENERAL:
@@ -9095,7 +9095,7 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[1, 2, 0] = new GHCommandButtonItem("Overview", "GnollHackClient.Assets.UI.overview.png", GHUtils.Ctrl((int)'o'));
             _moreBtnMatrix[1, 3, 0] = new GHCommandButtonItem("Discoveries", "GnollHackClient.Assets.UI.discoveries.png", (int)'\\');
 
-            _moreBtnMatrix[1, 0, 1] = new GHCommandButtonItem("View Spell", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Meta((int)'z'));
+            _moreBtnMatrix[1, 0, 1] = new GHCommandButtonItem("View Spell", "GnollHackClient.Assets.UI.viewspell.png", GHUtils.Meta((int)'z'));
             _moreBtnMatrix[1, 1, 1] = new GHCommandButtonItem("Mix", "GnollHackClient.Assets.UI.mix.png", (int)'X');
             _moreBtnMatrix[1, 2, 1] = new GHCommandButtonItem("Travel", "GnollHackClient.Assets.UI.travel.png", (int)'_');
             _moreBtnMatrix[1, 3, 1] = new GHCommandButtonItem("2-Weapon", "GnollHackClient.Assets.UI.twoweap.png", GHUtils.Ctrl((int)'x'));
@@ -9137,7 +9137,7 @@ namespace GnollHackClient.Pages.Game
 
             _moreBtnMatrix[2, 0, 3] = new GHCommandButtonItem("Fight", "GnollHackClient.Assets.UI.fight.png", (int)'F');
             _moreBtnMatrix[2, 1, 3] = new GHCommandButtonItem("Break", "GnollHackClient.Assets.UI.break.png", GHUtils.Ctrl((int)'b'));
-            _moreBtnMatrix[2, 2, 3] = new GHCommandButtonItem("Force Lock", "GnollHackClient.Assets.Icons.missing_icon.png", GHUtils.Meta((int)'f'));
+            _moreBtnMatrix[2, 2, 3] = new GHCommandButtonItem("Force Lock", "GnollHackClient.Assets.UI.forcelock.png", GHUtils.Meta((int)'f'));
             _moreBtnMatrix[2, 3, 3] = new GHCommandButtonItem("Wipe", "GnollHackClient.Assets.UI.wipe.png", GHUtils.Meta((int)'f'));
 
             _moreBtnMatrix[2, 0, 4] = new GHCommandButtonItem("Tip", "GnollHackClient.Assets.UI.tip.png", GHUtils.Meta((int)'T'));
