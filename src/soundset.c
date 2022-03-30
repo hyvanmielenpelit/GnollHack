@@ -858,6 +858,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Cold Resistance", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Shock Resistance", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Poison Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Stone Resistance", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Sleep Resistance", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Acid Resistance", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Disintegration Resistance", 1.0f },
@@ -870,6 +871,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Teleport Control", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Telepathy", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/Lycanthropy Resistance", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Intrinsic/Acquired/General", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Object/Potion/Gain Level/Cursed Effect", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Action/Rub", 1.0f },
@@ -10607,6 +10609,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         FALSE, SOUND_PLAY_GROUP_LONG
     },
     {
+        "GHSOUND_INTRINSIC_ACQUIRED_STONE_RESISTANCE",
+        {GHSOUND_INTRINSIC_ACQUIRED_STONE_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
         "GHSOUND_INTRINSIC_ACQUIRED_SLEEP_RESISTANCE",
         {GHSOUND_INTRINSIC_ACQUIRED_SLEEP_RESISTANCE, 1.0f},
         FALSE, SOUND_PLAY_GROUP_LONG
@@ -10664,6 +10671,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_INTRINSIC_ACQUIRED_LYCANTHROPY_RESISTANCE",
         {GHSOUND_INTRINSIC_ACQUIRED_LYCANTHROPY_RESISTANCE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_INTRINSIC_ACQUIRED_GENERAL",
+        {GHSOUND_INTRINSIC_ACQUIRED_GENERAL, 1.0f},
         FALSE, SOUND_PLAY_GROUP_LONG
     },
     {

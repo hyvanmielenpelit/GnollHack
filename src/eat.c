@@ -1174,6 +1174,14 @@ register struct permonst *ptr;
             HPoison_resistance |= FROM_ACQUIRED;
         }
         break;
+    case STONE_RESISTANCE:
+        debugpline0("Trying to give petrification resistance");
+        if (!(HStone_resistance & FROM_ACQUIRED)) {
+            play_sfx_sound(SFX_INTRINSIC_ACQUIRED_STONE_RESISTANCE);
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, Stone_resistance ? "especially limber." : "limber.");
+            HStone_resistance |= FROM_ACQUIRED;
+        }
+        break;
     case TELEPORT:
         debugpline0("Trying to give teleport");
         if (!(HTeleportation & FROM_ACQUIRED)) {
