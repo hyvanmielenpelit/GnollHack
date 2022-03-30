@@ -1734,7 +1734,8 @@ const char *mesg;
     struct obj *tin = context.tin.tin;
 
     r = tin_variety(tin, FALSE);
-    if (tin->otrapped || (tin->cursed && r != HOMEMADE_TIN && !rn2(8))) {
+    if (tin->otrapped || (tin->cursed && r != HOMEMADE_TIN && !rn2(8))) 
+    {
         b_trapped("tin", 0, u.ux, u.uy);
         tin = costly_tin(COST_DSTROY);
         goto use_up_tin;
@@ -1742,9 +1743,11 @@ const char *mesg;
 
     pline1(mesg); /* "You succeed in opening the tin." */
 
-    if (r != SPINACH_TIN) {
+    if (r != SPINACH_TIN) 
+    {
         mnum = tin->corpsenm;
-        if (mnum == NON_PM) {
+        if (mnum == NON_PM) 
+        {
             pline("It turns out to be empty.");
             tin->dknown = tin->known = 1;
             tin = costly_tin(COST_OPEN);
@@ -1752,13 +1755,18 @@ const char *mesg;
         }
 
         which = 0; /* 0=>plural, 1=>as-is, 2=>"the" prefix */
-        if (touch_petrifies(&mons[mnum]) // (mnum == PM_COCKATRICE || mnum == PM_CHICKATRICE)
-            && (Stone_resistance || Hallucination)) {
+        if (is_cockatrice(&mons[mnum]) // (mnum == PM_COCKATRICE || mnum == PM_CHICKATRICE)
+            && (Stone_resistance || Hallucination)) 
+        {
             what = "chicken";
             which = 1; /* suppress pluralization */
-        } else if (Hallucination) {
+        } 
+        else if (Hallucination) 
+        {
             what = rndmonnam(NULL);
-        } else {
+        } 
+        else 
+        {
             what = pm_common_name(&mons[mnum]);
             if (the_unique_pm(&mons[mnum]))
                 which = 2;
@@ -1771,7 +1779,8 @@ const char *mesg;
             what = the(what);
 
         pline("It smells like %s.", what);
-        if (yn_query("Eat it?") == 'n') {
+        if (yn_query("Eat it?") == 'n') 
+        {
             if (flags.verbose)
                 You("discard the open tin.");
             if (!Hallucination)
@@ -1807,23 +1816,30 @@ const char *mesg;
             display_nutrition_floating_text(u.ux, u.uy, tintxts[r].nut);
         }
 
-        if (tintxts[r].greasy) {
+        if (tintxts[r].greasy) 
+        {
             /* Assume !Glib, because you can't open tins when Glib. */
             incr_itimeout(&Glib, rnd(15));
             pline("Eating %s food made your %s very slippery.",
                   tintxts[r].txt, makeplural(body_part(FINGER)));
         }
 
-    } else { /* spinach... */
-        if (tin->cursed) {
+    }
+    else
+    { /* spinach... */
+        if (tin->cursed) 
+        {
             pline("It contains some decaying%s%s substance.",
                   Blind ? "" : " ", Blind ? "" : hcolor(NH_GREEN));
-        } else {
+        }
+        else 
+        {
             pline("It contains spinach.");
             tin->dknown = tin->known = 1;
         }
 
-        if (yn_query("Eat it?") == 'n') {
+        if (yn_query("Eat it?") == 'n') 
+        {
             if (flags.verbose)
                 You("discard the open tin.");
             tin = costly_tin(COST_OPEN);
