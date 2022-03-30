@@ -5534,14 +5534,16 @@ struct permonst _mons2[] = {
             | M1_CARNIVORE | M1_OVIPAROUS | M1_NOTAKE,
         M2_HOSTILE, M3_INFRAVISIBLE, M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
         11, CLR_BRIGHT_BLUE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("kraken", None, "gigantic squid-like monster with a drowning attack", None, None, S_EEL, LVL(20, 3, 6, 5, 0, -3), (G_GENO | G_NOGEN),
+    ENLARGED_MON("kraken", None, "gigantic squid-like monster with a drowning attack", None, None, S_EEL, LVL(20, 3, 6, 5, 0, -3), (G_GENO | G_NOGEN),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 2, 4, 0, 0, 0, 0, 0UL, 0),
           ATTK(AT_HUGS, AD_WRAP, 2, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_PHYS, 5, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1800, 1000, MS_SILENT, MZ_HUGE, 1, 0, MAT_FLESH), STATS(STR19(21), 18, 22, 4, 4, 1), MR_NONE, MR2_NONE, MC_NONE,
         M1_SWIM | M1_AMPHIBIOUS | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,
         M2_NOPOLY | M2_HOSTILE, M3_INFRAVISIBLE, M4_BRAVE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
-        16, CLR_RED, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        16, CLR_RED, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(KRAKEN_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KRAKEN_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(KRAKEN_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, KRAKEN_STATUE_ENLARGEMENT, 0, 0)),
     /*
      * lizards, &c
      */

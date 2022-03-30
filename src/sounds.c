@@ -4318,6 +4318,7 @@ struct monst* mtmp;
         case PM_ACOLYTE:
         case PM_THUG:
         case PM_HUNTER:
+        case PM_ROSHI:
         case PM_GUIDE:
         case PM_WARRIOR:
         case PM_APPRENTICE:
