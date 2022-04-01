@@ -19,6 +19,7 @@ STATIC_PTR int NDECL(wipeoff);
 STATIC_DCL int FDECL(menu_drop, (int));
 STATIC_DCL int NDECL(currentlevel_rewrite);
 STATIC_DCL void NDECL(final_level);
+STATIC_DCL void FDECL(print_corpse_properties, (winid, int, BOOLEAN_P));
 /* static boolean FDECL(badspot, (XCHAR_P,XCHAR_P)); */
 
 extern int n_dgns; /* number of dungeons, from dungeon.c */
@@ -515,6 +516,405 @@ boolean unit_fixed_width;
     }
 }
 
+STATIC_OVL
+void print_corpse_properties(datawin, mnum, isprobing)
+winid datawin;
+int mnum;
+boolean isprobing;
+{
+    struct permonst* ptr = &mons[mnum];
+    char buf[BUFSZ];
+    char buf2[BUFSZ];
+    const char* txt;
+    int cnt = 0;
+
+    if (mnum >= LOW_PM)
+    {
+        if (nonrotting_corpse(mnum))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Non-rotting corpse", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (is_reviver(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Reviving corpse", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (mnum == PM_LIZARD)
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Cures petrification", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (is_quantum_mechanic(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Causes uncertain velocity", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (mnum == PM_DISENCHANTER)
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Removes random intrinsic", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (mnum == PM_NURSE)
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Cures blindness", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (mnum == PM_CHAMELEON || mnum == PM_DOPPELGANGER)
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Causes polymorph", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (is_rider(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Instantly fatal", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (is_mimic(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Causes mimicking", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (is_were(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Infected with lycanthropy", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (is_bat(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Causes stun", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (mnum == PM_STALKER)
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Confers invisibility", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (flesh_petrifies(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Touching petrifies", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (mnum == PM_GREEN_SLIME)
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Touching turns into green slime", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (has_sickening_corpse(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Infected with terminal illness", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (has_mummy_rotted_corpse(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Infected with mummy rot", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (has_poisonous_corpse(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Poisonous", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+        if (has_acidic_corpse(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Acidic", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+        if (has_hallucinating_corpse(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Hallucinating", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+        if (mon_to_zombie(mnum) > NON_PM)
+        {
+            cnt++;
+            Sprintf(buf, " %2d - Zombifiable", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+        if (mon_to_mummy(mnum) > NON_PM)
+        {
+            cnt++;
+            Sprintf(buf, " %2d - Mummifiable", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+
+#if 0
+        if (((ptr)->mconveys & MC_FIRE) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer fire resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_COLD) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer cold resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_SLEEP) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer sleep resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_DISINT) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer disintegration resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_ELEC) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer shock resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_POISON) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer poison resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_STONE) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer petrification resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_ACID) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer acid resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_STONE) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer petrification resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_DEATH) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer death resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_DRAIN) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer drain resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_CHARM) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer charm resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_FEAR) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer fear resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_SICK) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer sickness resistance", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_FREE_ACTION) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer free action", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+#endif
+
+        if (((ptr)->mconveys & MC_STRENGTH) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer strength", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_DEXTERITY) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer dexterity", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_CONSTITUTION) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer constitution", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_INTELLIGENCE) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer intelligence", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_WISDOM) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer wisdom", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_CHARISMA) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer charisma", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_LEVEL_GAIN) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer an experiance level", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+
+#if 0
+        if (((ptr)->mconveys & MC_TELEPORT) != 0L)
+        {
+            Sprintf(buf, "  %d - Confers teleportitiis", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_TELEPORT_CONTROL) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer teleport control", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_BLIND_TELEPATHY) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer blind telepathy", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+        if (((ptr)->mconveys & MC_TELEPATHY) != 0L)
+        {
+            Sprintf(buf, "  %d - May confer telepathy", cnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            cnt++;
+        }
+#endif
+
+        /* Conveys */
+        int i;
+        for (i = 0; i < 32; i++)
+        {
+            unsigned long bit = 1UL << i;
+            if (((ptr)->mconveys & bit) != 0L)
+            {
+                int propnum = conveyed_to_prop(bit);
+                if (propnum != 0)
+                {
+                    const char* propname = get_property_name(propnum);
+                    if (propname && *propname)
+                    {
+                        cnt++;
+                        Sprintf(buf, " %2d - May confer %s", cnt, propname);
+                        txt = buf;
+                        putstr(datawin, ATR_INDENT_AT_DASH, txt);
+                    }
+                }
+            }
+        }
+    }
+
+    if (cnt == 0)
+    {
+        Sprintf(buf, "  (None)");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+}
+
 int
 corpsedescription(obj)
 register struct obj* obj;
@@ -543,7 +943,7 @@ register struct obj* obj;
     strcpy(buf, cxname(obj));
     *buf = highc(*buf);
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_TITLE, txt);
 
     strcpy(buf, "");
     txt = buf;
@@ -600,353 +1000,9 @@ register struct obj* obj;
     {
         Sprintf(buf, "Properties:");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_HEADING, txt);
 
-        int cnt = 1;
-
-        if (nonrotting_corpse(mnum))
-        {
-            Sprintf(buf, "  %d - Non-rotting corpse", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (is_reviver(ptr))
-        {
-            Sprintf(buf, "  %d - Reviving corpse", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (mnum == PM_LIZARD)
-        {
-            Sprintf(buf, "  %d - Cures petrification", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (is_quantum_mechanic(ptr))
-        {
-            Sprintf(buf, "  %d - Causes uncertain velocity", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (mnum == PM_DISENCHANTER)
-        {
-            Sprintf(buf, "  %d - Removes random intrinsic", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (mnum == PM_NURSE)
-        {
-            Sprintf(buf, "  %d - Cures blindness", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (mnum == PM_CHAMELEON || mnum == PM_DOPPELGANGER)
-        {
-            Sprintf(buf, "  %d - Causes polymorph", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (is_rider(ptr))
-        {
-            Sprintf(buf, "  %d - Instantly fatal", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (is_mimic(ptr))
-        {
-            Sprintf(buf, "  %d - Causes mimicking", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (is_were(ptr))
-        {
-            Sprintf(buf, "  %d - Infected with lycanthropy", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (is_bat(ptr))
-        {
-            Sprintf(buf, "  %d - Causes stun", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (mnum == PM_STALKER)
-        {
-            Sprintf(buf, "  %d - Confers invisibility", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (mnum == PM_STALKER)
-        {
-            Sprintf(buf, "  %d - Confers invisibility", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (flesh_petrifies(ptr))
-        {
-            Sprintf(buf, "  %d - Touching petrifies", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (mnum == PM_GREEN_SLIME || obj->otyp == GLOB_OF_GREEN_SLIME)
-        {
-            Sprintf(buf, "  %d - Touching turns into green slime", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (has_sickening_corpse(ptr))
-        {
-            Sprintf(buf, "  %d - Infected with terminal illness", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (has_mummy_rotted_corpse(ptr))
-        {
-            Sprintf(buf, "  %d - Infected with mummy rot", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-        if (has_poisonous_corpse(ptr))
-        {
-            Sprintf(buf, "  %d - Poisonous", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (has_acidic_corpse(ptr))
-        {
-            Sprintf(buf, "  %d - Acidic", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (has_hallucinating_corpse(ptr))
-        {
-            Sprintf(buf, "  %d - Hallucinating", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
-
-
-        if (((ptr)->mconveys & MC_FIRE) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer fire resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_COLD) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer cold resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_SLEEP) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer sleep resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_DISINT) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer disintegration resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_ELEC) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer shock resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_POISON) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer poison resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_ACID) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer acid resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_STONE) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer petrification resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_DEATH) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer death resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_DRAIN) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer drain resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_CHARM) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer charm resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_FEAR) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer fear resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_SICK) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer sickness resistance", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_FREE_ACTION) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer free action", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_STRENGTH) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer strength", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_DEXTERITY) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer dexterity", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_CONSTITUTION) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer constitution", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_INTELLIGENCE) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer intelligence", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_WISDOM) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer wisdom", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_CHARISMA) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer charisma", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_LEVEL_GAIN) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer an experiance level", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_TELEPORT) != 0L)
-        {
-            Sprintf(buf, "  %d - Confers teleportitiis", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_TELEPORT) != 0L)
-        {
-            Sprintf(buf, "  %d - Confers teleportitis", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_TELEPORT_CONTROL) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer teleport control", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_BLIND_TELEPATHY) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer blind telepathy", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-        if (((ptr)->mconveys & MC_TELEPATHY) != 0L)
-        {
-            Sprintf(buf, "  %d - May confer telepathy", cnt);
-            txt = buf;
-            putstr(datawin, 0, txt);
-            cnt++;
-        }
-
+        print_corpse_properties(datawin, mnum, TRUE);
     }
 
 
@@ -955,7 +1011,7 @@ register struct obj* obj;
     {
         strcpy(buf, "Description:");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_HEADING, txt);
 
         Sprintf(buf, "  %s", OBJ_ITEM_DESC(otyp));
         txt = buf;
@@ -3075,40 +3131,11 @@ register struct obj* obj;
         /* Corpse properties */
         if (otyp == CORPSE && obj->corpsenm > NON_PM)
         {
-            int powercnt = 0;
-
             Sprintf(buf, "Corpse properties:");
             txt = buf;
             putstr(datawin, ATR_HEADING, txt);
 
-            /* Flags here */
-            if (mon_to_zombie(obj->corpsenm) > NON_PM)
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Zombifiable", powercnt);
-                txt = buf;
-                putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            }
-            if (mon_to_mummy(obj->corpsenm) > NON_PM)
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Mummifiable", powercnt);
-                txt = buf;
-                putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            }
-            if (touch_petrifies(&mons[obj->corpsenm]))
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Touching petrifies", powercnt);
-                txt = buf;
-                putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            }
-            if (powercnt == 0)
-            {
-                Sprintf(buf, " (None)");
-                txt = buf;
-                putstr(datawin, 0, txt);
-            }
+            print_corpse_properties(datawin, obj->corpsenm, FALSE);
         }
     }
 

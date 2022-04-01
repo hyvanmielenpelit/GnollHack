@@ -778,6 +778,8 @@
     (((ptr)->mconveys & MC_WISDOM) != 0)
 #define conveys_charisma(ptr) \
     (((ptr)->mconveys & MC_CHARISMA) != 0)
+#define conveys_level(ptr) \
+    (((ptr)->mconveys & MC_LEVEL_GAIN) != 0)
 
 
 #define has_see_invisible(mon) \

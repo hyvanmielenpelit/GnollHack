@@ -459,6 +459,7 @@ E NEARDATA winid WIN_MAP, WIN_INVEN, WIN_HERE;
 
 /* pline (et al) for a single string argument (suppress compiler warning) */
 #define pline1(cstr) pline("%s", cstr)
+#define pline_The1(cstr) pline_The("%s", cstr)
 #define Your1(cstr) Your("%s", cstr)
 #define You1(cstr) You("%s", cstr)
 #define verbalize1(cstr) verbalize("%s", cstr)

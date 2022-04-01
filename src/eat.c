@@ -1400,8 +1400,9 @@ int pm;
         break;
     }
 
+    struct permonst* ptr = &mons[pm];
     /* Level gain has been moved here, 100% chance */
-    if (mons[pm].mconveys & MC_LEVEL_GAIN)
+    if (conveys_level(ptr))
     {
         pluslvl(FALSE);
         check_intrinsics = FALSE;
@@ -1410,7 +1411,6 @@ int pm;
     /* Possibly convey an intrinsic */
     if (check_intrinsics)
     {
-        struct permonst* ptr = &mons[pm];
         boolean conveys_STR = conveys_strength(ptr);
         boolean conveys_DEX = conveys_dexterity(ptr);
         boolean conveys_CON = conveys_constitution(ptr);
