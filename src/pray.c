@@ -2935,23 +2935,23 @@ dopray()
 {
     if (!context.spellpray)
     {
-        boolean canpray = can_pray(FALSE);
-        boolean tooquickly = (p_trouble > 0) ? (u.uprayer_timeout > 200)      /* big trouble */
-            : (p_trouble < 0) ? (u.uprayer_timeout > 100) /* minor difficulties */
+        (void)can_pray(FALSE);
+        boolean tooquickly = (p_trouble > 0) ? (u.uprayer_timeout > 200)
+            : (p_trouble < 0) ? (u.uprayer_timeout > 100)
             : (u.uprayer_timeout > 0);
 
         if (context.game_difficulty < 0 && tooquickly && !context.starting_prayer_timeout_expired)
         {
             char qbuf[BUFSZ];
-            Sprintf(qbuf, "Praying quickly after starting the game will anger your %s. Do you still want to pray?", align_gtitle(u.ualign.type));
+            Sprintf(qbuf, "Praying soon after starting the game may anger your %s. Do you still want to pray?", align_gtitle(u.ualign.type));
             if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Praying Too Early", qbuf) != 'y')
                 return 0;
         }
         else if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && tooquickly)
         {
             char qbuf[BUFSZ];
-            Sprintf(qbuf, "Praying too quickly in succession may anger your %s. Do you still want to pray?", align_gtitle(u.ualign.type));
-            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Praying Too Quickly Again", qbuf) != 'y')
+            Sprintf(qbuf, "Praying too often in succession may anger your %s. Do you still want to pray?", align_gtitle(u.ualign.type));
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Praying Too Often", qbuf) != 'y')
                 return 0;
         }
         else if (ParanoidPray || context.game_difficulty == MIN_DIFFICULTY_LEVEL)
