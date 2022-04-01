@@ -185,7 +185,13 @@ boolean resuming;
                     run_regions();
 
                     if (u.uprayer_timeout)
+                    {
                         u.uprayer_timeout--;
+                        if (!context.starting_prayer_timeout_expired && !u.uprayer_timeout)
+                        {
+                            context.starting_prayer_timeout_expired = TRUE;
+                        }
+                    }
                     if (flags.time && !context.run)
                         iflags.time_botl = TRUE;
 

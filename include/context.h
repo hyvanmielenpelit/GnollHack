@@ -247,6 +247,7 @@ struct context_info
     unsigned long npc_made;
     unsigned int view_pet_mid;
     boolean first_time_cmd;
+    boolean starting_prayer_timeout_expired;
 };
 
 extern NEARDATA struct context_info context;

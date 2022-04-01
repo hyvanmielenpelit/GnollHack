@@ -1619,11 +1619,14 @@ aligntyp g_align;
      * If your luck is at least 0, then you are guaranteed rescued from
      * your worst major problem.
      */
-    if (!trouble && u.ualign.record >= DEVOUT) {
+    if (!trouble && u.ualign.record >= DEVOUT) 
+    {
         /* if hero was in trouble, but got better, no special favor */
         if (p_trouble == 0)
             pat_on_head = 1;
-    } else {
+    } 
+    else 
+    {
         int action, prayer_luck;
         int tryct = 0;
 
@@ -1646,7 +1649,8 @@ aligntyp g_align;
         if (u.ualign.record < STRIDENT)
             action = (u.ualign.record > 0 || !rnl(2)) ? 1 : 0;
 
-        switch (min(action, 5)) {
+        switch (min(action, 5)) 
+        {
         case 5:
             pat_on_head = 1;
             /*FALLTHRU*/
@@ -1680,7 +1684,8 @@ aligntyp g_align;
        fixed or there were no troubles to begin with; hallucination
        won't be in effect so special handling for it is superfluous */
     if (pat_on_head)
-        switch (rn2((Luck + 6) >> 1)) {
+        switch (rn2((Luck + 6) >> 1)) 
+        {
         case 0:
             break;
         case 1:
@@ -1741,8 +1746,10 @@ aligntyp g_align;
                skip if you've solved it via mastermind or destroyed the
                drawbridge (both set uopened_dbridge) or if you've already
                travelled past the Valley of the Dead (gehennom_entered) */
-            if (!u.uevent.uopened_dbridge && !u.uevent.gehennom_entered) {
-                if (u.uevent.uheard_tune < 1) {
+            if (!u.uevent.uopened_dbridge && !u.uevent.gehennom_entered) 
+            {
+                if (u.uevent.uheard_tune < 1) 
+                {
                     godvoice(g_align, (char *) 0);
                     play_voice_god_simple_line_by_align(g_align, youmonst.data->mlet == S_HUMAN ? GOD_LINE_HARK_MORTAL : GOD_LINE_HARK_CREATURE);
                     verbalize("Hark, %s!", youmonst.data->mlet == S_HUMAN
@@ -1753,7 +1760,9 @@ aligntyp g_align;
                        "To enter the castle, thou must play the right tune!");
                     u.uevent.uheard_tune++;
                     break;
-                } else if (u.uevent.uheard_tune < 2) {
+                } 
+                else if (u.uevent.uheard_tune < 2)
+                {
                     You_hear("a divine music...");
                     pline("It sounds like:  \"%s\".", tune);
                     u.uevent.uheard_tune++;
@@ -1767,10 +1776,13 @@ aligntyp g_align;
                 You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are surrounded by %s glow.", an(hcolor(NH_GOLDEN)));
             /* if any levels have been lost (and not yet regained),
                treat this effect like blessed full healing */
-            if (u.ulevel < u.ulevelmax) {
+            if (u.ulevel < u.ulevelmax) 
+            {
                 u.ulevelmax -= 1; /* see potion.c */
                 pluslvl(FALSE);
-            } else {
+            }
+            else 
+            {
                 u.ubasehpmax += 5;
                 if (Upolyd)
                     u.basemhmax += 5;
@@ -1799,7 +1811,8 @@ aligntyp g_align;
             context.botl = context.botlx = 1;
             refresh_u_tile_gui_info(TRUE);
             break;
-        case 4: {
+        case 4: 
+        {
             register struct obj *otmp;
             int any = 0;
 
@@ -1808,11 +1821,14 @@ aligntyp g_align;
                 You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "the power of %s.", u_gname());
             else
                 You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are surrounded by %s aura.", an(hcolor(NH_LIGHT_BLUE)));
-            for (otmp = invent; otmp; otmp = otmp->nobj) {
+            for (otmp = invent; otmp; otmp = otmp->nobj) 
+            {
                 if (otmp->cursed
                     && (otmp != uarmh /* [see worst_cursed_item()] */
-                        || uarmh->otyp != HELM_OF_OPPOSITE_ALIGNMENT)) {
-                    if (!Blind) {
+                        || uarmh->otyp != HELM_OF_OPPOSITE_ALIGNMENT)) 
+                {
+                    if (!Blind) 
+                    {
                         pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s %s.", Yobjnam2(otmp, "softly glow"),
                               hcolor(NH_AMBER));
                         iflags.last_msg = PLNMSG_OBJ_GLOWS;
@@ -1826,7 +1842,8 @@ aligntyp g_align;
                 update_inventory();
             break;
         }
-        case 5: {
+        case 5: 
+        {
             static NEARDATA const char msg[] =
                 "\"and thus I grant thee the gift of %s!\"";
 
@@ -1834,17 +1851,22 @@ aligntyp g_align;
             play_voice_god_simple_line_by_align(g_align, GOD_LINE_THOU_HAST_PLEASED_ME_WITH_THY_PROGRESS);
             godvoice(u.ualign.type,
                      "Thou hast pleased me with thy progress,");
-            if (!(HTelepat & INTRINSIC)) {
+            if (!(HTelepat & INTRINSIC)) 
+            {
                 HTelepat |= FROM_ACQUIRED;
                 play_voice_god_simple_line_by_align(g_align, GOD_LINE_AND_THUS_I_GRANT_THEE_THE_GIFT_OF_TELEPATHY);
                 pline(msg, "Telepathy");
                 if (Blind)
                     see_monsters();
-            } else if (!(HFast & INTRINSIC)) {
+            } 
+            else if (!(HFast & INTRINSIC)) 
+            {
                 HFast |= FROM_ACQUIRED;
                 play_voice_god_simple_line_by_align(g_align, GOD_LINE_AND_THUS_I_GRANT_THEE_THE_GIFT_OF_SPEED);
                 pline(msg, "Speed");
-            } else if (!(HStealth & INTRINSIC)) {
+            } 
+            else if (!(HStealth & INTRINSIC)) 
+            {
                 HStealth |= FROM_ACQUIRED;
                 play_voice_god_simple_line_by_align(g_align, GOD_LINE_AND_THUS_I_GRANT_THEE_THE_GIFT_OF_STEALTH);
                 pline(msg, "Stealth");
@@ -1869,12 +1891,14 @@ aligntyp g_align;
         case 7:
         case 8:
 crown_here:
-            if (u.ualign.record >= PIOUS && !u.uevent.uhand_of_elbereth) {
+            if (u.ualign.record >= PIOUS && !u.uevent.uhand_of_elbereth) 
+            {
                 gcrownu();
                 break;
             }
             /*FALLTHRU*/
-        case 6: {
+        case 6: 
+        {
             struct obj *otmp;
             int sp_no, trycnt = u.ulevel + 1;
 
@@ -1882,15 +1906,19 @@ crown_here:
              */
             /* Also, try to grant a spell for which there is a skill slot */
             otmp = mkobj(SPBOOK_CLASS, TRUE, TRUE);
-            while (--trycnt > 0) {
-                if (otmp->otyp != SPE_BLANK_PAPER) {
+            while (--trycnt > 0) 
+            {
+                if (otmp->otyp != SPE_BLANK_PAPER) 
+                {
                     for (sp_no = 0; sp_no < MAXSPELL; sp_no++)
                         if (spl_book[sp_no].sp_id == otmp->otyp)
                             break;
                     if (sp_no == MAXSPELL
                         && !P_RESTRICTED(spell_skilltype(otmp->otyp)))
                         break; /* usable, but not yet known */
-                } else {
+                } 
+                else 
+                {
                     if (!objects[SPE_BLANK_PAPER].oc_name_known
                         || carrying(MAGIC_MARKER))
                         break;
@@ -2859,7 +2887,8 @@ boolean praying; /* false means no messages should be given */
     p_aligntyp = on_altar() ? a_align(u.ux, u.uy) : u.ualign.type;
     p_trouble = in_trouble();
 
-    if (is_demon(youmonst.data) && (p_aligntyp != A_CHAOTIC)) {
+    if (is_demon(youmonst.data) && (p_aligntyp != A_CHAOTIC)) 
+    {
         if (praying)
             pline_The("very idea of praying to a %s god is repugnant to you.",
                       p_aligntyp ? "lawful" : "neutral");
@@ -2882,7 +2911,8 @@ boolean praying; /* false means no messages should be given */
         p_type = 0;                     /* too soon... */
     else if ((int) Luck < 0 || u.ugangr || alignment < 0)
         p_type = 1; /* too naughty... */
-    else /* alignment >= 0 */ {
+    else /* alignment >= 0 */ 
+    {
         if (on_altar() && u.ualign.type != p_aligntyp)
             p_type = 2;
         else
@@ -2903,18 +2933,50 @@ boolean praying; /* false means no messages should be given */
 int
 dopray()
 {
-    /* Confirm accidental slips of Alt-P */
-    if (!context.spellpray && ParanoidPray && yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Confirm Prayer", "Are you sure you want to pray?") != 'y')
-        return 0;
+    if (!context.spellpray)
+    {
+        boolean canpray = can_pray(FALSE);
+        boolean tooquickly = (p_trouble > 0) ? (u.uprayer_timeout > 200)      /* big trouble */
+            : (p_trouble < 0) ? (u.uprayer_timeout > 100) /* minor difficulties */
+            : (u.uprayer_timeout > 0);
 
+        if (context.game_difficulty < 0 && tooquickly && !context.starting_prayer_timeout_expired)
+        {
+            char qbuf[BUFSZ];
+            Sprintf(qbuf, "Praying quickly after starting the game will anger your %s. Do you still want to pray?", align_gtitle(u.ualign.type));
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Praying Too Early", qbuf) != 'y')
+                return 0;
+        }
+        else if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && tooquickly)
+        {
+            char qbuf[BUFSZ];
+            Sprintf(qbuf, "Praying too quickly in succession may anger your %s. Do you still want to pray?", align_gtitle(u.ualign.type));
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Praying Too Quickly Again", qbuf) != 'y')
+                return 0;
+        }
+        else if (ParanoidPray || context.game_difficulty == MIN_DIFFICULTY_LEVEL)
+        {
+            /* Confirm accidental slips of Alt-P */
+            char qbuf[BUFSZ];
+            if(context.game_difficulty == MIN_DIFFICULTY_LEVEL)
+                Sprintf(qbuf, "Praying can be dangerous unless your %s views you favorably. Are you sure you want to pray?", align_gtitle(u.ualign.type));
+            else
+                strcpy(qbuf, "Are you sure you want to pray?");
+            if(yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Confirm Prayer", qbuf) != 'y')
+                return 0;
+        }
+    }
+    
     u.uconduct.gnostic++;
 
     /* set up p_type and p_alignment */
     if (!can_pray(TRUE))
         return 0;
 
-    if (wizard && p_type >= 0) {
-        if (yn_query("Force the gods to be pleased?") == 'y') {
+    if (wizard && p_type >= 0) 
+    {
+        if (yn_query("Force the gods to be pleased?") == 'y') 
+        {
             u.uprayer_timeout = 0;
             if (u.uluck < 0)
                 u.uluck = 0;
@@ -2925,6 +2987,7 @@ dopray()
                 p_type = 3;
         }
     }
+
     nomul(-3);
     multi_reason = "praying";
     nomovemsg = "You finish your prayer.";
@@ -2936,7 +2999,8 @@ dopray()
         delay_output_milliseconds(1500);
     }
 
-    if (p_type == 3 && !Inhell) {
+    if (p_type == 3 && !Inhell) 
+    {
         /* if you've been true to your god you can't die while you pray */
         if (!Blind)
             You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are surrounded by a shimmering light.");
@@ -3007,7 +3071,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
             u.uprayer_timeout += Role_if(PM_PRIEST) ? rnz(125) : rnz(250);
             gods_upset(u.ualign.type);
             change_luck(-3, TRUE);
-        } 
+        }
         else
             pleased(alignment);
     } 
