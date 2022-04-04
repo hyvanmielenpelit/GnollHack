@@ -42,8 +42,8 @@ namespace GnollHackClient
 
         public BackgroundStyles BackgroundStyle
         {
-            get => (BackgroundStyles)GetValue(BackgroundStyleProperty);
-            set => SetValue(BackgroundStyleProperty, value);
+            get { return (BackgroundStyles)GetValue(BackgroundStyleProperty); }
+            set { SetValue(BackgroundStyleProperty, value); InvalidateSurface(); }
         }
 
         public static readonly BindableProperty BackgroundBitmapProperty = BindableProperty.Create(
@@ -51,8 +51,8 @@ namespace GnollHackClient
 
         public BackgroundBitmaps BackgroundBitmap
         {
-            get => (BackgroundBitmaps)GetValue(BackgroundBitmapProperty);
-            set => SetValue(BackgroundBitmapProperty, value);
+            get { return (BackgroundBitmaps)GetValue(BackgroundBitmapProperty); }
+            set { SetValue(BackgroundBitmapProperty, value); InvalidateSurface(); }
         }
 
         public static readonly BindableProperty BorderStyleProperty = BindableProperty.Create(
@@ -60,8 +60,8 @@ namespace GnollHackClient
 
         public BorderStyles BorderStyle
         {
-            get => (BorderStyles)GetValue(BorderStyleProperty);
-            set => SetValue(BorderStyleProperty, value);
+            get { return (BorderStyles)GetValue(BorderStyleProperty); }
+            set { SetValue(BorderStyleProperty, value); InvalidateSurface(); }
         }
 
         private void Base_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
