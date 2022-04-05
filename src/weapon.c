@@ -2115,12 +2115,12 @@ boolean speedy;
     int skill_slots_needed = slots_required(skill_id);
     int actioncount = 0;
 
-    struct extended_create_window_info info = { 0 };
+    struct extended_create_window_info createinfo = { 0 };
     if(canadv)
-        info.create_flags |= WINDOW_CREATE_FLAGS_ACTIVE;
+        createinfo.create_flags |= WINDOW_CREATE_FLAGS_ACTIVE;
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SKILL_COMMAND_MENU, GLYPH_SKILL_TILE_OFF + skill_id, info);
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SKILL_COMMAND_MENU, GLYPH_SKILL_TILE_OFF + skill_id, createinfo);
     start_menu_ex(win, GHMENU_STYLE_SKILL_COMMAND);
 
     /* Skill description */
@@ -2133,16 +2133,39 @@ boolean speedy;
     actioncount++;
 
     /* Advance skill */
+    struct extended_menu_info menuinfo = { 0 };
+    menuinfo.color = NO_COLOR;
+    any = zeroany;
+
     if (canadv)
     {
         Sprintf(buf, "Advance to %s (%d skill slot%s from %s)", nextlevelbuf, skill_slots_needed, plur(skill_slots_needed), skilllevelbuf);
-        any = zeroany;
         any.a_int = 2;
-        add_menu(win, NO_GLYPH, &any,
-            0, 0, ATR_NONE,
-            buf, MENU_UNSELECTED);
-        actioncount++;
+        menuinfo.color = CLR_GREEN;
     }
+    else
+    {
+        char reasonbuf[BUFSZ] = "";
+        if(P_RESTRICTED(skill_id))
+            strcpy(reasonbuf, " {Restricted skill}");
+        else if (P_SKILL_LEVEL(skill_id) >= P_MAX_SKILL_LEVEL(skill_id))
+            strcpy(reasonbuf, " {Peaked skill}");
+        else if (u.skills_advanced >= P_SKILL_LIMIT)
+            strcpy(reasonbuf, " {General advancement limit reached}");
+        else if (urole.skill_advance_levels[skill_id][P_SKILL_LEVEL(skill_id) + 1] > 0 && u.ulevel < urole.skill_advance_levels[skill_id][P_SKILL_LEVEL(skill_id) + 1])
+            Sprintf(reasonbuf, " {Experience level too low: %d/%d}", u.ulevel, urole.skill_advance_levels[skill_id][P_SKILL_LEVEL(skill_id) + 1]);
+        else if (urole.skill_advance_levels[skill_id][P_SKILL_LEVEL(skill_id) + 1] == 0 && (int)P_ADVANCE(skill_id) < practice_needed_to_advance(skill_id, P_SKILL_LEVEL(skill_id)))
+            Sprintf(reasonbuf, " {Not enough practice: %d/%d}", (int)P_ADVANCE(skill_id), practice_needed_to_advance(skill_id, P_SKILL_LEVEL(skill_id)));
+        else if (u.weapon_slots < skill_slots_needed)
+            strcpy(reasonbuf, " {Not enough slots}");
+
+        Sprintf(buf, "Cannot advance to %s (%d skill slot%s from %s)%s", nextlevelbuf, skill_slots_needed, plur(skill_slots_needed), skilllevelbuf, reasonbuf);
+        menuinfo.color = CLR_GRAY;
+    }
+    add_extended_menu(win, NO_GLYPH, &any, menuinfo,
+        0, 0, ATR_NONE,
+        buf, MENU_UNSELECTED);
+    actioncount++;
 
     Sprintf(headerbuf, "What do you want to do with %s?", skillnamebuf);
     Sprintf(subbuf, "%d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
@@ -2156,10 +2179,10 @@ boolean speedy;
         destroy_nhwindow(win);
         return;
     }
-    else if (actioncount == 1)
-    {
-        cmd_idx = 1;
-    }
+    //else if (actioncount == 1)
+    //{
+    //    cmd_idx = 1;
+    //}
     else if (select_menu(win, PICK_ONE, &pick_list) > 0)
     {
         cmd_idx = pick_list->item.a_int;
