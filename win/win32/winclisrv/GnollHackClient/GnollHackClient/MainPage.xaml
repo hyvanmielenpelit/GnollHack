@@ -121,11 +121,12 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="classicModeLabel" Text="Classic Mode" TextColor="White" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
+                <local:CustomLabel x:Name="classicModeLabel" Text="Classic Mode" TextColor="White" FontSize="17" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                                   WidthRequest="160" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
+                    <local:CustomLabel.GestureRecognizers>
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
-                    </Label.GestureRecognizers>
-                </Label>
+                    </local:CustomLabel.GestureRecognizers>
+                </local:CustomLabel>
                 <Switch x:Name="classicModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="ClassicModeSwitch_Toggled"  />
             </Grid>
             <Grid x:Name="wizardModeGrid" Grid.Row="1" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
@@ -136,11 +137,12 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="White" FontSize="16" FontFamily="Diablo" Grid.Column="0" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
-                    <Label.GestureRecognizers>
+                <local:CustomLabel x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="White" FontSize="17" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                                   WidthRequest="160" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
+                    <local:CustomLabel.GestureRecognizers>
                         <TapGestureRecognizer Tapped="WizTapGestureRecognizer_Tapped"/>
-                    </Label.GestureRecognizers>
-                </Label>
+                    </local:CustomLabel.GestureRecognizers>
+                </local:CustomLabel>
                 <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="wizardModeSwitch_Toggled" />
             </Grid>
             <Grid Grid.Row="2" x:Name="StartLocalGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">

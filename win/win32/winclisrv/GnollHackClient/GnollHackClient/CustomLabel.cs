@@ -142,15 +142,19 @@ namespace GnollHackClient
             SKCanvas canvas = surface.Canvas;
             float canvaswidth = this.CanvasSize.Width;
             float canvasheight = this.CanvasSize.Height;
-            float scale = canvaswidth / (float)this.Width;
+            float scale = this.Width == 0 ? 1.0f : canvaswidth / (float)this.Width;
 
             canvas.Clear();
 
             using(SKPaint textPaint = new SKPaint())
             {
                 float x = 0, y = 0;
-                textPaint.TextSize = (float)FontSize * scale;
                 textPaint.Typeface = GetFontTypeface();
+                textPaint.TextSize = (float)FontSize * scale;
+                float textwidth = textPaint.MeasureText(Text);
+                float maxtextwidth = 0.98f * canvaswidth;
+                if (textwidth > maxtextwidth)
+                    textPaint.TextSize = textPaint.TextSize * maxtextwidth / textwidth;
 
                 switch (HorizontalTextAlignment)
                 {
@@ -176,7 +180,7 @@ namespace GnollHackClient
                         break;
                     default:
                     case TextAlignment.Center:
-                        y = canvasheight / 2 + (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent;
+                        y = canvasheight / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent;
                         break;
                     case TextAlignment.End:
                         y = canvasheight - textPaint.FontMetrics.Descent;
@@ -200,10 +204,10 @@ namespace GnollHackClient
 
         }
 
-        protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
-        {
-            return SetWidthHeight(widthConstraint, heightConstraint);
-        }
+        //protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
+        //{
+        //    return SetWidthHeight(widthConstraint, heightConstraint);
+        //}
 
         private double _currentWidth = 0;
         private double _currentHeight = 0;
