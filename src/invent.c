@@ -6261,7 +6261,31 @@ doprinuse()
     if (!ct)
         You1("are not wearing or wielding anything.");
     else
-        (void) display_inventory(lets, FALSE, 0);
+    {
+        //(void)display_inventory(lets, FALSE, 0);
+        char invlet;
+        long pickcnt = 0;
+
+        invlet = display_inventory_with_header(lets, TRUE, &pickcnt, 1, FALSE);
+        if (!invlet || invlet == '\033' || invlet == '\0')
+            return 0;
+
+        if (flags.inventory_obj_cmd)
+        {
+            return display_item_command_menu_by_invlet(invlet, pickcnt);
+        }
+        else
+        {
+            struct obj* invobj;
+            for (invobj = invent; invobj; invobj = invobj->nobj)
+                if (invobj->invlet == invlet)
+                {
+                    (void)itemdescription(invobj);
+                    break;
+                }
+            return 0;
+        }
+    }
     return 0;
 }
 

@@ -71,6 +71,7 @@
     <None Remove="Assets\UI\arrow_up.png" />
     <None Remove="Assets\UI\arrow_upleft.png" />
     <None Remove="Assets\UI\arrow_upright.png" />
+    <None Remove="Assets\UI\attributes.png" />
     <None Remove="Assets\UI\background-oldpaper.png" />
     <None Remove="Assets\UI\break.png" />
     <None Remove="Assets\UI\cancel.png" />
@@ -78,6 +79,7 @@
     <None Remove="Assets\UI\chat.png" />
     <None Remove="Assets\UI\close.png" />
     <None Remove="Assets\UI\commands.png" />
+    <None Remove="Assets\UI\conduct.png" />
     <None Remove="Assets\UI\count.png" />
     <None Remove="Assets\UI\dig.png" />
     <None Remove="Assets\UI\dip.png" />
@@ -94,6 +96,7 @@
     <None Remove="Assets\UI\frame-topleft.png" />
     <None Remove="Assets\UI\frame-vertical.png" />
     <None Remove="Assets\UI\genesis.png" />
+    <None Remove="Assets\UI\genocided.png" />
     <None Remove="Assets\UI\handedness.png" />
     <None Remove="Assets\UI\help.png" />
     <None Remove="Assets\UI\identify.png" />
@@ -101,6 +104,7 @@
     <None Remove="Assets\UI\invoke.png" />
     <None Remove="Assets\UI\jump.png" />
     <None Remove="Assets\UI\kick.png" />
+    <None Remove="Assets\UI\killed.png" />
     <None Remove="Assets\UI\lastitem.png" />
     <None Remove="Assets\UI\leftring.png" />
     <None Remove="Assets\UI\levelchange.png" />
@@ -113,6 +117,7 @@
     <None Remove="Assets\UI\mix.png" />
     <None Remove="Assets\UI\more.png" />
     <None Remove="Assets\UI\name.png" />
+    <None Remove="Assets\UI\next.png" />
     <None Remove="Assets\UI\no.png" />
     <None Remove="Assets\UI\offer.png" />
     <None Remove="Assets\UI\open.png" />
@@ -124,6 +129,7 @@
     <None Remove="Assets\UI\pickup.png" />
     <None Remove="Assets\UI\polymorph.png" />
     <None Remove="Assets\UI\pray.png" />
+    <None Remove="Assets\UI\previous.png" />
     <None Remove="Assets\UI\puton.png" />
     <None Remove="Assets\UI\quaff.png" />
     <None Remove="Assets\UI\quiver.png" />
@@ -238,6 +244,7 @@
     <EmbeddedResource Include="Assets\UI\arrow_up.png" />
     <EmbeddedResource Include="Assets\UI\arrow_upleft.png" />
     <EmbeddedResource Include="Assets\UI\arrow_upright.png" />
+    <EmbeddedResource Include="Assets\UI\attributes.png" />
     <EmbeddedResource Include="Assets\UI\background-oldpaper.png" />
     <EmbeddedResource Include="Assets\UI\break.png" />
     <EmbeddedResource Include="Assets\UI\cancel.png" />
@@ -245,6 +252,7 @@
     <EmbeddedResource Include="Assets\UI\chat.png" />
     <EmbeddedResource Include="Assets\UI\close.png" />
     <EmbeddedResource Include="Assets\UI\commands.png" />
+    <EmbeddedResource Include="Assets\UI\conduct.png" />
     <EmbeddedResource Include="Assets\UI\count.png" />
     <EmbeddedResource Include="Assets\UI\dig.png" />
     <EmbeddedResource Include="Assets\UI\dip.png" />
@@ -261,6 +269,7 @@
     <EmbeddedResource Include="Assets\UI\frame-topleft.png" />
     <EmbeddedResource Include="Assets\UI\frame-vertical.png" />
     <EmbeddedResource Include="Assets\UI\genesis.png" />
+    <EmbeddedResource Include="Assets\UI\genocided.png" />
     <EmbeddedResource Include="Assets\UI\handedness.png" />
     <EmbeddedResource Include="Assets\UI\help.png" />
     <EmbeddedResource Include="Assets\UI\identify.png" />
@@ -268,6 +277,7 @@
     <EmbeddedResource Include="Assets\UI\invoke.png" />
     <EmbeddedResource Include="Assets\UI\jump.png" />
     <EmbeddedResource Include="Assets\UI\kick.png" />
+    <EmbeddedResource Include="Assets\UI\killed.png" />
     <EmbeddedResource Include="Assets\UI\lastitem.png" />
     <EmbeddedResource Include="Assets\UI\leftring.png" />
     <EmbeddedResource Include="Assets\UI\levelchange.png" />
@@ -280,6 +290,7 @@
     <EmbeddedResource Include="Assets\UI\mix.png" />
     <EmbeddedResource Include="Assets\UI\more.png" />
     <EmbeddedResource Include="Assets\UI\name.png" />
+    <EmbeddedResource Include="Assets\UI\next.png" />
     <EmbeddedResource Include="Assets\UI\no.png" />
     <EmbeddedResource Include="Assets\UI\offer.png" />
     <EmbeddedResource Include="Assets\UI\open.png" />
@@ -291,6 +302,7 @@
     <EmbeddedResource Include="Assets\UI\pickup.png" />
     <EmbeddedResource Include="Assets\UI\polymorph.png" />
     <EmbeddedResource Include="Assets\UI\pray.png" />
+    <EmbeddedResource Include="Assets\UI\previous.png" />
     <EmbeddedResource Include="Assets\UI\puton.png" />
     <EmbeddedResource Include="Assets\UI\quaff.png" />
     <EmbeddedResource Include="Assets\UI\quiver.png" />

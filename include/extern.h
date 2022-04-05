@@ -286,6 +286,7 @@ E char NDECL(randomkey);
 E void FDECL(random_response, (char *, int));
 E int NDECL(rnd_extcmd_idx);
 E int NDECL(doconduct);
+E int NDECL(domonsterability);
 E int NDECL(domonability);
 E int NDECL(doability);
 E int NDECL(dospellmainmenu);
