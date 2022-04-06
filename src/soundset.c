@@ -880,6 +880,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Give", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Tool/Can of Grease/Apply", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Thump Hit", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Splash Hit", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Guilty", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Caitiff", 1.0f },
 
@@ -10701,6 +10702,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_THUMP_HIT",
         {GHSOUND_THUMP_HIT, 1.0f},
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_SPLASH_HIT",
+        {GHSOUND_SPLASH_HIT, 1.0f},
         TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {

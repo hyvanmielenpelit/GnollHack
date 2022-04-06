@@ -306,8 +306,8 @@ namespace GnollHackClient
 
             UpperButtonGrid.IsVisible = true;
             await UpperButtonGrid.FadeTo(1, 250);
-            StartButtonGrid.IsVisible = true;
-            await StartButtonGrid.FadeTo(1, 250);
+            StartButtonLayout.IsVisible = true;
+            await StartButtonLayout.FadeTo(1, 250);
             LogoGrid.IsVisible = true;
             await LogoGrid.FadeTo(1, 250);
 

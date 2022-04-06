@@ -6155,6 +6155,7 @@ struct obj* obj;
     if (is_pool(x, y) ^ !!u.uinwater) 
     {
         /* objects normally can't be removed from water by kicking */
+        play_sfx_sound(SFX_SPLASH_HIT);
         You("splash some %s around.", hliquid("water"));
         return 1;
     }
@@ -6199,6 +6200,7 @@ struct obj* obj;
             if (Levitation)
                 goto dumb;
             You("swing your %s at %s.", cxname(obj), (Blind ? something : "the altar"));
+            play_sfx_sound(SFX_THUMP_HIT);
             altar_wrath(x, y);
             return 1;
         }
@@ -6207,6 +6209,7 @@ struct obj* obj;
             if (Levitation)
                 goto dumb;
             You("swing your %s at %s.", cxname(obj), (Blind ? something : "the altar"));
+            play_sfx_sound(SFX_THUMP_HIT);
             pline("THUD!");
             return 1;
         }
@@ -6215,6 +6218,7 @@ struct obj* obj;
             if (Levitation)
                 goto dumb;
             You("swing at %s.", (Blind ? something : "the fountain"));
+            play_sfx_sound(SFX_SPLASH_HIT);
             pline("%s wet.", Yobjnam2(obj, "get"));
             return 1;
         }

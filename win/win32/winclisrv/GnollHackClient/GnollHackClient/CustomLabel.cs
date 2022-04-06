@@ -9,15 +9,9 @@ namespace GnollHackClient
 {
     public enum CustomLabelFonts
     {
-        Diablo
+        Diablo,
+        Immortal
     }
-
-    public enum CustomLabelHorizontalAlignment
-    {
-        Diablo
-    }
-
-
 
     public class CustomLabel : SKCanvasView
     {
@@ -130,6 +124,9 @@ namespace GnollHackClient
                 default:
                 case CustomLabelFonts.Diablo:
                     tf = App.DiabloTypeface;
+                    break;
+                case CustomLabelFonts.Immortal:
+                    tf = App.ImmortalTypeface;
                     break;
             }
             return tf;

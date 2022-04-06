@@ -780,7 +780,8 @@ boolean is_golf_swing;
         || kickedobj == uchain)
         return 0;
 
-    if ((trap = t_at(x, y)) != 0) {
+    if ((trap = t_at(x, y)) != 0) 
+    {
         if ((is_pit(trap->ttyp) && !Passes_walls) || trap->ttyp == WEB) 
         {
             if (!trap->tseen)
@@ -793,13 +794,15 @@ boolean is_golf_swing;
                 Hallucination ? "tizzy" : (trap->ttyp == WEB) ? "web" : "pit");
             return 1;
         }
-        if (trap->ttyp == STATUE_TRAP) {
+        if (trap->ttyp == STATUE_TRAP) 
+        {
             activate_statue_trap(trap, x,y, FALSE);
             return 1;
         }
     }
 
-    if (Fumbling && !rn2(3)) {
+    if (Fumbling && !rn2(3)) 
+    {
         Your("clumsy %s missed.", noun);
         return 1;
     }
@@ -818,10 +821,12 @@ boolean is_golf_swing;
             You("kick %s with your bare %s.",
                 corpse_xname(kickedobj, (const char*)0, CXN_PFX_THE),
                 makeplural(body_part(FOOT)));
-            if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM)) {
+            if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
+            {
                 ; /* hero has been transformed but kick continues */
             }
-            else {
+            else 
+            {
                 /* normalize body shape here; foot, not body_part(FOOT) */
                 Sprintf(killer.name, "kicking %s barefoot",
                     killer_xname(kickedobj));
@@ -853,13 +858,18 @@ boolean is_golf_swing;
     if (martial() && !is_golf_swing)
         range += rnd(3);
 
-    if (is_pool(x, y)) {
+    if (is_pool(x, y)) 
+    {
         /* you're in the water too; significantly reduce range */
         range = range / 3 + 1; /* {1,2}=>1, {3,4,5}=>2, {6,7,8}=>3 */
-    } else if (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) {
+    } 
+    else if (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) 
+    {
         /* you're in air, since is_pool did not match */
         range += rnd(3);
-    } else {
+    } 
+    else 
+    {
         if (is_ice(x, y))
             range += rnd(3), slide = TRUE;
         if (kickedobj->greased)
@@ -879,9 +889,11 @@ boolean is_golf_swing;
               && (shkp = shop_keeper(*in_rooms(x, y, SHOPBASE))) != 0
               && costly_spot(x, y));
 
-    if (IS_ROCK(levl[x][y].typ) || closed_door(x, y)) {
+    if (IS_ROCK(levl[x][y].typ) || closed_door(x, y)) 
+    {
         if ((!martial() && rn2(20) > ACURR(A_DEX))
-            || IS_ROCK(levl[u.ux][u.uy].typ) || closed_door(u.ux, u.uy)) {
+            || IS_ROCK(levl[u.ux][u.uy].typ) || closed_door(u.ux, u.uy)) 
+        {
             if (Blind)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It doesn't come loose.");
             else
@@ -901,7 +913,8 @@ boolean is_golf_swing;
         if (costly && (!costly_spot(u.ux, u.uy)
                        || !index(u.urooms, *in_rooms(x, y, SHOPBASE))))
             addtobill(kickedobj, FALSE, FALSE, FALSE);
-        if (!flooreffects(kickedobj, u.ux, u.uy, "fall")) {
+        if (!flooreffects(kickedobj, u.ux, u.uy, "fall")) 
+        {
             place_object(kickedobj, u.ux, u.uy);
             stackobj(kickedobj);
             newsym(u.ux, u.uy);
@@ -914,7 +927,6 @@ boolean is_golf_swing;
     {
         if (is_golf_swing)
         {
-            play_sfx_sound(SFX_THUMP_HIT);
             pline("Thump!");
             return 1;
         }
@@ -923,12 +935,13 @@ boolean is_golf_swing;
 
         if (range < 2)
         {
-            play_sfx_sound(SFX_THUMP_HIT);
             pline("THUD!");
         }
         container_impact_dmg(kickedobj, x, y);
-        if (kickedobj->olocked) {
-            if (!rn2(5) || (martial() && !rn2(2))) {
+        if (kickedobj->olocked) 
+        {
+            if (!rn2(5) || (martial() && !rn2(2))) 
+            {
                 if (kickedobj->keyotyp == STRANGE_OBJECT || kickedobj->keyotyp == NON_PM || kickedobj->keyotyp == SKELETON_KEY)
                 {
                     play_simple_container_sound(kickedobj, CONTAINER_SOUND_TYPE_BREAK_LOCK);
@@ -943,8 +956,11 @@ boolean is_golf_swing;
                 }
                 return 1;
             }
-        } else {
-            if (!rn2(3) || (martial() && !rn2(2))) {
+        }
+        else 
+        {
+            if (!rn2(3) || (martial() && !rn2(2))) 
+            {
                 play_simple_container_sound(kickedobj, CONTAINER_SOUND_TYPE_LID_SLAM);
                 pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "lid slams open, then falls shut.");
                 kickedobj->lknown = 1;
@@ -959,7 +975,6 @@ boolean is_golf_swing;
     }
     else if (Is_container(kickedobj) && (objects[kickedobj->otyp].oc_flags4 & O4_CONTAINER_MAY_CONTAIN_MONSTER))
     {
-        play_sfx_sound(SFX_THUMP_HIT);
         pline("THUD!");
         container_impact_dmg(kickedobj, x, y);
         if (maybe_disturb_container_monster(kickedobj))
@@ -976,20 +991,25 @@ boolean is_golf_swing;
      * player, so range == 2 means the object may move up to one square
      * from its current position
      */
-    if (range < 2) {
+    if (range < 2) 
+    {
         if (!Is_box(kickedobj))
         {
-            play_sfx_sound(SFX_THUMP_HIT);
             pline("Thump!");
         }
         return (!rn2(3) || martial());
     }
 
-    if (kickedobj->quan > 1L) {
-        if (!isgold) {
+    if (kickedobj->quan > 1L) 
+    {
+        if (!isgold) 
+        {
             kickedobj = splitobj(kickedobj, 1L);
-        } else {
-            if (rn2(20)) {
+        }
+        else
+        {
+            if (rn2(20)) 
+            {
                 static NEARDATA const char *const flyingcoinmsg[] = {
                     "scatter the coins", "knock coins all over the place",
                     "send coins flying in all directions",
