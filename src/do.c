@@ -1232,6 +1232,14 @@ register struct obj* obj;
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
+        if (otyp == EGG && obj->corpsenm >= LOW_PM && obj->known && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG))
+        {
+            strcpy(buf2, mons[obj->corpsenm].mname);
+            *buf2 = highc(*buf2);
+            Sprintf(buf, "Egg type:               %s", buf2);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_COLON, txt);
+        }
         if (stats_known && is_obj_normally_edible(obj))
         {
             if (objects[obj->otyp].oc_edible_subtype > EDIBLETYPE_NORMAL)
@@ -3704,6 +3712,22 @@ register struct obj* obj;
             }
         }
     }
+
+    /* Notable */
+    if (otyp == EGG && obj->corpsenm >= LOW_PM && obj->known && (mvitals[obj->corpsenm].mvflags & MV_KNOWS_EGG) != 0 && (obj->speflags & SPEFLAGS_YOURS) != 0)
+    {
+        int powercnt = 0;
+
+        Sprintf(buf, "Notable:");
+        txt = buf;
+        putstr(datawin, ATR_HEADING, txt);
+
+        powercnt++;
+        Sprintf(buf, " %2d - %s", powercnt, "Laid by you");
+        txt = buf;
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
+    }
+
 
     /* Description */
     if (stats_known && OBJ_ITEM_DESC(otyp) /* && !(obj->oartifact && obj->nknown) */)
