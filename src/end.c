@@ -2264,7 +2264,7 @@ boolean ask, isend;
                             || vanq_sortmode == VANQ_MCLS_HTOL);
 
             klwin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_NARROW_LIST, NO_GLYPH, zerocreatewindowinfo);
-            putstr(klwin, ATR_HEADING, "Vanquished creatures:");
+            putstr(klwin, ATR_TITLE, "Vanquished creatures:");
             if (!dumping)
                 putstr(klwin, 0, "");
 
@@ -2428,7 +2428,7 @@ boolean ask, isend;
             Sprintf(buf, "%s%s species:",
                 (ngenocided) ? "Genocided" : "Extinct",
                 (nextinct && ngenocided) ? " or extinct" : "");
-            putstr(klwin, ATR_HEADING, buf);
+            putstr(klwin, ATR_TITLE, buf);
             if (!dumping)
                 putstr(klwin, 0, "");
 

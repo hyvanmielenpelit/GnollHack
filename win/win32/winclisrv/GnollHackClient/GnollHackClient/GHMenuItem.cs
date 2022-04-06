@@ -480,6 +480,21 @@ namespace GnollHackClient
             }
         }
 
+        public double HeadingTopMargin
+        {
+            get
+            {
+                double res;
+                switch (_menuInfo.Style)
+                {
+                    default:
+                        res = 12;
+                        break;
+                }
+                return res;
+            }
+        }
+
         public bool Equals(GHMenuItem other)
         {
             if (other == null) 

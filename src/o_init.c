@@ -796,7 +796,7 @@ dodiscovered() /* free after Robert Viduya */
 
     tmpwin = create_nhwindow(NHW_MENU);
     putstr(tmpwin, ATR_TITLE, "Discoveries");
-    putstr(tmpwin, 0, "");
+    putstr(tmpwin, ATR_HALF_SIZE, " ");
 
     /* gather "unique objects" into a pseudo-class; note that they'll
        also be displayed individually within their regular class */
@@ -824,7 +824,7 @@ dodiscovered() /* free after Robert Viduya */
             if ((dis = disco[i]) != 0 && interesting_to_discover(dis)) {
                 ct++;
                 if (oclass != prev_class) {
-                    putstr(tmpwin, iflags.menu_headings,
+                    putstr(tmpwin, iflags.menu_headings | ATR_HEADING,
                            let_to_name(oclass, FALSE, FALSE));
                     prev_class = oclass;
                 }

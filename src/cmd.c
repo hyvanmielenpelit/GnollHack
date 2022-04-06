@@ -5079,7 +5079,8 @@ int final;
 
     /* Create the conduct window */
     en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SEMI_WIDE_LIST, NO_GLYPH, zerocreatewindowinfo);
-    putstr(en_win, ATR_HEADING, "Voluntary challenges:");
+    putstr(en_win, ATR_TITLE, "Voluntary challenges:");
+    putstr(en_win, 0, "");
 
     if (u.uroleplay.blind)
         you_have_been("blind from birth");

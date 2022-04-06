@@ -59,6 +59,7 @@ namespace GnollHackCommon
         AlignCenter = 0x00010000,
         AlignRight = 0x00020000,
         Inactive = 0x00040000,
+        HalfSize = 0x00080000,
     }
 
     [Flags]
