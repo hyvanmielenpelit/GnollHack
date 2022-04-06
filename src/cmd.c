@@ -808,6 +808,22 @@ doability(VOID_ARGS)
             available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
         abilitynum++;
+
+        /* Monster abilities */
+        //print_monster_abilities(win, &abilitynum, TRUE);
+
+        strcpy(available_ability_list[abilitynum].name, "Monster abilities");
+        available_ability_list[abilitynum].function_ptr = &domonsterability;
+        available_ability_list[abilitynum].target_mtmp = 0;
+
+        any = zeroany;
+        any.a_int = abilitynum + 1;
+
+        add_menu(win, NO_GLYPH, &any,
+            0, 0, ATR_NONE,
+            available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+        abilitynum++;
     }
 
 #ifndef GNH_ANDROID
@@ -844,10 +860,8 @@ doability(VOID_ARGS)
         available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
     abilitynum++;
-#endif
 
-    /* Monster abilities */
-    print_monster_abilities(win, &abilitynum, TRUE);
+#endif
 
     /* Game Status */
     any = zeroany;
