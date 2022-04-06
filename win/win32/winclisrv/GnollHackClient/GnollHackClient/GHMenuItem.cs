@@ -119,6 +119,7 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
                     case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                     case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                    case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
                         res = 1;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
@@ -147,6 +148,8 @@ namespace GnollHackClient
                         res = 1;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                        res = 1;
+                        break;
                     case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
                     case ghmenu_styles.GHMENU_STYLE_SPELLS:
                     case ghmenu_styles.GHMENU_STYLE_SKILLS:
@@ -250,6 +253,7 @@ namespace GnollHackClient
                         case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
                         case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
                         case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
+                        case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
                             res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHAT:
@@ -315,6 +319,7 @@ namespace GnollHackClient
                         case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
                         case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
                         case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
+                        case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHAT:
                             break;
@@ -385,6 +390,9 @@ namespace GnollHackClient
                         break;
                     case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                         res = res * 17.5 / 15.0;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
+                        res = res * 17.0 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                         break;

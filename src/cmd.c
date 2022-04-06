@@ -222,7 +222,7 @@ STATIC_DCL void FDECL(show_direction_keys, (winid, CHAR_P, BOOLEAN_P));
 STATIC_DCL boolean FDECL(help_dir, (CHAR_P, int, const char *));
 STATIC_DCL void FDECL(add_command_menu_items, (winid, int));
 STATIC_DCL void NDECL(check_gui_special_effect);
-STATIC_DCL void FDECL(print_monster_abilities, (winid, int*));
+STATIC_DCL void FDECL(print_monster_abilities, (winid, int*, BOOLEAN_P));
 
 
 static const char *readchar_queue = "";
@@ -742,7 +742,7 @@ doability(VOID_ARGS)
     anything any;
     int abilitynum = 0;
     int glyph = 0;
-    glyph = player_to_glyph_index(urole.rolenum, urace.racenum, flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
+    glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Upolyd ? u.mfemale : flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
 
     any = zeroany;
@@ -847,7 +847,7 @@ doability(VOID_ARGS)
 #endif
 
     /* Monster abilities */
-    print_monster_abilities(win, &abilitynum);
+    print_monster_abilities(win, &abilitynum, TRUE);
 
     /* Game Status */
     any = zeroany;
@@ -1043,15 +1043,15 @@ domonsterability(VOID_ARGS)
     anything any;
     int abilitynum = 0;
     int glyph, gui_glyph;
-    glyph = player_to_glyph_index(urole.rolenum, urace.racenum, flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
+    glyph = abs(u_to_glyph());
     gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_MENU_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon(&youmonst));
-    start_menu_ex(win, GHMENU_STYLE_CHARACTER);
-    print_monster_abilities(win, &abilitynum);
+    struct extended_create_window_info createinfo = extended_create_window_info_from_mon(&youmonst);
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_COMMAND_MENU, iflags.using_gui_tiles ? gui_glyph : glyph, createinfo);
+    start_menu_ex(win, GHMENU_STYLE_MONSTER_ABILITY);
+    print_monster_abilities(win, &abilitynum, FALSE);
     end_menu(win, "Monster Abilities");
-
 
     if (abilitynum <= 0)
     {
@@ -1082,9 +1082,10 @@ domonsterability(VOID_ARGS)
 
 STATIC_OVL
 void
-print_monster_abilities(win, abilitiesnum_ptr)
+print_monster_abilities(win, abilitiesnum_ptr, ischaractermenu)
 winid win;
 int* abilitiesnum_ptr;
+boolean ischaractermenu;
 {
     if (!abilitiesnum_ptr)
         return;
@@ -1092,6 +1093,11 @@ int* abilitiesnum_ptr;
     anything any;
     int abilitynum = *abilitiesnum_ptr;
     int glyph = 0, gui_glyph = 0;
+    const char* fmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
+        "%s (&mana; %d)" : "%s (%d mana)";
+    struct extended_menu_info menuinfo = { 0 };
+    menuinfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
+    menuinfo.color = NO_COLOR;
 
     /* Monster abilities */
     if (can_breathe(youmonst.data)
@@ -1109,21 +1115,31 @@ int* abilitiesnum_ptr;
         || lays_eggs(youmonst.data)
         )
     {
-        any = zeroany;
-        add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
-            0, 0, iflags.menu_headings | ATR_HEADING,
-            "Use Monster Abilities                 ", MENU_UNSELECTED);
+        if(ischaractermenu)
+        {
+            any = zeroany;
+            add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
+                0, 0, iflags.menu_headings | ATR_HEADING,
+                "Use Monster Abilities                 ", MENU_UNSELECTED);
+        }
+        else
+        {
+            any = zeroany;
+            add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
+                0, 0, iflags.menu_headings | ATR_HEADING,
+                "Your Abilities", MENU_UNSELECTED);
+        }
 
         if (can_breathe(youmonst.data))
         {
-            strcpy(available_ability_list[abilitynum].name, "Use breath weapon");
+            Sprintf(available_ability_list[abilitynum].name, fmt, "Use breath weapon", BREATH_WEAPON_MANA_COST);
             available_ability_list[abilitynum].function_ptr = &dobreathe;
             available_ability_list[abilitynum].target_mtmp = 0;
 
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1139,7 +1155,7 @@ int* abilitiesnum_ptr;
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1155,7 +1171,7 @@ int* abilitiesnum_ptr;
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1164,8 +1180,19 @@ int* abilitiesnum_ptr;
 
         if (attacktype(youmonst.data, AT_GAZE))
         {
+            int i, adtyp = 0;
+            for (i = 0; i < NATTK; i++) {
+                if (youmonst.data->mattk[i].aatyp == AT_GAZE) {
+                    adtyp = youmonst.data->mattk[i].adtyp;
+                    break;
+                }
+            }
+            int gazemanacost = (adtyp == AD_CNCL ? CNCL_GAZE_MANA_COST : EYE_STALK_MANA_COST);
+            const char* gazefmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
+                "Gaze%s (&mana; %d)" : "%s (%d mana)";
+
             char gazebuf[BUFSIZ];
-            Sprintf(gazebuf, "Gaze%s", youmonst.data->mlet == S_EYE ? " with central eye" : "");
+            Sprintf(gazebuf, gazefmt, youmonst.data->mlet == S_EYE ? " with central eye" : "", gazemanacost);
             strcpy(available_ability_list[abilitynum].name, gazebuf);
             available_ability_list[abilitynum].function_ptr = &dogaze;
             available_ability_list[abilitynum].target_mtmp = 0;
@@ -1173,7 +1200,7 @@ int* abilitiesnum_ptr;
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1182,14 +1209,14 @@ int* abilitiesnum_ptr;
 
         if (attacktype(youmonst.data, AT_EYES))
         {
-            strcpy(available_ability_list[abilitynum].name, "Gaze with one or more eyestalks");
+            Sprintf(available_ability_list[abilitynum].name, fmt, "Gaze with one or more eyestalks", EYE_STALK_MANA_COST);
             available_ability_list[abilitynum].function_ptr = &doeyestalk;
             available_ability_list[abilitynum].target_mtmp = 0;
 
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1198,14 +1225,14 @@ int* abilitiesnum_ptr;
 
         if (is_were(youmonst.data))
         {
-            strcpy(available_ability_list[abilitynum].name, "Summon monsters");
+            Sprintf(available_ability_list[abilitynum].name, fmt, "Summon monsters", WERE_SUMMON_MANA_COST);
             available_ability_list[abilitynum].function_ptr = &dosummon;
             available_ability_list[abilitynum].target_mtmp = 0;
 
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1221,7 +1248,7 @@ int* abilitiesnum_ptr;
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1237,7 +1264,7 @@ int* abilitiesnum_ptr;
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1246,14 +1273,14 @@ int* abilitiesnum_ptr;
 
         if (is_tentacled_one(youmonst.data))
         {
-            strcpy(available_ability_list[abilitynum].name, "Project a mind blast");
+            Sprintf(available_ability_list[abilitynum].name, fmt, "Project a mind blast", MIND_BLAST_MANA_COST);
             available_ability_list[abilitynum].function_ptr = &domindblast;
             available_ability_list[abilitynum].target_mtmp = 0;
 
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1269,7 +1296,7 @@ int* abilitiesnum_ptr;
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1278,14 +1305,14 @@ int* abilitiesnum_ptr;
 
         if (is_unicorn(youmonst.data))
         {
-            strcpy(available_ability_list[abilitynum].name, "Use your horn");
+            Sprintf(available_ability_list[abilitynum].name, fmt, "Use your horn", UNICORN_HORN_MANA_COST);
             available_ability_list[abilitynum].function_ptr = &douseunicornhorn;
             available_ability_list[abilitynum].target_mtmp = 0;
 
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1301,7 +1328,7 @@ int* abilitiesnum_ptr;
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1317,7 +1344,7 @@ int* abilitiesnum_ptr;
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1326,14 +1353,17 @@ int* abilitiesnum_ptr;
 
         if (lays_eggs(youmonst.data) && flags.female)
         {
-            Sprintf(available_ability_list[abilitynum].name, "%s an egg", eggs_in_water(youmonst.data) ? "Spawn" : "Lay");
+            const char* layfmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
+                "%s an egg (&food; %d)" : "%s an egg (%d nutrition)";
+
+            Sprintf(available_ability_list[abilitynum].name, layfmt, eggs_in_water(youmonst.data) ? "Spawn" : "Lay", (int)objects[EGG].oc_nutrition);
             available_ability_list[abilitynum].function_ptr = &dolayegg;
             available_ability_list[abilitynum].target_mtmp = 0;
 
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, menuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1352,22 +1382,33 @@ int* abilitiesnum_ptr;
         gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, u.usteed, 0UL));
         add_extended_menu(win, iflags.using_gui_tiles ? gui_glyph : glyph, &any, menu_heading_info(),
             0, 0, iflags.menu_headings,
-            "Use Your Steed's Abilities            ", MENU_UNSELECTED);
+            ischaractermenu ? "Use Your Steed's Abilities            " : "Your Steed's Abilities", MENU_UNSELECTED);
 
         if (can_breathe(u.usteed->data))
         {
+            struct extended_menu_info steedmenuinfo = { 0 };
+            steedmenuinfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
+            any = zeroany;
             if (u.usteed->mspec_used > 0)
+            {
                 strcpy(available_ability_list[abilitynum].name, "(Breath weapon cooling down)");
+                menuinfo.color = CLR_GRAY;
+            }
             else
-                strcpy(available_ability_list[abilitynum].name, "Command steed to use breath weapon");
+            {
+                const char* steedbreathefmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
+                    "%s (&cool; %s)" : "%s (%s round cooldown)";
+                Sprintf(available_ability_list[abilitynum].name, steedbreathefmt, "Command steed to use breath weapon", "1d10+4");
+                any.a_int = abilitynum + 1;
+                menuinfo.color = NO_COLOR;
+            }
 
             available_ability_list[abilitynum].function_ptr = &dosteedbreathe;
             available_ability_list[abilitynum].target_mtmp = 0;
 
             any = zeroany;
-            any.a_int = abilitynum + 1;
 
-            add_menu(win, NO_GLYPH, &any,
+            add_extended_menu(win, NO_GLYPH, &any, steedmenuinfo,
                 0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
@@ -1409,8 +1450,7 @@ domonability(VOID_ARGS)
         } else
             There("is no fountain here.");
     } else if (is_unicorn(youmonst.data)) {
-        use_unicorn_horn((struct obj *) 0);
-        return 1;
+        return douseunicornhorn();
     } else if (youmonst.data->msound == MS_SHRIEK) {
         You("shriek.");
         if (u.uburied)
@@ -2993,7 +3033,7 @@ int mode;  /* BASICENLIGHTENMENT | MAGICENLIGHTENMENT (| both) */
 int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
 {
     char buf[BUFSZ], tmpbuf[BUFSZ];
-    int glyph = player_to_glyph_index(urole.rolenum, urace.racenum, flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
+    int glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Upolyd ? u.mfemale : flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
 
     en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon(&youmonst));

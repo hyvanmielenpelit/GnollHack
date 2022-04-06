@@ -201,6 +201,7 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_INVENTORY:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                 case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                     break;
@@ -279,6 +280,7 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHAT:
                     break;
@@ -337,6 +339,7 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHAT:
                     break;
@@ -395,6 +398,7 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHAT:
                     break;
@@ -453,6 +457,7 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHAT:
                     break;

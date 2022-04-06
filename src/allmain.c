@@ -789,10 +789,15 @@ regenerate_hp()
             /* eel out of water loses hp, similar to monster eels;
                as hp gets lower, rate of further loss slows down */
             if (!Regeneration && rn2(u.mh) > rn2(8) && (!Half_physical_damage || (Half_physical_damage && !rn2(2))))
+            {
                 u.mh--;
+                context.botl = TRUE;
+                force_redraw_at(u.ux, u.uy);
+            }
         }
         else if (relevant_hpmax > 0 && (u.mh < relevant_hpmax || MummyRot))
         {
+            int mh_before = u.mh;
             u.mh += fixedhpperround;
             u.mh_fraction += fractional_hp;
             if (u.mh_fraction >= 10000 || u.mh_fraction < 0)
@@ -808,6 +813,8 @@ regenerate_hp()
                 u.mh_fraction = 0;
             }
             context.botl = TRUE;
+            if (u.mh != mh_before)
+                force_redraw_at(u.ux, u.uy);
             if (u.mh == relevant_hpmax)
                 interrupt_multi("You are in full health.");
         }
@@ -816,6 +823,7 @@ regenerate_hp()
     {
         if (relevant_hpmax > 0 && (u.uhp < relevant_hpmax || MummyRot))
         {
+            int uhp_before = u.uhp;
             u.uhp += fixedhpperround;
             u.uhp_fraction += fractional_hp;
             if (u.uhp_fraction >= 10000 || u.uhp_fraction < 0)
@@ -831,6 +839,8 @@ regenerate_hp()
                 u.uhp_fraction = 0;
             }
             context.botl = TRUE;
+            if (u.uhp != uhp_before)
+                force_redraw_at(u.ux, u.uy);
             if (u.uhp == relevant_hpmax)
                 interrupt_multi("You are in full health.");
         }

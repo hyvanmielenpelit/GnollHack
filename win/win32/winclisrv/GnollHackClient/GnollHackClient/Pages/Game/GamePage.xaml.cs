@@ -269,6 +269,7 @@ namespace GnollHackClient.Pages.Game
         private SKBitmap _cooldownBitmap;
         private SKBitmap _castsBitmap;
         private SKBitmap _addsBitmap;
+        private SKBitmap _foodBitmap;
 
         private object _skillRectLock = new object();
         private SKRect _skillRect = new SKRect();
@@ -8083,6 +8084,10 @@ namespace GnollHackClient.Pages.Game
             {
                 return _addsBitmap;
             }
+            else if (trimmed_str == "&food;")
+            {
+                return _foodBitmap;
+            }
             return null;
         }
 
@@ -9057,6 +9062,10 @@ namespace GnollHackClient.Pages.Game
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-adds.png"))
             {
                 _addsBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-food.png"))
+            {
+                _foodBitmap = SKBitmap.Decode(stream);
             }
 
         }

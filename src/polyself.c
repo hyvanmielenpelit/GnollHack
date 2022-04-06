@@ -1501,13 +1501,13 @@ dobreathe()
         You_cant_ex(ATR_NONE, CLR_MSG_NEGATIVE, "breathe.  Sorry.");
         return 0;
     }
-    if (u.uen < 15) 
+    if (u.uen < BREATH_WEAPON_MANA_COST)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MANA);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "don't have enough energy to breathe!");
         return 0;
     }
-    u.uen -= 15;
+    u.uen -= BREATH_WEAPON_MANA_COST;
     context.botl = 1;
 
     if (!getdir((char *) 0))
@@ -1811,7 +1811,7 @@ dogaze()
         return 0;
     }
 
-    int gazemanacost = (adtyp == AD_CNCL ? 5 : 15);
+    int gazemanacost = (adtyp == AD_CNCL ? CNCL_GAZE_MANA_COST : GAZE_MANA_COST);
 
     if (Blind) {
         You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "see anything to gaze at.");
@@ -2077,7 +2077,8 @@ doeyestalk()
     update_u_facing(TRUE);
 
     int attacksperformed = 0;
-    for (int i = 0; i < NATTK; i++)
+    int i;
+    for (i = 0; i < NATTK; i++)
     {
         struct attack* mattk = &youmonst.data->mattk[i];
 
@@ -2087,11 +2088,11 @@ doeyestalk()
         if (mattk->aatyp != AT_EYES)
             continue;
 
-        if (u.uen < 5) {
+        if (u.uen < EYE_STALK_MANA_COST) {
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "lack the energy to use your eyestalks%s!", attacksperformed > 0 ? " any further" : "");
             return (attacksperformed > 0 ? 1 : 0);
         }
-        u.uen -= 5;
+        u.uen -= EYE_STALK_MANA_COST;
         context.botl = 1;
 
         int typ = get_ray_adtyp(mattk->adtyp); 
@@ -2214,7 +2215,18 @@ dodryfountain()
 int
 douseunicornhorn()
 {
-    use_unicorn_horn((struct obj*) 0);
+    if (u.uen < UNICORN_HORN_MANA_COST) {
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "lack the energy to use your horn!");
+        return 1;
+    }
+    u.uen -= UNICORN_HORN_MANA_COST;
+    context.botl = 1;
+
+    struct obj dummyhorn = { 0 };
+    dummyhorn.otyp = UNICORN_HORN;
+    dummyhorn.oclass = TOOL_CLASS;
+    dummyhorn.charges = 10;
+    use_unicorn_horn(&dummyhorn);
     return 1;
 }
 
@@ -2284,11 +2296,11 @@ domindblast()
 {
     struct monst *mtmp, *nmon;
 
-    if (u.uen < 10) {
+    if (u.uen < MIND_BLAST_MANA_COST) {
         You("concentrate but lack the energy to maintain doing so.");
         return 0;
     }
-    u.uen -= 10;
+    u.uen -= MIND_BLAST_MANA_COST;
     context.botl = 1;
 
     You("concentrate.");

@@ -452,6 +452,7 @@ enum ghmenu_styles
     GHMENU_STYLE_SKILL_COMMAND,
     GHMENU_STYLE_SPELL_COMMAND,
     GHMENU_STYLE_GENERAL_COMMAND,
+    GHMENU_STYLE_MONSTER_ABILITY,
     MAX_GHMENU_STYLES
 };
 
@@ -743,6 +744,15 @@ enum yn_function_styles {
 #define OBJDATA_FLAGS_HALLUCINATION     0x00000002UL
 #define OBJDATA_FLAGS_UCHAIN            0x00000004UL
 #define OBJDATA_FLAGS_UBALL             0x00000008UL
+
+/* Monster abilities */
+#define BREATH_WEAPON_MANA_COST 15
+#define GAZE_MANA_COST 15
+#define CNCL_GAZE_MANA_COST 5
+#define EYE_STALK_MANA_COST 5
+#define WERE_SUMMON_MANA_COST 10
+#define MIND_BLAST_MANA_COST 10
+#define UNICORN_HORN_MANA_COST 25
 
 /*
  * type nhsym: loadable symbols go into this type

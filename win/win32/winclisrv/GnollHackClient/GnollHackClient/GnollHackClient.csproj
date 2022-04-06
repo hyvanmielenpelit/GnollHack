@@ -183,6 +183,7 @@
     <None Remove="Assets\UI\symbol-adds.png" />
     <None Remove="Assets\UI\symbol-casts.png" />
     <None Remove="Assets\UI\symbol-cooldown.png" />
+    <None Remove="Assets\UI\symbol-food.png" />
     <None Remove="Assets\UI\symbol-mana.png" />
     <None Remove="Assets\UI\symbol-success.png" />
     <None Remove="Assets\UI\takeoff.png" />
@@ -356,6 +357,7 @@
     <EmbeddedResource Include="Assets\UI\symbol-adds.png" />
     <EmbeddedResource Include="Assets\UI\symbol-casts.png" />
     <EmbeddedResource Include="Assets\UI\symbol-cooldown.png" />
+    <EmbeddedResource Include="Assets\UI\symbol-food.png" />
     <EmbeddedResource Include="Assets\UI\symbol-mana.png" />
     <EmbeddedResource Include="Assets\UI\symbol-success.png" />
     <EmbeddedResource Include="Assets\UI\takeoff.png" />
