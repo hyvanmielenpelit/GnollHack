@@ -2094,7 +2094,7 @@ boolean origin_at_mon;
     struct monst *m2;
 
     /* may be too weak or have been extinguished for population control */
-    if (mon->mhp <= 1 || mon->mbasehpmax <= 1 || mon->mhpmax <= 1 || (mvitals[monsndx(mon->data)].mvflags & G_EXTINCT))
+    if (mon->mhp <= 1 || mon->mbasehpmax <= 1 || mon->mhpmax <= 1 || (mvitals[monsndx(mon->data)].mvflags & MV_EXTINCT))
         return (struct monst *) 0;
 
     if (x == 0)
@@ -2264,24 +2264,24 @@ boolean ghostly;
 {
     boolean result;
     uchar lim = mbirth_limit(mndx);
-    boolean gone = (mvitals[mndx].mvflags & (uchar)G_GONE) != 0; /* geno'd|extinct */
+    boolean gone = (mvitals[mndx].mvflags & (uchar)MV_GONE) != 0; /* geno'd|extinct */
 
     result = (((int) mvitals[mndx].born < lim) && !gone) ? TRUE : FALSE;
 
     /* if it's unique, don't ever make it again */
     if ((mons[mndx].geno & G_UNIQ) && mndx != PM_HIGH_PRIEST)
-        mvitals[mndx].mvflags |= (uchar)G_EXTINCT;
+        mvitals[mndx].mvflags |= (uchar)MV_EXTINCT;
 
     if (mvitals[mndx].born < 255 && tally
         && (!ghostly || (ghostly && result)))
         mvitals[mndx].born++;
     if ((int) mvitals[mndx].born >= lim && !(mons[mndx].geno & (uchar)G_NOGEN)
-        && !(mvitals[mndx].mvflags & (uchar)G_EXTINCT)) {
+        && !(mvitals[mndx].mvflags & (uchar)MV_EXTINCT)) {
         if (wizard) {
             debugpline1("Automatically extinguished %s.",
                         makeplural(pm_common_name(&mons[mndx])));
         }
-        mvitals[mndx].mvflags |= (uchar)G_EXTINCT;
+        mvitals[mndx].mvflags |= (uchar)MV_EXTINCT;
         reset_rndmonst(mndx);
     }
     return result;
@@ -2660,10 +2660,10 @@ int level_limit;
 
         /* if you are to make a specific monster and it has
            already been genocided, return */
-        if (mvitals[mndx].mvflags & G_GENOD)
+        if (mvitals[mndx].mvflags & MV_GENOCIDED)
             return (struct monst *) 0;
 
-        if (wizard && (mvitals[mndx].mvflags & G_EXTINCT)) 
+        if (wizard && (mvitals[mndx].mvflags & MV_EXTINCT)) 
         {
             debugpline1("Explicitly creating extinct monster %s.",
                         mons[mndx].mname);
@@ -3055,7 +3055,8 @@ int level_limit;
 
     set_malign(mtmp); /* having finished peaceful changes */
 
-    if (anymon && !(mmflags & MM_NOGRP) && 0) { //Small and large groups deactivated due to new encounter system -- JG
+#if 0
+    if (anymon && !(mmflags & MM_NOGRP)) { //Small and large groups deactivated due to new encounter system -- JG
         if ((ptr->geno & G_SGROUP) && rn2(2)) 
         {
             m_initsgrp(mtmp, mtmp->mx, mtmp->my, mmflags);
@@ -3068,6 +3069,7 @@ int level_limit;
                 m_initsgrp(mtmp, mtmp->mx, mtmp->my, mmflags);
         }
     }
+#endif
 
     m_init_background(mtmp);
 
@@ -3244,10 +3246,10 @@ int mndx;
 {
     if (mons[mndx].geno & (G_NOGEN | G_UNIQ))
         return TRUE;
-    if (mvitals[mndx].mvflags & G_GONE)
+    if (mvitals[mndx].mvflags & MV_GONE)
         return TRUE;
 
-    boolean strayed_appearance_ok = (!(mvitals[mndx].mvflags & G_STRAYED) || ((mvitals[mndx].mvflags & G_STRAYED) && u.ualign.type != u.ualignbase[A_ORIGINAL]));
+    boolean strayed_appearance_ok = (!(mons[mndx].geno & G_STRAYED) || ((mons[mndx].geno & G_STRAYED) && u.ualign.type != u.ualignbase[A_ORIGINAL]));
 
     if (Inhell)
         return (boolean) ((mons[mndx].maligntyp > A_NEUTRAL) && strayed_appearance_ok);
@@ -3321,13 +3323,13 @@ int level_limit;
     if (u.uz.dnum == bovine_dnum)
     {
         ptr = (struct permonst*)0;
-        if(!(mons[PM_HELL_BOVINE].geno & G_GONE))
+        if(!(mons[PM_HELL_BOVINE].geno & MV_GONE))
             ptr = &mons[PM_HELL_BOVINE];
         
-        if (!(mons[PM_MINOTAUR].geno & G_GONE) && (!ptr || !rn2(2)))
+        if (!(mons[PM_MINOTAUR].geno & MV_GONE) && (!ptr || !rn2(2)))
             ptr = &mons[PM_MINOTAUR];
 
-        if (!(mons[PM_BISON].geno & G_GONE) && (!ptr || !rn2(6)))
+        if (!(mons[PM_BISON].geno & MV_GONE) && (!ptr || !rn2(6)))
             ptr = &mons[PM_BISON];
 
         return ptr;
@@ -3663,7 +3665,7 @@ int difficulty_adj;
     {
         if (atyp != A_NONE && sgn(mons[last].maligntyp) != sgn(atyp))
             continue;
-        if (mk_gen_ok(last, G_GONE, mask))
+        if (mk_gen_ok(last, MV_GONE, mask))
         {
             /* consider it; don't reject a toostrong() monster if we
                don't have anything yet (num==0) or if it is the same
@@ -3718,13 +3720,13 @@ int class;
         return NON_PM;
 
     for (last = first; last < SPECIAL_PM && mons[last].mlet == class; last++)
-        if (mk_gen_ok(last, G_GENOD, (G_NOGEN | G_UNIQ)))
+        if (mk_gen_ok(last, MV_GENOCIDED, (G_NOGEN | G_UNIQ)))
             num += (int)(mons[last].geno & G_FREQ);
     if (!num)
         return NON_PM;
 
     for (num = rnd(num); num > 0; first++)
-        if (mk_gen_ok(first, G_GENOD, (G_NOGEN | G_UNIQ)))
+        if (mk_gen_ok(first, MV_GENOCIDED, (G_NOGEN | G_UNIQ)))
             num -= (int)(mons[first].geno & G_FREQ);
     first--; /* correct an off-by-one error */
 
@@ -3845,8 +3847,8 @@ struct monst *mtmp, *victim;
         /* new form might force gender change */
         fem = is_male(ptr) ? 0 : is_female(ptr) ? 1 : mtmp->female;
 
-        if (mvitals[newtype].mvflags & G_GENOD)
-        { /* allow G_EXTINCT */
+        if (mvitals[newtype].mvflags & MV_GENOCIDED)
+        { /* allow MV_EXTINCT */
             if (canspotmon(mtmp))
                 pline("As %s grows up into %s, %s %s!", mon_nam(mtmp),
                       an(pm_monster_name(ptr, mtmp->female)), mhe(mtmp),
@@ -4402,7 +4404,7 @@ register struct monst *mtmp;
         && (appear == STATUE || appear == FIGURINE
             || appear == CORPSE || appear == EGG || appear == TIN)) {
         int mndx = rndmonnum(),
-            nocorpse_ndx = (mvitals[mndx].mvflags & G_NOCORPSE) != 0;
+            nocorpse_ndx = (mvitals[mndx].mvflags & MV_NOCORPSE) != 0;
 
         if (appear == CORPSE && nocorpse_ndx)
             mndx = rn1(PM_WIZARD - PM_ARCHAEOLOGIST + 1, PM_ARCHAEOLOGIST);

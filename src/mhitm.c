@@ -2205,7 +2205,7 @@ register struct obj* omonwep;
              */
             num = monsndx(pd);
             if (is_tame(magr) && !magr->isminion
-                && !(mvitals[num].mvflags & G_NOCORPSE)) 
+                && !(mvitals[num].mvflags & MV_NOCORPSE)) 
             {
                 struct obj* virtualcorpse = mksobj(CORPSE, FALSE, FALSE, FALSE);
                 int nutrit;

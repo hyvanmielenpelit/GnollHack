@@ -326,11 +326,11 @@ int mtype;
         (void) rloc(m_at(sx + 1, sy), FALSE); /* insurance */
 
     int montype = sanctum ? PM_HIGH_PRIEST : PM_ALIGNED_PRIEST;
-    if (mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & G_GONE))
+    if (mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & MV_GONE))
     {
         montype = mtype;
     }
-    else if (sroom->resident_mtype > 0 && sroom->resident_mtype < NUM_MONSTERS && !(mvitals[sroom->resident_mtype].mvflags & G_GONE))
+    else if (sroom->resident_mtype > 0 && sroom->resident_mtype < NUM_MONSTERS && !(mvitals[sroom->resident_mtype].mvflags & MV_GONE))
     {
         montype = sroom->resident_mtype;
     }
@@ -505,11 +505,11 @@ int mtype;
         (void)rloc(m_at(smith_loc_x, smith_loc_y), FALSE); /* insurance */
 
     int smith_montype = PM_SMITH;
-    if (mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & G_GONE))
+    if (mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & MV_GONE))
     {
         smith_montype = mtype;
     }
-    else if (sroom->resident_mtype > 0 && sroom->resident_mtype < NUM_MONSTERS && !(mvitals[sroom->resident_mtype].mvflags & G_GONE))
+    else if (sroom->resident_mtype > 0 && sroom->resident_mtype < NUM_MONSTERS && !(mvitals[sroom->resident_mtype].mvflags & MV_GONE))
     {
         smith_montype = sroom->resident_mtype;
     }

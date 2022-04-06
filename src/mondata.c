@@ -380,8 +380,8 @@ struct permonst *ptr;
 {
     /* non-stone golems turn into stone golems unless latter is genocided */
     return (boolean) (is_golem(ptr) && ptr != &mons[PM_STONE_GOLEM]
-                      && !(mvitals[PM_STONE_GOLEM].mvflags & G_GENOD));
-    /* allow G_EXTINCT */
+                      && !(mvitals[PM_STONE_GOLEM].mvflags & MV_GENOCIDED));
+    /* allow MV_EXTINCT */
 }
 
 

@@ -5045,14 +5045,14 @@ boolean is_wiz_wish;
             if (dead_species(mntmp, FALSE)) {
                 otmp->corpsenm = NON_PM; /* it's empty */
             } else if ((!(mons[mntmp].geno & G_UNIQ) || wiz_wishing)
-                       && !(mvitals[mntmp].mvflags & G_NOCORPSE)
+                       && !(mvitals[mntmp].mvflags & MV_NOCORPSE)
                        && mons[mntmp].cnutrit != 0) {
                 otmp->corpsenm = mntmp;
             }
             break;
         case CORPSE:
             if ((!(mons[mntmp].geno & G_UNIQ) || wiz_wishing)
-                && !(mvitals[mntmp].mvflags & G_NOCORPSE)) {
+                && !(mvitals[mntmp].mvflags & MV_NOCORPSE)) {
                 if (mons[mntmp].msound == MS_GUARDIAN)
                     mntmp = genus(mntmp, 1);
                 set_corpsenm(otmp, mntmp);

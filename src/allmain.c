@@ -648,11 +648,11 @@ select_rwraith()
         /* Difficulty level is one level higher than normal */
         get_generated_monster_minmax_levels(i, &minlevel, &maxlevel, 1);
 
-        wraithlordok = maxlevel >= mons[PM_WRAITHLORD].difficulty && !(mvitals[PM_WRAITHLORD].mvflags & G_GONE);
-        kingwraithok = maxlevel >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & G_GONE);
-        spectreok = maxlevel >= mons[PM_SPECTRE].difficulty && !(mvitals[PM_SPECTRE].mvflags & G_GONE);
-        barrowwightok = maxlevel >= mons[PM_BARROW_WIGHT].difficulty && !(mvitals[PM_BARROW_WIGHT].mvflags & G_GONE);
-        wraithok = maxlevel >= mons[PM_WRAITH].difficulty && !(mvitals[PM_WRAITH].mvflags & G_GONE);
+        wraithlordok = maxlevel >= mons[PM_WRAITHLORD].difficulty && !(mvitals[PM_WRAITHLORD].mvflags & MV_GONE);
+        kingwraithok = maxlevel >= mons[PM_KING_WRAITH].difficulty && !(mvitals[PM_KING_WRAITH].mvflags & MV_GONE);
+        spectreok = maxlevel >= mons[PM_SPECTRE].difficulty && !(mvitals[PM_SPECTRE].mvflags & MV_GONE);
+        barrowwightok = maxlevel >= mons[PM_BARROW_WIGHT].difficulty && !(mvitals[PM_BARROW_WIGHT].mvflags & MV_GONE);
+        wraithok = maxlevel >= mons[PM_WRAITH].difficulty && !(mvitals[PM_WRAITH].mvflags & MV_GONE);
 
         if (wraithlordok || kingwraithok || spectreok || barrowwightok || wraithok)
             break;
@@ -1227,7 +1227,8 @@ newgame()
 #endif
 
     for (i = LOW_PM; i < NUM_MONSTERS; i++)
-        mvitals[i].mvflags = (uchar)(mons[i].geno & G_NOCORPSE);
+        if((mons[i].geno & G_NOCORPSE) != 0)
+            mvitals[i].mvflags |= MV_NOCORPSE;
 
     init_objects(); /* must be before u_init() */
 

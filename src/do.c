@@ -2086,9 +2086,11 @@ register struct obj* obj;
     }
 
     /* Identification status */
+    boolean notfullyidentified = FALSE;
     if (obj->dknown)
     {
-        Sprintf(buf, "Identification status:  %s", stats_known ? (not_fully_identified(obj) ? "Known" : "Fully known") : "Unidentified");
+        notfullyidentified = not_fully_identified(obj);
+        Sprintf(buf, "Identification status:  %s", stats_known ? (notfullyidentified ? "Known" : "Fully known") : "Unidentified");
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
@@ -3866,6 +3868,24 @@ register struct obj* obj;
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
+    }
+
+    /* Hints */
+    if (context.game_difficulty < 0 && obj->dknown && (!stats_known || notfullyidentified))
+    {
+        int powercnt = 0;
+
+        Sprintf(buf, "Hints:");
+        txt = buf;
+        putstr(datawin, ATR_HEADING, txt);
+
+        powercnt++;
+        if (!stats_known)
+            Sprintf(buf, " %2d - You can identify this item, for example, by using a scroll of identify", powercnt);
+        else
+            Sprintf(buf, " %2d - You can fully learn the statistics by identifying this item (e.g., by using a scroll of identify)", powercnt);
+        txt = buf;
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
     display_nhwindow(datawin, FALSE);

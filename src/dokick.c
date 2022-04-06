@@ -1632,7 +1632,7 @@ dokick() {
             /* nothing, fruit or trouble? 75:23.5:1.5% */
             if (rn2(3)) 
             {
-                if (/*!rn2(6)*/ (levl[x][y].flags & TREE_HAS_BEE_HIVE) && !(mvitals[PM_KILLER_BEE].mvflags & G_GONE))
+                if (/*!rn2(6)*/ (levl[x][y].flags & TREE_HAS_BEE_HIVE) && !(mvitals[PM_KILLER_BEE].mvflags & MV_GONE))
                     You_hear("a low buzzing."); /* a warning */
                 goto ouch;
             }
@@ -1737,7 +1737,7 @@ dokick() {
                 update_u_action_revert(ACTION_TILE_NO_ACTION);
                 return 1;
             } else if (!(maploc->looted & S_LPUDDING) && !rn2(3)
-                       && !(mvitals[PM_BLACK_PUDDING].mvflags & G_GONE)) {
+                       && !(mvitals[PM_BLACK_PUDDING].mvflags & MV_GONE)) {
                 if (Blind)
                     You_hear("a gushing sound.");
                 else
@@ -1750,7 +1750,7 @@ dokick() {
                 update_u_action_revert(ACTION_TILE_NO_ACTION);
                 return 1;
             } else if (!(maploc->looted & S_LDWASHER) && !rn2(3)
-                       && !(mvitals[washerndx].mvflags & G_GONE)) {
+                       && !(mvitals[washerndx].mvflags & MV_GONE)) {
                 /* can't resist... */
                 pline("%s returns!", (Blind ? Something : "The dish washer"));
                 if (makemon(&mons[washerndx], x, y, washerfemale ? MM_FEMALE : NO_MM_FLAGS))

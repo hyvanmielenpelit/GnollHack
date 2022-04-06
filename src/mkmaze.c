@@ -1200,7 +1200,7 @@ const char *s;
         inv_pos.y = y;
         maketrap(inv_pos.x, inv_pos.y, VIBRATING_SQUARE, NON_PM, MKTRAP_NO_FLAGS);
 
-        if (!(mvitals[PM_BAPHOMET].mvflags & G_GONE))
+        if (!(mvitals[PM_BAPHOMET].mvflags & MV_GONE))
         {
             mazexy(&mm);
             (void)makemon(&mons[PM_BAPHOMET], mm.x, mm.y, NO_MM_FLAGS);

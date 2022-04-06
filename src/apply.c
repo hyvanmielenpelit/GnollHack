@@ -1676,9 +1676,9 @@ struct obj **optr;
         }
         if (obj->cursed && !rn2(4)
             /* note: once any of them are gone, we stop all of them */
-            && !(mvitals[PM_WOOD_NYMPH].mvflags & G_GONE)
-            && !(mvitals[PM_WATER_NYMPH].mvflags & G_GONE)
-            && !(mvitals[PM_MOUNTAIN_NYMPH].mvflags & G_GONE)
+            && !(mvitals[PM_WOOD_NYMPH].mvflags & MV_GONE)
+            && !(mvitals[PM_WATER_NYMPH].mvflags & MV_GONE)
+            && !(mvitals[PM_MOUNTAIN_NYMPH].mvflags & MV_GONE)
             && (mtmp = makemon(mkclass(S_NYMPH, 0), u.ux, u.uy, MM_NO_MONSTER_INVENTORY))
                    != 0) {
             You("summon %s!", a_monnam(mtmp));

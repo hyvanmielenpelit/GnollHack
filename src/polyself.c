@@ -610,9 +610,9 @@ int psflags;
         {
         do_merge:
             mntmp = armor_to_dragon(uarm->otyp);
-            if (!(mvitals[mntmp].mvflags & G_GENOD))
+            if (!(mvitals[mntmp].mvflags & MV_GENOCIDED))
             {
-                /* allow G_EXTINCT */
+                /* allow MV_EXTINCT */
                 if (is_dragon_scales(uarm))
                 {
                     /* dragon scales remain intact as uskin */
@@ -760,7 +760,7 @@ int mntmp;
             was_blind = !!Blind, dochange = FALSE;
     int mlvl;
 
-    if (mvitals[mntmp].mvflags & G_GENOD) { /* allow G_EXTINCT */
+    if (mvitals[mntmp].mvflags & MV_GENOCIDED) { /* allow MV_EXTINCT */
         play_sfx_sound(SFX_POLYMORPH_FAIL);
         You_feel("rather %s-ish.", pm_monster_name(&mons[mntmp], flags.female));
         exercise(A_WIS, TRUE);
@@ -2646,8 +2646,8 @@ polysense()
 boolean
 ugenocided()
 {
-    return (boolean) ((mvitals[urole.monsternum].mvflags & G_GENOD)
-                      || (mvitals[urace.monsternum].mvflags & G_GENOD)
+    return (boolean) ((mvitals[urole.monsternum].mvflags & MV_GENOCIDED)
+                      || (mvitals[urace.monsternum].mvflags & MV_GENOCIDED)
                      );
 }
 

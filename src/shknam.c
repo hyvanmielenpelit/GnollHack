@@ -790,7 +790,7 @@ struct mkroom *sroom;
 
     /* now initialize the shopkeeper monster structure */
     int shkomontype = PM_SHOPKEEPER;
-    if (sroom->resident_mtype > 0 && sroom->resident_mtype < NUM_MONSTERS && !(mvitals[sroom->resident_mtype].mvflags & G_GONE))
+    if (sroom->resident_mtype > 0 && sroom->resident_mtype < NUM_MONSTERS && !(mvitals[sroom->resident_mtype].mvflags & MV_GONE))
     {
         shkomontype = sroom->resident_mtype;
     }
@@ -860,13 +860,13 @@ get_gehennom_undead_spellcaster(origtype)
 int origtype;
 {
     int shkomontype = origtype;
-    boolean arch_lich_gone = (mvitals[PM_ARCH_LICH].mvflags & G_GONE);
-    boolean master_lich_gone = (mvitals[PM_MASTER_LICH].mvflags & G_GONE);
-    boolean demilich_gone = (mvitals[PM_DEMILICH].mvflags & G_GONE);
-    boolean lich_gone = (mvitals[PM_LICH].mvflags & G_GONE);
-    boolean death_flayer_gone = (mvitals[PM_DEATH_FLAYER].mvflags & G_GONE);
-    boolean ghost_gone = (mvitals[PM_GHOST].mvflags & G_GONE);
-    boolean vampire_mage_gone = (mvitals[PM_VAMPIRE_MAGE].mvflags & G_GONE);
+    boolean arch_lich_gone = (mvitals[PM_ARCH_LICH].mvflags & MV_GONE);
+    boolean master_lich_gone = (mvitals[PM_MASTER_LICH].mvflags & MV_GONE);
+    boolean demilich_gone = (mvitals[PM_DEMILICH].mvflags & MV_GONE);
+    boolean lich_gone = (mvitals[PM_LICH].mvflags & MV_GONE);
+    boolean death_flayer_gone = (mvitals[PM_DEATH_FLAYER].mvflags & MV_GONE);
+    boolean ghost_gone = (mvitals[PM_GHOST].mvflags & MV_GONE);
+    boolean vampire_mage_gone = (mvitals[PM_VAMPIRE_MAGE].mvflags & MV_GONE);
     boolean all_liches_gone = arch_lich_gone && master_lich_gone && demilich_gone && lich_gone;
 
     if (arch_lich_gone && all_liches_gone && vampire_mage_gone && ghost_gone)

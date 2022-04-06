@@ -3119,7 +3119,7 @@ int okind;
         break;
     }
 
-    if (!(mvitals[pm_index].mvflags & G_GENOD))
+    if (!(mvitals[pm_index].mvflags & MV_GENOCIDED))
         mdat = &mons[pm_index];
 
     mtmp = makemon(mdat, obj->ox, obj->oy, MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
@@ -11196,7 +11196,7 @@ int spl_otyp;
     else
         You("start to smell unnatural stench of death and decay!");
 
-    if (mvitals[monindex].mvflags & G_GONE || mvitals[monindex].born > 0)
+    if (mvitals[monindex].mvflags & MV_GONE || mvitals[monindex].born > 0)
     {
         pline("However, nobody answers your call.");
         return;
@@ -11249,7 +11249,7 @@ int spl_otyp UNUSED;
     else
         You("start to hear a distinctive heavenly melody from a distance!");
 
-    if ((mvitals[monindex].mvflags & G_GONE) || mvitals[monindex].born > 0)
+    if ((mvitals[monindex].mvflags & MV_GONE) || mvitals[monindex].born > 0)
     {
         pline("However, the music stops suddenly.");
         return;

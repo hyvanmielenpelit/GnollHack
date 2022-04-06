@@ -416,11 +416,11 @@ int mtype;
         (void)rloc(m_at(npc_loc_x, npc_loc_y), FALSE); /* insurance */
 
     int npc_montype = npc_subtype_definitions[npctype].mnum;
-    if (mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & G_GONE))
+    if (mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & MV_GONE))
     {
         npc_montype = mtype;
     }
-    else if (sroom->resident_mtype > 0 && sroom->resident_mtype < NUM_MONSTERS && !(mvitals[sroom->resident_mtype].mvflags & G_GONE))
+    else if (sroom->resident_mtype > 0 && sroom->resident_mtype < NUM_MONSTERS && !(mvitals[sroom->resident_mtype].mvflags & MV_GONE))
     {
         npc_montype = sroom->resident_mtype;
     }
@@ -436,15 +436,15 @@ int mtype;
                 npc_montype = get_gehennom_undead_spellcaster(npc_montype);
                 break;
             case NPC_GEHENNOM_DWARF_MUMMY:
-                if (!(mvitals[PM_GREATER_DWARVEN_MUMMY_GEOLOGIST].mvflags & G_GONE))
+                if (!(mvitals[PM_GREATER_DWARVEN_MUMMY_GEOLOGIST].mvflags & MV_GONE))
                     npc_montype = PM_GREATER_DWARVEN_MUMMY_GEOLOGIST;
-                else if (!(mvitals[PM_DWARF_MUMMY].mvflags & G_GONE))
+                else if (!(mvitals[PM_DWARF_MUMMY].mvflags & MV_GONE))
                     npc_montype = PM_DWARF_MUMMY;
-                else if (!(mvitals[PM_DWARF_ZOMBIE].mvflags & G_GONE))
+                else if (!(mvitals[PM_DWARF_ZOMBIE].mvflags & MV_GONE))
                     npc_montype = PM_DWARF_ZOMBIE;
-                else if (!(mvitals[PM_GHOST].mvflags & G_GONE))
+                else if (!(mvitals[PM_GHOST].mvflags & MV_GONE))
                     npc_montype = PM_GHOST;
-                else if (!(mvitals[PM_PIT_FIEND].mvflags & G_GONE))
+                else if (!(mvitals[PM_PIT_FIEND].mvflags & MV_GONE))
                     npc_montype = PM_PIT_FIEND;
                 break;
             default:

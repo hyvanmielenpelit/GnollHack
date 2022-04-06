@@ -99,7 +99,7 @@ boolean quietly;
             /* activating a figurine provides one way to exceed the
                maximum number of the target critter created--unless
                it has a special limit (erinys, Nazgul) */
-            if ((mvitals[mndx].mvflags & G_EXTINCT)
+            if ((mvitals[mndx].mvflags & MV_EXTINCT)
                 && mbirth_limit(mndx) != MAXMONNO)
             {
                 if (!quietly)

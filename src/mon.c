@@ -69,7 +69,7 @@ const char *msg;
 #endif
             return;
         }
-        if (chk_geno && (mvitals[mndx].mvflags & G_GENOD) != 0)
+        if (chk_geno && (mvitals[mndx].mvflags & MV_GENOCIDED) != 0)
             impossible("genocided %s in play (%s)", mons[mndx].mname, msg);
     }
     if (mtmp->isshk && !has_eshk(mtmp))
@@ -842,7 +842,7 @@ boolean createcorpse;
         return obj;
     default_1:
     default:
-        if (mvitals[mndx].mvflags & G_NOCORPSE) 
+        if (mvitals[mndx].mvflags & MV_NOCORPSE) 
         {
             return (struct obj*) 0;
         }
@@ -3040,7 +3040,7 @@ struct monst *mtmp;
         /* equip replacement amulet, if any, on next move */
         mtmp->worn_item_flags |= I_SPECIAL;
 
-        surviver = !(mvitals[monsndx(mtmp->data)].mvflags & G_GENOD);
+        surviver = !(mvitals[monsndx(mtmp->data)].mvflags & MV_GENOCIDED);
         mtmp->mcanmove = 1;
         mtmp->mfrozen = 0;
         mtmp->mwantstomove = 1;
@@ -3099,7 +3099,7 @@ unsigned long mdiedflags;
 
         /* this only happens if shapeshifted */
         if (mndx >= LOW_PM && mndx != monsndx(mtmp->data)
-            && !(mvitals[mndx].mvflags & G_GENOD)) 
+            && !(mvitals[mndx].mvflags & MV_GENOCIDED)) 
         {
             char buf[BUFSZ];
             boolean in_door = (amorphous(mtmp->data)
@@ -3237,7 +3237,7 @@ unsigned long mdiedflags;
 #ifdef MAIL
     /* if the mail daemon dies, no more mail delivery.  -3. */
     if (tmp == PM_MAIL_DAEMON)
-        mvitals[tmp].mvflags |= G_GENOD;
+        mvitals[tmp].mvflags |= MV_GENOCIDED;
 #endif
 
     if (mtmp->data->mlet == S_KOP) 
@@ -3550,7 +3550,7 @@ int how;
     disintegested = (how == AD_DGST || how == -AD_RBRE);
 
     boolean is_transforming_vampshifter = is_vampshifter(mdef) && mdef->cham >= LOW_PM && mdef->cham != monsndx(mdef->data)
-        && !(mvitals[mdef->cham].mvflags & G_GENOD);
+        && !(mvitals[mdef->cham].mvflags & MV_GENOCIDED);
 
     if (!disintegested && !is_transforming_vampshifter)
         play_simple_monster_sound(mdef, MONSTER_SOUND_TYPE_DEATH);
@@ -3745,7 +3745,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
         int otyp;
 
         /* illogical but traditional "treasure drop" */
-        if (!rn2(6) && !(mvitals[mndx].mvflags & G_NOCORPSE)
+        if (!rn2(6) && !(mvitals[mndx].mvflags & MV_NOCORPSE)
             /* no extra item from swallower or steed */
             && (x != u.ux || y != u.uy)
             /* no extra item from kops--too easy to abuse */
@@ -3915,7 +3915,7 @@ struct monst *mtmp;
 
         /* this only happens if shapeshifted */
         if (mndx >= LOW_PM && mndx != monsndx(mtmp->data)
-            && !(mvitals[mndx].mvflags & G_GENOD)) {
+            && !(mvitals[mndx].mvflags & MV_GENOCIDED)) {
             char buf[BUFSZ];
             boolean in_door = (amorphous(mtmp->data)
                                && closed_door(mtmp->mx, mtmp->my));
@@ -5005,7 +5005,7 @@ int mndx;
     if (mndx == NON_PM)
         return 0;
     mdat = &mons[mndx];
-    if ((mvitals[mndx].mvflags & G_GENOD) != 0)
+    if ((mvitals[mndx].mvflags & MV_GENOCIDED) != 0)
         return 0;
     if (is_placeholder(mdat))
         return 0;
@@ -5096,7 +5096,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
         } while (--tryct > 0);
         if (!tryct)
             return 0;
-    } else if (mvitals[monsndx(mdat)].mvflags & G_GENOD)
+    } else if (mvitals[monsndx(mdat)].mvflags & MV_GENOCIDED)
         return 0; /* passed in mdat is genocided */
 
     if (mdat == olddata)
@@ -5353,8 +5353,8 @@ boolean egg;
      * overpopulation does not kill eggs.
      */
     alt_idx = egg ? big_to_little(m_idx) : m_idx;
-    return (boolean) ((mvitals[m_idx].mvflags & G_GENOD) != 0
-                      || (mvitals[alt_idx].mvflags & G_GENOD) != 0);
+    return (boolean) ((mvitals[m_idx].mvflags & MV_GENOCIDED) != 0
+                      || (mvitals[alt_idx].mvflags & MV_GENOCIDED) != 0);
 }
 
 /* kill off any eggs of genocided monsters */
@@ -5413,8 +5413,8 @@ kill_genocided_monsters()
             continue;
         mndx = monsndx(mtmp->data);
         kill_cham = (mtmp->cham >= LOW_PM
-                     && (mvitals[mtmp->cham].mvflags & G_GENOD));
-        if ((mvitals[mndx].mvflags & G_GENOD) || kill_cham) {
+                     && (mvitals[mtmp->cham].mvflags & MV_GENOCIDED));
+        if ((mvitals[mndx].mvflags & MV_GENOCIDED) || kill_cham) {
             if (mtmp->cham >= LOW_PM && !kill_cham)
                 (void) newcham(mtmp, (struct permonst *) 0, FALSE, FALSE);
             else

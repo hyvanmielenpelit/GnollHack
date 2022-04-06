@@ -340,10 +340,10 @@ register boolean nearshop;
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "An alarm sounds!");
     }
 
-    nokops = ((mvitals[PM_KEYSTONE_KOP].mvflags & G_GONE)
-              && (mvitals[PM_KOP_SERGEANT].mvflags & G_GONE)
-              && (mvitals[PM_KOP_LIEUTENANT].mvflags & G_GONE)
-              && (mvitals[PM_KOP_KAPTAIN].mvflags & G_GONE));
+    nokops = ((mvitals[PM_KEYSTONE_KOP].mvflags & MV_GONE)
+              && (mvitals[PM_KOP_SERGEANT].mvflags & MV_GONE)
+              && (mvitals[PM_KOP_LIEUTENANT].mvflags & MV_GONE)
+              && (mvitals[PM_KOP_KAPTAIN].mvflags & MV_GONE));
 
     if (!angry_guards(!!Deaf) && nokops) {
         if (flags.verbose && !Deaf)
@@ -4416,7 +4416,7 @@ coord *mm;
         if ((cnt = k_cnt[k]) == 0)
             break;
         mndx = k_mndx[k];
-        if (mvitals[mndx].mvflags & G_GONE)
+        if (mvitals[mndx].mvflags & MV_GONE)
             continue;
 
         while (cnt--)

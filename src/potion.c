@@ -797,7 +797,7 @@ dodrink()
     potion_descr = OBJ_DESCR(objects[otmp->otyp]);
     if (potion_descr) {
         if (!strcmp(potion_descr, "milky")
-            && !(mvitals[PM_GHOST].mvflags & G_GONE)
+            && !(mvitals[PM_GHOST].mvflags & MV_GONE)
             && !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_GHOST].born))) {
             ghost_from_bottle();
             useup(otmp);
@@ -807,7 +807,7 @@ dodrink()
             goto check_add_to_bill_here;
 
         } else if (!strcmp(potion_descr, "smoky")
-                   && !(mvitals[PM_DJINNI].mvflags & G_GONE)
+                   && !(mvitals[PM_DJINNI].mvflags & MV_GONE)
                    && !rn2(POTION_OCCUPANT_CHANCE(mvitals[PM_DJINNI].born))) {
             djinni_from_bottle(otmp);
             useup(otmp);

@@ -1109,9 +1109,9 @@ antholemon()
             break;
         }
         /* try again if chosen type has been genocided or used up */
-    } while (++trycnt < 3 && (mvitals[mtyp].mvflags & G_GONE));
+    } while (++trycnt < 3 && (mvitals[mtyp].mvflags & MV_GONE));
 
-    return ((mvitals[mtyp].mvflags & G_GONE) ? (struct permonst *) 0
+    return ((mvitals[mtyp].mvflags & MV_GONE) ? (struct permonst *) 0
                                              : &mons[mtyp]);
 }
 
@@ -2235,7 +2235,7 @@ squadmon()
     }
     mndx = squadprob[rn2(NSTYPES)].pm;
 gotone:
-    if (!(mvitals[mndx].mvflags & G_GONE))
+    if (!(mvitals[mndx].mvflags & MV_GONE))
         return &mons[mndx];
     else
         return (struct permonst *) 0;
@@ -2315,7 +2315,7 @@ boolean doboss;
         }
     }
 
-    if (!(mvitals[mndx].mvflags & G_GONE))
+    if (!(mvitals[mndx].mvflags & MV_GONE))
         return &mons[mndx];
     else
         return (struct permonst*)0;

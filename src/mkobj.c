@@ -1421,7 +1421,7 @@ unsigned long mkflags;
                 tryct = 50;
                 do
                     otmp->corpsenm = undead_to_corpse(rndmonnum());
-                while ((mvitals[otmp->corpsenm].mvflags & G_NOCORPSE)
+                while ((mvitals[otmp->corpsenm].mvflags & MV_NOCORPSE)
                        && (--tryct > 0));
                 if (tryct == 0)
                 {
@@ -1455,7 +1455,7 @@ unsigned long mkflags;
                     {
                         mndx = undead_to_corpse(rndmonnum());
                         if (mons[mndx].cnutrit
-                            && !(mvitals[mndx].mvflags & G_NOCORPSE))
+                            && !(mvitals[mndx].mvflags & MV_NOCORPSE))
                         {
                             otmp->corpsenm = mndx;
                             set_tin_variety(otmp, RANDOM_TIN);
@@ -1575,7 +1575,7 @@ unsigned long mkflags;
                                     !rn2(2) || (level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_LORD].difficulty - 3 ? PM_SKELETON_WARRIOR :
                                     !rn2(2) || (level_difficulty() + u.ulevel) / 2 < mons[PM_SKELETON_KING].difficulty - 4 ? PM_SKELETON_LORD : PM_SKELETON_KING));
 
-                            if (tmp >= LOW_PM && !(mvitals[tmp].mvflags & G_GONE))
+                            if (tmp >= LOW_PM && !(mvitals[tmp].mvflags & MV_GONE))
                                 cnm = tmp;
                         }
 
@@ -1592,7 +1592,7 @@ unsigned long mkflags;
                                 classmonster = monsndx(ptr);
                             if (classmonster >= LOW_PM)
                                 cnm = classmonster;
-                            else if (!(mvitals[PM_VAMPIRE].mvflags & G_GONE))
+                            else if (!(mvitals[PM_VAMPIRE].mvflags & MV_GONE))
                                 cnm = PM_VAMPIRE;
                         }
                         else
@@ -1607,7 +1607,7 @@ unsigned long mkflags;
                                 if (ptr)
                                     classmonster = monsndx(ptr);
                                 int tmp = (rn2(9) && classmonster > NON_PM ? classmonster : very_low_level ? PM_HUMAN_ZOMBIE : low_level ? PM_BARROW_WIGHT : PM_SKELETON_WARRIOR);
-                                if (tmp >= LOW_PM && !(mvitals[tmp].mvflags & G_GONE))
+                                if (tmp >= LOW_PM && !(mvitals[tmp].mvflags & MV_GONE))
                                     cnm = tmp;
                             }
                         }
@@ -1956,7 +1956,7 @@ unsigned long mkflags;
     case CORPSE:
         if (otmp->corpsenm == NON_PM) {
             otmp->corpsenm = undead_to_corpse(rndmonnum());
-            if (mvitals[otmp->corpsenm].mvflags & (G_NOCORPSE | G_GONE))
+            if (mvitals[otmp->corpsenm].mvflags & (MV_NOCORPSE | MV_GONE))
                 otmp->corpsenm = urole.monsternum;
         }
         /*FALLTHRU*/

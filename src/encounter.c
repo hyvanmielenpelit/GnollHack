@@ -1425,7 +1425,7 @@ int selected_encounter, x, y;
         if (pmid == NON_PM)
             break;
 
-        if (mvitals[pmid].mvflags & G_GONE)
+        if (mvitals[pmid].mvflags & MV_GONE)
             continue;
         if (upper && !isupper((uchar)def_monsyms[(int)mons[pmid].mlet].sym))
             continue;
@@ -1457,7 +1457,7 @@ int selected_encounter, x, y;
         if (pmid == NON_PM)
             break;
 
-        if (mvitals[pmid].mvflags & G_GONE)
+        if (mvitals[pmid].mvflags & MV_GONE)
             continue;
         if (upper && !isupper((uchar)def_monsyms[(int)mons[pmid].mlet].sym))
             continue;

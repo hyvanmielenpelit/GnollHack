@@ -509,10 +509,10 @@ uchar dmask;
             struct monst *mtmp;
 
             if (level_difficulty() >= 9 && !rn2(5)
-                && !((mvitals[PM_SMALL_MIMIC].mvflags & G_GONE)
-                     && (mvitals[PM_LARGE_MIMIC].mvflags & G_GONE)
-                     && (mvitals[PM_GIANT_MIMIC].mvflags & G_GONE)
-                      && (mvitals[PM_CHAOS_MIMIC].mvflags & G_GONE))) {
+                && !((mvitals[PM_SMALL_MIMIC].mvflags & MV_GONE)
+                     && (mvitals[PM_LARGE_MIMIC].mvflags & MV_GONE)
+                     && (mvitals[PM_GIANT_MIMIC].mvflags & MV_GONE)
+                      && (mvitals[PM_CHAOS_MIMIC].mvflags & MV_GONE))) {
                 /* make a mimic instead */
                 levl[x][y].doormask = D_NODOOR;
                 mtmp = makemon(mkclass(S_MIMIC, 0), x, y, NO_MM_FLAGS);
@@ -1013,7 +1013,7 @@ makelevel()
         if (!res && u_depth >= min_npc_appearance_depth() && !rn2(7))
             res = mkroom(NPCROOM);
         if (!res && u_depth > 4 && u_depth < 15 && !rn2(8)
-            && !(mvitals[PM_LEPRECHAUN].mvflags & G_GONE))
+            && !(mvitals[PM_LEPRECHAUN].mvflags & MV_GONE))
             res = mkroom(LEPREHALL);
         if (!res && u_depth > 5 && u_depth < 16 && !rn2(6))
             res = mkroom(ZOO);
@@ -1022,19 +1022,19 @@ makelevel()
         if (!res && u_depth > 7 && !rn2(7))
             res = mkroom(LIBRARY);
         if (!res && u_depth > 9 && u_depth < 20 && !rn2(6)
-            && !(mvitals[PM_KILLER_BEE].mvflags & G_GONE))
+            && !(mvitals[PM_KILLER_BEE].mvflags & MV_GONE))
             res = mkroom(BEEHIVE);
         if (!res && u_depth > 10 && u_depth < 21 && !rn2(8) && antholemon())
             res = mkroom(ANTHOLE);
         if (!res && u_depth > 11 && !rn2(6))
             res = mkroom(MORGUE);
         if (!res && u_depth > 14 && !rn2(6)
-            && !(mvitals[PM_SOLDIER].mvflags & G_GONE))
+            && !(mvitals[PM_SOLDIER].mvflags & MV_GONE))
             res = mkroom(BARRACKS);
         if (!res && u_depth > 15 && !rn2(6))
             res = mkroom(SWAMP);
         if (!res && u_depth > 16 && !rn2(8)
-            && !(mvitals[PM_COCKATRICE].mvflags & G_GONE))
+            && !(mvitals[PM_COCKATRICE].mvflags & MV_GONE))
             res = mkroom(COCKNEST);
         if (!res && u_depth > 20 && !rn2(5))
             res = mkroom(DRAGONLAIR);

@@ -1719,9 +1719,9 @@ struct mkroom *croom;
     {
         pm = &mons[m->id];
         g_mvflags = (unsigned) mvitals[monsndx(pm)].mvflags;
-        if ((pm->geno & G_UNIQ) && (g_mvflags & G_EXTINCT))
+        if ((pm->geno & G_UNIQ) && (g_mvflags & MV_EXTINCT))
             return;
-        else if (g_mvflags & G_GONE)    /* genocided or extinct */
+        else if (g_mvflags & MV_GONE)    /* genocided or extinct */
             pm = (struct permonst *) 0; /* make random monster */
     }
     else 

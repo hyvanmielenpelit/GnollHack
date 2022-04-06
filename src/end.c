@@ -539,7 +539,7 @@ int how;
     /* this could happen if a high-end vampire kills the hero
        when ordinary vampires are genocided; ditto for wraiths */
     if (u.ugrave_arise >= LOW_PM
-        && (mvitals[u.ugrave_arise].mvflags & G_GENOD))
+        && (mvitals[u.ugrave_arise].mvflags & MV_GENOCIDED))
         u.ugrave_arise = NON_PM;
 
     done(how);
@@ -1480,12 +1480,12 @@ int how;
                 have been genocided:  genocide could occur after hero is
                 already infected or hero could eat a glob of one created
                 before genocide; don't try to arise as one if they're gone */
-             && !(mvitals[PM_GREEN_SLIME].mvflags & G_GENOD))
+             && !(mvitals[PM_GREEN_SLIME].mvflags & MV_GENOCIDED))
         u.ugrave_arise = PM_GREEN_SLIME;
     else if (how == ROTTED)
     {
         int montype = urace.mummynum;
-        if(montype > NON_PM && !(mvitals[montype].mvflags & G_GENOD))
+        if(montype > NON_PM && !(mvitals[montype].mvflags & MV_GENOCIDED))
             u.ugrave_arise = montype;
     }
 
@@ -1579,7 +1579,7 @@ int how;
     /* grave creation should be after disclosure so it doesn't have
        this grave in the current level's features for #overview */
     if (bones_ok && u.ugrave_arise == NON_PM
-        && !(mvitals[u.umonnum].mvflags & G_NOCORPSE))
+        && !(mvitals[u.umonnum].mvflags & MV_NOCORPSE))
     {
         int mnum = u.umonnum;
 
@@ -2366,7 +2366,7 @@ num_genocides()
     int i, n = 0;
 
     for (i = LOW_PM; i < NUM_MONSTERS; ++i) {
-        if (mvitals[i].mvflags & G_GENOD) {
+        if (mvitals[i].mvflags & MV_GENOCIDED) {
             ++n;
             if (UniqCritterIndx(i))
                 impossible("unique creature '%d: %s' genocided?",
@@ -2384,7 +2384,7 @@ num_extinct()
     for (i = LOW_PM; i < NUM_MONSTERS; ++i) {
         if (UniqCritterIndx(i))
             continue;
-        if ((mvitals[i].mvflags & G_GONE) == G_EXTINCT)
+        if ((mvitals[i].mvflags & MV_GONE) == MV_EXTINCT)
             ++n;
     }
     return n;
@@ -2439,7 +2439,7 @@ boolean ask, isend;
                 if (UniqCritterIndx(i))
                     continue;
 
-                if (mvitals[i].mvflags & G_GONE) 
+                if (mvitals[i].mvflags & MV_GONE) 
                 {
                     Sprintf(buf, " %s", makeplural(pm_common_name(&mons[i])));
                     /*
@@ -2448,7 +2448,7 @@ boolean ask, isend;
                      * but there might be members of the species still
                      * alive, contradicting the meaning of the word.
                      */
-                    if ((mvitals[i].mvflags & G_GONE) == G_EXTINCT)
+                    if ((mvitals[i].mvflags & MV_GONE) == MV_EXTINCT)
                         Strcat(buf, " (extinct)");
 
                     putstr(klwin, 0, buf);

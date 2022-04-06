@@ -3802,7 +3802,7 @@ do_class_genocide()
             {
                 if (!(mons[i].geno & G_GENO))
                     immunecnt++;
-                else if (mvitals[i].mvflags & G_GENOD)
+                else if (mvitals[i].mvflags & MV_GENOCIDED)
                     gonecnt++;
                 else
                     goodcnt++;
@@ -3850,17 +3850,17 @@ do_class_genocide()
                  */
                 if (Your_Own_Role(i) || Your_Own_Race(i)
                     || ((mons[i].geno & G_GENO)
-                        && !(mvitals[i].mvflags & G_GENOD))) 
+                        && !(mvitals[i].mvflags & MV_GENOCIDED))) 
                 {
                     /* This check must be first since player monsters might
-                     * have G_GENOD or !G_GENO.
+                     * have MV_GENOCIDED or !G_GENO.
                      */
                     if (!sound_played)
                     {
                         play_sfx_sound(SFX_GENOCIDE);
                         sound_played = TRUE;
                     }
-                    mvitals[i].mvflags |= (G_GENOD | G_NOCORPSE);
+                    mvitals[i].mvflags |= (MV_GENOCIDED | MV_NOCORPSE);
                     reset_rndmonst(i);
                     kill_genocided_monsters();
                     update_inventory(); /* eggs & tins */
@@ -3897,7 +3897,7 @@ do_class_genocide()
                         }
                     }
                 } 
-                else if (mvitals[i].mvflags & G_GENOD)
+                else if (mvitals[i].mvflags & MV_GENOCIDED)
                 {
                     if (!gameover)
                         pline("All %s are already nonexistent.", nam);
@@ -3996,7 +3996,7 @@ int how;
             }
 
             mndx = name_to_mon(buf);
-            if (mndx == NON_PM || (mvitals[mndx].mvflags & G_GENOD))
+            if (mndx == NON_PM || (mvitals[mndx].mvflags & MV_GENOCIDED))
             {
                 pline("Such creatures %s exist in this world.",
                       (mndx == NON_PM) ? "do not" : "no longer");
@@ -4064,7 +4064,7 @@ int how;
         play_sfx_sound(SFX_GENOCIDE);
 
         /* setting no-corpse affects wishing and random tin generation */
-        mvitals[mndx].mvflags |= (G_GENOD | G_NOCORPSE);
+        mvitals[mndx].mvflags |= (MV_GENOCIDED | MV_NOCORPSE);
         pline("Wiped out %s%s.", which,
               (*which != 'a') ? buf : makeplural(buf));
 
@@ -4113,14 +4113,14 @@ int how;
 
         context.makemon_spef_idx = 0;
         if (!(mons[mndx].geno & G_UNIQ)
-            && !(mvitals[mndx].mvflags & (G_GENOD | G_EXTINCT)))
+            && !(mvitals[mndx].mvflags & (MV_GENOCIDED | MV_EXTINCT)))
             for (i = rn1(3, 4); i > 0; i--)
             {
                 if (!makemon(ptr, u.ux, u.uy, MM_NO_MONSTER_INVENTORY))
                     break; /* couldn't make one */
                 context.makemon_spef_idx++;
                 ++cnt;
-                if (mvitals[mndx].mvflags & G_EXTINCT)
+                if (mvitals[mndx].mvflags & MV_EXTINCT)
                     break; /* just made last one */
             }
         makemon_animation_wait_until_end();

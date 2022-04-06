@@ -3572,7 +3572,7 @@ register struct attack *mattk;
                 } else {
                     tmp = 1 + (pd->cwt >> 8);
                     if (corpse_chance(mdef, &youmonst, TRUE)
-                        && !(mvitals[monsndx(pd)].mvflags & G_NOCORPSE)) 
+                        && !(mvitals[monsndx(pd)].mvflags & MV_NOCORPSE))
                     {
                         /* nutrition only if there can be a corpse */
                         u.uhunger += (pd->cnutrit + 1) / 2;

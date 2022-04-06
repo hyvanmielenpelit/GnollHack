@@ -38,7 +38,7 @@ dowatersnakes()
     register int num = rn1(5, 2);
     struct monst *mtmp;
 
-    if (!(mvitals[PM_WATER_MOCCASIN].mvflags & G_GONE)) {
+    if (!(mvitals[PM_WATER_MOCCASIN].mvflags & MV_GONE)) {
         if (!Blind)
             pline("An endless stream of %s pours forth!",
                   Hallucination ? makeplural(rndmonnam(NULL)) : "snakes");
@@ -59,7 +59,7 @@ dowaterdemon()
 {
     struct monst *mtmp;
 
-    if (!(mvitals[PM_WATER_DEMON].mvflags & G_GONE)) {
+    if (!(mvitals[PM_WATER_DEMON].mvflags & MV_GONE)) {
         if ((mtmp = makemon(&mons[PM_WATER_DEMON], u.ux, u.uy,
                             NO_MM_FLAGS)) != 0) {
             if (!Blind)
@@ -87,7 +87,7 @@ dowaternymph()
 {
     register struct monst *mtmp;
 
-    if (!(mvitals[PM_WATER_NYMPH].mvflags & G_GONE)
+    if (!(mvitals[PM_WATER_NYMPH].mvflags & MV_GONE)
         && (mtmp = makemon(&mons[PM_WATER_NYMPH], u.ux, u.uy,
                            NO_MM_FLAGS)) != 0) {
         if (!Blind)
@@ -1214,7 +1214,7 @@ drinksink()
         /* boiling water burns considered fire damage */
         break;
     case 3:
-        if (mvitals[PM_SEWER_RAT].mvflags & G_GONE)
+        if (mvitals[PM_SEWER_RAT].mvflags & MV_GONE)
             pline_The("sink seems quite dirty.");
         else {
             play_sfx_sound(SFX_WAS_HIDING);
@@ -1258,7 +1258,7 @@ drinksink()
         break;
     case 7:
         pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "%s moves as though of its own will!", hliquid("water"));
-        if ((mvitals[PM_WATER_ELEMENTAL].mvflags & G_GONE)
+        if ((mvitals[PM_WATER_ELEMENTAL].mvflags & MV_GONE)
             || !makemon(&mons[PM_WATER_ELEMENTAL], u.ux, u.uy, NO_MM_FLAGS))
             pline("But it quiets down.");
         else

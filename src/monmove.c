@@ -2311,7 +2311,7 @@ boolean
 can_fog(mtmp)
 struct monst *mtmp;
 {
-    if (!(mvitals[PM_FOG_CLOUD].mvflags & G_GENOD) && is_vampshifter(mtmp)
+    if (!(mvitals[PM_FOG_CLOUD].mvflags & MV_GENOCIDED) && is_vampshifter(mtmp)
         && !Protection_from_shape_changers && !stuff_prevents_passage(mtmp))
         return TRUE;
     return FALSE;

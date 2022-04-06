@@ -525,14 +525,14 @@ struct kinfo *kptr;
     if (mon_ambient_sound(youmonst.data))
         del_sound_source(SOUNDSOURCE_MONSTER, monst_to_any(&youmonst));
     save_mvflags = mvitals[PM_GREEN_SLIME].mvflags;
-    mvitals[PM_GREEN_SLIME].mvflags = save_mvflags & ~G_GENOD;
+    mvitals[PM_GREEN_SLIME].mvflags = save_mvflags & ~MV_GENOCIDED;
     (void) polymon(PM_GREEN_SLIME);
     mvitals[PM_GREEN_SLIME].mvflags = save_mvflags;
     done(TURNED_SLIME);
 
     /* life-saved; even so, hero still has turned into green slime;
        player may have genocided green slimes after being infected */
-    if ((mvitals[PM_GREEN_SLIME].mvflags & G_GENOD) != 0) {
+    if ((mvitals[PM_GREEN_SLIME].mvflags & MV_GENOCIDED) != 0) {
         killer.format = KILLED_BY;
         Strcpy(killer.name, "slimicide");
         /* immediately follows "OK, so you don't die." */
@@ -1416,7 +1416,7 @@ long timeout;
         hatchcount = rnd((int) egg->quan);
         cansee_hatchspot = cansee(x, y) && !silent;
         if (!(mons[mnum].geno & G_UNIQ)
-            && !(mvitals[mnum].mvflags & (G_GENOD | G_EXTINCT))) {
+            && !(mvitals[mnum].mvflags & (MV_GENOCIDED | MV_EXTINCT))) {
             for (i = hatchcount; i > 0; i--) {
                 if (!enexto(&cc, x, y, &mons[mnum])
                     || !(mon = makemon(&mons[mnum], cc.x, cc.y, MM_NO_MONSTER_INVENTORY)))
@@ -1431,7 +1431,7 @@ long timeout;
                             mon->mtame = 20;
                     }
                 }
-                if (mvitals[mnum].mvflags & G_EXTINCT)
+                if (mvitals[mnum].mvflags & MV_EXTINCT)
                     break;  /* just made last one */
                 mon2 = mon; /* in case makemon() fails on 2nd egg */
             }

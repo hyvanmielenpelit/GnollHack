@@ -1223,7 +1223,7 @@ register struct monst *mtmp;
                     if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
                         int chance = mattk->mlevel;
-                        if (!is_cancelled(mtmp) && !(mvitals[PM_MINOTAUR].mvflags & G_GONE) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
+                        if (!is_cancelled(mtmp) && !(mvitals[PM_MINOTAUR].mvflags & MV_GONE) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
                             struct monst* mtmp2 = makemon(&mons[PM_MINOTAUR], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
                             if(mtmp2)
@@ -1253,7 +1253,7 @@ register struct monst *mtmp;
                     if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
                         int chance = mattk->mlevel;
-                        if (!is_cancelled(mtmp) && !((mvitals[PM_ANCIENT_GOLD_DRAGON].mvflags & G_GONE) && (mvitals[PM_GOLD_DRAGON].mvflags & G_GONE)) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
+                        if (!is_cancelled(mtmp) && !((mvitals[PM_ANCIENT_GOLD_DRAGON].mvflags & MV_GONE) && (mvitals[PM_GOLD_DRAGON].mvflags & MV_GONE)) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
                             struct monst* mtmp2 = makemon(&mons[PM_ANCIENT_GOLD_DRAGON], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
                             if (!mtmp2)
@@ -4918,7 +4918,7 @@ cloneu()
 
     if (u.mh <= 1)
         return (struct monst *) 0;
-    if (mvitals[mndx].mvflags & G_EXTINCT)
+    if (mvitals[mndx].mvflags & MV_EXTINCT)
         return (struct monst *) 0;
     mon = makemon(youmonst.data, u.ux, u.uy, MM_NO_MONSTER_INVENTORY | MM_EDOG | MM_SET_ORIGIN_COORDINATES);
     if (!mon)

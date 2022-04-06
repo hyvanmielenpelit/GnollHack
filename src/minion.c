@@ -89,9 +89,9 @@ struct monst *mon;
         mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
 
         dtype = (!rn2(80)) ? PM_YEENAGHU : (!rn2(40)) ? monsndx(ptr) : (!rn2(4)) ? ndemon(atyp) : PM_FLIND;
-        if (dtype == PM_YEENAGHU && (mvitals[PM_YEENAGHU].mvflags & G_GONE))
+        if (dtype == PM_YEENAGHU && (mvitals[PM_YEENAGHU].mvflags & MV_GONE))
             dtype = monsndx(ptr);
-        if (dtype == PM_FLIND && (mvitals[PM_FLIND].mvflags & G_GONE))
+        if (dtype == PM_FLIND && (mvitals[PM_FLIND].mvflags & MV_GONE))
             dtype = ndemon(atyp);
         cnt = 1;
     }
@@ -166,7 +166,7 @@ struct monst *mon;
      * If this daemon is unique and being re-summoned (the only way we
      * could get this far with an extinct dtype), try another.
      */
-    if (mvitals[dtype].mvflags & G_GONE)
+    if (mvitals[dtype].mvflags & MV_GONE)
     {
         dtype = ndemon(atyp);
         if (dtype == NON_PM)
@@ -276,7 +276,7 @@ struct monst* summoner;
 
         }
 
-        if (dtype == NON_PM || mvitals[dtype].mvflags & G_GONE)
+        if (dtype == NON_PM || mvitals[dtype].mvflags & MV_GONE)
         {
             cnt--;
             continue;
@@ -351,7 +351,7 @@ struct monst* summoner;
     {
         dtype = !rn2(8) ? PM_THOUL : !rn2(2) ? PM_GHOUL : PM_GHAST;
 
-        if (mvitals[dtype].mvflags & G_GONE)
+        if (mvitals[dtype].mvflags & MV_GONE)
         {
             cnt--;
             break;
@@ -428,7 +428,7 @@ yacc_bison_summon()
     {
         dtype = PM_BISON;
 
-        if (mvitals[dtype].mvflags & G_GONE)
+        if (mvitals[dtype].mvflags & MV_GONE)
         {
             cnt--;
             break;
@@ -594,7 +594,7 @@ orcus_undead_summon()
             break;
         }
 
-        if (dtype == NON_PM || mvitals[dtype].mvflags & G_GONE)
+        if (dtype == NON_PM || mvitals[dtype].mvflags & MV_GONE)
         {
             cnt--;
             continue;
@@ -935,7 +935,7 @@ aligntyp atyp;
 
     for (tryct = !In_endgame(&u.uz) ? 20 : 0; tryct > 0; --tryct) {
         pm = rn1(PM_DEMOGORGON + 1 - PM_BAALZEBUB, PM_BAALZEBUB);
-        if (!(mvitals[pm].mvflags & G_GONE)
+        if (!(mvitals[pm].mvflags & MV_GONE)
             && (atyp == A_NONE || sgn(mons[pm].maligntyp) == sgn(atyp)))
             return pm;
     }
@@ -950,7 +950,7 @@ aligntyp atyp;
 
     for (tryct = !In_endgame(&u.uz) ? 20 : 0; tryct > 0; --tryct) {
         pm = rn1(PM_BAPHOMET + 1 - PM_JUBILEX, PM_JUBILEX);
-        if (!(mvitals[pm].mvflags & G_GONE)
+        if (!(mvitals[pm].mvflags & MV_GONE)
             && (atyp == A_NONE || sgn(mons[pm].maligntyp) == sgn(atyp)))
             return pm;
     }
@@ -961,7 +961,7 @@ aligntyp atyp;
 int
 llord()
 {
-    if (!(mvitals[PM_ARCHON].mvflags & G_GONE))
+    if (!(mvitals[PM_ARCHON].mvflags & MV_GONE))
         return PM_ARCHON;
 
     return lminion(); /* approximate */
