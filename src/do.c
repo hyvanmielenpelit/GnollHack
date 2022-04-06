@@ -805,82 +805,82 @@ boolean isprobing;
 
         if (((ptr)->mconveys & MC_STRENGTH) != 0L)
         {
+            cnt++;
             Sprintf(buf, "  %d - May confer strength", cnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            cnt++;
         }
         if (((ptr)->mconveys & MC_DEXTERITY) != 0L)
         {
+            cnt++;
             Sprintf(buf, "  %d - May confer dexterity", cnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            cnt++;
         }
         if (((ptr)->mconveys & MC_CONSTITUTION) != 0L)
         {
+            cnt++;
             Sprintf(buf, "  %d - May confer constitution", cnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            cnt++;
         }
         if (((ptr)->mconveys & MC_INTELLIGENCE) != 0L)
         {
+            cnt++;
             Sprintf(buf, "  %d - May confer intelligence", cnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            cnt++;
         }
         if (((ptr)->mconveys & MC_WISDOM) != 0L)
         {
+            cnt++;
             Sprintf(buf, "  %d - May confer wisdom", cnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            cnt++;
         }
         if (((ptr)->mconveys & MC_CHARISMA) != 0L)
         {
+            cnt++;
             Sprintf(buf, "  %d - May confer charisma", cnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            cnt++;
         }
         if (((ptr)->mconveys & MC_LEVEL_GAIN) != 0L)
         {
+            cnt++;
             Sprintf(buf, "  %d - May confer an experiance level", cnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            cnt++;
         }
 
 #if 0
         if (((ptr)->mconveys & MC_TELEPORT) != 0L)
         {
+            cnt++;
             Sprintf(buf, "  %d - Confers teleportitiis", cnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            cnt++;
         }
         if (((ptr)->mconveys & MC_TELEPORT_CONTROL) != 0L)
         {
+            cnt++;
             Sprintf(buf, "  %d - May confer teleport control", cnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            cnt++;
         }
         if (((ptr)->mconveys & MC_BLIND_TELEPATHY) != 0L)
         {
+            cnt++;
             Sprintf(buf, "  %d - May confer blind telepathy", cnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            cnt++;
         }
         if (((ptr)->mconveys & MC_TELEPATHY) != 0L)
         {
+            cnt++;
             Sprintf(buf, "  %d - May confer telepathy", cnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
-            cnt++;
         }
 #endif
 
