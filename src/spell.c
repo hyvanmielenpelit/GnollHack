@@ -1979,7 +1979,7 @@ int spell;
 
         Sprintf(buf, "Material components - %s:", buf2);
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_HEADING, txt);
 
         int j;
         for (j = 0; matlists[objects[booktype].oc_material_components].matcomp[j].objectid[0] > 0; j++)
@@ -1998,7 +1998,7 @@ int spell;
         int cnt = 1;
         strcpy(buf, "Spell statistics:");
         txt = buf;
-        putstr(datawin, 0, txt);
+        putstr(datawin, ATR_HEADING, txt);
 
         if (damageprinted)
         {
@@ -2021,7 +2021,7 @@ int spell;
 #endif
         strcpy(buf, "Description:");
         txt = buf;
-        putstr(datawin, ATR_INDENT_AT_DOUBLE_SPACE, txt);
+        putstr(datawin, ATR_INDENT_AT_DOUBLE_SPACE | ATR_HEADING, txt);
         Sprintf(buf, "  %s", OBJ_ITEM_DESC(booktype));
         txt = buf;
         putstr(datawin, 0, txt);
