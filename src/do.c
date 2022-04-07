@@ -155,10 +155,10 @@ docharacterstatistics()
         putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
 
-    /* Empty line */
-    strcpy(buf, "");
+    /* Empty line, half size since the next line is a heading with its own margin */
+    strcpy(buf, " ");
     txt = buf;
-    putstr(datawin, 0, txt);
+    putstr(datawin, ATR_HALF_SIZE, txt);
 
 
     /* Current attributes */
@@ -4223,7 +4223,7 @@ static const char* attack_type_names[] = {
     "none", "claw", "bite", "kick", "ram",
     "tail", "butt", "touch", "sting", "grab", "spit",
     "engulf", "breath weapon", "explosion", "explosion",
-    "gaze", "tentacle", "eys stalk", "horn", "tusk"
+    "gaze", "tentacle", "eye stalk", "horn", "tusk"
 };
 
 const char* get_attack_type_text(aatyp)
