@@ -271,6 +271,19 @@ namespace GnollHackClient.Pages.Game
         private SKBitmap _addsBitmap;
         private SKBitmap _foodBitmap;
 
+        private SKBitmap _spellAbjurationBitmap;
+        private SKBitmap _spellArcaneBitmap;
+        private SKBitmap _spellCelestialBitmap;
+        private SKBitmap _spellClericalBitmap;
+        private SKBitmap _spellConjurationBitmap;
+        private SKBitmap _spellDivinationBitmap;
+        private SKBitmap _spellEnchantmentBitmap;
+        private SKBitmap _spellHealingBitmap;
+        private SKBitmap _spellMovementBitmap;
+        private SKBitmap _spellNatureBitmap;
+        private SKBitmap _spellNecromancyBitmap;
+        private SKBitmap _spellTransmutationBitmap;
+
         private object _skillRectLock = new object();
         private SKRect _skillRect = new SKRect();
         public SKRect SkillRect { get { SKRect val; lock (_skillRectLock) { val = _skillRect; } return val;  } set { lock (_skillRectLock) { _skillRect = value; } } }
@@ -8088,6 +8101,54 @@ namespace GnollHackClient.Pages.Game
             {
                 return _foodBitmap;
             }
+            else if (trimmed_str == "&spabj;")
+            {
+                return _spellAbjurationBitmap;
+            }
+            else if (trimmed_str == "&sparc;")
+            {
+                return _spellArcaneBitmap;
+            }
+            else if (trimmed_str == "&spcel;")
+            {
+                return _spellCelestialBitmap;
+            }
+            else if (trimmed_str == "&spcle;")
+            {
+                return _spellClericalBitmap;
+            }
+            else if (trimmed_str == "&spcon;")
+            {
+                return _spellConjurationBitmap;
+            }
+            else if (trimmed_str == "&spdiv;")
+            {
+                return _spellDivinationBitmap;
+            }
+            else if (trimmed_str == "&spenc;")
+            {
+                return _spellEnchantmentBitmap;
+            }
+            else if (trimmed_str == "&sphea;")
+            {
+                return _spellHealingBitmap;
+            }
+            else if (trimmed_str == "&spmov;")
+            {
+                return _spellMovementBitmap;
+            }
+            else if (trimmed_str == "&spnat;")
+            {
+                return _spellNatureBitmap;
+            }
+            else if (trimmed_str == "&spnec;")
+            {
+                return _spellNecromancyBitmap;
+            }
+            else if (trimmed_str == "&sptra;")
+            {
+                return _spellTransmutationBitmap;
+            }
             return null;
         }
 
@@ -9081,6 +9142,55 @@ namespace GnollHackClient.Pages.Game
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-food.png"))
             {
                 _foodBitmap = SKBitmap.Decode(stream);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-abjuration.png"))
+            {
+                _spellAbjurationBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-arcane.png"))
+            {
+                _spellArcaneBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-celestial.png"))
+            {
+                _spellCelestialBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-clerical.png"))
+            {
+                _spellClericalBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-conjuration.png"))
+            {
+                _spellConjurationBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-divination.png"))
+            {
+                _spellDivinationBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-enchantment.png"))
+            {
+                _spellEnchantmentBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-healing.png"))
+            {
+                _spellHealingBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-movement.png"))
+            {
+                _spellMovementBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-nature.png"))
+            {
+                _spellNatureBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-necromancy.png"))
+            {
+                _spellNecromancyBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-transmutation.png"))
+            {
+                _spellTransmutationBitmap = SKBitmap.Decode(stream);
             }
 
         }

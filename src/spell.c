@@ -29,6 +29,7 @@
 #define spell_to_glyph(spell) (has_spell_tile(spell) ? (spellid(spell) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF) : (objnum_to_glyph(spellid(spell))))
 
 STATIC_DCL void FDECL(print_spell_level_text, (char*, int, UCHAR_P));
+STATIC_DCL void FDECL(print_spell_level_symbol, (char*, int));
 STATIC_DCL int FDECL(spell_let_to_idx, (CHAR_P));
 STATIC_DCL boolean FDECL(cursed_book, (struct obj * bp));
 STATIC_DCL boolean FDECL(confused_book, (struct obj *));
@@ -53,6 +54,7 @@ STATIC_DCL void FDECL(spell_backfire, (int));
 STATIC_DCL boolean FDECL(spell_aim_step, (genericptr_t, int, int));
 #endif
 STATIC_DCL const char *FDECL(spelltypemnemonic, (int));
+STATIC_DCL const char* FDECL(spelltypesymbol, (int));
 STATIC_DCL int FDECL(domaterialcomponentsmenu, (int));
 STATIC_DCL void FDECL(add_spell_cast_menu_item, (winid, int, int, int, char*, int*, BOOLEAN_P));
 STATIC_DCL void FDECL(add_spell_cast_menu_heading, (winid, int, BOOLEAN_P));
@@ -623,6 +625,9 @@ char* buf;
 int booktype;
 uchar capitalize_style;
 {
+    if (!buf)
+        return;
+
     char lvlbuf[BUFSZ];
     if (objects[booktype].oc_spell_level == -1)
         Sprintf(lvlbuf, "minor %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
@@ -647,6 +652,28 @@ uchar capitalize_style;
         break;
     }
 
+}
+
+STATIC_OVL
+void
+print_spell_level_symbol(buf, booktype)
+char* buf;
+int booktype;
+{
+    if (!buf)
+        return;
+
+    char lvlbuf[BUFSZ];
+    if (objects[booktype].oc_spell_level == -1)
+        strcpy(lvlbuf, "c");
+    else if (objects[booktype].oc_spell_level == 0)
+        strcpy(lvlbuf, "C");
+    else if (objects[booktype].oc_spell_level > 0)
+        Sprintf(lvlbuf, "%ld", objects[booktype].oc_spell_level);
+    else
+        strcpy(lvlbuf, "*");
+
+    Sprintf(buf, "%s %s", spelltypesymbol(objects[booktype].oc_skill), lvlbuf);
 }
 
 int
@@ -1318,6 +1345,76 @@ int skill;
     default:
         impossible("Unknown spell skill, %d;", skill);
         return empty_string;
+    }
+}
+
+STATIC_OVL const char*
+spelltypesymbol(skill)
+int skill;
+{
+    if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0)
+    {
+        switch (skill) {
+        case P_ARCANE_SPELL:
+            return "&sparc;";
+        case P_HEALING_SPELL:
+            return "&sphea;";
+        case P_DIVINATION_SPELL:
+            return "&spdiv;";
+        case P_ENCHANTMENT_SPELL:
+            return "&spenc;";
+        case P_CLERIC_SPELL:
+            return "&spcle;";
+        case P_MOVEMENT_SPELL:
+            return "&spmov;";
+        case P_TRANSMUTATION_SPELL:
+            return "&sptra;";
+        case P_CONJURATION_SPELL:
+            return "&spcon;";
+        case P_ABJURATION_SPELL:
+            return "&spabj;";
+        case P_CELESTIAL_SPELL:
+            return "&spcel;";
+        case P_NATURE_SPELL:
+            return "&spnat;";
+        case P_NECROMANCY_SPELL:
+            return "&spnec;";
+        default:
+            impossible("Unknown spell skill, %d;", skill);
+            return empty_string;
+        }
+    }
+    else
+    {
+        switch (skill) {
+        case P_ARCANE_SPELL:
+            return "Arc";
+        case P_HEALING_SPELL:
+            return "Hea";
+        case P_DIVINATION_SPELL:
+            return "Div";
+        case P_ENCHANTMENT_SPELL:
+            return "Enc";
+        case P_CLERIC_SPELL:
+            return "Cle";
+        case P_MOVEMENT_SPELL:
+            return "Mov";
+        case P_TRANSMUTATION_SPELL:
+            return "Tra";
+        case P_CONJURATION_SPELL:
+            return "Con";
+        case P_ABJURATION_SPELL:
+            return "Abj";
+        case P_CELESTIAL_SPELL:
+            return "Cel";
+        case P_NATURE_SPELL:
+            return "Nat";
+        case P_NECROMANCY_SPELL:
+            return "Nec";
+        default:
+            impossible("Unknown spell skill, %d;", skill);
+            return empty_string;
+        }
     }
 }
 
@@ -3927,14 +4024,20 @@ int i;
 int splaction;
 {
     int splnum = !spl_orderindx ? i : spl_orderindx[i];
-    char buf[BUFSZ], availablebuf[BUFSZ], levelbuf[BUFSZ];
+    char buf[BUFSZ], availablebuf[BUFSZ], descbuf[BUFSZ], levelbuf[BUFSZ] = "";
     char fullname[BUFSZ] = "";
     anything any = zeroany;
     strcpy(fullname, spellname(splnum));
     *fullname = highc(*fullname);
 
     int glyph = spell_to_glyph(splnum);
-    print_spell_level_text(levelbuf, spellid(splnum), TRUE);
+    print_spell_level_symbol(levelbuf, spellid(splnum));
+    if (OBJ_ITEM_DESC(spellid(splnum)))
+    {
+        Sprintf(descbuf, " (%s)", OBJ_ITEM_DESC(spellid(splnum)));
+    }
+    else
+        strcpy(descbuf, "");
 
     if (spellamount(splnum) >= 0)
         Sprintf(availablebuf, "%d", spellamount(splnum));
@@ -3954,8 +4057,9 @@ int splaction;
         if (spellcooldownleft(splnum) > 0)
             Sprintf(extrabuf, "%d/", spellcooldownleft(splnum));
         const char* fmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ? 
-            "%s (%s) {&success; %d%% &mana; %.1f &cool; %s%d &casts; %s}" : "%s (%s) {Success %d%% Mana %.1f Cool %s%d Casts %s}";
-        Sprintf(buf, fmt, fullname, levelbuf,
+            "%s%s {%s &success; %d%% &mana; %.1f &cool; %s%d &casts; %s}" : "%s%s {%s Success %d%% Mana %.1f Cool %s%d Casts %s}";
+        Sprintf(buf, fmt, fullname, descbuf,
+            levelbuf,
             percent_success(splnum),
             displayed_manacost,
             extrabuf, getspellcooldown(splnum),
