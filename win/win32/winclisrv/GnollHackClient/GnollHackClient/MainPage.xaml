@@ -121,8 +121,8 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <local:CustomLabel x:Name="classicModeLabel" Text="Classic Mode" TextColor="White" FontSize="17" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
-                                   WidthRequest="160" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
+                <local:CustomLabel x:Name="classicModeLabel" Text="Classic Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                                   WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
                     <local:CustomLabel.GestureRecognizers>
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                     </local:CustomLabel.GestureRecognizers>
@@ -137,8 +137,8 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <local:CustomLabel x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="White" FontSize="17" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
-                                   WidthRequest="160" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
+                <local:CustomLabel x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                                   WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
                     <local:CustomLabel.GestureRecognizers>
                         <TapGestureRecognizer Tapped="WizTapGestureRecognizer_Tapped"/>
                     </local:CustomLabel.GestureRecognizers>
