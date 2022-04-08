@@ -395,8 +395,7 @@ boolean exclude_ascii;
     if (isok(x, y) && (t = t_at(x, y)) != 0 && t->tseen && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
         in_pit = TRUE;
 
-    int artidx = obj->oartifact;
-    int obj_height = artidx ? artilist[artidx].tile_floor_height : OBJ_TILE_HEIGHT(obj->otyp);
+    int obj_height = get_obj_height(obj);
 
     /* Replace */
     int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, layer, obj, (struct monst*)0, 0UL));
@@ -1727,7 +1726,23 @@ short
 get_obj_height(obj)
 struct obj* obj;
 {
-    return (!obj ? 0 : obj->oartifact ? artilist[obj->oartifact].tile_floor_height : OBJ_TILE_HEIGHT(obj->otyp));
+    if (!obj)
+        return 0;
+
+    int baseheight = obj->oartifact ? artilist[obj->oartifact].tile_floor_height : OBJ_TILE_HEIGHT(obj->otyp);
+    int height = baseheight;
+    /* Special variable height for globs */
+    if (obj->globby)
+    {
+        if (obj->owt <= GLOB_SMALL_MAXIMUM_WEIGHT)
+            height = baseheight / 2;
+        else if(obj->owt <= GLOB_MEDIUM_MAXIMUM_WEIGHT)
+            height = (2 * baseheight) / 3;
+        else if (obj->owt <= GLOB_LARGE_MAXIMUM_WEIGHT)
+            height = (5 * baseheight) / 6;
+    }
+
+    return height;
 }
 
 boolean

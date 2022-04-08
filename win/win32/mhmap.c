@@ -2070,7 +2070,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int base_dest_added_from_source = 0;
                                 int artidx = otmp_round ? otmp_round->oartifact : 0;
                                 boolean has_floor_tile = !otmp_round ? FALSE : artidx ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(otmp_round);
-                                int obj_height = !otmp_round ? 0 : artidx ? artilist[artidx].tile_floor_height : OBJ_TILE_HEIGHT(otmp_round->otyp);
+                                int obj_height = get_obj_height(otmp_round);
 
                                 /* For all normal items, we use only lower part of the tile */
                                 if (otmp_round && has_floor_tile && !showing_detection && !Hallucination)
@@ -2736,7 +2736,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     int artidx = contained_obj ? contained_obj->oartifact : 0;
                                     boolean has_floor_tile = !contained_obj ? FALSE : artidx ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(contained_obj);
-                                    int obj_height = artidx ? artilist[artidx].tile_floor_height : OBJ_TILE_HEIGHT(contained_obj->otyp);
+                                    int obj_height = get_obj_height(contained_obj);
                                     int src_x = 0, src_y = ((objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) || has_floor_tile ? 0 : TILE_Y / 2);
                                     int dest_x = 0, dest_y = 0;
                                     int item_width = has_floor_tile ? TILE_Y / 2 : obj_height ? obj_height : TILE_Y / 2;
@@ -2876,7 +2876,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     int artidx = contained_obj ? contained_obj->oartifact : 0;
                                     boolean has_floor_tile = !contained_obj ? FALSE : artidx ? has_artifact_floor_tile(artidx) : has_obj_floor_tile(contained_obj);
-                                    int obj_height = artidx ? artilist[artidx].tile_floor_height : OBJ_TILE_HEIGHT(contained_obj->otyp);
+                                    int obj_height = get_obj_height(contained_obj);
                                     int src_x = 0, src_y = ((objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) || has_floor_tile ? 0 : TILE_Y / 2);
                                     int dest_x = 0, dest_y = 0;
                                     int item_width = has_floor_tile ? TILE_Y / 2 : obj_height ? obj_height : TILE_Y / 2;

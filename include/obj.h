@@ -85,6 +85,7 @@ struct obj {
 #define SPEFLAGS_CAUGHT_IN_LEAVES              0x00200000UL
 #define SPEFLAGS_CLONED_ITEM                   0x00400000UL
 #define SPEFLAGS_INSCRIPTION_REVEALED          0x00800000UL
+#define SPEFLAGS_ALTERNATIVE_APPEARANCE        0x01000000UL /* Alternative glyph is used for the object */
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
@@ -167,6 +168,7 @@ struct obj {
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
 #define leashmon corpsenm /* gets m_id of attached pet */
+#define appearanceidx corpsenm /* index for alternative appearance */
 #define novelidx special_quality /* 3.6 tribute - the index of the novel title */
 #define manualidx special_quality /* the index of the manual title */
 #define keyotyp corpsenm  /* otyp of the key capable of locking / unlocking the chest (0 = SKELETON_KEY). Special_quality additionally defines the type of the key (its matching special_quality) */
@@ -990,6 +992,10 @@ enum manual_types
 #define POTHIT_HERO_THROW  1 /* thrown by hero */
 #define POTHIT_MONST_THROW 2 /* thrown by a monster */
 #define POTHIT_OTHER_THROW 3 /* propelled by some other means [scatter()] */
+
+#define GLOB_SMALL_MAXIMUM_WEIGHT   100
+#define GLOB_MEDIUM_MAXIMUM_WEIGHT  300
+#define GLOB_LARGE_MAXIMUM_WEIGHT   500
 
 
 /*

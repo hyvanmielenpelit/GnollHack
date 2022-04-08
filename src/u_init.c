@@ -2047,7 +2047,17 @@ int itemtype;
 {
     struct obj* otmp = add_to_container(container, mksobj(itemtype, FALSE, FALSE, TRUE));
     if (otmp)
+    {
         otmp->bknown = 1;
+        /* Small kludge here to make sure that tourist starts with the right kind of slippers */
+        if (otmp->otyp == COTTON_SLIPPERS)
+        {
+            if (flags.female)
+                otmp->speflags |= SPEFLAGS_ALTERNATIVE_APPEARANCE;
+            else
+                otmp->speflags &= ~SPEFLAGS_ALTERNATIVE_APPEARANCE;
+        }
+    }
 
     return otmp;
 }

@@ -1036,8 +1036,8 @@ BOW("Galadhrim bow", "ornamental long bow",
          */
 
 #define GENERAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
-              cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)                   \
-    OBJECT(OBJ(name, desc, None, None, None, height, 0, 0, 0),                                       \
+              cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,anim,enl,repl)                   \
+    OBJECT(OBJ(name, desc, None, None, None, height, anim, enl, repl),                                       \
            BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, blk, 0, 0, sub, skill, metal),  \
            power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost,                     \
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
@@ -1049,7 +1049,7 @@ BOW("Galadhrim bow", "ornamental long bow",
 #define ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
               cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)                   \
         GENERAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
-              cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)
+              cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,0,0,0)
 #define HELM(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,floor_height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_HELM, P_NONE, metal, c, floor_height, soundset, flags, flags2, flags3, flags4, flags5, flags6, powconfermask)
@@ -1062,11 +1062,13 @@ BOW("Galadhrim bow", "ornamental long bow",
 #define GLOVES(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_GLOVES, P_NONE, metal, c, 24, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC | O4_FLOOR_TILE, flags5, flags6, powconfermask)
+#define GENERAL_BOOTS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,anim,enl,repl)  \
+    GENERAL_ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BOOTS, P_NONE, metal, c, 32, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5, flags6, powconfermask,anim,enl,repl)
 #define BOOTS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BOOTS, P_NONE, metal, c, 32, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5, flags6, powconfermask)
+    GENERAL_BOOTS(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask,0,0,0)
 #define SHIRT(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
-    ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
+        ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SHIRT, P_NONE, metal, c, 0, soundset, flags, flags2, flags3, flags4 | O4_NON_MYTHIC, flags5, flags6, powconfermask)
 #define ROBE(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
@@ -1499,11 +1501,11 @@ BOOTS("leather sandals", None,
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_LEATHER_NONBODY_ARMOR, 2, 1, 6,  4, 10, 0, 0, 0, 0, 0, 0,
     MAT_LEATHER, HI_LEATHER, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-BOOTS("cotton slippers", None,
+GENERAL_BOOTS("cotton slippers", None,
     1, 0,          
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 2, 1, 3,  4, 10, 0, 0, 0, 0, 0, 0,
     MAT_CLOTH, CLR_WHITE, OBJECT_SOUNDSET_COTTON_SLIPPERS, 
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_HAS_ALTERNATIVE_APPEARANCE, O6_NONE, PERMITTED_ALL, NO_ANIMATION, NO_REPLACEMENT, COTTON_SLIPPERS_REPLACEMENT),
 BOOTS("high boots", "jackboots",
     0, 0,          
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 10, 2, 30, 12, 8, 0, 0, 0, 0, 0, 0,
@@ -2233,8 +2235,8 @@ OBJECT(OBJ("Bell of Opening", "silver bell", None, None, None, 32, 0, 0, 0),
 #undef UNICORNHORN
 
 /* Comestibles ... */
-#define FOOD(name, desc, itemdesc, sub, known, prob, multigen, delay, wt, uses_known, material, ediblesubtype, edibleeffect, acquireprob, durdice, durdiesize, durplus, nutrition, color, height,soundset, flags, flags2, flags3, flags4, flags5, flags6,powconfermask)         \
-    OBJECT(OBJ(name, desc, None, None, itemdesc, height, 0, 0, 0),                                     \
+#define GENERAL_FOOD(name, desc, itemdesc, sub, known, prob, multigen, delay, wt, uses_known, material, ediblesubtype, edibleeffect, acquireprob, durdice, durdiesize, durplus, nutrition, color, height,soundset, flags, flags2, flags3, flags4, flags5, flags6,powconfermask,anim,enl,repl)         \
+    OBJECT(OBJ(name, desc, None, None, itemdesc, height, anim, enl, repl),                                     \
            BITS(known, 1, uses_known, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, sub, P_NONE, material), \
            0, 0, 0, 0, FOOD_CLASS, prob, multigen, delay, wt, nutrition / 20 + 5,  \
            0, 0, 0, 0, durdice, durdiesize, durplus, 0, 0, 0, 0, A1_NONE, A2_NONE, acquireprob, \
@@ -2242,6 +2244,8 @@ OBJECT(OBJ("Bell of Opening", "silver bell", None, None, None, 32, 0, 0, 0),
            nutrition, color, soundset, \
            0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4, flags5, flags6)
 
+#define FOOD(name, desc, itemdesc, sub, known, prob, multigen, delay, wt, uses_known, material, ediblesubtype, edibleeffect, acquireprob, durdice, durdiesize, durplus, nutrition, color, height,soundset, flags, flags2, flags3, flags4, flags5, flags6,powconfermask)         \
+    GENERAL_FOOD(name, desc, itemdesc, sub, known, prob, multigen, delay, wt, uses_known, material, ediblesubtype, edibleeffect, acquireprob, durdice, durdiesize, durplus, nutrition, color, height,soundset, flags, flags2, flags3, flags4, flags5, flags6,powconfermask, 0, 0, 0)
 /* All types of food (except tins & corpses) must have a delay of at least 1.
  * Delay on corpses is computed and is weight dependant.
  * Domestic pets prefer tripe rations above all others.
@@ -2279,18 +2283,18 @@ OBJECT(OBJ("meat ring", None, None, None, None, 24, 0, 0, 0),
        5, CLR_BROWN, OBJECT_SOUNDSET_GENERIC, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 /* pudding 'corpses' will turn into these and combine;
    must be in same order as the pudding monsters */
-FOOD("glob of gray ooze",        "gray glob", None, FOODTYPE_GLOB, 0,
+GENERAL_FOOD("glob of gray ooze",        "gray glob", None, FOODTYPE_GLOB, 0,
     0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLETYPE_NORMAL, EDIBLEFX_NO_EFFECT, 0, 0, 0, 0, 
-    20, CLR_GRAY, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-FOOD("glob of brown pudding",    "brown glob", None, FOODTYPE_GLOB, 0,
+    20, CLR_GRAY, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL, NO_ANIMATION, NO_ENLARGEMENT, GRAY_GLOB_REPLACEMENT),
+GENERAL_FOOD("glob of brown pudding",    "brown glob", None, FOODTYPE_GLOB, 0,
     0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLETYPE_NORMAL, EDIBLEFX_NO_EFFECT, 0, 0, 0, 0, 
-    20, CLR_BROWN, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-FOOD("glob of green slime",        "green glob", None, FOODTYPE_GLOB, 0,
+    20, CLR_BROWN, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL, NO_ANIMATION, NO_ENLARGEMENT, BROWN_GLOB_REPLACEMENT),
+GENERAL_FOOD("glob of green slime",        "green glob", None, FOODTYPE_GLOB, 0,
     0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLETYPE_NORMAL, EDIBLEFX_NO_EFFECT, 0, 0, 0, 0, 
-    20, CLR_GREEN, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
-FOOD("glob of black pudding",    "black glob", None, FOODTYPE_GLOB, 0,
+    20, CLR_GREEN, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL, NO_ANIMATION, NO_ENLARGEMENT, GREEN_GLOB_REPLACEMENT),
+GENERAL_FOOD("glob of black pudding",    "black glob", None, FOODTYPE_GLOB, 0,
     0, MULTIGEN_SINGLE, 2, 20, 1, MAT_FLESH, EDIBLETYPE_NORMAL, EDIBLEFX_NO_EFFECT, 0, 0, 0, 0, 
-    20, CLR_BLACK, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    20, CLR_BLACK, 24, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE, PERMITTED_ALL, NO_ANIMATION, NO_ENLARGEMENT, BLACK_GLOB_REPLACEMENT),
 
 /* fruits & veggies */
 FOOD("kelp frond", None, None, FOODTYPE_KELP,        1,

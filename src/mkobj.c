@@ -1367,6 +1367,13 @@ unsigned long mkflags;
         if (objects[otmp->otyp].oc_charged)
             otmp->charges = get_obj_init_charge(otmp);
 
+        /* alternative appearance */
+        if ((objects[otmp->otyp].oc_flags5 & O5_HAS_ALTERNATIVE_APPEARANCE) != 0)
+        {
+            if (rn2(2))
+                otmp->speflags |= SPEFLAGS_ALTERNATIVE_APPEARANCE;
+        }
+
         switch (let) {
         case WEAPON_CLASS:
             otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);// is_multigen(otmp) ? (long) rn1(6, 6) : 1L;

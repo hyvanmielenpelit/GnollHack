@@ -10,7 +10,8 @@ namespace GnollHackClient
         public obj ObjData;
         public objclassdata OtypData;
         public List<ObjectDataItem> ContainedObjs;
-        private short _tileHeight = 0;
+        //private short _tileHeight = 0;
+
         public short TileHeight {
             get
             {

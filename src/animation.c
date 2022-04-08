@@ -1800,6 +1800,52 @@ enum autodraw_types* autodraw_ptr;
             }
             break;
         }
+        case REPLACEMENT_ACTION_ALTERNATIVE_APPEARANCE:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            if (otmp->speflags & SPEFLAGS_ALTERNATIVE_APPEARANCE)
+            {
+                /* note: appearanceidx is -1 if not set separately */
+                int glyph_idx = otmp->appearanceidx > 0 && otmp->appearanceidx < replacements[replacement_idx].number_of_tiles ? otmp->appearanceidx : 0;
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_GLOB:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1 || otmp->owt <= GLOB_SMALL_MAXIMUM_WEIGHT) /* Small */
+                return ntile;
+
+            if (otmp->globby)
+            {
+                /* note: appearanceidx is -1 if not set separately */
+                int glyph_idx = (otmp->owt > GLOB_LARGE_MAXIMUM_WEIGHT)
+                    ? 2 /* Very large */
+                    : (otmp->owt > GLOB_MEDIUM_MAXIMUM_WEIGHT)
+                    ? 1 /* Large */
+                    : 0; /* Medium */
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
         case REPLACEMENT_ACTION_AUTODRAW:
         {
             if (autodraw_ptr)

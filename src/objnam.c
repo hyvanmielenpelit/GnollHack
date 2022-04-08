@@ -770,11 +770,11 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         }
         if (obj->globby) {
             Sprintf(buf, "%s%s",
-                    (obj->owt <= 100)
+                    (obj->owt <= GLOB_SMALL_MAXIMUM_WEIGHT)
                        ? "small "
-                       : (obj->owt > 500)
+                       : (obj->owt > GLOB_LARGE_MAXIMUM_WEIGHT)
                           ? "very large "
-                          : (obj->owt > 300)
+                          : (obj->owt > GLOB_MEDIUM_MAXIMUM_WEIGHT)
                              ? "large "
                              : "",
                     actualn);
