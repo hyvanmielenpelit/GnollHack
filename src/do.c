@@ -1691,16 +1691,29 @@ register struct obj* obj;
                 Strcat(buf, plusbuf);
             }
 
+            char endbuf[BUFSZ] = "";
+            double avgdmg = (double)exceptionality_multiplier * ((double)objects[otyp].oc_wedice * (double)(1 + objects[otyp].oc_wedam) / 2.0 + (double)objects[otyp].oc_wedmgplus);
+            if (*endbuf)
+                Strcat(endbuf, ", ");
+            Sprintf(eos(endbuf), "avg %.1f", avgdmg);
+
             if (objects[otyp].oc_aflags & A1_WOUNDING)
             {
-                Sprintf(plusbuf, " (permanent)");
-                Strcat(buf, plusbuf);
+                if (*endbuf)
+                    Strcat(endbuf, ", ");
+                Strcat(endbuf, "permanent");
             }
 
             if (objects[otyp].oc_aflags & A1_LIFE_LEECH)
             {
-                Sprintf(plusbuf, " (confers HP)");
-                Strcat(buf, plusbuf);
+                if (*endbuf)
+                    Strcat(endbuf, ", ");
+                Strcat(endbuf, "confers HP");
+            }
+
+            if (*endbuf)
+            {
+                Sprintf(eos(buf), " (%s)", endbuf);
             }
 
             txt = buf;
