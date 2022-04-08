@@ -1541,25 +1541,38 @@ register struct obj* obj;
                 Strcat(buf, plusbuf);
             }
 
-
+            char endbuf[BUFSZ] = "";
+            double avgdmg = (double)exceptionality_multiplier * ((double)objects[otyp].oc_wsdice * (double)(1 + objects[otyp].oc_wsdam) / 2.0 + (double)objects[otyp].oc_wsdmgplus);
+            if (*endbuf)
+                Strcat(endbuf, ", ");
+            Sprintf(eos(endbuf), "avg %.1f", avgdmg);
             if (stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
             {
                 /* Damage - Doubled */
-                Sprintf(eos(buf), " (x2)");
+                if (*endbuf)
+                    Strcat(endbuf, ", ");
+                Strcat(endbuf, "x2");
             }
             if (objects[otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
             {
                 if (objects[otyp].oc_aflags & A1_WOUNDING)
                 {
-                    Sprintf(plusbuf, " (permanent)");
-                    Strcat(buf, plusbuf);
+                    if(*endbuf)
+                        Strcat(endbuf, ", ");
+                    Strcat(endbuf, "permanent");
                 }
 
                 if (objects[otyp].oc_aflags & A1_LIFE_LEECH)
                 {
-                    Sprintf(plusbuf, " (confers HP)");
-                    Strcat(buf, plusbuf);
+                    if (*endbuf)
+                        Strcat(endbuf, ", ");
+                    Strcat(endbuf, "confers HP");
                 }
+            }
+
+            if (*endbuf)
+            {
+                Sprintf(eos(buf), " (%s)", endbuf);
             }
 
             txt = buf;
@@ -1592,25 +1605,40 @@ register struct obj* obj;
                 Sprintf(plusbuf, "%d", objects[otyp].oc_wldmgplus * exceptionality_multiplier);
                 Strcat(buf, plusbuf);
             }
+
+            char endbuf[BUFSZ] = "";
+            double avgdmg = (double)exceptionality_multiplier * ((double)objects[otyp].oc_wldice * (double)(1 + objects[otyp].oc_wldam) / 2.0 + (double)objects[otyp].oc_wldmgplus);
+            if (*endbuf)
+                Strcat(endbuf, ", ");
+            Sprintf(eos(endbuf), "avg %.1f", avgdmg);
+
             if (stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
             {
-                /* Damage - Doubled */
-                Sprintf(eos(buf), " (x2)");
+                if (*endbuf)
+                    Strcat(endbuf, ", ");
+                Strcat(endbuf, "x2");
             }
 
             if(objects[otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
             {
                 if (objects[otyp].oc_aflags & A1_WOUNDING)
                 {
-                    Sprintf(plusbuf, " (permanent)");
-                    Strcat(buf, plusbuf);
+                    if (*endbuf)
+                        Strcat(endbuf, ", ");
+                    Strcat(endbuf, "permanent");
                 }
 
                 if (objects[otyp].oc_aflags & A1_LIFE_LEECH)
                 {
-                    Sprintf(plusbuf, " (confers HP)");
-                    Strcat(buf, plusbuf);
+                    if (*endbuf)
+                        Strcat(endbuf, ", ");
+                    Strcat(endbuf, "confers HP");
                 }
+            }
+
+            if (*endbuf)
+            {
+                Sprintf(eos(buf), " (%s)", endbuf);
             }
 
             txt = buf;

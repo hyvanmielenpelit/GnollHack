@@ -1142,7 +1142,7 @@ int* spell_no;
 {
     winid tmpwin;
     int i, n, how, splnum;
-    char buf[BUFSZ], descbuf[BUFSZ];
+    char buf[BUFSIZ], descbuf[BUFSZ];
     menu_item* selected;
     anything any;
     const char* nodesc = "(No short description)";
@@ -4024,7 +4024,7 @@ int i;
 int splaction;
 {
     int splnum = !spl_orderindx ? i : spl_orderindx[i];
-    char buf[BUFSZ], availablebuf[BUFSZ], descbuf[BUFSZ], levelbuf[BUFSZ] = "";
+    char buf[BUFSIZ], availablebuf[BUFSZ], descbuf[BUFSZ], levelbuf[BUFSZ] = "";
     char fullname[BUFSZ] = "";
     anything any = zeroany;
     strcpy(fullname, spellname(splnum));
@@ -4097,7 +4097,7 @@ int i;
 int splaction;
 {
     int splnum = !spl_orderindx ? i : spl_orderindx[i];
-    char buf[BUFSZ], availablebuf[BUFSZ], matcompbuf[BUFSZ];
+    char buf[BUFSIZ], availablebuf[BUFSZ], matcompbuf[BUFSZ];
     anything any = zeroany;
     char fullname[BUFSZ];
     char addsbuf[BUFSZ];

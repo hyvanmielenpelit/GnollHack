@@ -2291,7 +2291,7 @@ int skill_id;
 
     if (P_MAX_SKILL_LEVEL(skill_id) > P_ISRESTRICTED)
     {
-        putstr(win, 0, emptytxt);
+        putstr(win, ATR_HALF_SIZE, " ");
         if (skill_id == P_BARE_HANDED_COMBAT && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
         {
             strcpy(buf, "Levels (bonuses from Martial Arts):");
