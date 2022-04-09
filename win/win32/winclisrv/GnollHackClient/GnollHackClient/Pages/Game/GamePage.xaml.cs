@@ -9277,7 +9277,7 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[2, 0, 3] = new GHCommandButtonItem("Fight", "GnollHackClient.Assets.UI.fight.png", (int)'F');
             _moreBtnMatrix[2, 1, 3] = new GHCommandButtonItem("Break", "GnollHackClient.Assets.UI.break.png", GHUtils.Ctrl((int)'b'));
             _moreBtnMatrix[2, 2, 3] = new GHCommandButtonItem("Force Lock", "GnollHackClient.Assets.UI.forcelock.png", GHUtils.Meta((int)'f'));
-            _moreBtnMatrix[2, 3, 3] = new GHCommandButtonItem("Wipe", "GnollHackClient.Assets.UI.wipe.png", GHUtils.Meta((int)'f'));
+            _moreBtnMatrix[2, 3, 3] = new GHCommandButtonItem("Wipe", "GnollHackClient.Assets.UI.wipe.png", GHUtils.Meta((int)'w'));
 
             _moreBtnMatrix[2, 0, 4] = new GHCommandButtonItem("Tip", "GnollHackClient.Assets.UI.tip.png", GHUtils.Meta((int)'T'));
             _moreBtnMatrix[2, 1, 4] = new GHCommandButtonItem("Invoke", "GnollHackClient.Assets.UI.invoke.png", GHUtils.Meta((int)'i'));
