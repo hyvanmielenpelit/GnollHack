@@ -1155,6 +1155,7 @@ namespace GnollHackCommon
         public const double WindowHideIntervals = 3.0;
         public const uint MainCanvasAnimationTime = 250;
         public const uint AuxiliaryCanvasAnimationTime = 240;
+        public const float MenuDefaultRowHeight = 30.0f;
     }
 
 

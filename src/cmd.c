@@ -3133,8 +3133,9 @@ int final;
     innategend = (Upolyd ? u.mfemale : flags.female) ? 1 : 0;
     role_titl = (innategend && urole.name.f) ? urole.name.f : urole.name.m;
     rank_titl = rank_of(u.ulevel, Role_switch, innategend);
-
+#ifndef GNH_ANDROID
     enlght_out("", ATR_NONE); /* separator after title */
+#endif
     enlght_out("Background:", ATR_HEADING);
 
     /* if polymorphed, report current shape before underlying role;
@@ -3323,7 +3324,7 @@ int final;
     int pw = u.uen, hp = (Upolyd ? u.mh : u.uhp),
         pwmax = u.uenmax, hpmax = (Upolyd ? u.mhmax : u.uhpmax);
 
-    enlght_out("", ATR_NONE); /* separator after background */
+    enlght_out(" ", ATR_HALF_SIZE); /* separator after background */
     enlght_out("Basics:", ATR_HEADING);
 
     if (hp < 0)
@@ -3423,7 +3424,7 @@ int final;
 {
     char buf[BUFSZ];
 
-    enlght_out("", ATR_NONE);
+    enlght_out(" ", ATR_HALF_SIZE);
     Sprintf(buf, "%s Characteristics:", !final ? "Current" : "Final");
     enlght_out(buf, ATR_HEADING);
 
@@ -3577,7 +3578,7 @@ int final;
      * Status (many are abbreviated on bottom line; others are or
      *     should be discernible to the hero hence to the player)
     \*/
-    enlght_out("", ATR_NONE); /* separator after title or characteristics */
+    enlght_out(" ", ATR_HALF_SIZE); /* separator after title or characteristics */
     enlght_out(final ? "Final Status:" : "Current Status:", ATR_HEADING);
 
     Strcpy(youtoo, You_);
@@ -3980,7 +3981,7 @@ int final;
     /*\
      *  Attributes
     \*/
-    enlght_out("", ATR_NONE);
+    enlght_out(" ", ATR_HALF_SIZE);
     enlght_out(final ? "Final Attributes:" : "Current Attributes:", ATR_HEADING);
 
     if (u.uevent.uhand_of_elbereth) {
@@ -5080,7 +5081,8 @@ int final;
     /* Create the conduct window */
     en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SEMI_WIDE_LIST, NO_GLYPH, zerocreatewindowinfo);
     putstr(en_win, ATR_TITLE, "Voluntary challenges:");
-    putstr(en_win, 0, "");
+    if(!final)
+        putstr(en_win, 0, "");
 
     if (u.uroleplay.blind)
         you_have_been("blind from birth");

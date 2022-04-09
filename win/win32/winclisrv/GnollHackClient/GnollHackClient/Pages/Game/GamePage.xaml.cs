@@ -7727,9 +7727,8 @@ namespace GnollHackClient.Pages.Game
             using (SKPaint textPaint = new SKPaint())
             {
                 textPaint.Typeface = App.UnderwoodTypeface;
-                textPaint.TextSize = 30 * scale;
-                float minrowheight = textPaint.FontSpacing;
-                float picturewidth = 64.0f * minrowheight / 48.0f;
+                textPaint.TextSize = GHConstants.MenuDefaultRowHeight * scale;
+                float picturewidth = 64.0f * textPaint.FontSpacing / 48.0f;
                 float picturepadding = 9 * scale;
                 float leftinnerpadding = 5;
                 float curmenuoffset = 0;
@@ -7770,6 +7769,12 @@ namespace GnollHackClient.Pages.Game
 
                     foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
                     {
+                        if ((mi.Attributes & (int)MenuItemAttributes.HalfSize) != 0)
+                            textPaint.TextSize = (GHConstants.MenuDefaultRowHeight / 2) * scale;
+                        else
+                            textPaint.TextSize = GHConstants.MenuDefaultRowHeight * scale;
+                        float minrowheight = textPaint.FontSpacing;
+
                         idx++;
                         x = leftmenupadding;
                         mi.DrawBounds.Left = x;

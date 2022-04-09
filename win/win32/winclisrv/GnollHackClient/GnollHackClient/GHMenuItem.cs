@@ -445,6 +445,11 @@ namespace GnollHackClient
                         break;
                 }
 
+                if((Attributes & (int)MenuItemAttributes.HalfSize) != 0)
+                {
+                    res /= 2;
+                }
+
                 if(res != _fontSize)
                 {
                     _fontSize = res;

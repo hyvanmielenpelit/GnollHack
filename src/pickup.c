@@ -1160,7 +1160,7 @@ int how;               /* type of query */
                  MENU_UNSELECTED);
 
         any = zeroany;
-        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, "", MENU_UNSELECTED);
     }
 
     if ((qflags & ALL_TYPES) && (ccount > 1)) {
@@ -1203,7 +1203,7 @@ int how;               /* type of query */
     if (do_unpaid || (qflags & BILLED_TYPES) || do_blessed || do_cursed
         || do_uncursed || do_buc_unknown) {
         any = zeroany;
-        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+        add_menu(win, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, "", MENU_UNSELECTED);
     }
 
     /* unpaid items if there are any */

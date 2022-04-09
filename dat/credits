@@ -15,6 +15,8 @@ Tile Graphics:   Riikka Laakkonen (Players, monsters, various graphics)
                  Joona Korhonen (Additional monster graphics)
                  Miro Pääkkönen (Additional monster graphics)
                  Milo Uusitalo (Additional monster and item graphics)
+                 Robert Santala (Additional item graphics)
+                 Anna-Marija Sabo (Additional item graphics)
                  Janne Gustafsson (Additional graphics)
                  Mikko Kangas (Project management)
 Voicing:         Tommi Gustafsson (Project management)
@@ -26,32 +28,91 @@ Playtesting:     Tommi Gustafsson
                  Robert Santala
                  Janne Rajamäki
 
+
                               EXTERNAL SOFTWARE
 
-Sound system:  FMOD Studio by Firelight Technologies Pty Ltd.
-
-
-                                  GRAPHICS
-
-[Specify]
+Sound middleware:  FMOD Studio by Firelight Technologies Pty Ltd.
 
 
                                    MUSIC
-A Elbereth Gilthoniel         Yolanda Mott (www.yolandamott.com)
-(YouTube: https://www.youtube.com/channel/UCDBi17csnWqzshvwFHhjB8Q )
-Zapsplat
 Eric Matyas, soundimage.org
+A Elbereth Gilthoniel         Yolanda Mott (www.yolandamott.com)
 
 
                                SOUND EFFECTS
 
 Zapsplat
-Eric Matyas, soundimage.org   Varius game musics
-[Specify]
 
 
                                VOICE ACTORS
 
 Yolanda Mott                  Lindisse, elven bard
-[Specify]
+James Takahashi               Wizard of Yendor
+Callum Garner                 Sandestin
+Carrick Inabnett              Imp, Male
+Veronica Laux                 Imp, Female
+Eric Navarro                  Angel, Male
+Joanna Christina Tenderro     Narrator; Angel, Female
+Natalia Makarski              Marilith
+Paul Warren                   Shopkeeper, Male
+Isabella Tugman               Shopkeeper, Female
+Kevin Urban                   Shopkeeper, Undead
+Dean T. Moody                 Lord Carnarvon (Archaeologist Quest)
+Ryan Chamberlain              Minion of Huhetotl (Archaelogist Quest)
+Hussein "HSE" Mohammed        Student, Male (Archaologist Quest)
+Kaylie Horowitz               Student, Female (Archaologist Quest); Warrior, Female (Valkyrie Quest)
+Andew J. Pond                 Pelias (Barbarian Quest)
+Edwyn Tiong                   Thoth Amon (Barbarian Quest)
+Carl Bonebright               Chieftain, Male (Barbarian Quest)
+Katte Noel                    Chieftain, Female (Barbarian Quest)
+Eric Umstott                  Priest
+Lissa G. Comess               Priestess
+Brian Anderson                High Priest of Moloch
+Nina Nikolic                  High Priestess of Moloch
+Cory Koehler                  God
+Laura Looi                    Goddess
+Kat Peterson                  Oracle
+Drew Veurink                  Smith, Male
+Rin Araneta                   Smith, Female
+Tom Laflin                    Smith, Undead; Artificer, Undead
+Ryan Haugen                   Smith, Flind; Keystone Kop
+Sean Siegler                  Artificer, Male
+Sonja Palmu                   Artificer, Female
+Henry Martin                  Dwarven Geologist, Male
+Kayla Kelly                   Dwarven Geologist, Female
+Jacob McClendon               Dwarven Geologist, Undead; Throne Room Announcer
+Austin Stamper                Watchman
+Whitney Kraatz                Watchwoman
+Scott J. Zim                  Vault Guard, Male
+Megan Youmans                 Vault Guard, Female
+Jorge Livingston              Djinn
+Sarah Glyszon                 The Norn (Valkyrie Quest)
+Matt Surges                   Lord Surtur (Valkyrie Quest)
+Jerron Bacat                  Warrior, Male (Valkyrie Quest)
+Sharon Grünwald               Neferet the Green (Wizard Quest)
+Colin Peter                   Dark One (Wizard Quest)
+Robert Bilodeau               Apprentice, Male (Wizard Quest)
+Courtney Steele               Apprentice, Female (Wizard Quest)
+Anthony Rodriguez             Neanderthal, Male (Caveman Quest)
+Zaida-Joy Davis               Neanderthal, Female (Caveman Quest), Attendant, Female (Healer Quest)
+Bellows_audio                 Hippocrates (Healer Quest)
+AveryLuna                     Cyclops (Healer Quest)
+Alex Lafnitzegger             Attendant, Male (Healer Quest)
+Stephen Carlock               King Arthur (Knight Quest)
+Azrumel                       Ixoth (Knight Quest)
+Jason Hall                    Page, Male (Knight Quest)
+Roanna Cruz                   Page, Female (Knight Quest)
+Oliver Smith                  Grand Master (Monk Quest)
+MushyTales                    Master Kane (Monk Quest)
+Branden Worton                Abbot (Monk Quest)
+JokoVoices                    Abbess (Monk Quest)
+DaRoninEnigma                 Orion (Ranger Quest)
+Incognitocas                  Scorpius (Ranger Quest)
+Robert Bilodeau               Hunter, Male (Ranger Quest)
+Angela McCarthy               Hunter, Female (Ranger Quest)
+hutygags                      Lord Sato (Samurai Quest)
+Xieken                        Ashikaga Takauji (Samurai Quest)
+Daneil Doan                   Roshi, Male (Samurai Quest)
+AnnaFaye                      Roshi, Female (Samurai Quest)
+
 
