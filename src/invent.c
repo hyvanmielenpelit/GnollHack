@@ -5746,7 +5746,7 @@ boolean picked_some;
         if (otmp->otyp == CORPSE)
             feel_cockatrice(otmp, FALSE);
     }
-    else if (WIN_HERE == WIN_ERR || total_count > iflags.wc2_here_window_size)
+    else if (WIN_HERE == WIN_ERR || total_count > iflags.wc2_here_window_size || Blind) // No here window
     {
         char buf[BUFSZ];
         char buf2[BUFSZ];
@@ -5759,12 +5759,13 @@ boolean picked_some;
 
         if (dfeature) {
             putstr(tmpwin, 0, fbuf);
-            putstr(tmpwin, 0, "");
+            putstr(tmpwin, ATR_HALF_SIZE, " ");
         }
         Sprintf(buf, "%s that %s here:",
                 picked_some ? "Other things" : "Things",
                 Blind ? "you feel" : "are");
-        putstr(tmpwin, 0, buf);
+        putstr(tmpwin, ATR_TITLE, buf);
+        putstr(tmpwin, ATR_HALF_SIZE, " ");
         totalweight = 0;
         for (; otmp; otmp = otmp->nexthere) {
             if (otmp->otyp == CORPSE && will_feel_cockatrice(otmp, FALSE)) {
@@ -5779,11 +5780,14 @@ boolean picked_some;
             else
                 totalweight += otmp->owt;
             Sprintf(buf2, "%2d - %s", count, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known))); //Looking at what is on the ground
-            putstr(tmpwin, 0, buf2);
+            putstr(tmpwin, ATR_INDENT_AT_DASH, buf2);
         }
 
         if (flags.show_weight_summary)
+        {
+            putstr(tmpwin, ATR_HALF_SIZE, " ");
             add_weight_summary_putstr(tmpwin, totalweight, 1);
+        }
 
         display_nhwindow(tmpwin, TRUE);
         destroy_nhwindow(tmpwin);

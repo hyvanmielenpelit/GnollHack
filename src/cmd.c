@@ -5092,7 +5092,7 @@ int final;
     en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SEMI_WIDE_LIST, NO_GLYPH, zerocreatewindowinfo);
     putstr(en_win, ATR_TITLE, "Voluntary challenges:");
     if(!final)
-        putstr(en_win, 0, "");
+        putstr(en_win, ATR_HALF_SIZE, " ");
 
     if (u.uroleplay.blind)
         you_have_been("blind from birth");

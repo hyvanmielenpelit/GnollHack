@@ -8786,8 +8786,8 @@ namespace GnollHackClient.Pages.Game
                         x += (float)putstritem.LeftPaddingWidth * scale;
                         textPaint.Typeface = App.GetTypefaceByName(putstritem.TextWindowFontFamily);
                         textPaint.TextSize = (float)putstritem.TextWindowFontSize * scale;
-                        /* Heading margin */
-                        if(putstritem.InstructionList.Count > 0)
+                        /* Heading margin, except on the first row */
+                        if(putstritem.InstructionList.Count > 0 && j > 0)
                         {
                             if ((putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.HalfSize) != 0)
                             {
@@ -8797,6 +8797,13 @@ namespace GnollHackClient.Pages.Game
                             {
                                 if ((putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Sub) != 0)
                                     y += textPaint.FontSpacing / 3.0f;
+                                else
+                                    y += textPaint.FontSpacing / 2.0f;
+                            }
+                            else if ((putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0)
+                            {
+                                if ((putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Sub) != 0)
+                                    y += 0.0f;
                                 else
                                     y += textPaint.FontSpacing / 2.0f;
                             }
