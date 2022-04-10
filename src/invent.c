@@ -5769,14 +5769,15 @@ boolean picked_some, explicit_cmd;
             putstr(tmpwin, ATR_TITLE, buf);
             putstr(tmpwin, ATR_HALF_SIZE, " ");
             totalweight = 0;
-            for (; otmp; otmp = otmp->nexthere) {
+            for (; otmp; otmp = otmp->nexthere) 
+            {
+                count++;
                 if (otmp->otyp == CORPSE && will_feel_cockatrice(otmp, FALSE)) {
                     felt_cockatrice = TRUE;
-                    Sprintf(buf, "%s...", doname(otmp));
-                    putstr(tmpwin, 0, buf);
+                    Sprintf(buf, "%2d - %s...", count, doname(otmp));
+                    putstr(tmpwin, ATR_INDENT_AT_DASH, buf);
                     break;
                 }
-                count++;
                 if (otmp->otyp == LOADSTONE && !objects[LOADSTONE].oc_name_known)
                     totalweight += objects[LUCKSTONE].oc_weight;
                 else
