@@ -147,7 +147,7 @@ NEARDATA struct permonst mons[] = {
         M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE, 
         M2_HOSTILE, 
         M3_NONE, 
-        M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
+        M4_NONE, M5_HALF_SIZED_MONSTER_TILE, M6_NONE, M7_NONE, M8_NONE,
         4, CLR_BLACK, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     MON("fire ant", None, "eusocial insect with fire attack", None, None, S_ANT, LVL(3, 18, 3, 0, 10, 0), (G_GENO | G_SGROUP | 1),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4, 0, 0, 0, 0, 0UL, 0), ATTK(AT_BITE, AD_FIRE, 2, 4, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
