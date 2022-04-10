@@ -3436,6 +3436,17 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       GLASS_PIERCER_DROP_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "teleport-cursor-animation", ANIMATION_TYPE_NORMAL, TELEPORT_CURSOR_ANIMATION_TILES,
+      TELEPORT_CURSOR_ANIMATION_FRAMES,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      -1, -1,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
 };
 
 NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =

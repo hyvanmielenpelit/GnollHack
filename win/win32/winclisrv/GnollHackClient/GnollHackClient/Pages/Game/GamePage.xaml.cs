@@ -459,72 +459,114 @@ namespace GnollHackClient.Pages.Game
         {
             _mainPage.GameStarted = true;
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            await LoadingProgressBar.ProgressTo(0.3, 600, Easing.Linear);
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack_64x96_transparent_32bits.png"))
+            var tasks = new List<Task>();
+            tasks.Add(LoadingProgressBar.ProgressTo(0.3, 600, Easing.Linear));
+            tasks.Add(Task.Run(() =>
             {
-                _tileMap[0] = SKBitmap.Decode(stream);
-            }
-            await LoadingProgressBar.ProgressTo(0.4, 100, Easing.Linear);
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack_64x96_transparent_32bits-2.png"))
-            {
-                _tileMap[1] = SKBitmap.Decode(stream);
-            }
-            await LoadingProgressBar.ProgressTo(0.5, 100, Easing.Linear);
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack-logo-test-2.png"))
-            {
-                _logoBitmap = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.skill.png"))
-            {
-                _skillBitmap = SKBitmap.Decode(stream);
-            }
-
-            InitializeArrowButtons(assembly);
-            InitializeUIBitmaps(assembly);
-            InitializeMoreCommandButtons();
-            await LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear);
-
-            _gnollHackService = DependencyService.Get<IGnollHackService>();
-            _gnollHackService.InitializeGnollHack(null);
-            UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
-            NoGlyph = _gnollHackService.GetNoGlyph();
-
-            int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, buff_tile_off, cursor_off;
-            _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out buff_tile_off,
-                out cursor_off);
-            AnimationOff = animoff;
-            EnlargementOff = enloff;
-            ReplacementOff = reoff;
-            GeneralTileOff = general_tile_off;
-            HitTileOff = hit_tile_off;
-            UITileOff = ui_tile_off;
-            SpellTileOff = spell_tile_off;
-            SkillTileOff = skill_tile_off;
-            BuffTileOff = buff_tile_off;
-            CursorOff = cursor_off;
-            await LoadingProgressBar.ProgressTo(0.7, 100, Easing.Linear);
-
-            _animationDefs = _gnollHackService.GetAnimationArray();
-            _enlargementDefs = _gnollHackService.GetEnlargementArray();
-            await LoadingProgressBar.ProgressTo(0.80, 100, Easing.Linear);
-            _replacementDefs = _gnollHackService.GetReplacementArray();
-            _autodraws = _gnollHackService.GetAutoDrawArray();
-            await LoadingProgressBar.ProgressTo(0.90, 100, Easing.Linear);
-
-            SetLayerDrawOrder();
-
-            for (int i = 0; i < GHConstants.MapCols; i++)
-            {
-                for (int j = 0; j < GHConstants.MapRows; j++)
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack_64x96_transparent_32bits.png"))
                 {
-                    _mapData[i, j] = new MapData();
-                    _mapData[i, j].Glyph = UnexploredGlyph;
-                    _mapData[i, j].BkGlyph = NoGlyph;
-                    _mapData[i, j].NeedsUpdate = true;
-
-                    _objectData[i, j] = new ObjectData();
+                    _tileMap[0] = SKBitmap.Decode(stream);
                 }
-            }
+            }));
+            await Task.WhenAll(tasks);
+            tasks.Clear();
+
+            tasks.Add(LoadingProgressBar.ProgressTo(0.4, 100, Easing.Linear));
+            tasks.Add(Task.Run(() =>
+            {
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack_64x96_transparent_32bits-2.png"))
+                {
+                    _tileMap[1] = SKBitmap.Decode(stream);
+                }
+            }));
+            await Task.WhenAll(tasks);
+            tasks.Clear();
+
+            tasks.Add(LoadingProgressBar.ProgressTo(0.5, 100, Easing.Linear));
+            tasks.Add(Task.Run(() =>
+            {
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.gnollhack-logo-test-2.png"))
+                {
+                    _logoBitmap = SKBitmap.Decode(stream);
+                }
+            }));
+            await Task.WhenAll(tasks);
+            tasks.Clear();
+
+            tasks.Add(LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear));
+            tasks.Add(Task.Run(() =>
+            {
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.skill.png"))
+                {
+                    _skillBitmap = SKBitmap.Decode(stream);
+                }
+
+                InitializeArrowButtons(assembly);
+                InitializeUIBitmaps(assembly);
+                InitializeMoreCommandButtons();
+
+                _gnollHackService = DependencyService.Get<IGnollHackService>();
+                _gnollHackService.InitializeGnollHack(null);
+                UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
+                NoGlyph = _gnollHackService.GetNoGlyph();
+
+                int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, buff_tile_off, cursor_off;
+                _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out buff_tile_off,
+                    out cursor_off);
+                AnimationOff = animoff;
+                EnlargementOff = enloff;
+                ReplacementOff = reoff;
+                GeneralTileOff = general_tile_off;
+                HitTileOff = hit_tile_off;
+                UITileOff = ui_tile_off;
+                SpellTileOff = spell_tile_off;
+                SkillTileOff = skill_tile_off;
+                BuffTileOff = buff_tile_off;
+                CursorOff = cursor_off;
+            }));
+            await Task.WhenAll(tasks);
+            tasks.Clear();
+
+            tasks.Add(LoadingProgressBar.ProgressTo(0.7, 100, Easing.Linear));
+            tasks.Add(Task.Run(() =>
+            {
+                _animationDefs = _gnollHackService.GetAnimationArray();
+                _enlargementDefs = _gnollHackService.GetEnlargementArray();
+            }));
+            await Task.WhenAll(tasks);
+            tasks.Clear();
+
+            tasks.Add(LoadingProgressBar.ProgressTo(0.80, 100, Easing.Linear));
+            tasks.Add(Task.Run(() =>
+            {
+                _replacementDefs = _gnollHackService.GetReplacementArray();
+                _autodraws = _gnollHackService.GetAutoDrawArray();
+            }));
+            await Task.WhenAll(tasks);
+            tasks.Clear();
+
+            tasks.Add(LoadingProgressBar.ProgressTo(0.90, 100, Easing.Linear));
+            tasks.Add(Task.Run(() =>
+            {
+
+                SetLayerDrawOrder();
+
+                for (int i = 0; i < GHConstants.MapCols; i++)
+                {
+                    for (int j = 0; j < GHConstants.MapRows; j++)
+                    {
+                        _mapData[i, j] = new MapData();
+                        _mapData[i, j].Glyph = UnexploredGlyph;
+                        _mapData[i, j].BkGlyph = NoGlyph;
+                        _mapData[i, j].NeedsUpdate = true;
+
+                        _objectData[i, j] = new ObjectData();
+                    }
+                }
+            }));
+            await Task.WhenAll(tasks);
+            tasks.Clear();
+
             await LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear);
 
             if (App.IsServerGame)
@@ -3419,7 +3461,7 @@ namespace GnollHackClient.Pages.Game
                                                                                 move_offset_y = base_move_offset_y;
                                                                                 if (layer_idx == (int)layer_types.MAX_LAYERS)
                                                                                 {
-                                                                                    opaqueness = (draw_shadow[mapx, mapy] & 2) != 0 && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY)) != 0 ? 0.65f : 0.5f;
+                                                                                    opaqueness = (draw_shadow[mapx, mapy] & 2) != 0 && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f : 0.5f;
                                                                                 }
                                                                                 else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
                                                                                 {
