@@ -3198,11 +3198,21 @@ int final;
                      /* lastly, normal case */
                      : "",
             u_gname());
-    enlght_out(buf, ATR_NONE);
+
+    boolean usenextrow = TRUE;
+#ifdef GNH_ANDROID
+    usenextrow = (boolean)final;
+#endif
+    if (usenextrow)
+    {
+        enlght_out(buf, ATR_NONE);
+        strcpy(buf, "");
+    }
+
     /* show the rest of this game's pantheon (finishes previous sentence)
        [appending "also Moloch" at the end would allow for straightforward
        trailing "and" on all three aligned entries but looks too verbose] */
-    Sprintf(buf, " who %s opposed by", !final ? "is" : "was");
+    Sprintf(eos(buf), " who %s opposed by", !final ? "is" : "was");
     if (u.ualign.type != A_LAWFUL)
         Sprintf(eos(buf), " %s (%s) and", align_gname(A_LAWFUL),
                 align_str(A_LAWFUL));
