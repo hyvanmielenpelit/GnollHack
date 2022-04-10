@@ -1778,8 +1778,17 @@ const char *mesg;
         else if (which == 2)
             what = the(what);
 
-        pline("It smells like %s.", what);
-        if (yn_query("Eat it?") == 'n') 
+        char buf[BUFSZ], smellsbuf[BUFSZ];
+        const char* eatit = "Eat it?";
+        Sprintf(smellsbuf, "It smells like %s.", what);
+#ifdef GNH_ANDROID
+        Sprintf(buf, "%s %s", smellsbuf, eatit);
+#else
+        pline1(smellsbuf);
+        strcpy(buf, eatit);
+#endif
+        //if (yn_query("Eat it?") == 'n') 
+        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, "Tin Opened", buf, ynchars, 'n', yndescs) != 'y')
         {
             if (flags.verbose)
                 You("discard the open tin.");
@@ -1827,18 +1836,27 @@ const char *mesg;
     }
     else
     { /* spinach... */
-        if (tin->cursed) 
+        char buf[BUFSZ], containsbuf[BUFSZ];
+        const char* eatit = "Eat it?";
+        if (tin->cursed)
         {
-            pline("It contains some decaying%s%s substance.",
+            Sprintf(containsbuf, "It contains some decaying%s%s substance.",
                   Blind ? "" : " ", Blind ? "" : hcolor(NH_GREEN));
         }
         else 
         {
-            pline("It contains spinach.");
+            strcpy(containsbuf, "It contains spinach.");
             tin->dknown = tin->known = 1;
         }
 
-        if (yn_query("Eat it?") == 'n') 
+#ifdef GNH_ANDROID
+        Sprintf(buf, "%s %s", containsbuf, eatit);
+#else
+        pline1(containsbuf);
+        strcpy(buf, eatit);
+#endif
+        //if (yn_query("Eat it?") == 'n') 
+        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, "Tin Opened", buf, ynchars, 'n', yndescs) != 'y')
         {
             if (flags.verbose)
                 You("discard the open tin.");
