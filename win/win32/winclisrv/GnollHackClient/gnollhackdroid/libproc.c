@@ -185,6 +185,7 @@ void lib_curs(winid wid, int x, int y)
     lib_callbacks.callback_curs(wid, x, y);
 }
 
+/* text is supposed to be in CP437; if text is UTF8 encoding, call callback_putstr_ex directly */
 void lib_putstr_ex(winid wid, int attr, const char* text, int param, int color)
 {
     char buf[BUFSIZ];
@@ -192,7 +193,6 @@ void lib_putstr_ex(winid wid, int attr, const char* text, int param, int color)
         write_text2buf_utf8(buf, BUFSIZ, text);
     lib_callbacks.callback_putstr_ex(wid, attr, text ? buf : 0, param, color);
 }
-
 
 void lib_display_file(const char* filename, BOOLEAN_P must_exist)
 {
@@ -211,11 +211,11 @@ void lib_display_file(const char* filename, BOOLEAN_P must_exist)
     }
     else 
     {
-        winid text;
+        winid textwin;
 #define LLEN 128
         char line[LLEN];
 
-        text = lib_create_nhwindow_ex(NHW_TEXT, 0, NO_GLYPH, zerocreatewindowinfo);
+        textwin = lib_create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_DISPLAY_FILE, NO_GLYPH, zerocreatewindowinfo);
 
         while (dlb_fgets(line, LLEN, f)) 
         {
@@ -223,12 +223,14 @@ void lib_display_file(const char* filename, BOOLEAN_P must_exist)
             len = strlen(line);
             if (line[len - 1] == '\n')
                 line[len - 1] = '\x0';
-            putstr(text, ATR_NONE, line);
+
+            /* The files are already in UTF8 encoding, so do not convert again by using lib_putstr_ex */
+            lib_callbacks.callback_putstr_ex(textwin, ATR_NONE, line, 0, NO_COLOR);
         }
         (void)dlb_fclose(f);
 
-        lib_display_nhwindow(text, 1);
-        lib_destroy_nhwindow(text);
+        lib_display_nhwindow(textwin, 1);
+        lib_destroy_nhwindow(textwin);
     }
 
 }

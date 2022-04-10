@@ -475,6 +475,8 @@ namespace GnollHackClient
                     case ghwindow_styles.GHWINDOW_STYLE_NARROW_LIST:
                     case ghwindow_styles.GHWINDOW_STYLE_SKILL_DESCRIPTION_SCREEN:
                         return 360.0;
+                    case ghwindow_styles.GHWINDOW_STYLE_DISPLAY_FILE:
+                        return 800.0;
                     default:
                         return 600.0;
                 }
