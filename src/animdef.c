@@ -8642,6 +8642,62 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "juggernaut-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "juggernaut-statue-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "chimera-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "chimera-statue-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "salamander-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "salamander-statue-enlargement", 0, 0,
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "gargantuan-beetle-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "gargantuan-beetle-statue-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
 };
 
 NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
