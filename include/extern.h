@@ -1396,7 +1396,7 @@ E const char *FDECL(dfeature_at, (int, int));
 E const char* FDECL(adjusted_dfeature_at, (int, int));
 int FDECL(here_window_display_style, (const char*, struct obj*));
 E const char* FDECL(get_floor_doodad_explanation_at, (int, int));
-E int FDECL(look_here, (int, BOOLEAN_P));
+E int FDECL(look_here, (int, BOOLEAN_P, BOOLEAN_P));
 E int NDECL(dolook);
 E boolean FDECL(will_feel_cockatrice, (struct obj *, BOOLEAN_P));
 E void FDECL(feel_cockatrice, (struct obj *, BOOLEAN_P));

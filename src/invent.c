@@ -5579,9 +5579,9 @@ int x, y;
 /* look at what is here; if there are many objects (pile_limit or more),
    don't show them unless obj_cnt is 0 */
 int
-look_here(obj_cnt, picked_some)
+look_here(obj_cnt, picked_some, explicit_cmd)
 int obj_cnt; /* obj_cnt > 0 implies that autopickup is in progress */
-boolean picked_some;
+boolean picked_some, explicit_cmd;
 {
     struct obj *otmp;
     struct trap *trap;
@@ -5746,55 +5746,66 @@ boolean picked_some;
         if (otmp->otyp == CORPSE)
             feel_cockatrice(otmp, FALSE);
     }
-    else if (WIN_HERE == WIN_ERR || total_count > iflags.wc2_here_window_size || Blind) // No here window
+    else
     {
-        char buf[BUFSZ];
-        char buf2[BUFSZ];
-        int count = 0;
-        int totalweight = 0;
+        if (explicit_cmd) // No here window
+        {
+            char buf[BUFSZ];
+            char buf2[BUFSZ];
+            int count = 0;
+            int totalweight = 0;
 
-        display_nhwindow(WIN_MESSAGE, FALSE);
+            display_nhwindow(WIN_MESSAGE, FALSE);
 
-        tmpwin = create_nhwindow(NHW_MENU);
+            tmpwin = create_nhwindow(NHW_MENU);
 
-        if (dfeature) {
-            putstr(tmpwin, 0, fbuf);
-            putstr(tmpwin, ATR_HALF_SIZE, " ");
-        }
-        Sprintf(buf, "%s that %s here:",
+            if (dfeature) {
+                putstr(tmpwin, 0, fbuf);
+                putstr(tmpwin, ATR_HALF_SIZE, " ");
+            }
+            Sprintf(buf, "%s that %s here:",
                 picked_some ? "Other things" : "Things",
                 Blind ? "you feel" : "are");
-        putstr(tmpwin, ATR_TITLE, buf);
-        putstr(tmpwin, ATR_HALF_SIZE, " ");
-        totalweight = 0;
-        for (; otmp; otmp = otmp->nexthere) {
-            if (otmp->otyp == CORPSE && will_feel_cockatrice(otmp, FALSE)) {
-                felt_cockatrice = TRUE;
-                Sprintf(buf, "%s...", doname(otmp));
-                putstr(tmpwin, 0, buf);
-                break;
-            }
-            count++;
-            if(otmp->otyp == LOADSTONE && !objects[LOADSTONE].oc_name_known)
-                totalweight += objects[LUCKSTONE].oc_weight;
-            else
-                totalweight += otmp->owt;
-            Sprintf(buf2, "%2d - %s", count, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known))); //Looking at what is on the ground
-            putstr(tmpwin, ATR_INDENT_AT_DASH, buf2);
-        }
-
-        if (flags.show_weight_summary)
-        {
+            putstr(tmpwin, ATR_TITLE, buf);
             putstr(tmpwin, ATR_HALF_SIZE, " ");
-            add_weight_summary_putstr(tmpwin, totalweight, 1);
+            totalweight = 0;
+            for (; otmp; otmp = otmp->nexthere) {
+                if (otmp->otyp == CORPSE && will_feel_cockatrice(otmp, FALSE)) {
+                    felt_cockatrice = TRUE;
+                    Sprintf(buf, "%s...", doname(otmp));
+                    putstr(tmpwin, 0, buf);
+                    break;
+                }
+                count++;
+                if (otmp->otyp == LOADSTONE && !objects[LOADSTONE].oc_name_known)
+                    totalweight += objects[LUCKSTONE].oc_weight;
+                else
+                    totalweight += otmp->owt;
+                Sprintf(buf2, "%2d - %s", count, (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known))); //Looking at what is on the ground
+                putstr(tmpwin, ATR_INDENT_AT_DASH, buf2);
+            }
+
+            if (flags.show_weight_summary)
+            {
+                putstr(tmpwin, ATR_HALF_SIZE, " ");
+                add_weight_summary_putstr(tmpwin, totalweight, 1);
+            }
+
+            display_nhwindow(tmpwin, TRUE);
+            destroy_nhwindow(tmpwin);
+
+            if (felt_cockatrice)
+                feel_cockatrice(otmp, FALSE);
+
+            read_engr_at(u.ux, u.uy); /* Eric Backus */
         }
-
-        display_nhwindow(tmpwin, TRUE);
-        destroy_nhwindow(tmpwin);
-
-        if (felt_cockatrice)
-            feel_cockatrice(otmp, FALSE);
-        read_engr_at(u.ux, u.uy); /* Eric Backus */
+        else
+        {
+            if (dfeature)
+                pline1(fbuf);
+            read_engr_at(u.ux, u.uy); /* Eric Backus */
+            You("%s %s here.", verb, "many objects"); //See on the ground
+        }
     }
     update_here_window();
     return !!Blind;
@@ -5932,7 +5943,7 @@ dolook()
        MSGTYPE={norep,noshow} "You see here"
        interfere with feedback from the look-here command */
     hide_unhide_msgtypes(TRUE, MSGTYP_MASK_REP_SHOW);
-    res = look_here(0, FALSE);
+    res = look_here(0, FALSE, TRUE);
     /* restore normal msgtype handling */
     hide_unhide_msgtypes(FALSE, MSGTYP_MASK_REP_SHOW);
     return res;

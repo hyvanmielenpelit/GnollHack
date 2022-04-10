@@ -315,7 +315,7 @@ boolean picked_some;
         if (context.run)
             nomul(0);
         flush_screen(1);
-        (void) look_here(ct, picked_some);
+        (void) look_here(ct, picked_some, FALSE);
     } else {
         read_engr_at(u.ux, u.uy);
     }
@@ -969,7 +969,7 @@ int show_weights;
             if ((qflags & FEEL_COCKATRICE) && curr->otyp == CORPSE
                 && will_feel_cockatrice(curr, FALSE)) {
                 destroy_nhwindow(win); /* stop the menu and revert */
-                (void) look_here(0, FALSE);
+                (void) look_here(0, FALSE, TRUE);
                 return 0;
             }
             if ((*allow)(curr)) {
