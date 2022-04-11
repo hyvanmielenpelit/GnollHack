@@ -8036,25 +8036,26 @@ namespace GnollHackClient.Pages.Game
                 rowidx++;
                 float endposition = calc_x_start;
                 SKBitmap symbolbitmap = null;
+                float printlength = 0;
                 if (usespecialsymbols && (symbolbitmap = GetSpecialSymbol(s)) != null)
                 {
                     float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
                     float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
                     float bmpmargin = bmpheight / 8;
-                    endposition = calc_x_start + bmpwidth + bmpmargin;
+                    printlength = bmpwidth + bmpmargin;
                 }
                 else
                 {
                     string added_split_str = s + " ";
-                    float printlength = textPaint.MeasureText(added_split_str);
-                    endposition = calc_x_start + printlength;
+                    printlength = textPaint.MeasureText(added_split_str);
                 }
+                endposition = calc_x_start + printlength;
                 bool pastend = endposition > canvaswidth - rightmenupadding;
                 if (pastend && rowidx > 0 & !nowrap)
                 {
                     rows++;
-                    calc_x_start = x_start;
-                    rowidx = -1;
+                    calc_x_start = x_start + printlength;
+                    rowidx = 0;
                 }
                 else
                 {
