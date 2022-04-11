@@ -3834,7 +3834,7 @@ boolean outokay, inokay, alreadyused, more_containers;
             buf, MENU_UNSELECTED);
     }
     any.a_int = 0;
-    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, " ", MENU_UNSELECTED);
     if (more_containers) {
         any.a_int = 7; /* 'n' */
         add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE,

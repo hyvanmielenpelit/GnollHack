@@ -1946,9 +1946,9 @@ int show_weights;
                 cat = SchroedingersBox(box);
 
                 Sprintf(buf, "Contents of %s:", the(xname(box)));
-                putstr(tmpwin, 0, buf);
+                putstr(tmpwin, ATR_TITLE, buf);
                 if (!dumping)
-                    putstr(tmpwin, 0, "");
+                    putstr(tmpwin, ATR_HALF_SIZE, " ");
                 buf[0] = buf[1] = ' '; /* two leading spaces */
                 if (box->cobj && !cat) {
                     sortflags = (((flags.sortloot == 'l'
@@ -1976,10 +1976,14 @@ int show_weights;
     
                         Sprintf(&buf[2], "%2d - %s", count, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(obj, loadstonecorrectly) : doname_with_price_and_weight_first(obj, loadstonecorrectly)) : doname_with_price(obj));
                         //Strcpy(&buf[2], doname_with_price_and_weight_first(obj));
-                        putstr(tmpwin, 0, buf);
+                        putstr(tmpwin, ATR_INDENT_AT_DASH, buf);
                     }
-                    if(flags.show_weight_summary)
+                    if (flags.show_weight_summary)
+                    {
+                        if (flags.inventory_weights_last)
+                            putstr(tmpwin, ATR_HALF_SIZE, " ");
                         add_weight_summary_putstr(tmpwin, totalweight, show_weights);
+                    }
 
                     unsortloot(&sortedcobj);
                 } else if (cat) {

@@ -4834,7 +4834,7 @@ int show_weights;
         printweight(totalweightbuf, total_ounce_weight, FALSE, FALSE);
 
         if (flags.inventory_weights_last)
-            Sprintf(buf, "You have %s of total weight.", totalweightbuf);
+            Sprintf(buf, "There is %s of total weight.", totalweightbuf);
         else
             Sprintf(buf, "   = %s of total weight", totalweightbuf);
 
@@ -5788,7 +5788,8 @@ boolean picked_some, explicit_cmd;
 
             if (flags.show_weight_summary)
             {
-                putstr(tmpwin, ATR_HALF_SIZE, " ");
+                if (flags.inventory_weights_last)
+                    putstr(tmpwin, ATR_HALF_SIZE, " ");
                 add_weight_summary_putstr(tmpwin, totalweight, 1);
             }
 
