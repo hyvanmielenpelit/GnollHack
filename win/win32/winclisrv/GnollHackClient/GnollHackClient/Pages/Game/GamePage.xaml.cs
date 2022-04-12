@@ -21,6 +21,7 @@ using FFImageLoading.Forms;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using GnollHackClient.Controls;
+using System.Runtime.CompilerServices;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -283,6 +284,10 @@ namespace GnollHackClient.Pages.Game
         private SKBitmap _spellNatureBitmap;
         private SKBitmap _spellNecromancyBitmap;
         private SKBitmap _spellTransmutationBitmap;
+
+
+        /* Persistent temporary bitmap */
+        SKBitmap _tempBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKColorType.Rgba8888, SKAlphaType.Unpremul);
 
         private object _skillRectLock = new object();
         private SKRect _skillRect = new SKRect();
@@ -3498,8 +3503,55 @@ namespace GnollHackClient.Pages.Game
                                                                                     else
                                                                                         targetrect = new SKRect(scaled_x_padding, scaled_y_padding, scaled_x_padding + scaled_tile_width, scaled_y_padding + scaled_tile_height);
                                                                                 }
-                                                                                paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                                                                                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
+
+                                                                                if (is_monster_like_layer && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
+                                                                                {
+                                                                                    IntPtr tempptraddr = _tempBitmap.GetPixels();
+                                                                                    IntPtr tileptraddr = TileMap[sheet_idx].GetPixels();
+                                                                                    double mid_x = (double)GHConstants.TileWidth / 2.0 - 0.5;
+                                                                                    double mid_y = (double)GHConstants.TileHeight / 2.0 - 0.5;
+                                                                                    double r = 0, semi_transparency = 0;
+                                                                                    byte radial_opacity = 0x00;
+                                                                                    int bytesperpixel = TileMap[sheet_idx].BytesPerPixel;
+                                                                                    unsafe
+                                                                                    {
+                                                                                        byte* tempptr = (byte*)tempptraddr.ToPointer();
+                                                                                        byte* tileptr = (byte*)tileptraddr.ToPointer();
+                                                                                        tileptr += ((int)sourcerect.Left + (int)sourcerect.Top * TileMap[sheet_idx].Width) * bytesperpixel;
+                                                                                        
+                                                                                        for (int row = 0; row < (int)sourcerect.Height; row++)
+                                                                                        {
+                                                                                            for (int col = 0; col < (int)sourcerect.Width; col++)
+                                                                                            {
+                                                                                                r = Math.Sqrt(Math.Pow((double)col - mid_x, 2.0) + Math.Pow((double)row - mid_y, 2.0));
+                                                                                                semi_transparency = r * 0.0375;
+                                                                                                if (semi_transparency > 0.98)
+                                                                                                    semi_transparency = 0.98;
+
+                                                                                                *tempptr++ = *tileptr;       // red
+                                                                                                tileptr++;
+                                                                                                *tempptr++ = *tileptr;       // green
+                                                                                                tileptr++;
+                                                                                                *tempptr++ = *tileptr;       // blue
+                                                                                                tileptr++;
+                                                                                                radial_opacity = (byte)((double)0xFF * (1.0 - semi_transparency) * ((double)(*tileptr) / (double)0xFF));
+                                                                                                *tempptr++ = radial_opacity; // alpha
+                                                                                                tileptr++;
+                                                                                            }
+                                                                                            tileptr += (TileMap[sheet_idx].Width - (int)sourcerect.Width) * bytesperpixel;
+                                                                                        }
+                                                                                    }
+                                                                                    SKRect tempsourcerect = new SKRect(0, 0, sourcerect.Width, sourcerect.Height);
+
+                                                                                    if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0)
+                                                                                        paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                                                                                    canvas.DrawBitmap(_tempBitmap, tempsourcerect, targetrect, paint);
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                                                                                    canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
+                                                                                }
                                                                             }
 
                                                                             DrawAutoDraw(autodraw, canvas, paint, otmp_round,
@@ -10314,6 +10366,10 @@ namespace GnollHackClient.Pages.Game
 
             return status;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        uint MakePixel(byte red, byte green, byte blue, byte alpha) =>
+        (uint)((alpha << 24) | (blue << 16) | (green << 8) | red);
     }
 
     public class ColorConverter : IValueConverter
