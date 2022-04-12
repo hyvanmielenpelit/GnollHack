@@ -8028,6 +8028,8 @@ namespace GnollHackClient.Pages.Game
             int rows = 1;
             float calc_x_start = x_start;
             int rowidx = -1;
+            float spacelength = textPaint.MeasureText(" ");
+
             foreach (string s in textsplit)
             {
                 bool nowrap = false;
@@ -8037,29 +8039,31 @@ namespace GnollHackClient.Pages.Game
                 float endposition = calc_x_start;
                 SKBitmap symbolbitmap = null;
                 float printlength = 0;
+                float marginlength = 0;
                 if (usespecialsymbols && (symbolbitmap = GetSpecialSymbol(s)) != null)
                 {
                     float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
                     float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
                     float bmpmargin = bmpheight / 8;
-                    printlength = bmpwidth + bmpmargin;
+                    printlength = bmpwidth;
+                    marginlength = bmpmargin;
                 }
                 else
                 {
-                    string added_split_str = s + " ";
-                    printlength = textPaint.MeasureText(added_split_str);
+                    printlength = textPaint.MeasureText(s);
+                    marginlength = spacelength;
                 }
                 endposition = calc_x_start + printlength;
                 bool pastend = endposition > canvaswidth - rightmenupadding;
                 if (pastend && rowidx > 0 & !nowrap)
                 {
                     rows++;
-                    calc_x_start = x_start + printlength;
+                    calc_x_start = x_start + printlength + marginlength;
                     rowidx = 0;
                 }
                 else
                 {
-                    calc_x_start = endposition;
+                    calc_x_start = endposition + marginlength;
                 }
             }
             return rows;
@@ -8069,6 +8073,7 @@ namespace GnollHackClient.Pages.Game
         {
             int split_idx_on_row = -1;
             x = start_x;
+            float spacelength = textPaint.MeasureText(" ");
             foreach (string split_str in textsplit)
             {
                 bool nowrap = false;
@@ -8083,7 +8088,7 @@ namespace GnollHackClient.Pages.Game
                     float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
                     float bmpmargin = bmpheight / 8;
                     endposition = x + bmpwidth + bmpmargin;
-                    bool pastend = endposition > canvaswidth - rightmenupadding;
+                    bool pastend = x + bmpwidth > canvaswidth - rightmenupadding;
                     if (pastend && split_idx_on_row > 0 && !nowrap)
                     {
                         x = indent_start_x;
@@ -8101,20 +8106,19 @@ namespace GnollHackClient.Pages.Game
                 }
                 else
                 {
-                    string added_split_str = split_str + " ";
-                    float printlength = textPaint.MeasureText(added_split_str);
-                    endposition = x + printlength;
-                    bool pastend = endposition > canvaswidth - rightmenupadding;
+                    float printlength = textPaint.MeasureText(split_str);
+                    endposition = x + printlength + spacelength;
+                    bool pastend = x + printlength > canvaswidth - rightmenupadding;
                     if (pastend && split_idx_on_row > 0 && !nowrap)
                     {
                         x = indent_start_x;
                         y += textPaint.FontSpacing;
                         split_idx_on_row = 0;
-                        endposition = x + printlength;
+                        endposition = x + printlength + spacelength;
                     }
 
                     if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                        canvas.DrawText(added_split_str, x, y, textPaint);
+                        canvas.DrawText(split_str, x, y, textPaint);
                 }
 
                 x = endposition;
