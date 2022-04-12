@@ -6558,6 +6558,10 @@ namespace GnollHackClient.Pages.Game
                 subthick.Top = MenuSubtitleLabel.Margin.Top;
                 subthick.Bottom = MenuSubtitleLabel.Margin.Bottom;
                 MenuSubtitleLabel.Margin = subthick;
+                Thickness glyphthick = smallthick;
+                glyphthick.Top = MenuWindowGlyphImage.Margin.Top;
+                glyphthick.Bottom = MenuWindowGlyphImage.Margin.Bottom;
+                MenuWindowGlyphImage.Margin = glyphthick;
 
                 lock (MapOffsetLock)
                 {
