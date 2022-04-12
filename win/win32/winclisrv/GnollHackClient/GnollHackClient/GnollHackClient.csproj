@@ -87,6 +87,7 @@
     <None Remove="Assets\UI\dropmany.png" />
     <None Remove="Assets\UI\eat.png" />
     <None Remove="Assets\UI\engrave.png" />
+    <None Remove="Assets\UI\examine.png" />
     <None Remove="Assets\UI\extended.png" />
     <None Remove="Assets\UI\fight.png" />
     <None Remove="Assets\UI\fire.png" />
@@ -115,6 +116,7 @@
     <None Remove="Assets\UI\loot.png" />
     <None Remove="Assets\UI\menubackground.png" />
     <None Remove="Assets\UI\mix.png" />
+    <None Remove="Assets\UI\monster.png" />
     <None Remove="Assets\UI\more.png" />
     <None Remove="Assets\UI\name.png" />
     <None Remove="Assets\UI\next.png" />
@@ -210,6 +212,7 @@
     <None Remove="Assets\UI\twoweap.png" />
     <None Remove="Assets\UI\untrap.png" />
     <None Remove="Assets\UI\viewspell.png" />
+    <None Remove="Assets\UI\vitruvian-gnoll.png" />
     <None Remove="Assets\UI\wait.png" />
     <None Remove="Assets\UI\wear.png" />
     <None Remove="Assets\UI\whatis.png" />
@@ -273,6 +276,7 @@
     <EmbeddedResource Include="Assets\UI\dropmany.png" />
     <EmbeddedResource Include="Assets\UI\eat.png" />
     <EmbeddedResource Include="Assets\UI\engrave.png" />
+    <EmbeddedResource Include="Assets\UI\examine.png" />
     <EmbeddedResource Include="Assets\UI\extended.png" />
     <EmbeddedResource Include="Assets\UI\fight.png" />
     <EmbeddedResource Include="Assets\UI\fire.png" />
@@ -301,6 +305,7 @@
     <EmbeddedResource Include="Assets\UI\loot.png" />
     <EmbeddedResource Include="Assets\UI\menubackground.png" />
     <EmbeddedResource Include="Assets\UI\mix.png" />
+    <EmbeddedResource Include="Assets\UI\monster.png" />
     <EmbeddedResource Include="Assets\UI\more.png" />
     <EmbeddedResource Include="Assets\UI\name.png" />
     <EmbeddedResource Include="Assets\UI\next.png" />
@@ -396,6 +401,7 @@
     <EmbeddedResource Include="Assets\UI\twoweap.png" />
     <EmbeddedResource Include="Assets\UI\untrap.png" />
     <EmbeddedResource Include="Assets\UI\viewspell.png" />
+    <EmbeddedResource Include="Assets\UI\vitruvian-gnoll.png" />
     <EmbeddedResource Include="Assets\UI\wait.png" />
     <EmbeddedResource Include="Assets\UI\wear.png" />
     <EmbeddedResource Include="Assets\UI\whatis.png" />

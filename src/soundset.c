@@ -203,6 +203,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Curse Item/Unbless", 0.3f },
 
     { SOUND_BANK_MASTER, "event:/Music/Smith/Normal", 0.08f },
+    { SOUND_BANK_MASTER, "event:/Music/NPC/Normal", 0.08f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Disintegrate", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Life Saved", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Healing/Healing", 0.3f },
@@ -14445,13 +14446,51 @@ struct mkroom* room;
             res = GHSOUND_DUNGEON_NORMAL_MUSIC_TEMPLE;
             break;
         case SMITHY:
-            res = GHSOUND_DUNGEON_NORMAL_MUSIC_SMITH_NORMAL;
+            if (Inhell)
+                res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_NORMAL;
+            else
+                res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_NORMAL;
             break;
         case NPCROOM:
-            if (room->rsubtype == NPC_HERMIT)
-                break;
+            if (Inhell)
+            {
+                switch (room->rsubtype)
+                {
+                case NPC_GEOLOGIST:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_NORMAL;
+                    break;
+                case NPC_HERMIT:
+                    break;
+                default:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_NORMAL;
+                    break;
+                }
+            }
+            else if(Is_minetown_level(&u.uz))
+            {
+                switch (room->rsubtype)
+                {
+                case NPC_GEOLOGIST:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_NORMAL;
+                    break;
+                case NPC_HERMIT:
+                    break;
+                default:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_NORMAL;
+                    break;
+                }
+            }
             else
-                res = GHSOUND_DUNGEON_NORMAL_MUSIC_SMITH_NORMAL;
+            {
+                switch (room->rsubtype)
+                {
+                case NPC_HERMIT:
+                    break;
+                default:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_NORMAL;
+                    break;
+                }
+            }
             break;
         case LEPREHALL:
             break;
