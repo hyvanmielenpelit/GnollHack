@@ -72,7 +72,7 @@ namespace GnollHackClient.Pages.Game
         private ulong _u_condition_bits = 0;
         private ulong _u_status_bits = 0;
         private ulong[] _u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
-        private int[] _statusmarkorder = { (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_PEACEFUL, (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+        private int[] _statusmarkorder = { (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_PEACEFUL, (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
         public string[] _condition_names = new string[(int)bl_conditions.NUM_BL_CONDITIONS] {
             "Petrifying",
             "Slimed",
@@ -3513,15 +3513,18 @@ namespace GnollHackClient.Pages.Game
                                                                                     double r = 0, semi_transparency = 0;
                                                                                     byte radial_opacity = 0x00;
                                                                                     int bytesperpixel = TileMap[sheet_idx].BytesPerPixel;
+                                                                                    int copywidth = Math.Min((int)sourcerect.Width, _tempBitmap.Width);
+                                                                                    int copyheight = Math.Min((int)sourcerect.Height, _tempBitmap.Height);
+                                                                                    int tilemapwidth = TileMap[sheet_idx].Width;
                                                                                     unsafe
                                                                                     {
                                                                                         byte* tempptr = (byte*)tempptraddr.ToPointer();
                                                                                         byte* tileptr = (byte*)tileptraddr.ToPointer();
-                                                                                        tileptr += ((int)sourcerect.Left + (int)sourcerect.Top * TileMap[sheet_idx].Width) * bytesperpixel;
+                                                                                        tileptr += ((int)sourcerect.Left + (int)sourcerect.Top * tilemapwidth) * bytesperpixel;
                                                                                         
-                                                                                        for (int row = 0; row < (int)sourcerect.Height; row++)
+                                                                                        for (int row = 0; row < copyheight; row++)
                                                                                         {
-                                                                                            for (int col = 0; col < (int)sourcerect.Width; col++)
+                                                                                            for (int col = 0; col < copywidth; col++)
                                                                                             {
                                                                                                 r = Math.Sqrt(Math.Pow((double)col - mid_x, 2.0) + Math.Pow((double)row - mid_y, 2.0));
                                                                                                 semi_transparency = r * 0.0375;
@@ -3538,10 +3541,10 @@ namespace GnollHackClient.Pages.Game
                                                                                                 *tempptr++ = radial_opacity; // alpha
                                                                                                 tileptr++;
                                                                                             }
-                                                                                            tileptr += (TileMap[sheet_idx].Width - (int)sourcerect.Width) * bytesperpixel;
+                                                                                            tileptr += (tilemapwidth - copywidth) * bytesperpixel;
                                                                                         }
                                                                                     }
-                                                                                    SKRect tempsourcerect = new SKRect(0, 0, sourcerect.Width, sourcerect.Height);
+                                                                                    SKRect tempsourcerect = new SKRect(0, 0, copywidth, copyheight);
 
                                                                                     if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0)
                                                                                         paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
