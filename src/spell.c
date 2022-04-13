@@ -2185,7 +2185,13 @@ boolean atme;
     if (spellamount(spell) == 0) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "do not have the spell's material components prepared.");
-        return 0; /* no time elapses */
+        char ans = yn_query_ex(ATR_NONE, CLR_MSG_ATTENTION, "No Components Mixed", "Do you want to mix the spell's material components now?");
+        if (ans == 'y')
+        {
+            return domaterialcomponentsmenu(spell);
+        }
+        else
+            return 0; /* no time elapses */
     }
 
     if (spellcooldownleft(spell) > 0) {
