@@ -8696,16 +8696,16 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 }
       },
       { "gargantuan-beetle-enlargement", 0, 0,
-        2,
-        3, 1, 0,
-        { -1, -1, -1, 0, 1 },
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
       { "gargantuan-beetle-statue-enlargement", 0, 0,
-        2,
-        3, 1, 0,
-        { -1, -1, -1, 0, 1 },
+        5,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
