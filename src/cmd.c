@@ -383,6 +383,7 @@ doextcmd(VOID_ARGS)
 
         func = extcmdlist[idx].ef_funct;
         if (!wizard && (extcmdlist[idx].flags & WIZMODECMD)) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("can't do that.");
             return 0;
         }
@@ -1069,6 +1070,7 @@ domonsterability(VOID_ARGS)
 
     if (abilitynum <= 0)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("don't have any monster abilities at your disposal.");
         destroy_nhwindow(win);
         return 0;
@@ -7282,9 +7284,11 @@ const char *msg;
     if (prefixhandling
         && (sym == Cmd.spkeys[NHKF_GETDIR_SELF]
             || (Cmd.num_pad && sym == Cmd.spkeys[NHKF_GETDIR_SELF2]))) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         Sprintf(buf, "You can't %s%s yourself.", dothat, how);
     /* for movement prefix followed by up or down */
     } else if (prefixhandling && (sym == '<' || sym == '>')) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         Sprintf(buf, "You can't %s %s.", dothat,
                 /* was "upwards" and "downwards", but they're considered
                    to be variants of canonical "upward" and "downward" */

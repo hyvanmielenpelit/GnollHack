@@ -992,6 +992,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
             castit = (sp_no < MAXSPELL && !Confusion);
             if (!castit && !break_the_rules) 
             {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("%s.",
                     !Teleportation ? ((sp_no < MAXSPELL)
                                         ? "can't cast that spell"
@@ -1025,14 +1026,17 @@ boolean break_the_rules; /* True: wizard mode ^T */
         } 
         else if (u.uhunger <= 10)
         {
+            play_sfx_sound(SFX_GENERAL_NOT_ENOUGH_STAMINA);
             cantdoit = "are too weak from hunger";
         } 
         else if (ACURR(A_STR) < 4) 
         {
+            play_sfx_sound(SFX_GENERAL_NOT_ENOUGH_STAMINA);
             cantdoit = "lack the strength";
         }
         else if (energy > u.uen)
         {
+            play_sfx_sound(SFX_NOT_ENOUGH_MANA);
             cantdoit = "lack the energy";
         }
 
@@ -1045,6 +1049,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
         else if (check_capacity(
                        "Your concentration falters from carrying so much."))
         {
+            play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
             return 1; /* this failure in spelleffects() also uses the move */
         }
 

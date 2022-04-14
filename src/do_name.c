@@ -1884,9 +1884,11 @@ namefloorobj()
               The(buf), use_plural ? "decide" : "decides",
               unames[rn2_on_display_rng(SIZE(unames))]);
     } else if (!objtyp_is_callable(obj->otyp)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s %s can't be assigned a type name.",
               use_plural ? "Those" : "That", buf);
     } else if (!obj->dknown) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("don't know %s %s well enough to name %s.",
             use_plural ? "those" : "that", buf, use_plural ? "them" : "it");
     } else {

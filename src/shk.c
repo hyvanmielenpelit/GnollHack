@@ -1406,18 +1406,22 @@ dopay()
         }
         mtmp = m_at(cx, cy);
         if (!cansee(cx, cy) && (!mtmp || !canspotmon(mtmp))) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("can't %s anyone there.", !Blind ? "see" : "sense");
             return 0;
         }
         if (!mtmp) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             There("is no one there to receive your payment.");
             return 0;
         }
         if (!mtmp->isshk) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("%s is not interested in your payment.", Monnam(mtmp));
             return 0;
         }
         if (mtmp != resident && distu(mtmp->mx, mtmp->my) > 2) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("%s is too far to receive your payment.", Shknam(mtmp));
             return 0;
         }

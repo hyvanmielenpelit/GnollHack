@@ -2249,6 +2249,7 @@ dolayegg()
 
     if (!flags.female)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s can't lay eggs!",
             Hallucination
             ? "You may think you are a platypus, but a male still"

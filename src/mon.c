@@ -4964,6 +4964,7 @@ struct monst *mon;
                 mndx = NON_PM;
             }
 
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("It can't become that.");
         } while (--tryct > 0);
         if (!tryct)

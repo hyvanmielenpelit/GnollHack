@@ -5660,6 +5660,7 @@ boolean picked_some, explicit_cmd;
         if (dfeature && !drift && !strcmp(dfeature, surface(u.ux, u.uy)))
             dfeature = 0; /* ice already identified */
         if (!can_reach_floor(TRUE)) {
+            play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
             pline1("But you can't reach it!");
             return 0;
         }

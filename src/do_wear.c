@@ -1731,7 +1731,7 @@ boolean noisy;
     {
         if (noisy)
         {
-            play_sfx_sound(SFX_GENERAL_CANNOT);
+            play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "can't wear any armor in your current form.");
         }
         return 0;

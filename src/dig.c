@@ -1175,6 +1175,7 @@ struct obj *obj;
     verb = ispick ? "dig" : isaxe ? "chop" : issaw ? "cut" : "dig";
 
     if (u.utrap && u.utraptype == TT_WEB) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s you can't %s while entangled in a web.",
               /* res==0 => no prior message;
                  res==1 => just got "You now wield a pick-axe." message */

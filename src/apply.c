@@ -2419,6 +2419,7 @@ dorub()
             use_stone(obj);
             return 1;
         } else {
+            play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
             pline("Sorry, I don't know how to use that.");
             return 0;
         }
@@ -5707,6 +5708,7 @@ doapply()
                 res = use_pick_axe(obj);
                 break;
             }
+            play_sfx_sound(SFX_GENERAL_DO_NOT_KNOW_HOW);
             pline("Sorry, I don't know how to use that.");
             nomul(0);
             return 0;

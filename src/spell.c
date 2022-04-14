@@ -238,6 +238,7 @@ struct obj *book2;
                          arti_cursed = FALSE;
 
         if (book2->cursed) {
+            play_sfx_sound(SFX_GENERAL_NOT_IN_THE_RIGHT_CONDITION);
             pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "runes appear scrambled.  You can't read them!");
             return;
         }

@@ -621,12 +621,14 @@ int reason; /* Player was thrown off etc. */
     case DISMOUNT_BYCHOICE:
     default:
         if (otmp && otmp->cursed) {
+            play_sfx_sound(SFX_GENERAL_WELDED);
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "can't.  The saddle %s cursed.",
                 otmp->bknown ? "is" : "seems to be");
             otmp->bknown = TRUE;
             return;
         }
         if (!have_spot) {
+            play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "can't.  There isn't anywhere for you to stand.");
             return;
         }
