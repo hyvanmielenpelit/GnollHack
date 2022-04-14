@@ -392,25 +392,13 @@ namespace GnollHackClient.Droid
             if (flags == 0)
                 flags = (ulong)StopSoundFlags.All;
 
-            //lock (eventInstanceLock)
-            //{
-                if ((flags & (ulong)StopSoundFlags.ImmediateNormal) != 0)
-                {
-                    foreach (GHSoundInstance ghsi in immediateInstances)
-                    {
-                        if (ghsi.stopped == false)
-                        {
-                            ghsi.stopped = true;
-                            ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-                        }
-                        ghsi.instance.release();
-                    }
-                    immediateInstances.Clear();
-                }
+            bool only_mid = (flags & (ulong)StopSoundFlags.OnlyDialogueMid) != 0;
 
-                if ((flags & (ulong)StopSoundFlags.ImmediateLong) != 0)
+            if ((flags & (ulong)StopSoundFlags.ImmediateNormal) != 0)
+            {
+                foreach (GHSoundInstance ghsi in immediateInstances)
                 {
-                    foreach (GHSoundInstance ghsi in longImmediateInstances)
+                    if (!only_mid || (only_mid && dialogue_mid == ghsi.dialogue_mid))
                     {
                         if (ghsi.stopped == false)
                         {
@@ -419,12 +407,20 @@ namespace GnollHackClient.Droid
                         }
                         ghsi.instance.release();
                     }
-                    longImmediateInstances.Clear();
                 }
+                for (int i = immediateInstances.Count - 1; i >= 0; i--)
+                {
+                    if (immediateInstances[i].stopped)
+                        immediateInstances.RemoveAt(i);
+                }
+                    //immediateInstances.Clear();
+            }
 
-                if ((flags & (ulong)StopSoundFlags.Music) != 0)
+            if ((flags & (ulong)StopSoundFlags.ImmediateLong) != 0)
+            {
+                foreach (GHSoundInstance ghsi in longImmediateInstances)
                 {
-                    foreach (GHSoundInstance ghsi in musicInstances)
+                    if (!only_mid || (only_mid && dialogue_mid == ghsi.dialogue_mid))
                     {
                         if (ghsi.stopped == false)
                         {
@@ -433,9 +429,99 @@ namespace GnollHackClient.Droid
                         }
                         ghsi.instance.release();
                     }
-                    musicInstances.Clear();
                 }
-            //}
+                for (int i = longImmediateInstances.Count - 1; i >= 0; i--)
+                {
+                    if (longImmediateInstances[i].stopped)
+                        longImmediateInstances.RemoveAt(i);
+                }
+                //longImmediateInstances.Clear();
+            }
+
+            if ((flags & (ulong)StopSoundFlags.Music) != 0)
+            {
+                foreach (GHSoundInstance ghsi in musicInstances)
+                {
+                    if (ghsi.stopped == false)
+                    {
+                        ghsi.stopped = true;
+                        ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                    }
+                    ghsi.instance.release();
+                }
+                musicInstances.Clear();
+            }
+
+            if ((flags & (ulong)StopSoundFlags.LevelAmbient) != 0)
+            {
+                foreach (GHSoundInstance ghsi in levelAmbientInstances)
+                {
+                    if (ghsi.stopped == false)
+                    {
+                        ghsi.stopped = true;
+                        ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                    }
+                    ghsi.instance.release();
+                }
+                levelAmbientInstances.Clear();
+            }
+
+            if ((flags & (ulong)StopSoundFlags.EnvironmentAmbient) != 0)
+            {
+                foreach (GHSoundInstance ghsi in environmentAmbientInstances)
+                {
+                    if (ghsi.stopped == false)
+                    {
+                        ghsi.stopped = true;
+                        ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                    }
+                    ghsi.instance.release();
+                }
+                environmentAmbientInstances.Clear();
+            }
+
+            if ((flags & (ulong)StopSoundFlags.OccupationAmbient) != 0)
+            {
+                foreach (GHSoundInstance ghsi in occupationAmbientInstances)
+                {
+                    if (ghsi.stopped == false)
+                    {
+                        ghsi.stopped = true;
+                        ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                    }
+                    ghsi.instance.release();
+                }
+                occupationAmbientInstances.Clear();
+            }
+
+            if ((flags & (ulong)StopSoundFlags.EffectAmbient) != 0)
+            {
+                foreach (GHSoundInstance ghsi in effectAmbientInstances)
+                {
+                    if (ghsi.stopped == false)
+                    {
+                        ghsi.stopped = true;
+                        ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                    }
+                    ghsi.instance.release();
+                }
+                effectAmbientInstances.Clear();
+            }
+
+            if ((flags & (ulong)StopSoundFlags.SoundSources) != 0)
+            {
+                foreach (GHSoundInstance ghsi in ambientList)
+                {
+                    if (!only_mid || (only_mid && dialogue_mid == ghsi.dialogue_mid))
+                    {
+                        if (!ghsi.stopped && ghsi.normalSoundVolume > 0.0f)
+                        {
+                            SetAmbientSoundVolume(ghsi.guid, 0.0f);
+                        }
+                    }
+                }
+            }
+
             res = _system.update();
             return (int)res;
         }
