@@ -414,6 +414,9 @@ char c;
     case 'f':
         str = align_gdesc(u.ualignbase[A_ORIGINAL]);
         break;
+    case 'h':
+        str = align_ghisher(u.ualignbase[A_ORIGINAL]);
+        break;
     case 'e':
         str = align_gname(u.ualign.type);
         break;

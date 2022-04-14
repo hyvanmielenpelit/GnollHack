@@ -2656,7 +2656,7 @@ you will be ready.
 %E [Return when you are %Ra.]
 %Cc Tou 00020
 "It would be an affront to %d to have one not true to the
-%a path undertake her bidding.
+%a path undertake %h bidding.
 
 "You must not return to us until you have purified yourself of these
 bad influences on your actions.  Remember, only by following the %a
@@ -3500,6 +3500,7 @@ Go now!  You are banished from this place.
  %d:	return((char *)align_gname(u.ualignbase[1]));
  %D:	return((char *)align_gname(A_LAWFUL));
  %f:	return((char *)align_gdesc(u.ualignbase[1]));
+ %h:	return((char *)align_ghisher(u.ualignbase[1]));
  %C:	return("chaotic");
  %N:	return("neutral");
  %L:	return("lawful");

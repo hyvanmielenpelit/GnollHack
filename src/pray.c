@@ -3342,6 +3342,16 @@ aligntyp alignment;
     return result;
 }
 
+const char*
+align_ghisher(alignment)
+aligntyp alignment;
+{
+    if (align_gfemale(alignment))
+        return "her";
+    else
+        return "his";
+}
+
 static const char *hallu_gods[] = {
     "the Flying Spaghetti Monster", /* Church of the FSM */
     "Eris",                         /* Discordianism */
