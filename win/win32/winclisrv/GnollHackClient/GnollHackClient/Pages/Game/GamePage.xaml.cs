@@ -4726,7 +4726,7 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         /* Pets */
-                        if(ShowPets)
+                        if (ShowPets)
                         {
                             lock (_petDataLock)
                             {
@@ -4954,6 +4954,16 @@ namespace GnollHackClient.Pages.Game
                                     }
 
                                     textPaint.TextAlign = SKTextAlign.Left;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            lock (_petDataLock)
+                            {
+                                foreach (GHPetDataItem pdi in _petData)
+                                {
+                                    pdi.Rect = new SKRect();
                                 }
                             }
                         }
@@ -6858,7 +6868,7 @@ namespace GnollHackClient.Pages.Game
                             {
                                 _touchWithinStatusBar = true;
                             }
-                            else if (!_showDirections && !_showNumberPad && (m_id = PetRectContains(e.Location)) != 0)
+                            else if (!_showDirections && !_showNumberPad && ShowPets && (m_id = PetRectContains(e.Location)) != 0)
                             {
                                 _touchWithinPet = m_id;
                             }
