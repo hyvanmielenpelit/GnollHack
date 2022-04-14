@@ -3710,7 +3710,7 @@ struct obj *obj;
         if (obj->cursed && obj->bknown) {
             char qbuf[QBUFSZ];
 
-            if (ynq(safe_qbuf(qbuf, "Really wield ", "?",
+            if (yn_query(safe_qbuf(qbuf, "Really wield ", "?",
                               obj, doname, thesimpleoname, "that")) != 'y')
                 return 0;
         }

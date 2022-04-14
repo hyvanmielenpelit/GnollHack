@@ -2576,7 +2576,7 @@ register struct obj *obj;
     {
         char qbuf[BUFSZ], c;
         Sprintf(qbuf, "You are putting %s into %s. Continue?", the(xname(obj)), the(xname(current_container)));
-        if ((c = yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, (const char*)0, qbuf, ynqchars, 'n', ynqdescs)) != 'y')
+        if ((c = yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, (const char*)0, qbuf, ynchars, 'n', yndescs)) != 'y')
             return 0;
     }
 

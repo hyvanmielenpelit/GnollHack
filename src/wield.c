@@ -1162,7 +1162,7 @@ dowieldquiver()
         }
 
         /* require confirmation to ready the main weapon */
-        if (ynq(qbuf) != 'y')
+        if (yn_query(qbuf) != 'y')
         {
             (void) Shk_Your(qbuf, uwep); /* replace qbuf[] contents */
             pline("%s%s %s wielded.", qbuf,
@@ -1214,7 +1214,7 @@ dowieldquiver()
         }
 
         /* require confirmation to ready the main weapon */
-        if (ynq(qbuf) != 'y') 
+        if (yn_query(qbuf) != 'y') 
         {
             (void)Shk_Your(qbuf, uarms); /* replace qbuf[] contents */
             pline("%s%s %s wielded.", qbuf,
@@ -1260,7 +1260,7 @@ dowieldquiver()
         }
 
         /* require confirmation to ready the alternate weapon */
-        if (ynq(qbuf) != 'y') 
+        if (yn_query(qbuf) != 'y') 
         {
             (void) Shk_Your(qbuf, uswapwep); /* replace qbuf[] contents */
             pline("%s%s %s %s.", qbuf,
@@ -1306,7 +1306,7 @@ dowieldquiver()
         }
 
         /* require confirmation to ready the alternate weapon */
-        if (ynq(qbuf) != 'y') 
+        if (yn_query(qbuf) != 'y') 
         {
             (void)Shk_Your(qbuf, uswapwep2); /* replace qbuf[] contents */
             pline("%s%s %s %s.", qbuf,
