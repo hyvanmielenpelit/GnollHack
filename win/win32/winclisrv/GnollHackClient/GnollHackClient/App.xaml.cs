@@ -47,6 +47,7 @@ namespace GnollHackClient
             App.ShowSpecialEffect = Preferences.Get("ShowSpecialEffect", false);
             App.ReadSecrets();
             Array.Sort<SecretsFile>(App.CurrentSecrets.files, new SecretsFileSizeComparer());
+            App.BackButtonPressed += App.EmptyBackButtonPressed;
         }
 
         private static Secrets _currentSecrets = null;
@@ -204,6 +205,11 @@ namespace GnollHackClient
                 return result;
             }
             return true;
+        }
+
+        public static async Task<bool> EmptyBackButtonPressed(object sender, EventArgs e)
+        {
+            return false;
         }
 
         public static SKTypeface DiabloTypeface { get; set; }
