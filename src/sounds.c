@@ -5529,6 +5529,7 @@ struct monst* mtmp;
 
     int sellable_item_count = 0;
     struct obj* otmp;
+    int i;
 
     menu_item* pick_list = (menu_item*)0;
     winid win;
@@ -5554,7 +5555,6 @@ struct monst* mtmp;
             classhasitems[(int)otmp->oclass] = TRUE;
     }
 
-    int i;
     for(i = 0; i < MAX_OBJECT_CLASSES; i++)
     {
         char oclass = classorder[i];
@@ -5631,7 +5631,6 @@ struct monst* mtmp;
         else if (!Deaf && is_speaking_monster(mtmp->data))
         {
             char itembuf[BUFSZ];
-            struct obj* otmp;
             if (sellable_item_count == 1 && (otmp = get_first_sellable_item(mtmp)) != 0)
                 strcpy(itembuf, iflags.using_gui_sounds ? "item" : cxname(otmp));
             else
@@ -5654,7 +5653,6 @@ struct monst* mtmp;
         if (pick_count > 1)
             itemized = (yn_query("Itemized billing?") == 'y');
 
-        int i;
         for (i = 0; i < pick_count; i++)
         {
             struct obj* item_to_buy = pick_list[i].item.a_obj;
@@ -5853,7 +5851,6 @@ struct monst* mtmp;
     int take_count = 0;
     if ((pick_count = select_menu(win, PICK_ANY, &pick_list)) > 0)
     {
-        int i;
         for (i = 0; i < pick_count; i++)
         {
             struct obj* item_to_take = pick_list[i].item.a_obj;
