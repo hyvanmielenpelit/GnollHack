@@ -524,7 +524,6 @@ boolean isprobing;
 {
     struct permonst* ptr = &mons[mnum];
     char buf[BUFSZ];
-    char buf2[BUFSZ];
     const char* txt;
     int cnt = 0;
 
