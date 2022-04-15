@@ -78,6 +78,8 @@ struct callback_procs lib_callbacks = { 0 }; /* To be set by RunGnollHack in gno
 char convert_gnhch(int ch);
 void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks);
 void monst_to_info(struct monst*, struct monst_info*);
+int get_condition_color(int cond_mask);
+
 
 /* Function definitions */
 void lib_init_nhwindows(int* argc, char** argv)

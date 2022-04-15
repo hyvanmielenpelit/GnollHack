@@ -574,7 +574,7 @@ namespace GnollHackClient.Droid
                         //    sw.Write(data);
                         //}
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         /* Likely asset at fullsourcepath did not exist */
                     }

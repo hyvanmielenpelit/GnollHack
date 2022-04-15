@@ -4,6 +4,7 @@
 
 #include "config.h"
 #include "layer.h"
+#include "general.h"
 
 #ifndef CALLBACK_H
 #define CALLBACK_H
@@ -116,7 +117,7 @@ typedef VoidConstCharBooleanCallback PutMsgHistoryCallback;
 typedef VoidVoidCallback StatusInitCallback;
 typedef VoidVoidCallback StatusFinishCallback;
 typedef VoidIntConstCharPtrConstCharPtrBooleanCallback StatusEnableFieldCallback;
-typedef void(__callconv* StatusUpdateCallback)(int, char*, long, int, int, int, unsigned long*);
+typedef void(__callconv* StatusUpdateCallback)(int, char*, long, int, int, int, short*);
 typedef BooleanVoidCallback CanSuspendYesCallback;
 typedef VoidVoidCallback StretchWindowCallback;
 typedef void(__callconv* SetAnimationTimerCallback)(unsigned long);
