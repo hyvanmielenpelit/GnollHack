@@ -520,7 +520,7 @@ STATIC_OVL
 void print_corpse_properties(datawin, mnum, isprobing)
 winid datawin;
 int mnum;
-boolean isprobing;
+boolean isprobing UNUSED;
 {
     struct permonst* ptr = &mons[mnum];
     char buf[BUFSZ];

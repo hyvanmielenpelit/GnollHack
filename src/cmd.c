@@ -1055,13 +1055,11 @@ domonsterability(VOID_ARGS)
 
     menu_item* pick_list = (menu_item*)0;
     winid win;
-    anything any;
     int abilitynum = 0;
     int glyph, gui_glyph;
     glyph = abs(u_to_glyph());
     gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
 
-    any = zeroany;
     struct extended_create_window_info createinfo = extended_create_window_info_from_mon(&youmonst);
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_COMMAND_MENU, iflags.using_gui_tiles ? gui_glyph : glyph, createinfo);
     start_menu_ex(win, GHMENU_STYLE_MONSTER_ABILITY);

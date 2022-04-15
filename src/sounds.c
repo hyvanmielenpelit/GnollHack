@@ -971,12 +971,12 @@ STATIC_OVL int
 domonnoise_with_popup(mtmp)
 register struct monst* mtmp;
 {
-    domonnoise(mtmp, TRUE);
+    return domonnoise(mtmp, TRUE);
 }
 
 STATIC_OVL int
 domonnoise(mtmp, dopopup)
-register struct monst *mtmp;
+struct monst *mtmp;
 boolean dopopup;
 {
     char verbuf[BUFSZ];
@@ -5528,6 +5528,7 @@ struct monst* mtmp;
         return 0;
 
     int sellable_item_count = 0;
+    struct obj* otmp;
 
     menu_item* pick_list = (menu_item*)0;
     winid win;
@@ -5547,7 +5548,6 @@ struct monst* mtmp;
     const char* classorder = flags.sortpack ? flags.inv_order : def_srt_order;
     boolean classhasitems[MAX_OBJECT_CLASSES] = { 0 };
 
-    struct obj* otmp;
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
     {
         if (otmp->oclass > ILLOBJ_CLASS)
@@ -5563,7 +5563,6 @@ struct monst* mtmp;
         if (flags.sortpack && !classhasitems[(int)oclass])
             continue;
 
-        struct obj* otmp;
         for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
         {
             if ((!flags.sortpack || (flags.sortpack && otmp->oclass == oclass)) && m_sellable_item(otmp, mtmp))

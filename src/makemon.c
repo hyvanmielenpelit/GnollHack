@@ -18,7 +18,9 @@
 STATIC_DCL boolean FDECL(uncommon, (int));
 STATIC_DCL int FDECL(align_shift, (struct permonst *));
 STATIC_DCL boolean FDECL(mk_gen_ok, (int, int, int));
+#if 0
 STATIC_DCL void FDECL(m_initgrp, (struct monst *, int, int, int, int));
+#endif
 STATIC_DCL void FDECL(m_initweap, (struct monst *));
 STATIC_DCL void FDECL(m_initinv, (struct monst *));
 STATIC_DCL void FDECL(m_init_background, (struct monst*));
@@ -26,8 +28,10 @@ STATIC_DCL struct obj* FDECL(m_inityour, (struct monst*, struct obj*));
 STATIC_DCL boolean FDECL(makemon_rnd_goodpos, (struct monst *,
                                                unsigned long, coord *));
 
+#if 0
 #define m_initsgrp(mtmp, x, y, mmf) m_initgrp(mtmp, x, y, 3, mmf)
 #define m_initlgrp(mtmp, x, y, mmf) m_initgrp(mtmp, x, y, 10, mmf)
+#endif
 #define toostrong(monindx, lev) (mons[monindx].difficulty > lev)
 #define tooweak(monindx, lev) (mons[monindx].difficulty < lev)
 
@@ -82,6 +86,7 @@ struct permonst *ptr;
     return FALSE;
 }
 
+#if 0 /* OBSOLETE, replaced by encounter system --JG */
 /* make a group just like mtmp */
 STATIC_OVL void
 m_initgrp(mtmp, x, y, n, mmflags)
@@ -153,7 +158,7 @@ int x, y, n, mmflags;
         }
     }
 }
-
+#endif
 
 void
 m_initthrow(mtmp, otyp, oquan_const, oquan_rnd, poisoned, elemental_enchantment, exceptionality)
@@ -2600,7 +2605,7 @@ int level_limit;
 {
     register struct monst *mtmp;
     int mndx = NON_PM, mcham, ct, mitem;
-    boolean anymon = (!ptr);
+    //boolean anymon = (!ptr);
     boolean byyou = (x == u.ux && y == u.uy);
     boolean allow_minvent = ((mmflags & MM_NO_MONSTER_INVENTORY) == 0);
     boolean countbirth = ((mmflags & MM_NOCOUNTBIRTH) == 0);
