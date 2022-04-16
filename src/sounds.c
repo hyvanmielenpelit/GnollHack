@@ -67,6 +67,7 @@ STATIC_DCL int FDECL(do_chat_orc_hermit3_luckstone, (struct monst*));
 
 STATIC_DCL int FDECL(do_chat_quantum_experiments, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_large_circular_dungeon, (struct monst*));
+STATIC_DCL int FDECL(do_chat_quantum_special_wand, (struct monst*));
 
 #define quantum_told_experiments special_talk_flag1
 
@@ -2352,6 +2353,23 @@ dochat()
             {
                 strcpy(available_chat_list[chatnum].name, "Ask about the Large Circular Dungeon");
                 available_chat_list[chatnum].function_ptr = &do_chat_quantum_large_circular_dungeon;
+                available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+                any = zeroany;
+                any.a_char = available_chat_list[chatnum].charnum;
+
+                add_menu(win, NO_GLYPH, &any,
+                    any.a_char, 0, ATR_NONE,
+                    available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+                chatnum++;
+            }
+
+            struct obj* tpwand = carrying(WAN_TOWN_PORTAL);
+            if (tpwand)
+            {
+                Sprintf(available_chat_list[chatnum].name, "Ask about %s", thesimpleoname(tpwand));
+                available_chat_list[chatnum].function_ptr = &do_chat_quantum_special_wand;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
                 any = zeroany;
@@ -7505,7 +7523,8 @@ struct monst* mtmp;
 
     if (mtmp->mspec_used)
     {
-        pline("%s explains something about your wave function having already collapsed.  Sounds pretty serious!", Monnam(mtmp));
+        pline("%s explains something about your wave function having already collapsed.", Monnam(mtmp));
+        pline1("It all sounds pretty serious!");
         return 0;
     }
 
@@ -8368,6 +8387,26 @@ struct monst* mtmp;
         0 };
 
     hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_LARGE_CIRCULAR_DUNGEON);
+    return 1;
+}
+
+
+STATIC_OVL int
+do_chat_quantum_special_wand(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !m_speak_check(mtmp))
+        return 0;
+
+    const char* linearray[4] = {
+        "That is a wand of town portal.",
+        "It enables you to teleport back and forth between this town and your original location.",
+        "I supply them to local inhabitants and travelers alike.",
+        0 };
+
+    hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_SPECIAL_WAND);
+    makeknown(WAN_TOWN_PORTAL);
+
     return 1;
 }
 

@@ -1581,6 +1581,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Teleportation", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Quantum Experiments", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Large Circular Dungeon", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Special Wand", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Standard Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Special Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Item Trading", 1.0f },
