@@ -7770,6 +7770,31 @@ struct monst* mtmp;
         return 0;
 
     int spell_otyps[10] = { SPE_MINOR_HEALING, SPE_HEALING, SPE_EXTRA_HEALING, SPE_GREATER_HEALING, 0, 0, 0, 0, 0, 0 };
+    switch (EPRI(mtmp)->shralign)
+    {
+    case A_NONE:
+        spell_otyps[4] = SPE_RAISE_SKELETON_WARRIOR;
+        spell_otyps[5] = SPE_DRAIN_LEVEL;
+        spell_otyps[6] = SPE_SUMMON_DEMON;
+        break;
+    case A_LAWFUL:
+        spell_otyps[4] = SPE_CURE_SICKNESS;
+        spell_otyps[5] = SPE_CURE_BLINDNESS;
+        spell_otyps[6] = SPE_CELESTIAL_DOVE;
+        break;
+    case A_NEUTRAL:
+        spell_otyps[4] = SPE_STICK_TO_SNAKE;
+        spell_otyps[5] = SPE_CREATE_FOOD;
+        spell_otyps[6] = SPE_CREATE_CLAY_GOLEM;
+        break;
+    case A_CHAOTIC:
+        spell_otyps[4] = SPE_RAISE_MINOR_ZOMBIE;
+        spell_otyps[5] = SPE_RAISE_SKELETON;
+        spell_otyps[6] = SPE_REPLENISH_UNDEATH;
+        break;
+    default:
+        break;
+    }
 
     return spell_teaching(mtmp, spell_otyps);
 }
