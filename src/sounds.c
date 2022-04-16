@@ -7559,13 +7559,13 @@ struct monst* mtmp;
     Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "velocity suddenly seems very uncertain!");
     if (rn2(2)) 
     {
-        play_sfz_sound(SFX_ACQUIRE_SLOW);
+        play_sfx_sound(SFX_ACQUIRE_SLOW);
         incr_itimeout(&HSlowed, 50 + d(1, 50));
         You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "seem slower.");
     }
     else 
     {
-        play_sfz_sound(SFX_ACQUIRE_HASTE);
+        play_sfx_sound(SFX_ACQUIRE_HASTE);
         incr_itimeout(!rn2(3) ? &HUltra_fast : !rn2(2) ? &HVery_fast  : &HFast, 50 + d(1, 50));
         You_ex(ATR_NONE, CLR_MSG_POSITIVE, "seem faster.");
     }
