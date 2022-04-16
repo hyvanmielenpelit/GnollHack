@@ -68,6 +68,7 @@ STATIC_DCL int FDECL(do_chat_orc_hermit3_luckstone, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_experiments, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_large_circular_dungeon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_special_wand, (struct monst*));
+STATIC_DCL int FDECL(do_chat_quantum_disintegration_wand, (struct monst*));
 
 #define quantum_told_experiments special_talk_flag1
 
@@ -2372,6 +2373,22 @@ dochat()
             {
                 Sprintf(available_chat_list[chatnum].name, "Ask about %s", thesimpleoname(tpwand));
                 available_chat_list[chatnum].function_ptr = &do_chat_quantum_special_wand;
+                available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+                any = zeroany;
+                any.a_char = available_chat_list[chatnum].charnum;
+
+                add_menu(win, NO_GLYPH, &any,
+                    any.a_char, 0, ATR_NONE,
+                    available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+                chatnum++;
+            }
+            struct obj* diswand = carrying(WAN_DISINTEGRATION);
+            if (diswand)
+            {
+                Sprintf(available_chat_list[chatnum].name, "Ask about %s", thesimpleoname(diswand));
+                available_chat_list[chatnum].function_ptr = &do_chat_quantum_disintegration_wand;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
                 any = zeroany;
@@ -8416,6 +8433,24 @@ struct monst* mtmp;
 
     hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_SPECIAL_WAND);
     makeknown(WAN_TOWN_PORTAL);
+
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_quantum_disintegration_wand(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !m_speak_check(mtmp))
+        return 0;
+
+    const char* linearray[3] = {
+        "That is a wand of disintegration.",
+        "It has been constructed using our research on planar rifts and other holes in the fabric of reality.",
+        0 };
+
+    hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_DISINTEGRATION_WAND);
+    makeknown(WAN_DISINTEGRATION);
 
     return 1;
 }
