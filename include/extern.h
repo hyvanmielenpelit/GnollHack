@@ -3254,7 +3254,7 @@ E int FDECL(use_saddle, (struct obj *));
 E void FDECL(put_saddle_on_mon, (struct obj *, struct monst *));
 E boolean FDECL(can_ride, (struct monst *));
 E int NDECL(doride);
-E boolean FDECL(mount_steed, (struct monst *, BOOLEAN_P));
+E boolean FDECL(mount_steed, (struct monst *));
 E void NDECL(exercise_steed);
 E void NDECL(kick_steed);
 E void FDECL(dismount_steed, (int));

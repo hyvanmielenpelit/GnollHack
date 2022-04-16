@@ -2048,11 +2048,13 @@ const char* nomoodstr;
 
     if (!mtmp) 
     {
+        play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
         There("is no one here to talk to.");
         return 0;
     }
     else if (!is_peaceful(mtmp) && !is_quantum_mechanic(mtmp->data)) 
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s is in no mood for %s.", Monnam(mtmp), nomoodstr);
         return 0;
     }
@@ -7413,10 +7415,11 @@ struct monst* mtmp;
     {
     case NPC_QUANTUM_MECHANIC:
     {
-        const char* linearray[4] = {
-            "Bear always these tactics in mind:",
-            "You can use a wand of teleportation to teleport monsters away. This works even on a non-teleport level, where you cannot teleport yourself.",
-            "You cannot level teleport while carrying the Amulet of Yendor.",
+        const char* linearray[5] = {
+            "After years of study, we have come up with the following research results:",
+            "First, it is elementary that a wand of teleportation can be used to teleport monsters away.",
+            "However, it is less well-known that this works even on a non-teleport level, on which you cannot teleport yourself.",
+            "Second, our results indicate that the Amulet of Yendor will prevent its owner from teleporting across dungeon levels.",
             0 };
 
         hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_TELEPORTATION);
@@ -7514,7 +7517,9 @@ struct monst* mtmp;
     umoney = money_cnt(invent);
 
 
-    if (!mtmp) {
+    if (!mtmp) 
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         There("is no one here to talk to.");
         return 0;
     }
@@ -7554,11 +7559,13 @@ struct monst* mtmp;
     Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "velocity suddenly seems very uncertain!");
     if (rn2(2)) 
     {
+        play_sfz_sound(SFX_ACQUIRE_SLOW);
         incr_itimeout(&HSlowed, 50 + d(1, 50));
         You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "seem slower.");
     }
     else 
     {
+        play_sfz_sound(SFX_ACQUIRE_HASTE);
         incr_itimeout(!rn2(3) ? &HUltra_fast : !rn2(2) ? &HVery_fast  : &HFast, 50 + d(1, 50));
         You_ex(ATR_NONE, CLR_MSG_POSITIVE, "seem faster.");
     }
@@ -7590,6 +7597,7 @@ struct monst* mtmp;
 
 
     if (!mtmp) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         There("is no one here to talk to.");
         return 0;
     }
@@ -8367,6 +8375,7 @@ struct monst* mtmp;
     const char* linearray[4] = {
         "Deep underneath this town, my colleagues are conducting delicate quantum experiments in the Large Circular Dungeon.",
         "But beware, it takes but a minuscule disturbance to ruin their carefully constructed entanglements.",
+        "Nothing would anger them more than somebody making them lose years of research.",
         0 };
 
     hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_EXPERIMENTS);
@@ -8383,7 +8392,7 @@ struct monst* mtmp;
 
     const char* linearray[4] = {
         "The Large Circular Dungeon is massive circular hallway constructed to conduct our most demanding quantum experiments.",
-        "It was built several years ago using special tunneling techniques involving violet fungi and purple worms.",
+        "The entire dungeon is one gigantic quantum apparatus, originally carved into its great size by tamed purple worms.",
         "Since its completion, it has provided us with invaluable insights into teleportation and formation of planar rifts, among other discoveries.",
         0 };
 
@@ -8402,7 +8411,7 @@ struct monst* mtmp;
     const char* linearray[4] = {
         "That is a wand of town portal.",
         "It enables you to teleport back and forth between this town and your original location.",
-        "I supply them to local inhabitants and travelers alike.",
+        "I supply them to local inhabitants and travellers alike.",
         0 };
 
     hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_SPECIAL_WAND);

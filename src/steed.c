@@ -196,8 +196,6 @@ struct monst *mtmp;
 int
 doride()
 {
-    boolean forcemount = FALSE;
-
     if (u.usteed) 
     {
         dismount_steed(DISMOUNT_BYCHOICE);
@@ -205,9 +203,7 @@ doride()
     else if (getdir((char *) 0) && isok(u.ux + u.dx, u.uy + u.dy))
     {
         update_u_facing(TRUE);
-        if (wizard && yn_query("Force the mount to succeed?") == 'y')
-            forcemount = TRUE;
-        return (mount_steed(m_at(u.ux + u.dx, u.uy + u.dy), forcemount));
+        return (mount_steed(m_at(u.ux + u.dx, u.uy + u.dy)));
     }
     else
     {
@@ -218,9 +214,8 @@ doride()
 
 /* Start riding, with the given monster */
 boolean
-mount_steed(mtmp, force)
+mount_steed(mtmp)
 struct monst *mtmp; /* The animal */
-boolean force;      /* Quietly force this animal */
 {
     struct obj *otmp;
     char buf[BUFSZ];
@@ -232,6 +227,35 @@ boolean force;      /* Quietly force this animal */
         play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are already riding %s.", mon_nam(u.usteed));
         return (FALSE);
+    }
+
+    /* Can the player reach and see the monster? */
+    boolean force = FALSE;      /* Quietly force this animal */
+    boolean forceasked = FALSE;      /* Quietly force this animal */
+    boolean steedunseen = mtmp && ((Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters)) || mtmp->mundetected
+        || M_AP_TYPE(mtmp) == M_AP_FURNITURE
+        || M_AP_TYPE(mtmp) == M_AP_OBJECT);
+
+    /* We have two questions to avoid having two plines for not seeing anything */
+    if (wizard && steedunseen)
+    {
+        forceasked = TRUE;
+        if (yn_query("Force the mount to succeed?") == 'y')
+            force = TRUE;
+    }
+
+    if (!mtmp || steedunseen)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT_SEE_SPOT);
+        pline("I see nobody there.");
+        return (FALSE);
+    }
+
+    if (wizard && !forceasked)
+    {
+        forceasked = TRUE;
+        if (yn_query("Force the mount to succeed?") == 'y')
+            force = TRUE;
     }
 
     /* Is the player in the right form? */
@@ -264,13 +288,6 @@ boolean force;      /* Quietly force this animal */
             return (FALSE);
     }
 
-    if (Upolyd && (!humanoid(youmonst.data) || verysmall(youmonst.data)
-                   || bigmonst(youmonst.data) || slithy(youmonst.data)))
-    {
-        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "won't fit on a saddle.");
-        return (FALSE);
-    }
     if (!force && (near_capacity() > SLT_ENCUMBER))
     {
         play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
@@ -278,15 +295,6 @@ boolean force;      /* Quietly force this animal */
         return (FALSE);
     }
 
-    /* Can the player reach and see the monster? */
-    if (!mtmp || (!force && ((Blind && !(Blind_telepat || Unblind_telepat || Detect_monsters)) || mtmp->mundetected
-                             || M_AP_TYPE(mtmp) == M_AP_FURNITURE
-                             || M_AP_TYPE(mtmp) == M_AP_OBJECT)))
-    {
-        play_sfx_sound(SFX_GENERAL_CANNOT_SEE_SPOT);
-        pline("I see nobody there.");
-        return (FALSE);
-    }
     if (is_long_worm_with_tail(mtmp->data)
         && (u.ux + u.dx != mtmp->mx || u.uy + u.dy != mtmp->my))
     {
@@ -299,6 +307,7 @@ boolean force;      /* Quietly force this animal */
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "couldn't ride %s, let alone its tail.", a_monnam(mtmp));
         return FALSE;
     }
+
     if (u.uswallow || u.ustuck || u.utrap || Punished
         || !test_move(u.ux, u.uy, mtmp->mx - u.ux, mtmp->my - u.uy,
                       TEST_MOVE)) 
@@ -319,6 +328,16 @@ boolean force;      /* Quietly force this animal */
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is not saddled.", Monnam(mtmp));
         return (FALSE);
     }
+
+    /* Steed has saddle, check if you fit */
+    if (Upolyd && (!humanoid(youmonst.data) || verysmall(youmonst.data)
+        || bigmonst(youmonst.data) || slithy(youmonst.data)))
+    {
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "won't fit on a saddle.");
+        return (FALSE);
+    }
+
     ptr = mtmp->data;
     if (touch_petrifies(ptr) && !Stone_resistance)
     {
