@@ -1807,6 +1807,15 @@ struct monst* mtmp;
         putstr(datawin, ATR_INDENT_AT_DASH, txt);
     }
 
+    if (is_non_eater(mtmp->data))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Does not eat");
+        txt = buf;
+        putstr(datawin, ATR_INDENT_AT_DASH, txt);
+    }
+
+
     int zombietype = mon_to_zombie(mtmp->mnum);
     int mummytype = mon_to_mummy(mtmp->mnum);
 

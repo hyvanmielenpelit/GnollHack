@@ -751,8 +751,7 @@ long nmv; /* number of moves */
     /* check to see if it would have died as a pet; if so, go wild instead
      * of dying the next time we call dog_move()
      */
-    if (mtmp->mtame && !mtmp->isminion
-        && (carnivorous(mtmp->data) || herbivorous(mtmp->data)))
+    if (mtmp->mtame && !mtmp->isminion && !is_non_eater(mtmp->data))
     {
         struct edog *edog = EDOG(mtmp);
 

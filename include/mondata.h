@@ -215,7 +215,7 @@
     ((ptr) == &mons[PM_GREEN_SLIME] || flaming(ptr) || is_incorporeal(ptr))
 
 #define is_non_eater(ptr) \
-    ((is_not_living(ptr) || is_angel(ptr) || is_demon(ptr) || has_mflag_is_non_eater(ptr)) && !is_corpse_eater(ptr))
+    ((is_not_living(ptr) || is_angel(ptr) || is_demon(ptr) || has_mflag_is_non_eater(ptr) || (!carnivorous(ptr) && !herbivorous(ptr) && !metallivorous(ptr))) && !is_corpse_eater(ptr))
 
 
 /* Resistances and properties */

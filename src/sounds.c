@@ -933,8 +933,10 @@ void
 beg(mtmp)
 register struct monst *mtmp;
 {
-    if (!mon_can_move(mtmp)
-        || !(carnivorous(mtmp->data) || herbivorous(mtmp->data)))
+    if (!mtmp)
+        return;
+
+    if (!mon_can_move(mtmp) || is_non_eater(mtmp->data))
         return;
 
     /* presumably nearness and soundok checks have already been made */
@@ -2938,7 +2940,7 @@ dochat()
             chatnum++;
         }
 
-        if ((is_domestic(mtmp->data) || mtmp->data->mlet == S_DOG || mtmp->data->mlet == S_FELINE || mtmp->data->mlet == S_YETI || mtmp->data->mlet == S_UNICORN || is_tame(mtmp)) && (carnivorous(mtmp->data) || herbivorous(mtmp->data)))
+        if ((is_domestic(mtmp->data) || mtmp->data->mlet == S_DOG || mtmp->data->mlet == S_FELINE || mtmp->data->mlet == S_YETI || mtmp->data->mlet == S_UNICORN || is_tame(mtmp)) && !is_non_eater(mtmp->data))
         {
             /* Feeding */
             if(humanoid(mtmp->data))

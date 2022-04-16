@@ -1537,7 +1537,7 @@ boolean showheads;
            just expose the fact that this current form isn't it */
         Strcat(info, ", shapechanger");
 
-    if (is_tame(mtmp) && (carnivorous(mtmp->data) || herbivorous(mtmp->data)) && !mtmp->isminion && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime)
+    if (is_tame(mtmp) && !is_non_eater(mtmp->data) && !mtmp->isminion && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime)
     {
         struct edog* edog = EDOG(mtmp);
 

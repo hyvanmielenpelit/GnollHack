@@ -3776,9 +3776,7 @@ gethungry()
        will need to wear an Amulet of Unchanging so still burn a small
        amount of nutrition in the 'moves % 20' ring/amulet check below */
     if ((!Unaware || !rn2(10)) /* slow metabolic rate while asleep */
-        && (carnivorous(youmonst.data)
-            || herbivorous(youmonst.data)
-            || metallivorous(youmonst.data))
+        && !is_non_eater(youmonst.data)
         && !Slow_digestion)
     {
         if (Half_slow_digestion)

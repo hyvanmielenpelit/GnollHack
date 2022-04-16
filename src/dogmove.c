@@ -698,7 +698,7 @@ struct edog *edog;
 
     if (monstermoves >= edog->hungrytime + 500) 
     {
-        if (!carnivorous(mtmp->data) && !herbivorous(mtmp->data))
+        if (is_non_eater(mtmp->data)) //(!carnivorous(mtmp->data) && !herbivorous(mtmp->data))
         {
             edog->hungrytime = monstermoves + 500;
             /* but not too high; it might polymorph */
@@ -754,7 +754,7 @@ struct edog *edog;
             stop_occupation();
         }
     }
-    else if (monstermoves >= edog->hungrytime && (carnivorous(mtmp->data) || herbivorous(mtmp->data)))
+    else if (monstermoves >= edog->hungrytime && !is_non_eater(mtmp->data))
     {
         if (context.hungry_message_displayed == FALSE && (monstermoves - edog->hungrytime) % 100 == 0)
         {
