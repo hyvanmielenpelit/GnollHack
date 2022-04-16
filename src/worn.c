@@ -851,11 +851,10 @@ boolean silently;
 
     if (canspotmon(mtmp))
     {
-
         if (!could_spot_mon)
         {
             res = TRUE;
-            pline("Suddenly, you can see %s!", mon_nam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, you can see %s!", mon_nam(mtmp));
         }
         else
         {
@@ -863,12 +862,12 @@ boolean silently;
             if (is_invisible(mtmp) && !was_invisible && knowninvisible(mtmp))
             {
                 res = TRUE;
-                pline("%s turns transparent!", SavedName);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns transparent!", SavedName);
             }
             else if (!is_invisible(mtmp) && was_invisible)
             {
                 res = TRUE;
-                pline("%s body loses its transparency!", s_suffix(Monnam(mtmp)));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s body loses its transparency!", s_suffix(Monnam(mtmp)));
             }
         }
 
@@ -876,24 +875,24 @@ boolean silently;
         if (is_stoning(mtmp) && !was_stoning)
         {
             res = TRUE;
-            pline("%s starts turning into stone!", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, "%s starts turning into stone!", Monnam(mtmp));
         }
         else if (!is_stoning(mtmp) && was_stoning)
         {
             res = TRUE;
-            pline("%s stops turning into stone.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s stops turning into stone.", Monnam(mtmp));
         }
 
         /* Slimed */
         if (is_turning_into_slime(mtmp) && !was_turning_into_slime)
         {
             res = TRUE;
-            pline("%s is turning into green slime!", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, "%s is turning into green slime!", Monnam(mtmp));
         }
         else if (!is_turning_into_slime(mtmp) && was_turning_into_slime)
         {
             res = TRUE;
-            pline("%s is not turning into green slime anymore.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s is not turning into green slime anymore.", Monnam(mtmp));
         }
 
         /* Speed */
@@ -902,7 +901,8 @@ boolean silently;
             )
         {
             res = TRUE;
-            pline("%s is moving %sfaster.", Monnam(mtmp), 
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : is_peaceful(mtmp) ? CLR_MSG_ATTENTION : CLR_MSG_WARNING, 
+                "%s is moving %sfaster.", Monnam(mtmp),
                 is_fast(mtmp) || is_very_fast(mtmp) || is_ultra_fast(mtmp) || is_super_fast(mtmp) || is_lightning_fast(mtmp) ? "much " : "");
         }
         else if (
@@ -914,7 +914,8 @@ boolean silently;
             )
         {
             res = TRUE;
-            pline("%s is moving faster.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : is_peaceful(mtmp) ? CLR_MSG_ATTENTION : CLR_MSG_WARNING, 
+                "%s is moving faster.", Monnam(mtmp));
         }
         else if (
             (!is_fast(mtmp) && !is_very_fast(mtmp) && !is_ultra_fast(mtmp) && !is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_fast || was_very_fast || was_ultra_fast || was_super_fast || was_lightning_fast))
@@ -925,150 +926,150 @@ boolean silently;
             )
         {
             res = TRUE;
-            pline("%s is moving slower.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is moving slower.", Monnam(mtmp));
         }
         else if (is_slow(mtmp) && !was_slow)
         {
             res = TRUE;
             if ((prop_index == STONED || prop_index == SLIMED) && value > 0)
-                pline("%s is slowing down!", Monnam(mtmp));
+                pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "%s is slowing down!", Monnam(mtmp));
             else if (prop_index == SLOWED && value > 0)
-                pline("%s slows down%s.", Monnam(mtmp), was_fast || was_very_fast ? " a lot" : "");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s slows down%s.", Monnam(mtmp), was_fast || was_very_fast ? " a lot" : "");
             else
-                pline("%s is moving %sslower.", Monnam(mtmp), was_fast || was_very_fast ? "much " : "");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is moving %sslower.", Monnam(mtmp), was_fast || was_very_fast ? "much " : "");
         }
 
         /* Silenced */
         if (is_silenced(mtmp) && !was_silenced)
         {
             res = TRUE;
-            pline("%s voice disappears.", s_suffix(Monnam(mtmp)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s voice disappears.", s_suffix(Monnam(mtmp)));
         }
         else if (!is_silenced(mtmp) && was_silenced)
         {
             res = TRUE;
-            pline("%s voice returns.", s_suffix(Monnam(mtmp)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s voice returns.", s_suffix(Monnam(mtmp)));
         }
 
         /* Cancellation */
         if (is_cancelled(mtmp) && !was_cancelled)
         {
             res = TRUE;
-            pline("%s magic seems to stop flowing properly.", s_suffix(Monnam(mtmp)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s magic seems to stop flowing properly.", s_suffix(Monnam(mtmp)));
         }
         else if (!is_cancelled(mtmp) && was_cancelled)
         {
             res = TRUE;
-            pline("%s magic seems to start flowing properly.", s_suffix(Monnam(mtmp)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s magic seems to start flowing properly.", s_suffix(Monnam(mtmp)));
         }
 
         /* Crazedness */
         if (is_crazed(mtmp) && !was_crazed)
         {
             res = TRUE;
-            pline("%s looks crazed.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s looks crazed.", Monnam(mtmp));
         }
         else if (!is_crazed(mtmp) && was_crazed)
         {
             res = TRUE;
-            pline("%s looks more sane.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s looks more sane.", Monnam(mtmp));
         }
 
         /* Heroism */
         if (is_super_heroic(mtmp) && !was_super_heroic)
         {
             res = TRUE;
-            pline("%s looks super-heroic.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_WARNING, "%s looks super-heroic.", Monnam(mtmp));
         }
         else if (!is_super_heroic(mtmp) && was_super_heroic)
         {
             res = TRUE;
-            pline("%s looks less super-heroic than before.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks less super-heroic than before.", Monnam(mtmp));
         }
         else if (!is_heroic(mtmp) && !is_super_heroic(mtmp) && was_heroic)
         {
             res = TRUE;
-            pline("%s looks less heroic than before.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks less heroic than before.", Monnam(mtmp));
         }
         else if (is_heroic(mtmp) && !was_heroic && !was_super_heroic && !is_super_heroic(mtmp))
         {
             res = TRUE;
-            pline("%s looks heroic.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_WARNING, "%s looks heroic.", Monnam(mtmp));
         }
 
         /* Sleeping */
         if (is_sleeping(mtmp) && !was_sleeping)
         {
             res = TRUE;
-            pline("%s falls asleep.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "%s falls asleep.", Monnam(mtmp));
         }
         else if (!is_sleeping(mtmp) && was_sleeping)
         {
             res = TRUE;
-            pline("%s wakes up.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s wakes up.", Monnam(mtmp));
         }
 
         /* Paralysis */
         if (is_paralyzed(mtmp) && !was_paralyzed)
         {
             res = TRUE;
-            pline("%s is paralyzed!", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, "%s is paralyzed!", Monnam(mtmp));
         }
         else if (!is_paralyzed(mtmp) && was_paralyzed)
         {
             res = TRUE;
             if (mon_can_move(mtmp))
-                pline("%s can move again!", Monnam(mtmp));
+                pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s can move again!", Monnam(mtmp));
             else
-                pline("%s is no longer paralyzed!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is no longer paralyzed!", Monnam(mtmp));
         }
 
         /* Blindness */
         if (is_blinded(mtmp) && !was_blinded)
         {
             res = TRUE;
-            pline("%s is blinded!", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "%s is blinded!", Monnam(mtmp));
         }
         else if (!has_blinded(mtmp) && was_blinded)
         {
             res = TRUE;
-            pline("%s can see again!", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s can see again!", Monnam(mtmp));
         }
 
         /* Stunned */
         if (is_stunned(mtmp) && !was_stunned)
         {
             res = TRUE;
-            pline("%s is stunned!", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, "%s is stunned!", Monnam(mtmp));
         }
         else if (!is_stunned(mtmp) && was_stunned)
         {
             res = TRUE;
-            pline("%s looks less stunned.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s looks less stunned.", Monnam(mtmp));
         }
 
         /* Confusion */
         if (is_confused(mtmp) && !was_confused)
         {
             res = TRUE;
-            pline("%s is confused!", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "%s is confused!", Monnam(mtmp));
         }
         else if (!is_confused(mtmp) && was_confused)
         {
             res = TRUE;
-            pline("%s looks less confused.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s looks less confused.", Monnam(mtmp));
         }
 
         /* Hallucination */
         if (is_hallucinating(mtmp) && !was_hallucinating)
         {
             res = TRUE;
-            pline("%s looks seriously confused!", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, "%s looks seriously confused!", Monnam(mtmp));
         }
         else if (!is_hallucinating(mtmp) && was_hallucinating)
         {
             res = TRUE;
-            pline("%s looks more straight-minded.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s looks more straight-minded.", Monnam(mtmp));
         }
 
 
@@ -1079,20 +1080,20 @@ boolean silently;
             {
                 res = TRUE;
                 if (!mon_can_move(mtmp) || !mtmp->data->mmove)
-                    pline("%s looks frightened.", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks frightened.", Monnam(mtmp));
                 else
-                    pline("%s %sturns to flee.", Monnam(mtmp), is_fearful(mtmp) ? "looks frightened and " : "");
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %sturns to flee.", Monnam(mtmp), is_fearful(mtmp) ? "looks frightened and " : "");
             }
         }
         else if (is_fearful(mtmp) && !was_fearful && was_fleeing)
         {
             res = TRUE;
-            pline("%s looks even more frightened than before.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks even more frightened than before.", Monnam(mtmp));
         }
         else if (!is_fleeing(mtmp) && was_fleeing)
         {
             res = TRUE;
-            pline("%s %sstops fleeing.", Monnam(mtmp), !is_fearful(mtmp) && was_fearful ? "looks less frightened and " : "");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %sstops fleeing.", Monnam(mtmp), !is_fearful(mtmp) && was_fearful ? "looks less frightened and " : "");
         }
 
 
@@ -1102,21 +1103,21 @@ boolean silently;
             res = TRUE;
             pline("%s is charmed!", Monnam(mtmp));
             if (is_tame(mtmp) && !was_tame)
-                pline("%s looks friendly.", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s looks friendly.", Monnam(mtmp));
             else
-                pline("%s looks %s for a while.", Monnam(mtmp), is_tame(mtmp) ? "a little perplexed" :
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s looks %s for a while.", Monnam(mtmp), is_tame(mtmp) ? "a little perplexed" :
                     is_peaceful(mtmp) ? "a little uncomfortable" : "uncomfortable");
         }
         if (!is_charmed(mtmp) && was_charmed)
         {
             res = TRUE;
             if (is_tame(mtmp))
-                pline("%s looks perplexed for a while.", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks perplexed for a while.", Monnam(mtmp));
             else
-                pline("%s looks more in control of %sself.", Monnam(mtmp), mhim(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s looks more in control of %sself.", Monnam(mtmp), mhim(mtmp));
 
             if (!is_peaceful(mtmp) && was_peaceful)
-                pline("%s turns hostile!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s turns hostile!", Monnam(mtmp));
         }
 
 
@@ -1124,68 +1125,68 @@ boolean silently;
         if (is_levitating(mtmp) && !was_levitating)
         {
             res = TRUE;
-            pline("%s starts levitating.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s starts levitating.", Monnam(mtmp));
         }
         else if (!is_levitating(mtmp) && was_levitating)
         {
             res = TRUE;
-            pline("%s stops levitating.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stops levitating.", Monnam(mtmp));
         }
 
-        /* Levitation */
+        /* Flying */
         if (is_flying(mtmp) && !was_flying)
         {
             res = TRUE;
-            pline("%s starts flying.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s starts flying.", Monnam(mtmp));
         }
         else if (!is_flying(mtmp) && was_flying)
         {
             res = TRUE;
-            pline("%s stops flying.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stops flying.", Monnam(mtmp));
         }
 
         if (is_being_strangled(mtmp) && !was_strangled)
         {
             res = TRUE;
-            pline("%s is being strangled to death!", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, "%s is being strangled to death!", Monnam(mtmp));
         }
         else if (!is_being_strangled(mtmp) && was_strangled)
         {
             res = TRUE;
-            pline("%s stops being strangled.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s stops being strangled.", Monnam(mtmp));
         }
 
         if (is_suffocating(mtmp) && !was_suffocating)
         {
             res = TRUE;
-            pline("%s is suffocating!", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, "%s is suffocating!", Monnam(mtmp));
         }
         else if (!is_suffocating(mtmp) && was_suffocating)
         {
             res = TRUE;
-            pline("%s stops being suffocated.", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s stops being suffocated.", Monnam(mtmp));
         }
 
         if (is_sick(mtmp) && !was_sick)
         {
             res = TRUE;
-            pline("%s looks terminally ill!", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, "%s looks terminally ill!", Monnam(mtmp));
         }
         else if (!is_sick(mtmp) && was_sick)
         {
             res = TRUE;
-            pline("%s is cured from %s terminal illness.", Monnam(mtmp), mhis(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s is cured of %s terminal illness.", Monnam(mtmp), mhis(mtmp));
         }
 
         if (is_mummy_rotted(mtmp) && !was_mummy_rotted)
         {
             res = TRUE;
-            pline("%s looks severely ill!", Monnam(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, "%s looks severely ill!", Monnam(mtmp));
         }
         else if (!is_mummy_rotted(mtmp) && was_mummy_rotted)
         {
             res = TRUE;
-            pline("%s is cured from %s rot-causing illness.", Monnam(mtmp), mhis(mtmp));
+            pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, "%s is cured of %s rot-causing illness.", Monnam(mtmp), mhis(mtmp));
         }
 
         /* Cancelled */
@@ -1201,7 +1202,7 @@ boolean silently;
     else if (could_spot_mon)
     {
         res = TRUE;
-        pline("Suddenly, you cannot see %s anymore!", savedname);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, you cannot see %s anymore!", savedname);
     }
 
     if (res)
