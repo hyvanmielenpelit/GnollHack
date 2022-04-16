@@ -127,7 +127,7 @@ namespace GnollHackClient
                             var cookie = responseCookies.First(c => c.Name == ".AspNetCore.Identity.Application");
                             return cookie;
                         }
-                        catch(Exception ex)
+                        catch //(Exception ex)
                         {
                             lblStatus.TextColor = _errorColor;
                             lblStatus.Text = "Server error: Server did not return authentication cookie.";

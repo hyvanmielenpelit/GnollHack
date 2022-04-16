@@ -39,7 +39,6 @@ namespace GnollHackClient.Pages.Game
         private const float _statusbar_diffontsize = 24f;
 
 
-
         private bool _connectionAttempted = false;
         private HubConnection _connection;
         private string _connection_status = "";
@@ -2169,8 +2168,6 @@ namespace GnollHackClient.Pages.Game
                 string str = "";
                 SKRect textBounds = new SKRect();
                 SKPathEffect _pathEffect = SKPathEffect.CreateDash(_gridIntervals, 0);
-                float xText = 0;
-                float yText = 0;
 
                 textPaint.Color = SKColors.White;
                 textPaint.Typeface = App.LatoRegular;
@@ -6775,7 +6772,7 @@ namespace GnollHackClient.Pages.Game
 
                 await _connection.InvokeAsync("AddNewServerGame");
             }
-            catch (Exception ex)
+            catch
             {
                 //Error
             }
@@ -8794,8 +8791,6 @@ namespace GnollHackClient.Pages.Game
         }
 
 
-        private int _firstDrawnTextItemIdx = -1;
-        private int _lastDrawnTextItemIdx = -1;
         private float _totalTextHeight = 0;
 
         private object TextScrollLock = new object();
@@ -10131,9 +10126,6 @@ namespace GnollHackClient.Pages.Game
             float canvasheight = canvasView.CanvasSize.Height;
             float tx = 0, ty = 0;
             SKRect bounds = new SKRect();
-            float scale = 1.0f;
-            float target_scale = 1.0f;
-            float mult = 1.0f;
             float padding = 0.0f;
             float relX = 0;
             float relY = 0;

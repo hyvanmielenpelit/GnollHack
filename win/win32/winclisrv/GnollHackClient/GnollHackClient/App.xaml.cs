@@ -14,7 +14,6 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Collections;
-using Plugin.SimpleAudioPlayer;
 using System.IO.Compression;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
@@ -117,7 +116,7 @@ namespace GnollHackClient
                 _fmodService.InitializeFmod();
                 _fmodService.LoadBanks();
             }
-            catch(Exception ex)
+            catch
             {
 
             }
@@ -498,20 +497,12 @@ namespace GnollHackClient
                     _fmodService.PlayImmediateSound(GHConstants.ButtonClickGHSound, GHConstants.ButtonClickEventPath, GHConstants.ButtonClickBankId, GHConstants.ButtonClickVolume,
                         1.0f, parameterNames, parameterValues, 0, 0, 0, 0, 0UL);
                 }
-                catch (Exception ex)
+                catch
                 {
 
                 }
 
             }
-        }
-
-        private static ISimpleAudioPlayer _soundPlayer = CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
-        public static void PlayButtonClickedSoundB()
-        {
-            _soundPlayer.Load(GetStreamFromFile("Assets.test4.wav"));
-            _soundPlayer.Volume = 0.075;
-            _soundPlayer.Play();
         }
 
         private static void Player_PlaybackEnded(object sender, EventArgs e)
@@ -524,18 +515,6 @@ namespace GnollHackClient
             var stream = assembly.GetManifestResourceStream("GnollHackClient." + filename);
 
             return stream;
-        }
-
-        private static ISimpleAudioPlayer _musicPlayer = CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
-        public static void PlayIntroMusic()
-        {
-            if (_musicPlayer.IsPlaying)
-                return;
-
-            _musicPlayer.Load(GetStreamFromFile("Assets.testm.mp3"));
-            _musicPlayer.Volume = 0.25;
-            _musicPlayer.Loop = true;
-            _musicPlayer.Play();
         }
 
         public static void PlayMenuSelectSound()
@@ -632,7 +611,7 @@ namespace GnollHackClient
 
                 writesuccessful = true;
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -642,7 +621,7 @@ namespace GnollHackClient
                 if (File.Exists(testfilepath))
                     File.Delete(testfilepath);
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -663,7 +642,7 @@ namespace GnollHackClient
                     if (!Directory.Exists(targetpath))
                         Directory.CreateDirectory(targetpath);
                 }
-                catch (Exception ex)
+                catch
                 {
 
                 }

@@ -787,7 +787,38 @@ extern "C"
         return (result == FMOD_OK);
     }
 
-    FMOD_RESULT F_CALLBACK GNHEventCallback(
+    FMOD_RESULT F_CALLBACK GNHImmediateEventCallback(
+        FMOD_STUDIO_EVENT_CALLBACK_TYPE type,
+        FMOD_STUDIO_EVENTINSTANCE* event,
+        void* parameters)
+    {
+        FMOD_RESULT result;
+        if (type == FMOD_STUDIO_EVENT_CALLBACK_STOPPED)
+        {
+            void* ptr = (void*)event;
+            for (int i = 0; i < NUM_IMMEDIATE_SOUND_INSTANCES; i++)
+            {
+                if (immediateSoundInstances[i].eventInstance == (Studio::EventInstance*)ptr)
+                {
+                    immediateSoundInstances[i].finished_playing = 1;
+                    break;
+                }
+            }
+            for (int i = 0; i < NUM_LONG_IMMEDIATE_SOUND_INSTANCES; i++)
+            {
+                if (longImmediateSoundInstances[i].eventInstance == (Studio::EventInstance*)ptr)
+                {
+                    longImmediateSoundInstances[i].finished_playing = 1;
+                    break;
+                }
+            }
+
+        }
+        return FMOD_OK;
+    }
+
+
+    FMOD_RESULT F_CALLBACK GNHDialogueEventCallback(
         FMOD_STUDIO_EVENT_CALLBACK_TYPE type,
         FMOD_STUDIO_EVENTINSTANCE* event,
         void* parameters)
@@ -888,6 +919,33 @@ extern "C"
         float event_volume = eventmap.volume;
         if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
             return FALSE;
+
+        if (info.play_flags & PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING)
+        {
+            if (play_group == SOUND_PLAY_GROUP_LONG)
+            {
+                for (int i = 0; i < NUM_LONG_IMMEDIATE_SOUND_INSTANCES; i++)
+                {
+                    if (longImmediateSoundInstances[i].ghsound == soundid && longImmediateSoundInstances[i].normalVolume > 0
+                        && !longImmediateSoundInstances[i].finished_playing && !longImmediateSoundInstances[i].queued)
+                    {
+                        return TRUE;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < NUM_IMMEDIATE_SOUND_INSTANCES; i++)
+                {
+                    if (immediateSoundInstances[i].ghsound == soundid && immediateSoundInstances[i].normalVolume > 0
+                        && !immediateSoundInstances[i].finished_playing && !immediateSoundInstances[i].queued)
+                    {
+                        return TRUE;
+                    }
+                }
+            }
+        }
+
         float relevant_general_volume = (info.sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : info.sound_type == IMMEDIATE_SOUND_DIALOGUE ? general_dialogue_volume : general_sfx_volume);
 
         Studio::EventDescription* immediateSoundDescription = NULL;
@@ -961,7 +1019,9 @@ extern "C"
             longImmediateSoundInstances[0].finished_playing = 0;
 
             if (info.sound_type == IMMEDIATE_SOUND_DIALOGUE)
-                result = longImmediateSoundInstances[0].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
+                result = longImmediateSoundInstances[0].eventInstance->setCallback(GNHDialogueEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
+            else
+                result = longImmediateSoundInstances[0].eventInstance->setCallback(GNHImmediateEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
 
             /* Fallback if queued for too long */
             if (longImmediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].queued && !longImmediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].finished_playing)
@@ -1000,9 +1060,12 @@ extern "C"
             immediateSoundInstances[0].sound_type = info.sound_type;
             immediateSoundInstances[0].dialogue_mid = info.dialogue_mid;
             immediateSoundInstances[0].queued = queue_sound;
+            immediateSoundInstances[0].finished_playing = 0;
 
             if (info.sound_type == IMMEDIATE_SOUND_DIALOGUE)
-                result = immediateSoundInstances[0].eventInstance->setCallback(GNHEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
+                result = immediateSoundInstances[0].eventInstance->setCallback(GNHDialogueEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
+            else
+                result = immediateSoundInstances[0].eventInstance->setCallback(GNHImmediateEventCallback, FMOD_STUDIO_EVENT_CALLBACK_ALL);
 
             /* Fallback if queued for too long */
             if (immediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].queued && !immediateSoundInstances[NUM_LONG_IMMEDIATE_SOUND_INSTANCES - 1].finished_playing)

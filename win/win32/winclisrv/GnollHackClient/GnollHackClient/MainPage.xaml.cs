@@ -168,7 +168,7 @@ namespace GnollHackClient
             {
                 App.FmodService.LoadBanks();
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -185,7 +185,7 @@ namespace GnollHackClient
                 App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
                 App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
             }
-            catch(Exception ex)
+            catch
             {
 
             }
@@ -279,7 +279,7 @@ namespace GnollHackClient
             {
                 App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
             }
-            catch(Exception ex)
+            catch
             {
 
             }
@@ -558,7 +558,7 @@ namespace GnollHackClient
                         }
                     }
                 }
-                catch(Exception ex)
+                catch
                 {
                     //Probably did not exist
                 }

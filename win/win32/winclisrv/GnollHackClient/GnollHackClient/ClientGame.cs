@@ -819,10 +819,10 @@ namespace GnollHackClient
                 }
             }
         }
-        private obj zeroobj;
-        private objclassdata zeroobjclassdata;
-        private skill_menu_info zeroskilldata;
-        private spell_menu_info zerospelldata;
+        private readonly obj zeroobj;
+        private readonly objclassdata zeroobjclassdata;
+        private readonly skill_menu_info zeroskilldata;
+        private readonly spell_menu_info zerospelldata;
         public void ClientCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color)
         {
             ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attributes, text, presel, color, 

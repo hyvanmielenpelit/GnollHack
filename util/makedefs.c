@@ -1199,7 +1199,7 @@ const char *delim;
 {
     Sprintf(outbuf, "%d%s%d%s%d", VERSION_MAJOR, delim, VERSION_MINOR, delim,
             PATCHLEVEL);
-#ifdef BETA
+#if 0 // defined (BETA)
     Sprintf(eos(outbuf), "-%d", EDITLEVEL);
 #endif
     return outbuf;
@@ -1224,14 +1224,14 @@ const char *build_date;
     if (HOTFIXLEVEL > 0)
         Sprintf(hotfixbuf, " (Hot Fix %d)", HOTFIXLEVEL);
 
-#ifdef PREALPHA
-    Sprintf(betabuf, "%s%s%s", " Pre-Alpha", editbuf, hotfixbuf);
-#endif
-#ifdef ALPHA
-    Sprintf(betabuf, "%s%s%s", " Alpha", editbuf, hotfixbuf);
-#endif
-#ifdef BETA
+#if defined(OPEN_BETA)
     Sprintf(betabuf, "%s%s%s", " Beta", editbuf, hotfixbuf);
+#elif defined(BETA)
+    Sprintf(betabuf, "%s%s%s", " Closed Beta", editbuf, hotfixbuf);
+#elif defined(ALPHA)
+    Sprintf(betabuf, "%s%s%s", " Alpha", editbuf, hotfixbuf);
+#elif defined(PREALPHA)
+    Sprintf(betabuf, "%s%s%s", " Pre-Alpha", editbuf, hotfixbuf);
 #endif
 
     subbuf[0] = '\0';
@@ -1265,14 +1265,14 @@ const char *build_date;
     Strcpy(&subbuf[1], PORT_SUB_ID);
 #endif
     Strcpy(betabuf, "");
-#ifdef PREALPHA
-    Sprintf(betabuf, "%s%s%s", " Pre-Alpha", editbuf, hotfixbuf);
-#endif
-#ifdef ALPHA
-    Sprintf(betabuf, "%s%s%s", " Alpha", editbuf, hotfixbuf);
-#endif
-#ifdef BETA
+#if defined(OPEN_BETA)
     Sprintf(betabuf, "%s%s%s", " Beta", editbuf, hotfixbuf);
+#elif defined(BETA)
+    Sprintf(betabuf, "%s%s%s", " Closed Beta", editbuf, hotfixbuf);
+#elif defined(ALPHA)
+    Sprintf(betabuf, "%s%s%s", " Alpha", editbuf, hotfixbuf);
+#elif defined(PREALPHA)
+    Sprintf(betabuf, "%s%s%s", " Pre-Alpha", editbuf, hotfixbuf);
 #endif
     Strcat(subbuf, betabuf);
 
@@ -1871,8 +1871,14 @@ do_options()
     Fprintf(ofp, "\n%sGnollHack version %d.%d.%d%s\n",
             opt_indent,
             VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL,
-#ifdef BETA
-            " [beta]"
+#if defined(OPEN_BETA)
+        " [beta]"
+#elif defined(BETA)
+        " [closed beta]"
+#elif defined(ALPHA)
+        " [alpha]"
+#elif defined(PREALPHA)
+        " [pre-alpha]"
 #else
             ""
 #endif

@@ -23,7 +23,6 @@ namespace GnollHackClient.Droid
             base.OnCreate(savedInstanceState);
             Window.AddFlags(WindowManagerFlags.Fullscreen);
             Window.ClearFlags(WindowManagerFlags.ForceNotFullscreen);
-            Rg.Plugins.Popup.Popup.Init(this);
             MessagingCenter.Subscribe<Object>(this, "HideOsNavigationBar", (sender) =>
             {
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
@@ -75,9 +74,9 @@ namespace GnollHackClient.Droid
 
         public override async void OnBackPressed()
         {
-            if(await App.OnBackButtonPressed())
+            if (await App.OnBackButtonPressed())
             {
-                Rg.Plugins.Popup.Popup.SendBackPressed(base.OnBackPressed);
+                base.OnBackPressed();
             }
         }
     }
