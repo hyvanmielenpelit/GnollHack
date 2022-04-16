@@ -7598,7 +7598,8 @@ struct monst* mtmp;
 
     if (mtmp->mspec_used)
     {
-        pline("%s explains something about your wave function having already collapsed.  Sounds pretty serious!", Monnam(mtmp));
+        pline("%s explains something about your wave function having already collapsed.", Monnam(mtmp));
+        pline1("It all sounds pretty serious!");
         return 0;
     }
 
