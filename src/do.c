@@ -577,7 +577,7 @@ boolean isprobing UNUSED;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
 
-        if (mnum == PM_CHAMELEON || mnum == PM_DOPPELGANGER)
+        if (mnum == PM_CHAMELEON || mnum == PM_DOPPELGANGER || mnum == PM_SANDESTIN)
         {
             cnt++;
             Sprintf(buf, "  %d - Causes polymorph", cnt);
@@ -609,7 +609,7 @@ boolean isprobing UNUSED;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
 
-        if (is_bat(ptr))
+        if (is_bat(ptr) || mnum == PM_STALKER)
         {
             cnt++;
             Sprintf(buf, "  %d - Causes stun", cnt);
