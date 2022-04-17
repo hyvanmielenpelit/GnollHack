@@ -1583,6 +1583,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Large Circular Dungeon", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Special Wand", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Disintegration Wand", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Teleportation Wand", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Standard Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Special Dialogue", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/NPCs/Quantum Mechanic/Item Trading", 1.0f },
@@ -16549,9 +16550,10 @@ struct monst* mtmp;
 }
 
 void
-play_hermit_dialogue_line(mtmp, soundid, lineid)
+play_hermit_dialogue_line(mtmp, soundid, soundindextype, lineid)
 struct monst* mtmp;
 enum ghsound_types soundid;
+uchar soundindextype;
 int lineid;
 {
     if (!mtmp || Deaf)
@@ -16560,7 +16562,16 @@ int lineid;
     struct ghsound_immediate_info info = { 0 };
     float volume = 1.0f;
     info.ghsound = soundid;
-    info.parameter_names[0] = "LineIndex";
+    switch (soundindextype)
+    {
+    default:
+    case 0:
+        info.parameter_names[0] = "LineIndex";
+        break;
+    case 1:
+        info.parameter_names[0] = "MsgIndex";
+        break;
+    }
     info.parameter_values[0] = (float)lineid;
     info.parameter_names[1] = (char*)0;
 

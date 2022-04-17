@@ -19,7 +19,9 @@ STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
 
 STATIC_DCL void FDECL(hermit_talk, (struct monst*, const char**, enum ghsound_types));
+STATIC_DCL void FDECL(hermit_talk_with_startindex, (struct monst*, const char**, enum ghsound_types, UCHAR_P, int));
 STATIC_DCL void FDECL(popup_talk, (struct monst*, const char**, enum ghsound_types, int, int, BOOLEAN_P, BOOLEAN_P));
+STATIC_DCL void FDECL(popup_talk_core, (struct monst*, const char**, enum ghsound_types, UCHAR_P, int, int, int, BOOLEAN_P, BOOLEAN_P));
 
 STATIC_DCL int FDECL(do_chat_hermit_dungeons, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_quests, (struct monst*));
@@ -69,6 +71,7 @@ STATIC_DCL int FDECL(do_chat_quantum_experiments, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_large_circular_dungeon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_special_wand, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quantum_disintegration_wand, (struct monst*));
+STATIC_DCL int FDECL(do_chat_quantum_teleportation_wand, (struct monst*));
 
 #define quantum_told_experiments special_talk_flag1
 
@@ -2369,7 +2372,7 @@ dochat()
             }
 
             struct obj* tpwand = carrying(WAN_TOWN_PORTAL);
-            if (tpwand)
+            if (tpwand && !objects[WAN_TOWN_PORTAL].oc_name_known)
             {
                 Sprintf(available_chat_list[chatnum].name, "Ask about %s", thesimpleoname(tpwand));
                 available_chat_list[chatnum].function_ptr = &do_chat_quantum_special_wand;
@@ -2385,10 +2388,26 @@ dochat()
                 chatnum++;
             }
             struct obj* diswand = carrying(WAN_DISINTEGRATION);
-            if (diswand)
+            if (diswand && !objects[WAN_DISINTEGRATION].oc_name_known)
             {
                 Sprintf(available_chat_list[chatnum].name, "Ask about %s", thesimpleoname(diswand));
                 available_chat_list[chatnum].function_ptr = &do_chat_quantum_disintegration_wand;
+                available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+                any = zeroany;
+                any.a_char = available_chat_list[chatnum].charnum;
+
+                add_menu(win, NO_GLYPH, &any,
+                    any.a_char, 0, ATR_NONE,
+                    available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+                chatnum++;
+            }
+            struct obj* telewand = carrying(WAN_TELEPORTATION);
+            if (telewand && !objects[WAN_TELEPORTATION].oc_name_known)
+            {
+                Sprintf(available_chat_list[chatnum].name, "Ask about %s", thesimpleoname(telewand));
+                available_chat_list[chatnum].function_ptr = &do_chat_quantum_teleportation_wand;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
 
                 any = zeroany;
@@ -8344,10 +8363,35 @@ enum ghsound_types soundid;
 }
 
 STATIC_OVL void
+hermit_talk_with_startindex(mtmp, linearray, soundid, soundindextype, startindex)
+struct monst* mtmp;
+const char** linearray;
+enum ghsound_types soundid;
+uchar soundindextype; /* 0 = LineIndex, 1 = MsgIndex */
+int startindex;
+{
+    popup_talk_core(mtmp, linearray, soundid, soundindextype, startindex, ATR_NONE, NO_COLOR, TRUE, TRUE);
+}
+
+STATIC_OVL void
 popup_talk(mtmp, linearray, soundid, attr, color, printtext, addquotes)
 struct monst* mtmp;
 const char** linearray;
 enum ghsound_types soundid;
+int attr, color;
+boolean printtext;
+boolean addquotes;
+{
+    popup_talk_core(mtmp, linearray, soundid, 0, 0, attr, color, printtext, addquotes);
+}
+
+STATIC_OVL void
+popup_talk_core(mtmp, linearray, soundid, soundindextype, startlineidx, attr, color, printtext, addquotes)
+struct monst* mtmp;
+const char** linearray;
+enum ghsound_types soundid;
+uchar soundindextype; /* 0 = line indexed, 1 = msg indexed */
+int startlineidx; /* Index number to start */
 int attr, color;
 boolean printtext;
 boolean addquotes;
@@ -8367,7 +8411,7 @@ boolean addquotes;
         {
             hermit_txt = linearray[idx];
             if (soundid != GHSOUND_NONE)
-                play_hermit_dialogue_line(mtmp, soundid, idx);
+                play_hermit_dialogue_line(mtmp, soundid, soundindextype, startlineidx + idx);
             if (printtext)
             {
                 if(addquotes)
@@ -8451,6 +8495,24 @@ struct monst* mtmp;
 
     hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_DISINTEGRATION_WAND);
     makeknown(WAN_DISINTEGRATION);
+
+    return 1;
+}
+
+STATIC_OVL int
+do_chat_quantum_teleportation_wand(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !m_speak_check(mtmp))
+        return 0;
+
+    const char* linearray[3] = {
+        "That is a wand of teleportation.",
+        "You can use it to teleport yourself and others to another location.",
+        0 };
+
+    hermit_talk(mtmp, linearray, GHSOUND_QUANTUM_TELEPORTATION_WAND);
+    makeknown(WAN_TELEPORTATION);
 
     return 1;
 }
