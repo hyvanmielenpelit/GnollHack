@@ -6383,6 +6383,13 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             u.uevent.quantum_portal_hint = 1;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you feel as if the fabric of reality stretches back and forth a bit, but then the sensation passes.");
         }
+
+        if (context.game_difficulty < 0 && level_difficulty() >= MINIMUM_DGN_LEVEL_POLY_TRAP && !u.uevent.polymorph_trap_warning)
+        {
+            u.uevent.polymorph_trap_warning = 1;
+            play_sfx_sound(SFX_WARNING);
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Warning - Polymorph traps can be present on dungeon level %d and on deeper levels.", MINIMUM_DGN_LEVEL_POLY_TRAP);
+        }
     }
 
     if (windowprocs.wincap2 & WC2_SCREEN_TEXT)

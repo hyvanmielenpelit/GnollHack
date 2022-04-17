@@ -808,6 +808,8 @@ enum ghsound_types {
     GHSOUND_SPLASH_HIT,
     GHSOUND_GUILTY,
     GHSOUND_CAITIFF,
+    GHSOUND_WARNING,
+    GHSOUND_HINT,
 
     GHSOUND_INTRO_TEXT,
     GHSOUND_COM_PAGER,
@@ -2066,6 +2068,8 @@ enum sfx_sound_types {
     SFX_SPLASH_HIT,
     SFX_GUILTY,
     SFX_CAITIFF,
+    SFX_WARNING,
+    SFX_HINT,
     MAX_SFX_SOUND_TYPES
 };
 

@@ -2495,7 +2495,8 @@ mapseen *mptr;
     if (mptr->flags.oracle || mptr->flags.bigroom || mptr->flags.roguelevel
         || mptr->flags.castle || mptr->flags.valley || mptr->flags.msanctum || mptr->flags.special_level
         || mptr->flags.quest_summons || mptr->flags.questing
-        || mptr->flags.modron_hint_shown || mptr->flags.yacc_hint_shown || mptr->flags.quantum_hint_shown)
+        || mptr->flags.modron_hint_shown || mptr->flags.yacc_hint_shown || mptr->flags.quantum_hint_shown 
+        || mptr->flags.lost_world_hint_shown)
         return TRUE;
     /* when in Sokoban, list all sokoban levels visited; when not in it,
        list any visited Sokoban level which remains unsolved (will usually

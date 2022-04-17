@@ -277,10 +277,12 @@ typedef struct mapseen {
            with entry portal and is reset once quest has been finished;
            questing is for quest home (level 1) */
         Bitfield(quest_summons, 1); /* heard summons from leader */
+        Bitfield(questing, 1); /* quest leader has unlocked quest stairs */
+        /* Hints about other special dungeons */
         Bitfield(modron_hint_shown, 1); /* received hint for the modron level */
         Bitfield(yacc_hint_shown, 1); /* received hint for the Hellish Pastures level */
         Bitfield(quantum_hint_shown, 1); /* received hint for the Large Circular Dungeon level */
-        Bitfield(questing, 1); /* quest leader has unlocked quest stairs */
+        Bitfield(lost_world_hint_shown, 1); /* reserved -- received hint for the Lost World level */
     } flags;
     /* custom naming */
     char *custom;

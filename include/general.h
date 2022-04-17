@@ -755,6 +755,14 @@ enum yn_function_styles {
 #define MIND_BLAST_MANA_COST 10
 #define UNICORN_HORN_MANA_COST 25
 
+/* Minimum dungeon levels for traps */
+#define MINIMUM_DGN_LEVEL_MEDIUM_LEVEL  2
+#define MINIMUM_DGN_LEVEL_LEVELTELE     5
+#define MINIMUM_DGN_LEVEL_SPIKED_PIT    5
+#define MINIMUM_DGN_LEVEL_LANDMINE      6
+#define MINIMUM_DGN_LEVEL_WEB           7
+#define MINIMUM_DGN_LEVEL_POLY_TRAP     8
+
 /*
  * type nhsym: loadable symbols go into this type
  */

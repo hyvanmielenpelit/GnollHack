@@ -23,6 +23,8 @@ namespace GnollHackClient
     {
         private static SKColor GHDarkGray = new SKColor(96, 96, 96);
         private static SKColor GHTitleGold = new SKColor(0xD4, 0xA0, 0x17);
+        private static SKColor GHGreen = new SKColor(0, 255, 0);
+        private static SKColor GHRed = new SKColor(255, 32, 32);
 
         public static SKColor NHColor2SKColor(int nhclr)
         {
@@ -50,10 +52,10 @@ namespace GnollHackClient
                         res = revertblackwhite ? SKColors.White : GHDarkGray;
                         break;
                     case nhcolor.CLR_RED:
-                        res = SKColors.Red;
+                        res = revertblackwhite ? SKColors.Red : GHRed;
                         break;
                     case nhcolor.CLR_GREEN:
-                        res = SKColors.Green;
+                        res = revertblackwhite ? SKColors.Green : GHGreen;
                         break;
                     case nhcolor.CLR_BROWN:
                         res = SKColors.Brown;

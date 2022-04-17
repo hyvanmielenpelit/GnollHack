@@ -1718,11 +1718,11 @@ namespace GnollHackClient.Pages.Game
             TipView.IsVisible = true;
             TipView.InvalidateSurface();
         }
-        private object msgHistoryLock = new object();
+        private object _msgHistoryLock = new object();
         private List<GHMsgHistoryItem> _msgHistory = null;
         private void PrintHistory(List<GHMsgHistoryItem> msgHistory)
         {
-            lock (msgHistoryLock)
+            lock (_msgHistoryLock)
             {
                 _msgHistory = msgHistory;
             }
@@ -4057,7 +4057,7 @@ namespace GnollHackClient.Pages.Game
                                     {
                                         _messageSmallestTop = canvasheight;
                                     }
-                                    lock (msgHistoryLock)
+                                    lock (_msgHistoryLock)
                                     {
                                         if (_msgHistory != null)
                                         {

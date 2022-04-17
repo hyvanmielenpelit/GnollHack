@@ -1776,28 +1776,28 @@ coord *tm;
                 switch (kind) {
                 case ROLLING_BOULDER_TRAP:
                 case SLP_GAS_TRAP:
-                    if (lvl < 2)
+                    if (lvl < MINIMUM_DGN_LEVEL_MEDIUM_LEVEL)
                         kind = NO_TRAP;
                     break;
                 case LEVEL_TELEP:
-                    if (lvl < 5 || level.flags.noteleport)
+                    if (lvl < MINIMUM_DGN_LEVEL_LEVELTELE || level.flags.noteleport)
                         kind = NO_TRAP;
                     break;
                 case SPIKED_PIT:
-                    if (lvl < 5)
+                    if (lvl < MINIMUM_DGN_LEVEL_SPIKED_PIT)
                         kind = NO_TRAP;
                     break;
                 case LANDMINE:
-                    if (lvl < 6)
+                    if (lvl < MINIMUM_DGN_LEVEL_LANDMINE)
                         kind = NO_TRAP;
                     break;
                 case WEB:
-                    if (lvl < 7)
+                    if (lvl < MINIMUM_DGN_LEVEL_WEB)
                         kind = NO_TRAP;
                     break;
                 case STATUE_TRAP:
                 case POLY_TRAP:
-                    if (lvl < 8)
+                    if (lvl < MINIMUM_DGN_LEVEL_POLY_TRAP)
                         kind = NO_TRAP;
                     break;
                 case FIRE_TRAP:
