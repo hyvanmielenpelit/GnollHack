@@ -1557,6 +1557,7 @@ dopay()
             Strcat(sbuf, "for the use of merchandise.");
         pline1(sbuf);
         if (umoney + eshkp->credit < dtmp) {
+            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             pline("But you don't%s have enough gold%s.",
                   stashed_gold ? " seem to" : "",
                   eshkp->credit ? " or credit" : "");
@@ -1566,11 +1567,13 @@ dopay()
                 eshkp->credit -= dtmp;
                 eshkp->debit = 0L;
                 eshkp->loan = 0L;
+                play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
                 Your("debt is covered by your credit.");
             } else if (!eshkp->credit) {
                 money2mon(shkp, dtmp);
                 eshkp->debit = 0L;
                 eshkp->loan = 0L;
+                play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
                 You("pay that debt.");
                 context.botl = 1;
             } else {
@@ -1579,6 +1582,7 @@ dopay()
                 money2mon(shkp, dtmp);
                 eshkp->debit = 0L;
                 eshkp->loan = 0L;
+                play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
                 pline("That debt is partially offset by your credit.");
                 You("pay the remainder.");
                 context.botl = 1;
@@ -1781,6 +1785,7 @@ boolean itemize;
         }
     }
     if (buy == PAY_BUY && umoney + ESHK(shkp)->credit < ltmp) {
+        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
         You("don't%s have gold%s enough to pay for %s.",
             stashed_gold ? " seem to" : "",
             (ESHK(shkp)->credit > 0L) ? " or credit" : "",

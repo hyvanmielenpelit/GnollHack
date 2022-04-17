@@ -1079,11 +1079,11 @@ boolean verbose;
         if (Hallucination && had_hallucination)
         {
             if (u.uroleplay.blind) {
-                pline1("For the first time in your life, you can see, and oh wow, it is all so cosmic for sure!");
+                pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, "For the first time in your life, you can see, and oh wow, it is all so cosmic for sure!");
                 u.uroleplay.blind = FALSE;
             }
             else
-                pline1("Far out!  Everything is all cosmic again!");
+                pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, "Far out!  Everything is all cosmic again!");
         }
         else
         {
@@ -1091,17 +1091,17 @@ boolean verbose;
                 /* this can only happen by putting on the Eyes of the Overworld;
                    that shouldn't actually produce a permanent cure, but we
                    can't let the "blind from birth" conduct remain intact */
-                pline1("For the first time in your life, you can see!");
+                pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, "For the first time in your life, you can see!");
                 u.uroleplay.blind = FALSE;
             }
             else
             {
                 if (!Blindfolded && was_wearing_blindfold)
-                    You1("can see again.");
+                    You_ex1(ATR_NONE, CLR_MSG_POSITIVE, "can see again.");
                 else if (Blocks_Blindness || !was_blocking_blindness)
-                    You1("can see!");
+                    You_ex1(ATR_NONE, CLR_MSG_POSITIVE, "can see!");
                 else
-                    You1("can see again.");
+                    You_ex1(ATR_NONE, CLR_MSG_POSITIVE, "can see again.");
             }
         }
 
@@ -1133,7 +1133,7 @@ boolean verbose;
 
         update_inventory();
         context.botl = context.botlx = TRUE;
-        pline("Everything %s SO boring now.", (!Blind) ? "looks" : "feels");
+        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "Everything %s SO boring now.", (!Blind) ? "looks" : "feels");
     }
 
 
@@ -1170,21 +1170,21 @@ boolean verbose;
             {
                 state_change_detected = TRUE;
                 newsym(u.ux, u.uy);
-                pline1("Suddenly you cannot see yourself.");
+                pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly you cannot see yourself.");
             }
         }
         else if (Blocks_Invisibility && !was_blocking_invisibility && !Invis && was_invisible)
         {
             state_change_detected = TRUE;
             newsym(u.ux, u.uy);
-            You("can %s!", See_invisible ? "no longer see through yourself"
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can %s!", See_invisible ? "no longer see through yourself"
                 : "see yourself");
         }
         else if (!Blocks_Invisibility && was_blocking_invisibility && Invis && !was_invisible)
         {
             state_change_detected = TRUE;
             newsym(u.ux, u.uy);
-            You("can %s.", See_invisible ? "see through yourself"
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can %s.", See_invisible ? "see through yourself"
                 : "no longer see yourself");
         }
         else if (Invis && !was_invisible)
@@ -1197,7 +1197,7 @@ boolean verbose;
         {
             state_change_detected = TRUE;
             newsym(u.ux, u.uy);
-            Your("body seems to unfade%s.",
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "body seems to unfade%s.",
                 See_invisible ? " completely" : "..");
         }
     }
@@ -1263,7 +1263,7 @@ boolean verbose;
             if (!has_innate_breathless(youmonst.data) && !amphibious(youmonst.data) && !Swimming) 
             {
                 state_change_detected = TRUE;
-                You("suddenly inhale an unhealthy amount of %s!",
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "suddenly inhale an unhealthy amount of %s!",
                     hliquid("water"));
                 (void)drown();
             }
@@ -1281,32 +1281,32 @@ boolean verbose;
         )
     {
         state_change_detected = TRUE;
-        You_feel("yourself slow down%s.", Fast ? " a bit" : "");
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "yourself slow down%s.", Fast ? " a bit" : "");
     }
     else if (Lightning_fast && !was_lightning_fast)
     {
         state_change_detected = TRUE;
-        You_feel("yourself speed up%s.", was_fast || was_very_fast || was_ultra_fast || was_super_fast ? " a bit more" : "");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "yourself speed up%s.", was_fast || was_very_fast || was_ultra_fast || was_super_fast ? " a bit more" : "");
     }
     else if (Super_fast && !was_super_fast && !was_lightning_fast)
     {
         state_change_detected = TRUE;
-        You_feel("yourself speed up%s.", was_fast || was_very_fast || was_ultra_fast ? " a bit more" : "");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "yourself speed up%s.", was_fast || was_very_fast || was_ultra_fast ? " a bit more" : "");
     }
     else if (Ultra_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
     {
         state_change_detected = TRUE;
-        You_feel("yourself speed up%s.", was_fast || was_very_fast ? " a bit more" : "");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "yourself speed up%s.", was_fast || was_very_fast ? " a bit more" : "");
     }
     else if (Very_fast && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
     {
         state_change_detected = TRUE;
-        You_feel("yourself speed up%s.", was_fast ? " a bit more" : "");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "yourself speed up%s.", was_fast ? " a bit more" : "");
     }
     else if (Fast && !was_fast && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
     {
         state_change_detected = TRUE;
-        You_feel("yourself speed up.");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "yourself speed up.");
     }
 
 
@@ -1314,69 +1314,69 @@ boolean verbose;
     if (Silenced && !was_silenced)
     {
         state_change_detected = TRUE;
-        Your("voice disappears!");
+        Your_ex1(ATR_NONE, CLR_MSG_NEGATIVE, "voice disappears!");
     }
     else if (!Silenced && was_silenced)
     {
         state_change_detected = TRUE;
-        Your("voice returns!");
+        Your_ex1(ATR_NONE, CLR_MSG_POSITIVE, "voice returns!");
     }
 
     /* Cancellation */
     if (Cancelled && !was_cancelled)
     {
         state_change_detected = TRUE;
-        Your("voice disappears!");
+        Your_ex1(ATR_NONE, CLR_MSG_NEGATIVE, "voice disappears!");
     }
     else if (!Cancelled && was_cancelled)
     {
         state_change_detected = TRUE;
-        Your1("voice returns!");
+        Your_ex1(ATR_NONE, CLR_MSG_POSITIVE, "voice returns!");
     }
 
     /* Some spell powers */
     if (Magical_protection && !had_protection)
     {
         state_change_detected = TRUE;
-        You1("feel protected!");
+        You_ex1(ATR_NONE, CLR_MSG_POSITIVE, "feel protected!");
     }
     else if (!Magical_protection && had_protection)
     {
         state_change_detected = TRUE;
-        You1("feel unprotected!");
+        You_ex1(ATR_NONE, CLR_MSG_WARNING, "feel unprotected!");
     }
 
     if (Magical_shielding && !had_magical_shielding)
     {
         state_change_detected = TRUE;
-        You1("feel shielded!");
+        You_ex1(ATR_NONE, CLR_MSG_POSITIVE, "feel shielded!");
     }
     else if (!Magical_shielding && had_magical_shielding)
     {
         state_change_detected = TRUE;
-        You1("feel unshielded!");
+        You_ex1(ATR_NONE, CLR_MSG_WARNING, "feel unshielded!");
     }
 
     if (Magical_barkskin && !had_magical_barkskin)
     {
         state_change_detected = TRUE;
-        Your1("skin thickens into bark!");
+        Your_ex1(ATR_NONE, CLR_MSG_POSITIVE, "skin thickens into bark!");
     }
     else if (!Magical_barkskin && had_magical_barkskin)
     {
         state_change_detected = TRUE;
-        Your("skin softens!");
+        Your_ex1(ATR_NONE, CLR_MSG_WARNING, "skin softens!");
     }
 
     if (Magical_stoneskin && !had_magical_stoneskin)
     {
         state_change_detected = TRUE;
-        Your("skin thickens into bark!");
+        Your_ex1(ATR_NONE, CLR_MSG_POSITIVE, "skin thickens into bark!");
     }
     else if (!Magical_stoneskin && had_magical_stoneskin)
     {
         state_change_detected = TRUE;
-        Your("skin unstones!");
+        Your_ex1(ATR_NONE, CLR_MSG_WARNING, "skin unstones!");
     }
 
     if (Titan_strength && !had_titan_strength)
