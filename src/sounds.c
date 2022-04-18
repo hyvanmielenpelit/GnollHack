@@ -992,6 +992,7 @@ boolean dopopup;
         *verbl_msg_mcan = 0;            /* verbalize() if cancelled */
     struct permonst *ptr = mtmp->data;
     int msound = ptr->msound;
+    char furiosbuf[BUFSZ] = "";
 
     /* presumably nearness and sleep checks have already been made */
     if (Deaf)
@@ -1665,8 +1666,8 @@ bark_here:
     case MS_QUANTUM:
         if (!is_peaceful(mtmp)) 
         {
-            pline("%s is furious about you ruining %s delicate experiment.", Monnam(mtmp), mhis(mtmp));
-            pline_msg = 0;
+            Sprintf(furiosbuf, "is furious about you ruining %s delicate experiment.", mhis(mtmp));
+            pline_msg = furiosbuf;
             chat_line = 0;
             break;
         }

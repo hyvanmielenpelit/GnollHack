@@ -2212,8 +2212,8 @@ boolean speedy;
                 if (!speedy)
                 {
                     const char* txt = "You feel you could be more dangerous!";
-                    pline1(txt);
-                    display_popup_text(txt, "More Skills to Advance", POPUP_TEXT_GENERAL, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
+                    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, txt);
+                    display_popup_text(txt, "More Skills to Advance", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
                 }
                 break;
             }
