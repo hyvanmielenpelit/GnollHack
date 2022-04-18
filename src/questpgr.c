@@ -32,7 +32,7 @@ STATIC_DCL void FDECL(qtext_pronoun, (CHAR_P, CHAR_P));
 STATIC_DCL struct qtmsg *FDECL(msg_in, (struct qtmsg *, int));
 STATIC_DCL void FDECL(convert_arg, (CHAR_P));
 STATIC_DCL void FDECL(convert_line, (char *,char *));
-STATIC_DCL void FDECL(deliver_by_pline, (struct qtmsg *));
+STATIC_DCL void FDECL(deliver_by_pline, (struct qtmsg *, int, int));
 STATIC_DCL void FDECL(deliver_by_window, (struct qtmsg *, int));
 STATIC_DCL void FDECL(deliver_by_file_write, (dlb*, struct qtmsg*, int, int));
 STATIC_DCL void FDECL(file_write_pager, (dlb*, struct qtmsg*, int, int));
@@ -555,8 +555,9 @@ char *in_line, *out_line;
 }
 
 STATIC_OVL void
-deliver_by_pline(qt_msg)
+deliver_by_pline(qt_msg, attr, color)
 struct qtmsg *qt_msg;
+int attr, color;
 {
     long size;
     char in_line[BUFSZ] = "", out_line[BUFSZ] = "";
@@ -574,7 +575,7 @@ struct qtmsg *qt_msg;
             Sprintf(eos(total_out_line), " ");
         Sprintf(eos(total_out_line), "%s", out_line);
     }
-    pline("%s", total_out_line);
+    pline_ex(attr, color, "%s", total_out_line);
 }
 
 STATIC_OVL void
@@ -650,6 +651,14 @@ com_pager(mtmp, msgnum)
 struct monst* mtmp;
 int msgnum;
 {
+    com_pager_ex(mtmp, msgnum, ATR_NONE, NO_COLOR);
+}
+
+void
+com_pager_ex(mtmp, msgnum, attr, color)
+struct monst* mtmp;
+int msgnum, attr, color;
+{
     struct qtmsg *qt_msg;
 
     if (skip_pager(TRUE))
@@ -664,7 +673,7 @@ int msgnum;
     if (qt_msg->delivery == 'p')
     {
         play_voice_com_pager(mtmp, msgnum, TRUE);
-        deliver_by_pline(qt_msg);
+        deliver_by_pline(qt_msg, attr, color);
     }
     else if (msgnum == 1)
     {
@@ -685,6 +694,14 @@ void
 qt_pager(mtmp, msgnum)
 struct monst* mtmp;
 int msgnum;
+{
+    qt_pager_ex(mtmp, msgnum, ATR_NONE, NO_COLOR);
+}
+
+void
+qt_pager_ex(mtmp, msgnum, attr, color)
+struct monst* mtmp;
+int msgnum, attr, color;
 {
     struct qtmsg *qt_msg;
 
@@ -711,7 +728,7 @@ int msgnum;
     if (qt_msg->delivery == 'p' && strcmp(windowprocs.name, "X11"))
     {
         play_voice_quest_pager(mtmp, qt_msg->msgnum, TRUE);
-        deliver_by_pline(qt_msg);
+        deliver_by_pline(qt_msg, attr, color);
     }
     else
     {

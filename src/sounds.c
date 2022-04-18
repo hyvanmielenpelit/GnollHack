@@ -9501,9 +9501,11 @@ int* spell_otyps;
     if(!mtmp || !spell_otyps)
         return 0;
 
+    char speakbuf[BUFSZ] = "";
     if (Deaf)
     {
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", Monnam(mtmp));
+        Sprintf(speakbuf, "%s says something but you cannot hear anything.", Monnam(mtmp));
+        popup_talk_line_ex(mtmp, speakbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
         return 1;
     }
 
@@ -9521,13 +9523,15 @@ int* spell_otyps;
     if (cnt == 0)
     {
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_CANNOT_TEACH_SPELLS);
-        verbalize("Unfortunately, I cannot teach any spells at the moment.");
+        strcpy(speakbuf, "Unfortunately, I cannot teach any spells at the moment.");
+        popup_talk_line_ex(mtmp, speakbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 1;
     }
     else if (not_known_cnt == 0)
     {
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_CANNOT_TEACH_SPELLS_YOU_DONT_KNOW);
-        verbalize("Unfortunately, I cannot teach any spells you do not already know.");
+        strcpy(speakbuf, "Unfortunately, I cannot teach any spells you do not already know.");
+        popup_talk_line_ex(mtmp, speakbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 1;
     }
 
@@ -9575,6 +9579,7 @@ int* spell_otyps;
 
     if (spell_count <= 0)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s doesn't have any spells to teach.", Monnam(mtmp));
         destroy_nhwindow(win);
         return 0;
@@ -9638,6 +9643,7 @@ struct monst* mtmp;
 
     int i = 0;
     int booktype = (short)context.spbook.book->otyp;
+    char learnbuf[BUFSZ] = "";
 
     for (i = 0; i < MAXSPELL; i++)
         if (spellid(i) == booktype || spellid(i) == NO_SPELL)
@@ -9653,14 +9659,18 @@ struct monst* mtmp;
         if (spellknow(i) > SPELL_IS_KEEN / 10)
         {
             play_sfx_sound(SFX_SPELL_KNOWN_ALREADY);
-            You("know %s quite well already.", OBJ_NAME(objects[booktype]));
+            Sprintf(learnbuf, "You know %s quite well already.", OBJ_NAME(objects[booktype]));
+            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, learnbuf);
+            display_popup_text(learnbuf, "Spell Known Already", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         }
         else
         { /* spellknow(i) <= SPELL_IS_KEEN/10 */
-            play_sfx_sound(SFX_SPELL_KEENER);
-            Your("knowledge of %s is %s.", OBJ_NAME(objects[booktype]),
-                spellknow(i) ? "keener" : "restored");
             incr_spell_nknow(i, 1);
+            play_sfx_sound(SFX_SPELL_KEENER);
+            Sprintf(learnbuf, "Your knowledge of %s is %s.", OBJ_NAME(objects[booktype]),
+                spellknow(i) ? "keener" : "restored");
+            pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, learnbuf);
+            display_popup_text(learnbuf, "Knowledge Keener", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_POSITIVE, NO_GLYPH, POPUP_FLAGS_NONE);
         }
     }
     else
@@ -9678,7 +9688,9 @@ struct monst* mtmp;
 
         incr_spell_nknow(i, 1);
         play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
-        You(i > 0 ? "add %s to your repertoire." : "learn %s.", OBJ_NAME(objects[booktype]));
+        Sprintf(learnbuf, i > 0 ? "You add %s to your repertoire." : "You learn %s.", OBJ_NAME(objects[booktype]));
+        pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, learnbuf);
+        display_popup_text(learnbuf, "New Spell Learnt", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_POSITIVE, NO_GLYPH, POPUP_FLAGS_NONE);
     }
 
     return 1;
