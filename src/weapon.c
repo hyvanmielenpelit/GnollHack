@@ -2351,17 +2351,11 @@ int skill_id;
             {
                 int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, skill_id, FALSE, FALSE, lvl);
                 int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, skill_id, FALSE, FALSE, lvl);
+                int criticalhitpct = get_skill_critical_strike_chance(skill_id, FALSE, FALSE, lvl);
                 int multihitpct = martial_arts_multishot_percentage_chance(lvl);
-                if (P_SKILL_LEVEL(skill_id) > P_UNSKILLED)
-                {
-                    Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
-                    Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
-                }
-                else
-                {
-                    strcpy(hbuf, "");
-                    strcpy(dbuf, "");
-                }
+                Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
+                Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
+                Sprintf(cbuf, "%d%%", criticalhitpct);
                 Sprintf(mbuf, "%d%%", multihitpct);
             }
             else if ((skill_id >= P_FIRST_WEAPON && skill_id <= P_LAST_WEAPON)
@@ -2370,19 +2364,22 @@ int skill_id;
                 int tohitbonus, dmgbonus, criticalhitpct;
                 if (skill_id == P_BARE_HANDED_COMBAT && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
                 {
-                    tohitbonus = weapon_skill_hit_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, 0);
-                    dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, 0);
-                    criticalhitpct = get_skill_critical_strike_chance(P_MARTIAL_ARTS, FALSE, FALSE, 0);
+                    tohitbonus = weapon_skill_hit_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, P_SKILL_LEVEL(P_MARTIAL_ARTS));
+                    dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, P_SKILL_LEVEL(P_MARTIAL_ARTS));
+                    criticalhitpct = get_skill_critical_strike_chance(P_MARTIAL_ARTS, FALSE, FALSE, P_SKILL_LEVEL(P_MARTIAL_ARTS));
+                    Sprintf(hbuf, "from Martial Arts %s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
+                    Sprintf(dbuf, "from Martial Arts %s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
+                    Sprintf(cbuf, "from Martial Arts %d%%", criticalhitpct);
                 }
                 else
                 {
                     tohitbonus = weapon_skill_hit_bonus((struct obj*)0, skill_id, FALSE, FALSE, lvl);
                     dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, skill_id, FALSE, FALSE, lvl);
                     criticalhitpct = get_skill_critical_strike_chance(skill_id, FALSE, FALSE, lvl);
+                    Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
+                    Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
+                    Sprintf(cbuf, "%d%%", criticalhitpct);
                 }
-                Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
-                Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
-                Sprintf(cbuf, "%d%%", criticalhitpct);
             }
             else if (skill_id >= P_FIRST_SPELL && skill_id <= P_LAST_SPELL)
             {
