@@ -162,17 +162,6 @@ namespace GnollHackClient
                 return 15.5;
             }
         }
-        public Color TextWindowTextColor
-        {
-            get
-            {
-                if (InstructionList != null && InstructionList.Count > 0 && InstructionList[0].Color != (int)nhcolor.NO_COLOR)
-                {
-                    return ClientUtils.NHColor2XColor(InstructionList[0].Color);
-                }
-                return Color.White;
-            }
-        }
 
         public double LeftPaddingWidth
         {

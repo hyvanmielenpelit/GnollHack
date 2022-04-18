@@ -1229,7 +1229,8 @@ namespace GnollHackClient.Pages.Game
 
             if (data.style == (int)popup_text_types.POPUP_TEXT_DIALOGUE ||
                 data.style == (int)popup_text_types.POPUP_TEXT_ADVICE ||
-                data.style == (int)popup_text_types.POPUP_TEXT_MESSAGE)
+                data.style == (int)popup_text_types.POPUP_TEXT_MESSAGE ||
+                data.style == (int)popup_text_types.POPUP_TEXT_NO_MONSTERS_IN_LIST)
             {
                 PopupTitleLabel.TextColor = _titleGoldColor;
                 PopupGrid.BackgroundColor = Color.Transparent;
@@ -1248,7 +1249,7 @@ namespace GnollHackClient.Pages.Game
             }
             else
             {
-                PopupTitleLabel.TextColor = Color.White;
+                PopupTitleLabel.TextColor = ClientUtils.NHColor2XColor(data.color, false, true);
                 PopupGrid.BackgroundColor = _popupTransparentBlackColor;
                 PopupFrame.BackgroundColor = _popupTransparentBlackColor;
                 PopupTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
@@ -1589,7 +1590,7 @@ namespace GnollHackClient.Pages.Game
                 }
                 else
                 {
-                    YnTitleLabel.TextColor = ClientUtils.NHColor2XColor(color);
+                    YnTitleLabel.TextColor = ClientUtils.NHColor2XColor(color, false, true);
                 }
             }
 

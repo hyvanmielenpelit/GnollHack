@@ -3113,7 +3113,7 @@ struct obj *obj;
         line = "GnollHack rumors file closed for renovation.";
     pline("%s:", Tobjnam(obj, "whisper"));
     verbalize1(line);
-    display_popup_text(line, cxname(obj), POPUP_TEXT_DIALOGUE, 0, 0, obj_to_glyph(obj, rn2_on_display_rng), POPUP_FLAGS_ADD_QUOTES);
+    display_popup_text(line, cxname(obj), POPUP_TEXT_DIALOGUE, ATR_NONE, NO_COLOR, obj_to_glyph(obj, rn2_on_display_rng), POPUP_FLAGS_ADD_QUOTES);
     return;
 }
 

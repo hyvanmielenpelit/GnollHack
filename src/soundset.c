@@ -25,7 +25,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Music-Temple", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Medusa", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Castle", BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Gnomish-Mines-Normal", 0.07f},
+    { SOUND_BANK_MASTER, "event:/Music/Music-Gnomish-Mines-Normal", 0.10f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Gnomish-Mines-Town", 0.10f},
 
     { SOUND_BANK_MASTER, "event:/Music/Music-Sokoban-Normal", 0.10f},

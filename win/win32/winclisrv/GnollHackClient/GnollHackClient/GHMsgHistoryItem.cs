@@ -12,15 +12,6 @@ namespace GnollHackClient
         public string Text { get; set; }
         public int Attributes { get; set; }
         public int NHColor { get; set; }
-        public Color Color 
-        { get 
-            { 
-                if(IsLast)
-                    return ClientUtils.NHColor2XColor(NHColor);
-                else
-                    return ClientUtils.NHColor2XColor(NHColor); //NHColor2GrayedXColor(NHColor); 
-            } 
-        }
         public bool IsLast { get; set; }
 
         public GHMsgHistoryItem()

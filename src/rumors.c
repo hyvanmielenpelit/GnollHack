@@ -397,7 +397,7 @@ int mechanism;
         strcpy(titlebuf, title);
 
     pline1(line);
-    display_popup_text(line, titlebuf, POPUP_TEXT_MESSAGE, 0, 0, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
+    display_popup_text(line, titlebuf, POPUP_TEXT_MESSAGE, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
 
 }
 

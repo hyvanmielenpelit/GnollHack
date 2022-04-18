@@ -2353,7 +2353,7 @@ boolean ask, isend;
         const char* nomsg = "No creatures have been vanquished.";
         pline1(nomsg);
         if (!isend)
-            display_popup_text(nomsg, "No Vanquished Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
+            display_popup_text(nomsg, "No Vanquished Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_NONE);
 #ifdef DUMPLOG
     }
     else if (dumping)
@@ -2483,7 +2483,7 @@ boolean ask, isend;
         const char* nomsg = "No species have been genocided or become extinct.";
         pline1(nomsg); /* Game is still ongoing, so pline is ok */
         if(!isend)
-            display_popup_text(nomsg, "No Genocided Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, 0, 0, NO_GLYPH, POPUP_FLAGS_NONE);
+            display_popup_text(nomsg, "No Genocided Monsters", POPUP_TEXT_NO_MONSTERS_IN_LIST, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_NONE);
 #ifdef DUMPLOG
     } 
     else if (dumping) 

@@ -571,7 +571,7 @@ int quest_id;
 
     if (context.quest_status_info[quest_id].quest_state == QUEST_STATE_UNDISCOVERED)
     {
-        //int title_color = (windowprocs.wincap2 & WC2_SPECIAL_GUI_COLORS) ? CLR_QUEST_TITLE : CLR_YELLOW;
+        //int title_color = CLR_YELLOW;
         //pline_ex1(ATR_BOLD, title_color, quest_definitions[quest_id].quest_type == 0 ? "MAIN QUEST DISCOVERED" : "OPTIONAL QUEST DISCOVERED");
         //pline_ex1(ATR_NONE, CLR_WHITE, quest_definitions[quest_id].title);
 

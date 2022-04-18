@@ -4527,7 +4527,7 @@ struct monst* mtmp;
             u.uconduct.literate++;
         }
         verbalize("%s", rumor);
-        display_popup_text(rumor, "Advice", POPUP_TEXT_ADVICE, 0, 0, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
+        display_popup_text(rumor, "Advice", POPUP_TEXT_ADVICE, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
 
         mtmp->told_rumor = TRUE;
     }
