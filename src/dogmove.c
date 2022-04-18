@@ -501,7 +501,7 @@ boolean verbose;
     if (!is_obj_normally_edible(otmp))
         return;
 
-    if (rn2(100) >= objects[otmp->otyp].oc_critical_strike_percentage)
+    if (rn2(100) >= objects[otmp->otyp].oc_effect_probability)
         return;
 
     /* Properties */

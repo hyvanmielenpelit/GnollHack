@@ -1872,7 +1872,7 @@ const char *mesg;
         play_occupation_immediate_sound(objects[tin->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
         u.uconduct.food++; /* don't need vegetarian checks for spinach */
         if (!tin->cursed)
-            pline("This makes you feel like %s!",
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "This makes you feel like %s!",
                   /* "Swee'pea" is a character from the Popeye cartoons */
                   Hallucination ? "Swee'pea"
                   /* "feel like Popeye" unless sustain ability suppresses
@@ -2843,7 +2843,7 @@ struct obj *otmp;
     if (!is_obj_normally_edible(otmp))
         return;
 
-    if (rn2(100) >= objects[otmp->otyp].oc_critical_strike_percentage)
+    if (rn2(100) >= objects[otmp->otyp].oc_effect_probability)
         return;
 
     /* Properties */
@@ -2910,7 +2910,7 @@ struct obj *otmp;
         break;
     case EDIBLEFX_GAIN_STRENGTH:
         if (otmp->otyp == HANDFUL_OF_SPINACH_LEAVES)
-            pline("That made you feel like %s!",
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "That made you feel like %s!",
                 Hallucination ? "Swee'pea"
                 : !Fixed_abil ? "Popeye"
                 : (flags.female ? "Olive Oyl" : "Bluto"));
@@ -2919,7 +2919,7 @@ struct obj *otmp;
         break;
     case EDIBLEFX_GAIN_DEXTERITY:
         if (otmp->otyp == BANANA)
-            pline("That made you feel like a monkey!");
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "That made you feel like a monkey!");
 
         if(adjattrib(A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
             TRUE ? -1 : 1))
@@ -2942,7 +2942,7 @@ struct obj *otmp;
         break;
     case EDIBLEFX_GAIN_CHARISMA:
         if (otmp->otyp == AVOCADO)
-            pline("That made you feel like a hipster!");
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "That made you feel like a hipster!");
 
         if(adjattrib(A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
             TRUE ? -1 : 1))
@@ -3017,13 +3017,13 @@ struct obj *otmp;
                not food, so we substitute cursed; fortunately our hero
                won't have to wait for a prince to be rescued/revived */
             if (Race_if(PM_DWARF) && Hallucination)
-                verbalize("Heigh-ho, ho-hum, I think I'll skip work today.");
+                verbalize_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Heigh-ho, ho-hum, I think I'll skip work today.");
             else if (Deaf || !flags.acoustics)
-                You("fall asleep.");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "fall asleep.");
             else
             {
                 play_sfx_sound(SFX_SINISTER_LAUGHTER);
-                You_hear("sinister laughter as you fall asleep...");
+                You_hear_ex(ATR_NONE, CLR_MSG_NEGATIVE, "sinister laughter as you fall asleep...");
             }
 
             if(!Sleeping)
@@ -3037,13 +3037,13 @@ struct obj *otmp;
             if (Stoned)
                 fix_petrification();
             else
-                You_feel("a bit more limber than before.");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a bit more limber than before.");
 
             /* Grants temporary stoning resistance */
             incr_itimeout(&HStone_resistance, 13);
         }
         else
-            pline("Ulch! That %s had a nasty slimy texture.", cxname(otmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ulch! That %s had a nasty slimy texture.", cxname(otmp));
 
         break;
     }

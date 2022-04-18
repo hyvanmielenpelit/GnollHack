@@ -358,8 +358,8 @@ struct objclass {
     Bitfield(oc_pre_discovered, 1); /* Already known at start of game;
                                        won't be listed as a discovery. */
     Bitfield(oc_magic, 1);          /* inherently magical object */
-    uchar oc_enchantable;                /* Uses +X statistic (enchantment) */
-    uchar oc_charged;                /* may have +n or (n) charges */
+    uchar oc_enchantable;           /* Uses +X statistic (enchantment) */
+    uchar oc_charged;               /* may have +n or (n) charges */
     uchar oc_recharging;            /* recharging type */
     Bitfield(oc_unique, 1);         /* special one-of-a-kind object */
     Bitfield(oc_nowish, 1);         /* cannot wish for this object */
@@ -370,15 +370,15 @@ struct objclass {
     Bitfield(oc_tough, 1); /* hard gems/rings */
 
     Bitfield(oc_dir, 4);
-#define NODIR 1     /* for wands/spells:    non-directional */
+#define NODIR 1     /* for wands/spells:      non-directional */
 #define IMMEDIATE 2 /*                        directional at one target */
 #define RAY 3       /*                        zap beams */
 #define TARGETED 4  /*                        targeted using throwspell */
 #define TOUCH 5     /*                        like immediate but touch distance */
-#define IMMEDIATE_MULTIPLE_TARGETS 6 /*        directional but many targets in a line like a ray */
-#define IMMEDIATE_ONE_TO_THREE_TARGETS 7 /*        directional but 1 target for cursed, 2 targets for uncursed and 3 targets for blessed in a line like a ray */
-#define IMMEDIATE_ONE_TO_SEVEN_TARGETS 8 /*        directional but 1 target for cursed, 4 targets for uncursed and 7 targets for blessed in a line like a ray */
-#define IMMEDIATE_TWO_TO_SIX_TARGETS 9 /*        directional but 2 target for cursed, 4 targets for uncursed and 6 targets for blessed in a line like a ray */
+#define IMMEDIATE_MULTIPLE_TARGETS 6 /*       directional but many targets in a line like a ray */
+#define IMMEDIATE_ONE_TO_THREE_TARGETS 7 /*   directional but 1 target for cursed, 2 targets for uncursed and 3 targets for blessed in a line like a ray */
+#define IMMEDIATE_ONE_TO_SEVEN_TARGETS 8 /*   directional but 1 target for cursed, 4 targets for uncursed and 7 targets for blessed in a line like a ray */
+#define IMMEDIATE_TWO_TO_SIX_TARGETS 9 /*     directional but 2 target for cursed, 4 targets for uncursed and 6 targets for blessed in a line like a ray */
 
 #define IMMEDIATE_ITEM_ARROW 1
 #define IMMEDIATE_NONE 0
@@ -660,23 +660,23 @@ struct objclass {
 
 
 /* spells */
-#define oc_spell_cooldown oc_oc1        /* books: spell cooldown time */
+#define oc_spell_cooldown oc_oc1         /* books: spell cooldown time */
 #define oc_spell_level oc_oc2            /* books: spell level */
 #define oc_spell_mana_cost oc_oc3        /* books: spell mana cost */
 #define oc_spell_attribute oc_oc4        /* books: spell primary casting attribute */
 #define oc_spell_range oc_oc5            /* books: spell range */
-#define oc_spell_radius oc_oc6            /* books: spell radius */
-#define oc_spell_skill_chance oc_oc7    /* books: % chance of gaining skill points upon casting, also % multiplier for mixing */
-#define oc_spell_per_level_step oc_oc8    /* books: how many levels to get one per level bonus */
+#define oc_spell_radius oc_oc6           /* books: spell radius */
+#define oc_spell_skill_chance oc_oc7     /* books: % chance of gaining skill points upon casting, also % multiplier for mixing */
+#define oc_spell_per_level_step oc_oc8   /* books: how many levels to get one per level bonus */
 #define oc_spell_saving_throw_adjustment oc_mc_adjustment    /* books: spell saving throw adjustment */
-#define oc_spell_dmg_dice oc_wsdice        /* books: spell damage no of dice */
+#define oc_spell_dmg_dice oc_wsdice      /* books: spell damage no of dice */
 #define oc_spell_dmg_diesize oc_wsdam    /* books: spell damage size of dice */
-#define oc_spell_dmg_plus oc_wsdmgplus    /* books: spell damage constant added */
-#define oc_spell_dur_dice oc_wldice        /* books: spell duration no of dice */
+#define oc_spell_dmg_plus oc_wsdmgplus   /* books: spell damage constant added */
+#define oc_spell_dur_dice oc_wldice      /* books: spell duration no of dice */
 #define oc_spell_dur_diesize oc_wldam    /* books: spell duration size of dice */
-#define oc_spell_dur_plus oc_wldmgplus    /* books: spell duration constant added */
-#define oc_spell_per_level_dice oc_wldice        /* books: spell per level bonus no of dice */
-#define oc_spell_per_level_diesize oc_wldam        /* books: spell per level bonus size of dice */
+#define oc_spell_dur_plus oc_wldmgplus   /* books: spell duration constant added */
+#define oc_spell_per_level_dice oc_wldice       /* books: spell per level bonus no of dice */
+#define oc_spell_per_level_diesize oc_wldam     /* books: spell per level bonus size of dice */
 #define oc_spell_per_level_plus oc_wldmgplus    /* books: spell per level bonus constant added */
 
 /* potions */
@@ -687,16 +687,16 @@ struct objclass {
 #define oc_potion_breathe_dice_buc_multiplier oc_oc5
 #define oc_potion_normal_dice_buc_multiplier oc_oc6
 #define oc_potion_saving_throw_adjustment oc_mc_adjustment    /* potions: potion saving throw adjustment */
-#define oc_potion_breathe_dice oc_wsdice                    /* potions: potion breathe duration no of dice */
+#define oc_potion_breathe_dice oc_wsdice                      /* potions: potion breathe duration no of dice */
 #define oc_potion_breathe_diesize oc_wsdam                    /* potions: potion breathe duration size of dice */
-#define oc_potion_breathe_plus oc_wsdmgplus                    /* potions: potion breathe duration constant added */
+#define oc_potion_breathe_plus oc_wsdmgplus                   /* potions: potion breathe duration constant added */
 /* Note potion duration data locations are aligned with spell duration data locations for simplicity */
-#define oc_potion_normal_dice oc_spell_dur_dice                /* potions: potion quaff duration no of dice */
-#define oc_potion_normal_diesize oc_spell_dur_diesize        /* potions: potion quaff duration size of dice */
-#define oc_potion_normal_plus oc_spell_dur_plus                /* potions: potion quaff duration constant added */
+#define oc_potion_normal_dice oc_spell_dur_dice               /* potions: potion quaff duration no of dice */
+#define oc_potion_normal_diesize oc_spell_dur_diesize         /* potions: potion quaff duration size of dice */
+#define oc_potion_normal_plus oc_spell_dur_plus               /* potions: potion quaff duration constant added */
 #define oc_potion_nutrition_dice oc_wedice                    /* potions: potion nutrition no of dice */
-#define oc_potion_nutrition_diesize oc_wedam                /* potions: potion nutrition size of dice */
-#define oc_potion_nutrition_plus oc_wedmgplus                /* potions: potion nutrition constant added */
+#define oc_potion_nutrition_diesize oc_wedam                  /* potions: potion nutrition size of dice */
+#define oc_potion_nutrition_plus oc_wedmgplus                 /* potions: potion nutrition constant added */
 
 
     int oc_dir_subtype;               /* spells: ID for type of ray or immediate effect, weapons: damage type */
@@ -712,11 +712,11 @@ struct objclass {
     unsigned long oc_flags5;        /* Even more flags */
     unsigned long oc_flags6;        /* Even more flags */
 
-    unsigned long oc_power_permissions; /* roles, races, genders, and alignments that the item's powers are conferred to */
-    unsigned long oc_target_permissions; /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
+    unsigned long oc_power_permissions;   /* roles, races, genders, and alignments that the item's powers are conferred to */
+    unsigned long oc_target_permissions;  /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
     int oc_critical_strike_percentage;    /* percentage to be used with A1_CRITICAL_STRIKE; can be used for other purposes for a S1_ flag, too */
-
-    int oc_multigen_type;                /* class number multi multigen_type */
+#define oc_effect_probability oc_critical_strike_percentage /* comestibles: probability of edible effect taking place */
+    int oc_multigen_type;                 /* class number multi multigen_type */
     enum object_soundset_types oc_soundset;
 
 /* oc_dir_subtypes for spells */
@@ -850,7 +850,7 @@ struct objclass {
 #define O2_KEY                    0x04000000UL
 #define O2_CREDIT_CARD            0x08000000UL
 
-#define O2_GENERATED_DEATH_OR_COLD_ENCHANTED 0x10000000UL            /* if deathenchantable item, then death, otherwise lightning*/
+#define O2_GENERATED_DEATH_OR_COLD_ENCHANTED 0x10000000UL                 /* if deathenchantable item, then death, otherwise lightning*/
 #define O2_GENERATED_BLESSED      0x20000000UL                            /* Always generated blessed */                                    
 #define O2_GENERATED_CURSED       0x40000000UL                            /* Always generated cursed */                                
 #define O2_CURSED_MAGIC_ITEM      0x80000000UL                            /* The effect of the item is negative; typically 90% chance of being cursed */                                    
@@ -873,10 +873,10 @@ struct objclass {
 
 #define O3_NO_PICKUP                                   0x00000800UL  /* monsters do not pick up this item type */
 
-#define O3_INVOKABLE                                   0x00001000UL    /* can be invoked using invoke command */
-#define O3_APPLIABLE                                   0x00002000UL    /* can be applied as a tool */
-#define O3_WIELDABLE                                   0x00004000UL    /* can be wielded in a weapon slot */
-#define O3_READABLE                                    0x00008000UL    /* can be read */                                
+#define O3_INVOKABLE                                   0x00001000UL  /* can be invoked using invoke command */
+#define O3_APPLIABLE                                   0x00002000UL  /* can be applied as a tool */
+#define O3_WIELDABLE                                   0x00004000UL  /* can be wielded in a weapon slot */
+#define O3_READABLE                                    0x00008000UL  /* can be read */                                
 #define O3_IGNITABLE                                   0x00010000UL    
 #define O3_RELATIVE_AGE                                0x00020000UL    
 #define O3_REFILLABLE_WITH_OIL                         0x00040000UL    
@@ -884,13 +884,13 @@ struct objclass {
 #define O3_EATING_IDENTIFIES                           0x00100000UL    
 #define O3_NONROTTING_FOOD                             0x00200000UL
 #define O3_POISONABLE                                  0x00400000UL
-#define O3_QUAFFABLE                                   0x00800000UL    /* can be drunk */            
+#define O3_QUAFFABLE                                   0x00800000UL  /* can be drunk */            
 
 #define O3_PERMTTED_TARGET_LAWFUL                      0x01000000UL
 #define O3_PERMTTED_TARGET_NEUTRAL                     0x02000000UL
 #define O3_PERMTTED_TARGET_CHAOTIC                     0x04000000UL
 
-#define O3_TARGET_PERMISSION_IS_M1_FLAG                0x08000000UL /* Note: if no flag, then default is a monster symbol */
+#define O3_TARGET_PERMISSION_IS_M1_FLAG                0x08000000UL  /* Note: if no flag, then default is a monster symbol */
 #define O3_TARGET_PERMISSION_IS_M2_FLAG                0x10000000UL
 #define O3_TARGET_PERMISSION_IS_M3_FLAG                0x20000000UL 
 #define O3_TARGET_PERMISSION_IS_M4_FLAG                0x40000000UL 
@@ -1012,12 +1012,12 @@ struct class_sym {
 };
 
 struct objdescr {
-    const char *oc_name;  /* actual name */
-    const char *oc_descr; /* description when name unknown */
-    const char* oc_content_name; /* true description of contents (jars) */
+    const char *oc_name;                /* actual name */
+    const char *oc_descr;               /* description when name unknown */
+    const char* oc_content_name;        /* true description of contents (jars) */
     const char* oc_content_description; /* unknown description of contents (spellbooks, jars) */
-    const char* oc_item_description; /* description of the item */
-    int oc_tile_floor_height;            /* (scaled) height of the item tile in pixels when it appears on the floor */
+    const char* oc_item_description;    /* description of the item */
+    int oc_tile_floor_height;           /* (scaled) height of the item tile in pixels when it appears on the floor */
     short stand_animation;
     short enlargement;
     short replacement;
