@@ -6212,7 +6212,7 @@ wiz_migrate_mons()
     struct monst *mtmp;
     d_level tolevel;
 
-    getlin("How many random monsters to migrate? [0]", inbuf);
+    getlin_ex(GETLINE_NUMBERS_ONLY, ATR_NONE, NO_COLOR, "How many random monsters to migrate? [0]", inbuf);
     if (*inbuf == '\033')
         return 0;
     mcount = atoi(inbuf);

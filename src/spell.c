@@ -5015,7 +5015,7 @@ int spell;
         char qbuf[BUFSZ] = "";
         char buf[BUFSZ] = "";
         Sprintf(qbuf, "You get %d casting%s per mixing. How many times to mix? [max %d] (1)", spells_gained_per_mixing, plur(spells_gained_per_mixing), lowest_multiplier);
-        getlin(qbuf, buf);
+        getlin_ex(GETLINE_NUMBERS_ONLY, ATR_NONE, NO_COLOR, qbuf, buf);
         (void)mungspaces(buf);
 
         if (buf[0] == '\033')
