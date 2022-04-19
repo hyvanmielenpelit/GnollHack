@@ -2971,7 +2971,8 @@ boolean *effect_happened_ptr;
             int numok = rightok + leftok + misc1ok + misc2ok + misc3ok + misc4ok + misc5ok + amuletok;
             int rndindex = numok <= 0 ? 0 : rnd(numok);
             int cnt = 0;
-            for (int i = 1; i <= 8; i++)
+            int i;
+            for (i = 1; i <= 8; i++)
             {
                 switch (i)
                 {
@@ -3753,7 +3754,8 @@ do_class_genocide()
 
                 char cbuf[BUFSZ];
                 strcpy(cbuf, "");
-                for (int k = 0; k < MAX_MONSTER_CLASSES; k++)
+                int k;
+                for (k = 0; k < MAX_MONSTER_CLASSES; k++)
                 {
                     strcpy(cbuf, def_monsyms[k].name);
                     if (strcmp(cbuf, "") && def_monsyms[k].sym != ' ' && def_monsyms[k].sym != DEF_GHOST)
