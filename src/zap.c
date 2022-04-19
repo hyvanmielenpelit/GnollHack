@@ -11018,7 +11018,7 @@ retry:
     if (iflags.cmdassist && tries > 0)
         Strcat(promptbuf, " (enter 'help' for assistance)");
     Strcat(promptbuf, "?");
-    getlin(promptbuf, buf);
+    getlin_ex(GETLINE_WISHING, ATR_NONE, NO_COLOR, promptbuf, buf);
     (void) mungspaces(buf);
     if (buf[0] == '\033') {
         buf[0] = '\0';

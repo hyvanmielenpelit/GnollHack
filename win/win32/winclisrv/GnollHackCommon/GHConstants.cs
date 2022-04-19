@@ -1044,6 +1044,20 @@ namespace GnollHackCommon
         CONTEXT_MENU_STYLE_GETPOS,
     }
 
+    public enum getline_types
+    {
+        GETLINE_GENERAL = 0,
+        GETLINE_EXTENDED_COMMAND,
+        GETLINE_ASK_NAME,
+        GETLINE_MENU_SEARCH,
+        GETLINE_PARANOID,
+        GETLINE_LEVELPORT,
+        GETLINE_LEVEL_CHANGE,
+        GETLINE_NUMBERS_ONLY,
+        GETLINE_WISHING,
+    }
+
+
 
     public enum downloaded_file_check_results
     {

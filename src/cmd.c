@@ -1722,7 +1722,7 @@ wiz_level_change(VOID_ARGS)
     int newlevel = 0;
     int ret;
 
-    getlin("To what experience level do you want to be set?", buf);
+    getlin_ex(GETLINE_LEVEL_CHANGE, ATR_NONE, NO_COLOR, "To what experience level do you want to be set?", buf);
     (void) mungspaces(buf);
     if (buf[0] == '\033' || buf[0] == '\0')
         ret = 0;

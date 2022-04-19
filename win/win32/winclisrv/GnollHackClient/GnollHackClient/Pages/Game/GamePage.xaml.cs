@@ -1734,12 +1734,47 @@ namespace GnollHackClient.Pages.Game
             var namePage = new NamePage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(namePage);
         }
+
+        private int _getLineStyle = 0;
         private void GetLine(string query, int style, int attr, int color)
         {
             Color clr = ClientUtils.NHColor2XColor(color, false, false); /* Non-title / white coloring works better here */
             GetLineCaption.Text = query;
             GetLineCaption.TextColor = clr;
             GetLineEntryText.Text = "";
+
+            _getLineStyle = style;
+            switch (style)
+            {
+                case (int)getline_types.GETLINE_LEVELPORT:
+                    GetLineEntryText.WidthRequest = 230;
+                    GetLineQuestionMarkGrid.IsVisible = true;
+                    GetLineEntryText.Placeholder = "Enter the level";
+                    GetLineEntryText.Keyboard = Keyboard.Numeric;
+                    break;
+                case (int)getline_types.GETLINE_LEVEL_CHANGE:
+                case (int)getline_types.GETLINE_NUMBERS_ONLY:
+                    GetLineEntryText.WidthRequest = 320;
+                    GetLineQuestionMarkGrid.IsVisible = false;
+                    GetLineEntryText.Keyboard = Keyboard.Numeric;
+                    if (style == (int)getline_types.GETLINE_LEVEL_CHANGE)
+                        GetLineEntryText.Placeholder = "Enter the level here";
+                    else
+                        GetLineEntryText.Placeholder = "Enter the number here";
+                    break;
+                case (int)getline_types.GETLINE_WISHING:
+                    GetLineEntryText.WidthRequest = 340;
+                    GetLineQuestionMarkGrid.IsVisible = false;
+                    GetLineEntryText.Placeholder = "Enter your wish here";
+                    GetLineEntryText.Keyboard = Keyboard.Default;
+                    break;
+                default:
+                    GetLineEntryText.WidthRequest = 320;
+                    GetLineQuestionMarkGrid.IsVisible = false;
+                    GetLineEntryText.Placeholder = "Enter the text here";
+                    GetLineEntryText.Keyboard = Keyboard.Default;
+                    break;
+            }
             GetLineGrid.IsVisible = true;
         }
 
@@ -1759,6 +1794,20 @@ namespace GnollHackClient.Pages.Game
                 res.Trim();
             }
 
+            ConcurrentQueue<GHResponse> queue;
+            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.GetLine, res));
+            }
+
+            GetLineGrid.IsVisible = false;
+            GetLineEntryText.Text = "";
+            GetLineCaption.Text = "";
+        }
+
+        private void GetLineQuestionMarkButton_Clicked(object sender, EventArgs e)
+        {
+            string res = "?";
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
