@@ -40,7 +40,7 @@
     <AndroidSupportedAbis>
     </AndroidSupportedAbis>
     <Debugger>Xamarin</Debugger>
-    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <MandroidI18n />
     <AndroidPackageFormat>apk</AndroidPackageFormat>
