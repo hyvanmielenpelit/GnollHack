@@ -4445,7 +4445,7 @@ create_particular()
     struct _create_particular_data d;
 
     do {
-        getlin("Create what kind of monster? [type the name or symbol]", buf);
+        getlin_ex(GETLINE_GENESIS, ATR_NONE, NO_COLOR, "Create what kind of monster?", buf); /* [type the name or symbol] */
         bufp = mungspaces(buf);
         if (*bufp == '\033')
             return FALSE;

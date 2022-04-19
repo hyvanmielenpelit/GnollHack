@@ -1779,6 +1779,10 @@ namespace GnollHackClient.Pages.Game
                 case (int)getline_types.GETLINE_WISHING:
                     GetLineEntryText.Placeholder = "Enter your wish here";
                     break;
+                case (int)getline_types.GETLINE_GENESIS:
+                case (int)getline_types.GETLINE_POLYMORPH:
+                    GetLineEntryText.Placeholder = "Enter the monster here";
+                    break;
                 default:
                     GetLineEntryText.Placeholder = "Enter the text here";
                     break;

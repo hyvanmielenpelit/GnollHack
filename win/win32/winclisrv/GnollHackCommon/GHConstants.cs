@@ -1057,6 +1057,8 @@ namespace GnollHackCommon
         GETLINE_LEVEL_CHANGE,
         GETLINE_NUMBERS_ONLY,
         GETLINE_WISHING,
+        GETLINE_GENESIS,
+        GETLINE_POLYMORPH,
     }
 
 
