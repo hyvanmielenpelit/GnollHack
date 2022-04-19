@@ -3696,6 +3696,7 @@ E int FDECL(vms_get_saved_games, (const char *, char ***));
 
 /* ### weapon.c ### */
 
+E int FDECL(practice_needed_to_advance, (int, int));
 E const char *FDECL(weapon_descr, (struct obj *));
 E int FDECL(m_weapon_range, (struct monst*, struct obj*, struct obj*));
 E int FDECL(weapon_range, (struct obj*, struct obj*));

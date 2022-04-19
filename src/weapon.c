@@ -1847,6 +1847,31 @@ int skill, lvl;
     //return (tmp + 1) / 2;
 }
 
+
+int
+practice_needed_to_advance(skill, level)
+int skill, level;
+{
+    int res = 0, i;
+    switch (skill)
+    {
+    case P_BARE_HANDED_COMBAT:
+        for(i = 0; i < level; i++)
+            res += level * 20;
+        break;
+    case P_MARTIAL_ARTS:
+        for (i = 0; i < level; i++)
+            res += (level + P_GRAND_MASTER) * 20;
+        break;
+    default:
+        res = practice_needed_to_advance_for_normal_skill(level);
+        break;
+    }
+
+    return res;
+}
+
+
 /* return true if this skill can be advanced */
 boolean
 can_advance(skill, speedy)

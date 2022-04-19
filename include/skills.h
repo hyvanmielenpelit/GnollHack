@@ -101,10 +101,7 @@ enum skill_levels {
 };
 
 #define is_magic_skill(skill) ((skill) >= P_ARCANE_SPELL && (skill) <= P_NECROMANCY_SPELL)
-#define is_martial_arts_skill(skill) ((skill) == P_MARTIAL_ARTS)
 #define practice_needed_to_advance_for_normal_skill(level) ((level) * (level) * 20)
-#define practice_needed_to_advance_for_martial_arts_skill(level) practice_needed_to_advance_for_normal_skill(level + 1)
-#define practice_needed_to_advance(skill, level) (is_martial_arts_skill(skill) ? practice_needed_to_advance_for_martial_arts_skill(level) : ((is_magic_skill(skill) ? 1 : 1) * practice_needed_to_advance_for_normal_skill(level)))
 
 /* The hero's skill in various weapons. */
 struct skills {
