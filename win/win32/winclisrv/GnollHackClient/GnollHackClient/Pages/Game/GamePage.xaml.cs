@@ -38,6 +38,7 @@ namespace GnollHackClient.Pages.Game
         private const float _statusbar_shieldfontsize = 32f;
         private const float _statusbar_diffontsize = 24f;
 
+        public List<string> ExtendedCommands { get; set; }
 
         private bool _connectionAttempted = false;
         private HubConnection _connection;
@@ -527,6 +528,9 @@ namespace GnollHackClient.Pages.Game
                 SkillTileOff = skill_tile_off;
                 BuffTileOff = buff_tile_off;
                 CursorOff = cursor_off;
+
+                ExtendedCommands = _gnollHackService.GetExtendedCommands();
+
             }));
             await Task.WhenAll(tasks);
             tasks.Clear();
@@ -1742,10 +1746,22 @@ namespace GnollHackClient.Pages.Game
             GetLineCaption.Text = query;
             GetLineCaption.TextColor = clr;
             GetLineEntryText.Text = "";
+            GetLineQuestionMarkGrid.IsVisible = false;
+            GetLineEntryText.IsVisible = true;
+            GetLineEntryText.Keyboard = Keyboard.Default;
+            GetLineEntryText.WidthRequest = 320;
+            GetLineAutoComplete.Text = "";
+            GetLineAutoComplete.IsVisible = false;
 
             _getLineStyle = style;
             switch (style)
             {
+                case (int)getline_types.GETLINE_EXTENDED_COMMAND:
+                    GetLineEntryText.WidthRequest = 230;
+                    GetLineQuestionMarkGrid.IsVisible = true;
+                    GetLineAutoComplete.IsVisible = true;
+                    GetLineEntryText.Placeholder = "Enter the command";
+                    break;
                 case (int)getline_types.GETLINE_LEVELPORT:
                     GetLineEntryText.WidthRequest = 230;
                     GetLineQuestionMarkGrid.IsVisible = true;
@@ -1754,8 +1770,6 @@ namespace GnollHackClient.Pages.Game
                     break;
                 case (int)getline_types.GETLINE_LEVEL_CHANGE:
                 case (int)getline_types.GETLINE_NUMBERS_ONLY:
-                    GetLineEntryText.WidthRequest = 320;
-                    GetLineQuestionMarkGrid.IsVisible = false;
                     GetLineEntryText.Keyboard = Keyboard.Numeric;
                     if (style == (int)getline_types.GETLINE_LEVEL_CHANGE)
                         GetLineEntryText.Placeholder = "Enter the level here";
@@ -1763,16 +1777,10 @@ namespace GnollHackClient.Pages.Game
                         GetLineEntryText.Placeholder = "Enter the number here";
                     break;
                 case (int)getline_types.GETLINE_WISHING:
-                    GetLineEntryText.WidthRequest = 340;
-                    GetLineQuestionMarkGrid.IsVisible = false;
                     GetLineEntryText.Placeholder = "Enter your wish here";
-                    GetLineEntryText.Keyboard = Keyboard.Default;
                     break;
                 default:
-                    GetLineEntryText.WidthRequest = 320;
-                    GetLineQuestionMarkGrid.IsVisible = false;
                     GetLineEntryText.Placeholder = "Enter the text here";
-                    GetLineEntryText.Keyboard = Keyboard.Default;
                     break;
             }
             GetLineGrid.IsVisible = true;
@@ -10435,6 +10443,47 @@ namespace GnollHackClient.Pages.Game
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         uint MakePixel(byte red, byte green, byte blue, byte alpha) =>
         (uint)((alpha << 24) | (blue << 16) | (green << 8) | red);
+
+        private void GetLineEntryText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (GetLineAutoComplete.IsVisible)
+                UpdateGetLineAutoComplete();
+        }
+
+        private void GetLineAutoCompleteTapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            if(GetLineAutoComplete.Text != "")
+            {
+                GetLineEntryText.Text = GetLineAutoComplete.Text;
+            }
+        }
+
+        private void UpdateGetLineAutoComplete()
+        {
+            if(_getLineStyle == (int)getline_types.GETLINE_EXTENDED_COMMAND)
+            {
+                if (string.IsNullOrEmpty(GetLineEntryText.Text))
+                {
+                    GetLineAutoComplete.Text = "";
+                    return;
+                }
+
+                if (ExtendedCommands == null)
+                    return;
+
+                for (int i = 0; i < ExtendedCommands.Count; i++)
+                {
+                    var command = ExtendedCommands[i];
+                    if (command == null)
+                        break;
+                    if (command.StartsWith(GetLineEntryText.Text))
+                    {
+                        GetLineAutoComplete.Text = command;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     public class ColorConverter : IValueConverter

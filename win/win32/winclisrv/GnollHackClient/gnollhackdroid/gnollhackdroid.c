@@ -4,6 +4,7 @@
 
 #include "gnollhackdroid.h"
 #include "hack.h"
+#include "func_tab.h"
 #include "libproc.h"
 #include "callback.h"
 #include "date_unix.h"
@@ -236,6 +237,35 @@ const char* LibGetVersionString()
 const char* LibGetVersionId()
 {
     return VERSION_ID;
+}
+
+static const char* extcmdnames[256] = { 0 };
+const char* LibGetExtendedCommand(int idx)
+{
+    if (idx < 0 || idx >= 256)
+        return 0;
+
+    int i = 0, j = 0;
+    if (idx == 0)
+    {
+        for (i = 0; i < 256; i++)
+            extcmdnames[i] = 0;
+
+        i = 0;
+        while (extcmdlist[i].ef_txt != 0)
+        {
+            if ((extcmdlist[i].flags & AUTOCOMPLETE) != 0 && 
+                (wizard || (!wizard && (extcmdlist[i].flags & WIZMODECMD) == 0))
+                )
+            {
+                extcmdnames[j] = extcmdlist[i].ef_txt;
+                j++;
+            }
+            i++;
+        }
+    }
+
+    return extcmdnames[idx];
 }
 
 void LibSetPetMID(unsigned int m_id)

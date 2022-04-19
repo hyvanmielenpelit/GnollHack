@@ -93,10 +93,15 @@ namespace GnollHackCommon
 
             string str = usedtext;
 
-            if ((usedattributes & (((int)MenuItemAttributes.IndentDash) | (int)MenuItemAttributes.IndentColon | (int)MenuItemAttributes.IndentAstr | (int)MenuItemAttributes.IndentSpace)) != 0)
+            if ((usedattributes & (((int)MenuItemAttributes.IndentDash) | (int)MenuItemAttributes.IndentColon | (int)MenuItemAttributes.IndentAstr | (int)MenuItemAttributes.IndentSpace | (int)MenuItemAttributes.IndentBracket)) != 0)
             {
-                string cstr = " ";
-                if ((usedattributes & (int)MenuItemAttributes.IndentDoubleSpace) == (int)MenuItemAttributes.IndentDoubleSpace)
+                string cstr = " ", cstr2 = "";
+                if ((usedattributes & (int)MenuItemAttributes.IndentBracketOrDoubleSpace) == (int)MenuItemAttributes.IndentBracketOrDoubleSpace)
+                {
+                    cstr = "]";
+                    cstr2 = "  ";
+                }
+                else if ((usedattributes & (int)MenuItemAttributes.IndentDoubleSpace) == (int)MenuItemAttributes.IndentDoubleSpace)
                     cstr = "  ";
                 else if ((usedattributes & (int)MenuItemAttributes.IndentPeriod) == (int)MenuItemAttributes.IndentPeriod)
                     cstr = ".";
@@ -108,8 +113,12 @@ namespace GnollHackCommon
                     cstr = "*";
                 else if ((usedattributes & (int)MenuItemAttributes.IndentSpace) == (int)MenuItemAttributes.IndentSpace)
                     cstr = " ";
+                else if ((usedattributes & (int)MenuItemAttributes.IndentBracket) == (int)MenuItemAttributes.IndentBracket)
+                    cstr = "]";
 
                 int idx = str.IndexOf(cstr);
+                if (idx < 0 && cstr2 != "")
+                    idx = str.IndexOf(cstr2);
                 if (idx >= 0)
                 {
                     int spacepos = idx + cstr.Length;

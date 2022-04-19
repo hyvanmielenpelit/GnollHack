@@ -1410,6 +1410,7 @@ namespace GnollHackClient
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_WIZARD_MODE:
                     _gamePage.EnableWizardMode = true;
+                    _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
                     break;
                 case (int)gui_command_types.GUI_CMD_PETS:
                     _gamePage.ClearPetData();

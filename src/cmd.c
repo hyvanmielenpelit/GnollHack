@@ -416,16 +416,18 @@ doextlist(VOID_ARGS)
                                       "Debugging Extended Commands" };
 
     searchbuf[0] = '\0';
-    menuwin = create_nhwindow(NHW_MENU);
+    menuwin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_DISPLAY_FILE, NO_GLYPH, zerocreatewindowinfo);
 
     while (redisplay) {
         redisplay = FALSE;
         any = zeroany;
         start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_COMMAND);
-        add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+#ifndef GNH_ANDROID
+        add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_TITLE,
                  "Extended Commands List", MENU_UNSELECTED);
-        add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
-                 "", MENU_UNSELECTED);
+        add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE,
+            " ", MENU_UNSELECTED);
+#endif
 
         Strcpy(buf, menumode ? "Show" : "Hide");
         Strcat(buf, " commands that don't autocomplete");
@@ -465,8 +467,8 @@ doextlist(VOID_ARGS)
                      MENU_UNSELECTED);
         }
         any = zeroany;
-        add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
-                 "", MENU_UNSELECTED);
+        add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE,
+                 " ", MENU_UNSELECTED);
         menushown[0] = menushown[1] = 0;
         n = 0;
         for (pass = 0; pass <= 1; ++pass) {
@@ -508,26 +510,29 @@ doextlist(VOID_ARGS)
                 if (!menushown[pass]) {
                     Strcpy(buf, headings[pass]);
                     add_extended_menu(menuwin, NO_GLYPH, &any, menu_heading_info(), 0, 0,
-                             iflags.menu_headings, buf, MENU_UNSELECTED);
+                             iflags.menu_headings | ATR_HEADING, buf, MENU_UNSELECTED);
                     menushown[pass] = 1;
                 }
                 Sprintf(buf, " %-14s %-3s %s",
                         efp->ef_txt,
-                        (efp->flags & AUTOCOMPLETE) ? "[A]" : " ",
+                        (efp->flags & AUTOCOMPLETE) ? "[A]" : "  ",
                         efp->ef_desc);
-                add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_INDENT_AT_BRACKET_OR_DOUBLE_SPACE,
                          buf, MENU_UNSELECTED);
                 ++n;
             }
             if (n)
-                add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
-                         "", MENU_UNSELECTED);
+                add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE,
+                         " ", MENU_UNSELECTED);
         }
         if (*searchbuf && !n)
             add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
                      "no matches", MENU_UNSELECTED);
-
+#ifndef GNH_ANDROID
         end_menu(menuwin, (char *) 0);
+#else
+        end_menu(menuwin, "Extended Commands List");
+#endif
         n = select_menu(menuwin, PICK_ONE, &selected);
         if (n > 0 && selected)
         {
@@ -5196,7 +5201,7 @@ struct ext_func_tab extcmdlist[] = {
     { '#', "#", "perform an extended command",
             doextcmd, IFBURIED | GENERALCMD },
     { M('?'), "?", "list all extended commands",
-            doextlist, IFBURIED | AUTOCOMPLETE | GENERALCMD },
+            doextlist, IFBURIED | GENERALCMD },
     { M('a'), "adjust", "adjust inventory letters",
             doorganize, IFBURIED | AUTOCOMPLETE },
     { M('A'), "annotate", "name current level",
@@ -5209,12 +5214,12 @@ struct ext_func_tab extcmdlist[] = {
             doattributes, IFBURIED | AUTOCOMPLETE },
     { '@', "autopickup", "toggle the pickup option on/off",
             dotogglepickup, IFBURIED },
-#ifdef USE_TILES
+#if defined (USE_TILES) && !defined(GNH_ANDROID)
     { M('b'), "bars", "toggle tile hit point bars on/off",
             dotogglehpbars, IFBURIED | AUTOCOMPLETE },
 #endif
     { C('b'), "break", "break something", dobreak, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_GENERAL, 0, 0, "break" },
-#ifdef USE_TILES
+#if defined (USE_TILES) && !defined(GNH_ANDROID)
     { M('y'), "bufftimers", "toggle tile buff timers on/off",
             dotogglebufftimers, IFBURIED | AUTOCOMPLETE },
 #endif
@@ -5243,7 +5248,7 @@ struct ext_func_tab extcmdlist[] = {
             doquickwhatis, IFBURIED | GENERALCMD },
     { M('g'), "genocided", "list genocided monsters",
             dogenocidedmonsters, IFBURIED },
-#ifdef USE_TILES
+#if defined (USE_TILES) && !defined(GNH_ANDROID)
     { M('_'), "grid", "toggle tile grid on/off",
             dotogglegrid, IFBURIED | AUTOCOMPLETE },
 #endif
@@ -5354,7 +5359,7 @@ struct ext_func_tab extcmdlist[] = {
 
     { 'T', "takeoff", "take off one piece of armor", dotakeoff, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_clothes, "take off", "take off" },
     { M('t')/*'A'*/, "takeoffall", "remove all armor", doddoremarm },
-#ifdef USE_TILES
+#if defined (USE_TILES) && !defined(GNH_ANDROID)
     { M(';'), "targeting", "toggle tile targeting graphics on/off",
             dotogglemonstertargeting, IFBURIED | AUTOCOMPLETE },
     { M(':'), "umark", "toggle tile player mark graphics on/off",
@@ -5409,7 +5414,7 @@ struct ext_func_tab extcmdlist[] = {
             dospellmanage, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
     { '\0', "reorderspells", "sort and reorder known spells",
             dovspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
-#ifdef USE_TILES
+#if defined (USE_TILES) && !defined(GNH_ANDROID)
     { M('.'), "zoomnormal", "revert to normal zoom level",
             dozoomnormal, IFBURIED | AUTOCOMPLETE },
     { M('+'), "zoomin", "zoom map out",
@@ -5450,6 +5455,7 @@ struct ext_func_tab extcmdlist[] = {
             wiz_makemap, IFBURIED | WIZMODECMD },
     { C('f'), "wizmap", "map the level",
             wiz_map, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+#ifndef GNH_ANDROID
     { '\0', "wizsavemon", "save monsters into a file",
             wiz_save_monsters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsaveenc", "save encounters into a file",
@@ -5462,6 +5468,7 @@ struct ext_func_tab extcmdlist[] = {
             wiz_save_glyph2tiles, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsavequesttexts", "save quest texts into a file",
             wiz_save_quest_texts, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+#endif
     { '\0', "wizcrown", "make the god crown you",
             wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizfiles", "browse through files in current directory",

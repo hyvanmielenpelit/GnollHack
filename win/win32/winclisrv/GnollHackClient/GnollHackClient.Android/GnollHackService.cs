@@ -183,6 +183,8 @@ namespace GnollHackClient.Droid
         [DllImport(@"libgnollhackdroid.so")]
         public static extern IntPtr LibGetPropertyName(int prop_index);
         [DllImport(@"libgnollhackdroid.so")]
+        public static extern IntPtr LibGetExtendedCommand(int idx);
+        [DllImport(@"libgnollhackdroid.so")]
         public static extern IntPtr LibDumplogDateString(long startdate);
 
         [DllImport(@"libgnollhackdroid.so")]
@@ -728,6 +730,19 @@ namespace GnollHackClient.Droid
         {
             IntPtr resptr = LibDumplogDateString(startdate);
             string ret = Marshal.PtrToStringAnsi(resptr);
+            return ret;
+        }
+        public List<string> GetExtendedCommands()
+        {
+            List<string> ret = new List<string>();
+            for (int i = 0; i < 256; i++)
+            {
+                IntPtr resptr = LibGetExtendedCommand(i);
+                if (resptr == IntPtr.Zero)
+                    break;
+                ret.Add(Marshal.PtrToStringAnsi(resptr));
+            }
+            ret.Sort();
             return ret;
         }
 

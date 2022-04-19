@@ -152,7 +152,7 @@
                             <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                                 <Entry x:Name="GetLineEntryText" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White"
-                                       HorizontalTextAlignment="Center" FontSize="20" />
+                                       HorizontalTextAlignment="Center" FontSize="20" TextChanged="GetLineEntryText_TextChanged" />
                                 <Grid x:Name="GetLineQuestionMarkGrid" IsVisible="False" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" WidthRequest="50" HeightRequest="50">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="50" HeightRequest="50"  HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Aspect="Fill" />
                                     <Button x:Name="GetLineQuestionMarkButton" Text="?" FontSize="18" WidthRequest="50" HeightRequest="50" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
@@ -160,7 +160,12 @@
                                             Clicked="GetLineQuestionMarkButton_Clicked" />
                                 </Grid>
                             </StackLayout>
-                            <Grid WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                            <Label x:Name="GetLineAutoComplete" IsVisible="False" Text="" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="LightGray" >
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="GetLineAutoCompleteTapGestureRecognizer_Tapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                                <Grid WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
                                 </Grid.RowDefinitions>
