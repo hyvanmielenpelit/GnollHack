@@ -538,6 +538,7 @@ void lib_getlin_ex(int style, int attr, int color, const char* question, char* i
     char buf[BUFSIZ];
     if (question)
         write_text2buf_utf8(buf, BUFSIZ, question);
+
     char* res = lib_callbacks.callback_getlin_ex(style, attr, color, question ? buf : 0);
     if (res && input)
     {
