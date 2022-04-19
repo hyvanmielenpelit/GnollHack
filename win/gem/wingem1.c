@@ -1995,7 +1995,7 @@ XEVENT *xev;
             case MENU_SEARCH:
                 if (Inv_how != PICK_NONE) {
                     char buf[BUFSZ];
-                    Gem_getlin_ex(ATR_NONE, NO_COLOR, "Search for:", buf);
+                    Gem_getlin_ex(GETLINE_MENU_SEARCH, ATR_NONE, NO_COLOR, "Search for:", buf);
                     if (!*buf || buf[0] == '\033')
                         break;
                     for (it = invent_list; it; it = it->Gmi_next) {
@@ -3005,8 +3005,8 @@ int col;
 /************************* getlin *******************************/
 
 void
-Gem_getlin_ex(attr, color, ques, input)
-int attr, color;
+Gem_getlin_ex(style, attr, color, ques, input)
+int style, attr, color;
 const char *ques;
 char *input;
 {

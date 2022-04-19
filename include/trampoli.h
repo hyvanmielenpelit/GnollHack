@@ -237,7 +237,7 @@
 #define dozap() dozap_()
 
 /* ### getline.c ### */
-#define tty_getlin_ex(a, c, x, y) tty_getlin_ex_(a, c, x, y)
+#define tty_getlin_ex(s, a, c, x, y) tty_getlin_ex_(s, a, c, x, y)
 #define tty_get_ext_cmd() tty_get_ext_cmd_()
 
 /* ### termcap.c ### */

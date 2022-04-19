@@ -1141,7 +1141,7 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-gnome_getlin_ex(int attr, int color, const char *question, char *input)
+gnome_getlin_ex(int style, int attr, int color, const char *question, char *input)
 {
     int ret;
 

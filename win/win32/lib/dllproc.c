@@ -1769,10 +1769,10 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-dll_getlin_ex(int attr, int color, const char *question, char *input)
+dll_getlin_ex(int style, int attr, int color, const char *question, char *input)
 {
     dll_logDebug("dll_getlin(%s, %p)\n", question, input);
-    char* res = dll_callbacks.callback_getlin_ex(attr, color, question);
+    char* res = dll_callbacks.callback_getlin_ex(style, attr, color, question);
     if (res && input)
         strcpy(input, res);
 
@@ -2029,7 +2029,7 @@ dll_outrip(winid wid, int how, time_t when)
     long year;
 
     dll_logDebug("dll_outrip(%d, %d, %ld)\n", wid, how, (long) when);
-    dll_callbacks.callback_outrip_begin(wid); //Begin
+    //dll_callbacks.callback_outrip_begin(wid); //Begin
 
     /* Put name on stone */
     Sprintf(buf, "%s", plname);
@@ -2052,7 +2052,7 @@ dll_outrip(winid wid, int how, time_t when)
     Sprintf(buf, "%4ld", year);
     putstr(wid, 0, buf);
 
-    dll_callbacks.callback_outrip_end(wid);  //End
+    //dll_callbacks.callback_outrip_end(wid);  //End
 }
 
 /* handle options updates here */

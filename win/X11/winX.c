@@ -1915,8 +1915,8 @@ release_getline_widgets()
 }
 
 void
-X11_getlin_ex(attr, color, question, input)
-int attr, color;
+X11_getlin_ex(style, attr, color, question, input)
+int style, attr, color;
 const char *question;
 char *input;
 {

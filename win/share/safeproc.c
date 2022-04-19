@@ -635,8 +635,8 @@ unsigned long ynflags;
 
 /*ARGSUSED*/
 void
-safe_getlin_ex(attr, color, prompt, outbuf)
-int attr UNUSED, color UNUSED;
+safe_getlin_ex(style, attr, color, prompt, outbuf)
+int style UNUSED, attr UNUSED, color UNUSED;
 const char *prompt UNUSED;
 char *outbuf;
 {

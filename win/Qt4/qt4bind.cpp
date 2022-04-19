@@ -592,7 +592,7 @@ char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph,
     }
 }
 
-void NetHackQtBind::qt_getlin_ex(int attr, int color, const char *prompt, char *line)
+void NetHackQtBind::qt_getlin_ex(int style, int attr, int color, const char *prompt, char *line)
 {
     NetHackQtStringRequestor requestor(mainWidget(),prompt);
     if (!requestor.Get(line)) {

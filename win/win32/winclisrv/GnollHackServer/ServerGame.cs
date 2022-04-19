@@ -109,8 +109,8 @@ namespace GnollHackServer
             VoidIntCallback callback_exit_hack,
             CharVoidCallback callback_getcwd,
             IntCharCharUintCallback callback_messagebox,
-            VoidIntCallback callback_outrip_begin,
-            VoidIntCallback callback_outrip_end,
+            //VoidIntCallback callback_outrip_begin,
+            //VoidIntCallback callback_outrip_end,
 
             FreeMemoryCallback callback_free_memory,
             ReportPlayerNameCallback callback_report_player_name,
@@ -270,8 +270,8 @@ namespace GnollHackServer
                 GameCallback_ExitHack,
                 GameCallback_GetCwd,
                 GameCallback_MessageBox,
-                GameCallback_VoidIntDummy,
-                GameCallback_VoidIntDummy,
+                //GameCallback_VoidIntDummy,
+                //GameCallback_VoidIntDummy,
                 GameCallback_FreeMemory,
                 GameCallback_ReportPlayerName,
                 GameCallback_SendObjectData,
@@ -582,7 +582,7 @@ namespace GnollHackServer
         {
             return 0;
         }
-        protected string GameCallback_GetLineCallback(int attr, int color, string value1)
+        protected string GameCallback_GetLineCallback(int style, int attr, int color, string value1)
         {
             return "";
         }

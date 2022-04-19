@@ -117,8 +117,8 @@ int RunGnollHack(
 
     GetCwdCallback callback_getcwd,
     MessageBoxCallback callback_messagebox,
-    OutRipBeginCallback callback_outrip_begin,
-    OutRipEndCallback callback_outrip_end,
+    //OutRipBeginCallback callback_outrip_begin,
+    //OutRipEndCallback callback_outrip_end,
 
     FreeMemoryCallback callback_free_memory,
     ReportPlayerNameCallback callback_report_player_name,

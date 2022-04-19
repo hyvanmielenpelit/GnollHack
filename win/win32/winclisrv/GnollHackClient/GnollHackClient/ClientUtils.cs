@@ -110,7 +110,7 @@ namespace GnollHackClient
         private static Color XTitleGoldColor = new Color((double)0xD4 / 255, (double)0xA0 / 255, (double)0x17 / 255);
         public static Color NHColor2XColor(int nhclr, bool revertblackandwhite, bool istitle)
         {
-            Color res = istitle ? XTitleGoldColor : revertblackandwhite ? Color.Black :Color.White;
+            Color res = istitle ? XTitleGoldColor : revertblackandwhite ? Color.Black : Color.White;
             switch ((nhcolor)nhclr)
             {
                 case nhcolor.CLR_BLACK:

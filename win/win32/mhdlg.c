@@ -25,7 +25,7 @@ struct getlin_data {
 INT_PTR CALLBACK GetlinDlgProc(HWND, UINT, WPARAM, LPARAM);
 
 int
-mswin_getlin_window(int attr, int color, const char *question, char *result, size_t result_size)
+mswin_getlin_window(int style, int attr, int color, const char *question, char *result, size_t result_size)
 {
     if (iflags.debug_fuzzer) {
         random_response(result, (int) result_size);

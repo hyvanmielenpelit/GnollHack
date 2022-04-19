@@ -235,7 +235,7 @@ curses_player_selection()
 void
 curses_askname()
 {
-    curses_line_input_dialog(ATR_NONE, NO_COLOR, "Who are you?", plname, PL_NSIZ);
+    curses_line_input_dialog(GETLINE_GENERAL, ATR_NONE, NO_COLOR, "Who are you?", plname, PL_NSIZ);
 }
 
 
@@ -863,9 +863,9 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-curses_getlin_ex(int attr, int color, const char *question, char *input)
+curses_getlin_ex(int style, int attr, int color, const char *question, char *input)
 {
-    curses_line_input_dialog(attr, color, question, input, BUFSZ);
+    curses_line_input_dialog(style, attr, color, question, input, BUFSZ);
 }
 
 /*

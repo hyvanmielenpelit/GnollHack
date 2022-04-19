@@ -49,7 +49,7 @@ static int FDECL(and_nh_poskey, (int *, int *, int *));
 static void NDECL(and_nhbell);
 static int NDECL(and_doprev_message);
 static char FDECL(and_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, unsigned long));
-static void FDECL(and_getlin_ex, (int, int, const char *,char *));
+static void FDECL(and_getlin_ex, (int, int, int, const char *,char *));
 static int NDECL(and_get_ext_cmd);
 static void FDECL(and_number_pad, (int));
 static void NDECL(and_delay_output);
@@ -1897,7 +1897,7 @@ void and_n_getline_r(const char* question, char* buf, int nMax, int showLog, int
 //		-- getlin() can assume the input buffer is at least BUFSZ
 //		   bytes in size and must truncate inputs to fit, including
 //		   the nul character.
-void and_getlin_ex(int attr, int color, const char *question, char *input)
+void and_getlin_ex(int style, int attr, int color, const char *question, char *input)
 {
 //	debuglog("and_getlin '%s'", question);
 	and_n_getline(question, input, BUFSZ, FALSE);

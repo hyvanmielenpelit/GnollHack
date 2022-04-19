@@ -1008,9 +1008,9 @@ namespace GnollHackClient
             }
         }
 
-        public string ClientCallback_getlin(int attr, int color, string query)
+        public string ClientCallback_GetLine(int style, int attr, int color, string query)
         {
-            Debug.WriteLine("ClientCallback_getlin");
+            Debug.WriteLine("ClientCallback_GetLine");
             if (query == null)
                 query = "";
 
@@ -1018,7 +1018,7 @@ namespace GnollHackClient
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 _getLineString = null;
-                queue.Enqueue(new GHRequest(this, GHRequestType.GetLine, query));
+                queue.Enqueue(new GHRequest(this, GHRequestType.GetLine, query, style, attr, color));
                 while (_getLineString == null)
                 {
                     Thread.Sleep(GHConstants.PollingInterval);

@@ -1812,7 +1812,7 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-mswin_getlin_ex(int attr, int color, const char *question, char *input)
+mswin_getlin_ex(int style, int attr, int color, const char *question, char *input)
 {
     logDebug("mswin_getlin(%s, %p)\n", question, input);
 

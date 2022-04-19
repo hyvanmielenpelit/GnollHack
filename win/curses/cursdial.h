@@ -10,7 +10,7 @@
 
 /* Global declarations */
 
-void curses_line_input_dialog(int attr, int color, const char *prompt, char *answer, int buffer);
+void curses_line_input_dialog(int style, int attr, int color, const char *prompt, char *answer, int buffer);
 int curses_character_input_dialog(int attr UNUSED, int color UNUSED, const char *prompt, const char *choices,
                                   CHAR_P def);
 int curses_ext_cmd(void);

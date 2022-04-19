@@ -8369,7 +8369,7 @@ const char *prompt, *title;
            (except we won't loop if response is ESC; it means no) */
         do {
             Sprintf(qbuf, "%s%s %s", promptprefix, prompt, responsetype);
-            getlin_ex(attr, color, qbuf, ans);
+            getlin_ex(GETLINE_PARANOID, attr, color, qbuf, ans);
             (void) mungspaces(ans);
             confirmed_ok = !strcmpi(ans, "yes");
             if (confirmed_ok || *ans == '\033')

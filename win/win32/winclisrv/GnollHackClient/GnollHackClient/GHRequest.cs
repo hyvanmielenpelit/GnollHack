@@ -191,6 +191,15 @@ namespace GnollHackClient
             RequestInt = requestint;
             RequestInt2 = requestint2;
         }
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring, int style, int attr, int color)
+        {
+            RequestingClientGame = clientgame;
+            RequestType = requesttype;
+            RequestString = requeststring;
+            RequestInt = style;
+            RequestAttr = attr;
+            RequestNhColor = color;
+        }
 
         public GHRequest(ClientGame clientgame, GHRequestType requesttype, string requeststring, uint attributes)
         {

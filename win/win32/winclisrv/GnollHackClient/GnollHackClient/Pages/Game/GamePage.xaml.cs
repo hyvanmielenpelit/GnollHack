@@ -1360,7 +1360,7 @@ namespace GnollHackClient.Pages.Game
                                 AskName();
                                 break;
                             case GHRequestType.GetLine:
-                                GetLine(req.RequestString);
+                                GetLine(req.RequestString, req.RequestInt, req.RequestAttr, req.RequestNhColor);
                                 break;
                             case GHRequestType.ReturnToMainMenu:
                                 ClearMap();
@@ -1734,9 +1734,11 @@ namespace GnollHackClient.Pages.Game
             var namePage = new NamePage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(namePage);
         }
-        private void GetLine(string query)
+        private void GetLine(string query, int style, int attr, int color)
         {
+            Color clr = ClientUtils.NHColor2XColor(color, false, false); /* Non-title / white coloring works better here */
             GetLineCaption.Text = query;
+            GetLineCaption.TextColor = clr;
             GetLineEntryText.Text = "";
             GetLineGrid.IsVisible = true;
         }
@@ -1744,9 +1746,17 @@ namespace GnollHackClient.Pages.Game
         private void GetLineOkButton_Clicked(object sender, EventArgs e)
         {
             string res = GetLineEntryText.Text;
-            if (string.IsNullOrWhiteSpace(GetLineEntryText.Text))
+            if (string.IsNullOrEmpty(GetLineEntryText.Text))
             {
                 res = "";
+            }
+            else if (string.IsNullOrWhiteSpace(GetLineEntryText.Text))
+            {
+                res = " ";
+            }
+            else
+            {
+                res.Trim();
             }
 
             ConcurrentQueue<GHResponse> queue;

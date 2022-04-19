@@ -23,7 +23,7 @@ STATIC_DCL boolean FDECL(ext_cmd_getlin_hook, (char *));
 typedef boolean FDECL((*getlin_hook_proc), (char *));
 
 STATIC_DCL void FDECL(hooked_tty_getlin_ex,
-                      (int, int, const char *, char *, getlin_hook_proc));
+                      (int, int, int, const char *, char *, getlin_hook_proc));
 extern int NDECL(extcmd_via_menu); /* cmd.c */
 
 extern char erase_char, kill_char; /* from appropriate tty.c file */
@@ -35,20 +35,20 @@ extern char erase_char, kill_char; /* from appropriate tty.c file */
  * resulting string is "\033".
  */
 void
-tty_getlin_ex(attr, color, query, bufp)
-int attr, color;
+tty_getlin_ex(style, attr, color, query, bufp)
+int style, attr, color;
 const char *query;
 register char *bufp;
 {
     suppress_history = FALSE;
-    hooked_tty_getlin_ex(attr, color, query, bufp, (getlin_hook_proc) 0);
+    hooked_tty_getlin_ex(style, attr, color, query, bufp, (getlin_hook_proc) 0);
 }
 
 boolean skip_utf8 = FALSE;
 
 STATIC_OVL void
-hooked_tty_getlin_ex(attr, color, query, bufp, hook)
-int attr UNUSED, color UNUSED;
+hooked_tty_getlin_ex(style, attr, color, query, bufp, hook)
+int style UNUSED, attr UNUSED, color UNUSED;
 const char *query;
 register char *bufp;
 getlin_hook_proc hook;
@@ -361,7 +361,7 @@ tty_get_ext_cmd()
      *                      : (getlin_hook_proc) 0);
      */
     buf[0] = '\0';
-    hooked_tty_getlin_ex(ATR_NONE, NO_COLOR, "#", buf, in_doagain ? (getlin_hook_proc) 0
+    hooked_tty_getlin_ex(GETLINE_EXTENDED_COMMAND, ATR_NONE, NO_COLOR, "#", buf, in_doagain ? (getlin_hook_proc) 0
                                            : ext_cmd_getlin_hook);
     (void) mungspaces(buf);
     if (buf[0] == 0 || buf[0] == '\033')
