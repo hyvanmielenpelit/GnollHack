@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+﻿using GnollHackCommon;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,11 +26,11 @@ namespace GnollHackClient
 
         public float GetFinishTime()
         {
-            return 2.0f;
+            return 1.5f;
         }
         public float GetFadeOutTime()
         {
-            return 1.75f;
+            return 1.25f;
         }
         public float GetFadeInTime()
         {
@@ -49,12 +50,12 @@ namespace GnollHackClient
             if (counter_value < 5)
                 return 999.0f;
 
-            return ((float)(counter_value - _created_at_count)) / 40.0f;
+            return ((float)(counter_value - _created_at_count)) / (float)GHConstants.MainCanvasAnimationFrequency;
         }
 
         public long GetFinishCounterValue()
         {
-            return (long)(GetFinishTime() * 40.0f) + _created_at_count;
+            return (long)(GetFinishTime() * GHConstants.MainCanvasAnimationFrequency) + _created_at_count;
         }
 
         public bool IsVisible(long counter_value)

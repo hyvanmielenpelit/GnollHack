@@ -1711,19 +1711,22 @@ register struct monst *mtmp;
                 (void)mongets(mtmp, !rn2(50) ? POT_FULL_ENERGY : !rn2(10) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
             
             /* Some random reagants */
-            n = rn2(3);
+            n = rn2(2);
             for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 0));
 
-            if (!rn2(2))
+            if (!rn2(4))
                 (void)mongets(mtmp, GINSENG_ROOT);
             
             /* Some spellbooks */
-            n = rn2(2);
-            for(i = 0; i < n; i++)
+            if (!rn2(2))
             {
-                otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
-                (void)mpickobj(mtmp, otmp);
+                n = rn2(2);
+                for (i = 0; i < n; i++)
+                {
+                    otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
+                    (void)mpickobj(mtmp, otmp);
+                }
             }
         }
 
@@ -1941,7 +1944,7 @@ register struct monst *mtmp;
         break;
 
     case S_GNOME:
-        if (!rn2(50)) /* Gnomish banker */
+        if (!rn2(125)) /* Gnomish banker */
         {
             struct obj* sack = mksobj(!rn2(20) ? BAG_OF_TREASURE_HAULING : SACK, FALSE, FALSE, FALSE);
             (void)mpickobj(mtmp, sack);
@@ -2002,7 +2005,7 @@ register struct monst *mtmp;
         }
         if (ptr == &mons[PM_GNOMISH_WIZARD])
         {
-            n = rnd(3);
+            n = rn2(3);
             for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 2));
 

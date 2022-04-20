@@ -55,7 +55,7 @@ namespace GnollHackClient
             if (counter_value < 5)
                 return 999.0f;
 
-            return ((float)(counter_value - _created_at_count)) / 40.0f;
+            return ((float)(counter_value - _created_at_count)) / (float)GHConstants.MainCanvasAnimationFrequency;
         }
 
         public bool IsVisible(long counter_value)

@@ -160,7 +160,7 @@
                                             Clicked="GetLineQuestionMarkButton_Clicked" />
                                 </Grid>
                             </StackLayout>
-                            <Label x:Name="GetLineAutoComplete" IsVisible="False" Text="" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="LightGray" >
+                            <Label x:Name="GetLineAutoComplete" IsVisible="False" Text="" FontSize="18" HorizontalOptions="CenterAndExpand" TextColor="LightGray" >
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="GetLineAutoCompleteTapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>

@@ -3900,7 +3900,7 @@ namespace GnollHackClient.Pages.Game
                             textPaint.MeasureText(sampletext, ref textBounds);
                             if (textBounds.Width > 0)
                             {
-                                float relativesize = relativetoscreenwidth * canvaswidth / textBounds.Width;
+                                float relativesize = relativetoscreenwidth * Math.Min(canvaswidth, canvasheight) / textBounds.Width;
                                 textPaint.TextSize = UsedFontSize * relativesize;
                             }
 
@@ -3939,6 +3939,9 @@ namespace GnollHackClient.Pages.Game
                                         for (int search_y = -1; search_y <= 1; search_y++)
                                         {
                                             if (search_x == 0 && search_y == 0)
+                                                continue;
+                                            if (p.X + search_x < 1 || p.X + search_x >= GHConstants.MapCols
+                                                || p.Y + search_y < 0 || p.Y + search_y >= GHConstants.MapRows)
                                                 continue;
                                             float rectsize = Math.Min(width, height);
                                             float rectxmargin = (width - rectsize) / 2;
