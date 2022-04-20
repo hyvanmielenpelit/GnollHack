@@ -240,33 +240,28 @@ const char* LibGetVersionId()
 }
 
 static const char* extcmdnames[256] = { 0 };
-const char* LibGetExtendedCommand(int idx)
+const char** LibGetExtendedCommands()
 {
-    if (idx < 0 || idx >= 256)
-        return 0;
-
     int i = 0, j = 0;
-    if (idx == 0)
-    {
-        for (i = 0; i < 256; i++)
-            extcmdnames[i] = 0;
+    for (i = 0; i < 256; i++)
+        extcmdnames[i] = 0;
 
-        i = 0;
-        while (extcmdlist[i].ef_txt != 0)
+    i = 0;
+    while (extcmdlist[i].ef_txt != 0)
+    {
+        if ((extcmdlist[i].flags & AUTOCOMPLETE) != 0 &&
+            (wizard || (extcmdlist[i].flags & WIZMODECMD) == 0)
+           )
         {
-            if ((extcmdlist[i].flags & AUTOCOMPLETE) != 0 && 
-                (wizard || (!wizard && (extcmdlist[i].flags & WIZMODECMD) == 0))
-                )
-            {
-                extcmdnames[j] = extcmdlist[i].ef_txt;
-                j++;
-            }
-            i++;
+            extcmdnames[j] = extcmdlist[i].ef_txt;
+            j++;
         }
+        i++;
     }
 
-    return extcmdnames[idx];
+    return extcmdnames;
 }
+
 
 void LibSetPetMID(unsigned int m_id)
 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace GnollHackCommon
@@ -135,6 +136,48 @@ namespace GnollHackCommon
             }
 
             return "";
+        }
+
+        public static List<string> GetAllStringsFromZeroTerminatedArray(IntPtr ptr)
+        {
+            return GetAllStringsFromZeroTerminatedArray(ptr, 0);
+        }
+
+        public static List<string> GetAllStringsFromZeroTerminatedArray(IntPtr ptr, int maxsize)
+        {
+            var list = new List<string>();
+            int cnt = 0;
+            if(ptr != IntPtr.Zero)
+            {
+                IntPtr strPtr;
+                while((strPtr = (IntPtr)Marshal.PtrToStructure(ptr, typeof(IntPtr))) != IntPtr.Zero)
+                {
+                    if (maxsize > 0 && cnt >= maxsize)
+                        break;
+                    list.Add(Marshal.PtrToStringAnsi(strPtr));
+                    ptr = new IntPtr(ptr.ToInt64() + IntPtr.Size);
+                    cnt++;
+                }
+            }
+            return list;
+        }
+
+        public static List<string> GetAllStringsFromFixedArray(IntPtr ptr, int size)
+        {
+            var list = new List<string>();
+            if (ptr != IntPtr.Zero)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    IntPtr strPtr = (IntPtr)Marshal.PtrToStructure(ptr, typeof(IntPtr));
+                    if (strPtr != IntPtr.Zero)
+                    {
+                        list.Add(Marshal.PtrToStringAnsi(strPtr));
+                        ptr = new IntPtr(ptr.ToInt64() + IntPtr.Size);
+                    }
+                }
+            }
+            return list;
         }
     }
 }

@@ -185,6 +185,8 @@ namespace GnollHackClient.Droid
         [DllImport(@"libgnollhackdroid.so")]
         public static extern IntPtr LibGetExtendedCommand(int idx);
         [DllImport(@"libgnollhackdroid.so")]
+        public static extern IntPtr LibGetExtendedCommands();
+        [DllImport(@"libgnollhackdroid.so")]
         public static extern IntPtr LibDumplogDateString(long startdate);
 
         [DllImport(@"libgnollhackdroid.so")]
@@ -734,14 +736,7 @@ namespace GnollHackClient.Droid
         }
         public List<string> GetExtendedCommands()
         {
-            List<string> ret = new List<string>();
-            for (int i = 0; i < 256; i++)
-            {
-                IntPtr resptr = LibGetExtendedCommand(i);
-                if (resptr == IntPtr.Zero)
-                    break;
-                ret.Add(Marshal.PtrToStringAnsi(resptr));
-            }
+            List<string> ret = GHUtils.GetAllStringsFromZeroTerminatedArray(LibGetExtendedCommands(), 256);
             ret.Sort();
             return ret;
         }
