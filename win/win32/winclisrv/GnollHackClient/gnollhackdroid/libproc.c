@@ -561,6 +561,9 @@ int lib_get_ext_cmd(void)
     if (!res)
         return -1;
 
+    if(*res == 27 || *res == 0)
+        return -1;
+
     char buf[BUFSZ];
     strncpy(buf, res, BUFSZ - 1);
     buf[BUFSZ - 1] = 0;

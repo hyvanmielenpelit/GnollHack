@@ -1849,22 +1849,22 @@ int skill, lvl;
 
 
 int
-practice_needed_to_advance(skill, level)
-int skill, level;
+practice_needed_to_advance(skill_id, skill_level)
+int skill_id, skill_level;
 {
     int res = 0, i;
-    switch (skill)
+    switch (skill_id)
     {
     case P_BARE_HANDED_COMBAT:
-        for(i = 0; i < level; i++)
-            res += level * 20;
+        for(i = 0; i < skill_level; i++)
+            res += skill_level * 20;
         break;
     case P_MARTIAL_ARTS:
-        for (i = 0; i < level; i++)
-            res += (level + P_GRAND_MASTER) * 20;
+        for (i = 0; i < skill_level; i++)
+            res += (skill_level + P_GRAND_MASTER) * 20;
         break;
     default:
-        res = practice_needed_to_advance_for_normal_skill(level);
+        res = practice_needed_to_advance_for_normal_skill(skill_level);
         break;
     }
 

@@ -19,7 +19,9 @@ STATIC_DCL int FDECL(do_chat_whoareyou, (struct monst*));
 STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
 
 STATIC_DCL void FDECL(hermit_talk, (struct monst*, const char**, enum ghsound_types));
+#if 0
 STATIC_DCL void FDECL(hermit_talk_with_startindex, (struct monst*, const char**, enum ghsound_types, UCHAR_P, int));
+#endif
 STATIC_DCL void FDECL(popup_talk, (struct monst*, const char**, enum ghsound_types, int, int, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL void FDECL(popup_talk_core, (struct monst*, const char**, enum ghsound_types, UCHAR_P, int, int, int, BOOLEAN_P, BOOLEAN_P));
 
@@ -8363,6 +8365,7 @@ enum ghsound_types soundid;
     popup_talk(mtmp, linearray, soundid, ATR_NONE, NO_COLOR, TRUE, TRUE);
 }
 
+#if 0
 STATIC_OVL void
 hermit_talk_with_startindex(mtmp, linearray, soundid, soundindextype, startindex)
 struct monst* mtmp;
@@ -8373,6 +8376,7 @@ int startindex;
 {
     popup_talk_core(mtmp, linearray, soundid, soundindextype, startindex, ATR_NONE, NO_COLOR, TRUE, TRUE);
 }
+#endif
 
 STATIC_OVL void
 popup_talk(mtmp, linearray, soundid, attr, color, printtext, addquotes)
