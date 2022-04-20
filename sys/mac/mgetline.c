@@ -32,12 +32,19 @@ get_line_from_key_queue(char *bufp)
 }
 
 static void
-topl_getlin_ex(int style UNUSED, int attr, int color, const char *query, char *bufp, Boolean ext)
+topl_getlin_ex(int style UNUSED, int attr, int color, const char *query, char *bufp, const char* placeholder, const char* defvalue, Boolean ext)
 {
     if (get_line_from_key_queue(bufp))
         return;
 
-    enter_topl_mode(attr, color, (char*)query);
+    char promptbuf[BUFSZ] = "";
+    if (query)
+        Sprintf(promptbuf, "%s", query);
+    if (placeholder)
+        Sprintf(eos(promptbuf), " [%s]", placeholder);
+    if (defvalue)
+        Sprintf(eos(promptbuf), " %s", defvalue);
+    enter_topl_mode(attr, color, promptbuf);
     while (topl_key(nhgetch(), ext))
         ;
     leave_topl_mode(bufp);
@@ -50,9 +57,9 @@ topl_getlin_ex(int style UNUSED, int attr, int color, const char *query, char *b
  * resulting string is "\033".
  */
 void
-mac_getlin_ex(int style, int attr, int color, const char *query, char *bufp)
+mac_getlin_ex(int style, int attr, int color, const char *query, char *bufp, const char* placeholder, const char* defvalue)
 {
-    topl_getlin_ex(style, attr, color, query, bufp, false);
+    topl_getlin_ex(style, attr, color, query, bufp, placeholder, defvalue, false);
 }
 
 /* Read in an extended command - doing command line completion for
@@ -67,7 +74,7 @@ mac_get_ext_cmd()
 
     if (iflags.extmenu)
         return extcmd_via_menu();
-    topl_getlin_ex(GETLINE_EXTENDED_COMMAND, ATR_NONE, NO_COLOR, "# ", bufp, true);
+    topl_getlin_ex(GETLINE_EXTENDED_COMMAND, ATR_NONE, NO_COLOR, "# ", bufp, (char*)0, (char*)0, true);
     for (i = 0; extcmdlist[i].ef_txt != (char *) 0; i++)
         if (!strcmp(bufp, extcmdlist[i].ef_txt))
             break;

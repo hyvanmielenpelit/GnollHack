@@ -1493,10 +1493,17 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-mswin_getlin_ex(int style, int attr, int color, const char *question, char *input)
+mswin_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* defvalue)
 {
     logDebug("mswin_getlin(%s, %p)\n", question, input);
-    if (mswin_getlin_window(style, attr, color, question, input, BUFSZ) == IDCANCEL) {
+    char promptbuf[BUFSZ] = "";
+    if(question)
+        Sprintf(promptbuf, "%s", question);
+    if (placeholder)
+        Sprintf(eos(promptbuf), " [%s]", placeholder);
+    if (defvalue)
+        Sprintf(eos(promptbuf), " %s", defvalue);
+    if (mswin_getlin_window(style, attr, color, promptbuf, input, BUFSZ) == IDCANCEL) {
         strcpy(input, "\033");
     }
 }

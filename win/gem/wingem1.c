@@ -1995,7 +1995,7 @@ XEVENT *xev;
             case MENU_SEARCH:
                 if (Inv_how != PICK_NONE) {
                     char buf[BUFSZ];
-                    Gem_getlin_ex(GETLINE_MENU_SEARCH, ATR_NONE, NO_COLOR, "Search for:", buf);
+                    Gem_getlin_ex(GETLINE_MENU_SEARCH, ATR_NONE, NO_COLOR, "Search for:", buf, 0, 0);
                     if (!*buf || buf[0] == '\033')
                         break;
                     for (it = invent_list; it; it = it->Gmi_next) {
@@ -3005,14 +3005,23 @@ int col;
 /************************* getlin *******************************/
 
 void
-Gem_getlin_ex(style, attr, color, ques, input)
+Gem_getlin_ex(style, attr, color, ques, input, placeholder, defvalue)
 int style, attr, color;
 const char *ques;
+const char* placeholder;
+const char* defvalue;
 char *input;
 {
     OBJECT *z_ob = zz_oblist[LINEGET];
     int d_exit, length;
     char *pr[2], *tmp;
+    char promptbuf[BUFSZ] = "";
+    if (ques)
+        Sprintf(promptbuf, "%s", ques);
+    if (placeholder)
+        Sprintf(eos(promptbuf), " [%s]", placeholder);
+    if (defvalue)
+        Sprintf(eos(promptbuf), " %s", defvalue);
 
     if (WIN_MESSAGE != WIN_ERR && Gem_nhwindow[WIN_MESSAGE].gw_window)
         mar_display_nhwindow(WIN_MESSAGE);
@@ -3022,18 +3031,18 @@ char *input;
     z_ob[LGPROMPT].ob_height = 2 * gr_ch;
 
     length = z_ob[LGPROMPT].ob_width / gr_cw;
-    if (strlen(ques) > length) {
-        tmp = ques + length;
-        while (*tmp != ' ' && tmp >= ques) {
+    if (strlen(promptbuf) > length) {
+        tmp = promptbuf + length;
+        while (*tmp != ' ' && tmp >= promptbuf) {
             tmp--;
         }
-        if (tmp <= ques)
-            tmp = ques + length; /* Mar -- Oops, what a word :-) */
-        pr[0] = ques;
+        if (tmp <= promptbuf)
+            tmp = promptbuf + length; /* Mar -- Oops, what a word :-) */
+        pr[0] = promptbuf;
         *tmp = 0;
         pr[1] = ++tmp;
     } else {
-        pr[0] = ques;
+        pr[0] = promptbuf;
         pr[1] = NULL;
     }
     ub_prompt.ub_parm = (long) pr;

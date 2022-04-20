@@ -1812,9 +1812,16 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-mswin_getlin_ex(int style, int attr, int color, const char *question, char *input)
+mswin_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* defvalue)
 {
     logDebug("mswin_getlin(%s, %p)\n", question, input);
+    char promptbuf[BUFSZ] = "";
+    if (question)
+        Sprintf(promptbuf, "%s", question);
+    if (placeholder)
+        Sprintf(eos(promptbuf), " [%s]", placeholder);
+    if (defvalue)
+        Sprintf(eos(promptbuf), " %s", defvalue);
 
     if (!iflags.wc_popup_dialog) {
         char c;
@@ -1827,7 +1834,7 @@ mswin_getlin_ex(int style, int attr, int color, const char *question, char *inpu
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
 
         /* mswin_clear_nhwindow(WIN_MESSAGE); */
-        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, question, 0, color);
+        mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, promptbuf, 0, color);
         mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD | attr, " ", 1, color);
 #ifdef EDIT_GETLIN
         mswin_putstr_ex(WIN_MESSAGE, ATR_BOLD, input, 0, NO_COLOR);
@@ -1872,7 +1879,7 @@ mswin_getlin_ex(int style, int attr, int color, const char *question, char *inpu
         SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
     } else {
-        if (mswin_getlin_window(attr, color, question, input, BUFSZ) == IDCANCEL) {
+        if (mswin_getlin_window(attr, color, promptbuf, input, BUFSZ) == IDCANCEL) {
             strcpy(input, "\033");
         }
     }

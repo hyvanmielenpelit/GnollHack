@@ -1364,7 +1364,7 @@ namespace GnollHackClient.Pages.Game
                                 AskName();
                                 break;
                             case GHRequestType.GetLine:
-                                GetLine(req.RequestString, req.RequestInt, req.RequestAttr, req.RequestNhColor);
+                                GetLine(req.RequestString, req.PlaceHolderString, req.DefValueString, req.RequestInt, req.RequestAttr, req.RequestNhColor);
                                 break;
                             case GHRequestType.ReturnToMainMenu:
                                 ClearMap();
@@ -1740,10 +1740,12 @@ namespace GnollHackClient.Pages.Game
         }
 
         private int _getLineStyle = 0;
-        private void GetLine(string query, int style, int attr, int color)
+        private void GetLine(string query, string placeholder, string defvalue, int style, int attr, int color)
         {
             Color clr = ClientUtils.NHColor2XColor(color, false, false); /* Non-title / white coloring works better here */
             GetLineCaption.Text = query;
+            if (!string.IsNullOrWhiteSpace(defvalue))
+                GetLineCaption.Text += " " + defvalue;
             GetLineCaption.TextColor = clr;
             GetLineEntryText.Text = "";
             GetLineQuestionMarkGrid.IsVisible = false;
@@ -1786,7 +1788,12 @@ namespace GnollHackClient.Pages.Game
                     GetLineEntryText.Placeholder = "Enter the monster here";
                     break;
                 default:
-                    GetLineEntryText.Placeholder = "Enter the text here";
+                    if (!string.IsNullOrWhiteSpace(placeholder) && placeholder.Length > 0)
+                    {
+                        GetLineEntryText.Placeholder = char.ToUpper(placeholder[0]) + placeholder.Substring(1);
+                    }
+                    else
+                        GetLineEntryText.Placeholder = "Enter the text here";
                     break;
             }
             GetLineGrid.IsVisible = true;

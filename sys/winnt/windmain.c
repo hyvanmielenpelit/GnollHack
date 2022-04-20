@@ -46,7 +46,7 @@ void NDECL(windows_nhbell);
 int FDECL(windows_nh_poskey, (int *, int *, int *));
 void FDECL(windows_raw_print, (const char *));
 char FDECL(windows_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, unsigned long));
-static void FDECL(windows_getlin_ex, (int, int, int, const char *, char *));
+static void FDECL(windows_getlin_ex, (int, int, int, const char *, char *, const char*, const char*));
 extern int NDECL(windows_console_custom_nhgetch);
 void NDECL(safe_routines);
 
@@ -825,9 +825,11 @@ unsigned long ynflags;
 
 /*ARGSUSED*/
 static void
-windows_getlin_ex(style, attr, color, prompt, outbuf)
+windows_getlin_ex(style, attr, color, prompt, outbuf, placeholder, defvalue)
 int style UNUSED, attr UNUSED, color UNUSED;
 const char *prompt UNUSED;
+const char* placeholder UNUSED;
+const char* defvalue UNUSED;
 char *outbuf;
 {
     Strcpy(outbuf, "\033");

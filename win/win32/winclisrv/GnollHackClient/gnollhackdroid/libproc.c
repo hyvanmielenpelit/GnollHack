@@ -533,13 +533,19 @@ char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* t
     return convert_gnhch(res);
 }
 
-void lib_getlin_ex(int style, int attr, int color, const char* question, char* input)
+void lib_getlin_ex(int style, int attr, int color, const char* question, char* input, const char* placeholder, const char* defvalue)
 {
-    char buf[BUFSIZ];
+    char buf[BUFSIZ] = "";
+    char phbuf[BUFSIZ] = "";
+    char dvbuf[BUFSIZ] = "";
     if (question)
         write_text2buf_utf8(buf, BUFSIZ, question);
+    if (placeholder)
+        write_text2buf_utf8(phbuf, BUFSIZ, placeholder);
+    if (defvalue)
+        write_text2buf_utf8(dvbuf, BUFSIZ, defvalue);
 
-    char* res = lib_callbacks.callback_getlin_ex(style, attr, color, question ? buf : 0);
+    char* res = lib_callbacks.callback_getlin_ex(style, attr, color, question ? buf : 0, placeholder ? phbuf : 0, defvalue ? dvbuf : 0);
     if (res && input)
     {
         char msgbuf[BUFSZ] = "";
@@ -551,7 +557,7 @@ void lib_getlin_ex(int style, int attr, int color, const char* question, char* i
 
 int lib_get_ext_cmd(void)
 {
-    char* res = lib_callbacks.callback_getlin_ex(GETLINE_EXTENDED_COMMAND, ATR_NONE, NO_COLOR, "Type an Extended Command");
+    char* res = lib_callbacks.callback_getlin_ex(GETLINE_EXTENDED_COMMAND, ATR_NONE, NO_COLOR, "Type an Extended Command", 0, 0);
     if (!res)
         return -1;
 

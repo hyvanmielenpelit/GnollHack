@@ -3983,7 +3983,7 @@ int how;
                 pline1(thats_enough_tries);
                 return;
             }
-            getlin_ex(GETLINE_GENOCIDE, ATR_NONE, NO_COLOR, "What monster do you want to genocide?", buf); /*  [type the name] */
+            getlin_ex(GETLINE_GENOCIDE, ATR_NONE, NO_COLOR, "What monster do you want to genocide?", buf, "type the name", (char*)0);
             (void) mungspaces(buf);
             /* choosing "none" preserves genocideless conduct */
             if (*buf == '\033' || !strcmpi(buf, "none")
@@ -4444,7 +4444,7 @@ create_particular()
     struct _create_particular_data d;
 
     do {
-        getlin_ex(GETLINE_GENESIS, ATR_NONE, NO_COLOR, "Create what kind of monster?", buf); /* [type the name or symbol] */
+        getlin_ex(GETLINE_GENESIS, ATR_NONE, NO_COLOR, "Create what kind of monster?", buf, "type the name or symbol", (char*)0);
         bufp = mungspaces(buf);
         if (*bufp == '\033')
             return FALSE;

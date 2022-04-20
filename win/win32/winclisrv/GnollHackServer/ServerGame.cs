@@ -582,7 +582,7 @@ namespace GnollHackServer
         {
             return 0;
         }
-        protected string GameCallback_GetLineCallback(int style, int attr, int color, string value1)
+        protected string GameCallback_GetLineCallback(int style, int attr, int color, string query, string placeholder, string defvalue)
         {
             return "";
         }

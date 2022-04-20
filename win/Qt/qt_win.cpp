@@ -5040,9 +5040,17 @@ char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph,
     }
 }
 
-void NetHackQtBind::qt_getlin_ex(int style, int attr, int color, const char *prompt, char *line)
+void NetHackQtBind::qt_getlin_ex(int style, int attr, int color, const char *prompt, char *line, const char* placeholder, const char* defvalue)
 {
-    NetHackQtStringRequestor requestor(keybuffer,prompt);
+    char promptbuf[BUFSZ] = "";
+    if (prompt)
+        Sprintf(promptbuf, "%s", prompt);
+    if (placeholder)
+        Sprintf(eos(promptbuf), " [%s]", placeholder);
+    if (defvalue)
+        Sprintf(eos(promptbuf), " %s", defvalue);
+
+    NetHackQtStringRequestor requestor(keybuffer, promptbuf);
     if (!requestor.Get(line)) {
 	line[0]=0;
     }

@@ -1124,6 +1124,7 @@ d_level target_level;
     else if ((Teleport_control && !Stunned) || controltype == 1 || (wizard && (teletype == 1 || yn_query("Enforce teleport control?") == 'y')))
     {
         char qbuf[BUFSZ];
+        char phbuf[BUFSZ] = "";
         int trycnt = 0;
 
         Strcpy(qbuf, "To what level do you want to teleport?");
@@ -1137,14 +1138,14 @@ d_level target_level;
             }
             if (++trycnt == 2) {
                 if (wizard)
-                    Strcat(qbuf, " [type a number, name, or ? for a menu]");
+                    strcpy(phbuf, "type a number, name, or ? for a menu");
                 else
-                    Strcat(qbuf, " [type a number or name]");
+                    strcpy(phbuf, "type a number or name");
             }
             *buf = '\0'; /* EDIT_GETLIN: if we're on second or later pass,
                             the previous input was invalid so don't use it
                             as getlin()'s preloaded default answer */
-            getlin_ex(GETLINE_LEVELPORT, ATR_NONE, NO_COLOR, qbuf, buf);
+            getlin_ex(GETLINE_LEVELPORT, ATR_NONE, NO_COLOR, qbuf, buf, phbuf, (char*)0);
             if (!strcmp(buf, "\033")) { /* cancelled */
                 if (teletype != 1 && Confusion && rnl(5)) {
                     pline("Oops...");
