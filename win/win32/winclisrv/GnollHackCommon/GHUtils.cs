@@ -173,8 +173,8 @@ namespace GnollHackCommon
                     if (strPtr != IntPtr.Zero)
                     {
                         list.Add(Marshal.PtrToStringAnsi(strPtr));
-                        ptr = new IntPtr(ptr.ToInt64() + IntPtr.Size);
                     }
+                    ptr = new IntPtr(ptr.ToInt64() + IntPtr.Size);
                 }
             }
             return list;
