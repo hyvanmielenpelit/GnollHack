@@ -3983,8 +3983,7 @@ int how;
                 pline1(thats_enough_tries);
                 return;
             }
-            getlin("What monster do you want to genocide? [type the name]",
-                   buf);
+            getlin_ex(GETLINE_GENOCIDE, ATR_NONE, NO_COLOR, "What monster do you want to genocide?", buf); /*  [type the name] */
             (void) mungspaces(buf);
             /* choosing "none" preserves genocideless conduct */
             if (*buf == '\033' || !strcmpi(buf, "none")

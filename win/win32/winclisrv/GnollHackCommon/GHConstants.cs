@@ -1059,6 +1059,8 @@ namespace GnollHackCommon
         GETLINE_WISHING,
         GETLINE_GENESIS,
         GETLINE_POLYMORPH,
+        GETLINE_GENOCIDE,
+        GETLINE_MONSTER,
     }
 
 

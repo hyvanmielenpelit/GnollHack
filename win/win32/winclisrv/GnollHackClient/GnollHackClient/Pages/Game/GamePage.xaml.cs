@@ -1781,6 +1781,8 @@ namespace GnollHackClient.Pages.Game
                     break;
                 case (int)getline_types.GETLINE_GENESIS:
                 case (int)getline_types.GETLINE_POLYMORPH:
+                case (int)getline_types.GETLINE_GENOCIDE:
+                case (int)getline_types.GETLINE_MONSTER:
                     GetLineEntryText.Placeholder = "Enter the monster here";
                     break;
                 default:
