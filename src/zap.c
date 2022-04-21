@@ -2060,11 +2060,12 @@ int locflags; /* Unused */
 
 /* used by revive() and animate_statue() */
 struct monst *
-montraits(obj, cc, adjacentok, mnum_override)
+montraits(obj, cc, adjacentok, mnum_override, mmflags)
 struct obj *obj;
 coord *cc;
 boolean adjacentok; /* False: at obj's spot only, True: nearby is allowed */
 int mnum_override; /* Use this mnum instead */
+unsigned long mmflags;
 {
     struct monst *mtmp = (struct monst *) 0;
     struct monst *mtmp2 = (struct monst *) 0;
@@ -2086,7 +2087,7 @@ int mnum_override; /* Use this mnum instead */
             return (struct monst *) 0;
         
         mtmp = makemon(mtmp2->data, cc->x, cc->y,
-                       (MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH
+                       (mmflags | MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH
                         | (adjacentok ? MM_ADJACENTOK : 0)));
         if (!mtmp)
             return mtmp;
@@ -2350,7 +2351,7 @@ boolean replaceundead;
     {
         /* make a zombie or doppelganger instead */
         /* note: montype has changed; mptr keeps old value for newcham() */
-        mtmp = makemon(&mons[montype], x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+        mtmp = makemon(&mons[montype], x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND);
         if (mtmp)
         {
             /* skip ghost handling */
@@ -2372,14 +2373,14 @@ boolean replaceundead;
     {
         /* use saved traits */
         xy.x = x, xy.y = y;
-        mtmp = montraits(corpse, &xy, FALSE, animateintomon >= 0 || replaceundead ? montype : -1);
+        mtmp = montraits(corpse, &xy, FALSE, animateintomon >= 0 || replaceundead ? montype : -1, MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND);
         if (mtmp && mtmp->mtame && !mtmp->isminion && !mtmp->isfaithful)
             wary_dog(mtmp, TRUE);
     }
     else 
     {
         /* make a new monster */
-        mtmp = makemon(mptr, x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+        mtmp = makemon(mptr, x, y, MM_NO_MONSTER_INVENTORY | MM_NOWAIT | MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_ANIMATE_DEAD_ANIMATION | MM_PLAY_SUMMON_SOUND);
     }
 
     if (!mtmp)
@@ -2532,6 +2533,9 @@ boolean replaceundead;
     default:
         panic("revive");
     }
+
+    flush_screen(1);
+    special_effect_wait_until_end(context.makemon_spef_idx);
 
     return mtmp;
 }

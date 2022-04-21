@@ -6591,7 +6591,7 @@ struct obj *corpse;
 
     if (mtmp) 
     {
-        int clr = is_tame(mtmp) ? CLR_MSG_ATTENTION : CLR_MSG_WARNING;
+        int clr = is_tame(mtmp) || is_peaceful(mtmp) ? CLR_MSG_ATTENTION : CLR_MSG_WARNING;
         switch (where) 
         {
         case OBJ_INVENT:
@@ -6690,18 +6690,19 @@ int animateintomon; // monstid to be animated into
 
     if (mtmp)
     {
-        switch (where) 
+        int clr = is_tame(mtmp) || is_peaceful(mtmp) ? CLR_MSG_ATTENTION : CLR_MSG_WARNING;
+        switch (where)
         {
         case OBJ_INVENT:
             if (is_uwep)
-                pline_The("%s writhes out of your grasp!", cname);
+                pline_The_ex(ATR_NONE, clr, "%s writhes out of your grasp!", cname);
             else
-                You_feel("squirming in your backpack!");
+                You_feel_ex(ATR_NONE, clr, "squirming in your backpack!");
             break;
 
         case OBJ_FLOOR:
             if (cansee(mtmp->mx, mtmp->my))
-                pline("%s rises from the dead as %s!",
+                pline_ex(ATR_NONE, clr, "%s rises from the dead as %s!",
                     The(pm_monster_name(&mons[oldcorpsenum], mtmp->female)), an(pm_monster_name(&mons[animateintomon], mtmp->female)));
             break;
 
@@ -6709,10 +6710,10 @@ int animateintomon; // monstid to be animated into
             if (cansee(mtmp->mx, mtmp->my)) 
             {
                 if (canseemon(mcarry))
-                    pline("Startled, %s drops %s as it gets animated!",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Startled, %s drops %s as it gets animated!",
                         mon_nam(mcarry), an(cname));
                 else
-                    pline("%s rises from the dead as %s!",
+                    pline_ex(ATR_NONE, clr, "%s rises from the dead as %s!",
                         The(pm_monster_name(&mons[oldcorpsenum], mtmp->female)), an(pm_monster_name(&mons[animateintomon], mtmp->female)));
             }
             break;
@@ -6723,20 +6724,20 @@ int animateintomon; // monstid to be animated into
             if (container_where == OBJ_MINVENT && cansee(mtmp->mx, mtmp->my)
                 && mcarry && canseemon(mcarry) && container)
             {
-                pline("%s writhes out of %s!", Amonnam(mtmp),
+                pline_ex(ATR_NONE, clr, "%s writhes out of %s!", Amonnam(mtmp),
                     yname(container));
             }
             else if (container_where == OBJ_INVENT && container)
             {
                 Strcpy(sackname, an(xname(container)));
-                pline("%s %s out of %s in your pack!",
+                pline_ex(ATR_NONE, clr, "%s %s out of %s in your pack!",
                     Blind ? Something : Amonnam(mtmp),
                     locomotion(mtmp->data, "writhes"), sackname);
             }
             else if (container_where == OBJ_FLOOR && container
                 && cansee(mtmp->mx, mtmp->my)) {
                 Strcpy(sackname, an(xname(container)));
-                pline("%s escapes from %s!", Amonnam(mtmp), sackname);
+                pline_ex(ATR_NONE, clr, "%s escapes from %s!", Amonnam(mtmp), sackname);
             }
             break;
         }

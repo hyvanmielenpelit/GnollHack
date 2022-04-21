@@ -56,6 +56,8 @@ namespace GnollHackClient.Droid
         private float _dialogueVolume = 1.0f;
         private float _effectsVolume = 1.0f;
         private float _uiVolume = 1.0f;
+        private bool _quieterMode = false;
+        private const float _quietModeMultiplier = 0.5f;
 
         public FmodService()
         {
@@ -562,7 +564,7 @@ namespace GnollHackClient.Droid
                 ghinstance.dialogue_mid = 0;
 
                 musicInstances.Insert(0, ghinstance);
-                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _musicVolume)));
+                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _musicVolume * ModeVolume)));
 
                 if (musicInstances.Count >= 2)
                 {
@@ -610,7 +612,7 @@ namespace GnollHackClient.Droid
                 /* Check if the volume is different */
                 if (levelAmbientInstances[0].normalSoundVolume != soundVolume)
                 {
-                    res = levelAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+                    res = levelAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
                     levelAmbientInstances[0].normalSoundVolume = soundVolume;
                     res = _system.update();
                     return (int)res;
@@ -642,7 +644,7 @@ namespace GnollHackClient.Droid
             ghinstance.dialogue_mid = 0;
 
             levelAmbientInstances.Insert(0, ghinstance);
-            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
 
             if (levelAmbientInstances.Count >= 2)
             {
@@ -690,7 +692,7 @@ namespace GnollHackClient.Droid
                 /* Check if the volume is different */
                 if (environmentAmbientInstances[0].normalSoundVolume != soundVolume)
                 {
-                    res = environmentAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+                    res = environmentAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
                     environmentAmbientInstances[0].normalSoundVolume = soundVolume;
                     res = _system.update();
                     return (int)res;
@@ -722,7 +724,7 @@ namespace GnollHackClient.Droid
             ghinstance.dialogue_mid = 0;
 
             environmentAmbientInstances.Insert(0, ghinstance);
-            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
 
             if (environmentAmbientInstances.Count >= 2)
             {
@@ -770,7 +772,7 @@ namespace GnollHackClient.Droid
                 /* Check if the volume is different */
                 if (occupationAmbientInstances[0].normalSoundVolume != soundVolume)
                 {
-                    res = occupationAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+                    res = occupationAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
                     occupationAmbientInstances[0].normalSoundVolume = soundVolume;
                     res = _system.update();
                     return (int)res;
@@ -802,7 +804,7 @@ namespace GnollHackClient.Droid
             ghinstance.dialogue_mid = 0;
 
             occupationAmbientInstances.Insert(0, ghinstance);
-            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
 
             if (occupationAmbientInstances.Count >= 2)
             {
@@ -850,7 +852,7 @@ namespace GnollHackClient.Droid
                 /* Check if the volume is different */
                 if (effectAmbientInstances[0].normalSoundVolume != soundVolume)
                 {
-                    res = effectAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+                    res = effectAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
                     effectAmbientInstances[0].normalSoundVolume = soundVolume;
                     res = _system.update();
                     return (int)res;
@@ -882,7 +884,7 @@ namespace GnollHackClient.Droid
             ghinstance.dialogue_mid = 0;
 
             effectAmbientInstances.Insert(0, ghinstance);
-            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
 
             if (effectAmbientInstances.Count >= 2)
             {
@@ -914,7 +916,7 @@ namespace GnollHackClient.Droid
                 if (effectAmbientInstances[0].normalSoundVolume != soundVolume)
                 {
                     float eventVolume = effectAmbientInstances[0].normalEventVolume;
-                    res = effectAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+                    res = effectAmbientInstances[0].instance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
                     effectAmbientInstances[0].normalSoundVolume = soundVolume;
                     res = _system.update();
                     return (int)res;
@@ -959,7 +961,7 @@ namespace GnollHackClient.Droid
             res = eventDescription.createInstance(out eventInstance);
 
             /* Set volume */
-            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume)));
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _ambientVolume * ModeVolume)));
             //ambientInstance->setVolume(fmod_volume* event_volume * general_ambient_volume* general_volume);
 
             /* Create new GHSoundInstance */
@@ -1048,7 +1050,7 @@ namespace GnollHackClient.Droid
             res = ghinstance.instance.getVolume(out old_volume);
 
             float event_volume = ghinstance.normalEventVolume;
-            res = ghinstance.instance.setVolume(event_volume * soundVolume * _generalVolume * _ambientVolume);
+            res = ghinstance.instance.setVolume(event_volume * soundVolume * _generalVolume * _ambientVolume * ModeVolume);
 
             if (old_volume == 0.0f && soundVolume > 0.0f)
                 res = ghinstance.instance.start();
@@ -1078,28 +1080,28 @@ namespace GnollHackClient.Droid
             {
                 if (!si.stopped)
                 {
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _musicVolume * _generalVolume));
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _musicVolume * _generalVolume * ModeVolume));
                 }
             }
             foreach (GHSoundInstance si in levelAmbientInstances)
             {
                 if (!si.stopped)
                 {
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume));
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume * ModeVolume));
                 }
             }
             foreach (GHSoundInstance si in environmentAmbientInstances)
             {
                 if (!si.stopped)
                 {
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume));
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume * ModeVolume));
                 }
             }
             foreach (GHSoundInstance si in environmentAmbientInstances)
             {
                 if (!si.stopped)
                 {
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume));
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume * ModeVolume));
                 }
             }
             /* Add occupation ambients */
@@ -1125,12 +1127,29 @@ namespace GnollHackClient.Droid
             {
                 if (!si.stopped)
                 {
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume));
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume * ModeVolume));
                 }
             }
 
             result = _system.update();
             return (int)result;
         }
+
+        private int AdjustVolumes()
+        {
+            return AdjustVolumes(_generalVolume, _musicVolume, _ambientVolume, _dialogueVolume, _effectsVolume, _uiVolume);
+        }
+
+        private float ModeVolume
+        {
+            get { return _quieterMode ? _quietModeMultiplier : 1.0f; }
+        }
+
+        public int SetQuieterMode(bool state)
+        {
+            _quieterMode = state;
+            return AdjustVolumes();
+        }
+
     }
 }

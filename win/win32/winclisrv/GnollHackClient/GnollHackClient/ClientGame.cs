@@ -1396,16 +1396,24 @@ namespace GnollHackClient
                     break;
                 case (int)gui_command_types.GUI_CMD_UNMUTE_SOUNDS:
                     {
-                        float generalVolume = Preferences.Get("GeneralVolume", 1.0f);
-                        float musicVolume = Preferences.Get("MusicVolume", 0.5f);
-                        float ambientVolume = Preferences.Get("AmbientVolume", 0.5f);
-                        float dialogueVolume = Preferences.Get("DialogueVolume", 0.5f);
-                        float effectsVolume = Preferences.Get("EffectsVolume", 0.5f);
-                        float UIVolume = Preferences.Get("UIVolume", 0.5f);
+                        float generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
+                        float musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
+                        float ambientVolume = Preferences.Get("AmbientVolume", GHConstants.DefaultAmbientVolume);
+                        float dialogueVolume = Preferences.Get("DialogueVolume", GHConstants.DefaultDialogueVolume);
+                        float effectsVolume = Preferences.Get("EffectsVolume", GHConstants.DefaultEffectsVolume);
+                        float UIVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
                         _gamePage.MuteSounds = false;
                         App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
                         break;
                     }
+                case (int)gui_command_types.GUI_CMD_ACTIVATE_QUIETER_MODE:
+                    _gamePage.QuieterMode = true;
+                    App.FmodService.SetQuieterMode(true);
+                    break;
+                case (int)gui_command_types.GUI_CMD_DEACTIVATE_QUIETER_MODE:
+                    _gamePage.QuieterMode = false;
+                    App.FmodService.SetQuieterMode(false);
+                    break;
                 case (int)gui_command_types.GUI_CMD_LOAD_VIDEOS:
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_WIZARD_MODE:
