@@ -4091,7 +4091,8 @@ boolean is_wiz_wish;
     int mythic_idx;
     for (mythic_idx = 1; mythic_idx < MAX_MYTHIC_SUFFIXES; mythic_idx++)
     {
-        if ((p = strstri(bp, mythic_suffix_qualities[mythic_idx].mythic_affix)) != 0) 
+        if ((p = strstri(bp, mythic_suffix_qualities[mythic_idx].mythic_affix)) != 0 
+            && strlen(p) == strlen(mythic_suffix_qualities[mythic_idx].mythic_affix))
         {
             char ringbuf[BUFSZ], robebuf[BUFSZ], bootsbuf[BUFSZ], glovesbuf[BUFSZ], gauntletsbuf[BUFSZ], bracersbuf[BUFSZ], amuletbuf[BUFSZ], cloakbuf[BUFSZ], shirtbuf[BUFSZ];
             Sprintf(ringbuf, "ring%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
