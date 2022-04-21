@@ -780,7 +780,7 @@ mswin_askname(void)
 {
     logDebug("mswin_askname()\n");
 
-    if (mswin_getlin_window(ATR_NONE, NO_COLOR, "Who are you?", plname, PL_NSIZ) == IDCANCEL) {
+    if (mswin_getlin_window(GETLINE_ASK_NAME, ATR_NONE, NO_COLOR, "Who are you?", plname, PL_NSIZ) == IDCANCEL) {
         bail("bye-bye");
         /* not reached */
     }
@@ -1879,7 +1879,7 @@ mswin_getlin_ex(int style, int attr, int color, const char *question, char *inpu
         SendMessage(mswin_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
     } else {
-        if (mswin_getlin_window(attr, color, promptbuf, input, BUFSZ) == IDCANCEL) {
+        if (mswin_getlin_window(style, attr, color, promptbuf, input, BUFSZ) == IDCANCEL) {
             strcpy(input, "\033");
         }
     }

@@ -1833,7 +1833,7 @@ dll_getlin_ex(int style, int attr, int color, const char *question, char *input,
         SendMessage(dll_hwnd_from_winid(WIN_MESSAGE), WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_CARET, (LPARAM) &createcaret);
     } else {
-        if (mswin_getlin_window(question, input, BUFSZ) == IDCANCEL) {
+        if (mswin_getlin_window(GETLINE_GENERAL, question, input, BUFSZ) == IDCANCEL) {
             strcpy(input, "\033");
         }
     }

@@ -2060,6 +2060,7 @@ wiz_map_levltyp(VOID_ARGS)
     return;
 }
 
+#ifndef GNH_ANDROID
 /* Save monster list */
 STATIC_PTR int
 wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
@@ -2499,6 +2500,7 @@ wiz_save_quest_texts(VOID_ARGS) /* Save a csv file for monsters */
 
     return 0;
 }
+#endif /* ifndef GNH_ANDROID */
 
 
 /* temporary? hack, since level type codes aren't the same as screen
@@ -4964,7 +4966,6 @@ int cmdflag;
     for (efp = extcmdlist; efp->ef_txt; efp++)
     {
         any = zeroany;
-        char shortcutbuf[BUFSZ] = "";
         char descbuf[BUFSZ] = "";
         char cmdbuf[BUFSZ] = "";
         char buf[BUFSZ] = "";
@@ -4990,6 +4991,7 @@ int cmdflag;
         *descbuf = highc(*descbuf);
 
 #ifndef GNH_ANDROID
+        char shortcutbuf[BUFSZ] = "";
         size_t desclen = 0;
         desclen = strlen(descbuf);
         if (desclen < maxdesclength)
