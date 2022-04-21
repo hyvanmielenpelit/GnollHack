@@ -143,10 +143,6 @@ namespace GnollHackClient.Pages.Game
         private bool _muteSounds = false;
         public bool MuteSounds { get { lock (_muteSoundsLock) { return _muteSounds; } } set { lock (_muteSoundsLock) { _muteSounds = value; } } }
 
-        private object _quieterModeLock = new object();
-        private bool _quieterMode = false;
-        public bool QuieterMode { get { lock (_quieterModeLock) { return _quieterMode; } } set { lock (_quieterModeLock) { _quieterMode = value; } } }
-
         public object RefreshScreenLock = new object();
         private bool _refreshScreen = true;
         public bool RefreshScreen

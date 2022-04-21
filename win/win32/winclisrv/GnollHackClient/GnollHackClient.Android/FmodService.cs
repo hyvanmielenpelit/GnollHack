@@ -200,45 +200,47 @@ namespace GnollHackClient.Droid
             if (service == null)
                 return RESULT.ERR_UNSUPPORTED;
 
-            //lock(service.eventInstanceLock)
-            //{
-                if (type == EVENT_CALLBACK_TYPE.STOPPED || type == EVENT_CALLBACK_TYPE.START_FAILED)
+            if (type == EVENT_CALLBACK_TYPE.STOPPED || type == EVENT_CALLBACK_TYPE.START_FAILED)
+            {
+                for (int i = 0; i < GHConstants.MaxNormalImmediateSoundInstances; i++)
                 {
-                    for (int i = 0; i < GHConstants.MaxNormalImmediateSoundInstances; i++)
-                    {
-                        if (i >= service.immediateInstances.Count)
-                            break;
+                    if (i >= service.immediateInstances.Count)
+                        break;
 
-                        if (service.immediateInstances[i].instance.handle == _event.handle)
+                    if (service.immediateInstances[i].instance.handle == _event.handle)
+                    {
+                        service.immediateInstances[i].stopped = true;
+                        if (service.immediateInstances[i].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
                         {
-                            service.immediateInstances[i].stopped = true;
-                            if (service.immediateInstances[i].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
+                            for (int j = i - 1; j >= 0; j--)
                             {
-                                for (int j = i - 1; j >= 0; j--)
+                                if (service.immediateInstances[j].queued)
                                 {
-                                    if (service.immediateInstances[j].queued)
-                                    {
-                                        service.immediateInstances[j].queued = false;
-                                        result = service.immediateInstances[j].instance.start();
-                                        result = _system.update();
-                                        return RESULT.OK;
-                                    }
+                                    service.immediateInstances[j].queued = false;
+                                    result = service.immediateInstances[j].instance.start();
+                                    result = _system.update();
+                                    return RESULT.OK;
                                 }
                             }
-                            else
-                            {
-                                break;
-                            }
+                            service.SetQuieterMode(false);
+                            break;
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
-                    for (int i = 0; i < GHConstants.MaxLongImmediateSoundInstances; i++)
-                    {
-                        if (i >= service.longImmediateInstances.Count)
-                            break;
+                }
+                for (int i = 0; i < GHConstants.MaxLongImmediateSoundInstances; i++)
+                {
+                    if (i >= service.longImmediateInstances.Count)
+                        break;
 
-                        if (service.longImmediateInstances[i].instance.handle == _event.handle)
+                    if (service.longImmediateInstances[i].instance.handle == _event.handle)
+                    {
+                        service.longImmediateInstances[i].stopped = true;
+                        if (service.longImmediateInstances[i].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
                         {
-                            service.longImmediateInstances[i].stopped = true;
                             for (int j = i - 1; j >= 0; j--)
                             {
                                 if (service.longImmediateInstances[j].queued)
@@ -249,11 +251,17 @@ namespace GnollHackClient.Droid
                                     return RESULT.OK;
                                 }
                             }
+                            service.SetQuieterMode(false);
+                            break;
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
                 }
-                return RESULT.OK;
-            //}
+            }
+            return RESULT.OK;
         }
 
 
@@ -293,91 +301,90 @@ namespace GnollHackClient.Droid
             bool queue_sound = false;
             float relevant_volume = sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_UI ? _uiVolume : sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE ? _dialogueVolume : _effectsVolume;
 
-            //lock (eventInstanceLock)
-            //{
             if (play_group == (int)sound_play_groups.SOUND_PLAY_GROUP_LONG)
-                {
-                    queue_sound = (longImmediateInstances.Count > 0 && sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && longImmediateInstances[0].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && !longImmediateInstances[0].stopped);
-                    longImmediateInstances.Insert(0, ghinstance);
+            {
+                queue_sound = (longImmediateInstances.Count > 0 && sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && longImmediateInstances[0].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && !longImmediateInstances[0].stopped);
+                longImmediateInstances.Insert(0, ghinstance);
 
-                    if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
-                        res = longImmediateInstances[0].instance.setCallback(GNHDialogueEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
-                    else
-                        res = longImmediateInstances[0].instance.setCallback(GNHImmediateEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
-
-                    /* Fallback if queued for too long */
-                    if (longImmediateInstances.Count >= GHConstants.MaxLongImmediateSoundInstances && longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].queued && !longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].stopped)
-                    {
-                        longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].queued = false;
-                        res = longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].instance.start();
-                    }
-                }
+                if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
+                    res = longImmediateInstances[0].instance.setCallback(GNHDialogueEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
                 else
+                    res = longImmediateInstances[0].instance.setCallback(GNHImmediateEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
+
+                /* Fallback if queued for too long */
+                if (longImmediateInstances.Count >= GHConstants.MaxLongImmediateSoundInstances && longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].queued && !longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].stopped)
                 {
-                    queue_sound = (immediateInstances.Count > 0 && sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && immediateInstances[0].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && !immediateInstances[0].stopped);
-
-                    immediateInstances.Insert(0, ghinstance);
-
-                    if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
-                        res = immediateInstances[0].instance.setCallback(GNHDialogueEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
-                    else
-                        res = immediateInstances[0].instance.setCallback(GNHImmediateEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
-
-                    /* Fallback if queued for too long */
-                    if (immediateInstances.Count >= GHConstants.MaxNormalImmediateSoundInstances && immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].queued && !immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].stopped)
-                    {
-                        immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].queued = false;
-                        res = immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].instance.start(); ;
-                    }
+                    longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].queued = false;
+                    res = longImmediateInstances[GHConstants.MaxLongImmediateSoundInstances - 1].instance.start();
                 }
+            }
+            else
+            {
+                queue_sound = (immediateInstances.Count > 0 && sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && immediateInstances[0].sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE && !immediateInstances[0].stopped);
 
-                ghinstance.queued = queue_sound;
+                immediateInstances.Insert(0, ghinstance);
 
-                res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * relevant_volume)));
-                for (int i = 0; i < arraysize; i++)
-                {
-                    if (i < parameterNames.Length && i < parameterValues.Length)
-                    {
-                        string str = parameterNames[i];
-                        if (str != null && str != "")
-                            eventInstance.setParameterByName(str, parameterValues[i]);
-                        else
-                            break;
-                    }
-                }
-
-                if (play_group == (int)sound_play_groups.SOUND_PLAY_GROUP_LONG)
-                {
-                    if (longImmediateInstances.Count > GHConstants.MaxLongImmediateSoundInstances)
-                    {
-                        GHSoundInstance ghsi = longImmediateInstances[longImmediateInstances.Count - 1];
-                        if (ghsi.stopped == false)
-                        {
-                            ghsi.stopped = true;
-                            ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-                        }
-                        ghsi.instance.release();
-                        longImmediateInstances.RemoveAt(longImmediateInstances.Count - 1);
-                    }
-                }
+                if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
+                    res = immediateInstances[0].instance.setCallback(GNHDialogueEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
                 else
+                    res = immediateInstances[0].instance.setCallback(GNHImmediateEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
+
+                /* Fallback if queued for too long */
+                if (immediateInstances.Count >= GHConstants.MaxNormalImmediateSoundInstances && immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].queued && !immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].stopped)
                 {
-                    if (immediateInstances.Count > GHConstants.MaxNormalImmediateSoundInstances)
-                    {
-                        GHSoundInstance ghsi = immediateInstances[immediateInstances.Count - 1];
-                        if (ghsi.stopped == false)
-                        {
-                            ghsi.stopped = true;
-                            ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-                        }
-                        ghsi.instance.release();
-                        immediateInstances.RemoveAt(immediateInstances.Count - 1);
-                    }
+                    immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].queued = false;
+                    res = immediateInstances[GHConstants.MaxNormalImmediateSoundInstances - 1].instance.start(); ;
                 }
-            //}
+            }
+
+            ghinstance.queued = queue_sound;
+
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * relevant_volume)));
+            for (int i = 0; i < arraysize; i++)
+            {
+                if (i < parameterNames.Length && i < parameterValues.Length)
+                {
+                    string str = parameterNames[i];
+                    if (str != null && str != "")
+                        eventInstance.setParameterByName(str, parameterValues[i]);
+                    else
+                        break;
+                }
+            }
+
+            if (play_group == (int)sound_play_groups.SOUND_PLAY_GROUP_LONG)
+            {
+                if (longImmediateInstances.Count > GHConstants.MaxLongImmediateSoundInstances)
+                {
+                    GHSoundInstance ghsi = longImmediateInstances[longImmediateInstances.Count - 1];
+                    if (ghsi.stopped == false)
+                    {
+                        ghsi.stopped = true;
+                        ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                    }
+                    ghsi.instance.release();
+                    longImmediateInstances.RemoveAt(longImmediateInstances.Count - 1);
+                }
+            }
+            else
+            {
+                if (immediateInstances.Count > GHConstants.MaxNormalImmediateSoundInstances)
+                {
+                    GHSoundInstance ghsi = immediateInstances[immediateInstances.Count - 1];
+                    if (ghsi.stopped == false)
+                    {
+                        ghsi.stopped = true;
+                        ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                    }
+                    ghsi.instance.release();
+                    immediateInstances.RemoveAt(immediateInstances.Count - 1);
+                }
+            }
 
             if (!queue_sound)
             {
+                if (sound_type == (int)immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE)
+                    SetQuieterMode(true);
                 res = eventInstance.start();
             }
 
@@ -1075,67 +1082,60 @@ namespace GnollHackClient.Droid
             _effectsVolume = new_general_sfx_volume;
             _uiVolume = new_general_ui_volume;
 
-            RESULT result;
-            foreach (GHSoundInstance si in musicInstances)
-            {
-                if (!si.stopped)
-                {
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _musicVolume * _generalVolume * ModeVolume));
-                }
-            }
-            foreach (GHSoundInstance si in levelAmbientInstances)
-            {
-                if (!si.stopped)
-                {
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume * ModeVolume));
-                }
-            }
-            foreach (GHSoundInstance si in environmentAmbientInstances)
-            {
-                if (!si.stopped)
-                {
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume * ModeVolume));
-                }
-            }
-            foreach (GHSoundInstance si in environmentAmbientInstances)
-            {
-                if (!si.stopped)
-                {
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume * ModeVolume));
-                }
-            }
-            /* Add occupation ambients */
-            /* Add effect ambients */
-            foreach (GHSoundInstance si in immediateInstances)
-            {
-                if (!si.stopped)
-                {
-                    float relevant_volume = si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_UI ? _uiVolume : si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE ? _dialogueVolume : _effectsVolume;
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * relevant_volume * _generalVolume));
-                }
-            }
-            foreach (GHSoundInstance si in longImmediateInstances)
-            {
-                if (!si.stopped)
-                {
-                    float relevant_volume = si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_UI ? _uiVolume : si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE ? _dialogueVolume : _effectsVolume;
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * relevant_volume * _generalVolume));
-                }
-            }
-
-            foreach (GHSoundInstance si in ambientList)
-            {
-                if (!si.stopped)
-                {
-                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * _ambientVolume * _generalVolume * ModeVolume));
-                }
-            }
-
+            RESULT result = SetMusicAndAmbientVolumesWithoutUpdate();
+            result = AdjustImmediateVolumeType(immediateInstances);
+            result = AdjustImmediateVolumeType(longImmediateInstances);
             result = _system.update();
             return (int)result;
         }
 
-        private int AdjustVolumes()
+        private RESULT AdjustVolumeType(List<GHSoundInstance> soundList, float typeVolume)
+        {
+            RESULT result = RESULT.OK;
+            foreach (GHSoundInstance si in soundList)
+            {
+                if (!si.stopped)
+                {
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * typeVolume * _generalVolume * ModeVolume));
+                }
+            }
+            return result;
+        }
+
+        private RESULT AdjustImmediateVolumeType(List<GHSoundInstance> soundList)
+        {
+            RESULT result = RESULT.OK;
+            foreach (GHSoundInstance si in soundList)
+            {
+                if (!si.stopped)
+                {
+                    float relevant_volume = si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_UI ? _uiVolume : si.sound_type == immediate_sound_types.IMMEDIATE_SOUND_DIALOGUE ? _dialogueVolume : _effectsVolume;
+                    result = si.instance.setVolume(Math.Min(1.0f, si.normalSoundVolume * si.normalEventVolume * relevant_volume * _generalVolume));
+                }
+            }
+            return result;
+        }
+
+        private RESULT SetMusicAndAmbientVolumesWithoutUpdate()
+        {
+            RESULT result;
+            result = AdjustVolumeType(musicInstances, _musicVolume);
+            result = AdjustVolumeType(levelAmbientInstances, _ambientVolume);
+            result = AdjustVolumeType(environmentAmbientInstances, _ambientVolume);
+            result = AdjustVolumeType(occupationAmbientInstances, _ambientVolume);
+            result = AdjustVolumeType(effectAmbientInstances, _ambientVolume);
+            result = AdjustVolumeType(ambientList, _ambientVolume);
+            return result;
+        }
+
+        private int AdjustMusicAndAmbientVolumes()
+        {
+            RESULT result = SetMusicAndAmbientVolumesWithoutUpdate();
+            result = _system.update();
+            return (int)result;
+        }
+
+        private int ReadjustAllVolumes()
         {
             return AdjustVolumes(_generalVolume, _musicVolume, _ambientVolume, _dialogueVolume, _effectsVolume, _uiVolume);
         }
@@ -1147,8 +1147,11 @@ namespace GnollHackClient.Droid
 
         public int SetQuieterMode(bool state)
         {
+            if (_quieterMode == state)
+                return (int)RESULT.OK;
+
             _quieterMode = state;
-            return AdjustVolumes();
+            return AdjustMusicAndAmbientVolumes();
         }
 
     }

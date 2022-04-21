@@ -1407,11 +1407,9 @@ namespace GnollHackClient
                         break;
                     }
                 case (int)gui_command_types.GUI_CMD_ACTIVATE_QUIETER_MODE:
-                    _gamePage.QuieterMode = true;
                     App.FmodService.SetQuieterMode(true);
                     break;
                 case (int)gui_command_types.GUI_CMD_DEACTIVATE_QUIETER_MODE:
-                    _gamePage.QuieterMode = false;
                     App.FmodService.SetQuieterMode(false);
                     break;
                 case (int)gui_command_types.GUI_CMD_LOAD_VIDEOS:
