@@ -14,6 +14,8 @@ using System.Reflection;
 using System.IO;
 using Xamarin.Forms;
 using GnollHackCommon;
+using System.Threading.Tasks;
+using System.Threading;
 
 [assembly: Dependency(typeof(GnollHackClient.Droid.FmodService))]
 namespace GnollHackClient.Droid
@@ -57,7 +59,7 @@ namespace GnollHackClient.Droid
         private float _effectsVolume = 1.0f;
         private float _uiVolume = 1.0f;
         private bool _quieterMode = false;
-        private const float _quietModeMultiplier = 0.5f;
+        private const float _quietModeMultiplier = 0.35f;
 
         public FmodService()
         {
@@ -1140,10 +1142,15 @@ namespace GnollHackClient.Droid
             return AdjustVolumes(_generalVolume, _musicVolume, _ambientVolume, _dialogueVolume, _effectsVolume, _uiVolume);
         }
 
+        private const int _maxModeFadeCounter = 10;
         private float ModeVolume
         {
-            get { return _quieterMode ? _quietModeMultiplier : 1.0f; }
+            get { return (_quieterMode ? _quietModeMultiplier : 1.0f) + (_quieterMode ? 1.0f : -1.0f) * (1.0f - _quietModeMultiplier) * (float)(_maxModeFadeCounter - _modeFadeCounter) / _maxModeFadeCounter; }
         }
+
+        private object _modeFadeLock = new object();
+        private int _modeFadeCounter = _maxModeFadeCounter;
+        private int ModeFadeCounter { get { lock (_modeFadeLock) { return _modeFadeCounter; } } set { lock (_modeFadeLock) { _modeFadeCounter = value; } } }
 
         public int SetQuieterMode(bool state)
         {
@@ -1151,7 +1158,25 @@ namespace GnollHackClient.Droid
                 return (int)RESULT.OK;
 
             _quieterMode = state;
-            return AdjustMusicAndAmbientVolumes();
+            ModeFadeCounter = 0;
+            Task.Run(() => {
+                for(int i = 0; i < _maxModeFadeCounter; i++)
+                {
+                    lock(_modeFadeLock)
+                    {
+                        if (_modeFadeCounter >= _maxModeFadeCounter)
+                        {
+                            _modeFadeCounter = _maxModeFadeCounter;
+                            break;
+                        }
+                    }
+                    ModeFadeCounter++;
+                    AdjustMusicAndAmbientVolumes();
+                    Thread.Sleep(25);
+                }
+            });
+
+            return (int)RESULT.OK; // AdjustMusicAndAmbientVolumes();
         }
 
     }
