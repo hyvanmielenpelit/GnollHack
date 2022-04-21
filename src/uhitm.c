@@ -4392,6 +4392,7 @@ boolean wep_was_destroyed;
                         You("are frozen by %s gaze!", s_suffix(mon_nam(mon)));
                         incr_itimeout(&HParalyzed, (ACURR(A_WIS) > 12 || rn2(4)) ? basedmg : 127);
                         context.botl = context.botlx = 1;
+                        refresh_u_tile_gui_info(TRUE);
 
 #if 0
                         nomul((ACURR(A_WIS) > 12 || rn2(4)) ? -tmp : -127);
@@ -4413,6 +4414,7 @@ boolean wep_was_destroyed;
                 You("are frozen by %s!", mon_nam(mon));
                 incr_itimeout(&HParalyzed, basedmg);
                 context.botl = context.botlx = 1;
+                refresh_u_tile_gui_info(TRUE);
 
 #if 0
                 nomovemsg = You_can_move_again;

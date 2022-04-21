@@ -851,6 +851,7 @@ register int pm;
 
         /* Grants temporary stoning resistance */
         incr_itimeout(&HStone_resistance, 13);
+        refresh_u_tile_gui_info(TRUE);
         break;
     }
     case PM_DEATH:
@@ -1003,6 +1004,7 @@ int duration;
     }
 
     incr_itimeout(&u.uprops[type].intrinsic, duration);
+    refresh_u_tile_gui_info(TRUE);
 }
 
 /* givit() tries to give you an intrinsic based on the monster's level
@@ -1284,6 +1286,7 @@ int pm;
     case PM_STALKER:
         if (!Invis) {
             set_itimeout(&HInvis, (long) rn1(100, 50));
+            refresh_u_tile_gui_info(TRUE);
             if (!Blind && !Blocks_Invisibility)
                 self_invis_message();
         } else {
@@ -1829,6 +1832,7 @@ const char *mesg;
         {
             /* Assume !Glib, because you can't open tins when Glib. */
             incr_itimeout(&Glib, rnd(15));
+            refresh_u_tile_gui_info(TRUE);
             pline("Eating %s food made your %s very slippery.",
                   tintxts[r].txt, makeplural(body_part(FINGER)));
         }
@@ -2071,6 +2075,7 @@ struct obj *obj;
         pline_The("world spins and %s %s.", what, where);
         incr_itimeout(&HDeaf, duration);
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
         play_environment_ambient_sounds();
         nomul(-duration);
         multi_reason = "unconscious from rotten food";
@@ -2589,6 +2594,7 @@ struct obj *otmp;
                     float_up();
                     incr_itimeout(&HLevitation, d(10, 20));
                     makeknown(typ);
+                    refresh_u_tile_gui_info(TRUE);
                 }
                 break;
             } /* inner switch */
@@ -3041,6 +3047,7 @@ struct obj *otmp;
 
             /* Grants temporary stoning resistance */
             incr_itimeout(&HStone_resistance, 13);
+            refresh_u_tile_gui_info(TRUE);
         }
         else
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ulch! That %s had a nasty slimy texture.", cxname(otmp));
@@ -4032,6 +4039,7 @@ boolean incr;
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "faint from lack of food.");
                 incr_itimeout(&HDeaf, duration);
                 context.botl = TRUE;
+                refresh_u_tile_gui_info(TRUE);
                 play_environment_ambient_sounds();
                 nomul(-duration);
                 multi_reason = "fainted from lack of food";

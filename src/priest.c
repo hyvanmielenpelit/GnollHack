@@ -1101,6 +1101,7 @@ register struct monst *priest;
                 play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_BESTOW_BLESSING);
                 verbalize("I bestow upon thee a blessing.");
                 incr_itimeout(&HClairvoyant, rn1(500, 500));
+                refresh_u_tile_gui_info(TRUE);
             }
         }
         else if (offer < (u.ulevel * 600)

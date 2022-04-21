@@ -528,6 +528,7 @@ int duration;
     if (mon == &youmonst)
     {
         incr_itimeout(&u.uprops[prop_index].intrinsic, amount);
+        refresh_u_tile_gui_info(TRUE);
         return;
     }
 
@@ -606,6 +607,7 @@ unsigned short amount;
     if (mon == &youmonst)
     {
         set_itimeout(&u.uprops[prop_index].intrinsic, amount);
+        refresh_u_tile_gui_info(TRUE);
         return;
     }
 

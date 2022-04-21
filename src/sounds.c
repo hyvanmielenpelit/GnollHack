@@ -6411,6 +6411,7 @@ struct monst* mtmp;
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_BESTOW_BLESSING);
         verbalize("I bestow upon thee a blessing.");
         incr_itimeout(&HClairvoyant, rn1(500, 500));
+        refresh_u_tile_gui_info(TRUE);
     }
     else if (priest_action == 1
         /* u.ublessed is only active when Protection is
@@ -7600,12 +7601,14 @@ struct monst* mtmp;
     {
         play_sfx_sound(SFX_ACQUIRE_SLOW);
         incr_itimeout(&HSlowed, 50 + d(1, 50));
+        refresh_u_tile_gui_info(TRUE);
         You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "seem slower.");
     }
     else 
     {
         play_sfx_sound(SFX_ACQUIRE_HASTE);
         incr_itimeout(!rn2(3) ? &HUltra_fast : !rn2(2) ? &HVery_fast  : &HFast, 50 + d(1, 50));
+        refresh_u_tile_gui_info(TRUE);
         You_ex(ATR_NONE, CLR_MSG_POSITIVE, "seem faster.");
     }
     newsym(u.ux, u.uy);

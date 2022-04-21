@@ -5867,7 +5867,10 @@ boolean ordinary;
         damage = 0;
         (void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus);
         if (obj->otyp != SPE_DISJUNCTION && obj->otyp != WAN_DISJUNCTION)
+        {
             set_itimeout(&HCancellation_resistance, max(HCancellation_resistance & TIMEOUT, 10));
+            refresh_u_tile_gui_info(TRUE);
+        }
         break;
 
     case SPE_LOWER_MAGIC_RESISTANCE:
@@ -5904,6 +5907,7 @@ boolean ordinary;
         }
 
         incr_itimeout(&HInvis, 100 + rn2(50));
+        refresh_u_tile_gui_info(TRUE);
 
 #if 0
         if (ordinary || !rn2(10))
@@ -5911,6 +5915,7 @@ boolean ordinary;
             HInvis |= FROM_ACQUIRED;
         } else { /* temporary */
             incr_itimeout(&HInvis, d(obj->charges, 250));
+            refresh_u_tile_gui_info(TRUE);
         }
 #endif
 
@@ -5929,6 +5934,7 @@ boolean ordinary;
         boolean was_very_fast = Very_fast;
         incr_itimeout(&HVery_fast, 150 + rnd(50));
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
         if (Very_fast && !was_very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
         {
             learn_it = TRUE;
@@ -5963,6 +5969,7 @@ boolean ordinary;
         boolean was_slowed = Slowed;
         incr_itimeout(&HSlowed, obj->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(obj)) : duration);
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
         if (Slowed && !was_slowed)
         {
             learn_it = TRUE;
@@ -5976,6 +5983,7 @@ boolean ordinary;
         boolean was_very_fast = Very_fast;
         incr_itimeout(&HVery_fast, obj->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(obj)) : duration);
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
         if (Very_fast && !was_very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
         {
             learn_it = TRUE;
@@ -5991,6 +5999,7 @@ boolean ordinary;
             boolean was_paralyzed = Paralyzed_or_immobile;
             incr_itimeout(&HParalyzed, duration);
             context.botl = context.botlx = TRUE;
+            refresh_u_tile_gui_info(TRUE);
             if (Paralyzed_or_immobile && !was_paralyzed)
             {
                 learn_it = TRUE;
@@ -6012,6 +6021,7 @@ boolean ordinary;
             boolean was_paralyzed = Paralyzed_or_immobile;
             incr_itimeout(&HUndead_immobility, duration);
             context.botl = context.botlx = TRUE;
+            refresh_u_tile_gui_info(TRUE);
             if (Paralyzed_or_immobile && !was_paralyzed)
             {
                 learn_it = TRUE;
@@ -6031,6 +6041,7 @@ boolean ordinary;
         boolean was_silenced = Silenced;
         incr_itimeout(&HSilenced, duration);
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
         if (Silenced && !was_silenced)
         {
             learn_it = TRUE;
@@ -6696,6 +6707,7 @@ int duration;
         /* Add cancellation debuff */
         incr_itimeout(&HCancelled, duration);
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
 
         if (Upolyd) { /* includes lycanthrope in creature form */
             /*

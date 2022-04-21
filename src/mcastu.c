@@ -991,6 +991,7 @@ int spellnum;
 
             /* No new paralysis for a while */
             set_itimeout(&HFree_action, 20);
+            refresh_u_tile_gui_info(TRUE);
         }
         nomovemsg = 0;
         damage = 0;

@@ -769,56 +769,6 @@ namespace GnollHackCommon
         public byte poisonable;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct skill_menu_info
-    {
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
-        public string skillname;
-        public byte skill_id;
-        public byte skilltype;
-        public byte current_level;
-        public byte advance_flags;
-        public byte skill_points_needed_to_advance;
-        public byte max_level;
-        public IntPtr curlevelname;
-        public IntPtr nextlevelname;
-        public IntPtr maxlevelname;
-        public byte bonus1_type;
-        public float curbonus1;
-        public float nextbonus1;
-        public byte bonus2_type;
-        public float curbonus2;
-        public float nextbonus2;
-        public byte bonus3_type;
-        public float curbonus3;
-        public float nextbonus3;
-        public byte bonus4_type;
-        public float curbonus4;
-        public float nextbonus4;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct spell_menu_info
-    {
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
-        public string spellname;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
-        public string schoolname;
-        public short spell_id;
-        public byte school_id;
-        public short level;
-        public float mana_cost;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
-        public string stats;
-        public short fail_percentage;
-        public short cooldown_rounds;
-        public short casts;
-        public short adds;
-        public IntPtr description;
-        public sbyte hotkey;
-    }
-
-
     public enum obj_class_types
     {
         RANDOM_CLASS = 0, /* used for generating random objects */

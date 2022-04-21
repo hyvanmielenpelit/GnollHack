@@ -72,13 +72,15 @@ boolean talk;
         if (talk)
             You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "less %s now.", Hallucination ? "trippy" : "confused");
     }
+
+    set_itimeout(&HConfusion, xtime);
+
     if ((xtime && !old) || (!xtime && old))
     {
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
     }
 
-    set_itimeout(&HConfusion, xtime);
 }
 
 void
@@ -402,6 +404,7 @@ boolean talk;
         talk = FALSE;
 
     set_itimeout(&Vomiting, xtime);
+    refresh_u_tile_gui_info(TRUE);
     context.botl = context.botlx = TRUE;
     if (!xtime && old)
         if (talk)
@@ -484,6 +487,7 @@ boolean talk;
 
     if (u_could_see ^ can_see_now) { /* one or the other but not both */
         toggle_blindness();
+        refresh_u_tile_gui_info(TRUE);
     }
 }
 
@@ -584,9 +588,9 @@ long mask; /* nonzero if resistance status should change by mask */
 
                 if (eyecount(youmonst.data) != 1)
                     eyes = makeplural(eyes);
-                Your(eyemsg, eyes, vtense(eyes, "itch"));
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, eyemsg, eyes, vtense(eyes, "itch"));
             } else { /* Grayswandir */
-                Your(vismsg, "flatten", "normal");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, vismsg, "flatten", "normal");
             }
         }
     }
@@ -613,7 +617,7 @@ long mask; /* nonzero if resistance status should change by mask */
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
         if (talk)
-            pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, message, verb);
+            pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_HALLUCINATED, message, verb);
     }
 
     return changed;
@@ -1109,6 +1113,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         incr_itimeout(&HInvis, duration);
         newsym(u.ux, u.uy); /* update position */
+        refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
 
         if (otmp->cursed)
@@ -1149,6 +1154,7 @@ struct obj *otmp;
             HSee_invisible |= FROM_ACQUIRED;
         else
             incr_itimeout(&HSee_invisible, duration);
+        refresh_u_tile_gui_info(FALSE);
         set_mimic_blocking(); /* do special mimic handling */
         see_monsters();       /* see invisible monsters */
         newsym(u.ux, u.uy);   /* see yourself! */
@@ -1236,6 +1242,7 @@ struct obj *otmp;
             else
                 i = duration;
             incr_itimeout(&HDetect_monsters, i);
+            refresh_u_tile_gui_info(TRUE);
             for (x = 1; x < COLNO; x++) {
                 for (y = 0; y < ROWNO; y++) 
                 {
@@ -1424,6 +1431,7 @@ struct obj *otmp;
         play_sfx_sound(SFX_ACQUIRE_HASTE);
         special_effect_wait_until_action(0);
         incr_itimeout(otmp->otyp == POT_LIGHTNING_SPEED ? &HLightning_fast : otmp->otyp == POT_GREATER_SPEED ? &HSuper_fast : &HUltra_fast, duration);
+        refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1441,6 +1449,7 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         incr_itimeout(&HAntimagic, duration);
+        refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1458,6 +1467,8 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         incr_itimeout(&HTitan_strength, duration);
+        refresh_u_tile_gui_info(TRUE);
+        refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1475,6 +1486,7 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         incr_itimeout(&HFire_immunity, duration);
+        refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1492,6 +1504,7 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         incr_itimeout(&HCold_immunity, duration);
+        refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1509,6 +1522,7 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         incr_itimeout(&HShock_immunity, duration);
+        refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1527,6 +1541,7 @@ struct obj *otmp;
         }
         exercise(A_WIS, TRUE);
         incr_itimeout(otmp->otyp == POT_HEROISM ? &HHeroism : &HSuper_heroism, duration);
+        refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1546,6 +1561,7 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         incr_itimeout(otmp->otyp == POT_GREATER_REGENERATION ? &HDivine_regeneration : otmp->otyp == POT_REGENERATION ? &HRapidest_regeneration : &HRapider_regeneration, duration);
+        refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1558,6 +1574,7 @@ struct obj *otmp;
         special_effect_wait_until_action(0);
         incr_itimeout(otmp->otyp == POT_GREATER_REJUVENATION ? &HRapidest_regeneration : otmp->otyp == POT_REJUVENATION ? &HRapider_regeneration : &HRapid_regeneration, duration);
         incr_itimeout(otmp->otyp == POT_GREATER_REJUVENATION ? &HRapidest_energy_regeneration : otmp->otyp == POT_REJUVENATION ? &HRapider_energy_regeneration : &HRapid_energy_regeneration, duration);
+        refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1730,6 +1747,7 @@ struct obj *otmp;
             spoteffects(FALSE);
         /* levitating blocks flying */
         float_vs_flight();
+        refresh_u_tile_gui_info(TRUE);
         break;
     case POT_GREATER_ENERGY:
     case POT_FULL_ENERGY:
@@ -1943,10 +1961,10 @@ struct obj *obj;
 const char *txt;
 {
     if (flags.beginner || !txt)
-        You("have a %s feeling for a moment, then it passes.",
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "have a %s feeling for a moment, then it passes.",
             Hallucination ? "normal" : "strange");
     else
-        pline1(txt);
+        pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, txt);
 
     if (!obj) /* e.g., crystal ball finds no traps */
         return;
@@ -2655,6 +2673,7 @@ struct obj *obj;
             play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
             pline("%s seems to be holding you.", Something);
             incr_itimeout(&HParalyzed, duration);
+            refresh_u_tile_gui_info(TRUE);
             context.botl = context.botlx = 1;
 #if 0
             nomul(-d(3 - 1 * bcsign(obj), 4)); // rnd(5));
@@ -2688,36 +2707,42 @@ struct obj *obj;
             Your("knees seem more flexible now.");
         play_sfx_sound(SFX_ACQUIRE_HASTE);
         incr_itimeout(obj->otyp == POT_LIGHTNING_SPEED ? &HLightning_fast : obj->otyp == POT_GREATER_SPEED ? &HSuper_fast : &HUltra_fast, duration);
+        refresh_u_tile_gui_info(TRUE);
         exercise(A_DEX, TRUE);
         break;
     case POT_MAGIC_RESISTANCE:
         if (!Antimagic)
             You("feel a bit more protected now.");
         incr_itimeout(&HAntimagic, duration);
+        refresh_u_tile_gui_info(TRUE);
         exercise(A_WIS, TRUE);
         break;
     case POT_TITAN_STRENGTH:
         if (!Titan_strength)
             You("feel a bit stronger than before.");
         incr_itimeout(&HTitan_strength, duration);
+        refresh_u_tile_gui_info(TRUE);
         exercise(A_WIS, TRUE);
         break;
     case POT_FIRE_IMMUNITY:
         if (!Fire_immunity)
             You("feel a bit more fire-protected now.");
         incr_itimeout(&HFire_immunity, duration);
+        refresh_u_tile_gui_info(TRUE);
         exercise(A_WIS, TRUE);
         break;
     case POT_COLD_IMMUNITY:
         if (!Cold_immunity)
             You("feel a bit more cold-protected now.");
         incr_itimeout(&HCold_immunity, duration);
+        refresh_u_tile_gui_info(TRUE);
         exercise(A_WIS, TRUE);
         break;
     case POT_SHOCK_IMMUNITY:
         if (!Shock_immunity)
             You("feel a bit more electricity-protected now.");
         incr_itimeout(&HShock_immunity, duration);
+        refresh_u_tile_gui_info(TRUE);
         exercise(A_WIS, TRUE);
         break;
     case POT_HEROISM:
@@ -2725,6 +2750,7 @@ struct obj *obj;
         if (obj->otyp == POT_SUPER_HEROISM ? !Super_heroism : !Super_heroism && !Heroism)
             You("feel a bit more heroic.");
         incr_itimeout(obj->otyp == POT_SUPER_HEROISM ? &HSuper_heroism : &HHeroism, duration);
+        refresh_u_tile_gui_info(TRUE);
         exercise(A_WIS, TRUE);
         break;
     case POT_LESSER_REGENERATION:
@@ -2734,6 +2760,7 @@ struct obj *obj;
             obj->otyp == POT_REGENERATION ? !Divine_regeneration && !Rapidest_regeneration : !Super_heroism && !Heroism)
             You("feel a bit more heroic.");
         incr_itimeout(obj->otyp == POT_SUPER_HEROISM ? &HSuper_heroism : &HHeroism, duration);
+        refresh_u_tile_gui_info(TRUE);
         exercise(A_WIS, TRUE);
         break;
     case POT_BLINDNESS:
@@ -3307,7 +3334,8 @@ dodip()
             pline_The("potion spills and covers your %s with oil.",
                       makeplural(body_part(FINGER)));
             incr_itimeout(&Glib, d(2, 10));
-        } 
+            refresh_u_tile_gui_info(TRUE);
+        }
         else if (obj->oclass != WEAPON_CLASS && !is_weptool(obj)) 
         {
             /* the following cases apply only to weapons */

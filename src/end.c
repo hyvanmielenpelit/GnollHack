@@ -1280,6 +1280,7 @@ int how;
             survive = TRUE;
             boolean teleinstead = FALSE;
             incr_itimeout(&HInvulnerable, 2);
+            refresh_u_tile_gui_info(TRUE);
             if (!In_endgame(&u.uz))
             {
                 d_level dl = { 0 };

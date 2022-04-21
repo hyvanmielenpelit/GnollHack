@@ -187,9 +187,6 @@ struct extended_menu_info {
     int style; /* Generic style or subtype; used in menu data */
     char special_mark;
     unsigned long menu_flags;
-
-    struct skill_menu_info skill_data;
-    struct spell_menu_info spell_data;
 };
 
 struct extended_create_window_info {

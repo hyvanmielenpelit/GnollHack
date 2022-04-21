@@ -2874,6 +2874,7 @@ struct obj *obj;
         {
             play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
             incr_itimeout(&u.uprops[oart->inv_prop].intrinsic, (art_inv_dur_dice >0 && art_inv_dur_diesize > 0 ? d(art_inv_dur_dice, art_inv_dur_diesize) : 0) + art_inv_dur_plus);
+            refresh_u_tile_gui_info(TRUE);
         }
         else
         {

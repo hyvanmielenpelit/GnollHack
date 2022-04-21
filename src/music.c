@@ -722,6 +722,7 @@ struct obj *instr;
         {
             You("beat a deafening row!");
             incr_itimeout(&HDeaf, rn1(20, 30));
+            refresh_u_tile_gui_info(TRUE);
             play_environment_ambient_sounds();
             exercise(A_WIS, FALSE);
         } 

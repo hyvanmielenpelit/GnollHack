@@ -63,14 +63,23 @@ sick_dialogue()
             nomul(0);
     }
 
+    boolean updategui = FALSE;
     if (i <= 8)
     {
         set_itimeout(&HConfusion, max((HConfusion & TIMEOUT), i + 1));
+        updategui = TRUE;
     }
 
     if (i <= 4)
     {
         set_itimeout(&HStun, max((HStun & TIMEOUT), i + 1));
+        updategui = TRUE;
+    }
+
+    if (updategui)
+    {
+        refresh_u_tile_gui_info(TRUE);
+        context.botl = context.botlx = 1;
     }
 
 }
@@ -114,16 +123,24 @@ food_poisoned_dialogue()
             nomul(0);
     }
 
+    boolean updategui = FALSE;
     if (i <= 8)
     {
         set_itimeout(&HConfusion, max((HConfusion & TIMEOUT), i + 1));
+        updategui = TRUE;
     }
 
     if (i <= 4)
     {
         set_itimeout(&HStun, max((HStun & TIMEOUT), i + 1));
+        updategui = TRUE;
     }
 
+    if (updategui)
+    {
+        refresh_u_tile_gui_info(TRUE);
+        context.botl = context.botlx = 1;
+    }
 }
 
 
@@ -1336,6 +1353,7 @@ boolean wakeup_msg;
            there's a need to override this when wakeup_msg is true */
         incr_itimeout(&HDeaf, how_long);
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
         afternmv = Hear_again; /* this won't give any messages */
     }
     /* early wakeup from combat won't be possible until next monster turn */
@@ -2503,6 +2521,7 @@ do_storms()
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Kaboom!!!  Boom!!  Boom!!");
         incr_itimeout(&HDeaf, rn1(20, 30));
         context.botl = context.botlx = TRUE;
+        refresh_u_tile_gui_info(TRUE);
         play_environment_ambient_sounds();
         if (!u.uinvulnerable) {
             stop_occupation();

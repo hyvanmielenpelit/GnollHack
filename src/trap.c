@@ -4162,6 +4162,7 @@ domagictrap()
             You_hear_ex(ATR_NONE, CLR_MSG_NEGATIVE, "a deafening roar!");
             incr_itimeout(&HDeaf, rn1(20, 30));
             context.botl = context.botlx = TRUE;
+            refresh_u_tile_gui_info(TRUE);
             play_environment_ambient_sounds();
         } 
         else
@@ -4170,6 +4171,7 @@ domagictrap()
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "rankled.");
             incr_itimeout(&HDeaf, rn1(5, 15));
             context.botl = context.botlx = TRUE;
+            refresh_u_tile_gui_info(TRUE);
             play_environment_ambient_sounds();
         }
         context.makemon_spef_idx = 0;
@@ -6828,6 +6830,7 @@ boolean disarm;
                 play_sfx_sound(SFX_CAUSE_PARALYSIS);
                 incr_itimeout(&HParalyzed, d(5, 6));
                 context.botl = context.botlx = 1;
+                refresh_u_tile_gui_info(TRUE);
                 pline("Suddenly you are frozen in place!");
 #if 0
                 nomul(-d(5, 6));

@@ -2258,6 +2258,7 @@ register struct obj* omonwep;
                     You("are put to sleep by %s!", mon_nam(mtmp));
             }
             set_itimeout(&HSleep_resistance, 20);
+            refresh_u_tile_gui_info(TRUE);
         }
         else if(damagedealt > 0)
             display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
@@ -2354,6 +2355,7 @@ register struct obj* omonwep;
 
                 incr_itimeout(&HParalyzed, (rnd(8) + 2));
                 context.botl = context.botlx = 1;
+                refresh_u_tile_gui_info(TRUE);
 
 #if 0
                 nomovemsg = You_can_move_again;
@@ -2363,6 +2365,7 @@ register struct obj* omonwep;
 #endif
                 /* No new paralysis for a while */
                 set_itimeout(&HFree_action, 20);
+                refresh_u_tile_gui_info(TRUE);
             }
         } else if(damagedealt > 0)
             display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
@@ -2924,6 +2927,7 @@ register struct obj* omonwep;
                 incr_itimeout(&HSlowed, 1);
             else
                 incr_itimeout(&HSlowed, (rnd(10) + 20));
+            refresh_u_tile_gui_info(TRUE);
             int speed_after = get_u_move_speed(TRUE);
             if (speed_after < speed_before)
                 You("slow down.");
@@ -4130,6 +4134,7 @@ struct attack *mattk;
             {
                 set_itimeout(&HCancelled, max(HCancelled & TIMEOUT, d(2, 4)));
                 set_itimeout(&HCancellation_resistance, max(HCancellation_resistance& TIMEOUT, 10));
+                refresh_u_tile_gui_info(TRUE);
                 context.botl = context.botlx = 1;
             }
         }

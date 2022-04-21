@@ -2401,6 +2401,7 @@ boolean *effect_happened_ptr;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         incr_itimeout(&HConflict, d(2, 10) + 140);
+        refresh_u_tile_gui_info(TRUE);
         special_effect_wait_until_end(0);
         break;
     case SCR_TAMING:

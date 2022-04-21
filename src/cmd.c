@@ -2760,6 +2760,7 @@ wiz_intrinsic(VOID_ARGS)
                 pline("Timeout for %s %s %d.", propertynames[i].prop_name,
                       oldtimeout ? "increased by" : "set to", amt);
                 incr_itimeout(&u.uprops[p].intrinsic, amt);
+                refresh_u_tile_gui_info(TRUE);
                 break;
             }
             context.botl = 1; /* probably not necessary... */

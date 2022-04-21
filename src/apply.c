@@ -324,6 +324,7 @@ struct obj *obj;
         case 2:
             old = Glib;
             incr_itimeout(&Glib, rn1(10, 3));
+            refresh_u_tile_gui_info(TRUE);
             Your("%s %s!", makeplural(body_part(HAND)),
                  (old ? "are filthier than ever" : "get slimy"));
             if (is_wet_towel(obj))
@@ -3451,6 +3452,7 @@ struct obj *obj;
             if (obj->cursed && !nohands(youmonst.data)) 
             {
                 incr_itimeout(&Glib, rnd(15));
+                refresh_u_tile_gui_info(TRUE);
                 pline("Some of the grease gets all over your %s.",
                       makeplural(body_part(HAND)));
             }
@@ -3458,6 +3460,7 @@ struct obj *obj;
         else
         {
             incr_itimeout(&Glib, rnd(15));
+            refresh_u_tile_gui_info(TRUE);
             You("coat your %s with grease.", makeplural(body_part(FINGER)));
         }
         makeknown(obj->otyp);
