@@ -1178,6 +1178,12 @@ namespace GnollHackCommon
         public const uint MainCanvasAnimationTime = 250;
         public const uint AuxiliaryCanvasAnimationTime = 240;
         public const float MenuDefaultRowHeight = 30.0f;
+        public const float DefaultGeneralVolume = 1.0f;
+        public const float DefaultMusicVolume = 0.5f;
+        public const float DefaultAmbientVolume = 0.5f;
+        public const float DefaultDialogueVolume = 0.5f;
+        public const float DefaultEffectsVolume = 0.5f;
+        public const float DefaultUIVolume = 0.5f;
     }
 
 

@@ -148,12 +148,12 @@ namespace GnollHackClient.Pages.Game
             bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, navbar = false, devmode = false, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
-            generalVolume = Preferences.Get("GeneralVolume", 1.0f);
-            musicVolume = Preferences.Get("MusicVolume", 0.5f);
-            ambientVolume = Preferences.Get("AmbientVolume", 0.5f);
-            dialogueVolume = Preferences.Get("DialogueVolume", 0.5f);
-            effectsVolume = Preferences.Get("EffectsVolume", 0.5f);
-            UIVolume = Preferences.Get("UIVolume", 0.5f);
+            generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
+            musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
+            ambientVolume = Preferences.Get("AmbientVolume", GHConstants.DefaultAmbientVolume);
+            dialogueVolume = Preferences.Get("DialogueVolume", GHConstants.DefaultDialogueVolume);
+            effectsVolume = Preferences.Get("EffectsVolume", GHConstants.DefaultEffectsVolume);
+            UIVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
             navbar = App.HideAndroidNavigatioBar;
             devmode = App.DeveloperMode;
             if (_gamePage == null)

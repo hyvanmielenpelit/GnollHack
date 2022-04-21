@@ -174,12 +174,12 @@ namespace GnollHackClient
             }
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
-            generalVolume = Preferences.Get("GeneralVolume", 1.0f);
-            musicVolume = Preferences.Get("MusicVolume", 0.5f);
-            ambientVolume = Preferences.Get("AmbientVolume", 0.5f);
-            dialogueVolume = Preferences.Get("DialogueVolume", 0.5f);
-            effectsVolume = Preferences.Get("EffectsVolume", 0.5f);
-            UIVolume = Preferences.Get("UIVolume", 0.5f);
+            generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
+            musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
+            ambientVolume = Preferences.Get("AmbientVolume", GHConstants.DefaultAmbientVolume);
+            dialogueVolume = Preferences.Get("DialogueVolume", GHConstants.DefaultDialogueVolume);
+            effectsVolume = Preferences.Get("EffectsVolume", GHConstants.DefaultEffectsVolume);
+            UIVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
             try
             {
                 App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);

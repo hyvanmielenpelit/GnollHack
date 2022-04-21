@@ -927,12 +927,12 @@ initoptions_init()
     iflags.wc2_here_window_size = HERE_WIN_SIZ_DFLT;
     flags.pile_limit = PILE_LIMIT_DFLT;  /* 5 */
 
-    flags.sound_volume_ambient = 100;
-    flags.sound_volume_dialogue = 100;
-    flags.sound_volume_effects = 100;
+    flags.sound_volume_ambient = 50;
+    flags.sound_volume_dialogue = 50;
+    flags.sound_volume_effects = 50;
     flags.sound_volume_general = 100;
-    flags.sound_volume_music = 100;
-    flags.sound_volume_ui = 100;
+    flags.sound_volume_music = 50;
+    flags.sound_volume_ui = 50;
 
     /* since this is done before init_objects(), do partial init here */
     objects[SLIME_MOLD].oc_name_idx = SLIME_MOLD;
