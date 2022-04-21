@@ -3728,7 +3728,7 @@ boolean ufound;
 
     if (!ufound)
     {
-       pline("%s explodes at a spot in %s!",
+       pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s explodes at a spot in %s!",
               canseemon(mtmp) ? Monnam(mtmp) : "It",
               levl[mtmp->mux][mtmp->muy].typ == WATER ? "empty water"
                                                       : "thin air");
@@ -3774,7 +3774,7 @@ boolean ufound;
                 else 
                 {
                     if (flags.verbose)
-                        You("get blasted!");
+                        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "get blasted!");
                 }
                 if (mattk->adtyp == AD_FIRE)
                     burn_away_slime();
@@ -3796,7 +3796,7 @@ boolean ufound;
                 /* sometimes you're affected even if it's invisible */
                 if (mon_visible(mtmp) || (rnd(basedmg /= 2) > u.ulevel)) 
                 {
-                    You("are blinded by a blast of light!");
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are blinded by a blast of light!");
                     make_blinded((long)basedmg, FALSE);
                     if (!Blind)
                         Your1(vision_clears);
@@ -3814,7 +3814,7 @@ boolean ufound;
             {
                 boolean chg;
                 if (!Hallucination)
-                    You("are caught in a blast of kaleidoscopic light!");
+                    You_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "are caught in a blast of kaleidoscopic light!");
                 /* avoid hallucinating the black light as it dies */
                 mondead_with_flags(mtmp, MONDIED_FLAGS_NO_DEATH_ACTION);    /* remove it from map now */
                 kill_agr = FALSE; /* already killed (maybe lifesaved) */
@@ -3825,7 +3825,7 @@ boolean ufound;
                 else
                     play_sfx_sound(SFX_GENERAL_UNAFFECTED);
 
-                You("%s.", chg ? "are freaked out" : "seem unaffected");
+                You_ex(ATR_NONE, chg ? CLR_MSG_NEGATIVE : NO_COLOR,"%s.", chg ? "are freaked out" : "seem unaffected");
             }
             break;
 

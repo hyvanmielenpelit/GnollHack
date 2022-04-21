@@ -6591,18 +6591,19 @@ struct obj *corpse;
 
     if (mtmp) 
     {
+        int clr = is_tame(mtmp) ? CLR_MSG_ATTENTION : CLR_MSG_WARNING;
         switch (where) 
         {
         case OBJ_INVENT:
             if (is_uwep)
-                pline_The("%s writhes out of your grasp!", cname);
+                pline_The_ex(ATR_NONE, clr, "%s writhes out of your grasp!", cname);
             else
-                You_feel("squirming in your backpack!");
+                You_feel_ex(ATR_NONE, clr, "squirming in your backpack!");
             break;
 
         case OBJ_FLOOR:
             if (cansee(mtmp->mx, mtmp->my))
-                pline("%s rises from the dead!",
+                pline_ex(ATR_NONE, clr, "%s rises from the dead!",
                       chewed ? Adjmonnam(mtmp, "bite-covered")
                              : Monnam(mtmp));
             break;
@@ -6610,10 +6611,10 @@ struct obj *corpse;
         case OBJ_MINVENT: /* probably a nymph's */
             if (cansee(mtmp->mx, mtmp->my)) {
                 if (canseemon(mcarry))
-                    pline("Startled, %s drops %s as it revives!",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Startled, %s drops %s as it revives!",
                           mon_nam(mcarry), an(cname));
                 else
-                    pline("%s suddenly appears!",
+                    pline_ex(ATR_NONE, clr, "%s suddenly appears!",
                           chewed ? Adjmonnam(mtmp, "bite-covered")
                                  : Monnam(mtmp));
             }
@@ -6623,17 +6624,17 @@ struct obj *corpse;
 
             if (container_where == OBJ_MINVENT && cansee(mtmp->mx, mtmp->my)
                 && mcarry && canseemon(mcarry) && container) {
-                pline("%s writhes out of %s!", Amonnam(mtmp),
+                pline_ex(ATR_NONE, clr, "%s writhes out of %s!", Amonnam(mtmp),
                       yname(container));
             } else if (container_where == OBJ_INVENT && container) {
                 Strcpy(sackname, an(xname(container)));
-                pline("%s %s out of %s in your pack!",
+                pline_ex(ATR_NONE, clr, "%s %s out of %s in your pack!",
                       Blind ? Something : Amonnam(mtmp),
                       locomotion(mtmp->data, "writhes"), sackname);
             } else if (container_where == OBJ_FLOOR && container
                        && cansee(mtmp->mx, mtmp->my)) {
                 Strcpy(sackname, an(xname(container)));
-                pline("%s escapes from %s!", Amonnam(mtmp), sackname);
+                pline_ex(ATR_NONE, clr, "%s escapes from %s!", Amonnam(mtmp), sackname);
             }
             break;
         }
