@@ -155,14 +155,14 @@ static NEARDATA struct mflag_description m4flag_descriptions[] = {
 
 static NEARDATA struct mflag_description m5flag_descriptions[] = {
     { M5_HATES_LIGHT, "vulnerable to light", "monsters vulnerable to light" },
-    { M5_SHADE, "impervious to physical weapons", "monsters impervious to physical weapons" },
-    { M5_TELEPORT_HEAL_TACTICS, "using teleport and heal tactics", "monsters using teleport and heal tactics" },
     { 0 , "", "" }
 };
 
 static NEARDATA struct mflag_description m6flag_descriptions[] = {
     { M6_NON_EATER, "non-eating living monster", "non-eating living monsters" },
     { M6_CORPSE_EATER, "corpse-eating monster", "corpse-eating monsters" },
+    { M6_SHADE, "impervious to physical weapons", "monsters impervious to physical weapons" },
+    { M6_TELEPORT_HEAL_TACTICS, "using teleport and heal tactics", "monsters using teleport and heal tactics" },
     { 0 , "", "" }
 };
 

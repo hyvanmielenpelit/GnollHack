@@ -178,9 +178,7 @@
 #define innate_eschew_blessed(ptr) (((ptr)->mflags5 & M5_ESCHEWS_BLESSED_ITEMS) != 0)
 #define innate_eschew_silver(ptr) (((ptr)->mflags5 & M5_ESCHEWS_SILVER_ITEMS) != 0)
 #define hates_light(ptr) (((ptr)->mflags5 & M5_HATES_LIGHT) != 0)
-#define is_shade(ptr) (((ptr)->mflags5 & M5_SHADE) != 0)
 #define is_special_silver_hater(ptr) (((ptr)->mflags5 & M5_HATES_SILVER) != 0)
-#define is_teleport_heal_caster(ptr) (((ptr)->mflags5 & M5_TELEPORT_HEAL_TACTICS) != 0)
 #define makes_sound_randomly(ptr) (((ptr)->mflags5 & M5_MAKES_SOUND_RANDOMLY) != 0)
 #define is_semi_transparent(ptr) (((ptr)->mflags5 & M5_SEMI_TRANSPARENT) != 0)
 #define is_radially_transparent(ptr) (((ptr)->mflags5 & M5_RADIAL_TRANSPARENCY) != 0)
@@ -192,6 +190,8 @@
 #define is_hell_hound(ptr) (((ptr)->mflags6 & M6_HELL_HOUND) != 0L)
 #define is_boss_monster(ptr) (((ptr)->mflags6 & M6_BOSS_MONSTER) != 0L)
 #define may_start_with_saddle(ptr) (((ptr)->mflags6 & M6_MAY_START_WITH_SADDLE) != 0L)
+#define is_shade(ptr) (((ptr)->mflags6 & M6_SHADE) != 0)
+#define is_teleport_heal_caster(ptr) (((ptr)->mflags6 & M6_TELEPORT_HEAL_TACTICS) != 0)
 
 #define is_archaeologist(ptr) (((ptr)->mflags7 & M7_ARCHAEOLOGIST) != 0L)
 #define is_barbarian(ptr) (((ptr)->mflags7 & M7_BARBARIAN) != 0L)

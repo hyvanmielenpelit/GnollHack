@@ -320,19 +320,19 @@
 #define M5_FEMALE_TILE                 0x00008000UL
 
 /* Some special tile flags */
-#define M5_FULL_SIZED_CORPSE_TILE           0x00010000UL
-#define M5_FULL_SIZED_FEMALE_CORPSE_TILE    0x00020000UL
+#define M5_FULL_SIZED_CORPSE_TILE           0x00010000UL /* Default is half size */
+#define M5_FULL_SIZED_FEMALE_CORPSE_TILE    0x00020000UL /* Default is half size */
 #define M5_HALF_SIZED_MONSTER_TILE          0x00040000UL /* Upper half of the tile is empty, so one can draw in menus just the lower half */
 #define M5_TWO_WIDE_CENTERED_MONSTER_TILE   0x00080000UL /* The monster covers three tiles, but is in fact only two tiles wide, leaving half tile from left and right empty, so one can draw just the center tile, right half of left tile, and left half of right tile. */
+#define M5_TWO_WIDE_CENTERED_CORPSE_TILE    0x00100000UL /* The corpse covers three tiles, but is in fact only two tiles wide, leaving half tile from left and right empty, so one can draw just the center tile, right half of left tile, and left half of right tile. */
+/* Free bit */
 
 /* Remaining bits are normal monster flags */
-#define M5_ESCHEWS_CURSED_ITEMS     0x00100000UL
-#define M5_ESCHEWS_BLESSED_ITEMS    0x00200000UL
-#define M5_ESCHEWS_SILVER_ITEMS     0x00400000UL
-#define M5_HATES_LIGHT              0x00800000UL /* Gremlin only */
-#define M5_HATES_SILVER             0x01000000UL /* In addition to lycanthropes, demons, and vampires, e.g. non-tengu imps and shade */
-#define M5_SHADE                    0x02000000UL /* Shade only */
-#define M5_TELEPORT_HEAL_TACTICS    0x04000000UL /* Arch-lich, Wizard of Yendor, Demogorgon, and various other monsters */
+#define M5_ESCHEWS_CURSED_ITEMS     0x00400000UL
+#define M5_ESCHEWS_BLESSED_ITEMS    0x00800000UL
+#define M5_ESCHEWS_SILVER_ITEMS     0x01000000UL
+#define M5_HATES_LIGHT              0x02000000UL /* Gremlin only */
+#define M5_HATES_SILVER             0x04000000UL /* In addition to lycanthropes, demons, and vampires, e.g. non-tengu imps and shade */
 #define M5_MAKES_SOUND_RANDOMLY     0x08000000UL
 #define M5_SEMI_TRANSPARENT         0x10000000UL /* Tile drawn with some transparency (default: 50% constant) */
 #define M5_RADIAL_TRANSPARENCY      0x20000000UL /* Tile drawn with radial transparency (0% at center and 96% at radius of 32 and 96% thereafter) */
@@ -354,6 +354,8 @@
 #define M6_HELL_HOUND               0x00000800UL /* Is a hell hound */
 #define M6_BOSS_MONSTER             0x00001000UL /* Seeing the monster triggers a boss fight */
 #define M6_MAY_START_WITH_SADDLE    0x00002000UL /* If steed, then may be generated with saddle */
+#define M6_SHADE                    0x00004000UL /* Shade only */
+#define M6_TELEPORT_HEAL_TACTICS    0x00008000UL /* Arch-lich, Wizard of Yendor, Demogorgon, and various other monsters */
 
 #define M7_NONE                     0x00000000UL
 #define M7_ARCHAEOLOGIST            0x00000001UL            /* monster can use archaeologist items */

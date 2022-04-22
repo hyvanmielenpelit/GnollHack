@@ -175,6 +175,11 @@ uchar* tilemapflags;
                             gtflags = GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
                         else
                             gtflags = GLYPH_TILE_FLAG_HALF_SIZED_TILE;
+
+                        if (mons[i].mflags5 & M5_TWO_WIDE_CENTERED_CORPSE_TILE)
+                        {
+                            gtflags |= GLYPH_TILE_FLAG_TWO_WIDE_CENTERED_TILE;
+                        }
                     }
                     else
                     {

@@ -6700,6 +6700,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "troll-corpse-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
       { "rock-troll-enlargement", 0, 0,
         5,
         3, 2, 0,
@@ -6711,6 +6718,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         5,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "rock-ttroll-corpse-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
@@ -6728,6 +6742,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "water-ttroll-corpse-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
       { "ice-troll-enlargement", 0, 0,
         5,
         3, 2, 0,
@@ -6739,6 +6760,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         5,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "ice-troll-corpse-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
@@ -6756,6 +6784,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "olog-hai-corpse-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
       { "thoul-enlargement", 0, 0,
         5,
         3, 2, 0,
@@ -6767,6 +6802,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         5,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "thoul-corpse-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
