@@ -4095,6 +4095,7 @@ boolean is_wiz_wish;
             && strlen(p) == strlen(mythic_suffix_qualities[mythic_idx].mythic_affix))
         {
             char ringbuf[BUFSZ], robebuf[BUFSZ], bootsbuf[BUFSZ], glovesbuf[BUFSZ], gauntletsbuf[BUFSZ], bracersbuf[BUFSZ], amuletbuf[BUFSZ], cloakbuf[BUFSZ], shirtbuf[BUFSZ];
+            char potionbuf[BUFSZ], wandbuf[BUFSZ], scrollbuf[BUFSZ], spellbookbuf[BUFSZ];
             Sprintf(ringbuf, "ring%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(robebuf, "robe%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(bootsbuf, "boots%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
@@ -4105,15 +4106,25 @@ boolean is_wiz_wish;
             Sprintf(bracersbuf, "bracers%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(gauntletsbuf, "gauntlets%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
 
-            if (!(p == bp + 4 && !strcmp(p - 4, ringbuf)) /* No rings and other standard itmes etc. */
-                && !(p == bp + 4 && !strcmp(p - 4, robebuf))
-                && !(p == bp + 5 && !strcmp(p - 5, bootsbuf))
-                && !(p == bp + 5 && !strcmp(p - 5, cloakbuf))
-                && !(p == bp + 5 && !strcmp(p - 5, shirtbuf))
-                && !(p == bp + 6 && !strcmp(p - 6, glovesbuf))
-                && !(p == bp + 6 && !strcmp(p - 6, amuletbuf))
-                && !(p == bp + 7 && !strcmp(p - 7, bracersbuf))
-                && !(p == bp + 9 && !strcmp(p - 9, gauntletsbuf))
+            Sprintf(wandbuf, "wand%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(potionbuf, "potion%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(scrollbuf, "scroll%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(spellbookbuf, "spellbook%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+
+            if (!(p >= bp + 4 && !strcmp(p - 4, ringbuf)) /* No rings and other standard itmes etc. */
+                && !(p >= bp + 4 && !strcmp(p - 4, robebuf))
+                && !(p >= bp + 5 && !strcmp(p - 5, bootsbuf))
+                && !(p >= bp + 5 && !strcmp(p - 5, cloakbuf))
+                && !(p >= bp + 5 && !strcmp(p - 5, shirtbuf))
+                && !(p >= bp + 6 && !strcmp(p - 6, glovesbuf))
+                && !(p >= bp + 6 && !strcmp(p - 6, amuletbuf))
+                && !(p >= bp + 7 && !strcmp(p - 7, bracersbuf))
+                && !(p >= bp + 9 && !strcmp(p - 9, gauntletsbuf))
+
+                && !(p >= bp + 4 && !strcmp(p - 4, wandbuf))
+                && !(p >= bp + 6 && !strcmp(p - 6, potionbuf))
+                && !(p >= bp + 6 && !strcmp(p - 6, scrollbuf))
+                && !(p >= bp + 9 && !strcmp(p - 9, spellbookbuf))
                 )
             {
                 *p = 0;
