@@ -23,7 +23,9 @@ static jmp_buf env;
 extern struct passwd *FDECL( getpwuid, ( uid_t));
 extern struct passwd *FDECL( getpwnam, (const char *));
 
+#if 0
 static boolean NDECL( whoami);
+#endif
 static void FDECL( process_options, (int, char **));
 
 static void NDECL( wd_message);
@@ -110,8 +112,6 @@ int GnollHackMain(int argc, char** argv)
 	/* Now initialize windows */
 	choose_windows(DEFAULT_WINDOW_SYS);
 	init_nhwindows(&argc, argv);
-	//exact_username = whoami();
-
 	initoptions();
 
 	/*
@@ -336,6 +336,7 @@ static void process_options(argc, argv)
 	}
 }
 
+#if 0
 static boolean whoami()
 {
 	/*
@@ -356,6 +357,7 @@ static boolean whoami()
 		(void)strncpy(plname, s, sizeof(plname) - 1);
 	return TRUE;
 }
+#endif
 
 #ifdef PORT_HELP
 void
