@@ -1897,7 +1897,7 @@ void and_n_getline_r(const char* question, char* buf, int nMax, int showLog, int
 //		-- getlin() can assume the input buffer is at least BUFSZ
 //		   bytes in size and must truncate inputs to fit, including
 //		   the nul character.
-void and_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* defvalue)
+void and_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix)
 {
 //	debuglog("and_getlin '%s'", question);
 	char promptbuf[BUFSZ] = "";
@@ -1905,8 +1905,8 @@ void and_getlin_ex(int style, int attr, int color, const char *question, char *i
 		Sprintf(promptbuf, "%s", question);
 	if (placeholder)
 		Sprintf(eos(promptbuf), " [%s]", placeholder);
-	if (defvalue)
-		Sprintf(eos(promptbuf), " %s", defvalue);
+	if (linesuffix)
+		Sprintf(eos(promptbuf), " %s", linesuffix);
 	and_n_getline(promptbuf, input, BUFSZ, FALSE);
 }
 

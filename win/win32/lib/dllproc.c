@@ -1769,10 +1769,10 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-dll_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* defvalue)
+dll_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix)
 {
     dll_logDebug("dll_getlin(%s, %p)\n", question, input);
-    char* res = dll_callbacks.callback_getlin_ex(style, attr, color, question, placeholder, defvalue);
+    char* res = dll_callbacks.callback_getlin_ex(style, attr, color, question, placeholder, linesuffix);
     if (res && input)
         strcpy(input, res);
 

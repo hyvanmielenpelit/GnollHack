@@ -752,6 +752,7 @@ struct obj *instr;
         return 0;
 
     char buf[BUFSZ] = DUMMY, c = 'y';
+    char ebuf[BUFSZ] = "";
     char *s;
     int x, y;
     boolean ok;
@@ -790,7 +791,7 @@ struct obj *instr;
         } 
         else 
         {
-            getlin("What tune are you playing? [5 notes, A-G]", buf);
+            getlin_ex(GETLINE_TUNE, ATR_NONE, NO_COLOR, "What tune are you playing? ", buf, (char*)0, "[5 notes, A - G]");
             (void) mungspaces(buf);
             if (*buf == '\033')
                 goto nevermind;

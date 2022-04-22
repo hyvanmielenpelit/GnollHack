@@ -1740,7 +1740,7 @@ namespace GnollHackClient.Pages.Game
         }
 
         private int _getLineStyle = 0;
-        private void GetLine(string query, string placeholder, string defvalue, int style, int attr, int color)
+        private void GetLine(string query, string placeholder, string linesuffix, int style, int attr, int color)
         {
             Color clr = ClientUtils.NHColor2XColor(color, false, false); /* Non-title / white coloring works better here */
             string PlaceHolderText = null;
@@ -1750,10 +1750,12 @@ namespace GnollHackClient.Pages.Game
             }
 
             GetLineCaption.Text = query;
-            if (!string.IsNullOrWhiteSpace(defvalue))
-                GetLineCaption.Text += " " + defvalue;
+            if (!string.IsNullOrWhiteSpace(linesuffix) && linesuffix != " -")
+                GetLineCaption.Text += " " + linesuffix;
+
             GetLineCaption.TextColor = clr;
             GetLineEntryText.Text = "";
+            GetLineEntryText.MaxLength = GHConstants.BUFSZ - 1;
             GetLineQuestionMarkGrid.IsVisible = false;
             GetLineEntryText.IsVisible = true;
             GetLineEntryText.Keyboard = Keyboard.Default;
@@ -1768,41 +1770,55 @@ namespace GnollHackClient.Pages.Game
                     GetLineEntryText.WidthRequest = 230;
                     GetLineQuestionMarkGrid.IsVisible = true;
                     GetLineAutoComplete.IsVisible = true;
-                    GetLineEntryText.Placeholder = "Enter the command";
+                    GetLineEntryText.Placeholder = "Type the command";
                     break;
                 case (int)getline_types.GETLINE_LEVELPORT:
-                    GetLineEntryText.Placeholder = "Enter the level here";
+                    GetLineEntryText.Placeholder = "Type the level here";
                     GetLineEntryText.Keyboard = Keyboard.Numeric;
                     /* '*' could be possible as well, but not implemented at the moment */
                     break;
                 case (int)getline_types.GETLINE_WIZ_LEVELPORT:
                     GetLineEntryText.WidthRequest = 230;
                     GetLineQuestionMarkGrid.IsVisible = true;
-                    GetLineEntryText.Placeholder = "Enter the level";
+                    GetLineEntryText.Placeholder = "Type the level";
                     GetLineEntryText.Keyboard = Keyboard.Numeric;
                     break;
                 case (int)getline_types.GETLINE_LEVEL_CHANGE:
                 case (int)getline_types.GETLINE_NUMBERS_ONLY:
+                    GetLineEntryText.WidthRequest = 240;
                     GetLineEntryText.Keyboard = Keyboard.Numeric;
                     if (style == (int)getline_types.GETLINE_LEVEL_CHANGE)
-                        GetLineEntryText.Placeholder = "Enter the level here";
+                        GetLineEntryText.Placeholder = "Type the level here";
                     else
-                        GetLineEntryText.Placeholder = "Enter the number here";
+                        GetLineEntryText.Placeholder = "Type the number here";
                     break;
                 case (int)getline_types.GETLINE_WISHING:
-                    GetLineEntryText.Placeholder = "Enter your wish here";
+                    GetLineEntryText.Placeholder = "Type your wish here";
                     break;
                 case (int)getline_types.GETLINE_GENESIS:
                 case (int)getline_types.GETLINE_POLYMORPH:
                 case (int)getline_types.GETLINE_GENOCIDE:
                 case (int)getline_types.GETLINE_MONSTER:
-                    GetLineEntryText.Placeholder = "Enter the monster here";
+                    GetLineEntryText.Placeholder = "Type the monster here";
+                    break;
+                case (int)getline_types.GETLINE_MONSTER_CLASS:
+                    GetLineEntryText.WidthRequest = 230;
+                    GetLineEntryText.MaxLength = 1;
+                    GetLineQuestionMarkGrid.IsVisible = true;
+                    GetLineEntryText.Placeholder = "Type the monster class";
+                    break;
+                case (int)getline_types.GETLINE_TUNE:
+                    GetLineEntryText.WidthRequest = 240;
+                    GetLineEntryText.Placeholder = "Type the tune here";
+                    break;
+                case (int)getline_types.GETLINE_QUESTION:
+                    GetLineEntryText.Placeholder = "Type the answer here";
                     break;
                 default:
                     if (PlaceHolderText != null)
                         GetLineEntryText.Placeholder = PlaceHolderText;
                     else
-                        GetLineEntryText.Placeholder = "Enter the text here";
+                        GetLineEntryText.Placeholder = "Type the text here";
                     break;
             }
             GetLineGrid.IsVisible = true;

@@ -812,11 +812,11 @@ amii_setpens(int count)
 /* Generate a requester for a string value. */
 
 void
-amii_getlin_ex(style, attr, color, prompt, bufp, placeholder, defvalue)
+amii_getlin_ex(style, attr, color, prompt, bufp, placeholder, linesuffix)
 int style, attr, color;
 const char *prompt;
 const char* placeholder;
-const char* defvalue;
+const char* linesuffix;
 char *bufp;
 {
     char promptbuf[BUFSZ] = "";
@@ -824,8 +824,8 @@ char *bufp;
         Sprintf(promptbuf, "%s", prompt);
     if (placeholder)
         Sprintf(eos(promptbuf), " [%s]", placeholder);
-    if (defvalue)
-        Sprintf(eos(promptbuf), " %s", defvalue);
+    if (linesuffix)
+        Sprintf(eos(promptbuf), " %s", linesuffix);
     getlind(promptbuf, bufp, 0);
 }
 

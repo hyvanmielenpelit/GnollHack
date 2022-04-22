@@ -1014,6 +1014,9 @@ namespace GnollHackCommon
         GETLINE_POLYMORPH,
         GETLINE_GENOCIDE,
         GETLINE_MONSTER,
+        GETLINE_MONSTER_CLASS,
+        GETLINE_TUNE,
+        GETLINE_QUESTION,
     }
 
 

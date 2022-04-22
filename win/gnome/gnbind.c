@@ -1141,7 +1141,7 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-gnome_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* defvalue)
+gnome_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix)
 {
     int ret;
     char promptbuf[BUFSZ] = "";
@@ -1149,8 +1149,8 @@ gnome_getlin_ex(int style, int attr, int color, const char *question, char *inpu
         Sprintf(promptbuf, "%s", question);
     if (placeholder)
         Sprintf(eos(promptbuf), " [%s]", placeholder);
-    if (defvalue)
-        Sprintf(eos(promptbuf), " %s", defvalue);
+    if (linesuffix)
+        Sprintf(eos(promptbuf), " %s", linesuffix);
 
     ret = ghack_ask_string_dialog(promptbuf, "", "nethack", input);
 

@@ -3005,11 +3005,11 @@ int col;
 /************************* getlin *******************************/
 
 void
-Gem_getlin_ex(style, attr, color, ques, input, placeholder, defvalue)
+Gem_getlin_ex(style, attr, color, ques, input, placeholder, linesuffix)
 int style, attr, color;
 const char *ques;
 const char* placeholder;
-const char* defvalue;
+const char* linesuffix;
 char *input;
 {
     OBJECT *z_ob = zz_oblist[LINEGET];
@@ -3020,8 +3020,8 @@ char *input;
         Sprintf(promptbuf, "%s", ques);
     if (placeholder)
         Sprintf(eos(promptbuf), " [%s]", placeholder);
-    if (defvalue)
-        Sprintf(eos(promptbuf), " %s", defvalue);
+    if (linesuffix)
+        Sprintf(eos(promptbuf), " %s", linesuffix);
 
     if (WIN_MESSAGE != WIN_ERR && Gem_nhwindow[WIN_MESSAGE].gw_window)
         mar_display_nhwindow(WIN_MESSAGE);

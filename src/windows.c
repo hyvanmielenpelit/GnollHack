@@ -880,11 +880,11 @@ int *x UNUSED, *y UNUSED, *mod UNUSED;
 
 /*ARGSUSED*/
 static void
-hup_getlin_ex(style, attr, color, prompt, outbuf, placeholder, defvalue)
+hup_getlin_ex(style, attr, color, prompt, outbuf, placeholder, linesuffix)
 int style UNUSED, attr UNUSED, color UNUSED;
 const char *prompt UNUSED;
 const char* placeholder UNUSED;
-const char* defvalue UNUSED;
+const char* linesuffix UNUSED;
 char *outbuf;
 {
     Strcpy(outbuf, "\033");

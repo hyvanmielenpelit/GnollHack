@@ -863,15 +863,15 @@ getlin(const char *ques, char *input)
                ports might use a popup.
 */
 void
-curses_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* defvalue)
+curses_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix)
 {
     char promptbuf[BUFSZ] = "";
     if (question)
         Sprintf(promptbuf, "%s", question);
     if (placeholder)
         Sprintf(eos(promptbuf), " [%s]", placeholder);
-    if (defvalue)
-        Sprintf(eos(promptbuf), " %s", defvalue);
+    if (linesuffix)
+        Sprintf(eos(promptbuf), " %s", linesuffix);
     curses_line_input_dialog(style, attr, color, promptbuf, input, BUFSZ);
 }
 

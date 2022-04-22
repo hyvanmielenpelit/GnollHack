@@ -3373,7 +3373,7 @@ int show_weights;
     int oletct, iletct, unpaid, oc_of_sym;
     char sym, *ip, olets[MAX_OBJECT_CLASSES + 5], ilets[MAX_OBJECT_CLASSES + 10];
     char extra_removeables[5 + 1]; /* uwep,uswapwep,uquiver */
-    char buf[BUFSZ] = DUMMY, qbuf[QBUFSZ];
+    char buf[BUFSZ] = DUMMY, qbuf[QBUFSZ], ebuf[QBUFSZ];
 
     if (!invent) {
         You("have nothing to %s.", word);
@@ -3418,9 +3418,9 @@ int show_weights;
     ilets[iletct] = '\0';
 
     for (;;) {
-        Sprintf(qbuf, "What kinds of thing do you want to %s? [%s]",
-                word, ilets);
-        getlin(qbuf, buf);
+        Sprintf(qbuf, "What kinds of thing do you want to %s?", word);
+        Sprintf(ebuf, "[%s]", ilets);
+        getlin_ex(GETLINE_GENERAL, ATR_NONE, NO_COLOR, qbuf, buf, (char*)0, ebuf);
         if (buf[0] == '\033')
             return 0;
         if (index(buf, 'i')) {

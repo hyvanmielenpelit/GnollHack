@@ -151,6 +151,7 @@ int *menu_on_demand;
     int iletct, oclassct;
     boolean not_everything, filtered;
     char qbuf[QBUFSZ];
+    char ebuf[QBUFSZ];
     boolean m_seen;
     int itemcount, bcnt, ucnt, ccnt, xcnt, ocnt;
 
@@ -197,9 +198,9 @@ int *menu_on_demand;
         oclasses[oclassct = 0] = '\0';
         *one_at_a_time = *everything = FALSE;
         not_everything = filtered = FALSE;
-        Sprintf(qbuf, "What kinds of thing do you want to %s? [%s]", action,
-                ilets);
-        getlin(qbuf, inbuf);
+        Sprintf(qbuf, "What kinds of thing do you want to %s?", action);
+        Sprintf(ebuf, "[%s]", ilets);
+        getlin_ex(GETLINE_GENERAL, ATR_NONE, NO_COLOR, qbuf, inbuf, (char*)0, ebuf);
         if (*inbuf == '\033')
             return FALSE;
 

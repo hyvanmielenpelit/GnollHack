@@ -3782,7 +3782,7 @@ do_class_genocide()
             }
             else
             {
-                getlin("What class of monsters do you wish to genocide?", buf);
+                getlin_ex(GETLINE_MONSTER_CLASS, ATR_NONE, NO_COLOR, "What class of monsters do you wish to genocide?", buf, (char*)0, (char*)0);
                 (void)mungspaces(buf);
             }
         } 

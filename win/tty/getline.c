@@ -35,26 +35,26 @@ extern char erase_char, kill_char; /* from appropriate tty.c file */
  * resulting string is "\033".
  */
 void
-tty_getlin_ex(style, attr, color, query, bufp, placeholder, defvalue)
+tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix)
 int style, attr, color;
 const char *query;
 const char* placeholder;
-const char* defvalue;
+const char* linesuffix;
 register char *bufp;
 {
     suppress_history = FALSE;
-    hooked_tty_getlin_ex(style, attr, color, query, bufp, placeholder, defvalue, (getlin_hook_proc) 0);
+    hooked_tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix, (getlin_hook_proc) 0);
 }
 
 boolean skip_utf8 = FALSE;
 
 STATIC_OVL void
-hooked_tty_getlin_ex(style, attr, color, query, bufp, placeholder, defvalue, hook)
+hooked_tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix, hook)
 int style UNUSED, attr UNUSED, color UNUSED;
 const char *query;
 register char *bufp;
 const char* placeholder;
-const char* defvalue;
+const char* linesuffix;
 getlin_hook_proc hook;
 {
     register char *obufp = bufp;
@@ -66,8 +66,8 @@ getlin_hook_proc hook;
         Sprintf(promptbuf, "%s", query);
     if (placeholder)
         Sprintf(eos(promptbuf), " [%s]", placeholder);
-    if (defvalue)
-        Sprintf(eos(promptbuf), " %s", defvalue);
+    if (linesuffix)
+        Sprintf(eos(promptbuf), " %s", linesuffix);
     if (ttyDisplay->toplin == 1 && !(cw->flags & WIN_STOP))
         more();
     cw->flags &= ~WIN_STOP;

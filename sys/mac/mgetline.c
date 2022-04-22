@@ -32,7 +32,7 @@ get_line_from_key_queue(char *bufp)
 }
 
 static void
-topl_getlin_ex(int style UNUSED, int attr, int color, const char *query, char *bufp, const char* placeholder, const char* defvalue, Boolean ext)
+topl_getlin_ex(int style UNUSED, int attr, int color, const char *query, char *bufp, const char* placeholder, const char* linesuffix, Boolean ext)
 {
     if (get_line_from_key_queue(bufp))
         return;
@@ -42,8 +42,8 @@ topl_getlin_ex(int style UNUSED, int attr, int color, const char *query, char *b
         Sprintf(promptbuf, "%s", query);
     if (placeholder)
         Sprintf(eos(promptbuf), " [%s]", placeholder);
-    if (defvalue)
-        Sprintf(eos(promptbuf), " %s", defvalue);
+    if (linesuffix)
+        Sprintf(eos(promptbuf), " %s", linesuffix);
     enter_topl_mode(attr, color, promptbuf);
     while (topl_key(nhgetch(), ext))
         ;
@@ -57,9 +57,9 @@ topl_getlin_ex(int style UNUSED, int attr, int color, const char *query, char *b
  * resulting string is "\033".
  */
 void
-mac_getlin_ex(int style, int attr, int color, const char *query, char *bufp, const char* placeholder, const char* defvalue)
+mac_getlin_ex(int style, int attr, int color, const char *query, char *bufp, const char* placeholder, const char* linesuffix)
 {
-    topl_getlin_ex(style, attr, color, query, bufp, placeholder, defvalue, false);
+    topl_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix, false);
 }
 
 /* Read in an extended command - doing command line completion for

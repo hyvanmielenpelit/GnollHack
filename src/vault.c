@@ -461,8 +461,8 @@ invault()
             if(!Deaf)
                 play_monster_special_dialogue_line(guard, VAULT_GUARD_LINE_HELLO_STRANGER_WHO_ARE_YOU);
 
-            getlin(Deaf ? "You are required to supply your name. -"
-                        : "\"Hello stranger, who are you?\" -", buf);
+            getlin_ex(GETLINE_QUESTION, ATR_NONE, NO_COLOR, Deaf ? "You are required to supply your name."
+                        : "\"Hello stranger, who are you?\"", buf, (char*)0, " -");
             (void) mungspaces(buf);
         } while (!buf[0] && --trycount > 0);
 
