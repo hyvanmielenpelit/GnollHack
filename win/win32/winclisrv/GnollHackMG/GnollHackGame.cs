@@ -133,7 +133,7 @@ namespace GnollHackMG
 
                 await connection.InvokeAsync("AddNewServerGame");
             }
-            catch (Exception ex)
+            catch
             {
                 //Error
             }

@@ -752,19 +752,20 @@ struct obj *instr;
         return 0;
 
     char buf[BUFSZ] = DUMMY, c = 'y';
-    char ebuf[BUFSZ] = "";
     char *s;
     int x, y;
     boolean ok;
 
     if (Underwater) 
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("play music underwater!");
         return 0;
     }
     else if ((objects[instr->otyp].oc_subtyp == TOOLTYPE_FLUTE || objects[instr->otyp].oc_subtyp == TOOLTYPE_HORN)
                && !can_blow(&youmonst)) 
     {
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You_ex(ATR_NONE, CLR_MSG_WARNING, "are incapable of playing %s.", the(distant_name(instr, xname)));
         return 0;
     }
