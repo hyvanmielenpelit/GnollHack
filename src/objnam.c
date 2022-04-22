@@ -4088,51 +4088,6 @@ boolean is_wiz_wish;
         contents = CONTAINER_SPINACH;
     }
 
-    int mythic_idx;
-    for (mythic_idx = 1; mythic_idx < MAX_MYTHIC_SUFFIXES; mythic_idx++)
-    {
-        if ((p = strstri(bp, mythic_suffix_qualities[mythic_idx].mythic_affix)) != 0 
-            && strlen(p) == strlen(mythic_suffix_qualities[mythic_idx].mythic_affix))
-        {
-            char ringbuf[BUFSZ], robebuf[BUFSZ], bootsbuf[BUFSZ], glovesbuf[BUFSZ], gauntletsbuf[BUFSZ], bracersbuf[BUFSZ], amuletbuf[BUFSZ], cloakbuf[BUFSZ], shirtbuf[BUFSZ];
-            char potionbuf[BUFSZ], wandbuf[BUFSZ], scrollbuf[BUFSZ], spellbookbuf[BUFSZ];
-            Sprintf(ringbuf, "ring%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-            Sprintf(robebuf, "robe%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-            Sprintf(bootsbuf, "boots%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-            Sprintf(cloakbuf, "cloak%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-            Sprintf(shirtbuf, "shirt%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-            Sprintf(glovesbuf, "gloves%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-            Sprintf(amuletbuf, "amulet%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-            Sprintf(bracersbuf, "bracers%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-            Sprintf(gauntletsbuf, "gauntlets%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-
-            Sprintf(wandbuf, "wand%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-            Sprintf(potionbuf, "potion%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-            Sprintf(scrollbuf, "scroll%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-            Sprintf(spellbookbuf, "spellbook%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
-
-            if (!(p >= bp + 4 && !strcmp(p - 4, ringbuf)) /* No rings and other standard itmes etc. */
-                && !(p >= bp + 4 && !strcmp(p - 4, robebuf))
-                && !(p >= bp + 5 && !strcmp(p - 5, bootsbuf))
-                && !(p >= bp + 5 && !strcmp(p - 5, cloakbuf))
-                && !(p >= bp + 5 && !strcmp(p - 5, shirtbuf))
-                && !(p >= bp + 6 && !strcmp(p - 6, glovesbuf))
-                && !(p >= bp + 6 && !strcmp(p - 6, amuletbuf))
-                && !(p >= bp + 7 && !strcmp(p - 7, bracersbuf))
-                && !(p >= bp + 9 && !strcmp(p - 9, gauntletsbuf))
-
-                && !(p >= bp + 4 && !strcmp(p - 4, wandbuf))
-                && !(p >= bp + 6 && !strcmp(p - 6, potionbuf))
-                && !(p >= bp + 6 && !strcmp(p - 6, scrollbuf))
-                && !(p >= bp + 9 && !strcmp(p - 9, spellbookbuf))
-                )
-            {
-                *p = 0;
-                mythic_suffix = mythic_idx;
-            }
-            break;
-        }
-    }
 
 
     /*
@@ -4159,6 +4114,54 @@ boolean is_wiz_wish;
         bp += 7;
     } else if (!strncmpi(bp, "sets of ", 8)) {
         bp += 8;
+    }
+
+    /* Mythic suffixes */
+    char* mythic_sng = makesingular(bp);
+    int mythic_idx;
+    for (mythic_idx = 1; mythic_idx < MAX_MYTHIC_SUFFIXES; mythic_idx++)
+    {
+        if (mythic_sng != 0 && (p = strstri(mythic_sng, mythic_suffix_qualities[mythic_idx].mythic_affix)) != 0
+            && strlen(p) == strlen(mythic_suffix_qualities[mythic_idx].mythic_affix))
+        {
+            char ringbuf[BUFSZ], robebuf[BUFSZ], bootsbuf[BUFSZ], glovesbuf[BUFSZ], gauntletsbuf[BUFSZ], bracersbuf[BUFSZ], amuletbuf[BUFSZ], cloakbuf[BUFSZ], shirtbuf[BUFSZ];
+            char potionbuf[BUFSZ], wandbuf[BUFSZ], scrollbuf[BUFSZ], spellbookbuf[BUFSZ];
+            Sprintf(ringbuf, "ring%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(robebuf, "robe%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(bootsbuf, "boots%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(cloakbuf, "cloak%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(shirtbuf, "shirt%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(glovesbuf, "gloves%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(amuletbuf, "amulet%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(bracersbuf, "bracers%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(gauntletsbuf, "gauntlets%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+
+            Sprintf(wandbuf, "wand%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(potionbuf, "potion%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(scrollbuf, "scroll%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+            Sprintf(spellbookbuf, "spellbook%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
+
+            if (!(p == mythic_sng + 4 && !strcmp(p - 4, ringbuf)) /* No rings and other standard itmes etc. */
+                && !(p == mythic_sng + 4 && !strcmp(p - 4, robebuf))
+                && !(p == mythic_sng + 5 && !strcmp(p - 5, bootsbuf))
+                && !(p == mythic_sng + 5 && !strcmp(p - 5, cloakbuf))
+                && !(p == mythic_sng + 5 && !strcmp(p - 5, shirtbuf))
+                && !(p == mythic_sng + 6 && !strcmp(p - 6, glovesbuf))
+                && !(p == mythic_sng + 6 && !strcmp(p - 6, amuletbuf))
+                && !(p == mythic_sng + 7 && !strcmp(p - 7, bracersbuf))
+                && !(p == mythic_sng + 9 && !strcmp(p - 9, gauntletsbuf))
+
+                && !(p == mythic_sng + 4 && !strcmp(p - 4, wandbuf))
+                && !(p == mythic_sng + 6 && !strcmp(p - 6, potionbuf))
+                && !(p == mythic_sng + 6 && !strcmp(p - 6, scrollbuf))
+                && !(p == mythic_sng + 9 && !strcmp(p - 9, spellbookbuf))
+                )
+            {
+                *p = 0;
+                mythic_suffix = mythic_idx;
+            }
+            break;
+        }
     }
 
     /* intercept pudding globs here; they're a valid wish target,
