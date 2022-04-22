@@ -1983,15 +1983,24 @@ enum autodraw_types* autodraw_ptr;
             if (replacements[replacement_idx].number_of_tiles < 1)
                 return ntile;
 
+            int glyph_idx = 0;
             aligntyp algn = mon_aligntyp(mtmp);
-            if (algn == A_NONE)
+            switch (algn)
             {
-                int glyph_idx = 0;
-                if (autodraw_ptr)
-                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
-                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            case A_NONE:
+                glyph_idx = 0;
+                break;
+            case A_CHAOTIC:
+            case A_NEUTRAL:
+            case A_LAWFUL:
+                glyph_idx = algn + 2;
+                break;
+            default:
+                return ntile;
             }
-            break;
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+            return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
         }
         case REPLACEMENT_ACTION_ALIGNED_PRIEST_STATUE:
         {
@@ -2005,9 +2014,76 @@ enum autodraw_types* autodraw_ptr;
                 return ntile;
 
             struct monst* mtmp2 = get_mtraits(otmp, FALSE);
-            if (mtmp2 && has_epri(mtmp2) && EPRI(mtmp2)->shralign == A_NONE)
+            if (mtmp2 && has_epri(mtmp2))
             {
                 int glyph_idx = 0;
+                switch (EPRI(mtmp2)->shralign)
+                {
+                case A_NONE:
+                    glyph_idx = 0;
+                    break;
+                case A_CHAOTIC:
+                case A_NEUTRAL:
+                case A_LAWFUL:
+                    glyph_idx = EPRI(mtmp2)->shralign + 2;
+                    break;
+                default:
+                    return ntile;
+                }
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_ANGEL:
+        {
+            if (!mtmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            int glyph_idx = 0;
+            aligntyp algn = mon_aligntyp(mtmp);
+            switch (algn)
+            {
+            case A_NONE:
+                glyph_idx = 0;
+                break;
+            default:
+                return ntile;
+            }
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+            return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+        }
+        case REPLACEMENT_ACTION_ANGEL_STATUE:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            struct monst* mtmp2 = get_mtraits(otmp, FALSE);
+            if (mtmp2 && has_epri(mtmp2))
+            {
+                int glyph_idx = 0;
+                switch (EPRI(mtmp2)->shralign)
+                {
+                case A_NONE:
+                    glyph_idx = 0;
+                    break;
+                default:
+                    return ntile;
+                }
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
                 return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
@@ -2410,12 +2486,22 @@ struct replacement_info info;
             if (!mtmp)
                 return glyph;
 
+            int glyph_idx = 0;
             aligntyp algn = mon_aligntyp(mtmp);
-            if (algn == A_NONE)
+            switch (algn)
             {
-                int glyph_idx = 0;
-                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            case A_NONE:
+                glyph_idx = 0;
+                break;
+            case A_CHAOTIC:
+            case A_NEUTRAL:
+            case A_LAWFUL:
+                glyph_idx = algn + 2;
+                break;
+            default:
+                return glyph;
             }
+            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             break;
         }
         case REPLACEMENT_ACTION_ALIGNED_PRIEST_STATUE:
@@ -2424,9 +2510,61 @@ struct replacement_info info;
                 return glyph;
 
             struct monst* mtmp2 = get_mtraits(otmp, FALSE);
-            if (mtmp2 && has_epri(mtmp2) && EPRI(mtmp2)->shralign == A_NONE)
+            if (mtmp2 && has_epri(mtmp2))
             {
                 int glyph_idx = 0;
+                switch (EPRI(mtmp2)->shralign)
+                {
+                case A_NONE:
+                    glyph_idx = 0;
+                    break;
+                case A_CHAOTIC:
+                case A_NEUTRAL:
+                case A_LAWFUL:
+                    glyph_idx = EPRI(mtmp2)->shralign + 2;
+                    break;
+                default:
+                    return glyph;
+                }
+                return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_ANGEL:
+        {
+            if (!mtmp)
+                return glyph;
+
+            int glyph_idx = 0;
+            aligntyp algn = mon_aligntyp(mtmp);
+            switch (algn)
+            {
+            case A_NONE:
+                glyph_idx = 0;
+                break;
+            default:
+                return glyph;
+            }
+            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
+            break;
+        }
+        case REPLACEMENT_ACTION_ANGEL_STATUE:
+        {
+            if (!otmp)
+                return glyph;
+
+            struct monst* mtmp2 = get_mtraits(otmp, FALSE);
+            if (mtmp2 && has_epri(mtmp2))
+            {
+                int glyph_idx = 0;
+                switch (EPRI(mtmp2)->shralign)
+                {
+                case A_NONE:
+                    glyph_idx = 0;
+                    break;
+                default:
+                    return glyph;
+                }
                 return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             }
             break;
