@@ -1743,6 +1743,12 @@ namespace GnollHackClient.Pages.Game
         private void GetLine(string query, string placeholder, string defvalue, int style, int attr, int color)
         {
             Color clr = ClientUtils.NHColor2XColor(color, false, false); /* Non-title / white coloring works better here */
+            string PlaceHolderText = null;
+            if (!string.IsNullOrWhiteSpace(placeholder) && placeholder.Length > 0)
+            {
+                PlaceHolderText = char.ToUpper(placeholder[0]) + placeholder.Substring(1);
+            }
+
             GetLineCaption.Text = query;
             if (!string.IsNullOrWhiteSpace(defvalue))
                 GetLineCaption.Text += " " + defvalue;
@@ -1765,6 +1771,11 @@ namespace GnollHackClient.Pages.Game
                     GetLineEntryText.Placeholder = "Enter the command";
                     break;
                 case (int)getline_types.GETLINE_LEVELPORT:
+                    GetLineEntryText.Placeholder = "Enter the level here";
+                    GetLineEntryText.Keyboard = Keyboard.Numeric;
+                    /* '*' could be possible as well, but not implemented at the moment */
+                    break;
+                case (int)getline_types.GETLINE_WIZ_LEVELPORT:
                     GetLineEntryText.WidthRequest = 230;
                     GetLineQuestionMarkGrid.IsVisible = true;
                     GetLineEntryText.Placeholder = "Enter the level";
@@ -1788,10 +1799,8 @@ namespace GnollHackClient.Pages.Game
                     GetLineEntryText.Placeholder = "Enter the monster here";
                     break;
                 default:
-                    if (!string.IsNullOrWhiteSpace(placeholder) && placeholder.Length > 0)
-                    {
-                        GetLineEntryText.Placeholder = char.ToUpper(placeholder[0]) + placeholder.Substring(1);
-                    }
+                    if (PlaceHolderText != null)
+                        GetLineEntryText.Placeholder = PlaceHolderText;
                     else
                         GetLineEntryText.Placeholder = "Enter the text here";
                     break;
