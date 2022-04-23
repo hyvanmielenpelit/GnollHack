@@ -16574,18 +16574,25 @@ int lineid;
     struct ghsound_immediate_info info = { 0 };
     float volume = 1.0f;
     info.ghsound = soundid;
+    int paramcnt = 0;
     switch (soundindextype)
     {
     default:
     case 0:
-        info.parameter_names[0] = "LineIndex";
+        info.parameter_names[paramcnt] = "LineIndex";
+        info.parameter_values[paramcnt] = (float)lineid;
+        paramcnt++;
         break;
     case 1:
-        info.parameter_names[0] = "MsgIndex";
+        info.parameter_names[paramcnt] = "MsgIndex";
+        info.parameter_values[paramcnt] = (float)lineid;
+        paramcnt++;
+        break;
+    case 2:
+        /* Nothing, lineid is ignored */
         break;
     }
-    info.parameter_values[0] = (float)lineid;
-    info.parameter_names[1] = (char*)0;
+    info.parameter_names[paramcnt] = (char*)0;
 
     if (isok(mtmp->mx, mtmp->my))
     {

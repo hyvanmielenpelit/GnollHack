@@ -5802,15 +5802,22 @@ struct monst* mtmp;
             if (!Deaf && !mtmp->isshk && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10)))
             {
                 play_monster_item_trading_line(mtmp, MONSTER_ITEM_TRADING_LINE_TRADING_USE_YOUR_PURCHASE_WELL);
-                verbalize("Use your purchase well!");
+                popup_talk_line_ex(mtmp, "Use your purchase well!", ATR_NONE, NO_COLOR, TRUE, TRUE);
+                //verbalize("Use your purchase well!");
             }
             else if (!Deaf && (is_speaking_monster(mtmp->data) || (mtmp->isshk && !muteshk(mtmp))))
             {
                 play_monster_item_trading_line(mtmp, MONSTER_ITEM_TRADING_LINE_TRADING_THANK_YOU_FOR_YOUR_PURCHASE);
-                verbalize("Thank you for your purchase!");
+                popup_talk_line_ex(mtmp, "Thank you for your purchase!", ATR_NONE, NO_COLOR, TRUE, TRUE);
+                //verbalize("Thank you for your purchase!");
             }
             else
-                pline("%s nods appreciatively at you for the purchase!", Monnam(mtmp));
+            {
+                char tbuf[BUFSZ];
+                Sprintf(tbuf, "%s nods appreciatively at you for the purchase!", Monnam(mtmp));
+                popup_talk_line_ex(mtmp, tbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
+                //pline("%s nods appreciatively at you for the purchase!", Monnam(mtmp));
+            }
         }
 
         if (buy_count > 0)
@@ -8398,7 +8405,7 @@ popup_talk_core(mtmp, linearray, soundid, soundindextype, startlineidx, attr, co
 struct monst* mtmp;
 const char** linearray;
 enum ghsound_types soundid;
-uchar soundindextype; /* 0 = line indexed, 1 = msg indexed */
+uchar soundindextype; /* 0 = line indexed, 1 = msg indexed, 2 = unindexed (ignore startlineidx) */
 int startlineidx; /* Index number to start */
 int attr, color;
 boolean printtext;
