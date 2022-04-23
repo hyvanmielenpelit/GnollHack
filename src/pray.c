@@ -2124,15 +2124,15 @@ register struct obj *otmp;
         {
         case 0:
             play_sfx_sound(SFX_ALTAR_OFFERING_VANISH);
-            Your("sacrifice sprouts wings and a propeller and roars away!");
+            Your_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "sacrifice sprouts wings and a propeller and roars away!");
             break;
         case 1:
             play_sfx_sound(SFX_ALTAR_OFFERING_VANISH);
-            Your("sacrifice puffs up, swelling bigger and bigger, and pops!");
+            Your_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "sacrifice puffs up, swelling bigger and bigger, and pops!");
             break;
         case 2:
             play_sfx_sound(SFX_ALTAR_OFFERING_VANISH);
-            Your(
+            Your_ex(ATR_NONE, CLR_MSG_HALLUCINATED,
      "sacrifice collapses into a cloud of dancing particles and fades away!");
             break;
         }
@@ -2140,12 +2140,12 @@ register struct obj *otmp;
     else if (Blind && u.ualign.type == A_LAWFUL)
     {
         play_sfx_sound(SFX_ALTAR_OFFERING_VANISH);
-        Your("sacrifice disappears!");
+        Your_ex(ATR_NONE, CLR_MSG_MYSTICAL, "sacrifice disappears!");
     }
     else
     {
         play_sfx_sound(SFX_ALTAR_BURST_OF_FLAME);
-        Your("sacrifice is consumed in a %s!",
+        Your_ex(ATR_NONE, CLR_MSG_MYSTICAL, "sacrifice is consumed in a %s!",
             u.ualign.type == A_LAWFUL ? "flash of light" : "burst of flame");
     }
     if (carried(otmp))
@@ -2168,6 +2168,7 @@ dosacrifice()
 
     if (!on_altar() || u.uswallow) 
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("are not standing on an altar.");
         return 0;
     }
@@ -2220,12 +2221,12 @@ dosacrifice()
             int luck_change = 0;
             if (is_demon(youmonst.data)) 
             {
-                You("find the idea very satisfying.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find the idea very satisfying.");
                 exercise(A_WIS, TRUE);
             }
             else if (u.ualign.type != A_CHAOTIC) 
             {
-                pline("You'll regret this infamous offense!");
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "You'll regret this infamous offense!");
                 exercise(A_WIS, FALSE);
             }
 
@@ -2238,7 +2239,7 @@ dosacrifice()
             {
                 /* curse the lawful/neutral altar */
                 play_sfx_sound(SFX_DESECRATE_ALTAR);
-                pline_The("altar is stained with %s blood.", urace.adj);
+                pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "altar is stained with %s blood.", urace.adj);
                 levl[u.ux][u.uy].altarmask = AM_CHAOTIC;
                 angry_priest();
             } 
