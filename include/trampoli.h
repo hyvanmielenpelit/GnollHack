@@ -230,6 +230,7 @@
 
 /* ### wield.c ### */
 #define dowield() dowield_()
+#define dounwield() dounwield_()
 
 /* ### zap.c ### */
 #define bhitm(x, y, z) bhitm_(x, y, z)

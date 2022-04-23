@@ -327,7 +327,7 @@ mswin_init_nhwindows(int *argc, char **argv)
         for (int i = 0; menus[i].menu_item_id > 0; i++)
         {
             cmd_id = cmd_from_txt(menus[i].menu_item_cmd_name);
-            if (!cmd_id || !(efp = Cmd.commands[cmd_id]) || !efp->bound_key)
+            if (!cmd_id || !(efp = Cmd.commands[cmd_id]) || !efp->bound_key || (efp->bound_key >= (uchar)M(0) && efp->bound_key <= (uchar)M(9)))
             {
                 Sprintf(buf, "%s", menus[i].menu_item_description);
             }

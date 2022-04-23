@@ -56,6 +56,7 @@
 
 STATIC_DCL boolean FDECL(cant_wield_corpse, (struct obj *));
 STATIC_DCL int FDECL(ready_weapon, (struct obj *, long));
+STATIC_DCL int FDECL(wield_weapon, (struct obj*));
 
 /* used by will_weld() */
 /* probably should be renamed */
@@ -371,28 +372,41 @@ static NEARDATA const char bullets[] = { /* (note: different from dothrow.c) */
     GEM_CLASS, WEAPON_CLASS, 0
 };
 
+static NEARDATA const char unwield_objs[] = { ALL_CLASSES, 0 };
+
 int
 dowield()
 {
-    register struct obj *wep, *oldwep;
-    int result;
+    struct obj* wep;
 
     /* May we attempt this? */
     multi = 0;
-    if (cantwield(youmonst.data)) 
+    if (cantwield(youmonst.data))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("Don't be ridiculous!");
         return 0;
     }
 
+    /* Prompt for a new weapon */
+    if (!(wep = getobj(wield_objs, "wield", 0, "")))
+        /* Cancelled */
+        return 0;
+
+    return wield_weapon(wep);
+}
+
+STATIC_OVL
+int
+wield_weapon(wep)
+struct obj* wep;
+{
+    struct obj* oldwep;
+    int result;
+
     if (u.twoweap)
     {
-        /* Prompt for a new weapon */
-        if (!(wep = getobj(wield_objs, "wield", 0, "")))
-            /* Cancelled */
-            return 0;
-        else if (wep == uwep || wep == uarms)
+        if (wep == uwep || wep == uarms)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You("are already wielding that!");
@@ -538,11 +552,7 @@ dowield()
     }
     else
     {
-        /* Prompt for a new weapon */
-        if (!(wep = getobj(wield_objs, "wield", 0, "")))
-            /* Cancelled */
-            return 0;
-        else if (wep == uwep) 
+        if (wep == uwep) 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You("are already wielding that!");
@@ -616,6 +626,48 @@ dowield()
 
     return result;
 }
+
+/* the unwield command */
+int
+dounwield()
+{
+    struct obj* otmp = (struct obj*)0;
+
+    if (!uwep & !uwep2) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline("Not wielding anything.");
+        return 0;
+    }
+
+    otmp = getobj(unwield_objs, "unwield", 0, "");
+    if (!otmp || !(otmp->owornmask & W_WIELDED_WEAPON))
+        return 0;
+
+    long mask = 0L;
+    if (otmp == uwep)
+        mask = W_WEP;
+    else if (otmp == uwep)
+        mask = W_WEP2;
+    else
+        return 0;
+
+    int result = ready_weapon((struct obj*)0, mask);
+    boolean unwield_succeeded = mask == W_WEP ? (uwep == (struct obj*)0) : (uwep2 == (struct obj*)0);
+    if (unwield_succeeded)
+    {
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_UNWIELD);
+        update_all_character_properties((struct obj*)0, TRUE);
+
+#ifdef STATUS_HILITES
+        if (VIA_WINDOWPORT())
+            status_initialize(REASSESS_NO_UPDATE_ALL);
+#endif
+    }
+
+    return result;
+}
+
+
 
 int
 dosingleswapweapon(mask)

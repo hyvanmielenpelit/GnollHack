@@ -8,6 +8,9 @@
 #include "hack.h"
 #include "func_tab.h"
 
+#ifndef M
+#define M(c) ((char) (0x80 | (c)))
+#endif
 #ifndef C /* same as cmd.c */
 #define C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
 #endif
@@ -3025,6 +3028,8 @@ struct obj* otmp_only;
             if (
                 (taking_off(word) /* exclude if not worn */
                     && !(otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
+                || (!strcmp(word, "unwield") /* exclude if not wielded */
+                    && !(otmp->owornmask & W_WIELDED_WEAPON))
                 || (putting_on(word) /* exclude if already worn */
                     && (otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
                 || (trading_items(word) /* exclude if already worn and unpaid items */
@@ -4205,7 +4210,7 @@ long pickcnt;
                     Sprintf(eos(tabbuf), "%s", " ");
             }
 
-            if (efp->bound_key != '\0')
+            if (efp->bound_key != '\0' && !(efp->bound_key >= (uchar)M(0) && efp->bound_key <= (uchar)M(9)))
                 Sprintf(shortcutbuf, "%s(%s%c)", tabbuf,
                     (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
                     (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);

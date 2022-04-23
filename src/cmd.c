@@ -128,6 +128,7 @@ extern int NDECL(doextversion);       /**/
 extern int NDECL(doswapweapon);       /**/
 extern int NDECL(dowield);            /**/
 extern int NDECL(dowieldquiver);      /**/
+extern int NDECL(dounwield);            /**/
 extern int NDECL(dozap);              /**/
 extern int NDECL(doorganize);         /**/
 #endif /* DUMB */
@@ -5004,7 +5005,7 @@ int cmdflag;
         uchar altmask = 0x80;
         uchar ctrlmask = 0x20 | 0x40;
 
-        if (efp->bound_key != '\0')
+        if (efp->bound_key != '\0' && !(efp->bound_key >= (uchar)M(0) && efp->bound_key <= (uchar)M(9)))
             Sprintf(shortcutbuf, "  (%s%c)",
             (efp->bound_key & ctrlmask) == 0 ? "Ctrl-" : (efp->bound_key & altmask) == altmask ? "Alt-" : "",
                 (efp->bound_key & ctrlmask) == 0 ? efp->bound_key | ctrlmask : (efp->bound_key & altmask) == altmask ? efp->bound_key & ~altmask : efp->bound_key);
@@ -5405,6 +5406,7 @@ struct ext_func_tab extcmdlist[] = {
     { M('w'), "wipe", "wipe off your face", dowipe, AUTOCOMPLETE | INCMDMENU },
     { 'x', "swap", "swap wielded and secondary weapons", doswapweapon_right_or_both, INCMDMENU },
     { M('x'), "examine", "describe an item", doitemdescriptions, IFBURIED | AUTOCOMPLETE | SINGLE_OBJ_CMD_INFO, 0, getobj_allobj, "examine" },
+    { M(5), "unwield", "unwield a weapon", dounwield, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_unwield_objs, "unwield"},
     { '}', "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE },
     { C('y'), "yell", "yell for your companions",
             doyell, IFBURIED | AUTOCOMPLETE | INCMDMENU },
