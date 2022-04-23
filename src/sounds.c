@@ -5492,7 +5492,7 @@ struct monst* mtmp;
             u_pay = join_cost;
 
             money2mon(mtmp, (long)u_pay);
-            context.botl = 1;
+            bot();
         }
 
         boolean success = tamedog(mtmp, (struct obj*)0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
@@ -5572,7 +5572,7 @@ struct monst* mtmp;
         u_pay = explain_cost;
         play_sfx_sound(SFX_READ);
         money2mon(mtmp, (long)u_pay);
-        context.botl = 1;
+        bot();
         monsterdescription(mtmp);
         return 1;
     }
@@ -5780,7 +5780,9 @@ struct monst* mtmp;
                     You("%s", qbuf);
 
                     money2mon(mtmp, (long)item_cost);
-                    
+                    if(itemized)
+                        bot();
+
                     if (quan < item_to_buy->quan)
                         item_to_buy = splitobj(item_to_buy, quan);
                     
@@ -5795,6 +5797,8 @@ struct monst* mtmp;
 
         free((genericptr_t)pick_list);
         destroy_nhwindow(win);
+        if(!itemized)
+            bot();
 
         if (is_peaceful(mtmp) && buy_count > 0) 
         {
@@ -6187,7 +6191,7 @@ struct monst* mtmp;
     if (effect_happened)
     {
         money2mon(mtmp, (long)u_pay);
-        context.botl = 1;
+        bot();
     }
 
     /* gnostic handled in seffects */
@@ -6229,7 +6233,7 @@ struct monst* mtmp;
         break;
     }
     money2mon(mtmp, (long)u_pay);
-    context.botl = 1;
+    bot();
 
     int otyp = POT_EXTRA_HEALING;
 
@@ -6277,7 +6281,7 @@ struct monst* mtmp;
         break;
     }
     money2mon(mtmp, (long)u_pay);
-    context.botl = 1;
+    bot();
 
     int otyp = POT_FULL_HEALING;
 
@@ -6325,7 +6329,7 @@ struct monst* mtmp;
         break;
     }
     money2mon(mtmp, (long)u_pay);
-    context.botl = 1;
+    bot();
 
     int otyp = SPE_CURE_SICKNESS;
 
@@ -6400,7 +6404,7 @@ struct monst* mtmp;
 
 
     money2mon(mtmp, (long)u_pay);
-    context.botl = 1;
+    bot();
 
     boolean coaligned = p_coaligned(mtmp);
     boolean strayed = (u.ualign.record < 0);
@@ -6495,7 +6499,7 @@ struct monst* mtmp;
         break;
     }
     money2mon(mtmp, (long)u_pay);
-    context.botl = 1;
+    bot();
 
     u.uconduct.gnostic++;
 
@@ -6778,7 +6782,7 @@ struct monst* mtmp;
     }
 
     money2mon(mtmp, u_pay);
-    context.botl = 1;
+    bot();
 
     make_happy_shk(mtmp, FALSE);
     long costapplyingtodebit = max(0, min(reconcile_cost - 1000, ESHK(mtmp)->debit));
@@ -6842,7 +6846,7 @@ struct monst* mtmp;
     }
 
     money2mon(mtmp, u_pay);
-    context.botl = 1;
+    bot();
 
     mtmp->mpeaceful = 1;
     newsym(mtmp->mx, mtmp->my);
@@ -7327,6 +7331,8 @@ struct monst* mtmp;
     else
         mtmp = 0;
 
+    bot();
+
     /* Make sure mtmp is not used anywhere anymore; it is not invalid */
     return 2; 
 }
@@ -7529,7 +7535,7 @@ struct monst* mtmp;
     }
 
     money2mon(mtmp, u_pay);
-    context.botl = 1;
+    bot();
 
     mtmp->mpeaceful = 1;
     newsym(mtmp->mx, mtmp->my);
@@ -7598,7 +7604,7 @@ struct monst* mtmp;
         }
 
         money2mon(mtmp, u_pay);
-        context.botl = 1;
+        bot();
     }
 
     mtmp->mspec_used = 100;
@@ -7678,7 +7684,7 @@ struct monst* mtmp;
         }
 
         money2mon(mtmp, u_pay);
-        context.botl = 1;
+        bot();
     }
 
     mtmp->mspec_used = 100;
@@ -7747,7 +7753,7 @@ struct monst* mtmp;
     }
 
     money2mon(mtmp, u_pay);
-    context.botl = 1;
+    bot();
 
     mtmp->mpeaceful = 1;
     newsym(mtmp->mx, mtmp->my);
@@ -7932,7 +7938,7 @@ struct monst* mtmp;
     }
 
     money2mon(mtmp, u_pay);
-    context.botl = 1;
+    bot();
 
     pacify_guards();
 
@@ -8106,7 +8112,7 @@ int id_idx, minor_id_cost, spdialogue1, spdialogue2;
         if (res)
         {
             money2mon(mtmp, (long)u_pay);
-            context.botl = 1;
+            bot();
             umoney = money_cnt(invent);
             cnt += res;
         }
@@ -9053,7 +9059,7 @@ int special_dialogue_sound_id;
     if (effect_happened)
     {
         money2mon(mtmp, (long)u_pay);
-        context.botl = 1;
+        bot();
     }
     obfree(pseudo, (struct obj*)0);
     /* gnostic handled in seffects */
@@ -9136,7 +9142,7 @@ int special_dialogue_sound_id;
     if (res)
     {
         money2mon(mtmp, u_pay);
-        context.botl = 1;
+        bot();
     }
 
     return 1;
