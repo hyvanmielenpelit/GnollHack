@@ -5119,14 +5119,14 @@ int spell;
         if ((99-rnl(100)) < explosionchance)//If lucky explosions happen less frequently
         {
             //One more damage
-            Your("concoction explodes in a large ball of fire!");
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "concoction explodes in a large ball of fire!");
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
             explode(u.ux, u.uy, RAY_FIRE, &youmonst, 0, 0, 1, 0, 0, EXPL_FIERY);
         }
         else
         {
             play_sfx_sound(SFX_MIXING_FLARES_UP);
-            Your("concoction flares up, burning you!");
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "concoction flares up, burning you!");
             display_u_being_hit(HIT_ON_FIRE, dmg, 0UL);
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
         }
@@ -5137,7 +5137,7 @@ int spell;
         int addedamount = spells_gained_per_mixing * selected_multiplier;
         spellamount(spell) += addedamount;
         play_sfx_sound(SFX_MIXING_SUCCESS);
-        You("successfully prepared the material components.");
+        You_ex(ATR_NONE, CLR_MSG_POSITIVE, "successfully prepared the material components.");
         if (addedamount == 1)
             You("now have one more casting of \"%s\" prepared.", spellname);
         else

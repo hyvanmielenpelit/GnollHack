@@ -53,6 +53,7 @@ boolean display_hit_tile;
     } else {
         if (damage < 1)
         {
+            int clr = NO_COLOR;
             switch (mattk->aatyp) {
             case AT_BITE:
                     pfmt = "%s bites!";
@@ -84,6 +85,7 @@ boolean display_hit_tile;
                 break;
             case AT_EXPL:
             case AT_BOOM:
+                clr = CLR_MSG_NEGATIVE;
                 pfmt = "%s explodes!";
                 break;
             case AT_RAMS:
@@ -95,13 +97,14 @@ boolean display_hit_tile;
             if (pfmt)
             {
                 if(use_mhis)
-                    pline(pfmt, Monst_name, Monst_his);
+                    pline_ex(ATR_NONE, clr, pfmt, Monst_name, Monst_his);
                 else
-                    pline(pfmt, Monst_name);
+                    pline_ex(ATR_NONE, clr, pfmt, Monst_name);
             }
             }
         else
         {
+            int clr = NO_COLOR;
             switch (mattk->aatyp) {
             case AT_BITE:
                 pfmt = "%s bites for %d damage!";
@@ -135,6 +138,7 @@ boolean display_hit_tile;
                 break;
             case AT_EXPL:
             case AT_BOOM:
+                clr = CLR_MSG_NEGATIVE;
                 pfmt = "%s explodes for %d damage!";
                 break;
             default:
@@ -143,10 +147,9 @@ boolean display_hit_tile;
             if (pfmt)
             {
                 if(use_mhis)
-                    pline(pfmt, Monst_name, Monst_his, damage);
+                    pline_ex(ATR_NONE, clr, pfmt, Monst_name, Monst_his, damage);
                 else
-                    pline(pfmt, Monst_name, damage);
-
+                    pline_ex(ATR_NONE, clr, pfmt, Monst_name, damage);
             }
         }
         if (display_hit_tile)
@@ -3430,11 +3433,11 @@ struct attack *mattk;
              * like horses for now :-)
              */
             Strcpy(buf, mon_nam(u.usteed));
-            pline("%s lunges forward and plucks you off %s!", Monnam(mtmp),
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s lunges forward and plucks you off %s!", Monnam(mtmp),
                   buf);
             dismount_steed(DISMOUNT_ENGULFED);
         } else
-            pline("%s engulfs you!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s engulfs you!", Monnam(mtmp));
         stop_occupation();
         reset_occupations(); /* behave as if you had moved */
 
@@ -3510,12 +3513,12 @@ struct attack *mattk;
         }
         else if (u.uswldtim == 0) 
         {
-            pline("%s totally digests you!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s totally digests you!", Monnam(mtmp));
             damage = u.uhp;
         } 
         else
         {
-            pline("%s%s digests you!", Monnam(mtmp),
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s digests you!", Monnam(mtmp),
                   (u.uswldtim == 2) ? " thoroughly"
                                     : (u.uswldtim == 1) ? " utterly" : "");
             exercise(A_STR, FALSE);
@@ -3524,7 +3527,7 @@ struct attack *mattk;
     case AD_PHYS:
         if (mtmp->data == &mons[PM_FOG_CLOUD]) 
         {
-            You("are laden with moisture and %s",
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are laden with moisture and %s",
                 flaming(youmonst.data)
                     ? "are smoldering out!"
                     : Breathless ? "find it mildly uncomfortable."
@@ -3549,9 +3552,9 @@ struct attack *mattk;
             damage = 0;
         } else {
             if (Hallucination)
-                pline("Ouch!  You've been slimed!");
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Ouch!  You've been slimed!");
             else
-                You("are covered in slime!  It burns!");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "are covered in slime!  It burns!");
             exercise(A_STR, FALSE);
         }
         break;
@@ -3580,7 +3583,7 @@ struct attack *mattk;
         if (!is_cancelled(mtmp) && rn2(2)) 
         {
             hit_tile = HIT_ELECTROCUTED;
-            pline_The("air around you crackles with electricity.");
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "air around you crackles with electricity.");
             if (Shock_immunity || Invulnerable) {
                 u_shieldeff();
                 You("seem unhurt.");
@@ -3599,7 +3602,7 @@ struct attack *mattk;
                 ugolemeffects(AD_COLD, damage);
                 damage = 0;
             } else
-                You("are freezing to death!");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "are freezing to death!");
         } else
             damage = 0;
         break;
@@ -3612,7 +3615,7 @@ struct attack *mattk;
                 ugolemeffects(AD_FIRE, damage);
                 damage = 0;
             } else
-                You("are burning to a crisp!");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "are burning to a crisp!");
             burn_away_slime();
         } else
             damage = 0;
@@ -3644,7 +3647,7 @@ struct attack *mattk;
     if (!u.uswallow) {
         ; /* life-saving has already expelled swallowed hero */
     } else if (touch_petrifies(youmonst.data) && !resists_ston(mtmp)) {
-        pline("%s very hurriedly %s you!", Monnam(mtmp),
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s very hurriedly %s you!", Monnam(mtmp),
               is_animal(mtmp->data) ? "regurgitates" : "expels");
         expels(mtmp, mtmp->data, FALSE);
     } else if (!u.uswldtim || youmonst.data->msize >= MZ_HUGE) {
@@ -3652,7 +3655,7 @@ struct attack *mattk;
            expels now so the !u.uswldtim case is no longer possible;
            however, polymorphing into a huge form while already
            swallowed is still possible */
-        You("get %s!", is_animal(mtmp->data) ? "regurgitated" : "expelled");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "get %s!", is_animal(mtmp->data) ? "regurgitated" : "expelled");
         if (flags.verbose
             && (is_animal(mtmp->data)
                 || (dmgtype(mtmp->data, AD_DGST) && Slow_digestion)))

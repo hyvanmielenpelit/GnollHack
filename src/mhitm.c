@@ -1174,7 +1174,7 @@ struct attack *mattk;
     }
 
     if (cansee(magr->mx, magr->my))
-        pline("%s explodes!", Monnam(magr));
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s explodes!", Monnam(magr));
     else
         noises(magr, mattk);
 

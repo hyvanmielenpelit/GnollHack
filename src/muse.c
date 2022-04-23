@@ -146,14 +146,14 @@ struct obj *obj;
         /* 3.6.1: no Deaf filter; 'if' message doesn't warrant it, 'else'
            message doesn't need it since You_hear() has one of its own */
         if (vis) {
-            pline("%s zaps %s, which suddenly explodes!", Monnam(mon),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s zaps %s, which suddenly explodes!", Monnam(mon),
                   an(xname(obj)));
         } else {
             /* same near/far threshold as mzapmsg() */
             int range = couldsee(mon->mx, mon->my) /* 9 or 5 */
                            ? NEARBY_CUTOFF_RANGE_CAN_SEE : NEARBY_CUTOFF_RANGE_CANNOT_SEE;
 
-            You_hear("a zap and an explosion %s.",
+            You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a zap and an explosion %s.",
                      (distu(mon->mx, mon->my) <= range * range)
                         ? "nearby" : "in the distance");
         }

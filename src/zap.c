@@ -5484,7 +5484,7 @@ struct obj *otmp;
     int dmg;
 
     otmp->in_use = TRUE; /* in case losehp() is fatal */
-    pline("%s suddenly explodes!", The(xname(otmp)));
+    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s suddenly explodes!", The(xname(otmp)));
     dmg = d(otmp->charges + 2, 6);
     losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "exploding wand", KILLED_BY_AN);
     useup(otmp);
