@@ -633,7 +633,7 @@ dounwield()
 {
     struct obj* otmp = (struct obj*)0;
 
-    if (!uwep & !uwep2) {
+    if (!uwep && !uwep2) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("Not wielding anything.");
         return 0;
