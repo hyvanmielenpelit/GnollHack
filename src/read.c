@@ -4030,7 +4030,7 @@ int how;
                         pline("A thunderous voice booms through the caverns:");
 
                     play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_NO_MORTAL_THAT_WILL_NOT_BE_DONE);
-                    verbalize("No, mortal!  That will not be done.");
+                    verbalize_ex(ATR_NONE, CLR_MSG_GOD, "No, mortal!  That will not be done.");
                 }
                 continue;
             }

@@ -1293,17 +1293,17 @@ struct monst *priest;
     {
     case 0:
         play_voice_god_simple_line_at(ax, ay, GOD_LINE_THOU_SHALT_SUFFER);
-        pline("%s roars in anger:  \"Thou shalt suffer!\"",
+        pline_ex(ATR_NONE, CLR_MSG_GOD, "%s roars in anger:  \"Thou shalt suffer!\"",
               a_gname_at(ax, ay));
         break;
     case 1:
         play_voice_god_simple_line_at(ax, ay, GOD_LINE_HOW_DAREST_THOU_HARM_MY_SERVANT);
-        pline("%s voice booms:  \"How darest thou harm my servant!\"",
+        pline_ex(ATR_NONE, CLR_MSG_GOD, "%s voice booms:  \"How darest thou harm my servant!\"",
               s_suffix(a_gname_at(ax, ay)));
         break;
     default:
         play_voice_god_simple_line_at(ax, ay, GOD_LINE_THOU_DOST_PROFANE_MY_SHRINE);
-        pline("%s roars:  \"Thou dost profane my shrine!\"",
+        pline_ex(ATR_NONE, CLR_MSG_GOD, "%s roars:  \"Thou dost profane my shrine!\"",
               a_gname_at(ax, ay));
         break;
     }

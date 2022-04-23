@@ -683,7 +683,7 @@ aligntyp resp_god;
     if (u.uswallow) {
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE,
           "Suddenly a bolt of lightning comes down at you from the heavens!");
-        pline("It strikes %s!", mon_nam(u.ustuck));
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "It strikes %s!", mon_nam(u.ustuck));
         if (!is_mon_immune_to_elec(u.ustuck)) {
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s fries to a crisp!", Monnam(u.ustuck));
             /* Yup, you get experience.  It takes guts to successfully
@@ -753,19 +753,19 @@ aligntyp resp_god;
         if (!Disint_resistance) {
             fry_by_god(resp_god, TRUE);
         } else {
-            You("bask in its %s glow for a minute...", NH_BLACK);
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "bask in its %s glow for a minute...", NH_BLACK);
             play_voice_god_simple_line_by_align(resp_god, GOD_LINE_I_BELIEVE_IT_NOT);
             godvoice(resp_god, "I believe it not!");
         }
         if (Is_astralevel(&u.uz) || Is_sanctum(&u.uz)) {
             /* one more try for high altars */
             play_voice_god_simple_line_by_align(resp_god, GOD_LINE_THOU_CANNOT_ESCAPE_MY_WRATH_MORTAL);
-            verbalize("Thou cannot escape my wrath, mortal!");
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou cannot escape my wrath, mortal!");
             summon_minion(resp_god, FALSE);
             summon_minion(resp_god, FALSE);
             summon_minion(resp_god, FALSE);
             play_voice_god_simple_line_by_align(resp_god, flags.female ? GOD_LINE_DESTROY_HER_MY_SERVANTS : GOD_LINE_DESTROY_HIM_MY_SERVANTS);
-            verbalize("Destroy %s, my servants!", uhim());
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Destroy %s, my servants!", uhim());
         }
     }
 }
@@ -811,7 +811,7 @@ aligntyp resp_god;
     switch (rn2(maxanger)) {
     case 0:
     case 1:
-        You_feel("that %s is %s.", align_gname(resp_god),
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "that %s is %s.", align_gname(resp_god),
                  Hallucination ? "bummed" : "displeased");
         break;
     case 2:
@@ -820,14 +820,14 @@ aligntyp resp_god;
         play_voice_god_simple_line_by_align(resp_god,
             youmonst.data->mlet == S_HUMAN ? (ugod_is_angry() && resp_god == u.ualign.type ? GOD_LINE_THOU_HAST_STRAYED_FROM_THE_PATH_MORTAL : GOD_LINE_THOU_ART_ARROGANT_MORTAL) : 
             (ugod_is_angry() && resp_god == u.ualign.type ? GOD_LINE_THOU_HAST_STRAYED_FROM_THE_PATH_CREATURE : GOD_LINE_THOU_ART_ARROGANT_CREATURE));
-        verbalize("Thou %s, %s.",
+        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou %s, %s.",
               (ugod_is_angry() && resp_god == u.ualign.type)
                   ? "hast strayed from the path"
                   : "art arrogant",
               youmonst.data->mlet == S_HUMAN ? "mortal" : "creature");
 
         play_voice_god_simple_line_by_align(resp_god, GOD_LINE_THOU_MUST_RELEARN_THY_LESSONS);
-        verbalize("Thou must relearn thy lessons!");
+        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou must relearn thy lessons!");
         (void)adjattrib(A_WIS, -1, FALSE);
         losexp((char*)0);
         break;
@@ -853,13 +853,13 @@ aligntyp resp_god;
                 youmonst.data->mlet == S_HUMAN ? GOD_LINE_THOU_HAST_STRAYED_FROM_THE_PATH_MORTAL :
                 (GOD_LINE_THOU_HAST_STRAYED_FROM_THE_PATH_CREATURE));
 
-            verbalize("Thou hast strayed from the path, %s.",
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou hast strayed from the path, %s.",
                 youmonst.data->mlet == S_HUMAN ? "mortal" : "creature");
 
             summon_minion(resp_god, FALSE);
 
             play_voice_god_simple_line_by_align(resp_god, GOD_LINE_THOU_SHALT_PAY_FOR_THINE_INDISCRETION);
-            verbalize("Thou shalt pay for thine indiscretion!");
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou shalt pay for thine indiscretion!");
             break;
         }
         /* else fall thru */
@@ -868,12 +868,12 @@ aligntyp resp_god;
         play_voice_god_simple_line_by_align(resp_god, 
             (on_altar() && (a_align(u.ux, u.uy) != resp_god)) ? GOD_LINE_THOU_DURST_SCORN_ME : GOD_LINE_THOU_DURST_CALL_UPON_ME);
 
-        verbalize("Thou durst %s me?",
+        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou durst %s me?",
                   (on_altar() && (a_align(u.ux, u.uy) != resp_god))
                       ? "scorn"
                       : "call upon");
         play_voice_god_simple_line_by_align(resp_god, youmonst.data->mlet == S_HUMAN ? GOD_LINE_THEN_DIE_MORTAL : GOD_LINE_THEN_DIE_CREATURE);
-        verbalize("Then die, %s!",
+        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Then die, %s!",
             youmonst.data->mlet == S_HUMAN ? "mortal" : "creature");
         summon_minion(resp_god, FALSE);
         break;
@@ -947,7 +947,7 @@ gcrownu()
         in_hand = (uwep && uwep->oartifact == ART_KATANA_OF_MASAMUNE);
         in_hand2 = (uarms && uarms->oartifact == ART_KATANA_OF_MASAMUNE);
         play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_I_CROWN_THEE_THE_HAND_OF_ELBERETH);
-        verbalize("I crown thee...  The Hand of Elbereth!");
+        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "I crown thee...  The Hand of Elbereth!");
         break;
     case A_NEUTRAL:
         u.uevent.uhand_of_elbereth = 2;
@@ -955,7 +955,7 @@ gcrownu()
         in_hand2 = (uarms && uarms->oartifact == ART_VORPAL_BLADE);
         already_exists = exist_artifact(LONG_SWORD, artiname(ART_VORPAL_BLADE));
         play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THOU_SHALT_BE_MY_ENVOY_OF_BALANCE);
-        verbalize("Thou shalt be my Envoy of Balance!");
+        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou shalt be my Envoy of Balance!");
         break;
     case A_CHAOTIC:
         u.uevent.uhand_of_elbereth = 3;
@@ -965,13 +965,13 @@ gcrownu()
         if (Role_if(PM_WIZARD) || Role_if(PM_PRIEST))
         {
             play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_I_CROWN_THEE_THE_GLORY_OF_ARIOCH);
-            verbalize("I crown thee... The Glory of Arioch!");
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "I crown thee... The Glory of Arioch!");
         }
         else
         {
             boolean takelives = ((already_exists && !in_hand && !in_hand2) || chaotic_crowning_gift_oartifact != ART_STORMBRINGER);
             play_voice_god_simple_line_by_align(u.ualign.type, takelives ? GOD_LINE_THOU_ART_CHOSEN_TO_TAKE_LIVES_FOR_MY_GLORY : GOD_LINE_THOU_ART_CHOSEN_TO_STEAL_SOULS_FOR_MY_GLORY);
-            verbalize("Thou art chosen to %s for My Glory!",
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou art chosen to %s for My Glory!",
                 takelives ? "take lives" : "steal souls");
         }
         break;
@@ -1553,7 +1553,7 @@ gcrownu()
     else if (class_gift == STRANGE_OBJECT)
     {
         /* opportunity knocked, but there was nobody home... */
-        You_feel("unworthy.");
+        You_feel_ex(ATR_NONE, CLR_MSG_MYSTICAL, "unworthy.");
     }
     update_inventory();
 
@@ -1753,19 +1753,19 @@ aligntyp g_align;
                 {
                     godvoice(g_align, (char *) 0);
                     play_voice_god_simple_line_by_align(g_align, youmonst.data->mlet == S_HUMAN ? GOD_LINE_HARK_MORTAL : GOD_LINE_HARK_CREATURE);
-                    verbalize("Hark, %s!", youmonst.data->mlet == S_HUMAN
+                    verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Hark, %s!", youmonst.data->mlet == S_HUMAN
                                                ? "mortal"
                                                : "creature");
                     play_voice_god_simple_line_by_align(g_align, GOD_LINE_TO_ENTER_THE_CASTLE_THOU_MUST_PLAY_THE_RIGHT_TUNE);
-                    verbalize(
+                    verbalize_ex(ATR_NONE, CLR_MSG_GOD,
                        "To enter the castle, thou must play the right tune!");
                     u.uevent.uheard_tune++;
                     break;
                 } 
                 else if (u.uevent.uheard_tune < 2)
                 {
-                    You_hear("a divine music...");
-                    pline("It sounds like:  \"%s\".", tune);
+                    You_hear_ex(ATR_NONE, CLR_MSG_MYSTICAL, "a divine music...");
+                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "It sounds like:  \"%s\".", tune);
                     u.uevent.uheard_tune++;
                     break;
                 }
@@ -1856,7 +1856,7 @@ aligntyp g_align;
             {
                 HTelepat |= FROM_ACQUIRED;
                 play_voice_god_simple_line_by_align(g_align, GOD_LINE_AND_THUS_I_GRANT_THEE_THE_GIFT_OF_TELEPATHY);
-                pline(msg, "Telepathy");
+                pline_ex(ATR_NONE, CLR_MSG_GOD, msg, "Telepathy");
                 if (Blind)
                     see_monsters();
             } 
@@ -1864,13 +1864,13 @@ aligntyp g_align;
             {
                 HFast |= FROM_ACQUIRED;
                 play_voice_god_simple_line_by_align(g_align, GOD_LINE_AND_THUS_I_GRANT_THEE_THE_GIFT_OF_SPEED);
-                pline(msg, "Speed");
+                pline_ex(ATR_NONE, CLR_MSG_GOD, msg, "Speed");
             } 
             else if (!(HStealth & INTRINSIC)) 
             {
                 HStealth |= FROM_ACQUIRED;
                 play_voice_god_simple_line_by_align(g_align, GOD_LINE_AND_THUS_I_GRANT_THEE_THE_GIFT_OF_STEALTH);
-                pline(msg, "Stealth");
+                pline_ex(ATR_NONE, CLR_MSG_GOD, msg, "Stealth");
             }
             else if (u.ublessed < 9)
             {
@@ -1879,14 +1879,14 @@ aligntyp g_align;
                 else
                     u.ublessed++;
                 play_voice_god_simple_line_by_align(g_align, GOD_LINE_AND_THUS_I_GRANT_THEE_THE_GIFT_OF_MY_PROTECTION);
-                pline(msg, "my protection");
+                pline_ex(ATR_NONE, CLR_MSG_GOD, msg, "my protection");
             }
             else
             {
                 goto crown_here;
             }
             play_voice_god_simple_line_by_align(g_align, GOD_LINE_USE_IT_WISELY_IN_MY_NAME);
-            verbalize("Use it wisely in my name!");
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Use it wisely in my name!");
             break;
         }
         case 7:
@@ -2090,7 +2090,7 @@ const char *words;
     else
         words = "";
 
-    pline_The("voice of %s %s: %s%s%s", align_gname(g_align),
+    pline_The_ex(ATR_NONE, CLR_MSG_GOD, "voice of %s %s: %s%s%s", align_gname(g_align),
               godvoices[rn2(SIZE(godvoices))], quot, words, quot);
 }
 
@@ -2434,7 +2434,7 @@ dosacrifice()
                 /* And the opposing team picks you up and
                    carries you off on their shoulders */
                 adjalign(-99);
-                pline("%s accepts your gift, and gains dominion over %s...",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s accepts your gift, and gains dominion over %s...",
                       a_gname(), u_gname());
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s is enraged...", u_gname());
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "Fortunately, %s permits you to live...", a_gname());
@@ -2453,7 +2453,7 @@ dosacrifice()
                 u.uachieve.ascended = 1;
 
                 play_sfx_sound(SFX_INVISIBLE_CHOIR_SINGS);
-                pline("An invisible choir sings, and you are bathed in radiance...");
+                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "An invisible choir sings, and you are bathed in radiance...");
                 
                 /* Radiance */
                 int x, y;
@@ -2471,9 +2471,9 @@ dosacrifice()
                 godvoice(altaralign, "Mortal, thou hast done well!");
                 display_nhwindow(WIN_MESSAGE, FALSE);
                 play_voice_god_simple_line_by_align(altaralign, GOD_LINE_IN_RETURN_FOR_THY_SERVICE_I_GRANT_THEE_THE_GIFT_OF_IMMORTALITY);
-                verbalize(
-          "In return for thy service, I grant thee the gift of Immortality!");
-                You_ex(ATR_NONE, CLR_BRIGHT_MAGENTA, "ascend to the status of Demigod%s...",
+                verbalize_ex(ATR_NONE, CLR_MSG_GOD,
+                      "In return for thy service, I grant thee the gift of Immortality!");
+                You_ex(ATR_NONE, CLR_MSG_POSITIVE, "ascend to the status of Demigod%s...",
                     flags.female ? "dess" : "");
                 done(ASCENDED);
             }
@@ -2487,11 +2487,11 @@ dosacrifice()
             goto too_soon;
 
         play_sfx_sound(SFX_ALTAR_THUNDERCLAP);
-        You_hear("a nearby thunderclap.");
+        You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "a nearby thunderclap.");
 
         if (!otmp->known)
         {
-            You("realize you have made a %s.",
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "realize you have made a %s.",
                 Hallucination ? "boo-boo" : "mistake");
             otmp->known = TRUE;
             change_luck(-1, TRUE);
@@ -2501,7 +2501,7 @@ dosacrifice()
         {
             /* don't you dare try to fool the gods */
             if (Deaf)
-                pline("Oh, no."); /* didn't hear thunderclap */
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "Oh, no."); /* didn't hear thunderclap */
             luck_change += -3;
             adjalign(-1);
             u.ugangr += 3;
@@ -2526,8 +2526,8 @@ dosacrifice()
          * gets the god who owns it truly pissed off.
          */
         play_sfx_sound(SFX_ALTAR_CHARGED_AIR);
-        You_feel("the air around you grow charged...");
-        pline("Suddenly, you realize that %s has noticed you...", a_gname());
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "the air around you grow charged...");
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "Suddenly, you realize that %s has noticed you...", a_gname());
         play_voice_god_simple_line_by_align(altaralign, GOD_LINE_SO_MORTAL_YOU_DARE_DESECRATE_MY_HIGH_TEMPLE);
         godvoice(altaralign,
                  "So, mortal!  You dare desecrate my High Temple!");
@@ -2560,10 +2560,10 @@ dosacrifice()
                 if (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL]
                     && altaralign != A_NONE) 
                 {
-                    You("have a strong feeling that %s is angry...",
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, "have a strong feeling that %s is angry...",
                         u_gname());
                     consume_offering(otmp);
-                    pline("%s accepts your allegiance.", a_gname());
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s accepts your allegiance.", a_gname());
                     play_sfx_sound(SFX_ALTAR_ANGRY_ACCEPTS_SACRIFICE);
 
                     uchangealign(altaralign, 0);
@@ -2658,7 +2658,7 @@ dosacrifice()
                 play_sfx_sound(SFX_ALTAR_GOD_MOLLIFIED);
                 if (u.ugangr)
                 {
-                    pline("%s seems %s.", u_gname(),
+                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s seems %s.", u_gname(),
                           Hallucination ? "groovy" : "slightly mollified");
 
                     if ((int) u.uluck < 0)
@@ -2666,7 +2666,7 @@ dosacrifice()
                 } 
                 else
                 {
-                    pline("%s seems %s.", u_gname(),
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s seems %s.", u_gname(),
                           Hallucination ? "cosmic (not a new fact)"
                                         : "mollified");
 
@@ -2678,9 +2678,9 @@ dosacrifice()
             { /* not satisfied yet */
                 play_sfx_sound(SFX_ALTAR_INADEQUACY);
                 if (Hallucination)
-                    pline_The("gods seem tall.");
+                    pline_The_ex(ATR_NONE, CLR_MSG_MYSTICAL, "gods seem tall.");
                 else
-                    You("have a feeling of inadequacy.");
+                    You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "have a feeling of inadequacy.");
             }
         }
         else if (ugod_is_angry()) 
@@ -2707,9 +2707,9 @@ dosacrifice()
                 {
                     play_sfx_sound(SFX_ALTAR_HOPEFUL_FEELING);
                     if (Hallucination)
-                        You("realize that the gods are not like you and I.");
+                        You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "realize that the gods are not like you and I.");
                     else
-                        You("have a hopeful feeling.");
+                        You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "have a hopeful feeling.");
                     if ((int) u.uluck < 0)
                         luck_change += 1;
                 } 
@@ -2828,10 +2828,10 @@ dosacrifice()
             {
                 play_sfx_sound(SFX_ALTAR_FOUR_LEAF_CLOVER);
                 if (Blind)
-                    You("think %s brushed your %s.", something,
+                    You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "think %s brushed your %s.", something,
                         body_part(FOOT));
                 else
-                    You(Hallucination
+                    You_ex(ATR_NONE, CLR_MSG_MYSTICAL, Hallucination
                     ? "see crabgrass at your %s.  A funny thing in a dungeon."
                             : "glimpse a four-leaf clover at your %s.",
                         makeplural(body_part(FOOT)));
@@ -3465,7 +3465,7 @@ register int x, y;
     } else {
         pline("A voice (could it be %s?) whispers:", align_gname(altaralign));
         play_voice_god_simple_line_by_align(altaralign, GOD_LINE_THOU_SHALT_PAY_INFIDEL);
-        verbalize("Thou shalt pay, infidel!");
+        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou shalt pay, infidel!");
         change_luck(-1, TRUE);
     }
 }

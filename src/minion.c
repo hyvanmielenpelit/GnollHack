@@ -712,9 +712,9 @@ boolean talk;
         {
             pline_The("voice of %s booms:", align_gname(alignment));
             play_voice_god_simple_line_by_align(alignment, GOD_LINE_THOU_SHALT_PAY_FOR_THINE_INDISCRETION);
-            verbalize("Thou shalt pay for thine indiscretion!");
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou shalt pay for thine indiscretion!");
             if (!Blind)
-                pline("%s appears before you.", Amonnam(mon));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears before you.", Amonnam(mon));
             mon->mstrategy &= ~STRAT_APPEARMSG;
         }
         mon->mpeaceful = FALSE;
@@ -1055,7 +1055,7 @@ boolean fromspell;
     {
         play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THY_DESIRE_FOR_CONFLICT_SHALL_BE_FULFILLED);
         pline("A voice booms:");
-        verbalize("Thy desire for conflict shall be fulfilled!");
+        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thy desire for conflict shall be fulfilled!");
         /* send in some hostile angels instead */
         lose_guardian_angel((struct monst *) 0);
     }
@@ -1063,7 +1063,7 @@ boolean fromspell;
     { /* fervent */
         play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THOU_HAST_BEEN_WORTHY_OF_ME);
         pline("A voice whispers:");
-        verbalize("Thou hast been worthy of me!");
+        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou hast been worthy of me!");
         mm.x = u.ux;
         mm.y = u.uy;
         if (enexto(&mm, mm.x, mm.y, &mons[PM_ANGEL])
@@ -1071,9 +1071,9 @@ boolean fromspell;
                                  TRUE)) != 0) {
             mtmp->mstrategy &= ~STRAT_APPEARMSG;
             if (!Blind)
-                pline("An angel appears near you.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "An angel appears near you.");
             else
-                You_feel("the presence of a friendly angel near you.");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "the presence of a friendly angel near you.");
             /* guardian angel -- the one case mtame doesn't
              * imply an edog structure, so we don't want to
              * call tamedog().

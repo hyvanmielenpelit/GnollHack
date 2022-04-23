@@ -2084,7 +2084,7 @@ struct monst *mtmp;
                     goto skipmsg;
                 if (vismon) {
                     play_sfx_sound_at_location(SFX_CURSED_GAIN_LEVEL, mtmp->mx, mtmp->my);
-                    pline("%s rises up, through the %s!", Monnam(mtmp),
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s rises up, through the %s!", Monnam(mtmp),
                           ceiling(mtmp->mx, mtmp->my));
                     if (!objects[POT_GAIN_LEVEL].oc_name_known
                         && !objects[POT_GAIN_LEVEL].oc_uname)
