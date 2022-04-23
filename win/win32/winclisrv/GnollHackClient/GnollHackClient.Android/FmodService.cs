@@ -273,12 +273,16 @@ namespace GnollHackClient.Droid
                 return 1;
 
             /* Decline to play if no play play_flag is set and the sound is playing */
-            if ((play_flags & (ulong)sound_play_flags.PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING) != 0)
+            if ((play_flags & (ulong)sound_play_flags.PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED) != 0)
             {
                 List<GHSoundInstance> soundlist = play_group == (int)sound_play_groups.SOUND_PLAY_GROUP_LONG ? longImmediateInstances : immediateInstances;
+                bool include_playing = (play_flags & (int)sound_play_flags.PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING) != 0;
+                bool include_queued = (play_flags & (int)sound_play_flags.PLAY_FLAGS_NO_PLAY_IF_ALREADY_QUEUED) != 0;
                 foreach (GHSoundInstance ghsi in soundlist)
                 {
-                    if (!ghsi.stopped && ghsi.normalSoundVolume > 0.0f && ghsi.ghsound == ghsound && ghsi.dialogue_mid == dialogue_mid && (int)ghsi.sound_type == sound_type)
+                    if (!ghsi.stopped && ghsi.normalSoundVolume > 0.0f && ghsi.ghsound == ghsound 
+                        && ghsi.dialogue_mid == dialogue_mid && (int)ghsi.sound_type == sound_type
+                        && ((include_queued && ghsi.queued) || (include_playing && !ghsi.queued)))
                     {
                         return 0;
                     }

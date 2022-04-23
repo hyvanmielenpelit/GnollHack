@@ -909,6 +909,8 @@ namespace GnollHackCommon
     {
         None = 0x00000000UL,
         PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING = 0x00000001UL,
+        PLAY_FLAGS_NO_PLAY_IF_ALREADY_QUEUED =  0x00000002UL,
+        PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED = 0x00000003UL,
     }
 
     public enum elemental_enchantment_types

@@ -928,14 +928,16 @@ extern "C"
         if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
             return FALSE;
 
-        if (info.play_flags & PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING)
+        if (info.play_flags & PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED)
         {
+            boolean include_playing = (info.play_flags & PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING) != 0;
+            boolean include_queued = (info.play_flags & PLAY_FLAGS_NO_PLAY_IF_ALREADY_QUEUED) != 0;
             if (play_group == SOUND_PLAY_GROUP_LONG)
             {
                 for (int i = 0; i < NUM_LONG_IMMEDIATE_SOUND_INSTANCES; i++)
                 {
                     if (longImmediateSoundInstances[i].ghsound == soundid && longImmediateSoundInstances[i].normalVolume > 0
-                        && !longImmediateSoundInstances[i].finished_playing && !longImmediateSoundInstances[i].queued)
+                        && !longImmediateSoundInstances[i].finished_playing && ((include_queued && longImmediateSoundInstances[i].queued) || (include_playing && !longImmediateSoundInstances[i].queued)))
                     {
                         return TRUE;
                     }
@@ -946,7 +948,7 @@ extern "C"
                 for (int i = 0; i < NUM_IMMEDIATE_SOUND_INSTANCES; i++)
                 {
                     if (immediateSoundInstances[i].ghsound == soundid && immediateSoundInstances[i].normalVolume > 0
-                        && !immediateSoundInstances[i].finished_playing && !immediateSoundInstances[i].queued)
+                        && !immediateSoundInstances[i].finished_playing && ((include_queued && immediateSoundInstances[i].queued) || (include_playing && !immediateSoundInstances[i].queued)))
                     {
                         return TRUE;
                     }
