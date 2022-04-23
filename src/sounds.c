@@ -8085,7 +8085,7 @@ int id_idx, minor_id_cost, spdialogue1, spdialogue2;
         }
         else
         {
-            play_monster_special_dialogue_line(mtmp, spdialogue2);
+            play_monster_special_dialogue_line_with_flags(mtmp, spdialogue2, PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED);
             Sprintf(qbuf, "Would you like to identify one more %s? (%d %s)", identify_item_str, minor_id_cost, currency((long)minor_id_cost));
         }
 

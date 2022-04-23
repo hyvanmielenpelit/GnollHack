@@ -16351,32 +16351,34 @@ enum wizard_of_yendor_simple_lines line_id;
 }
 
 void
-play_monster_line_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume)
+play_monster_line_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, pflags)
 struct monst* mtmp;
 enum monster_sound_types sound_id;
 int line_id;
 enum sound_play_groups play_group;
 enum immediate_sound_types sfx_sound_type;
 double minimum_volume;
+unsigned long pflags;
 {
-    play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, "LineIndex");
+    play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, "LineIndex", pflags);
 }
 
 void
-play_monster_msg_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume)
+play_monster_msg_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, pflags)
 struct monst* mtmp;
 enum monster_sound_types sound_id;
 int line_id;
 enum sound_play_groups play_group;
 enum immediate_sound_types sfx_sound_type;
 double minimum_volume;
+unsigned long pflags;
 {
-    play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, "MsgIndex");
+    play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, "MsgIndex", pflags);
 }
 
 
 void
-play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, index_name)
+play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, index_name, pflags)
 struct monst* mtmp;
 enum monster_sound_types sound_id;
 int line_id;
@@ -16384,6 +16386,7 @@ enum sound_play_groups play_group;
 enum immediate_sound_types sfx_sound_type;
 double minimum_volume;
 const char* index_name;
+unsigned long pflags;
 {
     if (!mtmp || Deaf)
         return;
@@ -16410,6 +16413,7 @@ const char* index_name;
     info.play_group = play_group;
     info.sound_type = sfx_sound_type;
     info.dialogue_mid = mtmp->m_id;
+    info.play_flags = pflags;
 
     if (info.ghsound > GHSOUND_NONE)
         play_immediate_ghsound(info);
@@ -16420,7 +16424,7 @@ play_monster_standard_dialogue_line(mtmp, line_id)
 struct monst* mtmp;
 enum monster_standard_dialogue_lines line_id;
 {
-    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.15f);
+    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.15f, 0UL);
 }
 
 void
@@ -16428,7 +16432,7 @@ play_monster_item_trading_line(mtmp, line_id)
 struct monst* mtmp;
 enum monster_item_trading_lines line_id;
 {
-    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_ITEM_TRADING, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.15f);
+    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_ITEM_TRADING, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.15f, 0UL);
 }
 
 
@@ -16437,7 +16441,16 @@ play_monster_special_dialogue_line(mtmp, line_id)
 struct monst* mtmp;
 int line_id;
 {
-    play_monster_msg_indexed_sound(mtmp, MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.15f);
+    play_monster_special_dialogue_line_with_flags(mtmp, line_id, 0UL);
+}
+
+void
+play_monster_special_dialogue_line_with_flags(mtmp, line_id, pflags)
+struct monst* mtmp;
+int line_id;
+unsigned long pflags;
+{
+    play_monster_msg_indexed_sound(mtmp, MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.15f, pflags);
 }
 
 void
@@ -16445,7 +16458,7 @@ play_monster_standard_sound(mtmp, line_id)
 struct monst* mtmp;
 enum monster_standard_sounds line_id;
 {
-    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_STANDARD_SOUND, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f);
+    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_STANDARD_SOUND, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, 0UL);
 }
 
 void
@@ -16453,7 +16466,16 @@ play_monster_special_sound(mtmp, line_id)
 struct monst* mtmp;
 int line_id;
 {
-    play_monster_msg_indexed_sound(mtmp, MONSTER_SOUND_TYPE_SPECIAL_SOUND, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f);
+    play_monster_special_sound_with_flags(mtmp, line_id, 0UL);
+}
+
+void
+play_monster_special_sound_with_flags(mtmp, line_id, pflags)
+struct monst* mtmp;
+int line_id;
+unsigned long pflags;
+{
+    play_monster_msg_indexed_sound(mtmp, MONSTER_SOUND_TYPE_SPECIAL_SOUND, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, pflags);
 }
 
 
@@ -16462,7 +16484,7 @@ play_monster_ouch_sound(mtmp, line_id)
 struct monst* mtmp;
 enum monster_ouch_sounds line_id;
 {
-    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_OUCH, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f);
+    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_OUCH, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, 0UL);
 }
 
 void
@@ -16470,7 +16492,7 @@ play_monster_happy_sound(mtmp, line_id)
 struct monst* mtmp;
 enum monster_happy_sounds line_id;
 {
-    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_HAPPY, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f);
+    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_HAPPY, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, 0UL);
 }
 
 void
@@ -16478,7 +16500,7 @@ play_monster_unhappy_sound(mtmp, line_id)
 struct monst* mtmp;
 enum monster_unhappy_sounds line_id;
 {
-    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_UNHAPPY, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f);
+    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_UNHAPPY, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, 0UL);
 }
 
 void
@@ -16486,7 +16508,7 @@ play_monster_flounder_sound(mtmp, line_id)
 struct monst* mtmp;
 enum monster_flounder_sounds line_id;
 {
-    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_FLOUNDER, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f);
+    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_FLOUNDER, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, 0UL);
 }
 
 void
@@ -16494,14 +16516,14 @@ play_monster_chat_sound(mtmp, line_id)
 struct monst* mtmp;
 int line_id;
 {
-    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_CHAT, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.0f);
+    play_monster_line_indexed_sound(mtmp, MONSTER_SOUND_TYPE_CHAT, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.0f, 0UL);
 }
 
 void
 play_player_flounder_sound(line_id)
 enum monster_flounder_sounds line_id;
 {
-    play_player_line_indexed_sound(MONSTER_SOUND_TYPE_FLOUNDER, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX);
+    play_player_line_indexed_sound(MONSTER_SOUND_TYPE_FLOUNDER, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0UL);
 }
 
 
