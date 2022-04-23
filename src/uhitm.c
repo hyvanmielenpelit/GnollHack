@@ -1148,6 +1148,7 @@ boolean* obj_destroyed;
                 {
                     boolean more_than_1 = (obj->quan > 1L);
 
+                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
                     pline("As you hit %s, %s%s breaks into splinters.",
                         mon_nam(mon), more_than_1 ? "one of " : "",
                         yname(obj));
@@ -1337,6 +1338,7 @@ boolean* obj_destroyed;
                 case MAGIC_MIRROR:
                     if (breaktest(obj)) 
                     {
+                        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
                         You("break %s.  That's bad luck!", ysimple_name(obj));
                         change_luck(-2, TRUE);
                         useup(obj);
@@ -1348,6 +1350,14 @@ boolean* obj_destroyed;
                     damage = 1;
                     break;
                 case EXPENSIVE_CAMERA:
+                    /* Play hit sound now here */
+                    if (thrown == HMON_MELEE)
+                        play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, obj, damage, thrown);
+                    else
+                        play_object_hit_sound(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), damage, thrown);
+                    
+                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
+
                     You("succeed in destroying %s.  Congratulations!",
                         ysimple_name(obj));
                     release_camera_demon(obj, u.ux, u.uy);
@@ -1358,6 +1368,13 @@ boolean* obj_destroyed;
                     {
                         damage = 1;
                         hittxt = TRUE;
+
+                        /* Play hit sound now here */
+                        if (thrown == HMON_MELEE)
+                            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, obj, damage, thrown);
+                        else
+                            play_object_hit_sound(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), damage, thrown);
+
                         You("hit %s with %s.", mon_nam(mon),
                             corpse_xname(obj, (const char*)0,
                                 obj->dknown ? CXN_PFX_THE
