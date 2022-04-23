@@ -15839,6 +15839,7 @@ long quan;
     info.play_group = SOUND_PLAY_GROUP_LONG;
     info.sound_type = IMMEDIATE_SOUND_DIALOGUE;
     info.dialogue_mid = shkp->m_id;
+    info.play_flags = PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING; /* Reduce tautophony in shops */
 
     if (info.ghsound > GHSOUND_NONE)
         play_immediate_ghsound(info);

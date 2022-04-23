@@ -273,7 +273,7 @@ namespace GnollHackClient.Droid
                 return 1;
 
             /* Decline to play if no play play_flag is set and the sound is playing */
-            if ((play_flags & (ulong)playing_flags.PlayOnlyIfNotAlreadyPlaying) != 0)
+            if ((play_flags & (ulong)sound_play_flags.PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING) != 0)
             {
                 List<GHSoundInstance> soundlist = play_group == (int)sound_play_groups.SOUND_PLAY_GROUP_LONG ? longImmediateInstances : immediateInstances;
                 foreach (GHSoundInstance ghsi in soundlist)
