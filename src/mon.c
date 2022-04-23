@@ -3168,7 +3168,7 @@ unsigned long mdiedflags;
                 /* 3.6.0 used a_monnam(mtmp); that was weird if mtmp was
                    named: "Dracula suddenly transforms and rises as Dracula";
                    3.6.1 used mtmp->data->mname; that ignored hallucination */
-                pline(upstart(buf),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, upstart(buf),
                       x_monnam(mtmp, ARTICLE_A, (char *) 0,
                                (SUPPRESS_NAME | SUPPRESS_IT
                                 | SUPPRESS_INVISIBLE), FALSE));
@@ -3337,7 +3337,7 @@ boolean was_swallowed; /* digestion */
             {
                 if (magr == &youmonst) 
                 {
-                    There("is an explosion in your %s!", body_part(STOMACH));
+                    There_ex(ATR_NONE, CLR_MSG_NEGATIVE, "is an explosion in your %s!", body_part(STOMACH));
                     Sprintf(killer.name, "%s explosion",
                             s_suffix(mon_monster_name(mon)));
                     losehp(adjust_damage(tmp, mon, &youmonst, AD_PHYS, ADFLAGS_NONE), killer.name, KILLED_BY_AN);
@@ -3352,9 +3352,9 @@ boolean was_swallowed; /* digestion */
                     if (DEADMONSTER(magr))
                     { /* maybe lifesaved */
                         if (canspotmon(magr))
-                            pline("%s rips open!", Monnam(magr));
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s rips open!", Monnam(magr));
                     } else if (canseemon(magr))
-                        pline("%s seems to have indigestion.", Monnam(magr));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems to have indigestion.", Monnam(magr));
                 }
 
                 return FALSE;

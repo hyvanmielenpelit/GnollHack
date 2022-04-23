@@ -2332,7 +2332,7 @@ boolean *effect_happened_ptr;
             if (Blind)
             {
                 otmp->rknown = FALSE;
-                Your("weapon feels warm for a moment.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "weapon feels warm for a moment.");
             }
             else 
             {
@@ -2369,9 +2369,9 @@ boolean *effect_happened_ptr;
         if (otyp == SPE_PROTECT_WEAPON || otyp == SCR_PROTECT_WEAPON)
         {
             if (otmp)
-                You_feel("as if your weapon is warmer than normal, but then it passes.");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "as if your weapon is warmer than normal, but then it passes.");
             else
-                You("experience a passing feeling of warmth.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "experience a passing feeling of warmth.");
 
             break;
         }
@@ -2395,7 +2395,7 @@ boolean *effect_happened_ptr;
     case SCR_CONFLICT:
         if (!Conflict)
         {
-            You_feel("like a rabble-rouser.");
+            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "like a rabble-rouser.");
             known = TRUE;
         }
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
@@ -2496,7 +2496,7 @@ boolean *effect_happened_ptr;
     }
     case SPE_MASS_SLEEP:
     {
-        pline("Glittering dust starts to swirl around you...");
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Glittering dust starts to swirl around you...");
 
         int candidates, results, vis_results;
         int i, j, bd, res = 0;
@@ -2552,7 +2552,7 @@ boolean *effect_happened_ptr;
     case SPE_HOLY_WORD:
     {
         You("recite the holy word aloud!");
-        pline("A blinding light blasts around you!");
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A blinding light blasts around you!");
 
         int candidates, results, vis_results;
         int i, j, bd, res = 0;
@@ -2688,13 +2688,13 @@ boolean *effect_happened_ptr;
         if (confused)
         {
             play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
-            You("identify this as an identify scroll.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "identify this as an identify scroll.");
         }
         else if (!already_known || !invent)
         {
             /* force feedback now if invent became
                empty after using up this scroll */
-            pline("This is an identify scroll.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "This is an identify scroll.");
         }
 
         if (!already_known)
@@ -2702,7 +2702,7 @@ boolean *effect_happened_ptr;
 
         if (confused)
         {
-            pline("The scroll disappears.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The scroll disappears.");
             useup(sobj);
             sobj = 0; /* it's gone */
             break;
@@ -2714,7 +2714,7 @@ boolean *effect_happened_ptr;
             int res = identify_pack(cval, !already_known);
             if (res > 0)
             {
-                pline("The scroll disappears.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The scroll disappears.");
                 useup(sobj);
                 sobj = 0; /* it's gone */
             }
@@ -2729,7 +2729,7 @@ boolean *effect_happened_ptr;
         if (confused)
         {
             play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
-            You("identify this as a spell of identify.");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "identify this as a spell of identify.");
         }
         else if (invent)
         {
@@ -2763,14 +2763,14 @@ boolean *effect_happened_ptr;
 
                 if (otmp->blessed || otmp->cursed) 
                 {
-                    There("is %s flash as you cast the spell on %s.",
+                    There_ex(ATR_NONE, otmp->blessed ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "is %s flash as you cast the spell on %s.",
                         an(hcolor(otmp->blessed ? NH_AMBER : NH_BLACK)), the(cxname(otmp)));
                     otmp->bknown = 1;
                     update_inventory();
                 }
                 else 
                 {
-                    pline("The spell glimmers around %s for a moment and then fades.", the(cxname(otmp)));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The spell glimmers around %s for a moment and then fades.", the(cxname(otmp)));
                     if (otmp->oclass != COIN_CLASS)
                     {
                         otmp->bknown = 1;
@@ -2782,7 +2782,7 @@ boolean *effect_happened_ptr;
         else
         {
             if(confused)
-                pline("The spell fizzles in the air.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The spell fizzles in the air.");
             else
                 pline("You're not carrying anything to detect beautitude for.");
         }
@@ -2913,7 +2913,7 @@ boolean *effect_happened_ptr;
             /* known = TRUE; -- handled inline here */
             if (!already_known)
             {
-                pline("This is a charging scroll.");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "This is a charging scroll.");
                 learnscroll(sobj);
             }
             /* use it up now to prevent it from showing in the

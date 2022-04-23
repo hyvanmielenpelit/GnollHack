@@ -1819,7 +1819,7 @@ register int amount;
         play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_SUCCESS);
         multiple = (weapon->quan > 1L);
         /* order: message, transformation, shop handling */
-        Your("%s %s much sharper now.", simpleonames(weapon),
+        Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s %s much sharper now.", simpleonames(weapon),
              multiple ? "fuse, and become" : "is");
         weapon->otyp = CRYSKNIFE;
         weapon->oerodeproof = 0;
@@ -1852,7 +1852,7 @@ register int amount;
         play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_NEGATIVE);
 
         /* order matters: message, shop handling, transformation */
-        Your("%s %s much duller now.", simpleonames(weapon), multiple ? "fuse, and become" : "is");
+        Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s much duller now.", simpleonames(weapon), multiple ? "fuse, and become" : "is");
         costly_alteration(weapon, COST_DEGRD); /* DECHNT? other? */
         weapon->otyp = WORM_TOOTH;
         weapon->oerodeproof = 0;
@@ -1905,7 +1905,7 @@ register int amount;
     if (!Blind) 
     {
         xtime = (amount * amount == 1) ? "moment" : "while";
-        pline_ex(ATR_NONE, amount == 0 ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "%s %s for a %s.", Yobjnam2(weapon, amount == 0 ? "violently glow" : "glow"), color, xtime);
+        pline_ex(ATR_NONE, amount == 0 ? CLR_MSG_WARNING : amount > 0 ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "%s %s for a %s.", Yobjnam2(weapon, amount == 0 ? "violently glow" : "glow"), color, xtime);
 
         if (otyp != STRANGE_OBJECT && weapon->known && (amount > 0 || (amount < 0 && otmp->bknown)))
             makeknown(otyp);
@@ -1939,7 +1939,7 @@ register int amount;
     if (weapon->oartifact && artifact_has_flag(weapon, AF_MAGIC_ABSORBING) && weapon->enchantment >= 0) 
     {
         play_sfx_sound(SFX_HANDS_ITCH);
-        Your("right %s %sches!", body_part(HAND),
+        Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "right %s %sches!", body_part(HAND),
              (((amount > 1) && (weapon->enchantment > 1)) ? "flin" : "it"));
     }
 
@@ -1949,7 +1949,7 @@ register int amount;
         /*&& (is_elven_weapon(weapon) || weapon->oartifact || !rn2(7)) */ ) /* Vibrates for sure */
     {
         play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);
-        pline("%s unexpectedly.", Yobjnam2(weapon, "suddenly vibrate"));
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s unexpectedly.", Yobjnam2(weapon, "suddenly vibrate"));
     }
 
     return 1;
