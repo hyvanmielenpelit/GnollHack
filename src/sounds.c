@@ -228,13 +228,13 @@ dosounds()
             "bubbling water.", "water falling on coins.",
             "the splashing of a naiad.", "a soda fountain!",
         };
-        You_hear1(fountain_msg[rn2(3) + hallu]);
+        You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, fountain_msg[rn2(3) + hallu]);
     }
     if (level.flags.nsinks && !rn2(300)) {
         static const char *const sink_msg[3] = {
             "a slow drip.", "a gurgling noise.", "dishes being washed!",
         };
-        You_hear1(sink_msg[rn2(2) + hallu]);
+        You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, sink_msg[rn2(2) + hallu]);
     }
     if (level.flags.has_court && !rn2(200)) {
         static const char *const throne_msg[4] = {
@@ -252,9 +252,9 @@ dosounds()
                 int which = rn2(3) + hallu;
 
                 if (which != 2)
-                    You_hear1(throne_msg[which]);
+                    You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, throne_msg[which]);
                 else
-                    pline(throne_msg[2], uhis());
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, throne_msg[2], uhis());
                 return;
             }
         }
@@ -264,7 +264,7 @@ dosounds()
             "hear mosquitoes!", "smell marsh gas!", /* so it's a smell...*/
             "hear Donald Duck!",
         };
-        You1(swamp_msg[rn2(2) + hallu]);
+        You_ex1(ATR_NONE, CLR_MSG_ATTENTION, swamp_msg[rn2(2) + hallu]);
         return;
     }
     if (level.flags.has_vault && !rn2(200)) {
@@ -295,14 +295,14 @@ dosounds()
                     if (gold_in_vault)
                     {
                         play_sfx_sound(!hallu ? SFX_LEVEL_SOMEONE_COUNTING_MONEY : SFX_LEVEL_QUARTERBACK_CALLING_PLAY);
-                        You_hear(!hallu
+                        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, !hallu
                             ? "someone counting money."
                             : "the quarterback calling the play.");
                     }
                     else
                     {
                         play_sfx_sound(SFX_LEVEL_SOMEONE_SEARCHING);
-                        You_hear("someone searching.");
+                        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "someone searching.");
                     }
                     break;
                 }
@@ -310,11 +310,11 @@ dosounds()
                 /*FALLTHRU*/
             case 0:
                 play_sfx_sound(SFX_LEVEL_FOOTSTEPS_OF_GUARD_PATROL);
-                You_hear("the footsteps of a guard on patrol.");
+                You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "the footsteps of a guard on patrol.");
                 break;
             case 2:
                 play_sfx_sound(SFX_LEVEL_EBENEZER_SCROOGE);
-                You_hear("Ebenezer Scrooge!");
+                You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "Ebenezer Scrooge!");
                 break;
             }
         return;
@@ -332,15 +332,15 @@ dosounds()
                 {
                 case 0:
                     play_sfx_sound(SFX_LEVEL_LOW_BUZZING);
-                    You_hear("a low buzzing.");
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a low buzzing.");
                     break;
                 case 1:
                     play_sfx_sound(SFX_LEVEL_ANGRY_DRONE);
-                    You_hear("an angry drone.");
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "an angry drone.");
                     break;
                 case 2:
                     play_sfx_sound(SFX_LEVEL_BEES_IN_BONNET);
-                    You_hear("bees in your %sbonnet!",
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "bees in your %sbonnet!",
                              uarmh ? "" : "(nonexistent) ");
                     break;
                 }
@@ -362,15 +362,15 @@ dosounds()
                 switch (rn2(2) + hallu)
                 {
                 case 0:
-                    You("suddenly realize it is quiter than usual.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "suddenly realize it is quiter than usual.");
                     break;
                 case 1:
                     play_sfx_sound(SFX_LEVEL_SOMEONE_DEMANDING_QUIETNESS);
-                    You_hear("somebody demanding quietness.");
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "somebody demanding quietness.");
                     break;
                 case 2:
                     play_sfx_sound(SFX_LEVEL_PAGES_TURNING_IN_HEAD);
-                    You_hear("pages turning in your head.");
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "pages turning in your head.");
                     break;
                 }
                 return;
@@ -391,25 +391,25 @@ dosounds()
                 {
                 case 0:
                     if (is_sleeping(mtmp))
-                        You_feel("ominiously threatened.");
+                        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "ominiously threatened.");
                     else
-                        You_hear("coins being assembled.");
+                        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "coins being assembled.");
                     break;
                 case 1:
                     if (is_sleeping(mtmp))
                     {
                         play_sfx_sound(SFX_LEVEL_LOUD_DRAGON_SNORING);
-                        You_hear("loud snoring.");
+                        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "loud snoring.");
                     }
                     else
                     {
                         play_sfx_sound(SFX_LEVEL_LOUD_DRAGON_ROAR);
-                        You_hear("a loud roar.");
+                        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a loud roar.");
                     }
                     break;
                 case 2:
                     play_sfx_sound(SFX_LEVEL_SOMEONE_CLAIMING_TO_BE_FIRE_AND_DEATH);
-                    You_hear("somebody claiming to be fire and death.");
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "somebody claiming to be fire and death.");
                     break;
                 }
                 return;
@@ -427,14 +427,14 @@ dosounds()
 
                 switch (rn2(2) + hallu) {
                 case 0:
-                    You("suddenly realize it is unnaturally quiet.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "suddenly realize it is unnaturally quiet.");
                     break;
                 case 1:
-                    pline_The("%s on the back of your %s %s up.", hair,
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s on the back of your %s %s up.", hair,
                               body_part(NECK), vtense(hair, "stand"));
                     break;
                 case 2:
-                    pline_The("%s on your %s %s to stand up.", hair,
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s on your %s %s to stand up.", hair,
                               body_part(HEAD), vtense(hair, "seem"));
                     break;
                 }
@@ -465,7 +465,7 @@ dosounds()
                 int roll = rn2(3) + hallu;
 
                 play_sfx_sound(barracks_sound[roll]);
-                You_hear1(barracks_msg[roll]);
+                You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, barracks_msg[roll]);
                 return;
             }
         }
@@ -493,7 +493,7 @@ dosounds()
             {
                 int roll = rn2(3) + hallu;
                 play_sfx_sound(armory_sound[roll]);
-                You_hear1(armory_msg[roll]);
+                You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, armory_msg[roll]);
                 return;
             }
         }
@@ -515,7 +515,7 @@ dosounds()
             {
                 int roll = rn2(2) + hallu;
                 play_sfx_sound(zoo_sound[roll]);
-                You_hear1(zoo_msg[roll]);
+                You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, zoo_msg[roll]);
                 return;
             }
         }
@@ -549,7 +549,7 @@ dosounds()
             else
                 play_sfx_sound(shop_sound[roll]);
 
-            You_hear1(shop_msg[roll]);
+            You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, shop_msg[roll]);
         }
         return;
     }
@@ -562,15 +562,15 @@ dosounds()
             if (mon_in_room(mtmp, DESERTEDSHOP))
             {
                 if (hallu)
-                    pline1("For a moment, you thought you heard Neiman and Marcus arguing!");
+                    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you thought you heard Neiman and Marcus arguing!");
                 else
                 {
                     if (!rn2(2))
-                        pline1("For a moment, you thought you heard someone cursing.");
+                        pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, "For a moment, you thought you heard someone cursing.");
                     else
                     {
                         play_sfx_sound(SFX_LEVEL_FAINT_CHIME);
-                        You1("hear a faint chime but then it fades.");
+                        You_ex1(ATR_NONE, CLR_MSG_ATTENTION, "hear a faint chime but then it fades.");
                     }
                 }
                 return;
@@ -640,9 +640,9 @@ dosounds()
                 play_sfx_sound(temple_sound[roll]);
 
             if (index(msg, '%'))
-                You_hear(msg, iflags.using_gui_sounds ? (mon_aligntyp(mtmp) == A_NONE ? Moloch : "god") : halu_gname(EPRI(mtmp)->shralign));
+                You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, msg, iflags.using_gui_sounds ? (mon_aligntyp(mtmp) == A_NONE ? Moloch : "god") : halu_gname(EPRI(mtmp)->shralign));
             else
-                You_hear1(msg);
+                You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, msg);
             return;
         }
     }
@@ -672,7 +672,7 @@ dosounds()
 
             int roll = rn2(3);
             play_sfx_sound(smithy_sound[roll]);
-            You_hear1(smithy_msg[roll]);
+            You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, smithy_msg[roll]);
             return;
         }
     }
@@ -703,7 +703,7 @@ dosounds()
             if (!has_enpc(mtmp))
             {
                 play_sfx_sound(npc_sound[roll]);
-                You_hear1(npc_msg[roll]);
+                You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, npc_msg[roll]);
             }
             else
             {
@@ -715,7 +715,7 @@ dosounds()
                 if (!has_this_distant_sound)
                 {
                     play_sfx_sound(npc_sound[roll]);
-                    You_hear1(npc_msg[roll]);
+                    You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, npc_msg[roll]);
                 }
                 else
                 {
@@ -723,9 +723,9 @@ dosounds()
                     play_monster_special_dialogue_line(mtmp, roll == 2 ? NPC_LINE_NPC_ROOM_3 : roll == 0 ? NPC_LINE_NPC_ROOM_1 : NPC_LINE_NPC_ROOM_2);
                     context.global_minimum_volume = 0.0f;
                     if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].distant_line == 0 || npc_subtype_definitions[ENPC(mtmp)->npc_typ].distant_line[roll] == 0)
-                        You_hear1(npc_msg[roll]);
+                        You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, npc_msg[roll]);
                     else
-                        You_hear1(npc_subtype_definitions[ENPC(mtmp)->npc_typ].distant_line[roll]);
+                        You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, npc_subtype_definitions[ENPC(mtmp)->npc_typ].distant_line[roll]);
                 }
             }
             return;
@@ -765,7 +765,7 @@ dosounds()
             {
                 play_sfx_sound(ora_sound[roll]);
             }
-            You_hear1(ora_msg[roll]);
+            You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, ora_msg[roll]);
         }
         return;
     }
