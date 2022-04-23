@@ -1048,6 +1048,7 @@ register struct monst *priest;
                 pline("%s gives you %s for an ale. (A ginger ale, to be exact.)", Monnam(priest),
                       (pmoney == 1L) ? "one bit" : "two bits");
                 money2u(priest, pmoney > 1L ? 2 : 1);
+                bot();
             }
             else
             {

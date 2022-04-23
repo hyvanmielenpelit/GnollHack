@@ -8274,6 +8274,7 @@ boolean auto_yes;
 
                 (void)mpickobj(mtmp, obj);
                 money2u(mtmp, offer);
+                bot();
                 return ans == 'a' ? -1 : 1;
             }
             else

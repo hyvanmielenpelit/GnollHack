@@ -1078,7 +1078,7 @@ register struct monst *shkp;
         money2mon(shkp, balance);
     else if (balance < 0)
         money2u(shkp, -balance);
-    context.botl = 1;
+    bot();
     if (robbed) {
         robbed -= tmp;
         if (robbed < 0)
