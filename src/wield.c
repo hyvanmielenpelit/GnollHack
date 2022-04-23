@@ -218,7 +218,7 @@ long mask;
         /* No weapon */
         if (wepinhand)
         {
-            You("are empty %s.", body_part(HANDED));
+            You("are now empty %s.", body_part(HANDED));
             setuwep((struct obj *) 0, mask);
             res++;
         } 
