@@ -2127,14 +2127,14 @@ boolean *effect_happened_ptr;
     {
         register struct obj* obj;
 
-        You_feel_ex(ATR_NONE, !Hallucination && !confused && !scursed ? CLR_MSG_POSITIVE : NO_COLOR, !Hallucination
+        You_feel_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : !confused && !scursed ? CLR_MSG_POSITIVE : CLR_MSG_ATTENTION, !Hallucination
             ? (!confused ? "like someone is helping you."
                 : "like you need some help.")
             : (!confused ? "in touch with the Universal Oneness."
                 : "the power of the Force against you!"));
 
         if (scursed) {
-            pline_The("scroll disintegrates.");
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "scroll disintegrates.");
         }
         else
         {
@@ -2523,7 +2523,7 @@ boolean *effect_happened_ptr;
                             res = 1;
                             if (canspotmon(mtmp))
                             {
-                                pline("%s falls asleep!", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s falls asleep!", Monnam(mtmp));
                                 vis_results += res;
                                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
                                 special_effect_wait_until_action(0);
@@ -2542,7 +2542,7 @@ boolean *effect_happened_ptr;
         }
         else 
         {
-            pline_The("neighborhood %s quieter.",
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "neighborhood %s quieter.",
                 vis_results ? "is" : "seems");
             if (vis_results > 0)
                 known = TRUE;
@@ -2638,7 +2638,7 @@ boolean *effect_happened_ptr;
     }
     case SCR_GENOCIDE:
         if (!already_known)
-            You("have found a scroll of genocide!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "have found a scroll of genocide!");
         known = TRUE;
         if (sblessed)
             do_class_genocide();
@@ -3091,13 +3091,13 @@ boolean *effect_happened_ptr;
         /*FALLTHRU*/
     case SPE_MAGIC_MAPPING:
         if (level.flags.nommap) {
-            Your("%s spins as %s blocks the spell!", body_part(HEAD),
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s spins as %s blocks the spell!", body_part(HEAD),
                  something);
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
             break;
         }
-        pline("A map coalesces in your mind!");
+        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "A map coalesces in your mind!");
         cval = (scursed && !confused);
         if (cval)
             HConfusion = 1; /* to screw up map */
@@ -3111,14 +3111,14 @@ boolean *effect_happened_ptr;
     case SPE_DETECT_TRAPS:
         if (level.flags.nommap) 
         {
-            Your("%s spins as %s blocks the spell!", body_part(HEAD),
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s spins as %s blocks the spell!", body_part(HEAD),
                 something);
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
             break;
         }
         if(trap_detect(sobj) == 0) //Something was detected
-            You("become aware of the location of nearby traps!");
+            You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "become aware of the location of nearby traps!");
         else
             play_simple_object_sound(sobj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
         break;
@@ -3153,14 +3153,14 @@ boolean *effect_happened_ptr;
         update_can_advance_any_skill();
 
         if (Hallucination) /* Ommmmmm! */
-            Your("mind releases itself from epistemological concerns.");
+            Your_ex(ATR_NONE, CLR_MSG_MYSTICAL, "mind releases itself from epistemological concerns.");
         else if (!strncmpi(plname, "Maud", 4))
-            pline(
+            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL,
                 "As your mind turns inward on itself, you forget the skills you have learned.");
         else if (rn2(2))
-            You("wonder if Maud wanted you to learn something.");
+            You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "wonder if Maud wanted you to learn something.");
         else
-            pline("Your mind releases itself from the skills you've learned.");
+            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Your mind releases itself from the skills you've learned.");
 
         special_effect_wait_until_end(0);
         break;
@@ -3197,7 +3197,7 @@ boolean *effect_happened_ptr;
         }
         if (Underwater)
         {
-            pline_The("%s around you vaporizes violently!", hliquid("water"));
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s around you vaporizes violently!", hliquid("water"));
         } 
         else
         {
@@ -3251,16 +3251,16 @@ boolean *effect_happened_ptr;
                 if (!Deaf)
                 {
                     if (u.uswallow)
-                        You_hear("rumbling.");
+                        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "rumbling.");
                     else
-                        pline_The("%s rumbles %s you!", ceiling(u.ux, u.uy),
+                        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "%s rumbles %s you!", ceiling(u.ux, u.uy),
                             sblessed ? "around" : "above");
                 }
                 delay_output_milliseconds(400);
             }
             else if(!Levitation && !Flying)
             {
-                You_feel("the %s shaking %s you!", Underwater ? "water" : "earth", sblessed ? "around" : "above");
+                You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "the %s shaking %s you!", Underwater ? "water" : "earth", sblessed ? "around" : "above");
             }
 
             if (!scursed)
@@ -3364,7 +3364,7 @@ boolean *effect_happened_ptr;
         coord cc;
 
         if (!already_known && otyp == SCR_STINKING_CLOUD)
-            You("have found a scroll of stinking cloud!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "have found a scroll of stinking cloud!");
         known = TRUE;
         pline("Where do you want to center the %scloud?",
               already_known ? "stinking " : "");

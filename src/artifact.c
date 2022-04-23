@@ -2779,7 +2779,7 @@ struct obj *obj;
                 mon->mprops[SUMMON_FORBIDDEN] |= M_INTRINSIC_ACQUIRED;
 
                 play_sfx_sound_at_location(SFX_SUMMON_DEMON, mon->mx, mon->my);
-                pline("%s appears in a puff of smoke!", Amonnam(mon));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears in a puff of smoke!", Amonnam(mon));
             }
             else
             {
@@ -2806,7 +2806,7 @@ struct obj *obj;
                 }
                 mon->mprops[SUMMON_FORBIDDEN] |= M_INTRINSIC_ACQUIRED;
 
-                pline("The air around you starts to swirl and forms into %s!", a_monnam(mon));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The air around you starts to swirl and forms into %s!", a_monnam(mon));
             }
             else
             {
@@ -2825,12 +2825,12 @@ struct obj *obj;
                 if (obj->charges > old_charges)
                 {
                     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
-                    pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
                 }
                 else if (obj->recharged != old_recharged)
                 {
                     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE2);
-                    pline("%s a bit more shiny.", Tobjnam(obj, "look"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s a bit more shiny.", Tobjnam(obj, "look"));
                 }
                 else
                 {
@@ -2902,24 +2902,24 @@ struct obj *obj;
         switch (oart->inv_prop) {
         case CONFLICT:
             if ((!temporary_effect && switch_on) || temporary_effect)
-                You_feel("like a rabble-rouser.");
+                You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "like a rabble-rouser.");
             else
-                You_feel("the tension decrease around you.");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "the tension decrease around you.");
             break;
         case DISPLACED:
             if (obj->oartifact == ART_MAGIC_MIRROR_OF_MERLIN)
             {
                 if ((!temporary_effect && switch_on) || temporary_effect)
-                    pline("%s an illusionary image of yourself near you.", Tobjnam(obj, "project"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s an illusionary image of yourself near you.", Tobjnam(obj, "project"));
                 else
-                    Your("illusionary double disappears.");
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "illusionary double disappears.");
             }
             else
             {
                 if ((!temporary_effect && switch_on) || temporary_effect)
-                    You_feel("your image becomes displaced.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "your image becomes displaced.");
                 else
-                    You_feel("your image is in its right place again.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "your image is in its right place again.");
             }
             break;
         case LEVITATION:
@@ -2950,13 +2950,13 @@ struct obj *obj;
     if ((oart->aflags & AF_INVOKE_MAY_DRAIN_ENERGY) && !rn2(2))
     {
         u.uen = 0;
-        pline("%s your energy!", Tobjnam(obj, "draw"));
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s your energy!", Tobjnam(obj, "draw"));
         context.botl = TRUE;
     }
 
     if ((oart->aflags & AF_INVOKE_MAY_DRAIN_LIFE) && !rn2(2))
     {
-        pline("%s your life energy!", Tobjnam(obj, "draw"));
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s your life energy!", Tobjnam(obj, "draw"));
         losexp("life drainage");
         context.botl = TRUE;
     }
@@ -2972,7 +2972,7 @@ struct obj* obj;
 {
     if (obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_INVOKED)))
     {
-        pline("As you invoke %s, %syou become aware that %s named %s!", the(cxname(obj)),
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As you invoke %s, %syou become aware that %s named %s!", the(cxname(obj)),
             obj->oartifact == ART_HOWLING_FLAIL ? "it lets loose a majestic howl and " : "",
             (pair_of(obj) || obj->quan > 1) ? "they are" : "it is", bare_artifactname(obj));
         obj->nknown = TRUE;
@@ -3042,15 +3042,15 @@ create_portal()
         || newlev.dnum == u.uz.dnum || !next_to_u())
     {
         play_sfx_sound(SFX_DISORIENTED_FOR_MOMENT);
-        You_feel("very disoriented for a moment.");
+        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "very disoriented for a moment.");
     }
     else 
     {
         play_sfx_sound(SFX_LEVEL_TELEPORT);
         if (!Blind)
-            You("are surrounded by a shimmering sphere!");
+            You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "are surrounded by a shimmering sphere!");
         else
-            You_feel("weightless for a moment.");
+            You_feel_ex(ATR_NONE, CLR_MSG_MYSTICAL, "weightless for a moment.");
         goto_level(&newlev, FALSE, FALSE, FALSE);
     }
 
@@ -3112,7 +3112,7 @@ struct obj *obj;
     line = getrumor(bcsign(obj), buf, TRUE);
     if (!*line)
         line = "GnollHack rumors file closed for renovation.";
-    pline("%s:", Tobjnam(obj, "whisper"));
+    pline_ex(ATR_NONE, CLR_MSG_GOD, "%s:", Tobjnam(obj, "whisper"));
     verbalize1(line);
     display_popup_text(line, cxname(obj), POPUP_TEXT_DIALOGUE, ATR_NONE, NO_COLOR, obj_to_glyph(obj, rn2_on_display_rng), POPUP_FLAGS_ADD_QUOTES);
     return;

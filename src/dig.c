@@ -109,9 +109,9 @@ register boolean rockit;
     register boolean waslit = rm_waslit();
 
     if (rockit)
-        pline("Crash!  The ceiling collapses around you!");
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "Crash!  The ceiling collapses around you!");
     else
-        pline("A mysterious force %s cave around you!",
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "A mysterious force %s cave around you!",
               (levl[u.ux][u.uy].typ == CORR) ? "creates a" : "extends the");
     display_nhwindow(WIN_MESSAGE, TRUE);
 

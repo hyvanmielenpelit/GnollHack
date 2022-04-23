@@ -547,7 +547,7 @@ int spellnum;
         if (mtmp->iswiz && context.no_of_wizards == 1)
         {
             play_voice_wizard_of_yendor_simple_line(mtmp, WIZARD_OF_YENDOR_LINE_DOUBLE_TROUBLE);
-            pline("Double Trouble...");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Double Trouble...");
             clonewiz();
             damage = 0;
         } else
@@ -582,11 +582,11 @@ int spellnum;
                only a single monster is seen */
             if (Invisib && !has_see_invisible(mtmp)
                 && (mtmp->mux != u.ux || mtmp->muy != u.uy))
-                pline("%s around a spot near you!", mappear);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s around a spot near you!", mappear);
             else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
-                pline("%s around your displaced image!", mappear);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s around your displaced image!", mappear);
             else
-                pline("%s from nowhere!", mappear);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s from nowhere!", mappear);
         }
         damage = 0;
         break;
@@ -617,23 +617,23 @@ int spellnum;
                only a single monster is seen */
             if (Invisib && !has_see_invisible(mtmp)
                 && (mtmp->mux != u.ux || mtmp->muy != u.uy))
-                pline("%s around a spot near you!", mappear);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s around a spot near you!", mappear);
             else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
-                pline("%s around your displaced image!", mappear);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s around your displaced image!", mappear);
             else
-                pline("%s from nowhere!", mappear);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s from nowhere!", mappear);
         }
         damage = 0;
         break;
     }
     case MGC_AGGRAVATION:
         play_sfx_sound(SFX_AGGRAVATE_MONSTER);
-        You_feel("that monsters are aware of your presence.");
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "that monsters are aware of your presence.");
         aggravate();
         damage = 0;
         break;
     case MGC_CURSE_ITEMS:
-        You_feel("as if you need some help.");
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "as if you need some help.");
         rndcurse();
         damage = 0;
         break;
@@ -646,11 +646,11 @@ int spellnum;
         else if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY) {
             play_sfx_sound(SFX_GENERAL_RESISTS);
             u_shieldeff();
-            pline("Your cloak neutralizes the destructive energies of the spell!");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Your cloak neutralizes the destructive energies of the spell!");
             makeknown(uarmc->otyp);
         } else if (!destroy_arm(some_armor(&youmonst))) {
             play_sfx_sound(SFX_HANDS_ITCH);
-            Your("skin itches.");
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin itches.");
         }
         damage = 0;
         break;
@@ -663,7 +663,7 @@ int spellnum;
         else 
         {
             play_sfx_sound(SFX_LOSE_ABILITY);
-            You("suddenly feel weaker!");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "suddenly feel weaker!");
             int strloss = mtmp->m_lev - 6;
             if (Half_spell_damage)
                 strloss = (strloss + 1) / 2;
@@ -679,7 +679,7 @@ int spellnum;
         if (!is_invisible(mtmp) && !has_blocks_invisibility(mtmp))
         {
             if (canseemon(mtmp))
-                pline("%s suddenly %s!", Monnam(mtmp),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly %s!", Monnam(mtmp),
                       !See_invisible ? "disappears" : "becomes transparent");
             increase_mon_property(mtmp, INVISIBILITY, d(2, 10) + 80);
             if (cansee(mtmp->mx, mtmp->my) && !canspotmon(mtmp))
@@ -698,7 +698,7 @@ int spellnum;
             }
             make_stunned(1L, FALSE);
         } else {
-            You(Stunned ? "struggle to keep your balance." : "reel...");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, Stunned ? "struggle to keep your balance." : "reel...");
             int stun_duration = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);
             if (Half_spell_damage)
                 stun_duration = (stun_duration + 1) / 2;
@@ -736,22 +736,22 @@ int spellnum;
         if (damage <= 5)
         {
             play_player_ouch_sound(MONSTER_OUCH_SOUND_SLIGHT_HEADACHE);
-            You("get a slight %sache.", body_part(HEAD));
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "get a slight %sache.", body_part(HEAD));
         }
         else if (damage <= 10)
         {
             play_player_ouch_sound(MONSTER_OUCH_SOUND_MODERATE_HEADACHE);
-            Your("brain is on fire!");
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "brain is on fire!");
         }
         else if (damage <= 20)
         {
             play_player_ouch_sound(MONSTER_OUCH_SOUND_PAINFUL_HEADACHE);
-            Your("%s suddenly aches painfully!", body_part(HEAD));
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s suddenly aches painfully!", body_part(HEAD));
         }
         else
         {
             play_player_ouch_sound(MONSTER_OUCH_SOUND_VERY_PAINFUL_HEADACHE);
-            Your("%s suddenly aches very painfully!", body_part(HEAD));
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s suddenly aches very painfully!", body_part(HEAD));
         }
         break;
     default:
@@ -814,11 +814,11 @@ int spellnum;
         /* this is physical damage (force not heat),
          * not magical damage or fire damage
          */
-        pline("A sudden geyser slams into you from nowhere!");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A sudden geyser slams into you from nowhere!");
         damage = adjust_damage(d(8, 6), mtmp, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE);
         break;
     case CLC_FIRE_PILLAR:
-        pline("A pillar of fire strikes all around you!");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A pillar of fire strikes all around you!");
         if (Fire_immunity) 
         {
             u_shieldeff();
@@ -835,7 +835,7 @@ int spellnum;
     case CLC_LIGHTNING: {
         boolean reflects;
 
-        pline("A bolt of lightning strikes down at you from above!");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A bolt of lightning strikes down at you from above!");
         reflects = ureflects("It bounces off your %s%s.", "");
         if (reflects || Shock_immunity) {
             play_sfx_sound(SFX_GENERAL_REFLECTS);
@@ -851,7 +851,7 @@ int spellnum;
         break;
     }
     case CLC_CURSE_ITEMS:
-        You_feel("as if you need some help.");
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "as if you need some help.");
         rndcurse();
         damage = 0;
         break;
@@ -922,10 +922,10 @@ int spellnum;
                 /* unseen caster summoned seen critter(s) */
                 arg = (newseen == oldseen + 1) ? an(what) : makeplural(what);
                 if (!Deaf)
-                    You_hear("someone summoning something, and %s %s.", arg,
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "someone summoning something, and %s %s.", arg,
                              vtense(arg, "appear"));
                 else
-                    pline("%s %s.", upstart(arg), vtense(arg, "appear"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s.", upstart(arg), vtense(arg, "appear"));
             }
 
             /* seen caster, possibly producing unseen--or just one--critters;
@@ -946,7 +946,7 @@ int spellnum;
         else
             fmt = (summon_quan == 1 ? "%s summons an insect!" : "%s summons insects!");
         if (fmt)
-            pline(fmt, Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, Monnam(mtmp));
 
         damage = 0;
         break;
@@ -957,7 +957,7 @@ int spellnum;
         {
             int num_eyes = eyecount(youmonst.data);
             play_sfx_sound(SFX_SCALES_COVER_EYES);
-            pline("Scales cover your %s!", (num_eyes == 1)
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Scales cover your %s!", (num_eyes == 1)
                                                ? body_part(EYE)
                                                : makeplural(body_part(EYE)));
             make_blinded(Half_spell_damage ? 100L : 200L, FALSE);
@@ -980,7 +980,7 @@ int spellnum;
             if (!Paralyzed)
             {
                 play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
-                You("are frozen in place!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frozen in place!");
             }
             int duration = d(3, 4); // 4 + (int)mtmp->m_lev;
             if (Half_spell_damage)
@@ -1010,9 +1010,9 @@ int spellnum;
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             make_confused(itimeout_incr(HConfusion, duration), TRUE);
             if (Hallucination)
-                You_feel("%s!", oldprop ? "trippier" : "trippy");
+                You_feel_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "%s!", oldprop ? "trippier" : "trippy");
             else
-                You_feel("%sconfused!", oldprop ? "more " : "");
+                You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%sconfused!", oldprop ? "more " : "");
         }
         damage = 0;
         break;
@@ -1031,13 +1031,13 @@ int spellnum;
             damage = damage / 2;
         }
         if (damage <= 5)
-            Your("skin itches badly for a moment.");
+            Your_ex(ATR_NONE, CLR_MSG_WARNING, "skin itches badly for a moment.");
         else if (damage <= 10)
-            pline("Wounds appear on your body!");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Wounds appear on your body!");
         else if (damage <= 20)
-            pline("Severe wounds appear on your body!");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Severe wounds appear on your body!");
         else
-            Your("body is covered with painful wounds!");
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "body is covered with painful wounds!");
         break;
     default:
         impossible("mcastu: invalid clerical spell (%d)", spellnum);

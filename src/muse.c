@@ -2303,7 +2303,7 @@ STATIC_OVL void
 you_aggravate(mtmp)
 struct monst *mtmp;
 {
-    pline("For some reason, %s presence is known to you.",
+    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "For some reason, %s presence is known to you.",
           s_suffix(noit_mon_nam(mtmp)));
     cls();
 #ifdef CLIPPING
@@ -2311,7 +2311,7 @@ struct monst *mtmp;
 #endif
     show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, rn2), mtmp, 0UL, 0, 0);
     display_self();
-    You_feel("aggravated at %s.", noit_mon_nam(mtmp));
+    You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "aggravated at %s.", noit_mon_nam(mtmp));
     display_nhwindow(WIN_MAP, TRUE);
     docrt();
     if (unconscious()) {

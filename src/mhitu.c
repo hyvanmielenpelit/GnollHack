@@ -1928,7 +1928,7 @@ register struct obj* omonwep;
     {
         if (mattk->aatyp == AT_HUGS && !sticks(youmonst.data))
         {
-            if (!u.ustuck && rn2(2))
+            if (!u.ustuck && !rn2(2))
             {
                 if (u_slip_free(mtmp, mattk))
                 {
@@ -1939,9 +1939,9 @@ register struct obj* omonwep;
                     play_sfx_sound(SFX_ACQUIRE_GRAB);
                     u.ustuck = mtmp;
                     if (damagedealt > 0)
-                        pline("%s grabs you%s! You sustain %d damage.", Monnam(mtmp), (hug_throttles(mtmp->data) && has_neck(youmonst.data)) ? " by the throat" : "", damagedealt);
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s grabs you%s! You sustain %d damage.", Monnam(mtmp), (hug_throttles(mtmp->data) && has_neck(youmonst.data)) ? " by the throat" : "", damagedealt);
                     else
-                        pline("%s grabs you%s!", Monnam(mtmp), (hug_throttles(mtmp->data) && has_neck(youmonst.data)) ? " by the throat" : "");
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s grabs you%s!", Monnam(mtmp), (hug_throttles(mtmp->data) && has_neck(youmonst.data)) ? " by the throat" : "");
 
                     update_extrinsics();
                     context.botl = context.botlx = 1;
@@ -1954,10 +1954,10 @@ register struct obj* omonwep;
                             if (!has_neck(youmonst.data) || Magical_breathing || !can_be_strangled(&youmonst))
                                 You("do not feel particularly concerned.");
                             else
-                                pline("%s is choking you to death!", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is choking you to death!", Monnam(mtmp));
                         }
                         else
-                            pline("%s is constricting you to death!", Monnam(mtmp));
+                            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is constricting you to death!", Monnam(mtmp));
                     }
                 }
             }
@@ -1966,7 +1966,7 @@ register struct obj* omonwep;
                 exercise(A_STR, FALSE);
                 if (damagedealt > 0)
                 {
-                    You("are being %s%s You sustain %d damage.",
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are being %s%s You sustain %d damage.",
                         hug_throttles(mtmp->data) ? "choked" : "crushed",
                         is_constrictor(mtmp->data) ? " to death!" : ".",
                         damagedealt);
@@ -1974,12 +1974,12 @@ register struct obj* omonwep;
                 }
                 else if (is_constrictor(mtmp->data))
                 {
-                    pline("%s is %s you to death!", Monnam(mtmp), hug_throttles(mtmp->data) ? "choking" : "constricting");
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is %s you to death!", Monnam(mtmp), hug_throttles(mtmp->data) ? "choking" : "constricting");
                     display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
                 }
                 else
                 {
-                    You("are being %s%s.", hug_throttles(mtmp->data)
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are being %s%s.", hug_throttles(mtmp->data)
                         ? "choked"
                         : "crushed", damage == 0 ? ", but sustain no damage" : "");
                     display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
@@ -2090,9 +2090,9 @@ register struct obj* omonwep;
                     /* Shattering is done below, here just the message */
                     objectshatters = TRUE;
                     if (omonwep->quan == 1)
-                        pline("%s %s shatters from the blow!", s_suffix(Monnam(mtmp)), xname(omonwep));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s shatters from the blow!", s_suffix(Monnam(mtmp)), xname(omonwep));
                     else
-                        pline("One of %s %s shatters from the blow!", s_suffix(mon_nam(mtmp)), xname(omonwep));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "One of %s %s shatters from the blow!", s_suffix(mon_nam(mtmp)), xname(omonwep));
                 }
 
 
@@ -2166,7 +2166,7 @@ register struct obj* omonwep;
             play_sfx_sound(SFX_MONSTER_ON_FIRE);
             if (completelyburns(youmonst.data)) 
             { /* paper or straw golem */
-                You("go up in flames!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "go up in flames!");
                 /* KMH -- this is okay with unchanging */
                 rehumanize();
                 break;
@@ -2250,15 +2250,15 @@ register struct obj* omonwep;
             fall_asleep(-rn1(3, 8), TRUE);
             if (Sleeping)
             {
-                You("feel even sleepier than before!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "feel even sleepier than before!");
             }
             else
             {
                 play_sfx_sound(SFX_ACQUIRE_SLEEP);
                 if (Blind)
-                    You("are put to sleep!");
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are put to sleep!");
                 else
-                    You("are put to sleep by %s!", mon_nam(mtmp));
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are put to sleep by %s!", mon_nam(mtmp));
             }
             set_itimeout(&HSleep_resistance, 20);
             refresh_u_tile_gui_info(TRUE);
@@ -2352,9 +2352,9 @@ register struct obj* omonwep;
                 play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
                 display_u_being_hit(HIT_PARALYZED, damagedealt, 0UL);
                 if (Blind)
-                    You("are frozen!");
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frozen!");
                 else
-                    You("are frozen by %s!", mon_nam(mtmp));
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frozen by %s!", mon_nam(mtmp));
 
                 incr_itimeout(&HParalyzed, (rnd(8) + 2));
                 context.botl = context.botlx = 1;
@@ -2379,7 +2379,7 @@ register struct obj* omonwep;
         {
             play_sfx_sound(SFX_SHARPNESS_SLICE);
             display_u_being_hit(HIT_CRITICAL, damagedealt, 0UL);
-            pline("%s strike slices a part of you off!", s_suffix(Monnam(mtmp)));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s strike slices a part of you off!", s_suffix(Monnam(mtmp)));
         } else if (damagedealt > 0)
             display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
         break;
@@ -2507,11 +2507,11 @@ register struct obj* omonwep;
                 {
                     if (damagedealt > 0)
                     {
-                        pline("%s swings itself around you. You sustain %d damage!", Monnam(mtmp), damagedealt);
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s swings itself around you. You sustain %d damage!", Monnam(mtmp), damagedealt);
                         display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
                     }
                     else
-                        pline("%s swings itself around you!", Monnam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s swings itself around you!", Monnam(mtmp));
 
                     if (is_pool(mtmp->mx, mtmp->my) && !Swimming && !Amphibious)
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is drowning you!", Monnam(mtmp));
@@ -2530,7 +2530,7 @@ register struct obj* omonwep;
                 if (is_pool(mtmp->mx, mtmp->my) && !Swimming && !Amphibious)
                 {
                     /* Drowning is now delayed death */
-                    pline("%s is drowning you!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is drowning you!", Monnam(mtmp));
 
                     /*
                     boolean moat = (levl[mtmp->mx][mtmp->my].typ != POOL)
@@ -2547,23 +2547,23 @@ register struct obj* omonwep;
                     */
                 } 
                 else if (is_constrictor(mtmp->data))
-                    pline("%s is constricting you to death!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is constricting you to death!", Monnam(mtmp));
                 else if (mattk->aatyp == AT_HUGS)
                 {
                     if (damagedealt > 0)
                     {
-                        You("are being crushed! You sustain %d damage.", damagedealt);
+                        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are being crushed! You sustain %d damage.", damagedealt);
                         display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
                     }
                     else
-                        You("are being crushed%s.", damage == 0 ? ", but sustain no damage" : "");
+                        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are being crushed%s.", damage == 0 ? ", but sustain no damage" : "");
                 }
             } 
             else 
             {
                 damage = 0;
                 if (flags.verbose)
-                    pline("%s brushes against your %s.", Monnam(mtmp),
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s brushes against your %s.", Monnam(mtmp),
                           body_part(LEG));
             }
         }
@@ -2577,7 +2577,7 @@ register struct obj* omonwep;
         {
             display_u_being_hit(HIT_WERE, damagedealt, 0UL);
             play_sfx_sound(SFX_CATCH_LYCANTHROPY);
-            You_feel("feverish.");
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "feverish.");
             exercise(A_CON, FALSE);
             set_ulycn(monsndx(mdat));
             retouch_equipment(2);
@@ -2734,7 +2734,7 @@ register struct obj* omonwep;
         if (is_iron(youmonst.data))
         {
             play_sfx_sound(SFX_YOU_RUST);
-            You("rust!");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "rust!");
             /* KMH -- this is okay with unchanging */
             rehumanize();
             break;
@@ -2754,7 +2754,7 @@ register struct obj* omonwep;
         if (u.umonnum == PM_WOOD_GOLEM || u.umonnum == PM_LEATHER_GOLEM) 
         {
             play_sfx_sound(SFX_YOU_RUST);
-            You("rot!");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "rot!");
             /* KMH -- this is okay with unchanging */
             rehumanize();
             break;
@@ -2866,13 +2866,13 @@ register struct obj* omonwep;
             {
                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
                 if (Blind)
-                    You_hear("laughter.");
+                    You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "laughter.");
                 else
-                    pline("%s chuckles.", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s chuckles.", Monnam(mtmp));
             }
             if (u.umonnum == PM_CLAY_GOLEM) 
             {
-                pline("Some writing vanishes from your head!");
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Some writing vanishes from your head!");
                 /* KMH -- this is okay with unchanging */
                 rehumanize();
                 break;
@@ -2933,7 +2933,7 @@ register struct obj* omonwep;
             refresh_u_tile_gui_info(TRUE);
             int speed_after = get_u_move_speed(TRUE);
             if (speed_after < speed_before)
-                You("slow down.");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "slow down.");
             context.botl = context.botlx = 1;
         } 
         else if (damagedealt >0)
@@ -2951,9 +2951,9 @@ register struct obj* omonwep;
         {
             mtmp->mspec_used = mtmp->mspec_used + ((int)ceil(damage) + rn2(6));
             if (Confusion)
-                You("are getting even more confused.");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are getting even more confused.");
             else
-                You("are getting confused.");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are getting confused.");
 
             if (!Confusion)
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
@@ -2964,7 +2964,7 @@ register struct obj* omonwep;
         break;
     case AD_DETH:
     {
-        pline("%s reaches out with its deadly touch.", Monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s reaches out with its deadly touch.", Monnam(mtmp));
         //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, (struct obj*)0, mtmp->m_lev, 0, 0, NOTELL);
         if (resists_death(&youmonst) || Death_resistance) //  || magic_resistance_success
         {
@@ -2989,7 +2989,7 @@ register struct obj* omonwep;
         default: /* case 16: ... case 5: */
             permdmg = 1; /* actual damage done below */
             display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
-            You_feel("your life force draining away... You lose %d hit points, some of them permanently.", damagedealt);
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "your life force draining away... You lose %d hit points, some of them permanently.", damagedealt);
             break;
         case 4:
         case 3:
@@ -3006,14 +3006,14 @@ register struct obj* omonwep;
         break;
     }
     case AD_PEST:
-        pline("%s reaches out, and you feel fever and chills. You lose %d hit points.", Monnam(mtmp), damagedealt);
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s reaches out, and you feel fever and chills. You lose %d hit points.", Monnam(mtmp), damagedealt);
         if(diseasemu(mtmp)) /* plus the normal damage */
             display_u_being_hit(HIT_SICK, damagedealt, 0UL);
         else
             display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
         break;
     case AD_FAMN:
-        pline("%s reaches out, and your body shrivels. You lose %d hit points.", Monnam(mtmp), damagedealt);
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s reaches out, and your body shrivels. You lose %d hit points.", Monnam(mtmp), damagedealt);
         exercise(A_CON, FALSE);
         if (!is_fainted())
         {
@@ -3042,7 +3042,7 @@ register struct obj* omonwep;
         } else if (!Slimed) {
             hitmsg(mtmp, mattk, damagedealt, TRUE);
             play_sfx_sound(SFX_START_SLIMING);
-            You("don't feel very well.");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "don't feel very well.");
             make_slimed(10L, (char *) 0);
             delayed_killer(SLIMED, KILLED_BY_AN, mon_monster_name(mtmp));
         }

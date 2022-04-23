@@ -5174,7 +5174,7 @@ struct obj *obj;
         goto discard_broken_wand;
     case WAN_STRIKING:
         /* we want this before the explosion instead of at the very end */
-        pline("A wall of force smashes down around you!");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A wall of force smashes down around you!");
         dmg_n = 1 + obj->charges;
         dmg_d = 6; /* normally 2d12 */
         goto wanexpl;
