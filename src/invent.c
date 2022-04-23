@@ -3761,7 +3761,7 @@ int id_limit;
 
         n = query_objlist(buf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE
                                          | USE_INVLET | INVORDER_SORT),
-                          &pick_list, PICK_ANY, not_fully_identified, 0);
+                          &pick_list, id_limit == 1 ? PICK_ONE : PICK_ANY, not_fully_identified, 0);
 
         if (n > 0)
         {
@@ -3814,7 +3814,7 @@ struct obj *objchn;
 /* returns the number of items identified */
 int
 identify_pack(id_limit, learning_id)
-int id_limit;
+int id_limit; /* 0 = all, >0 max no of items identified */
 boolean learning_id; /* true if we just read unknown identify scroll */
 {
     struct obj *obj;
