@@ -16523,7 +16523,7 @@ void
 play_player_flounder_sound(line_id)
 enum monster_flounder_sounds line_id;
 {
-    play_player_line_indexed_sound(MONSTER_SOUND_TYPE_FLOUNDER, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0UL);
+    play_player_line_indexed_sound(MONSTER_SOUND_TYPE_FLOUNDER, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX);
 }
 
 
