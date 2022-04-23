@@ -204,17 +204,17 @@ struct obj *spellbook;
 
     if (!rn2(3) && spellbook->otyp != SPE_BOOK_OF_THE_DEAD && spellbook->otyp != SPE_BOOK_OF_MODRON) {
         spellbook->in_use = TRUE; /* in case called from learn */
-        pline(
+        pline_ex(ATR_NONE, CLR_MSG_WARNING,
          "Being confused you have difficulties in controlling your actions.");
         display_nhwindow(WIN_MESSAGE, FALSE);
-        You("accidentally tear the spellbook to pieces.");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "accidentally tear the spellbook to pieces.");
         if (!objects[spellbook->otyp].oc_name_known
             && !objects[spellbook->otyp].oc_uname)
             docall(spellbook);
         useup(spellbook);
         gone = TRUE;
     } else {
-        You("find yourself reading the %s line over and over again.",
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find yourself reading the %s line over and over again.",
             spellbook == context.spbook.book ? "next" : "first");
     }
     return gone;
@@ -244,7 +244,7 @@ struct obj *book2;
         }
 
         if (!u.uhave.bell || !u.uhave.menorah) {
-            pline("A chill runs down your %s.", body_part(SPINE));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "A chill runs down your %s.", body_part(SPINE));
             if (!u.uhave.bell)
                 You_hear("a faint chime...");
             if (!u.uhave.menorah)
@@ -271,7 +271,7 @@ struct obj *book2;
 
         if (arti_cursed) {
             play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
-            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "invocation fails!");
+            pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "invocation fails!");
             pline("At least one of your artifacts is cursed...");
         } else if (arti1_primed && arti2_primed) {
             unsigned soon =
@@ -288,7 +288,7 @@ struct obj *book2;
             if (!u.udg_cnt || u.udg_cnt > soon)
                 u.udg_cnt = soon;
         } else { /* at least one artifact not prepared properly */
-            You("have a feeling that %s is amiss...", something);
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "have a feeling that %s is amiss...", something);
             goto raise_dead;
         }
         return;
@@ -298,7 +298,7 @@ struct obj *book2;
     if (book2->cursed)
     {
     raise_dead:
-        You("raised the dead!");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "raised the dead!");
         /* first maybe place a dangerous adversary */
         if (!rn2(3) && ((mtmp = makemon(&mons[PM_MASTER_LICH], u.ux, u.uy,
                                         MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0
@@ -353,13 +353,13 @@ struct obj *book2;
         switch (rn2(3))
         {
         case 0:
-            Your("ancestors are annoyed with you!");
+            Your_ex(ATR_NONE, CLR_MSG_WARNING, "ancestors are annoyed with you!");
             break;
         case 1:
-            pline_The("headstones in the cemetery begin to move!");
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "headstones in the cemetery begin to move!");
             break;
         default:
-            pline("Oh my!  Your name appears in the book!");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Oh my!  Your name appears in the book!");
         }
     }
     return;
@@ -375,9 +375,9 @@ struct obj* book2;
     makeknown(SPE_BOOK_OF_MODRON);
 
     if (Hallucination || Stunned || Confusion)
-        pline("The machinations of the multiverse suddenly start to make a lot more sense to you.");
+        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "The machinations of the multiverse suddenly start to make a lot more sense to you.");
     else
-        pline("The machinations of the multiverse are a bit clearer to you now.");
+        pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "The machinations of the multiverse are a bit clearer to you now.");
 
     play_sfx_sound(SFX_CURE_AILMENT);
 
