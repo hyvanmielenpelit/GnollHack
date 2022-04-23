@@ -576,10 +576,10 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
     } else if (magr == &youmonst) {
         You("eat %s brain!", s_suffix(mon_nam(mdef)));
     } else if (mdef == &youmonst) {
-        Your("brain is being eaten!");
+        Your_ex(ATR_NONE, CLR_MSG_WARNING, "brain is being eaten!");
     } else { /* monster against monster */
         if (visflag && canspotmon(mdef))
-            pline("%s brain is eaten!", s_suffix(Monnam(mdef)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s brain is eaten!", s_suffix(Monnam(mdef)));
     }
 
     if (!magr || !mdef)
@@ -603,7 +603,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
                 play_sfx_sound_at_location(SFX_PETRIFY, magr->mx, magr->my);
 
             if (visflag && canseemon(magr))
-                pline("%s turns to stone!", Monnam(magr));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns to stone!", Monnam(magr));
             monstone(magr);
             if (!DEADMONSTER(magr))
             {
@@ -614,7 +614,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
             {
                 if (is_tame(magr) && !visflag)
                     /* parallels mhitm.c's brief_feeling */
-                    You("have a sad thought for a moment, then it passes.");
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, "have a sad thought for a moment, then it passes.");
                 return MM_AGR_DIED;
             }
         }

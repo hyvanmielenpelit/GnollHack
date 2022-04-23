@@ -1462,10 +1462,10 @@ update_monster_timeouts()
                             if (is_speaking_monster(mtmp->data))
                             {
                                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
-                                pline("Suddenly, %s laughs %s.", mon_nam(mtmp), laughbuf);
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s laughs %s.", mon_nam(mtmp), laughbuf);
                             }
                             else
-                                pline("Suddenly, %s looks absolutely hilarious.", mon_nam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s looks absolutely hilarious.", mon_nam(mtmp));
                         }
                         break;
                     case FUMBLING:
@@ -1474,20 +1474,20 @@ update_monster_timeouts()
                         if (canseemon(mtmp))
                         {
                             if (nolimbs(mtmp->data) || slithy(mtmp->data))
-                                pline("Suddenly, %s stumbles.", mon_nam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s stumbles.", mon_nam(mtmp));
                             else if (unsolid(mtmp->data) || is_incorporeal(mtmp->data) || is_flying(mtmp) || is_levitating(mtmp))
-                                pline("Suddenly, %s seems highly unstable.", mon_nam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s seems highly unstable.", mon_nam(mtmp));
                             else
-                                pline("Suddenly, %s trips over %s feet.", mon_nam(mtmp), mhis(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s trips over %s feet.", mon_nam(mtmp), mhis(mtmp));
                         }
                         break;
                     case ODD_IDEAS:
                         if (canseemon(mtmp))
                         {
                             if (mindless(mtmp->data))
-                                pline("Suddenly, %s shudders.", mon_nam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s shudders.", mon_nam(mtmp));
                             else
-                                pline("Suddenly, %s looks unusually suspicious of %s surroundings.", mon_nam(mtmp), mhis(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s looks unusually suspicious of %s surroundings.", mon_nam(mtmp), mhis(mtmp));
                         }
                         break;
                     case SLEEPY:
@@ -1757,7 +1757,7 @@ register struct monst *mtmp;
                 increase_mon_property(mtmp, STUNNED, 5 + rnd(10));
                 if (canseemon(mtmp) && flags.verbose)
                 {
-                    pline("%s spits %s out in disgust!", Monnam(mtmp),
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s spits %s out in disgust!", Monnam(mtmp),
                           distant_name(otmp, doname));
                 }
             }
@@ -1816,7 +1816,7 @@ register struct monst *mtmp;
                         {
                             play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
                             if (canseemon(mtmp))
-                                pline("%s turns to stone!", Monnam(mtmp));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns to stone!", Monnam(mtmp));
                             monstone(mtmp);
                             ptr = (struct permonst *) 0;
                         }

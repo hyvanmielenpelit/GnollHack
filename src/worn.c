@@ -2025,7 +2025,7 @@ outer_break:
     /* if couldn't see it but now can, or vice versa, */
     if (!creation && (unseen ^ !canseemon(mon))) {
         if (is_invisible(mon) && !See_invisible) {
-            pline("Suddenly you cannot see %s.", nambuf);
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly you cannot see %s.", nambuf);
             makeknown(best->otyp);
         } /* else if (!mon->minvis) pline("%s suddenly appears!",
              Amonnam(mon)); */

@@ -2106,7 +2106,7 @@ boolean *effect_happened_ptr;
             if(!(confused || scursed))
                 play_sfx_sound(SFX_MANIACAL_LAUGHTER);
 
-            You_hear("%s %s.", (confused || scursed) ? "sad wailing"
+            You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s.", (confused || scursed) ? "sad wailing"
                 : "maniacal laughter",
                 !ct ? "in the distance" : "close by");
         }
@@ -3639,13 +3639,13 @@ struct obj *obj;
 
         if (!Blind) {
             if (u.uswallow) {
-                pline("It seems even darker in here than before.");
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "It seems even darker in here than before.");
             } else {
                 if (uwep && (artifact_light(uwep) || obj_shines_magical_light(uwep) || has_obj_mythic_magical_light(uwep)) && uwep->lamplit)
-                    pline("Suddenly, the only light left comes from %s!",
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "Suddenly, the only light left comes from %s!",
                           the(xname(uwep)));
                 else
-                    You("are surrounded by darkness!");
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, "are surrounded by darkness!");
             }
         }
 
@@ -3658,14 +3658,14 @@ struct obj *obj;
             if (Blind)
                 ; /* no feedback */
             else if (is_animal(u.ustuck->data))
-                pline("%s %s is lit.", s_suffix(Monnam(u.ustuck)),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s is lit.", s_suffix(Monnam(u.ustuck)),
                       mbodypart(u.ustuck, STOMACH));
             else if (is_whirly(u.ustuck->data))
-                pline("%s shines briefly.", Monnam(u.ustuck));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shines briefly.", Monnam(u.ustuck));
             else
-                pline("%s glistens.", Monnam(u.ustuck));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s glistens.", Monnam(u.ustuck));
         } else if (!Blind)
-            pline("A lit field surrounds you!");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A lit field surrounds you!");
     }
 
     /* No-op when swallowed or in water */

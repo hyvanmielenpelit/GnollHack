@@ -2131,11 +2131,11 @@ struct monst *mtmp;
         increase_mon_property(mtmp, INVISIBILITY, otmp->otyp == WAN_MAKE_INVISIBLE ? 100 + rn2(50): d(10, 10) + 400);
         if (vismon && is_invisible(mtmp)) { /* was seen, now invisible */
             if (canspotmon(mtmp)) {
-                pline("%s body takes on a %s transparency.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s body takes on a %s transparency.",
                       upstart(s_suffix(nambuf)),
                       Hallucination ? "normal" : "strange");
             } else {
-                pline("Suddenly you cannot see %s.", nambuf);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly you cannot see %s.", nambuf);
                 if (vis)
                     map_invisible(mtmp->mx, mtmp->my);
             }
@@ -2192,7 +2192,7 @@ struct monst *mtmp;
             return 2;
         mquaffmsg(mtmp, otmp);
         if (vismon)
-            pline("%s suddenly mutates!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly mutates!", Monnam(mtmp));
         if (newcham(mtmp, muse_newcham_mon(mtmp), FALSE, FALSE))
         {
             play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
@@ -2205,7 +2205,7 @@ struct monst *mtmp;
         if (vismon) {
             const char *Mnam = Monnam(mtmp);
 
-            pline("%s deliberately %s onto a polymorph trap!", Mnam,
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s deliberately %s onto a polymorph trap!", Mnam,
                   vtense(Mnam, locomotion(mtmp->data, "jump")));
         }
         if (vis)
@@ -2244,13 +2244,13 @@ struct monst *mtmp;
                 hand = makeplural(hand);
 
             if (vismon)
-                pline("%s flicks a bullwhip towards your %s!", Monnam(mtmp),
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s flicks a bullwhip towards your %s!", Monnam(mtmp),
                       hand);
             if (obj->otyp == HEAVY_IRON_BALL) {
                 pline("%s fails to wrap around %s.", The_whip, the_weapon);
                 return 1;
             }
-            pline("%s wraps around %s you're wielding!", The_whip,
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s wraps around %s you're wielding!", The_whip,
                   the_weapon);
             if (welded(obj, &youmonst)) {
                 pline("%s welded to your %s%c",
@@ -2272,17 +2272,17 @@ struct monst *mtmp;
             freeinv(obj);
             switch (where_to) {
             case 1: /* onto floor beneath mon */
-                pline("%s yanks %s from your %s!", Monnam(mtmp), the_weapon,
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s yanks %s from your %s!", Monnam(mtmp), the_weapon,
                       hand);
                 place_object(obj, mtmp->mx, mtmp->my);
                 break;
             case 2: /* onto floor beneath you */
-                pline("%s yanks %s to the %s!", Monnam(mtmp), the_weapon,
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s yanks %s to the %s!", Monnam(mtmp), the_weapon,
                       surface(u.ux, u.uy));
                 dropy(obj);
                 break;
             case 3: /* into mon's inventory */
-                pline("%s snatches %s!", Monnam(mtmp), the_weapon);
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s snatches %s!", Monnam(mtmp), the_weapon);
                 (void) mpickobj(mtmp, obj);
                 break;
             }
@@ -2462,7 +2462,7 @@ const char *str;
     if (!(mon->mprops[REFLECTING] & M_EXTRINSIC))
     {
         if (str)
-            pline(str, s_suffix(mon_nam(mon)), mon->data->mlet == S_DRAGON ? "scales" : mon->data->mlet == S_TREANT ? "bark" : "body");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, s_suffix(mon_nam(mon)), mon->data->mlet == S_DRAGON ? "scales" : mon->data->mlet == S_TREANT ? "bark" : "body");
 
         return TRUE;
     }
@@ -2474,7 +2474,7 @@ const char *str;
         {
             if (str) 
             {
-                pline(str, s_suffix(mon_nam(mon)), "shield");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, s_suffix(mon_nam(mon)), "shield");
                 makeknown(orefl->otyp);
             }
             return TRUE;
@@ -2483,7 +2483,7 @@ const char *str;
         {
             if (str)
             {
-                pline(str, s_suffix(mon_nam(mon)), "weapon");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, s_suffix(mon_nam(mon)), "weapon");
                 makeknown(orefl->otyp);
             }
             return TRUE;
@@ -2492,7 +2492,7 @@ const char *str;
         {
             if (str) 
             {
-                pline(str, s_suffix(mon_nam(mon)), "amulet");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, s_suffix(mon_nam(mon)), "amulet");
                 makeknown(orefl->otyp);
             }
             return TRUE;
@@ -2501,7 +2501,7 @@ const char *str;
         {
             if (str)
             {
-                pline(str, s_suffix(mon_nam(mon)), "armor");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, s_suffix(mon_nam(mon)), "armor");
                 makeknown(orefl->otyp);
             }
             return TRUE;
@@ -2509,7 +2509,7 @@ const char *str;
         else
         {
             if (str)
-                pline(str, s_suffix(mon_nam(mon)), "item");
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, str, s_suffix(mon_nam(mon)), "item");
 
             return TRUE;
         }
@@ -2548,18 +2548,18 @@ const char *fmt, *str;
                 if(is_shield(uarms))
                 {
                     if (u.twoweap)
-                        pline(fmt, str, "left hand shield");
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "left hand shield");
                     else
-                        pline(fmt, str, "shield");
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "shield");
                     makeknown(uarms->otyp);
                 }
                 else if(is_wielded_weapon(uarms))
                 {
-                    pline(fmt, str, "left hand weapon");
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "left hand weapon");
                 }
                 else
                 {
-                    pline(fmt, str, "left hand item");
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "left hand item");
                 }
             }
         }
@@ -2574,22 +2574,22 @@ const char *fmt, *str;
             {
                 if (is_shield(uwep))
                 {
-                    pline(fmt, str, "right hand shield");
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "right hand shield");
                     makeknown(uwep->otyp);
                 }
                 else if (is_wielded_weapon(uwep))
                 {
                     if(u.twoweap)
-                        pline(fmt, str, "right hand weapon");
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "right hand weapon");
                     else
-                        pline(fmt, str, "weapon");
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "weapon");
                 }
                 else
                 {
                     if (u.twoweap)
-                        pline(fmt, str, "right hand item");
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "right hand item");
                     else
-                        pline(fmt, str, "wielded item");
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "wielded item");
                 }
             }
 
@@ -2600,7 +2600,7 @@ const char *fmt, *str;
     {
         if (fmt && str)
         {
-            pline(fmt, str, "medallion");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "medallion");
             if(uamul)
                 makeknown(uamul->otyp);
         }
@@ -2609,7 +2609,7 @@ const char *fmt, *str;
     else if (EReflecting & W_ARMC)
     {
         if (fmt && str)
-            pline(fmt, str, "cloak");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "cloak");
         if (uarmc)
             makeknown(uarmc->otyp);
         return TRUE;
@@ -2617,7 +2617,7 @@ const char *fmt, *str;
     else if (EReflecting & W_ARMO)
     {
         if (fmt && str)
-            pline(fmt, str, "robe");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "robe");
         if (uarmo)
             makeknown(uarmo->otyp);
         return TRUE;
@@ -2625,14 +2625,14 @@ const char *fmt, *str;
     else if (EReflecting & W_ARM) 
     {
         if (fmt && str)
-            pline(fmt, str, uskin ? "luster" : "armor");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, uskin ? "luster" : "armor");
         return TRUE;
     }
     else if (EReflecting & W_ARMB) 
     {
         if (fmt && str)
         {
-            pline(fmt, str, "bracers");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "bracers");
             if(uarmb)
                 makeknown(uarmb->otyp);
         }
@@ -2641,43 +2641,43 @@ const char *fmt, *str;
     else if (is_reflecting(&youmonst))
     {  //youmonst.data == &mons[PM_SILVER_DRAGON]) {
         if (fmt && str)
-            pline(fmt, str, "scales");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "scales");
         return TRUE;
     }
     else if (HReflecting & TIMEOUT)
     { //Spell
         if (fmt && str)
-            pline(fmt, str, "protective spell");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "protective spell");
         return TRUE;
     }
     else if ((EReflecting & W_MISC) && umisc)
     {
         if (fmt && str)
-            pline(fmt, str, xname(umisc));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, xname(umisc));
         return TRUE;
     }
     else if ((EReflecting & W_MISC2) && umisc2) 
     {
         if (fmt && str)
-            pline(fmt, str, xname(umisc2));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, xname(umisc2));
         return TRUE;
     }
     else if (EReflecting & W_MISC3 && umisc3) 
     {
         if (fmt && str)
-            pline(fmt, str, xname(umisc3));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, xname(umisc3));
         return TRUE;
     }
     else if (EReflecting & W_MISC4 && umisc4) 
     {
         if (fmt && str)
-            pline(fmt, str, xname(umisc4));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, xname(umisc4));
         return TRUE;
     }
     else if (EReflecting & W_MISC5 && umisc5) 
     {
         if (fmt && str)
-            pline(fmt, str, xname(umisc5));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, xname(umisc5));
         return TRUE;
     }
     else if (EReflecting & W_CARRIED)
@@ -2692,7 +2692,7 @@ const char *fmt, *str;
             }
         }
         if (fmt && str)
-            pline(fmt, str, selobj ? xname(selobj) :"item-induced force field");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, selobj ? xname(selobj) :"item-induced force field");
         return TRUE;
     }
     else if (EReflecting & W_ARTIFACT_CARRIED)
@@ -2707,25 +2707,25 @@ const char *fmt, *str;
             }
         }
         if (fmt && str)
-            pline(fmt, str, selobj ? xname(selobj) : "artifact");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, selobj ? xname(selobj) : "artifact");
         return TRUE;
     }
     else if (EReflecting & W_ARTIFACT_INVOKED)
     {
         if (fmt && str)
-            pline(fmt, str, "artifact-invoked force field");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "artifact-invoked force field");
         return TRUE;
     }
     else if (EReflecting) 
     {
         if (fmt && str)
-            pline(fmt, str, "item");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "item");
         return TRUE;
     }
     else if (HReflecting) 
     {
         if (fmt && str)
-            pline(fmt, str, "body");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "body");
         return TRUE;
     }
     return FALSE;

@@ -4726,74 +4726,74 @@ register struct obj *obj;
     obj->in_use = TRUE;  /* block free identification via interrupt */
     switch (obj->otyp) { /* effects that can be noticed without eyes */
     case RIN_SEARCHING:
-        You("thought %s got lost in the sink, but there it is!", yname(obj));
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "thought %s got lost in the sink, but there it is!", yname(obj));
         goto giveback;
     case RIN_SLOW_DIGESTION:
-        pline_The("ring is regurgitated!");
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "ring is regurgitated!");
  giveback:
         obj->in_use = FALSE;
         dropx(obj);
         trycall(obj);
         return;
     case RIN_LEVITATION:
-        pline_The("sink quivers upward for a moment.");
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink quivers upward for a moment.");
         break;
     case RIN_POISON_RESISTANCE:
-        You("smell rotten %s.", makeplural(fruitname(FALSE)));
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "smell rotten %s.", makeplural(fruitname(FALSE)));
         break;
     case RIN_AGGRAVATE_MONSTER:
-        pline("Several %s buzz angrily around the sink.",
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Several %s buzz angrily around the sink.",
               Hallucination ? makeplural(rndmonnam(NULL)) : "flies");
         break;
     case RIN_SHOCK_RESISTANCE:
-        pline("Static electricity surrounds the sink.");
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Static electricity surrounds the sink.");
         break;
     case RIN_PROTECTION_FROM_UNDEATH:
-        pline("A pillar of smoke arises from the sink.");
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A pillar of smoke arises from the sink.");
         break;
     case RIN_SEVEN_CHARGES: /* Artifact version of ring of conflict */
-        You_hear("loud noises coming from the drain.");
+        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "loud noises coming from the drain.");
         break;
     case RIN_SUSTAIN_ABILITY: /* KMH */
-        pline_The("%s flow seems fixed.", hliquid("water"));
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flow seems fixed.", hliquid("water"));
         break;
     case RIN_GAIN_STRENGTH:
-        pline_The("%s flow seems %ser now.",
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flow seems %ser now.",
                   hliquid("water"),
                   (obj->enchantment < 0) ? "weak" : "strong");
         break;
     case RIN_GAIN_DEXTERITY:
-        pline_The("%s flow seems %ser now.",
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flow seems %ser now.",
             hliquid("water"),
             (obj->enchantment < 0) ? "stiff" : "nimbl");
         break;
     case RIN_GAIN_CONSTITUTION:
-        pline_The("%s flow seems %ser now.",
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flow seems %ser now.",
                   hliquid("water"),
                   (obj->enchantment < 0) ? "less" : "great");
         break;
     case RIN_GAIN_INTELLIGENCE:
-        pline_The("%s flow seems %ser now.",
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flow seems %ser now.",
             hliquid("water"),
             (obj->enchantment < 0) ? "coars" : "fin");
         break;
     case RIN_GAIN_WISDOM:
-        pline_The("%s flow seems %s now.",
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flow seems %s now.",
             hliquid("water"),
             (obj->enchantment < 0) ? "less sensible" : "more sensible");
         break;
     case RIN_POWER:
-        pline_The("%s flow seems %s now.",
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flow seems %s now.",
             hliquid("water"),
             (obj->enchantment < 0) ? "much worse" : "much better");
         break;
     case RIN_INCREASE_ACCURACY: /* KMH */
-        pline_The("%s flow %s the drain.",
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flow %s the drain.",
                   hliquid("water"),
                   (obj->enchantment < 0) ? "misses" : "hits");
         break;
     case RIN_INCREASE_DAMAGE:
-        pline_The("water's force seems %ser now.",
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "water's force seems %ser now.",
                   (obj->enchantment < 0) ? "small" : "great");
         break;
     case RIN_HUNGER:
@@ -4803,7 +4803,7 @@ register struct obj *obj;
             if (otmp != uball && otmp != uchain
                 && !obj_resists(otmp, 1, 99)) {
                 if (!Blind) {
-                    pline("Suddenly, %s %s from the sink!", doname(otmp),
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s %s from the sink!", doname(otmp),
                           otense(otmp, "vanish"));
                     ideed = TRUE;
                 }
@@ -4813,13 +4813,13 @@ register struct obj *obj;
         break;
     case MEAT_RING:
         /* Not the same as aggravate monster; besides, it's obvious. */
-        pline("Several flies buzz around the sink.");
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Several flies buzz around the sink.");
         break;
     case RIN_TELEPORTATION:
         nosink = teleport_sink();
         /* give message even if blind; we know we're not levitating,
            so can feel the outcome even if we can't directly see it */
-        pline_The("sink %svanishes.", nosink ? "" : "momentarily ");
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink %svanishes.", nosink ? "" : "momentarily ");
         ideed = FALSE;
         break;
     case RIN_POLYMORPH:

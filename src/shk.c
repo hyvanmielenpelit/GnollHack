@@ -3926,19 +3926,19 @@ boolean croaked;
         char wallbuf[BUFSZ];
 
         Sprintf(wallbuf, "section%s", plur(saw_walls));
-        pline("Suddenly, %s %s of wall %s up!",
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s %s of wall %s up!",
               (saw_walls == 1) ? "a" : (saw_walls <= 3) ? "some" : "several",
               wallbuf, vtense(wallbuf, "close"));
 
         if (saw_door)
-            pline_The("shop door reappears!");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "shop door reappears!");
         if (saw_floor)
-            pline_The("floor is repaired!");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "floor is repaired!");
         if (saw_untrap)
-            pline("%s!", upstart(trapmsg));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s!", upstart(trapmsg));
     } else {
         if (saw_door || saw_floor || saw_untrap)
-            pline("Suddenly, %s%s%s%s%s!",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s%s%s%s%s!",
                   saw_door ? "the shop door reappears" : "",
                   (saw_door && saw_floor) ? " and " : "",
                   saw_floor ? "the floor damage is gone" : "",
@@ -3949,9 +3949,9 @@ boolean croaked;
          *  for trap removal (except for hole and possibly trap door).
          */
         else if (inside_shop(u.ux, u.uy) == ESHK(shkp)->shoproom)
-            You_feel("more claustrophobic than before.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "more claustrophobic than before.");
         else if (!Deaf && !rn2(10))
-            Norep("The dungeon acoustics noticeably change.");
+            Norep_ex(ATR_NONE, CLR_MSG_ATTENTION, "The dungeon acoustics noticeably change.");
     }
     if (stop_picking)
         stop_occupation();

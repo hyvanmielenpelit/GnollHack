@@ -2426,7 +2426,7 @@ int style;
                 case LEVEL_TELEP:
                 case TELEP_TRAP:
                     if (cansee(bhitpos.x, bhitpos.y))
-                        pline("Suddenly the rolling boulder disappears!");
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly the rolling boulder disappears!");
                     else
                         You_hear("a rumbling stop abruptly.");
                     singleobj->otrapped = 0;
@@ -3632,7 +3632,7 @@ boolean byplayer;
 
     play_sfx_sound_at_location(SFX_PETRIFY, mon->mx, mon->my);
     if (cansee(mon->mx, mon->my))
-        pline("%s turns to stone.", Monnam(mon));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns to stone.", Monnam(mon));
     if (byplayer) {
         stoned = TRUE;
         xkilled(mon, XKILL_NOMSG);
@@ -6831,7 +6831,7 @@ boolean disarm;
                 incr_itimeout(&HParalyzed, d(5, 6));
                 context.botl = context.botlx = 1;
                 refresh_u_tile_gui_info(TRUE);
-                pline("Suddenly you are frozen in place!");
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Suddenly you are frozen in place!");
 #if 0
                 nomul(-d(5, 6));
                 multi_reason = "frozen by a trap";

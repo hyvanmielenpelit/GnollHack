@@ -3945,7 +3945,7 @@ struct attack *mattk;
             if (useeit)
             {
                 display_m_being_hit(mtmp, HIT_PETRIFIED, 0, 0UL, FALSE);
-                pline("%s is turned to stone!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is turned to stone!", Monnam(mtmp));
             }
             stoned = TRUE;
             killed(mtmp);
@@ -3956,7 +3956,7 @@ struct attack *mattk;
         }
         if (canseemon(mtmp) && couldsee(mtmp->mx, mtmp->my)
             && !Stone_resistance) {
-            You("meet %s gaze.", s_suffix(mon_nam(mtmp)));
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "meet %s gaze.", s_suffix(mon_nam(mtmp)));
             stop_occupation();
             if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
                 break;
@@ -3978,9 +3978,9 @@ struct attack *mattk;
 
                 mtmp->mspec_used = mtmp->mspec_used + (conf + rn2(6));
                 if (!Confusion)
-                    pline("%s gaze confuses you!", s_suffix(Monnam(mtmp)));
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s gaze confuses you!", s_suffix(Monnam(mtmp)));
                 else
-                    You("are getting more and more confused.");
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are getting more and more confused.");
                 if (!Confusion)
                     play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                 make_confused(itimeout_incr(HConfusion, conf), FALSE);
@@ -3999,7 +3999,7 @@ struct attack *mattk;
             } 
             else
             {
-                pline("%s stares piercingly at you!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s stares piercingly at you!", Monnam(mtmp));
                 if (!Stun_resistance)
                 {
                     int stun = d(2, 6);
@@ -4039,7 +4039,7 @@ struct attack *mattk;
                     blnd += d((int)mattk->damn, (int)mattk->damd);
                 blnd += mattk->damp;
 
-                You("are blinded by %s radiance!", s_suffix(mon_nam(mtmp)));
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are blinded by %s radiance!", s_suffix(mon_nam(mtmp)));
                 if (!Blind)
                     play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
                 make_blinded((long) blnd, FALSE);
@@ -4076,7 +4076,7 @@ struct attack *mattk;
                 double damage = adjust_damage(d(2, 6), mtmp, &youmonst, mattk->adtyp, ADFLAGS_NONE);
                 int lev = (int)mtmp->m_lev;
 
-                pline("%s attacks you with a fiery gaze!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s attacks you with a fiery gaze!", Monnam(mtmp));
                 stop_occupation();
                 if (Fire_immunity || Invulnerable) {
                     pline_The("fire doesn't feel hot!");
@@ -4123,9 +4123,9 @@ struct attack *mattk;
             if (canseemon(mtmp))
             {
                 if(!Cancelled)
-                    pline("%s gazes at you. You are hit by an invisible anti-magic ray!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gazes at you. You are hit by an invisible anti-magic ray!", Monnam(mtmp));
                 else
-                    pline("%s focuses %s anti-magic gaze on you.", Monnam(mtmp), mhis(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s focuses %s anti-magic gaze on you.", Monnam(mtmp), mhis(mtmp));
             }
             if (Cancellation_resistance)
             {
@@ -4738,7 +4738,7 @@ struct attack *mattk;
                 return 1;
             }
             play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
-            pline("%s turns to stone!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns to stone!", Monnam(mtmp));
             display_m_being_hit(mtmp, HIT_PETRIFIED, 0, 0UL, FALSE);
             stoned = 1;
             xkilled(mtmp, XKILL_NOMSG);

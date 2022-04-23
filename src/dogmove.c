@@ -734,9 +734,9 @@ struct edog *edog;
                 Your("leash goes slack.");
             }
             else if (cansee(mtmp->mx, mtmp->my))
-                pline("%s starves.", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s starves.", Monnam(mtmp));
             else
-                You_feel("%s for a moment.",
+                You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "%s for a moment.",
                          Hallucination ? "bummed" : "sad");
             mondied(mtmp);
             return  TRUE;

@@ -1991,7 +1991,7 @@ int in_sight;
 
         if (in_sight)
         {
-            pline("Suddenly, %s disappears out of sight.", mon_nam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, %s disappears out of sight.", mon_nam(mtmp));
             if (trap)
                 seetrap(trap);
         }

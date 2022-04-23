@@ -371,10 +371,10 @@ register struct monst *magr, *mdef;
                                                       : ARTICLE_NONE);
                 if (!justone)
                     montype = makeplural(montype);
-                You("dream of %s.", montype);
+                You_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "dream of %s.", montype);
             } 
             else
-                pline("Suddenly, you notice %s.", a_monnam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly, you notice %s.", a_monnam(mdef));
         }
     }
 
@@ -1585,13 +1585,13 @@ register struct obj* omonwep;
                 if(vis)
                     play_sfx_sound_at_location(SFX_PETRIFY, magr->mx, magr->my);
                 if (vis && canseemon(mdef))
-                    pline("%s turns to stone!", Monnam(mdef));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns to stone!", Monnam(mdef));
                 monstone(mdef);
 
                 if (!DEADMONSTER(mdef))
                     return 0;
                 else if (is_tame(mdef) && !vis)
-                    You(brief_feeling, "peculiarly sad");
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, brief_feeling, "peculiarly sad");
                 return (MM_DEF_DIED | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
             }
             else
@@ -1784,7 +1784,7 @@ register struct obj* omonwep;
                 if (!DEADMONSTER(mdef))
                     return 0;
                 else if (is_tame(mdef) && !vis)
-                    You(brief_feeling, "strangely sad");
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, brief_feeling, "strangely sad");
                 return (MM_DEF_DIED
                         | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
             }
