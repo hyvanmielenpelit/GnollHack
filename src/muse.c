@@ -191,10 +191,10 @@ boolean self;
         You_hear("a %s zap.", (distu(mtmp->mx, mtmp->my) <= range * range)
                                  ? "nearby" : "distant");
     } else if (self) {
-        pline("%s zaps %sself with %s!", Monnam(mtmp), mhim(mtmp),
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s zaps %sself with %s!", Monnam(mtmp), mhim(mtmp),
               doname(otmp));
     } else {
-        pline("%s zaps %s!", Monnam(mtmp), an(xname(otmp)));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s zaps %s!", Monnam(mtmp), an(xname(otmp)));
         stop_occupation();
     }
 }
@@ -230,7 +230,7 @@ struct obj *otmp;
     otmp->bknown = savebknown;
     play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_READ);
     if (vismon)
-        pline("%s reads %s!", Monnam(mtmp), onambuf);
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s reads %s!", Monnam(mtmp), onambuf);
     else
         You_hear("%s reading %s.",
                  x_monnam(mtmp, ARTICLE_A, (char *) 0,
@@ -252,7 +252,7 @@ struct obj *otmp;
 
     if (canseemon(mtmp)) {
         otmp->dknown = 1;
-        pline("%s drinks %s!", Monnam(mtmp), singular(otmp, doname));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s drinks %s!", Monnam(mtmp), singular(otmp, doname));
     } else if (!Deaf)
         You_hear("a chugging sound.");
 }
@@ -721,9 +721,9 @@ struct monst *mtmp;
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
         if (vismon) {
             if (otmp)
-                pline("%s uses a unicorn horn!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s uses a unicorn horn!", Monnam(mtmp));
             else
-                pline_The("tip of %s's horn glows!", mon_nam(mtmp));
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "tip of %s's horn glows!", mon_nam(mtmp));
         }
         if (is_blinded(mtmp)) {
             mcureblindness(mtmp, vismon);
@@ -731,14 +731,14 @@ struct monst *mtmp;
             mtmp->mprops[CONFUSION] = 0;
             mtmp->mprops[STUNNED] = 0;
             if (vismon)
-                pline("%s seems steadier now.", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems steadier now.", Monnam(mtmp));
         } else
             impossible("No need for unicorn horn?");
         return 2;
     case MUSE_BUGLE:
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
         if (vismon)
-            pline("%s plays %s!", Monnam(mtmp), doname(otmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s plays %s!", Monnam(mtmp), doname(otmp));
         else if (!Deaf)
             You_hear("a bugle playing reveille!");
 
@@ -770,7 +770,7 @@ struct monst *mtmp;
         }
         if ((mon_has_amulet(mtmp) || On_W_tower_level(&u.uz)) && !rn2(3)) {
             if (vismon)
-                pline("%s seems disoriented for a moment.", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems disoriented for a moment.", Monnam(mtmp));
             return 2;
         }
         if (oseen && how)
@@ -809,7 +809,7 @@ struct monst *mtmp;
 
             if (mon_has_amulet(mtmp) || In_endgame(&u.uz)) {
                 if (vismon)
-                    pline("%s seems very disoriented for a moment.",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems very disoriented for a moment.",
                           Monnam(mtmp));
                 return 2;
             }
@@ -843,12 +843,12 @@ struct monst *mtmp;
             || (is_drawbridge_wall(mtmp->mx, mtmp->my) >= 0)
             || (sstairs.sx && sstairs.sx == mtmp->mx
                 && sstairs.sy == mtmp->my)) {
-            pline_The("digging ray is ineffective.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "digging ray is ineffective.");
             return 2;
         }
         if (!Can_dig_down(&u.uz) && !levl[mtmp->mx][mtmp->my].candig) {
             if (canseemon(mtmp))
-                pline_The("%s here is too hard to dig in.",
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s here is too hard to dig in.",
                           surface(mtmp->mx, mtmp->my));
             return 2;
         }
@@ -857,9 +857,9 @@ struct monst *mtmp;
             return 2;
         seetrap(ttmp);
         if (vis) {
-            pline("%s has made a hole in the %s.", Monnam(mtmp),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s has made a hole in the %s.", Monnam(mtmp),
                   surface(mtmp->mx, mtmp->my));
-            pline("%s %s through...", Monnam(mtmp),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s through...", Monnam(mtmp),
                   is_flying(mtmp) ? "dives" : "falls");
         } else if (!Deaf)
             You_hear("%s crash through the %s.", something,
@@ -951,7 +951,7 @@ struct monst *mtmp;
 
             Mnam = Monnam(mtmp);
             play_sfx_sound_at_location((t->ttyp == TRAPDOOR) ? SFX_TRAP_DOOR_OPENS : SFX_HOLE_OPENS, trapx, trapy);
-            pline("%s %s into %s!", Mnam,
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s into %s!", Mnam,
                   vtense(Mnam, locomotion(mtmp->data, "jump")), an(trap_type_definitions[t->ttyp].type_name));
             if (levl[trapx][trapy].typ == SCORR) {
                 levl[trapx][trapy].typ = CORR;
@@ -998,7 +998,7 @@ struct monst *mtmp;
         }
 #endif
         if (vismon)
-            pline("%s escapes upstairs!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s escapes upstairs!", Monnam(mtmp));
         play_movement_sound(mtmp, CLIMBING_TYPE_STAIRS_UP);
         migrate_to_level(mtmp, ledger_no(&u.uz) - 1, MIGR_STAIRS_DOWN,
             (coord*)0);
@@ -1007,7 +1007,7 @@ struct monst *mtmp;
     case MUSE_DOWNSTAIRS:
         m_flee(mtmp);
         if (vismon)
-            pline("%s escapes downstairs!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s escapes downstairs!", Monnam(mtmp));
         play_movement_sound(mtmp, CLIMBING_TYPE_STAIRS_DOWN);
         migrate_to_level(mtmp, ledger_no(&u.uz) + 1, MIGR_STAIRS_UP,
                          (coord *) 0);
@@ -1015,7 +1015,7 @@ struct monst *mtmp;
     case MUSE_UP_LADDER:
         m_flee(mtmp);
         if (vismon)
-            pline("%s escapes up the ladder!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s escapes up the ladder!", Monnam(mtmp));
         play_movement_sound(mtmp, CLIMBING_TYPE_LADDER_UP);
         migrate_to_level(mtmp, ledger_no(&u.uz) - 1, MIGR_LADDER_DOWN,
                          (coord *) 0);
@@ -1023,7 +1023,7 @@ struct monst *mtmp;
     case MUSE_DN_LADDER:
         m_flee(mtmp);
         if (vismon)
-            pline("%s escapes down the ladder!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s escapes down the ladder!", Monnam(mtmp));
         play_movement_sound(mtmp, CLIMBING_TYPE_LADDER_DOWN);
         migrate_to_level(mtmp, ledger_no(&u.uz) + 1, MIGR_LADDER_UP,
                          (coord *) 0);
@@ -1042,13 +1042,13 @@ struct monst *mtmp;
             if (mon_has_special(mtmp))
                 return 0;
             if (vismon)
-                pline("%s escapes the dungeon!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s escapes the dungeon!", Monnam(mtmp));
             play_movement_sound(mtmp, sstairs.up ? CLIMBING_TYPE_STAIRS_UP : CLIMBING_TYPE_STAIRS_DOWN);
             mongone(mtmp);
             return 2;
         }
         if (vismon)
-            pline("%s escapes %sstairs!", Monnam(mtmp),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s escapes %sstairs!", Monnam(mtmp),
                   sstairs.up ? "up" : "down");
         /* going from the Valley to Castle (Stronghold) has no sstairs
            to target, but having sstairs.<sx,sy> == <0,0> will work the
@@ -1063,7 +1063,7 @@ struct monst *mtmp;
         if (vis)
         {
             Mnam = Monnam(mtmp);
-            pline("%s %s onto a teleport trap!", Mnam,
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s onto a teleport trap!", Mnam,
                   vtense(Mnam, locomotion(mtmp->data, "jump")));
             seetrap(t_at(trapx, trapy));
         }
@@ -1103,7 +1103,7 @@ struct monst *mtmp;
         if (is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
         if (vismon)
-            pline("%s looks much better.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks much better.", Monnam(mtmp));
         if (oseen)
             makeknown(POT_EXTRA_HEALING);
         m_useup(mtmp, otmp);
@@ -1119,7 +1119,7 @@ struct monst *mtmp;
         if (is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
         if (vismon)
-            pline("%s looks much, much better.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks much, much better.", Monnam(mtmp));
         if (oseen)
             makeknown(POT_GREATER_HEALING);
         m_useup(mtmp, otmp);
@@ -1134,7 +1134,7 @@ struct monst *mtmp;
         if (is_blinded(mtmp) && otmp->otyp != POT_SICKNESS)
             mcureblindness(mtmp, vismon);
         if (vismon)
-            pline("%s looks completely healed.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks completely healed.", Monnam(mtmp));
         if (oseen)
             makeknown(otmp->otyp);
         m_useup(mtmp, otmp);

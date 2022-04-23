@@ -1123,7 +1123,7 @@ doengrave()
     if (len == 0 || index(ebuf, '\033')) {
         if (zapwand) {
             if (!Blind)
-                pline("%s, then %s.", Tobjnam(otmp, "glow"),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s, then %s.", Tobjnam(otmp, "glow"),
                       otense(otmp, "fade"));
             return 1;
         } else {

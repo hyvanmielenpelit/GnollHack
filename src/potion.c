@@ -2003,6 +2003,7 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
     int costchange = COST_none;
     boolean altfmt = FALSE, res = FALSE;
     enum sfx_sound_types sfxsound = 0;
+    int textcolor = CLR_MSG_ATTENTION;
 
     if (!potion || potion->otyp != POT_WATER)
         return FALSE;
@@ -2012,6 +2013,7 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
         if (targobj->cursed) 
         {
             func = uncurse;
+            textcolor = CLR_MSG_POSITIVE;
             glowcolor = NH_AMBER;
             costchange = COST_UNCURS;
             sfxsound = SFX_UNCURSE_ITEM_SUCCESS;
@@ -2019,6 +2021,7 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
         else if (!targobj->blessed)
         {
             func = bless;
+            textcolor = CLR_MSG_POSITIVE;
             glowcolor = NH_LIGHT_BLUE;
             costchange = COST_alter;
             altfmt = TRUE; /* "with a <color> aura" */
@@ -2030,6 +2033,7 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
         if (targobj->blessed)
         {
             func = unbless;
+            textcolor = CLR_MSG_WARNING;
             glowcolor = "brown";
             costchange = COST_UNBLSS;
             sfxsound = SFX_UNBLESS_ITEM_SUCCESS;
@@ -2037,6 +2041,7 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
         else if (!targobj->cursed) 
         {
             func = curse;
+            textcolor = CLR_MSG_NEGATIVE;
             glowcolor = NH_BLACK;
             costchange = COST_alter;
             altfmt = TRUE;
@@ -2067,9 +2072,9 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
             glowcolor = hcolor(glowcolor);
 
             if (altfmt)
-                pline("%s with %s aura.", objphrase, an(glowcolor));
+                pline_ex(ATR_NONE, textcolor, "%s with %s aura.", objphrase, an(glowcolor));
             else
-                pline("%s %s.", objphrase, glowcolor);
+                pline_ex(ATR_NONE, textcolor, "%s %s.", objphrase, glowcolor);
 
             iflags.last_msg = PLNMSG_OBJ_GLOWS;
             targobj->bknown = !Hallucination;
@@ -3233,7 +3238,7 @@ dodip()
             default:
                 useupall(obj);
                 if (!Blind)
-                    pline_The("mixture glows brightly and evaporates.");
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "mixture glows brightly and evaporates.");
                 return 1;
             }
         }

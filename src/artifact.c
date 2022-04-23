@@ -2745,7 +2745,7 @@ struct obj *obj;
                 if (blessed)
                 {
                     check_arti_name_discovery(obj);
-                    pline("A light blue aura glows inside %s for a while.", the(cxname(obj)));
+                    pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "A light blue aura glows inside %s for a while.", the(cxname(obj)));
                     obj->repowerleft = artilist[obj->oartifact].repower_time;
                 }
                 else
@@ -3531,21 +3531,21 @@ int orc_count; /* new count, new count is in the items; OBSOLETE: (warn_obj_cnt 
         if (orc_count == -1 && otmp->detectioncount > 0) {
             /* -1 means that blindness has just been toggled; give a
                'continue' message that eventual 'stop' message will match */
-            pline("%s is %s.", weapbuf,
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is %s.", weapbuf,
                   glow_verb(Blind ? 0 : otmp->detectioncount, TRUE));
         } else if (newstr > 0 && newstr != oldstr) {
             /* 'start' message */
             if (!Blind)
-                pline("%s %s %s%c", weapbuf,
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s %s%c", weapbuf,
                       otense(otmp, glow_verb(orc_count, FALSE)),
                       colorbuf,
                       (newstr > oldstr) ? '!' : '.');
             else if (oldstr == 0) /* quivers */
-                pline("%s %s slightly.", weapbuf,
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s slightly.", weapbuf,
                       otense(otmp, glow_verb(0, FALSE)));
         } else if (orc_count == 0 && otmp->detectioncount > 0) {
             /* 'stop' message */
-            pline("%s stops %s.", weapbuf,
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stops %s.", weapbuf,
                   glow_verb(Blind ? 0 : otmp->detectioncount, TRUE));
         }
     }

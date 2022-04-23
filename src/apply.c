@@ -3548,25 +3548,25 @@ struct obj* obj;
                 {
                     otmp->orotten = TRUE;
                     suggestnamingwand = TRUE;
-                    pline("%s %s in black energy for a moment.", The(cxname(otmp)), otense(otmp, "shine"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s in black energy for a moment.", The(cxname(otmp)), otense(otmp, "shine"));
                 }
                 else
                 {
                     suggestnamingwand = TRUE;
-                    pline("%s in black energy for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in black energy for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case WAN_COLD:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
                     suggestnamingwand = TRUE;
-                    pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
                     break;
                 }
                 if (otmp->elemental_enchantment == FIRE_ENCHANTMENT)
                 {
                     wandknown = TRUE;
-                    pline("The cold energies of %s dispel the fire enchantment on %s.", the(xname(obj)), yname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The cold energies of %s dispel the fire enchantment on %s.", the(xname(obj)), yname(otmp));
                     otmp->elemental_enchantment = 0;
                     break;
                 }
@@ -3590,12 +3590,12 @@ struct obj* obj;
                 else if (otmp->oclass == FOOD_CLASS)
                 {
                     wandknown = TRUE;
-                    pline("%s %s covered in frost, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s covered in frost, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));
                 }
                 else
                 {
                     suggestnamingwand = TRUE;
-                    pline("%s in blue for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case WAN_FIRE:
@@ -3603,7 +3603,7 @@ struct obj* obj;
                 {
                     wandknown = TRUE;
                     play_sfx_sound(SFX_MONSTER_ON_FIRE);
-                    pline("Flames emerge from %s and engulf %s!", the(xname(obj)), yname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Flames emerge from %s and engulf %s!", the(xname(obj)), yname(otmp));
                     read_the_ruling_ring(otmp);
                     break;
                 }
@@ -3611,13 +3611,13 @@ struct obj* obj;
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
                     suggestnamingwand = TRUE;
-                    pline("%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
                     break;
                 }
                 if (otmp->elemental_enchantment == COLD_ENCHANTMENT)
                 {
                     wandknown = TRUE;
-                    pline("The fiery energies of %s dispel the cold enchantment on %s.", the(xname(obj)), yname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The fiery energies of %s dispel the cold enchantment on %s.", the(xname(obj)), yname(otmp));
                     otmp->elemental_enchantment = 0;
                     break;
                 }
@@ -3625,7 +3625,7 @@ struct obj* obj;
                 if (is_flammable(otmp) && (otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS))
                 {
                     wandknown = TRUE;
-                    pline("Flames erupt from %s and engulf %s!", the(xname(obj)), yname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Flames erupt from %s and engulf %s!", the(xname(obj)), yname(otmp));
                     (void)erode_obj(otmp, xname(otmp), ERODE_BURN,
                         EF_GREASE | EF_VERBOSE);
                 }
@@ -3634,11 +3634,11 @@ struct obj* obj;
                     wandknown = TRUE;
                     if (!otmp->lamplit)
                     {
-                        pline("A flame eminates from %s and lights up %s.", yname(obj), yname(otmp));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A flame eminates from %s and lights up %s.", yname(obj), yname(otmp));
                         use_lamp(otmp);
                     }
                     else
-                        pline("A flame eminates from %s, keeping %s alight.", yname(obj), yname(otmp));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A flame eminates from %s, keeping %s alight.", yname(obj), yname(otmp));
                 }
                 else if(is_elemental_enchantable(otmp))
                 {
@@ -3659,19 +3659,19 @@ struct obj* obj;
                 else if (otmp->oclass == FOOD_CLASS)
                 {
                     wandknown = TRUE;
-                    pline("%s %s covered in flames, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s covered in flames, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));
                 }
                 else
                 {
                     suggestnamingwand = TRUE;
-                    pline("%s in red for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in red for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case WAN_LIGHTNING:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
                     suggestnamingwand = TRUE;
-                    pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
                     break;
                 }
                 if (is_elemental_enchantable(otmp))
@@ -3692,11 +3692,11 @@ struct obj* obj;
                 else if (otmp->oclass == FOOD_CLASS)
                 {
                     wandknown = TRUE;
-                    pline("%s %s jolted by lightning, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));                }
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s jolted by lightning, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));                }
                 else
                 {
                     suggestnamingwand = TRUE;
-                    pline("%s in blue for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case WAN_STRIKING:
@@ -3705,7 +3705,7 @@ struct obj* obj;
                 else
                 {
                     suggestnamingwand = TRUE;
-                    pline("%s for a while, but that's about it.", Tobjnam(otmp, "vibrate"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s for a while, but that's about it.", Tobjnam(otmp, "vibrate"));
                 }
                 break;
             case WAN_DISJUNCTION:
@@ -3713,7 +3713,7 @@ struct obj* obj;
                 if (objects[otmp->otyp].oc_magic || otmp->enchantment != 0 || otmp->charges > (otmp->oclass == WAND_CLASS ? -1 : 0) || otmp->elemental_enchantment > 0 || otmp->blessed || otmp->cursed)
                 {
                     suggestnamingwand = TRUE;
-                    pline("%s in gray for a while.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in gray for a while.", Tobjnam(otmp, "flicker"));
                 }
                 else
                     pline("Nothing much happens.");
@@ -3728,7 +3728,7 @@ struct obj* obj;
                     suggestnamingwand = TRUE;
                     //This will prompt weapon glow
                     play_sfx_sound(SFX_AURA_GLOW);
-                    pline("%s black-bluish for a while.", Yobjnam2(otmp, "glow"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s black-bluish for a while.", Yobjnam2(otmp, "glow"));
                     otmp->enchantment += 3 - otmp->enchantment / 3;
                     break;
                 }
@@ -3746,7 +3746,7 @@ struct obj* obj;
                     if (!Blind)
                     {
                         suggestnamingwand = TRUE;
-                        pline("%s a strange %s, but %s intact.",
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s a strange %s, but %s intact.",
                             Tobjnam(otmp, "glow"), hcolor("black"), otense(otmp, "remain"));
                     }
                     break;
@@ -3757,7 +3757,7 @@ struct obj* obj;
                     remove_worn_item(otmp, TRUE);
 
                 play_sfx_sound(SFX_DISINTEGRATE);
-                pline("%s disintegrated!", Yobjnam2(otmp, "are"));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrated!", Yobjnam2(otmp, "are"));
                 wandknown = TRUE;
                 //Destroy item;
                 useupall(otmp);
@@ -3769,7 +3769,7 @@ struct obj* obj;
                     if (!Blind)
                     {
                         suggestnamingwand = TRUE;
-                        pline("%s a strange %s, but %s intact.",
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s a strange %s, but %s intact.",
                             Tobjnam(otmp, "glow"), otense(otmp, "remain"), hcolor("purple"));
                     }
                     break;
@@ -3788,13 +3788,13 @@ struct obj* obj;
                 strcat(buftext3, " and ");
 
                 otmp = poly_obj(otmp, STRANGE_OBJECT);
-                pline("%s %s%s into %s!", buftext, undonned ? buftext3 : "", buftext2, an(xname(otmp)));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s%s into %s!", buftext, undonned ? buftext3 : "", buftext2, an(xname(otmp)));
                 update_inventory();
                 break;
             case WAN_EVAPORATION:
                 if (otmp->oclass == POTION_CLASS)
                 {
-                    pline("%s!", Yobjnam2(otmp, "evaporate"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s!", Yobjnam2(otmp, "evaporate"));
                     wandknown = TRUE;
                     useupall(otmp);
                 }
@@ -3817,7 +3817,7 @@ struct obj* obj;
                 strcpy(tbuf, Tobjnam(otmp, "vanish"));
                 boolean stillexists = rloco(otmp);
                 play_sfx_sound(SFX_TELEPORT);
-                pline("%s from your person%s.", tbuf, !stillexists ? "" :
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s from your person%s.", tbuf, !stillexists ? "" :
                     otmp->ox == u.ux && otmp->oy == u.uy ? " and then appears at your feet" : 
                     cansee(otmp->ox, otmp->oy) && dist2(u.ux, u.uy, otmp->ox, otmp->oy) <= 9 ? " and then appears near you" : 
                     cansee(otmp->ox, otmp->oy) ? " and then appears at a distance from you" :
@@ -5596,7 +5596,7 @@ doapply()
                     play_sfx_sound(SFX_AURA_GLOW);
                     if (!Blind)
                     {
-                        pline("%s %s.", Yobjnam2(obj, "glow"), hcolor("brown"));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s.", Yobjnam2(obj, "glow"), hcolor("brown"));
                         obj->bknown = 1;
                     }
                     unbless(obj);

@@ -886,11 +886,11 @@ intervene()
     switch (which) {
     case 0:
     case 1:
-        You_feel("vaguely nervous.");
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "vaguely nervous.");
         break;
     case 2:
         if (!Blind)
-            You("notice a %s glow surrounding you.", hcolor(NH_BLACK));
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "notice a %s glow surrounding you.", hcolor(NH_BLACK));
         rndcurse();
         break;
     case 3:

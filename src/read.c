@@ -1784,7 +1784,7 @@ boolean *effect_happened_ptr;
             if(otmp && otmp->oclass != ARMOR_CLASS)
             {
                 play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
-                pline(!Blind
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, !Blind
                     ? "%s then fades."
                     : "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
                 sobj = 0;
@@ -2021,7 +2021,7 @@ boolean *effect_happened_ptr;
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                 special_effect_wait_until_action(0);
-                Your("%s begin to %s%s.", makeplural(body_part(HAND)),
+                Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s begin to %s%s.", makeplural(body_part(HAND)),
                     Blind ? "tingle" : "glow ",
                     Blind ? "" : hcolor(NH_PURPLE));
                 make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
@@ -2031,7 +2031,7 @@ boolean *effect_happened_ptr;
             {
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 special_effect_wait_until_action(0);
-                pline("A %s%s surrounds your %s.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A %s%s surrounds your %s.",
                     Blind ? "" : hcolor(NH_RED),
                     Blind ? "faint buzz" : " glow", body_part(HEAD));
                 make_confused(0L, TRUE);
@@ -2044,7 +2044,7 @@ boolean *effect_happened_ptr;
             {
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 special_effect_wait_until_action(0);
-                Your("%s%s %s%s.", makeplural(body_part(HAND)),
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%s %s%s.", makeplural(body_part(HAND)),
                     Blind ? "" : " begin to glow",
                     Blind ? (const char*) "tingle" : hcolor(NH_RED),
                     u.umconf ? " even more" : "");
@@ -2056,10 +2056,10 @@ boolean *effect_happened_ptr;
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 special_effect_wait_until_action(0);
                 if (Blind)
-                    Your("%s tingle %s sharply.", makeplural(body_part(HAND)),
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s tingle %s sharply.", makeplural(body_part(HAND)),
                         u.umconf ? "even more" : "very");
                 else
-                    Your("%s glow a%s brilliant %s.",
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s glow a%s brilliant %s.",
                         makeplural(body_part(HAND)),
                         u.umconf ? "n even more" : "", hcolor(NH_RED));
                 /* after a while, repeated uses become less effective */
@@ -2798,12 +2798,13 @@ boolean *effect_happened_ptr;
             {
                 u.uconduct.gnostic++;
                 enum sfx_sound_types soundid = SFX_BLESS_ITEM_SUCCESS;
-
+                int textcolor = CLR_MSG_ATTENTION;
                 if (otyp == SPE_BLESS) 
                 {
                     if (otmp->cursed) 
                     {
                         func = uncurse;
+                        textcolor = CLR_MSG_POSITIVE;
                         glowcolor = NH_AMBER;
                         costchange = COST_UNCURS;
                         soundid = SFX_UNCURSE_ITEM_SUCCESS;
@@ -2811,6 +2812,7 @@ boolean *effect_happened_ptr;
                     else if (!otmp->blessed) 
                     {
                         func = bless;
+                        textcolor = CLR_MSG_POSITIVE;
                         glowcolor = NH_LIGHT_BLUE;
                         costchange = COST_alter;
                         altfmt = TRUE; /* "with a <color> aura" */
@@ -2822,6 +2824,7 @@ boolean *effect_happened_ptr;
                     if (otmp->blessed) 
                     {
                         func = unbless;
+                        textcolor = CLR_MSG_WARNING;
                         glowcolor = "brown";
                         costchange = COST_UNBLSS;
                         soundid = SFX_UNBLESS_ITEM_SUCCESS;
@@ -2829,6 +2832,7 @@ boolean *effect_happened_ptr;
                     else if (!otmp->cursed)
                     {
                         func = curse;
+                        textcolor = CLR_MSG_NEGATIVE;
                         glowcolor = NH_BLACK;
                         costchange = COST_alter;
                         altfmt = TRUE;
@@ -2843,9 +2847,9 @@ boolean *effect_happened_ptr;
                        is cleared instead of set if perception is distorted */
                     glowcolor = hcolor(glowcolor);
                     if (altfmt)
-                        pline("%s with %s aura.", Yobjnam2(otmp, "glow"), an(glowcolor));
+                        pline_ex(ATR_NONE, textcolor, "%s with %s aura.", Yobjnam2(otmp, "glow"), an(glowcolor));
                     else
-                        pline("%s %s.", Yobjnam2(otmp, "glow"), glowcolor);
+                        pline_ex(ATR_NONE, textcolor, "%s %s.", Yobjnam2(otmp, "glow"), glowcolor);
                     iflags.last_msg = PLNMSG_OBJ_GLOWS;
                     otmp->bknown = !Hallucination;
                     /* potions of water are the only shop goods whose price depends
@@ -2878,6 +2882,7 @@ boolean *effect_happened_ptr;
             /* when casting a spell we know we're not confused,
                so inventory must be empty (another message has
                already been given above if reading a scroll) */
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("You're not carrying anything to be %s.", (otyp == SPE_BLESS ? "blessed" : "cursed"));
         }
         break;
@@ -2888,7 +2893,7 @@ boolean *effect_happened_ptr;
             {
                 if (scursed)
                 {
-                    You_feel("discharged.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "discharged.");
                     u.uen = 0;
                 } 
                 else 
@@ -2939,9 +2944,9 @@ boolean *effect_happened_ptr;
             {
                 play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
                 if(objects[otmp->otyp].oc_enchantable == ENCHTYPE_NO_ENCHANTMENT)
-                    You("have a feeling of loss.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "have a feeling of loss.");
                 else
-                    pline(!Blind
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, !Blind
                         ? "%s then fades."
                         : "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
                 sobj = 0;
@@ -2954,7 +2959,7 @@ boolean *effect_happened_ptr;
             {
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 special_effect_wait_until_action(0);
-                Your("head spins.");
+                Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "head spins.");
                 make_stunned((HStun& TIMEOUT) + rn1(scursed ? 90 : 40, 10), TRUE);;
                 context.botl = context.botlx = 1;
                 special_effect_wait_until_end(0);
@@ -3057,18 +3062,18 @@ boolean *effect_happened_ptr;
             }
         }
         else
-            Your("%s tingle.", makeplural(body_part(FINGER)));
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s tingle.", makeplural(body_part(FINGER)));
 
         known = TRUE;
 
         break;
     case SCR_MAGIC_MAPPING:
         if (level.flags.nommap) {
-            Your("mind is filled with crazy lines!");
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "mind is filled with crazy lines!");
             if (Hallucination)
-                pline("Wow!  Modern art.");
+                pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Wow!  Modern art.");
             else
-                Your("%s spins in bewilderment.", body_part(HEAD));
+                Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s spins in bewilderment.", body_part(HEAD));
             make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             break;

@@ -3004,7 +3004,7 @@ dopray()
     {
         /* if you've been true to your god you can't die while you pray */
         if (!Blind)
-            You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are surrounded by a shimmering light.");
+            You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "are surrounded by a shimmering light.");
         play_sfx_sound(SFX_PRAY_SHIMMERING_LIGHT);
         u.uinvulnerable = TRUE;
     }

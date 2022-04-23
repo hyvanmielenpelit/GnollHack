@@ -4836,13 +4836,13 @@ register struct obj *obj;
         ideed = TRUE;
         switch (obj->otyp) { /* effects that need eyes */
         case RIN_ADORNMENT:
-            pline_The("faucets flash brightly for a moment.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "faucets flash brightly for a moment.");
             break;
         case RIN_REGENERATION:
-            pline_The("sink looks as good as new.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink looks as good as new.");
             break;
         case RIN_REPLENISHMENT:
-            pline_The("sink shines with a blue aura for a while.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink shines with a blue aura for a while.");
             break;
         case RIN_INVISIBILITY:
             You("don't see anything happen to the sink.");
@@ -4851,35 +4851,35 @@ register struct obj *obj;
             You_see("the ring slide right down the drain!");
             break;
         case RIN_SEE_INVISIBLE:
-            You_see("some %s in the sink.",
+            You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "some %s in the sink.",
                     Hallucination ? "oxygen molecules" : "air");
             break;
         case RIN_STEALTH:
-            pline_The("sink seems to blend into the floor for a moment.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink seems to blend into the floor for a moment.");
             break;
         case RIN_FIRE_RESISTANCE:
-            pline_The("hot %s faucet flashes brightly for a moment.",
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "hot %s faucet flashes brightly for a moment.",
                       hliquid("water"));
             break;
         case RIN_COLD_RESISTANCE:
-            pline_The("cold %s faucet flashes brightly for a moment.",
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "cold %s faucet flashes brightly for a moment.",
                       hliquid("water"));
             break;
         case RIN_PROTECTION_FROM_SHAPE_CHANGERS:
-            pline_The("sink looks nothing like a fountain.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink looks nothing like a fountain.");
             break;
         case RIN_PROTECTION:
-            pline_The("sink glows %s for a moment.",
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink glows %s for a moment.",
                       hcolor((obj->enchantment < 0) ? NH_BLACK : NH_SILVER));
             break;
         case RIN_WARNING:
-            pline_The("sink glows %s for a moment.", hcolor(NH_WHITE));
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink glows %s for a moment.", hcolor(NH_WHITE));
             break;
         case RIN_TELEPORT_CONTROL:
-            pline_The("sink looks like it is being beamed aboard somewhere.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink looks like it is being beamed aboard somewhere.");
             break;
         case RIN_POLYMORPH_CONTROL:
-            pline_The(
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION,
                   "sink momentarily looks like a regularly erupting geyser.");
             break;
         default:

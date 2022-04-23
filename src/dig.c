@@ -2175,7 +2175,7 @@ struct obj* origobj;
                 if (room->typ == SDOOR)
                     transform_location_type(zx, zy, DOOR, 0);  /* doormask set below */
                 else if (cansee(zx, zy))
-                    pline_The("%s is razed!", get_door_name_at_ptr(room));
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is razed!", get_door_name_at_ptr(room));
                 watch_dig((struct monst*)0, zx, zy, TRUE);
                 room->doormask = (D_NODOOR | otherflags);
                 unblock_vision_and_hearing_at_point(zx, zy); /* vision */
@@ -2185,7 +2185,7 @@ struct obj* origobj;
             else
             {
                 play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
-                pline_The("%s glows then fades.", get_door_name_at_ptr(room));
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s glows then fades.", get_door_name_at_ptr(room));
                 break;
             }
             digdepth -= 2;
@@ -2218,7 +2218,7 @@ struct obj* origobj;
                 else if (!Blind)
                 {
                     play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
-                    pline_The("wall glows then fades.");
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "wall glows then fades.");
                 }
                 break;
             } 
@@ -2256,7 +2256,7 @@ struct obj* origobj;
                 else if (!Blind)
                 {
                     play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
-                    pline_The("rock glows then fades.");
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "rock glows then fades.");
                 }
                 break;
             }

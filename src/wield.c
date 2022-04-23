@@ -1879,7 +1879,7 @@ register int amount;
     {
         play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
         if (!Blind)
-            pline("%s %s.", Yobjnam2(weapon, "faintly glow"), color);
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s.", Yobjnam2(weapon, "faintly glow"), color);
         return 1;
     }
 
@@ -1894,9 +1894,9 @@ register int amount;
     {
         play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
         if (!Blind)
-            pline("%s %s for a while and then %s.", Yobjnam2(weapon, "violently glow"), color, otense(weapon, "evaporate"));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s for a while and then %s.", Yobjnam2(weapon, "violently glow"), color, otense(weapon, "evaporate"));
         else
-            pline("%s.", Yobjnam2(weapon, "evaporate"));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s.", Yobjnam2(weapon, "evaporate"));
 
         useupall(weapon); /* let all of them disappear */
         return 1;
@@ -1905,7 +1905,7 @@ register int amount;
     if (!Blind) 
     {
         xtime = (amount * amount == 1) ? "moment" : "while";
-        pline("%s %s for a %s.", Yobjnam2(weapon, amount == 0 ? "violently glow" : "glow"), color, xtime);
+        pline_ex(ATR_NONE, amount == 0 ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "%s %s for a %s.", Yobjnam2(weapon, amount == 0 ? "violently glow" : "glow"), color, xtime);
 
         if (otyp != STRANGE_OBJECT && weapon->known && (amount > 0 || (amount < 0 && otmp->bknown)))
             makeknown(otyp);

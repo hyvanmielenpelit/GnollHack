@@ -2412,7 +2412,7 @@ boolean* obj_destroyed;
                     && canseemon(mon))
                 {
                     play_sfx_sound_at_location(SFX_ACQUIRE_CONFUSION, mon->mx, mon->my);
-                    pline("%s appears confused.", Monnam(mon));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears confused.", Monnam(mon));
                 }
             }
         }
@@ -4652,14 +4652,14 @@ struct monst *mon;
         return;
     if (u.umconf == 1) {
         if (Blind)
-            Your("%s stop tingling.", hands);
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stop tingling.", hands);
         else
-            Your("%s stop glowing %s.", hands, hcolor(NH_RED));
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stop glowing %s.", hands, hcolor(NH_RED));
     } else {
         if (Blind)
-            pline_The("tingling in your %s lessens.", hands);
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "tingling in your %s lessens.", hands);
         else
-            Your("%s no longer glow so brightly %s.", hands, hcolor(NH_RED));
+            Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s no longer glow so brightly %s.", hands, hcolor(NH_RED));
     }
     u.umconf--;
 }

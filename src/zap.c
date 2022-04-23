@@ -2425,13 +2425,13 @@ boolean replaceundead;
             Strcat(buf, corpse_xname(corpse, (const char *) 0, CXN_NO_PFX));
             if (one_of) /* could be simplified to ''corpse->quan = 1L;'' */
                 corpse->quan--;
-            pline("%s glows iridescently.", upstart(buf));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s glows iridescently.", upstart(buf));
         } 
         else if (shkp)
         {
             /* need some prior description of the corpse since
                stolen_value() will refer to the object as "it" */
-            pline("A corpse is resuscitated.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A corpse is resuscitated.");
         }
 
         /* don't charge for shopkeeper's own corpse if we just revived him */
@@ -2456,7 +2456,7 @@ boolean replaceundead;
         if (ghost && ghost->data == &mons[PM_GHOST]) 
         {
             if (canseemon(ghost))
-                pline("%s is suddenly drawn into its former body!",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is suddenly drawn into its former body!",
                       Monnam(ghost));
             /* transfer the ghost's inventory along with it */
             while ((otmp = ghost->minvent) != 0) 
@@ -5540,7 +5540,7 @@ dozap()
     {
         play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
         if (!Blind)
-            pline("%s glows and fades.", The(xname(obj)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s glows and fades.", The(xname(obj)));
         /* make him pay for knowing !NODIR */
     } 
     else if (!u.dx && !u.dy && !u.dz
@@ -10260,7 +10260,7 @@ boolean forcedestroy;
         {
             skip++;
             if (!Blind)
-                pline("%s glows a strange %s, but remains intact.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s glows a strange %s, but remains intact.",
                       The(xname(obj)), hcolor("dark red"));
         }
         else if (oresist_fire(obj) || is_obj_protected_by_property(obj, &youmonst, dmgtyp))
@@ -10542,7 +10542,7 @@ int osym, dmgtyp;
             {
                 skip++;
                 if (vis)
-                    pline("%s glows a strange %s, but remains intact.",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s glows a strange %s, but remains intact.",
                           The(distant_name(obj, xname)), hcolor("dark red"));
             }
             if (oresist_fire(obj) || is_obj_protected_by_property(obj, mtmp, dmgtyp))
@@ -11346,7 +11346,7 @@ armageddon()
 void
 timestop()
 {
-    pline("The flow of time seems to slow down!");
+    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "The flow of time seems to slow down!");
     context.time_stopped = TRUE;
     begin_timestoptimer(d(objects[SPE_TIME_STOP].oc_spell_dur_dice, objects[SPE_TIME_STOP].oc_spell_dur_diesize) + objects[SPE_TIME_STOP].oc_spell_dur_plus);
 

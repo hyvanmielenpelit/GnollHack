@@ -2637,7 +2637,7 @@ boolean atme;
             int expl_type = EXPL_METEOR_SWARM;
             for (n = 0; n < shots; n++)
             {
-                You("shoot a meteor!");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "shoot a meteor!");
                 explode(cc.x, cc.y, objects[otyp].oc_dir_subtype, &youmonst, objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize, objects[otyp].oc_spell_dmg_plus, otyp, SPBOOK_CLASS, expl_type);
             }
         }
@@ -2723,7 +2723,7 @@ boolean atme;
             do_vicinity_map(pseudo);
         /* at present, only one thing blocks clairvoyance */
         } else if (uarmh && uarmh->otyp == CORNUTHAUM)
-            You("sense a pointy hat on top of your %s.", body_part(HEAD));
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "sense a pointy hat on top of your %s.", body_part(HEAD));
         special_effect_wait_until_end(0);
         break;
     case SPE_MINOR_CONSULTATION:
@@ -2772,7 +2772,7 @@ boolean atme;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound_at_location(SFX_GENERAL_GAIN_ABILITY_SPELL, u.ux, u.uy);
         special_effect_wait_until_action(0);
-        You("successfully cast \"%s\".", spellname(spell));
+        You_ex(ATR_NONE, CLR_MSG_POSITIVE, "successfully cast \"%s\".", spellname(spell));
         addspellintrinsictimeout(otyp);
         special_effect_wait_until_end(0);
         break;
@@ -2814,25 +2814,25 @@ boolean atme;
             case SPE_DEATH_ENCHANT_ITEM:
                 if (is_death_enchantable(otmp))
                 {
-                    You("enchant %s with death magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "enchant %s with death magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, DEATH_ENCHANTMENT_QUANTITY_NORMAL, DEATH_ENCHANTMENT);
                     prinv((char*)0, otmp, 0L);
                     //otmp->elemental_enchantment = DEATH_ENCHANTMENT;
                 }
                 else
                 {
-                    pline("%s in black energy for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in black energy for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case SPE_COLD_ENCHANT_ITEM:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
-                    pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
                     break;
                 }
                 if (otmp->elemental_enchantment == FIRE_ENCHANTMENT)
                 {
-                    pline("The cold energies dispel the flaming enchantment on %s.", yname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The cold energies dispel the flaming enchantment on %s.", yname(otmp));
                     otmp->elemental_enchantment = 0;
                     update_inventory();
                     break;
@@ -2840,25 +2840,25 @@ boolean atme;
 
                 if (is_elemental_enchantable(otmp))
                 {
-                    You("enchant %s with freezing magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "enchant %s with freezing magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL, COLD_ENCHANTMENT);
                     prinv((char*)0, otmp, 0L);
                     //otmp->elemental_enchantment = COLD_ENCHANTMENT;
                 }
                 else
                 {
-                    pline("%s in blue for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case SPE_FIRE_ENCHANT_ITEM:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
-                    pline("%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
                     break;
                 }
                 if (otmp->elemental_enchantment == COLD_ENCHANTMENT)
                 {
-                    pline("The fiery energies dispel the freezing enchantment on %s.", yname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The fiery energies dispel the freezing enchantment on %s.", yname(otmp));
                     otmp->elemental_enchantment = 0;
                     update_inventory();
                     break;
@@ -2866,32 +2866,32 @@ boolean atme;
 
                 if (is_elemental_enchantable(otmp))
                 {
-                    You("enchant %s with fire magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "enchant %s with fire magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL, FIRE_ENCHANTMENT);
                     prinv((char*)0, otmp, 0L);
                     //otmp->elemental_enchantment = FIRE_ENCHANTMENT;
                 }
                 else
                 {
-                    pline("%s in red for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in red for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case SPE_LIGHTNING_ENCHANT_ITEM:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
-                    pline("%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
                     break;
                 }
                 if (is_elemental_enchantable(otmp))
                 {
-                    You("enchant %s with lightning magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "enchant %s with lightning magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL, LIGHTNING_ENCHANTMENT);
                     prinv((char*)0, otmp, 0L);
                     //otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
                 }
                 else
                 {
-                    pline("%s in blue for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             }

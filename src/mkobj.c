@@ -2814,7 +2814,7 @@ int old_range;
                    when changing intensity, using "less brightly" is
                    straightforward for dimming, but we need "brighter"
                    rather than "more brightly" for brightening; ugh */
-                pline("%s %s %s%s.", buf, otense(obj, "shine"),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s %s%s.", buf, otense(obj, "shine"),
                       (abs(delta) > 1) ? "much " : "",
                       (delta > 0) ? "brighter" : "less brightly");
             }
