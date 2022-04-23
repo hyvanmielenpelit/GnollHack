@@ -2341,7 +2341,7 @@ boolean domsg;
     }
 
     if (reslt && domsg) {
-        pline("You %s %s where %s was.",
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You %s %s where %s was.",
               !canseemon(mon) ? "now detect" : "observe",
               noname_monnam(mon, ARTICLE_A), oldmtype);
         /* this message is given when it turns into a fog cloud

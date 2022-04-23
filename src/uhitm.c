@@ -3521,7 +3521,7 @@ register struct attack *mattk;
         {
             You("engulf it, then expel it.");
             if (canspotmon(mdef))
-                pline("It turns into %s.", a_monnam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It turns into %s.", a_monnam(mdef));
             else
                 map_invisible(mdef->mx, mdef->my);
             return 1;

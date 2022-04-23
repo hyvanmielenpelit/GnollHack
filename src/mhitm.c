@@ -1044,10 +1044,10 @@ register struct attack *mattk;
         {
             /* 'it' -- previous form is no longer available and
                using that would be excessively verbose */
-            pline("%s expels %s.", Monnam(magr),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s expels %s.", Monnam(magr),
                   canspotmon(mdef) ? "it" : something);
             if (canspotmon(mdef))
-                pline("It turns into %s.", a_monnam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It turns into %s.", a_monnam(mdef));
         }
         return MM_HIT; /* bypass mdamagem() */
     }

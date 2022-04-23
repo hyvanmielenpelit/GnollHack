@@ -5190,7 +5190,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
                     }
 
                     /* Do this even if msg is FALSE */
-                    You("%s %s%s!",
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s%s!",
                         (amorphous(olddata) || is_whirly(olddata))
                             ? "emerge from" : "break out of",
                         l_oldname, msgtrail);
@@ -5228,13 +5228,13 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
         /* oldname was capitalized above; newname will be lower case */
         if (!strcmpi(newname, "it")) { /* can't see or sense it now */
             if (!!strcmpi(oldname, "it")) /* could see or sense it before */
-                pline("%s disappears!", oldname);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disappears!", oldname);
             (void) usmellmon(mdat);
         } else { /* can see or sense it now */
             if (!strcmpi(oldname, "it")) /* couldn't see or sense it before */
-                pline("%s appears!", upstart(newname));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears!", upstart(newname));
             else
-                pline("%s turns into %s!", oldname, newname);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns into %s!", oldname, newname);
         }
     }
 
