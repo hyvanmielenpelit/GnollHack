@@ -129,7 +129,7 @@ boolean verbose;
     if (uwep == obj && olduwep && (artifact_light(olduwep) || has_obj_mythic_magical_light(olduwep) || obj_shines_magical_light(olduwep)) && olduwep->lamplit) {
         end_burn(olduwep, FALSE);
         if (!Blind && verbose)
-            pline("%s shining.", Tobjnam(olduwep, "stop"));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shining.", Tobjnam(olduwep, "stop"));
     }
     
     context.botl = context.botlx = 1;
@@ -294,7 +294,7 @@ long mask;
         {
             begin_burn(wep, FALSE);
             if (!Blind)
-                pline("%s to shine %s!", Tobjnam(wep, "begin"),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s to shine %s!", Tobjnam(wep, "begin"),
                       arti_light_description(wep));
         }
 #if 0
@@ -469,7 +469,8 @@ struct obj* wep;
             }
             mask = W_WEP;
         }
-        else {
+        else 
+        {
             char answer = '\0';
             do 
             {
@@ -557,7 +558,8 @@ struct obj* wep;
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You("are already wielding that!");
             return 0;
-        } else if (welded(uwep, &youmonst))
+        } 
+        else if (welded(uwep, &youmonst))
         {
             weldmsg(uwep);
             /* previously interrupted armor removal mustn't be resumed */
@@ -650,6 +652,14 @@ dounwield()
         mask = W_WEP2;
     else
         return 0;
+
+    if (welded(otmp, &youmonst))
+    {
+        weldmsg(otmp);
+        /* previously interrupted armor removal mustn't be resumed */
+        reset_remarm();
+        return 0;
+    }
 
     int result = ready_weapon((struct obj*)0, mask);
     boolean unwield_succeeded = mask == W_WEP ? (uwep == (struct obj*)0) : (uwep2 == (struct obj*)0);
@@ -1685,7 +1695,7 @@ uwepgone()
         if ((artifact_light(uwep) || has_obj_mythic_magical_light(uwep) || obj_shines_magical_light(uwep)) && uwep->lamplit) {
             end_burn(uwep, FALSE);
             if (!Blind)
-                pline("%s shining.", Tobjnam(uwep, "stop"));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shining.", Tobjnam(uwep, "stop"));
         }
         setworn((struct obj *) 0, W_WEP);
         update_unweapon();
@@ -1704,7 +1714,7 @@ uwep2gone()
         if ((artifact_light(uarms) || has_obj_mythic_magical_light(uarms) || obj_shines_magical_light(uarms)) && uarms->lamplit) {
             end_burn(uarms, FALSE);
             if (!Blind)
-                pline("%s shining.", Tobjnam(uarms, "stop"));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shining.", Tobjnam(uarms, "stop"));
         }
         setworn((struct obj*) 0, W_ARMS);
         update_unweapon();

@@ -1210,16 +1210,16 @@ int how;
     }
     if (Lifesaved && (how <= GENOCIDED)) 
     {
-        pline("But wait...");
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "But wait...");
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_LIFE_SAVED);
         special_effect_wait_until_action(0);
         if (HLifesaved)
         {
-            You("feel the invisible hand of %s around you.", u_gname());
+            You_ex(ATR_NONE, CLR_MSG_POSITIVE, "feel the invisible hand of %s around you.", u_gname());
             if (how == CHOKING)
                 You1("vomit ...");
-            You_feel("much better!");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "much better!");
             u.uprops[LIFESAVED].intrinsic = u.uprops[LIFESAVED].intrinsic & ~TIMEOUT; //Set timeout to 0
         }
         else
@@ -1227,12 +1227,12 @@ int how;
             if(uamul && uamul->otyp == AMULET_OF_LIFE_SAVING)
             {
                 makeknown(AMULET_OF_LIFE_SAVING);
-                Your("medallion %s!", !Blind ? "begins to glow" : "feels warm");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "medallion %s!", !Blind ? "begins to glow" : "feels warm");
                 if (how == CHOKING)
                     You1("vomit ...");
-                You_feel("much better!");
+                You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "much better!");
                 play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-                pline_The("medallion crumbles to dust!");
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "medallion crumbles to dust!");
                 if (uamul)
                     useup(uamul);
             }
@@ -1241,12 +1241,12 @@ int how;
                 struct obj* lifesaver = what_gives(LIFESAVED);
                 if (lifesaver)
                 {
-                    pline("%s %s!", Yname2(lifesaver), !Blind ? "begins to glow" : "feels warm");
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s!", Yname2(lifesaver), !Blind ? "begins to glow" : "feels warm");
                     if (how == CHOKING)
                         You1("vomit ...");
-                    You_feel("much better!");
+                    You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "much better!");
                     play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-                    pline_The("%s crumbles to dust!", cxname(lifesaver));
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s crumbles to dust!", cxname(lifesaver));
                     if (lifesaver)
                         useup(lifesaver);
                 }
@@ -1256,7 +1256,7 @@ int how;
         (void) adjattrib(A_CON, -1, TRUE);
         savelife(how);
         if (how == GENOCIDED) {
-            pline("Unfortunately you are still genocided...");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Unfortunately you are still genocided...");
         } else {
             survive = TRUE;
         }

@@ -1847,21 +1847,21 @@ register struct obj *obj;
     
     if (obj->special_quality < max_candles) 
     {
-        There("%s only %d %s in %s.", vtense(s, "are"), obj->special_quality, s,
+        There_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s only %d %s in %s.", vtense(s, "are"), obj->special_quality, s,
               the(xname(obj)));
         if (!Blind)
-            pline("%s lit.  %s dimly.", obj->special_quality == 1 ? "It is" : "They are",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s lit.  %s dimly.", obj->special_quality == 1 ? "It is" : "They are",
                   Tobjnam(obj, "shine"));
     }
     else 
     {
-        pline("%s's %s burn%s", The(xname(obj)), s,
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s's %s burn%s", The(xname(obj)), s,
               (Blind ? "." : " brightly!"));
     }
 
     if (obj->otyp != CANDELABRUM_OF_INVOCATION || !invocation_pos(u.ux, u.uy) || On_stairs(u.ux, u.uy)) 
     {
-        pline_The("%s %s being rapidly consumed!", s, vtense(s, "are"));
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s being rapidly consumed!", s, vtense(s, "are"));
         /* this used to be obj->age /= 2, rounding down; an age of
            1 would yield 0, confusing begin_burn() and producing an
            unlightable, unrefillable candelabrum; round up instead */
@@ -1872,9 +1872,9 @@ register struct obj *obj;
         if (obj->special_quality == max_candles) 
         {
             if (Blind)
-                pline("%s a strange warmth!", Tobjnam(obj, "radiate"));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s a strange warmth!", Tobjnam(obj, "radiate"));
             else
-                pline("%s with a strange light!", Tobjnam(obj, "glow"));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s with a strange light!", Tobjnam(obj, "glow"));
         }
         obj->known = 1;
     }

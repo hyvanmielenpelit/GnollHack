@@ -3017,23 +3017,23 @@ struct monst *mtmp;
          * disintegrating amulets are always visible. */
         if (cansee(mtmp->mx, mtmp->my)) 
         {
-            pline("But wait...");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "But wait...");
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
             play_sfx_sound_at_location(SFX_LIFE_SAVED, mtmp->mx, mtmp->my);
             special_effect_wait_until_action(0);
-            pline("%s medallion begins to glow!", s_suffix(Monnam(mtmp)));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s medallion begins to glow!", s_suffix(Monnam(mtmp)));
             makeknown(AMULET_OF_LIFE_SAVING);
             /* amulet is visible, but monster might not be */
             if (canseemon(mtmp)) 
             {
                 if (attacktype(mtmp->data, AT_EXPL)
                     || attacktype(mtmp->data, AT_BOOM))
-                    pline("%s reconstitutes!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s reconstitutes!", Monnam(mtmp));
                 else
-                    pline("%s looks much better!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks much better!", Monnam(mtmp));
             }
             play_sfx_sound_at_location(SFX_ITEM_CRUMBLES_TO_DUST, mtmp->mx, mtmp->my);
-            pline_The("medallion crumbles to dust!");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "medallion crumbles to dust!");
             special_effect_wait_until_end(0);
         }
         m_useup(mtmp, lifesave);

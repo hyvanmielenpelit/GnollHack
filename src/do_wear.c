@@ -332,7 +332,7 @@ Helmet_on(VOID_ARGS)
             {
                 begin_burn(wep, FALSE);
                 if (!Blind)
-                    pline("%s to shine %s!", Tobjnam(wep, "begin"),
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s to shine %s!", Tobjnam(wep, "begin"),
                         arti_light_description(wep));
             }
         }
