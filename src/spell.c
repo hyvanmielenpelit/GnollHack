@@ -139,11 +139,11 @@ struct obj *bp;
 
     switch (rn2(max(1, (lev + 4) / 2))) {
     case 0:
-        You_feel("a wrenching sensation.");
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "a wrenching sensation.");
         tele(); /* teleport him */
         break;
     case 1:
-        You_feel("threatened.");
+        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "threatened.");
         play_sfx_sound(SFX_AGGRAVATE_MONSTER);
         aggravate();
         break;
@@ -156,13 +156,13 @@ struct obj *bp;
         take_gold();
         break;
     case 4:
-        pline("These runes were just too much to comprehend.");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "These runes were just too much to comprehend.");
         if (!Confusion)
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
         make_confused(itimeout_incr(HConfusion, rn1(7, 16)), FALSE);
         break;
     case 5:
-        pline_The("book was coated with contact poison!");
+        pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "book was coated with contact poison!");
         if (uarmg) {
             erode_obj(uarmg, "gloves", ERODE_CORRODE, EF_GREASE | EF_VERBOSE);
             break;
@@ -180,9 +180,9 @@ struct obj *bp;
     case 6:
         if (Antimagic_or_resistance) {
             u_shieldeff();
-            pline_The("book %s, but you are unharmed!", explodes);
+            pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "book %s, but you are unharmed!", explodes);
         } else {
-            pline("As you read the book, it %s in your %s!", explodes,
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "As you read the book, it %s in your %s!", explodes,
                   body_part(FACE));
             dmg = 2 * rnd(10) + 5;
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "exploding rune", KILLED_BY_AN);
@@ -470,14 +470,14 @@ learn(VOID_ARGS)
         else if (!book->blessed && !rn2(2))
         {
             play_sfx_sound(SFX_SPELL_LEARN_FAIL);
-            pline("These runes were just too much to comprehend.");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "These runes were just too much to comprehend.");
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             make_confused(itimeout_incr(HConfusion, rnd(4) + 5), FALSE);
         }
         else
         {
             play_sfx_sound(SFX_SPELL_LEARN_FAIL);
-            pline("Despite your best efforts, you fail to understand the spell in %s.", the(cxname(book)));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Despite your best efforts, you fail to understand the spell in %s.", the(cxname(book)));
         }
 
         if (gone || !rn2(2)) {
@@ -486,7 +486,7 @@ learn(VOID_ARGS)
                 if (iflags.using_gui_sounds)
                     delay_output_milliseconds(100); /* Some time so that the sounds do not come exactly at the same time */
                 play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-                pline_The("spellbook crumbles to dust!");
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "spellbook crumbles to dust!");
             }
             if (!objects[book->otyp].oc_name_known
                 && !objects[book->otyp].oc_uname)
@@ -537,13 +537,13 @@ learn(VOID_ARGS)
         else if (spellknow(i) > SPELL_IS_KEEN / 10)
         {
             play_sfx_sound(SFX_SPELL_KNOWN_ALREADY);
-            You("know %s quite well already.", splname);
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "know %s quite well already.", splname);
             costly = FALSE;
         }
         else
         { /* spellknow(i) <= SPELL_IS_KEEN/10 */
             play_sfx_sound(SFX_SPELL_KEENER);
-            Your("knowledge of %s is %s.", splname,
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "knowledge of %s is %s.", splname,
                  spellknow(i) ? "keener" : "restored");
             incr_spell_nknow(i, 1);
             book->spestudied++;
@@ -580,7 +580,7 @@ learn(VOID_ARGS)
             incr_spell_nknow(i, 1);
             book->spestudied++;
             play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
-            You(i > 0 ? "add %s to your repertoire." : "learn %s.", splname);
+            You_ex(ATR_NONE, CLR_MSG_POSITIVE, i > 0 ? "add %s to your repertoire." : "learn %s.", splname);
             learnsuccess = TRUE;
         }
         makeknown((int) booktype);
@@ -603,7 +603,7 @@ learn(VOID_ARGS)
     if (learnsuccess)
     {
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-        pline_The("spellbook crumbles to dust.");
+        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "spellbook crumbles to dust.");
         useup(book);
         gone = TRUE;
     }

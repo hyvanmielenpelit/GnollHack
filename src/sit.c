@@ -169,7 +169,7 @@ dosit()
                 pline_The("fire feels warm.");
                 return 1;
             }
-            pline_The("fire burns you!");
+            pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "fire burns you!");
             int dmg = d(3, 6);
             play_sfx_sound(SFX_MONSTER_ON_FIRE);
             display_u_being_hit(HIT_ON_FIRE, dmg, 0UL);
@@ -199,7 +199,7 @@ dosit()
             pline_The("%s feels warm.", hliquid("lava"));
             return 1;
         }
-        pline_The("%s burns you!", hliquid("lava"));
+        pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s burns you!", hliquid("lava"));
         losehp(adjust_damage(d(10, 10), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), /* lava damage */
                "sitting on lava", KILLED_BY);
     } 
@@ -231,7 +231,7 @@ dosit()
                 break;
             case 3:
                 play_sfx_sound(SFX_ELECTRIC_SHOCK);
-                pline("A%s electric shock shoots through your body!",
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A%s electric shock shoots through your body!",
                       (Shock_immunity) ? "n" : " massive");
                 losehp(adjust_damage(Shock_immunity ? rnd(6) : rnd(30), (struct monst*)0, &youmonst, AD_ELEC, ADFLAGS_NONE), "electric chair",
                        KILLED_BY_AN);
@@ -239,7 +239,7 @@ dosit()
                 break;
             case 4:
                 play_sfx_sound(SFX_HEALING);
-                You_feel("much, much better!");
+                You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "much, much better!");
                 if (Upolyd) {
                     if (u.mh >= (u.mhmax - 5))
                         u.basemhmax += 4;
@@ -277,7 +277,7 @@ dosit()
                 play_sfx_sound(SFX_SUMMON_MONSTER);
                 pline("A voice echoes:");
                 play_sfx_sound(flags.female ? SFX_VOICE_THRONE_ROOM_AUDIENCE_SUMMONED_DAME : SFX_VOICE_THRONE_ROOM_AUDIENCE_SUMMONED_SIRE);
-                verbalize("Thy audience hath been summoned, %s!",
+                verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thy audience hath been summoned, %s!",
                           flags.female ? "Dame" : "Sire");
                 context.makemon_spef_idx = 0;
                 while (cnt--)
@@ -294,7 +294,7 @@ dosit()
                 /* Magical voice not affected by deafness */
                 pline("A voice echoes:");
                 play_sfx_sound(flags.female ? SFX_VOICE_THRONE_ROOM_BY_THINE_IMPERIOUS_ORDER_DAME : SFX_VOICE_THRONE_ROOM_BY_THINE_IMPERIOUS_ORDER_SIRE);
-                verbalize("By thine Imperious order, %s...",
+                verbalize_ex(ATR_NONE, CLR_MSG_GOD, "By thine Imperious order, %s...",
                           flags.female ? "Dame" : "Sire");
                 do_genocide(5); /* REALLY|ONTHRONE, see do_genocide() */
                 break;
@@ -302,7 +302,7 @@ dosit()
                 /* Magical voice not affected by deafness */
                 pline("A voice echoes:");
                 play_sfx_sound(SFX_VOICE_THRONE_ROOM_CURSE_UPON_THEE);
-                verbalize(
+                verbalize_ex(ATR_NONE, CLR_MSG_GOD,
                  "A curse upon thee for sitting upon this most holy throne!");
                 if (Luck > 0) {
                     if(!Blinded)
@@ -317,17 +317,17 @@ dosit()
                 if (Luck < 0 || (HSee_invisible & INTRINSIC)) 
                 {
                     if (level.flags.nommap) {
-                        pline("A terrible drone fills your head!");
+                        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A terrible drone fills your head!");
                         play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                         make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
                     } else {
-                        pline("An image forms in your mind.");
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "An image forms in your mind.");
                         do_mapping();
                     }
                 }
                 else 
                 {
-                    Your("vision becomes clear.");
+                    Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "vision becomes clear.");
                     HSee_invisible |= FROM_ACQUIRED;
                     newsym(u.ux, u.uy);
                 }
@@ -335,19 +335,19 @@ dosit()
             case 11:
                 if (Luck < 0)
                 {
-                    You_feel("threatened.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "threatened.");
                     play_sfx_sound(SFX_AGGRAVATE_MONSTER);
                     aggravate();
                 } 
                 else
                 {
                     play_sfx_sound(SFX_WRENCHING_SENSATION);
-                    You_feel("a wrenching sensation.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "a wrenching sensation.");
                     tele(); /* teleport him */
                 }
                 break;
             case 12:
-                You("are granted an insight!");
+                You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "are granted an insight!");
                 if (invent)
                 {
                     /* rn2(5) agrees w/seffects() */
@@ -356,7 +356,7 @@ dosit()
                 break;
             case 13:
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
-                Your("mind turns into a pretzel!");
+                Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "mind turns into a pretzel!");
                 make_confused(itimeout_incr(HConfusion, rnd(7) + 15),
                               FALSE);
                 break;
@@ -367,9 +367,9 @@ dosit()
 
         } else {
             if (is_prince(youmonst.data))
-                You_feel("very comfortable here.");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "very comfortable here.");
             else
-                You_feel("somehow out of place...");
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "somehow out of place...");
         }
 
         if (!rn2(3) && IS_THRONE(levl[u.ux][u.uy].typ))
@@ -379,7 +379,7 @@ dosit()
             special_effect_wait_until_action(0);
             /* may have teleported */
             create_current_floor_location(u.ux, u.uy, 0, NO_GLYPH, TRUE);
-            pline_The("throne vanishes in a puff of logic.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "throne vanishes in a puff of logic.");
             special_effect_wait_until_end(0);
         }
     } 
@@ -403,14 +403,14 @@ rndcurse()
     if (((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_MAGIC_ABSORBING)) || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_MAGIC_ABSORBING))) && rn2(20)) 
     {
         play_sfx_sound(SFX_MALIGNANT_AURA_RESISTED);
-        You(mal_aura, "the magic-absorbing blade");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, mal_aura, "the magic-absorbing blade");
         return;
     }
     
     if (Curse_resistance)
     {
         play_sfx_sound(SFX_MALIGNANT_AURA_RESISTED);
-        You_feel("a malignant aura around you, but it quickly dissipates.");
+        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a malignant aura around you, but it quickly dissipates.");
         return;
     }
 
@@ -418,7 +418,7 @@ rndcurse()
     {
         play_sfx_sound(SFX_MALIGNANT_AURA_SURROUNDS);
         u_shieldeff();
-        You(mal_aura, "you");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, mal_aura, "you");
     }
 
     for (otmp = invent; otmp; otmp = otmp->nobj) {
@@ -478,7 +478,7 @@ rndcurse()
             curse(otmp);
         }
         if (!Blind) {
-            pline("%s %s.", Yobjnam2(otmp, "glow"),
+            pline_ex(ATR_NONE, otmp->cursed ? CLR_MSG_NEGATIVE : CLR_MSG_ATTENTION, "%s %s.", Yobjnam2(otmp, "glow"),
                   hcolor(otmp->cursed ? NH_BLACK : (const char *) "brown"));
             otmp->bknown = TRUE;
         }
