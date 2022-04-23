@@ -6249,15 +6249,15 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     {
         if (Is_valley(&u.uz))
         {
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "arrive at the Valley of the Dead...");
-            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "odor of burnt flesh and decay pervades the air.");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "arrive at the Valley of the Dead...");
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "odor of burnt flesh and decay pervades the air.");
 #ifdef MICRO
             display_nhwindow(WIN_MESSAGE, FALSE);
 #endif
-            You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "groans and moans everywhere.");
+            You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "groans and moans everywhere.");
         } 
         else
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It is hot here.  You smell smoke...");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "It is hot here.  You smell smoke...");
 
 #ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.enter_gehennom)

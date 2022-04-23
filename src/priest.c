@@ -841,13 +841,13 @@ int roomno;
         switch (rn2(4))
         {
         case 0:
-            You("have an eerie feeling...");
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "have an eerie feeling...");
             break;
         case 1:
-            You_feel("like you are being watched.");
+            You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "like you are being watched.");
             break;
         case 2:
-            pline("A shiver runs down your %s.", body_part(SPINE));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "A shiver runs down your %s.", body_part(SPINE));
             break;
         default:
             break; /* no message; unfortunately there's no
@@ -860,16 +860,16 @@ int roomno;
         {
             int ngen = mvitals[PM_GHOST].born;
             if (canspotmon(mtmp))
-                pline("A%s ghost appears next to you%c",
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "A%s ghost appears next to you%c",
                       ngen < 5 ? "n enormous" : "",
                       ngen < 10 ? '!' : '.');
             else
-                You("sense a presence close by!");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "sense a presence close by!");
             mtmp->mpeaceful = 0;
             set_malign(mtmp);
             newsym(mtmp->mx, mtmp->my);
             if (flags.verbose)
-                You("are frightened to death, and unable to move.");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are frightened to death, and unable to move.");
             nomul(-3);
             multi_reason = "being terrified of a ghost";
             nomovemsg = "You regain your composure.";
@@ -967,13 +967,13 @@ int roomno;
         switch (rn2(4))
         {
         case 0:
-            You("have an oddly wishful feeling...");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "have an oddly wishful feeling...");
             break;
         case 1:
-            You_feel("something is out of place.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "something is out of place.");
             break;
         case 2:
-            You_feel("strangely worried.");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "strangely worried.");
             break;
         default:
             break; 

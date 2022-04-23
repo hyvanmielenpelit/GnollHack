@@ -946,7 +946,7 @@ int spellnum;
         else
             fmt = (summon_quan == 1 ? "%s summons an insect!" : "%s summons insects!");
         if (fmt)
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, fmt, Monnam(mtmp));
 
         damage = 0;
         break;
@@ -1326,7 +1326,7 @@ register struct attack *mattk;
         if (adtyp && adtyp <= AD_STON)
         { /* no cf unsigned >0 */
             if (canseemon(mtmp))
-                pline("%s casts \'%s\' at you!", Monnam(mtmp),
+                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s casts \'%s\' at you!", Monnam(mtmp),
                       flash_types[ad_to_typ(adtyp)]);
             buzz(-ad_to_typ(adtyp), (struct obj*)0, mtmp, damn, damd, damp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby));
             *appr_spec_ptr = is_ultimate ? d(2, 8) + 100 : d(2, 4) + 10;
