@@ -1278,6 +1278,7 @@ random_levtport:
 
         if (newlev >= 0 || newlev <= -llimit) 
         {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You_cant("get there from here.");
             return;
         }
