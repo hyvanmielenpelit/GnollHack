@@ -320,7 +320,7 @@ boolean foundyou;
     if (!foundyou && thinks_it_foundyou
         && !is_undirected_spell(mattk->adtyp, spellnum)) 
     {
-        pline("%s casts a spell at %s!",
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s casts a spell at %s!",
               canseemon(mtmp) ? Monnam(mtmp) : "Something",
               levl[mtmp->mux][mtmp->muy].typ == WATER ? "empty water"
                                                       : "thin air");
@@ -366,7 +366,7 @@ boolean foundyou;
     }
     if (canspotmon(mtmp) || !is_undirected_spell(mattk->adtyp, spellnum))
     {
-        pline("%s casts a spell%s!",
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s casts a spell%s!",
               canspotmon(mtmp) ? Monnam(mtmp) : "Something",
               is_undirected_spell(mattk->adtyp, spellnum)
                   ? ""
@@ -547,7 +547,7 @@ int spellnum;
         if (mtmp->iswiz && context.no_of_wizards == 1)
         {
             play_voice_wizard_of_yendor_simple_line(mtmp, WIZARD_OF_YENDOR_LINE_DOUBLE_TROUBLE);
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Double Trouble...");
+            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Double Trouble...");
             clonewiz();
             damage = 0;
         } else
@@ -582,11 +582,11 @@ int spellnum;
                only a single monster is seen */
             if (Invisib && !has_see_invisible(mtmp)
                 && (mtmp->mux != u.ux || mtmp->muy != u.uy))
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s around a spot near you!", mappear);
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s around a spot near you!", mappear);
             else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s around your displaced image!", mappear);
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s around your displaced image!", mappear);
             else
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s from nowhere!", mappear);
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s from nowhere!", mappear);
         }
         damage = 0;
         break;
@@ -617,11 +617,11 @@ int spellnum;
                only a single monster is seen */
             if (Invisib && !has_see_invisible(mtmp)
                 && (mtmp->mux != u.ux || mtmp->muy != u.uy))
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s around a spot near you!", mappear);
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s around a spot near you!", mappear);
             else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s around your displaced image!", mappear);
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s around your displaced image!", mappear);
             else
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s from nowhere!", mappear);
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s from nowhere!", mappear);
         }
         damage = 0;
         break;
