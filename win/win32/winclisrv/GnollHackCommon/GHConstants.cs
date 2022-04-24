@@ -346,6 +346,8 @@ namespace GnollHackCommon
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)layer_types.MAX_LAYERS)]
         public int[] layer_glyphs;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)layer_types.MAX_LAYERS)]
+        public int[] layer_gui_glyphs;
 
         public ulong layer_flags;
         public uint m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
@@ -362,6 +364,7 @@ namespace GnollHackCommon
         public int monster_hp;
         public int monster_maxhp;
         public int rider_glyph;
+        public int rider_gui_glyph;
         public ulong status_bits;
         public ulong condition_bits;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.NUM_BUFF_BIT_ULONGS)]

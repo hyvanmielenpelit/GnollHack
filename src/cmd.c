@@ -168,11 +168,13 @@ STATIC_PTR int NDECL(wiz_smell);
 STATIC_PTR int NDECL(wiz_intrinsic);
 STATIC_PTR int NDECL(wiz_show_wmodes);
 STATIC_DCL void NDECL(wiz_map_levltyp);
+#ifndef GNH_ANDROID
 STATIC_DCL int NDECL(wiz_save_monsters);
 STATIC_DCL int NDECL(wiz_save_tiledata);
 STATIC_DCL int NDECL(wiz_count_tiles);
 STATIC_DCL int NDECL(wiz_save_glyph2tiles);
 STATIC_DCL int NDECL(wiz_save_quest_texts);
+#endif
 STATIC_DCL void NDECL(wiz_levltyp_legend);
 #if defined(__BORLANDC__) && !defined(_WIN32)
 extern void FDECL(show_borlandc_stats, (winid));
@@ -2460,7 +2462,7 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             if (i == abs(u_to_glyph()))
                 special = ",YOU";
 
-            Sprintf(buf, "glyph=%d,tile=%d,flags=%d%s\n", i, glyph2tile[i], glyphtileflags[i], special);
+            Sprintf(buf, "glyph=%d,tile=%d,repl=%d,flags=%d%s\n", i, glyph2tile[i], glyph2replacement[i], glyphtileflags[i], special);
             (void)write(fd, buf, strlen(buf));
         }
 
@@ -8027,13 +8029,13 @@ parse()
            these, which caused counts to be strange when entered
            from the number pad. Now do not map them until here. */
         switch (foo) {
-        case '5':
+        case (char)'5':
             foo = Cmd.spkeys[NHKF_RUSH];
             break;
-        case M('5'):
+        case (char)M('5'):
             foo = Cmd.spkeys[NHKF_RUN];
             break;
-        case M('0'):
+        case (char)M('0'):
             foo = Cmd.spkeys[NHKF_DOINV];
             break;
         default:

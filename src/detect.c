@@ -1513,8 +1513,11 @@ register int x, y;
             if (level.flags.hero_memory)
             {
                 lev->hero_memory_layers.glyph = oldglyph;
-                if(glyph_is_trap(oldglyph))
+                if (glyph_is_trap(oldglyph))
+                {
                     lev->hero_memory_layers.layer_glyphs[LAYER_TRAP] = oldglyph;
+                    lev->hero_memory_layers.layer_gui_glyphs[LAYER_TRAP] = oldglyph;
+                }
             }
         }
     }

@@ -507,6 +507,7 @@ E void NDECL(redraw_map);
 E void FDECL(show_glyph, (int, int, int));
 E void FDECL(clear_current_and_show_glyph, (int, int, int));
 E void FDECL(maybe_clear_and_show_glyph, (int, int, int, BOOLEAN_P));
+E void FDECL(show_gui_glyph_on_layer, (int, int, int, int, enum layer_types));
 E void FDECL(show_glyph_on_layer, (int, int, int, enum layer_types));
 E void FDECL(show_glyph_ascii, (int, int, int));
 E void FDECL(show_glyph_on_layer_and_ascii, (int, int, int, enum layer_types));

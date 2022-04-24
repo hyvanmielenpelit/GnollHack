@@ -43,6 +43,7 @@ struct layer_info {
     int bkglyph; /* For ascii compatibility */
 
     int layer_glyphs[MAX_LAYERS];
+    int layer_gui_glyphs[MAX_LAYERS];
 
     unsigned long layer_flags;
 
@@ -60,6 +61,7 @@ struct layer_info {
     int monster_hp;
     int monster_maxhp;
     int rider_glyph;
+    int rider_gui_glyph;
     unsigned long status_bits;
     unsigned long condition_bits;
     unsigned long buff_bits[NUM_BUFF_BIT_ULONGS];

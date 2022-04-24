@@ -1135,7 +1135,9 @@ int x, y;
     {
         /* Just in case */
         level.locations[x][y].hero_memory_layers.layer_glyphs[LAYER_OBJECT] = NO_GLYPH;
+        level.locations[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_OBJECT] = NO_GLYPH;
         level.locations[x][y].hero_memory_layers.layer_glyphs[LAYER_COVER_OBJECT] = NO_GLYPH;
+        level.locations[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_COVER_OBJECT] = NO_GLYPH;
         level.locations[x][y].hero_memory_layers.o_id = 0;
 
         /* Clear actual memory objects */

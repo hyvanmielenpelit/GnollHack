@@ -1320,7 +1320,9 @@ unsigned short trflags;
         context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
         struct layer_info layers = layers_at(trap->tx, trap->ty);
         int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+        int old_gui_glyph = layers.layer_gui_glyphs[LAYER_TRAP];
         int old_cover_glyph = layers.layer_glyphs[LAYER_COVER_TRAP];
+        int old_cover_gui_glyph = layers.layer_gui_glyphs[LAYER_COVER_TRAP];
         show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_TRAP);
         show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_COVER_TRAP);
         flush_screen(1);
@@ -1338,8 +1340,8 @@ unsigned short trflags;
             play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, trap->tx, trap->ty, FALSE);
             special_effect_wait_until_action(0);
             special_effect_wait_until_end(0);
-            show_glyph_on_layer(trap->tx, trap->ty, old_glyph, LAYER_TRAP);
-            show_glyph_on_layer(trap->tx, trap->ty, old_cover_glyph, LAYER_COVER_TRAP);
+            show_gui_glyph_on_layer(trap->tx, trap->ty, old_glyph, old_gui_glyph, LAYER_TRAP);
+            show_gui_glyph_on_layer(trap->tx, trap->ty, old_cover_glyph, old_cover_gui_glyph, LAYER_COVER_TRAP);
             flush_screen(1);
             break;
         }
@@ -1353,8 +1355,8 @@ unsigned short trflags;
             play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, trap->tx, trap->ty, FALSE);
             special_effect_wait_until_action(0);
             special_effect_wait_until_end(0);
-            show_glyph_on_layer(trap->tx, trap->ty, old_glyph, LAYER_TRAP);
-            show_glyph_on_layer(trap->tx, trap->ty, old_cover_glyph, LAYER_COVER_TRAP);
+            show_gui_glyph_on_layer(trap->tx, trap->ty, old_glyph, old_gui_glyph, LAYER_TRAP);
+            show_gui_glyph_on_layer(trap->tx, trap->ty, old_cover_glyph, old_cover_gui_glyph, LAYER_COVER_TRAP);
             flush_screen(1);
             break;
         }
@@ -2894,7 +2896,9 @@ register struct monst *mtmp;
                     context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
                     struct layer_info layers = layers_at(trap->tx, trap->ty);
                     int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+                    int old_gui_glyph = layers.layer_gui_glyphs[LAYER_TRAP];
                     int old_cover_glyph = layers.layer_glyphs[LAYER_COVER_TRAP];
+                    int old_cover_gui_glyph = layers.layer_gui_glyphs[LAYER_COVER_TRAP];
                     show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_TRAP);
                     show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_COVER_TRAP);
                     flush_screen(1);
@@ -2905,8 +2909,8 @@ register struct monst *mtmp;
                           a_your[trap->madeby_u]);
                     seetrap(trap);
                     special_effect_wait_until_end(0);
-                    show_glyph_on_layer(trap->tx, trap->ty, old_glyph, LAYER_TRAP);
-                    show_glyph_on_layer(trap->tx, trap->ty, old_cover_glyph, LAYER_COVER_TRAP);
+                    show_gui_glyph_on_layer(trap->tx, trap->ty, old_glyph, old_gui_glyph, LAYER_TRAP);
+                    show_gui_glyph_on_layer(trap->tx, trap->ty, old_cover_glyph, old_cover_gui_glyph, LAYER_COVER_TRAP);
                     flush_screen(1);
                     context.global_newsym_flags = 0UL;
                 }
@@ -2936,15 +2940,17 @@ register struct monst *mtmp;
                     context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
                     struct layer_info layers = layers_at(trap->tx, trap->ty);
                     int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+                    int old_gui_glyph = layers.layer_gui_glyphs[LAYER_TRAP];
                     int old_cover_glyph = layers.layer_glyphs[LAYER_COVER_TRAP];
+                    int old_cover_gui_glyph = layers.layer_gui_glyphs[LAYER_COVER_TRAP];
                     show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_TRAP);
                     show_glyph_on_layer(trap->tx, trap->ty, NO_GLYPH, LAYER_COVER_TRAP);
                     flush_screen(1);
                     play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_OPEN, 0, trap->tx, trap->ty, FALSE);
                     special_effect_wait_until_action(0);
                     special_effect_wait_until_end(0);
-                    show_glyph_on_layer(trap->tx, trap->ty, old_glyph, LAYER_TRAP);
-                    show_glyph_on_layer(trap->tx, trap->ty, old_cover_glyph, LAYER_COVER_TRAP);
+                    show_gui_glyph_on_layer(trap->tx, trap->ty, old_glyph, old_gui_glyph, LAYER_TRAP);
+                    show_gui_glyph_on_layer(trap->tx, trap->ty, old_cover_glyph, old_cover_gui_glyph, LAYER_COVER_TRAP);
                     flush_screen(1);
                     context.global_newsym_flags = 0UL;
                 }
@@ -6446,7 +6452,9 @@ boolean *noticed; /* set to true iff hero notices the effect; */
                 context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
                 struct layer_info layers = layers_at(t->tx, t->ty);
                 int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+                int old_gui_glyph = layers.layer_gui_glyphs[LAYER_TRAP];
                 int old_cover_glyph = layers.layer_glyphs[LAYER_COVER_TRAP];
+                int old_cover_gui_glyph = layers.layer_gui_glyphs[LAYER_COVER_TRAP];
                 show_glyph_on_layer(t->tx, t->ty, NO_GLYPH, LAYER_TRAP);
                 show_glyph_on_layer(t->tx, t->ty, NO_GLYPH, LAYER_COVER_TRAP);
                 flush_screen(1);
@@ -6456,8 +6464,8 @@ boolean *noticed; /* set to true iff hero notices the effect; */
                 pline("%s is released from %s%s.", Monnam(mon), which,
                     trapdescr);
                 special_effect_wait_until_end(0);
-                show_glyph_on_layer(t->tx, t->ty, old_glyph, LAYER_TRAP);
-                show_glyph_on_layer(t->tx, t->ty, old_cover_glyph, LAYER_COVER_TRAP);
+                show_gui_glyph_on_layer(t->tx, t->ty, old_glyph, old_gui_glyph, LAYER_TRAP);
+                show_gui_glyph_on_layer(t->tx, t->ty, old_cover_glyph, old_cover_gui_glyph, LAYER_COVER_TRAP);
                 flush_screen(1);
                 context.global_newsym_flags = 0UL;
             }
@@ -6476,7 +6484,9 @@ boolean *noticed; /* set to true iff hero notices the effect; */
                 context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
                 struct layer_info layers = layers_at(t->tx, t->ty);
                 int old_glyph = layers.layer_glyphs[LAYER_TRAP];
+                int old_gui_glyph = layers.layer_gui_glyphs[LAYER_TRAP];
                 int old_cover_glyph = layers.layer_glyphs[LAYER_COVER_TRAP];
+                int old_cover_gui_glyph = layers.layer_gui_glyphs[LAYER_COVER_TRAP];
                 show_glyph_on_layer(t->tx, t->ty, NO_GLYPH, LAYER_TRAP);
                 show_glyph_on_layer(t->tx, t->ty, NO_GLYPH, LAYER_COVER_TRAP);
                 flush_screen(1);
@@ -6485,8 +6495,8 @@ boolean *noticed; /* set to true iff hero notices the effect; */
                 special_effect_wait_until_action(0);
                 pline("%s%s opens.", upstart(strcpy(buf, which)), trapdescr);
                 special_effect_wait_until_end(0);
-                show_glyph_on_layer(t->tx, t->ty, old_glyph, LAYER_TRAP);
-                show_glyph_on_layer(t->tx, t->ty, old_cover_glyph, LAYER_COVER_TRAP);
+                show_gui_glyph_on_layer(t->tx, t->ty, old_glyph, old_gui_glyph, LAYER_TRAP);
+                show_gui_glyph_on_layer(t->tx, t->ty, old_cover_glyph, old_cover_gui_glyph, LAYER_COVER_TRAP);
                 flush_screen(1);
                 context.global_newsym_flags = 0UL;
             }

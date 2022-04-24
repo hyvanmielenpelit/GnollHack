@@ -2530,11 +2530,11 @@ namespace GnollHackClient.Pages.Game
                                                 {
                                                     for (int mapx = startX; mapx <= endX; mapx++)
                                                     {
-                                                        if (_mapData[mapx, mapy].Layers.layer_glyphs == null)
+                                                        if (_mapData[mapx, mapy].Layers.layer_glyphs == null || _mapData[mapx, mapy].Layers.layer_gui_glyphs == null)
                                                             continue;
 
                                                         if (layer_idx == (int)layer_types.MAX_LAYERS
-                                                            && (draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_MONSTER] == NoGlyph)
+                                                            && (draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == NoGlyph)
                                                             )
                                                             continue;
 
@@ -3013,7 +3013,7 @@ namespace GnollHackClient.Pages.Game
 
                                                                             if (layer_idx == (int)layer_types.LAYER_ZAP)
                                                                             {
-                                                                                int adjacent_zap_glyph = _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_ZAP];
+                                                                                int adjacent_zap_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_ZAP];
                                                                                 ulong adjacent_layer_flags = (ulong)_mapData[mapx, mapy].Layers.layer_flags;
 
                                                                                 if (adjacent_zap_glyph == NoGlyph) // || !glyph_is_zap(adjacent_zap_glyph))
@@ -3046,7 +3046,7 @@ namespace GnollHackClient.Pages.Game
                                                                                     }
                                                                                     else if (is_long_worm_tail || (is_long_worm_with_tail && is_adj_worm_tail))
                                                                                     {
-                                                                                        int signed_main_glyph = _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
+                                                                                        int signed_main_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
                                                                                         int main_glyph = Math.Abs(signed_main_glyph);
                                                                                         int tile_animation_index = _gnollHackService.GetTileAnimationIndexFromGlyph(main_glyph);
                                                                                         int main_tile = Glyph2Tile[main_glyph];
@@ -3166,7 +3166,7 @@ namespace GnollHackClient.Pages.Game
                                                                             }
                                                                             else
                                                                             {
-                                                                                signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
+                                                                                signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
                                                                             }
                                                                         }
                                                                         else if (layer_idx == (int)layer_types.LAYER_COVER_OBJECT)
@@ -3189,7 +3189,7 @@ namespace GnollHackClient.Pages.Game
                                                                             }
                                                                             else
                                                                             {
-                                                                                signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[layer_idx];
+                                                                                signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[layer_idx];
                                                                             }
                                                                         }
                                                                         else
@@ -3197,7 +3197,7 @@ namespace GnollHackClient.Pages.Game
                                                                             int used_layer_idx = layer_idx;
                                                                             if (layer_idx == (int)layer_types.MAX_LAYERS)
                                                                                 used_layer_idx = (int)layer_types.LAYER_MONSTER;
-                                                                            signed_glyph = _mapData[mapx, mapy].Layers.layer_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_glyphs[used_layer_idx];
+                                                                            signed_glyph = _mapData[mapx, mapy].Layers.layer_gui_glyphs == null ? NoGlyph : _mapData[mapx, mapy].Layers.layer_gui_glyphs[used_layer_idx];
                                                                         }
 
                                                                         if (signed_glyph == NoGlyph)
@@ -3455,9 +3455,9 @@ namespace GnollHackClient.Pages.Game
                                                                             //int darken_x = mapx + darken_dx;
                                                                             //int darken_y = mapy + darken_dy;
                                                                             //bool darken = ((_mapData[darken_x, darken_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
-                                                                            //if (_mapData[mapx, mapy].Layers.layer_glyphs != null
-                                                                            //    && (_mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
-                                                                            //        || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
+                                                                            //if (_mapData[mapx, mapy].Layers.layer_gui_glyphs != null
+                                                                            //    && (_mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
+                                                                            //        || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
                                                                             //   )
                                                                             //    darken = false;
 
@@ -3686,9 +3686,9 @@ namespace GnollHackClient.Pages.Game
                                                             bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
                                                             bool darken = (!showing_detection && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0);
 
-                                                            if (_mapData[mapx, mapy].Layers.layer_glyphs != null
-                                                                && (_mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
-                                                                    || _mapData[mapx, mapy].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
+                                                            if (_mapData[mapx, mapy].Layers.layer_gui_glyphs != null
+                                                                && (_mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
+                                                                    || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
                                                                 )
                                                                 darken = false;
 
@@ -5866,8 +5866,8 @@ namespace GnollHackClient.Pages.Game
             if (!GHUtils.isok(x, y))
                 return true;
 
-            if (_mapData[x, y].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
-                || _mapData[x, y].Layers.layer_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
+            if (_mapData[x, y].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == UnexploredGlyph
+                || _mapData[x, y].Layers.layer_gui_glyphs[(int)layer_types.LAYER_FLOOR] == NoGlyph)
                 return true;
 
             if ((_mapData[x, y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_NO_WALL_END_AUTODRAW) != 0)
@@ -7455,12 +7455,17 @@ namespace GnollHackClient.Pages.Game
 
                         _mapData[x, y].Layers = new LayerInfo();
                         _mapData[x, y].Layers.layer_glyphs = new int[(int)layer_types.MAX_LAYERS];
+                        _mapData[x, y].Layers.layer_gui_glyphs = new int[(int)layer_types.MAX_LAYERS];
                         _mapData[x, y].Layers.leash_mon_x = new sbyte[GHConstants.MaxLeashed + 1];
                         _mapData[x, y].Layers.leash_mon_y = new sbyte[GHConstants.MaxLeashed + 1];
 
                         _mapData[x, y].Layers.layer_glyphs[0] = UnexploredGlyph;
+                        _mapData[x, y].Layers.layer_gui_glyphs[0] = UnexploredGlyph;
                         for (int i = 1; i < (int)layer_types.MAX_LAYERS; i++)
+                        {
                             _mapData[x, y].Layers.layer_glyphs[i] = NoGlyph;
+                            _mapData[x, y].Layers.layer_gui_glyphs[i] = NoGlyph;
+                        }
 
                         _mapData[x, y].Layers.glyph = UnexploredGlyph;
                         _mapData[x, y].Layers.bkglyph = NoGlyph;

@@ -732,8 +732,12 @@ static const char empty_string[] = "";
           NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
           NO_GLYPH,NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH \
         }, \
+        { base_cmap_to_glyph(empty_symbol),NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
+          NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
+          NO_GLYPH,NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH \
+        }, \
         0UL, 0U, 0U, (struct obj*)0,   0, 0,   \
-        0, 0, 0, 0, 0, 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0 }, 0, 0, 0UL,   0, \
+        0, 0, 0, 0, 0, 0, 0, 0, 0, { 0, 0, 0, 0, 0, 0, 0 }, 0, 0, 0UL,   0, \
         0, 0, 0, 0, 0, 0, 0, 0UL, 0, 0, 0, \
         {0, 0, 0}, {0, 0, 0} \
     }

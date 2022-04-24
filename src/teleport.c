@@ -412,9 +412,9 @@ boolean allow_drag, keep_effect_glyphs;
 
     if (keep_effect_glyphs)
     {
-        show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_GENERAL_EFFECT], LAYER_GENERAL_EFFECT);
-        show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_MONSTER_EFFECT], LAYER_MONSTER_EFFECT);
-        show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_BACKGROUND_EFFECT], LAYER_BACKGROUND_EFFECT);
+        show_gui_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_GENERAL_EFFECT], layers.layer_gui_glyphs[LAYER_GENERAL_EFFECT], LAYER_GENERAL_EFFECT);
+        show_gui_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_MONSTER_EFFECT], layers.layer_gui_glyphs[LAYER_MONSTER_EFFECT], LAYER_MONSTER_EFFECT);
+        show_gui_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_BACKGROUND_EFFECT], layers.layer_gui_glyphs[LAYER_BACKGROUND_EFFECT], LAYER_BACKGROUND_EFFECT);
         force_redraw_at(x, y);
         flush_screen(1);
     }
@@ -1486,7 +1486,7 @@ int x, y;
     play_special_effect_at(SPECIAL_EFFECT_LEVEL_TELEPORT_IN, 0, x, y, isyou);
     play_sfx_sound(SFX_LEVEL_TELEPORT);
     special_effect_wait_until_action(0);
-    show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_MONSTER], LAYER_MONSTER);
+    show_gui_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_MONSTER], layers.layer_gui_glyphs[LAYER_MONSTER], LAYER_MONSTER);
     force_redraw_at(x, y);
     flush_screen(1);
     special_effect_wait_until_end(0);
