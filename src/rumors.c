@@ -632,21 +632,21 @@ do_oracle_identify(oracl)
 struct monst* oracl;
 {
     long umoney;
-    int u_pay;
     int minor_id_cost = max(1, (int)((double)(150 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))) ; // 175 + 15 * u.ulevel;
     char qbuf[QBUFSZ];
 
     multi = 0;
     umoney = money_cnt(invent);
 
-
     if (!oracl) 
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         There("is no one here to identify items.");
         return 0;
     }
     else if (!is_peaceful(oracl)) 
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s is in no mood for identification.", Monnam(oracl));
         return 0;
     }
@@ -658,57 +658,81 @@ struct monst* oracl;
     }
     else if (count_unidentified(invent) == 0)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("have no unidentified items.");
         return 0;
     }
 
-    int cnt = 0;
     int res = 0;
 
-    do
+    play_monster_special_dialogue_line(oracl, ORACLE_LINE_DOST_THOU_DESIRE_AN_IDENTIFICATION);
+    Sprintf(qbuf, "\"Dost thou desire an identification?\" (%d %s)",
+        minor_id_cost, currency((long)minor_id_cost));
+
+    switch (ynq_mon(oracl, qbuf))
     {
-        if (!cnt)
+    default:
+    case 'n':
+    case 'q':
+        return 0;
+    case 'y':
+        if (umoney < (long)minor_id_cost)
         {
-            play_monster_special_dialogue_line(oracl, ORACLE_LINE_DOST_THOU_DESIRE_AN_IDENTIFICATION);
-            Sprintf(qbuf, "\"Dost thou desire an identification?\" (%d %s)",
-                minor_id_cost, currency((long)minor_id_cost));
-        }
-        else
-        {
-            play_monster_special_dialogue_line(oracl, ORACLE_LINE_WOULDST_THOU_DESIRE_A_FURTHER_IDENTIFICATION);
-            Sprintf(qbuf, "\"Wouldst thou desire a further identification?\" (%d %s)",
-                minor_id_cost, currency((long)minor_id_cost));
-        }
-
-        switch (ynq_mon(oracl, qbuf))
-        {
-        default:
-        case 'n':
-        case 'q':
+            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+            You("don't have enough money for that!");
             return 0;
-        case 'y':
-            if (umoney < (long)minor_id_cost)
-            {
-                play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-                You("don't have enough money for that!");
-                return 0;
-            }
-            u_pay = minor_id_cost;
-            break;
         }
+        break;
+    }
 
-        res = identify_pack(1, FALSE);
+    res = service_identify(oracl, minor_id_cost);
 
-        if (res)
-        {
-            money2mon(oracl, (long)u_pay);
-            context.botl = 1;
-            umoney = money_cnt(invent);
-            cnt += res;
-        }
-    } while (res > 0 && count_unidentified(invent) > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
+    //int u_pay;
+    //int cnt = 0;
+    //do
+    //{
+    //    if (!cnt)
+    //    {
+    //        play_monster_special_dialogue_line(oracl, ORACLE_LINE_DOST_THOU_DESIRE_AN_IDENTIFICATION);
+    //        Sprintf(qbuf, "\"Dost thou desire an identification?\" (%d %s)",
+    //            minor_id_cost, currency((long)minor_id_cost));
+    //    }
+    //    else
+    //    {
+    //        play_monster_special_dialogue_line(oracl, ORACLE_LINE_WOULDST_THOU_DESIRE_A_FURTHER_IDENTIFICATION);
+    //        Sprintf(qbuf, "\"Wouldst thou desire a further identification?\" (%d %s)",
+    //            minor_id_cost, currency((long)minor_id_cost));
+    //    }
 
-    return (cnt > 0);
+    //    switch (ynq_mon(oracl, qbuf))
+    //    {
+    //    default:
+    //    case 'n':
+    //    case 'q':
+    //        return 0;
+    //    case 'y':
+    //        if (umoney < (long)minor_id_cost)
+    //        {
+    //            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+    //            You("don't have enough money for that!");
+    //            return 0;
+    //        }
+    //        u_pay = minor_id_cost;
+    //        break;
+    //    }
+
+    //    res = identify_pack(1, FALSE);
+
+    //    if (res)
+    //    {
+    //        money2mon(oracl, (long)u_pay);
+    //        context.botl = 1;
+    //        umoney = money_cnt(invent);
+    //        cnt += res;
+    //    }
+    //} while (res > 0 && count_unidentified(invent) > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
+
+    return (res > 0);
 }
 
 int

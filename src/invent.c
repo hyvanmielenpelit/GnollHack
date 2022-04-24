@@ -3796,6 +3796,7 @@ int id_limit;
     }
     return res;
 }
+
 /* count the unidentified items */
 int
 count_unidentified(objchn)

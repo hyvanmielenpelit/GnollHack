@@ -6642,13 +6642,11 @@ struct monst* mtmp;
         return 0;
 
     long umoney;
-    int u_pay;
     int minor_id_cost = max(1, (int)((ESHK(mtmp)->shoptype == SHOPBASE ? 150 + 10 * (double)u.ulevel : 75 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
     umoney = money_cnt(invent);
-
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
         return 0;
@@ -6660,43 +6658,71 @@ struct monst* mtmp;
     }
 
     int res = 0;
-    int cnt = 0, unided = 0;
 
-    do
+    context.shop_identify_type = ESHK(mtmp)->shoptype - SHOPBASE + 1;
+    if (count_unidentified(invent) == 0)
     {
-        if(!cnt)
-            Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description), minor_id_cost, currency((long)minor_id_cost));
-        else
-            Sprintf(qbuf, "Would you like to identify one more %s? (%d %s)", shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description, minor_id_cost, currency((long)minor_id_cost));
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You("have nothing to identify.");
+        return 0;
+    }
+    context.shop_identify_type = 0;
 
-        switch (yn_query_mon(mtmp, qbuf)) {
-        default:
+    Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description), minor_id_cost, currency((long)minor_id_cost));
+    switch (yn_query_mon(mtmp, qbuf)) 
+    {
+    default:
+        return 0;
+    case 'y':
+        if (umoney < (long)minor_id_cost) {
+            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+            You("don't have enough money for that!");
             return 0;
-        case 'y':
-            if (umoney < (long)minor_id_cost) {
-                play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-                You("don't have enough money for that!");
-                return 0;
-            }
-            u_pay = minor_id_cost;
-            break;
         }
+        break;
+    }
 
-        context.shop_identify_type = ESHK(mtmp)->shoptype - SHOPBASE + 1; // shtypes[ESHK(mtmp)->shoptype - SHOPBASE].symb;
+    context.shop_identify_type = ESHK(mtmp)->shoptype - SHOPBASE + 1;
+    res = service_identify(mtmp, minor_id_cost);
+    context.shop_identify_type = 0;
 
-        res = identify_pack(1, FALSE);
-        unided = count_unidentified(invent);
+    //int u_pay;
+    //int cnt = 0, unided = 0;
+    //do
+    //{
+    //    if(!cnt)
+    //        Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description), minor_id_cost, currency((long)minor_id_cost));
+    //    else
+    //        Sprintf(qbuf, "Would you like to identify one more %s? (%d %s)", shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description, minor_id_cost, currency((long)minor_id_cost));
 
-        context.shop_identify_type = 0;
+    //    switch (yn_query_mon(mtmp, qbuf)) {
+    //    default:
+    //        return 0;
+    //    case 'y':
+    //        if (umoney < (long)minor_id_cost) {
+    //            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+    //            You("don't have enough money for that!");
+    //            return 0;
+    //        }
+    //        u_pay = minor_id_cost;
+    //        break;
+    //    }
 
-        if (res)
-        {
-            money2mon(mtmp, (long)u_pay);
-            context.botl = 1;
-            umoney = money_cnt(invent);
-            cnt += res;
-        }
-    } while (res > 0 && unided > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
+    //    context.shop_identify_type = ESHK(mtmp)->shoptype - SHOPBASE + 1; // shtypes[ESHK(mtmp)->shoptype - SHOPBASE].symb;
+
+    //    res = identify_pack(1, FALSE);
+    //    unided = count_unidentified(invent);
+
+    //    context.shop_identify_type = 0;
+
+    //    if (res)
+    //    {
+    //        money2mon(mtmp, (long)u_pay);
+    //        context.botl = 1;
+    //        umoney = money_cnt(invent);
+    //        cnt += res;
+    //    }
+    //} while (res > 0 && unided > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
 
     return 1; 
 }
@@ -8057,12 +8083,7 @@ int id_idx, minor_id_cost, spdialogue1, spdialogue2;
     if (!mtmp)
         return 0;
 
-    long umoney;
-    int u_pay;
-    char qbuf[QBUFSZ];
-
-    multi = 0;
-    umoney = money_cnt(invent);
+    long umoney = money_cnt(invent);
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
         return 0;
@@ -8073,52 +8094,157 @@ int id_idx, minor_id_cost, spdialogue1, spdialogue2;
         return 0;
     }
 
-    int res = 0;
-    int cnt = 0, unided = 0;
-
-    do
+    context.shop_identify_type = id_idx;
+    if (count_unidentified(invent) == 0)
     {
-        if (!cnt)
-        {
-            play_monster_special_dialogue_line(mtmp, spdialogue1);
-            Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(identify_item_str), minor_id_cost, currency((long)minor_id_cost));
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You("have nothing to identify.");
+        return 0;
+    }
+    context.shop_identify_type = 0;
+
+    char qbuf[QBUFSZ];
+    int res = 0;
+    play_monster_special_dialogue_line(mtmp, spdialogue1);
+    Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(identify_item_str), minor_id_cost, currency((long)minor_id_cost));
+
+    switch (yn_query_mon(mtmp, qbuf)) {
+    default:
+        return 0;
+    case 'y':
+        if (umoney < (long)minor_id_cost) {
+            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+            You("don't have enough money for that!");
+            return 0;
         }
-        else
+        break;
+    }
+
+    context.npc_identify_type = id_idx;
+    res = service_identify(mtmp, minor_id_cost);
+    context.npc_identify_type = 0;
+
+
+    //int cnt = 0, unided = 0;
+
+    //do
+    //{
+        //if (!cnt)
+        //{
+            //play_monster_special_dialogue_line(mtmp, spdialogue1);
+            //Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(identify_item_str), minor_id_cost, currency((long)minor_id_cost));
+        //}
+        //else
+        //{
+        //    play_monster_special_dialogue_line_with_flags(mtmp, spdialogue2, PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED);
+        //    Sprintf(qbuf, "Would you like to identify one more %s? (%d %s)", identify_item_str, minor_id_cost, currency((long)minor_id_cost));
+        //}
+
+        //switch (yn_query_mon(mtmp, qbuf)) {
+        //default:
+        //    return 0;
+        //case 'y':
+        //    if (umoney < (long)minor_id_cost) {
+        //        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+        //        You("don't have enough money for that!");
+        //        return 0;
+        //    }
+        //    break;
+        //}
+
+        //context.npc_identify_type = id_idx;
+        //res = identify_pack(1, FALSE);
+        //context.npc_identify_type = 0;
+
+    //} while (res > 0 && unided > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
+
+    return (res > 0);
+}
+
+
+
+/* menu of unidentified objects */
+int
+service_identify(mtmp, id_cost)
+struct monst* mtmp;
+int id_cost;
+{
+    menu_item* pick_list;
+    int n, i;
+    char buf[BUFSZ];
+    int res = 0, id_res = 0;
+    long umoney = money_cnt(invent);
+
+    strcpy(buf, "What would you like to identify?");
+
+    n = query_objlist(buf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE
+        | USE_INVLET | INVORDER_SORT),
+        &pick_list, PICK_ANY, not_fully_identified, 0);
+
+    if (n > 0)
+    {
+        boolean itemize = FALSE;
+        int iprompt = 'n';
+        if (n > 1)
         {
-            play_monster_special_dialogue_line_with_flags(mtmp, spdialogue2, PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED);
-            Sprintf(qbuf, "Would you like to identify one more %s? (%d %s)", identify_item_str, minor_id_cost, currency((long)minor_id_cost));
+            iprompt = ynq("Itemized billing for identification?");
+            itemize = (iprompt == 'y');
         }
 
-        switch (yn_query_mon(mtmp, qbuf)) {
-        default:
+        if (iprompt == 'q')
+        {
+            pline1(Never_mind);
             return 0;
-        case 'y':
-            if (umoney < (long)minor_id_cost) {
+        }
+
+        char qbuf[BUFSZ];
+        char qendbuf[BUFSZ];
+        for (i = 0; i < n; i++)
+        {
+            int ans = 'y';
+            struct obj* otmp = pick_list[i].item.a_obj;
+            if (itemize)
+            {
+                Sprintf(qendbuf, " for %d %s?", id_cost, currency((long)id_cost));
+                (void)safe_qbuf(qbuf, "Identify ", qendbuf, otmp,
+                    doname, thesimpleoname,
+                    (otmp->quan == 1L) ? "that" : "those");
+
+                ans = n == 1 ? yn_query(qbuf) : ynaq(qbuf);
+                switch (ans)
+                {
+                default:
+                case 'n':
+                    continue;
+                case 'a':
+                    itemize = FALSE;
+                    break;
+                case 'y':
+                    break;
+                case 'q':
+                    return res;
+                    break;
+                }
+            }
+
+            if (umoney < id_cost)
+            {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
                 You("don't have enough money for that!");
-                return 0;
+                return res;
             }
-            u_pay = minor_id_cost;
-            break;
-        }
 
-        context.npc_identify_type = id_idx;
-
-        res = identify_pack(1, FALSE);
-        unided = count_unidentified(invent);
-
-        context.npc_identify_type = 0;
-
-        if (res)
-        {
-            money2mon(mtmp, (long)u_pay);
-            bot();
+            play_sfx_sound(SFX_IDENTIFY_SUCCESS);
+            money2mon(mtmp, (long)id_cost);
             umoney = money_cnt(invent);
-            cnt += res;
+            bot();
+            id_res = identify(otmp);
+            res += id_res;
         }
-    } while (res > 0 && unided > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
-
-    return (cnt > 0);
+        free((genericptr_t)pick_list);
+        mark_synch(); /* Before we loop to pop open another menu */
+    }
+    return res;
 }
 
 
