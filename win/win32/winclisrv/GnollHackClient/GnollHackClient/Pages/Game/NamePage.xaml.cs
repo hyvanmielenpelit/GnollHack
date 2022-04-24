@@ -67,6 +67,7 @@ namespace GnollHackClient.Pages.Game
                 _backPressed = true;
                 //await App.Current.MainPage.Navigation.PopModalAsync();
             }
+            await Task.FromResult(0);
             return false;
         }
 
