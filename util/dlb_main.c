@@ -436,7 +436,7 @@ char **argv;
                 printf("%s\n", ld[i].fname);
 
             fsiz = 0L;
-            while ((rint = read(fd, buf, (unsigned int)(sizeof buf))) != 0) {
+            while ((rint = (int)read(fd, buf, (unsigned int)(sizeof buf))) != 0) {
                 if (rint <= -1) {
                     printf("Read Error in '%s'\n", ld[i].fname);
                     xexit(EXIT_FAILURE);

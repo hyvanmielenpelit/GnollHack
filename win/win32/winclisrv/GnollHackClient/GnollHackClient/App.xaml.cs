@@ -208,7 +208,7 @@ namespace GnollHackClient
 
         public static async Task<bool> EmptyBackButtonPressed(object sender, EventArgs e)
         {
-            return false;
+            return await Task.FromResult(false);
         }
 
         public static SKTypeface DiabloTypeface { get; set; }
