@@ -956,9 +956,10 @@ namespace GnollHackClient.Pages.Game
             switch ((char)data.cmd_def_char)
             {
                 case 'a':
+                case 'm':
                     switch (data.style)
                     {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Next interesting */
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Next interesting / monster */
                             icon_string = "GnollHackClient.Assets.UI.next.png";
                             break;
                         default:
@@ -967,9 +968,10 @@ namespace GnollHackClient.Pages.Game
                     }
                     break;
                 case 'A':
+                case 'M':
                     switch (data.style)
                     {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Previous interesting */
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_GETPOS: /* Previous interesting / monster */
                             icon_string = "GnollHackClient.Assets.UI.previous.png";
                             break;
                         default:

@@ -594,37 +594,42 @@ int mtype;
 
             if (level_difficulty() < 15)
             {
-                if (!rn2(3))
+                if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_MAGIC_ARROW;
+                    cnt++;
+                }
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_SHOCKING_TOUCH;
                     cnt++;
                 }
-                if (!rn2(3))
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_MAGIC_MISSILE;
                     cnt++;
                 }
-                if (!rn2(3))
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_CIRCLE_OF_FIRE;
                     cnt++;
                 }
-                if (!rn2(3))
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_CIRCLE_OF_MAGIC;
                     cnt++;
                 }
-                if (!rn2(3))
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_CIRCLE_OF_FROST;
                     cnt++;
                 }
-                if (!rn2(3))
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_CIRCLE_OF_LIGHTNING;
                     cnt++;
                 }
-                if (!rn2(3) || cnt == 0)
+                if ((!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS) || cnt == 0)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_FIRE_BOLT;
                     cnt++;
@@ -632,37 +637,37 @@ int mtype;
             }
             else if (Inhell)
             {
-                if (!rn2(2))
+                if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = rn2(2) ? SPE_INCINERATE : SPE_FLAME_BURST;
                     cnt++;
                 }
-                if (!rn2(2))
+                if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = rn2(2) ? SPE_GLACIAL_GRASP : SPE_GREATER_FROST_RAY;
                     cnt++;
                 }
-                if (!rn2(2))
+                if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_GREATER_ANIMATE_FIRE;
                     cnt++;
                 }
-                if (!rn2(2))
+                if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_SUMMON_DEMON;
                     cnt++;
                 }
-                if (!rn2(2))
+                if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = rn2(2) ? SPE_FINGER_OF_DEATH : SPE_DEATHSPELL;
                     cnt++;
                 }
-                if (!rn2(2))
+                if ((!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS) || cnt == 0)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = rn2(2) ? SPE_RAISE_SKELETON_KING : SPE_RAISE_SKELETON_LORD;
                     cnt++;
                 }
-                if (!rn2(6))
+                if (!rn2(6) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_CREATE_DRACOLICH;
                     cnt++;
@@ -670,37 +675,37 @@ int mtype;
             }
             else
             {
-                if (!rn2(3))
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_FORCE_STRIKE;
                     cnt++;
                 }
-                if (!rn2(3))
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_GREATER_MAGIC_MISSILE;
                     cnt++;
                 }
-                if (!rn2(3))
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_FIRE_STORM;
                     cnt++;
                 }
-                if (!rn2(3))
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_THUNDERSTORM;
                     cnt++;
                 }
-                if (!rn2(3))
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_ICE_STORM;
                     cnt++;
                 }
-                if (!rn2(3))
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_MAGIC_STORM;
                     cnt++;
                 }
-                if (!rn2(3))
+                if ((!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS) || cnt == 0)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_METEOR_SWARM;
                     cnt++;

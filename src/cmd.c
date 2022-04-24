@@ -8671,6 +8671,16 @@ enum create_context_menu_types menu_type;
         add_context_menu('.', Cmd.spkeys[NHKF_GETPOS_PICK], CONTEXT_MENU_STYLE_GETPOS, NO_GLYPH, "Select",
             0, 0, NO_COLOR);
         break;
+    case CREATE_CONTEXT_MENU_IN_GETPOS_MONSTER:
+        add_context_menu('m', Cmd.spkeys[NHKF_GETPOS_MON_NEXT], CONTEXT_MENU_STYLE_GETPOS, NO_GLYPH, "Next",
+            0, 0, NO_COLOR);
+
+        add_context_menu('M', Cmd.spkeys[NHKF_GETPOS_MON_PREV], CONTEXT_MENU_STYLE_GETPOS, NO_GLYPH, "Previous",
+            0, 0, NO_COLOR);
+
+        add_context_menu('.', Cmd.spkeys[NHKF_GETPOS_PICK], CONTEXT_MENU_STYLE_GETPOS, NO_GLYPH, "Select",
+            0, 0, NO_COLOR);
+        break;
     case CREATE_CONTEXT_MENU_IN_GETPOS_TRAVEL_MODE:
         add_context_menu('a', Cmd.spkeys[NHKF_GETPOS_INTERESTING_NEXT], CONTEXT_MENU_STYLE_GETPOS, NO_GLYPH, "Next",
             0, 0, NO_COLOR);

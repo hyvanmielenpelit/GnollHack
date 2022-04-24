@@ -1294,7 +1294,7 @@ a long sleep.
 As %n sinks to the ground, blood gushing from %nj open mouth, %nh
 defiantly curses you and %l:
 
-    "Thou hast not won yet, %r.  By the gods, I shall return
+    "Thou hast not won yet, %c.  By the gods, I shall return
     and dog thy steps to the grave!"
 
 %nJ tail flailing madly, %n tries to crawl towards you, but slumps
