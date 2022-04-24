@@ -6664,6 +6664,7 @@ struct monst* mtmp;
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You("have nothing to identify.");
+        context.shop_identify_type = 0;
         return 0;
     }
     context.shop_identify_type = 0;
@@ -8099,6 +8100,7 @@ int id_idx, minor_id_cost, spdialogue1, spdialogue2;
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You("have nothing to identify.");
+        context.shop_identify_type = 0;
         return 0;
     }
     context.shop_identify_type = 0;
@@ -8223,7 +8225,6 @@ int id_cost;
                     break;
                 case 'q':
                     return res;
-                    break;
                 }
             }
 
