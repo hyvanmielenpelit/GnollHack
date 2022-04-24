@@ -2274,7 +2274,7 @@ register struct obj* omonwep;
                 play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s blinds you!", Monnam(mtmp));
             }
-            make_blinded(Blinded + (long)ceil(damage), FALSE);
+            make_blinded(Blinded + 1 + (long)ceil(damage), FALSE);
             if (!Blind)
                 Your1(vision_clears);
         }
@@ -3567,7 +3567,7 @@ struct attack *mattk;
 
                 if (!Blinded)
                     You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "see in here!");
-                make_blinded((long)ceil(damage), FALSE);
+                make_blinded(1 + (long)ceil(damage), FALSE);
                 if (!was_blinded && !Blind)
                     Your1(vision_clears);
             }
@@ -3804,7 +3804,7 @@ boolean ufound;
                 if (mon_visible(mtmp) || (rnd(basedmg /= 2) > u.ulevel)) 
                 {
                     You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are blinded by a blast of light!");
-                    make_blinded((long)basedmg, FALSE);
+                    make_blinded(1 + (long)basedmg, FALSE);
                     if (!Blind)
                         Your1(vision_clears);
                 } 
@@ -4042,7 +4042,7 @@ struct attack *mattk;
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are blinded by %s radiance!", s_suffix(mon_nam(mtmp)));
                 if (!Blind)
                     play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
-                make_blinded((long) blnd, FALSE);
+                make_blinded(1 + (long) blnd, FALSE);
                 stop_occupation();
                 /* not blind at this point implies you're wearing
                    the Eyes of the Overworld; make them block this

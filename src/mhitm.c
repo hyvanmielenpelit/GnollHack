@@ -542,12 +542,12 @@ register struct monst *magr, *mdef;
                         {
                             set_to_zero = TRUE;
                             if(canseemon(magr))
-                                pline("%s %s shatters from the blow!", s_suffix(Monnam(magr)), xname(omonwep));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s shatters from the blow!", s_suffix(Monnam(magr)), xname(omonwep));
                         }
                         else
                         {
                             if (canseemon(magr))
-                                pline("One of %s %s shatters from the blow!", s_suffix(mon_nam(magr)), xname(omonwep));
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "One of %s %s shatters from the blow!", s_suffix(mon_nam(magr)), xname(omonwep));
                         }
                         m_useup(magr, omonwep);
                         if (set_to_zero)
@@ -591,7 +591,7 @@ register struct monst *magr, *mdef;
 
                                 Strcpy(buf, Monnam(mdef));
                                 if (canseemon(mdef))
-                                    pline("%s divides as %s hits it!", buf, mon_nam(magr));
+                                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s divides as %s hits it!", buf, mon_nam(magr));
                             }
                             mintrap(mclone);
                         }
@@ -925,7 +925,7 @@ struct attack *mattk;
             && M_AP_TYPE(mdef) != M_AP_NOTHING)
             seemimic(mdef);
         Sprintf(buf, "%s gazes at", Monnam(magr));
-        pline("%s %s...", buf,
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s...", buf,
               canspotmon(mdef) ? mon_nam(mdef) : "something");
     }
 
@@ -960,7 +960,7 @@ struct attack *mattk;
             {
                 if (canseemon(magr)) 
                 {
-                    pline(
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION,
                       "%s doesn't seem to notice that %s gaze was reflected.",
                           Monnam(magr), mhis(magr));
                 }
@@ -968,7 +968,7 @@ struct attack *mattk;
             }
             play_sfx_sound_at_location(SFX_PETRIFY, magr->mx, magr->my);
             if (canseemon(magr))
-                pline("%s is turned to stone!", Monnam(magr));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is turned to stone!", Monnam(magr));
             monstone(magr);
             if (!DEADMONSTER(magr))
                 return MM_MISS;
@@ -1031,7 +1031,7 @@ register struct attack *mattk;
            result could be included in an expression because the next one
            would overwrite first's result -- that's no longer the case] */
         Sprintf(buf, "%s swallows", Monnam(magr));
-        pline("%s %s.", buf, mon_nam(mdef));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s.", buf, mon_nam(mdef));
     }
 
     for (obj = mdef->minvent; obj; obj = obj->nobj)
@@ -1099,7 +1099,7 @@ register struct attack *mattk;
     else 
     {                           /* both alive, put them back */
         if (cansee(dx, dy))
-            pline("%s is regurgitated!", Monnam(mdef));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is regurgitated!", Monnam(mdef));
 
         remove_monster(dx,dy);
         place_monster(magr, ax, ay);
@@ -1200,7 +1200,7 @@ struct attack *mattk;
     }
 
     if (is_tame(magr)) /* give this one even if it was visible */
-        You(brief_feeling, "melancholy");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, brief_feeling, "melancholy");
 
     if (spef_idx < MAX_SPECIAL_EFFECTS)
     {
@@ -1321,7 +1321,7 @@ register struct obj* omonwep;
         if (is_rider(pd))
         {
             if (vis && canseemon(magr))
-                pline("%s %s!", Monnam(magr),
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s!", Monnam(magr),
                       (pd == &mons[PM_FAMINE])
                           ? "belches feebly, shrivels up and dies"
                           : (pd == &mons[PM_PESTILENCE])
@@ -1331,7 +1331,7 @@ register struct obj* omonwep;
             if (!DEADMONSTER(magr))
                 return 0; /* lifesaved */
             else if (is_tame(magr) && !vis)
-                You(brief_feeling, "queasy");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, brief_feeling, "queasy");
             return MM_AGR_DIED;
         }
         if (flags.verbose && !Deaf)
@@ -1347,7 +1347,7 @@ register struct obj* omonwep;
         if (canseemon(mdef))
         { 
             play_sfx_sound_at_location(SFX_ACQUIRE_STUN, mdef->mx, mdef->my);
-            pline("%s %s for a moment.", Monnam(mdef),
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s for a moment.", Monnam(mdef),
                 makeplural(stagger(pd, "stagger")));
         }
         nonadditive_increase_mon_property(mdef, STUNNED, 5 + rnd(5));
@@ -1428,7 +1428,7 @@ register struct obj* omonwep;
             pline("%s is %s!", Monnam(mdef), on_fire(pd, mattk));
         if (completelyburns(pd)) { /* paper golem or straw golem */
             if (vis && canseemon(mdef))
-                pline("%s burns completely!", Monnam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s burns completely!", Monnam(mdef));
             mondead(mdef); /* was mondied() but that dropped paper scrolls */
             if (!DEADMONSTER(mdef))
                 return 0;
@@ -1535,7 +1535,7 @@ register struct obj* omonwep;
         if (is_iron(pd)) 
         {
             if (vis && canseemon(mdef))
-                pline("%s falls to pieces!", Monnam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s falls to pieces!", Monnam(mdef));
             mondied(mdef);
             if (!DEADMONSTER(mdef))
                 return 0;
@@ -1560,7 +1560,7 @@ register struct obj* omonwep;
         if (pd == &mons[PM_WOOD_GOLEM] || pd == &mons[PM_LEATHER_GOLEM])
         {
             if (vis && canseemon(mdef))
-                pline("%s falls to pieces!", Monnam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s falls to pieces!", Monnam(mdef));
             mondied(mdef);
             if (!DEADMONSTER(mdef))
                 return 0;
@@ -1613,7 +1613,7 @@ register struct obj* omonwep;
             (void) rloc2(mdef, TRUE, TRUE);
 
             if (vis && wasseen && !canspotmon(mdef) && mdef != u.usteed)
-                pline("%s suddenly disappears!", mdef_Monnam);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly disappears!", mdef_Monnam);
 
             if (damage >= (double)mdef->mhp) 
             { /* see hitmu(mhitu.c) */
@@ -1632,7 +1632,7 @@ register struct obj* omonwep;
             {
                 play_sfx_sound_at_location(SFX_ACQUIRE_SLEEP, mdef->mx, mdef->my);
                 Strcpy(buf, Monnam(mdef));
-                pline("%s is put to sleep by %s.", buf, mon_nam(magr));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s is put to sleep by %s.", buf, mon_nam(magr));
             }
             mdef->mstrategy &= ~STRAT_WAITFORU;
             slept_monst(mdef);
@@ -1646,7 +1646,7 @@ register struct obj* omonwep;
             {
                 play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mdef->mx, mdef->my);
                 Strcpy(buf, Monnam(mdef));
-                pline("%s is frozen by %s.", buf, mon_nam(magr));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s is frozen by %s.", buf, mon_nam(magr));
             }
             paralyze_monst(mdef, 2 + rnd(8), FALSE);
         }
@@ -1658,7 +1658,7 @@ register struct obj* omonwep;
             if (vis && canspotmon(mdef) && !is_paralyzed(mdef))
             {
                 play_sfx_sound_at_location(SFX_SHARPNESS_SLICE, mdef->mx, mdef->my);
-                pline("%s strike slices a part of %s off!", s_suffix(Monnam(magr)), mon_nam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s strike slices a part of %s off!", s_suffix(Monnam(magr)), mon_nam(mdef));
             }
             damage += adjust_damage((mdef->mhpmax * SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE) / 100, magr, mdef, AD_PHYS, ADFLAGS_NONE);
         }
@@ -1679,7 +1679,7 @@ register struct obj* omonwep;
         if (!is_cancelled(magr)&& !is_confused(mdef) && !magr->mspec_used)
         {
             if (vis && canseemon(mdef))
-                pline("%s looks confused.", Monnam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks confused.", Monnam(mdef));
             play_sfx_sound_at_location(SFX_ACQUIRE_CONFUSION, mdef->mx, mdef->my);
             nonadditive_increase_mon_property(mdef, CONFUSION, 20 + rnd(10));
             mdef->mstrategy &= ~STRAT_WAITFORU;
@@ -1691,10 +1691,10 @@ register struct obj* omonwep;
             register unsigned rnd_tmp;
 
             if (vis && !is_blinded(mdef) && canspotmon(mdef))
-                pline("%s is blinded.", Monnam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is blinded.", Monnam(mdef));
             rnd_tmp = d((int) mattk->damn, (int) mattk->damd);
             play_sfx_sound_at_location(SFX_ACQUIRE_BLINDNESS, mdef->mx, mdef->my);
-            nonadditive_increase_mon_property(mdef, BLINDED, rnd_tmp);
+            nonadditive_increase_mon_property(mdef, BLINDED, 1 + rnd_tmp);
             mdef->mstrategy &= ~STRAT_WAITFORU;
         }
         damage = 0;
@@ -1729,9 +1729,9 @@ register struct obj* omonwep;
             if (canseemon(magr))
             {
                 if (is_cancelled(mdef))
-                    pline("%s gazes at %s. %s is hit by an invisible anti-magic ray!", Monnam(magr), mon_nam(mdef), Monnam(mdef));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s gazes at %s. %s is hit by an invisible anti-magic ray!", Monnam(magr), mon_nam(mdef), Monnam(mdef));
                 else
-                    pline("%s focuses %s anti-magic gaze on %s.", Monnam(magr), mhis(magr), mon_nam(mdef));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s focuses %s anti-magic gaze on %s.", Monnam(magr), mhis(magr), mon_nam(mdef));
             }
             if (has_cancellation_resistance(mdef))
             {
@@ -1751,7 +1751,7 @@ register struct obj* omonwep;
         if (!is_cancelled(magr)&& haseyes(pd) && !is_blinded(mdef)) 
         {
             if (vis && canseemon(mdef))
-                pline("%s looks %sconfused.", Monnam(mdef),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks %sconfused.", Monnam(mdef),
                       is_confused(mdef) ? "more " : "");
 
             play_sfx_sound_at_location(SFX_ACQUIRE_HALLUCINATION, mdef->mx, mdef->my);
@@ -1776,9 +1776,9 @@ register struct obj* omonwep;
                 if (vis && canseemon(mdef))
                 {
                     play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mdef->mx, mdef->my);
-                    pline("Some writing vanishes from %s head!",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Some writing vanishes from %s head!",
                           s_suffix(mon_nam(mdef)));
-                    pline("%s is destroyed!", Monnam(mdef));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is destroyed!", Monnam(mdef));
                 }
                 mondied(mdef);
                 if (!DEADMONSTER(mdef))
@@ -1793,9 +1793,9 @@ register struct obj* omonwep;
             {
                 play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_LAUGHTER);
                 if (!vis)
-                    You_hear("laughter.");
+                    You_hear_ex(ATR_NONE, CLR_MSG_WARNING, "laughter.");
                 else if (canseemon(magr))
-                    pline("%s chuckles.", Monnam(magr));
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s chuckles.", Monnam(magr));
             }
         }
         break;
@@ -1819,14 +1819,14 @@ register struct obj* omonwep;
         if (vis && canseemon(mdef))
         {
             Strcpy(buf, Monnam(magr));
-            pline("%s steals some gold from %s.", buf, mon_nam(mdef));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s steals some gold from %s.", buf, mon_nam(mdef));
         }
         if (!tele_restrict(magr)) 
         {
             boolean couldspot = canspotmon(magr);
             (void) rloc2(magr, TRUE, TRUE);
             if (vis && couldspot && !canspotmon(magr))
-                pline("%s suddenly disappears!", buf);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly disappears!", buf);
         }
         break;
     case AD_DRLI:
@@ -1836,7 +1836,7 @@ register struct obj* omonwep;
             int basehpdrain = d(2, 6);
             play_sfx_sound_at_location(SFX_DRAIN_LIFE, mdef->mx, mdef->my);
             if (vis && canspotmon(mdef))
-                pline("%s suddenly seems weaker!", Monnam(mdef));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly seems weaker!", Monnam(mdef));
             mdef->mbasehpmax -= basehpdrain;
             if (mdef->m_lev == 0)
                 damage = (double)mdef->mhp + 1;
@@ -1888,7 +1888,7 @@ register struct obj* omonwep;
             if (vis && canseemon(mdef))
             {
                 Strcpy(buf, Monnam(magr));
-                pline("%s steals %s from %s!", buf, onambuf, mdefnambuf);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s steals %s from %s!", buf, onambuf, mdefnambuf);
             }
             possibly_unwield(mdef, FALSE);
             mdef->mstrategy &= ~STRAT_WAITFORU;
@@ -1903,7 +1903,7 @@ register struct obj* omonwep;
 
                 (void) rloc2(magr, TRUE, TRUE);
                 if (vis && couldspot && !canspotmon(magr))
-                    pline("%s suddenly disappears!", buf);
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly disappears!", buf);
             }
         }
         damage = 0;
@@ -2088,7 +2088,7 @@ register struct obj* omonwep;
             {
                 if (canspotmon(mdef) && canspotmon(magr))
                 {
-                    pline("%s's %s %s deeply into %s!", Monnam(magr), cxname(mweapon), otense(mweapon, "cut"), mon_nam(mdef));
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s's %s %s deeply into %s!", Monnam(magr), cxname(mweapon), otense(mweapon, "cut"), mon_nam(mdef));
                 }
             }
         }
@@ -2135,7 +2135,7 @@ register struct obj* omonwep;
                 if (canspotmon(mdef) && canspotmon(magr))
                 {
                     play_sfx_sound_at_location(SFX_LIFE_LEECH, mdef->mx, mdef->my);
-                    pline("%s's %s %s life energy from %s!", Monnam(magr), cxname(mweapon), otense(mweapon, "leech"), mon_nam(mdef));
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s's %s %s life energy from %s!", Monnam(magr), cxname(mweapon), otense(mweapon, "leech"), mon_nam(mdef));
                 }
             }
         }
@@ -2173,7 +2173,7 @@ register struct obj* omonwep;
     if (DEADMONSTER(mdef)) 
     {
         if (poisondamage > 0 && ((double)mdef->mhp + ((double)mdef->mhp_fraction)/10000 - 1) > -poisondamage && vis && canspotmon(mdef) && !isdisintegrated)
-            pline_The("poison was deadly...");
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "poison was deadly...");
 
         if (m_at(mdef->mx, mdef->my) == magr) { /* see gulpmm() */
             remove_monster(mdef->mx, mdef->my);
@@ -2528,7 +2528,7 @@ int mdead;
                     if(!resists_paralysis(mdef))
                     {
                         if (canseemon(magr))
-                            pline("%s is frozen by %s gaze!", buf,
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is frozen by %s gaze!", buf,
                                   s_suffix(mon_nam(mdef)));
                         play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mdef->mx, mdef->my);
                         paralyze_monst(magr, basedmg, FALSE);
@@ -2541,7 +2541,7 @@ int mdead;
             { /* gelatinous cube */
                 Strcpy(buf, Monnam(magr));
                 if (canseemon(magr))
-                    pline("%s is frozen by %s.", buf, mon_nam(mdef));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is frozen by %s.", buf, mon_nam(mdef));
                 play_sfx_sound_at_location(SFX_ACQUIRE_PARALYSIS, mdef->mx, mdef->my);
                 paralyze_monst(magr, basedmg, FALSE);
                 update_m_action_core(mdef, action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
@@ -2580,7 +2580,7 @@ int mdead;
                 play_sfx_sound_at_location(SFX_ACQUIRE_STUN, mdef->mx, mdef->my);
                 nonadditive_increase_mon_property(magr, STUNNED, 5 + rnd(5));
                 if (canseemon(magr))
-                    pline("%s %s...", Monnam(magr),
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s...", Monnam(magr),
                           makeplural(stagger(magr->data, "stagger")));
             }
             damage = 0;
@@ -2669,7 +2669,7 @@ boolean givemsg;
     {
         mon->mspec_used += d(2, 2);
         if (givemsg)
-            pline("%s seems lethargic.", Monnam(mon));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems lethargic.", Monnam(mon));
     }
 }
 
