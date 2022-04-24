@@ -6725,7 +6725,7 @@ struct monst* mtmp;
     //    }
     //} while (res > 0 && unided > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
 
-    return 1; 
+    return (res > 0);
 }
 
 boolean
@@ -8079,7 +8079,7 @@ STATIC_OVL int
 do_chat_npc_general_identify(mtmp, identify_item_str, id_idx, minor_id_cost, spdialogue1, spdialogue2)
 struct monst* mtmp;
 const char* identify_item_str;
-int id_idx, minor_id_cost, spdialogue1, spdialogue2;
+int id_idx, minor_id_cost, spdialogue1, spdialogue2 UNUSED;
 {
     if (!mtmp)
         return 0;
