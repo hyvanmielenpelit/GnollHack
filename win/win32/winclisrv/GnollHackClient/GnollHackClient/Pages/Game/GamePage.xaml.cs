@@ -1410,6 +1410,9 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.DisplayPopupText:
                                 DisplayPopupText(req.ScreenTextData);
                                 break;
+                            case GHRequestType.HidePopupText:
+                                HidePopupGrid();
+                                break;
                             case GHRequestType.DisplayGUIEffect:
                                 DisplayGUIEffect(req.GUIEffectData);
                                 break;
@@ -7897,7 +7900,6 @@ namespace GnollHackClient.Pages.Game
         private void PopupOkButton_Clicked(object sender, EventArgs e)
         {
             GenericButton_Clicked(sender, e, 27);
-            HidePopupGrid();
         }
 
         private void HidePopupGrid()

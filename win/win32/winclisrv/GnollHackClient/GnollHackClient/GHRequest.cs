@@ -30,6 +30,7 @@ namespace GnollHackClient
         DisplayFloatingText,
         DisplayScreenText,
         DisplayPopupText,
+        HidePopupText,
         DisplayGUIEffect,
         ShowSkillButton,
         HideSkillButton,

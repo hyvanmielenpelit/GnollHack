@@ -1204,6 +1204,10 @@ namespace GnollHackClient
             }
 
             int val = ClientCallback_nhgetch();
+            if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                queue.Enqueue(new GHRequest(this, GHRequestType.HidePopupText));
+            }
         }
 
         public void ClientCallback_DisplayGUIEffect(int x, int y, int style, ulong tflags)
