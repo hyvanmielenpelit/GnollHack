@@ -2056,6 +2056,8 @@ struct mkroom *croom;
                     }
                 }
                 otmp->enchantment += 1;
+                if (otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
+                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
             else
             {
@@ -2085,6 +2087,8 @@ struct mkroom *croom;
                         otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
                 }
                 otmp->enchantment += 2;
+                if (otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
+                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
         }
         else
@@ -2107,6 +2111,8 @@ struct mkroom *croom;
                         otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
                 }
                 otmp->enchantment += 2;
+                if (otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
+                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
         }
     }
@@ -2143,6 +2149,7 @@ struct mkroom *croom;
             otmp = mksobj(ORCISH_DAGGER, FALSE, FALSE, FALSE);
             otmp->enchantment = 2 + rnd(3);
             otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
+            otmp->exceptionality = EXCEPTIONALITY_ELITE;
         }
 
         if (otmp)
