@@ -308,7 +308,7 @@ extern
 #define WC2_SCREEN_TEXT             0x00080000UL /* 20 windowing system can show screen texts */
 #define WC2_PLAY_GHSOUNDS           0x00100000UL /* 21 windowing system can play ghsounds */
 #define WC2_VOLUME_CONTROLS         0x00200000UL /* 22 volume controls are shown in options */
-#define WC2_RESERVED                0x00400000UL /* 23 reserved */
+#define WC2_PREPROCESS_REPLACEMENTS 0x00400000UL /* 23 graphical user interface that requires preprocessed gui_glyphs; does not do replacements */
 #define WC2_SPECIAL_SYMBOLS         0x00800000UL /* 24 handles special symbols in text of the type &symbol_name; */
 #define WC2_MENU_SUFFIXES           0x01000000UL /* 25 supports placing text in parentheses on a different line in menus */
 

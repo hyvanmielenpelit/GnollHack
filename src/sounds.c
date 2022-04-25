@@ -8564,15 +8564,14 @@ boolean addquotes;
             if (printtext)
             {
                 if(addquotes)
-                    verbalize1(hermit_txt);
+                    verbalize_ex1(attr, color, hermit_txt);
                 else
-                    pline1(hermit_txt);
+                    pline_ex1(attr, color, hermit_txt);
             }
             display_popup_text(hermit_txt, namebuf, POPUP_TEXT_DIALOGUE, attr, color, glyph, addquotes ? POPUP_FLAGS_ADD_QUOTES : 0);
         }
         idx++;
     }
-
 }
 
 STATIC_OVL int

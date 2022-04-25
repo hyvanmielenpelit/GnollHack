@@ -6736,7 +6736,7 @@ char *buf;
     }
     else if (!strcmp(optname, "sound_volume_dialogue"))
     {
-    Sprintf(buf, "%d", (int)flags.sound_volume_dialogue);
+        Sprintf(buf, "%d", (int)flags.sound_volume_dialogue);
     }
     else if (!strcmp(optname, "sound_volume_effects"))
     {
@@ -7549,12 +7549,14 @@ static struct wc_Opt wc2_options[] = {
     { "windowborders", WC2_WINDOWBORDERS },
     { "autostatuslines", WC2_AUTOSTATUSLINES },
     { "preferred_screen_scale", WC2_PREFERRED_SCREEN_SCALE },
-    { "sound_volume_ambient", WC2_VOLUME_CONTROLS },
-    { "sound_volume_dialogue", WC2_VOLUME_CONTROLS },
-    { "sound_volume_effects", WC2_VOLUME_CONTROLS },
-    { "sound_volume_general", WC2_VOLUME_CONTROLS },
-    { "sound_volume_music", WC2_VOLUME_CONTROLS },
-    { "sound_volume_ui", WC2_VOLUME_CONTROLS },
+#if 0 /* currently non-existent options for WC2 */
+    { "screen_text", WC2_SCREEN_TEXT },
+    { "play_ghsounds", WC2_PLAY_GHSOUNDS },
+    { "volume_controls", WC2_VOLUME_CONTROLS },
+    { "preprocess_replacements", WC2_PREPROCESS_REPLACEMENTS },
+    { "special_symbols", WC2_SPECIAL_SYMBOLS },
+    { "menu_suffixes", WC2_MENU_SUFFIXES },
+#endif
     { (char *) 0, 0L }
 };
 
