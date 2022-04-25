@@ -2056,14 +2056,14 @@ struct mkroom *croom;
                     }
                 }
                 otmp->enchantment += 1;
-                if (otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
-                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
             else
             {
                 otmp = mksobj_at(!rn2(2) ? STAFF_OF_FROST : STAFF_OF_THE_MAGI, x, y, TRUE, !named);
             }
             otmp->enchantment += 2;
+            if (can_have_exceptionality(otmp) && otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
+                otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
         }
         else if (Role_if(PM_MONK))
             otmp = mksobj_at(!rn2(3) ? BELT_OF_FIRE_GIANT_STRENGTH : !rn2(2) ? GAUNTLETS_OF_OGRE_POWER : GLOVES_OF_HASTE, x, y, TRUE, !named);
@@ -2087,7 +2087,7 @@ struct mkroom *croom;
                         otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
                 }
                 otmp->enchantment += 2;
-                if (otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
+                if (can_have_exceptionality(otmp) && otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
         }
@@ -2111,7 +2111,7 @@ struct mkroom *croom;
                         otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
                 }
                 otmp->enchantment += 2;
-                if (otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
+                if (can_have_exceptionality(otmp) && otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
         }

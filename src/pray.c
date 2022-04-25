@@ -2417,7 +2417,7 @@ dosacrifice()
                 if (u.ualign.record > -99)
                     u.ualign.record = -99;
                 /*[apparently shrug/snarl can be sensed without being seen]*/
-                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s shrugs and retains dominion over %s,", Moloch,
+                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s shrugs and retains dominion over %s,", Moloch,
                       u_gname());
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "then mercilessly snuffs out your life.");
                 Sprintf(killer.name, "%s indifference", s_suffix(Moloch));
@@ -2435,7 +2435,7 @@ dosacrifice()
                 /* And the opposing team picks you up and
                    carries you off on their shoulders */
                 adjalign(-99);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s accepts your gift, and gains dominion over %s...",
+                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s accepts your gift, and gains dominion over %s...",
                       a_gname(), u_gname());
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s is enraged...", u_gname());
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "Fortunately, %s permits you to live...", a_gname());
@@ -2630,7 +2630,7 @@ dosacrifice()
                 else
                 {
                     play_sfx_sound(SFX_ALTAR_POWER_DECREASE);
-                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "Unluckily, you feel the power of %s decrease.",
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Unluckily, you feel the power of %s decrease.",
                           u_gname());
                     luck_change += -1;
                     exercise(A_WIS, FALSE);
@@ -2659,7 +2659,7 @@ dosacrifice()
                 play_sfx_sound(SFX_ALTAR_GOD_MOLLIFIED);
                 if (u.ugangr)
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s seems %s.", u_gname(),
+                    pline_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "%s seems %s.", u_gname(),
                           Hallucination ? "groovy" : "slightly mollified");
 
                     if ((int) u.uluck < 0)
@@ -2679,9 +2679,9 @@ dosacrifice()
             { /* not satisfied yet */
                 play_sfx_sound(SFX_ALTAR_INADEQUACY);
                 if (Hallucination)
-                    pline_The_ex(ATR_NONE, CLR_MSG_MYSTICAL, "gods seem tall.");
+                    pline_The_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "gods seem tall.");
                 else
-                    You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "have a feeling of inadequacy.");
+                    You_ex(ATR_NONE, NO_COLOR, "have a feeling of inadequacy.");
             }
         }
         else if (ugod_is_angry()) 
@@ -2708,9 +2708,9 @@ dosacrifice()
                 {
                     play_sfx_sound(SFX_ALTAR_HOPEFUL_FEELING);
                     if (Hallucination)
-                        You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "realize that the gods are not like you and I.");
+                        You_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "realize that the gods are not like you and I.");
                     else
-                        You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "have a hopeful feeling.");
+                        You_ex(ATR_NONE, NO_COLOR, "have a hopeful feeling.");
                     if ((int) u.uluck < 0)
                         luck_change += 1;
                 } 
@@ -2718,7 +2718,7 @@ dosacrifice()
                 {
                     play_sfx_sound(SFX_ALTAR_RECONCILIATION);
                     if (Hallucination)
-                        pline("Overall, there is a smell of fried onions.");
+                        pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Overall, there is a smell of fried onions.");
                     else
                         You_ex(ATR_NONE, CLR_MSG_POSITIVE, "have a feeling of reconciliation.");
                     if ((int) u.uluck < 0)
@@ -2829,10 +2829,10 @@ dosacrifice()
             {
                 play_sfx_sound(SFX_ALTAR_FOUR_LEAF_CLOVER);
                 if (Blind)
-                    You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "think %s brushed your %s.", something,
+                    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "think %s brushed your %s.", something,
                         body_part(FOOT));
                 else
-                    You_ex(ATR_NONE, CLR_MSG_MYSTICAL, Hallucination
+                    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, Hallucination
                     ? "see crabgrass at your %s.  A funny thing in a dungeon."
                             : "glimpse a four-leaf clover at your %s.",
                         makeplural(body_part(FOOT)));
