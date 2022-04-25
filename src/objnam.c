@@ -4157,8 +4157,12 @@ boolean is_wiz_wish;
                 && !(p == mythic_sng + 9 && !strcmp(p - 9, spellbookbuf))
                 )
             {
-                *p = 0;
-                mythic_suffix = mythic_idx;
+                p = strstri(bp, mythic_suffix_qualities[mythic_idx].mythic_affix);
+                if (p)
+                {
+                    *p = 0;
+                    mythic_suffix = mythic_idx;
+                }
             }
             break;
         }

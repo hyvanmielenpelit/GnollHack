@@ -2040,19 +2040,22 @@ struct mkroom *croom;
                 otmp = mksobj_at(!rn2(2) ? DAGGER : ATHAME, x, y, TRUE, !named);
                 if (!otmp->oartifact)
                 {
-                    if (!rn2(2))
+                    if (can_obj_have_mythic(otmp))
                     {
-                        if (!rn2(2))
-                            otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
+                        if (!otmp->mythic_prefix && (!rn2(2) || otmp->mythic_suffix))
+                        {
+                            if (!rn2(2))
+                                otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
+                            else
+                                otmp->mythic_prefix = MYTHIC_PREFIX_STYGIAN;
+                        }
                         else
-                            otmp->mythic_prefix = MYTHIC_PREFIX_STYGIAN;
-                    }
-                    else
-                    {
-                        if (!rn2(2))
-                            otmp->mythic_suffix = MYTHIC_SUFFIX_SHARPNESS;
-                        else
-                            otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
+                        {
+                            if (!rn2(2))
+                                otmp->mythic_suffix = MYTHIC_SUFFIX_SHARPNESS;
+                            else
+                                otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
+                        }
                     }
                 }
                 otmp->enchantment += 1;
@@ -2072,19 +2075,36 @@ struct mkroom *croom;
             otmp = mksobj_at(Race_if(PM_GNOLL) && rn2(2) ? (!rn2(4) ? DOUBLE_HEADED_FLAIL : !rn2(2) ? SILVER_FLAIL : FLAIL) : !rn2(2) ? MACE : !rn2(2) ? MORNING_STAR : WAR_HAMMER, x, y, TRUE, !named);
             if (!otmp->oartifact)
             {
-                if (u.ualign.type == A_CHAOTIC)
+                if (can_obj_have_mythic(otmp))
                 {
-                    if (!rn2(2))
-                        otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
+                    if (u.ualign.type == A_CHAOTIC)
+                    {
+                        if (!otmp->mythic_prefix && (rn2(3) || otmp->mythic_suffix))
+                        {
+                            if (!rn2(2))
+                                otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
+                            else
+                                otmp->mythic_prefix = MYTHIC_PREFIX_STYGIAN;
+                        }
+                        else
+                        {
+                            otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
+                        }
+                    }
                     else
-                        otmp->mythic_prefix = MYTHIC_PREFIX_STYGIAN;
-                }
-                else
-                {
-                    if(!rn2(2))
-                        otmp->mythic_suffix = MYTHIC_SUFFIX_DISRUPTION;
-                    else
-                        otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
+                    {
+                        if (!otmp->mythic_suffix && (rn2(2) || otmp->mythic_prefix))
+                        {
+                            if (!rn2(2))
+                                otmp->mythic_suffix = MYTHIC_SUFFIX_DISRUPTION;
+                            else
+                                otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
+                        }
+                        else
+                        {
+                            otmp->mythic_prefix = MYTHIC_PREFIX_OLYMPIAN;
+                        }
+                    }
                 }
                 otmp->enchantment += 2;
                 if (can_have_exceptionality(otmp) && otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
@@ -2096,19 +2116,22 @@ struct mkroom *croom;
             otmp = mksobj_at(Race_if(PM_GNOLL) && rn2(2) ? (!rn2(4) ? DOUBLE_HEADED_FLAIL : !rn2(2) ? SILVER_FLAIL : FLAIL) : !rn2(3) ? LONG_SWORD : !rn2(2) ? SILVER_LONG_SWORD : TWO_HANDED_SWORD, x, y, TRUE, !named);
             if (!otmp->oartifact)
             {
-                if (!rn2(2))
+                if (can_obj_have_mythic(otmp))
                 {
-                    if(!rn2(2))
-                        otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
+                    if (!otmp->mythic_prefix && (!rn2(2) || otmp->mythic_suffix))
+                    {
+                        if (!rn2(2))
+                            otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
+                        else
+                            otmp->mythic_prefix = MYTHIC_PREFIX_STYGIAN;
+                    }
                     else
-                        otmp->mythic_prefix = MYTHIC_PREFIX_STYGIAN;
-                }
-                else
-                {
-                    if(!rn2(2))
-                        otmp->mythic_suffix = MYTHIC_SUFFIX_SHARPNESS;
-                    else
-                        otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
+                    {
+                        if (!rn2(2))
+                            otmp->mythic_suffix = MYTHIC_SUFFIX_SHARPNESS;
+                        else
+                            otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
+                    }
                 }
                 otmp->enchantment += 2;
                 if (can_have_exceptionality(otmp) && otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)

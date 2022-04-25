@@ -2352,9 +2352,9 @@ dosacrifice()
                  * it's a very good action.
                  */
                 if (u.ualign.record < ALIGNLIM)
-                    You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "appropriately %s.", align_str(u.ualign.type));
+                    You_feel_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "appropriately %s.", align_str(u.ualign.type));
                 else
-                    You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "you are thoroughly on the right path.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "you are thoroughly on the right path.");
                 adjalign(5);
                 value += 3;
                 play_sfx_sound(SFX_ALTAR_ADD_ALIGNMENT);
