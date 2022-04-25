@@ -2427,7 +2427,7 @@ dosacrifice()
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s snarls and tries again...", Moloch);
                 fry_by_god(A_NONE, TRUE); /* wrath of Moloch */
                 /* declined to die in wizard or explore mode */
-                pline(cloud_of_smoke, hcolor(NH_BLACK));
+                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, cloud_of_smoke, hcolor(NH_BLACK));
                 done(ESCAPED);
             } 
             else if (u.ualign.type != altaralign)
@@ -2439,7 +2439,7 @@ dosacrifice()
                       a_gname(), u_gname());
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s is enraged...", u_gname());
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "Fortunately, %s permits you to live...", a_gname());
-                pline(cloud_of_smoke, hcolor(NH_ORANGE));
+                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, cloud_of_smoke, hcolor(NH_ORANGE));
                 done(ESCAPED);
             } 
             else
@@ -2527,7 +2527,7 @@ dosacrifice()
          * gets the god who owns it truly pissed off.
          */
         play_sfx_sound(SFX_ALTAR_CHARGED_AIR);
-        You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "the air around you grow charged...");
+        You_feel_ex(ATR_NONE, CLR_MSG_MYSTICAL, "the air around you grow charged...");
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "Suddenly, you realize that %s has noticed you...", a_gname());
         play_voice_god_simple_line_by_align(altaralign, GOD_LINE_SO_MORTAL_YOU_DARE_DESECRATE_MY_HIGH_TEMPLE);
         godvoice(altaralign,

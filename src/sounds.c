@@ -1919,9 +1919,9 @@ bark_here:
             char tmpbuf[BUFSZ] = "";
             (void)ucase(strcpy(tmpbuf, verbl_msg));
             if(dopopup)
-                popup_talk_line_ex(mtmp, tmpbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
+                popup_talk_line_ex(mtmp, tmpbuf, ATR_NONE, CLR_MSG_GOD, TRUE, FALSE);
             else
-                pline1(tmpbuf);
+                pline_ex1(ATR_NONE, CLR_MSG_GOD, tmpbuf);
         }
         else 
         {
