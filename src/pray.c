@@ -1119,7 +1119,7 @@ gcrownu()
             otmp = mksobj(MACE, FALSE, FALSE, FALSE);
             bless(otmp);
             otmp->enchantment = 1 + rnd(3);
-            otmp->mythic_suffix = MYTHIC_SUFFIX_DISRUPTION;
+            otmp->mythic_suffix = MYTHIC_SUFFIX_BANISHMENT;
             otmp->oerodeproof = 1;
             (void)add_to_container(obj, otmp);
 

@@ -2095,7 +2095,9 @@ struct mkroom *croom;
                     {
                         if (!otmp->mythic_suffix && (rn2(2) || otmp->mythic_prefix))
                         {
-                            if (!rn2(2))
+                            if (!rn2(3))
+                                otmp->mythic_suffix = MYTHIC_SUFFIX_BANISHMENT;
+                            else if (!rn2(2))
                                 otmp->mythic_suffix = MYTHIC_SUFFIX_DISRUPTION;
                             else
                                 otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;

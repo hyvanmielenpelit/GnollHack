@@ -2126,11 +2126,10 @@ register struct obj* omonwep;
 
         if (extradmg > 0)
         {
-            magr->mhp += extradmg;
-            if (magr->mhp > magr->mhpmax)
-                magr->mhp = magr->mhpmax;
+            int hpbefore = mdef->mhp;
+            deduct_monster_hp(mdef, (double)-extradmg);
 
-            if (extradmg > 0)
+            if (mdef->mhp > hpbefore)
             {
                 if (canspotmon(mdef) && canspotmon(magr))
                 {

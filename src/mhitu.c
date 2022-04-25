@@ -3144,7 +3144,7 @@ register struct obj* omonwep;
     }
 
     /* Life leech */
-    if (mattk->aatyp == AT_WEAP && omonwep)
+    if (mattk->aatyp == AT_WEAP && omonwep && !is_not_living(youmonst.data) && !is_rider(youmonst.data))
     {
         int life_leech = 0;
         if (!uses_spell_flags && (objects[omonwep->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
@@ -3174,9 +3174,10 @@ register struct obj* omonwep;
 
         if (life_leech > 0)
         {
-            mtmp->mhp += extradmg;
-            if (mtmp->mhp > mtmp->mhpmax)
-                mtmp->mhp = mtmp->mhpmax;
+            int hpbefore = mtmp->mhp;
+            deduct_monster_hp(mtmp, (double)-life_leech);
+
+            if (mtmp->mhp > hpbefore)
 
             if (extradmg > 0)
             {

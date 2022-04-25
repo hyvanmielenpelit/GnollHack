@@ -2155,12 +2155,11 @@ boolean* obj_destroyed;
     }
 
     /* Life leech */
-    if (obj)
+    if (obj && !is_not_living(mon->data) && !is_rider(mon->data))
     {
         int extradmg = 0;
         if (
-            (!uses_spell_flags && (objects[obj->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst) && !is_rider(mon->data)
-                && !is_not_living(mon->data)
+            (!uses_spell_flags && (objects[obj->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(obj, mon, &youmonst)
                 && (
                     ((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
                         && (
@@ -2188,20 +2187,23 @@ boolean* obj_destroyed;
 
         if (extradmg > 0)
         {
+            boolean didleech = FALSE;
             if (Upolyd)
             {
-                u.mh += extradmg;
-                if (u.mh > u.mhmax)
-                    u.mh = u.mhmax;
+                int hpbefore = u.mh;
+                deduct_player_hp((double)-extradmg);
+                if (u.mh > hpbefore)
+                    didleech = TRUE;
             }
             else
             {
-                u.uhp += extradmg;
-                if (u.uhp > u.uhpmax)
-                    u.uhp = u.uhpmax;
+                int hpbefore = u.uhp;
+                deduct_player_hp((double)-extradmg);
+                if (u.uhp > hpbefore)
+                    didleech = TRUE;
             }
 
-            if (extradmg > 0)
+            if (didleech)
             {
                 char* whom = mon_nam(mon);
                 if (canspotmon(mon))
