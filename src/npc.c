@@ -594,11 +594,8 @@ int mtype;
 
             if (level_difficulty() < 15)
             {
-                if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
-                {
-                    ENPC(npc)->special_teach_spells[cnt] = SPE_MAGIC_ARROW;
-                    cnt++;
-                }
+                ENPC(npc)->special_teach_spells[cnt] = SPE_MAGIC_ARROW;
+                cnt++;
                 if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_SHOCKING_TOUCH;
