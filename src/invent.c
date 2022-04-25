@@ -4384,7 +4384,8 @@ boolean addinventoryheader, wornonly;
 
     if(show_weights == 1) // Inventory
         loadstonecorrectly = TRUE;
-    else if (show_weights == 2) { // Pick up
+    else if (show_weights == 2) 
+    { // Pick up
         loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
     }
     else if (show_weights == 3) // Drop
@@ -4393,14 +4394,16 @@ boolean addinventoryheader, wornonly;
     if (lets && !*lets)
         lets = 0; /* simplify tests: (lets) instead of (lets && *lets) */
 
-    if (iflags.perm_invent && (lets || xtra_choice)) {
+    if (iflags.perm_invent && (lets || xtra_choice)) 
+    {
         /* partial inventory in perm_invent setting; don't operate on
            full inventory window, use an alternate one instead; create
            the first time needed and keep it for re-use as needed later */
         if (cached_pickinv_win == WIN_ERR)
             cached_pickinv_win = create_nhwindow(NHW_MENU);
         win = cached_pickinv_win;
-    } else
+    } 
+    else
         win = WIN_INVEN;
 
     /*
@@ -4427,7 +4430,8 @@ boolean addinventoryheader, wornonly;
     if (xtra_choice || (n == 1 && (!lets || iflags.override_ID)))
         ++n;
 
-    if (n == 0) {
+    if (n == 0) 
+    {
         pline("%s.", not_carrying_anything);
         return 0;
     }
@@ -4436,18 +4440,22 @@ boolean addinventoryheader, wornonly;
     if (!flags.invlet_constant)
         reassign();
 
-    if (n == 1 && !iflags.force_invmenu) {
+    if (n == 1 && !iflags.force_invmenu) 
+    {
         /* when only one item of interest, use pline instead of menus;
            we actually use a fake message-line menu in order to allow
            the user to perform selection at the --More-- prompt for tty */
         ret = '\0';
-        if (xtra_choice) {
+        if (xtra_choice) 
+        {
             /* xtra_choice is "bare hands" (wield), "fingertip" (Engrave),
                "nothing" (ready Quiver), or "fingers" (apply grease) */
             ret = message_menu(HANDS_SYM, PICK_ONE,
                                xprname((struct obj *) 0, xtra_choice,
                                        HANDS_SYM, TRUE, 0L, 0L)); /* '-' */
-        } else {
+        } 
+        else 
+        {
             for (otmp = invent; otmp; otmp = otmp->nobj)
                 if (!lets || otmp->invlet == lets[0])
                     break;
@@ -4470,7 +4478,8 @@ boolean addinventoryheader, wornonly;
 
     start_menu_ex(win, addinventoryheader ? GHMENU_STYLE_INVENTORY : GHMENU_STYLE_PICK_ITEM_LIST);
     any = zeroany;
-    if (wizard && iflags.override_ID) {
+    if (wizard && iflags.override_ID) 
+    {
         int unid_cnt;
         char prompt[QBUFSZ];
 
@@ -4481,11 +4490,14 @@ boolean addinventoryheader, wornonly;
                     " -- unidentified or partially identified item%s",
                     plur(unid_cnt));
         add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, prompt, MENU_UNSELECTED);
-        if (!unid_cnt) {
+        if (!unid_cnt) 
+        {
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
                      "(all items are permanently identified already)",
                      MENU_UNSELECTED);
-        } else {
+        } 
+        else 
+        {
             any.a_obj = &wizid_fakeobj;
             Sprintf(prompt, "select %s to permanently identify",
                     (unid_cnt == 1) ? "it": "any or all of them");
@@ -4500,7 +4512,9 @@ boolean addinventoryheader, wornonly;
                      prompt, MENU_UNSELECTED);
             wizid = TRUE;
         }
-   } else if (xtra_choice) {
+    } 
+    else if (xtra_choice) 
+    {
         /* wizard override ID and xtra_choice are mutually exclusive */
         if (flags.sortpack)
             add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
@@ -4521,17 +4535,20 @@ boolean addinventoryheader, wornonly;
 #endif
 nextclass:
     classcount = 0;
-    for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) {
+    for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) 
+    {
         if (lets && !index(lets, otmp->invlet))
             continue;
         if (wornonly && !otmp->owornmask)
             continue;
-        if (!flags.sortpack || otmp->oclass == *invlet) {
+        if (!flags.sortpack || otmp->oclass == *invlet) 
+        {
             if (wizid && !not_fully_identified(otmp))
                 continue;
             any = zeroany; /* all bits zero */
             ilet = otmp->invlet;
-            if (flags.sortpack && !classcount) {
+            if (flags.sortpack && !classcount) 
+            {
                 add_extended_menu(win, NO_GLYPH, &any, 
                     menu_group_heading_info(*invlet > ILLOBJ_CLASS && *invlet < MAX_OBJECT_CLASSES ? def_oc_syms[(int)(*invlet)].sym : '\0'),
                     0, 0, iflags.menu_headings,
@@ -4560,15 +4577,18 @@ nextclass:
                      ATR_NONE, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly) : doname_with_weight_first(otmp, loadstonecorrectly)) : doname(otmp), MENU_UNSELECTED);
         }
     }
-    if (flags.sortpack) {
+    if (flags.sortpack) 
+    {
         if (*++invlet)
             goto nextclass;
-        if (--invlet != venom_inv) {
+        if (--invlet != venom_inv) 
+        {
             invlet = venom_inv;
             goto nextclass;
         }
     }
-    if (iflags.force_invmenu && lets && want_reply) {
+    if (iflags.force_invmenu && lets && want_reply) 
+    {
         any = zeroany;
         add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(), 0, 0, iflags.menu_headings,
                  "Special", MENU_UNSELECTED);
@@ -4581,7 +4601,8 @@ nextclass:
        nothing has been listed (because there isn't anyhing to list;
        recognized via any.a_char still being zero; the n==0 case above
        gets skipped for perm_invent), put something into the menu */
-    if (iflags.perm_invent && !lets && !any.a_char) {
+    if (iflags.perm_invent && !lets && !any.a_char) 
+    {
         any = zeroany;
         add_menu(win, NO_GLYPH, &any, 0, 0, 0,
                  not_carrying_anything, MENU_UNSELECTED);
@@ -4624,27 +4645,39 @@ nextclass:
     n = select_menu(win,
                     wizid ? PICK_ANY : want_reply ? PICK_ONE : PICK_NONE,
                     &selected);
-    if (n > 0) {
-        if (wizid) {
+    if (n > 0) 
+    {
+        if (wizid) 
+        {
             int i;
 
             ret = '\0';
-            for (i = 0; i < n; ++i) {
+            for (i = 0; i < n; ++i) 
+            {
                 otmp = selected[i].item.a_obj;
-                if (otmp == &wizid_fakeobj) {
+                if (otmp == &wizid_fakeobj) 
+                {
                     (void)identify_pack(0, FALSE);
-                } else {
+                } 
+                else 
+                {
                     if (not_fully_identified(otmp))
-                        (void) identify(otmp);
+                    {
+                        play_sfx_sound(SFX_IDENTIFY_SUCCESS);
+                        (void)identify(otmp);
+                    }
                 }
             }
-        } else {
+        } 
+        else 
+        {
             ret = selected[0].item.a_char;
             if (out_cnt)
                 *out_cnt = selected[0].count;
         }
         free((genericptr_t) selected);
-    } else
+    } 
+    else
         ret = !n ? '\0' : '\033'; /* cancelled */
 
     return ret;
