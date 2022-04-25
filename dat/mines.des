@@ -232,8 +232,8 @@ CONTAINER:('(',"chest"),locked,(20,14),keytype:('(',"bronze key"),no_pickup {
   OBJECT:'['
   [50%]:OBJECT:'['
   [50%]:OBJECT:'['
-  [20%]:OBJECT:class_treasure_weapon
-  [20%]:OBJECT:class_treasure_armor
+  [20%]:OBJECT:class_treasure_weapon, notcursed
+  [20%]:OBJECT:class_treasure_armor, notcursed
 }
 #ENGRAVING:(20,14),engrave,"Gilthoniel"
 
@@ -1129,7 +1129,10 @@ TRAP:random,random
 TRAP:random,random
 TRAP:random,random
 # Random monsters
-MONSTER:('g',"gnome king"),random
+MONSTER:('g',"gnome king"),random {
+  OBJECT: class_treasure_weapon, notcursed
+  OBJECT: ('[', "royal crown")
+}
 MONSTER:('g',"gnome lord"),random
 MONSTER:('g',"gnome lord"),random
 MONSTER:('g',"gnome lord"),random
@@ -1293,7 +1296,10 @@ TRAP:random,random
 TRAP:random,random
 TRAP:random,random
 # Random monsters.
-MONSTER:('g',"gnome king"),random
+MONSTER:('g',"gnome king"),random {
+  OBJECT: class_treasure_weapon, notcursed
+  OBJECT: ('[', "royal crown")
+}
 MONSTER:('g',"gnome lord"),random
 MONSTER:('g',"gnome lord"),random
 MONSTER:('g',"gnome lord"),random
@@ -1378,6 +1384,8 @@ OBJECT:'*',random
 OBJECT:('*',"amethyst"),random
 OBJECT:('*',"luckstone"),$place[0],name:"The Gladstone"
 OBJECT:('*',"flint"),$place[1]
+OBJECT:class_treasure_weapon,$place[2],notcursed
+OBJECT: ('[', "royal crown"),$place[2],cursed
 OBJECT:'?',random
 OBJECT:'?',random
 OBJECT:'?',random

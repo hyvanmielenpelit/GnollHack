@@ -120,17 +120,17 @@ CONTAINER:('(',"chest"),buried,(09,08) {
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
-  OBJECT:class_artifact
+  OBJECT:class_artifact, notcursed
   IF [50%] {
     IF [50%] {
-      OBJECT:')', exceptionality:elite, enchantment:5, elemental_enchantment:freezing
+      OBJECT:')', exceptionality:elite, enchantment:5, elemental_enchantment:freezing, notcursed
     } ELSE {
-      OBJECT:class_treasure_weapon
+      OBJECT:class_treasure_weapon, notcursed
     }
   } ELSE {
-    OBJECT:(')',"glass sword")
+    OBJECT:(')',"glass sword"), notcursed
   }
-  OBJECT:class_treasure_armor
+  OBJECT:class_treasure_armor, notcursed
   OBJECT:('/',"cold")
 }
 ENGRAVING: (09,08), engrave, "X"

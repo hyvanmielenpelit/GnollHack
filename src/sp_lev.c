@@ -2024,9 +2024,9 @@ struct mkroom *croom;
     {
         /* class armor treasure */
         if (Role_if(PM_WIZARD))
-            otmp = mksobj_at(!rn2(2) ? BRACERS_OF_DEFENSE : ROBE_OF_PROTECTION, x, y, TRUE, !named);
+            otmp = mksobj_at(!rn2(5) ? BRACERS_OF_REFLECTION : !rn2(2) ? BRACERS_OF_DEFENSE : ROBE_OF_PROTECTION, x, y, TRUE, !named);
         else if (Role_if(PM_MONK))
-            otmp = mksobj_at(!rn2(2) ? ROBE_OF_PROTECTION : CLOAK_OF_MAGIC_RESISTANCE, x, y, TRUE, !named);
+            otmp = mksobj_at(!rn2(5) ? BRACERS_OF_REFLECTION : !rn2(2) ? ROBE_OF_PROTECTION : !rn2(2) ? ROBE_OF_MAGIC_RESISTANCE : CLOAK_OF_MAGIC_RESISTANCE, x, y, TRUE, !named);
         else
             otmp = mksobj_at(!rn2(2) ? MITHRIL_FULL_PLATE_MAIL : ADAMANTIUM_FULL_PLATE_MAIL, x, y, TRUE, !named);
     }
@@ -2034,29 +2034,79 @@ struct mkroom *croom;
     {
         /* class weapon treasure */
         if (Role_if(PM_WIZARD))
-            otmp = mksobj_at(!rn2(2) ? STAFF_OF_FROST : STAFF_OF_THE_MAGI, x, y, TRUE, !named);
+        {
+            if (!rn2(2))
+            {
+                otmp = mksobj_at(!rn2(2) ? DAGGER : ATHAME, x, y, TRUE, !named);
+                if (!otmp->oartifact)
+                {
+                    if (!rn2(2))
+                    {
+                        if (!rn2(2))
+                            otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
+                        else
+                            otmp->mythic_prefix = MYTHIC_PREFIX_STYGIAN;
+                    }
+                    else
+                    {
+                        if (!rn2(2))
+                            otmp->mythic_suffix = MYTHIC_SUFFIX_SHARPNESS;
+                        else
+                            otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
+                    }
+                }
+                otmp->enchantment += 1;
+            }
+            else
+            {
+                otmp = mksobj_at(!rn2(2) ? STAFF_OF_FROST : STAFF_OF_THE_MAGI, x, y, TRUE, !named);
+            }
+            otmp->enchantment += 2;
+        }
         else if (Role_if(PM_MONK))
-            otmp = mksobj_at(!rn2(2) ? BELT_OF_FIRE_GIANT_STRENGTH : GLOVES_OF_HASTE, x, y, TRUE, !named);
+            otmp = mksobj_at(!rn2(3) ? BELT_OF_FIRE_GIANT_STRENGTH : !rn2(2) ? GAUNTLETS_OF_OGRE_POWER : GLOVES_OF_HASTE, x, y, TRUE, !named);
         else if (Role_if(PM_PRIEST))
         {
-            otmp = mksobj_at(MACE, x, y, TRUE, !named);
+            otmp = mksobj_at(Race_if(PM_GNOLL) && rn2(2) ? (!rn2(4) ? DOUBLE_HEADED_FLAIL : !rn2(2) ? SILVER_FLAIL : FLAIL) : !rn2(2) ? MACE : !rn2(2) ? MORNING_STAR : WAR_HAMMER, x, y, TRUE, !named);
             if (!otmp->oartifact)
             {
                 if (u.ualign.type == A_CHAOTIC)
-                    otmp->mythic_prefix = MYTHIC_PREFIX_STYGIAN;
+                {
+                    if (!rn2(2))
+                        otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
+                    else
+                        otmp->mythic_prefix = MYTHIC_PREFIX_STYGIAN;
+                }
                 else
-                    otmp->mythic_suffix = MYTHIC_SUFFIX_DISRUPTION;
+                {
+                    if(!rn2(2))
+                        otmp->mythic_suffix = MYTHIC_SUFFIX_DISRUPTION;
+                    else
+                        otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
+                }
+                otmp->enchantment += 2;
             }
         }
         else
         {
-            otmp = mksobj_at(!rn2(2) ? LONG_SWORD : TWO_HANDED_SWORD, x, y, TRUE, !named);
+            otmp = mksobj_at(Race_if(PM_GNOLL) && rn2(2) ? (!rn2(4) ? DOUBLE_HEADED_FLAIL : !rn2(2) ? SILVER_FLAIL : FLAIL) : !rn2(3) ? LONG_SWORD : !rn2(2) ? SILVER_LONG_SWORD : TWO_HANDED_SWORD, x, y, TRUE, !named);
             if (!otmp->oartifact)
             {
                 if (!rn2(2))
-                    otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
+                {
+                    if(!rn2(2))
+                        otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
+                    else
+                        otmp->mythic_prefix = MYTHIC_PREFIX_STYGIAN;
+                }
                 else
-                    otmp->mythic_suffix = MYTHIC_SUFFIX_SHARPNESS;
+                {
+                    if(!rn2(2))
+                        otmp->mythic_suffix = MYTHIC_SUFFIX_SHARPNESS;
+                    else
+                        otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
+                }
+                otmp->enchantment += 2;
             }
         }
     }
@@ -2168,6 +2218,12 @@ struct mkroom *croom;
     case 3:
         curse(otmp);
         break; /* CURSED */
+    case 4:
+        uncurse(otmp);
+        break; /* not cursed */
+    case 5:
+        unbless(otmp);
+        break; /* not blessed */
     default:
         break; /* Otherwise it's random and we're happy
                 * with what mkobj gave us! */
