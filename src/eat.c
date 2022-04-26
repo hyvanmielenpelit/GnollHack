@@ -2924,9 +2924,6 @@ struct obj *otmp;
         gainstr(otmp, 1, TRUE);
         break;
     case EDIBLEFX_GAIN_DEXTERITY:
-        if (otmp->otyp == BANANA)
-            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "That made you feel like a monkey!");
-
         if(adjattrib(A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
             TRUE ? -1 : 1))
             play_sfx_sound(SFX_GAIN_ABILITY);
@@ -2947,9 +2944,6 @@ struct obj *otmp;
             play_sfx_sound(SFX_GAIN_ABILITY);
         break;
     case EDIBLEFX_GAIN_CHARISMA:
-        if (otmp->otyp == AVOCADO)
-            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "That made you feel like a hipster!");
-
         if(adjattrib(A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
             TRUE ? -1 : 1))
             play_sfx_sound(SFX_GAIN_ABILITY);
