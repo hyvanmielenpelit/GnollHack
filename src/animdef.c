@@ -7988,6 +7988,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "hydra-corpse-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
       { "pyrohydra-enlargement", 0, 0,
         5,
         3, 2, 0,
@@ -8002,6 +8009,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "pyrohydra-corpse-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
       { "lernaean-hydra-enlargement", 0, 0,
         5,
         3, 2, 0,
@@ -8013,6 +8027,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         5,
         3, 2, 0,
         { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "lernaean-hydra-corpse-enlargement", 0, 0,
+        2,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
