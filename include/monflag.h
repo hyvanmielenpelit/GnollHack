@@ -242,7 +242,7 @@
 #define M3_CONSTRICTOR                                 0x00004000UL    /* grabbing / sticking itself causes constriction */
 #define M3_STRANGLES_NECK_BY_HAND                      0x00008000UL    /* rope golem's strangulation attack */
 
-/* free bit */
+#define M3_BURNS_COMPLETELY                            0x00010000UL    /* burns completely */
 /* free bit */
 /* free bit */
 /* free bit */

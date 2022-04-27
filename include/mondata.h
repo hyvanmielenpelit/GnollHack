@@ -130,10 +130,11 @@
 #define is_constrictor(ptr) (((ptr)->mflags3 & M3_CONSTRICTOR) != 0L)
 #define hug_throttles(ptr) (((ptr)->mflags3 & M3_STRANGLES_NECK_BY_HAND) != 0L)
 #define hug_requires_two_previous_attacks(ptr) (((ptr)->mflags3 & M3_HUG_HITS_IF_TWO_FIRST_ATTACKS_SUCCEEDED) != 0L)
-#define knows_pits_and_holes(ptr) \
-    (((ptr)->mflags3 & M3_KNOWS_PITS_AND_HOLES) != 0)
-#define knows_traps(ptr) \
-    (((ptr)->mflags3 & M3_KNOWS_TRAPS) != 0)
+#define knows_pits_and_holes(ptr) (((ptr)->mflags3 & M3_KNOWS_PITS_AND_HOLES) != 0)
+#define knows_traps(ptr) (((ptr)->mflags3 & M3_KNOWS_TRAPS) != 0)
+/* no corpse (ie, blank scrolls) if killed by fire */
+#define completelyburns(ptr) (((ptr)->mflags3 & M3_BURNS_COMPLETELY) != 0)
+
 
 #define is_brave(ptr) (((ptr)->mflags4 & M4_BRAVE) != 0L)
 #define is_fearless(ptr) (((ptr)->mflags4 & M4_FEARLESS) != 0L)
@@ -837,10 +838,6 @@
 /* cursed items are good for some evil creatures */
 #define cursed_items_are_positive(ptr) \
     (is_undead(ptr) || is_demon(ptr))
-
-/* no corpse (ie, blank scrolls) if killed by fire */
-#define completelyburns(ptr) \
-    ((ptr) == &mons[PM_PAPER_GOLEM] || (ptr) == &mons[PM_STRAW_GOLEM])
 
 /* Used for conduct with corpses, tins, and digestion attacks */
 /* G_NOCORPSE monsters might still be swallowed as a purple worm */

@@ -2875,7 +2875,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             else
                 You("smell burning%s.",
                     (pd == &mons[PM_PAPER_GOLEM]) ? " paper"
-                      : (pd == &mons[PM_STRAW_GOLEM]) ? " straw" : "");
+                      : (pd == &mons[PM_STRAW_GOLEM]) ? " straw" : " material");
             xkilled(mdef, XKILL_NOMSG | XKILL_NOCORPSE);
             damage = 0;
             break;
