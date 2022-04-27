@@ -289,6 +289,8 @@ namespace GnollHackClient.Pages.Game
         /* Persistent temporary bitmap */
         SKBitmap _tempBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKColorType.Rgba8888, SKAlphaType.Unpremul);
 
+        private object _rectLock = new object(); /* This is to make sure that tipView does not draw domething between clearing the rect and setting it */
+
         private object _skillRectLock = new object();
         private SKRect _skillRect = new SKRect();
         public SKRect SkillRect { get { SKRect val; lock (_skillRectLock) { val = _skillRect; } return val;  } set { lock (_skillRectLock) { _skillRect = value; } } }
@@ -4258,8 +4260,6 @@ namespace GnollHackClient.Pages.Game
                     _canvasButtonRect.Top = abilitybuttonbottom;
 
                 SkillRect = new SKRect();
-                HealthRect = new SKRect();
-                ManaRect = new SKRect();
                 StatusBarRect = new SKRect();
                 YouRect = new SKRect();
                 float orbleft = 5.0f;
@@ -4851,10 +4851,10 @@ namespace GnollHackClient.Pages.Game
                                 float pet_status_target_height = pet_target_height * 0.2f;
                                 //float pet_name_size = textPaint.TextSize * pet_name_target_height / textPaint.FontSpacing;
                                 float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing; //pet_name_size * pet_hp_target_height / pet_name_target_height;
-                                //textPaint.TextSize = pet_name_size;
-                                //string pet_test_text = "Large Dog";
-                                //float pet_target_width = textPaint.MeasureText(pet_test_text);
-                                //pet_target_width += textPaint.FontSpacing; // For picture
+                                                                                                                        //textPaint.TextSize = pet_name_size;
+                                                                                                                        //string pet_test_text = "Large Dog";
+                                                                                                                        //float pet_target_width = textPaint.MeasureText(pet_test_text);
+                                                                                                                        //pet_target_width += textPaint.FontSpacing; // For picture
                                 float pet_target_width = pet_target_height; // inverse_canvas_scale * (float)ESCButton.Width;
 
                                 SKRect menubuttonrect = GetViewScreenRect(GameMenuButton);
@@ -5091,77 +5091,83 @@ namespace GnollHackClient.Pages.Game
                     float lastdrawnrecty = ClassicStatusBar ? Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing) : statusbarheight;
                     tx = orbleft;
                     ty = lastdrawnrecty + 5.0f;
-                    /* HP and MP */
-                    if ((ShowOrbs | !ClassicStatusBar) && orbsok)
-                    {
-                        float orbfillpercentage = 0.0f;
-                        string valtext = "";
-                        string maxtext = "";
-                        lock (StatusFieldLock)
-                        {
-                            bool pctset = false;
-                            if (StatusFields[(int)statusfields.BL_HP] != null && StatusFields[(int)statusfields.BL_HP].Text != null && StatusFields[(int)statusfields.BL_HP].Text != "" && StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "")
-                            {
-                                valtext = StatusFields[(int)statusfields.BL_HP].Text;
-                                maxtext = StatusFields[(int)statusfields.BL_HPMAX].Text;
-                                int hp = 0, hpmax = 1;
-                                if (int.TryParse(StatusFields[(int)statusfields.BL_HP].Text, out hp) && int.TryParse(StatusFields[(int)statusfields.BL_HPMAX].Text, out hpmax))
-                                {
-                                    if (hpmax > 0)
-                                    {
-                                        orbfillpercentage = (float)hp / (float)hpmax;
-                                        pctset = true;
-                                    }
-                                }
-                                if (!pctset)
-                                    orbfillpercentage = ((float)StatusFields[(int)statusfields.BL_HP].Percent) / 100.0f;
-                            }
-                        }
-                        SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
-                        HealthRect = orbBorderDest;
-                        DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage, ShowMaxHealthInOrb);
 
-                        orbfillpercentage = 0.0f;
-                        valtext = "";
-                        maxtext = "";
-                        lock (StatusFieldLock)
+                    lock (_rectLock)
+                    {
+                        HealthRect = new SKRect();
+                        ManaRect = new SKRect();
+
+                        /* HP and MP */
+                        if ((ShowOrbs | !ClassicStatusBar) && orbsok)
                         {
-                            if (StatusFields[(int)statusfields.BL_ENE] != null && StatusFields[(int)statusfields.BL_ENE].Text != null && StatusFields[(int)statusfields.BL_ENEMAX] != null && StatusFields[(int)statusfields.BL_ENE].Text != "" && StatusFields[(int)statusfields.BL_ENEMAX].Text != null && StatusFields[(int)statusfields.BL_ENEMAX].Text != "")
+                            float orbfillpercentage = 0.0f;
+                            string valtext = "";
+                            string maxtext = "";
+                            lock (StatusFieldLock)
                             {
-                                valtext = StatusFields[(int)statusfields.BL_ENE].Text;
-                                maxtext = StatusFields[(int)statusfields.BL_ENEMAX].Text;
-                                int en = 0, enmax = 1;
-                                if (int.TryParse(StatusFields[(int)statusfields.BL_ENE].Text, out en) && int.TryParse(StatusFields[(int)statusfields.BL_ENEMAX].Text, out enmax))
+                                bool pctset = false;
+                                if (StatusFields[(int)statusfields.BL_HP] != null && StatusFields[(int)statusfields.BL_HP].Text != null && StatusFields[(int)statusfields.BL_HP].Text != "" && StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "")
                                 {
-                                    if (enmax > 0)
+                                    valtext = StatusFields[(int)statusfields.BL_HP].Text;
+                                    maxtext = StatusFields[(int)statusfields.BL_HPMAX].Text;
+                                    int hp = 0, hpmax = 1;
+                                    if (int.TryParse(StatusFields[(int)statusfields.BL_HP].Text, out hp) && int.TryParse(StatusFields[(int)statusfields.BL_HPMAX].Text, out hpmax))
                                     {
-                                        orbfillpercentage = (float)en / (float)enmax;
+                                        if (hpmax > 0)
+                                        {
+                                            orbfillpercentage = (float)hp / (float)hpmax;
+                                            pctset = true;
+                                        }
                                     }
+                                    if (!pctset)
+                                        orbfillpercentage = ((float)StatusFields[(int)statusfields.BL_HP].Percent) / 100.0f;
                                 }
                             }
-                        }
-                        orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
-                        ManaRect = orbBorderDest;
-                        DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage, ShowMaxManaInOrb);
-                        lastdrawnrecty = orbBorderDest.Bottom;
-                    }
+                            SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
+                            HealthRect = orbBorderDest;
+                            DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage, ShowMaxHealthInOrb);
 
-                    if (skillbuttonok)
-                    {
-                        SKRect skillDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
-                        SkillRect = skillDest;
-                        textPaint.Color = SKColors.White;
-                        textPaint.Typeface = App.LatoRegular;
-                        textPaint.TextSize = 9.5f * skillDest.Width / 50.0f;
-                        textPaint.TextAlign = SKTextAlign.Center;
-                        canvas.DrawBitmap(_skillBitmap, skillDest, textPaint);
-                        float text_x = (skillDest.Left + skillDest.Right) / 2;
-                        float text_y = skillDest.Bottom - textPaint.FontMetrics.Ascent;
-                        canvas.DrawText("Skills", text_x, text_y, textPaint);
-                        textPaint.TextAlign = SKTextAlign.Left;
+                            orbfillpercentage = 0.0f;
+                            valtext = "";
+                            maxtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)statusfields.BL_ENE] != null && StatusFields[(int)statusfields.BL_ENE].Text != null && StatusFields[(int)statusfields.BL_ENEMAX] != null && StatusFields[(int)statusfields.BL_ENE].Text != "" && StatusFields[(int)statusfields.BL_ENEMAX].Text != null && StatusFields[(int)statusfields.BL_ENEMAX].Text != "")
+                                {
+                                    valtext = StatusFields[(int)statusfields.BL_ENE].Text;
+                                    maxtext = StatusFields[(int)statusfields.BL_ENEMAX].Text;
+                                    int en = 0, enmax = 1;
+                                    if (int.TryParse(StatusFields[(int)statusfields.BL_ENE].Text, out en) && int.TryParse(StatusFields[(int)statusfields.BL_ENEMAX].Text, out enmax))
+                                    {
+                                        if (enmax > 0)
+                                        {
+                                            orbfillpercentage = (float)en / (float)enmax;
+                                        }
+                                    }
+                                }
+                            }
+                            orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
+                            ManaRect = orbBorderDest;
+                            DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage, ShowMaxManaInOrb);
+                            lastdrawnrecty = orbBorderDest.Bottom;
+                        }
+
+                        if (skillbuttonok)
+                        {
+                            SKRect skillDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
+                            SkillRect = skillDest;
+                            textPaint.Color = SKColors.White;
+                            textPaint.Typeface = App.LatoRegular;
+                            textPaint.TextSize = 9.5f * skillDest.Width / 50.0f;
+                            textPaint.TextAlign = SKTextAlign.Center;
+                            canvas.DrawBitmap(_skillBitmap, skillDest, textPaint);
+                            float text_x = (skillDest.Left + skillDest.Right) / 2;
+                            float text_y = skillDest.Bottom - textPaint.FontMetrics.Ascent;
+                            canvas.DrawText("Skills", text_x, text_y, textPaint);
+                            textPaint.TextAlign = SKTextAlign.Left;
+                        }
                     }
                 }
-
 
                 /* Number Pad and Direction Arrows */
                 _canvasButtonRect.Right = canvaswidth * (float)(0.8);
@@ -10013,7 +10019,7 @@ namespace GnollHackClient.Pages.Game
                 float mult_canvas = 1.0f;
                 float prev_bottom = 0;
                 float sbheight = GetStatusBarSkiaHeight();
-                SKRect statusBarRect = new SKRect(canvaswidth / 2 - sbheight / 2, 0, canvaswidth / 2 + sbheight / 2, sbheight);
+                SKRect statusBarCenterRect = new SKRect(canvaswidth / 2 - sbheight / 2, 0, canvaswidth / 2 + sbheight / 2, sbheight);
 
                 switch (ShownTip)
                 {
@@ -10062,12 +10068,12 @@ namespace GnollHackClient.Pages.Game
                         break;
                     case 1:
                         PaintTipButton(canvas, textPaint, GameMenuButton, "This opens the main menu.", "Main Menu", 1.5f, centerfontsize, fontsize, false, -0.15f, 0);
-                       break;
+                        break;
                     case 2:
                         PaintTipButton(canvas, textPaint, ESCButton, "This cancels any command.", "Escape Button", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
                         break;
                     case 3:
-                        PaintTipButton(canvas, textPaint, ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f  : -0.5f, landscape ? 0 : 1.5f);
+                        PaintTipButton(canvas, textPaint, ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f : -0.5f, landscape ? 0 : 1.5f);
                         break;
                     case 4:
                         PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0);
@@ -10079,7 +10085,7 @@ namespace GnollHackClient.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0);
                         break;
                     case 7:
-                        PaintTipButtonByRect(canvas, textPaint, statusBarRect, "You can tap the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
+                        PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can tap the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
                         break;
                     case 8:
                         PaintTipButton(canvas, textPaint, lAbilitiesButton, "Some commands do not have buttons.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
@@ -10091,10 +10097,16 @@ namespace GnollHackClient.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
                         break;
                     case 11:
-                        PaintTipButtonByRect(canvas, textPaint, HealthRect, "This orb shows your hit points.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        lock(_rectLock)
+                        {
+                            PaintTipButtonByRect(canvas, textPaint, HealthRect, "This orb shows your hit points.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        }
                         break;
                     case 12:
-                        PaintTipButtonByRect(canvas, textPaint, ManaRect, "And this one your mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        lock (_rectLock)
+                        {
+                            PaintTipButtonByRect(canvas, textPaint, ManaRect, "And this one your mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        }
                         break;
                     case 13:
                         textPaint.TextSize = 36;
