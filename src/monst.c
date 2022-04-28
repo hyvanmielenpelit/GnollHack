@@ -5438,7 +5438,7 @@ struct permonst _mons2[] = {
     /* Riders -- the Four Horsemen of the Apocalypse ("War" == player);
      * depicted with '&' but do not have M2_DEMON set.
      */
-    MON("Death", "Horseman of the Apocalypse", "personification of death", None, None, S_DEMON, LVL(40, 12, -5, 25, 100, 0), (G_UNIQ | G_NOGEN),
+    ENLARGED_MON("Death", "Horseman of the Apocalypse", "personification of death", None, None, S_DEMON, LVL(40, 12, -5, 25, 100, 0), (G_UNIQ | G_NOGEN),
         A(ATTK(AT_TUCH, AD_DETH, 8, 8, 0, -15, 0, 0, 0UL, 0), ATTK(AT_TUCH, AD_DETH, 8, 8, 0, -15, 0, 0, 0UL, 0), NO_ATTK,
             NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 1, MS_RIDER, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(STR18(100), 10, 10, 19, 19, 1),
@@ -5448,8 +5448,10 @@ struct permonst _mons2[] = {
         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_NASTY,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_DISPLACES | M3_REVIVES_FROM_DEAD | M3_REGENERATES_LOST_BODY_PARTS | M3_SPEAKING,
         M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_NONROTTING_CORPSE | M4_PROPER_NAME, M5_NONE, M6_NON_EATER | M6_BOSS_MONSTER, M7_NONE, M8_NONE,
-        55, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("Pestilence", "Horseman of the Apocalypse", "personification of terminal illness", None, None, S_DEMON, LVL(40, 12, -5, 25, 100, 0), (G_UNIQ | G_NOGEN),
+        55, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(DEATH_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DEATH_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(DEATH_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DEATH_STATUE_ENLARGEMENT, 0, 0)),
+    ENLARGED_MON("Pestilence", "Horseman of the Apocalypse", "personification of terminal illness", None, None, S_DEMON, LVL(40, 12, -5, 25, 100, 0), (G_UNIQ | G_NOGEN),
         A(ATTK(AT_TUCH, AD_PEST, 8, 8, 0, -30, 0, 0, 0UL, 0), ATTK(AT_TUCH, AD_PEST, 8, 8, 0, -30, 0, 0, 0UL, 0), NO_ATTK,
             NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 1, MS_RIDER, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(STR18(100), 10, 10, 19, 19, 1),
@@ -5459,8 +5461,10 @@ struct permonst _mons2[] = {
         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_NASTY,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_DISPLACES | M3_REVIVES_FROM_DEAD | M3_REGENERATES_LOST_BODY_PARTS | M3_SPEAKING,
         M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_NONROTTING_CORPSE | M4_PROPER_NAME, M5_NONE, M6_NON_EATER | M6_BOSS_MONSTER, M7_NONE, M8_NONE,
-        55, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("Famine", "Horseman of the Apocalypse", "personification of starvation", None, None, S_DEMON, LVL(40, 12, -5, 25, 100, 0), (G_UNIQ | G_NOGEN),
+        55, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(PESTILENCE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, PESTILENCE_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(PESTILENCE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, PESTILENCE_STATUE_ENLARGEMENT, 0, 0)),
+    ENLARGED_MON("Famine", "Horseman of the Apocalypse", "personification of starvation", None, None, S_DEMON, LVL(40, 12, -5, 25, 100, 0), (G_UNIQ | G_NOGEN),
         A(ATTK(AT_TUCH, AD_FAMN, 8, 8, 0, -30, 0, 0, 0UL, 0), ATTK(AT_TUCH, AD_FAMN, 8, 8, 0, -30, 0, 0, 0UL, 0), NO_ATTK,
             NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 1, MS_RIDER, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(STR18(100), 10, 10, 19, 19, 1),
@@ -5470,7 +5474,9 @@ struct permonst _mons2[] = {
         M2_NOPOLY | M2_STALK | M2_HOSTILE | M2_NASTY,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_DISPLACES | M3_REVIVES_FROM_DEAD | M3_REGENERATES_LOST_BODY_PARTS | M3_SPEAKING,
         M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_NONROTTING_CORPSE, M5_NONE, M6_NON_EATER | M6_BOSS_MONSTER, M7_NONE, M8_NONE,
-        55, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        55, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(FAMINE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, FAMINE_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(FAMINE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, FAMINE_STATUE_ENLARGEMENT, 0, 0)),
     /* other demons
      */
     MON("mail daemon", None, None, None, None, S_DEMON, LVL(56, 24, 10, 0, 127, 0), (G_NOGEN | G_NOCORPSE),
