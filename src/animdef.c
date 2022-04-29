@@ -3522,6 +3522,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "tarrasque-corpse-enlargement", 0, 0,
+      5,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
     { "marilith-enlargement", 0, 0,
       MARILITH_ENLARGEMENT_TILES,
       3, 2, 0,
