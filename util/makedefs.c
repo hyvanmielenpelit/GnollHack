@@ -1222,7 +1222,7 @@ const char *build_date;
     betaflagbuf[0] = '\0';
 
 #ifdef PRE_RELEASE
-#if BETA
+#ifdef BETA
     strcpy(betaflagbuf, "*");
 #endif
     if (EDITLEVEL > 0)
@@ -1269,7 +1269,7 @@ const char *build_date;
 #endif
 
 #ifdef PRE_RELEASE
-#if BETA
+#ifdef BETA
     strcpy(betaflagbuf, "*");
 #endif
     if (EDITLEVEL > 0)
