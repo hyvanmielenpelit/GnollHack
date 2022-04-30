@@ -19,7 +19,7 @@
  * EDITLEVEL is also used to indicate the pre-alpha / alpha / beta version if PREALPHA / ALPHA / BETA / OPEN_BETA compiler preprocessor option is on.
  * Change EDITLEVEL when the changes to the game are save-file-breaking.
  */
-#define EDITLEVEL 1
+#define EDITLEVEL 2
 
 /*
  * HOTFIXLEVEL indicates the hot fix number in PREALPHA / ALPHA / OPEN_BETA / BETA. 
