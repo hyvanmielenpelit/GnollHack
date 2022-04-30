@@ -16,17 +16,17 @@
  * Incrementing EDITLEVEL can be used to force invalidation of old bones
  * and save files.
  *
- * EDITLEVEL is also used to indicate the pre-alpha / alpha / beta version if PREALPHA / ALPHA / BETA / OPEN_BETA compiler preprocessor option is on.
+ * EDITLEVEL is also used to indicate the pre-alpha / alpha / beta version if PRE_RELEASE compiler preprocessor option is on.
  * Change EDITLEVEL when the changes to the game are save-file-breaking.
  */
-#define EDITLEVEL 2
+#define EDITLEVEL 22
 
 /*
- * HOTFIXLEVEL indicates the hot fix number in PREALPHA / ALPHA / OPEN_BETA / BETA. 
- * It does not invalidate save files and is meant to address non-save-file-breaking bugs during PREALPHA / ALPHA / BETA / OPEN_BETA
+ * HOTFIXLEVEL indicates the hot fix number. 
+ * It does not invalidate save files and is meant to address non-save-file-breaking bugs during PRE_RELEASE
  */
 #define HOTFIXLEVEL 0
-#define OPEN_BETA
+#define PRE_RELEASE
 
 #define COPYRIGHT_BANNER_A "GnollHack, Copyright 2022 by Sound Mind Games"
 #define COPYRIGHT_BANNER_B \

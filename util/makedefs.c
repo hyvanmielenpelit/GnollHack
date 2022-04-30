@@ -1212,26 +1212,30 @@ const char *build_date;
 {
     char subbuf[64], versbuf[64];
     char betabuf[64];
+    char betaflagbuf[64];
     char editbuf[64];
     char hotfixbuf[64];
 
     editbuf[0] = '\0';
     hotfixbuf[0] = '\0';
     betabuf[0] = '\0';
+    betaflagbuf[0] = '\0';
 
+#ifdef PRE_RELEASE
+#if BETA
+    strcpy(betaflagbuf, "*");
+#endif
     if (EDITLEVEL > 0)
-        Sprintf(editbuf, " %d", EDITLEVEL);
+        Sprintf(editbuf, "%d", EDITLEVEL % 10);
     if (HOTFIXLEVEL > 0)
         Sprintf(hotfixbuf, " (Hot Fix %d)", HOTFIXLEVEL);
 
-#if defined(OPEN_BETA)
-    Sprintf(betabuf, "%s%s%s", " Beta", editbuf, hotfixbuf);
-#elif defined(BETA)
-    Sprintf(betabuf, "%s%s%s", " Closed Beta", editbuf, hotfixbuf);
-#elif defined(ALPHA)
-    Sprintf(betabuf, "%s%s%s", " Alpha", editbuf, hotfixbuf);
-#elif defined(PREALPHA)
-    Sprintf(betabuf, "%s%s%s", " Pre-Alpha", editbuf, hotfixbuf);
+    if (EDITLEVEL > 20)
+        Sprintf(betabuf, "%s%s%s%s", " Beta ", editbuf, betaflagbuf, hotfixbuf);
+    else if (EDITLEVEL > 10)
+        Sprintf(betabuf, "%s%s%s%s", " Alpha ", editbuf, betaflagbuf, hotfixbuf);
+    else if (EDITLEVEL > 0)
+        Sprintf(betabuf, "%s%s%s%s", " Pre-Alpha ", editbuf, betaflagbuf, hotfixbuf);
 #endif
 
     subbuf[0] = '\0';
@@ -1252,28 +1256,35 @@ char *outbuf;
 const char *build_date;
 {
     char subbuf[64], versbuf[64], betabuf[64], editbuf[64], hotfixbuf[64];
+    char betaflagbuf[64];
 
     subbuf[0] = '\0';
     editbuf[0] = '\0';
     hotfixbuf[0] = '\0';
-    if (EDITLEVEL > 0)
-        Sprintf(editbuf, " %d", EDITLEVEL);
-    if (HOTFIXLEVEL > 0)
-        Sprintf(hotfixbuf, " (Hot Fix %d)", HOTFIXLEVEL);
+    betabuf[0] = '\0';
+    betaflagbuf[0] = '\0';
 #ifdef PORT_SUB_ID
     subbuf[0] = ' ';
     Strcpy(&subbuf[1], PORT_SUB_ID);
 #endif
-    Strcpy(betabuf, "");
-#if defined(OPEN_BETA)
-    Sprintf(betabuf, "%s%s%s", " Beta", editbuf, hotfixbuf);
-#elif defined(BETA)
-    Sprintf(betabuf, "%s%s%s", " Closed Beta", editbuf, hotfixbuf);
-#elif defined(ALPHA)
-    Sprintf(betabuf, "%s%s%s", " Alpha", editbuf, hotfixbuf);
-#elif defined(PREALPHA)
-    Sprintf(betabuf, "%s%s%s", " Pre-Alpha", editbuf, hotfixbuf);
+
+#ifdef PRE_RELEASE
+#if BETA
+    strcpy(betaflagbuf, "*");
 #endif
+    if (EDITLEVEL > 0)
+        Sprintf(editbuf, "%d", EDITLEVEL % 10);
+    if (HOTFIXLEVEL > 0)
+        Sprintf(hotfixbuf, " (Hot Fix %d)", HOTFIXLEVEL);
+
+    if (EDITLEVEL > 20)
+        Sprintf(betabuf, "%s%s%s%s", " Beta ", editbuf, betaflagbuf, hotfixbuf);
+    else if (EDITLEVEL > 10)
+        Sprintf(betabuf, "%s%s%s%s", " Alpha ", editbuf, betaflagbuf, hotfixbuf);
+    else if (EDITLEVEL > 0)
+        Sprintf(betabuf, "%s%s%s%s", " Pre-Alpha ", editbuf, betaflagbuf, hotfixbuf);
+#endif
+
     Strcat(subbuf, betabuf);
 
     Sprintf(outbuf, "         Version %s %s%s, %s %s.",
@@ -1871,14 +1882,8 @@ do_options()
     Fprintf(ofp, "\n%sGnollHack version %d.%d.%d%s\n",
             opt_indent,
             VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL,
-#if defined(OPEN_BETA)
-        " [beta]"
-#elif defined(BETA)
-        " [closed beta]"
-#elif defined(ALPHA)
-        " [alpha]"
-#elif defined(PREALPHA)
-        " [pre-alpha]"
+#if defined(PRE_RELEASE)
+        EDITLEVEL > 20 ? " [beta]" : EDITLEVEL > 10 ? " [alpha]" : " [pre-alpha]"
 #else
             ""
 #endif

@@ -1364,7 +1364,7 @@ docompress_file(filename, uncomp)
 const char *filename;
 boolean uncomp;
 {
-    char cfn[80];
+    char cfn[FILENAME];
     FILE *cf;
     const char *args[10];
 #ifdef COMPRESS_OPTIONS
@@ -1376,7 +1376,8 @@ boolean uncomp;
     boolean istty = WINDOWPORT("tty");
 #endif
 
-    Strcpy(cfn, filename);
+    strncpy(cfn, filename, FILENAME - 5);
+    cfn[FILENAME - 5] = 0;
 #ifdef COMPRESS_EXTENSION
     Strcat(cfn, COMPRESS_EXTENSION);
 #endif
