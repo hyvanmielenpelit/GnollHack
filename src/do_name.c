@@ -1343,7 +1343,8 @@ do_mname()
     int cx, cy;
     struct monst *mtmp = 0;
 
-    if (Hallucination) {
+    if (Hallucination) 
+    {
         You("would never recognize it anyway.");
         return;
     }
@@ -1354,16 +1355,21 @@ do_mname()
         return;
     cy = cc.y;
 
-    if (cx == u.ux && cy == u.uy) {
-        if (u.usteed && canspotmon(u.usteed)) {
+    if (cx == u.ux && cy == u.uy) 
+    {
+        if (u.usteed && canspotmon(u.usteed)) 
+        {
             mtmp = u.usteed;
-        } else {
+        } 
+        else 
+        {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("This %s creature is called %s and cannot be renamed.",
                   beautiful(), plname);
             return;
         }
-    } else
+    } 
+    else
         mtmp = m_at(cx, cy);
 
     if (!mtmp
@@ -1371,7 +1377,8 @@ do_mname()
             && (!(cansee(cx, cy) || see_with_infrared(mtmp))
                 || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE
                 || M_AP_TYPE(mtmp) == M_AP_OBJECT
-                || (is_invisible(mtmp) && !See_invisible)))) {
+                || (is_invisible(mtmp) && !See_invisible)))) 
+    {
         pline("I see no monster there.");
         return;
     }
@@ -1391,26 +1398,35 @@ do_mname()
      * Don't say the name is being rejected if it happens to match
      * the existing name.
      */
-    if ((mtmp->data->geno & G_UNIQ) && !mtmp->ispriest) {
+    if ((mtmp->data->geno & G_UNIQ) && !mtmp->ispriest) 
+    {
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s doesn't like being called names!", upstart(monnambuf));
-    } else if (mtmp->isshk
+    } 
+    else if (mtmp->isshk
                && !(Deaf || !mon_can_move(mtmp)
-                    || mtmp->data->msound <= MS_ANIMAL)) {
+                    || mtmp->data->msound <= MS_ANIMAL)) 
+    {
         if (!alreadynamed(mtmp, monnambuf, buf))
         {
             mtmp->u_know_mname = 1;
             verbalize("I'm %s, not %s.", shkname(mtmp), buf);
         }
-    } else if (mtmp->ispriest || mtmp->isminion || mtmp->isshk || mtmp->issmith || mtmp->isnpc) {
+    } 
+    else if (mtmp->ispriest || mtmp->isminion || mtmp->isshk || mtmp->issmith || mtmp->isnpc) 
+    {
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s will not accept the name %s.", upstart(monnambuf), buf);
     }
-    else if(!has_mname(mtmp) && is_peaceful(mtmp) && is_animal(mtmp->data))
+    else if((!has_mname(mtmp) || (is_tame(mtmp) && !is_charmed(mtmp))) && is_animal(mtmp->data) && is_peaceful(mtmp))
     {
-        /* Peaceful animals can be christened, others do not accept your naming */
+        /* Peaceful animals who do not have names and tame animals can be named, others do not accept your naming */
         (void)christen_monst(mtmp, buf);
         mtmp->u_know_mname = 1;
+
+        /* Clear out umname */
+        if (has_umname(mtmp))
+            free_umname(mtmp);
     }
     else if (has_mname(mtmp))
     {

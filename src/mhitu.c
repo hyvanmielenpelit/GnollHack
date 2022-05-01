@@ -4934,6 +4934,7 @@ cloneu()
         return NULL;
     mon->mcloned = 1;
     mon = christen_monst(mon, plname);
+    mon->u_know_mname = TRUE;
     initedog(mon, TRUE);
     mon->m_lev = youmonst.data->mlevel;
     //mon might need mbasehpmax stat

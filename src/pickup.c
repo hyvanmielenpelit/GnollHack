@@ -2948,6 +2948,7 @@ boolean makecat, givemsg;
                           Monnam(livecat));
             }
             (void) christen_monst(livecat, sc);
+            livecat->u_know_mname = TRUE; /* It is famous! */
             if (deadcat)
             {
                 obj_extract_self(deadcat);

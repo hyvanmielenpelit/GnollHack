@@ -151,6 +151,7 @@ register boolean special;
         if (special) {
             get_mplname(mtmp, nam);
             mtmp = christen_monst(mtmp, nam);
+            mtmp->u_know_mname = TRUE; /* They are pretty famous, too */
             /* that's why they are "stuck" in the endgame :-) */
             (void) mongets(mtmp, FAKE_AMULET_OF_YENDOR);
         }

@@ -2978,6 +2978,7 @@ int level_limit;
     else if (mndx == PM_GHOST && !(mmflags & MM_NONAME)) 
     {
         mtmp = christen_monst(mtmp, rndghostname());
+        mtmp->u_know_mname = TRUE;
     } 
     else if (mndx == PM_CROESUS) 
     {
