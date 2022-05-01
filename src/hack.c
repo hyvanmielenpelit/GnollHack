@@ -2967,57 +2967,57 @@ register boolean newlev;
          * but everything else gives a message only the first time */
         switch (rt) {
         case ZOO:
-            pline("Welcome to David's treasure zoo!");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Welcome to David's treasure zoo!");
             break;
         case SWAMP:
-            pline("It %s rather %s down here.", Blind ? "feels" : "looks",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It %s rather %s down here.", Blind ? "feels" : "looks",
                   Blind ? "humid" : "muddy");
             break;
         case COURT:
-            You("enter an opulent throne room!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter an opulent throne room!");
             break;
         case LEPREHALL:
-            You("enter a leprechaun hall!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a leprechaun hall!");
             break;
         case MORGUE:
             if (midnight()) {
                 const char *run = locomotion(youmonst.data, "Run");
-                pline("%s away!  %s away!", run, run);
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!  %s away!", run, run);
             } else
-                You("have an uncanny feeling...");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "have an uncanny feeling...");
             break;
         case BEEHIVE:
-            You("enter a giant beehive!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a giant beehive!");
             break;
         case GARDEN:
-            You("enter a lovely underground garden!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a lovely underground garden!");
             break;
         case DESERTEDSHOP:
-            You("enter a shop that has been deserted a long time ago!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a shop that has been deserted a long time ago!");
             break;
         case LIBRARY:
-            You("enter a library!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a library!");
             break;
         case DRAGONLAIR:
-            You("enter a dragon lair!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a dragon lair!");
             break;
         case COCKNEST:
-            You("enter a disgusting nest!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a disgusting nest!");
             break;
         case ANTHOLE:
-            You("enter an anthole!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter an anthole!");
             break;
         case BARRACKS:
             if (monstinroom(&mons[PM_SOLDIER], roomno)
                 || monstinroom(&mons[PM_SERGEANT], roomno)
                 || monstinroom(&mons[PM_LIEUTENANT], roomno)
                 || monstinroom(&mons[PM_CAPTAIN], roomno))
-                You("enter a military barracks!");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a military barracks!");
             else
-                You("enter an abandoned barracks.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter an abandoned barracks.");
             break;
         case ARMORY:
-            You("enter an armory!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter an armory!");
             break;
         case DELPHI: {
             struct monst *oracle = monstinroom(&mons[PM_ORACLE], roomno);

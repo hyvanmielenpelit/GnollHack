@@ -883,10 +883,10 @@ register struct monst *mtmp;
         if (distu(mtmp->mx, mtmp->my) > TELEPATHY_RANGE * TELEPATHY_RANGE)
         {
             play_sfx_sound(SFX_FAINT_WAVE_OF_PSYCHIC_ENERGY);
-            You("sense a faint wave of psychic energy.");
+            You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "sense a faint wave of psychic energy.");
             goto toofar;
         }
-        pline("A wave of psychic energy pours over you!");
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A wave of psychic energy pours over you!");
         if (is_peaceful(mtmp)
             && !(is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0))))
         {
@@ -899,7 +899,7 @@ register struct monst *mtmp;
             register boolean m_sen = sensemon(mtmp);
             if (m_sen || ((Blind_telepat || Unblind_telepat) && rn2(2)) || !rn2(10)) 
             {
-                pline("It locks on to your %s!",
+                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "It locks on to your %s!",
                       m_sen ? "telepathy" : (Blind_telepat || Unblind_telepat) ? "latent telepathy"
                                                           : "mind");
                 losehp(adjust_damage(rnd(15), mtmp, &youmonst, AD_PSIO, ADFLAGS_SPELL_DAMAGE), "psychic blast", KILLED_BY_AN);
@@ -926,7 +926,7 @@ register struct monst *mtmp;
                 || !rn2(10))
             {
                 if (cansee(m2->mx, m2->my))
-                    pline("It locks on to %s.", mon_nam(m2));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It locks on to %s.", mon_nam(m2));
                 deduct_monster_hp(m2, adjust_damage(rnd(15), mtmp, m2, AD_PSIO, ADFLAGS_NONE));
                 //m2->mhp -= rnd(15);
                 if (DEADMONSTER(m2))
