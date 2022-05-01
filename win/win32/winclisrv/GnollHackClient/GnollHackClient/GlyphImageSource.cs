@@ -418,7 +418,8 @@ namespace GnollHackClient
                         bool flip_tile = (signed_glyph < 0);
                         sbyte enl_height = ReferenceGamePage.Enlargements[enlargement_idx].height_in_tiles;
                         sbyte enl_width = ReferenceGamePage.Enlargements[enlargement_idx].width_in_tiles;
-                        sbyte enl_x = enl_width == 3 ? (sbyte)1 : ReferenceGamePage.Enlargements[enlargement_idx].main_tile_x_coordinate;
+                        sbyte enl_x = (sbyte)(enl_width == 1 ? 0 : enl_width == 3 ? 1 : ReferenceGamePage.Enlargements[enlargement_idx].main_tile_x_coordinate);
+                        sbyte flipped_enl_x = (sbyte)(enl_width == 1 ? 0 : enl_width == 3 ? 1 : 1 - ReferenceGamePage.Enlargements[enlargement_idx].main_tile_x_coordinate);
 
                         int width = GHConstants.TileWidth * enl_width;
                         int height = GHConstants.TileHeight * enl_height;
@@ -438,7 +439,7 @@ namespace GnollHackClient
                         /* Main tile */
                         using (new SKAutoCanvasRestore(canvas, true))
                         {
-                            canvas.Translate(t_x + (flip_tile ? tileWidth : 0), t_y);
+                            canvas.Translate(t_x + (flip_tile ? tileWidth * (1 + flipped_enl_x - enl_x) : 0), t_y);
                             canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
                             SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                             SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);

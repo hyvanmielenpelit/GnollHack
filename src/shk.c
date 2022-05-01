@@ -4830,6 +4830,18 @@ const char *Izchak_speaks[] = {
     "%s comments about the Valley of the Dead as being a gateway."
 };
 
+const char* Izchak_speaks2[] = {
+    "These shopping malls give me a headache.",
+    "Slow down.  Think clearly.",
+    "You need to take things one at a time.",
+    "I don't like poofy coffee... give me Columbian Supremo.",
+    "It is so difficult to get the DevTeam to agree on anything.",
+    "I have noticed those who serve their deity will prosper.",
+    "Don't try to steal from me - I have friends in high places!",
+    "You may well need something from this shop in the future.",
+    "Know that the Valley of the Dead is a gateway."
+};
+
 void
 shk_chat(shkp)
 struct monst *shkp;
@@ -4978,11 +4990,11 @@ struct monst* shkp;
 {
     if (shkp && has_eshk(shkp) && !Deaf && !muteshk(shkp))
     {
-        int talk_idx = rn2(SIZE(Izchak_speaks));
+        int talk_idx = rn2(SIZE(Izchak_speaks2));
         play_voice_shopkeeper_izchak_talks(shkp, talk_idx);
-        pline(Izchak_speaks[talk_idx], shkname(shkp));
+        popup_talk_line(shkp, Izchak_speaks2[talk_idx]);
+        //pline(Izchak_speaks[talk_idx], shkname(shkp));
     }
-
 }
 
 

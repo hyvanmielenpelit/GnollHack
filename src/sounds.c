@@ -183,6 +183,19 @@ extern const struct shclass shtypes[]; /* defined in shknam.c */
 #define QUERY_STYLE_COMPONENTS 0
 #define QUERY_STYLE_SPELL 1
 
+void You_ex1_popup(txt, title, attr, color, glyph, pflags)
+const char* txt, *title;
+int attr, color, glyph;
+unsigned long pflags;
+{
+    if (!txt)
+        return;
+    You_ex1(attr, color, txt);
+    char buf[BUFSZ];
+    Sprintf(buf, "You %s", txt);
+    display_popup_text(buf, title, POPUP_TEXT_GENERAL, attr, color, glyph, pflags);
+}
+
 int
 ask_shk_reconciliation(mtmp)
 struct monst* mtmp;
@@ -5486,7 +5499,7 @@ struct monst* mtmp;
             if (umoney < (long)join_cost) 
             {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-                You("don't have enough money for that!");
+                You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
                 return 0;
             }
             u_pay = join_cost;
@@ -5566,7 +5579,7 @@ struct monst* mtmp;
         if (umoney < (long)explain_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = explain_cost;
@@ -5750,7 +5763,7 @@ struct monst* mtmp;
                     case 'y':
                         if (umoney < (long)item_cost) {
                             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-                            You("don't have enough money for that!");
+                            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
                             break; /* switch break */
                         }
                         bought = TRUE;
@@ -6129,7 +6142,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -6142,7 +6155,7 @@ struct monst* mtmp;
     case 'y':
             if (umoney < (long)bless_cost) {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-                You("don't have enough money for that!");
+                You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
                 return 0;
             }
             u_pay = bless_cost;
@@ -6158,7 +6171,7 @@ struct monst* mtmp;
         if (umoney < (long)curse_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = curse_cost;
@@ -6214,7 +6227,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -6262,7 +6275,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -6274,7 +6287,7 @@ struct monst* mtmp;
     case 'y':
         if (umoney < (long)fullhealing_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = fullhealing_cost;
@@ -6310,7 +6323,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -6322,7 +6335,7 @@ struct monst* mtmp;
     case 'y':
         if (umoney < (long)cure_sickness_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = cure_sickness_cost;
@@ -6365,7 +6378,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -6378,7 +6391,7 @@ struct monst* mtmp;
     case 'y':
         if (umoney < (long)major_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = major_cost;
@@ -6394,7 +6407,7 @@ struct monst* mtmp;
         if (umoney < (long)minor_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = minor_cost;
@@ -6480,7 +6493,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -6492,7 +6505,7 @@ struct monst* mtmp;
     case 'y':
         if (umoney < (long)divination_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = divination_cost;
@@ -6653,7 +6666,7 @@ struct monst* mtmp;
     else if (!umoney) 
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -6662,9 +6675,9 @@ struct monst* mtmp;
     context.shop_identify_type = ESHK(mtmp)->shoptype - SHOPBASE + 1;
     if (count_unidentified(invent) == 0)
     {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("have nothing to identify.");
         context.shop_identify_type = 0;
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex1_popup("have nothing to identify.", "Nothing to Identify", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
     context.shop_identify_type = 0;
@@ -6677,7 +6690,7 @@ struct monst* mtmp;
     case 'y':
         if (umoney < (long)minor_id_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         break;
@@ -6801,7 +6814,7 @@ struct monst* mtmp;
     case 'y':
         if (umoney < (long)reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = reconcile_cost;
@@ -6818,12 +6831,12 @@ struct monst* mtmp;
     if (is_peaceful(mtmp))
     {
         play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_THATS_A_DEAL);
-        verbalize("That's a deal. Be more careful next time.");
+        popup_talk_line(mtmp, "That's a deal. Be more careful next time.");
     }
     else
     {
         play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_ON_SECOND_THOUGHT);
-        verbalize("On second thought, maybe you should hang for your crimes anyway.");
+        popup_talk_line(mtmp, "On second thought, maybe you should hang for your crimes anyway.");
     }
 
     return 1;
@@ -6865,7 +6878,7 @@ struct monst* mtmp;
     case 'y':
         if (umoney < (long)reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = reconcile_cost;
@@ -6881,12 +6894,12 @@ struct monst* mtmp;
     if (is_peaceful(mtmp))
     {
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_THATS_A_DEAL_BE_MORE_CAREFUL_NEXT_TIME);
-        verbalize("That's a deal. Be more careful next time.");
+        popup_talk_line(mtmp, "That's a deal. Be more careful next time.");
     }
     else
     {
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_ON_SECOND_THOUGHT_MAYBE_YOU_SHOULD_HANG_FOR_YOUR_CRIMES_ANYWAY);
-        verbalize("On second thought, maybe you should hang for your crimes anyway.");
+        popup_talk_line(mtmp, "On second thought, maybe you should hang for your crimes anyway.");
     }
 
     return 1;
@@ -7326,7 +7339,7 @@ struct monst* mtmp;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -7339,7 +7352,7 @@ struct monst* mtmp;
         if (umoney < (long)service_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = service_cost;
@@ -7554,7 +7567,7 @@ struct monst* mtmp;
     case 'y':
         if (umoney < (long)reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = reconcile_cost;
@@ -7623,7 +7636,7 @@ struct monst* mtmp;
         case 'y':
             if (umoney < (long)observe_cost) {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-                You("don't have enough money for that!");
+                You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
                 return 0;
             }
             u_pay = observe_cost;
@@ -7703,7 +7716,7 @@ struct monst* mtmp;
         case 'y':
             if (umoney < (long)observe_cost) {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-                You("don't have enough money for that!");
+                You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
                 return 0;
             }
             u_pay = observe_cost;
@@ -7772,7 +7785,7 @@ struct monst* mtmp;
     case 'y':
         if (umoney < (long)reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = reconcile_cost;
@@ -7957,7 +7970,7 @@ struct monst* mtmp;
     case 'y':
         if (umoney < (long)reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = reconcile_cost;
@@ -8091,7 +8104,7 @@ int id_idx, minor_id_cost, spdialogue1, spdialogue2 UNUSED;
     else if (!umoney) 
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -8099,7 +8112,7 @@ int id_idx, minor_id_cost, spdialogue1, spdialogue2 UNUSED;
     if (count_unidentified(invent) == 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("have nothing to identify.");
+        You_ex1_popup("have nothing to identify.", "Nothing to Identify", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         context.shop_identify_type = 0;
         return 0;
     }
@@ -8116,7 +8129,7 @@ int id_idx, minor_id_cost, spdialogue1, spdialogue2 UNUSED;
     case 'y':
         if (umoney < (long)minor_id_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         break;
@@ -8231,7 +8244,7 @@ int id_cost;
             if (umoney < id_cost)
             {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-                You("don't have enough money for that!");
+                You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
                 return res;
             }
 
@@ -9147,7 +9160,7 @@ int special_dialogue_sound_id;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 
@@ -9163,7 +9176,7 @@ int special_dialogue_sound_id;
         if (umoney < (long)service_cost) 
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You("don't have enough money for that!");
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         u_pay = service_cost;
@@ -9228,7 +9241,7 @@ int special_dialogue_sound_id;
     else if (!umoney)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You("have no money.");
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
 

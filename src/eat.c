@@ -2037,13 +2037,13 @@ STATIC_OVL int
 rottenfood(obj)
 struct obj *obj;
 {
-    pline("Blecch!  Rotten %s!", foodword(obj));
+    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Blecch!  Rotten %s!", foodword(obj));
     if (!rn2(4))
     {
         if (Hallucination)
-            You_feel("rather trippy.");
+            You_feel_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "rather trippy.");
         else
-            You_feel("rather %s.", body_part(LIGHT_HEADED));
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "rather %s.", body_part(LIGHT_HEADED));
 
         if (!Confusion)
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
@@ -2051,7 +2051,7 @@ struct obj *obj;
     } 
     else if (!rn2(4) && !Blind) 
     {
-        pline("Everything suddenly goes dark.");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Everything suddenly goes dark.");
         /* hero is not Blind, but Blinded timer might be nonzero if
            blindness is being overridden by the Eyes of the Overworld */
         if (!Blinded)
@@ -2072,7 +2072,7 @@ struct obj *obj;
         else
             what = "you slap against the",
             where = (u.usteed) ? "saddle" : surface(u.ux, u.uy);
-        pline_The("world spins and %s %s.", what, where);
+        pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "world spins and %s %s.", what, where);
         incr_itimeout(&HDeaf, duration);
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
@@ -2124,7 +2124,7 @@ struct obj *otmp;
         play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
         boolean cannibal = maybe_cannibal(mnum, FALSE);
 
-        pline("Ulch - that %s was tainted%s!",
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ulch - that %s was tainted%s!",
               (mons[mnum].mlet == S_FUNGUS) ? "fungoid vegetation"
                   : glob ? "glob"
                       : vegetarian(&mons[mnum]) ? "protoplasm"
@@ -2158,7 +2158,7 @@ struct obj *otmp;
     } 
     else if (has_sickening_corpse(&mons[mnum]) && rn2(5))
     {
-        pline("Ulch - that must have been infected by terminal disease!");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ulch - that must have been infected by terminal disease!");
         if (Sick_resistance) 
         {
             pline("It doesn't seem at all sickening, though...");
@@ -2184,7 +2184,7 @@ struct obj *otmp;
     }
     else if (has_mummy_rotted_corpse(&mons[mnum]) && rn2(5))
     {
-        pline("Ecch - that must have been infected by mummy rot!");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ecch - that must have been infected by mummy rot!");
         if (Sick_resistance)
         {
             pline("It doesn't seem at all sickening, though...");
@@ -2202,14 +2202,14 @@ struct obj *otmp;
     else if (has_acidic_corpse(&mons[mnum]) && !Acid_immunity && !Acid_resistance)
     {
         tp++;
-        You("have a very bad case of stomach acid.");   /* not body_part() */
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "have a very bad case of stomach acid.");   /* not body_part() */
         losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_ACID, ADFLAGS_NONE), !glob ? "acidic corpse" : "acidic glob",
                KILLED_BY_AN); /* acid damage */
     } 
     else if (has_poisonous_corpse(&mons[mnum]) && rn2(5))
     {
         tp++;
-        pline("Ecch - that must have been poisonous!");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ecch - that must have been poisonous!");
         if (!Poison_resistance)
         {
             play_sfx_sound(SFX_LOSE_ABILITY);
@@ -2227,7 +2227,7 @@ struct obj *otmp;
     else if ((rotted > 5L || (rotted > 3L && rn2(5))) && !Sick_resistance)
     {
         tp++;
-        You_feel("%ssick.", (FoodPoisoned) ? "very " : "");
+        You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%ssick.", (FoodPoisoned) ? "very " : "");
         losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, ADFLAGS_NONE), !glob ? "cadaver" : "rotted glob", KILLED_BY_AN);
     }
 
@@ -2246,7 +2246,7 @@ struct obj *otmp;
         if (!mons[otmp->corpsenm].cnutrit) {
             /* no nutrition: rots away, no message if you passed out */
             if (!retcode)
-                pline_The("corpse rots away completely.");
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "corpse rots away completely.");
             if (carried(otmp))
                 useup(otmp);
             else
@@ -2256,11 +2256,11 @@ struct obj *otmp;
 
         if (!retcode)
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
-    } else if (touch_petrifies(&mons[mnum]) //(mnum == PM_COCKATRICE || mnum == PM_CHICKATRICE)
+    } else if (is_cockatrice(&mons[mnum]) //(mnum == PM_COCKATRICE || mnum == PM_CHICKATRICE)
                && (Stone_resistance || Hallucination)) {
-        pline("This tastes just like chicken!");
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "This tastes just like chicken!");
     } else if (mnum == PM_FLOATING_EYE && u.umonnum == PM_RAVEN) {
-        You("peck the eyeball with delight.");
+        You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "peck the eyeball with delight.");
     } else {
         /* yummy is always False for omnivores, palatable always True */
         boolean yummy = (vegan(&mons[mnum])
@@ -2515,7 +2515,7 @@ STATIC_OVL void
 accessory_has_effect(otmp)
 struct obj *otmp;
 {
-    pline("Magic spreads through your body as you digest the %s.",
+    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Magic spreads through your body as you digest the %s.",
           (otmp->oclass == RING_CLASS) ? "ring" : "amulet");
 }
 
@@ -2567,7 +2567,7 @@ struct obj *otmp;
                 if (Invis && !was_seeing_invisible && See_invisible && !Blind) 
                 {
                     newsym(u.ux, u.uy);
-                    pline("Suddenly you can see yourself.");
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly you can see yourself.");
                     makeknown(typ);
                 }
                 if (typ != RIN_SUPREME_POWER)
@@ -2578,7 +2578,7 @@ struct obj *otmp;
                 if (!was_invisible && Invis && !See_invisible && !Blind) 
                 {
                     newsym(u.ux, u.uy);
-                    Your("body takes on a %s transparency...",
+                    Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "body takes on a %s transparency...",
                          Hallucination ? "normal" : "strange");
                     makeknown(typ);
                 }
@@ -2681,14 +2681,14 @@ struct obj *otmp;
             if (!(HSleep_resistance & FROM_ACQUIRED))
                 accessory_has_effect(otmp);
             if (!Sleep_resistance)
-                You_feel("wide awake.");
+                You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "wide awake.");
             HSleep_resistance |= FROM_ACQUIRED;
             break;
         case AMULET_OF_CHANGE:
             accessory_has_effect(otmp);
             makeknown(typ);
             change_sex();
-            You("are suddenly very %s!",
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "are suddenly very %s!",
                 flags.female ? "feminine" : "masculine");
             newsym(u.ux, u.uy);
             context.botl = 1;
