@@ -2557,6 +2557,7 @@ E const char *FDECL(a_gname_at, (XCHAR_P x, XCHAR_P y));
 E const char *FDECL(align_gname, (ALIGNTYP_P));
 E const char* FDECL(align_gdesc, (ALIGNTYP_P));
 E const char* FDECL(align_ghisher, (ALIGNTYP_P));
+E const char* NDECL(u_ghisher);
 E const char *FDECL(halu_gname, (ALIGNTYP_P));
 E const char *FDECL(align_gtitle, (ALIGNTYP_P));
 E boolean FDECL(align_gfemale, (ALIGNTYP_P));

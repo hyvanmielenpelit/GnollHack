@@ -8371,13 +8371,13 @@ const char *fltxt;
     }
     else if (fltxt)
     {
-        if (origmonst == &youmonst)
-            Sprintf(hisbuf, "%s own", uhis());
-        else
-            Sprintf(hisbuf, "%s's", an(mon_monster_name(origmonst)));
-
         if (origmonst)
         {
+            if (origmonst == &youmonst)
+                Sprintf(hisbuf, "%s own", uhis());
+            else
+                Sprintf(hisbuf, "%s's", an(mon_monster_name(origmonst)));
+
             if (origobj)
             {
                 Sprintf(killername, "%s from %s %s", fltxt, hisbuf, killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE));

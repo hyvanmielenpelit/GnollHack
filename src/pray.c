@@ -3354,6 +3354,13 @@ aligntyp alignment;
         return "his";
 }
 
+const char*
+u_ghisher()
+{
+    return align_ghisher(u.ualign.type);
+}
+
+
 static const char *hallu_gods[] = {
     "the Flying Spaghetti Monster", /* Church of the FSM */
     "Eris",                         /* Discordianism */

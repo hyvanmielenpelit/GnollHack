@@ -6153,12 +6153,12 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         if (isok(altar_x, altar_y))
         {
             u_on_newpos(altar_x, altar_y);
-            Sprintf(wakeupbuf, "You were dead for a while, but then %s revives you at the altar.", u_gname());
+            Sprintf(wakeupbuf, "After being dead for a while, you suddenly feel the saving grace of %s, and wake up at %s altar.", u_gname(), u_ghisher());
         }
         else
         {
             u_on_rndspot(FALSE);
-            Sprintf(wakeupbuf, "You were dead for a while, but then you feel the saving grace of %s. You wake up.", u_gname());
+            Sprintf(wakeupbuf, "After being dead for a while, you suddenly feel the saving grace of %s, and wake up.", u_gname());
         }
     }
     else 
@@ -6233,6 +6233,13 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         || In_sokoban(&u.uz) || In_endgame(&u.uz) || In_V_tower(&u.uz) || In_mines(&u.uz))
     {
         set_special_level_seen(&u.uz, TRUE);
+    }
+
+    if (displaywakeup)
+    {
+        play_sfx_sound(SFX_REVIVAL);
+        pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, wakeupbuf);
+        display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_REVIVAL, ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
     }
 
     /* special levels can have a custom arrival message */
@@ -6432,13 +6439,6 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 #ifdef INSURANCE
     save_currentstate();
 #endif
-
-    if (displaywakeup)
-    {
-        play_sfx_sound(SFX_REVIVAL);
-        pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, wakeupbuf);
-        display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_REVIVAL, ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
-    }
 
     if ((annotation = get_annotation(&u.uz)) != 0)
         You("remember this level as %s.", annotation);

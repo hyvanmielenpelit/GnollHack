@@ -11,8 +11,8 @@
       "version": "24",
       "source_directory": "banks",
       "source_url": "https://download.gnollhack.com/gnollhack-xu5yROO95006WNM/v24/Master.bank",
-      "length": 64314080,
-      "sha256": "ca16d219092a7ae6b593c93f85449c7ad5ac55914fd4bd3e5bd8cea7ccd723b7",
+      "length": 64289152,
+      "sha256": "03888e92ced6b342c69c4ee54d4b6a156da08d7762eac713d4eb62ec51f8042b",
       "target_directory": "bank",
       "flags": 0
     },
