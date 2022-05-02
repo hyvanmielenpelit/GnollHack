@@ -6238,8 +6238,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     if (displaywakeup)
     {
         play_sfx_sound(SFX_REVIVAL);
-        pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, wakeupbuf);
-        display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_REVIVAL, ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        pline_ex1(ATR_NONE, CLR_MSG_MYSTICAL, wakeupbuf);
+        display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_REVIVAL, ATR_NONE, CLR_MSG_MYSTICAL, NO_GLYPH, POPUP_FLAGS_NONE);
     }
 
     /* special levels can have a custom arrival message */

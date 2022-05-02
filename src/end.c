@@ -424,7 +424,7 @@ int how;
 
     if(how == STONING)
         play_sfx_sound(SFX_PETRIFY);
-    You1((how == STONING) ? "turn to stone..." : "die...");
+    You_ex1(ATR_NONE, CLR_MSG_NEGATIVE, (how == STONING) ? "turn to stone..." : "die...");
     mark_synch(); /* flush buffered screen output */
     buf[0] = '\0';
     killer.format = KILLED_BY_AN;
