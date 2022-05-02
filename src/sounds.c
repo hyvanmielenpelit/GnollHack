@@ -1990,26 +1990,31 @@ speak_check()
 {
     if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
     {
+        play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "As %s, you cannot speak.", an(mon_monster_name(&youmonst)));
         return 0;
     }
     if (Strangled)
     {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You_cant_ex(ATR_NONE, CLR_MSG_NEGATIVE, "speak.  You're choking!");
         return 0;
     }
     if (Silenced)
     {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "speak.  Your voice is gone!");
         return 0;
     }
     if (Underwater)
     {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "speech is unintelligible underwater.");
         return 0;
     }
     if (Deaf)
     {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "How can you hold a conversation when you cannot hear?");
         return 0;
     }

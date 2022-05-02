@@ -1498,6 +1498,7 @@ dobreathe()
     struct attack *mattk;
 
     if (Strangled) {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You_cant_ex(ATR_NONE, CLR_MSG_NEGATIVE, "breathe.  Sorry.");
         return 0;
     }
@@ -1558,12 +1559,14 @@ dosteedbreathe()
 
     if (!u.usteed || !can_breathe(u.usteed->data))
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("have no steed that use a breath weapon!");
         return 0;
     }
 
     if (u.usteed->mspec_used > 0)
     {
+        play_sfx_sound(SFX_NOT_READY_YET);
         pline("%s breath weapon is not ready yet.", s_suffix(Monnam(u.usteed)));
         return 0;
     }
@@ -1814,13 +1817,16 @@ dogaze()
     int gazemanacost = (adtyp == AD_CNCL ? CNCL_GAZE_MANA_COST : GAZE_MANA_COST);
 
     if (Blind) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "see anything to gaze at.");
         return 0;
     } else if (Hallucination) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "gaze at anything you can see.");
         return 0;
     }
     if (u.uen < gazemanacost) {
+        play_sfx_sound(SFX_NOT_ENOUGH_MANA);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "lack the energy to use your special gaze!");
         return 0;
     }
@@ -1902,6 +1908,7 @@ dogaze()
                             Your("gaze has no effect on %s!", mon_nam(mtmp));
                             break;
                         }
+                        play_sfx_sound_at_location(SFX_ACQUIRE_CONFUSION, mtmp->mx, mtmp->my);
                         if (!is_confused(mtmp))
                             Your("gaze confuses %s!", mon_nam(mtmp));
                         else
@@ -1983,6 +1990,7 @@ dogaze()
                             }
                             else
                             {
+                                play_sfx_sound_at_location(SFX_ACQUIRE_CANCELLATION, mtmp->mx, mtmp->my);
                                 nonadditive_increase_mon_property_verbosely(mtmp, CANCELLED, d(2, 4));
                                 nonadditive_increase_mon_property_verbosely(mtmp, CANCELLATION_RESISTANCE, 10);
                             }
@@ -2001,6 +2009,7 @@ dogaze()
                         if (mtmp->data == &mons[PM_FLOATING_EYE] && !is_cancelled(mtmp)) 
                         {
                             if (!Free_action) {
+                                play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
                                 You("are frozen by %s gaze!",
                                     s_suffix(mon_nam(mtmp)));
                                 nomul((u.ulevel > 6 || rn2(4))
@@ -2060,6 +2069,7 @@ doeyestalk()
         return 0;
     }
     else if (Hallucination) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "gaze at anything you can see.");
         return 0;
     }
@@ -2089,6 +2099,7 @@ doeyestalk()
             continue;
 
         if (u.uen < EYE_STALK_MANA_COST) {
+            play_sfx_sound(SFX_NOT_ENOUGH_MANA);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "lack the energy to use your eyestalks%s!", attacksperformed > 0 ? " any further" : "");
             return (attacksperformed > 0 ? 1 : 0);
         }
@@ -2216,6 +2227,7 @@ int
 douseunicornhorn()
 {
     if (u.uen < UNICORN_HORN_MANA_COST) {
+        play_sfx_sound(SFX_NOT_ENOUGH_MANA);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "lack the energy to use your horn!");
         return 1;
     }
@@ -2298,6 +2310,7 @@ domindblast()
     struct monst *mtmp, *nmon;
 
     if (u.uen < MIND_BLAST_MANA_COST) {
+        play_sfx_sound(SFX_NOT_ENOUGH_MANA);
         You("concentrate but lack the energy to maintain doing so.");
         return 0;
     }

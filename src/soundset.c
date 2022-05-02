@@ -886,6 +886,8 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Caitiff", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Warning", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Hint", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Revival", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Error/Not Ready Yet", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Com Pager", 1.0f },
@@ -10734,6 +10736,16 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         "GHSOUND_HINT",
         {GHSOUND_HINT, 1.0f},
         FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_REVIVAL",
+        {GHSOUND_REVIVAL, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_NOT_READY_YET",
+        {GHSOUND_NOT_READY_YET, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
 };
 

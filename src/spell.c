@@ -2196,7 +2196,7 @@ boolean atme;
     }
 
     if (spellcooldownleft(spell) > 0) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_NOT_READY_YET);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot cast the spell before the cooldown has expired.");
         return 0; /* no time elapses */
     }

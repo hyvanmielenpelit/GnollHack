@@ -5459,7 +5459,7 @@ doapply()
 
     if (obj->cooldownleft > 0)
     {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
+        play_sfx_sound(SFX_NOT_READY_YET);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot apply %s before its cooldown has expired.", the(cxname(obj)));
         return 0;
     }

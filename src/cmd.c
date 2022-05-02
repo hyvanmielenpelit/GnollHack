@@ -1211,7 +1211,7 @@ boolean ischaractermenu;
             }
             int gazemanacost = (adtyp == AD_CNCL ? CNCL_GAZE_MANA_COST : EYE_STALK_MANA_COST);
             const char* gazefmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
-                "Gaze%s (&mana; %d)" : "%s (%d mana)";
+                "Gaze%s (&mana; %d)" : "Gaze%s (%d mana)";
 
             char gazebuf[BUFSIZ];
             Sprintf(gazebuf, gazefmt, youmonst.data->mlet == S_EYE ? " with central eye" : "", gazemanacost);
