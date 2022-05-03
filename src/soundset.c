@@ -19,7 +19,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
 
     { SOUND_BANK_MASTER, "event:/Music/Start/Splash", 0.5f},
     { SOUND_BANK_MASTER, "event:/Music/Start/Player Selection", 0.3f},
-    { SOUND_BANK_MASTER, "event:/Music/Start/Intro", BACKGROUND_MUSIC_VOLUME * 2.5f},
+    { SOUND_BANK_MASTER, "event:/Music/Start/Intro", BACKGROUND_MUSIC_VOLUME * 1.5f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Normal-1", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Oracle", BACKGROUND_MUSIC_VOLUME * 4.0f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Temple", BACKGROUND_MUSIC_VOLUME},
