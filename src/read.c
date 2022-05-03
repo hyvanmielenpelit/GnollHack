@@ -2702,7 +2702,7 @@ boolean *effect_happened_ptr;
 
         if (confused)
         {
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The scroll disappears.");
+            pline_ex(ATR_NONE, NO_COLOR, "The scroll disappears.");
             useup(sobj);
             sobj = 0; /* it's gone */
             break;
@@ -2714,7 +2714,7 @@ boolean *effect_happened_ptr;
             int res = identify_pack(cval, !already_known);
             if (res > 0)
             {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The scroll disappears.");
+                pline_ex(ATR_NONE, NO_COLOR, "The scroll disappears.");
                 useup(sobj);
                 sobj = 0; /* it's gone */
             }
