@@ -849,15 +849,15 @@ register struct obj *spellbook;
                     if (read_ability <= 0)
                         Sprintf(descbuf, "%sseems impossible", perusetext ? "still " : "");
                     else if (read_ability <= 4)
-                        Sprintf(descbuf, "is %svery difficult", perusetext ? "still " : "");
+                        Sprintf(descbuf, "%sseems extremely difficult", perusetext ? "still " : "");
                     else if (read_ability <= 8)
-                        Sprintf(descbuf, "is %sdifficult", perusetext ? "still " : "");
+                        Sprintf(descbuf, "%sseems very difficult", perusetext ? "still " : "");
                     else if (read_ability <= 12)
-                        Sprintf(descbuf, "%sseems rather difficult", perusetext ? "still " : "");
+                        Sprintf(descbuf, "%sseems difficult", perusetext ? "still " : "");
                     else if (read_ability <= 16)
-                        Sprintf(descbuf, "seems somewhat easy");
+                        Sprintf(descbuf, "%sseems somewhat difficult", perusetext ? "still " : "");
                     else
-                        Sprintf(descbuf, "seems easy");
+                        Sprintf(descbuf, "%sseems a bit difficult", perusetext ? "still " : "");
 
                     Sprintf(qbuf, "This spellbook %s to comprehend. Continue?", descbuf);
 
