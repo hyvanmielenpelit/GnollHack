@@ -1,4 +1,5 @@
-/* androidunix.c
+/* 
+ * droidunix.c
  * based on unixunix.c
  */
 
