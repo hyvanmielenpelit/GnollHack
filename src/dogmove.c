@@ -1450,23 +1450,30 @@ int after; /* this is extra fast monster movement */
 
     boolean pathres = FALSE;
     xchar tx = 0, ty = 0;
-    if (mtmp->mcomingtou || (!has_edog && !couldsee(mtmp->mx, mtmp->my)))
+    if(!mtmp->notraveltimer)
     {
-        xchar mon_dx = 0, mon_dy = 0;
-
-        pathres = m_findtravelpath(mtmp, TRAVP_TRAVEL, &mon_dx, &mon_dy, allowflags);
-        if (!pathres)
-            pathres = m_findtravelpath(mtmp, TRAVP_GUESS, &mon_dx, &mon_dy, allowflags);
-
-        if (pathres && (mon_dx || mon_dy))
+        /* Find travel path if comingtou or if is a guardian angel that cannot see you */
+        if ((mtmp->mcomingtou || (!has_edog && !couldsee(mtmp->mx, mtmp->my))) && !mtmp->notraveltimer)
         {
-            tx = mtmp->mx + mon_dx;
-            ty = mtmp->my + mon_dy;
-            if (!isok(tx, ty))
-                pathres = FALSE;
+            xchar mon_dx = 0, mon_dy = 0;
+
+            pathres = m_findtravelpath(mtmp, TRAVP_TRAVEL, &mon_dx, &mon_dy, allowflags);
+            if (!pathres)
+                pathres = m_findtravelpath(mtmp, TRAVP_GUESS, &mon_dx, &mon_dy, allowflags);
+
+            if (!pathres)
+            {
+                mtmp->notraveltimer = 12; /* Check again after 12 rounds*/
+            }
+            
+            if (pathres && (mon_dx || mon_dy))
+            {
+                tx = mtmp->mx + mon_dx;
+                ty = mtmp->my + mon_dy;
+                if (!isok(tx, ty))
+                    pathres = FALSE;
+            }
         }
-        else
-            pathres = FALSE;
     }
 
     /* Normally dogs don't step on cursed items, but if they have no

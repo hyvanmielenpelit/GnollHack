@@ -1514,6 +1514,12 @@ update_monster_timeouts()
             mtmp->mflee = 0;
         if (mtmp->notalktimer > 0)
             mtmp->notalktimer--;
+        if (mtmp->notraveltimer > 0)
+        {
+            mtmp->notraveltimer--;
+            if (mtmp->mcomingtou) /* Do not reduce mcomingtou if path cannot be found */
+                mtmp->mcomingtou++;
+        }
         if (mtmp->mcomingtou && !--mtmp->mcomingtou)
         {
             mtmp->yell_x = 0;

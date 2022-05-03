@@ -721,6 +721,7 @@ struct obj *obj;
             if (!DEADMONSTER(mtmp) && is_tame(mtmp) && !is_deaf(mtmp))
             {
                 mtmp->mcomingtou = 100 + rnd(50);
+                mtmp->notraveltimer = 0;
                 mtmp->yell_x = u.ux;
                 mtmp->yell_y = u.uy;
             }

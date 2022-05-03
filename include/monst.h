@@ -132,7 +132,10 @@ struct monst {
 
     short mcomingtou;
     xchar yell_x, yell_y;   /* location where the pet heard you yelling from */
-    int notalktimer;
+    short notalktimer;
+    short notraveltimer;
+    short reserved_short1;
+    short reserved_short2;
     short rumorsleft;       /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
     uchar action;           /* the monster is currently in the midst of one of its attacks or actions */
 

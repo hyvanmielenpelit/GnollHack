@@ -1964,6 +1964,7 @@ doyell()
                 if (!is_deaf(mtmp))
                 {
                     mtmp->mcomingtou = 100 + rnd(50);
+                    mtmp->notraveltimer = 0;
                     mtmp->yell_x = u.ux;
                     mtmp->yell_y = u.uy;
                 }
@@ -4826,6 +4827,7 @@ struct monst* mtmp;
         char pbuf[BUFSZ] = "";
         short oldvalue = mtmp->mcomingtou;
         mtmp->mcomingtou = 100 + rnd(50);
+        mtmp->notraveltimer = 0;
         mtmp->yell_x = u.ux;
         mtmp->yell_y = u.uy;
 
@@ -4853,6 +4855,7 @@ struct monst* mtmp;
         char pbuf[BUFSZ] = "";
         short oldvalue = mtmp->mcomingtou;
         mtmp->mcomingtou = 0;
+        mtmp->notraveltimer = 0;
         mtmp->yell_x = 0;
         mtmp->yell_y = 0;
 
