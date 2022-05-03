@@ -1458,12 +1458,10 @@ int after; /* this is extra fast monster movement */
             xchar mon_dx = 0, mon_dy = 0;
 
             pathres = m_findtravelpath(mtmp, TRAVP_TRAVEL, &mon_dx, &mon_dy, allowflags);
-            if (!pathres)
-                pathres = m_findtravelpath(mtmp, TRAVP_GUESS, &mon_dx, &mon_dy, allowflags);
 
             if (!pathres)
             {
-                mtmp->notraveltimer = 12; /* Check again after 12 rounds*/
+                mtmp->notraveltimer = 12; /* Check again after 12 rounds */
             }
             
             if (pathres && (mon_dx || mon_dy))
