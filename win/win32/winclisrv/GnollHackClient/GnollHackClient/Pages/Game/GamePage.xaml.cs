@@ -2388,6 +2388,7 @@ namespace GnollHackClient.Pages.Game
             {
                 maincountervalue = _mainCounterValue;
             }
+            long moveIntervals = Math.Max(2, (long)Math.Ceiling((double)ClientUtils.GetMainCanvasAnimationFrequency(MapRefreshRate) / 10.0));
 
             using (SKPaint textPaint = new SKPaint())
             {
@@ -2665,20 +2666,22 @@ namespace GnollHackClient.Pages.Game
                                                         float scaled_y_height_change = 0;
                                                         sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
                                                         sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
-                                                        long glyphprintcountervalue = _mapData[mapx, mapy].GlyphPrintCounterValue;
+                                                        //long glyphprintanimcountervalue = _mapData[mapx, mapy].GlyphPrintAnimationCounterValue;
+                                                        long glyphprintmaincountervalue = _mapData[mapx, mapy].GlyphPrintMainCounterValue;
                                                         float base_move_offset_x = 0, base_move_offset_y = 0;
                                                         int movediffx = (int)monster_origin_x - mapx;
                                                         int movediffy = (int)monster_origin_y - mapy;
-                                                        long counterdiff = currentcountervalue - glyphprintcountervalue;
+                                                        //long animcounterdiff = currentcountervalue - glyphprintanimcountervalue;
+                                                        long maincounterdiff = maincountervalue - glyphprintmaincountervalue;
                                                         //if (GHUtils.isok(monster_origin_x, monster_origin_y) && layer_idx == (int)layer_types.LAYER_MONSTER)
                                                         //    mapx = mapx;
 
                                                         if (GHUtils.isok(monster_origin_x, monster_origin_y)
                                                             && (movediffx != 0 || movediffy != 0)
-                                                            && counterdiff >= 0 && counterdiff < GHConstants.MoveIntervals)
+                                                            && maincounterdiff >= 0 && maincounterdiff < moveIntervals)
                                                         {
-                                                            base_move_offset_x = width * (float)movediffx * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
-                                                            base_move_offset_y = height * (float)movediffy * (float)(GHConstants.MoveIntervals - counterdiff) / (float)GHConstants.MoveIntervals;
+                                                            base_move_offset_x = width * (float)movediffx * (float)(moveIntervals - maincounterdiff) / (float)moveIntervals;
+                                                            base_move_offset_y = height * (float)movediffy * (float)(moveIntervals - maincounterdiff) / (float)moveIntervals;
                                                         }
 
                                                         if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
@@ -3054,8 +3057,9 @@ namespace GnollHackClient.Pages.Game
                                                                     int signed_glyph = NoGlyph;
                                                                     short obj_height = _mapData[mapx, mapy].Layers.object_height;
 
-                                                                    long glyphobjectprintcountervalue = _mapData[mapx, mapy].GlyphObjectPrintCounterValue;
-                                                                    long objectcounterdiff = currentcountervalue - glyphobjectprintcountervalue;
+                                                                    //long glyphobjectprintanimcountervalue = _mapData[mapx, mapy].GlyphObjectPrintAnimationCounterValue;
+                                                                    long glyphobjectprintmaincountervalue = _mapData[mapx, mapy].GlyphObjectPrintMainCounterValue;
+                                                                    long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
                                                                     sbyte object_origin_x = 0;
                                                                     sbyte object_origin_y = 0;
 
@@ -3333,10 +3337,10 @@ namespace GnollHackClient.Pages.Game
 
                                                                         if (GHUtils.isok(object_origin_x, object_origin_y)
                                                                             && (objectmovediffx != 0 || objectmovediffy != 0)
-                                                                            && objectcounterdiff >= 0 && objectcounterdiff < GHConstants.MoveIntervals)
+                                                                            && objectcounterdiff >= 0 && objectcounterdiff < moveIntervals)
                                                                         {
-                                                                            object_move_offset_x = width * (float)objectmovediffx * (float)(GHConstants.MoveIntervals - objectcounterdiff) / (float)GHConstants.MoveIntervals;
-                                                                            object_move_offset_y = height * (float)objectmovediffy * (float)(GHConstants.MoveIntervals - objectcounterdiff) / (float)GHConstants.MoveIntervals;
+                                                                            object_move_offset_x = width * (float)objectmovediffx * (float)(moveIntervals - objectcounterdiff) / (float)moveIntervals;
+                                                                            object_move_offset_y = height * (float)objectmovediffy * (float)(moveIntervals - objectcounterdiff) / (float)moveIntervals;
                                                                         }
 
 
@@ -7502,7 +7506,11 @@ namespace GnollHackClient.Pages.Game
                      */
                     lock (AnimationTimerLock)
                     {
-                        _mapData[x, y].GlyphPrintCounterValue = AnimationTimers.general_animation_counter;
+                        _mapData[x, y].GlyphPrintAnimationCounterValue = AnimationTimers.general_animation_counter;
+                    }
+                    lock (_mainCounterLock)
+                    {
+                        _mapData[x, y].GlyphPrintMainCounterValue = _mainCounterValue;
                     }
                 }
                 if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
@@ -7529,7 +7537,11 @@ namespace GnollHackClient.Pages.Game
                      */
                     lock (AnimationTimerLock)
                     {
-                        _mapData[x, y].GlyphObjectPrintCounterValue = AnimationTimers.general_animation_counter;
+                        _mapData[x, y].GlyphObjectPrintAnimationCounterValue = AnimationTimers.general_animation_counter;
+                    }
+                    lock (_mainCounterLock)
+                    {
+                        _mapData[x, y].GlyphObjectPrintMainCounterValue = _mainCounterValue;
                     }
                 }
                 _mapData[x, y].Glyph = glyph;
@@ -7574,8 +7586,10 @@ namespace GnollHackClient.Pages.Game
                         _mapData[x, y].Color = SKColors.Black;// default(MapData);
                         _mapData[x, y].Special = 0;
                         _mapData[x, y].NeedsUpdate = true;
-                        _mapData[x, y].GlyphPrintCounterValue = 0;
-                        _mapData[x, y].GlyphObjectPrintCounterValue = 0;
+                        _mapData[x, y].GlyphPrintAnimationCounterValue = 0;
+                        _mapData[x, y].GlyphPrintMainCounterValue = 0;
+                        _mapData[x, y].GlyphObjectPrintAnimationCounterValue = 0;
+                        _mapData[x, y].GlyphObjectPrintMainCounterValue = 0;
 
                         _mapData[x, y].Layers = new LayerInfo();
                         _mapData[x, y].Layers.layer_glyphs = new int[(int)layer_types.MAX_LAYERS];

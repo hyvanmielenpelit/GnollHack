@@ -14,8 +14,10 @@ namespace GnollHackClient
         public SKColor Color { get; set; }
         public uint Special { get; set; }
         public LayerInfo Layers;
-        public long GlyphPrintCounterValue { get; set; }
-        public long GlyphObjectPrintCounterValue { get; set; }
+        public long GlyphPrintAnimationCounterValue { get; set; }
+        public long GlyphPrintMainCounterValue { get; set; }
+        public long GlyphObjectPrintAnimationCounterValue { get; set; }
+        public long GlyphObjectPrintMainCounterValue { get; set; }
         public bool NeedsUpdate { get; set; }
         public bool MapAnimated { get; set; }
         public bool RedrawTile { get; set; }
