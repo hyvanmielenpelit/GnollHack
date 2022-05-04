@@ -15118,6 +15118,14 @@ stop_all_immediate_sounds()
 }
 
 void
+stop_all_long_immediate_sounds()
+{
+    struct stop_all_info info = { 0 };
+    info.stop_flags = STOP_SOUNDS_FLAGS_IMMEDIATE_LONG;
+    stop_all_sounds(info);
+}
+
+void
 stop_all_dialogue_of_mon(mon)
 struct monst* mon;
 {

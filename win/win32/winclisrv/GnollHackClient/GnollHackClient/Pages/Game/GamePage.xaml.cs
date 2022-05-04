@@ -321,10 +321,16 @@ namespace GnollHackClient.Pages.Game
         private int _clipX;
         private int _clipY;
         public object ClipLock = new object();
-        public int ClipX { get { return _clipX; } set { _clipX = value; lock (MapOffsetLock) { _mapOffsetX = 0; } } }
-        public int ClipY { get { return _clipY; } set { _clipY = value; lock (MapOffsetLock) { _mapOffsetY = 0; } } }
-        public bool MapNoClipMode { get; set; }
-        public bool MapLookMode { get; set; }
+        public int ClipX { get { return _clipX; } set { _clipX = value; lock (_mapOffsetLock) { _mapOffsetX = 0; } } }
+        public int ClipY { get { return _clipY; } set { _clipY = value; lock (_mapOffsetLock) { _mapOffsetY = 0; } } }
+        
+        private object _mapNoClipModeLock = new object();
+        private bool _mapNoClipMode = false;
+        public bool MapNoClipMode { get { lock (_mapNoClipModeLock) { return _mapNoClipMode; } } set { lock (_mapNoClipModeLock) { _mapNoClipMode = value; } } }
+        
+        private object _mapLookModeLock = new object();
+        private bool _mapLookMode = false;
+        public bool MapLookMode { get { lock (_mapLookModeLock) { return _mapLookMode; } } set { lock (_mapLookModeLock) { _mapLookMode = value; } } }
 
         private bool _savedMapTravelMode = false;
         private object _mapTravelModeLock = new object();
@@ -434,6 +440,7 @@ namespace GnollHackClient.Pages.Game
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
             MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", deffontsize * GHConstants.MapFontRelativeAlternateSize);
+            MapNoClipMode = Preferences.Get("MapNoClipMode", false);
 
             ToggleModeButton_Clicked(null, null);
             ZoomMiniMode = true;
@@ -912,7 +919,7 @@ namespace GnollHackClient.Pages.Game
 
                 if (_targetClipOn)
                 {
-                    lock (MapOffsetLock)
+                    lock (_mapOffsetLock)
                     {
                         _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(generalcountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
                         _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(generalcountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
@@ -2401,7 +2408,7 @@ namespace GnollHackClient.Pages.Game
 
                 float usedOffsetX = 0;
                 float usedOffsetY = 0;
-                lock (MapOffsetLock)
+                lock (_mapOffsetLock)
                 {
                     usedOffsetX = _mapOffsetX;
                     usedOffsetY = _mapOffsetY;
@@ -4169,7 +4176,7 @@ namespace GnollHackClient.Pages.Game
 
                                 if (_clientGame.Windows[i].WindowType == GHWinType.Message)
                                 {
-                                    lock(MapOffsetLock)
+                                    lock(_mapOffsetLock)
                                     {
                                         _messageSmallestTop = canvasheight;
                                     }
@@ -4219,7 +4226,7 @@ namespace GnollHackClient.Pages.Game
                                                     ty = winRect.Top + _clientGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
                                                     if (ForceAllMessages)
                                                     {
-                                                        lock(MapOffsetLock)
+                                                        lock(_mapOffsetLock)
                                                         {
                                                             ty += _messageOffsetY;
                                                             if(ty + textPaint.FontMetrics.Ascent < _messageSmallestTop)
@@ -5415,7 +5422,7 @@ namespace GnollHackClient.Pages.Game
                         ty += _statusOffsetY;
                         base_ty = ty;
 
-                        lock (MapOffsetLock)
+                        lock (_mapOffsetLock)
                         {
                             _statusClipBottom = cliprect.Bottom;
                         }
@@ -5540,7 +5547,7 @@ namespace GnollHackClient.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (MapOffsetLock)
+                            lock (_mapOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
@@ -5569,7 +5576,7 @@ namespace GnollHackClient.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (MapOffsetLock)
+                            lock (_mapOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
@@ -5594,7 +5601,7 @@ namespace GnollHackClient.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (MapOffsetLock)
+                            lock (_mapOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
@@ -5623,7 +5630,7 @@ namespace GnollHackClient.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (MapOffsetLock)
+                            lock (_mapOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
@@ -5650,7 +5657,7 @@ namespace GnollHackClient.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (MapOffsetLock)
+                            lock (_mapOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
@@ -5680,7 +5687,7 @@ namespace GnollHackClient.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock(MapOffsetLock)
+                            lock(_mapOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
@@ -5743,7 +5750,7 @@ namespace GnollHackClient.Pages.Game
 
                                     canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
                                     canvas.DrawText(statusname, tx + marksize + markpadding, ty, textPaint);
-                                    lock (MapOffsetLock)
+                                    lock (_mapOffsetLock)
                                     {
                                         _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                                     }
@@ -5790,7 +5797,7 @@ namespace GnollHackClient.Pages.Game
 
                                     canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
                                     canvas.DrawText(conditionname, tx + marksize + markpadding, ty, textPaint);
-                                    lock (MapOffsetLock)
+                                    lock (_mapOffsetLock)
                                     {
                                         _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                                     }
@@ -5848,7 +5855,7 @@ namespace GnollHackClient.Pages.Game
                                         canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
                                         if (propname != null)
                                             canvas.DrawText(propname, tx + marksize + markpadding, ty, textPaint);
-                                        lock (MapOffsetLock)
+                                        lock (_mapOffsetLock)
                                         {
                                             _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                                         }
@@ -6745,7 +6752,7 @@ namespace GnollHackClient.Pages.Game
                 glyphthick.Bottom = MenuWindowGlyphImage.Margin.Bottom;
                 MenuWindowGlyphImage.Margin = glyphthick;
 
-                lock (MapOffsetLock)
+                lock (_mapOffsetLock)
                 {
                     _messageOffsetY = 0;
                     _statusOffsetY = 0;
@@ -6899,7 +6906,7 @@ namespace GnollHackClient.Pages.Game
         }
 
         private Dictionary<long, TouchEntry> TouchDictionary = new Dictionary<long, TouchEntry>();
-        public object MapOffsetLock = new object();
+        private object _mapOffsetLock = new object();
         public float _mapOffsetX = 0;
         public float _mapOffsetY = 0;
         public float _messageOffsetY = 0;
@@ -7044,7 +7051,7 @@ namespace GnollHackClient.Pages.Game
                                         /* Just one finger => Move the map */
                                         if (diffX != 0 || diffY != 0)
                                         {
-                                            lock (MapOffsetLock)
+                                            lock (_mapOffsetLock)
                                             {
                                                 if (ShowExtendedStatusBar)
                                                 {
@@ -7175,7 +7182,7 @@ namespace GnollHackClient.Pages.Game
                             else if (_touchWithinStatusBar)
                             {
                                 ShowExtendedStatusBar = !ShowExtendedStatusBar;
-                                lock (MapOffsetLock)
+                                lock (_mapOffsetLock)
                                 {
                                     _statusOffsetY = 0.0f;
                                 }
@@ -7207,7 +7214,7 @@ namespace GnollHackClient.Pages.Game
                                         if (ShowExtendedStatusBar)
                                         {
                                             ShowExtendedStatusBar = false;
-                                            lock (MapOffsetLock)
+                                            lock (_mapOffsetLock)
                                             {
                                                 _statusOffsetY = 0.0f;
                                             }
@@ -7261,7 +7268,7 @@ namespace GnollHackClient.Pages.Game
 
             if (ZoomMiniMode)
             {
-                lock (MapOffsetLock)
+                lock (_mapOffsetLock)
                 {
                     offsetX -= _mapOffsetX;
                     offsetY -= _mapOffsetY;
@@ -7278,7 +7285,7 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
             }
-            lock (MapOffsetLock)
+            lock (_mapOffsetLock)
             {
                 offsetX += _mapOffsetX;
                 offsetY += _mapOffsetY + _mapFontAscent;
@@ -7505,7 +7512,7 @@ namespace GnollHackClient.Pages.Game
                 else
                 {
                     _targetClipOn = true;
-                    lock (MapOffsetLock)
+                    lock (_mapOffsetLock)
                     {
                         _originMapOffsetWithNewClipX = _mapOffsetX + (float)(x - ClipX) * _tileWidth;
                         _originMapOffsetWithNewClipY = _mapOffsetY + (float)(y - ClipY) * _tileHeight;
@@ -7519,7 +7526,7 @@ namespace GnollHackClient.Pages.Game
                 _clipX = x;
                 _clipY = y;
             }
-            lock (MapOffsetLock)
+            lock (_mapOffsetLock)
             {
                 _mapOffsetX = _originMapOffsetWithNewClipX;
                 _mapOffsetY = _originMapOffsetWithNewClipY;
@@ -7776,84 +7783,6 @@ namespace GnollHackClient.Pages.Game
                 //LookModeImg.Source = lookmode_off_source;
             }
         }
-        private void NoClipButton_Clicked(object sender, EventArgs e)
-        {
-            App.PlayMenuSelectSound();
-            MapNoClipMode = !MapNoClipMode;
-            if (MapNoClipMode)
-            {
-                //NoClipButton.BackgroundColor = Color.Green;
-            }
-            else
-            {
-                //NoClipButton.BackgroundColor = Color.DarkBlue;
-            }
-
-        }
-
-        private void ChatButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'C');
-        }
-
-        private void ThrowQuiveredButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 't');
-        }
-
-        private void ApplyWieldedButton_Clicked(object sender, EventArgs e)
-        {
-            App.DebugWriteRestart("Apply");
-            GenericButton_Clicked(sender, e, 'a');
-        }
-
-        private void ZapButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'z');
-        }
-
-        private void SwapWeaponButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'x');
-        }
-
-        private void LootContextButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'l');
-        }
-
-        private void EatContextButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'e');
-        }
-
-        private void DropAllContextButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'D');
-        }
-
-        private void SacrificeContextButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, GHUtils.Meta('o'));
-        }
-
-        private void SkillButton_Clicked(object sender, EventArgs e)
-        {
-            App.DebugWriteRestart("Skill");
-            GenericButton_Clicked(sender, e, 'S');
-        }
-
-        private void AbilitiesButton_Clicked(object sender, EventArgs e)
-        {
-            App.DebugWriteRestart("Abilities");
-            GenericButton_Clicked(sender, e, 'A');
-        }
-
-        private void DropManyButton_Clicked(object sender, EventArgs e)
-        {
-            App.DebugWriteRestart("Drop Many");
-            GenericButton_Clicked(sender, e, '%');
-        }
 
         private EmbeddedResourceImageSource minimap_on_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-minimap-on.png"));
         private EmbeddedResourceImageSource minimap_off_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-minimap-off.png"));
@@ -7886,12 +7815,28 @@ namespace GnollHackClient.Pages.Game
                 ToggleZoomAlternateButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-altmap-on.png";
                 //ToggleZoomAlternateImg.Source = altmap_on_source;
                 //ToggleZoomAlternateButton.BackgroundColor = Color.Green;
+                lock(_mapOffsetLock)
+                {
+                    if(MapFontSize > 0)
+                    {
+                        _mapOffsetX = _mapOffsetX * MapFontAlternateSize / MapFontSize;
+                        _mapOffsetY = _mapOffsetY * MapFontAlternateSize / MapFontSize;
+                    }
+                }
             }
             else
             {
                 ToggleZoomAlternateButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-altmap-off.png";
                 //ToggleZoomAlternateImg.Source = altmap_off_source;
                 //ToggleZoomAlternateButton.BackgroundColor = Color.DarkBlue;
+                lock (_mapOffsetLock)
+                {
+                    if (MapFontAlternateSize > 0)
+                    {
+                        _mapOffsetX = _mapOffsetX * MapFontSize / MapFontAlternateSize;
+                        _mapOffsetY = _mapOffsetY * MapFontSize / MapFontAlternateSize;
+                    }
+                }
             }
 
         }
@@ -9974,7 +9919,7 @@ namespace GnollHackClient.Pages.Game
 
         private void ToggleMessageNumberButton_Clicked(object sender, EventArgs e)
         {
-            lock(MapOffsetLock)
+            lock(_mapOffsetLock)
             {
                 _messageOffsetY = 0.0f;
             }

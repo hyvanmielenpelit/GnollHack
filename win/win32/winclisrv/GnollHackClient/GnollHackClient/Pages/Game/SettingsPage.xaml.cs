@@ -87,6 +87,11 @@ namespace GnollHackClient.Pages.Game
                 _gamePage.WalkArrows = WalkArrowSwitch.IsToggled;
             Preferences.Set("WalkArrows", WalkArrowSwitch.IsToggled);
 
+            if (_gamePage != null)
+                _gamePage.MapNoClipMode = NoClipSwitch.IsToggled;
+            Preferences.Set("MapNoClipMode", NoClipSwitch.IsToggled);
+
+
 
             App.HideAndroidNavigatioBar = NavBarSwitch.IsToggled;
             Preferences.Set("HideAndroidNavigationBar", App.HideAndroidNavigatioBar);
@@ -146,7 +151,7 @@ namespace GnollHackClient.Pages.Game
 
             int cursor = 0, graphics = 0, msgnum = 0, petrows = 0;
             bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, navbar = false, devmode = false, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
-            bool forcemaxmsg = false, showexstatus = false;
+            bool forcemaxmsg = false, showexstatus = false, noclipmode = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
             musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
@@ -161,6 +166,7 @@ namespace GnollHackClient.Pages.Game
                 cursor = Preferences.Get("CursorStyle", 1);
                 graphics = Preferences.Get("GraphicsStyle", 1);
                 mapgrid = Preferences.Get("MapGrid", false);
+                noclipmode = Preferences.Get("MapNoClipMode", false);
 
                 forcemaxmsg = false; /* Always starts as false */
                 ForceMaxMessageSwitch.IsEnabled = false;
@@ -208,6 +214,7 @@ namespace GnollHackClient.Pages.Game
                 gpu = _gamePage.UseMainGLCanvas;
                 msgnum = _gamePage.NumDisplayedMessages;
                 petrows = _gamePage.NumDisplayedPetRows;
+                noclipmode = _gamePage.MapNoClipMode;
             }
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
@@ -221,6 +228,7 @@ namespace GnollHackClient.Pages.Game
             PlayerMarkSwitch.IsToggled = playermark;
             MonsterTargetingSwitch.IsToggled = monstertargeting;
             WalkArrowSwitch.IsToggled = walkarrows;
+            NoClipSwitch.IsToggled = noclipmode;
             MemorySwitch.IsToggled = mem;
             FPSSwitch.IsToggled = fps;
             GPUSwitch.IsToggled = gpu;

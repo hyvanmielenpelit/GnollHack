@@ -3130,6 +3130,7 @@ E float FDECL(get_monster_ambient_sound_volume, (enum monster_soundset_types));
 E void FDECL(get_god_indices, (int*, int*));
 E void NDECL(play_intro_text);
 E void NDECL(stop_all_immediate_sounds);
+E void NDECL(stop_all_long_immediate_sounds);
 E void FDECL(stop_all_dialogue_of_mon, (struct monst*));
 E void FDECL(play_voice_shopkeeper_welcome, (struct monst*, int));
 E void FDECL(play_voice_shopkeeper_simple_line, (struct monst*, enum shopkeeper_lines));

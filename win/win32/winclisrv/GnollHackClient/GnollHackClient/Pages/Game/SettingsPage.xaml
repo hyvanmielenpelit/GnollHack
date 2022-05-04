@@ -280,6 +280,16 @@
                                     <Switch x:Name="WalkArrowSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Disable Auto-Center"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="NoClipSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
                         </TableSection>
                         <TableSection>
                             <ViewCell>

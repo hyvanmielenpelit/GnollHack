@@ -5949,6 +5949,11 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             remdun_mapseen(l_idx);
     }
 
+    /* Stop all long immediate sounds from the previous level (footsteps going down are still fine) */
+    stop_all_long_immediate_sounds();
+
+
+    /* NEW LEVEL STARTS HERE */
     if (Is_really_rogue_level(newlevel) || Is_really_rogue_level(&u.uz))
         assign_graphics(Is_really_rogue_level(newlevel) ? ROGUESET : PRIMARY);
 
@@ -6219,9 +6224,13 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
      *  Move all plines beyond the screen reset.
      */
 
+    /* Update music and ambients */
+    update_game_music();
+    play_level_ambient_sounds();
+    play_environment_ambient_sounds();
+
      /* Fade back from black */
     issue_gui_command(GUI_CMD_AFTER_COLLECT);
-
 
     if (play_arrival_teleport_effect)
     {
