@@ -24,13 +24,13 @@ namespace GnollHackClient.Pages.Game
             list.Add("20 fps");
             list.Add("30 fps");
             list.Add("40 fps");
-            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 60.0f)
+            if (App.DisplayRefreshRate >= 60.0f)
                 list.Add("60 fps");
-            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 80.0f)
+            if (App.DisplayRefreshRate >= 80.0f)
                 list.Add("80 fps");
-            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 90.0f)
+            if (App.DisplayRefreshRate >= 90.0f)
                 list.Add("90 fps");
-            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 120.0f)
+            if (App.DisplayRefreshRate >= 120.0f)
                 list.Add("120 fps");
             RefreshRatePicker.ItemsSource = list;
         }

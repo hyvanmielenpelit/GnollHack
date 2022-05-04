@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GnollHackClient.Pages.Game;
+using GnollHackCommon;
 
 namespace GnollHackClient
 {
@@ -9,11 +11,15 @@ namespace GnollHackClient
     {
         private DisplayScreenFilterData _data;
         private long _created_at_count;
+        private GamePage _gamePage;
+        private int _animationFrequency = GHConstants.MainCanvasAnimationFrequency;
 
-        public GHScreenFilter(DisplayScreenFilterData data, long created_at_count)
+        public GHScreenFilter(DisplayScreenFilterData data, long created_at_count, GamePage gamePage)
         {
             _data = data;
             _created_at_count = created_at_count;
+            _gamePage = gamePage;
+            _animationFrequency = Math.Max(1, ClientUtils.GetMainCanvasAnimationFrequency(_gamePage.MapRefreshRate));
         }
 
         public long CreatedAt { get { return _created_at_count; } }
@@ -48,12 +54,12 @@ namespace GnollHackClient
             if (counter_value < 5)
                 return 999.0f;
 
-            return ((float)(counter_value - _created_at_count)) / 40.0f;
+            return ((float)(counter_value - _created_at_count)) / (float)_animationFrequency;
         }
 
         public long GetFinishCounterValue()
         {
-            return (long)(GetFinishTime() * 40.0f) + _created_at_count;
+            return (long)(GetFinishTime() * (float)_animationFrequency) + _created_at_count;
         }
 
         public bool IsVisible(long counter_value)

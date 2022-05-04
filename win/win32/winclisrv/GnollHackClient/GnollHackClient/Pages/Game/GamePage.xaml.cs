@@ -197,8 +197,8 @@ namespace GnollHackClient.Pages.Game
         public bool ShowFPS { get; set; }
         private double _fps;
         private long _counterValueDiff;
-        private long _previousMainCounterValue = 0L;
-        private long _previousCommandCounterValue = 0L;
+        private long _previousMainFPSCounterValue = 0L;
+        private long _previousCommandFPSCounterValue = 0L;
         private object _fpslock = new object();
         private Stopwatch _stopWatch = new Stopwatch();
 
@@ -706,18 +706,18 @@ namespace GnollHackClient.Pages.Game
                         {
                             if(MoreCommandsGrid.IsVisible)
                             {
-                                lock(_commandCounterLock)
+                                lock(_commandFPSCounterLock)
                                 {
-                                    _counterValueDiff = _commandCounterValue - _previousCommandCounterValue;
-                                    _previousCommandCounterValue = _commandCounterValue;
+                                    _counterValueDiff = _commandFPSCounterValue - _previousCommandFPSCounterValue;
+                                    _previousCommandFPSCounterValue = _commandFPSCounterValue;
                                 }
                             }
                             else
                             {
-                                lock (_mainCounterLock)
+                                lock (_mainFPSCounterLock)
                                 {
-                                    _counterValueDiff = _mainCounterValue - _previousMainCounterValue;
-                                    _previousMainCounterValue = _mainCounterValue;
+                                    _counterValueDiff = _mainFPSCounterValue - _previousMainFPSCounterValue;
+                                    _previousMainFPSCounterValue = _mainFPSCounterValue;
                                 }
                                 //lock (AnimationTimerLock)
                                 //{
@@ -826,23 +826,23 @@ namespace GnollHackClient.Pages.Game
             switch (MapRefreshRate)
             {
                 case MapRefreshRateStyle.MapFPS20:
-                    counter_increment = 2; /* Animations skip at every other frame at 40fps */
+                    counter_increment = 2; /* Animations skip at every other frame at 20fps to get 40fps */
                     break;
                 case MapRefreshRateStyle.MapFPS30:
                     break;
                 case MapRefreshRateStyle.MapFPS40:
                     break;
                 case MapRefreshRateStyle.MapFPS60:
-                    subCounterMax = 1; /* Animations proceed at every other frame at 60fps */
+                    subCounterMax = 1; /* Animations proceed at every other frame at 60fps to get 30fps */
                     break;
                 case MapRefreshRateStyle.MapFPS80:
-                    subCounterMax = 1; /* Animations proceed at every other frame at 80fps */
+                    subCounterMax = 1; /* Animations proceed at every other frame at 80fps to get 40fps */
                     break;
                 case MapRefreshRateStyle.MapFPS90:
-                    subCounterMax = 2; /* Animations proceed at every third frame at 90fps */
+                    subCounterMax = 2; /* Animations proceed at every third frame at 90fps to get 30fps */
                     break;
                 case MapRefreshRateStyle.MapFPS120:
-                    subCounterMax = 3; /* Animations proceed at every fourth frame at 120fps */
+                    subCounterMax = 2; /* Animations proceed at every third frame at 120fps to get 40fps */
                     break;
             }
             if(subCounterMax > 0)
@@ -874,7 +874,7 @@ namespace GnollHackClient.Pages.Game
         {
             int i;
             long counter_increment = GetAnimationCounterIncrement();
-            long generalcountervalue;
+            long generalcountervalue, maincountervalue;
             lock (AnimationTimerLock)
             {
                 AnimationTimers.general_animation_counter += counter_increment;
@@ -925,11 +925,20 @@ namespace GnollHackClient.Pages.Game
                 generalcountervalue = AnimationTimers.general_animation_counter;
             }
 
+            lock (_mainCounterLock)
+            {
+                _mainCounterValue++;
+                if (_mainCounterValue < 0)
+                    _mainCounterValue = 0;
+
+                maincountervalue = _mainCounterValue;
+            }
+
             lock (_floatingTextLock)
             {
                 for (i = _floatingTexts.Count - 1; i >= 0; i--)
                 {
-                    if (_floatingTexts[i].IsFinished(generalcountervalue))
+                    if (_floatingTexts[i].IsFinished(maincountervalue))
                         _floatingTexts.RemoveAt(i);
                 }
             }
@@ -938,7 +947,7 @@ namespace GnollHackClient.Pages.Game
             {
                 for (i = _conditionTexts.Count - 1; i >= 0; i--)
                 {
-                    if (_conditionTexts[i].IsFinished(generalcountervalue))
+                    if (_conditionTexts[i].IsFinished(maincountervalue))
                         _conditionTexts.RemoveAt(i);
                 }
             }
@@ -947,7 +956,7 @@ namespace GnollHackClient.Pages.Game
             {
                 for (i = _screenFilters.Count - 1; i >= 0; i--)
                 {
-                    if (_screenFilters[i].IsFinished(generalcountervalue))
+                    if (_screenFilters[i].IsFinished(maincountervalue))
                         _screenFilters.RemoveAt(i);
                 }
             }
@@ -956,15 +965,14 @@ namespace GnollHackClient.Pages.Game
             {
                 for (i = _guiEffects.Count - 1; i >= 0; i--)
                 {
-                    if (_guiEffects[i].IsFinished(generalcountervalue))
+                    if (_guiEffects[i].IsFinished(maincountervalue))
                         _guiEffects.RemoveAt(i);
                 }
             }
 
-
             lock (_screenTextLock)
             {
-                if (_screenText != null && _screenText.IsFinished(generalcountervalue))
+                if (_screenText != null && _screenText.IsFinished(maincountervalue))
                     _screenText = null;
             }
 
@@ -1162,9 +1170,13 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 long counter = 0;
-                lock (AnimationTimerLock)
+                //lock (AnimationTimerLock)
+                //{
+                //    counter = AnimationTimers.general_animation_counter;
+                //}
+                lock (_mainCounterLock)
                 {
-                    counter = AnimationTimers.general_animation_counter;
+                    counter = _mainCounterValue;
                 }
 
                 if (foundanother)
@@ -1178,20 +1190,24 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
 
-                _floatingTexts.Add(new GHFloatingText(data, counter));
+                _floatingTexts.Add(new GHFloatingText(data, counter, this));
             }
         }
 
         public void DisplayScreenText(DisplayScreenTextData data)
         {
             long countervalue;
-            lock (AnimationTimerLock)
+            //lock (AnimationTimerLock)
+            //{
+            //    countervalue = AnimationTimers.general_animation_counter;
+            //}
+            lock (_mainCounterLock)
             {
-                countervalue = AnimationTimers.general_animation_counter;
+                countervalue = _mainCounterValue;
             }
             lock (_screenTextLock)
             {
-                _screenText = new GHScreenText(data, countervalue);
+                _screenText = new GHScreenText(data, countervalue, this);
             }
 
             if (_clientGame != null)
@@ -1219,9 +1235,13 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 long counter = 0;
-                lock (AnimationTimerLock)
+                //lock (AnimationTimerLock)
+                //{
+                //    counter = AnimationTimers.general_animation_counter;
+                //}
+                lock (_mainCounterLock)
                 {
-                    counter = AnimationTimers.general_animation_counter;
+                    counter = _mainCounterValue;
                 }
 
                 if (highestcounter > 0 && highestcounter > counter)
@@ -1229,7 +1249,7 @@ namespace GnollHackClient.Pages.Game
                     counter = highestcounter;
                 }
 
-                _conditionTexts.Add(new GHConditionText(data, counter));
+                _conditionTexts.Add(new GHConditionText(data, counter, this));
             }
         }
 
@@ -1248,9 +1268,13 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 long counter = 0;
-                lock (AnimationTimerLock)
+                //lock (AnimationTimerLock)
+                //{
+                //    counter = AnimationTimers.general_animation_counter;
+                //}
+                lock (_mainCounterLock)
                 {
-                    counter = AnimationTimers.general_animation_counter;
+                    counter = _mainCounterValue;
                 }
 
                 if (highestcounter > 0 && highestcounter > counter)
@@ -1258,7 +1282,7 @@ namespace GnollHackClient.Pages.Game
                     counter = highestcounter;
                 }
 
-                _screenFilters.Add(new GHScreenFilter(data, counter));
+                _screenFilters.Add(new GHScreenFilter(data, counter, this));
             }
         }
 
@@ -1276,12 +1300,16 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 long counter = 0;
-                lock (AnimationTimerLock)
+                //lock (AnimationTimerLock)
+                //{
+                //    counter = AnimationTimers.general_animation_counter;
+                //}
+                lock (_mainCounterLock)
                 {
-                    counter = AnimationTimers.general_animation_counter;
+                    counter = _mainCounterValue;
                 }
 
-                _guiEffects.Add(new GHGUIEffect(data, counter));
+                _guiEffects.Add(new GHGUIEffect(data, counter, this));
             }
         }
 
@@ -2328,11 +2356,11 @@ namespace GnollHackClient.Pages.Game
                 }
             }
 
-            lock (_mainCounterLock)
+            lock (_mainFPSCounterLock)
             {
-                _mainCounterValue++;
-                if (_mainCounterValue >= 0xFFFFFFFC)
-                    _mainCounterValue = 0;
+                _mainFPSCounterValue++;
+                if (_mainFPSCounterValue < 0)
+                    _mainFPSCounterValue = 0;
             }
 
             /* Finally, flush */
@@ -2351,10 +2379,14 @@ namespace GnollHackClient.Pages.Game
             canvas.Clear(SKColors.Black);
             double canvas_scale = GetCanvasScale();
             float inverse_canvas_scale = canvas_scale == 0 ? 0.0f : 1.0f / (float)canvas_scale;
-            long generalcountervalue;
+            long generalcountervalue, maincountervalue;
             lock (AnimationTimerLock)
             {
                 generalcountervalue = AnimationTimers.general_animation_counter;
+            }
+            lock (_mainCounterLock)
+            {
+                maincountervalue = _mainCounterValue;
             }
 
             using (SKPaint textPaint = new SKPaint())
@@ -3848,13 +3880,13 @@ namespace GnollHackClient.Pages.Game
                             float relativestrokewidth = 0.0f;
                             SKColor strokecolor = SKColors.White;
                             SKColor fillcolor = SKColors.White;
-                            p = ft.GetPosition(generalcountervalue);
-                            fillcolor = ft.GetColor(generalcountervalue);
-                            textPaint.Typeface = ft.GetTypeface(generalcountervalue);
-                            textPaint.TextSize = UsedFontSize * ft.GetRelativeTextSize(generalcountervalue);
-                            relativestrokewidth = ft.GetRelativeOutlineWidth(generalcountervalue);
-                            strokecolor = ft.GetOutlineColor(generalcountervalue);
-                            str = ft.GetText(generalcountervalue);
+                            p = ft.GetPosition(maincountervalue);
+                            fillcolor = ft.GetColor(maincountervalue);
+                            textPaint.Typeface = ft.GetTypeface(maincountervalue);
+                            textPaint.TextSize = UsedFontSize * ft.GetRelativeTextSize(maincountervalue);
+                            relativestrokewidth = ft.GetRelativeOutlineWidth(maincountervalue);
+                            strokecolor = ft.GetOutlineColor(maincountervalue);
+                            str = ft.GetText(maincountervalue);
                             textPaint.MeasureText(str, ref textBounds);
                             tx = (offsetX + usedOffsetX + width * p.X - textBounds.Width / 2);
                             ty = (offsetY + usedOffsetY + height * p.Y - textBounds.Height / 2);
@@ -3879,14 +3911,14 @@ namespace GnollHackClient.Pages.Game
                             SKColor fillcolor = SKColors.White;
                             float maxfontsize = 9999.0f;
                             double canvasheightscale = this.Height / canvasView.Height;
-                            fillcolor = _screenText.GetTextColor(generalcountervalue);
-                            textPaint.Typeface = _screenText.GetTextTypeface(generalcountervalue);
-                            targetwidth = Math.Min(canvaswidth, canvasheight * (float)canvasheightscale) * _screenText.GetMainTextSizeRelativeToScreenWidth(generalcountervalue);
-                            maxfontsize = _screenText.GetMainTextMaxFontSize(generalcountervalue);
-                            yoffsetpct = _screenText.GetYOffsetPctOfScreen(generalcountervalue);
-                            relativestrokewidth = _screenText.GetRelativeTextOutlineWidth(generalcountervalue);
-                            strokecolor = _screenText.GetTextOutlineColor(generalcountervalue);
-                            str = _screenText.GetText(generalcountervalue);
+                            fillcolor = _screenText.GetTextColor(maincountervalue);
+                            textPaint.Typeface = _screenText.GetTextTypeface(maincountervalue);
+                            targetwidth = Math.Min(canvaswidth, canvasheight * (float)canvasheightscale) * _screenText.GetMainTextSizeRelativeToScreenWidth(maincountervalue);
+                            maxfontsize = _screenText.GetMainTextMaxFontSize(maincountervalue);
+                            yoffsetpct = _screenText.GetYOffsetPctOfScreen(maincountervalue);
+                            relativestrokewidth = _screenText.GetRelativeTextOutlineWidth(maincountervalue);
+                            strokecolor = _screenText.GetTextOutlineColor(maincountervalue);
+                            str = _screenText.GetText(maincountervalue);
                             textPaint.TextSize = UsedFontSize;
                             textPaint.MeasureText(str, ref textBounds);
                             if (textBounds.Width > 0)
@@ -3931,12 +3963,12 @@ namespace GnollHackClient.Pages.Game
 
                             if (_screenText.HasSuperText)
                             {
-                                fillcolor = _screenText.GetSuperTextColor(generalcountervalue);
-                                textPaint.Typeface = _screenText.GetSuperTextTypeface(generalcountervalue);
-                                textPaint.TextSize = maintextsize * _screenText.GetSuperTextSizeRelativeToMainText(generalcountervalue);
-                                relativesuperstrokewidth = _screenText.GetRelativeSuperTextOutlineWidth(generalcountervalue);
-                                superstrokecolor = _screenText.GetSuperTextOutlineColor(generalcountervalue);
-                                str = _screenText.GetSuperText(generalcountervalue);
+                                fillcolor = _screenText.GetSuperTextColor(maincountervalue);
+                                textPaint.Typeface = _screenText.GetSuperTextTypeface(maincountervalue);
+                                textPaint.TextSize = maintextsize * _screenText.GetSuperTextSizeRelativeToMainText(maincountervalue);
+                                relativesuperstrokewidth = _screenText.GetRelativeSuperTextOutlineWidth(maincountervalue);
+                                superstrokecolor = _screenText.GetSuperTextOutlineColor(maincountervalue);
+                                str = _screenText.GetSuperText(maincountervalue);
                                 textPaint.MeasureText(str, ref textBounds);
                                 tx = (canvaswidth / 2 - textBounds.Width / 2);
                                 ty = maintexty + maintextascent - textPaint.FontMetrics.Descent;
@@ -3966,12 +3998,12 @@ namespace GnollHackClient.Pages.Game
 
                             if (_screenText.HasSubText)
                             {
-                                fillcolor = _screenText.GetSubTextColor(generalcountervalue);
-                                textPaint.Typeface = _screenText.GetSubTextTypeface(generalcountervalue);
-                                textPaint.TextSize = maintextsize * _screenText.GetSubTextSizeRelativeToMainText(generalcountervalue);
-                                relativesubstrokewidth = _screenText.GetRelativeSubTextOutlineWidth(generalcountervalue);
-                                substrokecolor = _screenText.GetSubTextOutlineColor(generalcountervalue);
-                                str = _screenText.GetSubText(generalcountervalue);
+                                fillcolor = _screenText.GetSubTextColor(maincountervalue);
+                                textPaint.Typeface = _screenText.GetSubTextTypeface(maincountervalue);
+                                textPaint.TextSize = maintextsize * _screenText.GetSubTextSizeRelativeToMainText(maincountervalue);
+                                relativesubstrokewidth = _screenText.GetRelativeSubTextOutlineWidth(maincountervalue);
+                                substrokecolor = _screenText.GetSubTextOutlineColor(maincountervalue);
+                                str = _screenText.GetSubText(maincountervalue);
                                 textPaint.MeasureText(str, ref textBounds);
                                 tx = (canvaswidth / 2 - textBounds.Width / 2);
                                 ty = maintexty + maintextdescent - textPaint.FontMetrics.Ascent;
@@ -4010,12 +4042,12 @@ namespace GnollHackClient.Pages.Game
                             SKColor fillcolor = SKColors.White;
                             float relativetoscreenwidth = 0.0f;
                             string sampletext = "";
-                            fillcolor = ft.GetColor(generalcountervalue);
-                            textPaint.Typeface = ft.GetTypeface(generalcountervalue);
-                            relativetoscreenwidth = ft.GetRelativeSampleTextSize(generalcountervalue);
-                            relativestrokewidth = ft.GetRelativeOutlineWidth(generalcountervalue);
-                            strokecolor = ft.GetOutlineColor(generalcountervalue);
-                            str = ft.GetText(generalcountervalue);
+                            fillcolor = ft.GetColor(maincountervalue);
+                            textPaint.Typeface = ft.GetTypeface(maincountervalue);
+                            relativetoscreenwidth = ft.GetRelativeSampleTextSize(maincountervalue);
+                            relativestrokewidth = ft.GetRelativeOutlineWidth(maincountervalue);
+                            strokecolor = ft.GetOutlineColor(maincountervalue);
+                            str = ft.GetText(maincountervalue);
 
                             textPaint.TextSize = UsedFontSize;
                             sampletext = ft.GetSampleText();
@@ -4048,8 +4080,8 @@ namespace GnollHackClient.Pages.Game
                         {
                             SKPoint p;
                             SKColor effcolor;
-                            p = eff.GetPosition(generalcountervalue);
-                            effcolor = eff.GetColor(generalcountervalue);
+                            p = eff.GetPosition(maincountervalue);
+                            effcolor = eff.GetColor(maincountervalue);
                             tx = offsetX + usedOffsetX + width * p.X;
                             ty = offsetY + usedOffsetY + height * p.Y + _mapFontAscent;
                             textPaint.Color = effcolor;
@@ -8757,7 +8789,7 @@ namespace GnollHackClient.Pages.Game
                 _menuHideCancelled = false;
                 _menuHideOn = true;
             }
-            Device.StartTimer(TimeSpan.FromSeconds(GHConstants.WindowHideIntervals / GHConstants.GameAnimationRefreshRate), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(GHConstants.WindowHideIntervals / GHConstants.MainCanvasAnimationFrequency), () =>
             {
                 lock (_menuHideCancelledLock)
                 {
@@ -8798,7 +8830,7 @@ namespace GnollHackClient.Pages.Game
                 _delayedTextHideOn = true;
                 _delayedTextHideCancelled = false;
             }
-            Device.StartTimer(TimeSpan.FromSeconds(GHConstants.WindowHideIntervals / GHConstants.GameAnimationRefreshRate), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(GHConstants.WindowHideIntervals / GHConstants.MainCanvasAnimationFrequency), () =>
             {
                 lock(_delayedTextHideLock)
                 {
@@ -9615,8 +9647,11 @@ namespace GnollHackClient.Pages.Game
         private object _mainCounterLock = new object();
         private long _mainCounterValue = 0;
 
-        private object _commandCounterLock = new object();
-        private long _commandCounterValue = 0;
+        private object _mainFPSCounterLock = new object();
+        private long _mainFPSCounterValue = 0;
+
+        private object _commandFPSCounterLock = new object();
+        private long _commandFPSCounterValue = 0;
 
         private void CommandCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -9744,11 +9779,11 @@ namespace GnollHackClient.Pages.Game
                 }
 
             }
-            lock (_commandCounterLock)
+            lock (_commandFPSCounterLock)
             {
-                _commandCounterValue++;
-                if (_commandCounterValue >= 0xFFFFFFFC)
-                    _commandCounterValue = 0;
+                _commandFPSCounterValue++;
+                if (_commandFPSCounterValue < 0)
+                    _commandFPSCounterValue = 0;
             }
         }
 

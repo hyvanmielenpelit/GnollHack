@@ -265,7 +265,7 @@ drinkfountain()
             pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "The water makes you feel better.");
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of healing.");
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "That was a fountain of healing.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
@@ -297,7 +297,7 @@ drinkfountain()
             pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "The water makes magical energies course through your body.");
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of mana.");
+                pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "That was a fountain of mana.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
@@ -308,7 +308,7 @@ drinkfountain()
         pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "The water fills your body with new energy.");
         if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
         {
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of power.");
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "That was a fountain of power.");
             SET_FOUNTAIN_KNOWN(u.ux, u.uy);
         }
     }
@@ -332,7 +332,7 @@ drinkfountain()
         update_hunger_status(FALSE);
         if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
         {
-            pline("That was a natural spring.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a natural spring.");
             SET_FOUNTAIN_KNOWN(u.ux, u.uy);
         }
     }
@@ -353,7 +353,7 @@ drinkfountain()
         }
         if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
         {
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of poison.");
+            pline_ex(ATR_NONE, Poison_resistance ? CLR_MSG_ATTENTION : CLR_MSG_NEGATIVE, "That was a fountain of poison.");
             SET_FOUNTAIN_KNOWN(u.ux, u.uy);
         }
     }
@@ -392,7 +392,7 @@ drinkfountain()
         levl[u.ux][u.uy].blessedftn = 0;
         if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
         {
-            pline("That was an enchanted magic fountain.");
+            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "That was an enchanted magic fountain.");
             SET_FOUNTAIN_KNOWN(u.ux, u.uy);
         }
         return;
@@ -545,7 +545,7 @@ drinkfountain()
 
         if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
         {
-            pline("That was a magic fountain.");
+            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "That was a magic fountain.");
             SET_FOUNTAIN_KNOWN(u.ux, u.uy);
         }
 
@@ -697,7 +697,7 @@ register struct obj *obj;
         {
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of healing.");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "That was a fountain of healing.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
@@ -767,7 +767,7 @@ register struct obj *obj;
         {
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of mana.");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "That was a fountain of mana.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
@@ -850,7 +850,7 @@ register struct obj *obj;
         {
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of power.");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "That was a fountain of power.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
@@ -919,7 +919,7 @@ register struct obj *obj;
         {
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "That was a fountain of poison.");
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "That was a fountain of poison.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }

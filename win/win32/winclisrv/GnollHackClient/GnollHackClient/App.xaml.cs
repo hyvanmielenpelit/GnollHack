@@ -195,6 +195,8 @@ namespace GnollHackClient
         private static IPlatformService _platformService = null;
         public static IPlatformService PlatformService { get { return _platformService; } }
 
+        public static readonly float DisplayRefreshRate = Math.Max(30.0f, DeviceDisplay.MainDisplayInfo.RefreshRate);
+
         public static async Task<bool> OnBackButtonPressed()
         {
             var handler = BackButtonPressed;

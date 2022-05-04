@@ -3506,6 +3506,7 @@ doeat()
      * for normal vs. rotten food.  The reqtime and nutrit values are
      * then adjusted in accordance with the amount of food left.
      */
+    int identifycolor = CLR_MSG_ATTENTION;
     if (otmp->otyp == CORPSE || otmp->globby) 
     {
         int tmp = eatcorpse(otmp);
@@ -3561,8 +3562,8 @@ doeat()
             }
             else 
             {
+                identifycolor = CLR_MSG_NEGATIVE;
                 long sick_time;
-
                 sick_time = (long)rn1(10, 10);
                 /* make sure new ill doesn't result in improvement */
                 if (FoodPoisoned && (sick_time > FoodPoisoned))
@@ -3588,6 +3589,7 @@ doeat()
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_POISONOUS)
         {
+            identifycolor = CLR_MSG_NEGATIVE;
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ecch - that must have been poisonous!");
             if (!Poison_resistance) 
             {
@@ -3604,6 +3606,7 @@ doeat()
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS)
         {
+            identifycolor = CLR_MSG_NEGATIVE;
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ecch - that must have been terribly poisonous!");
             if (!Poison_resistance) 
             {
@@ -3620,12 +3623,14 @@ doeat()
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_SICKENING && !Sick_resistance)
         {
+            identifycolor = CLR_MSG_NEGATIVE;
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%ssick.", (FoodPoisoned) ? "very " : "");
             losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, ADFLAGS_NONE), "sickening food", KILLED_BY_AN);
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_HALLUCINATING && !Halluc_resistance)
         {
+            identifycolor = CLR_MSG_NEGATIVE;
             int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus;
 
             if(duration > 0)
@@ -3661,7 +3666,7 @@ doeat()
     {
         makeknown(otmp->otyp);
         //if(objects[otmp->otyp].oc_edible_subtype != EDIBLETYPE_NORMAL)
-        pline("That was %s!", an(cxname_singular(otmp)));
+        pline_ex(ATR_NONE, identifycolor, "That was %s!", an(cxname_singular(otmp)));
     }
 
     debugpline3(

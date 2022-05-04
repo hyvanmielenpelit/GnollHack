@@ -645,44 +645,59 @@ namespace GnollHackClient
 
         public static uint GetMainCanvasAnimationInterval(MapRefreshRateStyle mapRefreshRate)
         {
-            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
+            if (App.DisplayRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
                 return 8;
-            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
+            else if (App.DisplayRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
                 return 11;
-            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
+            else if (App.DisplayRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
                 return 13;
-            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
+            else if (App.DisplayRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
                 return 16;
-            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
+            else if (App.DisplayRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
                 return 25;
-            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
+            else if (App.DisplayRefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
                 return 33;
-            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
+            else if (App.DisplayRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
                 return 50;
             else
                 return 100;
 
             //return GHConstants.MainCanvasAnimationInterval;
         }
-        public static int GetMainCanvasAnimationFrequency()
+        public static int GetMainCanvasAnimationFrequency(MapRefreshRateStyle mapRefreshRate)
         {
-            return GHConstants.MainCanvasAnimationFrequency;
+            if (App.DisplayRefreshRate >= 120.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS120)
+                return 120;
+            else if (App.DisplayRefreshRate >= 90.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS90)
+                return 90;
+            else if (App.DisplayRefreshRate >= 80.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS80)
+                return 80;
+            else if (App.DisplayRefreshRate >= 60.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS60)
+                return 60;
+            else if (App.DisplayRefreshRate >= 40.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS40)
+                return 40;
+            else if (App.DisplayRefreshRate >= 30.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS30)
+                return 30;
+            else if (App.DisplayRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
+                return 20;
+            else
+                return GHConstants.MainCanvasAnimationFrequency;
         }
 
         public static uint GetAuxiliaryCanvasAnimationInterval()
         {
-            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 120.0f)
+            if (App.DisplayRefreshRate >= 120.0f)
                 return 8;
-            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 90.0f)
+            else if (App.DisplayRefreshRate >= 90.0f)
                 return 11;
             else
                 return 16;
         }
         public static int GetAuxiliaryCanvasAnimationFrequency()
         {
-            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 120.0f)
+            if (App.DisplayRefreshRate >= 120.0f)
                 return 120;
-            else if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 90.0f)
+            else if (App.DisplayRefreshRate >= 90.0f)
                 return 90;
             else
                 return 60;

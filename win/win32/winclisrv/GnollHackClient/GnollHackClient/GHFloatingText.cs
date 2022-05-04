@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
 using GnollHackCommon;
+using GnollHackClient.Pages.Game;
 
 namespace GnollHackClient
 {
@@ -10,11 +11,15 @@ namespace GnollHackClient
     {
         private DisplayFloatingTextData _data;
         private long _created_at_count;
+        private GamePage _gamePage;
+        private int _animationFrequency = GHConstants.MainCanvasAnimationFrequency;
 
-        public GHFloatingText(DisplayFloatingTextData data, long created_at_count)
+        public GHFloatingText(DisplayFloatingTextData data, long created_at_count, GamePage gamePage)
         {
             _data = data;
             _created_at_count = created_at_count;
+            _gamePage = gamePage;
+            _animationFrequency = Math.Max(1, ClientUtils.GetMainCanvasAnimationFrequency(_gamePage.MapRefreshRate));
         }
 
         public int X { get { return _data.x; } }
@@ -55,7 +60,7 @@ namespace GnollHackClient
             if (counter_value < 5)
                 return 999.0f;
 
-            return ((float)(counter_value - _created_at_count)) / (float)GHConstants.MainCanvasAnimationFrequency;
+            return ((float)(counter_value - _created_at_count)) / (float)_animationFrequency; // GHConstants.MainCanvasAnimationFrequency;
         }
 
         public bool IsVisible(long counter_value)

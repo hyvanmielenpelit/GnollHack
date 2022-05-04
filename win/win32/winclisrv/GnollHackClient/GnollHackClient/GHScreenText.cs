@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GnollHackClient.Pages.Game;
 using GnollHackCommon;
 using SkiaSharp;
 
@@ -10,14 +11,17 @@ namespace GnollHackClient
     {
         private DisplayScreenTextData _data;
         public long _created_at_count;
-
+        private GamePage _gamePage;
+        private int _animationFrequency = GHConstants.MainCanvasAnimationFrequency;
         public bool HasSuperText { get { return _data.supertext != null; } }
         public bool HasSubText { get { return _data.subtext != null; } }
 
-        public GHScreenText(DisplayScreenTextData data, long created_at_count)
+        public GHScreenText(DisplayScreenTextData data, long created_at_count, GamePage gamePage)
         {
             _data = data;
             _created_at_count = created_at_count;
+            _gamePage = gamePage;
+            _animationFrequency = Math.Max(1, ClientUtils.GetMainCanvasAnimationFrequency(_gamePage.MapRefreshRate));
         }
 
         public float GetFinishTime()
@@ -56,7 +60,7 @@ namespace GnollHackClient
             if (counter_value < _created_at_count)
                 return 999.0f;
 
-            return ((float)(counter_value - _created_at_count)) / 40.0f;
+            return ((float)(counter_value - _created_at_count)) / (float)_animationFrequency;
         }
 
         public bool IsFinished(long counter_value)
