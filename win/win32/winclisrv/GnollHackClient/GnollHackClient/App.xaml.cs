@@ -599,6 +599,15 @@ namespace GnollHackClient
             if (!Directory.Exists(targetpath))
                 Directory.CreateDirectory(targetpath);
 
+            try
+            {
+                GnollHackService.Chmod(targetpath, (uint)ChmodPermissions.S_IALL);
+            }
+            catch
+            {
+
+            }
+
             //DirectoryInfo dinfo = new DirectoryInfo(targetpath);
             bool writesuccessful = false;
             string testfilepath = Path.Combine(targetpath, "test.txt");
@@ -628,6 +637,7 @@ namespace GnollHackClient
 
             if (!writesuccessful)
             {
+                
                 try
                 {
                     if (Directory.Exists(targetpath))
@@ -641,6 +651,8 @@ namespace GnollHackClient
                     }
                     if (!Directory.Exists(targetpath))
                         Directory.CreateDirectory(targetpath);
+
+                    GnollHackService.Chmod(targetpath, (uint)ChmodPermissions.S_IALL);
                 }
                 catch
                 {

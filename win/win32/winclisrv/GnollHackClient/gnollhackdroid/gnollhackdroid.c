@@ -8,6 +8,7 @@
 #include "libproc.h"
 #include "callback.h"
 #include "date_unix.h"
+#include <sys/stat.h>
 
 extern int GnollHackMain(int argc, char** argv);
 
@@ -356,6 +357,12 @@ void
 LibSwitchDemoVersion(int state)
 {
     In_Demo = (state != 0);
+}
+
+int
+LibChmod(const char* filename, unsigned int mode)
+{
+    return chmod(filename, (mode_t)mode);
 }
 
 int GnollHackStart(cmdlineargs)

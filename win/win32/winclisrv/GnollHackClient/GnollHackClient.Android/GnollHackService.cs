@@ -224,6 +224,8 @@ namespace GnollHackClient.Droid
         public static extern void LibSwitchDemoVersion(int state);
         [DllImport(@"libgnollhackdroid.so")]
         public static extern void LibSetPetMID(uint m_id);
+        [DllImport(@"libgnollhackdroid.so")]
+        public static extern int LibChmod(string filename, uint mode);
 
         private void LoadNativeLibrary(string libName)
         {
@@ -749,6 +751,11 @@ namespace GnollHackClient.Droid
         public void SetPetMID(uint m_id)
         {
             LibSetPetMID(m_id);
+        }
+
+        public int Chmod(string filename, uint mode)
+        {
+            return LibChmod(filename, mode);
         }
 
         public int StartGnollHack(ClientGame clientGame)
