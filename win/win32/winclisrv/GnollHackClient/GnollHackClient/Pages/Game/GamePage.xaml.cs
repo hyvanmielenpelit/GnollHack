@@ -978,16 +978,16 @@ namespace GnollHackClient.Pages.Game
 
             lock (TargetClipLock)
             {
-                if (generalcountervalue < _targetClipStartCounterValue
-                    || generalcountervalue > _targetClipStartCounterValue + _targetClipPanTime)
+                if (maincountervalue < _targetClipStartCounterValue
+                    || maincountervalue > _targetClipStartCounterValue + _targetClipPanTime)
                     _targetClipOn = false;
 
                 if (_targetClipOn)
                 {
                     lock (_mapOffsetLock)
                     {
-                        _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(generalcountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                        _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(generalcountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                        _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                        _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
                     }
                 }
             }
@@ -7602,9 +7602,14 @@ namespace GnollHackClient.Pages.Game
         public void SetTargetClip(int x, int y, bool immediate_pan)
         {
             long curtimervalue = 0;
-            lock (AnimationTimerLock)
+            long pantime = Math.Max(2, (long)Math.Ceiling((double)ClientUtils.GetMainCanvasAnimationFrequency(MapRefreshRate) / 8.0));
+            //lock (AnimationTimerLock)
+            //{
+            //    curtimervalue = AnimationTimers.general_animation_counter;
+            //}
+            lock (_mainCounterLock)
             {
-                curtimervalue = AnimationTimers.general_animation_counter;
+                curtimervalue = _mainCounterValue;
             }
 
             lock (TargetClipLock)
@@ -7624,7 +7629,7 @@ namespace GnollHackClient.Pages.Game
                         _originMapOffsetWithNewClipY = _mapOffsetY + (float)(y - ClipY) * _tileHeight;
                     }
                     _targetClipStartCounterValue = curtimervalue;
-                    _targetClipPanTime = GHConstants.DefaultPanTime;
+                    _targetClipPanTime = pantime; // GHConstants.DefaultPanTime;
                 }
             }
             lock (ClipLock)
