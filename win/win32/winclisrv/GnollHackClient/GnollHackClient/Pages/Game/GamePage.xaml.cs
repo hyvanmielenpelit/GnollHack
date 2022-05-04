@@ -1183,7 +1183,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     float YSpeed = Math.Abs(speedvector.Y);
                     float secs = 0.5f / YSpeed;
-                    long ticks = (long)(secs * 40);
+                    long ticks = (long)(secs * ClientUtils.GetMainCanvasAnimationFrequency(MapRefreshRate));
                     if (counter - highestcounter >= -ticks * 10 && counter - highestcounter < ticks)
                     {
                         counter += ticks - (counter - highestcounter);
