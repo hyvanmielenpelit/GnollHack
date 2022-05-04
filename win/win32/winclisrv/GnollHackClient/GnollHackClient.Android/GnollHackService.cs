@@ -755,7 +755,8 @@ namespace GnollHackClient.Droid
 
         public int Chmod(string filename, uint mode)
         {
-            return LibChmod(filename, mode);
+            int res = LibChmod(filename, mode);
+            return res;
         }
 
         public int StartGnollHack(ClientGame clientGame)
