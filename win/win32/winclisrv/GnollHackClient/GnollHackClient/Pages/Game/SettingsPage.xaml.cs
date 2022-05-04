@@ -20,6 +20,19 @@ namespace GnollHackClient.Pages.Game
         {
             InitializeComponent();
             _gamePage = gamePage;
+            List<string> list = new List<string>();
+            list.Add("20 fps");
+            list.Add("30 fps");
+            list.Add("40 fps");
+            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 60.0f)
+                list.Add("60 fps");
+            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 80.0f)
+                list.Add("80 fps");
+            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 90.0f)
+                list.Add("90 fps");
+            if (DeviceDisplay.MainDisplayInfo.RefreshRate >= 120.0f)
+                list.Add("120 fps");
+            RefreshRatePicker.ItemsSource = list;
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
@@ -27,13 +40,26 @@ namespace GnollHackClient.Pages.Game
             App.BackButtonPressed -= BackButtonPressed;
             _doChangeVolume = false;
 
-            if (_gamePage != null)
-                _gamePage.CursorStyle = (TTYCursorStyle)CursorPicker.SelectedIndex;
-            Preferences.Set("CursorStyle", CursorPicker.SelectedIndex);
+            if (CursorPicker.SelectedIndex > -1)
+            {
+                if (_gamePage != null)
+                    _gamePage.CursorStyle = (TTYCursorStyle)CursorPicker.SelectedIndex;
+                Preferences.Set("CursorStyle", CursorPicker.SelectedIndex);
+            }
 
-            if (_gamePage != null)
-                _gamePage.GraphicsStyle = (GHGraphicsStyle)GraphicsPicker.SelectedIndex;
-            Preferences.Set("GraphicsStyle", GraphicsPicker.SelectedIndex);
+            if (GraphicsPicker.SelectedIndex > -1)
+            {
+                if (_gamePage != null)
+                    _gamePage.GraphicsStyle = (GHGraphicsStyle)GraphicsPicker.SelectedIndex;
+                Preferences.Set("GraphicsStyle", GraphicsPicker.SelectedIndex);
+            }
+
+            if(RefreshRatePicker.SelectedIndex > -1)
+            {
+                if (_gamePage != null)
+                    _gamePage.MapRefreshRate = (MapRefreshRateStyle)RefreshRatePicker.SelectedIndex;
+                Preferences.Set("MapRefreshRate", RefreshRatePicker.SelectedIndex);
+            }
 
             if (_gamePage != null)
                 _gamePage.ShowMemoryUsage = MemorySwitch.IsToggled;
@@ -149,7 +175,7 @@ namespace GnollHackClient.Pages.Game
         {
             App.BackButtonPressed += BackButtonPressed;
 
-            int cursor = 0, graphics = 0, msgnum = 0, petrows = 0;
+            int cursor = 0, graphics = 0, maprefresh = (int)MapRefreshRateStyle.MapFPS40, msgnum = 0, petrows = 0;
             bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, navbar = false, devmode = false, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
@@ -165,6 +191,7 @@ namespace GnollHackClient.Pages.Game
             {
                 cursor = Preferences.Get("CursorStyle", 1);
                 graphics = Preferences.Get("GraphicsStyle", 1);
+                maprefresh = Preferences.Get("MapRefreshRate", (int)MapRefreshRateStyle.MapFPS40);
                 mapgrid = Preferences.Get("MapGrid", false);
                 noclipmode = Preferences.Get("MapNoClipMode", false);
 
@@ -193,6 +220,7 @@ namespace GnollHackClient.Pages.Game
             {
                 cursor = (int)_gamePage.CursorStyle;
                 graphics = (int)_gamePage.GraphicsStyle;
+                maprefresh = (int)_gamePage.MapRefreshRate;
                 mapgrid = _gamePage.MapGrid;
                 forcemaxmsg = _gamePage.ForceAllMessages;
                 ForceMaxMessageSwitch.IsEnabled = true;
@@ -218,6 +246,7 @@ namespace GnollHackClient.Pages.Game
             }
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
+            RefreshRatePicker.SelectedIndex = Math.Min(RefreshRatePicker.Items.Count - 1, maprefresh);
             GridSwitch.IsToggled = mapgrid;
             HitPointBarSwitch.IsToggled = hpbars;
             ClassicStatusBarSwitch.IsToggled = statusbar;
