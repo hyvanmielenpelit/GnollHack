@@ -155,6 +155,7 @@ enum dismount_types {
 #define MG_FEMALE   0x00000400UL
 #define MG_H_FLIP   0x00000800UL /* Flipped horizontally */
 #define MG_STONE_INVERSE  0x00001000UL /* ' ' is inversed if it has color */
+#define MG_ALT_COLORS   0x00002000UL /* Uses alternative colors */
 
 
 /* sellobj_state() states */

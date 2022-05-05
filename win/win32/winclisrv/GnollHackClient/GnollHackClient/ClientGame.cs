@@ -737,6 +737,7 @@ namespace GnollHackClient
                                         DisplayConditionTextData data = new DisplayConditionTextData();
                                         data.text = ClientGame.cond_names_long[i];
                                         data.style = 0;
+                                        data.attr = 0;
                                         data.color = condcolor;
                                         data.tflags = 0UL;
                                         queue.Enqueue(new GHRequest(this, GHRequestType.DisplayConditionText, data));
@@ -768,6 +769,7 @@ namespace GnollHackClient
                                         {
                                             DisplayScreenFilterData fdata = new DisplayScreenFilterData();
                                             fdata.style = 0;
+                                            fdata.attr = 0;
                                             fdata.color = filtercolor;
                                             fdata.fflags = 0UL;
                                             queue.Enqueue(new GHRequest(this, GHRequestType.DisplayScreenFilter, fdata));

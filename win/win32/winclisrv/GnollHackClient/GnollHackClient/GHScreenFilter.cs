@@ -87,7 +87,7 @@ namespace GnollHackClient
             switch (_data.style)
             {
                 case 0:
-                    return ClientUtils.NHColor2SKColor(_data.color).WithAlpha(128);
+                    return ClientUtils.NHColor2SKColor(_data.color, _data.attr).WithAlpha(128);
                 default:
                     break;
             }

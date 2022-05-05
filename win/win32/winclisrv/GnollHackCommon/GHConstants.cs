@@ -27,6 +27,27 @@ namespace GnollHackCommon
         CLR_MAX
     }
 
+    public enum nhaltcolor
+    {
+        CLR_ALT_BLACK = 0,
+        CLR_ALT_RED,
+        CLR_ALT_GREEN,
+        CLR_ALT_GOLD,   /* Gold instead of brown */
+        CLR_ALT_BLUE,
+        CLR_ALT_MAGENTA,
+        CLR_ALT_CYAN,
+        CLR_ALT_GRAY,
+        NO_ALT_COLOR,
+        CLR_ALT_ORANGE,
+        CLR_ALT_BRIGHT_GREEN,
+        CLR_ALT_YELLOW,
+        CLR_ALT_BRIGHT_BLUE,
+        CLR_ALT_BRIGHT_MAGENTA,
+        CLR_ALT_BRIGHT_CYAN,
+        CLR_ALT_WHITE,
+        CLR_ALT_MAX
+    }
+
     public enum GHWindowPrintLocations
     {
         PrintToMap = 0,
@@ -62,6 +83,7 @@ namespace GnollHackCommon
         AlignRight = 0x00020000,
         Inactive = 0x00040000,
         HalfSize = 0x00080000,
+        AltColors = 0x00100000,
     }
 
     [Flags]

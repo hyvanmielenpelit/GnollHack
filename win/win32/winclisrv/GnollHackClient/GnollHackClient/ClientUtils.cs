@@ -26,91 +26,81 @@ namespace GnollHackClient
         private static SKColor GHGreen = new SKColor(0, 255, 0);
         private static SKColor GHRed = new SKColor(255, 32, 32);
 
-        public static SKColor NHColor2SKColor(int nhclr)
+        public static SKColor NHColor2SKColor(int nhclr, int attr)
         {
-            return NHColor2SKColorCore(nhclr, false);
+            return NHColor2SKColorCore(nhclr, attr, false);
         }
-        public static SKColor NHColor2SKColorCore(int nhclr, bool revertblackwhite)
+        public static SKColor NHColor2SKColorCore(int nhclr, int attr, bool revertblackwhite)
         {
             SKColor res = revertblackwhite ? SKColors.Black : SKColors.White;
-            if(nhclr < 0)
+            bool usealtcolors = (attr & (int)MenuItemAttributes.AltColors) != 0;
+            switch ((nhcolor)nhclr)
             {
-                switch (nhclr)
-                {
-                    case -1:
+                case nhcolor.CLR_BLACK:
+                    res = revertblackwhite ? SKColors.White : GHDarkGray;
+                    break;
+                case nhcolor.CLR_RED:
+                    res = revertblackwhite ? SKColors.Red : GHRed;
+                    break;
+                case nhcolor.CLR_GREEN:
+                    res = revertblackwhite ? SKColors.Green : GHGreen;
+                    break;
+                case nhcolor.CLR_BROWN:
+                    if(usealtcolors)
                         res = GHTitleGold;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            else
-            {
-                switch ((nhcolor)nhclr)
-                {
-                    case nhcolor.CLR_BLACK:
-                        res = revertblackwhite ? SKColors.White : GHDarkGray;
-                        break;
-                    case nhcolor.CLR_RED:
-                        res = revertblackwhite ? SKColors.Red : GHRed;
-                        break;
-                    case nhcolor.CLR_GREEN:
-                        res = revertblackwhite ? SKColors.Green : GHGreen;
-                        break;
-                    case nhcolor.CLR_BROWN:
+                    else
                         res = SKColors.Brown;
-                        break;
-                    case nhcolor.CLR_BLUE:
-                        res = SKColors.Blue;
-                        break;
-                    case nhcolor.CLR_MAGENTA:
-                        res = SKColors.Magenta;
-                        break;
-                    case nhcolor.CLR_CYAN:
-                        res = SKColors.Cyan;
-                        break;
-                    case nhcolor.CLR_GRAY:
-                        res = revertblackwhite ? GHDarkGray : SKColors.LightGray;
-                        break;
-                    case nhcolor.NO_COLOR:
-                        break;
-                    case nhcolor.CLR_ORANGE:
-                        res = SKColors.Orange;
-                        break;
-                    case nhcolor.CLR_BRIGHT_GREEN:
-                        res = SKColors.LightGreen;
-                        break;
-                    case nhcolor.CLR_YELLOW:
-                        res = SKColors.Yellow;
-                        break;
-                    case nhcolor.CLR_BRIGHT_BLUE:
-                        res = SKColors.LightBlue;
-                        break;
-                    case nhcolor.CLR_BRIGHT_MAGENTA:
-                        res = SKColors.LightPink;
-                        break;
-                    case nhcolor.CLR_BRIGHT_CYAN:
-                        res = SKColors.LightCyan;
-                        break;
-                    case nhcolor.CLR_WHITE:
-                        res = revertblackwhite ? SKColors.Black : SKColors.White;
-                        break;
-                    case nhcolor.CLR_MAX:
-                        break;
-                    default:
-                        break;
-                }
+                    break;
+                case nhcolor.CLR_BLUE:
+                    res = SKColors.Blue;
+                    break;
+                case nhcolor.CLR_MAGENTA:
+                    res = SKColors.Magenta;
+                    break;
+                case nhcolor.CLR_CYAN:
+                    res = SKColors.Cyan;
+                    break;
+                case nhcolor.CLR_GRAY:
+                    res = revertblackwhite ? GHDarkGray : SKColors.LightGray;
+                    break;
+                case nhcolor.NO_COLOR:
+                    break;
+                case nhcolor.CLR_ORANGE:
+                    res = SKColors.Orange;
+                    break;
+                case nhcolor.CLR_BRIGHT_GREEN:
+                    res = SKColors.LightGreen;
+                    break;
+                case nhcolor.CLR_YELLOW:
+                    res = SKColors.Yellow;
+                    break;
+                case nhcolor.CLR_BRIGHT_BLUE:
+                    res = SKColors.LightBlue;
+                    break;
+                case nhcolor.CLR_BRIGHT_MAGENTA:
+                    res = SKColors.LightPink;
+                    break;
+                case nhcolor.CLR_BRIGHT_CYAN:
+                    res = SKColors.LightCyan;
+                    break;
+                case nhcolor.CLR_WHITE:
+                    res = revertblackwhite ? SKColors.Black : SKColors.White;
+                    break;
+                case nhcolor.CLR_MAX:
+                    break;
+                default:
+                    break;
             }
-
             return res;
         }
 
         private static Color XRed = new Color((double)0xFF / 255.0, 32.0 / 255.0, 32.0 / 255.0);
         private static Color XGreen = new Color(0, (double)0xFF / 255, 0);
         private static Color XTitleGoldColor = new Color((double)0xD4 / 255, (double)0xA0 / 255, (double)0x17 / 255);
-        public static Color NHColor2XColor(int nhclr, bool revertblackandwhite, bool istitle)
+        public static Color NHColor2XColor(int nhclr, int attr, bool revertblackandwhite, bool istitle)
         {
             Color res = istitle ? XTitleGoldColor : revertblackandwhite ? Color.Black : Color.White;
+            bool usealtcolors = (attr & (int)MenuItemAttributes.AltColors) != 0;
             switch ((nhcolor)nhclr)
             {
                 case nhcolor.CLR_BLACK:
@@ -123,7 +113,10 @@ namespace GnollHackClient
                     res = revertblackandwhite ? Color.Green : XGreen;
                     break;
                 case nhcolor.CLR_BROWN:
-                    res = Color.Brown;
+                    if(usealtcolors)
+                        res = XTitleGoldColor;
+                    else
+                        res = Color.Brown;
                     break;
                 case nhcolor.CLR_BLUE:
                     res = Color.Blue;
@@ -167,9 +160,9 @@ namespace GnollHackClient
             }
             return res;
         }
-        public static Color NHColor2GrayedXColor(int color, bool revertblackandwhite, bool istitle)
+        public static Color NHColor2GrayedXColor(int color, int attr, bool revertblackandwhite, bool istitle)
         {
-            Color basecolor = NHColor2XColor(color, revertblackandwhite, istitle);
+            Color basecolor = NHColor2XColor(color, attr, revertblackandwhite, istitle);
             Color bgcolor = revertblackandwhite ? Color.White : Color.Black;
             Color grayedcolor;
             if (color == (int)nhcolor.NO_COLOR || color == (revertblackandwhite ? (int)nhcolor.CLR_BLACK : (int)nhcolor.CLR_WHITE))

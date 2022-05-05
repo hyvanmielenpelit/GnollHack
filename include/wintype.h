@@ -126,6 +126,7 @@ typedef struct mi {
 #define ATR_ALIGN_RIGHT     0x00020000
 #define ATR_INACTIVE        0x00040000
 #define ATR_HALF_SIZE       0x00080000
+#define ATR_ALT_COLORS      0x00100000
 
 /* nh_poskey() modifier types */
 #define CLICK_1 1

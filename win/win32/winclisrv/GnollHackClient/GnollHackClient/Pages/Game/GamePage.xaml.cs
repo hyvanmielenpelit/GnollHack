@@ -1349,7 +1349,7 @@ namespace GnollHackClient.Pages.Game
             }
             else
             {
-                PopupTitleLabel.TextColor = ClientUtils.NHColor2XColor(data.color, false, true);
+                PopupTitleLabel.TextColor = ClientUtils.NHColor2XColor(data.color, data.attr, false, true);
                 PopupGrid.BackgroundColor = _popupTransparentBlackColor;
                 PopupFrame.BackgroundColor = _popupTransparentBlackColor;
                 PopupTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
@@ -1695,7 +1695,7 @@ namespace GnollHackClient.Pages.Game
                 }
                 else
                 {
-                    YnTitleLabel.TextColor = ClientUtils.NHColor2XColor(color, false, true);
+                    YnTitleLabel.TextColor = ClientUtils.NHColor2XColor(color, attr, false, true);
                 }
             }
 
@@ -1843,7 +1843,7 @@ namespace GnollHackClient.Pages.Game
         private int _getLineStyle = 0;
         private void GetLine(string query, string placeholder, string linesuffix, int style, int attr, int color)
         {
-            Color clr = ClientUtils.NHColor2XColor(color, false, false); /* Non-title / white coloring works better here */
+            Color clr = ClientUtils.NHColor2XColor(color, attr, false, false); /* Non-title / white coloring works better here */
             string PlaceHolderText = null;
             if (!string.IsNullOrWhiteSpace(placeholder) && placeholder.Length > 0)
             {
@@ -4268,7 +4268,7 @@ namespace GnollHackClient.Pages.Game
                                                     canvas.DrawText(str, tx, ty, textPaint);
                                                 }
                                                 textPaint.Style = SKPaintStyle.Fill;
-                                                textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? instr.Color : (int)nhcolor.CLR_WHITE);
+                                                textPaint.Color = ClientUtils.NHColor2SKColor(instr.Color < (int)nhcolor.CLR_MAX ? instr.Color : (int)nhcolor.CLR_WHITE, instr.Attributes);
                                                 canvas.DrawText(str, tx, ty, textPaint);
                                                 textPaint.Style = SKPaintStyle.Fill;
                                                 xpos += totwidth;
@@ -4301,7 +4301,7 @@ namespace GnollHackClient.Pages.Game
                                             {
                                                 GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
                                                 longLine = msgHistoryItem.Text;
-                                                SKColor printColor = ClientUtils.NHColor2SKColor(msgHistoryItem.NHColor < (int)nhcolor.CLR_MAX ? msgHistoryItem.NHColor : (int)nhcolor.CLR_WHITE);
+                                                SKColor printColor = ClientUtils.NHColor2SKColor(msgHistoryItem.NHColor < (int)nhcolor.CLR_MAX ? msgHistoryItem.NHColor : (int)nhcolor.CLR_WHITE, msgHistoryItem.Attributes);
 
                                                 /* attributes */
                                                 wrappedLines.Clear();
@@ -4911,7 +4911,7 @@ namespace GnollHackClient.Pages.Game
                                 }
                                 if (colorfound)
                                 {
-                                    SKColor dotcolor = ClientUtils.NHColor2SKColorCore(i, true);
+                                    SKColor dotcolor = ClientUtils.NHColor2SKColorCore(i, 0, true);
                                     SKPoint dotpoint = new SKPoint(curx + marksize / 4, cury + (rowheight - marksize) / 2 + marksize / 2);
                                     float dotradius = marksize / 8;
                                     textPaint.Color = dotcolor;
@@ -5552,7 +5552,7 @@ namespace GnollHackClient.Pages.Game
                                 string[] statstring = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
                                 string printtext = statstring[i] + ":";
                                 canvas.DrawText(printtext, tx, ty, textPaint);
-                                textPaint.Color = ClientUtils.NHColor2SKColorCore(valcolor, true);
+                                textPaint.Color = ClientUtils.NHColor2SKColorCore(valcolor, 0, true);
                                 canvas.DrawText(valtext, tx + indentation, ty, textPaint);
                                 textPaint.Color = SKColors.Black;
                                 ty += textPaint.FontSpacing;
@@ -7547,7 +7547,7 @@ namespace GnollHackClient.Pages.Game
                 _mapData[x, y].Glyph = glyph;
                 _mapData[x, y].BkGlyph = bkglyph;
                 _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);
-                _mapData[x, y].Color = ClientUtils.NHColor2SKColor(color);
+                _mapData[x, y].Color = ClientUtils.NHColor2SKColor(color, (special & 0x00002000UL) != 0 ? (int)MenuItemAttributes.AltColors : 0);
                 _mapData[x, y].Special = special;
                 _mapData[x, y].Layers = layers;
 
@@ -8213,7 +8213,7 @@ namespace GnollHackClient.Pages.Game
                         }
 
                         /* Main text */
-                        SKColor maincolor = ClientUtils.NHColor2SKColorCore(mi.NHColor, MenuCanvas.RevertBlackAndWhite);
+                        SKColor maincolor = ClientUtils.NHColor2SKColorCore(mi.NHColor, mi.Attributes, MenuCanvas.RevertBlackAndWhite);
                         textPaint.Color = maincolor;
                         //int split_idx_on_row = -1;
                         float start_x = x;
@@ -9101,6 +9101,7 @@ namespace GnollHackClient.Pages.Game
 
                             textPaint.Color = ClientUtils.NHColor2SKColorCore(
                                 instr.Color < (int)nhcolor.CLR_MAX ? instr.Color : TextCanvas.RevertBlackAndWhite ? (int)nhcolor.CLR_BLACK : (int)nhcolor.CLR_WHITE, 
+                                instr.Attributes,
                                 TextCanvas.RevertBlackAndWhite);
 
                             string[] split = str.Split(' ');
