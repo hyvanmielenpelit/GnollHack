@@ -1438,7 +1438,7 @@ struct attack* mattk;
             if ((adtyp >= AD_MAGM) && (adtyp <= AD_STON))
             {
                 if (canseemon(mtmp))
-                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s casts \'%s\' at %s!", Monnam(mtmp),
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s casts \'%s\' at %s!", Monnam(mtmp),
                         flash_types[ad_to_typ(adtyp)], mon_nam(mtarg));
 
                 dobuzz((int)(-ad_to_typ(adtyp)), (struct obj*)0, mtmp, damn, damd, damp,

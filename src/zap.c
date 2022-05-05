@@ -4240,12 +4240,12 @@ register struct obj *obj;
         You("chant an invocation:");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Sword of Cold and Darkness, free yourself from the heaven's bonds.");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Become one with my power, one with my body, and let us walk the path of destruction together!");
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A sword-shaped planar rift forms before you!");
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "A sword-shaped planar rift forms before you!");
         summonblackblade(obj);
         break;
     case SPE_MAGE_ARMOR:
         known = TRUE;
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "An armor-shaped force field forms before you!");
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "An armor-shaped force field forms before you!");
         summonmagearmor(obj);
         break;
     case SPE_CREATE_FOOD:
@@ -4316,9 +4316,9 @@ register struct obj *obj;
         known = TRUE;
         You("chant an invocation:");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Vas Kal An Mani...");
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "The air begins to take an odd dull color.");
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "The air begins to take an odd dull color.");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "...In Corp Hur Tym!");
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Suddenly an eerie silence fills the air!");
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "Suddenly an eerie silence fills the air!");
         armageddon();
         break;
     case SPE_WISH:
@@ -4869,8 +4869,8 @@ register struct obj *obj;
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou who art darker than the blackest pitch, deeper than the deepest night.");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "I call upon thee, and swear myself to thee.");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Let the fools who stand before me be destroyed by the power you and I possess!");
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Air begins to shine with strange golden color...");
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Suddenly immense power blasts all around you!");
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "Air begins to shine with strange golden color...");
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "Suddenly immense power blasts all around you!");
 
         int radius = objects[obj->otyp].oc_spell_radius;
 
@@ -11217,9 +11217,9 @@ int spl_otyp;
     int monindex = PM_DEMOGORGON;
 
     if(!Blind)
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A pitch black gate forms in the air before you...");
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "A pitch black gate forms in the air before you...");
     else
-        You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "start to smell unnatural stench of death and decay!");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "start to smell unnatural stench of death and decay!");
 
     if (mvitals[monindex].mvflags & MV_GONE || mvitals[monindex].born > 0)
     {
@@ -11270,9 +11270,9 @@ int spl_otyp UNUSED;
     int monindex = PM_BAHAMUT;
 
     if (Deaf)
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "You feel vibrations in the air...");
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "You feel vibrations in the air...");
     else
-        You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "start to hear a distinctive heavenly melody from a distance!");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "start to hear a distinctive heavenly melody from a distance!");
 
     if ((mvitals[monindex].mvflags & MV_GONE) || mvitals[monindex].born > 0)
     {
@@ -11291,9 +11291,9 @@ int spl_otyp UNUSED;
         mon->disregards_own_health = FALSE;
         mon->hasbloodlust = FALSE;
         if (!Blind)
-            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s descends from the heavens!", Monnam(mon));
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s descends from the heavens!", Monnam(mon));
         else
-            You_feel_ex(ATR_NONE, CLR_MSG_MYSTICAL, "a %s presence near you!", is_peaceful(mon) ? "benevolent" : "threatening");
+            You_feel_ex(ATR_NONE, CLR_MSG_SPELL, "a %s presence near you!", is_peaceful(mon) ? "benevolent" : "threatening");
 
         if (!Blind)
         {
@@ -11346,7 +11346,7 @@ armageddon()
 void
 timestop()
 {
-    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "The flow of time seems to slow down!");
+    pline_ex(ATR_NONE, CLR_MSG_SPELL, "The flow of time seems to slow down!");
     context.time_stopped = TRUE;
     begin_timestoptimer(d(objects[SPE_TIME_STOP].oc_spell_dur_dice, objects[SPE_TIME_STOP].oc_spell_dur_diesize) + objects[SPE_TIME_STOP].oc_spell_dur_plus);
 

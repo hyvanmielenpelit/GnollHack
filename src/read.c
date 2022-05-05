@@ -2496,7 +2496,7 @@ boolean *effect_happened_ptr;
     }
     case SPE_MASS_SLEEP:
     {
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Glittering dust starts to swirl around you...");
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "Glittering dust starts to swirl around you...");
 
         int candidates, results, vis_results;
         int i, j, bd, res = 0;
@@ -2552,7 +2552,7 @@ boolean *effect_happened_ptr;
     case SPE_HOLY_WORD:
     {
         You("recite the holy word aloud!");
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A blinding light blasts around you!");
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "A blinding light blasts around you!");
 
         int candidates, results, vis_results;
         int i, j, bd, res = 0;
@@ -3118,7 +3118,7 @@ boolean *effect_happened_ptr;
             break;
         }
         if(trap_detect(sobj) == 0) //Something was detected
-            You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "become aware of the location of nearby traps!");
+            You_ex(ATR_NONE, CLR_MSG_SPELL, "become aware of the location of nearby traps!");
         else
             play_simple_object_sound(sobj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
         break;

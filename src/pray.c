@@ -522,7 +522,7 @@ int trouble;
         }
         if (Upolyd && nohands(youmonst.data)) {
             if (!Unchanging) {
-                Your("shape becomes uncertain.");
+                Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "shape becomes uncertain.");
                 rehumanize(); /* "You return to {normal} form." */
             } else if ((otmp = unchanger()) != 0 && otmp->cursed) {
                 /* otmp is an amulet of unchanging */
@@ -600,7 +600,7 @@ int trouble;
     case TROUBLE_POISONED:
         /* override Fixed_abil; ignore items which confer that */
         if (Hallucination)
-            pline("There's a tiger in your tank.");
+            pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "There's a tiger in your tank.");
         else
             You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "in good health again.");
 
@@ -1572,7 +1572,7 @@ aligntyp g_align;
     int pat_on_head = 0, kick_on_butt;
 
     play_sfx_sound(SFX_PRAY_PLEASED);
-    You_feel("that %s is %s.", align_gname(g_align),
+    You_feel_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "that %s is %s.", align_gname(g_align),
              (u.ualign.record >= DEVOUT)
                  ? Hallucination ? "pleased as punch" : "well-pleased"
                  : (u.ualign.record >= STRIDENT)

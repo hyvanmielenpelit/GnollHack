@@ -59,8 +59,10 @@
 #define CLR_MSG_ATTENTION     CLR_YELLOW
 #define CLR_MSG_HALLUCINATED  CLR_BRIGHT_MAGENTA
 #define CLR_MSG_GOD           CLR_MAGENTA
+#define CLR_MSG_SPELL         CLR_BRIGHT_BLUE /* The same as HI_ZAP */
 #define CLR_MSG_MYSTICAL      CLR_CYAN
 #define CLR_MSG_SUCCESSFUL    CLR_BRIGHT_GREEN
+#define CLR_MSG_HINT          CLR_BRIGHT_CYAN
 
 struct menucoloring {
     struct nhregex *match;

@@ -320,7 +320,7 @@ boolean foundyou;
     if (!foundyou && thinks_it_foundyou
         && !is_undirected_spell(mattk->adtyp, spellnum)) 
     {
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s casts a spell at %s!",
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s casts a spell at %s!",
               canseemon(mtmp) ? Monnam(mtmp) : "Something",
               levl[mtmp->mux][mtmp->muy].typ == WATER ? "empty water"
                                                       : "thin air");
@@ -366,7 +366,7 @@ boolean foundyou;
     }
     if (canspotmon(mtmp) || !is_undirected_spell(mattk->adtyp, spellnum))
     {
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s casts a spell%s!",
+        pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s casts a spell%s!",
               canspotmon(mtmp) ? Monnam(mtmp) : "Something",
               is_undirected_spell(mattk->adtyp, spellnum)
                   ? ""
@@ -547,7 +547,7 @@ int spellnum;
         if (mtmp->iswiz && context.no_of_wizards == 1)
         {
             play_voice_wizard_of_yendor_simple_line(mtmp, WIZARD_OF_YENDOR_LINE_DOUBLE_TROUBLE);
-            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Double Trouble...");
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, "Double Trouble...");
             clonewiz();
             damage = 0;
         } else
@@ -1326,7 +1326,7 @@ register struct attack *mattk;
         if (adtyp && adtyp <= AD_STON)
         { /* no cf unsigned >0 */
             if (canseemon(mtmp))
-                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s casts \'%s\' at you!", Monnam(mtmp),
+                pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s casts \'%s\' at you!", Monnam(mtmp),
                       flash_types[ad_to_typ(adtyp)]);
             buzz(-ad_to_typ(adtyp), (struct obj*)0, mtmp, damn, damd, damp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby));
             *appr_spec_ptr = is_ultimate ? d(2, 8) + 100 : d(2, 4) + 10;

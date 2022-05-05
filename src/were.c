@@ -237,7 +237,7 @@ boolean purify;
 
     if (purify) {
         play_sfx_sound(SFX_CURE_DISEASE);
-        You_feel("purified.");
+        You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "purified.");
         set_ulycn(NON_PM); /* cure lycanthropy */
     }
     if (!Unchanging && is_were(youmonst.data)
