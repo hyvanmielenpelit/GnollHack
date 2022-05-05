@@ -2425,7 +2425,7 @@ overexertion()
         if (*hp > 1) {
             *hp -= 1;
         } else {
-            You("pass out from exertion!");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "pass out from exertion!");
             exercise(A_CON, FALSE);
             fall_asleep(-10, FALSE);
         }
@@ -2690,7 +2690,7 @@ boolean pick;
         long time_left = spot_time_left(u.ux, u.uy, MELT_ICE_AWAY);
 
         if (time_left && time_left < 15L)
-            pline("%s", icewarnings[(time_left < 5L) ? 2
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s", icewarnings[(time_left < 5L) ? 2
                                     : (time_left < 10L) ? 1
                                       : 0]);
     }
@@ -2706,7 +2706,7 @@ boolean pick;
             update_m_action_core(mtmp, ACTION_TILE_SPECIAL_ATTACK, 2, NEWSYM_FLAGS_KEEP_OLD_FLAGS | NEWSYM_FLAGS_SHOW_DROPPING_PIERCER);
             play_sfx_sound(SFX_PIERCER_DROPS);
             m_wait_until_action();
-            pline("%s suddenly drops from the %s!", Amonnam(mtmp),
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s suddenly drops from the %s!", Amonnam(mtmp),
                   ceiling(u.ux, u.uy));
 
             if (is_tame(mtmp)) 
@@ -2750,7 +2750,7 @@ boolean pick;
             else if (is_peaceful(mtmp)) 
             {
                 play_sfx_sound(SFX_YOU_SURPRISE_MONSTER);
-                You("surprise %s!",
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "surprise %s!",
                     Blind && !sensemon(mtmp) ? something : a_monnam(mtmp));
                 mtmp->mpeaceful = 0;
                 newsym(mtmp->mx, mtmp->my);
@@ -2761,7 +2761,7 @@ boolean pick;
                 update_m_action_core(mtmp, ACTION_TILE_SPECIAL_ATTACK, 2, NEWSYM_FLAGS_SHOW_DROPPING_PIERCER);
                 play_sfx_sound(SFX_SURPRISE_ATTACK);
                 m_wait_until_action();
-                pline("%s attacks you by surprise!", Amonnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s attacks you by surprise!", Amonnam(mtmp));
 
             }
             break;
