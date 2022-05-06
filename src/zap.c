@@ -457,7 +457,7 @@ struct monst* origmonst;
     case SPE_TOUCH_OF_DEATH:
         res = 1;
         reveal_invis = TRUE;
-        You("reach out with your deadly touch...");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "reach out with your deadly touch...");
         if (check_rider_death_absorption(mtmp, (const char*)0))
         {
             /* no further action */
@@ -489,7 +489,7 @@ struct monst* origmonst;
     case SPE_OBLITERATE:
         res = 1;
         reveal_invis = TRUE;
-        You("reach out with your obliterating touch...");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "reach out with your obliterating touch...");
         if (check_rider_disintegration(mtmp, (const char*)0))
         {
             /* no further action */
@@ -532,7 +532,7 @@ struct monst* origmonst;
         break;
     case SPE_TOUCH_OF_PETRIFICATION:
         res = 1;
-        You("reach out with your petrifying touch...");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "reach out with your petrifying touch...");
         if (resists_ston(mtmp))
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
@@ -4200,7 +4200,7 @@ register struct obj *wand;
     if (wand->charges < 0 || (wand->charges == 0 && rn2(121)))
         return 0;
     if (wand->charges == 0)
-        You("wrest one last charge from the worn-out wand.");
+        You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "wrest one last charge from the worn-out wand.");
     wand->charges--;
     return 1;
 }
@@ -4237,7 +4237,7 @@ register struct obj *obj;
         break;
     case SPE_BLACK_BLADE_OF_DISASTER:
         known = TRUE;
-        You("chant an invocation:");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "chant an invocation:");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Sword of Cold and Darkness, free yourself from the heaven's bonds.");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Become one with my power, one with my body, and let us walk the path of destruction together!");
         pline_ex(ATR_NONE, CLR_MSG_SPELL, "A sword-shaped planar rift forms before you!");
@@ -4314,7 +4314,7 @@ register struct obj *obj;
     }
     case SPE_ARMAGEDDON:
         known = TRUE;
-        You("chant an invocation:");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "chant an invocation:");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Vas Kal An Mani...");
         pline_ex(ATR_NONE, CLR_MSG_SPELL, "The air begins to take an odd dull color.");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "...In Corp Hur Tym!");
@@ -4454,7 +4454,7 @@ register struct obj *obj;
         break;
     case SPE_CALL_DEMOGORGON:
         known = TRUE;
-        You("chant an invocation:");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "chant an invocation:");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Lord of the Abyss, Prince of Demons,");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "I call to thee, and I pledge myself to thee!");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "By the deluge of this blood sacrifice, come forth and walk this plane once more!");
@@ -4506,7 +4506,7 @@ register struct obj *obj;
         break;
     case SPE_CALL_BAHAMUT:
         known = TRUE;
-        You("chant an invocation:");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "chant an invocation:");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "O Platinum Dragon, King of Good Dragons,");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "I call to thee, and I pledge myself to thee!");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "By this meagre offering, please hear this call!");
@@ -4521,7 +4521,7 @@ register struct obj *obj;
             SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH | SUMMONCREATURE_FLAGS_PACIFIST | SUMMONCREATURE_FLAGS_FAITHFUL);
         break;
     case SPE_GUARDIAN_ANGEL:
-        You("recite an ancient prayer to %s.", u_gname());
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "recite an ancient prayer to %s.", u_gname());
         gain_guardian_angel(TRUE);
         break;
     case SPE_SUMMON_ARCHON:
@@ -4546,7 +4546,7 @@ register struct obj *obj;
         }
         break;
     case SPE_HEAVENLY_ARMY:
-        You("recite an old prayer to %s...", u_gname());
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "recite an old prayer to %s...", u_gname());
         for (int n = d(2, 4); n > 0; n--)
         {
             int roll = rn2(3);
@@ -4638,18 +4638,18 @@ register struct obj *obj;
             }
             if (aleaxcount + angelcount + archoncount == 1)
             {
-                pline("%s descends from the heavens.", buf);
+                pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s descends from the heavens.", buf);
             }
             else
             {
-                pline("%s descend from the heavens!", buf);
+                pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s descend from the heavens!", buf);
             }
         }
 
         break;
     case SPE_GREAT_YENDORIAN_SUMMONING: 
     {
-        You("successfully cast Rodney's Great Yendorian Summoning.");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "successfully cast Great Yendorian Summoning.");
         int monstcount = 0;
         int vismonstcount = 0;
         struct monst* lastseenmon = (struct monst*)0;
@@ -4675,10 +4675,10 @@ register struct obj *obj;
             pline("However, nothing seems to happen.");
         else if (vismonstcount == 1) {
             if (lastseenmon)
-                pline("%s appears in a cloud of smoke!", Amonnam(lastseenmon));
+                pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s appears in a cloud of smoke!", Amonnam(lastseenmon));
         }
         else
-            pline("Monsters appear in a cloud of smoke!");
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, "Monsters appear in a cloud of smoke!");
 
         break;
     }
@@ -4704,7 +4704,7 @@ register struct obj *obj;
         break;
     case SPE_CALL_GHOUL:
     {
-        You("call out for nearby ghouls in the dungeon.");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "call out for nearby ghouls in the dungeon.");
         int monstcount = 0;
         int vismonstcount = 0;
         struct monst* lastseenmon = (struct monst*)0;
@@ -4743,7 +4743,7 @@ register struct obj *obj;
     }
     case SPE_MASS_RAISE_ZOMBIE:
     {
-        You("successfully cast the voodoo animation spell.");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "successfully cast the voodoo animation spell.");
         int zombietype;
         int monstcount = 0;
         int radius = objects[obj->otyp].oc_spell_radius;
@@ -4777,7 +4777,7 @@ register struct obj *obj;
     }
     case SPE_MASS_CREATE_MUMMY:
     {
-        You("successfully permormed the embalming magic.");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "successfully permormed the embalming magic.");
         int zombietype;
         int monstcount = 0;
         int radius = objects[obj->otyp].oc_spell_radius;
@@ -4812,7 +4812,7 @@ register struct obj *obj;
     }
     case SPE_MASS_CREATE_DRACOLICH:
     {
-        You("successfully permormed the necromantic magic.");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "successfully permormed the necromantic magic.");
         int zombietype;
         int monstcount = 0;
         int hatchlingcount = 0;
@@ -4865,7 +4865,7 @@ register struct obj *obj;
     }    
     case SPE_SPHERE_OF_ANNIHILATION:
     {
-        You("chant an invocation:");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "chant an invocation:");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou who art darker than the blackest pitch, deeper than the deepest night.");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "I call upon thee, and swear myself to thee.");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Let the fools who stand before me be destroyed by the power you and I possess!");
@@ -5115,7 +5115,7 @@ register struct obj *obj;
         see_monsters();       /* see invisible monsters */
         newsym(u.ux, u.uy);   /* see yourself! */
         if (msg && !Blind) {  /* Blind possible if polymorphed */
-            You("can see through yourself, but you are visible!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can see through yourself, but you are visible!");
         }
     }
     /* FALLTHRU */
@@ -5128,7 +5128,7 @@ register struct obj *obj;
     case WAN_TRAP_DETECTION:
         if (level.flags.nommap)
         {
-            Your("%s spins as %s blocks the magic!", body_part(HEAD),
+            Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s spins as %s blocks the magic!", body_part(HEAD),
                 something);
             play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
@@ -5140,7 +5140,7 @@ register struct obj *obj;
                 play_simple_object_sound(obj, OBJECT_SOUND_TYPE_GENERAL_EFFECT2);
             return; /* nothing detected */
         }
-        You("become aware of the location of nearby traps!");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "become aware of the location of nearby traps!");
         known = TRUE;
         break;
     case WAN_ORE_DETECTION:
@@ -5169,7 +5169,7 @@ register struct obj *obj;
             || (context.last_turn_when_took_damage > 0 && moves >= context.last_turn_when_took_damage && moves <= context.last_turn_when_took_damage + number)
             || (obj->cursed && !rn2(3)))
         {
-            pline("The wand sparkles for a while, but nothing else happens.");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "The wand sparkles for a while, but nothing else happens.");
             break;
         }
 
@@ -5177,7 +5177,7 @@ register struct obj *obj;
         {
             /* Amulet of Yendor prevents any town portal */
             play_sfx_sound(SFX_MYSTERIOUS_FORCE_PREVENTS);
-            pline("A mysterious force prevents you from teleporting!");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "A mysterious force prevents you from teleporting!");
             break;
         }
 
@@ -5283,7 +5283,7 @@ register struct obj *obj;
                 }
                 else
                 {
-                    pline("The wand sparkles for a while, but nothing else happens.");
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "The wand sparkles for a while, but nothing else happens.");
                 }
 
                 destroy_nhwindow(menuwin);
@@ -5349,7 +5349,7 @@ register struct obj *obj;
                     }
                     else
                     {
-                        pline("The wand sparkles for a while, but nothing else happens.");
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "The wand sparkles for a while, but nothing else happens.");
                     }
 
                     destroy_nhwindow(menuwin);
@@ -5411,7 +5411,7 @@ register struct obj *obj;
         break;
     case SPE_COMMUNE:
         known = TRUE;
-        You("commune with %s...", u_gname());
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "commune with %s...", u_gname());
         display_nhwindow(WIN_MESSAGE, FALSE);
 
         if (can_pray(FALSE))
@@ -5462,7 +5462,7 @@ register struct obj *obj;
 
     }
     case SPE_ABSOLUTION:
-        You("recite an aeon-old prayer to %s.", u_gname());
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "recite an aeon-old prayer to %s.", u_gname());
         (void)absolution_spell();
         break;
     }
@@ -11176,7 +11176,7 @@ unsigned long scflags;
             begin_summontimer(mon);
 
         if(strcmp(message_fmt, "") != 0) //Strings do not match
-            pline(message_fmt, capitalize ? Amonnam(mon) : a_monnam(mon)); //"%s appears in a puff of smoke!"
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, message_fmt, capitalize ? Amonnam(mon) : a_monnam(mon)); //"%s appears in a puff of smoke!"
     }
     return mon;
 }

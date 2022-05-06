@@ -945,7 +945,7 @@ boolean is_golf_swing;
                 if (kickedobj->keyotyp == STRANGE_OBJECT || kickedobj->keyotyp == NON_PM || kickedobj->keyotyp == SKELETON_KEY)
                 {
                     play_simple_container_sound(kickedobj, CONTAINER_SOUND_TYPE_BREAK_LOCK);
-                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "break open the lock!");
+                    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "break open the lock!");
                     breakchestlock(kickedobj, FALSE);
                     if (otrp)
                         (void) chest_trap(kickedobj, LEG, FALSE);

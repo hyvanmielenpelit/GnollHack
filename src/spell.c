@@ -2772,7 +2772,7 @@ boolean atme;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound_at_location(SFX_GENERAL_GAIN_ABILITY_SPELL, u.ux, u.uy);
         special_effect_wait_until_action(0);
-        You_ex(ATR_NONE, CLR_MSG_POSITIVE, "successfully cast \"%s\".", spellname(spell));
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "successfully cast \"%s\".", spellname(spell));
         addspellintrinsictimeout(otyp);
         special_effect_wait_until_end(0);
         break;
@@ -5137,7 +5137,7 @@ int spell;
         int addedamount = spells_gained_per_mixing * selected_multiplier;
         spellamount(spell) += addedamount;
         play_sfx_sound(SFX_MIXING_SUCCESS);
-        You_ex(ATR_NONE, CLR_MSG_POSITIVE, "successfully prepared the material components.");
+        You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "successfully prepared the material components.");
         if (addedamount == 1)
             You("now have one more casting of \"%s\" prepared.", spellname);
         else

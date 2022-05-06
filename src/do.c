@@ -5861,7 +5861,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     if (on_level(&u.uz, &qstart_level) && !newdungeon && !ok_to_quest() && !wizard)
     {
         play_sfx_sound(SFX_MYSTERIOUS_FORCE_PREVENTS);
-        pline("A mysterious force prevents you from descending.");
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "A mysterious force prevents you from descending.");
         if(play_arrival_teleport_effect)
             level_teleport_effect_in(u.ux, u.uy);
         return;

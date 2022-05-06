@@ -2369,7 +2369,7 @@ namespace GnollHackClient.Pages.Game
 
         private float[] _gridIntervals = { 2.0f, 2.0f };
 
-        private float GetTextScale()
+        public float GetTextScale()
         {
             return (float)(lAbilitiesButton.Width / 50.0f) / (float)GetCanvasScale();
         }
@@ -4196,7 +4196,7 @@ namespace GnollHackClient.Pages.Game
                                     {
                                         float newleft = 0;
                                         float messagetop = _clientGame.Windows[_clientGame.MessageWindowId].Top;
-                                        float newtop = messagetop - _clientGame.Windows[i].Height - 30;
+                                        float newtop = messagetop - _clientGame.Windows[i].Height - 10 * textscale;
                                         _clientGame.Windows[i].Left = newleft;
                                         _clientGame.Windows[i].Top = newtop;
                                     }
@@ -4269,7 +4269,7 @@ namespace GnollHackClient.Pages.Game
                                                 if (_clientGame.Windows[i].StrokeWidth > 0)
                                                 {
                                                     textPaint.Style = SKPaintStyle.Stroke;
-                                                    textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
+                                                    textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth * textscale;
                                                     textPaint.Color = SKColors.Black;
                                                     canvas.DrawText(str, tx, ty, textPaint);
                                                 }
@@ -4354,7 +4354,7 @@ namespace GnollHackClient.Pages.Game
                                                     if (ty - textPaint.FontMetrics.Ascent > canvasheight)
                                                         continue;
                                                     textPaint.Style = SKPaintStyle.Stroke;
-                                                    textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth;
+                                                    textPaint.StrokeWidth = _clientGame.Windows[i].StrokeWidth * textscale;
                                                     textPaint.Color = SKColors.Black;
                                                     canvas.DrawText(wrappedLine, tx, ty, textPaint);
                                                     textPaint.Style = SKPaintStyle.Fill;

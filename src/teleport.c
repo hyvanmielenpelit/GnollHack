@@ -557,7 +557,7 @@ boolean iscontrolled;
         if (!wizard || yn_query("Teleportation is not allowed on this level. Override?") != 'y') 
         {
             play_sfx_sound(SFX_MYSTERIOUS_FORCE_PREVENTS);
-            pline("A mysterious force prevents you from teleporting!");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "A mysterious force prevents you from teleporting!");
             return TRUE;
         }
     }
@@ -1826,7 +1826,7 @@ struct monst *mon;
         if (canseemon(mon))
         {
             play_sfx_sound_at_location(SFX_MYSTERIOUS_FORCE_PREVENTS, mon->mx, mon->my);
-            pline("A mysterious force prevents %s from teleporting!",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A mysterious force prevents %s from teleporting!",
                 mon_nam(mon));
         }
         return TRUE;

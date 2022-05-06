@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
-using GnollHackClient.Pages.Game;
+﻿using GnollHackClient.Pages.Game;
 using GnollHackCommon;
 using SkiaSharp;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace GnollHackClient
 {
@@ -210,7 +209,7 @@ namespace GnollHackClient
         {
             Typeface = App.LatoRegular;
             TextColor = SKColors.White;
-            TextSize = 14;
+            TextSize = 14.0f;
             BackgroundColor = SKColors.Transparent;
             switch (_winType)
             {
@@ -219,14 +218,14 @@ namespace GnollHackClient
                 case GHWinType.Message:
                     TextSize = TextSize * 32.0f / 42f;
                     Typeface = App.DejaVuSansMonoTypeface;
-                    StrokeWidth = 8.0f;
+                    StrokeWidth = TextSize / 4.0f;
                     AutoPlacement = true;
                     break;
                 case GHWinType.Status:
                     //BackgroundColor = TransparentBlack;
                     TextSize = TextSize * 30.0f / 42.0f;
                     Typeface = App.LatoRegular;
-                    StrokeWidth = 3.0f;
+                    StrokeWidth = TextSize / 4.0f;
                     HasShadow = true;
                     Left = 0;
                     Top = 0;
@@ -256,7 +255,7 @@ namespace GnollHackClient
                 case GHWinType.Here:
                     TextSize = TextSize * 32.0f / 42.0f;
                     Typeface = App.DejaVuSansMonoTypeface;
-                    StrokeWidth = 8.0f;
+                    StrokeWidth = TextSize / 4.0f;
                     AutoPlacement = true;
                     break;
                 case GHWinType.Inventory:
@@ -367,7 +366,7 @@ namespace GnollHackClient
                 SKPaint textPaint = new SKPaint()
                 {
                     Typeface = Typeface,
-                    TextSize = TextSize
+                    TextSize = TextSize * _gamePage.GetTextScale()
                 };
 
                 if (CursY >= PutStrs.Count)
