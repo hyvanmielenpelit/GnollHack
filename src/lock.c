@@ -178,7 +178,7 @@ picklock(VOID_ARGS)
         /* unfortunately we don't have a 'tknown' flag to record
            "known to be trapped" so declining to disarm and then
            retrying lock manipulation will find it all over again */
-        if (yn_query_ex(ATR_NONE, CLR_MSG_ATTENTION, "Trap Found", "You find a trap!  Do you want to try to disarm it?") == 'y') {
+        if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Trap Found", "You find a trap!  Do you want to try to disarm it?") == 'y') {
             const char *what;
             boolean alreadyunlocked;
 
@@ -192,7 +192,7 @@ picklock(VOID_ARGS)
                 what = (xlock.box->otyp == CHEST) ? "chest" : "box";
                 alreadyunlocked = !xlock.box->olocked;
             }
-            You("succeed in disarming the trap.  The %s is still %slocked.",
+            You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "succeed in disarming the trap.  The %s is still %slocked.",
                 what, alreadyunlocked ? "un" : "");
             exercise(A_WIS, TRUE);
         } else {
@@ -202,7 +202,7 @@ picklock(VOID_ARGS)
         return ((xlock.usedtime = 0));
     }
 
-    You("succeed in %s.", lock_action());
+    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "succeed in %s.", lock_action());
     if (xlock.door) 
     {
         play_simple_location_sound(xlock.x, xlock.y, xlock.door->doormask & D_LOCKED ? LOCATION_SOUND_TYPE_UNLOCK : LOCATION_SOUND_TYPE_LOCK);
@@ -434,7 +434,7 @@ forcelock(VOID_ARGS)
     }
 
     play_simple_container_sound(xlock.box, CONTAINER_SOUND_TYPE_BREAK_LOCK);
-    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "succeed in forcing the lock.");
+    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "succeed in forcing the lock.");
     exercise(xlock.picktyp ? A_DEX : A_STR, TRUE);
     /* breakchestlock() might destroy xlock.box; if so, xlock context will
        be cleared (delobj -> obfree -> maybe_reset_pick); but it might not,

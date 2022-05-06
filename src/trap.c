@@ -5484,7 +5484,7 @@ struct trap *ttmp;
     if ((mtmp = m_at(ttmp->tx, ttmp->ty)) != 0) 
     {
         mtmp->mtrapped = 0;
-        You("remove %s %s from %s.", the_your[ttmp->madeby_u ? 1 : 0],
+        You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "remove %s %s from %s.", the_your[ttmp->madeby_u ? 1 : 0],
             (ttmp->ttyp == BEAR_TRAP) ? "bear trap" : "webbing",
             mon_nam(mtmp));
         reward_untrap(ttmp, mtmp);
@@ -5493,12 +5493,12 @@ struct trap *ttmp;
     {
         if (ttmp->ttyp == BEAR_TRAP)
         {
-            You("disarm %s bear trap.", the_your[ttmp->madeby_u ? 1 : 0]);
+            You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "disarm %s bear trap.", the_your[ttmp->madeby_u ? 1 : 0]);
             cnv_trap_obj(BEARTRAP, 1, ttmp, FALSE);
         }
         else /* if (ttmp->ttyp == WEB) */
         {
-            You("succeed in removing %s web.", the_your[ttmp->madeby_u ? 1 : 0]);
+            You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "succeed in removing %s web.", the_your[ttmp->madeby_u ? 1 : 0]);
             deltrap(ttmp);
         }
     }
@@ -5523,7 +5523,7 @@ struct trap* ttmp;
     }
 
     play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
-    You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_explanation(ttmp));
+    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "disarm %s %s.", the_your[ttmp->madeby_u], get_trap_explanation(ttmp));
     
     /* Skills gained */
     int skillgained = 5;
@@ -5848,7 +5848,7 @@ struct trap *ttmp;
     /* need to do cockatrice check first if sleeping or paralyzed */
     if (!untrap_ok)
     {
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "try to grab %s, but cannot get a firm grasp.", mon_nam(mtmp));
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "try to grab %s, but cannot get a firm grasp.", mon_nam(mtmp));
         if (mtmp->msleeping)
         {
             mtmp->msleeping = 0;
@@ -5886,7 +5886,7 @@ struct trap *ttmp;
     if (!try_lift(mtmp, ttmp, wt, TRUE))
         return 1;
 
-    You("pull %s out of the pit.", mon_nam(mtmp));
+    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "pull %s out of the pit.", mon_nam(mtmp));
     mtmp->mtrapped = 0;
     fill_pit(mtmp->mx, mtmp->my);
     reward_untrap(ttmp, mtmp);
@@ -6162,10 +6162,10 @@ boolean force;
         || (!force && confused && !rn2(3)))
     {
         play_sfx_sound(SFX_TRAP_FOUND);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find a trap on the door!");
+        You_ex(ATR_NONE, CLR_MSG_WARNING, "find a trap on the door!");
         exercise(A_WIS, TRUE);
 
-        if (yn_query_ex(ATR_NONE, CLR_MSG_ATTENTION, "Trap Found", "Disarm it?") != 'y')
+        if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Trap Found", "Disarm it?") != 'y')
             return 1;
 
         if (levl[x][y].doormask & D_TRAPPED) 
@@ -6311,11 +6311,11 @@ boolean force;
         play_sfx_sound(SFX_TRAP_FOUND);
         if (otmp->tknown)
         {
-            pline("You confirm that there is an elaborately constructed trap on %s.", the(xname(otmp)));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "You confirm that there is an elaborately constructed trap on %s.", the(xname(otmp)));
         }
         else
         {
-            You("find a trap on %s!", the(xname(otmp)));
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "find a trap on %s!", the(xname(otmp)));
             otmp->tknown = 1;
         }
         if (!confused)
@@ -6347,7 +6347,7 @@ boolean force;
             else
             {
                 play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
-                You("disarm it!");
+                You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "disarm it!");
                 otmp->otrapped = 0;
                 use_skill(P_DISARM_TRAP, 10);
             }

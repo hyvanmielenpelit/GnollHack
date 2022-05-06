@@ -1339,7 +1339,7 @@ boolean* obj_destroyed;
                     if (breaktest(obj)) 
                     {
                         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
-                        You("break %s.  That's bad luck!", ysimple_name(obj));
+                        You_ex(ATR_NONE, CLR_MSG_WARNING, "break %s.  That's bad luck!", ysimple_name(obj));
                         change_luck(-2, TRUE);
                         useup(obj);
                         obj = (struct obj*) 0;
@@ -1358,7 +1358,7 @@ boolean* obj_destroyed;
                     
                     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
 
-                    You("succeed in destroying %s.  Congratulations!",
+                    You_ex(ATR_NONE, CLR_MSG_WARNING, "succeed in destroying %s.  Congratulations!",
                         ysimple_name(obj));
                     release_camera_demon(obj, u.ux, u.uy);
                     useup(obj);
