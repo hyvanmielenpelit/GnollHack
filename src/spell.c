@@ -25,8 +25,8 @@
 #define spellname(spell) OBJ_NAME(objects[spellid(spell)])
 #define spellet(spell) \
     ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))  /* Obsolete! Do not use! */
-#define has_spell_tile(spell) ((objects[spellid(spell)].oc_flags5 & O5_HAS_SPELL_TILE) != 0)
-#define spell_to_glyph(spell) (has_spell_tile(spell) ? (spellid(spell) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF) : (objnum_to_glyph(spellid(spell))))
+#define uses_spell_tile(spell) ((objects[spellid(spell)].oc_flags5 & O5_USES_SPELL_TILE) != 0)
+#define spell_to_glyph(spell) (uses_spell_tile(spell) ? (spellid(spell) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF) : (objnum_to_glyph(spellid(spell))))
 
 STATIC_DCL void FDECL(print_spell_level_text, (char*, int, UCHAR_P));
 STATIC_DCL void FDECL(print_spell_level_symbol, (char*, int));
@@ -107,7 +107,7 @@ int spell_id;
 boolean active;
 {
     struct extended_create_window_info info = { 0 };
-    if (has_spell_tile(spell_id) && active)
+    if (uses_spell_tile(spell_id) && active)
         info.create_flags |= WINDOW_CREATE_FLAGS_ACTIVE;
     return info;
 }
@@ -1183,10 +1183,10 @@ int* spell_no;
             {
                 Sprintf(buf, "%s (%s)", fullname, descbuf);
                 info.color = NO_COLOR;
-                if (has_spell_tile(splnum))
+                if (uses_spell_tile(splnum))
                     info.menu_flags |= MENU_FLAGS_ACTIVE;
             }
-            if (has_spell_tile(splnum) && !inactive)
+            if (uses_spell_tile(splnum) && !inactive)
                 info.menu_flags |= MENU_FLAGS_ACTIVE;
 
             any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
@@ -4086,7 +4086,7 @@ int splaction;
     {
         info.color = NO_COLOR;
     }
-    if(has_spell_tile(splnum) && !inactive)
+    if(uses_spell_tile(splnum) && !inactive)
         info.menu_flags |= MENU_FLAGS_ACTIVE;
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
@@ -4112,7 +4112,7 @@ int splaction;
     *fullname = highc(*fullname);
 
     int glyph = NO_GLYPH;
-    if (has_spell_tile(splnum))
+    if (uses_spell_tile(splnum))
     {
         glyph = spellid(splnum) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
     }
@@ -4158,7 +4158,7 @@ int splaction;
             availablebuf, addsbuf);
         info.color = NO_COLOR;
     }
-    if (has_spell_tile(splnum) && !inactive)
+    if (uses_spell_tile(splnum) && !inactive)
         info.menu_flags |= MENU_FLAGS_ACTIVE;
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
