@@ -34,9 +34,9 @@ namespace GnollHackClient.Pages.Game
         private const float _statusbar_hmargin = 5.0f;
         private const float _statusbar_vmargin = 5.0f;
         private const float _statusbar_rowmargin = 5.0f;
-        private const float _statusbar_basefontsize = 42f;
-        private const float _statusbar_shieldfontsize = 32f;
-        private const float _statusbar_diffontsize = 24f;
+        private const float _statusbar_basefontsize = 14f;
+        private const float _statusbar_shieldfontsize = _statusbar_basefontsize * 32f / 42f;
+        private const float _statusbar_diffontsize = _statusbar_basefontsize * 24f / 42f;
 
         public List<string> ExtendedCommands { get; set; }
 
@@ -2369,6 +2369,11 @@ namespace GnollHackClient.Pages.Game
 
         private float[] _gridIntervals = { 2.0f, 2.0f };
 
+        private float GetTextScale()
+        {
+            return (float)(lAbilitiesButton.Width / 50.0f) / (float)GetCanvasScale();
+        }
+
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
 
@@ -2466,6 +2471,7 @@ namespace GnollHackClient.Pages.Game
                 /* Map */
                 float canvaswidth = canvasView.CanvasSize.Width;
                 float canvasheight = canvasView.CanvasSize.Height;
+                float textscale = GetTextScale();
                 float UsedFontSize = ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
                 textPaint.Typeface = App.DejaVuSansMonoTypeface;
                 textPaint.TextSize = UsedFontSize;
@@ -4172,7 +4178,7 @@ namespace GnollHackClient.Pages.Game
                                     continue;
 
                                 textPaint.Typeface = _clientGame.Windows[i].Typeface;
-                                textPaint.TextSize = _clientGame.Windows[i].TextSize;
+                                textPaint.TextSize = _clientGame.Windows[i].TextSize * textscale;
                                 textPaint.Color = _clientGame.Windows[i].TextColor;
                                 width = textPaint.FontMetrics.AverageCharacterWidth;
                                 height = textPaint.FontSpacing; // textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
@@ -4396,9 +4402,9 @@ namespace GnollHackClient.Pages.Game
                         float hmargin = _statusbar_hmargin;
                         float vmargin = _statusbar_vmargin;
                         float rowmargin = _statusbar_rowmargin;
-                        float basefontsize = _statusbar_basefontsize;
-                        float shieldfontsize = _statusbar_shieldfontsize;
-                        float diffontsize = _statusbar_diffontsize;
+                        float basefontsize = _statusbar_basefontsize * textscale;
+                        float shieldfontsize = _statusbar_shieldfontsize * textscale;
+                        float diffontsize = _statusbar_diffontsize * textscale;
 
                         float curx = hmargin;
                         float cury = vmargin;
@@ -6899,7 +6905,7 @@ namespace GnollHackClient.Pages.Game
             using (SKPaint textPaint = new SKPaint())
             {
                 textPaint.Typeface = App.LatoRegular;
-                textPaint.TextSize = _statusbar_basefontsize;
+                textPaint.TextSize = _statusbar_basefontsize * GetTextScale();
                 float rowheight = textPaint.FontSpacing;
                 statusbarheight = rowheight * 2 + _statusbar_vmargin * 2 + _statusbar_rowmargin;
             }
@@ -6908,9 +6914,10 @@ namespace GnollHackClient.Pages.Game
         public double GetCanvasScale()
         {
             if (canvasView.CanvasSize.Width <= 0 || canvasView.CanvasSize.Height <= 0)
-                return 0;
+                return 1.0;
             return Math.Sqrt(canvasView.Width / (double)canvasView.CanvasSize.Width * canvasView.Height / (double)canvasView.CanvasSize.Height);
         }
+
         public double GetStatusBarHeight()
         {
             double sb_xheight;
