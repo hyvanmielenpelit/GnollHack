@@ -1086,7 +1086,7 @@ unsigned short trflags;
          * reason why the player cannot escape the trap with a dexterity
          * check, clinging to the ceiling, etc.
          */
-        pline("Air currents pull you down into %s %s!",
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Air currents pull you down into %s %s!",
               a_your[trap->madeby_u],
               trapdesc);
         /* then proceed to normal trap effect */
@@ -1333,7 +1333,7 @@ unsigned short trflags;
         if (amorphous(youmonst.data) || is_whirly(youmonst.data)
             || unsolid(youmonst.data) || is_incorporeal(youmonst.data))
         {
-            pline("%s bear trap closes harmlessly through you.",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s bear trap closes harmlessly through you.",
                   A_Your[trap->madeby_u]);
 
             special_effect_wait_until_end(0);
@@ -1348,7 +1348,7 @@ unsigned short trflags;
 
         if (!u.usteed && youmonst.data->msize <= MZ_SMALL) 
         {
-            pline("%s bear trap closes harmlessly over you.",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s bear trap closes harmlessly over you.",
                   A_Your[trap->madeby_u]);
 
             special_effect_wait_until_end(0);
@@ -1401,7 +1401,7 @@ unsigned short trflags;
         special_effect_wait_until_action(0);
         if (Sleep_resistance || has_innate_breathless(youmonst.data))
         {
-            You("are enveloped in a cloud of gas!");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are enveloped in a cloud of gas!");
         } 
         else 
         {
@@ -1505,7 +1505,7 @@ unsigned short trflags;
             else 
             {
                 play_sfx_sound(SFX_TRAP_FOUND);
-                pline("%s pit %sopens up under you!", A_Your[trap->madeby_u],
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s pit %sopens up under you!", A_Your[trap->madeby_u],
                       ttype == SPIKED_PIT ? "full of spikes " : "");
                 You("don't fall in!");
             }
@@ -1878,7 +1878,7 @@ unsigned short trflags;
             if (!already_seen && rn2(3))
                 break;
             feeltrap(trap);
-            pline("%s %s in a pile of soil below you.",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s in a pile of soil below you.",
                   already_seen ? "There is" : "You discover",
                   trap->madeby_u ? "the trigger of your mine" : "a trigger");
 
@@ -1956,7 +1956,7 @@ unsigned short trflags;
             if (!already_seen && rn2(3))
                 break;
             feeltrap(trap);
-            pline("%s %s hidden in the floor below you.",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s hidden in the floor below you.",
                 already_seen ? "There is" : "You discover",
                 trap->madeby_u ? "your rolling boulder trap" : "a rolling boulder trap");
         }
@@ -6629,7 +6629,7 @@ boolean disarm;
     otmp->otrapped = 0; /* trap is one-shot; clear flag first in case
                            chest kills you and ends up in bones file */
     play_sfx_sound(SFX_CHEST_TRAP_TRIGGER);
-    You(disarm ? "set it off!" : "trigger a trap!");
+    You_ex(ATR_NONE, CLR_MSG_WARNING, disarm ? "set it off!" : "trigger a trap!");
     if (iflags.using_gui_sounds)
         delay_output_milliseconds(100);
 
@@ -6718,7 +6718,7 @@ boolean disarm;
             play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, ox, oy);
             special_effect_wait_until_action(0);
             context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
-            pline("%s!", Tobjnam(obj, "explode"));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s!", Tobjnam(obj, "explode"));
             Sprintf(buf, "exploding %s", xname(obj));
 
             if (costly)
@@ -6767,7 +6767,7 @@ boolean disarm;
             play_special_effect_at(SPECIAL_EFFECT_TRAP_SLEEP_GAS, 0, obj->ox, obj->oy, FALSE);
             play_sfx_sound(SFX_ENVELOPED_IN_CLOUD_OF_GAS);
             special_effect_wait_until_action(0);
-            pline("A cloud of noxious gas billows from %s.", the(xname(obj)));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A cloud of noxious gas billows from %s.", the(xname(obj)));
             poisoned("gas cloud", A_STR, "cloud of poison gas", 0, FALSE, 2);
             exercise(A_CON, FALSE);
             special_effect_wait_until_end(0);
@@ -6779,7 +6779,7 @@ boolean disarm;
             play_special_effect_at(SPECIAL_EFFECT_TRAP_NEEDLE, 0, obj->ox, obj->oy, FALSE);
             play_sfx_sound_at_location(SFX_TRAP_NEEDLE_PRICKS, obj->ox, obj->oy);
             special_effect_wait_until_action(0);
-            You_feel("a needle prick your %s.", body_part(bodypart));
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "a needle prick your %s.", body_part(bodypart));
             if (iflags.using_gui_sounds)
             {
                 delay_output_milliseconds(100);
@@ -6808,7 +6808,7 @@ boolean disarm;
             int dmg;
 
             play_sfx_sound(SFX_ELECTRIC_SHOCK);
-            You("are jolted by a surge of electricity!");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are jolted by a surge of electricity!");
             display_u_being_hit(HIT_ELECTROCUTED, 0, 0UL);
             if (Shock_immunity)
             {
@@ -6866,14 +6866,14 @@ boolean disarm;
             play_special_effect_at(SPECIAL_EFFECT_TRAP_SLEEP_GAS, 0, obj->ox, obj->oy, FALSE);
             play_sfx_sound(SFX_ENVELOPED_IN_CLOUD_OF_GAS);
             special_effect_wait_until_action(0);
-            pline("A cloud of %s gas billows from %s.",
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A cloud of %s gas billows from %s.",
                   Blind ? blindgas[rn2(SIZE(blindgas))] : rndcolor(),
                   the(xname(obj)));
             if (!Stunned) {
                 if (Hallucination)
-                    pline("What a groovy feeling!");
+                    pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "What a groovy feeling!");
                 else
-                    You("%s%s...", stagger(youmonst.data, "stagger"),
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s%s...", stagger(youmonst.data, "stagger"),
                         Halluc_resistance ? ""
                                           : Blind ? " and get dizzy"
                                                   : " and your vision blurs");
