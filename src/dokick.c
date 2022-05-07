@@ -952,7 +952,7 @@ boolean is_golf_swing;
                 }
                 else
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It feels that the lock of %s cannot be broken by kicking.", the(cxname(kickedobj)));
+                    pline_ex(ATR_NONE, CLR_MSG_HINT, "It feels that the lock of %s cannot be broken by kicking.", the(cxname(kickedobj)));
                 }
                 return 1;
             }
@@ -1945,7 +1945,7 @@ dokick() {
         play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
         pline("WHAMMM!!!");
         if(roll_success)
-            pline("The %s feels too hard to be broken by kicking.", get_door_name_at(x, y));
+            pline_ex(ATR_NONE, CLR_MSG_HINT, "The %s feels too hard to be broken by kicking.", get_door_name_at(x, y));
         if (in_town(x, y))
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
             {
