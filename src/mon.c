@@ -1247,7 +1247,7 @@ update_monster_timeouts()
             mtmp->heads_left++;
             if (canseemon(mtmp))
             {
-                pline("%s grows a new head!", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s grows a new head!", Monnam(mtmp));
             }
         }
 
@@ -1281,25 +1281,25 @@ update_monster_timeouts()
                     case STRANGLED:
                         if (canseemon(mtmp) && !is_breathless(mtmp))
                         {
-                            pline("%s is gasping for air!", Monnam(mtmp));
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is gasping for air!", Monnam(mtmp));
                         }
                         break;
                     case AIRLESS_ENVIRONMENT:
                         if (canseemon(mtmp) && !is_breathless(mtmp) && !(is_pool(mtmp->mx, mtmp->my) && amphibious(mtmp->data)))
                         {
-                            pline("%s is gasping for air!", Monnam(mtmp));
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is gasping for air!", Monnam(mtmp));
                         }
                         break;
                     case SICK:
                         if (canseemon(mtmp) && is_living(mtmp->data))
                         {
                             if(has_head(mtmp->data) && !rn2(3))
-                                pline("%s coughs%s%s!", Monnam(mtmp),
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s coughs%s%s!", Monnam(mtmp),
                                     duration >= 10 ? (!rn2(2) ? " roughly" : "") : duration >= 5 ? " feverishly" : " morbidly",
                                     !is_tame(mtmp) ? " at your general direction" : "");
                             else if (duration < 9)
                             {
-                                pline("%s looks %s!", Monnam(mtmp), duration >= 6 ? "very feverish" : duration >= 4 ? "gravely ill" : "deathly sick");
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks %s!", Monnam(mtmp), duration >= 6 ? "very feverish" : duration >= 4 ? "gravely ill" : "deathly sick");
                             }
                             if (duration <= 8)
                                 (void)nonadditive_increase_mon_property_verbosely(mtmp, CONFUSION, duration + 1);

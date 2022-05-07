@@ -3859,7 +3859,7 @@ struct monst *mtmp, *victim;
         if (mvitals[newtype].mvflags & MV_GENOCIDED)
         { /* allow MV_EXTINCT */
             if (canspotmon(mtmp))
-                pline("As %s grows up into %s, %s %s!", mon_nam(mtmp),
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As %s grows up into %s, %s %s!", mon_nam(mtmp),
                       an(pm_monster_name(ptr, mtmp->female)), mhe(mtmp),
                       is_not_living(ptr) ? "expires" : "dies");
             set_mon_data(mtmp, ptr); /* keep mvitals[] accurate */
@@ -3883,7 +3883,7 @@ struct monst *mtmp, *victim;
                            slightly less sexist if prepared for it...) */
                       : (fem && !mtmp->female) ? "female " : "",
                     pm_monster_name(ptr, !!fem));
-            pline("%s %s %s.", upstart(y_monnam(mtmp)),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s %s.", upstart(y_monnam(mtmp)),
                   (fem != mtmp->female) ? "changes into"
                                         : humanoid(ptr) ? "becomes"
                                                         : "grows up into",
