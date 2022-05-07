@@ -5003,7 +5003,7 @@ crawl:
     }
     if (u.uinwater) {
         u.uinwater = 0;
-        You("find yourself back %s.",
+        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "find yourself back %s.",
             Is_waterlevel(&u.uz) ? "in an air bubble" : "on land");
     }
     play_environment_ambient_sounds();
@@ -7342,7 +7342,7 @@ lava_effects()
             /* nowhere safe to land; repeat burning loop */
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "You're still burning.");
         }
-        You("find yourself back on solid %s.", surface(u.ux, u.uy));
+        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "find yourself back on solid %s.", surface(u.ux, u.uy));
         return TRUE;
     } 
     else if (!Wwalking && (!u.utrap || u.utraptype != TT_LAVA)) 

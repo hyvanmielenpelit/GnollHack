@@ -4362,12 +4362,12 @@ boolean pushing;
                 docrt();
                 vision_full_recalc = 1;
                 play_environment_ambient_sounds();
-                You("find yourself on dry land again!");
+                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "find yourself on dry land again!");
             }
             else if (lava && distu(rx, ry) <= 2)
             {
                 int dmg;
-                You("are hit by molten %s%c",
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are hit by molten %s%c",
                     hliquid("lava"), Fire_immunity ? '.' : '!');
                 burn_away_slime();
                 dmg = d(3, 6);

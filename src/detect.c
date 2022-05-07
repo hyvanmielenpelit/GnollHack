@@ -1891,7 +1891,7 @@ struct trap *trap;
     }
 
     play_sfx_sound(SFX_TRAP_FOUND);
-    You("find %s.", an(get_trap_explanation(trap)));
+    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find %s.", an(get_trap_explanation(trap)));
 
     if (cleared) {
         display_nhwindow(WIN_MAP, TRUE); /* wait */
@@ -1947,7 +1947,7 @@ boolean via_warning;
         }
         else if (!sensemon(mtmp))
         {
-            You("find %s.", is_tame(mtmp) ? y_monnam(mtmp) : a_monnam(mtmp));
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find %s.", is_tame(mtmp) ? y_monnam(mtmp) : a_monnam(mtmp));
         }
         return 1;
     }
@@ -2029,7 +2029,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
                         nomul(0);
                         feel_location(x, y); /* make sure it shows up */
                         play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
-                        You("find a hidden door.");
+                        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find a hidden door.");
                     } 
                     else if (levl[x][y].typ == SCORR) 
                     {
@@ -2041,7 +2041,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
                         nomul(0);
                         feel_newsym(x, y); /* make sure it shows up */
                         play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
-                        You("find a hidden passage.");
+                        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find a hidden passage.");
                     }
                     else
                     {

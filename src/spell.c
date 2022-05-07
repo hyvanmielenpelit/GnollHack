@@ -5139,9 +5139,9 @@ int spell;
         play_sfx_sound(SFX_MIXING_SUCCESS);
         You_ex(ATR_NONE, CLR_MSG_SUCCESS, "successfully prepared the material components.");
         if (addedamount == 1)
-            You("now have one more casting of \"%s\" prepared.", spellname);
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have one more casting of \"%s\" prepared.", spellname);
         else
-            You("now have %d more castings of \"%s\" prepared.", addedamount, spellname);
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "now have %d more castings of \"%s\" prepared.", addedamount, spellname);
 
 #if 0
         /* gain skill for successful preparation */

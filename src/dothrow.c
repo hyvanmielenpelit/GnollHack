@@ -986,7 +986,7 @@ int x, y;
 
         play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_BUMP_INTO);
         if (!glyph_is_monster(glyph) && !glyph_is_invisible(glyph))
-            You("find %s by bumping into %s.", mnam, pronoun);
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find %s by bumping into %s.", mnam, pronoun);
         else
             You("bump into %s.", mnam);
 
@@ -2006,7 +2006,7 @@ uchar* hitres_ptr;
                     break;
                 }
                 if(!context.hide_melee_range_warning)
-                    You("find it very hard to hit with %s at melee range.", an(cxname(uwep)));
+                    You_ex(ATR_NONE, CLR_MSG_HINT, "find it very hard to hit with %s at melee range.", an(cxname(uwep)));
 
                 context.hide_melee_range_warning = TRUE;
         }
@@ -2014,7 +2014,7 @@ uchar* hitres_ptr;
         {
             tmp -= THROWN_WEAPON_TO_HIT_MELEE_PENALTY;
             if (!context.hide_melee_range_warning && !is_obj_normally_edible(obj))
-                You("find it very hard to hit by throwing %s at melee range.", an(cxname(obj)));
+                You_ex(ATR_NONE, CLR_MSG_HINT, "find it very hard to hit by throwing %s at melee range.", an(cxname(obj)));
 
             context.hide_melee_range_warning = TRUE;
         }
