@@ -116,7 +116,7 @@ namespace GnollHackClient
                     if(usealtcolors)
                         res = XTitleGoldColor;
                     else
-                        res = Color.Brown;
+                        res = Color.SandyBrown;
                     break;
                 case nhcolor.CLR_BLUE:
                     res = Color.Blue;
