@@ -5452,7 +5452,7 @@ struct monst *mtmp;
             mtmp->mpeaceful = 1;
             set_malign(mtmp); /* reset alignment */
             newsym(mtmp->mx, mtmp->my);
-            pline("%s is grateful.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s is grateful.", Monnam(mtmp));
         }
 
         /* Helping someone out of a trap is a nice thing to do,
@@ -5460,7 +5460,7 @@ struct monst *mtmp;
         if (!rn2(3) && !rnl(8) && u.ualign.type == A_LAWFUL)
         {
             adjalign(1);
-            You_feel("that you did the right thing.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "that you did the right thing.");
         }
     }
 }
@@ -5771,7 +5771,7 @@ boolean stuff;
 
     if (((wt * 2) / wc) >= HVY_ENCUMBER) 
     {
-        pline("%s is %s for you to lift.", Monnam(mtmp),
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is %s for you to lift.", Monnam(mtmp),
               stuff ? "carrying too much" : "too heavy");
         if (!ttmp->madeby_u && !is_peaceful(mtmp) && mon_can_move(mtmp)
             && !mindless(mtmp->data) && mtmp->data->mlet != S_HUMAN
@@ -5780,7 +5780,7 @@ boolean stuff;
             mtmp->mpeaceful = 1;
             set_malign(mtmp); /* reset alignment */
             newsym(mtmp->mx, mtmp->my);
-            pline("%s thinks it was nice of you to try.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s thinks it was nice of you to try.", Monnam(mtmp));
         }
         return 0;
     }
@@ -5817,10 +5817,11 @@ struct trap *ttmp;
         return 1;
 
     /* Will our hero succeed? */
-    if ((untrap_ok = succeed_untrap(ttmp)) && mon_can_move(mtmp))
+    untrap_ok = succeed_untrap(ttmp);
+    if (!untrap_ok && mon_can_move(mtmp))
     {
         play_sfx_sound(SFX_MONSTER_DOES_NOT_ALLOW);
-        You("try to reach out your %s, but %s backs away skeptically.",
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "try to reach out your %s, but %s backs away skeptically.",
             makeplural(body_part(ARM)), mon_nam(mtmp));
         return 1;
     }
@@ -5828,7 +5829,7 @@ struct trap *ttmp;
     /* is it a cockatrice?... */
     if (touch_petrifies(mtmp->data) && !uarmg && !Stone_resistance)
     {
-        You("grab the trapped %s using your bare %s.", mon_monster_name(mtmp),
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "grab the trapped %s using your bare %s.", mon_monster_name(mtmp),
             makeplural(body_part(HAND)));
 
         if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM)) 
@@ -5855,7 +5856,7 @@ struct trap *ttmp;
         {
             mtmp->msleeping = 0;
             refresh_m_tile_gui_info(mtmp, TRUE);
-            pline("%s awakens.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s awakens.", Monnam(mtmp));
         }
         return 1;
     }
@@ -5867,14 +5868,14 @@ struct trap *ttmp;
     {
         mtmp->msleeping = 0;
         refresh_m_tile_gui_info(mtmp, TRUE);
-        pline("%s awakens.", Monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s awakens.", Monnam(mtmp));
     }
     else if (mtmp->mfrozen && !rn2(mtmp->mfrozen))
     {
         /* After such manhandling, perhaps the effect wears off */
         mtmp->mcanmove = 1;
         mtmp->mfrozen = 0;
-        pline("%s stirs.", Monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stirs.", Monnam(mtmp));
     }
 
     /* is the monster too heavy? */
