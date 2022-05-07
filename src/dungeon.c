@@ -3150,12 +3150,12 @@ boolean printdun;
                     depthstart,
                     depthstart + dungeons[dnum].dunlev_ureached - 1);
 #ifdef GNH_ANDROID
-        putstr(win, !final ? ATR_TITLE | ATR_ALIGN_CENTER : 0, dungeons[dnum].dname);
+        putstr(win, ATR_TITLE | ATR_ALIGN_CENTER, dungeons[dnum].dname);
         if(strcmp(dbuf, ""))
-            putstr(win, !final ? ATR_SUBTITLE | ATR_ALIGN_CENTER : 0, dbuf);
+            putstr(win, ATR_SUBTITLE | ATR_ALIGN_CENTER, dbuf);
 #else
         Sprintf(buf, "%s: %s", dungeons[dnum].dname, dbuf);
-        putstr(win, !final ? ATR_INVERSE | ATR_TITLE : 0, buf);
+        putstr(win, (!final ? ATR_INVERSE : 0) | ATR_TITLE, buf);
 #endif
     }
 
@@ -3181,7 +3181,7 @@ boolean printdun;
                 (!final || (final == 1 && how == ASCENDED)) ? "are"
                   : (final == 1 && how == ESCAPED) ? "left from"
                     : "were");
-    putstr(win, !final ? ATR_BOLD | ATR_HEADING | ATR_INDENT_AT_COLON : 0, buf);
+    putstr(win, (!final ? ATR_BOLD : 0) | ATR_HEADING | ATR_INDENT_AT_COLON, buf);
 
     if (mptr->flags.forgot)
         return;
