@@ -4924,13 +4924,13 @@ drown()
 
     if ((Teleportation || has_innate_teleportation(youmonst.data)) && !Unaware
         && (Teleport_control || rn2(3) < Luck + 2)) {
-        You("attempt a teleport spell."); /* utcsri!carroll */
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "attempt a teleport spell."); /* utcsri!carroll */
         if (!level.flags.noteleport) {
             (void) dotele(FALSE);
             if (!is_pool(u.ux, u.uy))
                 return TRUE;
         } else
-            pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "attempted teleport spell fails.");
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "attempted teleport spell fails.");
     }
     if (u.usteed) {
         dismount_steed(DISMOUNT_GENERIC);
@@ -5335,6 +5335,7 @@ boolean force_failure;
     /* Test for monster first, monsters are displayed instead of trap. */
     if (mtmp && (!mtmp->mtrapped || !holdingtrap)) 
     {
+        play_sfx_sound(SFX_SOMETHING_IN_WAY);
         pline("%s is in the way.", Monnam(mtmp));
         return 0;
     }
@@ -5342,6 +5343,7 @@ boolean force_failure;
     /* We might be forced to move onto the trap's location. */
     if (sobj_at(BOULDER, ttmp->tx, ttmp->ty) && !Passes_walls && !under_u) 
     {
+        play_sfx_sound(SFX_SOMETHING_IN_WAY);
         There("is a boulder in your way.");
         return 0;
     }
@@ -5377,6 +5379,7 @@ boolean force_failure;
     /* Will our hero succeed? */
     if (force_failure || !succeed_untrap(ttmp))
     {
+        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
         if (rnl(5))
         {
             pline("Whoops...");
@@ -5471,7 +5474,6 @@ struct trap *ttmp;
 
     if (fails < 2)
     {
-        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
         return fails;
     }
 
@@ -5484,7 +5486,7 @@ struct trap *ttmp;
     if ((mtmp = m_at(ttmp->tx, ttmp->ty)) != 0) 
     {
         mtmp->mtrapped = 0;
-        You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "remove %s %s from %s.", the_your[ttmp->madeby_u ? 1 : 0],
+        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "remove %s %s from %s.", the_your[ttmp->madeby_u ? 1 : 0],
             (ttmp->ttyp == BEAR_TRAP) ? "bear trap" : "webbing",
             mon_nam(mtmp));
         reward_untrap(ttmp, mtmp);
@@ -5493,12 +5495,12 @@ struct trap *ttmp;
     {
         if (ttmp->ttyp == BEAR_TRAP)
         {
-            You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "disarm %s bear trap.", the_your[ttmp->madeby_u ? 1 : 0]);
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "disarm %s bear trap.", the_your[ttmp->madeby_u ? 1 : 0]);
             cnv_trap_obj(BEARTRAP, 1, ttmp, FALSE);
         }
         else /* if (ttmp->ttyp == WEB) */
         {
-            You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "succeed in removing %s web.", the_your[ttmp->madeby_u ? 1 : 0]);
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "succeed in removing %s web.", the_your[ttmp->madeby_u ? 1 : 0]);
             deltrap(ttmp);
         }
     }
@@ -5518,12 +5520,11 @@ struct trap* ttmp;
 
     if (fails < 2)
     {
-        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
         return fails;
     }
 
     play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
-    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "disarm %s %s.", the_your[ttmp->madeby_u], get_trap_explanation(ttmp));
+    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "disarm %s %s.", the_your[ttmp->madeby_u], get_trap_explanation(ttmp));
     
     /* Skills gained */
     int skillgained = 5;
@@ -5652,7 +5653,8 @@ struct trap *ttmp;
 
     if (fails < 2)
     {
-        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
+        if (fails == 1)
+            play_sfx_sound(SFX_DISARM_TRAP_FAIL);
         return fails;
     }
 
@@ -5708,7 +5710,6 @@ struct trap *ttmp;
     fails = try_disarm(ttmp, FALSE);
     if (fails < 2)
     {
-        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
         return fails;
     }
 
@@ -5735,7 +5736,6 @@ int otyp;
 
     if (fails < 2)
     {
-        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
         return fails;
     }
 
@@ -5808,6 +5808,7 @@ struct trap *ttmp;
      */
     if (!mtmp->mtrapped)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s isn't trapped.", Monnam(mtmp));
         return 0;
     }
@@ -5848,7 +5849,8 @@ struct trap *ttmp;
     /* need to do cockatrice check first if sleeping or paralyzed */
     if (!untrap_ok)
     {
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "try to grab %s, but cannot get a firm grasp.", mon_nam(mtmp));
+        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "try to grab %s, but cannot get a firm grasp.", mon_nam(mtmp));
         if (mtmp->msleeping)
         {
             mtmp->msleeping = 0;
@@ -5886,7 +5888,7 @@ struct trap *ttmp;
     if (!try_lift(mtmp, ttmp, wt, TRUE))
         return 1;
 
-    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "pull %s out of the pit.", mon_nam(mtmp));
+    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "pull %s out of the pit.", mon_nam(mtmp));
     mtmp->mtrapped = 0;
     fill_pit(mtmp->mx, mtmp->my);
     reward_untrap(ttmp, mtmp);
@@ -5919,6 +5921,7 @@ boolean force;
 
     if (!isok(x, y)) 
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_The("perils lurking there are beyond your grasp.");
         return 0;
     }
@@ -5976,7 +5979,8 @@ boolean force;
             {
                 if (is_pit(ttmp->ttyp)) 
                 {
-                    You_cant("do much about %s%s.", the_trap,
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do much about %s%s.", the_trap,
                              u.utrap ? " that you're stuck in"
                                      : " while standing on the edge of it");
                     trap_skipped = TRUE;
@@ -6006,7 +6010,7 @@ boolean force;
             {
                 if (u.utrap) 
                 {
-                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot deal with %s while trapped%s!", the_trap,
+                    You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot deal with %s while trapped%s!", the_trap,
                         (x == u.ux && y == u.uy) ? " in it" : "");
                     return 1;
                 }
@@ -6027,7 +6031,7 @@ boolean force;
                 else if (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_DISARMABLE)
                 {
                     play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
-                    You("cannot disarm %s.", an(trap_type_definitions[ttmp->ttyp].name));
+                    You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot disarm %s.", an(trap_type_definitions[ttmp->ttyp].name));
                     return 0;
                 }
                 else
@@ -6062,21 +6066,21 @@ boolean force;
                         if (here)
                         {
                             play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
-                            You("are already on the edge of the pit.");
+                            You_ex(ATR_NONE, CLR_MSG_FAIL, "are already on the edge of the pit.");
                             return 0;
                         }
 
                         if (!mtmp)
                         {
                             play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
-                            pline("Try filling the pit instead.");
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Try filling the pit instead.");
                             return 0;
                         }
 
                         return help_monster_out(mtmp, ttmp);
                     default:
                         play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
-                        You("cannot disable %s trap.", !here ? "that" : "this");
+                        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot disable %s trap.", !here ? "that" : "this");
                         return 0;
                     }
                 }
@@ -6347,7 +6351,7 @@ boolean force;
             else
             {
                 play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
-                You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "disarm it!");
+                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "disarm it!");
                 otmp->otrapped = 0;
                 use_skill(P_DISARM_TRAP, 10);
             }

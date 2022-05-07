@@ -697,7 +697,7 @@ register struct obj *obj;
         {
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "That was a fountain of healing.");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "That was a fountain of healing.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
@@ -767,7 +767,7 @@ register struct obj *obj;
         {
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "That was a fountain of mana.");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "That was a fountain of mana.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }
@@ -850,7 +850,7 @@ register struct obj *obj;
         {
             if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
             {
-                pline_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "That was a fountain of power.");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "That was a fountain of power.");
                 SET_FOUNTAIN_KNOWN(u.ux, u.uy);
             }
         }

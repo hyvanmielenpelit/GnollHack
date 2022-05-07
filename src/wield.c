@@ -1438,7 +1438,7 @@ const char *verb; /* "rub",&c */
 
     if (obj->owornmask & ((W_ARMOR & ~W_ARMS) | W_ACCESSORY))
     {
-        You_cant("%s %s while wearing %s.", verb, yname(obj),
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s while wearing %s.", verb, yname(obj),
                  more_than_1 ? "them" : "it");
         return FALSE;
     }
@@ -1474,21 +1474,21 @@ const char *verb; /* "rub",&c */
             if (strstri(what, "pair of ") != 0)
                 more_than_1 = FALSE;
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE,
+            pline_ex(ATR_NONE, CLR_MSG_FAIL,
                "Since your weapon is welded to your %s, you cannot %s %s %s.",
                   hand, verb, more_than_1 ? "those" : "that", xname(obj));
         }
         else 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You_cant_ex(ATR_NONE, CLR_MSG_NEGATIVE, "do that.");
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that.");
         }
         return FALSE;
     }
 
     if (cantwield(youmonst.data))
     {
-        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "hold %s strongly enough.", more_than_1 ? "them" : "it");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "hold %s strongly enough.", more_than_1 ? "them" : "it");
         return FALSE;
     }
 
@@ -1496,7 +1496,7 @@ const char *verb; /* "rub",&c */
     if (uarms && bimanual(obj)) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot %s a two-handed %s while %s.", verb,
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot %s a two-handed %s while %s.", verb,
             (obj->oclass == WEAPON_CLASS) ? "weapon" : "tool", 
             is_shield(obj) ? "wearing a shield" : is_weapon(obj) ? "wielding a weapon in the other hand" : "wielding an item in the other hand");
         return FALSE;

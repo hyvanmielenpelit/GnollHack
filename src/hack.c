@@ -164,7 +164,7 @@ moverock()
             if (Blind)
                 feel_location(sx, sy);
             play_sfx_sound(SFX_GENERAL_NOT_ENOUGH_LEVERAGE);
-            You("don't have enough leverage to push %s.", the(xname(otmp)));
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough leverage to push %s.", the(xname(otmp)));
             /* Give them a chance to climb over it? */
             return -1;
         }
@@ -394,7 +394,7 @@ moverock()
                 if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC) 
                 {
                     play_sfx_sound(SFX_GENERAL_NOT_SKILLED_ENOUGH);
-                    You("aren't skilled enough to %s %s from %s.",
+                    You_ex(ATR_NONE, CLR_MSG_FAIL, "aren't skilled enough to %s %s from %s.",
                         willpickup ? "pick up" : "push aside",
                         the(xname(otmp)), y_monnam(u.usteed));
                 } 
@@ -1688,13 +1688,13 @@ domove_core()
         if (wtcap < OVERLOADED) 
         {
             play_sfx_sound(SFX_GENERAL_NOT_ENOUGH_STAMINA);
-            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "don't have enough stamina to move.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough stamina to move.");
             exercise(A_CON, FALSE);
         }
         else
         {
             play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
-            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "collapse under your load.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "collapse under your load.");
         }
         nomul(0);
         return;
@@ -3784,9 +3784,9 @@ const char *str;
     if (near_capacity() >= EXT_ENCUMBER) {
         play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
         if (str)
-            pline_ex1(ATR_NONE, CLR_MSG_WARNING, str);
+            pline_ex1(ATR_NONE, CLR_MSG_FAIL, str);
         else
-            You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "do that while carrying so much stuff.");
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that while carrying so much stuff.");
         return 1;
     }
     return 0;

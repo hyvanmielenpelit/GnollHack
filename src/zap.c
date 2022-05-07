@@ -4200,7 +4200,7 @@ register struct obj *wand;
     if (wand->charges < 0 || (wand->charges == 0 && rn2(121)))
         return 0;
     if (wand->charges == 0)
-        You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "wrest one last charge from the worn-out wand.");
+        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "wrest one last charge from the worn-out wand.");
     wand->charges--;
     return 1;
 }

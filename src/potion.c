@@ -665,6 +665,7 @@ ghost_from_bottle()
         pline("This bottle turns out to be empty.");
         return;
     }
+    play_sfx_sound(SFX_SURPRISE_ATTACK);
     if (Blind) {
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "As you open the bottle, %s emerges.", something);
         return;

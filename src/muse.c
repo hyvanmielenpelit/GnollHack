@@ -91,6 +91,7 @@ struct obj *obj;
                         pline1(empty);
                 } else {
                     if (vis) {
+                        play_sfx_sound(SFX_SURPRISE_ATTACK);
                         pline(
                             "As %s opens the bottle, an enormous %s emerges!",
                               mon_nam(mon),

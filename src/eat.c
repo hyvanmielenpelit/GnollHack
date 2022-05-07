@@ -1327,7 +1327,7 @@ int pm;
             char buf[BUFSZ];
 
             u.uconduct.polyselfs++; /* you're changing form */
-            You_cant("resist the temptation to mimic %s.",
+            You_cant_ex(ATR_NONE, CLR_MSG_NEGATIVE, "resist the temptation to mimic %s.",
                      Hallucination ? "an orange" : "a pile of gold");
             /* A pile of gold can't ride. */
             if (u.usteed)
@@ -2260,7 +2260,7 @@ struct obj *otmp;
                && (Stone_resistance || Hallucination)) {
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "This tastes just like chicken!");
     } else if (mnum == PM_FLOATING_EYE && u.umonnum == PM_RAVEN) {
-        You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "peck the eyeball with delight.");
+        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "peck the eyeball with delight.");
     } else {
         /* yummy is always False for omnivores, palatable always True */
         boolean yummy = (vegan(&mons[mnum])

@@ -557,15 +557,15 @@ register struct obj *obj;
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "have no hands!"); /* not `body_part(HAND)' */
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "have no hands!"); /* not `body_part(HAND)' */
         return 0;
     } else if (Deaf) {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "hear anything!");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "hear anything!");
         return 0;
     } else if (!freehand() && !is_telekinetic_operator(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "have no free %s.", body_part(HAND));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "have no free %s.", body_part(HAND));
         return 0;
     }
     if (!getdir((char *) 0))
@@ -965,7 +965,7 @@ struct obj *obj;
         /* for the unleash case, we don't verify whether this unseen
            monster is the creature attached to the current leash */
         play_sfx_sound(SFX_FAILS_TO_LEASH);
-        You("fail to %sleash something.", obj->leashmon ? "un" : "");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to %sleash something.", obj->leashmon ? "un" : "");
         /* trying again will work provided the monster is tame
            (and also that it doesn't change location by retry time) */
         map_invisible(cc.x, cc.y);
@@ -1543,7 +1543,7 @@ struct monst* origmonst;
                 if (!Deaf)
                     pline("%s laughs at your feeble attempt.", Monnam(mtmp));
                 else
-                    You("fail to turn %s.", mon_nam(mtmp));
+                    You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to turn %s.", mon_nam(mtmp));
             }
         }
     }
@@ -1895,7 +1895,7 @@ struct obj **optr;
     if (u.uswallow)
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You(no_elbow_room);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, no_elbow_room);
         return 1;
     }
 
@@ -2368,7 +2368,7 @@ struct obj **optr;
         return;
     } else if (Underwater) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        There("is not enough oxygen to sustain a fire.");
+        There_ex(ATR_NONE, CLR_MSG_FAIL, "is not enough oxygen to sustain a fire.");
         return;
     }
 
@@ -2669,12 +2669,13 @@ int magic; /* 0=Physical, otherwise skill level */
         /* normally (nolimbs || slithy) implies !Jumping,
            but that isn't necessarily the case for knights */
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "jump; you have no legs!");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "jump; you have no legs!");
         return 0;
     } 
     else if (!magic && !Jumping)
     {
-        You_cant("jump very far.");
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "jump very far.");
         return 0;
     /* if steed is immobile, can't do physical jump but can do spell one */
     }
@@ -2690,7 +2691,7 @@ int magic; /* 0=Physical, otherwise skill level */
             You("bounce around a little.");
             return 1;
         }
-        pline("You've got to be kidding!");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You've got to be kidding!");
         return 0;
     } 
     else if (u.uinwater) 
@@ -2700,19 +2701,21 @@ int magic; /* 0=Physical, otherwise skill level */
             You("swish around a little.");
             return 1;
         }
-        pline("This calls for swimming, not jumping!");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "This calls for swimming, not jumping!");
         return 0;
     }
     else if (u.ustuck) 
     {
         if (is_tame(u.ustuck) && !Conflict && !is_confused(u.ustuck) && !is_crazed(u.ustuck))
         {
-            You("pull free from %s.", mon_nam(u.ustuck));
+            play_sfx_sound(SFX_WRIGGLE_FREE);
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "pull free from %s.", mon_nam(u.ustuck));
             u.ustuck = 0;
             return 1;
         }
         if (magic) {
-            You("writhe a little in the grasp of %s!", mon_nam(u.ustuck));
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "writhe a little in the grasp of %s!", mon_nam(u.ustuck));
             return 1;
         }
         play_sfx_sound(SFX_STUCK_IN_TRAP);
@@ -2727,19 +2730,19 @@ int magic; /* 0=Physical, otherwise skill level */
             return 1;
         }
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("don't have enough traction to jump.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough traction to jump.");
         return 0;
     } 
     else if (!magic && near_capacity() > UNENCUMBERED) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("are carrying too much to jump!");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "are carrying too much to jump!");
         return 0;
     } 
     else if (!magic && (u.uhunger <= 100 || ACURR(A_STR) < 6))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("lack the strength to jump!");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "lack the strength to jump!");
         return 0;
     }
     else if (!magic && Wounded_legs) 
@@ -2750,9 +2753,9 @@ int magic; /* 0=Physical, otherwise skill level */
         if (wl == BOTH_SIDES)
             bp = makeplural(bp);
         if (u.usteed)
-            pline("%s is in no shape for jumping.", Monnam(u.usteed));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is in no shape for jumping.", Monnam(u.usteed));
         else
-            Your("%s%s %s in no shape for jumping.",
+            Your_ex(ATR_NONE, CLR_MSG_FAIL, "%s%s %s in no shape for jumping.",
                  (wl == LEFT_SIDE) ? "left " : (wl == RIGHT_SIDE) ? "right "
                                                                   : "",
                  bp, (wl == BOTH_SIDES) ? "are" : "is");
@@ -2760,7 +2763,7 @@ int magic; /* 0=Physical, otherwise skill level */
     } 
     else if (u.usteed && u.utrap) 
     {
-        pline("%s is stuck in a trap.", Monnam(u.usteed));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is stuck in a trap.", Monnam(u.usteed));
         return 0;
     }
 
@@ -3332,7 +3335,7 @@ boolean quietly;
         if (!quietly)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You("don't have enough room in here.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough room in here.");
         }
         return FALSE;
     }
@@ -3549,25 +3552,25 @@ struct obj* obj;
                 {
                     otmp->orotten = TRUE;
                     suggestnamingwand = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s in black energy for a moment.", The(cxname(otmp)), otense(otmp, "shine"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s %s in black energy for a moment.", The(cxname(otmp)), otense(otmp, "shine"));
                 }
                 else
                 {
                     suggestnamingwand = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in black energy for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in black energy for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case WAN_COLD:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
                     suggestnamingwand = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
                     break;
                 }
                 if (otmp->elemental_enchantment == FIRE_ENCHANTMENT)
                 {
                     wandknown = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The cold energies of %s dispel the fire enchantment on %s.", the(xname(obj)), yname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "The cold energies of %s dispel the fire enchantment on %s.", the(xname(obj)), yname(otmp));
                     otmp->elemental_enchantment = 0;
                     break;
                 }
@@ -3591,12 +3594,12 @@ struct obj* obj;
                 else if (otmp->oclass == FOOD_CLASS)
                 {
                     wandknown = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s covered in frost, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s %s covered in frost, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));
                 }
                 else
                 {
                     suggestnamingwand = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case WAN_FIRE:
@@ -3604,7 +3607,7 @@ struct obj* obj;
                 {
                     wandknown = TRUE;
                     play_sfx_sound(SFX_MONSTER_ON_FIRE);
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Flames emerge from %s and engulf %s!", the(xname(obj)), yname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "Flames emerge from %s and engulf %s!", the(xname(obj)), yname(otmp));
                     read_the_ruling_ring(otmp);
                     break;
                 }
@@ -3612,13 +3615,13 @@ struct obj* obj;
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
                     suggestnamingwand = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
                     break;
                 }
                 if (otmp->elemental_enchantment == COLD_ENCHANTMENT)
                 {
                     wandknown = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The fiery energies of %s dispel the cold enchantment on %s.", the(xname(obj)), yname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "The fiery energies of %s dispel the cold enchantment on %s.", the(xname(obj)), yname(otmp));
                     otmp->elemental_enchantment = 0;
                     break;
                 }
@@ -3626,7 +3629,7 @@ struct obj* obj;
                 if (is_flammable(otmp) && (otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS))
                 {
                     wandknown = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Flames erupt from %s and engulf %s!", the(xname(obj)), yname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "Flames erupt from %s and engulf %s!", the(xname(obj)), yname(otmp));
                     (void)erode_obj(otmp, xname(otmp), ERODE_BURN,
                         EF_GREASE | EF_VERBOSE);
                 }
@@ -3635,11 +3638,11 @@ struct obj* obj;
                     wandknown = TRUE;
                     if (!otmp->lamplit)
                     {
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A flame eminates from %s and lights up %s.", yname(obj), yname(otmp));
+                        pline_ex(ATR_NONE, CLR_MSG_SPELL, "A flame eminates from %s and lights up %s.", yname(obj), yname(otmp));
                         use_lamp(otmp);
                     }
                     else
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A flame eminates from %s, keeping %s alight.", yname(obj), yname(otmp));
+                        pline_ex(ATR_NONE, CLR_MSG_SPELL, "A flame eminates from %s, keeping %s alight.", yname(obj), yname(otmp));
                 }
                 else if(is_elemental_enchantable(otmp))
                 {
@@ -3660,19 +3663,19 @@ struct obj* obj;
                 else if (otmp->oclass == FOOD_CLASS)
                 {
                     wandknown = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s covered in flames, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s %s covered in flames, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));
                 }
                 else
                 {
                     suggestnamingwand = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in red for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in red for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case WAN_LIGHTNING:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
                     suggestnamingwand = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
                     break;
                 }
                 if (is_elemental_enchantable(otmp))
@@ -3693,11 +3696,11 @@ struct obj* obj;
                 else if (otmp->oclass == FOOD_CLASS)
                 {
                     wandknown = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s jolted by lightning, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));                }
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s %s jolted by lightning, but that's about it.", The(cxname(otmp)), otense(otmp, "are"));                }
                 else
                 {
                     suggestnamingwand = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case WAN_STRIKING:
@@ -3706,7 +3709,7 @@ struct obj* obj;
                 else
                 {
                     suggestnamingwand = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s for a while, but that's about it.", Tobjnam(otmp, "vibrate"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s for a while, but that's about it.", Tobjnam(otmp, "vibrate"));
                 }
                 break;
             case WAN_DISJUNCTION:
@@ -3714,7 +3717,7 @@ struct obj* obj;
                 if (objects[otmp->otyp].oc_magic || otmp->enchantment != 0 || otmp->charges > (otmp->oclass == WAND_CLASS ? -1 : 0) || otmp->elemental_enchantment > 0 || otmp->blessed || otmp->cursed)
                 {
                     suggestnamingwand = TRUE;
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in gray for a while.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in gray for a while.", Tobjnam(otmp, "flicker"));
                 }
                 else
                     pline("Nothing much happens.");
@@ -3729,7 +3732,7 @@ struct obj* obj;
                     suggestnamingwand = TRUE;
                     //This will prompt weapon glow
                     play_sfx_sound(SFX_AURA_GLOW);
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s black-bluish for a while.", Yobjnam2(otmp, "glow"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s black-bluish for a while.", Yobjnam2(otmp, "glow"));
                     otmp->enchantment += 3 - otmp->enchantment / 3;
                     break;
                 }
@@ -3758,7 +3761,7 @@ struct obj* obj;
                     remove_worn_item(otmp, TRUE);
 
                 play_sfx_sound(SFX_DISINTEGRATE);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrated!", Yobjnam2(otmp, "are"));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s disintegrated!", Yobjnam2(otmp, "are"));
                 wandknown = TRUE;
                 //Destroy item;
                 useupall(otmp);
@@ -4213,7 +4216,7 @@ set_trap()
                    (unsigned short) (trapinfo.force_bungle ? FORCEBUNGLE : 0));
     } else {
         /* this shouldn't happen */
-        Your("trap setting attempt fails.");
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "trap setting attempt fails.");
     }
     useup(otmp);
     reset_trapset();
@@ -4277,11 +4280,11 @@ struct obj *obj;
 
     if (u.uswallow && attack(u.ustuck)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        There("is not enough room to flick your bullwhip.");
+        There_ex(ATR_NONE, CLR_MSG_FAIL, "is not enough room to flick your bullwhip.");
 
     } else if (Underwater) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        There("is too much resistance to flick your bullwhip.");
+        There_ex(ATR_NONE, CLR_MSG_FAIL, "is too much resistance to flick your bullwhip.");
 
     } else if (u.dz < 0) {
         You("flick a bug off of the %s.", ceiling(u.ux, u.uy));
@@ -4711,7 +4714,7 @@ struct obj *obj;
 
     /* Are you allowed to use the pole? */
     if (u.uswallow) {
-        pline(not_enough_room);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, not_enough_room);
         return 0;
     }
     if (obj != uwep) {
@@ -4787,13 +4790,13 @@ struct obj *obj;
                && !glyph_is_invisible(glyph) && !glyph_is_any_statue(glyph))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT_SEE_SPOT);
-        You(cant_see_spot);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, cant_see_spot);
         return res;
     } 
     else if (!couldsee(cc.x, cc.y)) 
     { /* Eyes of the Overworld */
         play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-        You(cant_reach);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, cant_reach);
         return res;
     }
 
@@ -5991,12 +5994,12 @@ struct obj* obj;
         {
         case TT_PIT:
             if (!Passes_walls)
-                pline("There's not enough room for a golf swing down here.");
+                pline_ex(ATR_NONE, CLR_MSG_FAIL, "There's not enough room for a golf swing down here.");
             else
                 no_golf_swing = FALSE;
             break;
         case TT_WEB:
-            You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "move your %s!", makeplural(body_part(ARM)));
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "move your %s!", makeplural(body_part(ARM)));
             break;
         default:
             break;
@@ -6034,7 +6037,7 @@ struct obj* obj;
         {
         case 0:
             play_sfx_sound(SFX_STUCK_IN_TRAP);
-            You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "move your %s!", makeplural(body_part(ARM)));
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "move your %s!", makeplural(body_part(ARM)));
             break;
         case 1:
             if (is_animal(u.ustuck->data)) 

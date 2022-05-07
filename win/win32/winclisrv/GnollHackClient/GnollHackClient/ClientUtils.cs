@@ -49,7 +49,7 @@ namespace GnollHackClient
                     if(usealtcolors)
                         res = GHTitleGold;
                     else
-                        res = SKColors.Brown;
+                        res = SKColors.SandyBrown;
                     break;
                 case nhcolor.CLR_BLUE:
                     res = SKColors.Blue;

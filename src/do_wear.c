@@ -1306,7 +1306,7 @@ struct obj *obj;
             Strcpy(why, "; it's embedded");
         }
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant("take that off%s.", why);
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "take that off%s.", why);
         return 0;
     }
 
@@ -1996,7 +1996,7 @@ boolean noisy;
                     else
                     {
                         play_sfx_sound(SFX_GENERAL_CANNOT);
-                        You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "wear that over your %s.",
+                        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "wear that over your %s.",
                             (uarmc) ? cloak_simple_name(uarmc)
                             : (uarmo) ? robe_simple_name(uarmo) : c_armor);
                     }
@@ -2038,7 +2038,7 @@ boolean noisy;
                     else
                     {
                         play_sfx_sound(SFX_GENERAL_CANNOT);
-                        You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "wear that over your %s.", cloak_simple_name(uarmc));
+                        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "wear that over your %s.", cloak_simple_name(uarmc));
                     }
                 }
             }
@@ -2837,6 +2837,7 @@ register struct obj *otmp;
     /* special ring checks */
     if (otmp == uright || otmp == uleft) {
         if (nolimbs(youmonst.data)) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "ring is stuck.");
             return 0;
         }
@@ -2858,11 +2859,13 @@ register struct obj *otmp;
     /* special glove checks */
     if (otmp == uarmg) {
         if (welded(uwep, &youmonst)) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "are unable to take off your %s while wielding that %s.",
                 c_gloves, is_sword(uwep) ? c_sword : c_weapon);
             uwep->bknown = TRUE;
             return 0;
         } else if (Glib) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "take off the slippery %s with your slippery %s.",
                      c_gloves, makeplural(body_part(FINGER)));
             return 0;
@@ -2871,10 +2874,12 @@ register struct obj *otmp;
     /* special boot checks */
     if (otmp == uarmf) {
         if (u.utrap && u.utraptype == TT_BEARTRAP) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "bear trap prevents you from pulling your %s out.",
                       body_part(FOOT));
             return 0;
         } else if (u.utrap && u.utraptype == TT_INFLOOR) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "are stuck in the %s, and cannot pull your %s out.",
                 surface(u.ux, u.uy), makeplural(body_part(FOOT)));
             return 0;

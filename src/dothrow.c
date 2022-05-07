@@ -473,11 +473,11 @@ int *shotlimit_p; /* (see dothrow()) */
 
     if (notake(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("are physically incapable of throwing or shooting anything.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "are physically incapable of throwing or shooting anything.");
         return FALSE;
     } else if (nohands(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "throw or shoot without hands."); /* not body_part(HAND) */
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "throw or shoot without hands."); /* not body_part(HAND) */
         return FALSE;
         /*[what about !freehand(), aside from cursed missile launcher?]*/
     }

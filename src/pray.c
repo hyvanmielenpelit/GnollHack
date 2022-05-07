@@ -1572,7 +1572,7 @@ aligntyp g_align;
     int pat_on_head = 0, kick_on_butt;
 
     play_sfx_sound(SFX_PRAY_PLEASED);
-    You_feel_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "that %s is %s.", align_gname(g_align),
+    You_feel_ex(ATR_NONE, CLR_MSG_SUCCESS, "that %s is %s.", align_gname(g_align),
              (u.ualign.record >= DEVOUT)
                  ? Hallucination ? "pleased as punch" : "well-pleased"
                  : (u.ualign.record >= STRIDENT)
@@ -2352,9 +2352,9 @@ dosacrifice()
                  * it's a very good action.
                  */
                 if (u.ualign.record < ALIGNLIM)
-                    You_feel_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "appropriately %s.", align_str(u.ualign.type));
+                    You_feel_ex(ATR_NONE, CLR_MSG_SUCCESS, "appropriately %s.", align_str(u.ualign.type));
                 else
-                    You_feel_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "you are thoroughly on the right path.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_SUCCESS, "you are thoroughly on the right path.");
                 adjalign(5);
                 value += 3;
                 play_sfx_sound(SFX_ALTAR_ADD_ALIGNMENT);
@@ -2659,7 +2659,7 @@ dosacrifice()
                 play_sfx_sound(SFX_ALTAR_GOD_MOLLIFIED);
                 if (u.ugangr)
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "%s seems %s.", u_gname(),
+                    pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s seems %s.", u_gname(),
                           Hallucination ? "groovy" : "slightly mollified");
 
                     if ((int) u.uluck < 0)
@@ -2829,10 +2829,10 @@ dosacrifice()
             {
                 play_sfx_sound(SFX_ALTAR_FOUR_LEAF_CLOVER);
                 if (Blind)
-                    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "think %s brushed your %s.", something,
+                    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "think %s brushed your %s.", something,
                         body_part(FOOT));
                 else
-                    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, Hallucination
+                    You_ex(ATR_NONE, CLR_MSG_SUCCESS, Hallucination
                     ? "see crabgrass at your %s.  A funny thing in a dungeon."
                             : "glimpse a four-leaf clover at your %s.",
                         makeplural(body_part(FOOT)));

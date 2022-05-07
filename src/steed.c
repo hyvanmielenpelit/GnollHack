@@ -61,7 +61,7 @@ struct obj *otmp;
     }
     if (!u.dx && !u.dy) {
         play_sfx_sound(SFX_GENERAL_THATS_SILLY);
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Saddle yourself?  Very funny...");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Saddle yourself?  Very funny...");
         return 0;
     }
 
@@ -70,14 +70,14 @@ struct obj *otmp;
     if (!isok(u.ux + u.dx, u.uy + u.dy)
         || !(mtmp = m_at(u.ux + u.dx, u.uy + u.dy)) || !canspotmon(mtmp)) {
         play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "I see nobody there.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "I see nobody there.");
         return 1;
     }
 
     /* Is this a valid monster? */
     if (mtmp->worn_item_flags & W_SADDLE || which_armor(mtmp, W_SADDLE)) {
         play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s doesn't need another one.", Monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s doesn't need another one.", Monnam(mtmp));
         return 1;
     }
     ptr = mtmp->data;
@@ -99,12 +99,12 @@ struct obj *otmp;
     if (mtmp->isminion || mtmp->isshk || mtmp->ispriest || mtmp->isgd
         || mtmp->iswiz) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "I think %s would mind.", mon_nam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "I think %s would mind.", mon_nam(mtmp));
         return 1;
     }
     if (!can_saddle(mtmp)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "saddle such a creature.");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "saddle such a creature.");
         return 1;
     }
 
@@ -152,7 +152,7 @@ struct obj *otmp;
     /* Make the attempt */
     if (rn2(100) < chance) {
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
-        You_ex(ATR_NONE, CLR_MSG_POSITIVE, "put the saddle on %s.", mon_nam(mtmp));
+        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "put the saddle on %s.", mon_nam(mtmp));
         if (otmp->owornmask)
             remove_worn_item(otmp, FALSE);
         freeinv(otmp);
@@ -161,7 +161,7 @@ struct obj *otmp;
     else
     {
         play_sfx_sound_at_location(SFX_STEED_REFUSES, mtmp->mx, mtmp->my);
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists!", Monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s resists!", Monnam(mtmp));
     }
     return 1;
 }
@@ -225,7 +225,7 @@ struct monst *mtmp; /* The animal */
     if (u.usteed)
     {
         play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are already riding %s.", mon_nam(u.usteed));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "are already riding %s.", mon_nam(u.usteed));
         return (FALSE);
     }
 
@@ -262,7 +262,7 @@ struct monst *mtmp; /* The animal */
     if (Hallucination && !force) 
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Maybe you should find a designated driver.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Maybe you should find a designated driver.");
         return (FALSE);
     }
     /* While riding Wounded_legs refers to the steed's,
@@ -281,7 +281,7 @@ struct monst *mtmp; /* The animal */
     if (Wounded_legs)
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s are in no shape for riding.", makeplural(body_part(LEG)));
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "%s are in no shape for riding.", makeplural(body_part(LEG)));
         if (force && wizard && yn_query("Heal your legs?") == 'y')
             HWounded_legs = EWounded_legs = 0L;
         else
@@ -291,7 +291,7 @@ struct monst *mtmp; /* The animal */
     if (!force && (near_capacity() > SLT_ENCUMBER))
     {
         play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
-        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "do that while carrying so much stuff.");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that while carrying so much stuff.");
         return (FALSE);
     }
 
@@ -304,7 +304,7 @@ struct monst *mtmp; /* The animal */
            to worm's head could trigger an impossible() in worm_cross()
            called from test_move(), so handle not-on-head before that */
         play_sfx_sound(SFX_GENERAL_NOT_A_GOOD_IDEA);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "couldn't ride %s, let alone its tail.", a_monnam(mtmp));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "couldn't ride %s, let alone its tail.", a_monnam(mtmp));
         return FALSE;
     }
 
@@ -314,9 +314,9 @@ struct monst *mtmp; /* The animal */
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         if (Punished || !(u.uswallow || u.ustuck || u.utrap))
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are unable to swing your %s over.", body_part(LEG));
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "are unable to swing your %s over.", body_part(LEG));
         else
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are stuck here for now.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "are stuck here for now.");
         return (FALSE);
     }
 
@@ -325,7 +325,7 @@ struct monst *mtmp; /* The animal */
     if (!otmp)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is not saddled.", Monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is not saddled.", Monnam(mtmp));
         return (FALSE);
     }
 
@@ -334,7 +334,7 @@ struct monst *mtmp; /* The animal */
         || bigmonst(youmonst.data) || slithy(youmonst.data)))
     {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "won't fit on a saddle.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "won't fit on a saddle.");
         return (FALSE);
     }
 
@@ -350,7 +350,7 @@ struct monst *mtmp; /* The animal */
     if (!is_tame(mtmp) || mtmp->isminion)
     {
         play_sfx_sound(SFX_MONSTER_DOES_NOT_ALLOW);
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "I think %s would mind.", mon_nam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "I think %s would mind.", mon_nam(mtmp));
         return (FALSE);
     }
     if (mtmp->mtrapped)
@@ -360,7 +360,7 @@ struct monst *mtmp; /* The animal */
         if (t)
         {
             play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-            You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "mount %s while %s's trapped in %s.", mon_nam(mtmp),
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "mount %s while %s's trapped in %s.", mon_nam(mtmp),
                 mhe(mtmp), an(get_trap_explanation(t)));
         }
 
@@ -380,7 +380,7 @@ struct monst *mtmp; /* The animal */
         /* no longer tame */
         newsym(mtmp->mx, mtmp->my);
         play_sfx_sound_at_location(SFX_STEED_REFUSES, mtmp->mx, mtmp->my);
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists%s!", Monnam(mtmp),
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s resists%s!", Monnam(mtmp),
               mtmp->mleashed ? " and its leash comes off" : "");
         if (mtmp->mleashed)
             m_unleash(mtmp, FALSE);
@@ -389,14 +389,14 @@ struct monst *mtmp; /* The animal */
     if (!force && Underwater && !is_swimmer(ptr))
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "ride that creature while under %s.",
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "ride that creature while under %s.",
                  hliquid("water"));
         return (FALSE);
     }
     if (!can_saddle(mtmp) || !can_ride(mtmp))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "ride such a creature.");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "ride such a creature.");
         return FALSE;
     }
 
@@ -405,13 +405,13 @@ struct monst *mtmp; /* The animal */
         && !Lev_at_will)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot reach %s.", mon_nam(mtmp));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot reach %s.", mon_nam(mtmp));
         return (FALSE);
     }
     if (!force && uarm && is_metallic(uarm) && greatest_erosion(uarm)) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s armor is too stiff to be able to mount %s.",
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "%s armor is too stiff to be able to mount %s.",
              uarm->oeroded ? "rusty" : "corroded", mon_nam(mtmp));
         return (FALSE);
     }
@@ -421,7 +421,7 @@ struct monst *mtmp; /* The animal */
     {
         if (Levitation) {
             play_sfx_sound(SFX_MOUNT_FAIL_SLIP_AWAY);
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s slips away from you.", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s slips away from you.", Monnam(mtmp));
             return FALSE;
         }
         play_sfx_sound(SFX_MOUNT_FAIL_AND_SLIP);
@@ -448,11 +448,11 @@ struct monst *mtmp; /* The animal */
     {
         if (Levitation && !(is_flying(mtmp) || is_levitating(mtmp)))
             /* Must have Lev_at_will at this point */
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s magically floats up!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s magically floats up!", Monnam(mtmp));
         play_sfx_sound(SFX_MOUNT_SUCCESS);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "mount %s.", mon_nam(mtmp));
+        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "mount %s.", mon_nam(mtmp));
         if (Flying)
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "and %s take flight together.", mon_nam(mtmp));
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "and %s take flight together.", mon_nam(mtmp));
     }
     else
     {

@@ -567,7 +567,7 @@ struct monst *oracl;
     case 'y':
         if (umoney < (long)minor_cost) 
         {
-            You("don't even have enough money for that!");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't even have enough money for that!");
             return 0;
         }
 
@@ -679,7 +679,7 @@ struct monst* oracl;
         if (umoney < (long)minor_id_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+            You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
         break;
@@ -772,7 +772,7 @@ struct monst* oracl;
     if (umoney < (long)enl_cost)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
+        You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
     u_pay = enl_cost;

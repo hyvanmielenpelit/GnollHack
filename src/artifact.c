@@ -2500,7 +2500,7 @@ struct obj *obj;
     else if (u.uen < artilist[obj->oartifact].inv_mana_cost)
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MANA);
-        pline("You do not have enough mana to invoke %s.", the(cxname(obj)));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You do not have enough mana to invoke %s.", the(cxname(obj)));
         return 0;
     }
 
@@ -2779,7 +2779,7 @@ struct obj *obj;
                 mon->mprops[SUMMON_FORBIDDEN] |= M_INTRINSIC_ACQUIRED;
 
                 play_sfx_sound_at_location(SFX_SUMMON_DEMON, mon->mx, mon->my);
-                pline_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "%s appears in a puff of smoke!", Amonnam(mon));
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s appears in a puff of smoke!", Amonnam(mon));
             }
             else
             {
@@ -2806,7 +2806,7 @@ struct obj *obj;
                 }
                 mon->mprops[SUMMON_FORBIDDEN] |= M_INTRINSIC_ACQUIRED;
 
-                pline_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "The air around you starts to swirl and forms into %s!", a_monnam(mon));
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "The air around you starts to swirl and forms into %s!", a_monnam(mon));
             }
             else
             {
@@ -2910,14 +2910,14 @@ struct obj *obj;
             if (obj->oartifact == ART_MAGIC_MIRROR_OF_MERLIN)
             {
                 if ((!temporary_effect && switch_on) || temporary_effect)
-                    pline_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "%s an illusionary image of yourself near you.", Tobjnam(obj, "project"));
+                    pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s an illusionary image of yourself near you.", Tobjnam(obj, "project"));
                 else
                     Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "illusionary double disappears.");
             }
             else
             {
                 if ((!temporary_effect && switch_on) || temporary_effect)
-                    You_feel_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "your image becomes displaced.");
+                    You_feel_ex(ATR_NONE, CLR_MSG_SUCCESS, "your image becomes displaced.");
                 else
                     You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "your image is in its right place again.");
             }

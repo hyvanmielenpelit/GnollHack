@@ -993,7 +993,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
             if (!castit && !break_the_rules) 
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You("%s.",
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "%s.",
                     !Teleportation ? ((sp_no < MAXSPELL)
                                         ? "can't cast that spell"
                                         : "don't know that spell")
@@ -1042,7 +1042,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
 
         if (cantdoit) 
         {
-            You("%s %s.", cantdoit,
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s.", cantdoit,
                 castit ? "for a teleport spell" : "to teleport");
             return 0;
         } 
@@ -1083,7 +1083,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
     else 
     {
         play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
-        You("%s", shudder_for_moment);
+        You_ex1(ATR_NONE, CLR_MSG_ATTENTION, shudder_for_moment);
         return 0;
     }
 
@@ -1229,7 +1229,7 @@ d_level target_level;
         if (Is_knox(&u.uz) && newlev > 0 && !force_dest)
         {
             play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
-            You1(shudder_for_moment);
+            You_ex1(ATR_NONE, CLR_MSG_ATTENTION, shudder_for_moment);
             return;
         }
         /* if in Quest, the player sees "Home 1", etc., on the status
@@ -1257,7 +1257,7 @@ random_levtport:
         if (newlev == depth(&u.uz))
         {
             play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
-            You1(shudder_for_moment);
+            You_ex1(ATR_NONE, CLR_MSG_ATTENTION, shudder_for_moment);
             return;
         }
     }
@@ -1268,7 +1268,7 @@ random_levtport:
     if (!next_to_u() && !force_dest) 
     {
         play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
-        You1(shudder_for_moment);
+        You_ex1(ATR_NONE, CLR_MSG_ATTENTION, shudder_for_moment);
         return;
     }
 
@@ -1424,7 +1424,7 @@ register struct trap *ttmp;
 
     if (!next_to_u()) {
         play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
-        You1(shudder_for_moment);
+        You_ex1(ATR_NONE, CLR_MSG_ATTENTION, shudder_for_moment);
         return;
     }
 
@@ -1504,7 +1504,7 @@ struct trap *trap;
         You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a wrenching sensation.");
     } else if (!next_to_u()) {
         play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
-        You1(shudder_for_moment);
+        You_ex1(ATR_NONE, CLR_MSG_ATTENTION, shudder_for_moment);
     } else if (trap->once) {
         deltrap(trap);
         newsym(u.ux, u.uy); /* get rid of trap symbol */

@@ -256,13 +256,13 @@ int x, y;
               ) 
     {
         if (verbose)
-            pline_The("%s here is too hard to %s.", surface(x, y), verb);
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "%s here is too hard to %s.", surface(x, y), verb);
         return FALSE;
     } 
     else if (sobj_at(BOULDER, x, y)) 
     {
         if (verbose)
-            There("isn't enough room to %s here.", verb);
+            There_ex(ATR_NONE, CLR_MSG_FAIL, "isn't enough room to %s here.", verb);
         return FALSE;
     }
     else if (madeby == BY_OBJECT
@@ -1268,19 +1268,19 @@ struct obj *obj;
     else if (Underwater)
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        pline("Turbulence torpedoes your %s attempts.", verbing);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Turbulence torpedoes your %s attempts.", verbing);
     } 
     else if (u.dz < 0) 
     {
         if (Levitation)
         {
             play_sfx_sound(SFX_GENERAL_NOT_ENOUGH_LEVERAGE);
-            You("don't have enough leverage.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have enough leverage.");
         }
         else
         {
             play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-            You_cant("reach the %s.", ceiling(u.ux, u.uy));
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "reach the %s.", ceiling(u.ux, u.uy));
         }
     } 
     else if (!u.dx && !u.dy && !u.dz)
@@ -1543,7 +1543,7 @@ struct obj *obj;
     else if (is_pool_or_lava(u.ux, u.uy)) 
     {
         /* Monsters which swim also happen not to be able to dig */
-        You("cannot stay under%s long enough.",
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot stay under%s long enough.",
             is_pool(u.ux, u.uy) ? "water" : " the lava");
     }
     else if ((trap = t_at(u.ux, u.uy)) != 0

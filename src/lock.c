@@ -192,7 +192,7 @@ picklock(VOID_ARGS)
                 what = (xlock.box->otyp == CHEST) ? "chest" : "box";
                 alreadyunlocked = !xlock.box->olocked;
             }
-            You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "succeed in disarming the trap.  The %s is still %slocked.",
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "succeed in disarming the trap.  The %s is still %slocked.",
                 what, alreadyunlocked ? "un" : "");
             exercise(A_WIS, TRUE);
         } else {
@@ -202,7 +202,7 @@ picklock(VOID_ARGS)
         return ((xlock.usedtime = 0));
     }
 
-    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "succeed in %s.", lock_action());
+    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "succeed in %s.", lock_action());
     if (xlock.door) 
     {
         play_simple_location_sound(xlock.x, xlock.y, xlock.door->doormask & D_LOCKED ? LOCATION_SOUND_TYPE_UNLOCK : LOCATION_SOUND_TYPE_LOCK);
@@ -426,15 +426,15 @@ forcelock(VOID_ARGS)
     {
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         if (xlock.box->keyotyp == MAGIC_KEY)
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "fail to force the magic lock on the %s.", cxname(xlock.box));
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to force the magic lock on the %s.", cxname(xlock.box));
         else
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "fail to force the lock on the %s.", cxname(xlock.box));
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to force the lock on the %s.", cxname(xlock.box));
 
         return 0;
     }
 
     play_simple_container_sound(xlock.box, CONTAINER_SOUND_TYPE_BREAK_LOCK);
-    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "succeed in forcing the lock.");
+    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "succeed in forcing the lock.");
     exercise(xlock.picktyp ? A_DEX : A_STR, TRUE);
     /* breakchestlock() might destroy xlock.box; if so, xlock context will
        be cleared (delobj -> obfree -> maybe_reset_pick); but it might not,
@@ -526,7 +526,7 @@ struct obj *pick;
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) 
     {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "hold %s -- you have no hands!", doname(pick));
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "hold %s -- you have no hands!", doname(pick));
         return PICKLOCK_DID_NOTHING;
     }
     else if (u.uswallow)
@@ -629,7 +629,7 @@ boolean is_auto;
                     if (!is_auto)
                     {
                         play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-                        You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "reach %s from up here.", the(xname(otmp)));
+                        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "reach %s from up here.", the(xname(otmp)));
                     }
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
@@ -709,7 +709,7 @@ boolean is_auto;
         if (u.utrap && u.utraptype == TT_PIT) 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-            You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "reach over the edge of the pit.");
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "reach over the edge of the pit.");
             return PICKLOCK_LEARNED_SOMETHING;
         }
 
@@ -847,7 +847,7 @@ doforce()
     char qbuf[QBUFSZ];
 
     if (u.uswallow) {
-        You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "force anything from inside here.");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "force anything from inside here.");
         return 0;
     }
     if (!uwep /* proper type test */
@@ -958,13 +958,13 @@ int x, y;
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "open anything -- you have no hands!");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "open anything -- you have no hands!");
         return 0;
     }
 
     if (u.utrap && u.utraptype == TT_PIT) {
         play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-        You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "reach over the edge of the pit.");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "reach over the edge of the pit.");
         return 0;
     }
 
@@ -1208,13 +1208,13 @@ doclose()
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "close anything -- you have no hands!");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "close anything -- you have no hands!");
         return 0;
     }
 
     if (u.utrap && u.utraptype == TT_PIT) {
         play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-        You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "reach over the edge of the pit.");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "reach over the edge of the pit.");
         return 0;
     }
 

@@ -859,6 +859,7 @@ int roomno;
                    != 0) 
         {
             int ngen = mvitals[PM_GHOST].born;
+            play_sfx_sound(SFX_SURPRISE_ATTACK);
             if (canspotmon(mtmp))
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "A%s ghost appears next to you%c",
                       ngen < 5 ? "n enormous" : "",

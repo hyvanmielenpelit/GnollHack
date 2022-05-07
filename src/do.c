@@ -5581,7 +5581,8 @@ dodown()
                 }
                 else
                 {
-                    You("were unable to fit %s.", down_or_thru);
+                    play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
+                    You_ex(ATR_NONE, CLR_MSG_FAIL, "were unable to fit %s.", down_or_thru);
                     return 0;
                 }
             } 
@@ -6247,8 +6248,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     if (displaywakeup)
     {
         play_sfx_sound(SFX_REVIVAL);
-        pline_ex1(ATR_NONE, CLR_MSG_SUCCESSFUL, wakeupbuf);
-        display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_REVIVAL, ATR_NONE, CLR_MSG_SUCCESSFUL, NO_GLYPH, POPUP_FLAGS_NONE);
+        pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, wakeupbuf);
+        display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_REVIVAL, ATR_NONE, CLR_MSG_SUCCESS, NO_GLYPH, POPUP_FLAGS_NONE);
     }
 
     /* special levels can have a custom arrival message */

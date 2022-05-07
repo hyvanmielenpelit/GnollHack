@@ -788,7 +788,7 @@ boolean is_golf_swing;
                 find_trap(trap);
 
             play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-            You_cant("%s %s that's in a %s!", 
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s that's in a %s!", 
                 verb,
                 something,
                 Hallucination ? "tizzy" : (trap->ttyp == WEB) ? "web" : "pit");
@@ -945,7 +945,7 @@ boolean is_golf_swing;
                 if (kickedobj->keyotyp == STRANGE_OBJECT || kickedobj->keyotyp == NON_PM || kickedobj->keyotyp == SKELETON_KEY)
                 {
                     play_simple_container_sound(kickedobj, CONTAINER_SOUND_TYPE_BREAK_LOCK);
-                    You_ex(ATR_NONE, CLR_MSG_SUCCESSFUL, "break open the lock!");
+                    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "break open the lock!");
                     breakchestlock(kickedobj, FALSE);
                     if (otrp)
                         (void) chest_trap(kickedobj, LEG, FALSE);
@@ -1238,7 +1238,7 @@ dokick() {
             if (!Passes_walls)
             {
                 play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-                pline("There's not enough room to kick down here.");
+                pline_ex(ATR_NONE, CLR_MSG_FAIL, "There's not enough room to kick down here.");
             }
             else
                 no_kick = FALSE;
@@ -1246,7 +1246,7 @@ dokick() {
         case TT_WEB:
         case TT_BEARTRAP:
             play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-            You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "move your %s!", body_part(LEG));
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "move your %s!", body_part(LEG));
             break;
         default:
             break;
@@ -1292,7 +1292,7 @@ dokick() {
         {
         case 0:
             play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-            You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "move your %s!", body_part(LEG));
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "move your %s!", body_part(LEG));
             break;
         case 1:
             if (is_animal(u.ustuck->data))

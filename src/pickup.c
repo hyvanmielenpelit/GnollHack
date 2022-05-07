@@ -2184,7 +2184,7 @@ doloot()
                 if (mtmp)
                 {
                     play_sfx_sound(SFX_SOMETHING_IN_WAY);
-                    You_cant_ex(ATR_NONE, CLR_MSG_ATTENTION, "loot anything %sthere with %s in the way.",
+                    You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "loot anything %sthere with %s in the way.",
                              prev_inquiry ? "else " : "", mon_nam(mtmp));
                     return timepassed;
                 } 
@@ -2330,12 +2330,12 @@ boolean *prev_loot;
             if (nolimbs(youmonst.data)) 
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You_cant_ex(ATR_NONE, CLR_MSG_WARNING, "do that without limbs."); /* not body_part(HAND) */
+                You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that without limbs."); /* not body_part(HAND) */
                 return 0;
             }
             if (otmp->cursed)
             {
-                You_ex(ATR_NONE, CLR_MSG_WARNING, "can't.  The saddle seems to be stuck to %s.",
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "can't.  The saddle seems to be stuck to %s.",
                     x_monnam(mtmp, ARTICLE_THE, (char *) 0,
                              SUPPRESS_SADDLE, FALSE));
                 /* the attempt costs you time */

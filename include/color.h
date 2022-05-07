@@ -61,7 +61,8 @@
 #define CLR_MSG_GOD           CLR_MAGENTA
 #define CLR_MSG_SPELL         CLR_BRIGHT_BLUE /* The same as HI_ZAP */
 #define CLR_MSG_MYSTICAL      CLR_CYAN
-#define CLR_MSG_SUCCESSFUL    CLR_BRIGHT_GREEN
+#define CLR_MSG_SUCCESS       CLR_BRIGHT_GREEN
+#define CLR_MSG_FAIL          CLR_BROWN
 #define CLR_MSG_HINT          CLR_BRIGHT_CYAN
 
 struct menucoloring {

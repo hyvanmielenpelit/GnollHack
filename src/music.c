@@ -759,14 +759,14 @@ struct obj *instr;
     if (Underwater) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant("play music underwater!");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "play music underwater!");
         return 0;
     }
     else if ((objects[instr->otyp].oc_subtyp == TOOLTYPE_FLUTE || objects[instr->otyp].oc_subtyp == TOOLTYPE_HORN)
                && !can_blow(&youmonst)) 
     {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "are incapable of playing %s.", the(distant_name(instr, xname)));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "are incapable of playing %s.", the(distant_name(instr, xname)));
         return 0;
     }
 
