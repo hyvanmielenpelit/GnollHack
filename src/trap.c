@@ -5818,7 +5818,7 @@ struct trap *ttmp;
 
     /* Will our hero succeed? */
     untrap_ok = succeed_untrap(ttmp);
-    if (!untrap_ok && mon_can_move(mtmp))
+    if (untrap_ok && mon_can_move(mtmp) && !is_tame(mtmp) && !is_peaceful(mtmp) && rn2(3))
     {
         play_sfx_sound(SFX_MONSTER_DOES_NOT_ALLOW);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "try to reach out your %s, but %s backs away skeptically.",
