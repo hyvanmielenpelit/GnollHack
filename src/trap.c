@@ -5771,6 +5771,7 @@ boolean stuff;
 
     if (((wt * 2) / wc) >= HVY_ENCUMBER) 
     {
+        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is %s for you to lift.", Monnam(mtmp),
               stuff ? "carrying too much" : "too heavy");
         if (!ttmp->madeby_u && !is_peaceful(mtmp) && mon_can_move(mtmp)
@@ -5889,6 +5890,7 @@ struct trap *ttmp;
     if (!try_lift(mtmp, ttmp, wt, TRUE))
         return 1;
 
+    play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
     You_ex(ATR_NONE, CLR_MSG_SUCCESS, "pull %s out of the pit.", mon_nam(mtmp));
     mtmp->mtrapped = 0;
     fill_pit(mtmp->mx, mtmp->my);
