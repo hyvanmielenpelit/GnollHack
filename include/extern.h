@@ -566,6 +566,7 @@ E void FDECL(update_tile_gui_info, (BOOLEAN_P, struct monst*, int, int, unsigned
 E void FDECL(refresh_u_tile_gui_info, (BOOLEAN_P));
 E void FDECL(refresh_m_tile_gui_info, (struct monst*, BOOLEAN_P));
 E void FDECL(set_obj_glyph, (struct obj*));
+E int FDECL(get_seen_monster_glyph, (struct monst*));
 
 /* ### do.c ### */
 

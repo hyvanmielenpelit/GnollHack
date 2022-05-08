@@ -5307,4 +5307,17 @@ struct obj* otmp;
     otmp->gui_glyph = gui_glyph;
 }
 
+int
+get_seen_monster_glyph(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return NO_GLYPH;
+
+    int glyph = any_seen_mon_to_glyph(mtmp, rn2_on_display_rng);
+    int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL));
+
+    return iflags.using_gui_tiles ? gui_glyph : glyph;
+}
+
 /*display.c*/

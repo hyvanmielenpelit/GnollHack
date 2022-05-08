@@ -2294,7 +2294,7 @@ dochat()
         anything any;
 
         any = zeroany;
-        win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_MENU, any_seen_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
+        win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
         start_menu_ex(win, GHMENU_STYLE_CHAT);
 
         struct available_chat_item available_chat_list[MAXCHATNUM] = { {0} };
@@ -5618,7 +5618,7 @@ struct monst* mtmp;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, any_seen_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
     start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
 
     
@@ -5867,7 +5867,7 @@ struct monst* mtmp;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, any_seen_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
     start_menu_ex(win, GHMENU_STYLE_OTHERS_INVENTORY);
 
 
@@ -7003,7 +7003,7 @@ struct monst* mtmp;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, any_seen_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
     start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
 
     any = zeroany;
@@ -7111,7 +7111,7 @@ struct monst* mtmp;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, 0, any_seen_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_GENERAL, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
     start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
 
 
@@ -9711,7 +9711,7 @@ int* spell_otyps;
     anything any;
 
     any = zeroany;
-    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, any_seen_mon_to_glyph(mtmp, rn2_on_display_rng), extended_create_window_info_from_mon(mtmp));
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_ITEM_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
     start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
 
     for(spell_otyp_ptr = spell_otyps; spell_otyp_ptr && *spell_otyp_ptr > STRANGE_OBJECT; spell_otyp_ptr++)
