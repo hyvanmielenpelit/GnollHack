@@ -26,6 +26,9 @@ namespace GnollHackClient
         private static SKColor GHRed = new SKColor(255, 32, 32);
         private static SKColor GHGreen = new SKColor(0, 255, 0);
         private static SKColor GHBlue = new SKColor(112, 112, 255);
+        private static SKColor GHBrown = new SKColor(210, 128, 32);
+        private static SKColor GHBrightBlue = new SKColor(200, 200, 255);
+        private static SKColor GHBrightCyan = new SKColor(200, 255, 255);
 
         public static SKColor NHColor2SKColor(int nhclr, int attr)
         {
@@ -50,7 +53,7 @@ namespace GnollHackClient
                     if(usealtcolors)
                         res = GHTitleGold;
                     else
-                        res = revertblackwhite ? SKColors.Brown : SKColors.SandyBrown;
+                        res = revertblackwhite ? SKColors.Brown : GHBrown;
                     break;
                 case nhcolor.CLR_BLUE:
                     res = revertblackwhite ? SKColors.Blue : GHBlue;
@@ -76,13 +79,13 @@ namespace GnollHackClient
                     res = SKColors.Yellow;
                     break;
                 case nhcolor.CLR_BRIGHT_BLUE:
-                    res = SKColors.LightBlue;
+                    res = revertblackwhite ? SKColors.LightBlue : GHBrightBlue;
                     break;
                 case nhcolor.CLR_BRIGHT_MAGENTA:
                     res = SKColors.LightPink;
                     break;
                 case nhcolor.CLR_BRIGHT_CYAN:
-                    res = SKColors.LightCyan;
+                    res = revertblackwhite ? SKColors.LightCyan : GHBrightCyan;
                     break;
                 case nhcolor.CLR_WHITE:
                     res = revertblackwhite ? SKColors.Black : SKColors.White;
@@ -98,6 +101,9 @@ namespace GnollHackClient
         private static Color XRed = new Color((double)0xFF / 255.0, 32.0 / 255.0, 32.0 / 255.0);
         private static Color XGreen = new Color(0, (double)0xFF / 255, 0);
         private static Color XBlue = new Color(112.0 / 255.0, 112.0 / 255.0, (double)0xFF / 255.0);
+        private static Color XBrown = new Color(210.0 / 255.0, 128.0 / 255.0, 32.0 / 255.0);
+        private static Color XBrightBlue = new Color(200.0 / 255.0, 200.0 / 255.0, (double)0xFF / 255.0);
+        private static Color XBrightCyan = new Color(200.0 / 255.0, 255.0 / 255.0, (double)0xFF / 255.0);
         private static Color XTitleGoldColor = new Color((double)0xD4 / 255, (double)0xA0 / 255, (double)0x17 / 255);
         public static Color NHColor2XColor(int nhclr, int attr, bool revertblackandwhite, bool istitle)
         {
@@ -118,7 +124,7 @@ namespace GnollHackClient
                     if(usealtcolors)
                         res = XTitleGoldColor;
                     else
-                        res = revertblackandwhite ? Color.Brown : Color.SandyBrown;
+                        res = revertblackandwhite ? Color.Brown : XBrown;
                     break;
                 case nhcolor.CLR_BLUE:
                     res = revertblackandwhite ? Color.Blue : XBlue;
@@ -144,13 +150,13 @@ namespace GnollHackClient
                     res = Color.Yellow;
                     break;
                 case nhcolor.CLR_BRIGHT_BLUE:
-                    res = Color.LightBlue;
+                    res = revertblackandwhite ? Color.LightBlue : XBrightBlue;
                     break;
                 case nhcolor.CLR_BRIGHT_MAGENTA:
                     res = Color.LightPink;
                     break;
                 case nhcolor.CLR_BRIGHT_CYAN:
-                    res = Color.LightCyan;
+                    res = revertblackandwhite ? Color.LightCyan : XBrightCyan;
                     break;
                 case nhcolor.CLR_WHITE:
                     res = revertblackandwhite ? Color.Black : Color.White;

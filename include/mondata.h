@@ -860,6 +860,10 @@
     (((mon) == &youmonst && (Blind || Unaware || Flash_resistance)) || (is_blinded(mon) \
     || !haseyes((mon)->data) || is_sleeping(mon) || resists_flash(mon)))
 
+#define is_immune_to_life_leech(ptr) \
+    (is_rider(ptr) || is_not_living(ptr))
+#define resists_life_leech(mon) \
+    (is_immune_to_life_leech((mon)->data) || is_vampshifter(mon))
 
 /* monkeys are tameable via bananas but not pacifiable via food,
    otherwise their theft attack could be nullified too easily;

@@ -77,13 +77,14 @@ boolean firing;
     if (!canletgo(obj, firing ? "fire" : "throw"))
         return 0;
     if ((objects[obj->otyp].oc_flags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED) && obj != uwep) {
-        pline("%s must be wielded before it can be thrown.", The(xname(obj)));
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s must be wielded before it can be thrown.", The(xname(obj)));
         return 0;
     }
     if (//(obj->oartifact == ART_MJOLLNIR && ACURR(A_STR) < STR18(100)) //STR19(25)
         (obj->otyp == BOULDER && !(throws_rocks(youmonst.data))))  // || (int)obj->owt <= enclevelmaximumweight(UNENCUMBERED))))
     {
-        pline("It's too heavy.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "It's too heavy.");
         return 1;
     }
     if (!u.dx && !u.dy && !u.dz) {

@@ -2095,7 +2095,7 @@ register struct obj* omonwep;
     }
 
     /* Life leech */
-    if (mweapon && !isdisintegrated && !is_rider(mdef->data) && !is_not_living(mdef->data))
+    if (mweapon && !isdisintegrated && !resists_life_leech(mdef))
     {
         int extradmg = 0;
         if (!uses_spell_flags && (objects[mweapon->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr)

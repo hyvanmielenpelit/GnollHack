@@ -5970,21 +5970,21 @@ struct obj* obj;
         no_golf_swing = TRUE;
         if (!uwep || uwep != obj)
         {
-            You("must wield %s first.", the(cxname(obj)));
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "must wield %s first.", the(cxname(obj)));
         }
         else
         {
-            You("must have both hands free to use %s.", the(cxname(obj)));
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "must have both hands free to use %s.", the(cxname(obj)));
         }
     }
     else if (near_capacity() > SLT_ENCUMBER) 
     {
-        Your("load is too heavy to balance yourself for a golf swing.");
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "load is too heavy to balance yourself for a golf swing.");
         no_golf_swing = TRUE;
     }
     else if (u.uinwater && !rn2(2)) 
     {
-        Your("slow motion golf swing doesn't hit anything.");
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "slow motion golf swing doesn't hit anything.");
         no_golf_swing = TRUE;
     }
     else if (u.utrap) 

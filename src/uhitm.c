@@ -2155,7 +2155,7 @@ boolean* obj_destroyed;
     }
 
     /* Life leech */
-    if (obj && !is_not_living(mon->data) && !is_rider(mon->data))
+    if (obj && !resists_life_leech(mon))
     {
         int extradmg = 0;
         if (

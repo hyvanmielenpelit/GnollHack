@@ -851,12 +851,12 @@ boolean checkfeeding;
     if (steed) {
         /* check whether steed can move */
         if (!mon_can_move(steed)) {
-            pline("%s won't move!", upstart(y_monnam(steed)));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s won't move!", upstart(y_monnam(steed)));
             return TRUE;
         }
         /* optionally check whether steed is in the midst of a meal */
         if (checkfeeding && steed->meating) {
-            pline("%s is still eating.", upstart(y_monnam(steed)));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is still eating.", upstart(y_monnam(steed)));
             return TRUE;
         }
     }

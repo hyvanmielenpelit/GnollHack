@@ -3144,7 +3144,7 @@ register struct obj* omonwep;
     }
 
     /* Life leech */
-    if (mattk->aatyp == AT_WEAP && omonwep && !is_not_living(youmonst.data) && !is_rider(youmonst.data))
+    if (mattk->aatyp == AT_WEAP && omonwep && !is_immune_to_life_leech(youmonst.data))
     {
         int life_leech = 0;
         if (!uses_spell_flags && (objects[omonwep->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)

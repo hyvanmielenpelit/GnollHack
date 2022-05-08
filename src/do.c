@@ -5636,7 +5636,7 @@ doup()
     }
     if (u.ustuck) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are %s, and cannot go up.",
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "are %s, and cannot go up.",
             !u.uswallow ? "being held" : is_animal(u.ustuck->data)
                                              ? "swallowed"
                                              : "engulfed");
@@ -5644,7 +5644,8 @@ doup()
     }
     if (near_capacity() > SLT_ENCUMBER) {
         /* No levitation check; inv_weight() already allows for it */
-        Your("load is too heavy to climb the %s.",
+        play_sfx_sound(SFX_GENERAL_TOO_MUCH_ENCUMBRANCE);
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "load is too heavy to climb the %s.",
              levl[u.ux][u.uy].typ == STAIRS ? "stairs" : "ladder");
         return 1;
     }
@@ -5655,7 +5656,8 @@ doup()
             return 0;
     }
     if (!next_to_u()) {
-        You("are held back by your pet!");
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "are held back by your pet!");
         return 0;
     }
     at_ladder = (boolean) (levl[u.ux][u.uy].typ == LADDER);

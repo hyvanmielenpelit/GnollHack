@@ -1175,13 +1175,13 @@ dokick() {
     if (nolimbs(youmonst.data) || slithy(youmonst.data)) 
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "have no legs to kick with.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "have no legs to kick with.");
         no_kick = TRUE;
     }
     else if (verysmall(youmonst.data))
     {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "are too small to do any kicking.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "are too small to do any kicking.");
         no_kick = TRUE;
     } 
     else if (u.usteed) 
@@ -1206,7 +1206,7 @@ dokick() {
         if (wl == BOTH_SIDES)
             bp = makeplural(bp);
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s in no shape for kicking.",
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "%s%s %s in no shape for kicking.",
              (wl == LEFT_SIDE) ? "left " : (wl == RIGHT_SIDE) ? "right " : "",
              bp, (wl == BOTH_SIDES) ? "are" : "is");
         no_kick = TRUE;
@@ -1214,13 +1214,13 @@ dokick() {
     else if (near_capacity() > SLT_ENCUMBER)
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        Your_ex(ATR_NONE, CLR_MSG_WARNING, "load is too heavy to balance yourself for a kick.");
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "load is too heavy to balance yourself for a kick.");
         no_kick = TRUE;
     }
     else if (youmonst.data->mlet == S_LIZARD) 
     {
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-        Your_ex(ATR_NONE, CLR_MSG_WARNING, "legs cannot kick effectively.");
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "legs cannot kick effectively.");
         no_kick = TRUE;
     } 
     else if (u.uinwater && !rn2(2)) 
