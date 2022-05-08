@@ -1119,6 +1119,17 @@ namespace GnollHackClient.Pages.Game
                             break;
                     }
                     break;
+                case (char)27:
+                    switch (data.style)
+                    {
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_FIND_TRAP:
+                            icon_string = "GnollHackClient.Assets.UI.yes.png";
+                            break;
+                        default:
+                            icon_string = "GnollHackClient.Assets.UI.no.png";
+                            break;
+                    }
+                    break;
                 default:
                     if (data.cmd_def_char == LastPickedCmd)
                         icon_string = "GnollHackClient.Assets.UI.lastitem.png";

@@ -1885,6 +1885,7 @@ struct trap *trap;
         trap_to_glyph(trap, rn2_on_display_rng)) {
         /* There's too much clutter to see your find otherwise */
         cls();
+        create_context_menu(CREATE_CONTEXT_MENU_FIND_TRAP);
         map_trap(trap, 1);
         display_self();
         cleared = TRUE;
@@ -1896,6 +1897,7 @@ struct trap *trap;
     if (cleared) {
         display_nhwindow(WIN_MAP, TRUE); /* wait */
         docrt();
+        create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
     }
 }
 

@@ -1055,6 +1055,7 @@ namespace GnollHackCommon
         CONTEXT_MENU_STYLE_GENERAL = 0,
         CONTEXT_MENU_STYLE_GETDIR,
         CONTEXT_MENU_STYLE_GETPOS,
+        CONTEXT_MENU_STYLE_FIND_TRAP,
     }
 
     public enum getline_types
