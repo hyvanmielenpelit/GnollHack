@@ -888,6 +888,24 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Hint", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Revival", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Error/Not Ready Yet", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Artifact Name Known", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Zoo", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Swamp", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Court", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Leprechaun Hall", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Morgue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Morgue Midnight", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Beehive", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Garden", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Deserted Shop", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Library", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Dragon Lair", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Cockatrice Nest", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Anthole", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Barracks", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Abandoned Barracks", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Enter/Armory", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Intro/Intro Text", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Quests/Com Pager", 1.0f },
@@ -10747,8 +10765,92 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_NOT_READY_YET, 1.0f},
         FALSE, SOUND_PLAY_GROUP_NORMAL
     },
+    {
+        "GHSOUND_ARTIFACT_NAME_KNOWN",
+        {GHSOUND_ARTIFACT_NAME_KNOWN, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_ZOO",
+        {GHSOUND_ENTER_ZOO, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_SWAMP",
+        {GHSOUND_ENTER_SWAMP, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_COURT",
+        {GHSOUND_ENTER_COURT, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_LEPRECHAUN_HALL",
+        {GHSOUND_ENTER_LEPRECHAUN_HALL, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_MORGUE",
+        {GHSOUND_ENTER_MORGUE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_MORGUE_MIDNIGHT",
+        {GHSOUND_ENTER_MORGUE_MIDNIGHT, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_BEEHIVE",
+        {GHSOUND_ENTER_BEEHIVE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_GARDEN",
+        {GHSOUND_ENTER_GARDEN, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_DESERTED_SHOP",
+        {GHSOUND_ENTER_DESERTED_SHOP, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_LIBRARY",
+        {GHSOUND_ENTER_LIBRARY, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_DRAGON_LAIR",
+        {GHSOUND_ENTER_DRAGON_LAIR, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_COCKATRICE_NEST",
+        {GHSOUND_ENTER_COCKATRICE_NEST, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_ANTHOLE",
+        {GHSOUND_ENTER_ANTHOLE, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_BARRACKS",
+        {GHSOUND_ENTER_BARRACKS, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_ABANDONED_BARRACKS",
+        {GHSOUND_ENTER_ABANDONED_BARRACKS, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_ENTER_ARMORY",
+        {GHSOUND_ENTER_ARMORY, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
 };
-
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
 {

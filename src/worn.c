@@ -192,11 +192,14 @@ boolean verbose_and_update_stats;
     /* Readying a weapon to quiver or swap weapon slot does not trigger artifact name discovery -- JG */
     if ((mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)) && obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED)))
     {
-        if(verbose_and_update_stats)
-            pline("As you %s %s, you become aware that %s named %s!", 
-            (mask == W_WEP || (u.twoweap && mask == W_WEP2)) ? "wield" : "wear", the(cxname(obj)), 
+        if (verbose_and_update_stats)
+        {
+            play_sfx_sound(SFX_ARTIFACT_NAME_KNOWN);
+            pline_ex(ATR_NONE, CLR_MSG_HINT, "As you %s %s, you become aware that %s named %s!",
+                (mask == W_WEP || (u.twoweap && mask == W_WEP2)) ? "wield" : "wear", the(cxname(obj)),
                 (pair_of(obj) || obj->quan > 1) ? "they are" : "it is",
                 bare_artifactname(obj));
+        }
         obj->nknown = TRUE;
     }
 

@@ -2967,57 +2967,80 @@ register boolean newlev;
          * but everything else gives a message only the first time */
         switch (rt) {
         case ZOO:
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Welcome to David's treasure zoo!");
+            play_sfx_sound(SFX_ENTER_ZOO);
+            pline_ex(ATR_NONE, CLR_MSG_HINT, "Welcome to David's treasure zoo!");
             break;
         case SWAMP:
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "It %s rather %s down here.", Blind ? "feels" : "looks",
+            play_sfx_sound(SFX_ENTER_SWAMP);
+            pline_ex(ATR_NONE, CLR_MSG_HINT, "It %s rather %s down here.", Blind ? "feels" : "looks",
                   Blind ? "humid" : "muddy");
             break;
         case COURT:
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter an opulent throne room!");
+            play_sfx_sound(SFX_ENTER_COURT);
+            You_ex(ATR_NONE, CLR_MSG_HINT, "enter an opulent throne room!");
             break;
         case LEPREHALL:
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a leprechaun hall!");
+            play_sfx_sound(SFX_ENTER_LEPRECHAUN_HALL);
+            You_ex(ATR_NONE, CLR_MSG_HINT, "enter a leprechaun hall!");
             break;
         case MORGUE:
             if (midnight()) {
+                play_sfx_sound(SFX_ENTER_MORGUE_MIDNIGHT);
                 const char *run = locomotion(youmonst.data, "Run");
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s away!  %s away!", run, run);
-            } else
-                You_ex(ATR_NONE, CLR_MSG_WARNING, "have an uncanny feeling...");
+            }
+            else
+            {
+                play_sfx_sound(SFX_ENTER_MORGUE);
+                You_ex(ATR_NONE, CLR_MSG_HINT, "have an uncanny feeling...");
+            }
             break;
         case BEEHIVE:
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a giant beehive!");
+            play_sfx_sound(SFX_ENTER_BEEHIVE);
+            You_ex(ATR_NONE, CLR_MSG_HINT, "enter a giant beehive!");
             break;
         case GARDEN:
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a lovely underground garden!");
+            play_sfx_sound(SFX_ENTER_GARDEN);
+            You_ex(ATR_NONE, CLR_MSG_HINT, "enter a lovely underground garden!");
             break;
         case DESERTEDSHOP:
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a shop that has been deserted a long time ago!");
+            play_sfx_sound(SFX_ENTER_DESERTED_SHOP);
+            You_ex(ATR_NONE, CLR_MSG_HINT, "enter a shop that has been deserted a long time ago!");
             break;
         case LIBRARY:
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a library!");
+            play_sfx_sound(SFX_ENTER_LIBRARY);
+            You_ex(ATR_NONE, CLR_MSG_HINT, "enter a library!");
             break;
         case DRAGONLAIR:
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a dragon lair!");
+            play_sfx_sound(SFX_ENTER_DRAGON_LAIR);
+            You_ex(ATR_NONE, CLR_MSG_HINT, "enter a dragon lair!");
             break;
         case COCKNEST:
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a disgusting nest!");
+            play_sfx_sound(SFX_ENTER_COCKATRICE_NEST);
+            You_ex(ATR_NONE, CLR_MSG_HINT, "enter a disgusting nest!");
             break;
         case ANTHOLE:
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter an anthole!");
+            play_sfx_sound(SFX_ENTER_ANTHOLE);
+            You_ex(ATR_NONE, CLR_MSG_HINT, "enter an anthole!");
             break;
         case BARRACKS:
             if (monstinroom(&mons[PM_SOLDIER], roomno)
                 || monstinroom(&mons[PM_SERGEANT], roomno)
                 || monstinroom(&mons[PM_LIEUTENANT], roomno)
                 || monstinroom(&mons[PM_CAPTAIN], roomno))
-                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter a military barracks!");
+            {
+                play_sfx_sound(SFX_ENTER_BARRACKS);
+                You_ex(ATR_NONE, CLR_MSG_HINT, "enter a military barracks!");
+            }
             else
-                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter an abandoned barracks.");
+            {
+                play_sfx_sound(SFX_ENTER_ABANDONED_BARRACKS);
+                You_ex(ATR_NONE, CLR_MSG_HINT, "enter an abandoned barracks.");
+            }
             break;
         case ARMORY:
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "enter an armory!");
+            play_sfx_sound(SFX_ENTER_ARMORY);
+            You_ex(ATR_NONE, CLR_MSG_HINT, "enter an armory!");
             break;
         case DELPHI: {
             struct monst *oracle = monstinroom(&mons[PM_ORACLE], roomno);

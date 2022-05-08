@@ -743,7 +743,8 @@ struct monst *mon;
 
             if (!obj->nknown && (oart->aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP)))
             {
-                pline("As you touch %s, you become aware that it is called %s!", the(cxname(obj)), bare_artifactname(obj));
+                play_sfx_sound(SFX_ARTIFACT_NAME_KNOWN);
+                pline_ex(ATR_NONE, CLR_MSG_HINT, "As you touch %s, you become aware that it is called %s!", the(cxname(obj)), bare_artifactname(obj));
                 obj->nknown = TRUE;
             }
         }
@@ -2972,7 +2973,8 @@ struct obj* obj;
 {
     if (obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_INVOKED)))
     {
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As you invoke %s, %syou become aware that %s named %s!", the(cxname(obj)),
+        play_sfx_sound(SFX_ARTIFACT_NAME_KNOWN);
+        pline_ex(ATR_NONE, CLR_MSG_HINT, "As you invoke %s, %syou become aware that %s named %s!", the(cxname(obj)),
             obj->oartifact == ART_HOWLING_FLAIL ? "it lets loose a majestic howl and " : "",
             (pair_of(obj) || obj->quan > 1) ? "they are" : "it is", bare_artifactname(obj));
         obj->nknown = TRUE;
