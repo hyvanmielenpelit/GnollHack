@@ -27,8 +27,8 @@ namespace GnollHackClient
         private static SKColor GHGreen = new SKColor(0, 255, 0);
         private static SKColor GHBlue = new SKColor(112, 112, 255);
         private static SKColor GHBrown = new SKColor(210, 128, 32);
-        private static SKColor GHBrightBlue = new SKColor(200, 200, 255);
-        private static SKColor GHBrightCyan = new SKColor(200, 255, 255);
+        private static SKColor GHBrightBlue = new SKColor(180, 200, 255);
+        private static SKColor GHBrightCyan = new SKColor(165, 255, 255);
 
         public static SKColor NHColor2SKColor(int nhclr, int attr)
         {
@@ -102,8 +102,8 @@ namespace GnollHackClient
         private static Color XGreen = new Color(0, (double)0xFF / 255, 0);
         private static Color XBlue = new Color(112.0 / 255.0, 112.0 / 255.0, (double)0xFF / 255.0);
         private static Color XBrown = new Color(210.0 / 255.0, 128.0 / 255.0, 32.0 / 255.0);
-        private static Color XBrightBlue = new Color(200.0 / 255.0, 200.0 / 255.0, (double)0xFF / 255.0);
-        private static Color XBrightCyan = new Color(200.0 / 255.0, 255.0 / 255.0, (double)0xFF / 255.0);
+        private static Color XBrightBlue = new Color(180.0 / 255.0, 200.0 / 255.0, (double)0xFF / 255.0);
+        private static Color XBrightCyan = new Color(165.0 / 255.0, 255.0 / 255.0, (double)0xFF / 255.0);
         private static Color XTitleGoldColor = new Color((double)0xD4 / 255, (double)0xA0 / 255, (double)0x17 / 255);
         public static Color NHColor2XColor(int nhclr, int attr, bool revertblackandwhite, bool istitle)
         {
