@@ -175,7 +175,7 @@
                         <TableSection>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="Normal Auto-Center"
+                                    <Label Text="Normal Zoom Auto-Center"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
@@ -185,7 +185,7 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="Alternate Auto-Center"
+                                    <Label Text="Alternate Zoom Auto-Center"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
@@ -195,7 +195,7 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="Zoom Change Center"
+                                    <Label Text="Center at Zoom Change"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
