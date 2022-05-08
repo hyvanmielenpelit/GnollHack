@@ -2131,7 +2131,7 @@ boolean* obj_destroyed;
         }
 
         if (has_obj_mythic_wounding(obj))
-            extradmg += mythic_wounding_amount();
+            extradmg += mythic_wounding_amount(obj);
 
         if (extradmg > 0)
         {
@@ -2183,7 +2183,7 @@ boolean* obj_destroyed;
         }
 
         if (has_obj_mythic_life_draining(obj))
-            extradmg += mythic_life_draining_amount();
+            extradmg += mythic_life_draining_amount(obj);
 
         if (extradmg > 0)
         {

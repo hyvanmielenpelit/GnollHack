@@ -2048,7 +2048,9 @@ struct monst *mtmp;
             cansee(mtmp->mx, mtmp->my) ? "" : "has ",
             cansee(mtmp->mx, mtmp->my) ? "" : "ed",
             buf);
+        create_context_menu(CREATE_CONTEXT_MENU_BLOCKING_WINDOW);
         display_nhwindow(WIN_MAP, TRUE);
+        create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
     }
 }
 

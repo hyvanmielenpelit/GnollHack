@@ -3135,7 +3135,7 @@ register struct obj* omonwep;
         }
 
         if (has_obj_mythic_wounding(omonwep))
-            permdmg2 += mythic_wounding_amount();
+            permdmg2 += mythic_wounding_amount(omonwep);
 
         if (permdmg2 > 0)
         {
@@ -3170,7 +3170,7 @@ register struct obj* omonwep;
         }
 
         if (has_obj_mythic_life_draining(omonwep))
-            life_leech += mythic_life_draining_amount();
+            life_leech += mythic_life_draining_amount(omonwep);
 
         if (life_leech > 0)
         {

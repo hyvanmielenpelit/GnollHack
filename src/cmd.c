@@ -8707,8 +8707,8 @@ enum create_context_menu_types menu_type;
         add_context_menu('.', Cmd.spkeys[NHKF_GETDIR_SELF], CONTEXT_MENU_STYLE_GETDIR, u_to_glyph(), "Self",
             0, 0, NO_COLOR);
         break;
-    case CREATE_CONTEXT_MENU_FIND_TRAP:
-        add_context_menu(27, Cmd.spkeys[NHKF_ESC], CONTEXT_MENU_STYLE_FIND_TRAP, NO_GLYPH, "Close",
+    case CREATE_CONTEXT_MENU_BLOCKING_WINDOW:
+        add_context_menu(27, Cmd.spkeys[NHKF_ESC], CONTEXT_MENU_STYLE_CLOSE_DISPLAY, NO_GLYPH, "Close",
             0, 0, NO_COLOR);
         break;
     default:

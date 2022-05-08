@@ -813,7 +813,11 @@ int class;            /* an object class, 0 for all */
         play_simple_object_sound(detector, OBJECT_SOUND_TYPE_GENERAL_EFFECT);
 
     if (!ct)
+    {
+        create_context_menu(CREATE_CONTEXT_MENU_BLOCKING_WINDOW);
         display_nhwindow(WIN_MAP, TRUE);
+        create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
+    }
     else
         browse_map(ter_typ, "object");
 
@@ -902,7 +906,9 @@ int mclass;                /* monster class, 0 for all */
 
         if ((otmp && otmp->blessed) && !unconstrained) {
             /* persistent detection--just show updated map */
+            create_context_menu(CREATE_CONTEXT_MENU_BLOCKING_WINDOW);
             display_nhwindow(WIN_MAP, TRUE);
+            create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
         } else {
             /* one-shot detection--allow player to move cursor around and
                get autodescribe feedback */
@@ -1885,7 +1891,6 @@ struct trap *trap;
         trap_to_glyph(trap, rn2_on_display_rng)) {
         /* There's too much clutter to see your find otherwise */
         cls();
-        create_context_menu(CREATE_CONTEXT_MENU_FIND_TRAP);
         map_trap(trap, 1);
         display_self();
         cleared = TRUE;
@@ -1895,9 +1900,10 @@ struct trap *trap;
     You_ex(ATR_NONE, CLR_MSG_ATTENTION, "find %s.", an(get_trap_explanation(trap)));
 
     if (cleared) {
+        create_context_menu(CREATE_CONTEXT_MENU_BLOCKING_WINDOW);
         display_nhwindow(WIN_MAP, TRUE); /* wait */
-        docrt();
         create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
+        docrt();
     }
 }
 

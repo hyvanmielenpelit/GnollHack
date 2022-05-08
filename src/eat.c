@@ -1348,7 +1348,9 @@ int pm;
             newsym(u.ux, u.uy);
             curs_on_u();
             /* make gold symbol show up now */
+            create_context_menu(CREATE_CONTEXT_MENU_BLOCKING_WINDOW);
             display_nhwindow(WIN_MAP, TRUE);
+            create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
         }
         break;
     case PM_QUANTUM_MECHANIC:

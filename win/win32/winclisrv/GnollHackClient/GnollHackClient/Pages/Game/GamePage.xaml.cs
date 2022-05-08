@@ -350,7 +350,15 @@ namespace GnollHackClient.Pages.Game
         private object _mapNoClipModeLock = new object();
         private bool _mapNoClipMode = false;
         public bool MapNoClipMode { get { lock (_mapNoClipModeLock) { return _mapNoClipMode; } } set { lock (_mapNoClipModeLock) { _mapNoClipMode = value; } } }
-        
+
+        private object _mapAlternateNoClipModeLock = new object();
+        private bool _mapAlternateNoClipMode = false;
+        public bool MapAlternateNoClipMode { get { lock (_mapAlternateNoClipModeLock) { return _mapAlternateNoClipMode; } } set { lock (_mapAlternateNoClipModeLock) { _mapAlternateNoClipMode = value; } } }
+
+        private object _zoomChangeCenterModeLock = new object();
+        private bool _zoomChangeCenterMode = false;
+        public bool ZoomChangeCenterMode { get { lock (_zoomChangeCenterModeLock) { return _zoomChangeCenterMode; } } set { lock (_zoomChangeCenterModeLock) { _zoomChangeCenterMode = value; } } }
+
         private object _mapLookModeLock = new object();
         private bool _mapLookMode = false;
         public bool MapLookMode { get { lock (_mapLookModeLock) { return _mapLookMode; } } set { lock (_mapLookModeLock) { _mapLookMode = value; } } }
@@ -464,7 +472,9 @@ namespace GnollHackClient.Pages.Game
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
             MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", deffontsize * GHConstants.MapFontRelativeAlternateSize);
-            MapNoClipMode = Preferences.Get("MapNoClipMode", false);
+            MapNoClipMode = Preferences.Get("MapNoClipMode", GHConstants.DefaultMapNoClipMode);
+            MapAlternateNoClipMode = Preferences.Get("MapAlternateNoClipMode", GHConstants.DefaultMapAlternateNoClipMode);
+            ZoomChangeCenterMode = Preferences.Get("ZoomChangeCenterMode", GHConstants.DefaultZoomChangeCenterMode);
 
             ToggleModeButton_Clicked(null, null);
             ZoomMiniMode = true;
@@ -1122,7 +1132,7 @@ namespace GnollHackClient.Pages.Game
                 case (char)27:
                     switch (data.style)
                     {
-                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_FIND_TRAP:
+                        case (int)context_menu_styles.CONTEXT_MENU_STYLE_CLOSE_DISPLAY:
                             icon_string = "GnollHackClient.Assets.UI.yes.png";
                             break;
                         default:
@@ -7967,6 +7977,11 @@ namespace GnollHackClient.Pages.Game
                         _mapOffsetY = _mapOffsetY * MapFontAlternateSize / MapFontSize;
                     }
                 }
+
+                if (ZoomChangeCenterMode && !MapAlternateNoClipMode && MapNoClipMode && GHUtils.isok(_ux, _uy))
+                {
+                    SetTargetClip(_ux, _uy, true);
+                }
             }
             else
             {
@@ -7980,6 +7995,11 @@ namespace GnollHackClient.Pages.Game
                         _mapOffsetX = _mapOffsetX * MapFontSize / MapFontAlternateSize;
                         _mapOffsetY = _mapOffsetY * MapFontSize / MapFontAlternateSize;
                     }
+                }
+
+                if (ZoomChangeCenterMode && !MapNoClipMode && MapAlternateNoClipMode && GHUtils.isok(_ux, _uy))
+                {
+                    SetTargetClip(_ux, _uy, true);
                 }
             }
 

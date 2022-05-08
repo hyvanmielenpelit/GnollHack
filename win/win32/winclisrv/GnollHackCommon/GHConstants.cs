@@ -1055,7 +1055,7 @@ namespace GnollHackCommon
         CONTEXT_MENU_STYLE_GENERAL = 0,
         CONTEXT_MENU_STYLE_GETDIR,
         CONTEXT_MENU_STYLE_GETPOS,
-        CONTEXT_MENU_STYLE_FIND_TRAP,
+        CONTEXT_MENU_STYLE_CLOSE_DISPLAY,
     }
 
     public enum getline_types
@@ -1200,6 +1200,9 @@ namespace GnollHackCommon
         public const float DefaultDialogueVolume = 0.5f;
         public const float DefaultEffectsVolume = 0.5f;
         public const float DefaultUIVolume = 0.5f;
+        public const bool DefaultMapNoClipMode = false;
+        public const bool DefaultMapAlternateNoClipMode = false;
+        public const bool DefaultZoomChangeCenterMode = false;
     }
 
 
