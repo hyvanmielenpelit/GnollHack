@@ -1167,11 +1167,7 @@ namespace GnollHackClient
                 long countervalue;
                 do
                 {
-                    lock (_gamePage.AnimationTimerLock)
-                    {
-                        countervalue = _gamePage.AnimationTimers.general_animation_counter;
-                    }
-
+                    countervalue = _gamePage.MainCounterValue;
                     lock (_gamePage._screenTextLock)
                     {
                         if (_gamePage._screenText != null)

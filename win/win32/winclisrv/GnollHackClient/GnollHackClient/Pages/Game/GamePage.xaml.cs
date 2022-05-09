@@ -9704,6 +9704,7 @@ namespace GnollHackClient.Pages.Game
 
         private object _mainCounterLock = new object();
         private long _mainCounterValue = 0;
+        public long MainCounterValue { get { lock (_mainCounterLock) { return _mainCounterValue; } } }
 
         private object _mainFPSCounterLock = new object();
         private long _mainFPSCounterValue = 0;
