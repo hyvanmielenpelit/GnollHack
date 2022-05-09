@@ -960,16 +960,16 @@ struct obj *instr;
                     if (tumblers)
                     {
                         if (gears)
-                            You_hear("%d tumbler%s click and %d gear%s turn.",
+                            You_hear_ex(ATR_NONE, CLR_MSG_HINT, "%d tumbler%s click and %d gear%s turn.",
                                 tumblers, plur(tumblers), gears,
                                 plur(gears));
                         else
-                            You_hear("%d tumbler%s click.", tumblers,
+                            You_hear_ex(ATR_NONE, CLR_MSG_HINT, "%d tumbler%s click.", tumblers,
                                 plur(tumblers));
                     }
                     else if (gears)
                     {
-                        You_hear("%d gear%s turn.", gears, plur(gears));
+                        You_hear_ex(ATR_NONE, CLR_MSG_HINT, "%d gear%s turn.", gears, plur(gears));
                         /* could only get `gears == 5' by playing five
                            correct notes followed by excess; otherwise,
                            tune would have matched above */

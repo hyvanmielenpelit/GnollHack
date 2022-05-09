@@ -39,6 +39,7 @@ dosit()
     register int typ = levl[u.ux][u.uy].typ;
 
     if (u.usteed) {
+        play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
         You("are already sitting on %s.", mon_nam(u.usteed));
         return 0;
     }
@@ -47,15 +48,25 @@ dosit()
 
     if (!can_reach_floor(FALSE)) {
         if (u.uswallow)
+        {
+            play_sfx_sound(SFX_GENERAL_THATS_SILLY);
             There("are no seats in here!");
+        }
         else if (Levitation)
+        {
+            play_sfx_sound(SFX_TUMBLE_IN_AIR);
             You("tumble in place.");
+        }
         else
+        {
+            play_sfx_sound(SFX_SIT_IN_AIR);
             You("are sitting on air.");
+        }
         return 0;
     } else if (u.ustuck && !sticks(youmonst.data)) {
         /* holding monster is next to hero rather than beneath, but
            hero is in no condition to actually sit at has/her own spot */
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         if (humanoid(u.ustuck->data))
             pline("%s won't offer %s lap.", Monnam(u.ustuck), mhis(u.ustuck));
         else
@@ -72,10 +83,12 @@ dosit()
 
         obj = level.objects[u.ux][u.uy];
         if (youmonst.data->mlet == S_DRAGON && obj->oclass == COIN_CLASS) {
+            play_sfx_sound(SFX_SIT);
             You("coil up around your %shoard.",
                 (obj->quan + money_cnt(invent) < u.ulevel * 1000) ? "meager "
                                                                   : "");
         } else {
+            play_sfx_sound(SFX_SIT);
             You("sit on %s.", the(xname(obj)));
             if (!(Is_box(obj) || objects[obj->otyp].oc_material == MAT_CLOTH))
                 pline("It's not very comfortable...");
@@ -84,10 +97,12 @@ dosit()
         if (u.utrap) {
             exercise(A_WIS, FALSE); /* you're getting stuck longer */
             if (u.utraptype == TT_BEARTRAP) {
+                play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
                 You_cant("sit down with your %s in the bear trap.",
                          body_part(FOOT));
                 u.utrap++;
             } else if (u.utraptype == TT_PIT) {
+                play_sfx_sound(SFX_SIT);
                 if (trap && trap->ttyp == SPIKED_PIT) {
                     play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
                     You("sit down on a spike.  Ouch!");
@@ -98,9 +113,11 @@ dosit()
                     You("sit down in the pit.");
                 u.utrap += rn2(5);
             } else if (u.utraptype == TT_WEB) {
+                play_sfx_sound(SFX_SIT);
                 You("sit in the spider web and get entangled further!");
                 u.utrap += rn1(10, 5);
             } else if (u.utraptype == TT_LAVA) {
+                play_sfx_sound(SFX_SIT);
                 /* Must have fire resistance or they'd be dead already */
                 You("sit in the %s!", hliquid("lava"));
                 if (Slimed)
@@ -110,16 +127,19 @@ dosit()
                        KILLED_BY); /* lava damage */
             } else if (u.utraptype == TT_INFLOOR
                        || u.utraptype == TT_BURIEDBALL) {
+                play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
                 You_cant("maneuver to sit!");
                 u.utrap++;
             }
         } else {
+            play_sfx_sound(SFX_SIT);
             You("sit down.");
             dotrap(trap, VIASITTING);
         }
     }
     else if ((Underwater || Is_waterlevel(&u.uz)))
     {
+        play_sfx_sound(SFX_SIT);
         if (Is_waterlevel(&u.uz))
             There("are no cushions floating nearby.");
         else
@@ -128,6 +148,7 @@ dosit()
     else if (is_pool(u.ux, u.uy))
     {
     in_water:
+        play_sfx_sound(SFX_SIT);
         You("sit in the %s.", hliquid("water"));
         if (!rn2(10) && uarm)
             (void) water_damage(uarm, "armor", TRUE);
@@ -136,29 +157,35 @@ dosit()
     } 
     else if (IS_SINK(typ))
     {
+        play_sfx_sound(SFX_SIT);
         You(sit_message, defsyms[S_sink].explanation);
         Your("%s gets wet.", humanoid(youmonst.data) ? "rump" : "underside");
     } 
     else if (IS_ALTAR(typ)) 
     {
+        play_sfx_sound(SFX_SIT);
         You(sit_message, defsyms[S_altar].explanation);
         altar_wrath(u.ux, u.uy);
     }
     else if (IS_ANVIL(typ))
     {
+        play_sfx_sound(SFX_SIT);
         You(sit_message, defsyms[S_altar].explanation);
         pline("The anvil feels cold.");
     }
     else if (IS_GRAVE(typ))
     {
+        play_sfx_sound(SFX_SIT);
         You(sit_message, defsyms[S_grave].explanation);
     } 
     else if (IS_SIGNPOST(typ))
     {
+        play_sfx_sound(SFX_SIT);
         You("sit in the front of the %s.", defsyms[S_signpost].explanation);
     }
     else if (IS_BRAZIER(typ))
     {
+        play_sfx_sound(SFX_SIT);
         /* must be WWalking */
         You("sit in the %s.", defsyms[S_brazier].explanation);
         if (levl[u.ux][u.uy].lamplit)
@@ -183,15 +210,18 @@ dosit()
     }
     else if (typ == STAIRS)
     {
+        play_sfx_sound(SFX_SIT);
         You(sit_message, "stairs");
     } 
     else if (typ == LADDER) 
     {
+        play_sfx_sound(SFX_SIT);
         You(sit_message, "ladder");
     }
     else if (is_lava(u.ux, u.uy))
     {
         /* must be WWalking */
+        play_sfx_sound(SFX_SIT);
         You(sit_message, hliquid("lava"));
         burn_away_slime();
         if (likes_lava(youmonst.data) || Fire_immunity)
@@ -205,16 +235,19 @@ dosit()
     } 
     else if (is_ice(u.ux, u.uy))
     {
+        play_sfx_sound(SFX_SIT);
         You(sit_message, defsyms[S_ice].explanation);
         if (!Cold_immunity)
             pline_The("ice feels cold.");
     } 
     else if (typ == DRAWBRIDGE_DOWN) 
     {
+        play_sfx_sound(SFX_SIT);
         You(sit_message, "drawbridge");
     } 
     else if (IS_THRONE(typ))
     {
+        play_sfx_sound(SFX_SIT);
         You(sit_message, defsyms[S_throne].explanation);
         if (rnd(6) > 4) 
         {
@@ -385,6 +418,7 @@ dosit()
     } 
     else
     {
+        play_sfx_sound(SFX_SIT);
         pline("Having fun sitting on the %s?", surface(u.ux, u.uy));
     }
     return 1;

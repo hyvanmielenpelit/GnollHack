@@ -3903,6 +3903,7 @@ long hmask, emask; /* might cancel timeout */
     if (!trap) {
         trap = t_at(u.ux, u.uy);
         if (Is_airlevel(&u.uz)) {
+            play_sfx_sound(SFX_TUMBLE_IN_AIR);
             You("begin to tumble in place.");
         } else if (Is_waterlevel(&u.uz) && !no_msg) {
             You_feel("heavier.");

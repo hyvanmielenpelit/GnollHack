@@ -889,6 +889,9 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Revival", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Error/Not Ready Yet", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Artifact Name Known", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Action/Sit", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Action/Sit in Air", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Action/Tumble in Air", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/SFX/Enter/Zoo", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Enter/Swamp", 1.0f },
@@ -10849,6 +10852,21 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         "GHSOUND_ENTER_ARMORY",
         {GHSOUND_ENTER_ARMORY, 1.0f},
         FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_SIT",
+        {GHSOUND_SIT, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_SIT_IN_AIR",
+        {GHSOUND_SIT_IN_AIR, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_TUMBLE_IN_AIR",
+        {GHSOUND_TUMBLE_IN_AIR, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_NORMAL
     },
 };
 
