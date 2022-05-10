@@ -776,9 +776,9 @@ place_main_monst_here:
                                      FALSE);
                 break;
             case LIBRARY:
-                if (!rn2(4)) //Bookshelves are fuller at higher difficulty
+                if (!rn2(5)) //Bookshelves are fuller at higher difficulty
                     (void)mksobj_at(BOOKSHELF, sx, sy, TRUE, FALSE);
-                else if(!rn2(level_difficulty() >= 12 ? 3 : 4))
+                else if(!rn2(level_difficulty() >= 12 ? 4 : 5))
                     (void)mkobj_at(!rn2(4) ? SPBOOK_CLASS : SCROLL_CLASS, sx, sy, FALSE);
                 break;
             case BARRACKS:

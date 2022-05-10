@@ -36,7 +36,7 @@ ENDMAP
 # Dungeon Description
 REGION:(00,00,49,15),lit,"ordinary"
 REGION:(04,04,45,11),unlit,"ordinary"
-REGION:(06,06,22,09),lit,"throne" , unfilled
+REGION:(06,06,22,09),lit,"throne" , unfilled floorsubtype:floor_marble
 REGION:(27,06,43,09),lit,"ordinary"
 # Portal arrival point
 BRANCH:(20,14,20,14),(0,0,0,0)

@@ -1442,12 +1442,12 @@ register struct monst *mtmp;
             if (!rn2(2))
                 (void)mongetsgold(mtmp, rn2(501) + 200);
             //Reagents
-            n = rnd(5);
+            n = rn2(3);
             for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 0));
 
             //Spellbooks
-            n = rnd(3); // 1...3
+            n = rn2(3); // 0...2
             for (i = 0; i < n; i++)
             {
                 otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
@@ -1515,14 +1515,14 @@ register struct monst *mtmp;
                 (void)mongets(mtmp, !rn2(5) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
             
             //Reagents
-            n = rnd(4);
+            n = rn2(3);
             for (i = 0; i < n; i++)
             {
                 (void)mongets(mtmp, randomreagent(TRUE, 2));
             }
 
             //Some spellbooks
-            n = rnd(4); // 1...4
+            n = rn2(3); // 0...2
             for (i = 0; i < n; i++)
             {
                 otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
@@ -1547,7 +1547,7 @@ register struct monst *mtmp;
 
         //Bracers
         if (!rn2(10))
-            (void)mongets(mtmp, rn2(2) ? BRACERS_OF_DEFENSE : rn2(2) ? BRACERS_AGAINST_MAGIC_MISSILES : LEATHER_BRACERS);
+            (void)mongets(mtmp, !rn2(75) ? BRACERS_OF_REFLECTION : rn2(2) ? BRACERS_OF_DEFENSE : rn2(2) ? BRACERS_AGAINST_MAGIC_MISSILES : LEATHER_BRACERS);
 
         //Ring
         if (!rn2(10))
@@ -1558,17 +1558,17 @@ register struct monst *mtmp;
             (void)mongets(mtmp, !rn2(4) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
 
         //Reagents
-        n = rnd(3) + (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH] ? 2 : 0); //1...3 + 2
+        n = rn2(3) + (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH] ? 1 : 0); //1...3 + 2
         for (i = 0; i < n; i++)
             (void)mongets(mtmp, randomreagent(TRUE, 2));
 
         //Some spellbooks
         if (ptr == &mons[PM_ARCH_LICH])
-            n = 2 + rnd(3); // 3...5
+            n = rn2(5); // 0...4
         else if (ptr == &mons[PM_MASTER_LICH])
-            n = 1 + rnd(3); // 2...4
+            n = rn2(4); // 0...3
         else
-            n = rnd(3); // 1...3
+            n = rn2(3); // 0...2
 
         for (i = 0; i < n; i++)
         {
@@ -1605,14 +1605,14 @@ register struct monst *mtmp;
                 (void)mongets(mtmp, RIN_REPLENISHMENT);
 
             //Reagents
-            n = rnd(3) + 2;
+            n = rn2(4);
             for (i = 0; i < n; i++)
                 (void)mongets(mtmp, randomreagent(TRUE, 2));
 
             if (!rn2(4))
                 (void)mongetsgold(mtmp, 100 + rn2(1001));
 
-            n = 2 + rn2(3); // 2...4
+            n = rn2(3); // 0...2
         }
         else if (ptr == &mons[PM_ELDER_TENTACLED_ONE])
         {
@@ -1626,7 +1626,7 @@ register struct monst *mtmp;
             if (!rn2(4))
                 (void)mongetsgold(mtmp, 50 + rn2(251));
 
-            n = rn2(3); // 0...2
+            n = rn2(2); // 0...1
         }
         else if (ptr == &mons[PM_HALFLING])
         {
@@ -1783,7 +1783,7 @@ register struct monst *mtmp;
         }
         break;
     case S_QUANTMECH:
-        if (!rn2(2))
+        if (!rn2(5))
         {
             otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
             (void)mpickobj(mtmp, otmp);
@@ -1885,7 +1885,7 @@ register struct monst *mtmp;
             if (!rn2(5))
                 (void)mongets(mtmp, !rn2(30) ? POT_FULL_ENERGY : !rn2(8) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
 
-            if (!rn2(2))
+            if (!rn2(3))
             {
                 otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
                 (void)mpickobj(mtmp, otmp);

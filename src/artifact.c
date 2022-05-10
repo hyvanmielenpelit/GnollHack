@@ -2546,6 +2546,8 @@ struct obj *obj;
             int healamt = (u.uhpmax + 1 - u.uhp) / 2;
             long creamed = (long) u.ucreamed;
             play_sfx_sound(SFX_HEALING);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
+            special_effect_wait_until_action(0);
 
             if (Upolyd)
                 healamt = (u.mhmax + 1 - u.mh) / 2;
@@ -2553,22 +2555,24 @@ struct obj *obj;
                 You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "better.");
             else
                 goto nothing_special;
-            if (healamt > 0) {
-                if (Upolyd)
-                    u.mh += healamt;
-                else
-                    u.uhp += healamt;
-            }
-            if (Sick)
-                make_sick(0L, (char *) 0, FALSE);
-            if (FoodPoisoned)
-                make_food_poisoned(0L, (char*)0, FALSE);
-            if (MummyRot)
-                make_mummy_rotted(0L, (char*)0, FALSE);
+            healup(healamt, 0, TRUE, FALSE, FALSE, FALSE, FALSE);
+            //if (healamt > 0) {
+            //    if (Upolyd)
+            //        u.mh += healamt;
+            //    else
+            //        u.uhp += healamt;
+            //}
+            //if (Sick)
+            //    make_sick(0L, (char *) 0, FALSE);
+            //if (FoodPoisoned)
+            //    make_food_poisoned(0L, (char*)0, FALSE);
+            //if (MummyRot)
+            //    make_mummy_rotted(0L, (char*)0, FALSE);
             if (Slimed)
                 make_slimed(0L, (char *) 0);
             if (Blinded > creamed)
                 make_blinded(creamed, FALSE);
+            special_effect_wait_until_end(0);
             context.botl = TRUE;
             break;
         }
@@ -2581,10 +2585,23 @@ struct obj *obj;
             else if (epboost < 12)
                 epboost = u.uenmax - u.uen;
             if (epboost) {
-                u.uen += epboost;
-                context.botl = TRUE;
                 play_sfx_sound(SFX_GAIN_ENERGY);
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
+                special_effect_wait_until_action(0);
+
+                int mana_before = u.uen;
+                u.uen += epboost;
+                int mana_after = u.uen;
+                int mana_gain = mana_after - mana_before;
+                if (mana_gain > 0)
+                {
+                    char fbuf[BUFSZ];
+                    Sprintf(fbuf, "+%d", mana_gain);
+                    display_floating_text(u.ux, u.uy, fbuf, FLOATING_TEXT_MANA_GAIN, ATR_NONE, NO_COLOR, 0UL);
+                }
                 You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "re-energized.");
+                special_effect_wait_until_end(0);
+                context.botl = TRUE;
             } else
                 goto nothing_special;
             break;
