@@ -10218,7 +10218,7 @@ namespace GnollHackClient.Pages.Game
                         PaintTipButton(canvas, textPaint, ESCButton, "This cancels any command.", "Escape Button", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
                         break;
                     case 3:
-                        PaintTipButton(canvas, textPaint, ToggleAutoCenterModeButton, "This toggles auto-center on player.", "Map Auto-Center on Player", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
+                        PaintTipButton(canvas, textPaint, ToggleAutoCenterModeButton, "This toggles auto-center on player.", "Map Auto-Center", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
                         break;
                     case 4:
                         PaintTipButton(canvas, textPaint, ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f : -0.5f, landscape ? 0 : 1.5f);
@@ -10236,7 +10236,7 @@ namespace GnollHackClient.Pages.Game
                         PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can tap the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
                         break;
                     case 9:
-                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Some commands do not have buttons.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
+                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Some commands do not have buttons.", "Character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
                         break;
                     case 10:
                         PaintTipButton(canvas, textPaint, lWornItemsButton, "", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, 2.0f);
