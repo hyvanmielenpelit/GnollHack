@@ -69,12 +69,13 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <StackLayout Grid.Row="0" x:Name="UpperCmdLayout" Orientation="Horizontal" InputTransparent="true" CascadeInputTransparent="false"
+                    <StackLayout Grid.Row="0" x:Name="UpperCmdLayout" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false"
                         HorizontalOptions="End">
-                        <StackLayout x:Name="ZoomLayout" Padding="0" Orientation="Horizontal"
+                        <StackLayout x:Name="GameMenuLayout" Padding="0" Orientation="Horizontal"
                             HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
                             <controls:SimpleImageButton x:Name="GameMenuButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-menu.png" BtnClicked="GameMenuButton_Clicked"/>
                             <controls:SimpleImageButton x:Name="ESCButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-cancel.png" BtnClicked="ESCButton_Clicked"/>
+                            <controls:SimpleImageButton x:Name="ToggleAutoCenterModeButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-autocenter-on.png" BtnClicked="ToggleAutoCenterModeButton_Clicked"/>
                         </StackLayout>
                         <StackLayout x:Name="ModeLayout" Padding="0" Orientation="Vertical"
                             HorizontalOptions="End" BackgroundColor="Transparent" >
@@ -86,7 +87,7 @@
                             <StackLayout x:Name="ModeSubLayout2" Padding="0" Orientation="Vertical"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
                                 <controls:SimpleImageButton x:Name="LookModeButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-look-off.png" BtnClicked="LookModeButton_Clicked"/>
-                                <controls:SimpleImageButton x:Name="ToggleModeButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-travel-off.png" BtnClicked="ToggleModeButton_Clicked"/>
+                                <controls:SimpleImageButton x:Name="ToggleTravelModeButton" ImgSourcePath="resource://GnollHackClient.Assets.UI.stone-travel-off.png" BtnClicked="ToggleTravelModeButton_Clicked"/>
                             </StackLayout>
                         </StackLayout>
                     </StackLayout>

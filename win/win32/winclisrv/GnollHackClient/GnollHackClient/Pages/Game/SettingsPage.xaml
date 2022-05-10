@@ -109,7 +109,8 @@
                                         -->
                                     </Picker>
                                 </StackLayout>
-                            </ViewCell>                            <ViewCell>
+                            </ViewCell>
+                            <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Messages"
                                            FontFamily="Underwood" TextColor="Black"
@@ -175,7 +176,7 @@
                         <TableSection>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="Normal Zoom Auto-Center"
+                                    <Label Text="Default Auto-Center"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
@@ -183,7 +184,7 @@
                                     <Switch x:Name="YesClipNormalSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
-                            <ViewCell>
+                            <!--<ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Alternate Zoom Auto-Center"
                                            FontFamily="Underwood" TextColor="Black"
@@ -202,7 +203,7 @@
                                            HorizontalOptions="Start" />
                                     <Switch x:Name="ZoomChangeCenterSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
-                            </ViewCell>
+                            </ViewCell>-->
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Grid"

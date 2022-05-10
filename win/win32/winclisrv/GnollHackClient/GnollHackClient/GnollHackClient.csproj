@@ -178,6 +178,8 @@
     <None Remove="Assets\UI\status-xp-level.png" />
     <None Remove="Assets\UI\stone-altmap-off.png" />
     <None Remove="Assets\UI\stone-altmap-on.png" />
+    <None Remove="Assets\UI\stone-autocenter-off.png" />
+    <None Remove="Assets\UI\stone-autocenter-on.png" />
     <None Remove="Assets\UI\stone-cancel.png" />
     <None Remove="Assets\UI\stone-look-off.png" />
     <None Remove="Assets\UI\stone-look-on.png" />
@@ -367,6 +369,8 @@
     <EmbeddedResource Include="Assets\UI\status-xp-level.png" />
     <EmbeddedResource Include="Assets\UI\stone-altmap-off.png" />
     <EmbeddedResource Include="Assets\UI\stone-altmap-on.png" />
+    <EmbeddedResource Include="Assets\UI\stone-autocenter-off.png" />
+    <EmbeddedResource Include="Assets\UI\stone-autocenter-on.png" />
     <EmbeddedResource Include="Assets\UI\stone-cancel.png" />
     <EmbeddedResource Include="Assets\UI\stone-look-off.png" />
     <EmbeddedResource Include="Assets\UI\stone-look-on.png" />

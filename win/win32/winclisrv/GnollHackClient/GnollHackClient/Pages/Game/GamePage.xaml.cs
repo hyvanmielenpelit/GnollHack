@@ -351,13 +351,13 @@ namespace GnollHackClient.Pages.Game
         private bool _mapNoClipMode = false;
         public bool MapNoClipMode { get { lock (_mapNoClipModeLock) { return _mapNoClipMode; } } set { lock (_mapNoClipModeLock) { _mapNoClipMode = value; } } }
 
-        private object _mapAlternateNoClipModeLock = new object();
-        private bool _mapAlternateNoClipMode = false;
-        public bool MapAlternateNoClipMode { get { lock (_mapAlternateNoClipModeLock) { return _mapAlternateNoClipMode; } } set { lock (_mapAlternateNoClipModeLock) { _mapAlternateNoClipMode = value; } } }
+        //private object _mapAlternateNoClipModeLock = new object();
+        //private bool _mapAlternateNoClipMode = false;
+        //public bool MapAlternateNoClipMode { get { lock (_mapAlternateNoClipModeLock) { return _mapAlternateNoClipMode; } } set { lock (_mapAlternateNoClipModeLock) { _mapAlternateNoClipMode = value; } } }
 
-        private object _zoomChangeCenterModeLock = new object();
-        private bool _zoomChangeCenterMode = false;
-        public bool ZoomChangeCenterMode { get { lock (_zoomChangeCenterModeLock) { return _zoomChangeCenterMode; } } set { lock (_zoomChangeCenterModeLock) { _zoomChangeCenterMode = value; } } }
+        //private object _zoomChangeCenterModeLock = new object();
+        //private bool _zoomChangeCenterMode = false;
+        //public bool ZoomChangeCenterMode { get { lock (_zoomChangeCenterModeLock) { return _zoomChangeCenterMode; } } set { lock (_zoomChangeCenterModeLock) { _zoomChangeCenterMode = value; } } }
 
         private object _mapLookModeLock = new object();
         private bool _mapLookMode = false;
@@ -472,15 +472,17 @@ namespace GnollHackClient.Pages.Game
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
             MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", deffontsize * GHConstants.MapFontRelativeAlternateSize);
-            MapNoClipMode = Preferences.Get("MapNoClipMode", GHConstants.DefaultMapNoClipMode);
-            MapAlternateNoClipMode = Preferences.Get("MapAlternateNoClipMode", GHConstants.DefaultMapAlternateNoClipMode);
-            ZoomChangeCenterMode = Preferences.Get("ZoomChangeCenterMode", GHConstants.DefaultZoomChangeCenterMode);
+            MapNoClipMode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
+            //MapAlternateNoClipMode = Preferences.Get("MapAlternateNoClipMode", GHConstants.DefaultMapAlternateNoClipMode);
+            //ZoomChangeCenterMode = Preferences.Get("ZoomChangeCenterMode", GHConstants.DefaultZoomChangeCenterMode);
 
-            ToggleModeButton_Clicked(null, null);
+            ToggleTravelModeButton_Clicked(null, null);
             ZoomMiniMode = true;
             ZoomAlternateMode = true;
             ToggleZoomMiniButton_Clicked(null, null);
             ToggleZoomAlternateButton_Clicked(null, null);
+            MapNoClipMode = !MapNoClipMode;
+            ToggleAutoCenterModeButton_Clicked(null, null);
         }
 
         private float GetDefaultMapFontSize()
@@ -1558,11 +1560,11 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.SaveAndDisableTravelMode:
                                 _savedMapTravelMode = MapTravelMode;
                                 if (MapTravelMode)
-                                    ToggleModeButton_Clicked(ToggleModeButton, new EventArgs());
+                                    ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
                                 break;
                             case GHRequestType.RestoreTravelMode:
                                 if (MapTravelMode != _savedMapTravelMode)
-                                    ToggleModeButton_Clicked(ToggleModeButton, new EventArgs());
+                                    ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
                                 break;
                         }
                     }
@@ -6841,8 +6843,9 @@ namespace GnollHackClient.Pages.Game
 
                 GameMenuButton.SetSideSize(width, height);
                 ESCButton.SetSideSize(width, height);
+                ToggleAutoCenterModeButton.SetSideSize(width, height);
                 LookModeButton.SetSideSize(width, height);
-                ToggleModeButton.SetSideSize(width, height);
+                ToggleTravelModeButton.SetSideSize(width, height);
                 ToggleZoomMiniButton.SetSideSize(width, height);
                 ToggleZoomAlternateButton.SetSideSize(width, height);
 
@@ -6899,23 +6902,21 @@ namespace GnollHackClient.Pages.Game
                 {
                     /* Landscape */
                     ButtonRowStack.Orientation = StackOrientation.Horizontal;
-                    //ButtonRowStack.HeightRequest = gridsideheight;
                     ModeLayout.Orientation = StackOrientation.Vertical;
                     ModeSubLayout1.Orientation = StackOrientation.Horizontal;
                     ModeSubLayout2.Orientation = StackOrientation.Horizontal;
-                    ZoomLayout.Orientation = StackOrientation.Horizontal;
-                    UpperCmdLayout.Orientation = StackOrientation.Vertical;
+                    GameMenuLayout.Orientation = StackOrientation.Horizontal;
+                    //UpperCmdLayout.Orientation = StackOrientation.Vertical;
                 }
                 else
                 {
                     /* Portrait */
                     ButtonRowStack.Orientation = StackOrientation.Vertical;
-                    //ButtonRowStack.HeightRequest = 2 * gridsideheight;
                     ModeLayout.Orientation = StackOrientation.Vertical;
                     ModeSubLayout1.Orientation = StackOrientation.Vertical;
                     ModeSubLayout2.Orientation = StackOrientation.Vertical;
-                    ZoomLayout.Orientation = StackOrientation.Horizontal;
-                    UpperCmdLayout.Orientation = StackOrientation.Horizontal;
+                    GameMenuLayout.Orientation = StackOrientation.Horizontal;
+                    //UpperCmdLayout.Orientation = StackOrientation.Horizontal;
                 }
             }
         }
@@ -7902,21 +7903,42 @@ namespace GnollHackClient.Pages.Game
             App.PlayButtonClickedSound();
             GenericButton_Clicked(sender, e, 27);
         }
+        public void ToggleAutoCenterMode()
+        {
+            ToggleAutoCenterModeButton_Clicked(ToggleAutoCenterModeButton, new EventArgs());
+        }
 
+        private void ToggleAutoCenterModeButton_Clicked(object sender, EventArgs e)
+        {
+            App.PlayMenuSelectSound();
+            MapNoClipMode = !MapNoClipMode;
+            if (MapNoClipMode)
+            {
+                ToggleAutoCenterModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-autocenter-off.png";
+            }
+            else
+            {
+                ToggleAutoCenterModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-autocenter-on.png";
+                if (sender != null && GHUtils.isok(_ux, _uy))
+                {
+                    SetTargetClip(_ux, _uy, false);
+                }
+            }
+        }
         private EmbeddedResourceImageSource travelmode_on_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-travel-on.png"));
         private EmbeddedResourceImageSource travelmode_off_source = new EmbeddedResourceImageSource(new Uri("resource://GnollHackClient.Assets.UI.stone-travel-off.png"));
-        private void ToggleModeButton_Clicked(object sender, EventArgs e)
+        private void ToggleTravelModeButton_Clicked(object sender, EventArgs e)
         {
             App.PlayMenuSelectSound();
             MapTravelMode = !MapTravelMode;
             if (MapTravelMode)
             {
-                ToggleModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-travel-on.png";
+                ToggleTravelModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-travel-on.png";
                 //ToggleModeImg.Source = travelmode_on_source;
             }
             else
             {
-                ToggleModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-travel-off.png";
+                ToggleTravelModeButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-travel-off.png";
                 //ToggleModeImg.Source = travelmode_off_source;
             }
         }
@@ -7978,10 +8000,10 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
 
-                if (ZoomChangeCenterMode && !MapAlternateNoClipMode && MapNoClipMode && GHUtils.isok(_ux, _uy))
-                {
-                    SetTargetClip(_ux, _uy, true);
-                }
+                //if (ZoomChangeCenterMode && !MapAlternateNoClipMode && MapNoClipMode && GHUtils.isok(_ux, _uy))
+                //{
+                //    SetTargetClip(_ux, _uy, true);
+                //}
             }
             else
             {
@@ -7997,10 +8019,10 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
 
-                if (ZoomChangeCenterMode && !MapNoClipMode && MapAlternateNoClipMode && GHUtils.isok(_ux, _uy))
-                {
-                    SetTargetClip(_ux, _uy, true);
-                }
+                //if (ZoomChangeCenterMode && !MapNoClipMode && MapAlternateNoClipMode && GHUtils.isok(_ux, _uy))
+                //{
+                //    SetTargetClip(_ux, _uy, true);
+                //}
             }
 
         }
@@ -10196,42 +10218,45 @@ namespace GnollHackClient.Pages.Game
                         PaintTipButton(canvas, textPaint, ESCButton, "This cancels any command.", "Escape Button", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
                         break;
                     case 3:
-                        PaintTipButton(canvas, textPaint, ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f : -0.5f, landscape ? 0 : 1.5f);
+                        PaintTipButton(canvas, textPaint, ToggleAutoCenterModeButton, "This toggles auto-center on player.", "Map Auto-Center on Player", 1.5f, centerfontsize, fontsize, false, -1.5f, 0);
                         break;
                     case 4:
-                        PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0);
+                        PaintTipButton(canvas, textPaint, ToggleZoomMiniButton, "This zoom shows the entire level.", "Minimap", 1.5f, centerfontsize, fontsize, false, landscape ? -0.15f : -0.5f, landscape ? 0 : 1.5f);
                         break;
                     case 5:
-                        PaintTipButton(canvas, textPaint, LookModeButton, "This allows you to inspect the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, landscape ? -0.5f : 0);
+                        PaintTipButton(canvas, textPaint, ToggleZoomAlternateButton, "This is the secondary zoom.", "Alternative Zoom", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, 0);
                         break;
                     case 6:
-                        PaintTipButton(canvas, textPaint, ToggleModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0);
+                        PaintTipButton(canvas, textPaint, LookModeButton, "This allows you to inspect the map.", "Look Mode", 1.5f, centerfontsize, fontsize, false, -0.15f, landscape ? -0.5f : 0);
                         break;
                     case 7:
-                        PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can tap the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
+                        PaintTipButton(canvas, textPaint, ToggleTravelModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0);
                         break;
                     case 8:
-                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Some commands do not have buttons.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
+                        PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can tap the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
                         break;
                     case 9:
-                        PaintTipButton(canvas, textPaint, lWornItemsButton, "", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, 2.0f);
+                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Some commands do not have buttons.", "Tap here for character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
                         break;
                     case 10:
-                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
+                        PaintTipButton(canvas, textPaint, lWornItemsButton, "", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, 2.0f);
                         break;
                     case 11:
+                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
+                        break;
+                    case 12:
                         lock(_rectLock)
                         {
                             PaintTipButtonByRect(canvas, textPaint, HealthRect, "This orb shows your hit points.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
                         }
                         break;
-                    case 12:
+                    case 13:
                         lock (_rectLock)
                         {
                             PaintTipButtonByRect(canvas, textPaint, ManaRect, "And this one your mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
                         }
                         break;
-                    case 13:
+                    case 14:
                         textPaint.TextSize = 36;
                         textPaint.Typeface = App.ARChristyTypeface;
                         str = "You are all set";
@@ -10297,12 +10322,12 @@ namespace GnollHackClient.Pages.Game
                     break;
                 case SKTouchAction.Released:
                     ShownTip++;
-                    if(ShownTip == 11 && HealthRect.Width == 0)
+                    if(ShownTip == 12 && HealthRect.Width == 0)
                         ShownTip++;
-                    if (ShownTip == 12 && ManaRect.Width == 0)
+                    if (ShownTip == 13 && ManaRect.Width == 0)
                         ShownTip++;
                     TipView.InvalidateSurface();
-                    if (ShownTip >= 14 - (_blockingTipView ? 0 : 1))
+                    if (ShownTip >= 15 - (_blockingTipView ? 0 : 1))
                     {
                         TipView.IsVisible = false;
                         ShownTip = -1;
