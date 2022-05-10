@@ -1096,6 +1096,7 @@ struct monst* mtmp;
     if ((windowprocs.wincap2 & WC2_SCREEN_TEXT) && is_boss_monster(mtmp->data) && !mtmp->boss_fight_started && !DEADMONSTER(mtmp) && !is_peaceful(mtmp) && canspotmon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !(mtmp->mstrategy & STRAT_WAITFORU) && !mtmp->msleeping && !(mtmp->mon_flags & MON_FLAGS_CLONED_WIZ))
     {
         mtmp->boss_fight_started = 1;
+        newsym(mtmp->mx, mtmp->my);
         flush_screen(1);
         cliparound(mtmp->mx, mtmp->my, 2);
         play_sfx_sound(SFX_BOSS_FIGHT);

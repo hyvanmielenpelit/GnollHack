@@ -92,13 +92,17 @@ namespace GnollHackClient
         {
             switch(_data.style)
             {
-                case 0:
+                case (int)screen_text_types.SCREEN_TEXT_GENERAL:
                 case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
                 case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
                     return 0.65f;
-                case 2:
+                case (int)screen_text_types.SCREEN_TEXT_GAIN_LEVEL:
                     return 0.70f;
-                case 3:
+                case (int)screen_text_types.SCREEN_TEXT_SAVING:
+                    return 0.60f;
+                case (int)screen_text_types.SCREEN_TEXT_DEAD:
+                case (int)screen_text_types.SCREEN_TEXT_ESCAPED:
+                case (int)screen_text_types.SCREEN_TEXT_ASCENDED:
                     return 0.60f;
                 default:
                     return 0.70f;
@@ -108,14 +112,18 @@ namespace GnollHackClient
         {
             switch (_data.style)
             {
-                case 0:
-                case 1:
-                case 2:
+                case (int)screen_text_types.SCREEN_TEXT_GENERAL:
+                case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
+                case (int)screen_text_types.SCREEN_TEXT_GAIN_LEVEL:
                     return 0.0f;
-                case 3:
+                case (int)screen_text_types.SCREEN_TEXT_SAVING:
                     return 0.0f;
+                case (int)screen_text_types.SCREEN_TEXT_DEAD:
+                case (int)screen_text_types.SCREEN_TEXT_ESCAPED:
+                case (int)screen_text_types.SCREEN_TEXT_ASCENDED:
+                    return -0.20f;
                 case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
-                    return -0.10f;
+                    return -0.20f;
                 default:
                     return -0.02f;
             }
