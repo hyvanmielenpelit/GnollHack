@@ -1835,7 +1835,7 @@ const char *mesg;
             /* Assume !Glib, because you can't open tins when Glib. */
             incr_itimeout(&Glib, rnd(15));
             refresh_u_tile_gui_info(TRUE);
-            pline("Eating %s food made your %s very slippery.",
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Eating %s food made your %s very slippery.",
                   tintxts[r].txt, makeplural(body_part(FINGER)));
         }
 
@@ -1920,7 +1920,8 @@ opentin(VOID_ARGS)
         && (!obj_here(context.tin.tin, u.ux, u.uy) || !can_reach_floor(TRUE)))
         return 0; /* %% probably we should use tinoid */
     if (context.tin.usedtime++ >= 50) {
-        You("give up your attempt to open the tin.");
+        play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "give up your attempt to open the tin.");
         return 0;
     }
     if (context.tin.usedtime < context.tin.reqtime)
@@ -1946,7 +1947,7 @@ struct obj *otmp;
     else if (!can_operate_objects(youmonst.data)) 
     { /* nohands || verysmall */
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot handle the tin properly to open it.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot handle the tin properly to open it.");
         return;
     } 
     else if (otmp->blessed) 
@@ -3394,7 +3395,7 @@ doeat()
         context.victual.o_id = otmp->o_id;
         /* Don't split it, we don't need to if it's 1 move */
         context.victual.usedtime = 0;
-        context.victual.canchoke = (u.uhs == SATIATED);
+        context.victual.canchoke = (u.uhs == SATIATED) && can_obj_cause_choking(otmp);
         /* Note: gold weighs 1 pt. for each 1000 pieces (see
            pickup.c) so gold and non-gold is consistent. */
         if (otmp->oclass == COIN_CLASS)
@@ -3694,7 +3695,7 @@ doeat()
                                  / context.victual.reqtime);
     else
         context.victual.nmod = context.victual.reqtime % otmp->oeaten;
-    context.victual.canchoke = (u.uhs == SATIATED);
+    context.victual.canchoke = (u.uhs == SATIATED) && can_obj_cause_choking(otmp);
 
     if (!dont_start)
         start_eating(otmp, FALSE);

@@ -14,7 +14,7 @@ void
 rider_cant_reach()
 {
     play_sfx_sound(SFX_GENERAL_NOT_SKILLED_ENOUGH);
-    You("aren't skilled enough to reach from %s.", y_monnam(u.usteed));
+    You_ex(ATR_NONE, CLR_MSG_FAIL, "aren't skilled enough to reach from %s.", y_monnam(u.usteed));
 }
 
 /*** Putting the saddle on ***/

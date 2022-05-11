@@ -2621,7 +2621,7 @@ register struct obj *obj;
         int saved_oclass = obj->oclass;
 
         /* explicitly mention what item is triggering the explosion */
-        pline("As you put %s inside, you are blasted by a magical explosion!",
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "As you put %s inside, you are blasted by a magical explosion!",
               doname(obj));
         /* did not actually insert obj yet */
         if (was_unpaid)

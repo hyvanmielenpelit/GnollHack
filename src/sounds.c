@@ -8569,7 +8569,7 @@ boolean addquotes;
     if (!mtmp || !linearray)
         return;
 
-    int glyph = any_seen_mon_to_glyph(mtmp, rn2_on_display_rng);
+    int glyph = get_seen_monster_glyph(mtmp);
     const char* hermit_txt = 0;
     char namebuf[BUFSZ];
     strcpy_capitalized_for_title(namebuf, Monnam(mtmp));

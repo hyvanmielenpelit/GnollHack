@@ -501,14 +501,14 @@ struct obj *pick;
 
             if (picktyp == CREDIT_CARD)
                 what = "card";
-            pline(no_longer, "hold the", what);
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, no_longer, "hold the", what);
             reset_pick();
             return PICKLOCK_LEARNED_SOMETHING;
         }
         else if (u.uswallow || (xlock.box && !can_reach_floor(TRUE))) 
         {
             play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-            pline(no_longer, "reach the", "lock");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, no_longer, "reach the", "lock");
             reset_pick();
             return PICKLOCK_LEARNED_SOMETHING;
         } 

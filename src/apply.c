@@ -4949,15 +4949,15 @@ struct obj *obj;
         max_range = 8;
     if (distu(cc.x, cc.y) > max_range) {
         play_sfx_sound(SFX_GENERAL_TOO_FAR);
-        pline("Too far!");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Too far!");
         return res;
     } else if (!cansee(cc.x, cc.y)) {
         play_sfx_sound(SFX_GENERAL_CANNOT_SEE_SPOT);
-        You(cant_see_spot);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, cant_see_spot);
         return res;
     } else if (!couldsee(cc.x, cc.y)) { /* Eyes of the Overworld */
         play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-        You(cant_reach);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, cant_reach);
         return res;
     }
 

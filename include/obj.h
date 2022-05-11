@@ -632,6 +632,8 @@ struct obj {
 #define does_obj_drain_instead_of_explode(obj) \
     (does_otyp_drain_instead_of_explode((obj)->otyp))
 
+#define can_obj_cause_choking(o) (obj_nutrition(o) > 50)
+
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types
    which use that field for monster type (or other overloaded purpose) */
 

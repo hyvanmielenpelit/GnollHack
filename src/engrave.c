@@ -180,7 +180,7 @@ int x, y;
 boolean up, check_pit;
 {
     play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can't reach the %s.",
+    You_ex(ATR_NONE, CLR_MSG_FAIL, "can't reach the %s.",
         up ? ceiling(x, y)
            : (check_pit && can_reach_floor(FALSE))
                ? "bottom of the pit"

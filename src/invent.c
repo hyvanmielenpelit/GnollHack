@@ -5700,7 +5700,7 @@ boolean picked_some, explicit_cmd;
             dfeature = 0; /* ice already identified */
         if (!can_reach_floor(TRUE)) {
             play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-            pline1("But you can't reach it!");
+            pline_ex1(ATR_NONE, CLR_MSG_FAIL, "But you can't reach it!");
             return 0;
         }
     }

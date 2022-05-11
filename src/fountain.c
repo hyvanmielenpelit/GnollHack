@@ -28,7 +28,8 @@ const char *what;
         umsg = "are trapped in the %s.";
         what = surface(u.ux, u.uy); /* probably redundant */
     }
-    You(umsg, what);
+    play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
+    You_ex(ATR_NONE, CLR_MSG_FAIL, umsg, what);
 }
 
 /* Fountain of snakes! */

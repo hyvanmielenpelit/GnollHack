@@ -3182,12 +3182,12 @@ pickup_checks()
         if (Wwalking || is_floater(youmonst.data) || is_clinger(youmonst.data)
             || (Flying && !Breathless)) {
             play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-            You("cannot dive into the %s to pick things up.",
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot dive into the %s to pick things up.",
                 hliquid("water"));
             return 0;
         } else if (!Underwater) {
             play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-            You_cant("even see the bottom, let alone pick up %s.", something);
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "even see the bottom, let alone pick up %s.", something);
             return 0;
         }
     }
@@ -3195,11 +3195,11 @@ pickup_checks()
         if (Wwalking || is_floater(youmonst.data) || is_clinger(youmonst.data)
             || (Flying && !Breathless)) {
             play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-            You_cant("reach the bottom to pick things up.");
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "reach the bottom to pick things up.");
             return 0;
         } else if (!likes_lava(youmonst.data)) {
             play_sfx_sound(SFX_GENERAL_NOT_A_GOOD_IDEA);
-            You("would burn to a crisp trying to pick things up.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "would burn to a crisp trying to pick things up.");
             return 0;
         }
     }
@@ -3268,13 +3268,13 @@ pickup_checks()
         play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
         struct trap *traphere = t_at(u.ux, u.uy);
         if (traphere && uteetering_at_seen_pit(traphere))
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot reach the bottom of the pit.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot reach the bottom of the pit.");
         else if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC)
             rider_cant_reach();
         else if (Blind && !can_reach_floor(TRUE))
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot reach anything here.");
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot reach anything here.");
         else
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot reach the %s.", surface(u.ux, u.uy));
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot reach the %s.", surface(u.ux, u.uy));
         return 0;
     }
     return -1; /* can do normal pickup */

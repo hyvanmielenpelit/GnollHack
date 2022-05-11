@@ -784,9 +784,9 @@ struct monst *mon;
 
             play_sfx_sound(SFX_BLASTED_BY_POWER);
             if(oart)
-                You("are blasted by %s power!", s_suffix(the(xname(obj))));
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are blasted by %s power!", s_suffix(the(xname(obj))));
             else
-                You("are shocked by %s enchantment!", s_suffix(the(xname(obj))));
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are shocked by %s enchantment!", s_suffix(the(xname(obj))));
 
             touch_blasted = TRUE;
             if (badappropriate || badexceptional)

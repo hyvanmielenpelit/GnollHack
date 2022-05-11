@@ -5357,7 +5357,7 @@ boolean force_failure;
             || bigmonst(youmonst.data)) {
             /* don't allow untrap if they can't get thru to it */
             play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-            You("are unable to reach the %s!",
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "are unable to reach the %s!",
                 trapdesc);
             return 0;
         }
@@ -5371,7 +5371,7 @@ boolean force_failure;
         else
         {
             play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-            You("are unable to reach the %s!",
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "are unable to reach the %s!",
                 trapdesc);
         }
         return 0;
@@ -5430,7 +5430,7 @@ boolean force_failure;
         } 
         else
         {
-            pline("%s %s is difficult to %s.",
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s is difficult to %s.",
                   ttmp->madeby_u ? "Your" : under_u ? "This" : "That",
                   trapdesc,
                   (ttype == WEB) ? "remove" : "disarm");
@@ -5660,7 +5660,7 @@ struct trap *ttmp;
     }
 
     play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
-    You("disarm %s land mine.", the_your[ttmp->madeby_u]);
+    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "disarm %s land mine.", the_your[ttmp->madeby_u]);
     cnv_trap_obj(LAND_MINE, 1, ttmp, FALSE);
 
     /* gain skill for untrap */
@@ -5741,7 +5741,7 @@ int otyp;
     }
 
     play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
-    You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_explanation(ttmp));
+    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "disarm %s %s.", the_your[ttmp->madeby_u], get_trap_explanation(ttmp));
 
     int skill_level = P_SKILL_LEVEL(P_DISARM_TRAP);
     int getitem = (skill_level <= P_UNSKILLED ? !rn2(3) :
@@ -5966,7 +5966,7 @@ boolean force;
         if (ttmp || boxcnt)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-            There("%s %s %s but you can't reach %s%s.",
+            There_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s %s but you can't reach %s%s.",
                 useplural ? "are" : "is", the_trap, here ? "here" : "there",
                 useplural ? "them" : "it",
                 u.usteed ? " while mounted" : "");
@@ -6201,7 +6201,7 @@ boolean force;
             else 
             {
                 play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
-                You_ex(ATR_NONE, CLR_MSG_POSITIVE, "disarm it!");
+                You_ex(ATR_NONE, CLR_MSG_SUCCESS, "disarm it!");
                 levl[x][y].doormask &= ~D_TRAPPED;
                 use_skill(P_DISARM_TRAP, 10);
             }
@@ -6250,7 +6250,7 @@ boolean force;
         if (boxcnt)
         {
             play_sfx_sound(SFX_GENERAL_CANNOT_REACH);
-            There("%s %s %s but you can't reach %s%s.",
+            There_ex(ATR_NONE, CLR_MSG_FAIL, "%s %s %s but you can't reach %s%s.",
                 useplural ? "are" : "is", the_trap, "here",
                 useplural ? "them" : "it",
                 u.usteed ? " while mounted" : "");
