@@ -60,6 +60,7 @@ win/win32/winclisrv/GnollHackClient/gnollhackdroid/date*.h
 *.psd
 *.tlog
 enc_temp_folder
+_Isincrementalbuild
 
 # User-specific files
 *.suo
