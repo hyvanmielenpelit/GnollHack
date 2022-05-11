@@ -685,6 +685,16 @@ namespace GnollHackClient
                 return GHConstants.MainCanvasAnimationFrequency;
         }
 
+        public static MapRefreshRateStyle GetDefaultMapFPS()
+        {
+            if (App.DisplayRefreshRate >= 60f)
+                return MapRefreshRateStyle.MapFPS60;
+            else if (App.DisplayRefreshRate >= 40f)
+                return MapRefreshRateStyle.MapFPS40;
+            else
+                return MapRefreshRateStyle.MapFPS30;
+        }
+
         public static uint GetAuxiliaryCanvasAnimationInterval()
         {
             if (App.DisplayRefreshRate >= 120.0f)

@@ -170,7 +170,7 @@ namespace GnollHackClient.Pages.Game
 
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
-        private MapRefreshRateStyle _mapRefreshRate = MapRefreshRateStyle.MapFPS40;
+        private MapRefreshRateStyle _mapRefreshRate = MapRefreshRateStyle.MapFPS60;
         public MapRefreshRateStyle MapRefreshRate
         {
             get
@@ -456,7 +456,7 @@ namespace GnollHackClient.Pages.Game
 
             CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
             GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
-            MapRefreshRate = (MapRefreshRateStyle)Preferences.Get("MapRefreshRate", (int)MapRefreshRateStyle.MapFPS40);
+            MapRefreshRate = (MapRefreshRateStyle)Preferences.Get("MapRefreshRate", (int)ClientUtils.GetDefaultMapFPS());
             ShowFPS = Preferences.Get("ShowFPS", false);
             UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHConstants.IsGPUDefault);
             ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
