@@ -3885,6 +3885,7 @@ int num;
 
     debugpline1("lesshungry(%d)", num);
     u.uhunger += num;
+
     if (u.uhunger >= 2000)
     {
         if (!iseating || context.victual.canchoke) 
