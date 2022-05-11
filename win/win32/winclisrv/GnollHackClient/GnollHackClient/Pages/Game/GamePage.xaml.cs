@@ -10151,13 +10151,13 @@ namespace GnollHackClient.Pages.Game
                 textPaint.Typeface = App.LatoRegular;
                 textPaint.TextSize = 36;
                 textPaint.MeasureText(str, ref bounds);
-                float fontsize = Math.Min(48, 36 * 0.2f / (bounds.Width / canvaswidth));
+                float fontsize = Math.Min(48, 36 * 0.2f / (bounds.Width / Math.Min(canvaswidth, canvasheight)));
 
                 str = "This is an explanation.";
                 textPaint.Typeface = App.UnderwoodTypeface;
                 textPaint.TextSize = 36;
                 textPaint.MeasureText(str, ref bounds);
-                float centerfontsize = Math.Min(72, 36 * 0.62f / (bounds.Width / canvaswidth));
+                float centerfontsize = Math.Min(72, 36 * 0.62f / (bounds.Width / Math.Min(canvaswidth, canvasheight)));
 
                 float scale_canvas = 1.0f;
                 float target_scale_canvas = 1.0f;
