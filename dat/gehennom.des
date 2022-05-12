@@ -817,6 +817,8 @@ NAMING:"A hellish mansion", name_revealed_seeing_monster, montype:"Baalzebub"
 GEOMETRY:right,center
 # the two pools are fakes used to mark spots which need special wall fixups
 # the two iron bars are eyes and spots to their left will be made diggable
+#         1         2         3         4         5
+#12345678901234567890123456789012345678901234567890
 MAP
           LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL    
           LLLLLLLLLL----LLLLLLLLLLLLLLL----LL    
@@ -838,6 +840,13 @@ TELEPORT_REGION:levregion(01,00,15,20),levregion(15,1,70,16)
 # this actually leaves the farthest right column diggable
 NON_DIGGABLE:(00,00,47,12)
 SPECIAL_REGION:(00,00,47,12),region_special_level_seen
+
+MONSTER_GENERATION: 24, '&' 
+MONSTER_GENERATION: 8, ('m',"chaos mimic") 
+MONSTER_GENERATION: 8, ('&',"sandestin") 
+MONSTER_GENERATION: 4, ('n',"harpy") 
+MONSTER_GENERATION: 2, ('O',"ogre king") 
+MONSTER_GENERATION: 2, ('e',"elder gazer") 
 
 MAZEWALK:(00,06),west
 STAIR:(44,06),down
@@ -885,15 +894,48 @@ TRAP:"anti magic", random
 TRAP:"fire", random
 TRAP:"magic", random
 TRAP:"magic", random
+
+# Guardian mimic
+MONSTER:('m',"chaos mimic"),(07,06)
+
+# Baalzebub's court
+MONSTER:('&',"ice devil"),(32,05)
+MONSTER:('&',"sandestin"),(33,05)
+MONSTER:('n',"harpy"),(38,05)
+MONSTER:('&',"ice devil"),(38,07)
+MONSTER:('&',"sandestin"),(33,07)
+MONSTER:('e',"elder gazer"),(32,07)
+
+# Various corrupted kings
+MONSTER:('@',"Elvenking"),random,hostile {
+  OBJECT:(')', "sword of unholy desecration")
+  OBJECT:('[', "elven mithril-coat")
+}
+MONSTER:('h',"dwarf king"),random,hostile {
+  OBJECT:('[', "helm of opposite alignment")
+  OBJECT:(')', "dwarvish axe"),exceptionality:infernal
+  OBJECT:('[', "dwarvish mithril-coat")
+}
+MONSTER:('G',"gnoll king"),random,hostile
+MONSTER:('O',"ogre king"),random,hostile
+
 # Random monsters.
-MONSTER:(' ',"ghost"),(37,07)
-MONSTER:('&',"horned devil"),(32,05)
-MONSTER:('&',"barbed devil"),(38,07)
-MONSTER:'L',random
-# Some Vampires for good measure
-MONSTER:'V',random
-MONSTER:'V',random
-MONSTER:'V',random
+MONSTER:('&',"sandestin"),random
+MONSTER:('&',"sandestin"),random
+MONSTER:('&',"sandestin"),random
+MONSTER:('&',"sandestin"),random
+MONSTER:('m',"chaos mimic"),random
+MONSTER:('m',"chaos mimic"),random
+MONSTER:('m',"chaos mimic"),random
+MONSTER:('m',"chaos mimic"),random
+MONSTER:('&',"ice devil"),random
+MONSTER:('&',"ice devil"),random
+MONSTER:('&',"ice devil"),random
+MONSTER:('&',"ice devil"),random
+MONSTER:('n',"harpy"),(22,05)
+MONSTER:('n',"harpy"),(23,05)
+MONSTER:('n',"harpy"),(22,08)
+MONSTER:('n',"harpy"),(23,08)
 
 ########################
 #

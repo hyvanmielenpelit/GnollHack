@@ -2857,7 +2857,7 @@ SPELL("power word blind",   "anomalous", None, None, "Blinds the target", //Note
     P_CELESTIAL_SPELL,            4,   5,           250, 6, 60, A_MAX_WIS_CHA, 8, 0, 5, -8, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 5, 10, 50, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_BLND, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 
 SPELL("stick to snake",      "stick-patterned", None, None, "Summons a permanent snake",
-    P_NATURE_SPELL,               4,   1,             0, -1, 8, A_MAX_WIS_CHA, 0, 0, 200, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
+    P_NATURE_SPELL,               4,   1,             0, -1, 8, A_MAX_WIS_CHA, 0, 0, 200, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_USES_SPELL_TILE, O6_NONE),
 SPELL("create wood golem", "wooden", None, None, "Creates a permanent wood golem",
     P_NATURE_SPELL,               4,   4,             0, -1, 8, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("stick to cobra",      "snake-patterned", None, None, "Summons a permanent cobra",
@@ -2962,7 +2962,7 @@ SPELL("mirror image",            "nonsensical", None, None, "A displaced mirror 
     P_ENCHANTMENT_SPELL,        5, 3,             0, 1, 6, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, DISPLACED, 0, 0, 0, 0, 6, 10, 180, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 
 SPELL("cure sickness",   "indigo", None, None, "Cures sickness, terminal illness, and sliming",
-      P_HEALING_SPELL,            5,  3,             0, 3, 20, A_WIS, 5, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_HEAL, CLR_BLUE, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
+      P_HEALING_SPELL,            5,  3,             0, 3, 20, A_WIS, 5, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_HEAL, CLR_BLUE, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_USES_SPELL_TILE, O6_NONE),
 SPELL("cure petrification",   "runic", None, None, "Cures petrification",
       P_HEALING_SPELL,            5,  5,             0, 4, 30, A_WIS, 5, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_HEAL, CLR_BROWN, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("cure blindness",  "yellow", None, None, "Cures blindness",
@@ -3018,7 +3018,7 @@ SPELL("time stop",           "ancient", None, "an ancient movement spell", "Stop
     P_MOVEMENT_SPELL,            2, 10,            15,10,150, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 1, 4, 3, S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 
 SPELL("shield",       "obsidian-studded", None, None, "Gives -6 bonus to AC and +2 to MC",
-    P_ABJURATION_SPELL,            4,  3,             0, 1, 6, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, MAGICAL_SHIELDING, 0, 0, 0, 0, 2, 10, 130, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
+    P_ABJURATION_SPELL,            4,  3,             0, 1, 6, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, MAGICAL_SHIELDING, 0, 0, 0, 0, 2, 10, 130, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_USES_SPELL_TILE, O6_NONE),
 SPELL("reflection", "polished silver", None, None, "Grants reflection, which protects from rays",
       P_ABJURATION_SPELL,        5,  1,           120, 3, 20, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, REFLECTING, 0, 0, 0, 0, 10, 6, 25, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_SILVER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("protection from fire", "smoky", None, None, "Grants immunity to fire attacks",
