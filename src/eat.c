@@ -3262,6 +3262,7 @@ doeat()
 
     if (Strangled) 
     {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "If you can't breathe air, how can you consume solids?");
         return 0;
     }
@@ -3310,7 +3311,7 @@ doeat()
     if (!is_edible(otmp))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot eat that!");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot eat that!");
         return 0;
     }
     else if ((otmp->owornmask & (W_ARMOR | W_BLINDFOLD | W_AMUL | W_SADDLE)) != 0) 
@@ -3658,8 +3659,9 @@ doeat()
                 play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             }
             consume_oeaten(otmp, 1); /* oeaten >>= 1 */
-        } else
-                food_pre_effect(otmp);
+        } 
+        else
+            food_pre_effect(otmp);
     }
 
     /* re-calc the nutrition */
