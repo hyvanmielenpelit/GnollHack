@@ -1040,7 +1040,7 @@ int mode;
                     if (Underwater || iflags.mention_walls)
                     {
                         play_sfx_sound(SFX_SOMETHING_IN_WAY);
-                        You_cant("move diagonally into an intact doorway.");
+                        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "move diagonally into an intact doorway.");
                     }
                 }
                 return FALSE;
@@ -1117,7 +1117,7 @@ int mode;
         if (mode == DO_MOVE && iflags.mention_walls)
         {
             play_sfx_sound(SFX_SOMETHING_IN_WAY);
-            You_cant("move diagonally out of an intact doorway.");
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "move diagonally out of an intact doorway.");
         }
         return FALSE;
     }

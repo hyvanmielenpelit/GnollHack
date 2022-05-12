@@ -2360,7 +2360,7 @@ boolean in_takeoff_wear;
         {
             /* neither armor nor accessory */
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You_cant("wear that!");
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "wear that!");
             return 0;
         }
     }

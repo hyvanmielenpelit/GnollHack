@@ -5527,7 +5527,7 @@ dodown()
             else
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You_cant("go down here.");
+                You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "go down here.");
                 return 0;
             }
         }
@@ -5628,7 +5628,7 @@ doup()
         && (!sstairs.sx || u.ux != sstairs.sx || u.uy != sstairs.sy
             || !sstairs.up)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant("go up here.");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "go up here.");
         return 0;
     }
     if (stucksteed(TRUE)) {

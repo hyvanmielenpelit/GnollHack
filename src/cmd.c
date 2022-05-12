@@ -6953,13 +6953,13 @@ register char *cmd;
             if (!wizard && (tlist->flags & WIZMODECMD))
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You_cant("do that!");
+                You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that!");
                 res = 0;
             }
             else if (u.uburied && !(tlist->flags & IFBURIED)) 
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You_cant("do that while you are buried!");
+                You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that while you are buried!");
                 res = 0;
             } 
             else 

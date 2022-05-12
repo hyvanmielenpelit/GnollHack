@@ -3317,7 +3317,7 @@ doeat()
     {
         /* let them eat rings */
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant("eat %s you're wearing.", something);
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "eat %s you're wearing.", something);
         return 0;
     }
     else if (!(carried(otmp) ? retouch_object(&otmp, FALSE)
@@ -4254,7 +4254,7 @@ skipfloor:
         if (otmp->otyp != CORPSE || (corpsecheck == 2 && !tinnable(otmp)))
         {
             play_sfx_sound(SFX_GENERAL_CANNOT);
-            You_cant("%s that!", verb);
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "%s that!", verb);
             return (struct obj *) 0;
         }
     return otmp;

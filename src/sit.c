@@ -40,7 +40,7 @@ dosit()
 
     if (u.usteed) {
         play_sfx_sound(SFX_GENERAL_ALREADY_DONE);
-        You("are already sitting on %s.", mon_nam(u.usteed));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "are already sitting on %s.", mon_nam(u.usteed));
         return 0;
     }
     if (u.uundetected && is_hider(youmonst.data) && u.umonnum != PM_TRAPPER)
@@ -68,9 +68,9 @@ dosit()
            hero is in no condition to actually sit at has/her own spot */
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         if (humanoid(u.ustuck->data))
-            pline("%s won't offer %s lap.", Monnam(u.ustuck), mhis(u.ustuck));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s won't offer %s lap.", Monnam(u.ustuck), mhis(u.ustuck));
         else
-            pline("%s has no lap.", Monnam(u.ustuck));
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s has no lap.", Monnam(u.ustuck));
         return 0;
     } else if (is_pool(u.ux, u.uy) && !Underwater) { /* water walking */
         goto in_water;
@@ -98,14 +98,14 @@ dosit()
             exercise(A_WIS, FALSE); /* you're getting stuck longer */
             if (u.utraptype == TT_BEARTRAP) {
                 play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-                You_cant("sit down with your %s in the bear trap.",
+                You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "sit down with your %s in the bear trap.",
                          body_part(FOOT));
                 u.utrap++;
             } else if (u.utraptype == TT_PIT) {
                 play_sfx_sound(SFX_SIT);
                 if (trap && trap->ttyp == SPIKED_PIT) {
                     play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
-                    You("sit down on a spike.  Ouch!");
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "sit down on a spike.  Ouch!");
                     losehp(adjust_damage(rn2(2), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                            "sitting on an iron spike", KILLED_BY);
                     exercise(A_STR, FALSE);
@@ -114,12 +114,12 @@ dosit()
                 u.utrap += rn2(5);
             } else if (u.utraptype == TT_WEB) {
                 play_sfx_sound(SFX_SIT);
-                You("sit in the spider web and get entangled further!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "sit in the spider web and get entangled further!");
                 u.utrap += rn1(10, 5);
             } else if (u.utraptype == TT_LAVA) {
                 play_sfx_sound(SFX_SIT);
                 /* Must have fire resistance or they'd be dead already */
-                You("sit in the %s!", hliquid("lava"));
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "sit in the %s!", hliquid("lava"));
                 if (Slimed)
                     burn_away_slime();
                 u.utrap += rnd(4);
@@ -128,7 +128,7 @@ dosit()
             } else if (u.utraptype == TT_INFLOOR
                        || u.utraptype == TT_BURIEDBALL) {
                 play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
-                You_cant("maneuver to sit!");
+                You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "maneuver to sit!");
                 u.utrap++;
             }
         } else {
@@ -273,20 +273,29 @@ dosit()
             case 4:
                 play_sfx_sound(SFX_HEALING);
                 You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "much, much better!");
-                if (Upolyd) {
-                    if (u.mh >= (u.mhmax - 5))
-                        u.basemhmax += 4;
-                    u.mh = u.mhmax;
-                }
-                if (u.uhp >= (u.uhpmax - 5))
-                    u.ubasehpmax += 4;
-                updatemaxhp();
-                u.uhp = u.uhpmax;
+                int healamount = Upolyd ? u.mhmax - u.mh + 4 : u.uhpmax - u.uhp + 4;
+                //if (Upolyd) {
+                //    if (u.mh >= (u.mhmax - 5))
+                //        u.basemhmax += 4;
+                //    //u.mh = u.mhmax;
+                //    updatemaxhp();
+                //    healamount = u.mhmax - u.mh;
+                //}
+                //if (u.uhp >= (u.uhpmax - 5))
+                //    u.ubasehpmax += 4;
+
+                //updatemaxhp();
+                //if (!Upolyd)
+                //{
+                //    healamount = u.uhpmax - u.uhp;
+                //}
+                ////u.uhp = u.uhpmax;
                 u.ucreamed = 0;
-                make_blinded(0L, TRUE);
-                make_sick(0L, (char *) 0, FALSE);
-                make_food_poisoned(0L, (char*)0, FALSE);
-                make_mummy_rotted(0L, (char*)0, FALSE);
+                healup(healamount, 4, TRUE, TRUE, FALSE, FALSE, FALSE);
+                //make_blinded(0L, TRUE);
+                //make_sick(0L, (char *) 0, FALSE);
+                //make_food_poisoned(0L, (char*)0, FALSE);
+                //make_mummy_rotted(0L, (char*)0, FALSE);
                 heal_legs(0);
                 context.botl = context.botlx = 1;
                 break;

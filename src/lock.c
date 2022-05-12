@@ -531,7 +531,7 @@ struct obj *pick;
     }
     else if (u.uswallow)
     {
-        You_cant("%sunlock %s.", (picktyp == CREDIT_CARD) ? "" : "lock or ",
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "%sunlock %s.", (picktyp == CREDIT_CARD) ? "" : "lock or ",
                  mon_nam(u.ustuck));
         return PICKLOCK_DID_NOTHING;
     }
@@ -657,13 +657,13 @@ boolean is_auto;
 
                 if (otmp->obroken) 
                 {
-                    You_cant("fix its broken lock with %s.", doname(pick));
+                    You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "fix its broken lock with %s.", doname(pick));
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
                 else if (picktyp == CREDIT_CARD && !otmp->olocked) 
                 {
                     /* credit cards are only good for unlocking */
-                    You_cant("do that with %s.",
+                    You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that with %s.",
                         an(simple_typename(picktyp)));
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
@@ -769,7 +769,7 @@ boolean is_auto;
             /* credit cards are only good for unlocking */
             if (picktyp == CREDIT_CARD && !(door->doormask & D_LOCKED)) 
             {
-                You_cant("lock a door with a credit card.");
+                You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "lock a door with a credit card.");
                 return PICKLOCK_LEARNED_SOMETHING;
             }
 
@@ -856,7 +856,7 @@ doforce()
                   || objects[uwep->otyp].oc_skill == P_FLAIL
                   || objects[uwep->otyp].oc_skill >= P_BOW)
                : uwep->oclass != ROCK_CLASS)) {
-        You_cant("force anything %s weapon.",
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "force anything %s weapon.",
                  !uwep ? "when not wielding a"
                        : (uwep->oclass != WEAPON_CLASS && !is_weptool(uwep))
                              ? "without a proper"

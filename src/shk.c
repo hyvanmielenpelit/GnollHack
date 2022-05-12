@@ -1357,11 +1357,13 @@ dopay()
     }
 
     if ((!sk && (!Blind || (Blind_telepat || Unblind_telepat || Detect_monsters))) || (!Blind && !seensk)) {
-        There("appears to be no shopkeeper here to receive your payment.");
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        There_ex(ATR_NONE, CLR_MSG_FAIL, "appears to be no shopkeeper here to receive your payment.");
         return 0;
     }
 
     if (!seensk) {
+        play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         You_cant("see...");
         return 0;
     }

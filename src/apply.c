@@ -914,7 +914,7 @@ struct obj *obj;
            (note: the two in-use cases can't actually occur; all
            leashes are released when the hero gets engulfed) */
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant((!obj->leashmon
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, (!obj->leashmon
                   ? "leash %s from inside."
                   : (obj->leashmon == (int) u.ustuck->m_id)
                     ? "unleash %s from inside."
@@ -925,7 +925,7 @@ struct obj *obj;
     if (!obj->leashmon && number_leashed() >= MAXLEASHED) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("cannot leash any more pets.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot leash any more pets.");
         return 0;
     }
 
@@ -1209,7 +1209,7 @@ struct obj *obj;
     {
         if (!useeit) 
         {
-            You_cant("see your %s %s.", uvisage, body_part(FACE));
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "see your %s %s.", uvisage, body_part(FACE));
         } 
         else
         {
@@ -2596,7 +2596,7 @@ boolean showmsg;
             if (showmsg)
             {
                 play_sfx_sound(SFX_SOMETHING_IN_WAY);
-                You_cant("jump diagonally out of a doorway.");
+                You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "jump diagonally out of a doorway.");
             }
             return FALSE;
         }
@@ -3933,7 +3933,7 @@ struct obj *tstone;
     if (obj == tstone && obj->quan == 1L)
     {
         play_sfx_sound(SFX_GENERAL_THATS_SILLY);
-        You_cant("rub %s on itself.", the(xname(obj)));
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "rub %s on itself.", the(xname(obj)));
         return;
     }
 
@@ -4111,7 +4111,7 @@ struct obj *otmp;
                          ? "in a cloud"
                          : "in this place"; /* Air/Water Plane catch-all */
     if (what) {
-        You_cant("set a trap %s!", what);
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "set a trap %s!", what);
         reset_trapset();
         return;
     }
@@ -4879,7 +4879,7 @@ struct obj *obj;
             pline("There's %ssticky goop all over your %s.",
                   wascreamed ? "more " : "", body_part(FACE));
         else /* Blind  && !wasblind */
-            You_cant("see through all the sticky goop on your %s.",
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "see through all the sticky goop on your %s.",
                      body_part(FACE));
     }
 
@@ -5088,13 +5088,13 @@ struct obj *obj;
 
     if (nohands(youmonst.data)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant("break %s without hands!", yname(obj));
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "break %s without hands!", yname(obj));
         return 0;
     } else if (ACURR(A_STR) < (is_fragile ? 5 : 10)) {
-        You("don't have the strength to break %s!", yname(obj));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have the strength to break %s!", yname(obj));
         return 0;
     } else if (obj->oartifact > 0) {
-        pline("%s is too hard to break!", Yname2(obj));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s is too hard to break!", Yname2(obj));
         return 0;
     }
 

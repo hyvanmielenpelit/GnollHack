@@ -547,21 +547,21 @@ doengrave()
             jello = TRUE;
     } else if (is_lava(u.ux, u.uy)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant("write on the %s!", surface(u.ux, u.uy));
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "write on the %s!", surface(u.ux, u.uy));
         return 0;
     } else if (is_pool(u.ux, u.uy) || IS_FOUNTAIN(levl[u.ux][u.uy].typ)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant("write on the %s!", surface(u.ux, u.uy));
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "write on the %s!", surface(u.ux, u.uy));
         return 0;
     }
     if (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz) /* in bubble */) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant("write in thin air!");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "write in thin air!");
         return 0;
     } else if (!accessible(u.ux, u.uy)) {
         /* stone, tree, wall, secret corridor, pool, lava, bars */
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant("write here.");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "write here.");
         return 0;
     }
     if (cantwield(youmonst.data)) {
@@ -657,7 +657,7 @@ doengrave()
     case BALL_CLASS:
     case ROCK_CLASS:
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant("engrave with such a large object!");
+        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "engrave with such a large object!");
         ptext = FALSE;
         break;
     /* Objects too silly to engrave with */

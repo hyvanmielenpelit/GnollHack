@@ -216,7 +216,7 @@ doread()
 
         if (Blind) 
         {
-            You_cant("feel any Braille writing.");
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "feel any Braille writing.");
             return 0;
         }
         /* can't read shirt worn under suit (under cloak is ok though) */
@@ -318,7 +318,7 @@ doread()
     {
         if (Blind) 
         {
-            You_cant("feel any Braille writing.");
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "feel any Braille writing.");
             return 0;
         }
         if (flags.verbose)
@@ -371,7 +371,7 @@ doread()
 
         if (Blind) 
         {
-            You_cant("feel any Braille writing.");
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "feel any Braille writing.");
             return 0;
         }
         pline("The wrapper reads: \"%s\".",
