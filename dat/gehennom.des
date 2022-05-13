@@ -856,6 +856,22 @@ IF [50%] {
    TERRAIN:(29,05),'|'
    TERRAIN:(29,07),'S'
 }
+
+BRAZIER:(03,04)
+BRAZIER:(03,08)
+BRAZIER:(06,04)
+BRAZIER:(06,08)
+BRAZIER:(11,05)
+BRAZIER:(11,07)
+BRAZIER:(18,04)
+BRAZIER:(18,08)
+BRAZIER:(27,03)
+BRAZIER:(27,09)
+BRAZIER:(35,03)
+BRAZIER:(35,09)
+BRAZIER:(30,06)
+BRAZIER:(41,06)
+
 # The fellow in residence
 MONSTER:('&',"Baalzebub"),(35,06) {
   OBJECT:('(',"ornamental key"),special_quality:5
