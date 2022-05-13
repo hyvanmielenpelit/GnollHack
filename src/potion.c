@@ -110,12 +110,14 @@ boolean talk;
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s...", stagger(youmonst.data, "stagger"));
         }
     }
+
+    set_itimeout(&HStun, xtime);
+
     if ((!xtime && old) || (xtime && !old))
     {
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
     }
-    set_itimeout(&HStun, xtime);
 }
 
 
