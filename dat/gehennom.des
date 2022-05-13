@@ -797,6 +797,7 @@ BRAZIER: (31,01), brazier_normal, lit
 BRAZIER: (31,03), brazier_normal, lit
 SIGNPOST: (15,02), signpost_normal,"Uninvited Visitors Not Welcome"
 
+MONSTER:('d',"Cerberus"),(07,02)
 MONSTER:'&',random
 MONSTER:'&',random
 MONSTER:'&',random {
@@ -844,9 +845,7 @@ SPECIAL_REGION:(00,00,47,12),region_special_level_seen
 MONSTER_GENERATION: 24, '&' 
 MONSTER_GENERATION: 8, ('m',"chaos mimic") 
 MONSTER_GENERATION: 8, ('&',"sandestin") 
-MONSTER_GENERATION: 4, ('n',"harpy") 
-MONSTER_GENERATION: 2, ('O',"ogre king") 
-MONSTER_GENERATION: 2, ('e',"elder gazer") 
+MONSTER_GENERATION: 8, ('i',"lemure") 
 
 MAZEWALK:(00,06),west
 STAIR:(44,06),down
@@ -862,7 +861,7 @@ MONSTER:('&',"Baalzebub"),(35,06) {
   OBJECT:('(',"ornamental key"),special_quality:5
 }
 CONTAINER:('(',"chest"),trapped,locked,(35,06),keytype:('(',"ornamental key"),special_quality:5,no_pickup {
-   OBJECT:('$',"gold piece"), quantity:(3500+(3d1000))
+   OBJECT:('$',"gold piece"), quantity:(2000+(3d1000))
    [25%]:OBJECT:artifact
    OBJECT:random_contents
    OBJECT:random_contents
@@ -899,25 +898,24 @@ TRAP:"magic", random
 MONSTER:('m',"chaos mimic"),(07,06)
 
 # Baalzebub's court
-MONSTER:('&',"ice devil"),(32,05)
+MONSTER:('&',"pit fiend"),(32,05)
 MONSTER:('&',"sandestin"),(33,05)
-MONSTER:('n',"harpy"),(38,05)
-MONSTER:('&',"ice devil"),(38,07)
+MONSTER:('&',"pit fiend"),(38,07)
 MONSTER:('&',"sandestin"),(33,07)
-MONSTER:('e',"elder gazer"),(32,07)
 
-# Various corrupted kings
-MONSTER:('@',"Elvenking"),random,hostile {
-  OBJECT:(')', "sword of unholy desecration")
-  OBJECT:('[', "elven mithril-coat")
+# Various corrupted kings of player races
+MONSTER:('@',"Elvenking"),random,hostile,male,"Orodhuil the Black-Hearted" {
+   OBJECT:(')', "sword of unholy desecration"),cursed,enchantment:5
+   OBJECT:('[', "elven mithril-coat"),cursed,enchantment:5
+   OBJECT:('$',"gold piece"), quantity:(500+(1d500))
 }
-MONSTER:('h',"dwarf king"),random,hostile {
-  OBJECT:('[', "helm of opposite alignment")
-  OBJECT:(')', "dwarvish axe"),exceptionality:infernal
-  OBJECT:('[', "dwarvish mithril-coat")
+MONSTER:('h',"dwarf king"),random,hostile,male,"Burin the Wicked" {
+   OBJECT:('[', "helm of opposite alignment"),enchantment:3
+   OBJECT:(')', "dwarvish axe"),cursed,exceptionality:infernal,enchantment:3
+   OBJECT:('[', "dwarvish mithril-coat"),cursed,enchantment:3
+   OBJECT:('$',"gold piece"), quantity:(500+(1d500))
 }
-MONSTER:('G',"gnoll king"),random,hostile
-MONSTER:('O',"ogre king"),random,hostile
+MONSTER:('G',"gnoll king"),random,hostile,male,"Hoggen II"
 
 # Random monsters.
 MONSTER:('&',"sandestin"),random
@@ -928,14 +926,26 @@ MONSTER:('m',"chaos mimic"),random
 MONSTER:('m',"chaos mimic"),random
 MONSTER:('m',"chaos mimic"),random
 MONSTER:('m',"chaos mimic"),random
-MONSTER:('&',"ice devil"),random
-MONSTER:('&',"ice devil"),random
-MONSTER:('&',"ice devil"),random
-MONSTER:('&',"ice devil"),random
-MONSTER:('n',"harpy"),(22,05)
-MONSTER:('n',"harpy"),(23,05)
-MONSTER:('n',"harpy"),(22,08)
-MONSTER:('n',"harpy"),(23,08)
+MONSTER:('&',"pit fiend"),(22,04)
+MONSTER:('&',"pit fiend"),(23,04)
+MONSTER:('&',"pit fiend"),(22,08)
+MONSTER:('&',"pit fiend"),(23,08)
+MONSTER:('&',"erinys"),(22,05)
+MONSTER:('&',"erinys"),(23,05)
+MONSTER:('&',"erinys"),(22,07)
+MONSTER:('&',"erinys"),(23,07)
+MONSTER:('i',"lemure"),random
+MONSTER:('i',"lemure"),random
+MONSTER:('i',"lemure"),random
+MONSTER:('i',"lemure"),random
+MONSTER:('i',"lemure"),random
+MONSTER:('i',"lemure"),random
+MONSTER:('i',"lemure"),random
+MONSTER:('i',"lemure"),random
+MONSTER:('i',"lemure"),random
+MONSTER:('i',"lemure"),random
+MONSTER:('i',"lemure"),random
+MONSTER:('i',"lemure"),random
 
 ########################
 #
