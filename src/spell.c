@@ -2950,113 +2950,113 @@ int otyp;
         switch(objects[otyp].oc_dir_subtype)
         {
         case REFLECTING:
-            Your("skin feels more reflecting than before.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin feels more reflecting than before.");
             break;
         case FIRE_IMMUNITY:
         case IMPROVED_FIRE_RESISTANCE:
         case FIRE_RESISTANCE:
-            Your("skin feels less prone to burning than before.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin feels less prone to burning than before.");
             break;
         case COLD_IMMUNITY:
         case IMPROVED_COLD_RESISTANCE:
         case COLD_RESISTANCE:
-            Your("skin feels less prone to frostbites than before.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin feels less prone to frostbites than before.");
             break;
         case SHOCK_IMMUNITY:
         case IMPROVED_SHOCK_RESISTANCE:
         case SHOCK_RESISTANCE:
-            Your("skin feels less prone to electricity than before.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin feels less prone to electricity than before.");
             break;
         case DISINTEGRATION_RESISTANCE:
-            Your("body feels firmer than before.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "body feels firmer than before.");
             break;
         case POISON_RESISTANCE:
-            You_feel("more healthy than before.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "more healthy than before.");
             break;
         case ACID_RESISTANCE:
         case IMPROVED_ACID_RESISTANCE:
         case ACID_IMMUNITY:
-            Your("skin feels less prone to acid than before.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin feels less prone to acid than before.");
             break;
         case STONE_RESISTANCE:
-            Your("skin feels more limber than before.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin feels more limber than before.");
             break;
         case DRAIN_RESISTANCE:
-            You_feel("less suspectible to draining than before.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "less suspectible to draining than before.");
             break;
         case SICK_RESISTANCE:
-            You_feel("unbothered by disease agents.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "unbothered by disease agents.");
             break;
         case INVULNERABLE:
-            Your("skin feels less prone to damage than before.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin feels less prone to damage than before.");
             break;
         case ANTIMAGIC:
-            You_feel("more protected from magic.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "more protected from magic.");
             break;
         case MAGIC_MISSILE_IMMUNITY:
         case IMPROVED_MAGIC_MISSILE_RESISTANCE:
         case MAGIC_MISSILE_RESISTANCE:
-            You_feel("more protected from magic missiles.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "more protected from magic missiles.");
             break;
         case DEATH_RESISTANCE:
-            Your("soul's silver cord feels thicker than before.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "soul's silver cord feels thicker than before.");
             break;
         case CHARM_RESISTANCE:
-            You_feel("more firm about your own motivations.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "more firm about your own motivations.");
             break;
         case FEAR_RESISTANCE:
-            You_feel("more courageous.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "more courageous.");
             break;
         case MIND_SHIELDING:
-            You_feel("shielded from mental detection.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "shielded from mental detection.");
             break;
         case LYCANTHROPY_RESISTANCE:
-            You_feel("more protected from lycanthropy.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "more protected from lycanthropy.");
             break;
         case CURSE_RESISTANCE:
-            You_feel("more protected from curses.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "more protected from curses.");
             break;
         case LIFESAVED:
-            You_feel("less mortal than before.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "less mortal than before.");
             break;
         case DETECT_MONSTERS:
-            You_feel("sensitive to the presence of monsters.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "sensitive to the presence of monsters.");
             break;
         case BLIND_TELEPATHY:
-            You_feel("telepathic when blind.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "telepathic when blind.");
             break;
         case TELEPAT:
-            You_feel("telepathic.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "telepathic.");
             break;
         case XRAY_VISION:
-            You("can see through walls.");
+            You_ex(ATR_NONE, CLR_MSG_POSITIVE, "can see through walls.");
             break;
         case WATER_WALKING:
-            You_feel("like you could walk on water.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "like you could walk on water.");
             break;
         case MAGICAL_BREATHING:
-            You_feel("like you breathe in water.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "like you breathe in water.");
             break;
         case DISPLACED:
-            Your("image is duplicated by a displaced double.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "image is duplicated by a displaced double.");
             break;
         case CONFLICT:
-            Your("neighborhood feels more quarrelsome than before.");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "neighborhood feels more quarrelsome than before.");
             break;
         case MAGICAL_PROTECTION:
-            You_feel("protected!");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "protected!");
             break;
         case MAGICAL_SHIELDING:
-            You_feel("shielded!");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "shielded!");
             break;
         case MAGICAL_BARKSKIN:
-            Your("skin hardens into bark!");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin hardens into bark!");
             break;
         case MAGICAL_STONESKIN:
-            Your("skin hardens into stone!");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin hardens into stone!");
             break;
         case BISECTION_RESISTANCE:
-            Your("skin feels strong as steel!");
+            Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "skin feels strong as steel!");
             break;
         default:
             break;

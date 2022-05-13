@@ -2943,7 +2943,7 @@ SPELL("invisibility",     "dark brown", None, None, "The caster becomes invisibl
 SPELL("enchant armor",          "glowing", None, None, "Increases the enchantment on a piece of armor",
       P_ENCHANTMENT_SPELL,        5, 3,             0, 3, 40, A_MAX_INT_CHA, 0, 0, 300, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT | S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("enchant weapon",          "dark gray", None, None, "Increases the enchantment on a weapon",
-      P_ENCHANTMENT_SPELL,        5, 3,             0, 4, 60, A_MAX_INT_CHA, 0, 0, 300, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
+      P_ENCHANTMENT_SPELL,        5, 3,             0, 4, 60, A_MAX_INT_CHA, 0, 0, 300, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_USES_SPELL_TILE, O6_NONE),
 SPELL("protect armor",          "glowing", None, None, "Makes a piece of armor rust- or burn-proof",
       P_ENCHANTMENT_SPELL,        5, 2,             0, 3, 40, A_MAX_INT_CHA, 0, 0, 200, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("protect weapon",          "antiquarian", None, None, "Makes a weapon rust- or burn-proof",

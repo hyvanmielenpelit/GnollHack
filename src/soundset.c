@@ -2381,7 +2381,6 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
     {
         "Neanderthal Male",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -2494,8 +2493,6 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
-
     {
         "Attendant Male",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -2608,7 +2605,6 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
     {
         "Page Male",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -2721,7 +2717,6 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
     {
         "Abbot Male",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -2834,8 +2829,6 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
-
     {
         "Acolyte Male",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -2948,7 +2941,6 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
     {
         "Hunter Male",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -3061,8 +3053,6 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
-
     {
         "Thug Male",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -3175,7 +3165,6 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
     {
         "Roshi Male",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -3288,7 +3277,6 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
     {
         "Guide Male",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -3401,7 +3389,6 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
     {
         "Warrior Male",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -3514,7 +3501,6 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
     {
         "Apprentice Male",
         MONSTER_SOUNDSET_HUMAN_MALE,
@@ -3627,7 +3613,6 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
         }
     },
-
     {
         "Aligned Priest",
         MONSTER_SOUNDSET_HUMAN_MALE,
