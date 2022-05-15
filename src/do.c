@@ -918,7 +918,7 @@ int
 corpsedescription(obj)
 register struct obj* obj;
 {
-    if (!obj || obj == &zeroobj || obj->otyp != CORPSE)
+    if (!obj || obj == &zeroobj || !is_obj_rotting_corpse(obj))
         return 0;
 
     if(obj->corpsenm > NON_PM)
@@ -1333,7 +1333,7 @@ register struct obj* obj;
             }
 
             int mnum = obj->corpsenm;
-            if ((otyp == CORPSE || obj->globby) && mnum > NON_PM && (obj->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) !=0)
+            if (is_obj_rotting_corpse(obj) && mnum > NON_PM && (obj->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) !=0)
             {
                 long rotted = get_rotted_status(obj);
                 if (rotted > 5L)
@@ -3192,7 +3192,7 @@ register struct obj* obj;
         }
 
         /* Corpse properties */
-        if (otyp == CORPSE && obj->corpsenm > NON_PM && obj->corpsenm > NUM_MONSTERS)
+        if (is_obj_rotting_corpse(obj) && obj->corpsenm > NON_PM && obj->corpsenm < NUM_MONSTERS)
         {
             if (mvitals[obj->corpsenm].mvflags & MV_KNOWS_CORPSE)
             {
@@ -3974,7 +3974,7 @@ register struct obj* obj;
 
         if (show_corpse_hint)
         {
-            Sprintf(buf, " %2d - You can determine this corpse's properties by applying a wand of probing on it", powercnt);
+            Sprintf(buf, " %2d - You can determine this corpse's properties by using a wand of probing on it", powercnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }

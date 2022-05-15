@@ -525,7 +525,7 @@ boolean FDECL((*filterfunc), (OBJ_P));
             /* caller may be asking us to override filterfunc (in order
                to do a cockatrice corpse touch check during pickup even
                if/when the filter rejects food class) */
-            && (!augment_filter || o->otyp != CORPSE
+            && (!augment_filter || o->otyp != CORPSE || o->corpsenm < LOW_PM
                 || !touch_petrifies(&mons[o->corpsenm])))
             continue;
         sliarray[i].obj = o, sliarray[i].indx = (int) i;
@@ -3728,9 +3728,9 @@ struct obj *otmp;
         otmp->cknown = otmp->lknown = otmp->tknown = 1;
     if (otmp->otyp == EGG && otmp->corpsenm > NON_PM)
         learn_egg_type(otmp->corpsenm);
-    if (otmp->otyp == CORPSE && otmp->corpsenm > NON_PM)
+    if (is_obj_rotting_corpse(otmp) && otmp->corpsenm > NON_PM)
         learn_corpse_type(otmp->corpsenm);
-    if (otmp->otyp == CORPSE || otmp->globby)
+    if (is_obj_rotting_corpse(otmp))
         otmp->speflags |= SPEFLAGS_ROTTING_STATUS_KNOWN;
 }
 
@@ -6094,6 +6094,10 @@ register struct obj *otmp, *obj;
     if (obj->otyp == CORPSE || obj->otyp == EGG || obj->otyp == TIN) {
         if (obj->corpsenm != otmp->corpsenm)
             return FALSE;
+    }
+
+    if (is_obj_rotting_corpse(obj) && (obj->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) != (otmp->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN)) {
+        return FALSE;
     }
 
     /* hatching eggs don't merge; ditto for revivable corpses */

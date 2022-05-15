@@ -919,7 +919,7 @@ int otyp, exceptionality;
         if (otmp->otyp == otyp && (exceptionality < 0 || otmp->exceptionality == (uchar)exceptionality)
             /* never select non-cockatrice corpses */
             && !((otyp == CORPSE || otyp == EGG)
-                 && !touch_petrifies(&mons[otmp->corpsenm]))
+                 && (otmp->corpsenm < LOW_PM || !touch_petrifies(&mons[otmp->corpsenm])))
             && (!otmp->oartifact || touch_artifact(otmp, mtmp))
             && !inappropriate_exceptionality(mtmp, otmp)
             )

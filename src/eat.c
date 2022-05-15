@@ -344,11 +344,15 @@ unsigned
 obj_nutrition(otmp)
 struct obj *otmp;
 {
+    if (!otmp || (otmp->otyp == CORPSE && otmp->corpsenm < LOW_PM))
+        return 0;
+
     unsigned nut = (otmp->otyp == CORPSE) ? mons[otmp->corpsenm].cnutrit
                       : otmp->globby ? otmp->owt
                          : (unsigned) objects[otmp->otyp].oc_nutrition;
 
-    if (otmp->otyp == ELVEN_WAYBREAD) {
+    if (otmp->otyp == ELVEN_WAYBREAD) 
+    {
         if (maybe_polyd(is_elf(youmonst.data), Race_if(PM_ELF)))
             nut += nut / 4; /* 800 -> 1000 */
         else if (maybe_polyd(is_orc(youmonst.data), Race_if(PM_ORC)))
@@ -358,11 +362,14 @@ struct obj *otmp;
         if (otmp->oeaten >= nut)
             otmp->oeaten = (otmp->oeaten < objects[ELVEN_WAYBREAD].oc_nutrition)
                               ? (nut - 1) : nut;
-    } else if (otmp->otyp == CRAM_RATION) {
+    } 
+    else if (otmp->otyp == CRAM_RATION) 
+    {
         if (maybe_polyd(is_dwarf(youmonst.data), Race_if(PM_DWARF)))
             nut += nut / 6; /* 600 -> 700 */
     }
-    else if (otmp->otyp == TRIPE_RATION) {
+    else if (otmp->otyp == TRIPE_RATION) 
+    {
         if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
             nut += nut * 2; /* 200 -> 600 */
     }
@@ -505,7 +512,7 @@ boolean message;
         occtyp = 0;
     }
 
-    if (piece->otyp == CORPSE || piece->globby)
+    if (is_obj_rotting_corpse(piece))
         corpse_after_effect(piece->corpsenm);
     else
         food_after_effect(piece);
@@ -2321,7 +2328,7 @@ boolean resume;
     context.victual.eating = TRUE;
     context.victual.total_nutrition = otmp->oeaten;
 
-    if (otmp->otyp == CORPSE || otmp->globby) {
+    if (is_obj_rotting_corpse(otmp)) {
         corpse_pre_effect(context.victual.piece->corpsenm);
         if (!context.victual.piece || !context.victual.eating) {
             /* rider revived, or died and lifesaved */
@@ -3079,7 +3086,7 @@ long
 get_rotted_status(obj)
 struct obj* obj;
 {
-    if (!obj || (obj->otyp != CORPSE && !obj->globby) || obj->corpsenm < LOW_PM)
+    if (!obj || !is_obj_rotting_corpse(obj) || obj->corpsenm < LOW_PM || obj->corpsenm >= NUM_MONSTERS)
         return 0;
 
     long rotted = 0L;
@@ -3114,7 +3121,7 @@ struct obj *otmp;
      */
     char buf[BUFSZ], foodsmell[BUFSZ],
          it_or_they[QBUFSZ], eat_it_anyway[QBUFSZ];
-    boolean cadaver = (otmp->otyp == CORPSE || otmp->globby),
+    boolean cadaver = is_obj_rotting_corpse(otmp), // (otmp->otyp == CORPSE || otmp->globby),
             stoneorslime = FALSE;
     int material = objects[otmp->otyp].oc_material, mnum = otmp->corpsenm;
     long rotted = 0L;
@@ -3136,6 +3143,7 @@ struct obj *otmp;
         if (cadaver && mnum >= LOW_PM && !nonrotting_corpse(mnum))
         {
             rotted = get_rotted_status(otmp);
+            otmp->speflags |= SPEFLAGS_ROTTING_STATUS_KNOWN;
             //long age = peek_at_iced_corpse_age(otmp);
 
             ///* worst case rather than random
@@ -3537,7 +3545,7 @@ doeat()
      * then adjusted in accordance with the amount of food left.
      */
     int identifycolor = CLR_MSG_ATTENTION;
-    if (otmp->otyp == CORPSE || otmp->globby) 
+    if (is_obj_rotting_corpse(otmp))
     {
         int tmp = eatcorpse(otmp);
 

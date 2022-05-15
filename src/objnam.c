@@ -2035,7 +2035,7 @@ struct obj *otmp;
         return TRUE;
     if ((otmp->mythic_prefix || otmp->mythic_suffix) && !otmp->mknown)
         return TRUE;
-    if ((otmp->otyp == CORPSE || otmp->globby) && (otmp->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) == 0)
+    if (is_obj_rotting_corpse(otmp) && (otmp->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) == 0)
         return TRUE;
     /* otmp->rknown is the only item of interest if we reach here */
     /*

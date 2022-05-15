@@ -3676,7 +3676,7 @@ const char *arg;
 {
     char kbuf[BUFSZ];
 
-    if (uwep && uwep->otyp == CORPSE && touch_petrifies(&mons[uwep->corpsenm])
+    if (uwep && uwep->otyp == CORPSE && uwep->corpsenm >= LOW_PM && touch_petrifies(&mons[uwep->corpsenm])
         && !Stone_resistance) {
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s touch the %s corpse.", arg, corpse_monster_name(uwep));
         Sprintf(kbuf, "%s corpse", an(corpse_monster_name(uwep)));

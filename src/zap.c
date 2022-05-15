@@ -1522,7 +1522,7 @@ struct obj* obj;
         }
         res = 1;
     }
-    else if (obj->otyp == CORPSE)
+    else if (is_obj_rotting_corpse(obj))
     {
         res = corpsedescription(obj);
     }
@@ -2950,7 +2950,7 @@ int ochance, achance; /* percent chance for ordinary objects, artifacts */
         || obj->otyp == CANDELABRUM_OF_INVOCATION
         || obj->otyp == BELL_OF_OPENING
         || is_obj_indestructible(obj)
-        || (obj->otyp == CORPSE && is_rider(&mons[obj->corpsenm]))) 
+        || (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM && is_rider(&mons[obj->corpsenm])))
     {
         return TRUE;
     }
@@ -4003,7 +4003,7 @@ struct monst* origmonst;
             }
             break;
         case SPE_CREATE_MINOR_MUMMY:
-            if (obj->otyp == CORPSE && obj->corpsenm > 0)
+            if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM)
             {
                 int zombietype = mon_to_mummy(obj->corpsenm);
                 
@@ -4019,7 +4019,7 @@ struct monst* origmonst;
             }
             break;
         case SPE_CREATE_GIANT_MUMMY:
-            if (obj->otyp == CORPSE && obj->corpsenm > 0)
+            if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM)
             {
                 int zombietype = mon_to_mummy(obj->corpsenm);
 
@@ -4035,7 +4035,7 @@ struct monst* origmonst;
             }
             break;
         case SPE_CREATE_DRACOLICH:
-            if (obj->otyp == CORPSE)
+            if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM)
             {
                 int zombietype = NON_PM;
                 if ((obj->corpsenm >= PM_GRAY_DRAGON && obj->corpsenm <= PM_ANCIENT_YELLOW_DRAGON)
@@ -4731,12 +4731,12 @@ register struct obj *obj;
         else if (vismonstcount == 1)
         {
             if (lastseenmon)
-                pline("%s crawls out of nowhere!", Amonnam(lastseenmon));
+                pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s crawls out of nowhere!", Amonnam(lastseenmon));
         }
         else if (vismonstcount == 2)
-            pline("Two ghouls crawl out of nowhere!");
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, "Two ghouls crawl out of nowhere!");
         else
-            pline("Several ghouls crawl out of nowhere!");
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, "Several ghouls crawl out of nowhere!");
 
 
         break;
@@ -4827,7 +4827,7 @@ register struct obj *obj;
                 && cansee(sobj->ox, sobj->oy)
                 && !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
             {
-                if (sobj->otyp == CORPSE)
+                if (sobj->otyp == CORPSE && sobj->corpsenm >= LOW_PM)
                 {
                     if ((obj->corpsenm >= PM_GRAY_DRAGON && obj->corpsenm <= PM_ANCIENT_YELLOW_DRAGON)
                         || obj->corpsenm == PM_GOLD_DRAGON || obj->corpsenm == PM_ANCIENT_GOLD_DRAGON
@@ -4847,7 +4847,7 @@ register struct obj *obj;
                     else if (sobj->corpsenm >= PM_GRAY_DRAGON_HATCHLING && sobj->corpsenm <= PM_YELLOW_DRAGON_HATCHLING)
                     {
                         hatchlingcount++;
-                        pline("%s twitches for a moment, but nothing else happens.", The(cxname(sobj)));
+                        pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s twitches for a moment, but nothing else happens.", The(cxname(sobj)));
                     }
                 }
             }
@@ -4859,7 +4859,7 @@ register struct obj *obj;
             if(hatchlingcount == 0)
                 pline("However, nothing happens.");
             else
-                You_feel("the corpse%s might not be sufficiently large for the spell.", hatchlingcount > 1 ? "s" : "");
+                You_feel_ex(ATR_NONE, CLR_MSG_HINT, "the corpse%s might not be sufficiently large for the spell.", hatchlingcount > 1 ? "s" : "");
         }
         break;
     }    

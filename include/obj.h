@@ -586,6 +586,8 @@ struct obj {
 #define nonrotting_food(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_NONROTTING_FOOD) != 0)
 
+#define is_obj_rotting_corpse(o) ((o)->otyp == CORPSE || (o)->globby)
+
 #define has_otyp_double_digging_effort(otyp) \
     ((objects[(otyp)].oc_flags3 & O3_DOUBLE_DIGGING_EFFORT) != 0)
 #define is_otyp_buried_searchable(otyp) \

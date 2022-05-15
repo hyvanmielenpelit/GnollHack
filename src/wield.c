@@ -180,7 +180,7 @@ struct obj *obj;
 {
     char kbuf[BUFSZ];
 
-    if (uarmg || obj->otyp != CORPSE || !touch_petrifies(&mons[obj->corpsenm])
+    if (uarmg || obj->otyp != CORPSE || obj->corpsenm < LOW_PM || !touch_petrifies(&mons[obj->corpsenm])
         || Stone_resistance)
         return FALSE;
 

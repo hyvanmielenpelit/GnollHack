@@ -1364,7 +1364,7 @@ boolean* obj_destroyed;
                     useup(obj);
                     return TRUE;
                 case CORPSE: /* fixed by polder@cs.vu.nl */
-                    if (touch_petrifies(&mons[obj->corpsenm])) 
+                    if (obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]))
                     {
                         damage = 1;
                         hittxt = TRUE;
@@ -2635,7 +2635,7 @@ STATIC_OVL boolean
 theft_petrifies(otmp)
 struct obj *otmp;
 {
-    if (uarmg || otmp->otyp != CORPSE
+    if (uarmg || otmp->otyp != CORPSE || otmp->corpsenm < LOW_PM
         || !touch_petrifies(&mons[otmp->corpsenm]) || Stone_resistance)
         return FALSE;
 

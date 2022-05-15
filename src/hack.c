@@ -111,7 +111,7 @@ const char *msg;
     for (otmp = level.objects[x][y]; otmp; otmp = otmp2) 
     {
         otmp2 = otmp->nexthere;
-        if (otmp->otyp == CORPSE
+        if (otmp->otyp == CORPSE && otmp->corpsenm >= LOW_PM
             && (is_rider(&mons[otmp->corpsenm])
                 || otmp->corpsenm == PM_WIZARD_OF_YENDOR)) 
         {
