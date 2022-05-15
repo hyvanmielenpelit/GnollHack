@@ -58,7 +58,7 @@ void lib_end_screen(void);
 void lib_outrip(winid wid, int how, time_t when);
 void lib_preference_update(const char* pref);
 char* lib_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init);
-void lib_putmsghistory_ex(const char* msg, int attr, int color, BOOLEAN_P);
+void lib_putmsghistory_ex(const char* msg, int attr, int color, BOOLEAN_P restoring);
 
 void lib_status_init(void);
 void lib_status_finish(void);

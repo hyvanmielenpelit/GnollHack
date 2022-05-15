@@ -1287,13 +1287,13 @@ int fd, mode;
 {
     char *msg;
     int msgcount = 0;
-    int msglen = 0;
+    int msglen = 0, attr = ATR_NONE, color = NO_COLOR;
     int minusone = -1;
     boolean init = TRUE;
 
     if (perform_bwrite(mode)) {
         /* ask window port for each message in sequence */
-        while ((msg = getmsghistory(init)) != 0) {
+        while ((msg = getmsghistory_ex(&attr, &color, init)) != 0) {
             init = FALSE;
             msglen = strlen(msg);
             if (msglen < 1)
@@ -1304,7 +1304,10 @@ int fd, mode;
                 msglen = BUFSZ - 1;
             bwrite(fd, (genericptr_t) &msglen, sizeof(msglen));
             bwrite(fd, (genericptr_t) msg, msglen);
+            bwrite(fd, (genericptr_t) &attr, sizeof(attr));
+            bwrite(fd, (genericptr_t) &color, sizeof(color));
             ++msgcount;
+            attr = ATR_NONE, color = NO_COLOR;
         }
         bwrite(fd, (genericptr_t) &minusone, sizeof(int));
     }

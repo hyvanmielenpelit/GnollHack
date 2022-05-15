@@ -711,7 +711,7 @@ boolean is_restoring;
        previous session's messages upon restore, but it does put the quest
        message summary lines there by treating them as ordinary messages */
     if (!is_restoring)
-        pline("%s", msg);
+        pline_ex(attr, color, "%s", msg);
     return;
 }
 

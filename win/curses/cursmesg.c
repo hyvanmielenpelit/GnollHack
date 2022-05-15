@@ -804,7 +804,7 @@ boolean init;
 void
 curses_putmsghistory_ex(msg, attr, color, restoring_msghist)
 const char *msg;
-int attr, color;
+int attr UNUSED, color UNUSED;
 boolean restoring_msghist;
 {
     static boolean initd = FALSE;

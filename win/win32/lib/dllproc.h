@@ -90,7 +90,7 @@ void dll_end_screen(void);
 void dll_outrip(winid wid, int how, time_t when);
 void dll_preference_update(const char *pref);
 char *dll_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init);
-void dll_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P);
+void dll_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P restoring);
 
 void dll_status_init(void);
 void dll_status_finish(void);

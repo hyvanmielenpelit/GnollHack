@@ -6418,7 +6418,7 @@ boolean ordinary;
                 break;
             default:
             case 'n':
-                otmp = otmp = otmp->nexthere;
+                otmp = otmp->nexthere;
                 break;
             }
         }
