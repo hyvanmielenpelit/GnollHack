@@ -577,7 +577,7 @@ boolean createcorpse;
         num = undead_to_corpse(mndx);
         corpstatflags |= CORPSTAT_INIT;
         obj = mkcorpstat(CORPSE, mtmp, &mons[num], x, y, corpstatflags);
-        obj->age -= 100; /* this is an *OLD* corpse */
+        obj->age -= CORPSE_ROTTING_SPEED * 5L; /* this is an *OLD* corpse */
         break;
     case PM_KOBOLD_MUMMY:
     case PM_DWARF_MUMMY:
@@ -598,7 +598,7 @@ boolean createcorpse;
         num = undead_to_corpse(mndx);
         corpstatflags |= CORPSTAT_INIT;
         obj = mkcorpstat(CORPSE, mtmp, &mons[num], x, y, corpstatflags);
-        obj->age -= 100; /* this is an *OLD* corpse */
+        obj->age -= CORPSE_ROTTING_SPEED * 5L; /* this is an *OLD* corpse */
         break;
     case PM_IRON_GOLEM:
     {
