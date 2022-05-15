@@ -83,8 +83,8 @@ struct window_procs {
 
     void FDECL((*win_outrip), (winid, int, time_t));
     void FDECL((*win_preference_update), (const char *));
-    char *FDECL((*win_getmsghistory), (BOOLEAN_P));
-    void FDECL((*win_putmsghistory), (const char *, BOOLEAN_P));
+    char *FDECL((*win_getmsghistory_ex), (int*, int*, BOOLEAN_P));
+    void FDECL((*win_putmsghistory_ex), (const char *, int, int, BOOLEAN_P));
     void NDECL((*win_status_init));
     void NDECL((*win_status_finish));
     void FDECL((*win_status_enablefield),
@@ -201,8 +201,10 @@ extern
 
 #define outrip (*windowprocs.win_outrip)
 #define preference_update (*windowprocs.win_preference_update)
-#define getmsghistory (*windowprocs.win_getmsghistory)
-#define putmsghistory (*windowprocs.win_putmsghistory)
+#define getmsghistory_ex (*windowprocs.win_getmsghistory_ex)
+#define putmsghistory_ex (*windowprocs.win_putmsghistory_ex)
+#define getmsghistory(x) getmsghistory_ex((int*)0, (int*)0, x)
+#define putmsghistory(x, y) putmsghistory_ex(x, ATR_NONE, NO_COLOR, y)
 /* there is a status_initialize() in botl.c,
  * which calls win_status_init() directly; same with status_finish.
  */
@@ -461,8 +463,8 @@ struct chain_procs {
 
     void FDECL((*win_outrip), (CARGS, winid, int, time_t));
     void FDECL((*win_preference_update), (CARGS, const char *));
-    char *FDECL((*win_getmsghistory), (CARGS, BOOLEAN_P));
-    void FDECL((*win_putmsghistory), (CARGS, const char *, BOOLEAN_P));
+    char *FDECL((*win_getmsghistory_ex), (CARGS, int*, int*, BOOLEAN_P));
+    void FDECL((*win_putmsghistory_ex), (CARGS, const char *, int, int, BOOLEAN_P));
     void FDECL((*win_status_init), (CARGS));
     void FDECL((*win_status_finish), (CARGS));
     void FDECL((*win_status_enablefield),
@@ -562,8 +564,8 @@ extern void NDECL(safe_start_screen);
 extern void NDECL(safe_end_screen);
 extern void FDECL(safe_outrip, (winid, int, time_t));
 extern void FDECL(safe_preference_update, (const char *));
-extern char *FDECL(safe_getmsghistory, (BOOLEAN_P));
-extern void FDECL(safe_putmsghistory, (const char *, BOOLEAN_P));
+extern char *FDECL(safe_getmsghistory_ex, (int*, int*, BOOLEAN_P));
+extern void FDECL(safe_putmsghistory_ex, (const char *, int, int, BOOLEAN_P));
 extern void NDECL(safe_status_init);
 extern void NDECL(safe_status_finish);
 extern void FDECL(safe_status_enablefield,

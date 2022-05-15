@@ -129,7 +129,7 @@ struct window_procs tty_procs = {
     /* other defs that really should go away (they're tty specific) */
     tty_start_screen, tty_end_screen, genl_outrip,
     tty_preference_update,
-    tty_getmsghistory, tty_putmsghistory,
+    tty_getmsghistory_ex, tty_putmsghistory_ex,
     tty_status_init,
     genl_status_finish, tty_status_enablefield,
 #ifdef STATUS_HILITES

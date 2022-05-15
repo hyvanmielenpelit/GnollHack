@@ -46,6 +46,13 @@ namespace GnollHackCommon
     public delegate byte BooleanVoidPtrCallback(IntPtr value1);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    [return: MarshalAs(UnmanagedType.LPStr)]
+    public delegate string GetMsgHistoryCallback(IntPtr attr, IntPtr color, byte value1);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void PutMsgHistoryCallback([MarshalAs(UnmanagedType.LPStr)] string value1, int attr, int color, byte value2);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int CreateGHWindowCallback(int winid, int style, int glyph, byte dataflags, obj objdata, objclassdata otypdata);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]

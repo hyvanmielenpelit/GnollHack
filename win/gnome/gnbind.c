@@ -49,7 +49,7 @@ struct window_procs Gnome_procs = {
 #endif
     /* other defs that really should go away (they're tty specific) */
     gnome_start_screen, gnome_end_screen, gnome_outrip,
-    genl_preference_update, genl_getmsghistory, genl_putmsghistory,
+    genl_preference_update, genl_getmsghistory_ex, genl_putmsghistory_ex,
     genl_status_init, genl_status_finish, genl_status_enablefield,
     genl_status_update,
     genl_can_suspend_yes,

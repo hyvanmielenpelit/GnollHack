@@ -41,7 +41,7 @@ struct window_procs lib_procs = {
 #endif
     /* other defs that really should go away (they're tty specific) */
     lib_start_screen, lib_end_screen, lib_outrip,
-    lib_preference_update, lib_getmsghistory, lib_putmsghistory,
+    lib_preference_update, lib_getmsghistory_ex, lib_putmsghistory_ex,
     lib_status_init, lib_status_finish, lib_status_enablefield,
     lib_status_update,
     genl_can_suspend_yes,
@@ -649,9 +649,9 @@ void lib_preference_update(const char* pref)
     }
 }
 
-char* lib_getmsghistory(BOOLEAN_P init)
+char* lib_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
 {
-    char* res = lib_callbacks.callback_getmsghistory((int)init);
+    char* res = lib_callbacks.callback_getmsghistory(attr_ptr, color_ptr, (int)init);
     static char buf[BUFSIZ] = "";
     if (res)
     {
@@ -661,9 +661,9 @@ char* lib_getmsghistory(BOOLEAN_P init)
     return res ? buf : 0;
 }
 
-void lib_putmsghistory(const char* msg, BOOLEAN_P is_restoring)
+void lib_putmsghistory_ex(const char* msg, int attr, int color, BOOLEAN_P is_restoring)
 {
-    lib_callbacks.callback_putmsghistory(msg, is_restoring);
+    lib_callbacks.callback_putmsghistory(msg, attr, color, is_restoring);
 }
 
 

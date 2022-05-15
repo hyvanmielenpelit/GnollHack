@@ -1055,8 +1055,9 @@ const char *pref;
 }
 
 char *
-trace_getmsghistory(vp, init)
+trace_getmsghistory_ex(vp, attr_ptr, color_ptr, init)
 void *vp;
+int* attr, *color;
 boolean init;
 {
     struct trace_data *tdp = vp;
@@ -1065,7 +1066,7 @@ boolean init;
     fprintf(wc_tracelogf, "%sgetmsghistory(%d)\n", INDENT, init);
 
     PRE;
-    rv = (*tdp->nprocs->win_getmsghistory)(tdp->ndata, init);
+    rv = (*tdp->nprocs->win_getmsghistory_ex)(tdp->ndata, attr_ptr, color_ptr, init);
     POST;
 
     if (rv) {
@@ -1079,9 +1080,10 @@ boolean init;
 }
 
 void
-trace_putmsghistory(vp, msg, is_restoring)
+trace_putmsghistory_ex(vp, msg, attr, color, is_restoring)
 void *vp;
 const char *msg;
+int attr, color;
 boolean is_restoring;
 {
     struct trace_data *tdp = vp;
@@ -1095,7 +1097,7 @@ boolean is_restoring;
     }
 
     PRE;
-    (*tdp->nprocs->win_putmsghistory)(tdp->ndata, msg, is_restoring);
+    (*tdp->nprocs->win_putmsghistory)(tdp->ndata, msg, attr, color, is_restoring);
     POST;
 }
 
@@ -1227,8 +1229,8 @@ struct chain_procs trace_procs = {
 
     trace_start_screen, trace_end_screen,
 
-    trace_outrip, trace_preference_update, trace_getmsghistory,
-    trace_putmsghistory,
+    trace_outrip, trace_preference_update, trace_getmsghistory_ex,
+    trace_putmsghistory_ex,
     trace_status_init, trace_status_finish, trace_status_enablefield,
     trace_status_update,
     trace_can_suspend,

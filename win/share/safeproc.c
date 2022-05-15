@@ -94,7 +94,7 @@ struct window_procs safe_procs = {
 #endif
     safe_start_screen, safe_end_screen, genl_outrip,
     safe_preference_update,
-    safe_getmsghistory, safe_putmsghistory,
+    safe_getmsghistory_ex, safe_putmsghistory_ex,
     safe_status_init,
     safe_status_finish, safe_status_enablefield,
 #ifdef STATUS_HILITES
@@ -707,17 +707,23 @@ const char *pref UNUSED;
     return;
 }
 
-char *
-safe_getmsghistory(init)
+char*
+safe_getmsghistory_ex(attr_ptr, color_ptr, init)
+int* attr_ptr, * color_ptr;
 boolean init UNUSED;
 {
+    if (attr_ptr)
+        *attr_ptr = ATR_NONE;
+    if (color_ptr)
+        *color_ptr = NO_COLOR;
     return (char *) 0;
 }
 
 void
-safe_putmsghistory(msg, is_restoring)
-const char *msg;
-boolean is_restoring;
+safe_putmsghistory_ex(msg, attr, color, is_restoring)
+const char *msg UNUSED;
+int attr UNUSED, color UNUSED;
+boolean is_restoring UNUSED;
 {
 }
 

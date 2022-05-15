@@ -243,8 +243,8 @@ E void NDECL(tty_end_screen);
 
 E void FDECL(genl_outrip, (winid, int, time_t));
 
-E char *FDECL(tty_getmsghistory, (BOOLEAN_P));
-E void FDECL(tty_putmsghistory, (const char *, BOOLEAN_P));
+E char *FDECL(tty_getmsghistory_ex, (int*, int*, BOOLEAN_P));
+E void FDECL(tty_putmsghistory_ex, (const char *, int, int, BOOLEAN_P));
 
 #ifdef NO_TERMS
 #ifdef MAC

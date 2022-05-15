@@ -193,8 +193,8 @@ void mswin_start_screen(void);
 void mswin_end_screen(void);
 void mswin_outrip(winid wid, int how, time_t when);
 void mswin_preference_update(const char *pref);
-char *mswin_getmsghistory(BOOLEAN_P init);
-void mswin_putmsghistory(const char *msg, BOOLEAN_P);
+char *mswin_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init);
+void mswin_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P);
 
 void mswin_status_init(void);
 void mswin_statuslines_init(void);

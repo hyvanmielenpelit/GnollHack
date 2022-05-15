@@ -33,7 +33,7 @@ STATIC_DCL struct qtmsg *FDECL(msg_in, (struct qtmsg *, int));
 STATIC_DCL void FDECL(convert_arg, (CHAR_P));
 STATIC_DCL void FDECL(convert_line, (char *,char *));
 STATIC_DCL void FDECL(deliver_by_pline, (struct qtmsg *, int, int));
-STATIC_DCL void FDECL(deliver_by_window, (struct qtmsg *, int));
+STATIC_DCL void FDECL(deliver_by_window, (struct qtmsg *, int, int, int));
 STATIC_DCL void FDECL(deliver_by_file_write, (dlb*, struct qtmsg*, int, int));
 STATIC_DCL void FDECL(file_write_pager, (dlb*, struct qtmsg*, int, int));
 STATIC_DCL boolean FDECL(skip_pager, (BOOLEAN_P));
@@ -59,7 +59,7 @@ dump_qtlist()
 
     for (msg = qt_list.chrole; msg->msgnum > 0; msg++) {
         (void) dlb_fseek(msg_file, msg->offset, SEEK_SET);
-        deliver_by_window(msg, NHW_MAP);
+        deliver_by_window(msg, ATR_NONE, NO_COLOR, NHW_MAP);
     }
 #endif /* DEBUG */
     return;
@@ -579,9 +579,9 @@ int attr, color;
 }
 
 STATIC_OVL void
-deliver_by_window(qt_msg, how)
+deliver_by_window(qt_msg, attr, color, how)
 struct qtmsg *qt_msg;
-int how;
+int attr, color, how;
 {
     long size;
     char in_line[BUFSZ], out_line[BUFSZ];
@@ -626,7 +626,7 @@ int how;
 #endif
     }
     if (*out_line)
-        putmsghistory(out_line, FALSE);
+        putmsghistory_ex(out_line, attr, color, FALSE);
 }
 
 boolean
@@ -678,13 +678,13 @@ int msgnum, attr, color;
     else if (msgnum == 1)
     {
         play_intro_text();
-        deliver_by_window(qt_msg, NHW_MENU);
+        deliver_by_window(qt_msg, attr, color, NHW_MENU);
         stop_all_immediate_sounds();
     }
     else
     {
         play_voice_com_pager(mtmp, msgnum, FALSE);
-        deliver_by_window(qt_msg, NHW_TEXT);
+        deliver_by_window(qt_msg, attr, color, NHW_TEXT);
         stop_all_immediate_sounds();
     }
     return;
@@ -733,7 +733,7 @@ int msgnum, attr, color;
     else
     {
         play_voice_quest_pager(mtmp, qt_msg->msgnum, FALSE);
-        deliver_by_window(qt_msg, NHW_TEXT);
+        deliver_by_window(qt_msg, attr, color, NHW_TEXT);
         stop_all_immediate_sounds();
     }
     return;

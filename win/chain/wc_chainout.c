@@ -620,27 +620,29 @@ const char *pref;
 }
 
 char *
-chainout_getmsghistory(vp, init)
+chainout_getmsghistory_ex(vp, attr_ptr, color_ptr, init)
 void *vp;
+int* attr_ptr, *color_ptr;
 boolean init;
 {
     struct chainout_data *tdp = vp;
     char *rv;
 
-    rv = (*tdp->nprocs->win_getmsghistory)(init);
+    rv = (*tdp->nprocs->win_getmsghistory_ex)(attr_ptr, color_ptr, init);
 
     return rv;
 }
 
 void
-chainout_putmsghistory(vp, msg, is_restoring)
+chainout_putmsghistory_ex(vp, msg, attr, color, is_restoring)
 void *vp;
 const char *msg;
+int attr, color;
 boolean is_restoring;
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_putmsghistory)(msg, is_restoring);
+    (*tdp->nprocs->win_putmsghistory_ex)(msg, attr, color, is_restoring);
 }
 
 void
@@ -738,8 +740,8 @@ struct chain_procs chainout_procs = {
 
     chainout_start_screen, chainout_end_screen,
 
-    chainout_outrip, chainout_preference_update, chainout_getmsghistory,
-    chainout_putmsghistory,
+    chainout_outrip, chainout_preference_update, chainout_getmsghistory_ex,
+    chainout_putmsghistory_ex,
     chainout_status_init, chainout_status_finish, chainout_status_enablefield,
     chainout_status_update,
     chainout_can_suspend,

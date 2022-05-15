@@ -21,7 +21,7 @@ void curses_last_messages(void);
 void curses_init_mesg_history(void);
 void curses_prev_mesg(void);
 void curses_count_window(const char *count_text);
-char *curses_getmsghistory(BOOLEAN_P);
-void curses_putmsghistory(const char *, BOOLEAN_P);
+char *curses_getmsghistory_ex(int*, int*, BOOLEAN_P);
+void curses_putmsghistory_ex(const char *, int, int, BOOLEAN_P);
 
 #endif /* CURSMESG_H */

@@ -71,7 +71,7 @@ struct window_procs Gem_procs = {
 
     /* other defs that really should go away (they're tty specific) */
     Gem_start_screen, Gem_end_screen, Gem_outrip, Gem_preference_update,
-    genl_getmsghistory, genl_putmsghistory
+    genl_getmsghistory_ex, genl_putmsghistory_ex
                             genl_status_init,
     genl_status_finish, genl_status_enablefield, genl_status_update,
     genl_can_suspend_no,

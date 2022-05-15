@@ -74,8 +74,8 @@ namespace GnollHackServer
             VoidVoidCallback callback_end_screen,
             OutRipCallback callback_outrip,
             VoidConstCharCallback callback_preference_update,
-            CharPtrBooleanCallback callback_getmsghistory,
-            VoidConstCharBooleanCallback callback_putmsghistory,
+            GetMsgHistoryCallback callback_getmsghistory,
+            PutMsgHistoryCallback callback_putmsghistory,
             VoidVoidCallback callback_status_init,
             VoidVoidCallback callback_status_finish,
             VoidIntConstCharPtrConstCharPtrBooleanCallback callback_status_enablefield,
@@ -235,8 +235,8 @@ namespace GnollHackServer
                 GameCallback_VoidVoidDummy,
                 GameCallback_OutRip,
                 GameCallback_VoidConstCharDummy,
-                GameCallback_CharPtrBooleanDummy,
-                GameCallback_VoidConstCharBooleanDummy,
+                GameCallback_GetMsgHistory,
+                GameCallback_PutMsgHistory,
                 GameCallback_VoidVoidDummy,
                 GameCallback_VoidVoidDummy,
                 GameCallback_VoidIntConstCharPtrConstCharPtrBooleanDummy,
@@ -367,6 +367,19 @@ namespace GnollHackServer
         protected void GameCallback_EndMenu(int value1, string value2, string value3)
         {
 
+        }
+
+        public string GameCallback_GetMsgHistory(IntPtr attr, IntPtr color, byte init)
+        {
+            if(attr != IntPtr.Zero)
+                Marshal.WriteInt32(attr, 0);
+            if (color != IntPtr.Zero)
+                Marshal.WriteInt32(color, (int)nhcolor.NO_COLOR);
+            return null;
+        }
+
+        public void GameCallback_PutMsgHistory(string msg, int attr, int color, byte is_restoring)
+        {
         }
 
         protected void GameCallback_FreeMemory(ref IntPtr ptr)

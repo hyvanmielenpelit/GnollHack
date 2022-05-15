@@ -658,7 +658,7 @@ void NetHackQtBind::qt_outrip(winid wid, int how, time_t when)
     window->UseRIP(how, when);
 }
 
-char * NetHackQtBind::qt_getmsghistory(BOOLEAN_P init)
+char * NetHackQtBind::qt_getmsghistory_ex(int *attr_ptr, int *color_ptr, BOOLEAN_P init)
 {
     NetHackQtMessageWindow* window = main->GetMessageWindow();
     if (window)
@@ -666,7 +666,7 @@ char * NetHackQtBind::qt_getmsghistory(BOOLEAN_P init)
     return NULL;
 }
 
-void NetHackQtBind::qt_putmsghistory(const char *msg, BOOLEAN_P is_restoring)
+void NetHackQtBind::qt_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P is_restoring)
 {
     NetHackQtMessageWindow* window = main->GetMessageWindow();
     if (!window)
@@ -836,8 +836,8 @@ struct window_procs Qt_procs = {
 #endif
     genl_preference_update,
 
-    nethack_qt4::NetHackQtBind::qt_getmsghistory,
-    nethack_qt4::NetHackQtBind::qt_putmsghistory,
+    nethack_qt4::NetHackQtBind::qt_getmsghistory_ex,
+    nethack_qt4::NetHackQtBind::qt_putmsghistory_ex,
     genl_status_init,
     genl_status_finish, genl_status_enablefield,
 #ifdef STATUS_HILITES

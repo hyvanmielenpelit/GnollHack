@@ -632,13 +632,19 @@ boolean purged; /* True: took history's pointers, False: just cloned them */
  * Any new messages issued after that point will not be
  * included among the output of the subsequent calls.
  */
-char *
-tty_getmsghistory(init)
+char*
+tty_getmsghistory_ex(attr_ptr, color_ptr, init)
+int* attr_ptr, * color_ptr;
 boolean init;
 {
     static int nxtidx;
     char *nextmesg;
     char *result = 0;
+
+    if (attr_ptr)
+        *attr_ptr = ATR_NONE;
+    if (color_ptr)
+        *color_ptr = NO_COLOR;
 
     if (init) {
         msghistory_snapshot(FALSE);
@@ -674,8 +680,9 @@ boolean init;
  * into message history for ^P recall without having displayed it.
  */
 void
-tty_putmsghistory(msg, restoring_msghist)
+tty_putmsghistory_ex(msg, attr, color, restoring_msghist)
 const char *msg;
+int attr UNUSED, color UNUSED;
 boolean restoring_msghist;
 {
     static boolean initd = FALSE;

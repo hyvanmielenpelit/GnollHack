@@ -491,23 +491,25 @@ const char *pref;
     (*cibase->nprocs->win_preference_update)(cibase->ndata, pref);
 }
 
-char *
-chainin_getmsghistory(init)
+char*
+chainin_getmsghistory_ex(init, attr_ptr, color_ptr)
+int *attr_ptr, *color_ptr;
 boolean init;
 {
     char *rv;
 
-    rv = (*cibase->nprocs->win_getmsghistory)(cibase->ndata, init);
+    rv = (*cibase->nprocs->win_getmsghistory_ex)(cibase->ndata, attr_ptr, color_ptr, init);
 
     return rv;
 }
 
 void
-chainin_putmsghistory(msg, is_restoring)
+chainin_putmsghistory_ex(msg, attr, color, is_restoring)
 const char *msg;
+int attr, color;
 boolean is_restoring;
 {
-    (*cibase->nprocs->win_putmsghistory)(cibase->ndata, msg, is_restoring);
+    (*cibase->nprocs->win_putmsghistory_ex)(cibase->ndata, msg, attr, color, is_restoring);
 }
 
 void
@@ -592,8 +594,8 @@ struct window_procs chainin_procs = {
 
     chainin_start_screen, chainin_end_screen,
 
-    chainin_outrip, chainin_preference_update, chainin_getmsghistory,
-    chainin_putmsghistory,
+    chainin_outrip, chainin_preference_update, chainin_getmsghistory_ex,
+    chainin_putmsghistory_ex,
     chainin_status_init, chainin_status_finish, chainin_status_enablefield,
     chainin_status_update,
     chainin_can_suspend,

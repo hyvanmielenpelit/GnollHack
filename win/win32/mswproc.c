@@ -119,7 +119,7 @@ struct window_procs mswin_procs = {
 #endif
     /* other defs that really should go away (they're tty specific) */
     mswin_start_screen, mswin_end_screen, mswin_outrip,
-    mswin_preference_update, mswin_getmsghistory, mswin_putmsghistory,
+    mswin_preference_update, mswin_getmsghistory_ex, mswin_putmsghistory_ex,
     mswin_status_init, mswin_status_finish, mswin_status_enablefield,
     mswin_status_update,
     genl_can_suspend_yes,
@@ -2261,8 +2261,13 @@ mswin_preference_update(const char *pref)
 
 #define TEXT_BUFFER_SIZE 4096
 char *
-mswin_getmsghistory(BOOLEAN_P init)
+mswin_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
 {
+    if (attr_ptr)
+        *attr_ptr = ATR_NONE;
+    if (color_ptr)
+        *color_ptr = NO_COLOR;
+
     static PMSNHMsgGetText text = 0;
     static char *next_message = 0;
 
@@ -2302,18 +2307,19 @@ mswin_getmsghistory(BOOLEAN_P init)
 }
 
 void
-mswin_putmsghistory(const char *msg, BOOLEAN_P restoring)
+mswin_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P restoring)
 {
     BOOL save_sound_opt;
 
     UNREFERENCED_PARAMETER(restoring);
+
 
     if (!msg)
         return; /* end of message history restore */
     save_sound_opt = GetNHApp()->bNoSounds;
     GetNHApp()->bNoSounds =
         TRUE; /* disable sounds while restoring message history */
-    mswin_putstr_ex(WIN_MESSAGE, ATR_NONE, msg, 0, NO_COLOR);
+    mswin_putstr_ex(WIN_MESSAGE, attr, msg, 0, color);
     clear_nhwindow(WIN_MESSAGE); /* it is in fact end-of-turn indication so
                                     each message will print on the new line */
     GetNHApp()->bNoSounds = save_sound_opt; /* restore sounds option */

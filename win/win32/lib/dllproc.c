@@ -92,7 +92,7 @@ struct window_procs dll_procs = {
 #endif
     /* other defs that really should go away (they're tty specific) */
     dll_start_screen, dll_end_screen, dll_outrip,
-    dll_preference_update, dll_getmsghistory, dll_putmsghistory,
+    dll_preference_update, dll_getmsghistory_ex, dll_putmsghistory_ex,
     dll_status_init, dll_status_finish, dll_status_enablefield,
     dll_status_update,
     genl_can_suspend_yes,
@@ -2187,8 +2187,13 @@ dll_preference_update(const char *pref)
 
 #define TEXT_BUFFER_SIZE 4096
 char *
-dll_getmsghistory(BOOLEAN_P init)
+dll_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
 {
+    if (attr_ptr)
+        *attr_ptr = ATR_NONE;
+    if (color_ptr)
+        *color_ptr = NO_COLOR;
+
     return (char*)0; // dll_callbacks.callback_getmsghistory(init);
 
 #if 0
@@ -2232,9 +2237,9 @@ dll_getmsghistory(BOOLEAN_P init)
 }
 
 void
-dll_putmsghistory(const char *msg, BOOLEAN_P restoring)
+dll_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P restoring)
 {
-    dll_callbacks.callback_putmsghistory(msg, restoring);
+    dll_callbacks.callback_putmsghistory(msg, attr, color, restoring);
 #if 0
     BOOL save_sound_opt;
 

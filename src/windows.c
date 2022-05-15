@@ -660,9 +660,15 @@ const char *pref UNUSED;
 }
 
 char *
-genl_getmsghistory(init)
+genl_getmsghistory_ex(attr_ptr, color_ptr, init)
+int* attr_ptr, * color_ptr;
 boolean init UNUSED;
 {
+    if (attr_ptr)
+        *attr_ptr = ATR_NONE;
+    if (color_ptr)
+        *color_ptr = NO_COLOR;
+
     /* window ports can provide
        their own getmsghistory() routine to
        preserve message history between games.
@@ -678,8 +684,9 @@ boolean init UNUSED;
 }
 
 void
-genl_putmsghistory(msg, is_restoring)
+genl_putmsghistory_ex(msg, attr, color, is_restoring)
 const char *msg;
+int attr, color;
 boolean is_restoring;
 {
     /* window ports can provide
@@ -797,8 +804,8 @@ static struct window_procs hup_procs = {
 #endif /* CHANGE_COLOR */
     hup_void_ndecl,                                   /* start_screen */
     hup_void_ndecl,                                   /* end_screen */
-    hup_outrip, genl_preference_update, genl_getmsghistory,
-    genl_putmsghistory,
+    hup_outrip, genl_preference_update, genl_getmsghistory_ex,
+    genl_putmsghistory_ex,
     hup_void_ndecl,                                   /* status_init */
     hup_void_ndecl,                                   /* status_finish */
     genl_status_enablefield, hup_status_update,
@@ -811,7 +818,7 @@ static void FDECL((*previnterface_exit_nhwindows), (const char *)) = 0;
 void
 nhwindows_hangup()
 {
-    char *FDECL((*previnterface_getmsghistory), (BOOLEAN_P)) = 0;
+    char *FDECL((*previnterface_getmsghistory_ex), (int*, int*, BOOLEAN_P)) = 0;
 
 #ifdef ALTMETA
     /* command processor shouldn't look for 2nd char after seeing ESC */
@@ -827,13 +834,13 @@ nhwindows_hangup()
 
     /* also, we have to leave the old interface's getmsghistory()
        in place because it will be called while saving the game */
-    if (windowprocs.win_getmsghistory != hup_procs.win_getmsghistory)
-        previnterface_getmsghistory = windowprocs.win_getmsghistory;
+    if (windowprocs.win_getmsghistory_ex != hup_procs.win_getmsghistory_ex)
+        previnterface_getmsghistory_ex = windowprocs.win_getmsghistory_ex;
 
     windowprocs = hup_procs;
 
-    if (previnterface_getmsghistory)
-        windowprocs.win_getmsghistory = previnterface_getmsghistory;
+    if (previnterface_getmsghistory_ex)
+        windowprocs.win_getmsghistory_ex = previnterface_getmsghistory_ex;
 }
 
 static void

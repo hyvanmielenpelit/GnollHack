@@ -5326,8 +5326,8 @@ struct window_procs Qt_procs = {
     genl_outrip,
 #endif
     genl_preference_update,
-    genl_getmsghistory,
-    genl_putmsghistory,
+    genl_getmsghistory_ex,
+    genl_putmsghistory_ex,
     genl_status_init,
     genl_status_finish,
     genl_status_enablefield,

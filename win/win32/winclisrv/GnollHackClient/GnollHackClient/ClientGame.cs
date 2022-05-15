@@ -787,15 +787,24 @@ namespace GnollHackClient
         }
 
         private int _msgIndex = 0;
-        public string ClientCallback_GetMsgHistory(byte init)
+        public string ClientCallback_GetMsgHistory(IntPtr attr, IntPtr color, byte init)
         {
             if (init != 0)
                 _msgIndex = 0;
+
+            if (attr != IntPtr.Zero)
+                Marshal.WriteInt32(attr, 0);
+            if (color != IntPtr.Zero)
+                Marshal.WriteInt32(color, (int)nhcolor.NO_COLOR);
 
             string res = null;
             if (_msgIndex < _message_history.Count)
             {
                 res = _message_history[_msgIndex].Text;
+                if (attr != IntPtr.Zero)
+                    Marshal.WriteInt32(attr, _message_history[_msgIndex].Attributes);
+                if (color != IntPtr.Zero)
+                    Marshal.WriteInt32(color, _message_history[_msgIndex].NHColor);
                 _msgIndex++;
                 if (_msgIndex < 0)
                     _msgIndex = 0;
@@ -804,10 +813,10 @@ namespace GnollHackClient
             return res;
         }
 
-        public void ClientCallback_PutMsgHistory(string msg, byte is_restoring)
+        public void ClientCallback_PutMsgHistory(string msg, int attr, int color, byte is_restoring)
         {
             if(msg != null)
-                ClientCallback_RawPrint(msg);
+                RawPrintEx(msg, attr, color);
         }
 
         public void ClientCallback_StartMenu(int winid, int style)

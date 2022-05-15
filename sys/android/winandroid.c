@@ -61,8 +61,8 @@ static char * NDECL(and_get_color_string);
 #endif
 static void NDECL(and_start_screen);
 static void NDECL(and_end_screen);
-static char* FDECL(and_getmsghistory, (BOOLEAN_P));
-static void FDECL(and_putmsghistory, (const char *, BOOLEAN_P));
+static char* FDECL(and_getmsghistory_ex, (int*, int*, BOOLEAN_P));
+static void FDECL(and_putmsghistory_ex, (const char *, int, int, BOOLEAN_P));
 static void save_msg(const char* msg);
 static void FDECL(and_status_update, (int, genericptr_t, int, int, int, unsigned long *));
 static void and_status_flush();
@@ -129,8 +129,8 @@ struct window_procs and_procs = {
 	and_end_screen,
 	genl_outrip,
 	genl_preference_update,
-	and_getmsghistory,
-	and_putmsghistory,
+	and_getmsghistory_ex,
+	and_putmsghistory_ex,
 	genl_status_init,
 	genl_status_finish,
 	genl_status_enablefield,
@@ -2197,7 +2197,7 @@ void and_end_screen()
 }
 
 //____________________________________________________________________________________
-// and_getmsghistory(init)
+// and_getmsghistory_ex(init)
 // 		window ports can provide their own getmsghistory() routine to
 // 		preserve message history between games. The routine is called
 // 		repeatedly from the core save routine, and the window port is
@@ -2208,7 +2208,7 @@ int add_msghistory_idx(int idx)
 {
 	return (idx + 1) % (sizeof(msghistory)/sizeof(char*));
 }
-char* and_getmsghistory(BOOLEAN_P init)
+char* and_getmsghistory_ex(int* attr_ptr, int* color_ptr, BOOLEAN_P init)
 {
 	if(init)
 	{
@@ -2243,7 +2243,7 @@ char* and_getmsghistory(BOOLEAN_P init)
 //		should it assume that another message will follow this
 //		one, so it should keep all pointers/indexes intact at the
 //		end of each call.
-void and_putmsghistory(const char *msg, BOOLEAN_P restoring)
+void and_putmsghistory_ex(const char *msg, int attr, int color, BOOLEAN_P restoring)
 {
 	if(!msg) return;
 	if(restoring)

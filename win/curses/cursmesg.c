@@ -751,12 +751,18 @@ get_msg_line(boolean reverse, int mindex)
 /* save/restore code retrieves one ^P message at a time during save and
    puts it into save file; if any new messages are added to the list while
    that is taking place, the results are likely to be scrambled */
-char *
-curses_getmsghistory(init)
+char*
+curses_getmsghistory_ex(attr_ptr, color_ptr, init)
+int* attr_ptr, *color_ptr;
 boolean init;
 {
     static int nxtidx;
     nhprev_mesg *mesg;
+
+    if (attr_ptr)
+        *attr_ptr = ATR_NONE;
+    if (color_ptr)
+        *color_ptr = NO_COLOR;
 
     if (init)
         nxtidx = 0;
@@ -796,8 +802,9 @@ boolean init;
  * into message history for ^P recall without having displayed it.
  */
 void
-curses_putmsghistory(msg, restoring_msghist)
+curses_putmsghistory_ex(msg, attr, color, restoring_msghist)
 const char *msg;
+int attr, color;
 boolean restoring_msghist;
 {
     static boolean initd = FALSE;

@@ -136,7 +136,7 @@ struct window_procs X11_procs = {
 #else
     genl_outrip,
 #endif
-    X11_preference_update, X11_getmsghistory, X11_putmsghistory,
+    X11_preference_update, X11_getmsghistory_ex, X11_putmsghistory_ex,
     X11_status_init, X11_status_finish, X11_status_enablefield,
     X11_status_update,
     genl_can_suspend_no, /* XXX may not always be correct */
@@ -183,8 +183,9 @@ static winid message_win = WIN_ERR, /* These are the winids of the message, */
 static Pixmap icon_pixmap = None;   /* Pixmap for icon.                     */
 
 void
-X11_putmsghistory(msg, is_restoring)
+X11_putmsghistory_ex(msg, attr, color, is_restoring)
 const char *msg;
+int attr, color;
 boolean is_restoring;
 {
     if (WIN_MESSAGE != WIN_ERR) {
@@ -195,10 +196,16 @@ boolean is_restoring;
     }
 }
 
-char *
-X11_getmsghistory(init)
+char*
+X11_getmsghistory_ex(attr_ptr, color_ptr, init)
+int* attr_ptr, color_ptr;
 boolean init;
 {
+    if (attr_ptr)
+        *attr_ptr = ATR_NONE;
+    if (color_ptr)
+        *color_ptr = NO_COLOR;
+
     if (WIN_MESSAGE != WIN_ERR) {
         static struct line_element *curr = (struct line_element *) 0;
         static int numlines = 0;
