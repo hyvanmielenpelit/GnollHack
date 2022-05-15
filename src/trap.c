@@ -2919,7 +2919,7 @@ register struct monst *mtmp;
                     if (is_bear(mptr))
                     {
                         play_monster_unhappy_sound(mtmp, MONSTER_UNHAPPY_SOUND_HOWL_IN_ANGER);
-                        You_hear("the roaring of an angry bear!");
+                        You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "the roaring of an angry bear!");
                     }
                 }
             }

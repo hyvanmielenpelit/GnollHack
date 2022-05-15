@@ -4245,7 +4245,7 @@ boolean via_attack;
         if (humanoid(mtmp->data) || mtmp->isshk || mtmp->isgd)
         {
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
-            pline("%s gets angry!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gets angry!", Monnam(mtmp));
         }
         else if (flags.verbose && !Deaf)
             growl(mtmp);
@@ -4279,7 +4279,7 @@ boolean via_attack;
 
             if (got_mad > 1)
                 who = makeplural(who);
-            pline_The("%s %s to be angry too...",
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s to be angry too...",
                       who, vtense(who, "appear"));
         }
     }
@@ -4334,7 +4334,7 @@ boolean via_attack;
                             if (!exclaimed)
                             {
                                 play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_GET_ANGRY);
-                                pline("%s gets angry!", Monnam(mon));
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gets angry!", Monnam(mon));
                             }
                         }
                     }
@@ -5513,14 +5513,14 @@ boolean silent;
     if (ct) {
         if (!silent) { /* do we want pline msgs? */
             if (slct)
-                pline_The("guard%s wake%s up!", slct > 1 ? "s" : "",
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "guard%s wake%s up!", slct > 1 ? "s" : "",
                           slct == 1 ? "s" : "");
             if (nct || sct) {
                 if (nct)
-                    pline_The("guard%s get%s angry!", nct == 1 ? "" : "s",
+                    pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "guard%s get%s angry!", nct == 1 ? "" : "s",
                               nct == 1 ? "s" : "");
                 else if (!Blind)
-                    You_see("%sangry guard%s approaching!",
+                    You_see_ex(ATR_NONE, CLR_MSG_WARNING, "%sangry guard%s approaching!",
                             sct == 1 ? "an " : "", sct > 1 ? "s" : "");
             } else
                 You_hear("the shrill sound of a guard's whistle.");

@@ -735,7 +735,7 @@ struct monst *mtmp;
         || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_ANGERS_DEMONS))
         ) 
     {
-        pline("%s looks very angry.", Amonnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s looks very angry.", Amonnam(mtmp));
         mtmp->mpeaceful = mtmp->mtame = 0;
         if (!mtmp->mtame)
             mtmp->ispartymember = FALSE;
@@ -763,12 +763,14 @@ struct monst *mtmp;
         set_mon_property(mtmp, INVISIBILITY, 0);
 
         if (wasunseen && canspotmon(mtmp)) {
-            pline("%s appears before you.", Amonnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s appears before you.", Amonnam(mtmp));
             mtmp->mstrategy &= ~STRAT_APPEARMSG;
         }
         newsym(mtmp->mx, mtmp->my);
     }
-    if (youmonst.data->mlet == S_DEMON) { /* Won't blackmail their own. */
+    if (youmonst.data->mlet == S_DEMON) 
+    { /* Won't blackmail their own. */
+        /* play sound is missing from here */
         pline("%s says, \"Good hunting, %s.\"", Amonnam(mtmp),
               flags.female ? "Sister" : "Brother");
         if (!tele_restrict(mtmp))
@@ -780,9 +782,9 @@ struct monst *mtmp;
     else if (mtmp->data == &mons[PM_YEENAGHU] && maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
     {
         if (canspotmon(mtmp))
-            pline("%s, the Demon Lord of Gnolls, stands towering before you.", Amonnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s, the Demon Lord of Gnolls, stands towering before you.", Amonnam(mtmp));
         else
-            pline("You hear the thundering voice of %s, the Demon Lord of Gnolls.", Amonnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You hear the thundering voice of %s, the Demon Lord of Gnolls.", Amonnam(mtmp));
 
         pline("%s speaks.", Amonnam(mtmp));
 
@@ -791,29 +793,29 @@ struct monst *mtmp;
         {
             struct monst tmpmon = *mtmp; /* Save Yeenaghu's data */
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_PLEASED);
-            verbalize("You have pleased me, my minion. I will grant one wish!");
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "You have pleased me, my minion. I will grant one wish!");
             /* give a wish and discard the monster (mtmp set to null) */
             mongrantswish(&mtmp);
             //mongrantswish removes the monster (calls mongone)
             play_simple_monster_sound(&tmpmon, MONSTER_SOUND_TYPE_LAUGHTER);
-            pline("The demon lord laughs, then vanishes.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The demon lord laughs, then vanishes.");
             return 1;
         }
         if (u.ualign.type != A_LAWFUL)
         {
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_NOT_PLEASED);
-            verbalize("You have not pleased me! Prove your allegiance to the Abyss, and you shall be rewarded.");
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "You have not pleased me! Prove your allegiance to the Abyss, and you shall be rewarded.");
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_SCOWLS);
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-            pline("%s scowls at you, then vanishes.", Amonnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s scowls at you, then vanishes.", Amonnam(mtmp));
         }
         else
         {
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_DISPLEASE);
-            verbalize("Your ways displease me. Follow the path of the Abyss, and you shall be rewarded.");
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Your ways displease me. Follow the path of the Abyss, and you shall be rewarded.");
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_SCOWLS);
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-            pline("%s scowls at you menacingly, then vanishes.", Amonnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s scowls at you menacingly, then vanishes.", Amonnam(mtmp));
         }
     }
     else if (mtmp->data == &mons[PM_DEMOGORGON] || mtmp->data == &mons[PM_YEENAGHU] || mtmp->data == &mons[PM_JUBILEX] || mtmp->data == &mons[PM_ORCUS])
@@ -823,13 +825,13 @@ struct monst *mtmp;
         {
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-            pline("%s laughs menacingly, then vanishes.",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s laughs menacingly, then vanishes.",
                 Amonnam(mtmp));
         } 
         else 
         {
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
-            pline("Seeing you, %s gets angry...", Amonnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "Seeing you, %s gets angry...", Amonnam(mtmp));
             mtmp->mpeaceful = 0;
             set_malign(mtmp);
             newsym(mtmp->mx, mtmp->my);
@@ -859,31 +861,31 @@ struct monst *mtmp;
                 demand = cash + (long) rn1(1000, 40);
 
             if (canspotmon(mtmp))
-                pline("%s stands towering before you.", Amonnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stands towering before you.", Amonnam(mtmp));
             else
-                pline("You hear the thundering voice of %s.", Amonnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You hear the thundering voice of %s.", Amonnam(mtmp));
 
-            verbalize("For your life, we, %s, demand a gift of %ld %s.", Amonnam(mtmp), demand,
+            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "For your life, we, %s, demand a gift of %ld %s.", Amonnam(mtmp), demand,
                   currency(demand));
 
             if ((offer = bribe(mtmp)) >= demand) 
             {
                 play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
-                pline("%s vanishes, laughing about cowardly mortals.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s vanishes, laughing about cowardly mortals.",
                       Amonnam(mtmp));
             } 
             else if (offer > 0L
                        && (long) rnd(5 * ACURR(A_CHA)) > (demand - offer)) 
             {
                 play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
-                pline("%s scowls at you menacingly, then vanishes.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s scowls at you menacingly, then vanishes.",
                       Amonnam(mtmp));
             } 
             else 
             {
                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
-                pline("%s gets angry...", Amonnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gets angry...", Amonnam(mtmp));
                 mtmp->mpeaceful = 0;
                 set_malign(mtmp);
                 newsym(mtmp->mx, mtmp->my);

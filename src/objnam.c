@@ -1138,6 +1138,14 @@ char *prefix;
             Strcat(prefix, is_corrodeable(obj) ? "corroded " : "rotted ");
         }
     }
+    else if ((obj->otyp == CORPSE || obj->globby) && (obj->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) != 0)
+    {
+        long rotted = get_rotted_status(obj);
+        if(obj->orotten || rotted > 3L)
+            Strcat(prefix, rotted > 5L ? "tainted " : "rotten ");
+        else
+            Strcat(prefix, "unrotten ");
+    }
 
     /* Erodeproof status; now shown also for nondamageable objects, if they happen to be erodeproof */
     if (rknown && obj->oerodeproof)
@@ -2026,6 +2034,8 @@ struct obj *otmp;
     if (!otmp->nknown && has_oname(otmp))
         return TRUE;
     if ((otmp->mythic_prefix || otmp->mythic_suffix) && !otmp->mknown)
+        return TRUE;
+    if ((otmp->otyp == CORPSE || otmp->globby) && (otmp->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) == 0)
         return TRUE;
     /* otmp->rknown is the only item of interest if we reach here */
     /*

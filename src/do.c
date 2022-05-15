@@ -921,7 +921,13 @@ register struct obj* obj;
     if (!obj || obj == &zeroobj || obj->otyp != CORPSE)
         return 0;
 
+    if(obj->corpsenm > NON_PM)
+        learn_corpse_type(obj->corpsenm);
 
+    obj->speflags |= SPEFLAGS_ROTTING_STATUS_KNOWN;
+    return itemdescription(obj);
+
+#if 0
     winid datawin = WIN_ERR;
 
     datawin = create_nhwindow(NHW_MENU);
@@ -959,20 +965,7 @@ register struct obj* obj;
     }
 
     int mnum = obj->corpsenm;
-    long rotted = 0L;
-
-    if (!nonrotting_corpse(mnum))
-    {
-        long age = peek_at_iced_corpse_age(obj);
-
-        /* worst case rather than random
-            in this calculation to force prompt */
-        rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + 0 /* was rn2(CORPSE_ROTTING_SPEED_VARIATION) */);
-        if (obj->cursed)
-            rotted += 2L;
-        else if (obj->blessed)
-            rotted -= 2L;
-    }
+    long rotted = get_rotted_status(obj);
 
     if (rotted > 5L)
     {
@@ -991,17 +984,15 @@ register struct obj* obj;
     txt = buf;
     putstr(datawin, 0, txt);
 
-    struct permonst* ptr = &mons[mnum];
-    if ((ptr)->mconveys != 0UL || flesh_petrifies(ptr) || is_quantum_mechanic(ptr) || mnum == PM_GREEN_SLIME || obj->otyp == GLOB_OF_GREEN_SLIME || is_mimic(ptr) || is_were(ptr) || is_bat(ptr) || nonrotting_corpse(mnum) || is_rider(ptr)
-        || mnum == PM_STALKER || mnum == PM_LIZARD || mnum == PM_CHAMELEON || mnum == PM_DOPPELGANGER || mnum == PM_NURSE || mnum == PM_DISENCHANTER
-        || is_reviver(ptr)
-        ) 
+    //struct permonst* ptr = &mons[mnum];
+    if (otyp == CORPSE && mnum > NON_PM && mnum < NUM_MONSTERS)
     {
         Sprintf(buf, "Properties:");
         txt = buf;
         putstr(datawin, ATR_HEADING, txt);
 
         print_corpse_properties(datawin, mnum, TRUE);
+        learn_corpse_type(mnum);
     }
 
 
@@ -1022,7 +1013,7 @@ register struct obj* obj;
     destroy_nhwindow(datawin), datawin = WIN_ERR;
 
     return 1;
-
+#endif
 
 }
 
@@ -1339,6 +1330,28 @@ register struct obj* obj;
                 Sprintf(buf, "Comestible effect:      %s", buf2);
                 txt = buf;
                 putstr(datawin, ATR_INDENT_AT_COLON, txt);
+            }
+
+            int mnum = obj->corpsenm;
+            if ((otyp == CORPSE || obj->globby) && mnum > NON_PM && (obj->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) !=0)
+            {
+                long rotted = get_rotted_status(obj);
+                if (rotted > 5L)
+                {
+                    strcpy(buf2, "Tainted");
+                }
+                else if (obj->orotten || rotted > 3L)
+                {
+                    strcpy(buf2, "Rotten");
+                }
+                else
+                {
+                    strcpy(buf2, "Normal");
+                }
+
+                Sprintf(buf, "Comestible quality:     %s", buf2);
+                txt = buf;
+                putstr(datawin, 0, txt);
             }
         }
     }
@@ -2987,6 +3000,7 @@ register struct obj* obj;
     }
 
     /* General for all items */
+    boolean show_corpse_hint = FALSE;
     if(stats_known)
     {
         /* Item properties */
@@ -3177,15 +3191,21 @@ register struct obj* obj;
             }
         }
 
-
         /* Corpse properties */
-        if (otyp == CORPSE && obj->corpsenm > NON_PM)
+        if (otyp == CORPSE && obj->corpsenm > NON_PM && obj->corpsenm > NUM_MONSTERS)
         {
-            Sprintf(buf, "Corpse properties:");
-            txt = buf;
-            putstr(datawin, ATR_HEADING, txt);
+            if (mvitals[obj->corpsenm].mvflags & MV_KNOWS_CORPSE)
+            {
+                Sprintf(buf, "Corpse properties:");
+                txt = buf;
+                putstr(datawin, ATR_HEADING, txt);
 
-            print_corpse_properties(datawin, obj->corpsenm, FALSE);
+                print_corpse_properties(datawin, obj->corpsenm, FALSE);
+            }
+            else if (context.game_difficulty <= 0) /* Shows up on expert, too, just in case */
+            {
+                show_corpse_hint = TRUE;
+            }
         }
     }
 
@@ -3935,7 +3955,8 @@ register struct obj* obj;
     }
 
     /* Hints */
-    if (context.game_difficulty < 0 && obj->dknown && (!stats_known || notfullyidentified))
+    boolean show_identify_hint = context.game_difficulty < 0 && obj->dknown && (!stats_known || notfullyidentified);
+    if (show_identify_hint || show_corpse_hint)
     {
         int powercnt = 0;
 
@@ -3950,6 +3971,13 @@ register struct obj* obj;
             Sprintf(buf, " %2d - You can fully learn the statistics by identifying this item (e.g., by using a scroll of identify)", powercnt);
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_DASH, txt);
+
+        if (show_corpse_hint)
+        {
+            Sprintf(buf, " %2d - You can determine this corpse's properties by applying a wand of probing on it", powercnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
     }
 
     display_nhwindow(datawin, FALSE);

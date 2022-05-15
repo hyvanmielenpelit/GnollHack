@@ -1579,10 +1579,22 @@ learn_egg_type(mnum)
 int mnum;
 {
     /* baby monsters hatch from grown-up eggs */
-    mnum = little_to_big(mnum);
-    mvitals[mnum].mvflags |= MV_KNOWS_EGG;
-    /* we might have just learned about other eggs being carried */
-    update_inventory();
+    if (mnum > NON_PM && mnum < NUM_MONSTERS)
+    {
+        mnum = little_to_big(mnum);
+        mvitals[mnum].mvflags |= MV_KNOWS_EGG;
+        /* we might have just learned about other eggs being carried */
+        update_inventory();
+    }
+}
+
+/* Learn to recognize eggs of the given type. */
+void
+learn_corpse_type(mnum)
+int mnum;
+{
+    if(mnum > NON_PM && mnum < NUM_MONSTERS)
+        mvitals[mnum].mvflags |= MV_KNOWS_CORPSE;
 }
 
 /* Attach a fig_transform timeout to the given figurine. */

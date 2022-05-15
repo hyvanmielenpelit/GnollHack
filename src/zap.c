@@ -334,7 +334,7 @@ struct monst* origmonst;
         { /* match effect on player */
             play_sfx_sound_at_location(SFX_GENERAL_REFLECTS, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
-            pline("Boing!");
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, "Boing!");
             break; /* skip makeknown */
         }
         else if (u.uswallow || 1)
@@ -364,7 +364,7 @@ struct monst* origmonst;
         }
         /* resist deals the damage and displays the damage dealt */
         play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
-        Your("touch jolts %s with electricity!", mon_nam(mtmp));
+        Your_ex(ATR_NONE, CLR_MSG_SPELL, "touch jolts %s with electricity!", mon_nam(mtmp));
         display_m_being_hit(mtmp, HIT_ELECTROCUTED, dmg, 0UL, FALSE);
         (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE, dmg, AD_ELEC, TELL);
         learn_it = TRUE;
@@ -385,7 +385,7 @@ struct monst* origmonst;
         }
         /* resist deals the damage and displays the damage dealt */
         play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_CELESTIAL_MAGIC);
-        Your("%s sears %s!", OBJ_NAME(objects[otyp]), mon_nam(mtmp));
+        Your_ex(ATR_NONE, CLR_MSG_SPELL, "%s sears %s!", OBJ_NAME(objects[otyp]), mon_nam(mtmp));
         display_m_being_hit(mtmp, HIT_GENERAL, dmg, 0UL, FALSE);
         (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE, dmg, AD_CLRC, TELL);
         learn_it = TRUE;
@@ -406,7 +406,7 @@ struct monst* origmonst;
         }
         /* resist deals the damage and displays the damage dealt */
         play_sfx_sound(SFX_MONSTER_ON_FIRE);
-        Your("fiery touch burns %s!", mon_nam(mtmp));
+        Your_ex(ATR_NONE, CLR_MSG_SPELL, "fiery touch burns %s!", mon_nam(mtmp));
         display_m_being_hit(mtmp, HIT_ON_FIRE, dmg, 0UL, FALSE);
         (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE, dmg, AD_FIRE, TELL);
         learn_it = TRUE;
@@ -427,7 +427,7 @@ struct monst* origmonst;
         }
         /* resist deals the damage and displays the damage dealt */
         play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
-        Your("freezing touch sears %s!", mon_nam(mtmp));
+        Your_ex(ATR_NONE, CLR_MSG_SPELL, "freezing touch sears %s!", mon_nam(mtmp));
         display_m_being_hit(mtmp, HIT_FROZEN, dmg, 0UL, FALSE);
         (void)check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE, dmg, AD_COLD, TELL);
         learn_it = TRUE;
@@ -443,7 +443,7 @@ struct monst* origmonst;
         {
             /* resist deals the damage and displays the damage dealt */
             play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_CELESTIAL_MAGIC);
-            pline("The %s sears %s!", OBJ_NAME(objects[otyp]),  mon_nam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_SPELL, "The %s sears %s!", OBJ_NAME(objects[otyp]),  mon_nam(mtmp));
             display_m_being_hit(mtmp, HIT_GENERAL, dmg, 0UL, FALSE);
             (void)inflict_spell_damage(mtmp, otmp, origmonst, dmg, AD_CLRC, TELL);
             learn_it = TRUE;
@@ -686,8 +686,8 @@ struct monst* origmonst;
             increase_mon_property_verbosely(mtmp, SLOWED, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
             m_dowear(mtmp, FALSE); /* might want speed boots */
             if (u.uswallow && (mtmp == u.ustuck) && is_whirly(mtmp->data)) {
-                You("disrupt %s!", mon_nam(mtmp));
-                pline("A huge hole opens up...");
+                You_ex(ATR_NONE, CLR_MSG_SPELL, "disrupt %s!", mon_nam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A huge hole opens up...");
                 expels(mtmp, mtmp->data, TRUE);
             }
             else
@@ -723,8 +723,8 @@ struct monst* origmonst;
             increase_mon_property_verbosely(mtmp, PARALYZED, duration);
             if (u.uswallow && (mtmp == u.ustuck) && is_whirly(mtmp->data)) 
             {
-                You("disrupt %s!", mon_nam(mtmp));
-                pline("A huge hole opens up...");
+                You_ex(ATR_NONE, CLR_MSG_SPELL, "disrupt %s!", mon_nam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A huge hole opens up...");
                 expels(mtmp, mtmp->data, TRUE);
             }
             else
@@ -763,8 +763,8 @@ struct monst* origmonst;
             increase_mon_property_verbosely(mtmp, UNDEAD_IMMOBILITY, duration);
             if (u.uswallow && (mtmp == u.ustuck) && (is_undead(mtmp->data) || is_vampshifter(mtmp)) && is_whirly(mtmp->data))
             {
-                You("disrupt %s!", mon_nam(mtmp));
-                pline("A huge hole opens up...");
+                You_ex(ATR_NONE, CLR_MSG_SPELL, "disrupt %s!", mon_nam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A huge hole opens up...");
                 expels(mtmp, mtmp->data, TRUE);
             }
             else
@@ -940,7 +940,7 @@ struct monst* origmonst;
                 if (canseemon(mtmp)) 
                 {
                     play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_SHUDDER);
-                    pline("%s shudders!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shudders!", Monnam(mtmp));
                     learn_it = TRUE;
                 }
                 /* context.bypasses = TRUE; ## for make_corpse() */
@@ -1071,9 +1071,9 @@ struct monst* origmonst;
             res = 1;
             if (is_animal(mtmp->data)) {
                 if (Blind)
-                    You_feel("a sudden rush of air!");
+                    You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a sudden rush of air!");
                 else
-                    pline("%s opens its mouth!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s opens its mouth!", Monnam(mtmp));
             }
             expels(mtmp, mtmp->data, TRUE);
             /* zap which hits steed will only release saddle if it
@@ -1095,10 +1095,10 @@ struct monst* origmonst;
             if (cansee(mtmp->mx, mtmp->my)) {
                 if (!canspotmon(mtmp))
                     Strcpy(buf, An(distant_name(obj, xname)));
-                pline("%s falls to the %s.", buf,
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s falls to the %s.", buf,
                       surface(mtmp->mx, mtmp->my));
             } else if (canspotmon(mtmp)) {
-                pline("%s falls off.", buf);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s falls off.", buf);
             }
             obj_extract_self(obj);
             mdrop_obj(mtmp, obj, FALSE);
@@ -1385,7 +1385,7 @@ cure_petrification_here:
             /* turn into flesh golem */
             if (newcham(mtmp, &mons[PM_FLESH_GOLEM], FALSE, FALSE)) {
                 if (canseemon(mtmp))
-                    pline("%s turns to flesh!", name);
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns to flesh!", name);
             } else {
                 if (canseemon(mtmp))
                     pline("%s looks rather fleshy for a moment.", name);
@@ -1426,7 +1426,7 @@ cure_petrification_here:
             {
                 mtmp->m_lev--;
                 if (canseemon(mtmp))
-                    pline("%s suddenly seems weaker!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly seems weaker!", Monnam(mtmp));
             }
             update_mon_maxhp(mtmp);
         }
@@ -2342,7 +2342,7 @@ boolean replaceundead;
         || item_prevents_revival(montype)) 
     {
         if (by_hero && cansee(x, y))
-            pline("%s twitches feebly.",
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s twitches feebly.",
                 upstart(corpse_xname(corpse, (const char *) 0, CXN_PFX_THE)));
         return (struct monst *) 0;
     }
@@ -2815,9 +2815,9 @@ struct monst *mon;
         if ((mtmp2 = revive(otmp, !context.mon_moving, -1, FALSE)) != 0) {
             ++res;
             if (youseeit)
-                pline("%s%s suddenly comes alive!", owner, corpse);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%s suddenly comes alive!", owner, corpse);
             else if (canseemon(mtmp2))
-                pline("%s suddenly appears!", Amonnam(mtmp2));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly appears!", Amonnam(mtmp2));
         }
     }
     return res;
@@ -3139,7 +3139,7 @@ int okind;
     polyuse(obj, okind, (int) mons[pm_index].cwt);
 
     if (mtmp && cansee(mtmp->mx, mtmp->my)) {
-        pline("Some %sobjects meld, and %s arises from the pile!", material,
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Some %sobjects meld, and %s arises from the pile!", material,
               a_monnam(mtmp));
     }
 }
@@ -3540,12 +3540,12 @@ int id;
                 else 
                 {
                     play_simple_monster_sound(shkp, MONSTER_SOUND_TYPE_GET_ANGRY);
-                    pline("%s gets angry!", Monnam(shkp));
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gets angry!", Monnam(shkp));
                     hot_pursuit(shkp);
                 }
             } 
             else
-                Norep("%s is furious!", Monnam(shkp));
+                Norep_ex(ATR_NONE, CLR_MSG_WARNING, "%s is furious!", Monnam(shkp));
         }
     }
     delobj(obj);

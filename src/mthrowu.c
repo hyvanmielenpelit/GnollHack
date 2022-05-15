@@ -2138,9 +2138,9 @@ boolean your_fault, from_invent;
         /* breakage makes its own noises */
         if (obj_type == POT_ACID) {
             if (cansee(barsx, barsy) && !unbreakable)
-                pline_The("iron bars are dissolved!");
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "iron bars are dissolved!");
             else
-                You_hear(Hallucination ? "angry snakes!" : "a hissing noise.");
+                You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, Hallucination ? "angry snakes!" : "a hissing noise.");
             if (!unbreakable)
                 dissolve_bars(barsx, barsy);
         }

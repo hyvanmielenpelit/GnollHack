@@ -739,14 +739,14 @@ struct obj *obj;
     register struct monst *mtmp, *nextmon, *selmon;
     selmon = (struct monst*)0;
 
-    if (!can_blow(&youmonst)) 
+    if (obj && !can_blow(&youmonst))
     {
-        You("are incapable of using the whistle.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "are incapable of using the whistle.");
     } 
     else if (obj && obj->cursed && !rn2(2)) 
     {
         play_sfx_sound(SFX_CURSED_MAGIC_WHISTLE);
-        You("produce a %shigh-pitched humming noise.",
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "produce a %shigh-pitched humming noise.",
             Underwater ? "very " : "");
         wake_nearby();
     } 
@@ -756,11 +756,11 @@ struct obj *obj;
 
         /* it's magic!  it works underwater too (at a higher pitch) */
         if(obj)
-            You(whistle_str,
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, whistle_str,
                 Hallucination ? "normal" : Underwater ? "strange, high-pitched"
                                                   : "strange");
         else
-            Your("spell produces a %s whistling sound.",
+            Your_ex(ATR_NONE, CLR_MSG_SPELL, "spell produces a %s whistling sound.",
                 Hallucination ? "normal" : Underwater ? "strange, high-pitched"
                 : "strange");
         
@@ -809,9 +809,9 @@ struct obj *obj;
             else
             {
                 if(pet_cnt == 1 && selmon)
-                    pline("%s appears in a cloud of smoke!", Ymonnam(selmon));
+                    pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s appears in a cloud of smoke!", Ymonnam(selmon));
                 else
-                    Your("pets appear in a cloud of smoke!");
+                    Your_ex(ATR_NONE, CLR_MSG_SUCCESS, "pets appear in a cloud of smoke!");
             }
         }
     }

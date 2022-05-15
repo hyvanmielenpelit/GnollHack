@@ -3726,8 +3726,12 @@ struct obj *otmp;
 
     if (Is_container(otmp) || otmp->otyp == STATUE)
         otmp->cknown = otmp->lknown = otmp->tknown = 1;
-    if (otmp->otyp == EGG && otmp->corpsenm != NON_PM)
+    if (otmp->otyp == EGG && otmp->corpsenm > NON_PM)
         learn_egg_type(otmp->corpsenm);
+    if (otmp->otyp == CORPSE && otmp->corpsenm > NON_PM)
+        learn_corpse_type(otmp->corpsenm);
+    if (otmp->otyp == CORPSE || otmp->globby)
+        otmp->speflags |= SPEFLAGS_ROTTING_STATUS_KNOWN;
 }
 
 /* ggetobj callback routine; identify an object and give immediate feedback */

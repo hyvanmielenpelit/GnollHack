@@ -993,7 +993,7 @@ E boolean FDECL(Popeye, (int));
 E unsigned FDECL(obj_nutrition, (struct obj*));
 E void FDECL(display_nutrition_floating_text, (int, int, int));
 E void FDECL(display_famine_floating_text, (int, int, int));
-
+E long FDECL(get_rotted_status, (struct obj*));
 
 /* ### encounter.c ### */
 
@@ -3334,6 +3334,7 @@ E void FDECL(attach_fig_transform_timeout, (struct obj *));
 E void FDECL(kill_egg, (struct obj *));
 E void FDECL(hatch_egg, (ANY_P *, long));
 E void FDECL(learn_egg_type, (int));
+E void FDECL(learn_corpse_type, (int));
 E void FDECL(burn_object, (ANY_P *, long));
 E void FDECL(begin_burn, (struct obj *, BOOLEAN_P));
 E void FDECL(end_burn, (struct obj *, BOOLEAN_P));

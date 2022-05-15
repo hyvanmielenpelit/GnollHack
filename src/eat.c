@@ -2095,7 +2095,6 @@ eatcorpse(otmp)
 struct obj *otmp;
 {
     int retcode = 0, tp = 0, mnum = otmp->corpsenm;
-    long rotted = 0L;
 
     if (mnum < LOW_PM)
         return retcode; /* Should not happen, but just in case to avoid out of bounds errors */
@@ -2106,21 +2105,23 @@ struct obj *otmp;
                          && !slimeproof(youmonst.data)),
             glob = otmp->globby ? TRUE : FALSE;
 
+    long rotted = get_rotted_status(otmp);
+
     /* KMH, conduct */
     if (!vegan(&mons[mnum]))
         u.uconduct.unvegan++;
     if (!vegetarian(&mons[mnum]))
         violated_vegetarian();
 
-    if (!nonrotting_corpse(mnum)) {
-        long age = peek_at_iced_corpse_age(otmp);
+    //if (!nonrotting_corpse(mnum)) {
+    //    long age = peek_at_iced_corpse_age(otmp);
 
-        rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + rn2(CORPSE_ROTTING_SPEED_VARIATION));
-        if (otmp->cursed)
-            rotted += 2L;
-        else if (otmp->blessed)
-            rotted -= 2L;
-    }
+    //    rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + 0 /*rn2(CORPSE_ROTTING_SPEED_VARIATION)*/);
+    //    if (otmp->cursed)
+    //        rotted += 2L;
+    //    else if (otmp->blessed)
+    //        rotted -= 2L;
+    //}
 
     if (mnum != PM_ACID_BLOB && !stoneable && !slimeable && rotted > 5L)
     {
@@ -3074,6 +3075,30 @@ struct obj *otmp;
 }
 #endif
 
+long
+get_rotted_status(obj)
+struct obj* obj;
+{
+    if (!obj || (obj->otyp != CORPSE && !obj->globby) || obj->corpsenm < LOW_PM)
+        return 0;
+
+    long rotted = 0L;
+    int mnum = obj->corpsenm;
+    if (!nonrotting_corpse(mnum))
+    {
+        long age = peek_at_iced_corpse_age(obj);
+
+        /* worst case rather than random
+            in this calculation to force prompt */
+        rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + 0 /* was rn2(CORPSE_ROTTING_SPEED_VARIATION) */);
+        if (obj->cursed)
+            rotted += 2L;
+        else if (obj->blessed)
+            rotted -= 2L;
+    }
+
+    return rotted;
+}
 /*
  * return 0 if the food was not dangerous.
  * return 1 if the food was dangerous and you chose to stop.
@@ -3110,15 +3135,16 @@ struct obj *otmp;
 
         if (cadaver && mnum >= LOW_PM && !nonrotting_corpse(mnum))
         {
-            long age = peek_at_iced_corpse_age(otmp);
+            rotted = get_rotted_status(otmp);
+            //long age = peek_at_iced_corpse_age(otmp);
 
-            /* worst case rather than random
-               in this calculation to force prompt */
-            rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + 0 /* was rn2(CORPSE_ROTTING_SPEED_VARIATION) */);
-            if (otmp->cursed)
-                rotted += 2L;
-            else if (otmp->blessed)
-                rotted -= 2L;
+            ///* worst case rather than random
+            //   in this calculation to force prompt */
+            //rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + 0 /* was rn2(CORPSE_ROTTING_SPEED_VARIATION) */);
+            //if (otmp->cursed)
+            //    rotted += 2L;
+            //else if (otmp->blessed)
+            //    rotted -= 2L;
         }
     }
 

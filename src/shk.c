@@ -1279,7 +1279,7 @@ xchar oy UNUSED;
     }
 
     play_simple_monster_sound(shkp, MONSTER_SOUND_TYPE_GET_ANGRY);
-    pline("%s %s!", Shknam(shkp), !ANGRY(shkp) ? "gets angry" : "is furious");
+    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s!", Shknam(shkp), !ANGRY(shkp) ? "gets angry" : "is furious");
     hot_pursuit(shkp);
 }
 

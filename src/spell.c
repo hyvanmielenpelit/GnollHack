@@ -272,7 +272,7 @@ struct obj *book2;
         if (arti_cursed) {
             play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
             pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "invocation fails!");
-            pline("At least one of your artifacts is cursed...");
+            pline_ex(ATR_NONE, CLR_MSG_HINT, "At least one of your artifacts is cursed...");
         } else if (arti1_primed && arti2_primed) {
             unsigned soon =
                 (unsigned) d(2, 6); /* time til next intervene() */
@@ -529,7 +529,7 @@ learn(VOID_ARGS)
         if (book->spestudied > MAX_SPELL_STUDY)
         {
             play_sfx_sound(SFX_SPELL_TOO_FAINT);
-            pline("This spellbook is too faint to be read any more.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "This spellbook is too faint to be read any more.");
             book->otyp = booktype = SPE_BLANK_PAPER;
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
@@ -561,7 +561,7 @@ learn(VOID_ARGS)
         if (book->spestudied >= MAX_SPELL_STUDY) {
             /* pre-used due to being the product of polymorph */
             play_sfx_sound(SFX_SPELL_TOO_FAINT);
-            pline("This spellbook is too faint to read even once.");
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "This spellbook is too faint to read even once.");
             book->otyp = booktype = SPE_BLANK_PAPER;
             /* reset spestudied as if polymorph had taken place */
             book->spestudied = rn2(book->spestudied);
@@ -719,7 +719,7 @@ register struct obj *spellbook;
                 }
                 else
                 {
-                    pline("This spellbook contains \"%s\".", namebuf);
+                    pline_ex(ATR_NONE, CLR_MSG_HINT, "This spellbook contains \"%s\".", namebuf);
                     makeknown(spellbook->otyp);
                     takeround = 1;
                     Sprintf(buf, "\"%s\" is %s. Continue?", Namebuf2, an(lvlbuf));
@@ -764,7 +764,7 @@ register struct obj *spellbook;
                 if (eyecount(youmonst.data) > 1)
                     eyes = makeplural(eyes);
                 play_sfx_sound(SFX_ACQUIRE_SLEEP);
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "This book is so dull that you can't keep your %s open.",
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "This book is so dull that you can't keep your %s open.",
                       eyes);
                 dullbook += rnd(2 * objects[booktype].oc_spell_level);
                 fall_asleep(-dullbook, TRUE);
@@ -1114,7 +1114,7 @@ int spell_list_type;
             if (idx < 0 || idx >= nspells)
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                You("don't know that spell.");
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "don't know that spell.");
                 continue; /* ask again */
             }
             *spell_no = idx;
@@ -2567,7 +2567,7 @@ boolean atme;
                  * "nevermind" is not an option.
                  */
                 play_sfx_sound(SFX_MAGICAL_ENERGY_RELEASED);
-                pline_The("magical energy is released!");
+                pline_The_ex(ATR_NONE, CLR_MSG_SPELL, "magical energy is released!");
             }
 
             if (!u.dx && !u.dy && !u.dz)
@@ -2821,18 +2821,18 @@ boolean atme;
                 }
                 else
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in black energy for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in black energy for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case SPE_COLD_ENCHANT_ITEM:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
                     break;
                 }
                 if (otmp->elemental_enchantment == FIRE_ENCHANTMENT)
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The cold energies dispel the flaming enchantment on %s.", yname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "The cold energies dispel the flaming enchantment on %s.", yname(otmp));
                     otmp->elemental_enchantment = 0;
                     update_inventory();
                     break;
@@ -2840,25 +2840,25 @@ boolean atme;
 
                 if (is_elemental_enchantable(otmp))
                 {
-                    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "enchant %s with freezing magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "enchant %s with freezing magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL, COLD_ENCHANTMENT);
                     prinv((char*)0, otmp, 0L);
                     //otmp->elemental_enchantment = COLD_ENCHANTMENT;
                 }
                 else
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case SPE_FIRE_ENCHANT_ITEM:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
                     break;
                 }
                 if (otmp->elemental_enchantment == COLD_ENCHANTMENT)
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The fiery energies dispel the freezing enchantment on %s.", yname(otmp));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "The fiery energies dispel the freezing enchantment on %s.", yname(otmp));
                     otmp->elemental_enchantment = 0;
                     update_inventory();
                     break;
@@ -2866,32 +2866,32 @@ boolean atme;
 
                 if (is_elemental_enchantable(otmp))
                 {
-                    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "enchant %s with fire magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "enchant %s with fire magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL, FIRE_ENCHANTMENT);
                     prinv((char*)0, otmp, 0L);
                     //otmp->elemental_enchantment = FIRE_ENCHANTMENT;
                 }
                 else
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in red for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in red for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             case SPE_LIGHTNING_ENCHANT_ITEM:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
                     break;
                 }
                 if (is_elemental_enchantable(otmp))
                 {
-                    You_ex(ATR_NONE, CLR_MSG_POSITIVE, "enchant %s with lightning magic.", yname(otmp));
+                    You_ex(ATR_NONE, CLR_MSG_SUCCESS, "enchant %s with lightning magic.", yname(otmp));
                     otmp = elemental_enchant_quan(otmp, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL, LIGHTNING_ENCHANTMENT);
                     prinv((char*)0, otmp, 0L);
                     //otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
                 }
                 else
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
+                    pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
                 }
                 break;
             }
@@ -4855,21 +4855,21 @@ int spell;
     if (spellknow(spell) <= 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "cannot recall this spell or its material components anymore.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot recall this spell or its material components anymore.");
         return 0;
     }
 
     if (!spellmatcomp(spell))
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("That spell does not require material components.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "That spell does not require material components.");
         return 0;
     }
 
     if (!invent)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        You("have nothing to prepare spells with.");
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "have nothing to prepare spells with.");
         return 0;
     }
 

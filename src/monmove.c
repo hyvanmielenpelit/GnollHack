@@ -855,7 +855,7 @@ register struct monst *mtmp;
 
                 /* Why?  For the same reason in real demon talk */
                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
-                pline("%s gets angry!", Amonnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gets angry!", Amonnam(mtmp));
                 mtmp->mpeaceful = 0;
                 newsym(mtmp->mx, mtmp->my);
                 set_malign(mtmp);
