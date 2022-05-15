@@ -180,6 +180,10 @@ int mndx;
     case PM_HUMAN_MUMMY:
         mndx = PM_HUMAN;
         break;
+    case PM_GNOLL_ZOMBIE:
+    case PM_GNOLL_MUMMY:
+        mndx = PM_GNOLL;
+        break;
     case PM_GIANT_ZOMBIE:
     case PM_GIANT_MUMMY:
         mndx = PM_GIANT;
@@ -577,7 +581,7 @@ boolean createcorpse;
         num = undead_to_corpse(mndx);
         corpstatflags |= CORPSTAT_INIT;
         obj = mkcorpstat(CORPSE, mtmp, &mons[num], x, y, corpstatflags);
-        obj->age -= CORPSE_ROTTING_SPEED * 5L; /* this is an *OLD* corpse */
+        obj->age -= CORPSE_ROTTING_SPEED * 10L; /* this is an *OLD* corpse */
         break;
     case PM_KOBOLD_MUMMY:
     case PM_DWARF_MUMMY:
@@ -585,6 +589,7 @@ boolean createcorpse;
     case PM_ORC_MUMMY:
     case PM_ELF_MUMMY:
     case PM_HUMAN_MUMMY:
+    case PM_GNOLL_MUMMY:
     case PM_GIANT_MUMMY:
     case PM_ETTIN_MUMMY:
     case PM_KOBOLD_ZOMBIE:
@@ -593,12 +598,13 @@ boolean createcorpse;
     case PM_ORC_ZOMBIE:
     case PM_ELF_ZOMBIE:
     case PM_HUMAN_ZOMBIE:
+    case PM_GNOLL_ZOMBIE:
     case PM_GIANT_ZOMBIE:
     case PM_ETTIN_ZOMBIE:
         num = undead_to_corpse(mndx);
         corpstatflags |= CORPSTAT_INIT;
         obj = mkcorpstat(CORPSE, mtmp, &mons[num], x, y, corpstatflags);
-        obj->age -= CORPSE_ROTTING_SPEED * 5L; /* this is an *OLD* corpse */
+        obj->age -= CORPSE_ROTTING_SPEED * 10L; /* this is an *OLD* corpse */
         break;
     case PM_IRON_GOLEM:
     {

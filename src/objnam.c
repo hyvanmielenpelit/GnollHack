@@ -1138,14 +1138,6 @@ char *prefix;
             Strcat(prefix, is_corrodeable(obj) ? "corroded " : "rotted ");
         }
     }
-    else if ((obj->otyp == CORPSE || obj->globby) && (obj->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) != 0)
-    {
-        long rotted = get_rotted_status(obj);
-        if(obj->orotten || rotted > 3L)
-            Strcat(prefix, rotted > 5L ? "tainted " : "rotten ");
-        else
-            Strcat(prefix, "unrotten ");
-    }
 
     /* Erodeproof status; now shown also for nondamageable objects, if they happen to be erodeproof */
     if (rknown && obj->oerodeproof)
@@ -1617,8 +1609,19 @@ weapon_here:
         }
         break;
     case FOOD_CLASS:
+
         if (obj->oeaten)
             Strcat(prefix, "partly eaten ");
+        
+        if (is_obj_rotting_corpse(obj) && (obj->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) != 0)
+        {
+            long rotted = get_rotted_status(obj);
+            if (obj->orotten || rotted > 3L)
+                Strcat(prefix, rotted > 5L ? "tainted " : "rotten ");
+            else
+                Strcat(prefix, "unrotten ");
+        }
+
         if (obj->otyp == CORPSE) {
             /* (quan == 1) => want corpse_xname() to supply article,
                (quan != 1) => already have count or "some" as prefix;

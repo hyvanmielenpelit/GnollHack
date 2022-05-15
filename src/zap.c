@@ -6389,8 +6389,42 @@ boolean ordinary;
     case SPE_PROBE_MONSTER:
     case WAN_PROBING: 
     {
+        if (obj->otyp == WAN_PROBING && !objects[obj->otyp].oc_name_known)
+            pline("This is a wand of probing.");
+
         damage = 0;
-        struct obj *otmp;
+        struct obj *otmp = level.objects[u.ux][u.uy];
+        int cnt = 0;
+        for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
+            cnt++;
+
+        learn_it = TRUE;
+        otmp = level.objects[u.ux][u.uy];
+        boolean effectfinished = FALSE;
+        while(otmp)
+        {
+            char qbuf[BUFSZ];
+            Sprintf(qbuf, "There is %s here. Probe it?", an(cxname(otmp)));
+            int ans = cnt > 1 ? ynq(qbuf) : yn_query(qbuf);
+            switch (ans)
+            {
+            case 'y':
+                probe_object(otmp);
+                effectfinished = TRUE;
+                otmp = 0;
+                break;
+            case 'q':
+                otmp = 0;
+                break;
+            default:
+            case 'n':
+                otmp = otmp = otmp->nexthere;
+                break;
+            }
+        }
+
+        if (effectfinished)
+            break;
 
         for (otmp = invent; otmp; otmp = otmp->nobj) 
         {
@@ -6402,7 +6436,6 @@ boolean ordinary;
                     otmp->cknown = 1;
             }
         }
-        learn_it = TRUE;
         ustatusline();
         enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
         break;

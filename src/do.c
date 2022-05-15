@@ -1346,7 +1346,7 @@ register struct obj* obj;
                 }
                 else
                 {
-                    strcpy(buf2, "Normal");
+                    strcpy(buf2, "Unrotten");
                 }
 
                 Sprintf(buf, "Comestible quality:     %s", buf2);
