@@ -1092,8 +1092,7 @@ const struct Race races[] = {
         PM_HUMAN,
         PM_HUMAN_MUMMY,
         PM_HUMAN_ZOMBIE,
-        MH_HUMAN | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL
-            | ROLE_CHAOTIC,
+        MH_HUMAN | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL | ROLE_CHAOTIC,
         MH_HUMAN,
         0,
         MH_GNOLL | MH_ORC,
@@ -1115,7 +1114,7 @@ const struct Race races[] = {
         PM_ELF,
         PM_ELF_MUMMY,
         PM_ELF_ZOMBIE,
-        MH_ELF | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC,
+        MH_ELF | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL,
         MH_ELF,
         MH_ELF,
         MH_ORC | MH_GNOLL,
