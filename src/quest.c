@@ -40,17 +40,17 @@ STATIC_OVL void
 on_start()
 {
     if (!Qstat(first_start)) {
-        qt_pager((struct monst*)0, QT_FIRSTTIME);
+        qt_pager_ex((struct monst*)0, QT_FIRSTTIME, ATR_NONE, CLR_MSG_HINT);
         stop_all_immediate_sounds();
         Qstat(first_start) = TRUE;
     } else if ((u.uz0.dnum != u.uz.dnum) || (u.uz0.dlevel < u.uz.dlevel)) {
         if (Qstat(not_ready) <= 2)
         {
-            qt_pager((struct monst*)0, QT_NEXTTIME);
+            qt_pager_ex((struct monst*)0, QT_NEXTTIME, ATR_NONE, CLR_MSG_HINT);
         }
         else
         {
-            qt_pager((struct monst*)0, QT_OTHERTIME);
+            qt_pager_ex((struct monst*)0, QT_OTHERTIME, ATR_NONE, CLR_MSG_HINT);
         }
     }
 }
@@ -67,7 +67,7 @@ on_locate()
     } else if (!Qstat(first_locate)) {
         if (from_above)
         {
-            qt_pager((struct monst*)0, QT_FIRSTLOCATE);
+            qt_pager_ex((struct monst*)0, QT_FIRSTLOCATE, ATR_NONE, CLR_MSG_HINT);
         }
         /* if we've arrived from below this will be a lie, but there won't
            be any point in delivering the message upon a return visit from
@@ -76,7 +76,7 @@ on_locate()
     } else {
         if (from_above)
         {
-            qt_pager((struct monst*)0, QT_NEXTLOCATE);
+            qt_pager_ex((struct monst*)0, QT_NEXTLOCATE, ATR_NONE, CLR_MSG_HINT);
         }
     }
 }
@@ -87,7 +87,7 @@ on_goal()
     if (Qstat(killed_nemesis)) {
         return;
     } else if (!Qstat(made_goal)) {
-        qt_pager((struct monst*)0, QT_FIRSTGOAL);
+        qt_pager_ex((struct monst*)0, QT_FIRSTGOAL, ATR_NONE, CLR_MSG_HINT);
         Qstat(made_goal) = 1;
     } else {
         /*
@@ -131,7 +131,7 @@ nemdead()
 {
     if (!Qstat(killed_nemesis)) {
         Qstat(killed_nemesis) = TRUE;
-        qt_pager((struct monst*)0, QT_KILLEDNEM);
+        qt_pager_ex((struct monst*)0, QT_KILLEDNEM, ATR_NONE, CLR_MSG_HINT);
     }
 }
 
@@ -148,7 +148,7 @@ struct obj *obj;
         obj->nknown = 1;
         /* only give this message once */
         Qstat(touched_artifact) = TRUE;
-        qt_pager((struct monst*)0, QT_GOTIT);
+        qt_pager_ex((struct monst*)0, QT_GOTIT, ATR_NONE, CLR_MSG_HINT);
         exercise(A_WIS, TRUE);
     }
 }
@@ -246,12 +246,12 @@ struct obj *obj; /* quest artifact; possibly null if carrying Amulet */
     struct obj *otmp;
 
     if (u.uhave.amulet) { /* unlikely but not impossible */
-        qt_pager((struct monst*)0, QT_HASAMULET);
+        qt_pager_ex((struct monst*)0, QT_HASAMULET, ATR_NONE, CLR_MSG_HINT);
         /* leader IDs the real amulet but ignores any fakes */
         if ((otmp = carrying(AMULET_OF_YENDOR)) != 0)
             fully_identify_obj(otmp);
     } else {
-        qt_pager((struct monst*)0, !Qstat(got_thanks) ? QT_OFFEREDIT : QT_OFFEREDIT2);
+        qt_pager_ex((struct monst*)0, !Qstat(got_thanks) ? QT_OFFEREDIT : QT_OFFEREDIT2, ATR_NONE, CLR_MSG_HINT);
         /* should have obtained bell during quest;
            if not, suggest returning for it now */
         if ((otmp = carrying(BELL_OF_OPENING)) == 0)
@@ -322,7 +322,7 @@ struct monst* mtmp;
         res = TRUE;
         if (!Qstat(met_leader)) 
         {
-            qt_pager(mtmp, QT_FIRSTLEADER);
+            qt_pager_ex(mtmp, QT_FIRSTLEADER, ATR_NONE, CLR_MSG_HINT);
             Qstat(met_leader) = TRUE;
             Qstat(not_ready) = 0;
         } 
@@ -338,23 +338,23 @@ struct monst* mtmp;
 
         if (not_capable())
         {
-            qt_pager(mtmp, QT_BADLEVEL);
+            qt_pager_ex(mtmp, QT_BADLEVEL, ATR_NONE, CLR_MSG_HINT);
             exercise(A_WIS, TRUE);
             res = FALSE; // For safety
             expulsion(FALSE);
         }
         else if (is_pure(TRUE) < 0) 
         {
-            com_pager((struct monst*)0, QT_BANISHED);
+            com_pager_ex((struct monst*)0, QT_BANISHED, ATR_NONE, CLR_MSG_NEGATIVE);
             res = FALSE; // For safety
             expulsion(TRUE);
         }
         else if (is_pure(TRUE) == 0)
         {
-            qt_pager(mtmp, QT_BADALIGN);
+            qt_pager_ex(mtmp, QT_BADALIGN, ATR_NONE, CLR_MSG_WARNING);
             if (Qstat(not_ready) == MAX_QUEST_TRIES)
             {
-                qt_pager(mtmp, QT_LASTLEADER);
+                qt_pager_ex(mtmp, QT_LASTLEADER, ATR_NONE, CLR_MSG_NEGATIVE);
                 res = FALSE; // For safety
                 expulsion(TRUE);
             }
@@ -367,7 +367,7 @@ struct monst* mtmp;
         }
         else 
         { /* You are worthy! */
-            qt_pager(mtmp, QT_ASSIGNQUEST);
+            qt_pager_ex(mtmp, QT_ASSIGNQUEST, ATR_NONE, CLR_MSG_HINT);
             exercise(A_WIS, TRUE);
             Qstat(got_quest) = TRUE;
         }
@@ -392,7 +392,7 @@ struct monst *mtmp;
 
     if (Qstat(pissed_off)) 
     {
-        qt_pager(mtmp, QT_LASTLEADER);
+        qt_pager_ex(mtmp, QT_LASTLEADER, ATR_NONE, CLR_MSG_NEGATIVE);
         expulsion(TRUE); // Return FALSE for safety
     }
     else if(!u.uevent.qcompleted)
