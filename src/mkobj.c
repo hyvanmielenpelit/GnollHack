@@ -439,6 +439,7 @@ unsigned long rndflags;
                     if (spellid(j) == i)
                     {
                         alreadyknown = TRUE;
+                        break;
                     }
                 }
 
