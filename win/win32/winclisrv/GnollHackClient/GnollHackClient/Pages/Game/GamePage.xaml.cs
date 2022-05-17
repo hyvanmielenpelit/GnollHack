@@ -1135,7 +1135,7 @@ namespace GnollHackClient.Pages.Game
                     switch (data.style)
                     {
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_CLOSE_DISPLAY:
-                            icon_string = "GnollHackClient.Assets.UI.yes.png";
+                            icon_string = "GnollHackClient.Assets.UI.exit-to-map.png";
                             break;
                         default:
                             icon_string = "GnollHackClient.Assets.UI.no.png";

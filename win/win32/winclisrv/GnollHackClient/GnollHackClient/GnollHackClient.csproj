@@ -93,6 +93,7 @@
     <None Remove="Assets\UI\eat.png" />
     <None Remove="Assets\UI\engrave.png" />
     <None Remove="Assets\UI\examine.png" />
+    <None Remove="Assets\UI\exit-to-map.png" />
     <None Remove="Assets\UI\extended.png" />
     <None Remove="Assets\UI\fight.png" />
     <None Remove="Assets\UI\fire.png" />
@@ -284,6 +285,7 @@
     <EmbeddedResource Include="Assets\UI\eat.png" />
     <EmbeddedResource Include="Assets\UI\engrave.png" />
     <EmbeddedResource Include="Assets\UI\examine.png" />
+    <EmbeddedResource Include="Assets\UI\exit-to-map.png" />
     <EmbeddedResource Include="Assets\UI\extended.png" />
     <EmbeddedResource Include="Assets\UI\fight.png" />
     <EmbeddedResource Include="Assets\UI\fire.png" />
