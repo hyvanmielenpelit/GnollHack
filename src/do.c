@@ -5362,7 +5362,10 @@ int retry;
                 if (ParanoidAutoSelectAll)
                 {
                     if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "All Items Selected", "Are you sure to drop all items?") != 'y')
+                    {
+                        free((genericptr_t)pick_list);
                         return 0;
+                    }
                 }
 
                 drop_everything = TRUE;
