@@ -38,7 +38,7 @@ namespace GnollHackClient
             var mainPage = new MainPage();
             var navPage = new NavigationPage(mainPage);
             MainPage = navPage;
-            App.HideAndroidNavigatioBar = Preferences.Get("HideAndroidNavigationBar", false);
+            App.HideAndroidNavigatioBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             App.DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
             App.FullVersionMode = true; // Preferences.Get("FullVersion", true);
             App.ClassicMode = Preferences.Get("ClassicMode", false);

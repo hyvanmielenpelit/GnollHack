@@ -5358,7 +5358,15 @@ int retry;
             if (pick_list[i].item.a_int == ALL_TYPES_SELECTED)
                 all_categories = TRUE;
             else if (pick_list[i].item.a_int == 'A')
+            {
+                if (ParanoidAutoSelectAll)
+                {
+                    if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "All Items Selected", "Are you sure to drop all items?") != 'y')
+                        return 0;
+                }
+
                 drop_everything = TRUE;
+            }
             else
                 add_valid_menu_class(pick_list[i].item.a_int);
         }

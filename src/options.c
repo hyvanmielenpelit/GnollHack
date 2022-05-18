@@ -829,7 +829,7 @@ initoptions_init()
     flags.end_own = FALSE;
     flags.end_top = 3;
     flags.end_around = 2;
-    flags.paranoia_bits = PARANOID_PRAY; /* old prayconfirm=TRUE */
+    flags.paranoia_bits = PARANOID_PRAY | PARANOID_AUTOALL; /* old prayconfirm=TRUE */
     flags.runmode = RUN_LEAP;
     iflags.msg_history = 20;
     /* msg_window has conflicting defaults for multi-interface binary */
@@ -1484,6 +1484,8 @@ STATIC_VAR const struct paranoia_opts {
       "yes vs y to enter a pool of water or lava" },
     { PARANOID_TRAP, "trap", 2, (const char*)0, 0,
       "yes vs y to enter into a trap" },
+    { PARANOID_AUTOALL, "autoall", 2, (const char*)0, 0,
+      "y to select all items" },
       /* for config file parsing; interactive menu skips these */
     { 0, "none", 4, 0, 0, 0 }, /* require full word match */
     { ~0, "all", 3, 0, 0, 0 }, /* ditto */

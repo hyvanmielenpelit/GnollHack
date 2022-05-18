@@ -16,6 +16,7 @@ namespace GnollHackClient.Pages.Game
     {
         private GamePage _gamePage;
         private TableSection _developerSection;
+        private TableSection _optionsSection;
 
         public GameMenuPage(GamePage gamePage)
         {
@@ -23,8 +24,12 @@ namespace GnollHackClient.Pages.Game
 
             _gamePage = gamePage;
             _developerSection = DeveloperSection;
+            _optionsSection = OptionsSection;
             if (!App.DeveloperMode)
+            {
+                GameTableView.Root.Remove(_optionsSection);
                 GameTableView.Root.Remove(_developerSection);
+            }
         }
 
         private async void btnSave_Clicked(object sender, EventArgs e)
@@ -83,8 +88,12 @@ namespace GnollHackClient.Pages.Game
         {
             App.BackButtonPressed += BackButtonPressed;
             MainLayout.IsEnabled = true;
+            if (App.DeveloperMode && !GameTableView.Root.Contains(_optionsSection))
+                GameTableView.Root.Insert(1, _optionsSection);
+            if (!App.DeveloperMode && GameTableView.Root.Contains(_optionsSection))
+                GameTableView.Root.Remove(_optionsSection);
             if (App.DeveloperMode && !GameTableView.Root.Contains(_developerSection))
-                GameTableView.Root.Insert(1, _developerSection);
+                GameTableView.Root.Insert(3, _developerSection);
             if (!App.DeveloperMode && GameTableView.Root.Contains(_developerSection))
                 GameTableView.Root.Remove(_developerSection);
         }

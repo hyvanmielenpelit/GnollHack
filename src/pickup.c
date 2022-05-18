@@ -3565,11 +3565,23 @@ struct obj* other_container;
                            mflags, &pick_list, PICK_ANY);
         if (!n)
             return 0;
-        for (i = 0; i < n; i++) {
+
+        for (i = 0; i < n; i++) 
+        {
             if (pick_list[i].item.a_int == 'A')
+            {
+                if (ParanoidAutoSelectAll)
+                {
+                    if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "All Items Selected", "Are you sure to select all items?") != 'y')
+                        return 0;
+                }
+
                 loot_everything = TRUE;
+            }
             else if (pick_list[i].item.a_int == ALL_TYPES_SELECTED)
+            {
                 all_categories = TRUE;
+            }
             else
                 add_valid_menu_class(pick_list[i].item.a_int);
         }

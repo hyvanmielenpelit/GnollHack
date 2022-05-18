@@ -1203,6 +1203,7 @@ namespace GnollHackCommon
         public const bool DefaultMapNoClipMode = false;
         public const bool DefaultMapAlternateNoClipMode = false;
         public const bool DefaultZoomChangeCenterMode = false;
+        public const bool DefaultHideNavigation = true;
     }
 
 
