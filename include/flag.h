@@ -164,7 +164,7 @@ struct flag {
 #define PARANOID_HIT        0x0010
 #define PARANOID_PRAY       0x0020
 #define PARANOID_REMOVE     0x0040
-#define PARANOID_BREAKWAND  0x0080
+#define PARANOID_BREAK  0x0080
 #define PARANOID_WERECHANGE 0x0100
 #define PARANOID_WATER      0x0200
 #define PARANOID_TRAP       0x0400
@@ -597,7 +597,7 @@ enum runmode_types {
    item even when only one accessory or piece of armor is currently worn */
 #define ParanoidRemove ((flags.paranoia_bits & PARANOID_REMOVE) != 0)
 /* breakwand: Applying a wand */
-#define ParanoidBreakwand ((flags.paranoia_bits & PARANOID_BREAKWAND) != 0)
+#define ParanoidBreak ((flags.paranoia_bits & PARANOID_BREAK) != 0)
 /* werechange: accepting randomly timed werecreature change to transform
    from human to creature or vice versa while having polymorph control */
 #define ParanoidWerechange ((flags.paranoia_bits & PARANOID_WERECHANGE) != 0)

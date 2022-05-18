@@ -5080,7 +5080,7 @@ struct obj *obj;
     boolean is_fragile = (!strcmp(OBJ_DESCR(objects[obj->otyp]), "balsa"));
     context.bhitcount = 0;
 
-    if (!paranoid_query(ParanoidBreakwand,
+    if (!paranoid_query(ParanoidBreak,
                        safe_qbuf(confirm,
                                  "Are you really sure you want to break ",
                                  "?", obj, yname, ysimple_name, "the wand")))
@@ -5416,7 +5416,7 @@ dobreak()
     {
         char confirm[QBUFSZ];
 
-        if (!paranoid_query(ParanoidBreakwand, //Use this wall all breaking
+        if (!paranoid_query(ParanoidBreak, //Use this wall all breaking
             safe_qbuf(confirm,
                 "Are you really sure you want to break ",
                 "?", obj, yname, ysimple_name, "the item")))
