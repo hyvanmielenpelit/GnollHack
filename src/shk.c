@@ -1222,7 +1222,7 @@ register boolean silentkops;
         }
 
         if (vanished)
-            pline("Satisfied, %s suddenly disappears!", shk_nam);
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Satisfied, %s suddenly disappears!", shk_nam);
     }
     else if (wasmad)
     {

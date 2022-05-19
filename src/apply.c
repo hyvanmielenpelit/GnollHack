@@ -3262,19 +3262,19 @@ long timeout;
         switch (figurine->where) {
         case OBJ_INVENT:
             if (Blind || suppress_see)
-                You_feel("%s %s from your pack!", something,
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s from your pack!", something,
                          locomotion(mtmp->data, "drop"));
             else
-                You_see("%s %s out of your pack%s!", monnambuf,
+                You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s out of your pack%s!", monnambuf,
                         locomotion(mtmp->data, "drop"), and_vanish);
             break;
 
         case OBJ_FLOOR:
             if (cansee_spot && !silent) {
                 if (suppress_see)
-                    pline("%s suddenly vanishes!", an(xname(figurine)));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly vanishes!", an(xname(figurine)));
                 else
-                    You_see("a figurine transform into %s%s!", monnambuf,
+                    You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "a figurine transform into %s%s!", monnambuf,
                             and_vanish);
                 redraw = TRUE; /* update figurine's map location */
             }
@@ -3295,7 +3295,7 @@ long timeout;
                         Strcpy(carriedby, "empty water");
                     else
                         Strcpy(carriedby, "thin air");
-                    You_see("%s %s out of %s%s!", monnambuf,
+                    You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s out of %s%s!", monnambuf,
                         locomotion(mtmp->data, "drop"), carriedby,
                         and_vanish);
                 }
@@ -3761,7 +3761,7 @@ struct obj* obj;
                     remove_worn_item(otmp, TRUE);
 
                 play_sfx_sound(SFX_DISINTEGRATE);
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s disintegrated!", Yobjnam2(otmp, "are"));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrated!", Yobjnam2(otmp, "are"));
                 wandknown = TRUE;
                 //Destroy item;
                 useupall(otmp);

@@ -2769,7 +2769,7 @@ struct obj *obj;
         {
             kn++;
             play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
-            pline("It suddenly gets dark.");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "It suddenly gets dark.");
         }
         //if (!Blind && !Unaware)
         //    Your1(vision_clears);

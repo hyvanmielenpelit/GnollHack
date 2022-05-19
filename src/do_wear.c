@@ -766,7 +766,7 @@ struct obj* uitem;
     if (orig_sex != poly_gender()) {
         makeknown(uitem->otyp);
         play_sfx_sound(SFX_SEX_CHANGE);
-        You("are suddenly very %s!",
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are suddenly very %s!",
             flags.female ? "feminine" : "masculine");
         context.botl = 1;
     }
@@ -775,10 +775,10 @@ struct obj* uitem;
         play_sfx_sound(SFX_UNKNOWN_ODD_EFFECT);
         /* already polymorphed into single-gender monster; only
            changed the character's base sex */
-        You("don't feel like yourself.");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "don't feel like yourself.");
     }
     play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-    pline("%s disintegrates!", The(cxname(uitem)));
+    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrates!", The(cxname(uitem)));
     if (orig_sex == poly_gender() && uitem->dknown
         && !objects[uitem->otyp].oc_name_known
         && !objects[uitem->otyp].oc_uname)
@@ -2161,9 +2161,9 @@ boolean in_takeoff_wear;
         { /* in quest */
             play_sfx_sound(SFX_GENERAL_NOT_A_GOOD_IDEA);
             if (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL])
-                You("narrowly avoid losing all chance at your goal.");
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "narrowly avoid losing all chance at your goal.");
             else /* converted */
-                You("are suddenly overcome with shame and change your mind.");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are suddenly overcome with shame and change your mind.");
             u.ublessed = 0; /* lose your god's protection */
             makeknown(obj->otyp);
             context.botl = 1; /*for AC after zeroing u.ublessed */

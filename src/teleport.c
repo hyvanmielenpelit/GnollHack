@@ -1863,9 +1863,9 @@ int in_sight;
             play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(1);
             if (canseemon(mtmp))
-                pline("%s seems disoriented.", monname);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems disoriented.", monname);
             else
-                pline("%s suddenly disappears!", monname);
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly disappears!", monname);
             seetrap(trap);
             special_effect_wait_until_end(1);
         }

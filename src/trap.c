@@ -2064,7 +2064,7 @@ struct obj *otmp;
             && mon_can_move(steed)) {
             if (sleep_monst(steed, (struct obj*)0, (struct monst*)0, rn1(7,8), -100, FALSE))
                 /* no in_sight check here; you can feel it even if blind */
-                pline("%s suddenly falls asleep!", Monnam(steed));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly falls asleep!", Monnam(steed));
         }
         steedhit = TRUE;
         special_effect_wait_until_end(0);
@@ -2688,7 +2688,7 @@ register struct monst *mtmp;
                 {
                     mtmp->mtrapped = 0;
                     if (canseemon(mtmp))
-                        pline("%s rises from the pit...", Monnam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s rises from the pit...", Monnam(mtmp));
                     fill_pit(mtmp->mx, mtmp->my);
                 }
             } 
@@ -2702,7 +2702,7 @@ register struct monst *mtmp;
             if (trap->ttyp == BEAR_TRAP) 
             {
                 if (canseemon(mtmp))
-                    pline("%s eats a bear trap!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s eats a bear trap!", Monnam(mtmp));
                 deltrap(trap);
                 mtmp->meating = 5;
                 mtmp->mtrapped = 0;
@@ -2710,7 +2710,7 @@ register struct monst *mtmp;
             else if (trap->ttyp == SPIKED_PIT)
             {
                 if (canseemon(mtmp))
-                    pline("%s munches on some spikes!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s munches on some spikes!", Monnam(mtmp));
                 trap->ttyp = PIT;
                 trap->tsubtyp = 0;
                 trap->tflags = 0;
@@ -2765,7 +2765,7 @@ register struct monst *mtmp;
             if (trap->once && trap->tseen && !rn2(15)) {
                 play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
                 if (in_sight && see_it)
-                    pline("%s triggers a trap but nothing happens.",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s triggers a trap but nothing happens.",
                           Monnam(mtmp));
                 deltrap(trap);
                 newsym(mtmp->mx, mtmp->my);
@@ -2783,7 +2783,7 @@ register struct monst *mtmp;
             if (trap->once && trap->tseen && !rn2(15)) {
                 play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
                 if (in_sight && see_it)
-                    pline("%s triggers a trap but nothing happens.",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s triggers a trap but nothing happens.",
                           Monnam(mtmp));
                 deltrap(trap);
                 newsym(mtmp->mx, mtmp->my);
@@ -2817,9 +2817,9 @@ register struct monst *mtmp;
                 if (in_sight)
                 {
                     if(see_it)
-                        pline("A trap door above %s opens, but nothing falls out!", mon_nam(mtmp));
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A trap door above %s opens, but nothing falls out!", mon_nam(mtmp));
                     else
-                        You_see("a trap door open at a distance, but nothing falls out!");
+                        You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "a trap door open at a distance, but nothing falls out!");
                 }
                 deltrap(trap);
                 newsym(mtmp->mx, mtmp->my);
@@ -2866,11 +2866,11 @@ register struct monst *mtmp;
             play_sfx_sound_at_location_with_minimum_volume(SFX_SQUEAKY_BOARD, mtmp->mx, mtmp->my, 0.15);
             if (in_sight) {
                 if (!Deaf) {
-                    pline("A board beneath %s squeaks %s loudly.",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A board beneath %s squeaks %s loudly.",
                           mon_nam(mtmp), trapnote(trap, 0));
                     seetrap(trap);
                 } else {
-                    pline("%s stops momentarily and appears to cringe.",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stops momentarily and appears to cringe.",
                           Monnam(mtmp));
                 }
             } else {
@@ -2878,7 +2878,7 @@ register struct monst *mtmp;
                 int range = couldsee(mtmp->mx, mtmp->my) /* 9 or 5 */
                                ? NEARBY_CUTOFF_RANGE_CAN_SEE : NEARBY_CUTOFF_RANGE_CANNOT_SEE;
 
-                You_hear("a %s squeak %s.", trapnote(trap, 1),
+                You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a %s squeak %s.", trapnote(trap, 1),
                          (distu(mtmp->mx, mtmp->my) <= range * range)
                             ? "nearby" : "in the distance");
             }
@@ -2905,7 +2905,7 @@ register struct monst *mtmp;
                     play_special_effect_at(SPECIAL_EFFECT_BEAR_TRAP_CLOSE, 0, trap->tx, trap->ty, FALSE);
                     play_sfx_sound_at_location(SFX_BEAR_TRAP_CLOSES, trap->tx, trap->ty);
                     special_effect_wait_until_action(0);
-                    pline("%s is caught in %s bear trap!", Monnam(mtmp),
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is caught in %s bear trap!", Monnam(mtmp),
                           a_your[trap->madeby_u]);
                     seetrap(trap);
                     special_effect_wait_until_end(0);
@@ -2927,7 +2927,7 @@ register struct monst *mtmp;
             {
                 if (in_sight)
                 {
-                    pline("%s evades %s bear trap!", Monnam(mtmp),
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s evades %s bear trap!", Monnam(mtmp),
                           a_your[trap->madeby_u]);
                     seetrap(trap);
                 }
@@ -2977,12 +2977,12 @@ register struct monst *mtmp;
             if (!resists_sleep(mtmp) && !has_innate_breathless(mptr) && mon_can_move(mtmp) && sleep_monst(mtmp, (struct obj*)0, (struct monst*)0, rn1(7, 8), -100, FALSE))
             {
                 if(in_sight || see_it)
-                    pline("%s suddenly falls asleep!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly falls asleep!", Monnam(mtmp));
             }
             else
             {
                 if (in_sight || see_it)
-                    pline("%s is enveloped in a cloud of gas!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is enveloped in a cloud of gas!", Monnam(mtmp));
             }
 
             if (can_see_trap)
@@ -3008,14 +3008,14 @@ register struct monst *mtmp;
             {
             case 0:
                 if (in_sight)
-                    pline("%s %s on the %s!", A_gush_of_water_hits,
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s on the %s!", A_gush_of_water_hits,
                           mon_nam(mtmp), mbodypart(mtmp, HEAD));
                 target = which_armor(mtmp, W_ARMH);
                 (void) water_damage(target, helm_simple_name(target), TRUE);
                 break;
             case 1:
                 if (in_sight)
-                    pline("%s %s's left %s!", A_gush_of_water_hits,
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s's left %s!", A_gush_of_water_hits,
                           mon_nam(mtmp), mbodypart(mtmp, ARM));
                 target = which_armor(mtmp, W_ARMS);
                 if (water_damage(target, (target && (target->oclass == ARMOR_CLASS && objects[target->otyp].oc_armor_category == ARM_SHIELD) ? "shield" : "secondary weapon"), TRUE) != ER_NOTHING)
@@ -3029,13 +3029,13 @@ register struct monst *mtmp;
                 break;
             case 2:
                 if (in_sight)
-                    pline("%s %s's right %s!", A_gush_of_water_hits,
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s's right %s!", A_gush_of_water_hits,
                           mon_nam(mtmp), mbodypart(mtmp, ARM));
                 (void) water_damage(MON_WEP(mtmp), 0, TRUE);
                 goto glovecheck;
             default:
                 if (in_sight)
-                    pline("%s %s!", A_gush_of_water_hits, mon_nam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s!", A_gush_of_water_hits, mon_nam(mtmp));
                 for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
                     if (otmp->lamplit
                         && (otmp->owornmask & (W_WEP | W_SWAPWEP)) == 0)
@@ -3053,9 +3053,9 @@ register struct monst *mtmp;
             if (is_iron(mptr)) 
             {
                 if (in_sight)
-                    pline("%s falls to pieces!", Monnam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s falls to pieces!", Monnam(mtmp));
                 else if (is_tame(mtmp))
-                    pline("May %s rust in peace.", mon_nam(mtmp));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "May %s rust in peace.", mon_nam(mtmp));
                 mondied(mtmp);
                 if (DEADMONSTER(mtmp))
                     trapkilled = TRUE;

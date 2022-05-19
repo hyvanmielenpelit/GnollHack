@@ -295,10 +295,10 @@ moverock()
                             goto dopush;
                     }
                     if (u.usteed)
-                        pline("%s pushes %s and suddenly it disappears!",
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s pushes %s and suddenly it disappears!",
                               upstart(y_monnam(u.usteed)), the(xname(otmp)));
                     else
-                        You("push %s and suddenly it disappears!",
+                        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "push %s and suddenly it disappears!",
                             the(xname(otmp)));
                     if (ttmp->ttyp == TELEP_TRAP)
                     {

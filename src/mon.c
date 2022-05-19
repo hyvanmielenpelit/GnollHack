@@ -4052,7 +4052,7 @@ boolean has_effects;
     if (!in_mklev && (mtmp->mstrategy & STRAT_APPEARMSG)) {
         mtmp->mstrategy &= ~STRAT_APPEARMSG; /* one chance only */
         if (!couldspot && canspotmon(mtmp))
-            pline("%s suddenly %s!", Amonnam(mtmp),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s suddenly %s!", Amonnam(mtmp),
                   !Blind ? "appears" : "arrives");
     }
     return;

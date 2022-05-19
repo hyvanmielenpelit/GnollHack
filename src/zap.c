@@ -8785,13 +8785,13 @@ const char* fltxt;
                 hit(fltxt, mon, ".", -1, "");
 
             play_sfx_sound_at_location(SFX_DISINTEGRATE, mon->mx, mon->my);
-            pline("%s disintegrates.", Monnam(mon));
-            pline("%s body reintegrates before your %s!",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrates.", Monnam(mon));
+            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s body reintegrates before your %s!",
                 s_suffix(Monnam(mon)),
                 (eyecount(youmonst.data) == 1)
                 ? body_part(EYE)
                 : makeplural(body_part(EYE)));
-            pline("%s resurrects!", Monnam(mon));
+            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s resurrects!", Monnam(mon));
         }
         mon->mhp = mon->mhpmax;
         return TRUE;
@@ -8813,8 +8813,8 @@ const char* fltxt;
             if (fltxt && strcmp(fltxt, ""))
                 hit(fltxt, mon, ".", -1, "");
 
-            pline("%s absorbs the deadly magics!", Monnam(mon));
-            pline("It seems even stronger than before.");
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s absorbs the deadly magics!", Monnam(mon));
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "It seems even stronger than before.");
         }
         mon->mbasehpmax += mon->mbasehpmax / 2;
         if (mon->mbasehpmax > DEATH_MAX_HP_FROM_DEATH_RAY)
@@ -8875,7 +8875,7 @@ const char *fltxt;
     {
         if (!m_amulet)
         {
-            pline("%s is disintegrated!", Monnam(mon));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is disintegrated!", Monnam(mon));
             display_m_being_hit(mon, HIT_DISINTEGRATED, 0, 0UL, FALSE);
         }
         else
@@ -9288,7 +9288,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                             /* some armor was destroyed; no damage done */
                             play_sfx_sound_at_location(SFX_DISINTEGRATE, mon->mx, mon->my);
                             if (canseemon(mon))
-                                pline("%s %s is disintegrated!",
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s is disintegrated!",
                                       s_suffix(Monnam(mon)),
                                       distant_name(otmp, xname));
                             m_useup(mon, otmp);
@@ -10059,15 +10059,15 @@ short exploding_wand_typ;
 
             if (see_it)
             {
-                pline1(see_txt);
+                pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, see_txt);
                 newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
             }
             else if (sense_txt) 
             {
-                You1(sense_txt);
+                You_ex1(ATR_NONE, CLR_MSG_ATTENTION, sense_txt);
             } 
             else if (hear_txt)
-                You_hear1(hear_txt);
+                You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, hear_txt);
 
             if (createsplinters)
             {
@@ -10114,7 +10114,7 @@ short exploding_wand_typ;
             {
                 play_special_effect_at(SPECIAL_EFFECT_DISINTEGRATED, 0, x, y, FALSE);
                 play_sfx_sound_at_location(SFX_DISINTEGRATE, x, y);
-                pline_The("tree disintegrates!");
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "tree disintegrates!");
                 special_effect_wait_until_action(0);
                 special_effect_wait_until_end(0);
             }
@@ -10132,7 +10132,7 @@ short exploding_wand_typ;
             newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
             play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, x, y, FALSE);
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, x, y);
-            You("%s of smoke.", !Blind ? "see a puff" : "smell a whiff");
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s of smoke.", !Blind ? "see a puff" : "smell a whiff");
             special_effect_wait_until_action(0);
             special_effect_wait_until_end(0);
         }
@@ -10171,7 +10171,7 @@ boolean verbose;
             /* shop message says "you owe <shk> <$> for it!" so we need
                to precede that with a message explaining what "it" is */
             if(verbose)
-                You("fracture %s %s.", s_suffix(shkname(shkp)), xname(obj));
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "fracture %s %s.", s_suffix(shkname(shkp)), xname(obj));
             breakobj(obj, x, y, TRUE, FALSE); /* charges for shop goods */
         }
     }
@@ -11256,7 +11256,7 @@ int spl_otyp;
 
     if (mvitals[monindex].mvflags & MV_GONE || mvitals[monindex].born > 0)
     {
-        pline("However, nobody answers your call.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "However, nobody answers your call.");
         return;
     }
 
@@ -11284,7 +11284,7 @@ int spl_otyp;
     }
     else
     {
-        pline("However, nothing else happens");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "However, nothing else happens");
     }
     if (!Blind)
     {
@@ -11309,7 +11309,7 @@ int spl_otyp UNUSED;
 
     if ((mvitals[monindex].mvflags & MV_GONE) || mvitals[monindex].born > 0)
     {
-        pline("However, the music stops suddenly.");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "However, the music stops suddenly.");
         return;
     }
 
@@ -11340,7 +11340,7 @@ int spl_otyp UNUSED;
     }
     else
     {
-        pline("However, nothing else happens");
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "However, nothing else happens");
     }
 
 }

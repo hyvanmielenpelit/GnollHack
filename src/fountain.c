@@ -412,20 +412,20 @@ drinkfountain()
         switch (fate) 
         {
         case 19: /* Self-knowledge */
-            pline_The("water tingles in your mouth.");
-            You_feel("self-knowledgeable...");
+            pline_The_ex(ATR_NONE, CLR_MSG_POSITIVE, "water tingles in your mouth.");
+            You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "self-knowledgeable...");
             display_nhwindow(WIN_MESSAGE, FALSE);
             enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
             exercise(A_WIS, TRUE);
             pline_The("feeling subsides.");
             break;
         case 20: /* Foul water */
-            pline_The("water is foul!  You gag and vomit.");
+            pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "water is foul!  You gag and vomit.");
             morehungry(rn1(20, 11));
             vomit();
             break;
         case 21: /* Poisonous */
-            pline_The("water is contaminated!");
+            pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "water is contaminated!");
             if (Poison_resistance) {
                 pline("Perhaps it is runoff from the nearby %s farm.",
                       fruitname(FALSE));
@@ -437,21 +437,21 @@ drinkfountain()
             exercise(A_CON, FALSE);
             break;
         case 22: /* Fountain of snakes! */
-            pline_The("water tastes a bit slimy.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "water tastes a bit slimy.");
             if (zlevel > 8) {
                 dowatersnakes();
             }
             else
             {
-                You_hear("a snake hissing.");
+                You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a snake hissing.");
             }
             break;
         case 23: /* Water demon */
-            pline_The("water tastes bitter.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "water tastes bitter.");
             if (zlevel > 12) {
                 if (item_prevents_summoning(PM_WATER_DEMON)) 
                 {
-                    pline("You have a passing sensation of relief.");
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You have a passing sensation of relief.");
                 }
                 else
                 {
@@ -460,14 +460,14 @@ drinkfountain()
             }
             else
             {
-                You("feel as if something evil is watching you.");
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel as if something evil is watching you.");
             }
             break;
         case 24: /* Curse an item */
         {
             register struct obj *obj;
 
-            pline("This water's no good!");
+            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "This water's no good!");
             morehungry(rn1(20, 11));
             exercise(A_CON, FALSE);
             for (obj = invent; obj; obj = obj->nobj)
@@ -476,16 +476,16 @@ drinkfountain()
             break;
         }
         case 25: /* See invisible */
-            pline_The("water is tasteless.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "water is tasteless.");
             if (Blind) {
                 if (Invisib) {
-                    You("feel transparent.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel transparent.");
                 } else {
-                    You("feel very self-conscious.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel very self-conscious.");
                     pline("Then it passes.");
                 }
             } else {
-                You_see("an image of someone stalking you.");
+                You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "an image of someone stalking you.");
                 pline("But it disappears.");
             }
             HSee_invisible |= FROM_ACQUIRED;
@@ -493,30 +493,30 @@ drinkfountain()
             exercise(A_WIS, TRUE);
             break;
         case 26: /* See Monsters */
-            pline_The("water tingles in your mouth.");
+            pline_The_ex(ATR_NONE, CLR_MSG_POSITIVE, "water tingles in your mouth.");
             (void) monster_detect((struct obj *) 0, 0);
             exercise(A_WIS, TRUE);
             break;
         case 27: /* Find a gem in the sparkling waters. */
-            pline_The("water is hard.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "water is hard.");
             if (!FOUNTAIN_IS_LOOTED(u.ux, u.uy)) {
                 dofindgem();
                 break;
             }
             /*FALLTHRU*/
         case 28: /* Water Nymph */
-            pline_The("water tastes very sweet.");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "water tastes very sweet.");
             if (zlevel > 4) {
                 dowaternymph();
             }
             else
             {
                 if (Blind) {
-                    You("feel as if somebody is watching you.");
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel as if somebody is watching you.");
                     pline("But then it passes disappears.");
                 }
                 else {
-                    You_see("an image of someone stalking you.");
+                    You_see_ex(ATR_NONE, CLR_MSG_ATTENTION, "an image of someone stalking you.");
                     pline("But it disappears.");
                 }
             }
@@ -525,7 +525,7 @@ drinkfountain()
         {
             register struct monst *mtmp;
 
-            pline("This %s gives you bad breath!",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "This %s gives you bad breath!",
                   hliquid("water"));
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
                 if (DEADMONSTER(mtmp))
@@ -535,11 +535,11 @@ drinkfountain()
             break;
         }
         case 30: /* Gushing forth in this room */
-            pline_The("water suddenly starts bubbling.");
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "water suddenly starts bubbling.");
             dogushforth(TRUE);
             break;
         default:
-            pline("This tepid %s is tasteless.",
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "This tepid %s is tasteless.",
                   hliquid("water"));
             break;
         }

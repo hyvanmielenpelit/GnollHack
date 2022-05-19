@@ -991,25 +991,25 @@ boolean is_disintegrated;
         {
             play_sfx_sound_at_location(SFX_DISINTEGRATE, x2, y2);
             if (cansee(x, y) || cansee(x2, y2))
-                pline_The("drawbridge disintegrates!");
+                pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "drawbridge disintegrates!");
         }
         else
         {
             play_sfx_sound_at_location(SFX_DRAWBRIDGE_LOUD_SPLASH, x, y);
             if (lev1->typ == DRAWBRIDGE_UP) {
                 if (cansee(x2, y2))
-                    pline_The("portcullis of the drawbridge falls into the %s!",
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "portcullis of the drawbridge falls into the %s!",
                         lava ? hliquid("lava") : "moat");
                 else if (!Deaf)
-                    You_hear("a loud *SPLASH*!");
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a loud *SPLASH*!");
             }
             else 
             {
                 if (cansee(x, y))
-                    pline_The("drawbridge collapses into the %s!",
+                    pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "drawbridge collapses into the %s!",
                         lava ? hliquid("lava") : "moat");
                 else if (!Deaf)
-                    You_hear("a loud *SPLASH*!");
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a loud *SPLASH*!");
             }
         }
         full_location_transform(x, y, lava ? LAVAPOOL : MOAT, 0, 0, 0, 0, 0, lev1->floortyp, lev1->floorsubtyp, lev1->floorvartyp, FALSE, FALSE, 0, 0, FALSE);
@@ -1023,9 +1023,9 @@ boolean is_disintegrated;
     {
         play_sfx_sound_at_location(SFX_DRAWBRIDGE_LOUD_CRASH, x, y);
         if (cansee(x, y))
-            pline_The("drawbridge shatters!");
+            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "drawbridge shatters!");
         else
-            You_hear("a loud *CRASH*!");
+            You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a loud *CRASH*!");
 
         int trtyp = ((lev1->drawbridgemask & DB_ICE) ? ICE : GROUND);
         int trsubtyp = get_initial_location_subtype(trtyp);
@@ -1068,7 +1068,7 @@ boolean is_disintegrated;
         if (!automiss(etmp2)) 
         {
             if (e_inview)
-                pline("%s blown apart by flying debris.",
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s blown apart by flying debris.",
                       E_phrase(etmp2, "are"));
             killer.format = KILLED_BY_AN;
             Strcpy(killer.name, "exploding drawbridge");
@@ -1095,17 +1095,17 @@ boolean is_disintegrated;
             if (e_inview) 
             {
                 if (!is_u(etmp1) && Hallucination)
-                    pline("%s into some heavy metal!",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s into some heavy metal!",
                           E_phrase(etmp1, "get"));
                 else
-                    pline("%s hit by a huge chunk of metal!",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s hit by a huge chunk of metal!",
                           E_phrase(etmp1, "are"));
             } 
             else
             {
                 if (!Deaf && !is_u(etmp1) && !is_pool(x, y)) 
                 {
-                    You_hear("a crushing sound.");
+                    You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a crushing sound.");
                 }
                 else 
                 {

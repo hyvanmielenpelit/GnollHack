@@ -290,7 +290,7 @@ boolean remotely;
     if (!obj || obj->otyp != CORPSE || !is_rider(&mons[obj->corpsenm]))
         return FALSE;
 
-    pline("At your %s, the corpse suddenly moves...",
+    pline_ex(ATR_NONE, CLR_MSG_WARNING, "At your %s, the corpse suddenly moves...",
           remotely ? "attempted acquisition" : "touch");
     (void) revive_corpse(obj);
     exercise(A_WIS, FALSE);
