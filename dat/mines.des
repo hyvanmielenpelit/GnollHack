@@ -99,6 +99,7 @@ LEVEL: "minetn-1"
 FLAGS:mazelevel
 INIT_MAP:mines,':',' ',true,true,random,true
 GEOMETRY:center,center
+#         1         2         3         4
 #1234567890123456789012345678901234567890
 MAP
 :::::::::::::::::::::::::::::::::::::
@@ -194,6 +195,17 @@ OBJECT:('%',"corpse"),random,montype:"watchman"
 OBJECT:('%',"corpse"),random,montype:"watchman"
 OBJECT:('%',"corpse"),random,montype:"watch captain"
 OBJECT:('%',"corpse"),(14,13),montype:"smith"
+
+# Entry locations
+$entryplace = { (28,01),(35,13),(01,12),(05,01),(06,17),(20,17),(31,17) }
+SHUFFLE:$entryplace
+
+# Two entry places in the barricades -- One blocked by a boulder, and one secret door
+TERRAIN:$entryplace[0], '+'
+OBJECT:('`',"boulder"),$entryplace[0]
+OBJECT:('*',"rock"),$entryplace[0]
+
+TERRAIN:$entryplace[1], 'S'
 
 # Rubble!
 LOOP [9 + 2d5] {
