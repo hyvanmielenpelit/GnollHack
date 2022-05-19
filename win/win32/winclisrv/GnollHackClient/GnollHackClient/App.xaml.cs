@@ -81,14 +81,20 @@ namespace GnollHackClient
 
         protected override void OnStart()
         {
+            if(PlatformService != null)
+                PlatformService.OverrideAnimationDuration();
         }
 
         protected override void OnSleep()
         {
+            if (PlatformService != null)
+                PlatformService.RevertAnimationDuration();
         }
 
         protected override void OnResume()
         {
+            if (PlatformService != null)
+                PlatformService.OverrideAnimationDuration();
         }
 
         public static void LoadServices()

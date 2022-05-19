@@ -21,6 +21,7 @@ namespace GnollHackClient.Droid
     {
         public void CloseApplication()
         {
+            RevertAnimationDuration();
             MainActivity.CurrentMainActivity.Finish();
         }
         public bool IsModernAndroid()
@@ -40,7 +41,7 @@ namespace GnollHackClient.Droid
                 string path = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
                 string filePath = System.IO.Path.Combine(path, name);
 
-                if(System.IO.File.Exists(filePath))
+                if (System.IO.File.Exists(filePath))
                 {
                     System.IO.FileInfo file = new System.IO.FileInfo(filePath);
                     file.Delete();
@@ -48,6 +49,56 @@ namespace GnollHackClient.Droid
                 FileOutputStream fileOutputStream = new FileOutputStream(new Java.IO.File(filePath));
                 fileOutputStream.Write(data);
                 fileOutputStream.Close();
+            }
+        }
+
+        private bool _originalSet = false;
+        private float _originalAnimationDurationScale = 1.0f;
+        public void OverrideAnimationDuration()
+        {
+            var resolver = Android.App.Application.Context.ContentResolver;
+            var scaleName = Android.Provider.Settings.Global.AnimatorDurationScale;
+            float scale = Android.Provider.Settings.Global.GetFloat(resolver, scaleName, 0);
+
+            if (scale > 0)
+                return;
+
+            if (!_originalSet)
+            {
+                _originalAnimationDurationScale = scale;
+                _originalSet = true;
+            }
+
+            try
+            {
+                var classForName = JNIEnv.FindClass("android/animation/ValueAnimator");
+                var methodId = JNIEnv.GetStaticMethodID(classForName, "setDurationScale", "(F)V");
+
+                JNIEnv.CallStaticVoidMethod(classForName, methodId, new JValue(1f));
+            }
+            catch //(Exception ex)
+            {
+                // Log Error
+            }
+        }
+        public void RevertAnimationDuration()
+        {
+            if (_originalSet)
+            {
+                try
+                {
+                    var classForName = JNIEnv.FindClass("android/animation/ValueAnimator");
+                    var methodId = JNIEnv.GetStaticMethodID(classForName, "setDurationScale", "(F)V");
+
+                    JNIEnv.CallStaticVoidMethod(classForName, methodId, new JValue(_originalAnimationDurationScale));
+                }
+                catch //(Exception ex)
+                {
+                    // Log Error
+                }
+
+                _originalSet = false;
+                _originalAnimationDurationScale = 1.0f;
             }
         }
     }

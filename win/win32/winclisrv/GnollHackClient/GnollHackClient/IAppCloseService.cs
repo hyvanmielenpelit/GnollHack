@@ -9,5 +9,7 @@ namespace GnollHackClient
         void CloseApplication();
         bool IsModernAndroid();
         void SaveFileToDownloads(byte[] data, string name);
+        void OverrideAnimationDuration();
+        void RevertAnimationDuration();
     }
 }
