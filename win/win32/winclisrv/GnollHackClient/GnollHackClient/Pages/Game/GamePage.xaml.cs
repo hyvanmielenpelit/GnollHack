@@ -805,27 +805,27 @@ namespace GnollHackClient.Pages.Game
             uint mainAnimationLength = 20; // GHConstants.MainCanvasAnimationTime / ClientUtils.GetMainCanvasAnimationInterval(MapRefreshRate);
             Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, mainAnimationLength);
             canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: GHConstants.MainCanvasAnimationTime, 
-                rate: ClientUtils.GetMainCanvasAnimationInterval(MapRefreshRate), repeat: () => MainGrid.IsVisible);
+                rate: ClientUtils.GetMainCanvasAnimationInterval(MapRefreshRate), repeat: () => true /* MainGrid.IsVisible */);
         }
 
         private void StartCommandCanvasAnimation()
         {
             Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
             commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
-                rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => MoreCommandsGrid.IsVisible);
+                rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => true /* MoreCommandsGrid.IsVisible */);
         }
 
         private void StartMenuCanvasAnimation()
         {
             Animation commandAnimation = new Animation(v => MenuCanvas.GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
             commandAnimation.Commit(MenuCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
-                rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => MenuGrid.IsVisible);
+                rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => true /* MenuGrid.IsVisible */);
         }
         private void StartTextCanvasAnimation()
         {
             Animation commandAnimation = new Animation(v => TextCanvas.GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
             commandAnimation.Commit(TextCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
-                rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => TextGrid.IsVisible);
+                rate: ClientUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => true /* TextGrid.IsVisible */);
         }
 
         private bool StartingPositionsSet { get; set; }
