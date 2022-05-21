@@ -2305,6 +2305,12 @@ struct mkroom *croom;
         otmp->elemental_enchantment = (uchar)o->elemental_enchantment;
     if (o->exceptionality >= 0)
         otmp->exceptionality = (uchar)o->exceptionality;
+
+    if (o->mythic_type >= 0 && can_obj_have_mythic(otmp) && otmp->oartifact == 0)
+    {
+        randomize_mythic_quality(otmp, o->mythic_type, &otmp->mythic_prefix, &otmp->mythic_suffix);
+    }
+
     if (o->mythic_prefix >= 0)
         otmp->mythic_prefix = (uchar)o->mythic_prefix;
     if (o->mythic_suffix >= 0)
@@ -3897,6 +3903,7 @@ struct sp_coder *coder;
     tmpobj.trapped = -1;
     tmpobj.elemental_enchantment = -1; /* random */
     tmpobj.exceptionality = -1;  /* random */
+    tmpobj.mythic_type = -1; /* random */
     tmpobj.mythic_prefix = -1;  /* random */
     tmpobj.mythic_suffix = -1;  /* random */
     tmpobj.age = -1;  /* not set */
@@ -4040,6 +4047,10 @@ struct sp_coder *coder;
         case SP_O_V_EXCEPTIONALITY:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpobj.exceptionality = OV_i(parm);
+            break;
+        case SP_O_V_MYTHIC_TYPE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.mythic_type = OV_i(parm);
             break;
         case SP_O_V_MYTHIC_PREFIX:
             if (OV_typ(parm) == SPOVAR_INT)

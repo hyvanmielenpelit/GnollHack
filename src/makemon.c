@@ -1233,7 +1233,7 @@ register struct monst *mtmp;
         }
         break;
     case S_DOG:
-        if(!rn2(7))
+        if(!rn2(20))
             (void)mon_gets_noinit_item(mtmp, BONE, 1);
         
         break;
