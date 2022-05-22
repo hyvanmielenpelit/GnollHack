@@ -1395,7 +1395,9 @@ struct obj *obj;
         if (do_react)
         {
             if (vis)
-                pline("%s is frightened by its reflection.", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is frightened by its reflection.", Monnam(mtmp));
+
+            play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
             monflee(mtmp, d(2, 4), FALSE, FALSE);
         }
     }
@@ -1430,7 +1432,7 @@ struct obj* obj;
     if (obj->charges <= 0)
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        You("raise %s high, but nothing happens.", yname(obj));
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "raise %s high, but nothing happens.", yname(obj));
         return 0;
     }
 
@@ -1438,13 +1440,16 @@ struct obj* obj;
 
     if ((u.ualign.type != A_CHAOTIC
         && (is_demon(youmonst.data) || is_undead(youmonst.data)))
-        || u.ugangr > 6 || Inhell) { /* "Die, mortal!" */
-        You("raise %s high, but nothing happens.", yname(obj));
+        || u.ugangr > 6 || Inhell) 
+    { 
+        play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "raise %s high, but nothing happens.", yname(obj));
         exercise(A_WIS, FALSE);
         return 0;
     }
 
-    You("raise %s high.", yname(obj));
+    play_simple_player_sound(MONSTER_SOUND_TYPE_CAST);
+    You_ex(ATR_NONE, CLR_MSG_HINT, "raise %s high.", yname(obj));
     exercise(A_WIS, TRUE);
     (void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, 0, ZAPPED_WAND, uthitm, uthito,
         &obj, &youmonst, TRUE, FALSE);
@@ -1500,10 +1505,12 @@ struct monst* origmonst;
         boolean turn_success = rn2(100) < chance;
         if (!(mtmp->data->geno & G_UNIQ) && turn_success)
         {
-            pline("%s brightly before %s!", Yobjnam2(otmp, "shine"), mon_nam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "%s brightly before %s!", Yobjnam2(otmp, "shine"), mon_nam(mtmp));
             if (!DEADMONSTER(mtmp))
+            {
+                play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
                 monflee(mtmp, 200 + rnd(100), FALSE, TRUE);
-
+            }
 #if 0
             if (!otmp->cursed)
             {
@@ -1549,7 +1556,7 @@ struct monst* origmonst;
     }
     else if (is_demon(mtmp->data))
     {
-        pline("%s no effect on %s.", Yobjnam2(otmp, "have"), mon_nam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s no effect on %s.", Yobjnam2(otmp, "have"), mon_nam(mtmp));
     }
     else
     {

@@ -616,20 +616,20 @@ boolean fleemsg;
             if (!mon_can_move(mtmp) || !mtmp->data->mmove)
             {
                 if(is_sleeping(mtmp) && !is_paralyzed(mtmp))
-                    pline("%s seems to flinch.", Adjmonnam(mtmp, "sleeping"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems to flinch.", Adjmonnam(mtmp, "sleeping"));
                 else if (is_paralyzed(mtmp) && mtmp->mcanmove)
-                    pline("%s seems to flinch.", Adjmonnam(mtmp, "paralyzed"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems to flinch.", Adjmonnam(mtmp, "paralyzed"));
                 else
-                    pline("%s seems to flinch.", Adjmonnam(mtmp, "immobile"));
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s seems to flinch.", Adjmonnam(mtmp, "immobile"));
             } 
             else if (flees_light(mtmp)) {
                 if (rn2(10) || Deaf)
-                    pline("%s flees from the painful light of %s.",
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flees from the painful light of %s.",
                           Monnam(mtmp), bare_artifactname(uwep));
                 else
-                    verbalize("Bright light!");
+                    verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Bright light!");
             } else
-                pline("%s turns to flee.", Monnam(mtmp));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns to flee.", Monnam(mtmp));
         }
         mtmp->mflee = 1;
     }

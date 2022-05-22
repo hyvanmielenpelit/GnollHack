@@ -1501,6 +1501,7 @@ boolean* obj_destroyed;
                 case CLOVE_OF_GARLIC: /* no effect against demons */
                     if (is_undead(mdat) || is_vampshifter(mon)) 
                     {
+                        play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mon->mx, mon->my);
                         monflee(mon, d(2, 4), FALSE, TRUE);
                     }
                     damage = 1;
@@ -4704,7 +4705,10 @@ struct obj *otmp; /* source of flash */
                 if (!context.mon_moving)
                     setmangry(mtmp, TRUE);
                 if (tmp < 9 && !mtmp->isshk && rn2(4))
+                {
+                    play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
                     monflee(mtmp, rn2(4) ? rnd(100) : 0, FALSE, TRUE);
+                }
 
                 if (tmp < 3)
                     increase_mon_property(mtmp, BLINDED, rnd(1 + 50 / tmp));

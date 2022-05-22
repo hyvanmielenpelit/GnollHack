@@ -820,7 +820,10 @@ struct monst* origmonst;
             special_effect_wait_until_action(0);
             (void)inflict_spell_damage(mtmp, otmp, origmonst, dmg, AD_CLRC, TELL);
             if (!DEADMONSTER(mtmp))
+            {
+                play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
                 monflee(mtmp, duration, FALSE, TRUE);
+            }
             special_effect_wait_until_end(0);
         }
         break;
@@ -862,7 +865,10 @@ struct monst* origmonst;
             if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE, dmg, AD_CLRC, TELL_LETHAL_STYLE))
             {
                 if (!DEADMONSTER(mtmp))
+                {
+                    play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
                     monflee(mtmp, duration, FALSE, TRUE);
+                }
             }
             special_effect_wait_until_end(0);
         }
@@ -881,7 +887,10 @@ struct monst* origmonst;
             if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, origmonst, TRUE, dmg, AD_CLRC, TELL_LETHAL_STYLE))
             {
                 if (!DEADMONSTER(mtmp))
+                {
+                    play_sfx_sound_at_location(SFX_ACQUIRE_FEAR, mtmp->mx, mtmp->my);
                     monflee(mtmp, duration, FALSE, TRUE);
+                }
             }
             special_effect_wait_until_end(0);
         }
