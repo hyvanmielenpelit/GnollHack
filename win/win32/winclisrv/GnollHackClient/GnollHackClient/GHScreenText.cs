@@ -177,21 +177,22 @@ namespace GnollHackClient
         {
             switch(_data.style)
             {
-                case 0:
+                case (int)screen_text_types.SCREEN_TEXT_GENERAL:
                     return ClientUtils.NHColor2SKColor(_data.color, _data.attr);
                 case (int)screen_text_types.SCREEN_TEXT_ENTER_DUNGEON_LEVEL:
                     return TransparentGold;
-                case 2:
+                case (int)screen_text_types.SCREEN_TEXT_GAIN_LEVEL:
                     return TransparentGold;
-                case 3:
+                case (int)screen_text_types.SCREEN_TEXT_SAVING:
                     return SKColors.Beige;
-                case 4:
+                case (int)screen_text_types.SCREEN_TEXT_QUIT:
+                case (int)screen_text_types.SCREEN_TEXT_DEAD:
                     return SKColors.Red;
-                case 5:
+                case (int)screen_text_types.SCREEN_TEXT_ESCAPED:
                     return SKColors.White;
-                case 6:
+                case (int)screen_text_types.SCREEN_TEXT_ASCENDED:
                     return SKColors.LightBlue;
-                case 7:
+                case (int)screen_text_types.SCREEN_TEXT_SPECIAL_END:
                     return SKColors.Pink;
                 case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
                     return SKColors.Yellow;
