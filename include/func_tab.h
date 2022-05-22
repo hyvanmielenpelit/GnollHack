@@ -14,11 +14,12 @@
 #define WIZMODECMD          0x0004 /* wizard-mode command */
 #define GENERALCMD          0x0008 /* general command, does not take game time */
 #define CMD_NOT_AVAILABLE   0x0010 /* recognized but non-functional (!SHELL,&c) */
-#define INCMDMENU            0x0020 /* Displayed in command menu under M('c') */
-#define INSPELLMENU            0x0040 /* Displayed in spell menu under '+' */
-#define SINGLE_OBJ_CMD_GENERAL        0x0080 /* Displayed in inventory for single objects under general commands */
+#define INCMDMENU                   0x0020 /* Displayed in command menu under M('c') */
+#define INSPELLMENU                 0x0040 /* Displayed in spell menu under '+' */
+#define SINGLE_OBJ_CMD_GENERAL      0x0080 /* Displayed in inventory for single objects under general commands */
 #define SINGLE_OBJ_CMD_SPECIFIC     0x0100 /* Displayed in inventory for single objects under specific commands */
 #define SINGLE_OBJ_CMD_INFO         0x0200 /* Displayed in inventory for single objects under info commands */
+#define CASUALMODECMD       0x0400 /* casual/explore/wizard-mode command */
 
 struct ext_func_tab {
     uchar key;

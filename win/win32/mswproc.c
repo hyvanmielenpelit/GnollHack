@@ -1949,6 +1949,7 @@ mswin_get_ext_cmd()
                          oindex++) {
                         if ((extcmdlist[oindex].flags & AUTOCOMPLETE)
                             && !(!wizard && (extcmdlist[oindex].flags & WIZMODECMD))
+                            && !(!wizard && !discover && !CasualMode && (extcmdlist[oindex].flags & CASUALMODECMD))
                             && !strncmpi(cmd, extcmdlist[oindex].ef_txt, len)) {
                             if (com_index == -1) /* no matches yet */
                                 com_index = oindex;

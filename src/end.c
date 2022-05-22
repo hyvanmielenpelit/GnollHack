@@ -1913,6 +1913,9 @@ int how;
 
     topten(how, endtime);
 
+    if (how == ASCENDED && CasualMode && has_existing_save_file)
+        (void)delete_savefile(); /* The casual mode character gets deleted only upon ascension */
+
     if (have_windows)
         exit_nhwindows((char*)0);
 

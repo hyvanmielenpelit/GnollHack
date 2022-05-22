@@ -151,10 +151,13 @@ dosave0()
         if (fd > 0) {
             (void) nhclose(fd);
             clear_nhwindow(WIN_MESSAGE);
-            There("seems to be an old save file.");
-            if (yn_query("Overwrite the old file?") == 'n') {
-                nh_compress(fq_save);
-                return 0;
+            if (!CasualMode)
+            {
+                There("seems to be an old save file.");
+                if (yn_query("Overwrite the old file?") == 'n') {
+                    nh_compress(fq_save);
+                    return 0;
+                }
             }
         }
     }

@@ -262,6 +262,7 @@ namespace GnollHackClient.Pages.Game
         private SKBitmap _orbGlassBitmap;
 
         private SKBitmap _statusWizardBitmap;
+        private SKBitmap _statusCasualBitmap;
         private SKBitmap _statusModernBitmap;
 
         private SKBitmap _statusDifficultyBitmap;
@@ -4468,6 +4469,15 @@ namespace GnollHackClient.Pages.Game
                             target_height = target_scale * _statusWizardBitmap.Height;
                             statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
                             canvas.DrawBitmap(_statusWizardBitmap, statusDest, textPaint);
+                            curx += target_width;
+                            curx += innerspacing;
+                        }
+                        else if (valtext.StartsWith("C"))
+                        {
+                            target_width = target_scale * _statusCasualBitmap.Width;
+                            target_height = target_scale * _statusCasualBitmap.Height;
+                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                            canvas.DrawBitmap(_statusCasualBitmap, statusDest, textPaint);
                             curx += target_width;
                             curx += innerspacing;
                         }
@@ -9416,6 +9426,10 @@ namespace GnollHackClient.Pages.Game
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-wizard-mode.png"))
             {
                 _statusWizardBitmap = SKBitmap.Decode(stream);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-casual-mode.png"))
+            {
+                _statusCasualBitmap = SKBitmap.Decode(stream);
             }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.status-modern-mode.png"))
             {

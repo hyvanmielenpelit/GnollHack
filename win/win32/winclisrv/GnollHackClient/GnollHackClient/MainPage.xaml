@@ -107,12 +107,6 @@
         <StackLayout x:Name="StartButtonLayout" Opacity="0" IsVisible="false"
               HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.5, 0.90, AutoSize, AutoSize"
               AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300">
-            <!--<Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>-->
             <Grid x:Name="classicModeGrid" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -129,6 +123,22 @@
                 </local:CustomLabel>
                 <Switch x:Name="classicModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="ClassicModeSwitch_Toggled"  />
             </Grid>
+            <Grid x:Name="casualModeGrid" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <local:CustomLabel x:Name="casualModeLabel" Text="Casual Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                                   WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
+                    <local:CustomLabel.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="CasualTapGestureRecognizer_Tapped"/>
+                    </local:CustomLabel.GestureRecognizers>
+                </local:CustomLabel>
+                <Switch x:Name="casualModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="CasualModeSwitch_Toggled"  />
+            </Grid>
             <Grid x:Name="wizardModeGrid" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -137,7 +147,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <local:CustomLabel x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                <local:CustomLabel x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="LightBlue" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
                     <local:CustomLabel.GestureRecognizers>
                         <TapGestureRecognizer Tapped="WizTapGestureRecognizer_Tapped"/>

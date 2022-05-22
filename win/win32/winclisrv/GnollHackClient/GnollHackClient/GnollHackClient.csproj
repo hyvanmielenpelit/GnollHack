@@ -159,6 +159,7 @@
     <None Remove="Assets\UI\stairs-down.png" />
     <None Remove="Assets\UI\stairs-up.png" />
     <None Remove="Assets\UI\status-ac.png" />
+    <None Remove="Assets\UI\status-casual-mode.png" />
     <None Remove="Assets\UI\status-difficulty-average.png" />
     <None Remove="Assets\UI\status-difficulty-easy.png" />
     <None Remove="Assets\UI\status-difficulty-expert.png" />
@@ -351,6 +352,7 @@
     <EmbeddedResource Include="Assets\UI\stairs-down.png" />
     <EmbeddedResource Include="Assets\UI\stairs-up.png" />
     <EmbeddedResource Include="Assets\UI\status-ac.png" />
+    <EmbeddedResource Include="Assets\UI\status-casual-mode.png" />
     <EmbeddedResource Include="Assets\UI\status-difficulty-average.png" />
     <EmbeddedResource Include="Assets\UI\status-difficulty-easy.png" />
     <EmbeddedResource Include="Assets\UI\status-difficulty-expert.png" />

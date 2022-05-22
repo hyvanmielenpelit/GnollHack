@@ -390,6 +390,11 @@ doextcmd(VOID_ARGS)
             You("can't do that.");
             return 0;
         }
+        if (!(wizard || discover || CasualMode) && (extcmdlist[idx].flags & CASUALMODECMD)) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You("can't do that.");
+            return 0;
+        }
         if (iflags.menu_requested && !accept_menu_prefix(func)) {
             pline("'%s' prefix has no effect for the %s command.",
                   visctrl(Cmd.spkeys[NHKF_REQMENU]),
@@ -413,10 +418,12 @@ doextlist(VOID_ARGS)
     anything any;
     menu_item* selected = (menu_item*)0;
     int n, pass;
-    int menumode = 0, menushown[2], onelist = 0;
+    int menumode = 0, menushown[3], onelist = 0;
     boolean redisplay = TRUE, search = FALSE;
     static const char *headings[] = { "Extended commands",
-                                      "Debugging Extended Commands" };
+                                      "Casual Extended Commands",
+                                      "Debugging Extended Commands",
+                                      };
 
     searchbuf[0] = '\0';
     menuwin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_DISPLAY_FILE, NO_GLYPH, zerocreatewindowinfo);
@@ -472,15 +479,17 @@ doextlist(VOID_ARGS)
         any = zeroany;
         add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE,
                  " ", MENU_UNSELECTED);
-        menushown[0] = menushown[1] = 0;
+        menushown[0] = menushown[1] = menushown[2] = 0;
         n = 0;
-        for (pass = 0; pass <= 1; ++pass) {
-            /* skip second pass if not in wizard mode or wizard mode
+        for (pass = 0; pass <= 2; ++pass) {
+            /* skip second/third pass if not in wizard mode or wizard mode
                commands are being integrated into a single list */
-            if (pass == 1 && (onelist || !wizard))
+            if (pass == 1 && (onelist || !(wizard || discover || CasualMode)))
+                continue;
+            if (pass == 2 && (onelist || !wizard))
                 break;
             for (efp = extcmdlist; efp->ef_txt; efp++) {
-                int wizc;
+                int wizc, casualc;
 
                 if ((efp->flags & CMD_NOT_AVAILABLE) != 0)
                     continue;
@@ -501,9 +510,14 @@ doextlist(VOID_ARGS)
                    when showing two sections, skip wizard mode commands
                    in pass==0 and skip other commands in pass==1 */
                 wizc = (efp->flags & WIZMODECMD) != 0;
+                casualc = (efp->flags & CASUALMODECMD) != 0;
                 if (wizc && !wizard)
                     continue;
-                if (!onelist && pass != wizc)
+                if (casualc && !(wizard || discover || CasualMode))
+                    continue;
+                if (!onelist && ((pass != 1 && casualc) || (pass == 1 && !casualc)))
+                    continue;
+                if (!onelist && ((pass != 2 && wizc) || (pass == 2 && !wizc)))
                     continue;
 
                 /* We're about to show an item, have we shown the menu yet?
@@ -1513,7 +1527,7 @@ enter_explore_mode(VOID_ARGS)
         if (paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidQuit, "Confirm Explore Mode",
                            "Do you want to enter explore mode?")) {
             clear_nhwindow(WIN_MESSAGE);
-            You("are now in non-scoring explore mode.");
+            You_ex(ATR_NONE, CLR_MSG_HINT, "are now in non-scoring explore mode.");
             discover = TRUE;
             context.botl = context.botlx = 1;
         } else {
@@ -5082,6 +5096,33 @@ int msgflag;          /* for variant message phrasing */
     }
 }
 
+int
+dodeletesavedgame(VOID_ARGS)
+{
+    if (wizard || discover || CasualMode)
+    {
+        boolean has_existing_save_file = check_existing_save_file();
+        if (has_existing_save_file)
+        {
+            if (yn_query_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Delete Save File", "Are you sure to delete the save file?") == 'y')
+            {
+                delete_savefile();
+                pline("Save file has been deleted.");
+            }
+            else
+                pline(Never_mind);
+        }
+        else
+        {
+            pline("There is no save file to delete.");
+        }
+    }
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(dodeletesavedgame)));
+
+    return 0;
+}
+
 /* KMH, #conduct
  * (shares enlightenment's tense handling)
  */
@@ -5236,6 +5277,8 @@ struct ext_func_tab extcmdlist[] = {
             docommandmenu, IFBURIED | GENERALCMD | AUTOCOMPLETE },
     { M(3) /*M('c')*/, "conduct", "list voluntary challenges you have maintained",
             doconduct, IFBURIED | AUTOCOMPLETE },
+    { M(6), "deletesavedgame", "delete saved game if it exists",
+            dodeletesavedgame, IFBURIED | CASUALMODECMD | AUTOCOMPLETE },
     { C('g'), "dig", "dig the ground", dodig, INCMDMENU },
     { M('d'), "dip", "dip an object into something", dodip, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_GENERAL, 0, getobj_allowall, "dip" },
     { '>', "down", "go down a staircase", dodown },
@@ -5752,14 +5795,14 @@ dokeylist(VOID_ARGS)
     if (dokeylist_putcmds(datawin, TRUE, GENERALCMD, WIZMODECMD, keys_used)) {
         putstr(datawin, 0, "");
         putstr(datawin, 0, "General commands:");
-        (void) dokeylist_putcmds(datawin, FALSE, GENERALCMD, WIZMODECMD,
+        (void) dokeylist_putcmds(datawin, FALSE, GENERALCMD, WIZMODECMD | CASUALMODECMD,
                                  keys_used);
     }
 
     if (dokeylist_putcmds(datawin, TRUE, 0, WIZMODECMD, keys_used)) {
         putstr(datawin, 0, "");
         putstr(datawin, 0, "Game commands:");
-        (void) dokeylist_putcmds(datawin, FALSE, 0, WIZMODECMD, keys_used);
+        (void) dokeylist_putcmds(datawin, FALSE, 0, WIZMODECMD | CASUALMODECMD, keys_used);
     }
 
     if (wizard
@@ -5767,6 +5810,13 @@ dokeylist(VOID_ARGS)
         putstr(datawin, 0, "");
         putstr(datawin, 0, "Wizard-mode commands:");
         (void) dokeylist_putcmds(datawin, FALSE, WIZMODECMD, 0, keys_used);
+    }
+
+    if ((wizard || discover || CasualMode)
+        && dokeylist_putcmds(datawin, TRUE, CASUALMODECMD, 0, keys_used)) {
+        putstr(datawin, 0, "");
+        putstr(datawin, 0, "Casual-mode commands:");
+        (void)dokeylist_putcmds(datawin, FALSE, CASUALMODECMD, 0, keys_used);
     }
 
     display_nhwindow(datawin, FALSE);
@@ -6956,7 +7006,13 @@ register char *cmd;
                 You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that!");
                 res = 0;
             }
-            else if (u.uburied && !(tlist->flags & IFBURIED)) 
+            else if (!(wizard || discover || CasualMode) && (tlist->flags & CASUALMODECMD))
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
+                You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that!");
+                res = 0;
+            }
+            else if (u.uburied && !(tlist->flags & IFBURIED))
             {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "do that while you are buried!");

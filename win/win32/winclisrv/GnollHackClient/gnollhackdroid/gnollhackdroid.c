@@ -251,7 +251,8 @@ const char** LibGetExtendedCommands()
     while (extcmdlist[i].ef_txt != 0)
     {
         if ((extcmdlist[i].flags & AUTOCOMPLETE) != 0 &&
-            (wizard || (extcmdlist[i].flags & WIZMODECMD) == 0)
+            (wizard || (extcmdlist[i].flags & WIZMODECMD) == 0) &&
+            (wizard || discover || CasualMode || (extcmdlist[i].flags & CASUALMODECMD) == 0)
            )
         {
             extcmdnames[j] = extcmdlist[i].ef_txt;

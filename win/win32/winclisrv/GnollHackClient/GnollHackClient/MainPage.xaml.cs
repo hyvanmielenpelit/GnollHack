@@ -91,6 +91,7 @@ namespace GnollHackClient
             StartServerGrid.IsVisible = App.ServerGameAvailable;
 
             classicModeSwitch.IsToggled = App.ClassicMode;
+            casualModeSwitch.IsToggled = App.CasualMode;
 
             UpdateSponsor();
 
@@ -1072,6 +1073,20 @@ namespace GnollHackClient
             }
         }
 
+        private void CasualModeSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            App.CasualMode = casualModeSwitch.IsToggled;
+            Preferences.Set("CasualMode", App.CasualMode);
+            if (casualModeSwitch.IsToggled)
+            {
+                wizardModeSwitch.IsToggled = false;
+            }
+            else
+            {
+
+            }
+        }
+
         private enum popup_style
         {
             GeneralDialog = 0,
@@ -1100,7 +1115,17 @@ namespace GnollHackClient
             PopupCheckBoxLayout.IsVisible = false;
             PopupTitleLabel.TextColor = Color.White;
             PopupTitleLabel.Text = "Classic Mode";
-            PopupLabel.Text = "In the Classic Mode, death is permanent. Otherwise, your god will revive you at the starting altar, or at another special location.";
+            PopupLabel.Text = "In the Classic Mode, death is permanent. Otherwise, your god will revive you at the starting altar, or at another special location. Each such revival will reduce your game score.";
+            PopupGrid.IsVisible = true;
+        }
+
+        private void CasualTapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            _popupStyle = popup_style.GeneralDialog;
+            PopupCheckBoxLayout.IsVisible = false;
+            PopupTitleLabel.TextColor = Color.White;
+            PopupTitleLabel.Text = "Casual Mode";
+            PopupLabel.Text = "Casual Mode is a non-scoring game mode in which your saved games will not be deleted after loading, enabling you to load them again after quitting or dying.";
             PopupGrid.IsVisible = true;
         }
 
@@ -1119,6 +1144,7 @@ namespace GnollHackClient
             if (wizardModeSwitch.IsToggled)
             {
                 classicModeSwitch.IsToggled = true;
+                casualModeSwitch.IsToggled = false;
             }
             else
             {

@@ -764,7 +764,8 @@ namespace GnollHackClient.Droid
             string filesdir = GetGnollHackPath();
             ulong runflags = (ulong)(clientGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
                 (ulong)(App.FullVersionMode ? RunGnollHackFlags.FullVersion : 0) |
-                (ulong)(App.ClassicMode ? 0 : RunGnollHackFlags.ModernMode);
+                (ulong)(App.ClassicMode ? 0 : RunGnollHackFlags.ModernMode) |
+                (ulong)(App.CasualMode ? RunGnollHackFlags.CasualMode : 0);
             string lastusedplname = Preferences.Get("LastUsedPlayerName", "");
 
             return RunGnollHack(
