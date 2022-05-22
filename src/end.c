@@ -335,7 +335,8 @@ done2()
 {
     if (iflags.debug_fuzzer)
         return 0;
-    if (!paranoid_query_ex(ATR_NONE, NO_COLOR, ParanoidQuit, (char*)0, "Really quit?")) {
+    if (!paranoid_query_ex(ATR_NONE, CLR_MSG_NEGATIVE, ParanoidQuit, "Confirm Quit", 
+        wizard || discover ? "Really quit?" : "This will end the game and delete your character! Are you sure to quit?")) {
 #ifndef NO_SIGNAL
         (void) signal(SIGINT, (SIG_RET_TYPE) done1);
 #endif
@@ -1418,6 +1419,13 @@ int how;
         clr = CLR_MAGENTA;
         break;
     case QUIT:
+        if (!wizard && !discover)
+        {
+            endtext = "You have quit.";
+            screentextstyle = SCREEN_TEXT_QUIT;
+            clr = CLR_RED;
+        }
+        break;
     default:
         break;
     }

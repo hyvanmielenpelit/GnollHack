@@ -103,6 +103,7 @@ namespace GnollHackClient
                 case (int)screen_text_types.SCREEN_TEXT_DEAD:
                 case (int)screen_text_types.SCREEN_TEXT_ESCAPED:
                 case (int)screen_text_types.SCREEN_TEXT_ASCENDED:
+                case (int)screen_text_types.SCREEN_TEXT_QUIT:
                     return 0.60f;
                 default:
                     return 0.70f;
@@ -121,6 +122,7 @@ namespace GnollHackClient
                 case (int)screen_text_types.SCREEN_TEXT_DEAD:
                 case (int)screen_text_types.SCREEN_TEXT_ESCAPED:
                 case (int)screen_text_types.SCREEN_TEXT_ASCENDED:
+                case (int)screen_text_types.SCREEN_TEXT_QUIT:
                     return -0.20f;
                 case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
                     return -0.20f;

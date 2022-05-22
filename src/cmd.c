@@ -1510,7 +1510,7 @@ enter_explore_mode(VOID_ARGS)
 #endif
         pline_ex(ATR_NONE, CLR_MSG_WARNING,
         "Beware!  From explore mode there will be no return to normal game.");
-        if (paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidQuit, (char*)0,
+        if (paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidQuit, "Confirm Explore Mode",
                            "Do you want to enter explore mode?")) {
             clear_nhwindow(WIN_MESSAGE);
             You("are now in non-scoring explore mode.");
