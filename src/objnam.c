@@ -4809,16 +4809,6 @@ boolean is_wiz_wish;
             return (struct obj*)&zeroobj;
         }
 
-        if (!BSTRCMPI(bp, p - 4, "tree")) {
-            int subtype = get_initial_location_subtype(TREE);
-            int vartype = get_initial_location_vartype(TREE, subtype);
-            create_simple_location(x, y, TREE, subtype, vartype, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].vartyp : levl[x][y].floorvartyp, FALSE);
-            pline("A tree.");
-            newsym(x, y);
-            block_vision_and_hearing_at_point(x, y);
-            return (struct obj *) &zeroobj;
-        }
-
         for (i = 1; i < MAX_TREE_SUBTYPES; i++)
         {
             if (!tree_subtype_definitions[i].description)
@@ -4840,6 +4830,18 @@ boolean is_wiz_wish;
             }
 
         }
+
+        if (!BSTRCMPI(bp, p - 4, "tree")) {
+            int subtype = get_initial_location_subtype(TREE);
+            int vartype = get_initial_location_vartype(TREE, subtype);
+            create_simple_location(x, y, TREE, subtype, vartype, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].vartyp : levl[x][y].floorvartyp, FALSE);
+            pline("A tree.");
+            newsym(x, y);
+            block_vision_and_hearing_at_point(x, y);
+            return (struct obj*)&zeroobj;
+        }
+
+
 
         if (!BSTRCMPI(bp, p - 4, "bars")) {
             create_simple_location(x, y, IRONBARS, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].vartyp : levl[x][y].floorvartyp, FALSE);
