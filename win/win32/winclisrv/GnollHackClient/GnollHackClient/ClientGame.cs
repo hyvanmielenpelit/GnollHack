@@ -51,6 +51,8 @@ namespace GnollHackClient
             set { lock (_characterNameLock) { _characterName = value; } }
         }
         public bool WizardMode { get { return _gamePage.EnableWizardMode; } }
+        public bool CasualMode { get { return _gamePage.EnableCasualMode; } }
+        public bool ModernMode { get { return _gamePage.EnableModernMode; } }
 
         public ClientGame(GamePage gamePage)
         {

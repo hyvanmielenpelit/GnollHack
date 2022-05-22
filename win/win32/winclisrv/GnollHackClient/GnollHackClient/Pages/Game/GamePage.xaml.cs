@@ -450,6 +450,10 @@ namespace GnollHackClient.Pages.Game
         private bool _enableCasualMode = false;
         public bool EnableCasualMode { get { lock (_enableCasualModeLock) { return _enableCasualMode; } } set { lock (_enableCasualModeLock) { _enableCasualMode = value; } } }
 
+        private object _enableModernModeLock = new object();
+        private bool _enableModernMode = false;
+        public bool EnableModernMode { get { lock (_enableModernModeLock) { return _enableModernMode; } } set { lock (_enableModernModeLock) { _enableModernMode = value; } } }
+
         private List<AddContextMenuData> _contextMenuData = new List<AddContextMenuData>();
 
         private bool _useMapBitmap = false;

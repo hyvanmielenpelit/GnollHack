@@ -59,6 +59,7 @@ namespace GnollHackClient
             var gamePage = new GamePage(this);
             gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
             gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
+            gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
             await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
             gamePage.StartGame();
         }
