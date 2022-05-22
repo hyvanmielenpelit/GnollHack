@@ -1143,7 +1143,10 @@ namespace GnollHackCommon
         public const int MaxObjectsDrawn = 12;
         public const int OBJECT_PILE_START_HEIGHT = 2;
         public const int OBJECT_PILE_HEIGHT_DIFFERENCE = 2;
+        public const float MinimumMapMiniRelativeFontSize = 0.5f;
+        public const float MaximumMapMiniRelativeFontSize = 2.0f;
         public const float MinimumMapFontSize = 4.0f;
+        public const float MaximumMapFontSize = 500.0f;
         public const float MapFontDefaultSize = 72.0f;
         public const float MapFontRelativeAlternateSize = 7.0f / 16.0f;
         public const int DefaultMessageRows = 5;
