@@ -446,6 +446,10 @@ namespace GnollHackClient.Pages.Game
         private bool _enableWizardMode = false;
         public bool EnableWizardMode { get { lock (_enableWizardModeLock) { return _enableWizardMode; } } set { lock (_enableWizardModeLock) { _enableWizardMode = value; } } }
 
+        private object _enableCasualModeLock = new object();
+        private bool _enableCasualMode = false;
+        public bool EnableCasualMode { get { lock (_enableCasualModeLock) { return _enableCasualMode; } } set { lock (_enableCasualModeLock) { _enableCasualMode = value; } } }
+
         private List<AddContextMenuData> _contextMenuData = new List<AddContextMenuData>();
 
         private bool _useMapBitmap = false;
@@ -1446,7 +1450,7 @@ namespace GnollHackClient.Pages.Game
 
         protected void GNHThreadProc()
         {
-            _clientGame = new ClientGame(this, EnableWizardMode);
+            _clientGame = new ClientGame(this);
             _gnollHackService.StartGnollHack(_clientGame);
         }
 
@@ -7020,7 +7024,7 @@ namespace GnollHackClient.Pages.Game
             _connection.On<int>("AddNewGameResult", (result) =>
             {
                 _message3 = "New Game Added: " + result;
-                _clientGame = new ClientGame(this, EnableWizardMode);
+                _clientGame = new ClientGame(this);
             });
 
             _connection.On<bool>("GameAliveResult", (result) =>

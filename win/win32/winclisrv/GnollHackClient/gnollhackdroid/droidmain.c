@@ -241,6 +241,9 @@ int GnollHackMain(int argc, char** argv)
 	if(wizard)
 		issue_gui_command(GUI_CMD_ENABLE_WIZARD_MODE); /* Notification may be needed if loaded a wizard mode saved game */
 
+	if (CasualMode)
+		issue_gui_command(GUI_CMD_ENABLE_CASUAL_MODE); /* Notification may be needed if loaded a casual mode saved game */
+
 	moveloop(resuming);
     exit(EXIT_SUCCESS);
 

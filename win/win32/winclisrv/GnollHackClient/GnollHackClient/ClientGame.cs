@@ -50,15 +50,13 @@ namespace GnollHackClient
             get { lock (_characterNameLock) { return _characterName; } } 
             set { lock (_characterNameLock) { _characterName = value; } }
         }
-        private bool _wizardMode;
-        public bool WizardMode { get { return _wizardMode; } }
+        public bool WizardMode { get { return _gamePage.EnableWizardMode; } }
 
-        public ClientGame(GamePage gamePage, bool wizardMode)
+        public ClientGame(GamePage gamePage)
         {
             ClientGame.RequestDictionary.TryAdd(this, new ConcurrentQueue<GHRequest>());
             ClientGame.ResponseDictionary.TryAdd(this, new ConcurrentQueue<GHResponse>());
             _gamePage = gamePage;
-            _wizardMode = wizardMode;
         }
 
         ~ClientGame()
@@ -1422,6 +1420,10 @@ namespace GnollHackClient
                     break;
                 case (int)gui_command_types.GUI_CMD_ENABLE_WIZARD_MODE:
                     _gamePage.EnableWizardMode = true;
+                    _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
+                    break;
+                case (int)gui_command_types.GUI_CMD_ENABLE_CASUAL_MODE:
+                    _gamePage.EnableCasualMode = true;
                     _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
                     break;
                 case (int)gui_command_types.GUI_CMD_PETS:
