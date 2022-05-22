@@ -1353,7 +1353,7 @@ int how;
     time_t endtime;
     long umoney;
     boolean has_existing_save_file = (wizard || discover || CasualMode) && check_existing_save_file();
-    boolean disclose_and_dumplog_ok = !(how == QUIT && CasualMode && has_existing_save_file);
+    boolean disclose_and_dumplog_ok = !(how < ASCENDED && CasualMode && has_existing_save_file);
     //long tmp;
 
     /*
@@ -1582,6 +1582,12 @@ int how;
             disclose(how, taken);
 
         dump_everything(how, endtime);
+    }
+    else if (how != QUIT)
+    {
+        char ebuf[BUFSZ];
+        Sprintf(ebuf, "%s%s", endtext ? endtext : "Your game has ended.", has_existing_save_file ? " You can load the game from the point when you last saved the game." : "");
+        display_popup_text(ebuf, "Game Over", POPUP_TEXT_MESSAGE, ATR_NONE, clr, NO_GLYPH, POPUP_FLAGS_NONE);
     }
 
     /* if pets will contribute to score, populate mydogs list now
