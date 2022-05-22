@@ -391,7 +391,7 @@ can_make_bones()
         return FALSE;
     /* don't let multiple restarts generate multiple copies of objects
        in bones files */
-    if (discover || ModernMode)
+    if (discover || ModernMode || CasualMode)
         return FALSE;
     return TRUE;
 }
@@ -640,7 +640,7 @@ getbones()
     register int ok;
     char c, *bonesid, oldbonesid[40]; /* was [10]; more should be safer */
 
-    if (discover || ModernMode) /* save bones files for real games */
+    if (discover || ModernMode || CasualMode) /* save bones files for classic mode games */
         return 0;
 
     if (!flags.bones)

@@ -212,9 +212,9 @@ int GnollHackMain(int argc, char** argv)
 		check_special_room(FALSE);
 		wd_message();
 
-		if(discover || wizard)
+		if(discover || wizard || CasualMode)
 		{
-			if(yn_query("Do you want to keep the save file?") == 'n')
+			if(!CasualMode && yn_query("Do you want to keep the save file?") == 'n')
 			{
 				(void)delete_savefile();
 			}
@@ -373,8 +373,8 @@ port_help()
 
 static void wd_message()
 {
-	if(discover)
-		You("are in non-scoring discovery mode.");
+	if (discover || CasualMode)
+		You("are in non-scoring %s mode.", discover ? "explore" : "casual");
 }
 
 /*

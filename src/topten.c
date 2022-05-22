@@ -389,7 +389,7 @@ int how;
             aligns[1 - u.ualignbase[A_ORIGINAL]].filecode);
     Fprintf(rfile, "%cflags=0x%lx", XLOG_SEP, encodexlogflags());
     Fprintf(rfile, "%cdifficulty=%d", XLOG_SEP, (int)context.game_difficulty);
-    Fprintf(rfile, "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : ModernMode ? "modern" : "normal");
+    Fprintf(rfile, "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : CasualMode ? "casual" : ModernMode ? "modern" : "normal");
     Fprintf(rfile, "%cdemo=%d", XLOG_SEP, In_Demo ? 1 : 0);
     Fprintf(rfile, "\n");
 #undef XLOG_SEP
@@ -410,6 +410,8 @@ encodexlogflags()
         e |= 1L << 3;
     if (In_Demo)
         e |= 1L << 4;
+    if (CasualMode)
+        e |= 1L << 5;
 
     return e;
 }
@@ -674,7 +676,7 @@ time_t when;
     }
 #endif /* XLOGFILE */
 
-    if (wizard || discover) {
+    if (wizard || discover || CasualMode) {
         if (how != PANICKED)
             HUP {
                 char pbuf[BUFSZ];
@@ -682,7 +684,7 @@ time_t when;
                 topten_print("");
                 Sprintf(pbuf,
              "Since you were in %s mode, the score list will not be checked.",
-                        wizard ? "wizard" : "discover");
+                        wizard ? "wizard" : discover ? "explore" : "casual");
                 topten_print(pbuf);
             }
         goto showwin;

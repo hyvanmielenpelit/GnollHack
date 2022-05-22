@@ -150,6 +150,8 @@ struct flag {
 
     boolean modern_mode;  /* in modern mode */
 #define ModernMode flags.modern_mode
+    boolean casual_mode;  /* in casual mode */
+#define CasualMode flags.casual_mode
 
     int end_top, end_around; /* describe desired score list */
     unsigned moonphase;

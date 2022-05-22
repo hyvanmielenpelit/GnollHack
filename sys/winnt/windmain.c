@@ -390,11 +390,12 @@ attempt_restore:
         if (dorecover(fd))
         {
             resuming = TRUE; /* not starting new game */
-            if (discover)
-                You("are in non-scoring discovery mode.");
-            if (discover || wizard) 
+            if (discover || CasualMode)
+                You("are in non-scoring %s mode.", discover ? "explore" : "casual");
+
+            if (discover || wizard || CasualMode)
             {
-                if (yn_query("Do you want to keep the save file?") == 'n')
+                if (!CasualMode && yn_query("Do you want to keep the save file?") == 'n')
                     (void) delete_savefile();
                 else 
                 {
@@ -429,8 +430,8 @@ attempt_restore:
 
         /* NEW GAME STARTS HERE */
         newgame();
-        if (discover)
-            You("are in non-scoring discovery mode.");
+        if (discover || CasualMode)
+            You("are in non-scoring %s mode.", discover ? "explore" : "casual");
     }
     else
     {

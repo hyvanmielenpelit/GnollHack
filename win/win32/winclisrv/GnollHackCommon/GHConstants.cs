@@ -195,7 +195,8 @@ namespace GnollHackCommon
         SetWinCaps =    0x00000001,
         WizardMode =    0x00000002,
         FullVersion =   0x00000004,
-        ModernMode =  0x00000008,
+        ModernMode =    0x00000008, /* Upon death, the character teleports back to starting altar */
+        CasualMode =    0x00000010, /* Save games are preserved */
     }
 
     [Flags]

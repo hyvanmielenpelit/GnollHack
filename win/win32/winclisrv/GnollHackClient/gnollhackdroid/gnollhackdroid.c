@@ -517,9 +517,14 @@ int RunGnollHack(
         In_Demo = TRUE;
     }
 
-    if (!wizard && !discover && (runflags & GHRUNFLAGS_BEGINNER))
+    if (!wizard && !discover && (runflags & GHRUNFLAGS_MODERN_MODE))
     {
         ModernMode = TRUE;
+    }
+
+    if (!wizard && !discover && (runflags & GHRUNFLAGS_CASUAL_MODE))
+    {
+        CasualMode = TRUE;
     }
 
     /* Set callback function pointers here */

@@ -357,6 +357,30 @@ register int fd, mode;
     bflush(fd);
 }
 
+/* returns 1 if save file exists, otherwise 0 */
+int
+check_existing_save_file()
+{
+    const char* fq_save;
+    register int fd;
+    fq_save = fqname(SAVEF, SAVEPREFIX, 1); /* level files take 0 */
+
+#if defined(MICRO) && defined(MFLOPPY)
+    if (!saveDiskPrompt(0))
+        return 0;
+#endif
+
+    nh_uncompress(fq_save);
+    fd = open_savefile();
+    if (fd > 0) {
+        (void)nhclose(fd);
+        /* There is an old save file, let's compress it back */
+        nh_compress(fq_save);
+        return 1;
+    }
+    return 0;
+}
+
 boolean
 tricked_fileremoved(fd, whynot)
 int fd;

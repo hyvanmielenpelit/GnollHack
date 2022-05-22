@@ -2880,6 +2880,7 @@ E void NDECL(rumor_check);
 
 E int NDECL(dosave);
 E int NDECL(dosave0);
+E int NDECL(check_existing_save_file);
 E boolean FDECL(tricked_fileremoved, (int, char *));
 #ifdef INSURANCE
 E void NDECL(savestateinlock);

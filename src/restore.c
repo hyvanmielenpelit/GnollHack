@@ -996,7 +996,7 @@ register int fd;
     restlevelstate(stuckid, steedid);
     program_state.something_worth_saving = 1; /* useful data now exists */
 
-    if (!wizard && !discover)
+    if (!wizard && !discover && !CasualMode)
         (void) delete_savefile();
     if (Is_really_rogue_level(&u.uz))
         assign_graphics(ROGUESET);

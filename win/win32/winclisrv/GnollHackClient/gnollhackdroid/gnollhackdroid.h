@@ -18,7 +18,8 @@ int FDECL(GnollHackStart, (char*));
 #define GHRUNFLAGS_SET_WINCAPS  0x00000001
 #define GHRUNFLAGS_WIZARD_MODE  0x00000002
 #define GHRUNFLAGS_FULL_VERSION 0x00000004
-#define GHRUNFLAGS_BEGINNER     0x00000008
+#define GHRUNFLAGS_MODERN_MODE  0x00000008
+#define GHRUNFLAGS_CASUAL_MODE  0x00000010
 
 /* Main GnollHack routine with all the necessary callback functions in dllmain.c */
 int RunGnollHack(
