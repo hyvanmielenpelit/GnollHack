@@ -484,6 +484,11 @@ namespace GnollHackClient.Pages.Game
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
             MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", deffontsize * GHConstants.MapFontRelativeAlternateSize);
             MapFontMiniRelativeSize = Preferences.Get("MapFontMiniRelativeSize", 1.0f);
+            lock(_mapOffsetLock)
+            {
+                _mapMiniOffsetX = Preferences.Get("MapMiniOffsetX", 0.0f);
+                _mapMiniOffsetY = Preferences.Get("MapMiniOffsetY", 0.0f);
+            }
             MapNoClipMode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             //MapAlternateNoClipMode = Preferences.Get("MapAlternateNoClipMode", GHConstants.DefaultMapAlternateNoClipMode);
             //ZoomChangeCenterMode = Preferences.Get("ZoomChangeCenterMode", GHConstants.DefaultZoomChangeCenterMode);
@@ -2258,6 +2263,11 @@ namespace GnollHackClient.Pages.Game
             Preferences.Set("MapFontSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontSize));
             Preferences.Set("MapFontAlternateSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontAlternateSize));
             Preferences.Set("MapFontMiniRelativeSize", Math.Min(GHConstants.MaximumMapMiniRelativeFontSize, Math.Max(GHConstants.MinimumMapMiniRelativeFontSize, MapFontMiniRelativeSize)));
+            lock(_mapOffsetLock)
+            {
+                Preferences.Set("MapMiniOffsetX", _mapMiniOffsetX);
+                Preferences.Set("MapMiniOffsetY", _mapMiniOffsetY);
+            }
         }
 
 
