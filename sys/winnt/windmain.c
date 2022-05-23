@@ -391,7 +391,7 @@ attempt_restore:
         {
             resuming = TRUE; /* not starting new game */
             if (discover || CasualMode)
-                You_ex(ATR_NONE, CLR_MSG_HINT, "are in non-scoring %s mode.", discover ? "explore" : ModernMode ? "casual" : "casual-classic");
+                You_ex(ATR_NONE, CLR_MSG_HINT, "are in %s mode.", get_game_mode_text(TRUE));
 
             if (discover || wizard || CasualMode)
             {
@@ -431,7 +431,7 @@ attempt_restore:
         /* NEW GAME STARTS HERE */
         newgame();
         if (discover || CasualMode)
-            You_ex(ATR_NONE, CLR_MSG_HINT, "are in non-scoring %s mode.", discover ? "explore" : ModernMode ? "casual" : "casual-classic");
+            You_ex(ATR_NONE, CLR_MSG_HINT, "are in %s mode.", get_game_mode_text(TRUE));
     }
     else
     {

@@ -1527,9 +1527,9 @@ enter_explore_mode(VOID_ARGS)
         if (paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidQuit, "Confirm Explore Mode",
                            "Do you want to enter explore mode?")) {
             clear_nhwindow(WIN_MESSAGE);
-            You_ex(ATR_NONE, CLR_MSG_HINT, "are now in non-scoring explore mode.");
             discover = TRUE;
             CasualMode = FALSE, ModernMode = FALSE;
+            You_ex(ATR_NONE, CLR_MSG_HINT, "are now in %s mode.", get_game_mode_text(TRUE));
             context.botl = context.botlx = 1;
         } else {
             clear_nhwindow(WIN_MESSAGE);
@@ -3446,9 +3446,10 @@ int final;
     int pct_monster_dmg_mult = (int)(monster_damage_mult * 100);
     int pct_player_dmg_mult = (int)((1 / monster_hp_mult) * 100);
     char difficultybuf[BUFSIZ];
-    Sprintf(difficultybuf, " (%d%% monster damage, %d%% player damage)", pct_monster_dmg_mult, pct_player_dmg_mult);
+    Sprintf(difficultybuf, " (%d%% damage by monsters, %d%% by player)", pct_monster_dmg_mult, pct_player_dmg_mult);
     enl_msg("Your game difficulty ", "is ", "was ", buf, difficultybuf);
 
+    enl_msg("You ", "are playing in ", "were playing in ", get_game_mode_text(TRUE), " mode");
 
 }
 

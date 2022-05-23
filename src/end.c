@@ -1462,8 +1462,8 @@ int how;
     if(disclose_and_dumplog_ok)
         dump_open_log(endtime);
 
-    You("were playing on %s difficulty%s.", get_game_difficulty_text(context.game_difficulty),
-        wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : CasualMode ? (ModernMode ? " in non-scoring casual mode" : " in non-scoring casual-classic mode") : ModernMode ? " in modern mode" : "");
+    You("were playing on %s difficulty in %s mode.", get_game_difficulty_text(context.game_difficulty),
+        get_game_mode_text(TRUE));
 
     /* Sometimes you die on the first move.  Life's not fair.
      * On those rare occasions you get hosed immediately, go out
@@ -1586,7 +1586,7 @@ int how;
     else if (how != QUIT)
     {
         char ebuf[BUFSZ];
-        Sprintf(ebuf, "%s%s", endtext ? endtext : "Your game has ended.", has_existing_save_file ? " You can load the game from the point when you last saved the game." : "");
+        Sprintf(ebuf, "%s", has_existing_save_file ? "You can load the game from the point at which you last saved the game." : endtext ? endtext : "Your game is over.");
         display_popup_text(ebuf, "Game Over", POPUP_TEXT_MESSAGE, ATR_NONE, clr, NO_GLYPH, POPUP_FLAGS_NONE);
     }
 
@@ -1896,8 +1896,8 @@ int how;
         Sprintf(pbuf, "and %ld piece%s of gold, after %ld move%s.", umoney,
             plur(umoney), moves, plur(moves));
         dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
-        Sprintf(pbuf, "You played on %s difficulty%s.", get_game_difficulty_text(context.game_difficulty),
-            wizard ? " in debug mode" : discover ? " in non-scoring explore mode" : CasualMode ? (ModernMode ? " in non-scoring casual mode" : " in non-scoring casual-classic mode") : ModernMode ? " in modern mode" : "");
+        Sprintf(pbuf, "You played on %s difficulty in %s mode.", get_game_difficulty_text(context.game_difficulty),
+            get_game_mode_text(TRUE));
         dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
         Sprintf(pbuf,
             "You were level %d with a maximum of %d hit point%s when you %s.",
@@ -1917,9 +1917,10 @@ int how;
     if (have_windows && !iflags.toptenwin)
         exit_nhwindows((char*)0), have_windows = FALSE;
 
-    topten(how, endtime);
+    if((!wizard && !discover && !CasualMode) || (CasualMode && how == ASCENDED) || (wizard && yn_query("Write top score entry?") == 'y'))
+        topten(how, endtime);
 
-    if (how == ASCENDED && CasualMode && has_existing_save_file)
+    if (CasualMode && how == ASCENDED && has_existing_save_file)
         (void)delete_savefile(); /* The casual mode character gets deleted only upon ascension */
 
     if (have_windows)

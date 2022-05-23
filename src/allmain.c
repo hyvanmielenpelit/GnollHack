@@ -1147,6 +1147,27 @@ int dif_level;
     return "?";
 }
 
+const char*
+get_game_mode_text(display_nonscoring)
+boolean display_nonscoring;
+{
+    if (wizard)
+        return "wizard";
+    else if (discover)
+        return display_nonscoring ? "non-scoring explore" : "explore";
+    else if (CasualMode)
+    {
+        if (ModernMode)
+            return display_nonscoring ? "non-scoring casual" : "casual";
+        else
+            return display_nonscoring ? "non-scoring casual-classic" : "casual-classic";
+    }
+    else if (ModernMode)
+        return "modern";
+    else
+        return "classic";
+
+}
 
 void 
 choose_game_difficulty()

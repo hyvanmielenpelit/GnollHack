@@ -33,6 +33,7 @@ E void NDECL(newgame);
 E void NDECL(choose_game_difficulty);
 E const char* FDECL(get_game_difficulty_text, (int));
 E const char* FDECL(get_game_difficulty_symbol, (int));
+E const char* FDECL(get_game_mode_text, (BOOLEAN_P));
 E void NDECL(show_gui_tips);
 E void FDECL(welcome, (BOOLEAN_P));
 E time_t NDECL(get_realtime);

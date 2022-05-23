@@ -435,7 +435,7 @@ static struct Comp_Opt {
       MAX_OBJECT_CLASSES, SET_IN_GAME },
     { "pile_limit", "threshold for \"there are many objects here\"", 24,
       SET_IN_GAME },
-    { "playmode", "normal play, non-scoring explore or casual mode, or debug mode", 8,
+    { "playmode", "classic or modern play, non-scoring explore or casual mode, or debug mode", 8,
       DISP_IN_GAME },
     { "player_selection", "choose character via dialog or prompts", 12,
       DISP_IN_GAME },
@@ -3362,13 +3362,13 @@ boolean tinitial, tfrom_file;
         op = string_for_opt(opts, FALSE);
         if (!op)
             return FALSE;
-        if (!strncmpi(op, "normal", 6) || !strcmpi(op, "play")) {
-            wizard = discover = FALSE;
+        if (!strncmpi(op, "normal", 6) || !strncmpi(op, "classic", 7) || !strcmpi(op, "play")) {
+            wizard = discover = CasualMode = ModernMode = FALSE;
         } else if (!strncmpi(op, "explore", 6)
                    || !strncmpi(op, "discovery", 6)) {
-            wizard = FALSE, discover = TRUE;
+            wizard = CasualMode = ModernMode = FALSE, discover = TRUE;
         } else if (!strncmpi(op, "debug", 5) || !strncmpi(op, "wizard", 6)) {
-            wizard = TRUE, discover = FALSE;
+            wizard = TRUE, discover = CasualMode = ModernMode = FALSE;
         } else if (!strncmpi(op, "casual", 6)) {
             CasualMode = TRUE, ModernMode = TRUE, wizard = FALSE, discover = FALSE;
         } else if (!strncmpi(op, "modern", 6)) {
