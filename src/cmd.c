@@ -1529,6 +1529,7 @@ enter_explore_mode(VOID_ARGS)
             clear_nhwindow(WIN_MESSAGE);
             You_ex(ATR_NONE, CLR_MSG_HINT, "are now in non-scoring explore mode.");
             discover = TRUE;
+            CasualMode = FALSE, ModernMode = FALSE;
             context.botl = context.botlx = 1;
         } else {
             clear_nhwindow(WIN_MESSAGE);

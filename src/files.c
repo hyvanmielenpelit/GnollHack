@@ -3871,7 +3871,7 @@ const char *reason; /* explanation */
             char buf[BUFSZ];
             time_t now = getnow();
             int uid = getuid();
-            char playmode = wizard ? 'D' : discover ? 'X' : CasualMode ? 'C' : ModernMode ? 'M' : '-';
+            char playmode = wizard ? 'D' : discover ? 'X' : CasualMode ? (ModernMode ? 'C' : 'S') : ModernMode ? 'M' : '-';
 
             (void) fprintf(lfile, "%s %08ld %06ld %d %c: %s %s\n",
                            version_string(buf), yyyymmdd(now), hhmmss(now),

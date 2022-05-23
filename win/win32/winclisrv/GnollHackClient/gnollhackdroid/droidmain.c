@@ -377,7 +377,7 @@ port_help()
 static void wd_message()
 {
 	if (discover || CasualMode)
-		You_ex(ATR_NONE, CLR_MSG_HINT, "are in non-scoring %s mode.", discover ? "explore" : "casual");
+		You_ex(ATR_NONE, CLR_MSG_HINT, "are in non-scoring %s mode.", discover ? "explore" : ModernMode ? "casual" : "casual-classic");
 }
 
 /*

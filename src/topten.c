@@ -389,7 +389,7 @@ int how;
             aligns[1 - u.ualignbase[A_ORIGINAL]].filecode);
     Fprintf(rfile, "%cflags=0x%lx", XLOG_SEP, encodexlogflags());
     Fprintf(rfile, "%cdifficulty=%d", XLOG_SEP, (int)context.game_difficulty);
-    Fprintf(rfile, "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : CasualMode ? "casual" : ModernMode ? "modern" : "normal");
+    Fprintf(rfile, "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : CasualMode ? (ModernMode ? "casual" : "casual-classic") : ModernMode ? "modern" : "normal");
     Fprintf(rfile, "%cdemo=%d", XLOG_SEP, In_Demo ? 1 : 0);
     Fprintf(rfile, "\n");
 #undef XLOG_SEP
@@ -684,7 +684,7 @@ time_t when;
                 topten_print("");
                 Sprintf(pbuf,
              "Since you were in %s mode, the score list will not be checked.",
-                        wizard ? "wizard" : discover ? "explore" : "casual");
+                        wizard ? "wizard" : discover ? "explore" : ModernMode ? "casual" : "casual-classic");
                 topten_print(pbuf);
             }
         goto showwin;
