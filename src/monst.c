@@ -1327,7 +1327,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
         M4_PRINCE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
         11, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("orc king", None, "orc in a top leadership position", "orc queen", "orc royal", S_ORC, LVL(10, 12, 10, 0, 25, -6), G_NOGEN,
+    ENLARGED_MON("orc king", None, "orc in a top leadership position", "orc queen", "orc royal", S_ORC, LVL(10, 12, 10, 0, 25, -6), G_NOGEN,
         A(ATTK(AT_WEAP, AD_PHYS, 2, 6, 0, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 6, 0, 0, 0, 0, 0UL, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1550, 400, MS_ORC, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(STR18(100), 16, 19, 12, 12, 17),
@@ -1337,7 +1337,9 @@ NEARDATA struct permonst mons[] = {
         M2_ORC | M2_GREEDY | M2_JEWELS | M2_COLLECT | M2_MAGIC,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY,
         M4_PRINCE, M5_FEMALE_TILE, M6_NONE, M7_NONE, M8_NONE,
-        14, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        14, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(ORC_KING_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ORC_KING_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(ORC_QUEEN_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ORC_QUEEN_STATUE_ENLARGEMENT, 0, 0)),
     /*
      * piercers
      */
@@ -3336,7 +3338,7 @@ struct permonst _mons2[] = {
     /*
      * modrons
      */
-    MON("modron monodrone", None, "sphere-shaped being", None, None, S_MODRON, LVL(15, 12, -3, 3, 10, 0), G_NOGEN | G_LGROUP | G_MODRON | 2,
+    ENLARGED_MON("modron monodrone", None, "sphere-shaped being", None, None, S_MODRON, LVL(15, 12, -3, 3, 10, 0), G_NOGEN | G_LGROUP | G_MODRON | 2,
         A(ATTK(AT_WEAP, AD_PHYS, 9, 4, 9, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(100, 25, MS_SILENT, MZ_SMALL, 1, 0, MAT_MODRONITE), STATS(14, 9, 9, 3, 3, 3),
@@ -3347,7 +3349,9 @@ struct permonst _mons2[] = {
         M2_NEUTER | M2_HOSTILE | M2_MODRON, 
         M3_NONLIVING | M3_MULTIWEAPON | M3_KNOWS_TRAPS,
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
-        12, CLR_WHITE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        12, CLR_WHITE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(MODRON_MONODRONE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_MONODRONE_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(MODRON_MONODRONE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_MONODRONE_STATUE_ENLARGEMENT, 0, 0)),
 
     MON("modron duodrone", None, "pole-shaped being", None, None, S_MODRON, LVL(18, 13, -4, 4, 20, 0), G_NOGEN | G_SGROUP | G_MODRON | 2,
         A(ATTK(AT_WEAP, AD_PHYS, 4, 4, 4, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 4, 4, 4, 0, 0, 0, 0UL, 0), NO_ATTK,
@@ -3362,7 +3366,7 @@ struct permonst _mons2[] = {
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
         14, CLR_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
 
-    MON("modron tridrone", None, "tetrahedron-shaped being", None, None, S_MODRON, LVL(21, 14, -5, 5, 30, 0), G_NOGEN | G_MODRON | 1,
+    ENLARGED_MON("modron tridrone", None, "tetrahedron-shaped being", None, None, S_MODRON, LVL(21, 14, -5, 5, 30, 0), G_NOGEN | G_MODRON | 1,
         A(ATTK(AT_WEAP, AD_PHYS, 3, 4, 3, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 3, 4, 3, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 3, 4, 3, 0, 0, 0, 0UL, 0),
             NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(300, 75, MS_SILENT, MZ_MEDIUM, 1, 0, MAT_MODRONITE), STATS(16, 13, 13, 9, 9, 9),
@@ -3373,9 +3377,11 @@ struct permonst _mons2[] = {
         M2_NEUTER | M2_HOSTILE | M2_MODRON, 
         M3_NONLIVING | M3_MULTIWEAPON | M3_KNOWS_TRAPS,
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
-        18, CLR_ORANGE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        18, CLR_ORANGE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(MODRON_TRIDRONE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_TRIDRONE_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(MODRON_TRIDRONE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_TRIDRONE_STATUE_ENLARGEMENT, 0, 0)),
 
-    MON("modron quadrone", None, "cube-shaped being", None, None, S_MODRON, LVL(24, 15, -6, 6, 40, 0), G_NOGEN | G_MODRON | 1,
+    ENLARGED_MON("modron quadrone", None, "cube-shaped being", None, None, S_MODRON, LVL(24, 15, -6, 6, 40, 0), G_NOGEN | G_MODRON | 1,
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4, 2, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 4, 2, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 4, 2, 0, 0, 0, 0UL, 0),
             ATTK(AT_WEAP, AD_PHYS, 2, 4, 2, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(400, 100, MS_SILENT, MZ_MEDIUM, 1, 0, MAT_MODRONITE), STATS(17, 14, 14, 12, 12, 12),
@@ -3386,9 +3392,11 @@ struct permonst _mons2[] = {
         M2_NEUTER | M2_HOSTILE | M2_MODRON,
         M3_NONLIVING | M3_MULTIWEAPON | M3_KNOWS_TRAPS,
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
-        22, CLR_BRIGHT_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        22, CLR_BRIGHT_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(MODRON_QUADRONE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_QUADRONE_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(MODRON_QUADRONE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_QUADRONE_STATUE_ENLARGEMENT, 0, 0)),
 
-    MON("modron pentadrone", None, "five-handed round being", None, None, S_MODRON, LVL(27, 16, -7, 7, 50, 0), G_NOGEN | G_MODRON | 1,
+    ENLARGED_MON("modron pentadrone", None, "five-handed round being", None, None, S_MODRON, LVL(27, 16, -7, 7, 50, 0), G_NOGEN | G_MODRON | 1,
         A(ATTK(AT_WEAP, AD_PHYS, 2, 4, 1, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 4, 1, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 4, 1, 0, 0, 0, 0UL, 0),
             ATTK(AT_WEAP, AD_PHYS, 2, 4, 1, 0, 0, 0, 0UL, 0), ATTK(AT_WEAP, AD_PHYS, 2, 4, 1, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(500, 125, MS_SILENT, MZ_LARGE, 1, 0, MAT_MODRONITE), STATS(18, 15, 15, 15, 15, 15),
@@ -3398,9 +3406,11 @@ struct permonst _mons2[] = {
         M2_NEUTER | M2_HOSTILE | M2_MODRON, 
         M3_NONLIVING | M3_MULTIWEAPON | M3_KNOWS_TRAPS,
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
-        24, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        24, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(MODRON_PENTADRONE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_PENTADRONE_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(MODRON_PENTADRONE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_PENTADRONE_STATUE_ENLARGEMENT, 0, 0)),
 
-    MON("modron quinton", None, "low-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(30, 17, -8, 12, 60, 0), G_NOGEN | 1,
+    ENLARGED_MON("modron quinton", None, "low-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(30, 17, -8, 12, 60, 0), G_NOGEN | 1,
         A(ATTK(AT_CLAW, AD_PHYS, 3, 4, 3, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 3, 4, 3, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 3, 4, 3, 0, 0, 0, 0UL, 0),
             ATTK(AT_CLAW, AD_PHYS, 3, 4, 3, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 3, 4, 3, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_CLRC, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK),
         SIZ(600, 150, MS_MODRON, MZ_LARGE, 1, 0, MAT_MODRONITE), STATS(STR19(19), 19, 19, 17, 17, 17),
@@ -3411,9 +3421,11 @@ struct permonst _mons2[] = {
         M2_NEUTER | M2_HOSTILE | M2_MODRON,
         M3_NONLIVING | M3_SPEAKING | M3_KNOWS_TRAPS,
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
-        30, CLR_BLUE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        30, CLR_BLUE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(MODRON_QUINTON_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_QUINTON_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(MODRON_QUINTON_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_QUINTON_STATUE_ENLARGEMENT, 0, 0)),
 
-    MON("modron quarton", None, "mid-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(35, 18, -9, 14, 70, 0), G_NOGEN | 1,
+    ENLARGED_MON("modron quarton", None, "mid-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(35, 18, -9, 14, 70, 0), G_NOGEN | 1,
         A(ATTK(AT_CLAW, AD_PHYS, 4, 4, 4, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 4, 4, 4, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 4, 4, 4, 0, 0, 0, 0UL, 0),
             ATTK(AT_CLAW, AD_PHYS, 4, 4, 4, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_CLRC, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(800, 200, MS_MODRON, MZ_LARGE, 1, 0, MAT_MODRONITE), STATS(STR19(20), 20, 20, 19, 19, 19),
@@ -3425,9 +3437,11 @@ struct permonst _mons2[] = {
         M3_NONLIVING | M3_SPEAKING | M3_KNOWS_TRAPS, 
         M4_NONE, 
         M5_NONE, M6_NONE, M7_NONE, M8_NONE,
-        40, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        40, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(MODRON_QUARTON_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_QUARTON_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(MODRON_QUARTON_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_QUARTON_STATUE_ENLARGEMENT, 0, 0)),
 
-    MON("modron tertian", None, "high-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(40, 19, -10, 16, 80, 0), G_NOGEN | 1,
+    ENLARGED_MON("modron tertian", None, "high-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(40, 19, -10, 16, 80, 0), G_NOGEN | 1,
         A(ATTK(AT_CLAW, AD_PHYS, 5, 4, 5, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 5, 4, 5, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 5, 4, 5, 0, 0, 0, 0UL, 0),
             ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1200, 300, MS_MODRON, MZ_LARGE, 1, 0, MAT_MODRONITE), STATS(STR19(21), 21, 21, 21, 21, 21),
@@ -3438,9 +3452,11 @@ struct permonst _mons2[] = {
         M2_NEUTER | M2_HOSTILE | M2_MODRON,
         M3_NONLIVING | M3_SPEAKING | M3_KNOWS_TRAPS,
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
-        55, CLR_RED, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        55, CLR_RED, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(MODRON_TERTIAN_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_TERTIAN_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(MODRON_TERTIAN_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_TERTIAN_STATUE_ENLARGEMENT, 0, 0)),
 
-    MON("modron secundus", None, "second-highest-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(45, 20, -12, 18, 90, 0), G_NOGEN | 1,
+    ENLARGED_MON("modron secundus", None, "second-highest-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(45, 20, -12, 18, 90, 0), G_NOGEN | 1,
         A(ATTK(AT_CLAW, AD_PHYS, 8, 4, 8, 0, 0, 0, 0UL, 0), ATTK(AT_CLAW, AD_PHYS, 8, 4, 8, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 0, 0, 0UL, 0),
             NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1600, 400, MS_MODRON, MZ_LARGE, 1, 0, MAT_MODRONITE), STATS(STR19(22), 22, 22, 23, 23, 23),
@@ -3451,9 +3467,11 @@ struct permonst _mons2[] = {
         M2_NEUTER | M2_HOSTILE | M2_MODRON, 
         M3_NONLIVING | M3_SPEAKING | M3_KNOWS_TRAPS,
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE,
-        70, CLR_YELLOW, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        70, CLR_YELLOW, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(MODRON_SECUNDUS_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_SECUNDUS_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(MODRON_SECUNDUS_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_SECUNDUS_STATUE_ENLARGEMENT, 0, 0)),
 
-    MON("Modron Primus", "The One and The Prime", "highest-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(50, 21, -15, 20, 100, 0), G_NOGEN | G_UNIQ,
+    ENLARGED_MON("Modron Primus", "The One and The Prime", "highest-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(50, 21, -15, 20, 100, 0), G_NOGEN | G_UNIQ,
         A(ATTK(AT_CLAW, AD_PHYS, 15, 4, 15, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0, 0, 0, 0UL, 0), ATTK(AT_MAGC, AD_CLRC, 0, 0, 0, 0, 0, 0, 0UL, 0),
             NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(3200, 800, MS_MODRON, MZ_HUGE, 1, 0, MAT_MODRONITE), STATS(STR19(23), 23, 23, 25, 25, 25),
@@ -3464,7 +3482,9 @@ struct permonst _mons2[] = {
         M2_NEUTER | M2_HOSTILE | M2_MODRON, 
         M3_NONLIVING | M3_SPEAKING | M3_KNOWS_TRAPS,
         M4_NONE, M5_NONE, M6_BOSS_MONSTER, M7_NONE, M8_NONE,
-        95, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        95, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(MODRON_PRIMUS_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_PRIMUS_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(MODRON_PRIMUS_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, MODRON_PRIMUS_STATUE_ENLARGEMENT, 0, 0)),
 
     /*
      * Nagas
