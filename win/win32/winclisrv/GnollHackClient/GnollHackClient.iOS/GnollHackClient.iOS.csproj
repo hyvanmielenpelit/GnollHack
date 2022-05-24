@@ -67,10 +67,13 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="FmodService.cs" />
+    <Compile Include="GnollHackService.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
+    <Compile Include="PlatformService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +153,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\..\GnollHackCommon\GnollHackCommon.csproj">
+      <Project>{40516bc7-ac45-4f0c-9754-6c6a381302ab}</Project>
+      <Name>GnollHackCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GnollHackClient\GnollHackClient.csproj">
       <Project>{5A266A7A-92C8-4E71-88AE-74AC420F9F18}</Project>
       <Name>GnollHackClient</Name>
