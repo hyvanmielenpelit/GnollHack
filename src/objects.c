@@ -2697,7 +2697,7 @@ SPELL("magic arrow",      "dart-patterned", None, None, "Shoots a magical arrow"
 SPELL("lightning bolt",   "shimmering", None, None, "Shoots a ray of lightning",
       P_ARCANE_SPELL,              4,  3,             0, 3, 10, A_INT, 14, 0, 20, 0, 1, RAY, RAY_LIGHTNING, 8, 5, 6, 0, 1, 10, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_ELEC, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("shocking touch",   "hand-patterned", None, None, "Causes the target to be jolted with electricity",
-      P_ARCANE_SPELL,              4,  3,             0, 3, 10, A_INT, 1, 0, 20, 0, 1, TOUCH, TOUCH_NONE, 3, 8, 6, 0, 1, 6, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_ELEC, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
+      P_ARCANE_SPELL,              4,  3,             0, 3, 10, A_INT, 1, 0, 20, 0, 1, TOUCH, TOUCH_NONE, 3, 8, 6, 0, 1, 6, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_ELEC, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_USES_SPELL_TILE, O6_NONE),
 SPELL("thunderstorm",      "strange", "thunderstorm", None, "Conjures a storm of lightning",
       P_ARCANE_SPELL,              4,  10,         0, 7, 30, A_INT, 18, 0, 50, 0, 1, RAY, RAY_LIGHTNING, 2, 12, 6, 0, 1, 6, 0, S1_SPELL_EXPLOSION_EFFECT | S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_ELEC, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE),
 SPELL("magic storm",      "scintillating", "storm of magic", None, "Conjures a storm of arcane energy",

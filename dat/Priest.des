@@ -37,7 +37,7 @@ MAP
 ENDMAP
 # Dungeon Description
 REGION:(00,00,75,19),lit,"ordinary"
-REGION:(24,06,33,13),lit,"temple"
+REGION:(24,06,33,13),lit,"temple" floorsubtype:floor_marble
 
 REPLACE_TERRAIN:(0,0,10,19),',','T',10%
 REPLACE_TERRAIN:(65,0,75,19),',','T',10%
