@@ -1,15 +1,11 @@
 /* 
- * gnollhackdroid.h 
+ * gnhcommon.h 
  * Copyright (c) Janne Gustafsson, 2022
  */
 
-#ifndef GNOLLHACKDROID_H
-#define GNOLLHACKDROID_H
+#ifndef GNHCOMMON_H
+#define GNHCOMMON_H
 
-extern const char* getPlatformABI();
-extern void gnollhackdroid();
-
-#if 0
 #include "callback.h"
 #include "tradstdc.h"
 
@@ -22,7 +18,7 @@ int FDECL(GnollHackStart, (char*));
 #define GHRUNFLAGS_MODERN_MODE  0x00000008
 #define GHRUNFLAGS_CASUAL_MODE  0x00000010
 
-/* Main GnollHack routine with all the necessary callback functions in dllmain.c */
+/* Main GnollHack routine with all the necessary callback functions */
 int RunGnollHack(
     char* gnhdir,
     char* cmdlineargs,
@@ -130,5 +126,5 @@ int RunGnollHack(
     SendObjectDataCallback callback_send_object_data,
     SendMonsterDataCallback callback_send_monster_data
 );
-#endif
+
 #endif

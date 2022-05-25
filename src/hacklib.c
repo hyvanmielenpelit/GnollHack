@@ -946,8 +946,8 @@ int FDECL((*fn), (int)) UNUSED;
 # ifdef RANDOM /* srandom() from sys/share/random.c */
     srandom((unsigned int) seed);
 # else
-#  if defined(__APPLE__) || defined(BSD) || defined(LINUX) || defined(ULTRIX) \
-    || defined(CYGWIN32) /* system srandom() */
+#  if (defined(__APPLE__) || defined(BSD) || defined(LINUX) || defined(ULTRIX) \
+    || defined(CYGWIN32)) /* system srandom() */
 #   if defined(BSD) && !defined(POSIX_TYPES) && defined(SUNOS4)
     (void)
 #   endif

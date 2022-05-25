@@ -35,7 +35,7 @@
 /*
  * Mac Stuff.
  */
-#if defined(__APPLE__) && defined(__MACH__)
+#if defined(__APPLE__) && defined(__MACH__) && !defined(GNH_MOBILE)
 #define MACOSX
 #endif
 

@@ -181,7 +181,7 @@ typedef xchar boolean; /* 0 or 1 */
 #ifdef MAC
 #define PORT_ID "Mac"
 #endif
-#ifdef __APPLE__
+#if defined(__APPLE__)  && !defined(GNH_MOBILE)
 #define PORT_ID "MacOSX"
 #endif
 #ifdef MSDOS

@@ -183,8 +183,6 @@ namespace GnollHackClient.Droid
         [DllImport(@"libgnollhackdroid.so")]
         public static extern IntPtr LibGetPropertyName(int prop_index);
         [DllImport(@"libgnollhackdroid.so")]
-        public static extern IntPtr LibGetExtendedCommand(int idx);
-        [DllImport(@"libgnollhackdroid.so")]
         public static extern IntPtr LibGetExtendedCommands();
         [DllImport(@"libgnollhackdroid.so")]
         public static extern IntPtr LibDumplogDateString(long startdate);

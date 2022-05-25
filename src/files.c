@@ -2115,7 +2115,7 @@ int src;
     set_configfile_name(tmp_config);
     if ((fp = fopenp(configfile, "r")) != (FILE *) 0)
         return fp;
-#if defined(__APPLE__) /* UNIX+__APPLE__ => MacOSX */
+#if defined(__APPLE__) && !defined(GNH_MOBILE) /* UNIX+__APPLE__ => MacOSX */
     /* try an alternative */
     if (envp) {
         /* OSX-style configuration settings */

@@ -53,10 +53,10 @@
     <MtouchLink>None</MtouchLink>
     <MtouchInterpreter>
     </MtouchInterpreter>
-    <MtouchExtraArgs>
-    </MtouchExtraArgs>
+    <MtouchExtraArgs>-cxx -gcc_flags "-L${ProjectDir}/NativeReferences -lgnollhackios -force_load ${ProjectDir}/NativeReferences/libgnollhackios.a"</MtouchExtraArgs>
     <MtouchSdkVersion>
     </MtouchSdkVersion>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -167,7 +167,10 @@
       <Name>GnollHackClient</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="libs\arm64-v8a\" />
+    <NativeReference Include="NativeReferences/libgnollhackios.a">
+      <Kind>Static</Kind>
+    </NativeReference>
   </ItemGroup>
 </Project>

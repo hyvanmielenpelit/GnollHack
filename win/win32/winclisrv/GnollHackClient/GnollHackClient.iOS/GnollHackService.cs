@@ -18,8 +18,7 @@ namespace GnollHackClient.iOS
 {
     class GnollHackService : IGnollHackService
     {
-#if false
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "RunGnollHack")]
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
@@ -125,105 +124,103 @@ namespace GnollHackClient.iOS
             SendMonsterDataCallback callback_send_monster_data
         );
 
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "GetGlyph2Tile")]
         public static extern int GetGlyph2Tile(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "GetGlyphTileFlags")]
         public static extern int GetGlyphTileFlags(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "GetTile2Animation")]
         public static extern int GetTile2Animation(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "GetTile2Enlargement")]
         public static extern int GetTile2Enlargement(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "GetTile2Replacement")]
         public static extern int GetTile2Replacement(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "GetTile2Autodraw")]
         public static extern int GetTile2Autodraw(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "GetAnimationOffsets")]
         public static extern int GetAnimationOffsets(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "GetEnlargementOffsets")]
         public static extern int GetEnlargementOffsets(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "GetReplacementOffsets")]
         public static extern int GetReplacementOffsets(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "CountTotalTiles")]
         public static extern int CountTotalTiles();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetUnexploredGlyph")]
         public static extern int LibGetUnexploredGlyph();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetNoGlyph")]
         public static extern int LibGetNoGlyph();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetAnimationOff")]
         public static extern int LibGetAnimationOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetEnlargementOff")]
         public static extern int LibGetEnlargementOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetReplacementOff")]
         public static extern int LibGetReplacementOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetGeneralTileOff")]
         public static extern int LibGetGeneralTileOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetHitTileOff")]
         public static extern int LibGetHitTileOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetUITileOff")]
         public static extern int LibGetUITileOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetSpellTileOff")]
         public static extern int LibGetSpellTileOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetSkillTileOff")]
         public static extern int LibGetSkillTileOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetBuffTileOff")]
         public static extern int LibGetBuffTileOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetCursorOff")]
         public static extern int LibGetCursorOff();
 
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibTest")]
         public static extern int LibTest();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetVersionString")]
         public static extern IntPtr LibGetVersionString();
 
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetVersionId")]
         public static extern IntPtr LibGetVersionId();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetPropertyName")]
         public static extern IntPtr LibGetPropertyName(int prop_index);
-        [DllImport(@"libgnollhackdroid.so")]
-        public static extern IntPtr LibGetExtendedCommand(int idx);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetExtendedCommands")]
         public static extern IntPtr LibGetExtendedCommands();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibDumplogDateString")]
         public static extern IntPtr LibDumplogDateString(long startdate);
 
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetAnimationArraySize")]
         public static extern int LibGetAnimationArraySize();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetAnimationArrayElement")]
         public static extern AnimationDefinition LibGetAnimationArrayElement(int idx);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetEnlargementArrayElement")]
         public static extern EnlargementDefinition LibGetEnlargementArrayElement(int idx);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetReplacementArrayElement")]
         public static extern ReplacementDefinition LibGetReplacementArrayElement(int idx);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetAutoDrawArrayElement")]
         public static extern AutoDrawDefinition LibGetAutoDrawArrayElement(int idx);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetEnlargementArraySize")]
         public static extern int LibGetEnlargementArraySize();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetReplacementArraySize")]
         public static extern int LibGetReplacementArraySize();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGetAutoDrawArraySize")]
         public static extern int LibGetAutoDrawArraySize();
 
-        [DllImport(@"libgnollhackdroid.so")]
-        public static extern int get_tile_animation_index_from_glyph(int glyph);
+        [DllImport("__Internal", EntryPoint = "LibGetAutoDrawArraySize")]
+        public static extern int LibGetAutoDrawArraySize(int glyph);
 
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGlyphIsExplosion")]
         public static extern byte LibGlyphIsExplosion(int glyph);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGlyphIsZap")]
         public static extern byte LibGlyphIsZap(int glyph);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibGlyphIsAnyDying")]
         public static extern byte LibGlyphIsAnyDying(int glyph);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "maybe_get_animated_tile")]
         public static extern int maybe_get_animated_tile(int ntile, int tile_animation_idx, int play_type, long interval_counter, 
             out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, ref int autodraw_ptr);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibZapGlyphToCornerGlyph")]
         public static extern int LibZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibSwitchDemoVersion")]
         public static extern void LibSwitchDemoVersion(int state);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibSetPetMID")]
         public static extern void LibSetPetMID(uint m_id);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport("__Internal", EntryPoint = "LibChmod")]
         public static extern int LibChmod(string filename, uint mode);
-#endif
+
 
         private void LoadNativeLibrary(string libName)
         {
@@ -596,22 +593,22 @@ namespace GnollHackClient.iOS
 
         public void GetGlyphArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size)
         {
-            size1 = gltifl_size = 0;
-            gl2ti = gltifl = IntPtr.Zero;
-            //GetGlyph2Tile(out gl2ti, out size1);
-            //GetGlyphTileFlags(out gltifl, out gltifl_size);
+            //size1 = gltifl_size = 0;
+            //gl2ti = gltifl = IntPtr.Zero;
+            GetGlyph2Tile(out gl2ti, out size1);
+            GetGlyphTileFlags(out gltifl, out gltifl_size);
         }
         public void GetTileArrays(out IntPtr ti2an, out int size2, out IntPtr ti2en, out int size3, out IntPtr ti2ad, out int size4, 
             out IntPtr anoff_ptr, out int anoff_size, out IntPtr enoff_ptr, out int enoff_size, out IntPtr reoff_ptr, out int reoff_size)
         {
-            ti2an = ti2en = ti2ad = anoff_ptr = enoff_ptr = reoff_ptr = IntPtr.Zero;
-            size2 = size3= size4 = anoff_size = enoff_size = reoff_size = 0;
-            //GetTile2Animation(out ti2an, out size2);
-            //GetTile2Enlargement(out ti2en, out size3);
-            //GetTile2Autodraw(out ti2ad, out size4);
-            //GetAnimationOffsets(out anoff_ptr, out anoff_size);
-            //GetEnlargementOffsets(out enoff_ptr, out enoff_size);
-            //GetReplacementOffsets(out reoff_ptr, out reoff_size);
+            //ti2an = ti2en = ti2ad = anoff_ptr = enoff_ptr = reoff_ptr = IntPtr.Zero;
+            //size2 = size3= size4 = anoff_size = enoff_size = reoff_size = 0;
+            GetTile2Animation(out ti2an, out size2);
+            GetTile2Enlargement(out ti2en, out size3);
+            GetTile2Autodraw(out ti2ad, out size4);
+            GetAnimationOffsets(out anoff_ptr, out anoff_size);
+            GetEnlargementOffsets(out enoff_ptr, out enoff_size);
+            GetReplacementOffsets(out reoff_ptr, out reoff_size);
         }
         public int GetTotalTiles()
         {
@@ -724,57 +721,52 @@ namespace GnollHackClient.iOS
 
         public int Test()
         {
-            return 5; // LibTest();
+            return LibTest();
         }
         public string GetVersionString()
         {
-            //IntPtr resptr = LibGetVersionString();
-            //string ret = Marshal.PtrToStringAnsi(resptr);
-            //return ret;
-            return "";
+            IntPtr resptr = LibGetVersionString();
+            string ret = Marshal.PtrToStringAnsi(resptr);
+            return ret;
         }
         public string GetVersionId()
         {
-            //IntPtr resptr = LibGetVersionId();
-            //string ret = Marshal.PtrToStringAnsi(resptr);
-            //return ret;
-            return "";
+            IntPtr resptr = LibGetVersionId();
+            string ret = Marshal.PtrToStringAnsi(resptr);
+            return ret;
         }
         public string GetPropertyName(int prop_index)
         {
-            //IntPtr resptr = LibGetPropertyName(prop_index);
-            //string ret = Marshal.PtrToStringAnsi(resptr);
-            //return ret;
-            return "";
+            IntPtr resptr = LibGetPropertyName(prop_index);
+            string ret = Marshal.PtrToStringAnsi(resptr);
+            return ret;
         }
         public string DumplogDateString(long startdate)
         {
-            //IntPtr resptr = LibDumplogDateString(startdate);
-            //string ret = Marshal.PtrToStringAnsi(resptr);
-            //return ret;
-            return "";
+            IntPtr resptr = LibDumplogDateString(startdate);
+            string ret = Marshal.PtrToStringAnsi(resptr);
+            return ret;
         }
         public List<string> GetExtendedCommands()
         {
-            //List<string> ret = GHUtils.GetAllStringsFromZeroTerminatedArray(LibGetExtendedCommands(), 256);
-            //ret.Sort();
-            //return ret;
-            return new List<string>();
+            List<string> ret = GHUtils.GetAllStringsFromZeroTerminatedArray(LibGetExtendedCommands(), 256);
+            ret.Sort();
+            return ret;
         }
 
         public void SwitchDemoVersion(bool active)
         {
-            //LibSwitchDemoVersion(active ? 1 : 0);
+            LibSwitchDemoVersion(active ? 1 : 0);
         }
 
         public void SetPetMID(uint m_id)
         {
-            //LibSetPetMID(m_id);
+            LibSetPetMID(m_id);
         }
 
         public int Chmod(string filename, uint mode)
         {
-            int res = 0; // LibChmod(filename, mode);
+            int res = LibChmod(filename, mode);
             return res;
         }
 
@@ -786,111 +778,111 @@ namespace GnollHackClient.iOS
                 (ulong)(clientGame.ModernMode ? RunGnollHackFlags.ModernMode : 0) |
                 (ulong)(clientGame.CasualMode ? RunGnollHackFlags.CasualMode : 0);
             string lastusedplname = Preferences.Get("LastUsedPlayerName", "");
-            return 0;
-            //return RunGnollHack(
-            //    filesdir,
-            //    "",
-            //    "",
-            //    lastusedplname,
-            //    runflags,
-            //    0,
-            //    0,
-            //    clientGame.ClientCallback_InitWindows,
-            //    clientGame.ClientCallback_PlayerSelection,
-            //    clientGame.ClientCallback_AskName,
-            //    clientGame.ClientCallback_get_nh_event,
-            //    clientGame.ClientCallback_ExitWindows,
-            //    clientGame.ClientCallback_VoidConstCharDummy,
-            //    clientGame.ClientCallback_VoidVoidDummy,
-            //    clientGame.ClientCallback_CreateGHWindow,
-            //    clientGame.ClientCallback_ClearGHWindow,
-            //    clientGame.ClientCallback_DisplayGHWindow,
-            //    clientGame.ClientCallback_DestroyGHWindow,
-            //    clientGame.ClientCallback_Curs,
-            //    clientGame.ClientCallback_PutStrEx,
-            //    clientGame.ClientCallback_PutStrEx,
-            //    clientGame.ClientCallback_VoidConstCharBooleanDummy,
-            //    clientGame.ClientCallback_StartMenu,
-            //    clientGame.ClientCallback_AddMenu,
-            //    clientGame.ClientCallback_AddExtendedMenu,
-            //    clientGame.ClientCallback_EndMenu,
-            //    clientGame.ClientCallback_SelectMenu,
-            //    clientGame.ClientCallback_VoidIntDummy, /* no need for X-specific handling */
-            //    clientGame.ClientCallback_VoidVoidDummy,
-            //    clientGame.ClientCallback_VoidVoidDummy,
-            //    clientGame.ClientCallback_VoidVoidDummy,
-            //    /* If clipping is on */
-            //    clientGame.ClientCallback_Cliparound,
-            //    /* If positionbar is on */
-            //    clientGame.ClientCallback_VoidCharDummy,
-            //    clientGame.ClientCallback_PrintGlyph,
-            //    clientGame.ClientCallback_IssueGuiCommand,
-            //    clientGame.ClientCallback_RawPrint,
-            //    clientGame.ClientCallback_RawPrintBold,
-            //    clientGame.ClientCallback_nhgetch,
-            //    clientGame.ClientCallback_nh_poskey,
-            //    clientGame.ClientCallback_VoidVoidDummy,
-            //    clientGame.ClientCallback_IntVoidDummy,
-            //    clientGame.ClientCallback_YnQuestion,
-            //    clientGame.ClientCallback_GetLine,
-            //    clientGame.ClientCallback_IntVoidDummy,
-            //    clientGame.ClientCallback_VoidIntDummy,
-            //    clientGame.ClientCallback_DelayOutput,
-            //    clientGame.ClientCallback_DelayOutputMilliseconds,
-            //    clientGame.ClientCallback_DelayOutputIntervals,
 
-            //    clientGame.ClientCallback_VoidVoidDummy,
-            //    clientGame.ClientCallback_VoidIntDummy,
-            //    clientGame.ClientCallback_VoidIntDummy,
-            //    clientGame.ClientCallback_CharVoidDummy,
+            return RunGnollHack(
+                filesdir,
+                "",
+                "",
+                lastusedplname,
+                runflags,
+                0,
+                0,
+                clientGame.ClientCallback_InitWindows,
+                clientGame.ClientCallback_PlayerSelection,
+                clientGame.ClientCallback_AskName,
+                clientGame.ClientCallback_get_nh_event,
+                clientGame.ClientCallback_ExitWindows,
+                clientGame.ClientCallback_VoidConstCharDummy,
+                clientGame.ClientCallback_VoidVoidDummy,
+                clientGame.ClientCallback_CreateGHWindow,
+                clientGame.ClientCallback_ClearGHWindow,
+                clientGame.ClientCallback_DisplayGHWindow,
+                clientGame.ClientCallback_DestroyGHWindow,
+                clientGame.ClientCallback_Curs,
+                clientGame.ClientCallback_PutStrEx,
+                clientGame.ClientCallback_PutStrEx,
+                clientGame.ClientCallback_VoidConstCharBooleanDummy,
+                clientGame.ClientCallback_StartMenu,
+                clientGame.ClientCallback_AddMenu,
+                clientGame.ClientCallback_AddExtendedMenu,
+                clientGame.ClientCallback_EndMenu,
+                clientGame.ClientCallback_SelectMenu,
+                clientGame.ClientCallback_VoidIntDummy, /* no need for X-specific handling */
+                clientGame.ClientCallback_VoidVoidDummy,
+                clientGame.ClientCallback_VoidVoidDummy,
+                clientGame.ClientCallback_VoidVoidDummy,
+                /* If clipping is on */
+                clientGame.ClientCallback_Cliparound,
+                /* If positionbar is on */
+                clientGame.ClientCallback_VoidCharDummy,
+                clientGame.ClientCallback_PrintGlyph,
+                clientGame.ClientCallback_IssueGuiCommand,
+                clientGame.ClientCallback_RawPrint,
+                clientGame.ClientCallback_RawPrintBold,
+                clientGame.ClientCallback_nhgetch,
+                clientGame.ClientCallback_nh_poskey,
+                clientGame.ClientCallback_VoidVoidDummy,
+                clientGame.ClientCallback_IntVoidDummy,
+                clientGame.ClientCallback_YnQuestion,
+                clientGame.ClientCallback_GetLine,
+                clientGame.ClientCallback_IntVoidDummy,
+                clientGame.ClientCallback_VoidIntDummy,
+                clientGame.ClientCallback_DelayOutput,
+                clientGame.ClientCallback_DelayOutputMilliseconds,
+                clientGame.ClientCallback_DelayOutputIntervals,
 
-            //    clientGame.ClientCallback_VoidVoidDummy,
-            //    clientGame.ClientCallback_VoidVoidDummy,
-            //    clientGame.ClientCallback_OutRip,
-            //    clientGame.ClientCallback_PreferenceUpdate,
-            //    clientGame.ClientCallback_GetMsgHistory,
-            //    clientGame.ClientCallback_PutMsgHistory,
-            //    clientGame.ClientCallback_StatusInit,
-            //    clientGame.ClientCallback_StatusFinish,
-            //    clientGame.ClientCallback_StatusEnable,
-            //    clientGame.ClientCallback_StatusUpdate,
-            //    clientGame.ClientCallback_BooleanVoidDummy,
-            //    clientGame.ClientCallback_VoidVoidDummy,
-            //    clientGame.ClientCallback_VoidUlongDummy,
-            //    clientGame.ClientCallback_OpenSpecialView,
-            //    clientGame.ClientCallback_StopAllSounds,
-            //    clientGame.ClientCallback_PlayImmediateSound,
-            //    clientGame.ClientCallback_PlayOccupationAmbient,
-            //    clientGame.ClientCallback_PlayEffectAmbient,
-            //    clientGame.ClientCallback_SetEffectAmbientVolume,
-            //    clientGame.ClientCallback_PlayMusic,
-            //    clientGame.ClientCallback_PlayLevelAmbient,
-            //    clientGame.ClientCallback_PlayEnvironmentAmbient,
-            //    clientGame.ClientCallback_AdjustGeneralVolumes,
-            //    clientGame.ClientCallback_AddAmbientSound,
-            //    clientGame.ClientCallback_DeleteAmbientSound,
-            //    clientGame.ClientCallback_SetAmbientSoundVolume,
-            //    clientGame.ClientCallback_ClearContextMenu,
-            //    clientGame.ClientCallback_AddContextMenu,
-            //    clientGame.ClientCallback_UpdateStatusButton,
-            //    clientGame.ClientCallback_ToggleAnimationTimer,
-            //    clientGame.ClientCallback_DisplayFloatingText,
-            //    clientGame.ClientCallback_DisplayScreenText,
-            //    clientGame.ClientCallback_DisplayPopupText,
-            //    clientGame.ClientCallback_DisplayGUIEffect,
-            //    clientGame.ClientCallback_UpdateCursor,
-            //    clientGame.ClientCallback_UIHasInput,
-            //    clientGame.ClientCallback_ExitHack,
-            //    clientGame.ClientCallback_GetCwd,
-            //    clientGame.ClientCallback_MessageBox,
-            //    //clientGame.ClientCallback_VoidIntDummy,
-            //    //clientGame.ClientCallback_VoidIntDummy,
+                clientGame.ClientCallback_VoidVoidDummy,
+                clientGame.ClientCallback_VoidIntDummy,
+                clientGame.ClientCallback_VoidIntDummy,
+                clientGame.ClientCallback_CharVoidDummy,
 
-            //    clientGame.ClientCallback_FreeMemory,
-            //    clientGame.ClientCallback_ReportPlayerName,
-            //    clientGame.ClientCallback_SendObjectData,
-            //    clientGame.ClientCallback_SendMonsterData
-            //    );
+                clientGame.ClientCallback_VoidVoidDummy,
+                clientGame.ClientCallback_VoidVoidDummy,
+                clientGame.ClientCallback_OutRip,
+                clientGame.ClientCallback_PreferenceUpdate,
+                clientGame.ClientCallback_GetMsgHistory,
+                clientGame.ClientCallback_PutMsgHistory,
+                clientGame.ClientCallback_StatusInit,
+                clientGame.ClientCallback_StatusFinish,
+                clientGame.ClientCallback_StatusEnable,
+                clientGame.ClientCallback_StatusUpdate,
+                clientGame.ClientCallback_BooleanVoidDummy,
+                clientGame.ClientCallback_VoidVoidDummy,
+                clientGame.ClientCallback_VoidUlongDummy,
+                clientGame.ClientCallback_OpenSpecialView,
+                clientGame.ClientCallback_StopAllSounds,
+                clientGame.ClientCallback_PlayImmediateSound,
+                clientGame.ClientCallback_PlayOccupationAmbient,
+                clientGame.ClientCallback_PlayEffectAmbient,
+                clientGame.ClientCallback_SetEffectAmbientVolume,
+                clientGame.ClientCallback_PlayMusic,
+                clientGame.ClientCallback_PlayLevelAmbient,
+                clientGame.ClientCallback_PlayEnvironmentAmbient,
+                clientGame.ClientCallback_AdjustGeneralVolumes,
+                clientGame.ClientCallback_AddAmbientSound,
+                clientGame.ClientCallback_DeleteAmbientSound,
+                clientGame.ClientCallback_SetAmbientSoundVolume,
+                clientGame.ClientCallback_ClearContextMenu,
+                clientGame.ClientCallback_AddContextMenu,
+                clientGame.ClientCallback_UpdateStatusButton,
+                clientGame.ClientCallback_ToggleAnimationTimer,
+                clientGame.ClientCallback_DisplayFloatingText,
+                clientGame.ClientCallback_DisplayScreenText,
+                clientGame.ClientCallback_DisplayPopupText,
+                clientGame.ClientCallback_DisplayGUIEffect,
+                clientGame.ClientCallback_UpdateCursor,
+                clientGame.ClientCallback_UIHasInput,
+                clientGame.ClientCallback_ExitHack,
+                clientGame.ClientCallback_GetCwd,
+                clientGame.ClientCallback_MessageBox,
+                //clientGame.ClientCallback_VoidIntDummy,
+                //clientGame.ClientCallback_VoidIntDummy,
+
+                clientGame.ClientCallback_FreeMemory,
+                clientGame.ClientCallback_ReportPlayerName,
+                clientGame.ClientCallback_SendObjectData,
+                clientGame.ClientCallback_SendMonsterData
+                );
 
         }
     }

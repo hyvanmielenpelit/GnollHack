@@ -106,7 +106,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.Android", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.iOS", "..\winclisrv\GnollHackClient\GnollHackClient.iOS\GnollHackClient.iOS.csproj", "{0BBCFE15-9A3B-4175-A543-24B39C812D9E}"
 	ProjectSection(ProjectDependencies) = postProject
-		{AD147B80-A146-43D4-AA33-CA2A83823871} = {AD147B80-A146-43D4-AA33-CA2A83823871}
 		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291} = {F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}
 	EndProjectSection
 EndProject
@@ -151,8 +150,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceFileTimeStamper", "SourceFileTimeStamper\SourceFileTimeStamper.csproj", "{3469E673-1318-4731-9168-23F32D98FB3E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnollhackios", "gnollhackios.vcxproj", "{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GnollHackClient.iOS.Bindings", "..\winclisrv\GnollHackClient\GnollHackClient.iOS.Bindings\GnollHackClient.iOS.Bindings.csproj", "{AD147B80-A146-43D4-AA33-CA2A83823871}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -910,34 +907,6 @@ Global
 		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Win32.Build.0 = Release|x86
 		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|x64.ActiveCfg = Release|x64
 		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|x64.Build.0 = Release|x64
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|ARM.Build.0 = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|Win32.Build.0 = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Debug|x64.Build.0 = Debug|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|ARM.ActiveCfg = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|ARM.Build.0 = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|ARM64.Build.0 = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|iPhone.Build.0 = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|Win32.ActiveCfg = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|Win32.Build.0 = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|x64.ActiveCfg = Release|Any CPU
-		{AD147B80-A146-43D4-AA33-CA2A83823871}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

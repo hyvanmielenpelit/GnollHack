@@ -382,6 +382,9 @@
     <ClCompile Include="$(SysShareDir)posixregex.c">
       <Filter>Common Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(LibShareDir)gnhcommon.c">
+      <Filter>Android Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(IncDir)action.h">
@@ -647,6 +650,9 @@
     </ClInclude>
     <ClInclude Include="$(IncDir)unixconf.h">
       <Filter>Common Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibShareDir)gnhcommon.h">
+      <Filter>Android Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
