@@ -460,7 +460,7 @@
         ((mon)->female ? female_mon_to_glyph(mon, rng) : mon_to_glyph(mon, rng)) \
    ))
 
-#define any_seen_mon_to_glyph(mon, rng) (canseemon(mon) ? any_mon_to_glyph(mon, rng) : GLYPH_INVISIBLE)
+#define any_seen_mon_to_glyph(mon, rng) (canseemon(mon) || is_tame(mon) ? any_mon_to_glyph(mon, rng) : GLYPH_INVISIBLE)
 
 #define is_obj_activated(obj) \
   ((obj)->lamplit || (obj)->invokeon || (obj)->detectioncount > 0)

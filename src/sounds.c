@@ -203,8 +203,8 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isshk || !mtmp->mextra || !ESHK(mtmp))
         return 0;
 
-    You("try to appease %s by offering %s some compensation.", mon_nam(mtmp), mhim(mtmp));
-    pline("%s says:", Monnam(mtmp));
+    You("try to appease %s by offering %s some compensation.", noittame_mon_nam(mtmp), mhim(mtmp));
+    pline("%s says:", noittame_Monnam(mtmp));
     int res = do_chat_shk_reconciliation(mtmp);
     return res;
 }
@@ -2057,7 +2057,7 @@ struct monst* mtmp;
         char Mhis[BUFSIZ];
         strcpy(Mhis, mhis(mtmp));
         *Mhis = highc(*Mhis);
-        pline("%s cannot answer you. %s voice is gone!", Monnam(mtmp), Mhis);
+        pline("%s cannot answer you. %s voice is gone!", noittame_Monnam(mtmp), Mhis);
         return 0;
     }
 
@@ -2081,7 +2081,7 @@ const char* nomoodstr;
     else if (!is_peaceful(mtmp) && !is_quantum_mechanic(mtmp->data)) 
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("%s is in no mood for %s.", Monnam(mtmp), nomoodstr);
+        pline("%s is in no mood for %s.", noittame_Monnam(mtmp), nomoodstr);
         return 0;
     }
 
@@ -2137,7 +2137,7 @@ dochat()
         if (!mon_can_move(u.usteed)) 
         {
             play_sfx_sound(SFX_MONSTER_DOES_NOT_NOTICE);
-            pline("%s seems not to notice you.", Monnam(u.usteed));
+            pline("%s seems not to notice you.", noittame_Monnam(u.usteed));
             return 1;
         } else
             return domonnoise(u.usteed, FALSE);
@@ -2193,13 +2193,16 @@ dochat()
         return 0;
     }
 
-    if (!mtmp || mtmp->mundetected || !canspotmon(mtmp) || M_AP_TYPE(mtmp) == M_AP_FURNITURE
+    if (!mtmp || mtmp->mundetected || (!canspotmon(mtmp) && !is_tame(mtmp)) || M_AP_TYPE(mtmp) == M_AP_FURNITURE
         || M_AP_TYPE(mtmp) == M_AP_OBJECT)
     {
         play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
-        pline1("There is no-one to talk to.");
+        pline1(Blind ? "You cannot see there anyone to talk to." : "There is no-one to talk to.");
         return 0;
     }
+
+    if (!canspotmon(mtmp) && is_tame(mtmp))
+        pline("You cannot see anyone but then you feel %s's familiar presence there.", noit_mon_nam(mtmp));
 
 #if 0
     /* Non-speaking monster */
@@ -3003,7 +3006,7 @@ dochat()
         if (is_animal(mtmp->data))
         {
             /* Petting */
-            Sprintf(available_chat_list[chatnum].name, "Pet %s", mon_nam(mtmp));
+            Sprintf(available_chat_list[chatnum].name, "Pet %s", noittame_mon_nam(mtmp));
             available_chat_list[chatnum].function_ptr = &do_chat_pet_pet;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3022,9 +3025,9 @@ dochat()
         {
             /* Feeding */
             if(humanoid(mtmp->data))
-                Sprintf(available_chat_list[chatnum].name, "Give food to %s", mon_nam(mtmp));
+                Sprintf(available_chat_list[chatnum].name, "Give food to %s", noittame_mon_nam(mtmp));
             else
-                Sprintf(available_chat_list[chatnum].name, "Feed %s", mon_nam(mtmp));
+                Sprintf(available_chat_list[chatnum].name, "Feed %s", noittame_mon_nam(mtmp));
             available_chat_list[chatnum].function_ptr = &do_chat_feed;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3041,7 +3044,7 @@ dochat()
 
         if (is_tame(mtmp) && invent && is_peaceful(mtmp)) /*  && !mtmp->issummoned */
         {
-            Sprintf(available_chat_list[chatnum].name, "Give items to %s", mon_nam(mtmp));
+            Sprintf(available_chat_list[chatnum].name, "Give items to %s", noittame_mon_nam(mtmp));
             available_chat_list[chatnum].function_ptr = &do_chat_pet_giveitems;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
             available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3057,7 +3060,7 @@ dochat()
 
             if (is_packmule(mtmp->data) && mtmp->minvent)
             {
-                Sprintf(available_chat_list[chatnum].name, "Take items from %s", mon_nam(mtmp));
+                Sprintf(available_chat_list[chatnum].name, "Take items from %s", noittame_mon_nam(mtmp));
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_takeitems;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
@@ -3641,7 +3644,7 @@ dochat()
                 chatnum++;
 
                 char sbuf[BUFSIZ];
-                Sprintf(sbuf, "Sell nuggets of ore to %s", mon_nam(mtmp));
+                Sprintf(sbuf, "Sell nuggets of ore to %s", noittame_mon_nam(mtmp));
                 strcpy(available_chat_list[chatnum].name, sbuf);
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_sell_ore;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -3905,7 +3908,7 @@ dochat()
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_GEMS_AND_STONES)
                 {
                     char sbuf[BUFSIZ];
-                    Sprintf(sbuf, "Sell gems and stones to %s", mon_nam(mtmp));
+                    Sprintf(sbuf, "Sell gems and stones to %s", noittame_mon_nam(mtmp));
                     strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_gems_and_stones;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -3924,7 +3927,7 @@ dochat()
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_DILITHIUM_CRYSTALS)
                 {
                     char sbuf[BUFSIZ];
-                    Sprintf(sbuf, "Sell dilithium crystals to %s", mon_nam(mtmp));
+                    Sprintf(sbuf, "Sell dilithium crystals to %s", noittame_mon_nam(mtmp));
                     strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_dilithium_crystals;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -3943,7 +3946,7 @@ dochat()
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_SPELLBOOKS)
                 {
                     char sbuf[BUFSIZ];
-                    Sprintf(sbuf, "Sell spellbooks to %s", mon_nam(mtmp));
+                    Sprintf(sbuf, "Sell spellbooks to %s", noittame_mon_nam(mtmp));
                     strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_spellbooks;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -4126,7 +4129,7 @@ struct monst* mtmp;
 
     if (Deaf)
     {
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", Monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", noittame_Monnam(mtmp));
         return 1;
     }
 
@@ -4151,7 +4154,7 @@ struct monst* mtmp;
         {
             if (muteshk(mtmp))
             {
-                pline("%s does not respond.", Monnam(mtmp));
+                pline("%s does not respond.", noittame_Monnam(mtmp));
                 return 1;
             }
 
@@ -4190,12 +4193,12 @@ struct monst* mtmp;
         {
             if (has_mname(mtmp))
             {
-                Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), mon_nam(mtmp));
+                Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), noit_mon_nam(mtmp));
                 mtmp->u_know_mname = 1;
             }
             else
             {
-                Sprintf(ansbuf, "I am %s.", mon_nam(mtmp));
+                Sprintf(ansbuf, "I am %s.", noit_mon_nam(mtmp));
             }
         }
         popup_talk_line_with_know_mname(mtmp, ansbuf, saved_know_mname);
@@ -4287,9 +4290,9 @@ struct monst* mtmp;
     else if (mtmp->m_id == quest_status.leader_m_id && msound > MS_ANIMAL)
     {
         if (mtmp->data->mtitle && *mtmp->data->mtitle)
-            Sprintf(ansbuf, "I am %s, %s.", mon_nam(mtmp), mtmp->data->mtitle);
+            Sprintf(ansbuf, "I am %s, %s.", noit_mon_nam(mtmp), mtmp->data->mtitle);
         else
-            Sprintf(ansbuf, "I am %s, your quest leader.", mon_nam(mtmp));
+            Sprintf(ansbuf, "I am %s, your quest leader.", noit_mon_nam(mtmp));
     
         play_voice_quest_leader_whoareyou(mtmp);
         popup_talk_line(mtmp, ansbuf);
@@ -4429,7 +4432,7 @@ struct monst* mtmp;
     }
     else if (msound == MS_NEMESIS)
     {
-        Sprintf(ansbuf, "I am %s, your quest nemesis. Tremble before me!", mon_nam(mtmp));
+        Sprintf(ansbuf, "I am %s, your quest nemesis. Tremble before me!", noit_mon_nam(mtmp));
         popup_talk_line(mtmp, ansbuf);
     }
     else if (msound == MS_DJINNI)
@@ -4497,7 +4500,7 @@ struct monst* mtmp;
 
     if (Deaf)
     {
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", Monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", noittame_Monnam(mtmp));
         return 1;
     }
 
@@ -4505,7 +4508,7 @@ struct monst* mtmp;
     {
         char ansbuf[BUFSZ];
         play_monster_special_dialogue_line(mtmp, ORACLE_LINE_THE_WISDOM_OF_DELPHI_SHALL_BE_CONVEYED_TO_THEE_BY_CONSULTATION);
-        pline("%s answers:", Monnam(mtmp));
+        pline("%s answers:", noittame_Monnam(mtmp));
         Sprintf(ansbuf, "The wisdom of Delphi shall be conveyed to thee by consultation.");
         popup_talk_line(mtmp, ansbuf);
         mtmp->rumorsleft = -1;
@@ -4526,7 +4529,7 @@ struct monst* mtmp;
     if (mtmp->rumorsleft == 0 || !rumor)
     {
         play_voice_monster_advice(mtmp, FALSE);
-        pline("%s answers:", Monnam(mtmp));
+        pline("%s answers:", noittame_Monnam(mtmp));
         Sprintf(ansbuf, "Unfortunately, I don't have any %s advice for you.", mtmp->told_rumor ? "further" : "useful");
         popup_talk_line(mtmp, ansbuf);
         mtmp->rumorsleft = 0;
@@ -4534,7 +4537,7 @@ struct monst* mtmp;
     else
     {
         play_voice_monster_advice(mtmp, TRUE);
-        pline("%s answers:", Monnam(mtmp));
+        pline("%s answers:", noittame_Monnam(mtmp));
         if (mtmp->told_rumor)
             Sprintf(ansbuf, "Let me think. Maybe keep this in mind%s", iflags.using_gui_sounds || Deaf ? "." : ":");
         else
@@ -4544,7 +4547,7 @@ struct monst* mtmp;
         /* Tell a rumor */
         if (iflags.using_gui_sounds || Deaf)
         {
-            pline("(%s hands a note over to you.)  It reads:", Monnam(mtmp));
+            pline("(%s hands a note over to you.)  It reads:", noittame_Monnam(mtmp));
             u.uconduct.literate++;
         }
         verbalize("%s", rumor);
@@ -4569,14 +4572,14 @@ struct monst* mtmp;
     char pbuf[BUFSZ] = "";
     if (mtmp->mtame > 5 || (mtmp->mtame > 0 && rn2(mtmp->mtame + 1)))
     {
-        Sprintf(pbuf, "%s sits down!", Monnam(mtmp));
+        Sprintf(pbuf, "%s sits down!", noittame_Monnam(mtmp));
         mtmp->mstaying = 2 + rn2(5);
         mtmp->mwantstomove = 0;
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
     }
     else
     {
-        Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+        Sprintf(pbuf, "%s stares at you but does nothing.", noittame_Monnam(mtmp));
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
     }
 
@@ -4597,14 +4600,14 @@ struct monst* mtmp;
     char pbuf[BUFSZ] = "";
     if (givepawsuccess)
     {
-        Sprintf(pbuf, "%s gives you the paw!", Monnam(mtmp));
+        Sprintf(pbuf, "%s gives you the paw!", noittame_Monnam(mtmp));
         if (mtmp->mtame > 0 && mtmp->mtame < 20 && !rn2(mtmp->mtame + 20))
             mtmp->mtame++;
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
     }
     else
     {
-        Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+        Sprintf(pbuf, "%s stares at you but does nothing.", noittame_Monnam(mtmp));
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
     }
 
@@ -4626,19 +4629,19 @@ struct monst* mtmp;
         switch (mtmp->data->msound)
         {
         case MS_BARK:
-            Sprintf(pbuf, "%s woofs.", Monnam(mtmp));
+            Sprintf(pbuf, "%s woofs.", noittame_Monnam(mtmp));
             break;
         case MS_MEW:
-            Sprintf(pbuf, "%s mews softly.", Monnam(mtmp));
+            Sprintf(pbuf, "%s mews softly.", noittame_Monnam(mtmp));
             break;
         case MS_NEIGH:
-            Sprintf(pbuf, "%s snorts.", Monnam(mtmp));
+            Sprintf(pbuf, "%s snorts.", noittame_Monnam(mtmp));
             break;
         case MS_BLEAT:
-            Sprintf(pbuf, "%s baas.", Monnam(mtmp));
+            Sprintf(pbuf, "%s baas.", noittame_Monnam(mtmp));
             break;
         default:
-            Sprintf(pbuf, "%s seems to appreciate your kind words!", Monnam(mtmp));
+            Sprintf(pbuf, "%s seems to appreciate your kind words!", noittame_Monnam(mtmp));
             break;
         }
 
@@ -4654,7 +4657,7 @@ struct monst* mtmp;
         domonnoise(mtmp, FALSE);
     else
     {
-        Sprintf(pbuf, "%s does not seem to react to your words.", Monnam(mtmp));
+        Sprintf(pbuf, "%s does not seem to react to your words.", noittame_Monnam(mtmp));
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
     }
     return 1;
@@ -4674,12 +4677,12 @@ struct monst* mtmp;
         if (!rn2(is_domestic(mtmp->data) ? 20 : 200) && !(mtmp->data->mflags2 & M2_HOSTILE) && !(mtmp->data->geno & G_UNIQ) && !mtmp->iswiz && mtmp->cham < LOW_PM)
         {
             mtmp->mpeaceful = 1;
-            Sprintf(pbuf, "%s seems to appreciate your gesture!", Monnam(mtmp));
+            Sprintf(pbuf, "%s seems to appreciate your gesture!", noittame_Monnam(mtmp));
             color = CLR_MSG_POSITIVE;
         }
         else
         {
-            Sprintf(pbuf, "%s does not seem to appreciate your gesture!", Monnam(mtmp));
+            Sprintf(pbuf, "%s does not seem to appreciate your gesture!", noittame_Monnam(mtmp));
             color = CLR_MSG_NEGATIVE;
         }
 
@@ -4691,20 +4694,20 @@ struct monst* mtmp;
         {
             mtmp->mpeaceful = 1;
             tamedog(mtmp, (struct obj*)0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, TRUE, FALSE);
-            Sprintf(pbuf, "%s seems to appreciate your gesture!", Monnam(mtmp));
+            Sprintf(pbuf, "%s seems to appreciate your gesture!", noittame_Monnam(mtmp));
             popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
         }
         else
         {
             if (!rn2(is_domestic(mtmp->data) ? 40 : 10) && !(mtmp->data->mflags2 & M2_PEACEFUL))
             {
-                Sprintf(pbuf, "%s does not seem to appreciate your gesture!", Monnam(mtmp));
+                Sprintf(pbuf, "%s does not seem to appreciate your gesture!", noittame_Monnam(mtmp));
                 setmangry(mtmp, FALSE);
                 popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_NEGATIVE, TRUE, FALSE);
             }
             else
             {
-                Sprintf(pbuf, "%s seems to ignore your gesture!", Monnam(mtmp));
+                Sprintf(pbuf, "%s seems to ignore your gesture!", noittame_Monnam(mtmp));
                 popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
             }
         }
@@ -4716,19 +4719,19 @@ struct monst* mtmp;
         switch (mtmp->data->msound)
         {
         case MS_BARK:
-            Sprintf(pbuf, "%s grunts softly in appreciation!", Monnam(mtmp));
+            Sprintf(pbuf, "%s grunts softly in appreciation!", noittame_Monnam(mtmp));
             break;
         case MS_MEW:
-            Sprintf(pbuf, "%s purrs in appreciation!", Monnam(mtmp));
+            Sprintf(pbuf, "%s purrs in appreciation!", noittame_Monnam(mtmp));
             break;
         case MS_NEIGH:
-            Sprintf(pbuf, "%s snorts in appreciation!", Monnam(mtmp));
+            Sprintf(pbuf, "%s snorts in appreciation!", noittame_Monnam(mtmp));
             break;
         case MS_BLEAT:
-            Sprintf(pbuf, "%s baas in appreciation!", Monnam(mtmp));
+            Sprintf(pbuf, "%s baas in appreciation!", noittame_Monnam(mtmp));
             break;
         default:
-            Sprintf(pbuf, "%s seems to appreciate your gesture!", Monnam(mtmp));
+            Sprintf(pbuf, "%s seems to appreciate your gesture!", noittame_Monnam(mtmp));
             break;
         }
 
@@ -4744,7 +4747,7 @@ struct monst* mtmp;
         domonnoise(mtmp, FALSE);
     else
     {
-        Sprintf(pbuf, "%s does not seem to react to your gesture.", Monnam(mtmp));
+        Sprintf(pbuf, "%s does not seem to react to your gesture.", noittame_Monnam(mtmp));
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
     }
     newsym(mtmp->mx, mtmp->my);
@@ -4765,19 +4768,19 @@ struct monst* mtmp;
     if (mtmp->mtame > 5 || (mtmp->mtame > 0 && rn2(mtmp->mtame + 1)))
     {
         if (is_steed(mtmp->data))
-            Sprintf(pbuf, "%s looks determined not to move anywhere.", Monnam(mtmp));
+            Sprintf(pbuf, "%s looks determined not to move anywhere.", noittame_Monnam(mtmp));
         else if is_animal(mtmp->data)
-            Sprintf(pbuf, "%s sits down and looks determined not to move anywhere.", Monnam(mtmp));
+            Sprintf(pbuf, "%s sits down and looks determined not to move anywhere.", noittame_Monnam(mtmp));
         else if (is_speaking_monster(mtmp->data))
-            Sprintf(pbuf, "%s starts to hold its position.", Monnam(mtmp));
+            Sprintf(pbuf, "%s starts to hold its position.", noittame_Monnam(mtmp));
         else
-            Sprintf(pbuf, "%s starts to hold its position.", Monnam(mtmp));
+            Sprintf(pbuf, "%s starts to hold its position.", noittame_Monnam(mtmp));
 
         mtmp->mstaying = 25 + rn2(20);
         mtmp->mwantstomove = 0;
     }
     else
-        Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+        Sprintf(pbuf, "%s stares at you but does nothing.", noittame_Monnam(mtmp));
 
     popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
 
@@ -4796,19 +4799,19 @@ struct monst* mtmp;
     if (mtmp->mtame > 0 && mtmp->mstaying)
     {
         if (is_steed(mtmp->data))
-            Sprintf(pbuf, "%s stops staying put.", Monnam(mtmp));
+            Sprintf(pbuf, "%s stops staying put.", noittame_Monnam(mtmp));
         else if is_animal(mtmp->data)
-            Sprintf(pbuf, "%s stands up.", Monnam(mtmp));
+            Sprintf(pbuf, "%s stands up.", noittame_Monnam(mtmp));
         else if (is_speaking_monster(mtmp->data))
-            Sprintf(pbuf, "%s stops holding its position.", Monnam(mtmp));
+            Sprintf(pbuf, "%s stops holding its position.", noittame_Monnam(mtmp));
         else
-            Sprintf(pbuf, "%s stops holding its position.", Monnam(mtmp));
+            Sprintf(pbuf, "%s stops holding its position.", noittame_Monnam(mtmp));
 
         mtmp->mstaying = 0;
         mtmp->mwantstomove = 1;
     }
     else
-        Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+        Sprintf(pbuf, "%s stares at you but does nothing.", noittame_Monnam(mtmp));
 
     popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
 
@@ -4832,9 +4835,9 @@ struct monst* mtmp;
         mtmp->yell_y = u.uy;
 
         if (mtmp->mcomingtou > oldvalue)
-            Sprintf(pbuf, "%s is now following you more closely.", Monnam(mtmp));
+            Sprintf(pbuf, "%s is now following you more closely.", noittame_Monnam(mtmp));
         else
-            Sprintf(pbuf, "%s %s.", Monnam(mtmp), has_head(mtmp->data) ? "nods" : "looks perplexed");
+            Sprintf(pbuf, "%s %s.", noittame_Monnam(mtmp), has_head(mtmp->data) ? "nods" : "looks perplexed");
 
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
 
@@ -4860,9 +4863,9 @@ struct monst* mtmp;
         mtmp->yell_y = 0;
 
         if (oldvalue > 0)
-            Sprintf(pbuf, "%s stops following you.", Monnam(mtmp));
+            Sprintf(pbuf, "%s stops following you.", noittame_Monnam(mtmp));
         else
-            Sprintf(pbuf, "%s looks perplexed.", Monnam(mtmp));
+            Sprintf(pbuf, "%s looks perplexed.", noittame_Monnam(mtmp));
 
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
 
@@ -4914,7 +4917,7 @@ struct monst* mtmp;
     else
     {
         char pbuf[BUFSZ] = "";
-        Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+        Sprintf(pbuf, "%s stares at you but does nothing.", noittame_Monnam(mtmp));
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
     }
 
@@ -4961,7 +4964,7 @@ struct monst* mtmp;
                         otmp = splitobj(obj, carryamt);
 
                     if (cansee(omx, omy) && flags.verbose)
-                        pline("%s picks up %s.", Monnam(mtmp),
+                        pline("%s picks up %s.", noittame_Monnam(mtmp),
                             distant_name(otmp, doname));
 
                     obj_extract_self(otmp);
@@ -4975,13 +4978,13 @@ struct monst* mtmp;
         }
         if(itemspicked == 0 && shkpreaction != 2)
         {
-            Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+            Sprintf(pbuf, "%s stares at you but does nothing.", noittame_Monnam(mtmp));
             popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
         }
     }
     else
     {
-        Sprintf(pbuf, "%s stares at you but does nothing.", Monnam(mtmp));
+        Sprintf(pbuf, "%s stares at you but does nothing.", noittame_Monnam(mtmp));
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
     }
 
@@ -5003,7 +5006,7 @@ struct monst* mtmp;
     menu_item* pick_list;
 
     char qbuf[BUFSIZ] = "";
-    Sprintf(qbuf, "What would you like to give to %s?", mon_nam(mtmp));
+    Sprintf(qbuf, "What would you like to give to %s?", noittame_mon_nam(mtmp));
 
     /* should coordinate with perm invent, maybe not show worn items */
     n = query_objlist(qbuf, &invent,
@@ -5044,12 +5047,12 @@ struct monst* mtmp;
                 if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    You("cannot give %s to %s. You are wearing it.", doname(otmp), mon_nam(mtmp));
+                    You("cannot give %s to %s. You are wearing it.", doname(otmp), noittame_mon_nam(mtmp));
                 }
                 else if (carryamt == 0 || carryamt < otmp->quan)
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    pline("%s cannot carry %s.", Monnam(mtmp), yname(otmp));
+                    pline("%s cannot carry %s.", noittame_Monnam(mtmp), yname(otmp));
                 }
                 else
                 {
@@ -5060,7 +5063,7 @@ struct monst* mtmp;
                         if (flags.verbose)
                         {
                             play_simple_object_sound_at_location(otmp, u.ux, u.uy, OBJECT_SOUND_TYPE_GIVE);
-                            You("give %s to %s.", doname(otmp), mon_nam(mtmp));
+                            You("give %s to %s.", doname(otmp), noittame_mon_nam(mtmp));
                         }
 
                         if (*u.ushops || otmp->unpaid)
@@ -5096,7 +5099,7 @@ struct monst* mtmp;
     struct obj* otmp, * otmp2;
     menu_item* pick_list;
     char qbuf[BUFSIZ] = "";
-    Sprintf(qbuf, "What would you like to feed to %s?", mon_nam(mtmp));
+    Sprintf(qbuf, "What would you like to feed to %s?", noittame_mon_nam(mtmp));
 
     add_valid_menu_class(0); /* clear any classes already there */
     add_valid_menu_class(FOOD_CLASS);
@@ -5159,11 +5162,11 @@ struct monst* mtmp;
                 if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
                 {
                     play_sfx_sound(SFX_GENERAL_CANNOT);
-                    You("cannot pass %s over to %s. You are wearing it.", an(singular(otmp, cxname)), mon_nam(mtmp));
+                    You("cannot pass %s over to %s. You are wearing it.", an(singular(otmp, cxname)), noittame_mon_nam(mtmp));
                 }
                 else
                 {
-                    You("offer %s to %s.", an(singular(otmp, cxname)), mon_nam(mtmp));
+                    You("offer %s to %s.", an(singular(otmp, cxname)), noittame_mon_nam(mtmp));
                     n_given++;
                     int releasesuccess = TRUE;
                     if (mon_can_move(mtmp) && !mtmp->meating
@@ -5184,7 +5187,7 @@ struct monst* mtmp;
                         else
                         {
                             place_object(otmp, mtmp->mx, mtmp->my);
-                            pline("%s eats %s, but does not seem to appreciate it much.", Monnam(mtmp), the(cxname(otmp)));
+                            pline("%s eats %s, but does not seem to appreciate it much.", noittame_Monnam(mtmp), the(cxname(otmp)));
                             dog_food_after_effect(mtmp, otmp, canseemon(mtmp));
                             if (otmp->unpaid)
                             {
@@ -5201,13 +5204,13 @@ struct monst* mtmp;
                     else
                     {
                         if (!mon_can_move(mtmp))
-                            pline("%s does not seem to be able to move in order to eat %s.", Monnam(mtmp), the(singular(otmp, cxname)));
+                            pline("%s does not seem to be able to move in order to eat %s.", noittame_Monnam(mtmp), the(singular(otmp, cxname)));
                         else if (mtmp->meating)
-                            pline("%s is already eating something else.", Monnam(mtmp));
+                            pline("%s is already eating something else.", noittame_Monnam(mtmp));
                         else if (!releasesuccess)
                             ; /* Nothing here */
                         else
-                            pline("%s refuses to eat %s.", Monnam(mtmp), the(singular(otmp, cxname)));
+                            pline("%s refuses to eat %s.", noittame_Monnam(mtmp), the(singular(otmp, cxname)));
 
                     }
                 }
@@ -5334,9 +5337,9 @@ struct monst* mtmp;
         {
             play_sfx_sound(SFX_GENERAL_WELDED);
             if (otmp->owornmask & W_SADDLE)
-                You_ex(ATR_NONE, CLR_MSG_WARNING, "try to remove %s from %s, but you can't. It's cursed!", cxname(otmp), mon_nam(mtmp));
+                You_ex(ATR_NONE, CLR_MSG_WARNING, "try to remove %s from %s, but you can't. It's cursed!", cxname(otmp), noittame_mon_nam(mtmp));
             else
-                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s tries to takes off %s, but can't. It's cursed!", Monnam(mtmp), cxname(otmp));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s tries to takes off %s, but can't. It's cursed!", noittame_Monnam(mtmp), cxname(otmp));
 
             otmp->bknown = TRUE;
         }
@@ -5351,9 +5354,9 @@ struct monst* mtmp;
                 dismount_steed(DISMOUNT_FELL);
 
             if(otmp->owornmask & W_SADDLE)
-                You("remove %s from %s.", cxname(otmp), mon_nam(mtmp));
+                You("remove %s from %s.", cxname(otmp), noittame_mon_nam(mtmp));
             else
-                pline("%s takes off %s.", Monnam(mtmp), cxname(otmp));
+                pline("%s takes off %s.", noittame_Monnam(mtmp), cxname(otmp));
         }
     }
 
@@ -5425,14 +5428,14 @@ struct monst* mtmp;
         if (mwelded(mwep, mtmp))
         {
             play_sfx_sound(SFX_GENERAL_WELDED);
-            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s tries to unwield %s, but can't. It's cursed!", Monnam(mtmp), cxname(mwep));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s tries to unwield %s, but can't. It's cursed!", noittame_Monnam(mtmp), cxname(mwep));
             mwep->bknown = TRUE;
         }
         else
         {
             setmnotwielded(mtmp, mwep);
             mtmp->weapon_strategy = NEED_WEAPON;
-            pline("%s unwields %s.", Monnam(mtmp), cxname(mwep));
+            pline("%s unwields %s.", noittame_Monnam(mtmp), cxname(mwep));
         }
     }
     return 1;
@@ -5466,15 +5469,15 @@ struct monst* mtmp;
     }
     else if (is_tame(mtmp)) {
         if(mtmp->ispartymember)
-            pline("%s is already in your party.", Monnam(mtmp));
+            pline("%s is already in your party.", noittame_Monnam(mtmp));
         else
-            pline("%s is already following you.", Monnam(mtmp));
+            pline("%s is already following you.", noittame_Monnam(mtmp));
         return 0;
     }
 
     if (Deaf)
     {
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", Monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", noittame_Monnam(mtmp));
         return 1;
     }
 
@@ -5486,16 +5489,16 @@ struct monst* mtmp;
     */
     if (!join_cost)
     {
-        Sprintf(qbuf, "%s is willing to join you for free. Do you accept?", Monnam(mtmp));
+        Sprintf(qbuf, "%s is willing to join you for free. Do you accept?", noittame_Monnam(mtmp));
     }
     else if (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10) )
     {
-        pline("%s first %s, but then says:", Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
+        pline("%s first %s, but then says:", noittame_Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
         Sprintf(qbuf, "\"You shall pay me a tribute of %ld %s.\" Do you yield to this demand?", join_cost, currency(join_cost));
     }
     else
     {
-        pline("%s looks at you and replies:", Monnam(mtmp));
+        pline("%s looks at you and replies:", noittame_Monnam(mtmp));
         Sprintf(qbuf, "\"I can join you for a fee of %ld %s. Acceptable?\"", join_cost, currency(join_cost));
     }
     switch (yn_query_mon(mtmp, qbuf)) {
@@ -5521,12 +5524,12 @@ struct monst* mtmp;
         {
             mtmp->ispartymember = TRUE;
             play_sfx_sound(SFX_TAMING);
-            pline("%s joins your party!", Monnam(mtmp));
+            pline("%s joins your party!", noittame_Monnam(mtmp));
         }
         else if (!is_tame(mtmp))
         {
             play_sfx_sound(SFX_SURPRISE_ATTACK);
-            pline("%s takes your money but refuses join your party after all!", Monnam(mtmp));
+            pline("%s takes your money but refuses join your party after all!", noittame_Monnam(mtmp));
         }
         return 1;
 
@@ -5565,18 +5568,18 @@ struct monst* mtmp;
 
     if (Deaf)
     {
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", Monnam(mtmp));
+        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", noittame_Monnam(mtmp));
         return 1;
     }
 
     if (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10))
     {
-        pline("%s first %s, but then says:", Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
+        pline("%s first %s, but then says:", noittame_Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
         Sprintf(qbuf, "\"You shall pay me %ld %s for learning my statistics.\" Do you accept?", explain_cost, currency(explain_cost));
     }
     else
     {
-        pline("%s looks at you and then says:", Monnam(mtmp));
+        pline("%s looks at you and then says:", noittame_Monnam(mtmp));
         Sprintf(qbuf, "\"I can explain my statistics to you for a fee of %ld %s. Do you accept?\"", explain_cost, currency(explain_cost));
     }
     switch (yn_query_mon(mtmp, qbuf))
@@ -5699,7 +5702,7 @@ struct monst* mtmp;
 
     if (sellable_item_count <= 0)
     {
-        pline("%s doesn't have anything to sell.", Monnam(mtmp));
+        pline("%s doesn't have anything to sell.", noittame_Monnam(mtmp));
         destroy_nhwindow(win);
         return 0;
     }
@@ -5722,7 +5725,7 @@ struct monst* mtmp;
             verbalize("Hello, adventurer! May I interest you in the following %s?", itembuf);
         }
         else
-            pline("%s shows you %s merchandise.", Monnam(mtmp), mhis(mtmp));
+            pline("%s shows you %s merchandise.", noittame_Monnam(mtmp), mhis(mtmp));
     }
 
 
@@ -5839,7 +5842,7 @@ struct monst* mtmp;
             else
             {
                 char tbuf[BUFSZ];
-                Sprintf(tbuf, "%s nods appreciatively at you for the purchase!", Monnam(mtmp));
+                Sprintf(tbuf, "%s nods appreciatively at you for the purchase!", noittame_Monnam(mtmp));
                 popup_talk_line_ex(mtmp, tbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
                 //pline("%s nods appreciatively at you for the purchase!", Monnam(mtmp));
             }
@@ -5934,7 +5937,7 @@ struct monst* mtmp;
 
     if (item_count <= 0)
     {
-        pline("%s doesn't have any items.", Monnam(mtmp));
+        pline("%s doesn't have any items.", noittame_Monnam(mtmp));
         destroy_nhwindow(win);
         return 0;
     }
@@ -5952,7 +5955,7 @@ struct monst* mtmp;
                 if ((objects[item_to_take->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && item_to_take->cursed) 
                 {
                     play_sfx_sound(SFX_GENERAL_WELDED);
-                    pline("%s not leave %s!", Tobjnam(item_to_take, "do"), mon_nam(mtmp));
+                    pline("%s not leave %s!", Tobjnam(item_to_take, "do"), noittame_mon_nam(mtmp));
                 }
                 else
                 {
@@ -5962,7 +5965,7 @@ struct monst* mtmp;
                     obj_extract_self(item_to_take);
 
                     play_simple_object_sound_at_location(item_to_take, mtmp->mx, mtmp->my, OBJECT_SOUND_TYPE_GIVE);
-                    You("took %s from %s.", doname(item_to_take), mon_nam(mtmp));
+                    You("took %s from %s.", doname(item_to_take), noittame_mon_nam(mtmp));
 
                     hold_another_object(item_to_take, "Oops!  %s out of your grasp!",
                         The(aobjnam(item_to_take, "slip")),
@@ -6622,7 +6625,7 @@ struct monst* mtmp;
         return dopay();
     else
     {
-        pline("%s is not a shopkeeper.", Monnam(mtmp));
+        pline("%s is not a shopkeeper.", noittame_Monnam(mtmp));
         return 0;
     }
 }
@@ -7368,7 +7371,7 @@ struct monst* mtmp;
     }
 
     money2mon(mtmp, (long)u_pay);
-    pline("%s opens a branch portal for you.", Monnam(mtmp));
+    pline("%s opens a branch portal for you.", noittame_Monnam(mtmp));
     int portal_res = create_portal();
     if (!portal_res)
     {
@@ -7431,7 +7434,7 @@ struct monst* mtmp;
 
     hermit_talk(mtmp, linearray, GHSOUND_ELVEN_BARD_HEAR_THIS_SONG);
 
-    pline("%s magically summons a large elven harp, and then starts playing.", Monnam(mtmp));
+    pline("%s magically summons a large elven harp, and then starts playing.", noittame_Monnam(mtmp));
 
     struct stop_all_info sainfo = { 0 };
     stop_all_sounds(sainfo);
@@ -7567,7 +7570,7 @@ struct monst* mtmp;
     else if (!m_speak_check(mtmp))
         return 0;
 
-    Sprintf(qbuf, "%s asks for a research support of %ld %s.  Agree?", Monnam(mtmp), reconcile_cost, currency(reconcile_cost));
+    Sprintf(qbuf, "%s asks for a research support of %ld %s.  Agree?", noittame_Monnam(mtmp), reconcile_cost, currency(reconcile_cost));
 
     switch (yn_query(qbuf)) {
     default:
@@ -7591,12 +7594,12 @@ struct monst* mtmp;
     play_sfx_sound(SFX_BUY_FROM_NPC);
     if (is_peaceful(mtmp))
     {
-        pline("%s thanks you for your support.", Monnam(mtmp));
+        pline("%s thanks you for your support.", noittame_Monnam(mtmp));
 
     }
     else
     {
-        pline("%s seems mysteriously disappointed.", Monnam(mtmp));
+        pline("%s seems mysteriously disappointed.", noittame_Monnam(mtmp));
     }
 
     return 1;
@@ -7629,14 +7632,14 @@ struct monst* mtmp;
 
     if (mtmp->mspec_used)
     {
-        pline("%s explains something about your wave function having already collapsed.", Monnam(mtmp));
+        pline("%s explains something about your wave function having already collapsed.", noittame_Monnam(mtmp));
         pline1("It all sounds pretty serious!");
         return 0;
     }
 
     if (!is_tame(mtmp))
     {
-        Sprintf(qbuf, "%s asks for %ld %s to observe your exact position.  Agree?", Monnam(mtmp), observe_cost, currency(observe_cost));
+        Sprintf(qbuf, "%s asks for %ld %s to observe your exact position.  Agree?", noittame_Monnam(mtmp), observe_cost, currency(observe_cost));
 
         switch (yn_query(qbuf)) {
         default:
@@ -7678,7 +7681,7 @@ struct monst* mtmp;
     {
         play_sfx_sound(SFX_BUY_FROM_NPC);
     }
-    pline("%s tells that your position was observed to be exactly where you are.", Monnam(mtmp));
+    pline("%s tells that your position was observed to be exactly where you are.", noittame_Monnam(mtmp));
 
     return 1;
 }
@@ -7709,14 +7712,14 @@ struct monst* mtmp;
 
     if (mtmp->mspec_used)
     {
-        pline("%s explains something about your wave function having already collapsed.", Monnam(mtmp));
+        pline("%s explains something about your wave function having already collapsed.", noittame_Monnam(mtmp));
         pline1("It all sounds pretty serious!");
         return 0;
     }
 
     if (!is_tame(mtmp))
     {
-        Sprintf(qbuf, "%s asks for %ld %s to observe your exact speed.  Agree?", Monnam(mtmp), observe_cost, currency(observe_cost));
+        Sprintf(qbuf, "%s asks for %ld %s to observe your exact speed.  Agree?", noittame_Monnam(mtmp), observe_cost, currency(observe_cost));
 
         switch (yn_query(qbuf)) {
         default:
@@ -7748,7 +7751,7 @@ struct monst* mtmp;
         play_sfx_sound(SFX_BUY_FROM_NPC);
     }
     if(canspotmon(mtmp) && m_canseeu(mtmp))
-            pline("%s tells that your speed was observed to be zero.", Monnam(mtmp));
+            pline("%s tells that your speed was observed to be zero.", noittame_Monnam(mtmp));
 
     return 1;
 }
@@ -7959,7 +7962,7 @@ struct monst* mtmp;
         return 0;
     }
     else if (mtmp->mhp < (3 * mtmp->mhpmax) / 4) {
-        pline("%s is in no mood for talking.", Monnam(mtmp));
+        pline("%s is in no mood for talking.", noittame_Monnam(mtmp));
         return 0;
     }
 
@@ -8361,7 +8364,7 @@ boolean auto_yes;
     if (!isgold && offer == 0L) 
     {
         play_sfx_sound(SFX_SEEMS_UNINTERESTED);
-        pline("%s seems uninterested.", Monnam(mtmp));
+        pline("%s seems uninterested.", noittame_Monnam(mtmp));
         res = 1;
         goto merge_obj_back;
     }
@@ -8371,7 +8374,7 @@ boolean auto_yes;
         || offer == 0L) 
     {
         play_sfx_sound(SFX_SEEMS_UNINTERESTED);
-        pline("%s seems uninterested.", Monnam(mtmp));
+        pline("%s seems uninterested.", noittame_Monnam(mtmp));
         res = 1;
         goto merge_obj_back;
     }
@@ -8380,7 +8383,7 @@ boolean auto_yes;
     if (!shkmoney) 
     {
         play_sfx_sound(SFX_CANNOT_PAY);
-        pline("%s cannot pay you at present.", Monnam(mtmp));
+        pline("%s cannot pay you at present.", noittame_Monnam(mtmp));
     }
     else 
     {
@@ -8391,7 +8394,7 @@ boolean auto_yes;
             offer = shkmoney;
 
         Sprintf(qbuf, "%s offers%s %ld gold piece%s for %s ",
-            Monnam(mtmp), short_funds ? " only" : "", offer,
+            noittame_Monnam(mtmp), short_funds ? " only" : "", offer,
             plur(offer),
             "your");
         one = (obj->quan == 1L);
@@ -8415,7 +8418,7 @@ boolean auto_yes;
             if (release_item_from_hero_inventory(obj))
             {
                 play_sfx_sound(SFX_SELL_TO_NPC);
-                You("sold %s for %ld gold piece%s to %s.", doname(obj), offer, plur(offer), mon_nam(mtmp));
+                You("sold %s for %ld gold piece%s to %s.", doname(obj), offer, plur(offer), noittame_mon_nam(mtmp));
 
                 if (*u.ushops || obj->unpaid)
                     check_shop_obj(obj, mtmp->mx, mtmp->my, FALSE);
@@ -8572,7 +8575,7 @@ boolean addquotes;
     int glyph = get_seen_monster_glyph(mtmp);
     const char* hermit_txt = 0;
     char namebuf[BUFSZ];
-    strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
+    strcpy_capitalized_for_title(namebuf, noittame_Monnam(mtmp));
 
     int idx = 0;
     while(linearray[idx] != 0)
@@ -9309,9 +9312,9 @@ struct monst* mtmp;
 
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
     if(iflags.using_gui_sounds)
-        pline("%s says: \"Let's have a look.\"", Monnam(mtmp));
+        pline("%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
     else
-        pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
+        pline("%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
 
     if (otmp && otmp->oclass != ARMOR_CLASS)
     {
@@ -9359,9 +9362,9 @@ struct monst* mtmp;
 
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
     if (iflags.using_gui_sounds)
-        pline("%s says: \"Let's have a look.\"", Monnam(mtmp));
+        pline("%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
     else
-        pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
+        pline("%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
 
     /* Check if the selection is not an appropriate weapon */
     if (otmp && !is_weapon(otmp))
@@ -9450,7 +9453,7 @@ struct monst* mtmp;
         otmp->age = 0;
     }
 
-    pline("%s fills %s with oil.", Monnam(mtmp), yname(otmp));
+    pline("%s fills %s with oil.", noittame_Monnam(mtmp), yname(otmp));
 
     otmp->age = 1500L;
     otmp->special_quality = 1;
@@ -9474,11 +9477,11 @@ struct monst* mtmp;
     if (iflags.using_gui_sounds)
     {
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
-        pline("%s says: \"Let's have a look.\"", Monnam(mtmp));
+        pline("%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
     }
     else
     {
-        pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
+        pline("%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
     }
 
     /* Check if the selection is appropriate */
@@ -9490,7 +9493,7 @@ struct monst* mtmp;
         return 0;
     }
 
-    pline("%s starts working on %s.", Monnam(mtmp), yname(otmp));
+    pline("%s starts working on %s.", noittame_Monnam(mtmp), yname(otmp));
 
     dragon_scales_to_scale_mail(otmp, FALSE);
 
@@ -9585,12 +9588,12 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
     if (iflags.using_gui_sounds)
     {
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
-        pline("%s says: \"Let's have a look.\"", Monnam(mtmp));
+        pline("%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
         delay_output_milliseconds(750);
     }
     else
     {
-        pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
+        pline("%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
     }
 
     int quan_needed = forge_source_quan;
@@ -9625,7 +9628,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
     }
 
     play_sfx_sound(SFX_NEARBY_LOUD_CLANGING);
-    pline("%s starts working on %s.", Monnam(mtmp), yname(otmp));
+    pline("%s starts working on %s.", noittame_Monnam(mtmp), yname(otmp));
     if (iflags.using_gui_sounds)
         delay_output_milliseconds(2000);
 
@@ -9643,7 +9646,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
     struct obj* craftedobj = mksobj(forge_dest_otyp, FALSE, FALSE, 3);
     if (craftedobj)
     {
-        pline("%s hands %s to you.", Monnam(mtmp), an(cxname(craftedobj)));
+        pline("%s hands %s to you.", noittame_Monnam(mtmp), an(cxname(craftedobj)));
         hold_another_object(craftedobj, "Oops!  %s out of your grasp!",
             The(aobjnam(craftedobj, "slip")),
             (const char*)0);
@@ -9655,7 +9658,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
     }
     else
     {
-        pline("%s stares blankly for a moment as if something is seriously amiss.", Monnam(mtmp));
+        pline("%s stares blankly for a moment as if something is seriously amiss.", noittame_Monnam(mtmp));
     }
 
     return 1;
@@ -9672,7 +9675,7 @@ int* spell_otyps;
     char speakbuf[BUFSZ] = "";
     if (Deaf)
     {
-        Sprintf(speakbuf, "%s says something but you cannot hear anything.", Monnam(mtmp));
+        Sprintf(speakbuf, "%s says something but you cannot hear anything.", noittame_Monnam(mtmp));
         popup_talk_line_ex(mtmp, speakbuf, ATR_NONE, CLR_MSG_ATTENTION, TRUE, FALSE);
         return 1;
     }
@@ -9748,7 +9751,7 @@ int* spell_otyps;
     if (spell_count <= 0)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("%s doesn't have any spells to teach.", Monnam(mtmp));
+        pline("%s doesn't have any spells to teach.", noittame_Monnam(mtmp));
         destroy_nhwindow(win);
         return 0;
     }
