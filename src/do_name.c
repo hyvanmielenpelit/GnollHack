@@ -2220,9 +2220,9 @@ struct monst* mtmp;
         return "";
     
     if (is_tame(mtmp))
-        return mon_nam(mtmp);
-    else
         return noit_mon_nam(mtmp);
+    else
+        return mon_nam(mtmp);
 }
 
 char *
