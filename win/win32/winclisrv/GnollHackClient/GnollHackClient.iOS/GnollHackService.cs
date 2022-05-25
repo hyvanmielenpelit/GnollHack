@@ -203,6 +203,10 @@ namespace GnollHackClient.iOS
         [DllImport("__Internal", EntryPoint = "LibGetAutoDrawArraySize")]
         public static extern int LibGetAutoDrawArraySize(int glyph);
 
+        [DllImport("__Internal", EntryPoint = "get_tile_animation_index_from_glyph")]
+        public static extern int get_tile_animation_index_from_glyph(int glyph);
+
+
         [DllImport("__Internal", EntryPoint = "LibGlyphIsExplosion")]
         public static extern byte LibGlyphIsExplosion(int glyph);
         [DllImport("__Internal", EntryPoint = "LibGlyphIsZap")]
@@ -612,96 +616,96 @@ namespace GnollHackClient.iOS
         }
         public int GetTotalTiles()
         {
-            return 0; // CountTotalTiles();
+            return CountTotalTiles();
         }
         public int GetUnexploredGlyph()
         {
-            return 0; // LibGetUnexploredGlyph();
+            return LibGetUnexploredGlyph();
         }
         public int GetNoGlyph()
         {
-            return 0; // LibGetNoGlyph();
+            return LibGetNoGlyph();
         }
 
         public void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile, out int ui_tile, out int spell_tile, out int skill_tile, out int buff_tile, out int cursor_off)
         {
-            a = e =r = gen_tile = hit_tile = ui_tile = spell_tile = skill_tile = buff_tile = cursor_off = 0;
-            //a = LibGetAnimationOff();
-            //e = LibGetEnlargementOff();
-            //r = LibGetReplacementOff();
-            //gen_tile = LibGetGeneralTileOff();
-            //hit_tile = LibGetHitTileOff();
-            //ui_tile = LibGetUITileOff();
-            //spell_tile = LibGetSpellTileOff();
-            //skill_tile = LibGetSkillTileOff();
-            //buff_tile = LibGetBuffTileOff();
-            //cursor_off = LibGetCursorOff();
+            //a = e =r = gen_tile = hit_tile = ui_tile = spell_tile = skill_tile = buff_tile = cursor_off = 0;
+            a = LibGetAnimationOff();
+            e = LibGetEnlargementOff();
+            r = LibGetReplacementOff();
+            gen_tile = LibGetGeneralTileOff();
+            hit_tile = LibGetHitTileOff();
+            ui_tile = LibGetUITileOff();
+            spell_tile = LibGetSpellTileOff();
+            skill_tile = LibGetSkillTileOff();
+            buff_tile = LibGetBuffTileOff();
+            cursor_off = LibGetCursorOff();
         }
 
         public List<AnimationDefinition> GetAnimationArray()
         {
-            //int siz = LibGetAnimationArraySize();
+            int siz = LibGetAnimationArraySize();
             List<AnimationDefinition> array = new List<AnimationDefinition>();
-            //for (int i = 0; i < siz; i++)
-            //{
-            //    AnimationDefinition anim = LibGetAnimationArrayElement(i);
-            //    array.Add(anim);
-            //}
+            for (int i = 0; i < siz; i++)
+            {
+                AnimationDefinition anim = LibGetAnimationArrayElement(i);
+                array.Add(anim);
+            }
 
             return array;
         }
         public List<EnlargementDefinition> GetEnlargementArray()
         {
-            //int siz = LibGetEnlargementArraySize();
+            int siz = LibGetEnlargementArraySize();
             List<EnlargementDefinition> array = new List<EnlargementDefinition>();
-            //for (int i = 0; i < siz; i++)
-            //{
-            //    EnlargementDefinition enl = LibGetEnlargementArrayElement(i);
-            //    array.Add(enl);
-            //}
+            for (int i = 0; i < siz; i++)
+            {
+                EnlargementDefinition enl = LibGetEnlargementArrayElement(i);
+                array.Add(enl);
+            }
 
             return array;
         }
         public List<ReplacementDefinition> GetReplacementArray()
         {
-            //int siz = LibGetReplacementArraySize();
+            int siz = LibGetReplacementArraySize();
             List<ReplacementDefinition> array = new List<ReplacementDefinition>();
-            //List<ReplacementDefinition> array2 = array;
-            //for (int i = 0; i < siz; i++)
-            //{
-            //    ReplacementDefinition enl = LibGetReplacementArrayElement(i);
-            //    array2.Add(enl);
-            //}
+            List<ReplacementDefinition> array2 = array;
+            for (int i = 0; i < siz; i++)
+            {
+                ReplacementDefinition enl = LibGetReplacementArrayElement(i);
+                array2.Add(enl);
+            }
 
             return array;
         }
         public List<AutoDrawDefinition> GetAutoDrawArray()
         {
-            //int siz = LibGetAutoDrawArraySize();
+            int siz = LibGetAutoDrawArraySize();
             List<AutoDrawDefinition> array = new List<AutoDrawDefinition>();
-            //for (int i = 0; i < siz; i++)
-            //{
-            //    AutoDrawDefinition enl = LibGetAutoDrawArrayElement(i);
-            //    array.Add(enl);
-            //}
+            for (int i = 0; i < siz; i++)
+            {
+                AutoDrawDefinition enl = LibGetAutoDrawArrayElement(i);
+                array.Add(enl);
+            }
 
             return array;
         }
         public int GetTileAnimationIndexFromGlyph(int glyph)
         {
-            return 0; // get_tile_animation_index_from_glyph(glyph);
+            return get_tile_animation_index_from_glyph(glyph);
         }
         public bool GlyphIsExplosion(int glyph)
         {
-            return false; // (LibGlyphIsExplosion(glyph) != 0);
+            return (LibGlyphIsExplosion(glyph) != 0);
         }
         public bool GlyphIsZap(int glyph)
         {
-            return false; //(LibGlyphIsZap(glyph) != 0);
+            return (LibGlyphIsZap(glyph) != 0);
         }
         public bool GlyphIsAnyDying(int glyph)
         {
-            return false; //(LibGlyphIsAnyDying(glyph) != 0);
+            return (LibGlyphIsAnyDying(glyph) != 0);
         }
 
         public int GetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter,
@@ -709,14 +713,14 @@ namespace GnollHackClient.iOS
         {
             frame_idx_ptr = main_tile_idx_ptr = autodraw_ptr = 0;
             mapAnimated = 0;
-            return 0;
-            //return maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter,
-            //    out frame_idx_ptr, out main_tile_idx_ptr, out mapAnimated, ref autodraw_ptr);
+
+            return maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter,
+                out frame_idx_ptr, out main_tile_idx_ptr, out mapAnimated, ref autodraw_ptr);
         }
 
         public int ZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir)
         {
-            return 0; // LibZapGlyphToCornerGlyph(adjglyph, adjflags, source_dir);
+            return LibZapGlyphToCornerGlyph(adjglyph, adjflags, source_dir);
         }
 
         public int Test()
