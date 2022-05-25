@@ -357,7 +357,7 @@ done2()
         }
         return 0;
     }
-#if ((defined(UNIX) || defined(VMS) || defined(LATTICE)) && !defined(GNH_ANDROID))
+#if ((defined(UNIX) || defined(VMS) || defined(LATTICE)) && !defined(GNH_MOBILE))
     if (wizard) {
         int c;
 #ifdef VMS
@@ -401,7 +401,7 @@ int sig_unused UNUSED;
     return;
 }
 
-#if (defined(UNIX) || defined(VMS) || defined(__EMX__))  && !defined(GNH_ANDROID)
+#if (defined(UNIX) || defined(VMS) || defined(__EMX__))  && !defined(GNH_MOBILE)
 /* signal() handler */
 static void
 done_hangup(sig)
@@ -1476,7 +1476,7 @@ int how;
         wait_synch(); /* flush screen output */
 #ifndef NO_SIGNAL
     (void) signal(SIGINT, (SIG_RET_TYPE) done_intr);
-#if (defined(UNIX) || defined(VMS) || defined(__EMX__)) && !defined(GNH_ANDROID)
+#if (defined(UNIX) || defined(VMS) || defined(__EMX__)) && !defined(GNH_MOBILE)
     (void) signal(SIGQUIT, (SIG_RET_TYPE) done_intr);
     sethanguphandler(done_hangup);
 #endif

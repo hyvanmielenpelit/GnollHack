@@ -2625,7 +2625,7 @@ enhance_weapon_skill()
 
         char headerbuf[BUFSZ] = "";
         any = zeroany;
-#if defined(GNH_ANDROID)
+#if defined(GNH_MOBILE)
         prefix = "";
 #else
             prefix =
@@ -2736,7 +2736,7 @@ enhance_weapon_skill()
                 }
                 else if (could_advance(i))
                 {
-#if defined (GNH_ANDROID)
+#if defined (GNH_MOBILE)
                     prefix = "";
                     special_mark = '*';
                     color = CLR_GRAY;
@@ -2748,7 +2748,7 @@ enhance_weapon_skill()
                 }
                 else if (peaked_skill(i))
                 {
-#if defined (GNH_ANDROID)
+#if defined (GNH_MOBILE)
                     prefix = "";
                     special_mark = '#';
                     color = CLR_GRAY;
@@ -2760,7 +2760,7 @@ enhance_weapon_skill()
                 }
                 else
                 {
-#if defined (GNH_ANDROID)
+#if defined (GNH_MOBILE)
                     prefix = "";
                     color = CLR_GRAY;
 #elif defined (ANDROID)
@@ -2976,7 +2976,7 @@ enhance_weapon_skill()
         Strcpy(buf, (to_advance > 0) ? "Pick a skill to advance"
                                      : "Current skills");
 
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
         if (!speedy)
         {
             char subbuf[BUFSZ] = "";

@@ -26,6 +26,7 @@
     <MonoGameBinDir>$(RootDir)bin\$(Configuration)\Client\netcoreapp3.1\</MonoGameBinDir>
     <GnollHackServerBinDir>$(RootDir)bin\$(Configuration)\Server\netcoreapp3.1\</GnollHackServerBinDir>
     <LibDroidDir>$(RootDir)win\win32\winclisrv\GnollHackClient\gnollhackdroid\</LibDroidDir>
+    <LibiOSDir>$(RootDir)win\win32\winclisrv\GnollHackClient\gnollhackios\</LibiOSDir>
     <GooglePlayDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\</GooglePlayDir>
     <LibShareDir>$(RootDir)win\win32\share\</LibShareDir>
     <AndroidLibsDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.Android\libs\</AndroidLibsDir>

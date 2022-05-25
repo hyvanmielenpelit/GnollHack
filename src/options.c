@@ -120,7 +120,7 @@ static struct Bool_Opt {
     { "classic_colors", &flags.classic_colors, FALSE, SET_IN_GAME },
     { "clicklook", &iflags.clicklook, TRUE, SET_IN_GAME },
     { "cmdassist", &iflags.cmdassist, TRUE, SET_IN_GAME },
-#if defined(MICRO) || defined(WIN32) || defined(ANDROID) ||  defined(GNH_ANDROID) || defined(CURSES_GRAPHICS)
+#if defined(MICRO) || defined(WIN32) || defined(ANDROID) ||  defined(GNH_MOBILE) || defined(CURSES_GRAPHICS)
     { "color", &iflags.wc_color, TRUE, SET_IN_GAME }, /*WC*/
 #else /* systems that support multiple terminals, many monochrome */
     { "color", &iflags.wc_color, FALSE, SET_IN_GAME }, /*WC*/
@@ -133,7 +133,7 @@ static struct Bool_Opt {
     {"dumplog", &iflags.dumplog, FALSE, SET_IN_FILE },
 #endif
     { "eight_bit_tty", &iflags.wc_eight_bit_input, FALSE, SET_IN_GAME }, /*WC*/
-#if defined(UNIX) && !defined(GNH_ANDROID) 
+#if defined(UNIX) && !defined(GNH_MOBILE) 
     { "enablettyarrowkeys", &iflags.enablettyarrowkeys, FALSE, SET_IN_GAME }, 
 #endif
     { "exchange_prompt", &flags.exchange_prompt, TRUE, SET_IN_GAME },

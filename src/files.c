@@ -43,7 +43,7 @@ const
 #endif
 #endif
 
-#if defined(UNIX) && (defined(QT_GRAPHICS) || defined(ANDROID) || defined(GNH_ANDROID))
+#if defined(UNIX) && (defined(QT_GRAPHICS) || defined(ANDROID) || defined(GNH_MOBILE))
 #include <sys/types.h>
 #include <dirent.h>
 #include <stdlib.h>
@@ -604,7 +604,7 @@ clearlocks()
 #ifndef NO_SIGNAL
         (void) signal(SIGINT, SIG_IGN);
 #endif
-#if !defined(ANDROID) && !defined(GNH_ANDROID)
+#if !defined(ANDROID) && !defined(GNH_MOBILE)
 #if defined(UNIX) || defined(VMS)
         sethanguphandler((void FDECL((*), (int) )) SIG_IGN);
 #endif
@@ -1139,7 +1139,7 @@ const char *filename;
 /* --------- end of obsolete code ----*/
 #endif /* 0 - WAS STORE_PLNAME_IN_FILE*/
 }
-#if defined(ANDROID) || defined(GNH_ANDROID)
+#if defined(ANDROID) || defined(GNH_MOBILE)
 int filter_running(entry)
 const struct dirent* entry;
 {
@@ -1264,7 +1264,7 @@ get_saved_games()
         }
     }
 #endif
-#if defined(ANDROID) || defined(GNH_ANDROID)
+#if defined(ANDROID) || defined(GNH_MOBILE)
     int myuid = getuid();
     struct dirent** namelist;
     struct dirent** namelist2;
@@ -1971,13 +1971,13 @@ const char *filename;
 /* ----------  BEGIN CONFIG FILE HANDLING ----------- */
 
 const char *default_configfile =
-#if defined(UNIX) && !defined(ANDROID) && !defined(GNH_ANDROID)
+#if defined(UNIX) && !defined(ANDROID) && !defined(GNH_MOBILE)
     ".gnollhackrc";
 #else
 #if defined(MAC) || defined(__BEOS__)
     "GnollHack Defaults";
 #else
-#if defined(MSDOS) || defined(WIN32) || defined(ANDROID) || defined(GNH_ANDROID)
+#if defined(MSDOS) || defined(WIN32) || defined(ANDROID) || defined(GNH_MOBILE)
     "defaults.gnh";
 #else
     "GnollHack.cnf";
@@ -2065,7 +2065,7 @@ int src;
     }
     /* fall through to standard names */
 
-#if defined(MICRO) || defined(MAC) || defined(__BEOS__) || defined(WIN32) || defined(ANDROID) || defined(GNH_ANDROID)
+#if defined(MICRO) || defined(MAC) || defined(__BEOS__) || defined(WIN32) || defined(ANDROID) || defined(GNH_MOBILE)
     set_configfile_name(fqname(default_configfile, CONFIGPREFIX, 0));
     if ((fp = fopenp(configfile, "r")) != (FILE *) 0) {
         return fp;
@@ -3179,7 +3179,7 @@ fopen_wizkit_file()
 #endif
     }
 
-#if defined(MICRO) || defined(MAC) || defined(__BEOS__) || defined(WIN32) || defined(ANDROID) || defined(GNH_ANDROID)
+#if defined(MICRO) || defined(MAC) || defined(__BEOS__) || defined(WIN32) || defined(ANDROID) || defined(GNH_MOBILE)
     if ((fp = fopenp(fqname(wizkit, CONFIGPREFIX, 0), "r")) != (FILE *) 0)
         return fp;
 #else
@@ -4481,7 +4481,7 @@ int bufsz;
 void
 list_files()
 {
-#if defined(UNIX) && (defined(QT_GRAPHICS) || defined(ANDROID) || defined(GNH_ANDROID))
+#if defined(UNIX) && (defined(QT_GRAPHICS) || defined(ANDROID) || defined(GNH_MOBILE))
     char fileslist[BUFSIZ * 5] = "";
     char savelist[BUFSIZ * 5] = "";
 

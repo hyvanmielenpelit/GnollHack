@@ -1587,7 +1587,7 @@ use_utf8_encoding()
 
 
 
-#if defined(UNIX) && !defined(GNH_ANDROID) 
+#if defined(UNIX) && !defined(GNH_MOBILE) 
 extern int unix_is_stdin_empty(); /* From unixmain.c */
 #endif
 

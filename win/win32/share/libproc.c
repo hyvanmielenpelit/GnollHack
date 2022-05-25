@@ -7,6 +7,7 @@
 #include "libproc.h"
 #include "callback.h"
 #include "dlb.h"
+#include <stdarg.h>
 
 struct window_procs lib_procs = {
     "LIB",

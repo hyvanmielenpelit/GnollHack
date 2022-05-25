@@ -1793,7 +1793,7 @@ const char *mesg;
         char buf[BUFSZ], smellsbuf[BUFSZ];
         const char* eatit = "Eat it?";
         Sprintf(smellsbuf, "It smells like %s.", what);
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
         Sprintf(buf, "%s %s", smellsbuf, eatit);
 #else
         pline1(smellsbuf);
@@ -1862,7 +1862,7 @@ const char *mesg;
             tin->dknown = tin->known = 1;
         }
 
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
         Sprintf(buf, "%s %s", containsbuf, eatit);
 #else
         pline1(containsbuf);
@@ -3962,7 +3962,7 @@ int num;
                     {
                         const char* conteattxt = "Continue eating?";
                         char buf[BUFSZ];
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
                         Sprintf(buf, "%s %s", hardtimetxt, conteattxt);
 #else
                         pline1(hardtimetxt);

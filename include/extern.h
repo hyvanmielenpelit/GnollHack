@@ -872,19 +872,19 @@ E const char* FDECL(get_cmap_tilename, (int));
 
 /* ### droidmain.c ### */
 
-#if defined(UNIX) && defined(GNH_ANDROID)
+#if defined(UNIX) && defined(GNH_MOBILE)
 #ifdef PORT_HELP
 E void NDECL(port_help);
 #endif
 E boolean NDECL(authorize_wizard_mode);
-#endif /* UNIX && GNH_ANDROID */
+#endif /* UNIX && GNH_MOBILE */
 
 /* ### unixunix.c ### */
 
-#if defined(UNIX) && defined(GNH_ANDROID)
+#if defined(UNIX) && defined(GNH_MOBILE)
 E void NDECL(getlock);
 E void NDECL(check_crash);
-#endif /* UNIX && GNH_ANDROID */
+#endif /* UNIX && GNH_MOBILE */
 
 /* ### dungeon.c ### */
 
@@ -2081,7 +2081,7 @@ E int FDECL(_copyfile, (char *, char *));
 E int NDECL(kbhit);
 E void NDECL(set_colors);
 E void NDECL(restore_colors);
-#if defined(SUSPEND) && !defined(GNH_ANDROID)
+#if defined(SUSPEND) && !defined(GNH_MOBILE)
 E int NDECL(dosuspend);
 #endif
 #endif /* TOS */
@@ -3506,7 +3506,7 @@ E void FDECL(remove_monster_and_nearby_waitforu, (struct monst*));
 
 /* ### unixmain.c ### */
 
-#if defined(UNIX) && !defined(GNH_ANDROID)
+#if defined(UNIX) && !defined(GNH_MOBILE)
 #ifdef PORT_HELP
 E void NDECL(port_help);
 #endif
@@ -3529,7 +3529,8 @@ E void VDECL(error, (const char *, ...)) PRINTF_F(1, 2);
 
 /* ### unixunix.c ### */
 
-#if defined(UNIX) && !defined(GNH_ANDROID)
+#if defined(UNIX)
+#if !defined(GNH_MOBILE)
 E void NDECL(getlock);
 E void FDECL(regularize, (char *));
 #if defined(TIMED_DELAY) && !defined(msleep) && defined(SYSV)
@@ -3544,6 +3545,9 @@ E int FDECL(child, (int));
 #ifdef PANICTRACE
 E boolean FDECL(file_exists, (const char *));
 #endif
+#else
+E void FDECL(regularize, (char*));
+#endif /* GNH_MOBILE */
 #endif /* UNIX */
 
 /* ### unixres.c ### */
@@ -3699,7 +3703,7 @@ E int NDECL(dosh);
 #if defined(SHELL) || defined(MAIL)
 E int FDECL(vms_doshell, (const char *, BOOLEAN_P));
 #endif
-#if defined(SUSPEND) && !defined(GNH_ANDROID)
+#if defined(SUSPEND) && !defined(GNH_MOBILE)
 E int NDECL(dosuspend);
 #endif
 #ifdef SELECTSAVED

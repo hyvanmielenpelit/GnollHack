@@ -106,6 +106,15 @@
     <ClCompile Include="$(SrcDir)fountain.c">
       <Filter>Common Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(LibShareDir)gnhmain.c">
+      <Filter>iOS Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibShareDir)gnhunix.c">
+      <Filter>iOS Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibiOSDir)gnollhackios.c">
+      <Filter>iOS Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)hack.c">
       <Filter>Common Source Files</Filter>
     </ClCompile>
@@ -113,6 +122,9 @@
       <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)invent.c">
+      <Filter>Common Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SysShareDir)ioctl.c">
       <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)isaac64.c">
@@ -217,6 +229,9 @@
     <ClCompile Include="$(SrcDir)polyself.c">
       <Filter>Common Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(SysShareDir)posixregex.c">
+      <Filter>Common Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)potion.c">
       <Filter>Common Source Files</Filter>
     </ClCompile>
@@ -319,6 +334,9 @@
     <ClCompile Include="$(SrcDir)uhitm.c">
       <Filter>Common Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(SysShareDir)unixtty.c">
+      <Filter>Common Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)vault.c">
       <Filter>Common Source Files</Filter>
     </ClCompile>
@@ -358,29 +376,11 @@
     <ClCompile Include="$(SrcDir)zap.c">
       <Filter>Common Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(LibDroidDir)gnollhackdroid.c">
-      <Filter>Android Source Files</Filter>
+    <ClCompile Include="$(LibShareDir)libproc.c">
+      <Filter>iOS Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(LibShareDir)callback.c">
-      <Filter>Android Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(LibShareDir)gnhmain.c">
-      <Filter>Android Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(LibShareDir)gnhunix.c">
-      <Filter>Android Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(LibShareDir)libproc.c">
-      <Filter>Android Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SysShareDir)ioctl.c">
-      <Filter>Common Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SysShareDir)unixtty.c">
-      <Filter>Common Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SysShareDir)posixregex.c">
-      <Filter>Common Source Files</Filter>
+      <Filter>iOS Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -435,16 +435,10 @@
     <ClInclude Include="$(IncDir)decl.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(IncDir)dgn_comp.h">
-      <Filter>Common Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(IncDir)dgn_file.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)display.h">
-      <Filter>Common Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(IncDir)dlb.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)dungeon.h">
@@ -475,6 +469,9 @@
       <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)integer.h">
+      <Filter>Common Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibiOSDir)iosconf.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)isaac64.h">
@@ -552,19 +549,19 @@
     <ClInclude Include="$(IncDir)quest.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(IncDir)rect.h">
+    <ClInclude Include="$(IncDir)region.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(IncDir)region.h">
+    <ClInclude Include="$(IncDir)rect.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)rm.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(IncDir)skills.h">
+    <ClInclude Include="$(IncDir)soundset.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(IncDir)soundset.h">
+    <ClInclude Include="$(IncDir)skills.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)sp_lev.h">
@@ -573,13 +570,13 @@
     <ClInclude Include="$(IncDir)spell.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(IncDir)sys.h">
+    <ClInclude Include="$(IncDir)tcap.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)system.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(IncDir)tcap.h">
+    <ClInclude Include="$(IncDir)sys.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)tile2x11.h">
@@ -591,19 +588,19 @@
     <ClInclude Include="$(IncDir)timeout.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(IncDir)tradstdc.h">
+    <ClInclude Include="$(IncDir)trampoli.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(IncDir)trampoli.h">
+    <ClInclude Include="$(IncDir)tradstdc.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)trap.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(IncDir)vis_tab.h">
+    <ClInclude Include="$(IncDir)vision.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(IncDir)vision.h">
+    <ClInclude Include="$(IncDir)vis_tab.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)winprocs.h">
@@ -615,29 +612,29 @@
     <ClInclude Include="$(IncDir)wintype.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(IncDir)you.h">
-      <Filter>Common Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(IncDir)youprop.h">
       <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(LibDroidDir)gnollhackdroid.h">
-      <Filter>Android Header Files</Filter>
+    <ClInclude Include="$(IncDir)you.h">
+      <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(LibDroidDir)pch.h">
-      <Filter>Android Header Files</Filter>
+    <ClInclude Include="$(LibiOSDir)date_unix.h">
+      <Filter>iOS Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(LibDroidDir)droidconf.h">
-      <Filter>Android Header Files</Filter>
+    <ClInclude Include="$(IncDir)dgn_comp.h">
+      <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(LibShareDir)callback.h">
-      <Filter>Android Header Files</Filter>
+    <ClInclude Include="$(IncDir)dlb.h">
+      <Filter>Common Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(LibDroidDir)date_unix.h">
-      <Filter>Android Header Files</Filter>
+    <ClInclude Include="$(LibiOSDir)gnollhackios.h">
+      <Filter>iOS Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(LibShareDir)libproc.h">
-      <Filter>Android Header Files</Filter>
+      <Filter>iOS Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibShareDir)callback.h">
+      <Filter>iOS Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)mail.h">
       <Filter>Common Header Files</Filter>
@@ -651,21 +648,16 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Common Header Files">
-      <UniqueIdentifier>{eb3de988-65af-4cd1-9fc4-4d05d5f9834a}</UniqueIdentifier>
+      <UniqueIdentifier>{494eb221-1f22-4a74-82aa-1331c873496f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Common Source Files">
-      <UniqueIdentifier>{6dfcc330-5f54-4f74-9f45-cd35ff42fd0c}</UniqueIdentifier>
+      <UniqueIdentifier>{f3be19aa-f6aa-4c00-abb8-07e1369b7bcd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Android Source Files">
-      <UniqueIdentifier>{09e55356-eec7-4a63-952b-591793fff4a2}</UniqueIdentifier>
+    <Filter Include="iOS Header Files">
+      <UniqueIdentifier>{376dbc84-f87f-4976-9a70-d2ffd1580ac9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Android Header Files">
-      <UniqueIdentifier>{d94f2d84-73da-4c39-b103-015758ad4d39}</UniqueIdentifier>
+    <Filter Include="iOS Source Files">
+      <UniqueIdentifier>{83bc8910-1b50-489f-9752-6024e686ed3e}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(SrcDir)Makefile.gcc">
-      <Filter>Common Source Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

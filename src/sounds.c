@@ -5694,7 +5694,7 @@ struct monst* mtmp;
     long umoney = money_cnt(invent);
     Sprintf(moneybuf, "You have %ld %s.", umoney, currency(umoney));
     char* txt = 0;
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
     txt = moneybuf;
 #endif
     end_menu_ex(win, "What do you want to buy?", txt);

@@ -129,7 +129,7 @@ typedef struct branch {
 #define Is_sanctum(x) (on_level(x, &sanctum_level))
 #define Is_portal_level(x) (on_level(x, &portal_level))
 #define Is_rogue_level(x) (on_level(x, &rogue_level))
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
 #define Enable_rogue_level FALSE
 #else
 #define Enable_rogue_level TRUE

@@ -118,7 +118,7 @@
 #define doorganize() doorganize_()
 
 /* ### ioctl.c ### */
-#if defined(UNIX) && !defined(GNH_ANDROID)
+#if defined(UNIX) && !defined(GNH_MOBILE)
 #ifdef SUSPEND
 #define dosuspend() dosuspend_()
 #endif /* SUSPEND */

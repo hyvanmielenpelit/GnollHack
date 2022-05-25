@@ -169,6 +169,10 @@ typedef xchar boolean; /* 0 or 1 */
 #include "droidconf.h"
 #endif
 
+#ifdef GNH_IOS
+#include "iosconf.h"
+#endif
+
 /* Displayable name of this port; don't redefine if defined in *conf.h */
 #ifndef PORT_ID
 #ifdef AMIGA

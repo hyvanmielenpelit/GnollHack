@@ -3613,7 +3613,7 @@ int *spell_no;
             Strcat(spacebuf, " ");
 
         if (!iflags.menu_tab_sep) {
-#if defined (GNH_ANDROID)
+#if defined (GNH_MOBILE)
             Sprintf(fmt, "%%-%ds  #  Description    %%s", namelength);
 #else
             Sprintf(fmt, "    %%-%ds  #  Description    %%s", namelength);
@@ -3840,7 +3840,7 @@ boolean addemptyline;
 
     if (!iflags.menu_tab_sep)
     {
-#if defined (GNH_ANDROID)
+#if defined (GNH_MOBILE)
         Sprintf(fmt, "%%-%ds  Casts  Adds  Material components    %%s", namelength);
 #else
         Sprintf(fmt, "    %%-%ds  Casts  Adds  Material components    %%s", namelength);
@@ -4000,7 +4000,7 @@ boolean addemptyline;
 
     if (!iflags.menu_tab_sep)
     {
-#if defined(GNH_ANDROID)
+#if defined(GNH_MOBILE)
         Sprintf(fmt, "%%-%ds Level %%-13s Mana Stat Fail Cool Casts", namelength);
 #else
         Sprintf(fmt, "    %%-%ds Level %%-13s Mana Stat Fail Cool Casts", namelength);
@@ -4372,7 +4372,7 @@ dospellmanagemenu()
     selnum++;
 #endif
 
-#ifndef GNH_ANDROID
+#ifndef GNH_MOBILE
     strcpy(available_selection_item[selnum].name, "Set or clear a hotkey for a spell");
     //available_selection_item[selnum].function_ptr = &setspellhotkey;
     available_selection_item[selnum].action = 4;

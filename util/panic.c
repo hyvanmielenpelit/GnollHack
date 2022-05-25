@@ -10,7 +10,7 @@
  *      mode for the makedefs / drg code.
  */
 
-#if defined(GNOLLHACK_MAIN_PROGRAM) && (defined(__BEOS__) || defined(MICRO) || defined(OS2) || defined(ANDROID) || defined(GNH_ANDROID) || defined(WIN32))
+#if defined(GNOLLHACK_MAIN_PROGRAM) && (defined(__BEOS__) || defined(MICRO) || defined(OS2) || defined(ANDROID) || defined(GNH_MOBILE) || defined(WIN32))
 extern void FDECL(gnollhack_exit, (int));
 #else
 #ifndef gnollhack_exit

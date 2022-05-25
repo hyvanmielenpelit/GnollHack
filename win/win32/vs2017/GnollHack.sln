@@ -149,7 +149,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dlbdroid", "dlbdroid.vcxpro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SourceFileTimeStamper", "SourceFileTimeStamper\SourceFileTimeStamper.csproj", "{3469E673-1318-4731-9168-23F32D98FB3E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnollhackios", "..\winclisrv\GnollHackClient\gnollhackios\gnollhackios.vcxproj", "{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnollhackios", "gnollhackios.vcxproj", "{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

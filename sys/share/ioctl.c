@@ -90,7 +90,7 @@ void
 catch_stp()
 {
     signal(SIGTSTP, SIG_DFL);
-#if !defined(GNH_ANDROID)
+#if !defined(GNH_MOBILE)
     dosuspend();
 #endif
 }
@@ -160,7 +160,7 @@ setioctls()
 #endif
 }
 
-#if defined(SUSPEND) && !defined(GNH_ANDROID) /* No longer implies BSD */
+#if defined(SUSPEND) && !defined(GNH_MOBILE) /* No longer implies BSD */
 int
 dosuspend()
 {

@@ -4528,7 +4528,7 @@ boolean addinventoryheader, wornonly;
                  xtra_choice, MENU_UNSELECTED);
     }
 
-#if !defined(GNH_ANDROID)
+#if !defined(GNH_MOBILE)
    if(strcmp(headertext, "") != 0)
    {
        add_menu(win, NO_GLYPH, &any, ' ', 0, ATR_NONE,
@@ -4639,7 +4639,7 @@ nextclass:
     }
     else
     {
-#if !defined(GNH_ANDROID)
+#if !defined(GNH_MOBILE)
         end_menu(win, query && *query ? query : (char*)0);
 #else
         end_menu_ex(win, query && *query ? query : (char*)0, headertext && strcmp(headertext, "") != 0 ? headertext : (char*)0);

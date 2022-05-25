@@ -12,7 +12,7 @@
 
 #define NEED_VARARGS
 #include "hack.h"
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
 #include "date_unix.h"
 #else
 #include "date.h"

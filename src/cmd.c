@@ -168,7 +168,7 @@ STATIC_PTR int NDECL(wiz_smell);
 STATIC_PTR int NDECL(wiz_intrinsic);
 STATIC_PTR int NDECL(wiz_show_wmodes);
 STATIC_DCL void NDECL(wiz_map_levltyp);
-#ifndef GNH_ANDROID
+#ifndef GNH_MOBILE
 STATIC_DCL int NDECL(wiz_save_monsters);
 STATIC_DCL int NDECL(wiz_save_tiledata);
 STATIC_DCL int NDECL(wiz_count_tiles);
@@ -432,7 +432,7 @@ doextlist(VOID_ARGS)
         redisplay = FALSE;
         any = zeroany;
         start_menu_ex(menuwin, GHMENU_STYLE_CHOOSE_COMMAND);
-#ifndef GNH_ANDROID
+#ifndef GNH_MOBILE
         add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_TITLE,
                  "Extended Commands List", MENU_UNSELECTED);
         add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE,
@@ -545,7 +545,7 @@ doextlist(VOID_ARGS)
         if (*searchbuf && !n)
             add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
                      "no matches", MENU_UNSELECTED);
-#ifndef GNH_ANDROID
+#ifndef GNH_MOBILE
         end_menu(menuwin, (char *) 0);
 #else
         end_menu(menuwin, "Extended Commands List");
@@ -849,7 +849,7 @@ doability(VOID_ARGS)
         abilitynum++;
     }
 
-#ifndef GNH_ANDROID
+#ifndef GNH_MOBILE
     /* SKILL-BASED ABILITIES */
     any = zeroany;
     add_extended_menu(win, NO_GLYPH, &any, menu_heading_info(),
@@ -1512,7 +1512,7 @@ enter_explore_mode(VOID_ARGS)
     } else {
 #ifdef SYSCF
 #if defined(UNIX)
-#if !defined(GNH_ANDROID)
+#if !defined(GNH_MOBILE)
             if (!sysopt.explorers || !sysopt.explorers[0]
             || !check_user_string(sysopt.explorers)) 
 #endif
@@ -2078,7 +2078,7 @@ wiz_map_levltyp(VOID_ARGS)
     return;
 }
 
-#ifndef GNH_ANDROID
+#ifndef GNH_MOBILE
 /* Save monster list */
 STATIC_PTR int
 wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
@@ -2518,7 +2518,7 @@ wiz_save_quest_texts(VOID_ARGS) /* Save a csv file for monsters */
 
     return 0;
 }
-#endif /* ifndef GNH_ANDROID */
+#endif /* ifndef GNH_MOBILE */
 
 
 /* temporary? hack, since level type codes aren't the same as screen
@@ -3085,7 +3085,7 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
     *tmpbuf = highc(*tmpbuf); /* same adjustment as bottom line */
     /* as in background_enlightenment, when poly'd we need to use the saved
        gender in u.mfemale rather than the current you-as-monster gender */
-#ifndef GNH_ANDROID
+#ifndef GNH_MOBILE
     Sprintf(buf, "%s the %s's attributes:", tmpbuf,
             ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
                 ? urole.name.f
@@ -3120,7 +3120,7 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
         display_nhwindow(en_win, TRUE);
     } else {
         menu_item *selected = 0;
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
         Sprintf(buf, "%s the %s", tmpbuf,
             ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
             ? urole.name.f
@@ -3159,7 +3159,7 @@ int final;
     innategend = (Upolyd ? u.mfemale : flags.female) ? 1 : 0;
     role_titl = (innategend && urole.name.f) ? urole.name.f : urole.name.m;
     rank_titl = rank_of(u.ulevel, Role_switch, innategend);
-#ifndef GNH_ANDROID
+#ifndef GNH_MOBILE
     enlght_out("", ATR_NONE); /* separator after title */
 #endif
     enlght_out("Background:", ATR_HEADING);
@@ -3226,7 +3226,7 @@ int final;
             u_gname());
 
     boolean usenextrow = TRUE;
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
     usenextrow = (boolean)final;
 #endif
     if (usenextrow)
@@ -5010,7 +5010,7 @@ int cmdflag;
         strcpy(descbuf, efp->ef_desc);
         *descbuf = highc(*descbuf);
 
-#ifndef GNH_ANDROID
+#ifndef GNH_MOBILE
         char shortcutbuf[BUFSZ] = "";
         size_t desclen = 0;
         desclen = strlen(descbuf);
@@ -5263,12 +5263,12 @@ struct ext_func_tab extcmdlist[] = {
             doattributes, IFBURIED | AUTOCOMPLETE },
     { '@', "autopickup", "toggle the pickup option on/off",
             dotogglepickup, IFBURIED },
-#if defined (USE_TILES) && !defined(GNH_ANDROID)
+#if defined (USE_TILES) && !defined(GNH_MOBILE)
     { M('b'), "bars", "toggle tile hit point bars on/off",
             dotogglehpbars, IFBURIED | AUTOCOMPLETE },
 #endif
     { C('b'), "break", "break something", dobreak, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_GENERAL, 0, 0, "break" },
-#if defined (USE_TILES) && !defined(GNH_ANDROID)
+#if defined (USE_TILES) && !defined(GNH_MOBILE)
     { M('y'), "bufftimers", "toggle tile buff timers on/off",
             dotogglebufftimers, IFBURIED | AUTOCOMPLETE },
 #endif
@@ -5299,7 +5299,7 @@ struct ext_func_tab extcmdlist[] = {
             doquickwhatis, IFBURIED | GENERALCMD },
     { M('g'), "genocided", "list genocided monsters",
             dogenocidedmonsters, IFBURIED },
-#if defined (USE_TILES) && !defined(GNH_ANDROID)
+#if defined (USE_TILES) && !defined(GNH_MOBILE)
     { M('_'), "grid", "toggle tile grid on/off",
             dotogglegrid, IFBURIED | AUTOCOMPLETE },
 #endif
@@ -5410,7 +5410,7 @@ struct ext_func_tab extcmdlist[] = {
 
     { 'T', "takeoff", "take off one piece of armor", dotakeoff, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_clothes, "take off", "take off" },
     { M('t')/*'A'*/, "takeoffall", "remove all armor", doddoremarm },
-#if defined (USE_TILES) && !defined(GNH_ANDROID)
+#if defined (USE_TILES) && !defined(GNH_MOBILE)
     { M(';'), "targeting", "toggle tile targeting graphics on/off",
             dotogglemonstertargeting, IFBURIED | AUTOCOMPLETE },
     { M(':'), "umark", "toggle tile player mark graphics on/off",
@@ -5466,7 +5466,7 @@ struct ext_func_tab extcmdlist[] = {
             dospellmanage, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
     { '\0', "reorderspells", "sort and reorder known spells",
             dovspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
-#if defined (USE_TILES) && !defined(GNH_ANDROID)
+#if defined (USE_TILES) && !defined(GNH_MOBILE)
     { M('.'), "zoomnormal", "revert to normal zoom level",
             dozoomnormal, IFBURIED | AUTOCOMPLETE },
     { M('+'), "zoomin", "zoom map out",
@@ -5478,7 +5478,7 @@ struct ext_func_tab extcmdlist[] = {
     { C(','), "zoomhalf", "zoom map out to 50% of normal",
             dozoomhalf, IFBURIED | AUTOCOMPLETE },
 #endif
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
     { '{', "viewpet", "view currently active pet",
             doviewpet, IFBURIED },
 #endif
@@ -5507,7 +5507,7 @@ struct ext_func_tab extcmdlist[] = {
             wiz_makemap, IFBURIED | WIZMODECMD },
     { C('f'), "wizmap", "map the level",
             wiz_map, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-#ifndef GNH_ANDROID
+#ifndef GNH_MOBILE
     { '\0', "wizsavemon", "save monsters into a file",
             wiz_save_monsters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { '\0', "wizsaveenc", "save encounters into a file",
@@ -8458,7 +8458,7 @@ const char *prompt, *title;
 STATIC_PTR int
 dosuspend_core(VOID_ARGS)
 {
-#if defined(SUSPEND) && !defined(GNH_ANDROID)
+#if defined(SUSPEND) && !defined(GNH_MOBILE)
     /* Does current window system support suspend? */
     if ((*windowprocs.win_can_suspend)()) {
         /* NB: SYSCF SHELLERS handled in port code. */

@@ -1484,7 +1484,7 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
                      MENU_UNSELECTED);
         }
 
-#ifndef GNH_ANDROID
+#ifndef GNH_MOBILE
         add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
                  "Select one of your saved games", MENU_UNSELECTED);
 #endif
@@ -1505,7 +1505,7 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
         add_menu(tmpwin, NO_GLYPH, &any, clet, 0, ATR_NONE,
                  "Never mind (quit)", MENU_SELECTED);
 
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
         end_menu(tmpwin, "Select one of your saved games");
 #else
         /* no prompt on end_menu, as we've done our own at the top */

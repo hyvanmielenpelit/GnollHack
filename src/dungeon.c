@@ -787,7 +787,7 @@ init_dungeons()
 
     if (!check_version(&vers_info, DUNGEON_FILE, TRUE))
     {
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
         impossible("Dungeon description not valid. Check that GnollHack Android files are up-to-date.");
 #else
         panic("Dungeon description not valid.");
@@ -3149,7 +3149,7 @@ boolean printdun;
             Sprintf(dbuf, "Levels %d to %d",
                     depthstart,
                     depthstart + dungeons[dnum].dunlev_ureached - 1);
-#ifdef GNH_ANDROID
+#ifdef GNH_MOBILE
         putstr(win, ATR_TITLE | ATR_ALIGN_CENTER, dungeons[dnum].dname);
         if(strcmp(dbuf, ""))
             putstr(win, ATR_SUBTITLE | ATR_ALIGN_CENTER, dbuf);

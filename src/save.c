@@ -129,7 +129,7 @@ dosave0()
         return 0;
     fq_save = fqname(SAVEF, SAVEPREFIX, 1); /* level files take 0 */
 
-#if !defined(ANDROID) && !defined(GNH_ANDROID)
+#if !defined(ANDROID) && !defined(GNH_MOBILE)
 #if defined(UNIX) || defined(VMS)
     sethanguphandler((void FDECL((*), (int))) SIG_IGN);
 #endif
