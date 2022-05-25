@@ -8,7 +8,7 @@
 #include <math.h>
 
 STATIC_DCL boolean FDECL(mon_is_gecko, (struct monst *));
-STATIC_DCL int FDECL(domonnoise, (struct monst *, BOOLEAN_P));
+STATIC_DCL int FDECL(domonnoise, (struct monst *, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL int FDECL(domonnoise_with_popup, (struct monst*));
 STATIC_DCL boolean NDECL(speak_check);
 STATIC_DCL boolean NDECL(yell_check);
@@ -961,7 +961,7 @@ register struct monst *mtmp;
 
     /* presumably nearness and soundok checks have already been made */
     if (!is_silent(mtmp->data) && mtmp->data->msound <= MS_ANIMAL)
-        (void) domonnoise(mtmp, FALSE);
+        (void) domonnoise(mtmp, FALSE, FALSE);
     else if (mtmp->data->msound >= MS_HUMANOID) {
         if (!canspotmon(mtmp))
             map_invisible(mtmp->mx, mtmp->my);
@@ -993,13 +993,13 @@ STATIC_OVL int
 domonnoise_with_popup(mtmp)
 register struct monst* mtmp;
 {
-    return domonnoise(mtmp, TRUE);
+    return domonnoise(mtmp, TRUE, TRUE);
 }
 
 STATIC_OVL int
-domonnoise(mtmp, dopopup)
+domonnoise(mtmp, dopopup, fromchatmenu)
 struct monst *mtmp;
-boolean dopopup;
+boolean dopopup, fromchatmenu;
 {
     char verbuf[BUFSZ];
     register const char *pline_msg = 0, /* Monnam(mtmp) will be prepended */
@@ -1308,7 +1308,7 @@ boolean dopopup;
         if (flags.moonphase == FULL_MOON && (night() ^ !rn2(13))) {
             chat_line = 1;
             pline("%s throws back %s head and lets out a blood curdling %s!",
-                  Monnam(mtmp), mhis(mtmp),
+                  fromchatmenu ? noittame_Monnam(mtmp) : Monnam(mtmp), mhis(mtmp),
                   ptr == &mons[PM_HUMAN_WERERAT] ? "shriek" : ptr == &mons[PM_HUMAN_WEREBEAR] ? "growl" : "howl");
             wake_nearto(mtmp->mx, mtmp->my, 11 * 11);
         }
@@ -1493,7 +1493,7 @@ bark_here:
         }
         break;
     case MS_BONES:
-        pline("%s rattles noisily.", Monnam(mtmp));
+        pline("%s rattles noisily.", fromchatmenu ? noittame_Monnam(mtmp) : Monnam(mtmp));
         chat_line = 0;
         You("freeze for a moment.");
         nomul(-2);
@@ -1546,7 +1546,7 @@ bark_here:
         if (!is_peaceful(mtmp)) {
             switch (rn2(4)) {
             case 0:
-                pline("%s boasts about %s gem collection.", Monnam(mtmp),
+                pline("%s boasts about %s gem collection.", fromchatmenu ? noittame_Monnam(mtmp) : Monnam(mtmp),
                       mhis(mtmp));
                 chat_line = 2;
                 break;
@@ -1909,7 +1909,7 @@ bark_here:
     if (pline_msg) 
     {
         char pbuf[BUFSZ];
-        Sprintf(pbuf, "%s %s", Monnam(mtmp), pline_msg);
+        Sprintf(pbuf, "%s %s", fromchatmenu ? noittame_Monnam(mtmp) : Monnam(mtmp), pline_msg);
         if(dopopup)
             popup_talk_line_ex(mtmp, pbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         else
@@ -2140,7 +2140,7 @@ dochat()
             pline("%s seems not to notice you.", noittame_Monnam(u.usteed));
             return 1;
         } else
-            return domonnoise(u.usteed, FALSE);
+            return domonnoise(u.usteed, FALSE, TRUE);
     }
 
     if (u.dz)
@@ -4654,7 +4654,7 @@ struct monst* mtmp;
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
     }
     else if(rn2(4) && mon_can_move(mtmp))
-        domonnoise(mtmp, FALSE);
+        domonnoise(mtmp, FALSE, TRUE);
     else
     {
         Sprintf(pbuf, "%s does not seem to react to your words.", noittame_Monnam(mtmp));
@@ -4744,7 +4744,7 @@ struct monst* mtmp;
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
     }
     else if(rn2(4) && mon_can_move(mtmp))
-        domonnoise(mtmp, FALSE);
+        domonnoise(mtmp, FALSE, TRUE);
     else
     {
         Sprintf(pbuf, "%s does not seem to react to your gesture.", noittame_Monnam(mtmp));

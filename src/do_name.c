@@ -2253,9 +2253,9 @@ struct monst* mtmp;
         return "";
 
     if (is_tame(mtmp))
-        return Monnam(mtmp);
-    else
         return noit_Monnam(mtmp);
+    else
+        return Monnam(mtmp);
 }
 
 /* return "a dog" rather than "Fido", honoring hallucination and visibility */
