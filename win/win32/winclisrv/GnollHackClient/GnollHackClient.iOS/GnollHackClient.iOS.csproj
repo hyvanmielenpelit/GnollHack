@@ -51,7 +51,12 @@
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchLink>None</MtouchLink>
-    <MtouchInterpreter>-all</MtouchInterpreter>
+    <MtouchInterpreter>
+    </MtouchInterpreter>
+    <MtouchExtraArgs>
+    </MtouchExtraArgs>
+    <MtouchSdkVersion>
+    </MtouchSdkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -161,5 +166,8 @@
       <Project>{5A266A7A-92C8-4E71-88AE-74AC420F9F18}</Project>
       <Name>GnollHackClient</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="libs\arm64-v8a\" />
   </ItemGroup>
 </Project>

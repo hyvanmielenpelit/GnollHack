@@ -48,6 +48,7 @@ win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/license
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/nhdat
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/gnh/defaults.gnh
 win/win32/winclisrv/GnollHackClient/GnollHackClient.Android/assetpacks/assets.zip
+libgnollhackios.a
 dat/dlb.lst
 win/win32/winclisrv/GnollHackClient/gnollhackdroid/date*.h
 *.lastbuildstate
