@@ -5109,14 +5109,14 @@ dodeletesavedgame(VOID_ARGS)
             if (yn_query_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Delete Save File", "Are you sure to delete the save file?") == 'y')
             {
                 delete_savefile();
-                pline("Save file has been deleted.");
+                pline1("Save file has been deleted.");
             }
             else
-                pline(Never_mind);
+                pline1(Never_mind);
         }
         else
         {
-            pline("There is no save file to delete.");
+            pline1("There is no save file to delete.");
         }
     }
     else

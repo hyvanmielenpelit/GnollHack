@@ -25,6 +25,8 @@ namespace GnollHackClient
         private bool _screenTextSet = false;
         private bool _crashReportFinished = false;
         private bool _guiTipsFinished = false;
+        private bool _panicFinished = false;
+        private bool _messageFinished = false;
         private string _characterName = "";
         private object _characterNameLock = new object();
         private GamePage _gamePage;
@@ -122,6 +124,12 @@ namespace GnollHackClient
                             break;
                         case GHRequestType.CrashReport:
                             _crashReportFinished = true;
+                            break;
+                        case GHRequestType.Panic:
+                            _panicFinished = true;
+                            break;
+                        case GHRequestType.Message:
+                            _messageFinished = true;
                             break;
                         default:
                             break;
@@ -336,6 +344,22 @@ namespace GnollHackClient
             {
                 if (_ghWindows[winHandle] != null)
                     _ghWindows[winHandle].PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, layers);
+            }
+
+            _gamePage.ClearAllObjectData(x, y);
+
+        }
+
+        public void ClientCallback_PrintGlyphSimple(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special, IntPtr layers_ptr)
+        {
+            lock (_ghWindowsLock)
+            {
+                if (_ghWindows[winHandle] != null)
+                {
+                    LayerInfo layers = new LayerInfo();
+                    layers = (LayerInfo)Marshal.PtrToStructure(layers_ptr, typeof(LayerInfo));
+                    _ghWindows[winHandle].PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, layers);
+                }
             }
 
             _gamePage.ClearAllObjectData(x, y);
@@ -1523,6 +1547,44 @@ namespace GnollHackClient
                         }
 
                         while (!_crashReportFinished)
+                        {
+                            Thread.Sleep(GHConstants.PollingInterval);
+                            pollResponseQueue();
+                        }
+
+                        break;
+                    }
+                case (int)special_view_types.SPECIAL_VIEW_PANIC:
+                    {
+                        ConcurrentQueue<GHRequest> queue;
+                        _panicFinished = false;
+                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, GHRequestType.Panic, text));
+                        }
+
+                        while (!_panicFinished)
+                        {
+                            Thread.Sleep(GHConstants.PollingInterval);
+                            pollResponseQueue();
+                        }
+
+                        break;
+                    }
+                case (int)special_view_types.SPECIAL_VIEW_DEBUGLOG:
+                    if (text != null)
+                        Debug.WriteLine(text);
+                    break;
+                case (int)special_view_types.SPECIAL_VIEW_MESSAGE:
+                    {
+                        ConcurrentQueue<GHRequest> queue;
+                        _messageFinished = false;
+                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, GHRequestType.Message, text));
+                        }
+
+                        while (!_messageFinished)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
                             pollResponseQueue();

@@ -1323,6 +1323,7 @@ E int NDECL(tty_arrow_key_support_enabled);
 E void FDECL(write_nhsym_utf8, (char**, nhsym, BOOLEAN_P));
 E void FDECL(write_text2buf_utf8, (char*, size_t, const char*));
 E void FDECL(write_CP437_to_buf_unicode, (char*, size_t, const char*));
+E void FDECL(write_gui_debuglog, (const char*));
 
 /* ### invent.c ### */
 

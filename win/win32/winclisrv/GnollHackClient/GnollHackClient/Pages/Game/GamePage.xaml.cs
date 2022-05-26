@@ -1569,6 +1569,12 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.CrashReport:
                                 ReportCrashDetected();
                                 break;
+                            case GHRequestType.Panic:
+                                ReportPanic(req.RequestString);
+                                break;
+                            case GHRequestType.Message:
+                                ShowMessage(req.RequestString);
+                                break;
                             case GHRequestType.DisplayConditionText:
                                 DisplayConditionText(req.ConditionTextData);
                                 break;
@@ -10638,6 +10644,28 @@ namespace GnollHackClient.Pages.Game
             Weapon,
             DungeonLevel,
             XPLevel
+        }
+
+        public async void ReportPanic(string text)
+        {
+            await DisplayAlert("Panic", text != null ? text : "GnollHack has panicked. See the Panic Log.", "OK");
+
+            ConcurrentQueue<GHResponse> queue;
+            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.Panic));
+            }
+        }
+
+        public async void ShowMessage(string text)
+        {
+            await DisplayAlert("Message", text != null ? text : "No message.", "OK");
+
+            ConcurrentQueue<GHResponse> queue;
+            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.Message));
+            }
         }
 
         public async void ReportCrashDetected()

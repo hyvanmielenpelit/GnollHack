@@ -78,6 +78,7 @@ DLL int RunGnollHack(
     UpdatePositionBarCallback callback_update_positionbar,
 
     PrintGlyphCallback callback_print_glyph,
+    PrintGlyphSimpleCallback callback_print_glyph_simple,
     IssueGuiCommandCallback callback_issue_gui_command,
     RawPrintCallback callback_raw_print,
     RawPrintBoldCallback callback_raw_print_bold,
@@ -145,6 +146,7 @@ DLL int RunGnollHack(
     ReportPlayerNameCallback callback_report_player_name,
     SendObjectDataCallback callback_send_object_data,
     SendMonsterDataCallback callback_send_monster_data
+
 );
 
 DLL int RunGnollHackSimple(

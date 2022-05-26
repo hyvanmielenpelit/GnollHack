@@ -50,6 +50,7 @@ namespace GnollHackServer
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
             PrintGlyphCallback callback_print_glyph,
+            PrintGlyphSimpleCallback callback_print_glyph_simple,
             VoidIntCallback callback_issue_gui_command,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
@@ -211,6 +212,7 @@ namespace GnollHackServer
                 /* If positionbar is on */
                 GameCallback_VoidCharDummy,
                 GameCallback_PrintGlyph,
+                GameCallback_PrintGlyphSimple,
                 GameCallback_VoidIntDummy,
                 GameCallback_VoidConstCharDummy,
                 GameCallback_VoidConstCharDummy,
@@ -607,6 +609,10 @@ namespace GnollHackServer
             return "";
         }
         protected void GameCallback_PrintGlyph(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8, LayerInfo layers)
+        {
+            return;
+        }
+        protected void GameCallback_PrintGlyphSimple(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8, IntPtr layers)
         {
             return;
         }

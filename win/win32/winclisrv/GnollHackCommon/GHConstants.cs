@@ -422,8 +422,10 @@ namespace GnollHackCommon
         public int rider_gui_glyph;
         public ulong status_bits;
         public ulong condition_bits;
+
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.NUM_BUFF_BIT_ULONGS)]
         public ulong[] buff_bits;
+
         public sbyte wsegdir;
         public sbyte reverse_prev_wsegdir;
         public ulong monster_flags;
@@ -446,6 +448,16 @@ namespace GnollHackCommon
         public sbyte[] leash_mon_x; /* the last coordinate is the other end of the leash, i.e., u.ux at the time */
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxLeashed + 1)]
         public sbyte[] leash_mon_y; /* the last coordinate is the other end of the leash, i.e., u.uy at the time */
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct simple_layer_info
+    {
+        public int glyph; /* For ascii compatibility */
+        public int bkglyph; /* For ascii compatibility */
+        public ulong layer_flags;
+        public uint m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
+        public uint o_id;  /* this is the o_id of the possibly moving boulder */
     }
 
     public enum animation_play_types
@@ -1050,6 +1062,9 @@ namespace GnollHackCommon
         SPECIAL_VIEW_SHOW_SPECIAL_EFFECT,
         SPECIAL_VIEW_GUI_TIPS,
         SPECIAL_VIEW_CRASH_DETECTED,
+        SPECIAL_VIEW_PANIC,
+        SPECIAL_VIEW_DEBUGLOG,
+        SPECIAL_VIEW_MESSAGE,
         MAX_SPECIAL_VIEW_TYPES
     }
 

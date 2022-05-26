@@ -659,11 +659,21 @@ VA_DECL(const char *, str)
         Vsprintf(buf, str, VA_ARGS);
         raw_print(buf);
         paniclog("panic", buf);
+#ifdef GNOLLHACK_MAIN_PROGRAM
+        if (open_special_view)
+        {
+            struct special_view_info info = { 0 };
+            info.viewtype = SPECIAL_VIEW_PANIC;
+            info.text = str;
+            open_special_view(info);
+        }
+#endif
     }
 #ifdef WIN32
     interject(INTERJECT_PANIC);
 #endif
-#if defined(UNIX) || defined(VMS) || defined(LATTICE) || defined(WIN32)
+
+#if (defined(UNIX) || defined(VMS) || defined(LATTICE) || defined(WIN32)) && !defined(GNH_MOBILE)
     if (wizard)
         NH_abort(); /* generate core dump */
 #endif

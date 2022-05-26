@@ -1676,4 +1676,17 @@ const char* text;
     *bp = '\0';
 }
 
+void
+write_gui_debuglog(str)
+const char* str;
+{
+    if (!str || open_special_view == 0)
+        return;
+
+    struct special_view_info info = { 0 };
+    info.viewtype = SPECIAL_VIEW_DEBUGLOG;
+    info.text = str;
+    open_special_view(info);
+}
+
 /*hacklib.c*/

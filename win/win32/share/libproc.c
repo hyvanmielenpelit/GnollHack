@@ -354,9 +354,14 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     nhsym sym = 0;
     int ocolor = 0;
     unsigned long special = 0UL;
+
     (void)mapglyph(layers, &sym, &ocolor, &special, x, y);
     symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (long)cp437toUnicode[sym] : (long)sym;
+
+    lib_callbacks.callback_print_glyph_simple(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, &layers);
+#if 0
     lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, layers);
+#endif
 
     /* Now send all object data */
     /* Note: print_glyph clears all object data */
@@ -448,7 +453,15 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 
                     set_obj_glyph(cotmp);
 
+#if defined(DEBUG) && defined(GNH_IOS)
+                    write_gui_debuglog("lib_print_glyph:  Before callback_send_object_data");
+#endif
+
                     lib_callbacks.callback_send_object_data(x, y, *cotmp, 3, basewhere, get_objclassdata(cotmp), coflags);
+
+#if defined(DEBUG) && defined(GNH_IOS)
+                    write_gui_debuglog("lib_print_glyph:  After callback_send_object_data");
+#endif
                 }
             }
         }

@@ -91,6 +91,7 @@ typedef VoidVoidCallback WaitSynchCallback;
 typedef VoidIntIntBooleanCallback ClipAroundCallback;
 typedef VoidCharCallback UpdatePositionBarCallback;
 typedef void(__callconv* PrintGlyphCallback)(int, int, int, int, int, long, int, unsigned long, struct layer_info);
+typedef void(__callconv* PrintGlyphSimpleCallback)(int, int, int, int, int, long, int, unsigned long, struct layer_info*);
 typedef VoidIntCallback IssueGuiCommandCallback;
 typedef VoidConstCharCallback RawPrintCallback;
 typedef VoidConstCharCallback RawPrintBoldCallback;
@@ -185,6 +186,7 @@ struct callback_procs {
     UpdatePositionBarCallback callback_update_positionbar;
     
     PrintGlyphCallback callback_print_glyph;
+    PrintGlyphSimpleCallback callback_print_glyph_simple;
     IssueGuiCommandCallback callback_issue_gui_command;
     RawPrintCallback callback_raw_print;
     RawPrintBoldCallback callback_raw_print_bold;
