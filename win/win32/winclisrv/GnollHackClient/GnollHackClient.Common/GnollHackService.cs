@@ -86,7 +86,6 @@ namespace GnollHackClient.Unknown
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
             PrintGlyphCallback callback_print_glyph,
-            PrintGlyphSimpleCallback callback_print_glyph_simple,
             VoidIntCallback callback_issue_gui_command,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
@@ -905,7 +904,6 @@ namespace GnollHackClient.Unknown
                 /* If positionbar is on */
                 clientGame.ClientCallback_VoidCharDummy,
                 clientGame.ClientCallback_PrintGlyph,
-                clientGame.ClientCallback_PrintGlyphSimple,
                 clientGame.ClientCallback_IssueGuiCommand,
                 clientGame.ClientCallback_RawPrint,
                 clientGame.ClientCallback_RawPrintBold,

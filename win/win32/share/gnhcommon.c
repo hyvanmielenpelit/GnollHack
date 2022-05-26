@@ -391,7 +391,6 @@ int RunGnollHack(
     UpdatePositionBarCallback callback_update_positionbar,
 
     PrintGlyphCallback callback_print_glyph,
-    PrintGlyphSimpleCallback callback_print_glyph_simple,
     IssueGuiCommandCallback callback_issue_gui_command,
     RawPrintCallback callback_raw_print,
     RawPrintBoldCallback callback_raw_print_bold,
@@ -527,7 +526,6 @@ int RunGnollHack(
     lib_callbacks.callback_cliparound = callback_cliparound;
     lib_callbacks.callback_update_positionbar = callback_update_positionbar;
     lib_callbacks.callback_print_glyph = callback_print_glyph;
-    lib_callbacks.callback_print_glyph_simple = callback_print_glyph_simple;
     lib_callbacks.callback_issue_gui_command = callback_issue_gui_command;
     lib_callbacks.callback_raw_print = callback_raw_print;
     lib_callbacks.callback_raw_print_bold = callback_raw_print_bold;

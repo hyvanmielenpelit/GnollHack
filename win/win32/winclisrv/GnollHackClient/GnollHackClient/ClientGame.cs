@@ -226,8 +226,11 @@ namespace GnollHackClient
                 queue.Enqueue(new GHRequest(this, GHRequestType.HideLoadingScreen));
             }
         }
-        public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph, byte dataflags, obj objdata, objclassdata otypdata)
+        public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph, byte dataflags, IntPtr objdata_ptr, IntPtr otypdata_ptr)
         {
+            obj objdata = objdata_ptr == IntPtr.Zero ? new obj() : (obj)Marshal.PtrToStructure(objdata_ptr, typeof(obj));
+            objclassdata otypdata = otypdata_ptr == IntPtr.Zero ? new objclassdata() : (objclassdata)Marshal.PtrToStructure(otypdata_ptr, typeof(objclassdata));
+
             if (_lastWindowHandle >= GHConstants.MaxGHWindows) /* Should not happen, but paranoid */
                 _lastWindowHandle = GHConstants.MaxGHWindows - 1;
 
@@ -338,26 +341,14 @@ namespace GnollHackClient
                     _ghWindows[winHandle].Curs(x, y);
             }
         }
-        public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special, LayerInfo layers)
-        {
-            lock(_ghWindowsLock)
-            {
-                if (_ghWindows[winHandle] != null)
-                    _ghWindows[winHandle].PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, layers);
-            }
 
-            _gamePage.ClearAllObjectData(x, y);
-
-        }
-
-        public void ClientCallback_PrintGlyphSimple(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special, IntPtr layers_ptr)
+        public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special, IntPtr layers_ptr)
         {
             lock (_ghWindowsLock)
             {
                 if (_ghWindows[winHandle] != null)
                 {
-                    LayerInfo layers = new LayerInfo();
-                    layers = (LayerInfo)Marshal.PtrToStructure(layers_ptr, typeof(LayerInfo));
+                    LayerInfo layers = layers_ptr == IntPtr.Zero ? new LayerInfo() : (LayerInfo)Marshal.PtrToStructure(layers_ptr, typeof(LayerInfo));
                     _ghWindows[winHandle].PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, layers);
                 }
             }
@@ -857,12 +848,15 @@ namespace GnollHackClient
         public void ClientCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color)
         {
             ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attributes, text, presel, color, 
-                0, 0, 0, '\0', '\0', 0, 0, 0, new obj(), new objclassdata());
+                0, 0, 0, '\0', '\0', 0, 0, 0, IntPtr.Zero, IntPtr.Zero);
         }
         public void ClientCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color, 
-            int maxcount, UInt64 oid, UInt64 mid, char headingaccel, char special_mark, ulong menuflags, byte dataflags, int style, obj otmpdata, objclassdata otypdata)
+            int maxcount, UInt64 oid, UInt64 mid, char headingaccel, char special_mark, ulong menuflags, byte dataflags, int style, IntPtr otmpdata_ptr, IntPtr otypdata_ptr)
         {
             App.DebugWriteProfilingStopwatchTimeAndStart("AddExtendedMenu");
+            obj otmpdata = otmpdata_ptr == IntPtr.Zero ? new obj() : (obj)Marshal.PtrToStructure(otmpdata_ptr, typeof(obj));
+            objclassdata otypdata = otypdata_ptr == IntPtr.Zero ? new objclassdata() : (objclassdata)Marshal.PtrToStructure(otypdata_ptr, typeof(objclassdata));
+
             lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
@@ -1023,14 +1017,17 @@ namespace GnollHackClient
                 Preferences.Set("LastUsedPlayerName", used_player_name);
         }
 
-        public void ClientCallback_SendObjectData(int x, int y, obj otmp, int cmdtype, int where, objclassdata otypdata, ulong oflags)
+        public void ClientCallback_SendObjectData(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags)
         {
+            obj otmp = otmp_ptr == IntPtr.Zero ? new obj() : (obj)Marshal.PtrToStructure(otmp_ptr, typeof(obj));
+            objclassdata otypdata = otypdata_ptr == IntPtr.Zero ? new objclassdata() : (objclassdata)Marshal.PtrToStructure(otypdata_ptr, typeof(objclassdata));
             _gamePage.AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
         }
 
-        public void ClientCallback_SendMonsterData(int cmdtype, int x, int y, monst_info monster_data, ulong oflags)
+        public void ClientCallback_SendMonsterData(int cmdtype, int x, int y, IntPtr monster_data_ptr, ulong oflags)
         {
-            switch(cmdtype)
+            monst_info monster_data = monster_data_ptr == IntPtr.Zero ? new monst_info() : (monst_info)Marshal.PtrToStructure(monster_data_ptr, typeof(monst_info));
+            switch (cmdtype)
             {
                 case 0: /* Add Pet */
                     _gamePage.AddPetData(monster_data);

@@ -820,7 +820,8 @@ dll_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_wi
 {
     winid i = 0;
     dll_logDebug("dll_create_nhwindow_ex(%d)\n", type);
-    i = dll_callbacks.callback_create_nhwindow_ex(type, style, glyph, (info.object ? 1 : 0) | (info.monster ? 2 : 0) | (Hallucination ? 4 : 0), info.object ? *(info.object) : zeroobj, get_objclassdata(info.object));
+    struct objclassdata ocdata = get_objclassdata(info.object);
+    i = dll_callbacks.callback_create_nhwindow_ex(type, style, glyph, (info.object ? 1 : 0) | (info.monster ? 2 : 0) | (Hallucination ? 4 : 0), info.object, &ocdata);
 
 #if 0
     /* Return the next available winid
@@ -1188,10 +1189,11 @@ dll_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct exte
     get_menu_coloring(str, &color, &attr);
 #endif
 
+    struct objclassdata ocdata = get_objclassdata(info.object);
     dll_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr,
         str, presel, color, info.object ? info.object->quan : 0, info.object ? info.object->o_id : 0, 
         info.monster ? info.monster->m_id : 0, info.heading_for_group_accelerator, info.special_mark, info.menu_flags, 1, info.style, 
-        info.object ? *(info.object) : zeroobj, get_objclassdata(info.object));
+        info.object, &ocdata);
 }
 
 void
@@ -1380,7 +1382,7 @@ dll_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     (void)mapglyph(layers, &sym, &ocolor, &special, 0, 0);
     symbol = (long)sym;
 
-    dll_callbacks.callback_print_glyph(wid, (int)x, (int)y, glyph, bkglyph, symbol, ocolor, special, layers);
+    dll_callbacks.callback_print_glyph(wid, (int)x, (int)y, glyph, bkglyph, symbol, ocolor, special, &layers);
 
 #if 0
     if ((wid >= 0) && (wid < MAXWINDOWS)

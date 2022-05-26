@@ -70,7 +70,7 @@ typedef VoidVoidCallback GetEventCallback;
 typedef VoidConstCharCallback ExitWindowsCallback;
 typedef VoidConstCharCallback SuspendWindowsCallback;
 typedef VoidVoidCallback ResumeWindowsCallback;
-typedef int(__callconv* CreateWindowCallback)(int, int, int, UCHAR_P, struct obj, struct objclassdata);
+typedef int(__callconv* CreateWindowCallback)(int, int, int, UCHAR_P, struct obj*, struct objclassdata*);
 typedef VoidIntCallback ClearWindowCallback;
 typedef VoidIntBooleanCallback DisplayWindowCallback;
 typedef VoidIntCallback DestroyWindowCallback;
@@ -81,7 +81,7 @@ typedef VoidConstCharBooleanCallback DisplayFileCallback;
 typedef void(__callconv* StartMenuCallback)(int, int);
 typedef void(__callconv* AddMenuCallback)(int, int, long long, CHAR_P, CHAR_P, int, const char*, UCHAR_P, int);
 typedef void(__callconv* AddExtendedMenuCallback)(int, int, long long, CHAR_P, CHAR_P, int, const char*, UCHAR_P, int, int,
-    unsigned long long, unsigned long long, CHAR_P, CHAR_P, unsigned long, UCHAR_P, int, struct obj, struct objclassdata);
+    unsigned long long, unsigned long long, CHAR_P, CHAR_P, unsigned long, UCHAR_P, int, struct obj*, struct objclassdata*);
 typedef void(__callconv* EndMenuCallback)(int, const char*, const char*);
 typedef int(__callconv* SelectMenuCallback)(int, int, long long**, int*);
 typedef void(__callconv* MessageMenuCallback)(int);
@@ -90,8 +90,7 @@ typedef VoidVoidCallback MarkSynchCallback;
 typedef VoidVoidCallback WaitSynchCallback;
 typedef VoidIntIntBooleanCallback ClipAroundCallback;
 typedef VoidCharCallback UpdatePositionBarCallback;
-typedef void(__callconv* PrintGlyphCallback)(int, int, int, int, int, long, int, unsigned long, struct layer_info);
-typedef void(__callconv* PrintGlyphSimpleCallback)(int, int, int, int, int, long, int, unsigned long, struct layer_info*);
+typedef void(__callconv* PrintGlyphCallback)(int, int, int, int, int, long, int, unsigned long, struct layer_info*);
 typedef VoidIntCallback IssueGuiCommandCallback;
 typedef VoidConstCharCallback RawPrintCallback;
 typedef VoidConstCharCallback RawPrintBoldCallback;
@@ -153,8 +152,8 @@ typedef VoidIntCallback OutRipBeginCallback;
 typedef VoidIntCallback OutRipEndCallback;
 typedef void(__callconv* FreeMemoryCallback)(long long**);
 typedef void (__callconv* ReportPlayerNameCallback)(char*);
-typedef void(__callconv* SendObjectDataCallback)(int, int, struct obj, int, int, struct objclassdata, unsigned long);
-typedef void(__callconv* SendMonsterDataCallback)(int, int, int, struct monst_info, unsigned long);
+typedef void(__callconv* SendObjectDataCallback)(int, int, struct obj*, int, int, struct objclassdata*, unsigned long);
+typedef void(__callconv* SendMonsterDataCallback)(int, int, int, struct monst_info*, unsigned long);
 
 struct callback_procs {
     InitWindowsCallback callback_init_nhwindows;
@@ -186,7 +185,6 @@ struct callback_procs {
     UpdatePositionBarCallback callback_update_positionbar;
     
     PrintGlyphCallback callback_print_glyph;
-    PrintGlyphSimpleCallback callback_print_glyph_simple;
     IssueGuiCommandCallback callback_issue_gui_command;
     RawPrintCallback callback_raw_print;
     RawPrintBoldCallback callback_raw_print_bold;

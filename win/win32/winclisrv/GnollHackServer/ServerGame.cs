@@ -50,7 +50,6 @@ namespace GnollHackServer
             /* If positionbar is on */
             VoidCharCallback callback_update_positionbar,
             PrintGlyphCallback callback_print_glyph,
-            PrintGlyphSimpleCallback callback_print_glyph_simple,
             VoidIntCallback callback_issue_gui_command,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
@@ -212,7 +211,6 @@ namespace GnollHackServer
                 /* If positionbar is on */
                 GameCallback_VoidCharDummy,
                 GameCallback_PrintGlyph,
-                GameCallback_PrintGlyphSimple,
                 GameCallback_VoidIntDummy,
                 GameCallback_VoidConstCharDummy,
                 GameCallback_VoidConstCharDummy,
@@ -361,7 +359,7 @@ namespace GnollHackServer
         }
 
         protected void GameCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, string text, byte presel, int color, int maxcount,
-            UInt64 oid, UInt64 mid, char heading_group_accel, char special_mark, ulong menu_flags, byte dataflags, int style, obj otmpdata, objclassdata otypdata)
+            UInt64 oid, UInt64 mid, char heading_group_accel, char special_mark, ulong menu_flags, byte dataflags, int style, IntPtr otmpdata_ptr, IntPtr otypdata_ptr)
         {
 
         }
@@ -394,11 +392,11 @@ namespace GnollHackServer
 
         }
 
-        public void GameCallback_SendObjectData(int x, int y, obj otmp, int cmdtype, int where, objclassdata otypdata, ulong oflags)
+        public void GameCallback_SendObjectData(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags)
         {
 
         }
-        public void GameCallback_SendMonsterData(int cmdtype, int x, int y, monst_info monster_data, ulong oflags)
+        public void GameCallback_SendMonsterData(int cmdtype, int x, int y, IntPtr monster_data_ptr, ulong oflags)
         {
 
         }
@@ -456,7 +454,7 @@ namespace GnollHackServer
             return 0;
         }
 
-        protected int GameCallback_CreateGHWindow(int widid, int style, int glyph, byte dataflags, obj objdata, objclassdata otypdata)
+        protected int GameCallback_CreateGHWindow(int widid, int style, int glyph, byte dataflags, IntPtr objdata, IntPtr otypdata)
         {
             return 0;
         }
@@ -608,11 +606,7 @@ namespace GnollHackServer
         {
             return "";
         }
-        protected void GameCallback_PrintGlyph(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8, LayerInfo layers)
-        {
-            return;
-        }
-        protected void GameCallback_PrintGlyphSimple(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8, IntPtr layers)
+        protected void GameCallback_PrintGlyph(int value1, int value2, int value3, int value4, int value5, int value6, int value7, uint value8, IntPtr layers_ptr)
         {
             return;
         }

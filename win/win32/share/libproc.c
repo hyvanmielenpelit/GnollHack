@@ -162,9 +162,10 @@ void lib_resume_nhwindows(void)
 
 winid lib_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_window_info info)
 {
-    return lib_callbacks.callback_create_nhwindow_ex(type, style, glyph, 
+    struct objclassdata ocdata = get_objclassdata(info.object);
+    return lib_callbacks.callback_create_nhwindow_ex(type, style, glyph,
         (info.object ? 1 : 0) | (info.monster ? 2 : 0) | (Hallucination ? 4 : 0) | (info.create_flags & WINDOW_CREATE_FLAGS_ACTIVE ? 8 : 0), 
-        info.object ? *(info.object) : zeroobj, get_objclassdata(info.object));
+        info.object, &ocdata);
 }
 
 void lib_clear_nhwindow(winid wid)
@@ -278,10 +279,11 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct
     if (info.object)
         set_obj_glyph(info.object);
 
+    struct objclassdata ocdata = get_objclassdata(info.object);
     lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, str ? buf : 0, presel, color, (info.object && !(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? info.object->quan : 0),
         (unsigned long long)(info.object ? info.object->o_id : 0), (unsigned long long)(info.monster ? info.monster->m_id : 0), info.heading_for_group_accelerator, info.special_mark, info.menu_flags,
         (info.object ? MENU_DATAFLAGS_HAS_OBJECT_DATA : 0) | (info.monster ? MENU_DATAFLAGS_HAS_MONSTER_DATA : 0) | (Hallucination ? MENU_DATAFLAGS_HALLUCINATED : 0) | (info.monster && info.monster->female ? MENU_DATAFLAGS_FEMALE : 0),
-        info.style, info.object ? *(info.object) : zeroobj, get_objclassdata(info.object));
+        info.style, info.object, &ocdata);
 }
 
 void lib_end_menu_ex(winid wid, const char* prompt, const char* subtitle)
@@ -358,10 +360,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     (void)mapglyph(layers, &sym, &ocolor, &special, x, y);
     symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (long)cp437toUnicode[sym] : (long)sym;
 
-    lib_callbacks.callback_print_glyph_simple(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, &layers);
-#if 0
-    lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, layers);
-#endif
+    lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, &layers);
 
     /* Now send all object data */
     /* Note: print_glyph clears all object data */
@@ -435,7 +434,8 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 
             set_obj_glyph(otmp);
 
-            lib_callbacks.callback_send_object_data(x, y, *otmp, 2, basewhere, get_objclassdata(otmp), oflags);
+            struct objclassdata ocdata = get_objclassdata(otmp);
+            lib_callbacks.callback_send_object_data(x, y, otmp, 2, basewhere, &ocdata, oflags);
             if (otmp->cobj)
             {
                 struct obj* cotmp;
@@ -453,15 +453,8 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 
                     set_obj_glyph(cotmp);
 
-#if defined(DEBUG) && defined(GNH_IOS)
-                    write_gui_debuglog("lib_print_glyph:  Before callback_send_object_data");
-#endif
-
-                    lib_callbacks.callback_send_object_data(x, y, *cotmp, 3, basewhere, get_objclassdata(cotmp), coflags);
-
-#if defined(DEBUG) && defined(GNH_IOS)
-                    write_gui_debuglog("lib_print_glyph:  After callback_send_object_data");
-#endif
+                    struct objclassdata cocdata = get_objclassdata(cotmp);
+                    lib_callbacks.callback_send_object_data(x, y, cotmp, 3, basewhere, &cocdata, coflags);
                 }
             }
         }
@@ -483,7 +476,7 @@ void lib_issue_gui_command(int initid)
             if (!DEADMONSTER(mtmp) && is_tame(mtmp))
             {
                 monst_to_info(mtmp, &mi);
-                lib_callbacks.callback_send_monster_data(0, 0, 0, mi, 0UL); /* Add a pet */
+                lib_callbacks.callback_send_monster_data(0, 0, 0, &mi, 0UL); /* Add a pet */
             }
         }
         break;
