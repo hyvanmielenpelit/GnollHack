@@ -4,7 +4,7 @@
   <!-- TODO not copying record-->
   <Target Name="Build"
     Inputs="$(WslOutDir)include\date.h;$(WslOutDir)bin\nhdat;$(WslOutDir)dat\credits;$(WslOutDir)dat\xcredits;$(WslOutDir)dat\license;$(WslOutDir)rc\defaults.gnh;$(WslOutDir)rc\sysconf"
-    Outputs="$(LibDroidDir)include\date_unix.h;$(AndroidGnhDir)nhdat;$(AndroidGnhDir)credits;$(AndroidGnhDir)xcredits;$(AndroidGnhDir)license;$(AndroidGnhDir)symbols;$(AndroidGnhDir)defaults.gnh;$(AndroidGnhDir)sysconf">
+    Outputs="$(LibDroidDir)include\date_unix.h;$(AndroidGnhDir)nhdat;$(AndroidGnhDir)credits;$(AndroidGnhDir)xcredits;$(AndroidGnhDir)license;$(AndroidGnhDir)symbols;$(AndroidGnhDir)defaults.gnh;$(AndroidGnhDir)sysconf;$(LibiOSDir)include\date_unix.h;$(iOSGnhDir)nhdat;$(iOSGnhDir)credits;$(iOSGnhDir)xcredits;$(iOSGnhDir)license;$(iOSGnhDir)symbols;$(iOSGnhDir)defaults.gnh;$(iOSGnhDir)sysconf">
     <Copy SourceFiles="$(WslOutDir)include\date_unix.h" DestinationFolder="$(LibDroidDir)"/>
     <Copy SourceFiles="$(WslOutDir)bin\nhdat" DestinationFolder="$(AndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\credits" DestinationFolder="$(AndroidGnhDir)"/>
@@ -13,6 +13,15 @@
     <Copy SourceFiles="$(WslOutDir)dat\symbols" DestinationFolder="$(AndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)rc\defaults.gnh" DestinationFolder="$(AndroidGnhDir)"/>
 	<Copy SourceFiles="$(WslOutDir)rc\sysconf" DestinationFolder="$(AndroidGnhDir)"/>
+
+	<Copy SourceFiles="$(WslOutDir)include\date_unix.h" DestinationFolder="$(LibiOSDir)"/>
+    <Copy SourceFiles="$(WslOutDir)bin\nhdat" DestinationFolder="$(iOSGnhDir)"/>
+    <Copy SourceFiles="$(WslOutDir)dat\credits" DestinationFolder="$(iOSGnhDir)"/>
+    <Copy SourceFiles="$(WslOutDir)dat\xcredits" DestinationFolder="$(iOSGnhDir)"/>
+    <Copy SourceFiles="$(WslOutDir)dat\license" DestinationFolder="$(iOSGnhDir)"/>
+    <Copy SourceFiles="$(WslOutDir)dat\symbols" DestinationFolder="$(iOSGnhDir)"/>
+    <Copy SourceFiles="$(WslOutDir)rc\defaults.gnh" DestinationFolder="$(iOSGnhDir)"/>
+	<Copy SourceFiles="$(WslOutDir)rc\sysconf" DestinationFolder="$(iOSGnhDir)"/>
   </Target>
   <Target Name="Clean">
     <Delete Files="$(LibDroidDir)date.h"/>
@@ -23,5 +32,13 @@
     <Delete Files="$(AndroidGnhDir)symbols"/>
     <Delete Files="$(AndroidGnhDir)defaults.gnh"/>
 	<Delete Files="$(AndroidGnhDir)sysconf"/>
+    <Delete Files="$(LibiOSDir)date.h"/>
+    <Delete Files="$(iOSGnhDir)nhdat"/>
+    <Delete Files="$(iOSGnhDir)credits"/>
+    <Delete Files="$(iOSGnhDir)xcredits"/>
+    <Delete Files="$(iOSGnhDir)license"/>
+    <Delete Files="$(iOSGnhDir)symbols"/>
+    <Delete Files="$(iOSGnhDir)defaults.gnh"/>
+	<Delete Files="$(iOSGnhDir)sysconf"/>
   </Target>
 </Project>

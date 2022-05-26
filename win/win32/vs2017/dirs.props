@@ -33,6 +33,7 @@
     <iOSLibsDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.iOS\libs\</iOSLibsDir>
     <ClientCommonAssetsDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient\Assets\</ClientCommonAssetsDir>
     <AndroidGnhDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.Android\gnh\</AndroidGnhDir>
+    <iOSGnhDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.iOS\gnh\</iOSGnhDir>
     <BankDesktopDir>$(WinWin32Dir)bank\Desktop\</BankDesktopDir>
     <BankMobileDir>$(WinWin32Dir)bank\Mobile\</BankMobileDir>
     <OutDir>$(ToolsDir)</OutDir>

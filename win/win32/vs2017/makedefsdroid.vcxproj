@@ -164,8 +164,8 @@
     <GnhDataFiles Include="$(DatDir)credits" />
     <GnhDataFiles Include="$(DatDir)xcredits" />
     <GnhDataFiles Include="$(DatDir)license" />
-    <GnhDataFiles Include="$(LibDroidDir)defaults.gnh" />
-    <GnhDataFiles Include="$(LibDroidDir)sysconf" />
+    <GnhDataFiles Include="$(LibShareDir)defaults.gnh" />
+    <GnhDataFiles Include="$(LibShareDir)sysconf" />
     <GnhDataFiles Include="$(GooglePlayDir)createassetpack.sh" />
     <GnhDataFiles Include="$(GooglePlayDir)AndroidManifest.xml" />
     <DataFilesToCopyRemotely Include="@(GnhDataFiles)" />

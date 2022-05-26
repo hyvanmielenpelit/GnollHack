@@ -3,14 +3,6 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "gnollhackdroid.h"
-#include "hack.h"
-#include "func_tab.h"
-#include "libproc.h"
-#include "callback.h"
-#include "date_unix.h"
-#include <sys/stat.h>
-
-extern int GnollHackMain(int argc, char** argv);
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "gnollhackdroid", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "gnollhackdroid", __VA_ARGS__))
@@ -36,8 +28,6 @@ const char *getPlatformABI()
 	LOGI("This dynamic shared library is compiled with ABI: %s", ABI);
 	return "This native library is compiled with ABI: %s" ABI ".";
 }
-
-extern void FDECL(set_wincaps, (unsigned long, unsigned long));
 
 void gnollhackdroid(void)
 {
