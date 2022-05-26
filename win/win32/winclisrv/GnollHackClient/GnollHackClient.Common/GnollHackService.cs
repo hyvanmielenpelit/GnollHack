@@ -1,10 +1,4 @@
-﻿using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,17 +6,49 @@ using System.Reflection;
 using System.IO;
 using Xamarin.Forms;
 using System.Runtime.InteropServices;
-using Android.Content.Res;
 using GnollHackClient;
 using GnollHackCommon;
 using Xamarin.Essentials;
 
+#if __IOS__
+using Foundation;
+using UIKit;
+
+[assembly: Dependency(typeof(GnollHackClient.iOS.GnollHackService))]
+namespace GnollHackClient.iOS
+#elif __ANDROID__
+using Android.App;
+using Android.Content;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
+using Android.Content.Res;
+
 [assembly: Dependency(typeof(GnollHackClient.Droid.GnollHackService))]
 namespace GnollHackClient.Droid
+#else
+[assembly: Dependency(typeof(GnollHackClient.Unknown.GnollHackService))]
+namespace GnollHackClient.Unknown
+#endif
 {
+    public class PlatformConstants
+    {
+#if __IOS__
+        public const string dll     = "__Internal";
+        public const string library = "gnollhackios";
+#elif __ANDROID__
+        public const string dll     = @"libgnollhackdroid.so";
+        public const string library = "gnollhackdroid";
+#else
+        public const string dll     = @"libgnollhackunknown.so";
+        public const string library = "gnollhackunknown";
+#endif
+    }
+
     class GnollHackService : IGnollHackService
     {
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
@@ -128,119 +154,128 @@ namespace GnollHackClient.Droid
             SendMonsterDataCallback callback_send_monster_data
         );
 
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int GetGlyph2Tile(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int GetGlyphTileFlags(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int GetTile2Animation(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int GetTile2Enlargement(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int GetTile2Replacement(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int GetTile2Autodraw(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int GetAnimationOffsets(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int GetEnlargementOffsets(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int GetReplacementOffsets(out IntPtr array_ptr, out int size);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int CountTotalTiles();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetUnexploredGlyph();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetNoGlyph();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetAnimationOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetEnlargementOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetReplacementOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetGeneralTileOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetHitTileOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetUITileOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetSpellTileOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetSkillTileOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetBuffTileOff();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetCursorOff();
 
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibTest();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetVersionString();
 
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetVersionId();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetPropertyName(int prop_index);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibGetExtendedCommands();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern IntPtr LibDumplogDateString(long startdate);
 
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetAnimationArraySize();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern AnimationDefinition LibGetAnimationArrayElement(int idx);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern EnlargementDefinition LibGetEnlargementArrayElement(int idx);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern ReplacementDefinition LibGetReplacementArrayElement(int idx);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern AutoDrawDefinition LibGetAutoDrawArrayElement(int idx);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetEnlargementArraySize();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetReplacementArraySize();
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetAutoDrawArraySize();
 
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetAutoDrawArraySize(int glyph);
+
+        [DllImport(PlatformConstants.dll)]
         public static extern int get_tile_animation_index_from_glyph(int glyph);
 
-        [DllImport(@"libgnollhackdroid.so")]
+
+        [DllImport(PlatformConstants.dll)]
         public static extern byte LibGlyphIsExplosion(int glyph);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern byte LibGlyphIsZap(int glyph);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern byte LibGlyphIsAnyDying(int glyph);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int maybe_get_animated_tile(int ntile, int tile_animation_idx, int play_type, long interval_counter, 
             out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, ref int autodraw_ptr);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern void LibSwitchDemoVersion(int state);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern void LibSetPetMID(uint m_id);
-        [DllImport(@"libgnollhackdroid.so")]
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibChmod(string filename, uint mode);
+
 
         private void LoadNativeLibrary(string libName)
         {
+#if __ANDROID__
             Java.Lang.JavaSystem.LoadLibrary(libName);
+#endif
         }
         private void UnloadNativeLibrary(string libName)
         {
+#if __ANDROID__
             Java.Lang.JavaSystem.Gc();
+#endif
         }
 
         public void LoadLibrary()
         {
-            LoadNativeLibrary("gnollhackdroid");
+            LoadNativeLibrary(PlatformConstants.library);
         }
         public void UnloadLibrary()
         {
-            UnloadNativeLibrary("gnollhackdroid");
+            UnloadNativeLibrary(PlatformConstants.library);
         }
         public void ClearFiles()
         {
@@ -347,13 +382,20 @@ namespace GnollHackClient.Droid
         public void ResetDefaultsFile()
         {
             string content;
-            AssetManager assets = MainActivity.StaticAssets;
             string filesdir = GetGnollHackPath();
-
             string assetsourcedir = "gnh";
             string txtfile = "defaults.gnh";
+#if __IOS__
+            string fullsourcepath = NSBundle.MainBundle.PathForResource("defaults", "gnh", assetsourcedir);
+            using (StreamReader sr = new StreamReader(fullsourcepath))
+#elif __ANDROID__
             string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+            AssetManager assets = MainActivity.StaticAssets;
             using (StreamReader sr = new StreamReader(assets.Open(fullsourcepath)))
+#else
+            string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+            using (StreamReader sr = new StreamReader(fullsourcepath))
+#endif
             {
                 content = sr.ReadToEnd();
             }
@@ -370,7 +412,18 @@ namespace GnollHackClient.Droid
 
         public string GetGnollHackPath()
         {
+#if __ANDROID__            
             return Android.App.Application.Context.FilesDir.Path;
+#elif __IOS__
+            string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string library = Path.Combine(documents, "..", "Library");
+            string path = Path.Combine(library, "Application Support");
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            return path;
+#else
+            return ".";
+#endif
         }
 
 
@@ -400,17 +453,29 @@ namespace GnollHackClient.Droid
                 App.CheckCreateDirectory(fulldirepath);
             }
 
-
             /* Copy missing files from resources */
             string content;
-            AssetManager assets = MainActivity.StaticAssets;
-
             string assetsourcedir = "gnh";
+#if __ANDROID__
+            AssetManager assets = MainActivity.StaticAssets;
+#endif
 
             foreach (string txtfile in _txtfileslist)
             {
+#if __IOS__
+                string extension = Path.GetExtension(txtfile);
+                if (extension != null && extension.Length > 0)
+                    extension = extension.Substring(1); /* Remove . from the start */
+                string fname = Path.GetFileNameWithoutExtension(txtfile);
+                string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, assetsourcedir);
+                using (StreamReader sr = new StreamReader(fullsourcepath))
+#elif __ANDROID__
                 string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
                 using (StreamReader sr = new StreamReader(assets.Open(fullsourcepath)))
+#else
+                string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+                using (StreamReader sr = new StreamReader(fullsourcepath))
+#endif
                 {
                     content = sr.ReadToEnd();
                 }
@@ -431,9 +496,20 @@ namespace GnollHackClient.Droid
             int maxsize = 2048 * 1024;
             foreach (string binfile in _binfileslist)
             {
+#if __IOS__
+                string extension = Path.GetExtension(binfile);
+                if (extension != null && extension.Length > 0)
+                    extension = extension.Substring(1); /* Remove . from the start */
+                string fname = Path.GetFileNameWithoutExtension(binfile);
+                string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, assetsourcedir);
+                using (BinaryReader br = new BinaryReader(File.OpenRead(fullsourcepath)))
+#elif __ANDROID__
                 string fullsourcepath = Path.Combine(assetsourcedir, binfile);
-
                 using (BinaryReader br = new BinaryReader(assets.Open(fullsourcepath)))
+#else
+                string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+                using (BinaryReader br = new BinaryReader(File.OpenRead(fullsourcepath)))
+#endif                
                 {
                     data = br.ReadBytes(maxsize);
                 }
@@ -466,7 +542,19 @@ namespace GnollHackClient.Droid
                 foreach (SecretsFile sfile in secrets.files)
                 {
                     string assetfile = sfile.name;
-                    string fullsourcepath = Path.Combine(sfile.source_directory, assetfile);
+                    string sfiledir = sfile.source_directory;
+
+#if __IOS__
+                    string extension = Path.GetExtension(assetfile);
+                    if (extension != null && extension.Length > 0)
+                        extension = extension.Substring(1); /* Remove . from the start */
+                    string fname = Path.GetFileNameWithoutExtension(assetfile);
+                    string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, Path.Combine("Resources", sfiledir));
+#elif __ANDROID__
+                    string fullsourcepath = Path.Combine(sfiledir, assetfile);
+#else
+                    string fullsourcepath = Path.Combine(sfiledir, assetfile);
+#endif                
 
                     try
                     {
@@ -492,7 +580,7 @@ namespace GnollHackClient.Droid
                             }
                         }
 
-                        using (Stream s = assets.Open(fullsourcepath))
+                        using (Stream s = File.OpenRead(fullsourcepath))
                         {
                             if (s == null)
                                 continue;
@@ -588,12 +676,16 @@ namespace GnollHackClient.Droid
 
         public void GetGlyphArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size)
         {
+            //size1 = gltifl_size = 0;
+            //gl2ti = gltifl = IntPtr.Zero;
             GetGlyph2Tile(out gl2ti, out size1);
             GetGlyphTileFlags(out gltifl, out gltifl_size);
         }
         public void GetTileArrays(out IntPtr ti2an, out int size2, out IntPtr ti2en, out int size3, out IntPtr ti2ad, out int size4, 
             out IntPtr anoff_ptr, out int anoff_size, out IntPtr enoff_ptr, out int enoff_size, out IntPtr reoff_ptr, out int reoff_size)
         {
+            //ti2an = ti2en = ti2ad = anoff_ptr = enoff_ptr = reoff_ptr = IntPtr.Zero;
+            //size2 = size3= size4 = anoff_size = enoff_size = reoff_size = 0;
             GetTile2Animation(out ti2an, out size2);
             GetTile2Enlargement(out ti2en, out size3);
             GetTile2Autodraw(out ti2ad, out size4);
@@ -616,6 +708,7 @@ namespace GnollHackClient.Droid
 
         public void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile, out int ui_tile, out int spell_tile, out int skill_tile, out int buff_tile, out int cursor_off)
         {
+            //a = e =r = gen_tile = hit_tile = ui_tile = spell_tile = skill_tile = buff_tile = cursor_off = 0;
             a = LibGetAnimationOff();
             e = LibGetEnlargementOff();
             r = LibGetReplacementOff();
@@ -697,6 +790,9 @@ namespace GnollHackClient.Droid
         public int GetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter,
                     out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, ref int autodraw_ptr)
         {
+            //frame_idx_ptr = main_tile_idx_ptr = autodraw_ptr = 0;
+            //mapAnimated = 0;
+
             return maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter,
                 out frame_idx_ptr, out main_tile_idx_ptr, out mapAnimated, ref autodraw_ptr);
         }

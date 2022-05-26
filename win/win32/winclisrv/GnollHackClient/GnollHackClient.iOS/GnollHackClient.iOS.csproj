@@ -77,7 +77,7 @@
     <Compile Include="..\GnollHackClient.FMOD\fmod_dsp.cs" />
     <Compile Include="..\GnollHackClient.FMOD\fmod_errors.cs" />
     <Compile Include="..\GnollHackClient.FMOD\fmod_studio.cs" />
-    <Compile Include="GnollHackService.cs" />
+    <Compile Include="..\GnollHackClient.Common\GnollHackService.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />

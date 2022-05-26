@@ -40,7 +40,7 @@
     <AndroidSupportedAbis>
     </AndroidSupportedAbis>
     <Debugger>Xamarin</Debugger>
-    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <MandroidI18n />
     <AndroidPackageFormat>apk</AndroidPackageFormat>
@@ -117,7 +117,7 @@
     <Compile Include="..\GnollHackClient.FMOD\fmod_dsp.cs" />
     <Compile Include="..\GnollHackClient.FMOD\fmod_errors.cs" />
     <Compile Include="..\GnollHackClient.FMOD\fmod_studio.cs" />
-    <Compile Include="GnollHackService.cs" />
+    <Compile Include="..\GnollHackClient.Common\GnollHackService.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
