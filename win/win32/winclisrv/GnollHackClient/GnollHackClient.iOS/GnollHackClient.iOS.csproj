@@ -96,9 +96,9 @@
     <None Include="Info.plist" />
     <Compile Include="PlatformService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <BundleResource Include="Resources\banks\Auxiliary.bank" />
-    <BundleResource Include="Resources\banks\Master.bank" />
-    <BundleResource Include="Resources\banks\Master.strings.bank" />
+    <BundleResource Include="banks\Auxiliary.bank" />
+    <BundleResource Include="banks\Master.bank" />
+    <BundleResource Include="banks\Master.strings.bank" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

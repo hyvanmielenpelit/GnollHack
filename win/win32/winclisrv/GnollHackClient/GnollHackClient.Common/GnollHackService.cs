@@ -549,7 +549,7 @@ namespace GnollHackClient.Unknown
                     if (extension != null && extension.Length > 0)
                         extension = extension.Substring(1); /* Remove . from the start */
                     string fname = Path.GetFileNameWithoutExtension(assetfile);
-                    string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, Path.Combine("Resources", sfiledir));
+                    string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, sfiledir);
 #elif __ANDROID__
                     string fullsourcepath = Path.Combine(sfiledir, assetfile);
 #else
