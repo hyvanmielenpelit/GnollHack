@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;UNITY_IPHONE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchArch>x86_64</MtouchArch>
@@ -33,6 +33,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <DefineConstants>UNITY_IPHONE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchLink>None</MtouchLink>
@@ -43,7 +44,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\iPhone\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;UNITY_IPHONE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchArch>ARM64</MtouchArch>
@@ -53,7 +54,7 @@
     <MtouchLink>None</MtouchLink>
     <MtouchInterpreter>
     </MtouchInterpreter>
-    <MtouchExtraArgs>-cxx -gcc_flags "-L${ProjectDir}/NativeReferences -lgnollhackios -force_load ${ProjectDir}/NativeReferences/libgnollhackios.a"</MtouchExtraArgs>
+    <MtouchExtraArgs>-cxx -gcc_flags "-L${ProjectDir}/NativeReferences -lgnollhackios -lfmod_iphoneos -lfmodstudio_iphoneos -force_load ${ProjectDir}/NativeReferences/libgnollhackios.a ${ProjectDir}/NativeReferences/libfmod_iphoneos.a ${ProjectDir}/NativeReferences/libfmodstudio_iphoneos.a"</MtouchExtraArgs>
     <MtouchSdkVersion>
     </MtouchSdkVersion>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
@@ -72,7 +73,11 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="FmodService.cs" />
+    <Compile Include="..\GnollHackClient.FMOD\FmodService.cs" />
+    <Compile Include="..\GnollHackClient.FMOD\fmod.cs" />
+    <Compile Include="..\GnollHackClient.FMOD\fmod_dsp.cs" />
+    <Compile Include="..\GnollHackClient.FMOD\fmod_errors.cs" />
+    <Compile Include="..\GnollHackClient.FMOD\fmod_studio.cs" />
     <Compile Include="GnollHackService.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
@@ -170,6 +175,12 @@
   <ItemGroup />
   <ItemGroup>
     <NativeReference Include="NativeReferences/libgnollhackios.a">
+      <Kind>Static</Kind>
+    </NativeReference>
+    <NativeReference Include="NativeReferences/libfmod_iphoneos.a">
+      <Kind>Static</Kind>
+    </NativeReference>
+    <NativeReference Include="NativeReferences/libfmodstudio_iphoneos.a">
       <Kind>Static</Kind>
     </NativeReference>
   </ItemGroup>
