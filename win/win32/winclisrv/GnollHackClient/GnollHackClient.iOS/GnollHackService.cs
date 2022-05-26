@@ -18,7 +18,7 @@ namespace GnollHackClient.iOS
 {
     class GnollHackService : IGnollHackService
     {
-        [DllImport("__Internal", EntryPoint = "RunGnollHack")]
+        [DllImport("__Internal")]
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
@@ -169,7 +169,7 @@ namespace GnollHackClient.iOS
         [DllImport("__Internal", EntryPoint = "LibGetCursorOff")]
         public static extern int LibGetCursorOff();
 
-        [DllImport("__Internal", EntryPoint = "LibTest")]
+        [DllImport("__Internal")]
         public static extern int LibTest();
         [DllImport("__Internal", EntryPoint = "LibGetVersionString")]
         public static extern IntPtr LibGetVersionString();
@@ -347,15 +347,12 @@ namespace GnollHackClient.iOS
 
         public void ResetDefaultsFile()
         {
-#if false
             string content;
-            AssetManager assets = MainActivity.StaticAssets;
             string filesdir = GetGnollHackPath();
 
-            string assetsourcedir = "gnh";
             string txtfile = "defaults.gnh";
-            string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
-            using (StreamReader sr = new StreamReader(assets.Open(fullsourcepath)))
+            string fullsourcepath = NSBundle.MainBundle.PathForResource("defaults", "gnh", "gnh");
+            using (StreamReader sr = new StreamReader(fullsourcepath))
             {
                 content = sr.ReadToEnd();
             }
@@ -368,7 +365,6 @@ namespace GnollHackClient.iOS
             {
                 sw.Write(content);
             }
-#endif
         }
 
         public string GetGnollHackPath()
@@ -408,17 +404,18 @@ namespace GnollHackClient.iOS
                 App.CheckCreateDirectory(fulldirepath);
             }
 
-#if false
             /* Copy missing files from resources */
             string content;
-            AssetManager assets = MainActivity.StaticAssets;
-
             string assetsourcedir = "gnh";
 
             foreach (string txtfile in _txtfileslist)
             {
-                string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
-                using (StreamReader sr = new StreamReader(assets.Open(fullsourcepath)))
+                string extension = Path.GetExtension(txtfile);
+                if (extension != null && extension.Length > 0)
+                    extension = extension.Substring(1); /* Remove . from the start */
+                string fname = Path.GetFileNameWithoutExtension(txtfile);
+                string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, assetsourcedir);
+                using (StreamReader sr = new StreamReader(fullsourcepath))
                 {
                     content = sr.ReadToEnd();
                 }
@@ -439,9 +436,12 @@ namespace GnollHackClient.iOS
             int maxsize = 2048 * 1024;
             foreach (string binfile in _binfileslist)
             {
-                string fullsourcepath = Path.Combine(assetsourcedir, binfile);
-
-                using (BinaryReader br = new BinaryReader(assets.Open(fullsourcepath)))
+                string extension = Path.GetExtension(binfile);
+                if (extension != null && extension.Length > 0)
+                    extension = extension.Substring(1); /* Remove . from the start */
+                string fname = Path.GetFileNameWithoutExtension(binfile);
+                string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, assetsourcedir);
+                using (BinaryReader br = new BinaryReader(File.OpenRead(fullsourcepath)))
                 {
                     data = br.ReadBytes(maxsize);
                 }
@@ -474,7 +474,13 @@ namespace GnollHackClient.iOS
                 foreach (SecretsFile sfile in secrets.files)
                 {
                     string assetfile = sfile.name;
-                    string fullsourcepath = sfile.source_directory + "/" + assetfile;
+                    string sfiledir = sfile.source_directory;
+
+                    string extension = Path.GetExtension(assetfile);
+                    if (extension != null && extension.Length > 0)
+                        extension = extension.Substring(1); /* Remove . from the start */
+                    string fname = Path.GetFileNameWithoutExtension(assetfile);
+                    string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, Path.Combine("Resources", sfiledir));
 
                     try
                     {
@@ -500,7 +506,7 @@ namespace GnollHackClient.iOS
                             }
                         }
 
-                        using (Stream s = assets.Open(fullsourcepath))
+                        using (Stream s = File.OpenRead(fullsourcepath))
                         {
                             if (s == null)
                                 continue;
@@ -592,7 +598,6 @@ namespace GnollHackClient.iOS
                     }
                 }
             }
-#endif
         }
 
         public void GetGlyphArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size)

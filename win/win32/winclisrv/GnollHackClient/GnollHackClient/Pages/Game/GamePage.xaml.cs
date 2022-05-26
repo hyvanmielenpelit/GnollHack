@@ -2423,6 +2423,8 @@ namespace GnollHackClient.Pages.Game
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
+            if (!MainGrid.IsVisible)
+                return;
 
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;

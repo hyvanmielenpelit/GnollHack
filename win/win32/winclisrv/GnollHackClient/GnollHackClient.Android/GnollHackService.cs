@@ -466,7 +466,7 @@ namespace GnollHackClient.Droid
                 foreach (SecretsFile sfile in secrets.files)
                 {
                     string assetfile = sfile.name;
-                    string fullsourcepath = sfile.source_directory + "/" + assetfile;
+                    string fullsourcepath = Path.Combine(sfile.source_directory, assetfile);
 
                     try
                     {
