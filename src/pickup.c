@@ -4205,11 +4205,14 @@ can_stash_objs()
     return FALSE;
 }
 
-void 
-set_current_container_to_zeroobj()
+static struct obj dummy_container = { 0 };
+
+void
+set_current_container_to_dummyobj()
 {
-    current_container = &zeroobj;
+    current_container = &dummy_container;
 }
+
 
 void
 set_current_container_to_null()
@@ -4229,7 +4232,7 @@ dostash()
         return 0;
     }
 
-    current_container = &zeroobj; /* dummy for getobj with stash */
+    current_container = &dummy_container; /* dummy for getobj with stash */
     otmp = getobj(getobj_stash_objs, "stash", 0, "");
     current_container = 0;
     if (!otmp)
@@ -4258,7 +4261,7 @@ dostash()
            reason; might need to undo splitobj() */
         (void)unsplitobj(otmp);
     }
-
+    return 1;
 }
 
 /*pickup.c*/

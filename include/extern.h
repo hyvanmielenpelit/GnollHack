@@ -2447,7 +2447,7 @@ E boolean FDECL(maybe_disturb_container_monster, (struct obj* ));
 E int NDECL(handle_knapsack_full);
 E int NDECL(dostash);
 E boolean NDECL(can_stash_objs);
-E void NDECL(set_current_container_to_zeroobj);
+E void NDECL(set_current_container_to_dummyobj);
 E void NDECL(set_current_container_to_null);
 
 /* ### pline.c ### */

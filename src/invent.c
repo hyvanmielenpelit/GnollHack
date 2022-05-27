@@ -4143,7 +4143,7 @@ long pickcnt;
             }
 
             if (!strcmp(extcmdlist[i].getobj_word, "stash"))
-                set_current_container_to_zeroobj();
+                set_current_container_to_dummyobj();
             boolean acceptable = acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word);
             if (!strcmp(extcmdlist[i].getobj_word, "stash"))
                 set_current_container_to_null();
@@ -4195,7 +4195,7 @@ long pickcnt;
             }
 
             if (!strcmp(extcmdlist[i].getobj_word, "stash"))
-                set_current_container_to_zeroobj();
+                set_current_container_to_dummyobj();
             boolean acceptable = acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word);
             if (!strcmp(extcmdlist[i].getobj_word, "stash"))
                 set_current_container_to_null();
