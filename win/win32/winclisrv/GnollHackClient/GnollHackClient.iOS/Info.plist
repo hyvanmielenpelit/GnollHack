@@ -40,5 +40,7 @@
 	<true/>
 	<key>UIRequiresFullScreen</key>
 	<true/>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>

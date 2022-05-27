@@ -25,7 +25,7 @@ namespace GnollHackClient.iOS
             global::Xamarin.Forms.Forms.Init();
             CachedImageRenderer.Init();
             LoadApplication(new App());
-
+            UIApplication.SharedApplication.StatusBarHidden = true;
             return base.FinishedLaunching(app, options);
         }
     }
