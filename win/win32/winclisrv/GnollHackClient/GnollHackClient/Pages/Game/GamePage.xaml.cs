@@ -6979,6 +6979,7 @@ namespace GnollHackClient.Pages.Game
                     //UpperCmdLayout.Orientation = StackOrientation.Horizontal;
                 }
 
+                App.FmodService?.MixerResume();
                 IsSizeAllocatedProcessed = true;
             }
         }

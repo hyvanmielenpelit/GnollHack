@@ -13,7 +13,7 @@ using System.Threading;
 
 #if __IOS__
 using Foundation;
-using UIKit;
+using AVFoundation;
 
 [assembly: Dependency(typeof(GnollHackClient.iOS.FmodService))]
 namespace GnollHackClient.iOS
@@ -106,9 +106,57 @@ namespace GnollHackClient.Unknown
             if (res != RESULT.OK)
                 return;
 
+#if __IOS__
+            iOSAVSetup();
+#endif
             _initialized = true;
         }
 
+#if __IOS__
+        void iOSAVSetup()
+        {
+            AVAudioSession.SharedInstance().Init();
+            NSError error;
+            NSError scerror = AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.Playback);
+            //if (error != null)
+            //{
+            //    return;
+            //}
+            AVAudioSession.Notifications.ObserveInterruption(ToneInterruptionListener);
+            
+            NSObject notification = AVAudioSession.Notifications.ObserveMediaServicesWereReset((sender, args) => {
+                /* Access strongly typed args */
+                Console.WriteLine("ObserveMediaServicesWereReset Notification: {0}", args.Notification);
+            });
+            NSObject notification2 = AVAudioSession.Notifications.ObserveMediaServicesWereLost((sender, args) => {
+                /* Access strongly typed args */
+                Console.WriteLine("ObserveMediaServicesWereLost Notification: {0}", args.Notification);
+            });
+            NSObject notification3 = AVAudioSession.Notifications.ObserveRouteChange((sender, args) => {
+                /* Access strongly typed args */
+                Console.WriteLine("ObserveRouteChange Notification: {0}", args.Notification);
+            });
+            NSObject notification4 = AVAudioSession.Notifications.ObserveSilenceSecondaryAudioHint((sender, args) => {
+                /* Access strongly typed args */
+                Console.WriteLine("ObserveSilenceSecondaryAudioHint Notification: {0}", args.Notification);
+            });
+            NSObject notification5 = AVAudioSession.Notifications.ObserveSpatialPlaybackCapabilitiesChanged((sender, args) => {
+                /* Access strongly typed args */
+                Console.WriteLine("ObserveSpatialPlaybackCapabilitiesChanged Notification: {0}", args.Notification);
+            });
+
+            if (!AVAudioSession.SharedInstance().SetActive(true, out error))
+            {
+                Console.WriteLine("AVAudioSession not active");
+                //return;
+            }
+
+            void ToneInterruptionListener(object sender, AVAudioSessionInterruptionEventArgs interruptArgs)
+            {
+                Console.WriteLine("ToneInterruptionListener Notification: {0}", interruptArgs.Notification);
+            }
+        }
+#endif
         private bool FMODup()
         {
             return _initialized;
@@ -161,6 +209,17 @@ namespace GnollHackClient.Unknown
             }
         }
 
+        public int MixerSuspend()
+        {
+            RESULT res = _coresystem.mixerSuspend();
+            return (int)res;
+        }
+
+        public int MixerResume()
+        {
+            RESULT res = _coresystem.mixerResume();
+            return (int)res;
+        }
 
         //public object eventInstanceLock = new object();
         public List<GHSoundInstance> musicInstances = new List<GHSoundInstance>();

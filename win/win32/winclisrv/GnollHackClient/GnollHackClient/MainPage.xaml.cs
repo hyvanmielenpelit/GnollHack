@@ -489,6 +489,7 @@ namespace GnollHackClient
                 videoView.WidthRequest = width;
                 videoView.HeightRequest = height;
                 videoView.Play();
+                App.FmodService?.MixerResume();
             }
         }
 
