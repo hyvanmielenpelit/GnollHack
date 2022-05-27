@@ -7449,12 +7449,12 @@ namespace GnollHackClient.Pages.Game
                                         else
                                             IssueNHCommandViaTouch(sender, e);
                                     }
-                                    if (TouchDictionary.ContainsKey(e.Id))
-                                        TouchDictionary.Remove(e.Id);
-                                    if (TouchDictionary.Count == 0)
-                                        _touchMoved = false;
                                 }
                             }
+                            if (TouchDictionary.ContainsKey(e.Id))
+                                TouchDictionary.Remove(e.Id);
+                            if (TouchDictionary.Count == 0)
+                                _touchMoved = false;
                             e.Handled = true;
                         }
                         break;
