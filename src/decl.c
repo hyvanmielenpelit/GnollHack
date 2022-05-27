@@ -318,6 +318,7 @@ NEARDATA const char getobj_wield_objs[] = {
     ALL_CLASSES, ALLOW_NONE, WEAPON_CLASS, TOOL_CLASS, 0
 };
 NEARDATA const char getobj_unwield_objs[] = { ALL_CLASSES,  0 };
+NEARDATA const char getobj_stash_objs[] = { ALLOW_COUNT, COIN_CLASS, ALL_CLASSES, 0 };
 NEARDATA const char getobj_ready_objs[] = {
     ALLOW_COUNT, COIN_CLASS, ALL_CLASSES, ALLOW_NONE, WEAPON_CLASS, 0
 };

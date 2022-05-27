@@ -2441,6 +2441,16 @@ int held;
 }
 
 /* Returns: -1 to stop, 1 item was inserted, 0 item was not inserted. */
+int
+stash_obj_in_container(obj, container)
+struct obj* obj, *container;
+{
+
+    current_container = container;
+    return in_container(obj);
+}
+
+/* Returns: -1 to stop, 1 item was inserted, 0 item was not inserted. */
 STATIC_PTR int
 in_container(obj)
 register struct obj *obj;
@@ -4181,6 +4191,74 @@ struct obj *box; /* or bag */
         if (held)
             (void) encumber_msg();
     }
+}
+
+boolean
+can_stash_objs()
+{
+    struct obj* otmp;
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+    {
+        if (Is_container(otmp) && !(otmp->dknown && objects[otmp->otyp].oc_name_known && (!Is_proper_container(otmp) || otmp->olocked)))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+void 
+set_current_container_to_zeroobj()
+{
+    current_container = &zeroobj;
+}
+
+void
+set_current_container_to_null()
+{
+    current_container = 0;
+}
+
+/* the stash command */
+int
+dostash()
+{
+    struct obj* otmp = (struct obj*)0;
+
+    if (!can_stash_objs()) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You1("do not have any containers to stash items into.");
+        return 0;
+    }
+
+    current_container = &zeroobj; /* dummy for getobj with stash */
+    otmp = getobj(getobj_stash_objs, "stash", 0, "");
+    current_container = 0;
+    if (!otmp)
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+
+    if (Is_container(otmp)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You1("cannot stash that.");
+        return 0;
+    }
+
+    struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
+
+    if (!container)
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+
+    if (!stash_obj_in_container(otmp, container))
+    {
+        /* couldn't put selected item into container for some
+           reason; might need to undo splitobj() */
+        (void)unsplitobj(otmp);
+    }
+
 }
 
 /*pickup.c*/

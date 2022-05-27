@@ -262,6 +262,7 @@ E NEARDATA const char getobj_accessories[];
 E NEARDATA const char getobj_beverages[];
 E NEARDATA const char getobj_wield_objs[];
 E NEARDATA const char getobj_unwield_objs[];
+E NEARDATA const char getobj_stash_objs[];
 E NEARDATA const char getobj_ready_objs[];
 E NEARDATA const char getobj_bullets[];
 E NEARDATA const char getobj_readable[];

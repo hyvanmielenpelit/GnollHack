@@ -3027,13 +3027,15 @@ struct obj* otmp_only;
                         /* ugly check: remove inappropriate things */
             if (
                 (taking_off(word) /* exclude if not worn */
-                    && !(otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
+                    && !(otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS)))
                 || (!strcmp(word, "unwield") /* exclude if not wielded */
                     && !(otmp->owornmask & W_WIELDED_WEAPON))
+                || (!strcmp(word, "stash") /* exclude worn items and other containers */
+                    && (otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS) || Is_container(otmp) || !can_stash_objs()))
                 || (putting_on(word) /* exclude if already worn */
-                    && (otmp->owornmask & (W_ARMOR | W_ACCESSORY)))
+                    && (otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS)))
                 || (trading_items(word) /* exclude if already worn and unpaid items */
-                    && ((otmp->owornmask & (W_ARMOR | W_ACCESSORY)) || otmp->unpaid))
+                    && ((otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS)) || otmp->unpaid))
 #if 0 /* 3.4.1 -- include currently wielded weapon among 'wield' choices */
                 || (!strcmp(word, "wield")
                     && (otmp->owornmask & W_WEP))
@@ -4140,7 +4142,12 @@ long pickcnt;
                     : getobj_ready_objs);
             }
 
-            if (!acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word))
+            if (!strcmp(extcmdlist[i].getobj_word, "stash"))
+                set_current_container_to_zeroobj();
+            boolean acceptable = acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word);
+            if (!strcmp(extcmdlist[i].getobj_word, "stash"))
+                set_current_container_to_null();
+            if (!acceptable)
                 continue;
 
             cnt++;
@@ -4187,7 +4194,12 @@ long pickcnt;
                     : getobj_ready_objs);
             }
 
-            if (!acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word))
+            if (!strcmp(extcmdlist[i].getobj_word, "stash"))
+                set_current_container_to_zeroobj();
+            boolean acceptable = acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word);
+            if (!strcmp(extcmdlist[i].getobj_word, "stash"))
+                set_current_container_to_null();
+            if (!acceptable)
                 continue;
 
             efp = &extcmdlist[i];

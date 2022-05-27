@@ -128,7 +128,8 @@ extern int NDECL(doextversion);       /**/
 extern int NDECL(doswapweapon);       /**/
 extern int NDECL(dowield);            /**/
 extern int NDECL(dowieldquiver);      /**/
-extern int NDECL(dounwield);            /**/
+extern int NDECL(dounwield);          /**/
+extern int NDECL(dostash);            /**/
 extern int NDECL(dozap);              /**/
 extern int NDECL(doorganize);         /**/
 #endif /* DUMB */
@@ -5399,6 +5400,7 @@ struct ext_func_tab extcmdlist[] = {
 #endif /* SHELL */
     },
     { C('s'), "sit", "sit down", dosit, AUTOCOMPLETE | INCMDMENU },
+    { M(7), "stash", "stash an item into a container", dostash, SINGLE_OBJ_CMD_GENERAL, 0, getobj_stash_objs, "stash" },
     { '\0', "stats", "show memory statistics",
             wiz_show_stats, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { C('z'), "suspend", "suspend the game",

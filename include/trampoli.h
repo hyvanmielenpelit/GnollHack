@@ -12,6 +12,7 @@
 /* ### apply.c ### */
 #define dig() dig_()
 #define doapply() doapply_()
+#define dostash() dostash_()
 #define dojump() dojump_()
 #define dorub() dorub_()
 
