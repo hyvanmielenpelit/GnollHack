@@ -83,6 +83,7 @@ namespace GnollHackClient
 
         private Animation _sponsorAnimation = null;
         private bool _firsttime = true;
+        private bool _mainScreenMusicStarted = false;
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             wizardModeGrid.IsVisible = App.DeveloperMode;
@@ -95,7 +96,7 @@ namespace GnollHackClient
             classicModeSwitch.IsToggled = App.ClassicMode;
             casualModeSwitch.IsToggled = App.CasualMode;
 
-            UpdateSponsor();
+            UpdateMobileVersionLabel();
 
             if (_firsttime)
             {
@@ -111,9 +112,10 @@ namespace GnollHackClient
                 StartLogoImage.IsVisible = false;
                 FmodLogoImage.IsVisible = false;
             }
-            else if (!GameStarted && videoView.IsVisible == false)
+            else if (!GameStarted)
             {
-                PlayMainScreenVideoAndMusic();
+                if ((App.IsAndroid && !videoView.IsVisible) || (App.IsiOS && !_mainScreenMusicStarted))
+                    PlayMainScreenVideoAndMusic();
             }
 
             StartServerGrid.IsEnabled = true;
@@ -275,16 +277,21 @@ namespace GnollHackClient
 
         public void PlayMainScreenVideoAndMusic()
         {
-            videoView.IsVisible = true;
-            videoView.Play();
-            StillImage.IsVisible = false;
+            if (App.IsAndroid)
+            {
+                videoView.IsVisible = true;
+                videoView.Play();
+                StillImage.IsVisible = false;
+            }
+
             try
             {
                 App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                _mainScreenMusicStarted = true;
             }
-            catch
+            catch(Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -303,9 +310,17 @@ namespace GnollHackClient
             //Task[] tasklist1 = new Task[2] { t1, t2 };
             //Task.WaitAll(tasklist1);
 
-            videoView.IsVisible = true;
-            await videoView.FadeTo(1, 250);
-            videoView.Play();
+            if (App.IsAndroid)
+            {
+                videoView.IsVisible = true;
+                await videoView.FadeTo(1, 250);
+                videoView.Play();
+            }
+            else
+            {
+                StillImage.IsVisible = true;
+                await StillImage.FadeTo(1, 250);
+            }
 
             UpperButtonGrid.IsVisible = true;
             await UpperButtonGrid.FadeTo(1, 250);
@@ -456,9 +471,12 @@ namespace GnollHackClient
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            StillImage.IsVisible = true;
-            videoView.Stop();
-            videoView.IsVisible = false;
+            if (App.IsAndroid)
+            {
+                StillImage.IsVisible = true;
+                videoView.Stop();
+                videoView.IsVisible = false;
+            }
         }
 
         private double _currentPageWidth = 0;
@@ -470,26 +488,29 @@ namespace GnollHackClient
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
-                videoView.Stop();
-                videoView.Source = null;
-                if(width > height)
+
+                if (App.IsAndroid)
                 {
-                    if (Device.RuntimePlatform == Device.UWP)
-                        videoView.Source = new Uri($"ms-appx:///Assets/mainmenulandscape.mp4");
+                    videoView.Stop();
+                    videoView.Source = null;
+                    if (width > height)
+                    {
+                        if (Device.RuntimePlatform == Device.UWP)
+                            videoView.Source = new Uri($"ms-appx:///Assets/mainmenulandscape.mp4");
+                        else
+                            videoView.Source = new Uri($"ms-appx:///mainmenulandscape.mp4");
+                    }
                     else
-                        videoView.Source = new Uri($"ms-appx:///mainmenulandscape.mp4");
+                    {
+                        if (Device.RuntimePlatform == Device.UWP)
+                            videoView.Source = new Uri($"ms-appx:///Assets/mainmenuportrait.mp4");
+                        else
+                            videoView.Source = new Uri($"ms-appx:///mainmenuportrait.mp4");
+                    }
+                    videoView.WidthRequest = width;
+                    videoView.HeightRequest = height;
+                    videoView.Play();
                 }
-                else
-                {
-                    if (Device.RuntimePlatform == Device.UWP)
-                        videoView.Source = new Uri($"ms-appx:///Assets/mainmenuportrait.mp4");
-                    else
-                        videoView.Source = new Uri($"ms-appx:///mainmenuportrait.mp4");
-                }
-                videoView.WidthRequest = width;
-                videoView.HeightRequest = height;
-                videoView.Play();
-                App.FmodService?.MixerResume();
             }
         }
 
@@ -1057,9 +1078,9 @@ namespace GnollHackClient
         //    return res;
         //}
 
-        private void UpdateSponsor()
+        private void UpdateMobileVersionLabel()
         {
-            AndroidLabel.Text = "Android Version";
+            MobileVersionLabel.Text = Device.RuntimePlatform + " Version";
         }
 
         private void ClassicModeSwitch_Toggled(object sender, ToggledEventArgs e)

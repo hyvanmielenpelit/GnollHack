@@ -53,7 +53,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchLink>None</MtouchLink>
     <MtouchInterpreter>-all</MtouchInterpreter>
-    <MtouchExtraArgs>-cxx -gcc_flags "-L${ProjectDir}/NativeReferences -lgnollhackios -lfmod_iphoneos -lfmodstudio_iphoneos -force_load ${ProjectDir}/NativeReferences/libgnollhackios.a ${ProjectDir}/NativeReferences/libfmod_iphoneos.a ${ProjectDir}/NativeReferences/libfmodstudio_iphoneos.a"</MtouchExtraArgs>
+    <MtouchExtraArgs>-cxx -gcc_flags "-L${ProjectDir}/NativeReferences -framework AudioToolbox -framework CoreAudio -lgnollhackios -lfmod_iphoneos -lfmodstudio_iphoneos -force_load ${ProjectDir}/NativeReferences/libgnollhackios.a ${ProjectDir}/NativeReferences/libfmod_iphoneos.a ${ProjectDir}/NativeReferences/libfmodstudio_iphoneos.a"</MtouchExtraArgs>
     <MtouchSdkVersion>
     </MtouchSdkVersion>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
@@ -193,10 +193,10 @@
     <NativeReference Include="NativeReferences/libgnollhackios.a">
       <Kind>Static</Kind>
     </NativeReference>
-    <NativeReference Include="NativeReferences/libfmod_iphoneos.a">
+    <NativeReference Include="NativeReferences/libfmodL_iphoneos.a">
       <Kind>Static</Kind>
     </NativeReference>
-    <NativeReference Include="NativeReferences/libfmodstudio_iphoneos.a">
+    <NativeReference Include="NativeReferences/libfmodstudioL_iphoneos.a">
       <Kind>Static</Kind>
     </NativeReference>
   </ItemGroup>

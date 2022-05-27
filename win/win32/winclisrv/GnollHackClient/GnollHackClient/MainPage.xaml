@@ -64,8 +64,8 @@
                 <Label x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
                    TextColor="White" 
                    FontFamily="ARChristy" FontSize="27" />
-                <Label x:Name="AndroidLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"  
-                   Text="Android Version" TextColor="White"
+                <Label x:Name="MobileVersionLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"  
+                   Text="Mobile Version" TextColor="White"
                    FontFamily="ARChristy" FontSize="18" />
                 <Grid x:Name="SponsorGrid"  WidthRequest="120">
                     <ff:CachedImage x:Name="BuyNowImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" WidthRequest="120" HeightRequest="50"/>

@@ -9,7 +9,6 @@ using System.IO;
 using Xamarin.Forms;
 using GnollHackCommon;
 using System.Threading.Tasks;
-using System.Threading;
 
 #if __IOS__
 using Foundation;
@@ -54,8 +53,8 @@ namespace GnollHackClient.Unknown
     class FmodService : IFmodService
     {
         public static FmodService _latestService = null;
-        private static FMOD.Studio.System _system;
-        private static FMOD.System _coresystem;
+        private static FMOD.Studio.System _system = new FMOD.Studio.System();
+        private static FMOD.System _coresystem = new FMOD.System();
 
         //private byte[] _bankBuffer1;
         //private byte[] _bankBuffer2;
@@ -93,6 +92,15 @@ namespace GnollHackClient.Unknown
             LoadNativeLibrary("fmodstudio");
 
             RESULT res;
+
+            //uint ver;
+            //res = Factory.System_Create(out _coresystem);
+            //if (res != RESULT.OK)
+            //    return;
+            //res = _coresystem.getVersion(out ver);
+            //if (res != RESULT.OK)
+            //    return;
+
             res = FMOD.Studio.System.create(out _system);
             if (res != RESULT.OK)
                 return;
@@ -106,57 +114,9 @@ namespace GnollHackClient.Unknown
             if (res != RESULT.OK)
                 return;
 
-#if __IOS__
-            iOSAVSetup();
-#endif
             _initialized = true;
         }
 
-#if __IOS__
-        void iOSAVSetup()
-        {
-            AVAudioSession.SharedInstance().Init();
-            NSError error;
-            NSError scerror = AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.Playback);
-            //if (error != null)
-            //{
-            //    return;
-            //}
-            AVAudioSession.Notifications.ObserveInterruption(ToneInterruptionListener);
-            
-            NSObject notification = AVAudioSession.Notifications.ObserveMediaServicesWereReset((sender, args) => {
-                /* Access strongly typed args */
-                Console.WriteLine("ObserveMediaServicesWereReset Notification: {0}", args.Notification);
-            });
-            NSObject notification2 = AVAudioSession.Notifications.ObserveMediaServicesWereLost((sender, args) => {
-                /* Access strongly typed args */
-                Console.WriteLine("ObserveMediaServicesWereLost Notification: {0}", args.Notification);
-            });
-            NSObject notification3 = AVAudioSession.Notifications.ObserveRouteChange((sender, args) => {
-                /* Access strongly typed args */
-                Console.WriteLine("ObserveRouteChange Notification: {0}", args.Notification);
-            });
-            NSObject notification4 = AVAudioSession.Notifications.ObserveSilenceSecondaryAudioHint((sender, args) => {
-                /* Access strongly typed args */
-                Console.WriteLine("ObserveSilenceSecondaryAudioHint Notification: {0}", args.Notification);
-            });
-            NSObject notification5 = AVAudioSession.Notifications.ObserveSpatialPlaybackCapabilitiesChanged((sender, args) => {
-                /* Access strongly typed args */
-                Console.WriteLine("ObserveSpatialPlaybackCapabilitiesChanged Notification: {0}", args.Notification);
-            });
-
-            if (!AVAudioSession.SharedInstance().SetActive(true, out error))
-            {
-                Console.WriteLine("AVAudioSession not active");
-                //return;
-            }
-
-            void ToneInterruptionListener(object sender, AVAudioSessionInterruptionEventArgs interruptArgs)
-            {
-                Console.WriteLine("ToneInterruptionListener Notification: {0}", interruptArgs.Notification);
-            }
-        }
-#endif
         private bool FMODup()
         {
             return _initialized;
@@ -209,18 +169,6 @@ namespace GnollHackClient.Unknown
             }
         }
 
-        public int MixerSuspend()
-        {
-            RESULT res = _coresystem.mixerSuspend();
-            return (int)res;
-        }
-
-        public int MixerResume()
-        {
-            RESULT res = _coresystem.mixerResume();
-            return (int)res;
-        }
-
         //public object eventInstanceLock = new object();
         public List<GHSoundInstance> musicInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> immediateInstances = new List<GHSoundInstance>();
@@ -230,7 +178,6 @@ namespace GnollHackClient.Unknown
         public List<GHSoundInstance> occupationAmbientInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> effectAmbientInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> ambientList = new List<GHSoundInstance>();
-
 
         public static RESULT GNHImmediateEventCallback(EVENT_CALLBACK_TYPE type, EventInstance _event, IntPtr parameters)
         {
@@ -1249,7 +1196,7 @@ namespace GnollHackClient.Unknown
                     }
                     ModeFadeCounter++;
                     AdjustMusicAndAmbientVolumes();
-                    Thread.Sleep(25);
+                    System.Threading.Thread.Sleep(25);
                 }
             });
 

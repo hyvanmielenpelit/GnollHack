@@ -12,8 +12,6 @@ namespace GnollHackClient
         void LoadBanks();
         void PlayTestSound();
         void StopTestSound();
-        int MixerSuspend();
-        int MixerResume();
         int PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, ulong play_flags);
         int PlayMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume);
         int PlayLevelAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume);

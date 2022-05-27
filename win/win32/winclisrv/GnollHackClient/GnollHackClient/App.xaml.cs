@@ -123,9 +123,9 @@ namespace GnollHackClient
                 _fmodService.InitializeFmod();
                 _fmodService.LoadBanks();
             }
-            catch
+            catch(Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -204,6 +204,9 @@ namespace GnollHackClient
         public static IPlatformService PlatformService { get { return _platformService; } }
 
         public static readonly float DisplayRefreshRate = Math.Max(30.0f, DeviceDisplay.MainDisplayInfo.RefreshRate);
+        public static readonly bool IsAndroid = (Device.RuntimePlatform == Device.Android);
+        public static readonly bool IsiOS = (Device.RuntimePlatform == Device.iOS);
+        public static readonly bool IsUWP = (Device.RuntimePlatform == Device.UWP);
 
         public static async Task<bool> OnBackButtonPressed()
         {
