@@ -58,6 +58,7 @@ win/win32/winclisrv/GnollHackClient/GnollHackClient.iOS/gnh/defaults.gnh
 dat/dlb.lst
 win/win32/winclisrv/GnollHackClient/gnollhackdroid/date*.h
 win/win32/winclisrv/GnollHackClient/gnollhackios/date*.h
+win/win32/winclisrv/GnollHackClient/gnollhackios/download*.bat
 *.lastbuildstate
 *.csv
 *.wav

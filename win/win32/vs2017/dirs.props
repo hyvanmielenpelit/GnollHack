@@ -30,7 +30,7 @@
     <GooglePlayDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\</GooglePlayDir>
     <LibShareDir>$(RootDir)win\win32\share\</LibShareDir>
     <AndroidLibsDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.Android\libs\</AndroidLibsDir>
-    <iOSLibsDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.iOS\libs\</iOSLibsDir>
+    <iOSNativeReferencesDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.iOS\NativeReferences\</iOSNativeReferencesDir>
     <ClientCommonAssetsDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient\Assets\</ClientCommonAssetsDir>
     <AndroidGnhDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.Android\gnh\</AndroidGnhDir>
     <iOSGnhDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.iOS\gnh\</iOSGnhDir>
@@ -39,6 +39,7 @@
     <OutDir>$(ToolsDir)</OutDir>
     <WslInDir>C:\wsl-in\</WslInDir>
     <WslOutDir>C:\wsl-out\</WslOutDir>
+    <MacOutDir>C:\mac-out\</MacOutDir>
 	<IntDir>$(ObjDir)</IntDir>
 	<WinCursDir>$(RootDir)win\curses\</WinCursDir>
   </PropertyGroup>

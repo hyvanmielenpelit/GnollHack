@@ -1,0 +1,13 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="dirs.props"/>
+  <Import Project="files.props"/>
+  <!-- TODO not copying record-->
+  <Target Name="Build"
+    Inputs="$(MacOutDir)libgnollhackios.a"
+    Outputs="$(iOSNativeReferencesDir)libgnollhackios.a">
+    <Copy SourceFiles="$(MacOutDir)libgnollhackios.a" DestinationFolder="$(iOSNativeReferencesDir)"/>
+  </Target>
+  <Target Name="Clean">
+    <Delete Files="$(MacOutDir)libgnollhackios.a"/>
+  </Target>
+</Project>

@@ -119,6 +119,10 @@
     <Link>
       <AdditionalOptions>-lm -lc -static</AdditionalOptions>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -138,6 +142,10 @@
       <CppLanguageStandard>Default</CppLanguageStandard>
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
     </ClCompile>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <ClCompile>
@@ -157,6 +165,12 @@
     <Link>
       <AdditionalOptions>-lm -lc -static</AdditionalOptions>
     </Link>
+    <PostBuildEvent>
+      <Command>..\winclisrv\GnollHackClient\gnollhackios\download-Debug-ARM64.bat</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>if not exist "c:\mac-out" mkdir "c:\mac-out"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
@@ -168,6 +182,12 @@
     <Link>
       <AdditionalOptions>-lm -lc -static</AdditionalOptions>
     </Link>
+    <PostBuildEvent>
+      <Command>..\winclisrv\GnollHackClient\gnollhackios\download-Release-ARM64.bat</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>if not exist "c:\mac-out" mkdir "c:\mac-out"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
@@ -176,6 +196,10 @@
       <CppLanguageStandard>Default</CppLanguageStandard>
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
     </ClCompile>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <ClCompile>
@@ -339,7 +363,6 @@
     <SourcesToCopyRemotely Include="@(ClCompile)" />
   </ItemGroup>
   <ItemGroup>
-
     <ClInclude Include="$(IncDir)action.h" />
     <ClInclude Include="$(IncDir)align.h" />
     <ClInclude Include="$(IncDir)animation.h" />
@@ -432,4 +455,13 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
+  <Target Name="AfterBuild">
+    <MSBuild Projects="aftergnollhackios.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>
+  <Target Name="AfterClean">
+    <MSBuild Projects="aftergnollhackios.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+  </Target>
+  <Target Name="AfterRebuild">
+    <MSBuild Projects="aftergnollhackios.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+  </Target>
 </Project>
