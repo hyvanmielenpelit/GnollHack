@@ -126,7 +126,11 @@ namespace GnollHackClient.Pages.Game
             "Hostile townguard",
         };
 
+        private object _isSizeAllocatedProcessedLock = new object();
+        private bool _isSizeAllocatedProcessed = false;
+        public bool IsSizeAllocatedProcessed { get { lock (_isSizeAllocatedProcessedLock) { return _isSizeAllocatedProcessed; } } set { lock (_isSizeAllocatedProcessedLock) { _isSizeAllocatedProcessed = value; } } }
 
+        
         private object _forceAsciiLock = new object();
         private bool _forceAscii = false;
         public bool ForceAscii { get { lock (_forceAsciiLock) { return _forceAscii; } } set { lock (_forceAsciiLock) { _forceAscii = value; } } }
@@ -701,7 +705,7 @@ namespace GnollHackClient.Pages.Game
 
             Device.StartTimer(TimeSpan.FromSeconds(1.0 / GHConstants.PollingFrequency), () =>
             {
-                if(!StartingPositionsSet && !canvasView.CanvasSize.IsEmpty)
+                if(!StartingPositionsSet && !canvasView.CanvasSize.IsEmpty && IsSizeAllocatedProcessed && lAbilitiesButton.Width > 0)
                 {
                     double statusbarheight = GetStatusBarHeight();
                     lAbilitiesButton.HeightRequest = statusbarheight;
@@ -2424,7 +2428,7 @@ namespace GnollHackClient.Pages.Game
 
         public float GetTextScale()
         {
-            return (float)(lAbilitiesButton.Width / 50.0f) / (float)GetCanvasScale();
+            return (float)((lAbilitiesButton.Width <= 0 ? lAbilitiesButton.WidthRequest : lAbilitiesButton.Width) / 50.0f) / (float)GetCanvasScale();
         }
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
@@ -6911,10 +6915,10 @@ namespace GnollHackClient.Pages.Game
                 ThirdButton.SetSideSize(width, height);
                 FourthButton.SetSideSize(width, height);
 
-                double statusbarheight = GetStatusBarHeight();
                 lAbilitiesButton.SetSideSize(width, height);
-                lAbilitiesButton.HeightRequest = statusbarheight;
                 lWornItemsButton.SetSideSize(width, height);
+                double statusbarheight = GetStatusBarHeight();
+                lAbilitiesButton.HeightRequest = statusbarheight;
                 lWornItemsButton.HeightRequest = statusbarheight;
                 //lSkillButton.SetSideSize(width, height);
                 UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
@@ -6974,6 +6978,8 @@ namespace GnollHackClient.Pages.Game
                     GameMenuLayout.Orientation = StackOrientation.Horizontal;
                     //UpperCmdLayout.Orientation = StackOrientation.Horizontal;
                 }
+
+                IsSizeAllocatedProcessed = true;
             }
         }
 
