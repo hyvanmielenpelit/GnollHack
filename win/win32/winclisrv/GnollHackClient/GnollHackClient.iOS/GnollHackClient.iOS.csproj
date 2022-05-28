@@ -67,6 +67,9 @@
     <MtouchArch>ARM64</MtouchArch>
     <CodesignKey>iPhone Developer</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchInterpreter>-all</MtouchInterpreter>
+    <MtouchExtraArgs>-cxx -gcc_flags "-L${ProjectDir}/NativeReferences -framework AudioToolbox -framework CoreAudio -lgnollhackios -lfmod_iphoneos -lfmodstudio_iphoneos -force_load ${ProjectDir}/NativeReferences/libgnollhackios.a ${ProjectDir}/NativeReferences/libfmod_iphoneos.a ${ProjectDir}/NativeReferences/libfmodstudio_iphoneos.a"</MtouchExtraArgs>
+    <MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <AppExtensionDebugBundleId />
@@ -194,10 +197,10 @@
     <NativeReference Include="NativeReferences/libgnollhackios.a">
       <Kind>Static</Kind>
     </NativeReference>
-    <NativeReference Include="NativeReferences/libfmodL_iphoneos.a">
+    <NativeReference Include="NativeReferences/libfmod_iphoneos.a">
       <Kind>Static</Kind>
     </NativeReference>
-    <NativeReference Include="NativeReferences/libfmodstudioL_iphoneos.a">
+    <NativeReference Include="NativeReferences/libfmodstudio_iphoneos.a">
       <Kind>Static</Kind>
     </NativeReference>
   </ItemGroup>
