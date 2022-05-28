@@ -249,7 +249,7 @@ namespace GnollHackClient
 
         public static string MenuHeaderFontFamily(ghmenu_styles style)
         {
-            string res = App.IsiOS ? "Diablo" : "Immortal";
+            string res = "Immortal";
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_GENERAL:

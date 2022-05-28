@@ -54,6 +54,7 @@
     <None Remove="Assets\Icons\read.png" />
     <None Remove="Assets\Icons\skill.png" />
     <None Remove="Assets\Icons\wait.png" />
+    <None Remove="Assets\Immortal-Regular.ttf" />
     <None Remove="Assets\imrl.otf" />
     <None Remove="Assets\imrl.ttf" />
     <None Remove="Assets\Lato-Bold.ttf" />
@@ -255,6 +256,7 @@
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
     <EmbeddedResource Include="Assets\Icons\missing_icon.png" />
+    <EmbeddedResource Include="Assets\Immortal-Regular.ttf" />
     <Page Include="Assets\imrl.otf" />
     <EmbeddedResource Include="Assets\imrl.ttf" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />

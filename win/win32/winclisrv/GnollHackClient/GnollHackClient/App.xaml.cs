@@ -18,7 +18,7 @@ using System.IO.Compression;
 
 [assembly: ExportFont("diablo_h.ttf", Alias = "Diablo")]
 [assembly: ExportFont("uwch.ttf", Alias = "Underwood")]
-[assembly: ExportFont("imrl.ttf", Alias = "Immortal")]
+[assembly: ExportFont("Immortal-Regular.ttf", Alias = "Immortal")]
 [assembly: ExportFont("endr.ttf", Alias = "Endor")]
 [assembly: ExportFont("shxi.ttf", Alias = "Xizor")]
 [assembly: ExportFont("Lato-Regular.ttf", Alias = "Lato-Regular")]
