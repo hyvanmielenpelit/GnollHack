@@ -299,7 +299,7 @@ namespace GnollHackClient
                     }
                 }
             }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.imrl.ttf"))
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Immortal-Regular.ttf"))
             {
                 if (stream != null)
                 {

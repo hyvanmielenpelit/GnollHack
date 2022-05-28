@@ -8363,7 +8363,7 @@ namespace GnollHackClient.Pages.Game
                         }
                         else
                         {
-                            x += textPaint.FontMetrics.AverageCharacterWidth;
+                            x += accel_fixed_width; // textPaint.FontMetrics.AverageCharacterWidth;
                         }
 
                         /* Main text */

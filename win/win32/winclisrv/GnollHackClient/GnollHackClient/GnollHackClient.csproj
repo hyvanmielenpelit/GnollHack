@@ -56,7 +56,6 @@
     <None Remove="Assets\Icons\wait.png" />
     <None Remove="Assets\Immortal-Regular.ttf" />
     <None Remove="Assets\imrl.otf" />
-    <None Remove="Assets\imrl.ttf" />
     <None Remove="Assets\Lato-Bold.ttf" />
     <None Remove="Assets\Lato-Regular.ttf" />
     <None Remove="Assets\main-menu-portrait-snapshot.jpg" />
@@ -258,7 +257,6 @@
     <EmbeddedResource Include="Assets\Icons\missing_icon.png" />
     <EmbeddedResource Include="Assets\Immortal-Regular.ttf" />
     <Page Include="Assets\imrl.otf" />
-    <EmbeddedResource Include="Assets\imrl.ttf" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />
     <EmbeddedResource Include="Assets\main-menu-portrait-snapshot.jpg" />
