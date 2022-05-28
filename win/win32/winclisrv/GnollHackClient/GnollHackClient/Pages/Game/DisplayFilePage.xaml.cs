@@ -22,6 +22,11 @@ namespace GnollHackClient.Pages.Game
             HeaderLabel.Text = header;
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             CloseButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+            if (App.IsiOS)
+            {
+                TextEditor.IsVisible = false;
+                TextScrollView.IsVisible = true;
+            }
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
@@ -36,15 +41,16 @@ namespace GnollHackClient.Pages.Game
         public bool ReadFile(out string errorMessage)
         {
             string res = "";
-            TextEditor.Text = "(Reading file)";
             try
             {
-                TextEditor.Text = File.ReadAllText(_fileName, Encoding.UTF8);
-                TextEditor.IsEnabled = true;
+                string text = File.ReadAllText(_fileName, Encoding.UTF8);
+                if (App.IsiOS)
+                    TextLabel.Text = text;
+                else
+                    TextEditor.Text = text;
             }
             catch (Exception e)
             {
-                TextEditor.Text = "";
                 errorMessage = e.Message;
                 return false;
             }
@@ -61,17 +67,25 @@ namespace GnollHackClient.Pages.Game
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
+                Thickness margins = new Thickness();
+                if (App.IsiOS)
+                    margins = TextLabel.Margin;
+                else
+                    margins = TextEditor.Margin;
 
                 double bordermargin = ClientUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
                 MainGrid.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
                 double target_width = (Math.Min(width, MainGrid.WidthRequest) - MainGrid.Margin.Left - MainGrid.Margin.Right 
-                    - MainGrid.Padding.Left - MainGrid.Padding.Right - TextEditor.Margin.Left - TextEditor.Margin.Right);
+                    - MainGrid.Padding.Left - MainGrid.Padding.Right - margins.Left - margins.Right);
                 double newsize = 12 * target_width / 640;
-                TextEditor.FontSize = newsize;
+
+                if(App.IsiOS)
+                    TextLabel.FontSize = newsize;
+                else
+                    TextEditor.FontSize = newsize;
 
                 HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
-
             }
         }
 

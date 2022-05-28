@@ -18,9 +18,13 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Label x:Name="HeaderLabel" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
-                <Editor x:Name="TextEditor" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                <gnollhackclient:GHEditor x:Name="TextEditor" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
                         FontFamily="DejaVuSansMono" FontSize="13" IsReadOnly="true" >
-                </Editor>
+                </gnollhackclient:GHEditor>
+                <ScrollView x:Name="TextScrollView" IsVisible="false" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
+                    <Label x:Name="TextLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                        FontFamily="DejaVuSansMono" FontSize="13" />
+                </ScrollView>
                 <Grid Grid.Row="2" x:Name="CloseGrid" BackgroundColor="Transparent" HorizontalOptions="Center" WidthRequest="250" HeightRequest="70">
                     <ff:CachedImage x:Name="CloseButtonImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="250" HeightRequest="70" />
                     <Button Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />

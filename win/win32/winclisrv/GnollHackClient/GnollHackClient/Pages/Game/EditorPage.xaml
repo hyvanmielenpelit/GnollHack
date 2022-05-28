@@ -21,9 +21,9 @@
                 </Grid.ColumnDefinitions>
                 <Label x:Name="HeaderLabel" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
                 <Label x:Name="ErrorLabel" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Start"  HorizontalTextAlignment="Center" FontSize="Small" TextColor="Red" FontFamily="Lato"/>
-                <Editor x:Name="TextEditor" TextChanged="TextEditor_TextChanged" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Grid.Row="2" Text="" PlaceholderColor="Gray" TextColor="Black" BackgroundColor="Transparent"
+                <gnollhackclient:GHEditor x:Name="TextEditor" TextChanged="TextEditor_TextChanged" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Grid.Row="2" Text="" PlaceholderColor="Gray" TextColor="Black" BackgroundColor="Transparent"
                         FontFamily="Lato-Regular" FontSize="16" IsSpellCheckEnabled="false" IsTextPredictionEnabled = "false" >
-                </Editor>
+                </gnollhackclient:GHEditor>
                 <Grid x:Name="CloseGrid" Grid.Row="3" BackgroundColor="Transparent" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
