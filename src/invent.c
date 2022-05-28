@@ -3032,6 +3032,10 @@ struct obj* otmp_only;
                     && !(otmp->owornmask & W_WIELDED_WEAPON))
                 || (!strcmp(word, "stash") /* exclude worn items and other containers */
                     && (otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS) || Is_container(otmp) || !can_stash_objs()))
+                || (!strcmp(word, "mark as auto-stash") /* exclude not a container or already auto-stash */
+                    && (!(Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) || (otmp->speflags & SPEFLAGS_AUTOSTASH) != 0))
+                || (!strcmp(word, "unmark as auto-stash") /* exclude if not an auto-stash */
+                    && ((otmp->speflags & SPEFLAGS_AUTOSTASH) == 0))
                 || (putting_on(word) /* exclude if already worn */
                     && (otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS)))
                 || (trading_items(word) /* exclude if already worn and unpaid items */

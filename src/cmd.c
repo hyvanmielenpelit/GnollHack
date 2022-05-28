@@ -5400,7 +5400,7 @@ struct ext_func_tab extcmdlist[] = {
 #endif /* SHELL */
     },
     { C('s'), "sit", "sit down", dosit, AUTOCOMPLETE | INCMDMENU },
-    { M(7), "stash", "stash an item into a container", dostash, SINGLE_OBJ_CMD_GENERAL, 0, getobj_stash_objs, "stash" },
+    { M(7), "stash", "stash an item into a container", dostash, SINGLE_OBJ_CMD_GENERAL, 0, getobj_stash_objs, "stash", "stash into a container" },
     { '\0', "stats", "show memory statistics",
             wiz_show_stats, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { C('z'), "suspend", "suspend the game",
@@ -5460,6 +5460,8 @@ struct ext_func_tab extcmdlist[] = {
     { C('y'), "yell", "yell for your companions",
             doyell, IFBURIED | AUTOCOMPLETE | INCMDMENU },
     { 'z', "zap", "zap a wand", dozap, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_zap_syms, "zap" },
+    { M(8), "markautostash", "mark a container as auto-stash", domarkautostash, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_mark_autostashs, "mark as auto-stash", "mark as auto-stash"  },
+    { M(9), "unmarkautostash", "unmark a container as auto-stash", dounmarkautostash, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_unmark_autostashs, "unmark as auto-stash", "unmark as auto-stash" },
     { 'Z', "cast", "cast a spell", docast, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
     { 'X', "mix", "prepare a spell from material components",
             domix, AUTOCOMPLETE | INSPELLMENU },
@@ -8859,6 +8861,53 @@ enum create_context_menu_types menu_type;
         break;
     }
     }
+}
+
+int
+domarkautostash()
+{
+    struct obj* obj = getobj(getobj_mark_autostashs, "mark as auto-stash", 0, "");
+    if (!obj)
+        return 0;
+
+    if (obj && (Is_proper_container(obj) || (Is_container(obj) && !objects[obj->otyp].oc_name_known)))
+    {
+        if (obj->speflags & SPEFLAGS_AUTOSTASH)
+        {
+            pline("%s is already an auto-stash.", The(cxname(obj)));
+        }
+        else
+        {
+            obj->speflags |= SPEFLAGS_AUTOSTASH;
+            pline("%s is now marked as an auto-stash.", The(cxname(obj)));
+        }
+    }
+    else
+    {
+        pline("%s is not an auto-stashable item.", The(cxname(obj)));
+    }
+
+    return 0;
+}
+
+int
+dounmarkautostash()
+{
+    struct obj* obj = getobj(getobj_unmark_autostashs, "unmark as auto-stash", 0, "");
+    if (!obj)
+        return 0;
+
+    if (!(obj->speflags & SPEFLAGS_AUTOSTASH))
+    {
+        pline("%s is not an auto-stash.", The(cxname(obj)));
+    }
+    else
+    {
+        obj->speflags &= ~SPEFLAGS_AUTOSTASH;
+        pline("%s was unmarked as an auto-stash.", The(cxname(obj)));
+    }
+
+    return 0;
 }
 
 /*cmd.c*/

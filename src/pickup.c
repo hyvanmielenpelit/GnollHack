@@ -737,7 +737,7 @@ handle_knapsack_full(VOID_ARGS)
         char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", "Do you want to put items Into a container or Drop them?", idqchars, 'q', idqdescs);
         if (ans == 'i')
         {
-            struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
+            struct obj* container = select_other_container(invent, (struct obj*)0, FALSE, FALSE);
             if (container)
             {
                 current_container = container;
@@ -3419,7 +3419,7 @@ struct obj* other_container;
         {
             move_target_container = (struct obj*)0;
             /* Select container here */
-            move_target_container = select_other_container(invent, applied_container, FALSE);
+            move_target_container = select_other_container(invent, applied_container, FALSE, FALSE);
             if (!move_target_container)
                 return 0;
         }
@@ -3436,7 +3436,7 @@ struct obj* other_container;
         {
             move_target_container = (struct obj*)0;
             /* Select container here */
-            move_target_container = select_other_container(level.objects[u.ux][u.uy], applied_container, TRUE);
+            move_target_container = select_other_container(level.objects[u.ux][u.uy], applied_container, TRUE, FALSE);
             if (!move_target_container)
                 return 0;
         }
@@ -3538,7 +3538,7 @@ struct obj* other_container;
         {
             move_target_container = (struct obj*)0;
             /* Choose another container */
-            move_target_container = select_other_container(invent, applied_container, FALSE);
+            move_target_container = select_other_container(invent, applied_container, FALSE, FALSE);
             if (!move_target_container)
                 return 0;
         }
@@ -3551,7 +3551,7 @@ struct obj* other_container;
         {
             move_target_container = (struct obj*)0;
             /* Choose another container */
-            move_target_container = select_other_container(level.objects[u.ux][u.uy], applied_container, TRUE);
+            move_target_container = select_other_container(level.objects[u.ux][u.uy], applied_container, TRUE, FALSE);
             if (!move_target_container)
                 return 0;
         }
@@ -4247,7 +4247,28 @@ dostash()
         return 0;
     }
 
-    struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
+    /* Check auto-stashes */
+    struct obj* stash = 0;
+    struct obj* autostash = 0;
+    int autostashcount = 0;
+    for (stash = invent; stash; stash = stash->nobj)
+    {
+        if (Is_container(stash) && (stash->speflags & SPEFLAGS_AUTOSTASH) != 0)
+        {
+            autostash = stash;
+            autostashcount++;
+        }
+    }
+
+    struct obj* container = 0;
+    if (!autostashcount || !autostash)
+        container = select_other_container(invent, (struct obj*)0, FALSE, FALSE);
+    else if (autostashcount == 1)
+        container = autostash;
+    else
+    {
+        container = select_other_container(invent, (struct obj*)0, FALSE, TRUE);
+    }
 
     if (!container)
     {

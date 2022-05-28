@@ -1530,6 +1530,10 @@ weapon_here:
             Strcat(bp, " (being worn)");
             break;
         }
+        if (obj->speflags & SPEFLAGS_AUTOSTASH) {
+            Strcat(bp, " (auto-stash)");
+            break;
+        }
         if (obj->otyp == LEASH && obj->leashmon != 0) {
             struct monst *mlsh = find_mid(obj->leashmon, FM_FMON);
 

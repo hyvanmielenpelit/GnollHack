@@ -270,6 +270,8 @@ E NEARDATA const char getobj_cuddly[];
 E NEARDATA const char getobj_toss_objs[];
 E NEARDATA const char getobj_tippables[];
 E NEARDATA const char getobj_zap_syms[];
+E NEARDATA const char getobj_mark_autostashs[];
+E NEARDATA const char getobj_unmark_autostashs[];
 
 E long done_money;
 E NEARDATA char plname[PL_NSIZ];

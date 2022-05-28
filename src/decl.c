@@ -334,6 +334,8 @@ NEARDATA const char getobj_toss_objs[] = { ALLOW_COUNT, COIN_CLASS,
                                            ALL_CLASSES, WEAPON_CLASS, 0 };
 NEARDATA const char getobj_tippables[] = { ALL_CLASSES, TOOL_CLASS, 0 };
 NEARDATA const char getobj_zap_syms[] = { WAND_CLASS, 0 };
+NEARDATA const char getobj_mark_autostashs[] = { ALL_CLASSES,  TOOL_CLASS, 0 };
+NEARDATA const char getobj_unmark_autostashs[] = { ALL_CLASSES,  TOOL_CLASS, 0 };
 
 /* originally from dog.c */
 NEARDATA char dogname[PL_PSIZ] = DUMMY;

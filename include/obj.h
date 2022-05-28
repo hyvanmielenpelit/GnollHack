@@ -87,6 +87,7 @@ struct obj {
 #define SPEFLAGS_INSCRIPTION_REVEALED          0x00800000UL
 #define SPEFLAGS_ALTERNATIVE_APPEARANCE        0x01000000UL /* Alternative glyph is used for the object */
 #define SPEFLAGS_ROTTING_STATUS_KNOWN          0x02000000UL
+#define SPEFLAGS_AUTOSTASH                     0x04000000UL
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
