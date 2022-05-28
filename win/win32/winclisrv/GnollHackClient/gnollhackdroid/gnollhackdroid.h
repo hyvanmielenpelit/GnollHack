@@ -7,6 +7,6 @@
 #define GNOLLHACKDROID_H
 
 extern const char* getPlatformABI();
-extern void gnollhackdroid();
+extern void gnollhackdroid(void);
 
 #endif

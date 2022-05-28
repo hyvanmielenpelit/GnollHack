@@ -33,6 +33,8 @@ namespace GnollHackClient.Pages.Game
             if (App.DisplayRefreshRate >= 120.0f)
                 list.Add("120 fps");
             RefreshRatePicker.ItemsSource = list;
+
+            SetInitialValues();
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
@@ -173,8 +175,6 @@ namespace GnollHackClient.Pages.Game
                 Preferences.Set("NumDisplayedPetRows", res);
             }
 
-
-
             if (_gamePage != null)
                 _gamePage.ShowExtendedStatusBar = ShowExtendedStatusBarSwitch.IsToggled;
         }
@@ -182,7 +182,10 @@ namespace GnollHackClient.Pages.Game
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             App.BackButtonPressed += BackButtonPressed;
+        }
 
+        private void SetInitialValues()
+        {
             int cursor = 0, graphics = 0, maprefresh = (int)ClientUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, navbar = GHConstants.DefaultHideNavigation, devmode = false, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode;
@@ -298,7 +301,7 @@ namespace GnollHackClient.Pages.Game
             for (int i = 0; i < PetRowPicker.Items.Count; i++)
             {
                 int tryint = 0;
-                if(petrows == 99 && PetRowPicker.Items[i].ToString().Length >= 3 && PetRowPicker.Items[i].ToString().Substring(0,3) == "Max")
+                if (petrows == 99 && PetRowPicker.Items[i].ToString().Length >= 3 && PetRowPicker.Items[i].ToString().Substring(0, 3) == "Max")
                 {
                     PetRowPicker.SelectedIndex = i;
                     break;

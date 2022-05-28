@@ -30,17 +30,21 @@ namespace GnollHackClient.Pages.Game
         public bool ReadFile(out string errorMessage)
         {
             string res = "";
+            TextEditor.Text = "(Reading file)";
             try
             {
                 TextEditor.Text = File.ReadAllText(_fileName, Encoding.UTF8);
+                TextEditor.IsEnabled = true;
             }
             catch (Exception e)
             {
+                TextEditor.Text = "";
                 errorMessage = e.Message;
                 return false;
             }
             errorMessage = res;
             _registerChanges = true;
+ 
             return true;
         }
 

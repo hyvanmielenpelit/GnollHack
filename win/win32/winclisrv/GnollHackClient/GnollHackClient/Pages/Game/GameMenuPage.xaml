@@ -26,22 +26,18 @@
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnBackToGame_Clicked" />
                                 </Grid>
                             </ViewCell>
-                        </TableSection>
-                        <TableSection x:Name="OptionsSection">
-                            <ViewCell>
-                                <Grid WidthRequest="320" HorizontalOptions="Center">
-                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                                    <Button x:Name="btnOptions" WidthRequest="320" FontFamily="Diablo" Text="Options" BackgroundColor="Transparent" TextColor="White"
-                                HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnOptions_Clicked" />
-                                </Grid>
-                            </ViewCell>
-                        </TableSection>
-                        <TableSection x:Name="BaseSection2">
                             <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
                                     <Button x:Name="btnSettings" WidthRequest="320" FontFamily="Diablo" Text="Settings" BackgroundColor="Transparent" TextColor="White"
                                     HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnSettings_Clicked" />
+                                </Grid>
+                            </ViewCell>
+                            <ViewCell x:Name="OptionsViewCell">
+                                <Grid WidthRequest="320" HorizontalOptions="Center">
+                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                                    <Button x:Name="btnOptions" WidthRequest="320" FontFamily="Diablo" Text="Options" BackgroundColor="Transparent" TextColor="White"
+                                HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnOptions_Clicked" />
                                 </Grid>
                             </ViewCell>
                             <ViewCell>
@@ -51,8 +47,6 @@
                                     HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnTips_Clicked" />
                                 </Grid>
                             </ViewCell>
-                        </TableSection>
-                        <TableSection x:Name="DeveloperSection">
                             <ViewCell x:Name="GCViewCell">
                                 <Grid x:Name="GCCollectGrid" WidthRequest="320" HorizontalOptions="Center">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
@@ -60,8 +54,6 @@
                                     HorizontalOptions="Fill" VerticalOptions="FillAndExpand"  Clicked="btnGC_Clicked" />
                                 </Grid>
                             </ViewCell>
-                        </TableSection>
-                        <TableSection x:Name="SaveQuitSection">
                             <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />

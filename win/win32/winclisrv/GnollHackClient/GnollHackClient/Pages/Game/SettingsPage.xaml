@@ -160,8 +160,6 @@
                                     <Switch x:Name="ForceMaxMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
-                        </TableSection>
-                        <TableSection>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Hide Navigation"
@@ -172,8 +170,6 @@
                                     <Switch x:Name="NavBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
-                        </TableSection>
-                        <TableSection>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Default Auto-Center"
@@ -284,7 +280,8 @@
                                         </Picker.ItemsSource>
                                     </Picker>
                                 </StackLayout>
-                            </ViewCell>                            <ViewCell>
+                            </ViewCell>
+                            <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Orbs"
                                            FontFamily="Underwood" TextColor="Black"
@@ -344,8 +341,6 @@
                                     <Switch x:Name="WalkArrowSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
-                        </TableSection>
-                        <TableSection>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Master Volume"
@@ -412,8 +407,6 @@
                                             WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                                 </StackLayout>
                             </ViewCell>
-                        </TableSection>
-                        <TableSection>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Developer Mode"
