@@ -22,7 +22,7 @@
                    InputTransparent="True" />
             <gnhcli:GHButton x:Name="ViewButton" Text="" 
                              Letter="{Binding BtnLetter}" ApplyMeta="{Binding BtnMeta}" ApplyCtrl="{Binding BtnCtrl}" RawCommand="{Binding BtnCommand}" 
-                             BackgroundColor="Transparent" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
+                             BackgroundColor="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
         </Grid>
     </ContentView.Content>
 </ContentView>
