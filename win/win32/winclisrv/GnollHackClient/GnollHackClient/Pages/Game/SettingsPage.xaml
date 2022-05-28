@@ -450,9 +450,9 @@
                         </TableSection>
                     </TableRoot>
                 </TableView>
-                <Grid Grid.Row="2" x:Name="CloseGrid" WidthRequest="250" Margin="0,10,0,10" HorizontalOptions="Center" VerticalOptions="EndAndExpand">
-                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="250"  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                    <Button Text="Close" WidthRequest="250" FontFamily="Diablo" FontSize="19" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
+                <Grid Grid.Row="2" x:Name="CloseGrid" WidthRequest="250" HeightRequest="60" Margin="0,10,0,10" HorizontalOptions="Center" VerticalOptions="EndAndExpand">
+                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="250" HeightRequest="60" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                    <Button Text="Close" WidthRequest="250" HeightRequest="60" FontFamily="Diablo" FontSize="19" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
                 </Grid>
             </Grid>

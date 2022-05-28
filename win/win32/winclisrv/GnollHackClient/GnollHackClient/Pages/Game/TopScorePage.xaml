@@ -70,8 +70,8 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <Grid Grid.Row="2" x:Name="CloseGrid" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="End" Margin="10,20" WidthRequest="250" HeightRequest="70">
-                    <ff:CachedImage x:Name="CloseButtonImage" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="250" HeightRequest="70" />
+                <Grid Grid.Row="2" x:Name="CloseGrid" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="End" Margin="10,20" WidthRequest="250" HeightRequest="60">
+                    <ff:CachedImage x:Name="CloseButtonImage" Aspect="Fill" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" WidthRequest="250" HeightRequest="60" />
                     <Button Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
                 </Grid>
             </Grid>

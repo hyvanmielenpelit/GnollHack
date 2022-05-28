@@ -20,9 +20,9 @@
                        HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="Gray" />
 
                 <Label x:Name="lblError" HorizontalOptions="CenterAndExpand" Text="" />
-                <Grid WidthRequest="320" HorizontalOptions="Center">
-                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320"  HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                    <Button x:Name="btnOK" Text="OK" WidthRequest="320" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                <Grid WidthRequest="320" HeightRequest="60" HorizontalOptions="Center">
+                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320"  HeightRequest="60"  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                    <Button x:Name="btnOK" Text="OK" WidthRequest="320" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="btnOK_Clicked" />
                 </Grid>
             </StackLayout>

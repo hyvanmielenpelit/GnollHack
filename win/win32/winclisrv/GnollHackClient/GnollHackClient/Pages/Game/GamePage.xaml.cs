@@ -2536,7 +2536,7 @@ namespace GnollHackClient.Pages.Game
                 textPaint.TextSize = UsedFontSize;
                 if (ZoomMiniMode)
                 {
-                    float tmpwidth = textPaint.FontMetrics.AverageCharacterWidth;
+                    float tmpwidth = textPaint.MeasureText("A"); //textPaint.FontMetrics.AverageCharacterWidth;
                     float tmpheight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                     if (GraphicsStyle == GHGraphicsStyle.Tiles && !ForceAscii)
                     {
@@ -2552,7 +2552,7 @@ namespace GnollHackClient.Pages.Game
                     UsedFontSize = UsedFontSize * MapFontMiniRelativeSize;
                     textPaint.TextSize = UsedFontSize;
                 }
-                float width = textPaint.FontMetrics.AverageCharacterWidth;
+                float width = textPaint.MeasureText("A"); //textPaint.FontMetrics.AverageCharacterWidth;
                 float height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
 
                 if (GraphicsStyle == GHGraphicsStyle.Tiles && !ForceAscii)
@@ -4245,7 +4245,7 @@ namespace GnollHackClient.Pages.Game
                                 textPaint.Typeface = _clientGame.Windows[i].Typeface;
                                 textPaint.TextSize = _clientGame.Windows[i].TextSize * textscale;
                                 textPaint.Color = _clientGame.Windows[i].TextColor;
-                                width = textPaint.FontMetrics.AverageCharacterWidth;
+                                width = textPaint.MeasureText("A"); // textPaint.FontMetrics.AverageCharacterWidth;
                                 height = textPaint.FontSpacing; // textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
 
                                 if (_clientGame.Windows[i].AutoPlacement)
@@ -5464,58 +5464,59 @@ namespace GnollHackClient.Pages.Game
                             textPaint.Style = SKPaintStyle.Stroke;
                             textPaint.StrokeWidth = textPaint.TextSize / 20;
                         }
+                        float avgwidth = textPaint.MeasureText("A");
                         for (int i = 0; i <= 9; i++)
                         {
                             switch (i)
                             {
                                 case 0:
                                     str = "4";
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (buttonsize / 2) - avgwidth / 2;
                                     ty = _canvasButtonRect.Top + _canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
                                     break;
                                 case 1:
                                     str = "8";
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width / 2 - avgwidth / 2;
                                     ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
                                     break;
                                 case 2:
                                     str = "6";
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (1.0f - buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (1.0f - buttonsize / 2) - avgwidth / 2;
                                     ty = _canvasButtonRect.Top + _canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
                                     break;
                                 case 3:
                                     str = "2";
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width / 2 - avgwidth / 2;
                                     ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
                                     break;
                                 case 4:
                                     str = "7";
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (buttonsize / 2) - avgwidth / 2;
                                     ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
                                     break;
                                 case 5:
                                     str = "5";
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width / 2 - avgwidth / 2;
                                     ty = _canvasButtonRect.Top + _canvasButtonRect.Height / 2 + textPaint.FontMetrics.Descent;
                                     break;
                                 case 6:
                                     str = "9";
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (1.0f - buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (1.0f - buttonsize / 2) - avgwidth / 2;
                                     ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
                                     break;
                                 case 7:
                                     str = "3";
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (1.0f - buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (1.0f - buttonsize / 2) - avgwidth / 2;
                                     ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
                                     break;
                                 case 8:
                                     str = "1";
-                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (buttonsize / 2) - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    tx = _canvasButtonRect.Left + _canvasButtonRect.Width * (buttonsize / 2) - avgwidth / 2;
                                     ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
                                     break;
                                 case 9:
                                     str = "0";
-                                    tx = 0 + _canvasButtonRect.Left / 2 - textPaint.FontMetrics.AverageCharacterWidth / 2;
+                                    tx = 0 + _canvasButtonRect.Left / 2 - avgwidth / 2;
                                     //ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (buttonsize / 2) + textPaint.FontMetrics.Descent;
                                     ty = _canvasButtonRect.Top + _canvasButtonRect.Height * (1.0f - buttonsize / 2) + textPaint.FontMetrics.Descent;
                                     textPaint.TextSize = Math.Max(10.0f, textPaint.TextSize * Math.Min(1.0f, _canvasButtonRect.Left / (_canvasButtonRect.Width * buttonsize)));
@@ -8276,9 +8277,9 @@ namespace GnollHackClient.Pages.Game
 
                         if (first)
                         {
-                            accel_fixed_width = textPaint.FontMetrics.AverageCharacterWidth; // + 3 * textPaint.MeasureText(" ");
+                            accel_fixed_width = textPaint.MeasureText("A"); // textPaint.FontMetrics.AverageCharacterWidth; // + 3 * textPaint.MeasureText(" ");
                             _firstDrawnMenuItemIdx = idx;
-                            maintext_x_start = leftmenupadding + leftinnerpadding + (has_identifiers ? accel_fixed_width : 0) + (has_pictures ? picturepadding + picturewidth + picturepadding : textPaint.FontMetrics.AverageCharacterWidth);
+                            maintext_x_start = leftmenupadding + leftinnerpadding + (has_identifiers ? accel_fixed_width : 0) + (has_pictures ? picturepadding + picturewidth + picturepadding : accel_fixed_width /*textPaint.FontMetrics.AverageCharacterWidth*/);
                             first = false;
                         }
 
