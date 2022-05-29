@@ -1188,7 +1188,7 @@ char **
 get_saved_games()
 {
 #if defined(SELECTSAVED)
-    int n, j = 0;
+    int j = 0;
     char **result = 0;
 #ifdef WIN32
     {
@@ -1202,7 +1202,7 @@ get_saved_games()
 #endif
         fq_save = fqname(SAVEF, SAVEPREFIX, 0);
 
-        n = 0;
+        int n = 0;
         foundfile = foundfile_buffer();
         if (findfirst((char *) fq_save)) {
             do {
@@ -1228,6 +1228,7 @@ get_saved_games()
 #if defined(UNIX) && defined(QT_GRAPHICS)
     /* posixly correct version */
     int myuid = getuid();
+    int n;
     DIR *dir;
 
     if ((dir = opendir(fqname("save", SAVEPREFIX, 0)))) {
@@ -2019,7 +2020,7 @@ const char *filename;
 int src;
 {
     FILE *fp;
-#if defined(UNIX) || defined(VMS)
+#if (defined(UNIX) || defined(VMS)) && !(defined(ANDROID) || defined(GNH_MOBILE))
     char tmp_config[BUFSZ];
     char *envp;
 #endif
@@ -3144,9 +3145,6 @@ STATIC_OVL FILE *
 fopen_wizkit_file()
 {
     FILE *fp;
-#if defined(VMS) || defined(UNIX)
-    char tmp_wizkit[BUFSZ];
-#endif
     char *envp;
 
     envp = nh_getenv("WIZKIT");
@@ -3183,6 +3181,7 @@ fopen_wizkit_file()
     if ((fp = fopenp(fqname(wizkit, CONFIGPREFIX, 0), "r")) != (FILE *) 0)
         return fp;
 #else
+    char tmp_wizkit[BUFSZ];
 #ifdef VMS
     envp = nh_getenv("HOME");
     if (envp)

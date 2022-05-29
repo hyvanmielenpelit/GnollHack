@@ -887,7 +887,7 @@ const char *str;
     for (bitmask = 1, p = str, q = buf; *p; q++) {
         *q = *p++;
         if (*q & (32 | 64))
-            *q ^= bitmask;
+            *q ^= (char)bitmask;
         if ((bitmask <<= 1) >= 32)
             bitmask = 1;
     }
@@ -2401,7 +2401,7 @@ do_permonst()
             Fprintf(ofp, "HUMAN_");
         for (nam = c = tmpdup(mons[i].mname); *c; c++)
             if (*c >= 'a' && *c <= 'z')
-                *c -= (char) ('a' - 'A');
+                *c -= ((char)'a' - (char)'A');
             else if (*c < 'A' || *c > 'Z')
                 *c = '_';
         Fprintf(ofp, "%s\t%d", nam, i);
@@ -2910,7 +2910,7 @@ do_objs()
 
         for (c = objnam; *c; c++)
             if (*c >= 'a' && *c <= 'z')
-                *c -= (char) ('a' - 'A');
+                *c -= ((char)'a' - (char)'A');
             else if (*c < 'A' || *c > 'Z')
                 *c = '_';
 
@@ -3029,7 +3029,7 @@ do_objs()
 
         for (c = objnam = tmpdup(artifact_names[i]); *c; c++)
             if (*c >= 'a' && *c <= 'z')
-                *c -= (char) ('a' - 'A');
+                *c -= ((char)'a' - (char)'A');
             else if (*c < 'A' || *c > 'Z')
                 *c = '_';
 

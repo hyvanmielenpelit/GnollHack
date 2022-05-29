@@ -1276,7 +1276,7 @@ void
 savefruitchn(fd, mode)
 int fd, mode;
 {
-    static struct fruit zerofruit = { 0 };
+    static struct fruit zerofruit = { { 0 }, 0, 0 };
     register struct fruit *f2, *f1;
 
     f1 = ffruit;

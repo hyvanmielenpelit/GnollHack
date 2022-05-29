@@ -735,7 +735,7 @@ dosounds()
                     context.global_minimum_volume = 0.15f;
                     play_monster_special_dialogue_line(mtmp, roll == 2 ? NPC_LINE_NPC_ROOM_3 : roll == 0 ? NPC_LINE_NPC_ROOM_1 : NPC_LINE_NPC_ROOM_2);
                     context.global_minimum_volume = 0.0f;
-                    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].distant_line == 0 || npc_subtype_definitions[ENPC(mtmp)->npc_typ].distant_line[roll] == 0)
+                    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].distant_line[roll] == 0)
                         You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, npc_msg[roll]);
                     else
                         You_hear_ex1(ATR_NONE, CLR_MSG_ATTENTION, npc_subtype_definitions[ENPC(mtmp)->npc_typ].distant_line[roll]);
