@@ -2216,10 +2216,7 @@ char*
 noittame_mon_nam(mtmp)
 struct monst* mtmp;
 {
-    if (!mtmp)
-        return "";
-    
-    if (is_tame(mtmp))
+    if (mtmp && is_tame(mtmp))
         return noit_mon_nam(mtmp);
     else
         return mon_nam(mtmp);
@@ -2249,10 +2246,7 @@ char*
 noittame_Monnam(mtmp)
 struct monst* mtmp;
 {
-    if (!mtmp)
-        return "";
-
-    if (is_tame(mtmp))
+    if (mtmp && is_tame(mtmp))
         return noit_Monnam(mtmp);
     else
         return Monnam(mtmp);
