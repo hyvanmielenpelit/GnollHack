@@ -108,7 +108,7 @@ dosh()
 void
 check_crash()
 {
-	if (!recovery_plname || !*recovery_plname)
+	if (!*recovery_plname)
 		return;
 
 	//list_files();
