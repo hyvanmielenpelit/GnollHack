@@ -2563,7 +2563,7 @@ boolean from_invent;
     case EGG:
         /* breaking your own eggs is bad luck */
         if (hero_caused && (obj->speflags & SPEFLAGS_YOURS) && obj->corpsenm >= LOW_PM)
-            change_luck((schar) -min(obj->quan, 5L), TRUE);
+            change_luck(-min(obj->quan, 5L), TRUE);
         break;
     case BOULDER:
     case STATUE:

@@ -647,14 +647,14 @@ boolean lifesavedalready;
 
 void
 change_luck(n, verbose)
-register schar n;
+int n;
 boolean verbose;
 {
     if (!n)
         return;
 
     schar startluck = u.uluck;
-    u.uluck += n;
+    u.uluck += (schar)n;
     if (u.uluck < 0 && u.uluck < LUCKMIN)
         u.uluck = LUCKMIN;
     if (u.uluck > 0 && u.uluck > LUCKMAX)

@@ -2230,8 +2230,7 @@ dosacrifice()
                 exercise(A_WIS, FALSE);
             }
 
-            if (highaltar
-                && (altaralign != A_CHAOTIC || u.ualign.type != A_CHAOTIC))
+            if (highaltar && (altaralign != A_CHAOTIC || u.ualign.type != A_CHAOTIC))
             {
                 goto desecrate_high_altar;
             } 

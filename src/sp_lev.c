@@ -3718,6 +3718,8 @@ struct sp_coder *coder;
     opvar_free(op);
 }
 
+static const monster emptymons; /* Initialized to zero automatically */
+
 void
 spo_monster(coder)
 struct sp_coder *coder;
@@ -3726,7 +3728,7 @@ struct sp_coder *coder;
     int nparams = 0;
     struct opvar *varparam;
     struct opvar *id, *mcoord, *has_inv;
-    monster tmpmons = { 0 };
+    monster tmpmons = emptymons;
 
     tmpmons.peaceful = -1;
     tmpmons.asleep = -1;
@@ -3744,10 +3746,16 @@ struct sp_coder *coder;
     tmpmons.paralyzed = 0;
     tmpmons.stunned = 0;
     tmpmons.confused = 0;
-    tmpmons.seentraps = 0;
-    tmpmons.has_invent = 0;
     tmpmons.waitforu = 0;
     tmpmons.protector = 0;
+    tmpmons.seentraps = 0;
+    tmpmons.has_invent = 0;
+    tmpmons.id = 0;
+    tmpmons.align = 0;
+    tmpmons.coord = 0;
+    tmpmons.x = 0;
+    tmpmons.y = 0;
+    tmpmons.class = 0;
 
     if (!OV_pop_i(has_inv))
         return;
@@ -3877,6 +3885,9 @@ struct sp_coder *coder;
     opvar_free(varparam);
 }
 
+
+static const object emptyobject; /* Initialized to zero automatically */
+
 void
 spo_object(coder)
 struct sp_coder *coder;
@@ -3886,7 +3897,7 @@ struct sp_coder *coder;
     long quancnt;
     struct opvar *varparam;
     struct opvar *id, *containment;
-    object tmpobj;
+    object tmpobj = emptyobject;
 
     tmpobj.enchantment = -127; /* random */
     tmpobj.charges = -127; /* random */

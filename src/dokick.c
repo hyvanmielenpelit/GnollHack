@@ -2248,7 +2248,7 @@ boolean shop_floor_obj;
             result = "splat";
             You_hear_ex(ATR_NONE, CLR_MSG_ATTENTION, "a muffled %s.", result);
             if (otmp->otyp == EGG && (otmp->speflags & SPEFLAGS_YOURS) && otmp->corpsenm >= LOW_PM)
-                change_luck((schar) -min(otmp->quan, 5L), TRUE);
+                change_luck(-min(otmp->quan, 5L), TRUE);
         }
         obj_extract_self(otmp);
         obfree(otmp, (struct obj *) 0);

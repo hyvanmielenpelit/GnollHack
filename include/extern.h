@@ -186,7 +186,7 @@ E void FDECL(losestr, (int));
 E void FDECL(poisontell, (int, BOOLEAN_P));
 E void FDECL(poisoned, (const char *, int, const char *, int, BOOLEAN_P, int));
 E void FDECL(extra_enchantment_damage, (const char*, UCHAR_P, const char*, BOOLEAN_P));
-E void FDECL(change_luck, (SCHAR_P, BOOLEAN_P));
+E void FDECL(change_luck, (int, BOOLEAN_P));
 E int FDECL(stone_luck, (BOOLEAN_P));
 E boolean FDECL(object_uses_spellbook_wand_flags_and_properties, (struct obj*));
 E boolean FDECL(inappropriate_character_type, (struct obj*));
