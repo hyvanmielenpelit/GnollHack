@@ -106,6 +106,8 @@
     <BundleResource Include="banks\Auxiliary.bank" />
     <BundleResource Include="banks\Master.bank" />
     <BundleResource Include="banks\Master.strings.bank" />
+    <ITunesArtwork Include="iTunesArtwork" />
+    <ITunesArtwork Include="iTunesArtwork%402x" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
