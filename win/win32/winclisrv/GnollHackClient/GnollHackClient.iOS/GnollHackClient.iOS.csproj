@@ -70,7 +70,7 @@
     <CodesignKey>Apple Development: Janne Gustafsson (LWNBT5L73Q)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchInterpreter>-all</MtouchInterpreter>
-    <MtouchExtraArgs>-cxx -gcc_flags "-L${ProjectDir}/NativeReferences -framework AudioToolbox -framework CoreAudio -lgnollhackios -lfmod_iphoneos -lfmodstudio_iphoneos"</MtouchExtraArgs>
+    <MtouchExtraArgs>-cxx -gcc_flags "-L${ProjectDir}/NativeReferences -framework AudioToolbox -framework CoreAudio -lgnollhackios -lfmod_iphoneos -lfmodstudio_iphoneos -force_load ${ProjectDir}/NativeReferences/libgnollhackios.a -force_load ${ProjectDir}/NativeReferences/libfmod_iphoneos.a -force_load ${ProjectDir}/NativeReferences/libfmodstudio_iphoneos.a"</MtouchExtraArgs>
     <MtouchLink>None</MtouchLink>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
     <MtouchFastDev>false</MtouchFastDev>
@@ -208,16 +208,12 @@
   <ItemGroup>
     <NativeReference Include="NativeReferences/libfmodstudio_iphoneos.a">
       <Kind>Static</Kind>
-      <ForceLoad>True</ForceLoad>
     </NativeReference>
     <NativeReference Include="NativeReferences/libfmod_iphoneos.a">
       <Kind>Static</Kind>
-      <ForceLoad>True</ForceLoad>
     </NativeReference>
     <NativeReference Include="NativeReferences/libgnollhackios.a">
       <Kind>Static</Kind>
-      <ForceLoad>True</ForceLoad>
-      <IsCxx>True</IsCxx>
     </NativeReference>
   </ItemGroup>
 </Project>

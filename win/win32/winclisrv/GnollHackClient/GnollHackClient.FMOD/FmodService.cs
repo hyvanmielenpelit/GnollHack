@@ -93,13 +93,13 @@ namespace GnollHackClient.Unknown
 
             RESULT res;
 
-            //uint ver;
-            //res = Factory.System_Create(out _coresystem);
-            //if (res != RESULT.OK)
-            //    return;
-            //res = _coresystem.getVersion(out ver);
-            //if (res != RESULT.OK)
-            //    return;
+            uint ver;
+            res = Factory.System_Create(out _coresystem);
+            if (res != RESULT.OK)
+                return;
+            res = _coresystem.getVersion(out ver);
+            if (res != RESULT.OK)
+                return;
 
             res = FMOD.Studio.System.create(out _system);
             if (res != RESULT.OK)
