@@ -417,7 +417,7 @@ namespace GnollHackClient.Unknown
 #elif __IOS__
             string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             string library = Path.Combine(documents, "..", "Library");
-            string path = Path.Combine(library, "Application Support");
+            string path = Path.Combine(library, "GnollHackData");
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             return path;

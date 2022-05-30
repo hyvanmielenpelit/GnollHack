@@ -24,10 +24,6 @@ namespace GnollHackClient.Droid
             RevertAnimationDuration();
             MainActivity.CurrentMainActivity.Finish();
         }
-        public bool IsModernAndroid()
-        {
-            return Build.VERSION.SdkInt >= BuildVersionCodes.R;
-        }
 
         public void SaveFileToDownloads(byte[] data, string name)
         {

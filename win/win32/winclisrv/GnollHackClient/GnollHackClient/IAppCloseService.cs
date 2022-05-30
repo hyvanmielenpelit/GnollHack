@@ -7,7 +7,6 @@ namespace GnollHackClient
     public interface IPlatformService
     {
         void CloseApplication();
-        bool IsModernAndroid();
         void SaveFileToDownloads(byte[] data, string name);
         void OverrideAnimationDuration();
         void RevertAnimationDuration();

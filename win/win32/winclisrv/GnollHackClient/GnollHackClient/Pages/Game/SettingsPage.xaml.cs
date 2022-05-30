@@ -187,7 +187,8 @@ namespace GnollHackClient.Pages.Game
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, maprefresh = (int)ClientUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, navbar = GHConstants.DefaultHideNavigation, devmode = false, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, navbar = GHConstants.DefaultHideNavigation;
+            bool devmode = GHConstants.DefaultDeveloperMode, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode;
             //bool altnoclipmode = GHConstants.DefaultMapAlternateNoClipMode, zoomchangecenter = GHConstants.DefaultZoomChangeCenterMode;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;

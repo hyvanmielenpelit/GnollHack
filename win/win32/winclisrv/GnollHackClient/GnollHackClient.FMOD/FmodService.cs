@@ -93,23 +93,27 @@ namespace GnollHackClient.Unknown
 
             RESULT res;
 
-            uint ver;
-            res = Factory.System_Create(out _coresystem);
-            if (res != RESULT.OK)
-                return;
-            res = _coresystem.getVersion(out ver);
-            if (res != RESULT.OK)
-                return;
+            //uint ver;
+            //res = Factory.System_Create(out _coresystem);
+            //if (res != RESULT.OK)
+            //    return;
+
+            //res = _coresystem.getVersion(out ver);
+            //if (res != RESULT.OK)
+            //    return;
 
             res = FMOD.Studio.System.create(out _system);
             if (res != RESULT.OK)
                 return;
+
             res = _system.getCoreSystem(out _coresystem);
             if (res != RESULT.OK)
                 return;
+
             res = _coresystem.setSoftwareFormat(0, SPEAKERMODE.DEFAULT, 0);
             if (res != RESULT.OK)
                 return;
+
             res = _system.initialize(1024, FMOD.Studio.INITFLAGS.NORMAL, FMOD.INITFLAGS.NORMAL, IntPtr.Zero);
             if (res != RESULT.OK)
                 return;

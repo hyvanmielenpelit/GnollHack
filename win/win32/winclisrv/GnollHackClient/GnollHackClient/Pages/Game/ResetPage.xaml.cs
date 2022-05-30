@@ -197,8 +197,8 @@ namespace GnollHackClient.Pages.Game
 
         private async void btnViewPanicLog_Clicked(object sender, EventArgs e)
         {
-            App.PlayButtonClickedSound();
             GameTableView.IsEnabled = false;
+            App.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(App.GHPath, "paniclog");
             var displFilePage = new DisplayFilePage(fulltargetpath, "Panic Log");
             string errormsg = "";

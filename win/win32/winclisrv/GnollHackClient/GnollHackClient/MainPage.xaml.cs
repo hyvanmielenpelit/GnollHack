@@ -131,20 +131,46 @@ namespace GnollHackClient
                 //_sponsorAnimation.Commit(SponsorButton, "Animation", 16, 4000, Easing.Linear, (v, c) => BackgroundColor = Color.Default);
             }
         }
+        public void InitializeServices()
+        {
+            bool resetFiles = Preferences.Get("ResetAtStart", true);
+            if (resetFiles)
+            {
+                App.GnollHackService.ClearFiles();
+                Preferences.Set("ResetAtStart", false);
+                Preferences.Set("ResetExternalFiles", true);
+            }
+            App.ResetAcquiredFiles();
+            App.GnollHackService.InitializeGnollHack(App.CurrentSecrets);
+            App.FmodService.InitializeFmod();
+
+            //App.AddLogLine("Attempting to load FMOD banks.");
+            //try
+            //{
+            //    _fmodService.LoadBanks();
+            //}
+            //catch(Exception ex)
+            //{
+            //    Debug.WriteLine("Loading FMOD banks failed: " + ex.Message);
+            //}
+        }
+
 
         private async Task StartUpTasks()
         {
+            InitializeServices();
+
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            App.InitializeServices();
             App.InitTypefaces(assembly);
             App.InitBitmaps(assembly);
-            App.IsModernAndroid = App.PlatformService.IsModernAndroid();
+
             string verstr = App.GnollHackService.GetVersionString();
             string verid = App.GnollHackService.GetVersionId();
             string path = App.GnollHackService.GetGnollHackPath();
             App.GHVersionString = verstr;
             App.GHVersionId = verid;
             App.GHPath = path;
+
             VersionLabel.Text = verid;
             GnollHackLabel.Text = "GnollHack"; // + verstr;
 
@@ -173,9 +199,9 @@ namespace GnollHackClient
             {
                 App.FmodService.LoadBanks();
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine("Loading FMOD banks failed: " + ex.Message);
             }
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
@@ -195,6 +221,7 @@ namespace GnollHackClient
 
             }
         }
+
 
         private object _abortLock = new object();
         private bool _abortDisplayed = false;
@@ -291,7 +318,7 @@ namespace GnollHackClient
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Debug.WriteLine("Playing music failed: " + ex.Message);
             }
         }
 

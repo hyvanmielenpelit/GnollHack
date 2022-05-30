@@ -19,10 +19,6 @@ namespace GnollHackClient.iOS
             RevertAnimationDuration();
             //MainActivity.CurrentMainActivity.Finish();
         }
-        public bool IsModernAndroid()
-        {
-            return true;
-        }
 
         public void SaveFileToDownloads(byte[] data, string name)
         {
