@@ -14,7 +14,7 @@ namespace GnollHackClient.Pages.Game
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GameMenuPage : ContentPage
     {
-        private GamePage _gamePage;
+        public GamePage _gamePage;
         private ViewCell _optionsViewCell;
         private ViewCell _gcViewCell;
 
@@ -80,16 +80,20 @@ namespace GnollHackClient.Pages.Game
         {
             MainLayout.IsEnabled = false;
             App.PlayButtonClickedSound();
-            var settingsPage = new SettingsPage(this._gamePage);
+            var settingsPage = new SettingsPage(this, null);
             await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
         }
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             App.BackButtonPressed += BackButtonPressed;
+        }
+
+        public void UpdateLayout()
+        {
             MainLayout.IsEnabled = true;
             if (App.DeveloperMode && !BaseSection.Contains(_optionsViewCell))
-               BaseSection.Insert(2, _optionsViewCell);
+                BaseSection.Insert(2, _optionsViewCell);
             if (!App.DeveloperMode && BaseSection.Contains(_optionsViewCell))
                 BaseSection.Remove(_optionsViewCell);
             if (App.DeveloperMode && !BaseSection.Contains(GCViewCell))

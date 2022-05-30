@@ -84,7 +84,8 @@ namespace GnollHackClient
         private Animation _sponsorAnimation = null;
         private bool _firsttime = true;
         private bool _mainScreenMusicStarted = false;
-        private async void ContentPage_Appearing(object sender, EventArgs e)
+
+        public void UpdateLayout()
         {
             wizardModeGrid.IsVisible = App.DeveloperMode;
             if (!App.DeveloperMode)
@@ -97,7 +98,11 @@ namespace GnollHackClient
             casualModeSwitch.IsToggled = App.CasualMode;
 
             UpdateMobileVersionLabel();
+        }
 
+        private async void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            UpdateLayout();
             if (_firsttime)
             {
                 App.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
@@ -466,7 +471,7 @@ namespace GnollHackClient
         {
             UpperButtonGrid.IsEnabled = false;
             App.PlayButtonClickedSound();
-            var settingsPage = new SettingsPage(null);
+            var settingsPage = new SettingsPage(null, this);
             await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
         }
 

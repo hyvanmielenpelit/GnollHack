@@ -15,11 +15,18 @@ namespace GnollHackClient.Pages.Game
     public partial class SettingsPage : ContentPage
     {
         private GamePage _gamePage;
+        private GameMenuPage _gameMenuPage;
+        private MainPage _mainPage;
         private bool _doChangeVolume = false;
-        public SettingsPage(GamePage gamePage)
+        public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
         {
             InitializeComponent();
-            _gamePage = gamePage;
+            _gameMenuPage = gameMenuPage;
+            if(_gameMenuPage != null)
+                _gamePage = _gameMenuPage._gamePage;
+            else
+                _gamePage = null;
+            _mainPage = mainPage;
             List<string> list = new List<string>();
             list.Add("20 fps");
             list.Add("30 fps");
@@ -177,6 +184,12 @@ namespace GnollHackClient.Pages.Game
 
             if (_gamePage != null)
                 _gamePage.ShowExtendedStatusBar = ShowExtendedStatusBarSwitch.IsToggled;
+
+            if (_mainPage != null)
+                _mainPage.UpdateLayout();
+
+            if (_gameMenuPage != null)
+                _gameMenuPage.UpdateLayout();
         }
 
         private void ContentPage_Appearing(object sender, EventArgs e)
