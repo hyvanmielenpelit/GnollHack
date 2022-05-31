@@ -53,7 +53,8 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchLink>None</MtouchLink>
     <MtouchInterpreter>-all</MtouchInterpreter>
-    <MtouchExtraArgs>-cxx -gcc_flags "-L${ProjectDir}/NativeReferences -framework AudioToolbox -framework CoreAudio -lgnollhackios -lfmod_iphoneos -lfmodstudio_iphoneos -force_load ${ProjectDir}/NativeReferences/libgnollhackios.a -force_load ${ProjectDir}/NativeReferences/libfmod_iphoneos.a -force_load ${ProjectDir}/NativeReferences/libfmodstudio_iphoneos.a"</MtouchExtraArgs>
+    <MtouchExtraArgs>
+    </MtouchExtraArgs>
     <MtouchSdkVersion>
     </MtouchSdkVersion>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
@@ -71,7 +72,8 @@
     <CodesignKey>Apple Development: Janne Gustafsson (LWNBT5L73Q)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchInterpreter>-all</MtouchInterpreter>
-    <MtouchExtraArgs>-cxx -gcc_flags "-L${ProjectDir}/NativeReferences -framework AudioToolbox -framework CoreAudio -lgnollhackios -lfmod_iphoneos -lfmodstudio_iphoneos -force_load ${ProjectDir}/NativeReferences/libgnollhackios.a -force_load ${ProjectDir}/NativeReferences/libfmod_iphoneos.a -force_load ${ProjectDir}/NativeReferences/libfmodstudio_iphoneos.a"</MtouchExtraArgs>
+    <MtouchExtraArgs>
+    </MtouchExtraArgs>
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchNoSymbolStrip>false</MtouchNoSymbolStrip>
     <MtouchFastDev>false</MtouchFastDev>
@@ -207,14 +209,20 @@
     <BundleResource Include="Resources\mainmenuportrait.mp4" />
   </ItemGroup>
   <ItemGroup>
-    <NativeReference Include="NativeReferences/libfmodstudio_iphoneos.a">
+    <NativeReference Include="Native References/libfmodstudio_iphoneos.a">
       <Kind>Static</Kind>
+      <Frameworks>AudioToolbox CoreAudio</Frameworks>
+      <ForceLoad>True</ForceLoad>
     </NativeReference>
-    <NativeReference Include="NativeReferences/libfmod_iphoneos.a">
+    <NativeReference Include="Native References/libfmod_iphoneos.a">
       <Kind>Static</Kind>
+      <Frameworks>AudioToolbox CoreAudio</Frameworks>
+      <ForceLoad>True</ForceLoad>
     </NativeReference>
-    <NativeReference Include="NativeReferences/libgnollhackios.a">
+    <NativeReference Include="Native References/libgnollhackios.a">
       <Kind>Static</Kind>
+      <ForceLoad>True</ForceLoad>
+      <IsCxx>True</IsCxx>
     </NativeReference>
   </ItemGroup>
 </Project>
