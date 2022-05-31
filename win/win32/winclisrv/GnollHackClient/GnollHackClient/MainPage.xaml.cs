@@ -28,6 +28,7 @@ using FFImageLoading;
 using Xamarin.Essentials;
 using System.Collections;
 using System.Collections.Concurrent;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace GnollHackClient
 {
@@ -35,12 +36,13 @@ namespace GnollHackClient
     {
         private bool _canClickButton = true;
         private bool _serverButtonClicked = false;
-        private NavigationPage _loginNavPage = null;
+        private Xamarin.Forms.NavigationPage _loginNavPage = null;
         public bool GameStarted { get; set; }
 
         public MainPage()
         {
             InitializeComponent();
+            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
         }
 
         public void HideLocalGameButton()
@@ -76,7 +78,7 @@ namespace GnollHackClient
             _canClickButton = false;
 
             var loginPage = new LoginPage(this);
-            _loginNavPage = new NavigationPage(loginPage);
+            _loginNavPage = new Xamarin.Forms.NavigationPage(loginPage);
             
             await Navigation.PushAsync(_loginNavPage);
         }

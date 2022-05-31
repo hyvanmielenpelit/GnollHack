@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using GnollHackClient.Controls;
 using System.Runtime.CompilerServices;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -468,6 +469,7 @@ namespace GnollHackClient.Pages.Game
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
+            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
             _mainPage = mainPage;
 
             CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
@@ -8072,6 +8074,10 @@ namespace GnollHackClient.Pages.Game
                 ToggleZoomMiniButton.ImgSourcePath = "resource://GnollHackClient.Assets.UI.stone-minimap-off.png";
                 //ToggleZoomMiniImg.Source = minimap_off_source;
                 //ToggleZoomMiniButton.BackgroundColor = Color.DarkBlue;
+                if (sender != null && GHUtils.isok(_ux, _uy) && !MapNoClipMode)
+                {
+                    SetTargetClip(_ux, _uy, true);
+                }
             }
         }
 
@@ -8112,6 +8118,11 @@ namespace GnollHackClient.Pages.Game
                         _mapOffsetX = _mapOffsetX * MapFontSize / MapFontAlternateSize;
                         _mapOffsetY = _mapOffsetY * MapFontSize / MapFontAlternateSize;
                     }
+                }
+
+                if (sender != null && GHUtils.isok(_ux, _uy) && !MapNoClipMode)
+                {
+                    SetTargetClip(_ux, _uy, true);
                 }
 
                 //if (ZoomChangeCenterMode && !MapNoClipMode && MapAlternateNoClipMode && GHUtils.isok(_ux, _uy))
@@ -10460,7 +10471,7 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        public SKRect GetViewScreenRect(VisualElement view)
+        public SKRect GetViewScreenRect(Xamarin.Forms.VisualElement view)
         {
             float canvaswidth = canvasView.CanvasSize.Width;
             float canvasheight = canvasView.CanvasSize.Height;
@@ -10470,7 +10481,7 @@ namespace GnollHackClient.Pages.Game
             // Get the view's parent (if it has one...)
             if (view.Parent.GetType() != typeof(App))
             {
-                VisualElement parent = (VisualElement)view.Parent;
+                Xamarin.Forms.VisualElement parent = (Xamarin.Forms.VisualElement)view.Parent;
 
                 // Loop through all parents
                 while (parent != null)
@@ -10483,7 +10494,7 @@ namespace GnollHackClient.Pages.Game
                     if (parent.Parent.GetType() == typeof(App))
                         parent = null;
                     else
-                        parent = (VisualElement)parent.Parent;
+                        parent = (Xamarin.Forms.VisualElement)parent.Parent;
                 }
             }
             float relX = (float)(screenCoordinateX / canvasView.Width) * canvaswidth;
@@ -10495,7 +10506,7 @@ namespace GnollHackClient.Pages.Game
             return res;
         }
 
-        public void PaintTipButton(SKCanvas canvas, SKPaint textPaint, VisualElement view, string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety)
+        public void PaintTipButton(SKCanvas canvas, SKPaint textPaint, Xamarin.Forms.VisualElement view, string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety)
         {
             SKRect viewrect = GetViewScreenRect(view);
             PaintTipButtonByRect(canvas, textPaint, viewrect, centertext, boxtext, radius_mult, centertextfontsize, boxfontsize, linefromright, lineoffsetx, lineoffsety);

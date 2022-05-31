@@ -152,7 +152,7 @@
                         <StackLayout x:Name="GetLineLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                             <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
-                                <Entry x:Name="GetLineEntryText" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White"
+                                <Entry x:Name="GetLineEntryText" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        HorizontalTextAlignment="Center" FontSize="20" TextChanged="GetLineEntryText_TextChanged" />
                                 <Grid x:Name="GetLineQuestionMarkGrid" IsVisible="False" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" WidthRequest="50" HeightRequest="50">
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="50" HeightRequest="50"  HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Aspect="Fill" />
@@ -166,7 +166,7 @@
                                     <TapGestureRecognizer Tapped="GetLineAutoCompleteTapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-                                <Grid WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                            <Grid WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
                                 </Grid.RowDefinitions>
@@ -310,6 +310,7 @@
                                     VerticalTextAlignment="Center"
                                     FontFamily="Underwood"
                                     FontSize="15" 
+                                    TextColor="White"
                                     BackgroundColor="#303030"
                                     PropertyChanged="MenuEntry_PropertyChanged"
                                     Margin="1"

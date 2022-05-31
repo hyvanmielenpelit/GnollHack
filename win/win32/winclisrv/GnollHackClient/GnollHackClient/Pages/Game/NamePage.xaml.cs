@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
 namespace GnollHackClient.Pages.Game
@@ -21,6 +22,7 @@ namespace GnollHackClient.Pages.Game
         public NamePage(GamePage gamepage)
         {
             InitializeComponent();
+            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
             ValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,32}$");
             _clientGame = gamepage.ClientGame;
             _gamePage = gamepage;

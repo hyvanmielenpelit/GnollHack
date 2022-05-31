@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
 namespace GnollHackClient.Pages.Game
@@ -22,6 +23,7 @@ namespace GnollHackClient.Pages.Game
         public TopScorePage(string fileName)
         {
             InitializeComponent();
+            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
             _fileName = fileName;
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             CloseButtonImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);

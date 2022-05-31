@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -21,6 +22,7 @@ namespace GnollHackClient.Pages.Game
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
         {
             InitializeComponent();
+            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
             _gameMenuPage = gameMenuPage;
             if(_gameMenuPage != null)
                 _gamePage = _gameMenuPage._gamePage;

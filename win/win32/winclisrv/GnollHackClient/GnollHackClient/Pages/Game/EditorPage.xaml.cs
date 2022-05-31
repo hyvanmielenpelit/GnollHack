@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
 namespace GnollHackClient.Pages.Game
@@ -19,6 +20,8 @@ namespace GnollHackClient.Pages.Game
         public EditorPage(string fileName, string header)
         {
             InitializeComponent();
+            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+
             _fileName = fileName;
             HeaderLabel.Text = header;
             Assembly assembly = GetType().GetTypeInfo().Assembly;
