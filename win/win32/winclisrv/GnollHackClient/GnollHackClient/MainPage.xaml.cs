@@ -466,7 +466,7 @@ namespace GnollHackClient
             App.PlayButtonClickedSound();
             var resetPage = new ResetPage();
             await App.Current.MainPage.Navigation.PushModalAsync(resetPage);
-
+            UpperButtonGrid.IsEnabled = true;
         }
 
         private async void SettingsButton_Clicked(object sender, EventArgs e)
@@ -475,6 +475,7 @@ namespace GnollHackClient
             App.PlayButtonClickedSound();
             var settingsPage = new SettingsPage(null, this);
             await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
+            UpperButtonGrid.IsEnabled = true;
         }
 
         private async void OptionsButton_Clicked(object sender, EventArgs e)
@@ -486,7 +487,6 @@ namespace GnollHackClient
             string errormsg = "";
             if (!editorPage.ReadFile(out errormsg))
             {
-                UpperButtonGrid.IsEnabled = true;
                 ErrorLabel.Text = errormsg;
             }
             else
@@ -494,6 +494,7 @@ namespace GnollHackClient
                 ErrorLabel.Text = "";
                 await App.Current.MainPage.Navigation.PushModalAsync(editorPage);
             }
+            UpperButtonGrid.IsEnabled = true;
         }
 
         private async void CreditsButton_Clicked(object sender, EventArgs e)
@@ -502,6 +503,7 @@ namespace GnollHackClient
             App.PlayButtonClickedSound();
             var creditsPage = new CreditsPage();
             await App.Current.MainPage.Navigation.PushModalAsync(creditsPage);
+            UpperButtonGrid.IsEnabled = true;
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
@@ -560,7 +562,6 @@ namespace GnollHackClient
                 string errormsg = "";
                 if (!topScorePage.ReadFile(out errormsg))
                 {
-                    UpperButtonGrid.IsEnabled = false;
                     ErrorLabel.Text = errormsg;
                 }
                 else
@@ -575,6 +576,7 @@ namespace GnollHackClient
                 var topScorePage = new TopScorePage();
                 await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
             }
+            UpperButtonGrid.IsEnabled = true;
         }
 
         private void GetFilesFromResources()

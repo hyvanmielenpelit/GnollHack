@@ -31,13 +31,13 @@ namespace GnollHackClient.Pages.Game
             string errormsg = "";
             if (!displFilePage.ReadFile(out errormsg))
             {
-                CreditsTableView.IsEnabled = true;
                 await DisplayAlert("Error Opening File", "GnollHack cannot open the xcredits file.", "OK");
             }
             else
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
             }
+            CreditsTableView.IsEnabled = true;
         }
 
         private async void btnCreditsW_Clicked(object sender, EventArgs e)
@@ -49,13 +49,13 @@ namespace GnollHackClient.Pages.Game
             string errormsg = "";
             if (!displFilePage.ReadFile(out errormsg))
             {
-                CreditsTableView.IsEnabled = true;
                 await DisplayAlert("Error Opening File", "GnollHack cannot open the credits file.", "OK");
             }
             else
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
             }
+            CreditsTableView.IsEnabled = true;
         }
 
         private async void btnLicense_Clicked(object sender, EventArgs e)
@@ -67,13 +67,13 @@ namespace GnollHackClient.Pages.Game
             string errormsg = "";
             if (!displFilePage.ReadFile(out errormsg))
             {
-                CreditsTableView.IsEnabled = true;
                 await DisplayAlert("Error Opening File", "GnollHack cannot open the license file.", "OK");
             }
             else
             {
                 await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
             }
+            CreditsTableView.IsEnabled = true;
         }
         private async void btnGitHub_Clicked(object sender, EventArgs e)
         {

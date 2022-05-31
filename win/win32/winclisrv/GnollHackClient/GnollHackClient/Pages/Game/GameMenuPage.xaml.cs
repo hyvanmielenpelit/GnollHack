@@ -84,6 +84,7 @@ namespace GnollHackClient.Pages.Game
             App.PlayButtonClickedSound();
             var settingsPage = new SettingsPage(this, null);
             await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
+            MainLayout.IsEnabled = true;
         }
 
         private void ContentPage_Appearing(object sender, EventArgs e)

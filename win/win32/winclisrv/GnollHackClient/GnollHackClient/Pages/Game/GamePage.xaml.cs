@@ -1994,6 +1994,16 @@ namespace GnollHackClient.Pages.Game
                 res.Trim();
             }
 
+            /* Style-dependent behavior */
+            switch(_getLineStyle)
+            {
+                case (int)getline_types.GETLINE_EXTENDED_COMMAND:
+                    res = res.ToLower();
+                    break;
+                default:
+                    break;
+            }
+
             ConcurrentQueue<GHResponse> queue;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
@@ -8138,6 +8148,7 @@ namespace GnollHackClient.Pages.Game
             GameMenuButton.IsEnabled = false;
             App.PlayButtonClickedSound();
             ShowGameMenu(sender, e);
+            GameMenuButton.IsEnabled = true;
         }
 
         private void PopupOkButton_Clicked(object sender, EventArgs e)
@@ -10817,12 +10828,13 @@ namespace GnollHackClient.Pages.Game
                 if (ExtendedCommands == null)
                     return;
 
+                string searchstring = GetLineEntryText.Text.ToLower();
                 for (int i = 0; i < ExtendedCommands.Count; i++)
                 {
-                    var command = ExtendedCommands[i];
+                    string command = ExtendedCommands[i];
                     if (command == null)
                         break;
-                    if (command.StartsWith(GetLineEntryText.Text))
+                    if (command.ToLower().StartsWith(searchstring))
                     {
                         GetLineAutoComplete.Text = command;
                         break;
