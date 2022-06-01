@@ -8624,7 +8624,7 @@ struct monst* mtmp;
         return 0;
 
     const char* linearray[4] = {
-        "The Large Circular Dungeon is massive circular hallway constructed to conduct our most demanding quantum experiments.",
+        "The Large Circular Dungeon is a massive circular hallway constructed to conduct our most demanding quantum experiments.",
         "The entire dungeon is one gigantic quantum apparatus, originally carved into its great size by tamed purple worms.",
         "Since its completion, it has provided us with invaluable insights into teleportation and formation of planar rifts, among other discoveries.",
         0 };
