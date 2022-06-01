@@ -40,7 +40,10 @@ namespace GnollHackClient
 
             var mainPage = new MainPage();
             var navPage = new NavigationPage(mainPage);
+            navPage.BarTextColor = Color.White;
+            navPage.BarBackgroundColor = Color.Black;
             MainPage = navPage;
+
             App.HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             App.HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             App.DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
