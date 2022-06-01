@@ -412,15 +412,22 @@ namespace GnollHackClient.Unknown
 
         public string GetGnollHackPath()
         {
-#if __ANDROID__            
+#if __ANDROID__
             return Android.App.Application.Context.FilesDir.Path;
 #elif __IOS__
-            string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string library = Path.Combine(documents, "..", "Library");
-            string path = Path.Combine(library, "GnollHackData");
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-            return path;
+            try
+            {
+                string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string library = Path.Combine(documents, "..", "Library");
+                string path = Path.Combine(library, "GnollHackData");
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+                return path;
+            }
+            catch
+            {
+                return ".";
+            }
 #else
             return ".";
 #endif
