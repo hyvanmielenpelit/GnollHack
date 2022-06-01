@@ -1706,11 +1706,13 @@ boolean* obj_destroyed;
             nopoison = 2;
         if (Role_if(PM_SAMURAI))
         {
+            play_sfx_sound(SFX_CAITIFF);
             You("dishonorably use a poisoned weapon!");
             adjalign(-sgn(u.ualign.type));
         }
         else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10)
         {
+            play_sfx_sound(SFX_CAITIFF);
             You_feel("like an evil coward for using a poisoned weapon.");
             adjalign(-1);
         }
@@ -1811,11 +1813,13 @@ boolean* obj_destroyed;
         {
             if (Role_if(PM_SAMURAI))
             {
+                play_sfx_sound(SFX_CAITIFF);
                 You("dishonorably use a weapon imbued with death magic!");
                 adjalign(-sgn(u.ualign.type));
             }
             else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10) 
             {
+                play_sfx_sound(SFX_CAITIFF);
                 You_feel("like an evil coward for using a weapon imbued with death magic.");
                 adjalign(-1);
             }

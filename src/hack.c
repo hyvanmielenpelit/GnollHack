@@ -233,19 +233,43 @@ moverock()
                         obj_extract_self(otmp);
                         place_object(otmp, rx, ry);
                         newsym(sx, sy);
+
+                        boolean spef_on = FALSE;
+                        if (cansee(rx, ry))
+                        {
+                            flush_screen(1);
+                            play_special_effect_at(SPECIAL_EFFECT_LAND_MINE_EXPLOSION, 0, rx, ry, FALSE);
+                            play_sfx_sound_at_location(SFX_LAND_MINE_ACTIVATE, rx, ry);
+                            special_effect_wait_until_action(0);
+                            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, rx, ry);
+                            spef_on = TRUE;
+                            context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+                        }
+                        else
+                            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, rx, ry);
+
                         pline("KAABLAMM!!!  %s %s land mine.",
                               Tobjnam(otmp, "trigger"),
                               ttmp->madeby_u ? "your" : "a");
                         blow_up_landmine(ttmp);
+
+                        if (spef_on)
+                        {
+                            special_effect_wait_until_end(0);
+                            context.global_newsym_flags = 0UL;
+                        }
+
                         /* if the boulder remains, it should fill the pit */
-                        fill_pit(u.ux, u.uy);
+                        fill_pit(rx, ry);
                         if (cansee(rx, ry))
                             newsym(rx, ry);
+
                         return sobj_at(BOULDER, sx, sy) ? -1 : 0;
                     }
                     break;
                 case SPIKED_PIT:
                 case PIT:
+                    play_sfx_sound_at_location(SFX_BOULDER_FILLS_PIT, rx, ry);
                     obj_extract_self(otmp);
                     /* vision kludge to get messages right;
                        the pit will temporarily be seen even
@@ -261,6 +285,7 @@ moverock()
                     return sobj_at(BOULDER, sx, sy) ? -1 : 0;
                 case HOLE:
                 case TRAPDOOR:
+                    play_sfx_sound_at_location(SFX_BOULDER_PLUGS_HOLE_OR_TRAPDOOR, rx, ry);
                     if (Blind)
                         pline("Kerplunk!  You no longer feel %s.",
                               the(xname(otmp)));

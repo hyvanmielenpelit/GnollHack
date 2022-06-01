@@ -945,9 +945,11 @@ coord *cc;
     if ((ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN) != 0 || nohole))
         || (IS_ROCK(lev->typ) && lev->typ != SDOOR
             && (lev->wall_info & W_NONDIGGABLE) != 0)) {
+        play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         pline_The("%s %shere is too hard to dig in.", surface(dig_x, dig_y),
                   (dig_x != u.ux || dig_y != u.uy) ? "t" : "");
     } else if (is_pool_or_lava(dig_x, dig_y)) {
+        play_sfx_sound(SFX_SPLASH_HIT);
         pline_The("%s sloshes furiously for a moment, then subsides.",
                   hliquid(is_lava(dig_x, dig_y) ? "lava" : "water"));
         wake_nearby(); /* splashing */
@@ -958,6 +960,7 @@ coord *cc;
            bridge is extended; drawbridge_wall is the open "doorway" or
            closed "door" where the portcullis/mechanism is located */
         if (pit_only) {
+            play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
             pline_The("drawbridge seems too hard to dig through.");
             return FALSE;
         } else {
@@ -971,6 +974,7 @@ coord *cc;
     } else if ((boulder_here = sobj_at(BOULDER, dig_x, dig_y)) != 0) {
         if (ttmp && is_pit(ttmp->ttyp)
             && rn2(2)) {
+            play_sfx_sound(SFX_BOULDER_FILLS_PIT);
             pline_The("boulder settles into the %spit.",
                       (dig_x != u.ux || dig_y != u.uy) ? "adjacent " : "");
             ttmp->ttyp = PIT; /* crush spikes */
@@ -982,6 +986,7 @@ coord *cc;
              * digging makes a hole, but the boulder immediately
              * fills it.  Final outcome:  no hole, no boulder.
              */
+            play_sfx_sound(SFX_BOULDER_FILLS_PIT);
             pline("KADOOM!  The boulder falls in!");
             (void) delfloortrap(ttmp);
         }
@@ -1002,6 +1007,7 @@ coord *cc;
              * We can't dig a hole here since that will destroy
              * the drawbridge.  The following is a cop-out. --dlc
              */
+            play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
             pline_The("%s %shere is too hard to dig in.",
                       surface(dig_x, dig_y),
                       (dig_x != u.ux || dig_y != u.uy) ? "t" : "");
@@ -1015,17 +1021,27 @@ coord *cc;
         return TRUE;
 
     /* the following two are here for the wand of digging */
-    } else if (IS_THRONE(lev->typ)) {
+    } 
+    else if (IS_THRONE(lev->typ)) 
+    {
+        play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         pline_The("throne is too hard to break apart.");
 
     }
-    else if (IS_ANVIL(lev->typ)) {
+    else if (IS_ANVIL(lev->typ)) 
+    {
+        play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         pline_The("anvil is too hard to break apart.");
 
-    } else if (IS_ALTAR(lev->typ)) {
+    } 
+    else if (IS_ALTAR(lev->typ)) 
+    {
+        play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         pline_The("altar is too hard to break apart.");
 
-    } else {
+    } 
+    else 
+    {
         typ = fillholetyp(dig_x, dig_y, FALSE);
 
         lev->flags = 0;
@@ -1078,14 +1094,17 @@ coord *cc;
     /* Grave-robbing is frowned upon... */
     exercise(A_WIS, FALSE);
     if (Role_if(PM_ARCHAEOLOGIST)) {
+        play_sfx_sound(SFX_GUILTY);
         adjalign(-sgn(u.ualign.type) * 3);
-        You_feel("like a despicable grave-robber!");
+        You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "like a despicable grave-robber!");
     } else if (Role_if(PM_SAMURAI)) {
+        play_sfx_sound(SFX_GUILTY);
         adjalign(-sgn(u.ualign.type));
-        You("disturb the honorable dead!");
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "disturb the honorable dead!");
     } else if ((u.ualign.type == A_LAWFUL) && (u.ualign.record > -10)) {
+        play_sfx_sound(SFX_GUILTY);
         adjalign(-sgn(u.ualign.type));
-        You("have violated the sanctity of this grave!");
+        You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "have violated the sanctity of this grave!");
     }
 
     int itemsfound = unearth_objs(&youmonst, u.ux, u.uy, TRUE, FALSE);

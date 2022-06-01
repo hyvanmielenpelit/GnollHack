@@ -2189,6 +2189,7 @@ boolean atme;
         char ans = yn_query_ex(ATR_NONE, CLR_MSG_FAIL, "No Components Mixed", "Do you want to mix the spell's material components now?");
         if (ans == 'y')
         {
+            in_doagain = 0;
             return domaterialcomponentsmenu(spell);
         }
         else

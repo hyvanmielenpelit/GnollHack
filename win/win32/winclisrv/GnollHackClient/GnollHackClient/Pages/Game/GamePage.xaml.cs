@@ -1046,6 +1046,9 @@ namespace GnollHackClient.Pages.Game
         public void AddContextMenu(AddContextMenuData data)
         {
             _contextMenuData.Add(data);
+            int cmddefchar = data.cmd_def_char;
+            if (cmddefchar < 0)
+                cmddefchar += 256; /* On this operating system, chars are signed chars; fix to positive values */
             string icon_string = "";
             int LastPickedCmd = GHUtils.Meta('<');
             int OfferCmd = GHUtils.Meta('o');
@@ -1053,17 +1056,8 @@ namespace GnollHackClient.Pages.Game
             int DipCmd = GHUtils.Meta('d');
             int DigCmd = GHUtils.Ctrl('g');
             int SitCmd = GHUtils.Ctrl('s');
-            if (data.cmd_def_char < 0)
-            {
-                LastPickedCmd -= 256;
-                OfferCmd -= 256;
-                PrayCmd -= 256;
-                DipCmd -= 256;
-                DigCmd -= 256;
-                SitCmd -= 256;
-            }
 
-            switch ((char)data.cmd_def_char)
+            switch ((char)cmddefchar)
             {
                 case 'a':
                 case 'm':
@@ -1167,17 +1161,17 @@ namespace GnollHackClient.Pages.Game
                     }
                     break;
                 default:
-                    if (data.cmd_def_char == LastPickedCmd)
+                    if (cmddefchar == LastPickedCmd)
                         icon_string = "GnollHackClient.Assets.UI.lastitem.png";
-                    else if (data.cmd_def_char == OfferCmd)
+                    else if (cmddefchar == OfferCmd)
                         icon_string = "GnollHackClient.Assets.UI.offer.png";
-                    else if (data.cmd_def_char == PrayCmd)
+                    else if (cmddefchar == PrayCmd)
                         icon_string = "GnollHackClient.Assets.UI.pray.png";
-                    else if (data.cmd_def_char == DipCmd)
+                    else if (cmddefchar == DipCmd)
                         icon_string = "GnollHackClient.Assets.UI.dip.png";
-                    else if (data.cmd_def_char == DigCmd)
+                    else if (cmddefchar == DigCmd)
                         icon_string = "GnollHackClient.Assets.UI.dig.png";
-                    else if (data.cmd_def_char == SitCmd)
+                    else if (cmddefchar == SitCmd)
                         icon_string = "GnollHackClient.Assets.UI.sit.png";
                     else
                         icon_string = "GnollHackClient.Assets.Icons.missing_icon.png";
@@ -1190,7 +1184,7 @@ namespace GnollHackClient.Pages.Game
             lib.LblText = data.cmd_text;
             lib.SetSideSize(_currentPageWidth, _currentPageHeight);
             lib.GridMargin = new Thickness(lib.ImgWidth / 15, lib.ImgWidth / 30);
-            lib.BtnCommand = data.cmd_cur_char;
+            lib.BtnCommand = cmddefchar;
             lib.BtnClicked += GHButton_Clicked;
             ContextLayout.IsVisible = true;
             ContextLayout.Children.Add(lib);
@@ -1624,7 +1618,8 @@ namespace GnollHackClient.Pages.Game
             {
                 window = _clientGame.Windows[winid];
             }
-            ShowWindowCanvas(window, strs);
+            if(window != null)
+                ShowWindowCanvas(window, strs);
         }
 
         private void ShowWindowCanvas(GHWindow window, List<GHPutStrItem> strs)
@@ -7472,8 +7467,12 @@ namespace GnollHackClient.Pages.Game
                             }
                             if (TouchDictionary.ContainsKey(e.Id))
                                 TouchDictionary.Remove(e.Id);
+                            else
+                                TouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+
                             if (TouchDictionary.Count == 0)
                                 _touchMoved = false;
+
                             e.Handled = true;
                         }
                         break;
@@ -7569,21 +7568,21 @@ namespace GnollHackClient.Pages.Game
                     SKPoint RectLoc = new SKPoint(e.Location.X - _canvasButtonRect.Left, e.Location.Y - _canvasButtonRect.Top);
 
                     if (RectLoc.Y < _canvasButtonRect.Height * buttonsize && RectLoc.X < _canvasButtonRect.Width * buttonsize)
-                        resp = -7;
+                        resp += -7;
                     else if (RectLoc.Y < _canvasButtonRect.Height * buttonsize && RectLoc.X > _canvasButtonRect.Width * (1.0f - buttonsize))
-                        resp = -9;
+                        resp += -9;
                     else if (RectLoc.Y > _canvasButtonRect.Height * (1.0f - buttonsize) && RectLoc.X < _canvasButtonRect.Width * buttonsize)
-                        resp = -1;
+                        resp += -1;
                     else if (RectLoc.Y > _canvasButtonRect.Height * (1.0f - buttonsize) && RectLoc.X > _canvasButtonRect.Width * (1.0f - buttonsize))
-                        resp = -3;
+                        resp += -3;
                     else if (RectLoc.Y < _canvasButtonRect.Height * buttonsize)
-                        resp = -8; //ch = "k";
+                        resp += -8; //ch = "k";
                     else if (RectLoc.Y > _canvasButtonRect.Height * (1.0f - buttonsize))
-                        resp = -2; // ch = "j";
+                        resp += -2; // ch = "j";
                     else if (RectLoc.X < _canvasButtonRect.Width * buttonsize)
-                        resp = -4; // ch = "h";
+                        resp += -4; // ch = "h";
                     else if (RectLoc.X > _canvasButtonRect.Width * (1.0f - buttonsize))
-                        resp = -6; // ch = "l";
+                        resp += -6; // ch = "l";
                     else
                     {
                         lock (_uLock)
@@ -7594,17 +7593,24 @@ namespace GnollHackClient.Pages.Game
                                 int dy = y - _uy;
                                 if (Math.Abs(x - _ux) <= 1 && Math.Abs(y - _uy) <= 1)
                                 {
-                                    resp = -1 * (5 + dx - 3 * dy);
-                                    if (resp == 5)
+                                    int dres = -1 * (5 + dx - 3 * dy);
+                                    if (dres == 5)
                                         resp = 46; /* '.', or self */
+                                    else
+                                        resp += dres;
                                 }
                                 else
                                     return;
                             }
                             else
-                                resp = ShowNumberPad ? -5 : 46; /* '.', or self */
+                            {
+                                if (ShowNumberPad)
+                                    resp += -5;
+                                else
+                                    resp = 46; /* '.', or self */
+                            }
                         }
-                }
+                    }
 
                     if (ShowNumberPad)
                         resp -= 10;
@@ -8756,6 +8762,9 @@ namespace GnollHackClient.Pages.Game
                             }
                             if (MenuTouchDictionary.ContainsKey(e.Id))
                                 MenuTouchDictionary.Remove(e.Id);
+                            else
+                                MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+
                             if (MenuTouchDictionary.Count == 0)
                                 _menuTouchMoved = false;
                         }
@@ -9424,6 +9433,9 @@ namespace GnollHackClient.Pages.Game
                                 }
                                 if (TextTouchDictionary.ContainsKey(e.Id))
                                     TextTouchDictionary.Remove(e.Id);
+                                else
+                                    TextTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+
                                 if (TextTouchDictionary.Count == 0)
                                     _textTouchMoved = false;
                             }
@@ -10224,6 +10236,9 @@ namespace GnollHackClient.Pages.Game
 
                                 if (CommandTouchDictionary.ContainsKey(e.Id))
                                     CommandTouchDictionary.Remove(e.Id);
+                                else
+                                    CommandTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+
                                 if (CommandTouchDictionary.Count == 0)
                                     _commandTouchMoved = false;
                             }

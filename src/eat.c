@@ -271,6 +271,7 @@ struct obj *food;
         if (!food || food->otyp != AMULET_OF_STRANGULATION)
             return;
     } else if (Role_if(PM_KNIGHT) && u.ualign.type == A_LAWFUL) {
+        play_sfx_sound(SFX_GUILTY);
         adjalign(-1); /* gluttony is unchivalrous */
         You_feel("like a glutton!");
     }

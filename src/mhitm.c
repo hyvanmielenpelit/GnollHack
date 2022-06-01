@@ -352,7 +352,7 @@ register struct monst *magr, *mdef;
     {
         tmp += 4;
         mdef->msleeping = 0;
-        refresh_m_tile_gui_info(mdef, TRUE);
+        refresh_m_tile_gui_info(mdef, FALSE);
     }
 
     /* undetect monsters become un-hidden if they are attacked */
@@ -1767,6 +1767,7 @@ register struct obj* omonwep;
         {
             increase_mon_property(mdef, CANCELLED, 100 + rnd(50)); /* cancelled regardless of lifesave */
             mdef->mstrategy &= ~STRAT_WAITFORU;
+            refresh_m_tile_gui_info(mdef, FALSE);
 
             if (is_were(pd) && pd->mlet != S_HUMAN)
                 were_change(mdef);
@@ -1893,6 +1894,7 @@ register struct obj* omonwep;
             possibly_unwield(mdef, FALSE);
             mdef->mstrategy &= ~STRAT_WAITFORU;
             mselftouch(mdef, (const char *) 0, FALSE);
+            refresh_m_tile_gui_info(mdef, FALSE);
             if (DEADMONSTER(mdef))
                 return (MM_DEF_DIED
                         | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
@@ -1914,7 +1916,6 @@ register struct obj* omonwep;
             play_sfx_sound_at_location(SFX_DRAIN_ENERGY, mdef->mx, mdef->my);
             xdrainenergym(mdef, (boolean)(vis&& canspotmon(mdef)
                 && mattk->aatyp != AT_ENGL));
-
         }
         damage = 0;
         break;
@@ -2042,7 +2043,10 @@ register struct obj* omonwep;
         break;
     }
     if (!damage)
+    {
+        refresh_m_tile_gui_info(mdef, FALSE);
         return res;
+    }
 
     int crit_strike_probability = get_critical_strike_percentage_chance(mweapon, mdef, magr);
     int crit_strike_die_roll_threshold = crit_strike_probability / 5;
@@ -2169,6 +2173,8 @@ register struct obj* omonwep;
     if (iflags.wc2_statuslines > 3 && is_tame(mdef))
         context.botl = 1;
 
+    refresh_m_tile_gui_info(mdef, FALSE);
+
     if (DEADMONSTER(mdef)) 
     {
         if (poisondamage > 0 && ((double)mdef->mhp + ((double)mdef->mhp_fraction)/10000 - 1) > -poisondamage && vis && canspotmon(mdef) && !isdisintegrated)
@@ -2274,6 +2280,7 @@ boolean verbosely;
 
     mon->meating = 0; /* terminate any meal-in-progress */
     mon->mstrategy &= ~STRAT_WAITFORU;
+    refresh_m_tile_gui_info(mon, FALSE);
 }
 
 /* `mon' is hit by a sleep attack; return 1 if it's affected, 0 otherwise */

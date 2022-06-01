@@ -1382,13 +1382,13 @@ char convert_gnhch(int ch)
         key = Cmd.move_NE;
         break;
     case -10:
-        key = '0';
+        key = (char)'0';
         break;
     default:
         if (ch >= -19 && ch <= -10)
-            key = abs(ch) - 10 + '0';
+            key = (char)(abs(ch) - 10 + '0');
         else
-            key = ch;
+            key = (char)ch;
         break;
     }
 

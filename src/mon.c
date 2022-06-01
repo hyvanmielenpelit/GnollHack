@@ -3840,6 +3840,7 @@ cleanup:
     /* adjust alignment points */
     if (mtmp->m_id == quest_status.leader_m_id) 
     { /* REAL BAD! */
+        play_sfx_sound(SFX_GUILTY);
         adjalign(-(u.ualign.record + (int) ALIGNLIM / 2));
         pline("That was %sa bad idea...",
               u.uevent.qcompleted ? "probably " : "");

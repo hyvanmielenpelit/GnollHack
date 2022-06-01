@@ -4315,6 +4315,7 @@ register int fall;
     {
         if (Role_if(PM_KNIGHT))
         {
+            play_sfx_sound(SFX_GUILTY);
             You_feel("like a common thief.");
             adjalign(-sgn(u.ualign.type));
         }
@@ -4344,6 +4345,7 @@ register int fall;
         }
         if (Role_if(PM_KNIGHT))
         {
+            play_sfx_sound(SFX_GUILTY);
             You_feel("like a common thief.");
             adjalign(-sgn(u.ualign.type));
         }

@@ -2090,7 +2090,7 @@ struct obj *otmp;
         if (spef_on)
         {
             special_effect_wait_until_end(0);
-            context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS;
+            context.global_newsym_flags = 0UL;
         }
         break;
     }
