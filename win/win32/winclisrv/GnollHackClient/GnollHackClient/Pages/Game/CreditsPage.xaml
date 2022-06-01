@@ -4,7 +4,9 @@
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              xmlns:gnollhackclient="clr-namespace:GnollHackClient"
              BackgroundColor="Black"
-             x:Class="GnollHackClient.Pages.Game.CreditsPage" Appearing="ContentPage_Appearing" Disappearing="ContentPage_Disappearing">
+             x:Class="GnollHackClient.Pages.Game.CreditsPage" 
+             Appearing="ContentPage_Appearing" 
+             Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
