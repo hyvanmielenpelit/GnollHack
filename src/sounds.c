@@ -3284,7 +3284,7 @@ dochat()
 
             chatnum++;
 
-            strcpy(available_chat_list[chatnum].name, "Identify an item");
+            strcpy(available_chat_list[chatnum].name, "Identify items");
             available_chat_list[chatnum].function_ptr = &do_chat_oracle_identify;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -3538,7 +3538,7 @@ dochat()
                 shp_indx = ESHK(mtmp)->shoptype - SHOPBASE;
                 const struct shclass* shp = &shtypes[shp_indx];
                 char itembuf[BUFSIZ] = "";
-                strcpy(itembuf, an(shp->identified_item_description));
+                strcpy(itembuf, shp->identified_item_description_plural);
             
                 Sprintf(available_chat_list[chatnum].name, "Identify %s", itembuf);
                 available_chat_list[chatnum].function_ptr = &do_chat_shk_identify;
@@ -3629,10 +3629,10 @@ dochat()
 
                 chatnum++;
 
-                strcpy(available_chat_list[chatnum].name, "Identify a weapon or armor");
+                strcpy(available_chat_list[chatnum].name, "Identify weapons and armor");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_identify;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3893,7 +3893,7 @@ dochat()
                     strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_gems_and_stones;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
-                    available_chat_list[chatnum].stops_dialogue = TRUE;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
 
                     any = zeroany;
                     any.a_char = available_chat_list[chatnum].charnum;
@@ -3969,7 +3969,7 @@ dochat()
                     strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_accessories_and_charged_items;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
-                    available_chat_list[chatnum].stops_dialogue = TRUE;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
 
                     any = zeroany;
                     any.a_char = available_chat_list[chatnum].charnum;
@@ -3988,7 +3988,7 @@ dochat()
                     strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_gems_stones_and_charged_items;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
-                    available_chat_list[chatnum].stops_dialogue = TRUE;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
 
                     any = zeroany;
                     any.a_char = available_chat_list[chatnum].charnum;

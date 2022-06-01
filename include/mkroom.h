@@ -32,6 +32,7 @@ struct shclass {
     const char *name; /* name of the shop type */
     char symb;        /* this identifies the shop type */
     const char* identified_item_description; /* name of the shop type */
+    const char* identified_item_description_plural; /* name of the shop type */
     int prob;         /* the shop type probability in % */
     schar shdist;     /* object placement type */
 #define D_SCATTER 0   /* normal placement */

@@ -2693,7 +2693,7 @@ SPELL("ice storm",          "mithril-plated", "ice storm", None, "Conjures a sto
 SPELL("force bolt",       "red", None, None, "Shoots a bolt of force",
       P_ARCANE_SPELL,              4,  2,             0, 1, 6, A_INT, 10, 0, 20, 0, 1, IMMEDIATE, IMMEDIATE_MAGIC_MISSILE_NONBEAM, 8, 3, 6, 0, 1, 6, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_MAGM, CLR_RED, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_USES_SPELL_TILE, O6_NONE),
 SPELL("magic arrow",      "dart-patterned", None, None, "Shoots a magical arrow",
-      P_ARCANE_SPELL,              4,  1,             0, -1, 2, A_INT, 18, 0, 20, 0, 1, IMMEDIATE, IMMEDIATE_ITEM_ARROW, 12, 2, 6, 0, 1, 6, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_MAGM, CLR_BROWN, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
+      P_ARCANE_SPELL,              4,  1,             0, -1, 2, A_INT, 18, 0, 20, 0, 1, IMMEDIATE, IMMEDIATE_ITEM_ARROW, 12, 2, 6, 0, 1, 6, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_MAGM, CLR_BROWN, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_USES_SPELL_TILE, O6_NONE),
 SPELL("lightning bolt",   "shimmering", None, None, "Shoots a ray of lightning",
       P_ARCANE_SPELL,              4,  3,             0, 3, 10, A_INT, 14, 0, 20, 0, 1, RAY, RAY_LIGHTNING, 8, 5, 6, 0, 1, 10, 0, S1_LDMG_IS_PER_LEVEL_DMG_INCREASE, S2_NONE, ALL_TARGETS, AD_ELEC, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_USES_SPELL_TILE, O6_NONE),
 SPELL("shocking touch",   "hand-patterned", None, None, "Causes the target to be jolted with electricity",
