@@ -41,7 +41,8 @@ namespace GnollHackClient
             var mainPage = new MainPage();
             var navPage = new NavigationPage(mainPage);
             MainPage = navPage;
-            App.HideAndroidNavigatioBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
+            App.HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
+            App.HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             App.DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
             App.FullVersionMode = true; // Preferences.Get("FullVersion", true);
             App.ClassicMode = Preferences.Get("ClassicMode", false);
@@ -139,7 +140,7 @@ namespace GnollHackClient
         }
 
         private static bool _hideNavBar;
-        public static bool HideAndroidNavigatioBar
+        public static bool HideAndroidNavigationBar
         {
             get { return _hideNavBar; }
             set
@@ -154,6 +155,12 @@ namespace GnollHackClient
                     MessagingCenter.Send<Object>(new object(), "ShowOsNavigationBar");
                 }
             }
+        }
+
+        public static bool HideiOSStatusBar
+        {
+            get { return PlatformService.GetStatusBarHidden(); }
+            set { PlatformService.SetStatusBarHidden(value); }
         }
 
         public static bool DeveloperMode { get; set; }

@@ -1225,6 +1225,7 @@ namespace GnollHackCommon
         public const bool DefaultMapAlternateNoClipMode = false;
         public const bool DefaultZoomChangeCenterMode = false;
         public const bool DefaultHideNavigation = true;
+        public const bool DefaultHideStatusBar = true;
     }
 
 

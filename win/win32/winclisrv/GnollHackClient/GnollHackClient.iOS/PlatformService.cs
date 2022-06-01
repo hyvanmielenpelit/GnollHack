@@ -20,6 +20,16 @@ namespace GnollHackClient.iOS
             //MainActivity.CurrentMainActivity.Finish();
         }
 
+        public void SetStatusBarHidden(bool ishidden)
+        {
+            UIApplication.SharedApplication.StatusBarHidden = ishidden;
+        }
+
+        public bool GetStatusBarHidden()
+        {
+            return UIApplication.SharedApplication.StatusBarHidden;
+        }
+
         public void SaveFileToDownloads(byte[] data, string name)
         {
             //if (MainActivity.CurrentMainActivity?.CheckSelfPermission(Manifest.Permission.WriteExternalStorage) != Android.Content.PM.Permission.Granted)
@@ -42,55 +52,13 @@ namespace GnollHackClient.iOS
             //    fileOutputStream.Close();
             //}
         }
-
-        private bool _originalSet = false;
-        private float _originalAnimationDurationScale = 1.0f;
         public void OverrideAnimationDuration()
         {
-            //var resolver = Android.App.Application.Context.ContentResolver;
-            //var scaleName = Android.Provider.Settings.Global.AnimatorDurationScale;
-            //float scale = Android.Provider.Settings.Global.GetFloat(resolver, scaleName, 0);
 
-            //if (scale > 0)
-            //    return;
-
-            //if (!_originalSet)
-            //{
-            //    _originalAnimationDurationScale = scale;
-            //    _originalSet = true;
-            //}
-
-            //try
-            //{
-            //    var classForName = JNIEnv.FindClass("android/animation/ValueAnimator");
-            //    var methodId = JNIEnv.GetStaticMethodID(classForName, "setDurationScale", "(F)V");
-
-            //    JNIEnv.CallStaticVoidMethod(classForName, methodId, new JValue(1f));
-            //}
-            //catch //(Exception ex)
-            //{
-            //    // Log Error
-            //}
         }
         public void RevertAnimationDuration()
         {
-            //if (_originalSet)
-            //{
-            //    try
-            //    {
-            //        var classForName = JNIEnv.FindClass("android/animation/ValueAnimator");
-            //        var methodId = JNIEnv.GetStaticMethodID(classForName, "setDurationScale", "(F)V");
 
-            //        JNIEnv.CallStaticVoidMethod(classForName, methodId, new JValue(_originalAnimationDurationScale));
-            //    }
-            //    catch //(Exception ex)
-            //    {
-            //        // Log Error
-            //    }
-
-            //    _originalSet = false;
-            //    _originalAnimationDurationScale = 1.0f;
-            //}
         }
     }
 }

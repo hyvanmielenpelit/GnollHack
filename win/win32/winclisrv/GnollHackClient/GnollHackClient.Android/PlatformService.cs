@@ -25,6 +25,16 @@ namespace GnollHackClient.Droid
             MainActivity.CurrentMainActivity.Finish();
         }
 
+        public void SetStatusBarHidden(bool ishidden)
+        {
+
+        }
+
+        public bool GetStatusBarHidden()
+        {
+            return true;
+        }
+
         public void SaveFileToDownloads(byte[] data, string name)
         {
             if (MainActivity.CurrentMainActivity?.CheckSelfPermission(Manifest.Permission.WriteExternalStorage) != Android.Content.PM.Permission.Granted)

@@ -137,8 +137,11 @@ namespace GnollHackClient.Pages.Game
             //Preferences.Set("ZoomChangeCenterMode", ZoomChangeCenterSwitch.IsToggled);
 
 
-            App.HideAndroidNavigatioBar = NavBarSwitch.IsToggled;
-            Preferences.Set("HideAndroidNavigationBar", App.HideAndroidNavigatioBar);
+            App.HideAndroidNavigationBar = NavBarSwitch.IsToggled;
+            Preferences.Set("HideAndroidNavigationBar", App.HideAndroidNavigationBar);
+
+            App.HideiOSStatusBar = StatusBarSwitch.IsToggled;
+            Preferences.Set("HideiOSStatusBar", App.HideiOSStatusBar);
 
             App.DeveloperMode = DeveloperSwitch.IsToggled;
             Preferences.Set("DeveloperMode", App.DeveloperMode);
@@ -202,8 +205,8 @@ namespace GnollHackClient.Pages.Game
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, maprefresh = (int)ClientUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, navbar = GHConstants.DefaultHideNavigation;
-            bool devmode = GHConstants.DefaultDeveloperMode, hpbars = false, statusbar = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool mem = false, fps = false, gpu = GHConstants.IsGPUDefault, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            bool devmode = GHConstants.DefaultDeveloperMode, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode;
             //bool altnoclipmode = GHConstants.DefaultMapAlternateNoClipMode, zoomchangecenter = GHConstants.DefaultZoomChangeCenterMode;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
@@ -214,7 +217,8 @@ namespace GnollHackClient.Pages.Game
             dialogueVolume = Preferences.Get("DialogueVolume", GHConstants.DefaultDialogueVolume);
             effectsVolume = Preferences.Get("EffectsVolume", GHConstants.DefaultEffectsVolume);
             UIVolume = Preferences.Get("UIVolume", GHConstants.DefaultUIVolume);
-            navbar = App.HideAndroidNavigatioBar;
+            navbar = App.HideAndroidNavigationBar;
+            statusbar = App.HideiOSStatusBar;
             devmode = App.DeveloperMode;
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             if (_gamePage == null)
@@ -234,7 +238,7 @@ namespace GnollHackClient.Pages.Game
                 ShowExtendedStatusBarSwitch.IsEnabled = false;
                 ShowExtendedStatusBarLabel.TextColor = Color.Gray;
                 hpbars = Preferences.Get("HitPointBars", false);
-                statusbar = Preferences.Get("ClassicStatusBar", GHConstants.IsDefaultStatusBarClassic);
+                nhstatusbarclassic = Preferences.Get("ClassicStatusBar", GHConstants.IsDefaultStatusBarClassic);
                 pets = Preferences.Get("ShowPets", true);
                 orbs = Preferences.Get("ShowOrbs", true);
                 orbmaxhp = Preferences.Get("ShowMaxHealthInOrb", false);
@@ -260,7 +264,7 @@ namespace GnollHackClient.Pages.Game
                 showexstatus = _gamePage.ShowExtendedStatusBar;
                 ShowExtendedStatusBarSwitch.IsEnabled = true;
                 ShowExtendedStatusBarLabel.TextColor = Color.Black;
-                statusbar = _gamePage.ClassicStatusBar;
+                nhstatusbarclassic = _gamePage.ClassicStatusBar;
                 hpbars = _gamePage.HitPointBars;
                 pets = _gamePage.ShowPets;
                 orbs = _gamePage.ShowOrbs;
@@ -283,7 +287,7 @@ namespace GnollHackClient.Pages.Game
             RefreshRatePicker.SelectedIndex = Math.Min(RefreshRatePicker.Items.Count - 1, maprefresh);
             GridSwitch.IsToggled = mapgrid;
             HitPointBarSwitch.IsToggled = hpbars;
-            ClassicStatusBarSwitch.IsToggled = statusbar;
+            ClassicStatusBarSwitch.IsToggled = nhstatusbarclassic;
             PetSwitch.IsToggled = pets;
             OrbSwitch.IsToggled = orbs;
             MaxHealthInOrbSwitch.IsToggled = orbmaxhp;
@@ -298,6 +302,7 @@ namespace GnollHackClient.Pages.Game
             FPSSwitch.IsToggled = fps;
             GPUSwitch.IsToggled = gpu;
             NavBarSwitch.IsToggled = navbar;
+            StatusBarSwitch.IsToggled = statusbar;
             DeveloperSwitch.IsToggled = devmode;
             GeneralVolumeSlider.Value = (double)generalVolume;
             MusicVolumeSlider.Value = (double)musicVolume;

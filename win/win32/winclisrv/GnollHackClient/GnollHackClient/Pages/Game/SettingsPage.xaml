@@ -97,19 +97,6 @@
                                             BackgroundColor="Transparent"
                                             VerticalOptions="Center"
                                             HorizontalOptions="EndAndExpand" >
-                                        <!--
-                                        <Picker.ItemsSource>
-                                            <x:Array Type="{x:Type x:String}">
-                                                <x:String>20 fps</x:String>
-                                                <x:String>30 fps</x:String>
-                                                <x:String>40 fps</x:String>
-                                                <x:String>60 fps</x:String>
-                                                <x:String>80 fps</x:String>
-                                                <x:String>90 fps</x:String>
-                                                <x:String>120 fps</x:String>
-                                            </x:Array>
-                                        </Picker.ItemsSource>
-                                        -->
                                     </Picker>
                                 </StackLayout>
                             </ViewCell>
@@ -175,6 +162,16 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
+                                    <Label Text="Hide Status Bar"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="StatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
                                     <Label Text="Default Auto-Center"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -183,26 +180,6 @@
                                     <Switch x:Name="YesClipNormalSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
-                            <!--<ViewCell>
-                                <StackLayout Orientation="Horizontal">
-                                    <Label Text="Alternate Zoom Auto-Center"
-                                           FontFamily="Underwood" TextColor="Black"
-                                           FontSize="15"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="Start" />
-                                    <Switch x:Name="YesClipAlternateSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                                </StackLayout>
-                            </ViewCell>
-                            <ViewCell>
-                                <StackLayout Orientation="Horizontal">
-                                    <Label Text="Center at Zoom Change"
-                                           FontFamily="Underwood" TextColor="Black"
-                                           FontSize="15"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="Start" />
-                                    <Switch x:Name="ZoomChangeCenterSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                                </StackLayout>
-                            </ViewCell>-->
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Grid"
