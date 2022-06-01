@@ -3751,7 +3751,6 @@ struct sp_coder *coder;
     tmpmons.seentraps = 0;
     tmpmons.has_invent = 0;
     tmpmons.id = 0;
-    tmpmons.align = 0;
     tmpmons.coord = 0;
     tmpmons.x = 0;
     tmpmons.y = 0;
