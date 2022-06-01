@@ -463,13 +463,4 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
-  <Target Name="AfterBuild">
-    <MSBuild Projects="afterlibdroid.proj" Targets="Build" />
-  </Target>
-  <Target Name="AfterClean">
-    <MSBuild Projects="afterlibdroid.proj" Targets="Build" />
-  </Target>
-  <Target Name="AfterRebuild">
-    <MSBuild Projects="afterlibdroid.proj" Targets="Build" />
-  </Target>
 </Project>
