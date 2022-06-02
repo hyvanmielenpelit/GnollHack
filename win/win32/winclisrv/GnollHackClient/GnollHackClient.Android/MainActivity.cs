@@ -57,7 +57,6 @@ namespace GnollHackClient.Droid
 
             Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            VersionTracking.Track();
 
             MainActivity.StaticAssets = this.Assets;
             CurrentMainActivity = this;

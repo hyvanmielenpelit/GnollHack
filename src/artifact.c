@@ -3885,7 +3885,7 @@ int
 artifact_to_obj(artifactid)
 int artifactid;
 {
-    if (artifactid <= 0 || artifactid > NUM_ARTIFACTS || artifactid == NO_GLYPH)
+    if (artifactid <= 0 || artifactid > NUM_ARTIFACTS)
         return STRANGE_OBJECT;
     return (int)artilist[artifactid].otyp;
 

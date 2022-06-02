@@ -14,6 +14,12 @@ namespace GnollHackClient.iOS
 {
     public class PlatformService : IPlatformService
     {
+        public string GetVersionString()
+        {
+            NSObject ver = NSBundle.MainBundle.InfoDictionary["CFBundleShortVersionString"];
+            return ver.ToString();
+        }
+
         public void CloseApplication()
         {
             RevertAnimationDuration();
@@ -30,8 +36,8 @@ namespace GnollHackClient.iOS
             return UIApplication.SharedApplication.StatusBarHidden;
         }
 
-        public void SaveFileToDownloads(byte[] data, string name)
-        {
+        //public void SaveFileToDownloads(byte[] data, string name)
+        //{
             //if (MainActivity.CurrentMainActivity?.CheckSelfPermission(Manifest.Permission.WriteExternalStorage) != Android.Content.PM.Permission.Granted)
             //{
             //    MainActivity.CurrentMainActivity?.RequestPermissions(new string[] { Manifest.Permission.WriteExternalStorage }, 0);
@@ -51,7 +57,8 @@ namespace GnollHackClient.iOS
             //    fileOutputStream.Write(data);
             //    fileOutputStream.Close();
             //}
-        }
+        //}
+
         public void OverrideAnimationDuration()
         {
 

@@ -174,9 +174,11 @@ namespace GnollHackClient
             string verstr = App.GnollHackService.GetVersionString();
             string verid = App.GnollHackService.GetVersionId();
             string path = App.GnollHackService.GetGnollHackPath();
+            string fmodverstr = App.FmodService.GetVersionString();
             App.GHVersionString = verstr;
             App.GHVersionId = verid;
             App.GHPath = path;
+            App.FMODVersionString = fmodverstr;
 
             VersionLabel.Text = verid;
             GnollHackLabel.Text = "GnollHack"; // + verstr;

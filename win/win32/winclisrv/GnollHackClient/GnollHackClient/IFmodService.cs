@@ -25,5 +25,7 @@ namespace GnollHackClient
         int StopAllSounds(ulong flags, uint dialogue_mid);
         int AdjustVolumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_dialogue_volume, float new_general_sfx_volume, float new_general_ui_volume);
         int SetQuieterMode(bool state);
+        uint GetVersionCode();
+        string GetVersionString();
     }
 }

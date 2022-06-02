@@ -1,17 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              xmlns:gnollhackclient="clr-namespace:GnollHackClient"
              BackgroundColor="Black"
-             x:Class="GnollHackClient.Pages.Game.DisplayFilePage">
+             x:Class="GnollHackClient.Pages.Game.VersionPage">
     <ContentPage.Content>
         <Grid>
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <!--<ff:CachedImage HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill"
-                            Source ="resource://GnollHackClient.Assets.UI.menubackground.png" />-->
-
-            <Grid x:Name="MainGrid" WidthRequest="900" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+            <Grid x:Name="MainGrid" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -20,19 +17,24 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="HeaderLabel" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
-                <gnollhackclient:GHEditor x:Name="TextEditor" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
-                        FontFamily="DejaVuSansMono" FontSize="13" IsReadOnly="true" >
-                </gnollhackclient:GHEditor>
-                <ScrollView x:Name="TextScrollView" IsVisible="false" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
-                    <Label x:Name="TextLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
-                        FontFamily="DejaVuSansMono" FontSize="13" />
+                <Label x:Name="HeaderLabel" Text="Version" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
+                <ScrollView x:Name="TextScrollView" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
+                    <StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                            <Label x:Name="KeyLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                            FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label x:Name="ValueLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                            FontFamily="DejaVuSansMono" FontSize="13" />
+                        </StackLayout>
+                        <Label x:Name="LongLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                            FontFamily="DejaVuSansMono" FontSize="13" />
+                    </StackLayout>
                 </ScrollView>
                 <Grid Grid.Row="2" x:Name="CloseGrid" BackgroundColor="Transparent" HorizontalOptions="Center" WidthRequest="250" HeightRequest="60">
                     <ff:CachedImage x:Name="CloseButtonImage" Source="resource://GnollHackClient.Assets.button_normal.png" Aspect="Fill" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" WidthRequest="250" HeightRequest="60" />
                     <Button Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
                 </Grid>
             </Grid>
-        </Grid>    
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

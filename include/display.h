@@ -378,7 +378,7 @@
 #define GLYPH_ENLARGEMENT_OFF  (TOTAL_NUM_ANIMATION_FRAMES + GLYPH_ANIMATION_OFF)
 #define MAX_GLYPH         (TOTAL_NUM_ENLARGEMENT_TILES + GLYPH_ENLARGEMENT_OFF)
 
-#define NO_GLYPH          MAX_GLYPH
+#define NO_GLYPH          0 /* MAX_GLYPH */
 #define GLYPH_INVISIBLE   GLYPH_INVIS_OFF
 
 #define warning_to_glyph(mwarnlev) ((mwarnlev) + GLYPH_WARNING_OFF)
@@ -671,7 +671,7 @@
 #define glyph_is_artifact(glyph) \
     ((abs(glyph)) >= GLYPH_ARTIFACT_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_OFF + NUM_ARTIFACTS))
 #define glyph_to_artifact(glyph) \
-    (glyph_is_artifact(glyph) ? ((abs(glyph)) + 1 - GLYPH_ARTIFACT_OFF) : NO_GLYPH)
+    (glyph_is_artifact(glyph) ? ((abs(glyph)) + 1 - GLYPH_ARTIFACT_OFF) : 0)
 #define glyph_is_artifact_missile(glyph) \
     ((abs(glyph)) >= GLYPH_ARTIFACT_MISSILE_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_MISSILE_OFF + NUM_ARTIFACTS * NUM_MISSILE_DIRS))
 

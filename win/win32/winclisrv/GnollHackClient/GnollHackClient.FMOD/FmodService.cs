@@ -1207,5 +1207,30 @@ namespace GnollHackClient.Unknown
             return (int)RESULT.OK; // AdjustMusicAndAmbientVolumes();
         }
 
+        public uint GetVersionCode()
+        {
+            if (!FMODup())
+                return 0;
+
+            uint ver = 0;
+            RESULT res = _coresystem.getVersion(out ver);
+            if (res != RESULT.OK)
+                return 0;
+
+            return ver;
+        }
+        public string GetVersionString()
+        {
+            uint ver = GetVersionCode();
+            if (ver == 0)
+                return "";
+
+            uint majorversion = (ver >> 16) & 0xFFFFU;
+            uint minorversion = (ver >> 8) & 0xFFU;
+            uint patchversion = ver & 0xFFU;
+
+            string str = majorversion + "." + minorversion + "." + patchversion;
+            return str;
+        }
     }
 }

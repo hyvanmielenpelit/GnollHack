@@ -36,6 +36,7 @@ namespace GnollHackClient
         public App()
         {
             InitializeComponent();
+            VersionTracking.Track();
             App.GetDependencyServices();
 
             var mainPage = new MainPage();
@@ -174,6 +175,7 @@ namespace GnollHackClient
 
         public static string GHVersionId { get; set; }
         public static string GHVersionString { get; set; }
+        public static string FMODVersionString { get; set; }
         public static string GHPath { get; set; }
         //public static readonly string LogFile = "console.log";
         //public static TextWriter OldOut;
