@@ -1037,7 +1037,7 @@ register struct attack *mattk;
     for (obj = mdef->minvent; obj; obj = obj->nobj)
         (void) snuff_lit(obj);
 
-    if (is_vampshifter(mdef)
+    if (mdef->cham >= LOW_PM && is_vampshifter(mdef)
         && newcham(mdef, &mons[mdef->cham], FALSE, FALSE))
     {
         if (vis)
@@ -2214,7 +2214,7 @@ register struct obj* omonwep;
              * No nutrition from G_NOCORPSE monster, eg, undead.
              * DGST monsters don't die from undead corpses
              */
-            num = monsndx(pd);
+            num = mdef->mnum;
             if (is_tame(magr) && !magr->isminion
                 && !(mvitals[num].mvflags & MV_NOCORPSE)) 
             {

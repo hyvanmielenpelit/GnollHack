@@ -124,12 +124,12 @@ struct monst *mon;
                                                      : monsndx(ptr);
         cnt = 1;
     }
-    else if (is_lminion(mon))
+    else if (mon && is_lminion(mon))
     {
         mmanimtype = MM_LAWFUL_SUMMON_ANIMATION;
         dtype = (is_lord(ptr) && !rn2(40))
                     ? llord()
-                    : (is_lord(ptr) || !rn2(6)) ? lminion() : monsndx(ptr);
+                    : (is_lord(ptr) || !rn2(6)) ? lminion() : mon->mnum;
         cnt = (!rn2(4) && !is_lord(&mons[dtype])) ? 2 : 1;
     }
     else if (ptr == &mons[PM_ANGEL])

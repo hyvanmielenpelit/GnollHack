@@ -126,6 +126,12 @@ namespace GnollHackClient.Unknown
             return _initialized;
         }
 
+        public void UnloadBanks()
+        {
+            RESULT res;
+            res = _system.unloadAll();
+        }
+
         public void LoadBanks()
         {
             RESULT res;

@@ -25,7 +25,7 @@ register struct monst *mon;
             if (!Deaf && !canseemon(mon)) {
                 const char *howler;
 
-                switch (monsndx(mon->data)) {
+                switch (mon->mnum) {
                 case PM_WEREWOLF:
                     howler = "wolf";
                     break;
@@ -119,7 +119,7 @@ register struct monst *mon;
 
     register int pm;
 
-    pm = counter_were(monsndx(mon->data));
+    pm = counter_were(mon->mnum);
     if (pm < LOW_PM) {
         impossible("unknown lycanthrope %s.", mon->data->mname);
         return;

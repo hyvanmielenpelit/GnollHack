@@ -677,7 +677,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         }
         /* targetting another tentacled one or your own underlying species
            is cannibalism */
-        (void) maybe_cannibal(monsndx(pd), TRUE);
+        (void) maybe_cannibal(mdef->mnum, TRUE);
 
     } 
     else if (mdef == &youmonst) 

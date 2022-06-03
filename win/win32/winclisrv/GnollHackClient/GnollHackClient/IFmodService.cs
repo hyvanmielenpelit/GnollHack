@@ -10,6 +10,7 @@ namespace GnollHackClient
         void ClearLoadableSoundBanks();
         void AddLoadableSoundBank(string fullfilepath);
         void LoadBanks();
+        void UnloadBanks();
         void PlayTestSound();
         void StopTestSound();
         int PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, ulong play_flags);

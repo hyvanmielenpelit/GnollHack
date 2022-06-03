@@ -966,8 +966,8 @@ struct permonst *ptr;
     i = (int) (ptr - &mons[0]);
     if (i < LOW_PM || i >= NUM_MONSTERS) 
     {
-        panic("monsndx - could not index monster (%s)",
-              fmt_ptr((genericptr_t) ptr));
+        panic("monsndx - could not index monster (%s, %s, %d)",
+            fmt_ptr((genericptr_t)&mons[0]), fmt_ptr((genericptr_t) ptr), i);
         return NON_PM; /* will not get here */
     }
     return i;
@@ -1575,6 +1575,9 @@ on_fire(mptr, mattk)
 struct permonst *mptr;
 struct attack *mattk;
 {
+    if (!mptr || !mattk)
+        return "on fire";
+
     const char *what;
 
     switch (monsndx(mptr)) {

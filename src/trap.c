@@ -3111,7 +3111,7 @@ register struct monst *mtmp;
 
                 /* paper burns very fast, assume straw is tightly
                  * packed and burns a bit slower */
-                switch (monsndx(mptr)) 
+                switch (mtmp->mnum)
                 {
                 case PM_PAPER_GOLEM:
                     immolate = TRUE;
@@ -3287,7 +3287,7 @@ register struct monst *mtmp;
             if (mu_maybe_destroy_web(mtmp, in_sight, trap))
                 break;
             tear_web = FALSE;
-            switch (monsndx(mptr))
+            switch (mtmp->mnum)
             {
             default:
                 if (is_bear(mptr) && !in_sight) 

@@ -52,7 +52,9 @@ const char *msg;
     if (mtmp->data < &mons[LOW_PM] || mtmp->data >= &mons[NUM_MONSTERS]) {
         impossible("illegal mon data %s; mnum=%d (%s)",
                    fmt_ptr((genericptr_t) mtmp->data), mtmp->mnum, msg);
-    } else {
+    } 
+    else 
+    {
         int mndx = monsndx(mtmp->data);
 
         if (mtmp->mnum != mndx) {
@@ -312,11 +314,11 @@ boolean createcorpse;
         return (struct obj*) 0;
 
     register struct permonst *mdat = mtmp->data;
+    int mndx = mtmp->mnum;
     int num;
     struct obj *obj = (struct obj *) 0;
     struct obj *otmp = (struct obj *) 0;
     int x = mtmp->mx, y = mtmp->my;
-    int mndx = monsndx(mdat);
     unsigned corpstatflags = corpseflags;
     boolean burythem = ((corpstatflags & CORPSTAT_BURIED) != 0);
     int oneinchance = 0;
@@ -444,7 +446,7 @@ boolean createcorpse;
             }
 
             if (oneinchance > 0 && basemonsterindex > 0 && (oneinchance == 1 || !rn2(oneinchance))) {
-                num = GRAY_DRAGON_SCALES + monsndx(mdat) - basemonsterindex;
+                num = GRAY_DRAGON_SCALES + mndx - basemonsterindex;
                 obj = mksobj_at(num, x, y, FALSE, FALSE);
                 obj->enchantment = 0;
                 obj->cursed = obj->blessed = FALSE;
@@ -2644,7 +2646,7 @@ struct monst *magr, /* monster that is currently deciding where to move */
     if ((pa->mflags3 & M3_DISPLACES) != 0 && (pd->mflags3 & M3_DISPLACES) == 0
         /* no displacing grid bugs diagonally */
         && !(magr->mx != mdef->mx && magr->my != mdef->my
-             && NODIAG(monsndx(pd)))
+             && NODIAG(mdef->mnum))
         /* no displacing trapped monsters or multi-location longworms */
         && !mdef->mtrapped && (!mdef->wormno || !count_wsegs(mdef))
         /* riders can move anything; others, same size or smaller only */
@@ -3052,7 +3054,7 @@ struct monst *mtmp;
         /* equip replacement amulet, if any, on next move */
         mtmp->worn_item_flags |= I_SPECIAL;
 
-        surviver = !(mvitals[monsndx(mtmp->data)].mvflags & MV_GENOCIDED);
+        surviver = !(mvitals[mtmp->mnum].mvflags & MV_GENOCIDED);
         mtmp->mcanmove = 1;
         mtmp->mfrozen = 0;
         mtmp->mwantstomove = 1;
@@ -3110,7 +3112,7 @@ unsigned long mdiedflags;
         int x = mtmp->mx, y = mtmp->my;
 
         /* this only happens if shapeshifted */
-        if (mndx >= LOW_PM && mndx != monsndx(mtmp->data)
+        if (mndx >= LOW_PM && mndx != mtmp->mnum
             && !(mvitals[mndx].mvflags & MV_GENOCIDED)) 
         {
             char buf[BUFSZ];
@@ -3239,7 +3241,7 @@ unsigned long mdiedflags;
      * based on only player kills probably opens more avenues of abuse
      * for rings of conflict and such.
      */
-    tmp = monsndx(mtmp->data);
+    tmp = mtmp->mnum;
     if (mvitals[tmp].died < 255)
         mvitals[tmp].died++;
 
@@ -3561,7 +3563,7 @@ int how;
     /* no corpses if digested or disintegrated */
     disintegested = (how == AD_DGST || how == -AD_RBRE);
 
-    boolean is_transforming_vampshifter = is_vampshifter(mdef) && mdef->cham >= LOW_PM && mdef->cham != monsndx(mdef->data)
+    boolean is_transforming_vampshifter = mdef->cham >= LOW_PM && is_vampshifter(mdef) && mdef->cham != mdef->mnum
         && !(mvitals[mdef->cham].mvflags & MV_GENOCIDED);
 
     if (!disintegested && !is_transforming_vampshifter)
@@ -3733,7 +3735,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
     check_special_level_naming_by_mon(mtmp);
 
     mdat = mtmp->data; /* note: mondead can change mtmp->data */
-    mndx = monsndx(mdat);
+    mndx = mtmp->mnum;
 
     if (stoned) 
     {
@@ -3922,13 +3924,15 @@ boolean
 vamp_stone(mtmp)
 struct monst *mtmp;
 {
-    if (is_vampshifter(mtmp)) {
+    if (is_vampshifter(mtmp)) 
+    {
         int mndx = mtmp->cham;
         int x = mtmp->mx, y = mtmp->my;
 
         /* this only happens if shapeshifted */
-        if (mndx >= LOW_PM && mndx != monsndx(mtmp->data)
-            && !(mvitals[mndx].mvflags & MV_GENOCIDED)) {
+        if (mndx >= LOW_PM && mndx != mtmp->mnum
+            && !(mvitals[mndx].mvflags & MV_GENOCIDED)) 
+        {
             char buf[BUFSZ];
             boolean in_door = (amorphous(mtmp->data)
                                && closed_door(mtmp->mx, mtmp->my));
@@ -4297,7 +4301,7 @@ boolean via_attack;
             "Gasp!", "Uh-oh.", "Oh my!", "What?", "Why?",
         };
         struct monst *mon;
-        int mndx = monsndx(mtmp->data);
+        int mndx = mtmp->mnum;
 
         for (mon = fmon; mon; mon = mon->nmon) {
             if (DEADMONSTER(mon))
@@ -4346,7 +4350,7 @@ boolean via_attack;
                         }
                     }
                 } else if (mon->data->mlet == mtmp->data->mlet
-                           && big_little_match(mndx, monsndx(mon->data))
+                           && big_little_match(mndx, mon->mnum)
                            && !rn2(3)) {
                     if (!rn2(4)) {
                         growl(mon);
@@ -4457,7 +4461,8 @@ rescham()
         if (DEADMONSTER(mtmp))
             continue;
         mcham = (int) mtmp->cham;
-        if (mcham >= LOW_PM) {
+        if (mcham >= LOW_PM) 
+        {
             (void) newcham(mtmp, &mons[mcham], FALSE, FALSE);
             mtmp->cham = NON_PM;
         }
@@ -4478,13 +4483,15 @@ restartcham()
 {
     register struct monst *mtmp;
 
-    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
+    {
         if (DEADMONSTER(mtmp))
             continue;
         if (!is_cancelled(mtmp))
-            mtmp->cham = pm_to_cham(monsndx(mtmp->data));
+            mtmp->cham = pm_to_cham(mtmp->mnum);
         if (is_mimic(mtmp->data) && mtmp->msleeping
-            && cansee(mtmp->mx, mtmp->my)) {
+            && cansee(mtmp->mx, mtmp->my)) 
+        {
             set_mimic_sym(mtmp);
             newsym(mtmp->mx, mtmp->my);
         }
@@ -4500,16 +4507,22 @@ struct monst *mon;
 {
     int mcham;
 
-    if (Protection_from_shape_changers) {
+    if (Protection_from_shape_changers) 
+    {
         mcham = (int) mon->cham;
-        if (mcham >= LOW_PM) {
+        if (mcham >= LOW_PM) 
+        {
             mon->cham = NON_PM;
             (void) newcham(mon, &mons[mcham], FALSE, FALSE);
-        } else if (is_were(mon->data) && !is_human(mon->data)) {
+        }
+        else if (is_were(mon->data) && !is_human(mon->data)) 
+        {
             new_were(mon);
         }
-    } else if (mon->cham == NON_PM) {
-        mon->cham = pm_to_cham(monsndx(mon->data));
+    } 
+    else if (mon->cham == NON_PM) 
+    {
+        mon->cham = pm_to_cham(mon->mnum);
     }
 }
 
@@ -4686,15 +4699,19 @@ int shiftflags;
          * if we're a fog cloud at full hp, maybe pick a different shape.
          * If we're not already shifted and in good health, maybe shift.
          */
-        if (mon->data->mlet != S_VAMPIRE) {
+        if (mon->data->mlet != S_VAMPIRE) 
+        {
             if ((mon->mhp <= (mon->mhpmax + 5) / 6) && rn2(4)
-                && mon->cham >= LOW_PM) {
+                && mon->cham >= LOW_PM) 
+            {
                 ptr = &mons[mon->cham];
                 dochng = TRUE;
-            } else if (mon->data == &mons[PM_FOG_CLOUD]
+            } 
+            else if (mon->data == &mons[PM_FOG_CLOUD]
                      && mon->mhp == mon->mhpmax && !rn2(4)
                      && (!canseemon(mon)
-                         || distu(mon->mx, mon->my) > U_NOT_NEARBY_RANGE * U_NOT_NEARBY_RANGE)) {
+                         || distu(mon->mx, mon->my) > U_NOT_NEARBY_RANGE * U_NOT_NEARBY_RANGE)) 
+            {
                 /* if a fog cloud, maybe change to wolf or vampire bat;
                    those are more likely to take damage--at least when
                    tame--and then switch back to vampire; they'll also
@@ -4803,7 +4820,8 @@ int *mndx_p, monclass;
         *mndx_p = mon->cham;
         return TRUE;
     }
-    if (mon->cham == PM_VLAD_THE_IMPALER && mon_has_special(mon)) {
+    if (mon->cham == PM_VLAD_THE_IMPALER && mon_has_special(mon)) 
+    {
         /* Vlad with Candelabrum; override choice, then accept it */
         *mndx_p = PM_VLAD_THE_IMPALER;
         return TRUE;
@@ -4827,7 +4845,8 @@ int *mndx_p, monclass;
         *mndx_p = PM_FOG_CLOUD;
         break;
     case S_DOG:
-        if (mon->cham != PM_VAMPIRE) {
+        if (mon->cham != PM_VAMPIRE) 
+        {
             *mndx_p = PM_WOLF;
             break;
         }
@@ -5062,21 +5081,24 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     int hpn, hpd;
     int mndx, tryct;
     struct permonst *olddata = mtmp->data;
+    int oldmnum = mtmp->mnum;
     char *p, oldname[BUFSZ], l_oldname[BUFSZ], newname[BUFSZ];
 
     /* Riders are immune to polymorph and green slime
        (but apparent Rider might actually be a doppelganger) */
-    if (mtmp->cham == NON_PM) { /* not a shapechanger */
+    if (mtmp->cham == NON_PM) 
+    { /* not a shapechanger */
         if (is_rider(olddata))
             return 0;
         /* make Nazgul and erinyes immune too, to reduce chance of
            anomalous extinction feedback during final disclsoure */
-        if (mbirth_limit(monsndx(olddata)) < MAXMONNO)
+        if (mbirth_limit(oldmnum) < MAXMONNO)
             return 0;
         /* cancelled shapechangers become uncancelled prior
            to being given a new shape */
-        if (is_cancelled(mtmp) && !Protection_from_shape_changers) {
-            mtmp->cham = pm_to_cham(monsndx(mtmp->data));
+        if (is_cancelled(mtmp) && !Protection_from_shape_changers) 
+        {
+            mtmp->cham = pm_to_cham(mtmp->mnum);
             if (mtmp->cham != NON_PM)
                 mtmp->mprops[CANCELLED] = 0;
         }
@@ -5144,13 +5166,13 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     set_mon_data(mtmp, mdat);
 
     /* Adjust monster ability scores to the new form */
-    int oldtype = monsndx(olddata);
-    int newtype = monsndx(mdat);
+    int oldtype = oldmnum;
+    int newtype = mtmp->mnum;
 
     change_mon_ability_scores(mtmp, oldtype, newtype);
 
     /* set level and hit points */
-    newmonhp(mtmp, monsndx(mdat), 0UL);
+    newmonhp(mtmp, newtype, 0UL);
     /* new hp: same fraction of max as before */
 #ifndef LINT
     mtmp->mhp = (int)(((long)hpn * (long)mtmp->mhp) / (long)hpd);
@@ -5425,10 +5447,12 @@ kill_genocided_monsters()
         mtmp2 = mtmp->nmon;
         if (DEADMONSTER(mtmp))
             continue;
-        mndx = monsndx(mtmp->data);
+        mndx = mtmp->mnum;
         kill_cham = (mtmp->cham >= LOW_PM
                      && (mvitals[mtmp->cham].mvflags & MV_GENOCIDED));
-        if ((mvitals[mndx].mvflags & MV_GENOCIDED) || kill_cham) {
+        
+        if ((mvitals[mndx].mvflags & MV_GENOCIDED) || kill_cham) 
+        {
             if (mtmp->cham >= LOW_PM && !kill_cham)
                 (void) newcham(mtmp, (struct permonst *) 0, FALSE, FALSE);
             else

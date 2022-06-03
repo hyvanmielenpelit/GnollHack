@@ -325,8 +325,11 @@ STATIC_OVL void
 m_initweap(mtmp)
 register struct monst *mtmp;
 {
+    if (!mtmp)
+        return;
+
     register struct permonst *ptr = mtmp->data;
-    register int mm = monsndx(ptr);
+    register int mm = mtmp->mnum;
     struct obj *otmp;
     int bias, spe2, w1, w2;
 
@@ -1167,10 +1170,13 @@ STATIC_OVL void
 m_initinv(mtmp)
 register struct monst *mtmp;
 {
+    if (!mtmp)
+        return;
+
     register int cnt;
     register struct obj *otmp;
     register struct permonst *ptr = mtmp->data;
-    int mndx = monsndx(ptr);
+    int mndx = mtmp->mnum;
     int n = 0;
     int i;
 
@@ -1278,7 +1284,7 @@ register struct monst *mtmp;
                     (void)mongetsgold(mtmp, rn2(81) + 50);
                 break;
             default:
-                impossible("odd mercenary %d?", monsndx(ptr));
+                impossible("odd mercenary %d?", mndx);
                 mac = 0;
                 break;
             }
@@ -2062,7 +2068,7 @@ register struct monst *mtmp;
         break;
     }
 
-    switch (monsndx(ptr))
+    switch (mndx)
     {
     case PM_GOBLIN_KING:
     case PM_OGRE_KING:
@@ -2102,7 +2108,7 @@ boolean origin_at_mon;
     struct monst *m2;
 
     /* may be too weak or have been extinguished for population control */
-    if (mon->mhp <= 1 || mon->mbasehpmax <= 1 || mon->mhpmax <= 1 || (mvitals[monsndx(mon->data)].mvflags & MV_EXTINCT))
+    if (mon->mhp <= 1 || mon->mbasehpmax <= 1 || mon->mhpmax <= 1 || (mvitals[mon->mnum].mvflags & MV_EXTINCT))
         return (struct monst *) 0;
 
     if (x == 0)
@@ -3434,7 +3440,7 @@ int level_limit;
         if ((ct -= (int) rndmonst_state.mchoices[mndx]) <= 0)
             break;
 
-    if (mndx == SPECIAL_PM || uncommon(mndx)) 
+    if (mndx == SPECIAL_PM || uncommon(mndx) || mndx < LOW_PM || mndx >= NUM_MONSTERS) 
     { /* shouldn't happen */
         impossible("rndmonst: bad `mndx' [#%d]", mndx);
         return (struct permonst *) 0;
@@ -3596,35 +3602,35 @@ int mndx, mvflagsmask, genomask;
    to allow the normal genesis masks to be deactivated.
    Returns Null if no monsters in that class can be made. */
 struct permonst *
-mkclass(class, spc)
-char class;
+mkclass(mclass, spc)
+char mclass;
 int spc;
 {
-    return mkclass_core(class, spc, A_NONE, 0);
+    return mkclass_core(mclass, spc, A_NONE, 0);
 }
 
 /* mkclass() with alignment restrictions; used by ndemon() */
 struct permonst*
-mkclass_aligned(class, spc, atyp)
-char class;
+mkclass_aligned(mclass, spc, atyp)
+char mclass;
 int spc;
 aligntyp atyp;
 {
-    return mkclass_core(class, spc, atyp, 0);
+    return mkclass_core(mclass, spc, atyp, 0);
 }
 
 struct permonst *
-mkclass_core(class, spc, atyp, difficulty_adj)
-char class;
+mkclass_core(mclass, spc, atyp, difficulty_adj)
+char mclass;
 int spc;
 aligntyp atyp;
 int difficulty_adj;
 {
-    register int first, last, num = 0;
+    register int first = 0, last = 0, num = 0;
     int k, nums[SPECIAL_PM + 1]; /* +1: insurance for final return value */
     int minmlev = 0, maxmlev = 0, mask = (G_NOGEN | G_UNIQ) & ~spc;
 
-    if (class < 1 || class >= MAX_MONSTER_CLASSES) {
+    if (mclass < 1 || mclass >= MAX_MONSTER_CLASSES) {
         impossible("mkclass called with bad class!");
         return (struct permonst*)0;
     }
@@ -3644,7 +3650,7 @@ int difficulty_adj;
         first = NON_PM;
         boolean foundfirst = FALSE;
         for (int firstindex = LOW_PM; firstindex < SPECIAL_PM; firstindex++)
-            if (mons[firstindex].mlet == class)
+            if (mons[firstindex].mlet == mclass)
             {
                 if(first == 0)
                     first = firstindex;
@@ -3663,14 +3669,14 @@ int difficulty_adj;
 
     if (first == NON_PM) //SPECIAL_PM)
     {
-        impossible("mkclass found no class %d monsters", class);
+        impossible("mkclass found no class %d monsters", mclass);
         return (struct permonst *) 0;
     }
 
     /*  Assumption #2:  monsters of a given class are presented in ascending
      *                  order of strength.
      */
-    for (last = first; last < SPECIAL_PM && mons[last].mlet == class; last++)
+    for (last = first; last < SPECIAL_PM && mons[last].mlet == mclass; last++)
     {
         if (atyp != A_NONE && sgn(mons[last].maligntyp) != sgn(atyp))
             continue;
@@ -3709,6 +3715,12 @@ int difficulty_adj;
         if ((num -= nums[first]) <= 0)
             break;
 
+    if (first < LOW_PM || first >= NUM_MONSTERS)
+    {
+        impossible("mkclass: bad `first' [#%d]", first);
+        return (struct permonst*)0;
+    }
+
     return nums[first] ? &mons[first] : (struct permonst *) 0;
 }
 
@@ -3717,18 +3729,18 @@ int difficulty_adj;
    genocided types are avoided but extinct ones are acceptable; we don't
    check polyok() here--caller accepts some choices !polyok() would reject */
 int
-mkclass_poly(class)
-int class;
+mkclass_poly(mclass)
+int mclass;
 {
     register int first, last, num = 0;
 
     for (first = LOW_PM; first < SPECIAL_PM; first++)
-        if (mons[first].mlet == class)
+        if (mons[first].mlet == mclass)
             break;
     if (first == SPECIAL_PM)
         return NON_PM;
 
-    for (last = first; last < SPECIAL_PM && mons[last].mlet == class; last++)
+    for (last = first; last < SPECIAL_PM && mons[last].mlet == mclass; last++)
         if (mk_gen_ok(last, MV_GENOCIDED, (G_NOGEN | G_UNIQ)))
             num += (int)(mons[last].geno & G_FREQ);
     if (!num)

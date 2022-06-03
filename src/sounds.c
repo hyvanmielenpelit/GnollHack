@@ -1020,7 +1020,7 @@ boolean dopopup, fromchatmenu;
         msound = MS_LEADER;
     /* make sure it's your role's quest guardian; adjust if not */
     else if (msound == MS_GUARDIAN && ptr != &mons[urole.guardnum])
-        msound = mons[genus(monsndx(ptr), 1)].msound;
+        msound = mons[genus(mtmp->mnum, 1)].msound;
     /* some normally non-speaking types can/will speak if hero is similar */
     else if (msound == MS_ORC         /* note: MS_ORC is same as MS_GRUNT */
              && (same_race(ptr, youmonst.data)           /* current form, */
@@ -1640,7 +1640,7 @@ bark_here:
             chat_line = 13;
         }
         else
-            switch (monsndx(ptr)) 
+            switch (mtmp->mnum)
             {
             case PM_HALFLING:
                 pline_msg =
@@ -2260,7 +2260,7 @@ dochat()
         msound = MS_LEADER;
     /* make sure it's your role's quest guardian; adjust if not */
     else if (msound == MS_GUARDIAN && ptr != &mons[urole.guardnum])
-        msound = mons[genus(monsndx(ptr), 1)].msound;
+        msound = mons[genus(mtmp->mnum, 1)].msound;
     /* some normally non-speaking types can/will speak if hero is similar */
     else if (msound == MS_ORC         /* note: MS_ORC is same as MS_GRUNT */
         && (same_race(ptr, youmonst.data)           /* current form, */

@@ -3304,7 +3304,7 @@ struct monst *mtmp;
 
 #if 0 /* All monsters should have data and mnum */
         if (mtmp->data)
-            mtmp2->mnum = monsndx(mtmp->data);
+            mtmp2->mnum = mtmp->mnum;
 #endif
         /* invalidate pointers */
         /* m_id is needed to know if this is a revived quest leader */

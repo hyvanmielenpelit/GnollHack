@@ -1058,16 +1058,16 @@ struct obj* uitem;
         if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_MASK)
         {
             if (
-                ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHAEOLOGIST) && (monsndx(monster->data) == PM_ARCHAEOLOGIST || is_archaeologist(monster->data)))
-                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_BARBARIAN) && (monsndx(monster->data) == PM_BARBARIAN || is_barbarian(monster->data)))
-                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_CAVEMAN) && (monsndx(monster->data) == PM_CAVEMAN || is_caveman(monster->data)))
-                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_HEALER) && (monsndx(monster->data) == PM_HEALER || is_healer(monster->data)))
-                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_KNIGHT) && (monsndx(monster->data) == PM_KNIGHT || is_knight(monster->data)))
-                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_MONK) && (monsndx(monster->data) == PM_MONK || is_monk(monster->data)))
-                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST) && (monsndx(monster->data) == PM_PRIEST || monster->ispriest || is_priest(monster->data)))
-                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_TOURIST) && (monsndx(monster->data) == PM_TOURIST || is_tourist(monster->data)))
-                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_VALKYRIE) && (monsndx(monster->data) == PM_VALKYRIE || is_valkyrie(monster->data)))
-                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_WIZARD) && (monsndx(monster->data) == PM_WIZARD || is_wizard(monster->data)))
+                ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHAEOLOGIST) && (monster->mnum == PM_ARCHAEOLOGIST || is_archaeologist(monster->data)))
+                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_BARBARIAN) && (monster->mnum == PM_BARBARIAN || is_barbarian(monster->data)))
+                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_CAVEMAN) && (monster->mnum == PM_CAVEMAN || is_caveman(monster->data)))
+                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_HEALER) && (monster->mnum == PM_HEALER || is_healer(monster->data)))
+                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_KNIGHT) && (monster->mnum == PM_KNIGHT || is_knight(monster->data)))
+                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_MONK) && (monster->mnum == PM_MONK || is_monk(monster->data)))
+                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST) && (monster->mnum == PM_PRIEST || monster->ispriest || is_priest(monster->data)))
+                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_TOURIST) && (monster->mnum == PM_TOURIST || is_tourist(monster->data)))
+                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_VALKYRIE) && (monster->mnum == PM_VALKYRIE || is_valkyrie(monster->data)))
+                || ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_WIZARD) && (monster->mnum == PM_WIZARD || is_wizard(monster->data)))
                 )
             {
                 // Ok

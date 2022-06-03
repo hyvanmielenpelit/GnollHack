@@ -260,7 +260,7 @@ struct obj *otmp, *mwep;
                 skilllevel = P_SKILLED;
 
             /* Monks and ninjas are also assumed to be experts in certain weapons */
-            switch (monsndx(mtmp->data)) 
+            switch (mtmp->mnum) 
             {
             case PM_MONK:
                 if (skill == -P_THROWN_WEAPON)

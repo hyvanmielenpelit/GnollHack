@@ -201,16 +201,19 @@ namespace GnollHackClient
             exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
 
-            GetFilesFromResources();
+            if(App.LoadBanks)
+            {
+                GetFilesFromResources();
 
-            await DownloadAndCheckFiles();
-            try
-            {
-                App.FmodService.LoadBanks();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Loading FMOD banks failed: " + ex.Message);
+                await DownloadAndCheckFiles();
+                try
+                {
+                    App.FmodService.LoadBanks();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Loading FMOD banks failed: " + ex.Message);
+                }
             }
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
@@ -223,7 +226,8 @@ namespace GnollHackClient
             try
             {
                 App.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
-                App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                if (App.LoadBanks)
+                    App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
             }
             catch
             {

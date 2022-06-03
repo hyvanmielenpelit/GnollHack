@@ -1342,7 +1342,7 @@ struct monst* mattacker UNUSED;
                 if (mythic_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING && 
                     (mythic_powers[i].parameter3 == mon->data->mlet 
                         || (mythic_powers[i].parameter4 & mon->data->mflags2) 
-                        || ((mythic_powers[i].power_flags & MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS) && mon->cham && ((mythic_powers[i].parameter3 == mons[mon->cham].mlet || (mythic_powers[i].parameter4 & mons[mon->cham].mflags2))))
+                        || ((mythic_powers[i].power_flags & MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS) && mon->cham >= LOW_PM && ((mythic_powers[i].parameter3 == mons[mon->cham].mlet || (mythic_powers[i].parameter4 & mons[mon->cham].mflags2))))
                     )
                    )
                 {

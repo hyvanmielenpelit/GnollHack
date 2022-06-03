@@ -384,62 +384,62 @@
 #define warning_to_glyph(mwarnlev) ((mwarnlev) + GLYPH_WARNING_OFF)
 
 #define mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_MON_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_MON_OFF))
 #define attacking_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_ATTACK_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_ATTACK_OFF))
 #define throwing_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_THROW_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_THROW_OFF))
 #define firing_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FIRE_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FIRE_OFF))
 #define nodir_casting_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_CAST_NODIR_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_CAST_NODIR_OFF))
 #define dir_casting_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_CAST_DIR_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_CAST_DIR_OFF))
 #define special_attacking_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_SPECIAL_ATTACK_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_SPECIAL_ATTACK_OFF))
 #define kicking_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_KICK_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_KICK_OFF))
 #define passive_defense_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_PASSIVE_DEFENSE_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_PASSIVE_DEFENSE_OFF))
 #define special_attacking2_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_SPECIAL_ATTACK_2_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_SPECIAL_ATTACK_2_OFF))
 #define special_attacking3_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_SPECIAL_ATTACK_3_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_SPECIAL_ATTACK_3_OFF))
 #define item_using_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_ITEM_USE_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_ITEM_USE_OFF))
 #define door_using_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_DOOR_USE_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_DOOR_USE_OFF))
 #define dying_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_DEATH_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_DEATH_OFF))
 
 #define female_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_MON_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_MON_OFF))
 #define female_attacking_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_ATTACK_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_ATTACK_OFF))
 #define female_throwing_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_THROW_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_THROW_OFF))
 #define female_firing_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_FIRE_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_FIRE_OFF))
 #define female_nodir_casting_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_CAST_NODIR_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_CAST_NODIR_OFF))
 #define female_dir_casting_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_CAST_DIR_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_CAST_DIR_OFF))
 #define female_special_attacking_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_SPECIAL_ATTACK_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_SPECIAL_ATTACK_OFF))
 #define female_kicking_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_KICK_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_KICK_OFF))
 #define female_passive_defense_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_PASSIVE_DEFENSE_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_PASSIVE_DEFENSE_OFF))
 #define female_special_attacking2_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_SPECIAL_ATTACK_2_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_SPECIAL_ATTACK_2_OFF))
 #define female_special_attacking3_mon_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_SPECIAL_ATTACK_3_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_SPECIAL_ATTACK_3_OFF))
 #define female_item_using_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_ITEM_USE_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_ITEM_USE_OFF))
 #define female_door_using_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_DOOR_USE_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_DOOR_USE_OFF))
 #define female_dying_mon_to_glyph(mon, rng)                               \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_DEATH_OFF))
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon((mon)->mnum, rng) + GLYPH_FEMALE_DEATH_OFF))
 
 #define any_mon_to_glyph(mon, rng)    \
   ((mon) == &youmonst ? u_to_glyph() : \

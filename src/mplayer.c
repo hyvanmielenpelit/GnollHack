@@ -90,7 +90,7 @@ char *nam;
     else
         mtmp->female = 0;
     Strcat(nam, " the ");
-    Strcat(nam, rank_of((int) mtmp->m_lev, monsndx(mtmp->data),
+    Strcat(nam, rank_of((int) mtmp->m_lev, mtmp->mnum,
                         (boolean) mtmp->female));
 }
 
@@ -168,7 +168,7 @@ register boolean special;
         shield = !rn2(8) ? STRANGE_OBJECT
                          : rnd_class(ELVEN_SHIELD, SHIELD_OF_REFLECTION);
 
-        switch (monsndx(ptr)) {
+        switch (mtmp->mnum) {
         case PM_ARCHAEOLOGIST:
             if (rn2(2))
                 weapon = BULLWHIP;

@@ -1214,7 +1214,7 @@ int dx, dy, range;
     if (!range || (!dx && !dy))
         return; /* paranoia */
     /* don't let grid bugs be hurtled diagonally */
-    if (dx && dy && NODIAG(monsndx(mon->data)))
+    if (dx && dy && NODIAG(mon->mnum))
         return;
 
     /* Send the monster along the path */

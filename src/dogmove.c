@@ -1246,7 +1246,8 @@ struct monst *mtmp, *mtarg;
            damage (from counterattacks) to switch back to vampire form;
            make it be more aggressive by behaving as if stronger */
         mtmp_lev = mtmp->m_lev;
-        if (is_vampshifter(mtmp) && mtmp->data->mlet != S_VAMPIRE) {
+        if (mtmp->cham >= LOW_PM && is_vampshifter(mtmp) && mtmp->data->mlet != S_VAMPIRE) 
+        {
             /* is_vampshifter() implies (mtmp->cham >= LOW_PM) */
             mtmp_lev = mons[mtmp->cham].mlevel;
             /* actual vampire level would range from 1.0*mlvl to 1.5*mlvl */
@@ -2009,7 +2010,7 @@ struct monst *mtmp;
 
     do {
         idx = rn2(SIZE(qm));
-        if (qm[idx].mndx != 0 && monsndx(mtmp->data) == qm[idx].mndx)
+        if (qm[idx].mndx != 0 && mtmp->mnum == qm[idx].mndx)
             break;
         if (qm[idx].mlet != 0 && mtmp->data->mlet == qm[idx].mlet)
             break;

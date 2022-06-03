@@ -1718,7 +1718,7 @@ struct mkroom *croom;
     else if (m->id != NON_PM) 
     {
         pm = &mons[m->id];
-        g_mvflags = (unsigned) mvitals[monsndx(pm)].mvflags;
+        g_mvflags = (unsigned) mvitals[m->id].mvflags;
         if ((pm->geno & G_UNIQ) && (g_mvflags & MV_EXTINCT))
             return;
         else if (g_mvflags & MV_GONE)    /* genocided or extinct */

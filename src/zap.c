@@ -1388,7 +1388,7 @@ cure_petrification_here:
     case JAR_OF_BASILISK_BLOOD:
     case SPE_STONE_TO_FLESH:
         res = 1;
-        if (monsndx(mtmp->data) == PM_STONE_GOLEM) {
+        if (mtmp->mnum == PM_STONE_GOLEM) {
             char *name = Monnam(mtmp);
 
             /* turn into flesh golem */

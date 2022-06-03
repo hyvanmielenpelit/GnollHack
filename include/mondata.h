@@ -12,7 +12,7 @@
 #define hugemonst(ptr) ((ptr)->msize >= MZ_HUGE)
 
 #define is_vampshifter(mon)                                      \
-    (mons[(mon)->cham].mlet == S_VAMPIRE && (mons[(mon)->cham].mflags2 & M2_SHAPESHIFTER) != 0)
+    ((mon)->cham >= LOW_PM && mons[(mon)->cham].mlet == S_VAMPIRE && (mons[(mon)->cham].mflags2 & M2_SHAPESHIFTER) != 0)
 
 /* M1-4 flags*/
 #define is_flyer(ptr) (((ptr)->mflags1 & M1_FLY) != 0L)

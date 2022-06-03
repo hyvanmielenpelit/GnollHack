@@ -2393,10 +2393,14 @@ namespace GnollHackClient.Pages.Game
                     str = "Memory: " + memusage / 1024 + " kB";
                     textPaint.Typeface = App.LatoBold;
                     textPaint.TextSize = 26;
-                    textPaint.Color = SKColors.Yellow;
                     textWidth = textPaint.MeasureText(str, ref textBounds);
                     yText = -textPaint.FontMetrics.Ascent + 5 + (ShowFPS ? textPaint.FontSpacing : 0);
                     xText = canvaswidth - textWidth - 5;
+                    textPaint.Color = SKColors.Black.WithAlpha(128);
+                    float textmargin = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                    SKRect bkrect = new SKRect(xText - textmargin, yText + textPaint.FontMetrics.Ascent - textmargin, xText + textWidth + textmargin, yText + textPaint.FontMetrics.Ascent - textmargin + textPaint.FontSpacing);
+                    canvas.DrawRect(bkrect, textPaint);
+                    textPaint.Color = SKColors.Yellow;
                     canvas.DrawText(str, xText, yText, textPaint);
                 }
 

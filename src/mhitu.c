@@ -2579,7 +2579,7 @@ register struct obj* omonwep;
             play_sfx_sound(SFX_CATCH_LYCANTHROPY);
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "feverish.");
             exercise(A_CON, FALSE);
-            set_ulycn(monsndx(mdat));
+            set_ulycn(mtmp->mnum);
             retouch_equipment(2);
         } else if (damagedealt > 0)
             display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);

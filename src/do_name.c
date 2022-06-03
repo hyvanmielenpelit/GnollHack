@@ -2131,7 +2131,7 @@ boolean called;
     {
         char pbuf[BUFSZ];
 
-        Strcpy(pbuf, rank_of((int) mtmp->m_lev, monsndx(mdat),
+        Strcpy(pbuf, rank_of((int) mtmp->m_lev, mtmp->mnum,
                              (boolean) mtmp->female != 0));
         Strcat(buf, lcase(pbuf));
         name_at_start = FALSE;

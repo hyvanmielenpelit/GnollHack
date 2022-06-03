@@ -473,7 +473,7 @@ struct monst *mtmp;
         boolean ignore_boulders = (verysmall(mtmp->data)
                                    || throws_rocks(mtmp->data)
                                    || passes_walls(mtmp->data)),
-            diag_ok = !NODIAG(monsndx(mtmp->data));
+            diag_ok = !NODIAG(mtmp->mnum);
 
         for (i = 0; i < 10; ++i) /* 10: 9 spots plus sentinel */
             locs[i][0] = locs[i][1] = 0;
@@ -1163,7 +1163,7 @@ rnd_defensive_item(mtmp)
 struct monst *mtmp;
 {
     struct permonst *pm = mtmp->data;
-    int difficulty = mons[(monsndx(pm))].difficulty;
+    int difficulty = mons[mtmp->mnum].difficulty;
     int trycnt = 0;
     int roll = 0;
 
@@ -1835,7 +1835,7 @@ rnd_offensive_item(mtmp)
 struct monst *mtmp;
 {
     struct permonst *pm = mtmp->data;
-    int difficulty = mons[(monsndx(pm))].difficulty;
+    int difficulty = mons[mtmp->mnum].difficulty;
 
     if (is_animal(pm) || attacktype(pm, AT_EXPL) || mindless(mtmp->data) || is_modron(mtmp->data)
         || pm->mlet == S_GHOST || pm->mlet == S_KOP)
@@ -2019,13 +2019,13 @@ struct monst *mtmp;
         }
         nomore(MUSE_WAN_POLYMORPH);
         if (obj->otyp == WAN_POLYMORPH && obj->charges > 0
-            && (mtmp->cham == NON_PM) && mons[monsndx(mdat)].difficulty < 6) {
+            && (mtmp->cham == NON_PM) && mons[mtmp->mnum].difficulty < 6) {
             m.misc = obj;
             m.has_misc = MUSE_WAN_POLYMORPH;
         }
         nomore(MUSE_POT_POLYMORPH);
         if (obj->otyp == POT_POLYMORPH && (mtmp->cham == NON_PM)
-            && mons[monsndx(mdat)].difficulty < 6) {
+            && mons[mtmp->mnum].difficulty < 6) {
             m.misc = obj;
             m.has_misc = MUSE_POT_POLYMORPH;
         }
@@ -2331,7 +2331,7 @@ rnd_misc_item(mtmp)
 struct monst *mtmp;
 {
     struct permonst *pm = mtmp->data;
-    int difficulty = mons[(monsndx(pm))].difficulty;
+    int difficulty = mons[mtmp->mnum].difficulty;
 
     if (is_animal(pm) || attacktype(pm, AT_EXPL) || mindless(mtmp->data)
         || pm->mlet == S_GHOST || pm->mlet == S_KOP)
@@ -2390,7 +2390,7 @@ struct obj *obj;
         if (typ == WAN_DIGGING)
             return (boolean) !is_floater(mon->data);
         if (typ == WAN_POLYMORPH)
-            return (boolean) (mons[monsndx(mon->data)].difficulty < 6);
+            return (boolean) (mons[mon->mnum].difficulty < 6);
         if (objects[typ].oc_dir == RAY || typ == WAN_STRIKING
             || typ == WAN_TELEPORTATION || typ == WAN_CREATE_MONSTER)
             return TRUE;
@@ -3144,7 +3144,7 @@ struct monst *mon;
     /* approximation */
     if (strstri(ptr->mname, "green"))
         return TRUE;
-    switch (monsndx(ptr)) {
+    switch (mon->mnum) {
     case PM_FOREST_CENTAUR:
     case PM_GARTER_SNAKE:
     case PM_GECKO:

@@ -1406,11 +1406,11 @@ register int after;
             || is_obj_mappear(&youmonst,STRANGE_OBJECT) || u.uundetected
             || (is_obj_mappear(&youmonst,GOLD_PIECE) && !likes_gold(ptr))
             || (is_peaceful(mtmp) && !mtmp->isshk) /* allow shks to follow */
-            || ((monsndx(ptr) == PM_STALKER || ptr->mlet == S_BAT
+            || ((mtmp->mnum == PM_STALKER || ptr->mlet == S_BAT
                  || ptr->mlet == S_LIGHT) && !rn2(3)))
             appr = 0;
 
-        if (monsndx(ptr) == PM_LEPRECHAUN && (appr == 1)
+        if (mtmp->mnum == PM_LEPRECHAUN && (appr == 1)
             && ((lepgold = findgold(mtmp->minvent))
                 && (lepgold->quan
                     > ((ygold = findgold(invent)) ? ygold->quan : 0L))))
