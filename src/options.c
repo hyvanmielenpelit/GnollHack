@@ -712,7 +712,7 @@ const char *user_string, *opt_name;
 size_t min_length;
 boolean val_allowed;
 {
-    int len = (int) strlen(user_string);
+    size_t len = strlen(user_string);
 
     if (val_allowed) {
         const char *p = index(user_string, ':'),
@@ -725,7 +725,7 @@ boolean val_allowed;
                so might have tabs or consecutive spaces */
             while (p > user_string && isspace((uchar) *(p - 1)))
                 p--;
-            len = (int) (p - user_string);
+            len = (size_t) (p - user_string);
         }
     }
 

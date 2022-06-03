@@ -3054,7 +3054,7 @@ boolean preselected;        /* item is marked as selected */
 
         if (len >= BUFSZ) {
             /* We *think* everything's coming in off at most BUFSZ bufs... */
-            impossible("Menu item too long (%d).", len);
+            impossible("Menu item too long (%ld).", len);
             len = BUFSZ - 1;
         }
         Sprintf(buf, "%c - ", ch ? ch : '?');
@@ -3181,9 +3181,9 @@ const char *prompt, *subtitle; /* prompt to for menu */
         len = strlen(curr->str) + 2; /* extra space at beg & end */
         if (len > (size_t) ttyDisplay->cols) {
             curr->str[ttyDisplay->cols - 2] = 0;
-            len = ttyDisplay->cols;
+            len = (size_t)ttyDisplay->cols;
         }
-        if (len > cw->cols)
+        if ((long)len > cw->cols)
             cw->cols = (long)len;
     }
     cw->plist[cw->npages] = 0; /* plist terminator */

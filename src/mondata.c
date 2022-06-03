@@ -1169,7 +1169,7 @@ int* fem_ptr;
             if (!relevant_name)
                 continue;
 
-            register int m_i_len = relevant_name ? (int)strlen(relevant_name) : 0;
+            size_t m_i_len = relevant_name ? strlen(relevant_name) : 0;
 
             if (m_i_len > len && !strncmpi(relevant_name, str, m_i_len)) {
                 if (m_i_len == slen) {

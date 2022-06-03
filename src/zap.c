@@ -7830,8 +7830,8 @@ boolean stop_at_first_hit_object;
                                 struct monst* mtmp2 = m_at(px, py);
                                 if (mtmp2 && mtmp2 != mtmp && mtmp2 != &youmonst)
                                 {
-                                    int had_more_effect = 0;
-                                    had_more_effect = (*fhitm)(mtmp2, obj, origmonst);
+                                    //int had_more_effect = 0;
+                                    /*had_more_effect = */(void)(*fhitm)(mtmp2, obj, origmonst);
                                     //more_effect_num += had_more_effect;
                                 }
                             }

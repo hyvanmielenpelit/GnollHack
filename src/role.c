@@ -2100,7 +2100,7 @@ int rolenum, racenum, gendnum, alignnum;
     /* <your lawful female gnomish cavewoman> || <your lawful female gnome>
      *    || <your lawful female character>
      */
-    if (buflen > (int) (strlen(buf) + 1)) {
+    if (buflen > strlen(buf) + 1) {
         Strcpy(suppliedbuf, buf);
         return suppliedbuf;
     } else

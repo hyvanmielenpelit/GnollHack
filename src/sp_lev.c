@@ -4882,18 +4882,18 @@ struct sp_coder* coder;
         }
 
         levl[x][y].typ = BRAZIER;
-        schar stval = (schar)OV_i(subtyp);
+        long stval = OV_i(subtyp);
         if (stval >= 0)
-            levl[x][y].subtyp = stval;
+            levl[x][y].subtyp = (schar)stval;
         else
             levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
 
         levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
         levl[x][y].special_quality = 0;
 
-        unsigned int val = (unsigned int)OV_i(lamplit);
+        long val = OV_i(lamplit);
         if (val >= 0)
-            levl[x][y].lamplit = val;
+            levl[x][y].lamplit = (unsigned int)val;
         else
             levl[x][y].lamplit = rn2(2);
 
@@ -4934,9 +4934,9 @@ struct sp_coder* coder;
 
         levl[x][y].typ = TREE;
         int forest_id = (int)OV_i(foresttyp);
-        schar val = (schar)OV_i(subtyp);
+        long val = OV_i(subtyp);
         if (val >= 0)
-            levl[x][y].subtyp = val;
+            levl[x][y].subtyp = (schar)val;
         else
             levl[x][y].subtyp = get_initial_tree_subtype(forest_id >= 0 ? forest_id : -1);
 
