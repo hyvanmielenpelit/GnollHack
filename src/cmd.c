@@ -8044,10 +8044,10 @@ parse()
     escape_sequence_key_start_allowed = 1;
 
     if ((!Cmd.num_pad && !Cmd.gnh_layout) || ((foo = readchar()) == Cmd.spkeys[NHKF_COUNT])) {
-        long tmpmulti = multi;
+        long tmpmulti = (long)multi;
 
         foo = get_count((char *) 0, '\0', LARGEST_INT, &tmpmulti, FALSE);
-        last_multi = multi = tmpmulti;
+        last_multi = multi = (int)tmpmulti;
     }
 #ifdef ALTMETA
     alt_esc = FALSE; /* readchar() reset */

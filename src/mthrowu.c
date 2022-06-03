@@ -287,7 +287,7 @@ struct obj *otmp, *mwep;
 
             if(multishotok)
             {
-                multishot = objects[otmpmulti->otyp].oc_multishot_style;
+                multishot = (int)objects[otmpmulti->otyp].oc_multishot_style;
             }
         }
 

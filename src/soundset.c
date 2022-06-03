@@ -15975,7 +15975,7 @@ long quan;
 void
 play_voice_shopkeeper_pay_before_buying(shkp, obj_quan, save_quan)
 struct monst* shkp;
-int obj_quan, save_quan;
+long obj_quan, save_quan;
 {
     if (!shkp || !shkp->mextra || !ESHK(shkp) || Deaf)
         return;

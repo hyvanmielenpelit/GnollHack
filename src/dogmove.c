@@ -509,9 +509,9 @@ boolean verbose;
     if (objects[otmp->otyp].oc_edible_effect > 0)
     {
         if (duration > 0)
-            (void)set_mon_property_b(mtmp, objects[otmp->otyp].oc_edible_effect, duration, verbose);
+            (void)set_mon_property_b(mtmp, (int)objects[otmp->otyp].oc_edible_effect, duration, verbose);
         else
-            (void)set_mon_property_b(mtmp, objects[otmp->otyp].oc_edible_effect, -1, verbose);
+            (void)set_mon_property_b(mtmp, (int)objects[otmp->otyp].oc_edible_effect, -1, verbose);
     }
 
     switch (objects[otmp->otyp].oc_edible_effect)

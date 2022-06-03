@@ -2011,7 +2011,7 @@ unsigned long portal_flags;
 {
     struct trap* t;
 
-    if (subtyp < MODRON_PORTAL_SUBTYPE_SPHERICAL && subtyp >= MAX_MODRON_PORTAL_SUBTYPES)
+    if (subtyp < MODRON_PORTAL_SUBTYPE_SPHERICAL || subtyp >= MAX_MODRON_PORTAL_SUBTYPES)
         return;
 
     if (!tm) 

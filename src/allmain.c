@@ -1500,7 +1500,7 @@ enum earlyarg e_arg;
             userea = &argv[i][1];
         }
         match = match_optname(userea, earlyopts[idx].name,
-                              earlyopts[idx].minlength,
+                              (size_t)earlyopts[idx].minlength,
                               earlyopts[idx].valallowed);
         if (match) break;
     }

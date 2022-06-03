@@ -171,7 +171,7 @@ boolean firing;
 
             if (multishotok)
             {
-                multishot = objects[otmpmulti->otyp].oc_multishot_style;
+                multishot = (int)objects[otmpmulti->otyp].oc_multishot_style;
             }
         }
 #endif
@@ -386,7 +386,7 @@ double* average_ptr;
         used_multishotstyle = 3; /* Melee */
 
 
-    int multishotstyle = objects[otmpmulti->otyp].oc_multishot_style;
+    int multishotstyle = (int)objects[otmpmulti->otyp].oc_multishot_style;
 
     if(used_multishotstyle == 1)
     {
@@ -2563,7 +2563,7 @@ boolean from_invent;
     case EGG:
         /* breaking your own eggs is bad luck */
         if (hero_caused && (obj->speflags & SPEFLAGS_YOURS) && obj->corpsenm >= LOW_PM)
-            change_luck(-min(obj->quan, 5L), TRUE);
+            change_luck(-1* (int)min(obj->quan, 5L), TRUE);
         break;
     case BOULDER:
     case STATUE:

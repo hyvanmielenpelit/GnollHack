@@ -11,7 +11,7 @@
 #include "hack.h"
 #include "dlb.h"
 
-STATIC_DCL boolean FDECL(is_swallow_sym, (int));
+STATIC_DCL boolean FDECL(is_swallow_sym, (nhsym));
 STATIC_DCL int FDECL(append_str, (char *, const char *));
 STATIC_DCL void FDECL(look_at_object, (char *, int, int, int));
 STATIC_DCL void FDECL(look_at_monster, (char *, char *,
@@ -42,12 +42,12 @@ extern void NDECL(port_help);
 /* Returns "true" for characters that could represent a monster's stomach. */
 STATIC_OVL boolean
 is_swallow_sym(c)
-int c;
+nhsym c;
 {
     int i;
 
     for (i = S_sw_tl; i <= S_sw_br; i++)
-        if ((int) showsyms[i] == c)
+        if (showsyms[i] == c)
             return TRUE;
     return FALSE;
 }
@@ -62,7 +62,7 @@ append_str(buf, new_str)
 char *buf;
 const char *new_str;
 {
-    int space_left; /* space remaining in buf */
+    size_t space_left; /* space remaining in buf */
 
     if (strstri(buf, new_str))
         return 0;

@@ -5181,7 +5181,7 @@ unsigned long additional_newsym_flags;
     {
         if (context.u_intervals_to_wait_until_end > 0)
         {
-            delay_output_intervals(context.u_intervals_to_wait_until_end);
+            delay_output_intervals((int)context.u_intervals_to_wait_until_end);
             context.u_intervals_to_wait_until_end = 0UL;
         }
     }
@@ -5214,7 +5214,7 @@ unsigned long additional_newsym_flags;
             }
             else
             {
-                delay_output_intervals(animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+                delay_output_intervals((int)animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
                 if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
                 {
                     context.u_intervals_to_wait_until_action = animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
@@ -5305,7 +5305,7 @@ unsigned long additional_newsym_flags;
         if (context.m_intervals_to_wait_until_end > 0)
         {
             if(canspotmon(mtmp))
-                delay_output_intervals(context.m_intervals_to_wait_until_end);
+                delay_output_intervals((int)context.m_intervals_to_wait_until_end);
             context.m_intervals_to_wait_until_end = 0UL;
         }
     }
@@ -5341,7 +5341,7 @@ unsigned long additional_newsym_flags;
             }
             else
             {
-                delay_output_intervals(animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+                delay_output_intervals((int)animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
                 if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
                 {
                     context.m_intervals_to_wait_until_action = animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
@@ -5376,7 +5376,7 @@ u_wait_until_action()
 {
     if (context.u_intervals_to_wait_until_action > 0UL)
     {
-        delay_output_intervals(context.u_intervals_to_wait_until_action);
+        delay_output_intervals((int)context.u_intervals_to_wait_until_action);
         context.u_intervals_to_wait_until_action = 0UL;
     }
 }
@@ -5386,7 +5386,7 @@ m_wait_until_action()
 {
     if (context.m_intervals_to_wait_until_action > 0UL)
     {
-        delay_output_intervals(context.m_intervals_to_wait_until_action);
+        delay_output_intervals((int)context.m_intervals_to_wait_until_action);
         context.m_intervals_to_wait_until_action = 0UL;
     }
 }
@@ -5396,7 +5396,7 @@ u_wait_until_end()
 {
     if (context.u_intervals_to_wait_until_end > 0UL)
     {
-        delay_output_intervals(context.u_intervals_to_wait_until_end);
+        delay_output_intervals((int)context.u_intervals_to_wait_until_end);
         context.u_intervals_to_wait_until_end = 0UL;
     }
 }
@@ -5406,7 +5406,7 @@ m_wait_until_end()
 {
     if (context.m_intervals_to_wait_until_end > 0UL)
     {
-        delay_output_intervals(context.m_intervals_to_wait_until_end);
+        delay_output_intervals((int)context.m_intervals_to_wait_until_end);
         context.m_intervals_to_wait_until_end = 0UL;
     }
 }

@@ -42,7 +42,7 @@
         const char *    ordin           (int)
         char *          sitoa           (int)
         int             sgn             (int)
-        int             rounddiv        (long, int)
+        int             rounddiv        (int, int)
         int             distmin         (int, int, int, int)
         int             dist2           (int, int, int, int)
         boolean         online2         (int, int)
@@ -635,7 +635,7 @@ int n;
 /* calculate x/y, rounding as appropriate */
 int
 rounddiv(x, y)
-long x;
+int x;
 int y;
 {
     int r, m;

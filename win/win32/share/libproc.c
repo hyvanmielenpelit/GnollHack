@@ -642,7 +642,7 @@ void lib_outrip(winid wid, int how, time_t when)
     long year = yyyymmdd(when) / 10000L;
     Sprintf(tbuf, "%4ld", year);
 
-    int points = u.u_gamescore;
+    int points = (int)u.u_gamescore;
 
     lib_callbacks.callback_outrip(wid, plname, points, kbuf, tbuf);
 }

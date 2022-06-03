@@ -30,7 +30,7 @@ init_lan_features()
  *
  */
 char lusername[MAX_LAN_USERNAME];
-int lusername_size = MAX_LAN_USERNAME;
+size_t lusername_size = MAX_LAN_USERNAME;
 
 char *
 lan_username()

@@ -557,8 +557,8 @@ void
 xputs(s)
 const char *s;
 {
-    int k;
-    int slen = strlen(s);
+    size_t k;
+    size_t slen = strlen(s);
 
     if (ttyDisplay)
         set_console_cursor(ttyDisplay->curx, ttyDisplay->cury);
@@ -1049,7 +1049,8 @@ map_subkeyvalue(op)
 register char *op;
 {
     char digits[] = "0123456789";
-    int length, i, idx, val;
+    size_t length, i;
+    int idx, val;
     char *kp;
 
     idx = -1;

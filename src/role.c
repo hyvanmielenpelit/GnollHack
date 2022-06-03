@@ -1290,7 +1290,8 @@ int
 str2role(str)
 const char *str;
 {
-    int i, len;
+    int i;
+    size_t len;
 
     /* Is str valid? */
     if (!str || !str[0])
@@ -1359,7 +1360,8 @@ int
 str2race(str)
 const char *str;
 {
-    int i, len;
+    int i;
+    size_t len;
 
     /* Is str valid? */
     if (!str || !str[0])
@@ -1426,7 +1428,8 @@ int
 str2gend(str)
 const char *str;
 {
-    int i, len;
+    int i;
+    size_t len;
 
     /* Is str valid? */
     if (!str || !str[0])
@@ -1492,7 +1495,8 @@ int
 str2align(str)
 const char *str;
 {
-    int i, len;
+    int i;
+    size_t len;
 
     /* Is str valid? */
     if (!str || !str[0])
@@ -1947,7 +1951,8 @@ char *
 root_plselection_prompt(suppliedbuf, buflen, rolenum, racenum, gendnum,
                         alignnum)
 char *suppliedbuf;
-int buflen, rolenum, racenum, gendnum, alignnum;
+size_t buflen;
+int rolenum, racenum, gendnum, alignnum;
 {
     int k, gendercount = 0, aligncount = 0;
     char buf[BUFSZ];
@@ -2105,7 +2110,8 @@ int buflen, rolenum, racenum, gendnum, alignnum;
 char *
 build_plselection_prompt(buf, buflen, rolenum, racenum, gendnum, alignnum, add_ynq)
 char *buf;
-int buflen, rolenum, racenum, gendnum, alignnum;
+size_t buflen;
+int rolenum, racenum, gendnum, alignnum;
 boolean add_ynq;
 {
     const char *defprompt = "Shall I pick a character for you?";
@@ -2250,7 +2256,8 @@ winid where;
                                not_yet[] = " not yet specified",
                                rand_choice[] = " random";
     char buf[BUFSZ];
-    int r, c, g, a, allowmask;
+    int r, c, g, a;
+    unsigned long allowmask;
 
     r = flags.initrole;
     c = flags.initrace;
@@ -2346,7 +2353,8 @@ boolean preselect;
     anything any;
     char buf[BUFSZ];
     const char *what = 0, *constrainer = 0, *forcedvalue = 0;
-    int f = 0, r, c, g, a, i, allowmask;
+    int f = 0, r, c, g, a, i;
+    unsigned long allowmask;
 
     r = flags.initrole;
     c = flags.initrace;

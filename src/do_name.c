@@ -1106,7 +1106,7 @@ enum game_cursor_types cursor_style;
 void
 new_mname(mon, lth)
 struct monst *mon;
-int lth; /* desired length (caller handles adding 1 for terminator) */
+size_t lth; /* desired length (caller handles adding 1 for terminator) */
 {
     if (lth) {
         /* allocate mextra if necessary; otherwise get rid of old name */
@@ -1114,7 +1114,7 @@ int lth; /* desired length (caller handles adding 1 for terminator) */
             mon->mextra = newmextra();
         else
             free_mname(mon); /* already has mextra, might also have name */
-        MNAME(mon) = (char *) alloc((size_t)lth);
+        MNAME(mon) = (char *) alloc(lth);
     } else {
         /* zero length: the new name is empty; get rid of the old name */
         if (has_mname(mon))
@@ -1137,7 +1137,7 @@ struct monst *mon;
 void
 new_umname(mon, lth)
 struct monst* mon;
-int lth; /* desired length (caller handles adding 1 for terminator) */
+size_t lth; /* desired length (caller handles adding 1 for terminator) */
 {
     if (lth) 
     {
@@ -1146,7 +1146,7 @@ int lth; /* desired length (caller handles adding 1 for terminator) */
             mon->mextra = newmextra();
         else
             free_umname(mon); /* already has mextra, might also have name */
-        UMNAME(mon) = (char*)alloc((size_t)lth);
+        UMNAME(mon) = (char*)alloc(lth);
     }
     else {
         /* zero length: the new name is empty; get rid of the old name */
@@ -1170,7 +1170,7 @@ struct monst* mon;
 void
 new_oname(obj, lth)
 struct obj *obj;
-int lth; /* desired length (caller handles adding 1 for terminator) */
+size_t lth; /* desired length (caller handles adding 1 for terminator) */
 {
     if (lth) {
         /* allocate oextra if necessary; otherwise get rid of old name */
@@ -1178,7 +1178,7 @@ int lth; /* desired length (caller handles adding 1 for terminator) */
             obj->oextra = newoextra();
         else
             free_oname(obj); /* already has oextra, might also have name */
-        ONAME(obj) = (char *) alloc((size_t)lth);
+        ONAME(obj) = (char *) alloc(lth);
     } else {
         /* zero length: the new name is empty; get rid of the old name */
         if (has_oname(obj))
@@ -1216,7 +1216,7 @@ struct obj *obj;
 void
 new_uoname(obj, lth)
 struct obj* obj;
-int lth; /* desired length (caller handles adding 1 for terminator) */
+size_t lth; /* desired length (caller handles adding 1 for terminator) */
 {
     if (lth) {
         /* allocate oextra if necessary; otherwise get rid of old name */
@@ -1224,7 +1224,7 @@ int lth; /* desired length (caller handles adding 1 for terminator) */
             obj->oextra = newoextra();
         else
             free_uoname(obj); /* already has oextra, might also have name */
-        UONAME(obj) = (char*)alloc((size_t)lth);
+        UONAME(obj) = (char*)alloc(lth);
     }
     else {
         /* zero length: the new name is empty; get rid of the old name */
@@ -1266,11 +1266,11 @@ christen_monst(mtmp, name)
 struct monst *mtmp;
 const char *name;
 {
-    int lth;
+    size_t lth;
     char buf[PL_PSIZ];
 
     /* dogname & catname are PL_PSIZ arrays; object names have same limit */
-    lth = (name && *name) ? ((int) strlen(name) + 1) : 0;
+    lth = (name && *name) ? (strlen(name) + 1) : 0;
     if (lth > PL_PSIZ) {
         lth = PL_PSIZ;
         name = strncpy(buf, name, PL_PSIZ - 1);
@@ -1287,11 +1287,11 @@ u_name_monst(mtmp, name)
 struct monst* mtmp;
 const char* name;
 {
-    int lth;
+    size_t lth;
     char buf[PL_PSIZ];
 
     /* dogname & catname are PL_PSIZ arrays; object names have same limit */
-    lth = (name && *name) ? ((int)strlen(name) + 1) : 0;
+    lth = (name && *name) ? (strlen(name) + 1) : 0;
     if (lth > PL_PSIZ) {
         lth = PL_PSIZ;
         name = strncpy(buf, name, PL_PSIZ - 1);
@@ -1534,10 +1534,10 @@ oname(obj, name)
 struct obj *obj;
 const char *name;
 {
-    int lth;
+    size_t lth;
     char buf[PL_PSIZ];
 
-    lth = *name ? (int) (strlen(name) + 1) : 0;
+    lth = *name ? (strlen(name) + 1) : 0;
     if (lth > PL_PSIZ) {
         lth = PL_PSIZ;
         name = strncpy(buf, name, PL_PSIZ - 1);
@@ -1575,10 +1575,10 @@ uoname(obj, name)
 struct obj* obj;
 const char* name;
 {
-    int lth;
+    size_t lth;
     char buf[PL_PSIZ];
 
-    lth = *name ? (int)(strlen(name) + 1) : 0;
+    lth = *name ? (strlen(name) + 1) : 0;
     if (lth > PL_PSIZ) {
         lth = PL_PSIZ;
         name = strncpy(buf, name, PL_PSIZ - 1);

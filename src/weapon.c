@@ -2504,7 +2504,8 @@ boolean singular;
 int
 enhance_weapon_skill()
 {
-    int pass, i, n, len, longest, to_advance, eventually_advance, maxxed_cnt;
+    int pass, i, n, to_advance, eventually_advance, maxxed_cnt;
+    size_t len, longest;
     char buf[BUFSZ], sklnambuf[BUFSZ];
     const char* prefix;
     char special_mark = '\0';
@@ -2637,7 +2638,7 @@ enhance_weapon_skill()
         {
             if (!iflags.menu_tab_sep)
                 Sprintf(headerbuf, " %s%-*s %-12s %-1s %-12s %5s (%s)", prefix,
-                    longest, "Skill", "Current", ">", "Maximum", "Point",
+                    (int)longest, "Skill", "Current", ">", "Maximum", "Point",
                     "Next");
             else
                 Sprintf(headerbuf, " %s%s\t%s\t%s\t%s\t%5s (%4s)", prefix, "Skill", "Current", ">", "Maximum", "Point",
@@ -2646,7 +2647,7 @@ enhance_weapon_skill()
         else
         {
             if (!iflags.menu_tab_sep)
-                Sprintf(headerbuf, " %s %-*s %-12s %-1s %-12s %s %s ", prefix, longest, "Skill", "Current", ">", "Maximum", "  Bonuses   ",
+                Sprintf(headerbuf, " %s %-*s %-12s %-1s %-12s %s %s ", prefix, (int)longest, "Skill", "Current", ">", "Maximum", "  Bonuses   ",
                     to_advance + eventually_advance > 0 ? "  Advanced  " : "");
             else
                 Sprintf(headerbuf, " %s%s\t%s\t%s\t%s\t%s\t%s", prefix, "Skill", "Current", ">", "Maximum", "Bonuses",
@@ -2789,7 +2790,7 @@ enhance_weapon_skill()
                 {
                     if (!iflags.menu_tab_sep)
                         Sprintf(buf, " %s%-*s %-12s %-1s %-12s %5d (%d)", prefix,
-                            longest, skillnamebuf, sklnambuf, skillslotbuf, skillmaxbuf, P_ADVANCE(i),
+                            (int)longest, skillnamebuf, sklnambuf, skillslotbuf, skillmaxbuf, P_ADVANCE(i),
                             practice_needed_to_advance(i, P_SKILL_LEVEL(i)));
                     else
                         Sprintf(buf, " %s%s\t%s\t%s\t%s\t%5d (%d)", prefix, skillnamebuf,
@@ -2962,7 +2963,7 @@ enhance_weapon_skill()
                         }
                     }
                     if (!iflags.menu_tab_sep)
-                        Sprintf(buf, " %s %-*s %-12s %-1s %-12s %-12s %s", prefix, longest,
+                        Sprintf(buf, " %s %-*s %-12s %-1s %-12s %-12s %s", prefix, (int)longest,
                             skillnamebuf, sklnambuf, skillslotbuf, skillmaxbuf, bonusbuf, nextbonusbuf);
                     else
                         Sprintf(buf, " %s%s\t%s\t%s\t%s\t%s\t%s", prefix, skillnamebuf,

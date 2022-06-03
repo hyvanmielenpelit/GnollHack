@@ -1083,7 +1083,7 @@ long crd;
     c = get_unpacked_coord(crd, humidity);
     *x = c.x;
     *y = c.y;
-    get_location(x, y, c.getloc_flags | (c.is_random ? NO_LOC_WARN : 0),
+    get_location(x, y, (int)c.getloc_flags | (c.is_random ? NO_LOC_WARN : 0),
                  croom);
     if (*x == -1 && *y == -1 && c.is_random)
         get_location(x, y, humidity, croom);
@@ -1954,7 +1954,7 @@ struct mkroom *croom;
         if (m->seentraps)
             mtmp->mtrapseen = m->seentraps;
         if (m->female >= 0)
-            mtmp->female = m->female;
+            mtmp->female = (unsigned int)m->female;
         if (m->waitforu)
             mtmp->mstrategy |= STRAT_WAITFORU;
         if (m->protector)
@@ -4525,7 +4525,7 @@ struct sp_coder *coder;
     init_lev.throne_on_ground = coder->throne_on_ground;
     init_lev.fountain_on_ground = coder->fountain_on_ground;
     init_lev.fountain_on_grass = coder->fountain_on_grass;
-    coder->lvl_is_joined = OV_i(joined);
+    coder->lvl_is_joined = (int)OV_i(joined);
 
     splev_initlev(&init_lev);
 
@@ -6649,7 +6649,7 @@ struct sp_coder *coder;
         min_rx = max_rx = dx1;
         min_ry = max_ry = dy1;
         smeq[nroom] = nroom;
-        flood_fill_rm(dx1, dy1, nroom + ROOMOFFSET, OV_i(rlit), TRUE);
+        flood_fill_rm(dx1, dy1, nroom + ROOMOFFSET, (boolean)OV_i(rlit), TRUE);
         add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OV_i(rtype), TRUE, usedfloortype, usedfloorsubtype, roommontype);
         troom->rlit = OV_i(rlit);
         troom->irregular = TRUE;
@@ -6789,7 +6789,7 @@ struct sp_coder *coder;
     get_location_coord(&x, &y, DRY | WET | HOT, coder->croom, OV_i(dcoord));
     if ((dopen = OV_i(db_open)) == -1)
         dopen = !rn2(2);
-    if (!create_drawbridge(x, y, OV_i(dir), dopen ? TRUE : FALSE))
+    if (!create_drawbridge(x, y, (int)OV_i(dir), dopen ? TRUE : FALSE))
         impossible("Cannot create drawbridge.");
     SpLev_Map[x][y] = 1;
 
@@ -6805,7 +6805,7 @@ struct sp_coder *coder;
     static const char nhFunc[] = "spo_mazewalk";
     xchar x, y;
     struct opvar *ftyp, *fstocked, *fdir, *mcoord;
-    int dir;
+    long dir;
 
     if (!OV_pop_i(ftyp) || !OV_pop_i(fstocked) || !OV_pop_i(fdir)
         || !OV_pop_c(mcoord))

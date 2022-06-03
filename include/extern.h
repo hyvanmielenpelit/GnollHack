@@ -254,7 +254,7 @@ E void NDECL(bot);
 E void NDECL(timebot);
 E int FDECL(xlev_to_rank, (int));
 E const char *FDECL(rank_of, (int, SHORT_P, BOOLEAN_P));
-E int FDECL(title_to_mon, (const char *, int *, int *));
+E int FDECL(title_to_mon, (const char *, int *, size_t*));
 E void NDECL(max_rank_sz);
 #ifdef SCORE_ON_BOTL
 E long NDECL(botl_score);
@@ -646,14 +646,14 @@ E char *FDECL(coord_desc, (int, int, char *, CHAR_P));
 E boolean FDECL(getpos_menu, (coord *, int));
 E int FDECL(getpos, (coord *, BOOLEAN_P, const char *, enum game_cursor_types));
 E void FDECL(getpos_sethilite, (void (*f)(int), boolean (*d)(int,int)));
-E void FDECL(new_mname, (struct monst *, int));
+E void FDECL(new_mname, (struct monst *, size_t));
 E void FDECL(free_mname, (struct monst *));
-E void FDECL(new_umname, (struct monst*, int));
+E void FDECL(new_umname, (struct monst*, size_t));
 E void FDECL(free_umname, (struct monst*));
-E void FDECL(new_oname, (struct obj *, int));
+E void FDECL(new_oname, (struct obj *, size_t));
 E void FDECL(free_oname, (struct obj *));
 E const char *FDECL(safe_oname, (struct obj *));
-E void FDECL(new_uoname, (struct obj*, int));
+E void FDECL(new_uoname, (struct obj*, size_t));
 E void FDECL(free_uoname, (struct obj*));
 E const char* FDECL(safe_uoname, (struct obj*));
 E struct monst *FDECL(christen_monst, (struct monst *, const char *));
@@ -1280,7 +1280,7 @@ E int FDECL(strNsubst, (char *, const char *, const char *, int));
 E const char *FDECL(ordin, (int));
 E char *FDECL(sitoa, (int));
 E int FDECL(sgn, (int));
-E int FDECL(rounddiv, (long, int));
+E int FDECL(rounddiv, (int, int));
 E int FDECL(dist2, (int, int, int, int));
 E int FDECL(isqrt, (int));
 E int FDECL(distmin, (int, int, int, int));
@@ -2089,7 +2089,7 @@ E int NDECL(dosuspend);
 #endif
 #endif /* TOS */
 #ifdef WIN32
-E char *FDECL(get_username, (int *));
+E char *FDECL(get_username, (size_t *));
 E void FDECL(nt_regularize, (char *));
 E int NDECL((*nt_kbhit));
 E void FDECL(Delay, (int));
@@ -2294,7 +2294,7 @@ E void FDECL(print_lock_with_buf, (char*, int, int, BOOLEAN_P));
 /* ### options.c ### */
 
 E void NDECL(reglyph_darkroom);
-E boolean FDECL(match_optname, (const char *, const char *, int, BOOLEAN_P));
+E boolean FDECL(match_optname, (const char *, const char *, size_t, BOOLEAN_P));
 E void NDECL(initoptions);
 E void NDECL(initoptions_init);
 E void NDECL(initoptions_finish);
@@ -2833,8 +2833,8 @@ E void NDECL(rigid_role_checks);
 E boolean FDECL(setrolefilter, (const char *));
 E boolean NDECL(gotrolefilter);
 E void NDECL(clearrolefilter);
-E char *FDECL(build_plselection_prompt, (char *, int, int, int, int, int, BOOLEAN_P));
-E char *FDECL(root_plselection_prompt, (char *, int, int, int, int, int));
+E char *FDECL(build_plselection_prompt, (char *, size_t, int, int, int, int, BOOLEAN_P));
+E char *FDECL(root_plselection_prompt, (char *, size_t, int, int, int, int));
 E void NDECL(plnamesuffix);
 E void FDECL(role_selection_prolog, (int, winid));
 E void FDECL(role_menu_extra, (int, winid, BOOLEAN_P));
@@ -3048,7 +3048,7 @@ E void FDECL(popup_talk_lines, (struct monst*, const char**));
 E void FDECL(popup_talk_line, (struct monst*, const char*));
 E void FDECL(popup_talk_line_ex, (struct monst*, const char*, int, int, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(popup_talk_line_with_know_mname, (struct monst*, const char*, BOOLEAN_P));
-E int FDECL(service_identify, (struct monst*, int));
+E int FDECL(service_identify, (struct monst*, long));
 E void FDECL(You_ex1_popup, (const char*, const char*, int, int, int, unsigned long));
 
 /* ### soundset.c ### */
@@ -3152,7 +3152,7 @@ E void FDECL(play_voice_shopkeeper_cad_line, (struct monst*, enum shopkeeper_cad
 E void FDECL(play_voice_shopkeeper_candelabrum_candles, (struct monst*, struct obj*));
 E void FDECL(play_voice_shopkeeper_izchak_talks, (struct monst*, int));
 E void FDECL(play_voice_shopkeeper_for_you, (struct monst*, int, int, long));
-E void FDECL(play_voice_shopkeeper_pay_before_buying, (struct monst*, int, int));
+E void FDECL(play_voice_shopkeeper_pay_before_buying, (struct monst*, long, long));
 E void FDECL(play_voice_shopkeeper_how_dare_you_damage, (struct monst*, UCHAR_P, const char*, BOOLEAN_P));
 E void FDECL(play_voice_shopkeeper_costly_alteration, (struct monst*, struct obj*, enum cost_alteration_types));
 E void FDECL(play_voice_monster_cuss, (struct monst*, int));
@@ -3389,7 +3389,7 @@ E void FDECL(property_expiry_message, (int, BOOLEAN_P));
 
 /* ### topten.c ### */
 
-E void FDECL(formatkiller, (char *, unsigned, int, BOOLEAN_P));
+E void FDECL(formatkiller, (char *, size_t, int, BOOLEAN_P));
 E int FDECL(observable_depth, (d_level *));
 E void FDECL(topten, (int, time_t));
 E void FDECL(prscore, (int, char **));

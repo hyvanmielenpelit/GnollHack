@@ -1010,7 +1010,7 @@ int* fem_ptr;
     register int mntmp = NON_PM;
     register char *s, *str, *term;
     char buf[BUFSZ];
-    int len, slen;
+    size_t len, slen;
 
     str = strcpy(buf, in_str);
 
@@ -1143,7 +1143,7 @@ int* fem_ptr;
         register const struct alt_spl *namep;
 
         for (namep = names; namep->name; namep++)
-            if (!strncmpi(str, namep->name, (int)strlen(namep->name)))
+            if (!strncmpi(str, namep->name, strlen(namep->name)))
             {
                 if(namep->gender == 1 && fem_ptr)
                     *fem_ptr = 0;
@@ -1203,7 +1203,7 @@ int* fem_ptr;
     }
 
     if (mntmp == NON_PM)
-        mntmp = title_to_mon(str, (int *) 0, (int *) 0);
+        mntmp = title_to_mon(str, (int *) 0, (size_t *) 0);
     
     return mntmp;
 }

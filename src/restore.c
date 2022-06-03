@@ -1579,7 +1579,7 @@ const char *name;
     if (!(reslt = uptodate(fd, name)))
         return 1;
 
-    rlen = read(fd, (genericptr_t) &sfi, (readLenType)sizeof sfi);
+    rlen = (int)read(fd, (genericptr_t) &sfi, (readLenType)sizeof sfi);
     minit(); /* ZEROCOMP */
     if (rlen == 0) {
         if (verbose) {
@@ -1768,7 +1768,7 @@ register size_t len;
 {
     register int rlen;
 
-    rlen = read(fd, buf, (readLenType) len);
+    rlen = (int)read(fd, buf, (readLenType) len);
     if ((readLenType) rlen != (readLenType) len) {
         if (restoreprocs.mread_flags == 1) { /* means "return anyway" */
             restoreprocs.mread_flags = -1;

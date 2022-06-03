@@ -367,7 +367,7 @@ newman()
     for (i = 0; i < oldlvl; i++)
         hpmax -= (int) u.uhpinc[i];
     /* hpmax * rn1(4,8) / 10; 0.95*hpmax on average */
-    hpmax = rounddiv((long) hpmax * (long) rn1(4, 8), 10);
+    hpmax = rounddiv(hpmax * rn1(4, 8), 10);
     for (i = 0; (u.ulevel = i) < newlvl; i++)
         hpmax += newhp();
     if (hpmax < u.ulevel)
@@ -376,19 +376,19 @@ newman()
     int oldhpmax = u.uhpmax;
     u.ubasehpmax = hpmax;
     updatemaxhp();
-    u.uhp = rounddiv((long)u.uhp * (long)oldhpmax, u.uhpmax);
+    u.uhp = rounddiv(u.uhp * oldhpmax, u.uhpmax);
     /*
      * Do the same for spell power.
      */
     enmax = u.ubaseenmax;
     for (i = 0; i < oldlvl; i++)
         enmax -= (int) u.ueninc[i];
-    enmax = rounddiv((long) enmax * (long) rn1(4, 8), 10);
+    enmax = rounddiv(enmax * rn1(4, 8), 10);
     for (i = 0; (u.ulevel = i) < newlvl; i++)
         enmax += newpw();
     if (enmax < u.ulevel)
         enmax = u.ulevel;
-    u.uen = rounddiv((long) u.uen * (long) enmax,
+    u.uen = rounddiv(u.uen * enmax,
                      ((u.uenmax < 1) ? 1 : u.uenmax));
     u.ubaseenmax = enmax;
     updatemaxen();

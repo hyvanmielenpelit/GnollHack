@@ -339,7 +339,7 @@ int expltype;
             }
             else
             {
-                delay_output_intervals(animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+                delay_output_intervals((int)animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
                 if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
                 {
                     context.expl_intervals_to_wait_until_action = animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
@@ -1051,7 +1051,7 @@ enum explosion_types expltype;
             }
             else
             {
-                delay_output_intervals(animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+                delay_output_intervals((int)animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
                 if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
                 {
                     context.expl_intervals_to_wait_until_action = animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
@@ -1080,7 +1080,7 @@ explosion_wait_until_action()
 {
     if (context.expl_intervals_to_wait_until_action > 0UL)
     {
-        delay_output_intervals(context.expl_intervals_to_wait_until_action);
+        delay_output_intervals((int)context.expl_intervals_to_wait_until_action);
         context.expl_intervals_to_wait_until_action = 0UL;
     }
 }
@@ -1090,7 +1090,7 @@ explosion_wait_until_end()
 {
     if (context.expl_intervals_to_wait_until_end > 0)
     {
-        delay_output_intervals(context.expl_intervals_to_wait_until_end);
+        delay_output_intervals((int)context.expl_intervals_to_wait_until_end);
         context.expl_intervals_to_wait_until_end = 0UL;
     }
 

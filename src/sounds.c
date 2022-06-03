@@ -137,7 +137,7 @@ STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_stones_and_charged_items, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_general_identify, (struct monst*, const char*, int, int, int, int));
+STATIC_DCL int FDECL(do_chat_npc_general_identify, (struct monst*, const char*, int, long, int, int));
 STATIC_DCL int FDECL(do_chat_npc_sell_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_dilithium_crystals, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_spellbooks, (struct monst*));
@@ -151,7 +151,7 @@ STATIC_DCL int FDECL(do_chat_npc_teach_spells, (struct monst*));
 STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
-STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, int, const char*, int));
+STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, long, const char*, int));
 STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, long, const char*, int));
 STATIC_DCL int FDECL(general_service_query_with_extra, (struct monst*, int (*)(struct monst*), const char*, long, const char*, int, const char*, int));
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
@@ -5451,7 +5451,7 @@ struct monst* mtmp;
         return 0;
 
     long umoney;
-    int u_pay;
+    long u_pay;
     long base_join_cost = 20 + 5 * mtmp->data->difficulty * mtmp->data->difficulty;
     int ucha = ACURR(A_CHA);
     long join_cost = (base_join_cost * max(10, (100 - (ucha - 8) * 5))) / 100;
@@ -5507,7 +5507,7 @@ struct monst* mtmp;
     case 'y':
         if (join_cost > 0)
         {
-            if (umoney < (long)join_cost) 
+            if (umoney < join_cost) 
             {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
                 You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
@@ -5515,7 +5515,7 @@ struct monst* mtmp;
             }
             u_pay = join_cost;
 
-            money2mon(mtmp, (long)u_pay);
+            money2mon(mtmp, u_pay);
             bot();
         }
 
@@ -5547,7 +5547,7 @@ struct monst* mtmp;
         return 0;
 
     long umoney;
-    int u_pay;
+    long u_pay;
     long base_explain_cost = 5 + 1 * mtmp->data->difficulty;
     int ucha = ACURR(A_CHA);
     long explain_cost = (base_explain_cost * max(10, (100 - (ucha - 8) * 5))) / 100;
@@ -5587,7 +5587,7 @@ struct monst* mtmp;
     default:
         return 0;
     case 'y':
-        if (umoney < (long)explain_cost)
+        if (umoney < explain_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
@@ -5595,7 +5595,7 @@ struct monst* mtmp;
         }
         u_pay = explain_cost;
         play_sfx_sound(SFX_READ);
-        money2mon(mtmp, (long)u_pay);
+        money2mon(mtmp, u_pay);
         bot();
         monsterdescription(mtmp);
         return 1;
@@ -5772,7 +5772,7 @@ struct monst* mtmp;
                     case 'n':
                         break;
                     case 'y':
-                        if (umoney < (long)item_cost) {
+                        if (umoney < item_cost) {
                             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
                             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
                             break; /* switch break */
@@ -5785,7 +5785,7 @@ struct monst* mtmp;
                 }
                 else
                 {
-                    if (umoney < (long)item_cost) {
+                    if (umoney < item_cost) {
                         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
                         You("don't have enough money for %s!", cxname(item_to_buy));
                         break; /* for break */
@@ -5803,7 +5803,7 @@ struct monst* mtmp;
 
                     You("%s", qbuf);
 
-                    money2mon(mtmp, (long)item_cost);
+                    money2mon(mtmp, item_cost);
                     if(itemized)
                         bot();
 
@@ -6142,9 +6142,9 @@ struct monst* mtmp;
 {
 
     long umoney = money_cnt(invent);
-    int u_pay, 
-        bless_cost = max(1, (int)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
-        curse_cost = max(1, (int)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long u_pay, 
+        bless_cost = max(1L, (long)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+        curse_cost = max(1L, (long)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     int priest_action = 0;
     char qbuf[QBUFSZ];
 
@@ -6158,13 +6158,13 @@ struct monst* mtmp;
     }
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_BLESS_AN_ITEM);
-    Sprintf(qbuf, "Would you like to bless an item? (%d %s)", bless_cost, currency((long)bless_cost));
+    Sprintf(qbuf, "Would you like to bless an item? (%ld %s)", bless_cost, currency(bless_cost));
     switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
         return 0;
     case 'y':
-            if (umoney < (long)bless_cost) {
+            if (umoney < bless_cost) {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
                 You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
                 return 0;
@@ -6175,11 +6175,11 @@ struct monst* mtmp;
         break;
     case 'n':
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_CURSE_AN_ITEM);
-        Sprintf(qbuf, "Then would you like to curse one? (%d %s)",
-            curse_cost, currency((long)curse_cost));
+        Sprintf(qbuf, "Then would you like to curse one? (%ld %s)",
+            curse_cost, currency(curse_cost));
         if (yn_query_mon(mtmp, qbuf) != 'y')
             return 0;
-        if (umoney < (long)curse_cost)
+        if (umoney < curse_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
@@ -6214,7 +6214,7 @@ struct monst* mtmp;
 
     if (effect_happened)
     {
-        money2mon(mtmp, (long)u_pay);
+        money2mon(mtmp, u_pay);
         bot();
     }
 
@@ -6230,7 +6230,7 @@ struct monst* mtmp;
 {
 
     long umoney = money_cnt(invent);
-    int u_pay, extrahealing_cost = max(1, (int)(50 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long u_pay, extrahealing_cost = max(1L, (long)(50 * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
@@ -6243,12 +6243,12 @@ struct monst* mtmp;
     }
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_STANDARD_HEALING);
-    Sprintf(qbuf, "Would you like to have a standard healing? (%d %s)", extrahealing_cost, currency((long)extrahealing_cost));
+    Sprintf(qbuf, "Would you like to have a standard healing? (%ld %s)", extrahealing_cost, currency(extrahealing_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
         return 0;
     case 'y':
-        if (umoney < (long)extrahealing_cost) {
+        if (umoney < extrahealing_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You("don't have enough money for that!");
             return 0;
@@ -6256,7 +6256,7 @@ struct monst* mtmp;
         u_pay = extrahealing_cost;
         break;
     }
-    money2mon(mtmp, (long)u_pay);
+    money2mon(mtmp, u_pay);
     bot();
 
     int otyp = POT_EXTRA_HEALING;
@@ -6278,7 +6278,7 @@ struct monst* mtmp;
 {
 
     long umoney = money_cnt(invent);
-    int u_pay, fullhealing_cost = max(1, (int)((250 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long u_pay, fullhealing_cost = max(1L, (long)((250 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
@@ -6291,12 +6291,12 @@ struct monst* mtmp;
     }
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FULL_HEALING);
-    Sprintf(qbuf, "Would you like to have a full healing? (%d %s)", fullhealing_cost, currency((long)fullhealing_cost));
+    Sprintf(qbuf, "Would you like to have a full healing? (%ld %s)", fullhealing_cost, currency(fullhealing_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
         return 0;
     case 'y':
-        if (umoney < (long)fullhealing_cost) {
+        if (umoney < fullhealing_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
@@ -6304,7 +6304,7 @@ struct monst* mtmp;
         u_pay = fullhealing_cost;
         break;
     }
-    money2mon(mtmp, (long)u_pay);
+    money2mon(mtmp, u_pay);
     bot();
 
     int otyp = POT_FULL_HEALING;
@@ -6326,7 +6326,7 @@ struct monst* mtmp;
 {
 
     long umoney = money_cnt(invent);
-    int u_pay, cure_sickness_cost = max(1, (int)(100 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long u_pay, cure_sickness_cost = max(1L, (long)(100 * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
@@ -6339,12 +6339,12 @@ struct monst* mtmp;
     }
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_SICKNESS_CURED);
-    Sprintf(qbuf, "Would you like to have your sickness cured? (%d %s)", cure_sickness_cost, currency((long)cure_sickness_cost));
+    Sprintf(qbuf, "Would you like to have your sickness cured? (%ld %s)", cure_sickness_cost, currency(cure_sickness_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
         return 0;
     case 'y':
-        if (umoney < (long)cure_sickness_cost) {
+        if (umoney < cure_sickness_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
@@ -6352,7 +6352,7 @@ struct monst* mtmp;
         u_pay = cure_sickness_cost;
         break;
     }
-    money2mon(mtmp, (long)u_pay);
+    money2mon(mtmp, u_pay);
     bot();
 
     int otyp = SPE_CURE_SICKNESS;
@@ -6378,9 +6378,9 @@ struct monst* mtmp;
     //priest_talk(mtmp);
 
     long umoney = money_cnt(invent);
-    int u_pay,
-        major_cost = max(1, (int)((2500 + 150 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
-        minor_cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long u_pay,
+        major_cost = max(1L, (long)((2500 + 150 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+        minor_cost = max(1L, (long)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     int priest_action = 0;
     char qbuf[QBUFSZ];
 
@@ -6394,13 +6394,13 @@ struct monst* mtmp;
     }
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_MAJOR_CONTRIBUTION);
-    Sprintf(qbuf, "Would you like to make a major contribution for the temple? (%d %s)", major_cost, currency((long)major_cost));
+    Sprintf(qbuf, "Would you like to make a major contribution for the temple? (%ld %s)", major_cost, currency(major_cost));
     switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
         return 0;
     case 'y':
-        if (umoney < (long)major_cost) {
+        if (umoney < major_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
@@ -6411,11 +6411,11 @@ struct monst* mtmp;
         break;
     case 'n':
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_MINOR_DONATION);
-        Sprintf(qbuf, "Then would you like to make a minor donation instead? (%d %s)",
-            minor_cost, currency((long)minor_cost));
+        Sprintf(qbuf, "Then would you like to make a minor donation instead? (%ld %s)",
+            minor_cost, currency(minor_cost));
         if (yn_query_mon(mtmp, qbuf) != 'y')
             return 0;
-        if (umoney < (long)minor_cost)
+        if (umoney < minor_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
@@ -6427,7 +6427,7 @@ struct monst* mtmp;
     }
 
 
-    money2mon(mtmp, (long)u_pay);
+    money2mon(mtmp, u_pay);
     bot();
 
     boolean coaligned = p_coaligned(mtmp);
@@ -6496,7 +6496,7 @@ do_chat_priest_divination(mtmp)
 struct monst* mtmp;
 {
     long umoney = money_cnt(invent);
-    int u_pay, divination_cost = max(1, (int)(25 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long u_pay, divination_cost = max(1L, (long)(25 * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
@@ -6509,12 +6509,12 @@ struct monst* mtmp;
     }
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_WOULD_YOU_LIKE_TO_SEE_YOUR_FORTUNE);
-    Sprintf(qbuf, "Would you like to see your fortune? (%d %s)", divination_cost, currency((long)divination_cost));
+    Sprintf(qbuf, "Would you like to see your fortune? (%ld %s)", divination_cost, currency(divination_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
         return 0;
     case 'y':
-        if (umoney < (long)divination_cost) {
+        if (umoney < divination_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
@@ -6522,7 +6522,7 @@ struct monst* mtmp;
         u_pay = divination_cost;
         break;
     }
-    money2mon(mtmp, (long)u_pay);
+    money2mon(mtmp, u_pay);
     bot();
 
     u.uconduct.gnostic++;
@@ -6666,7 +6666,7 @@ struct monst* mtmp;
         return 0;
 
     long umoney;
-    int minor_id_cost = max(1, (int)((ESHK(mtmp)->shoptype == SHOPBASE ? 150 + 10 * (double)u.ulevel : 75 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long minor_id_cost = max(1L, (long)((ESHK(mtmp)->shoptype == SHOPBASE ? 150 + 10 * (double)u.ulevel : 75 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -6693,13 +6693,13 @@ struct monst* mtmp;
     }
     context.shop_identify_type = 0;
 
-    Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description), minor_id_cost, currency((long)minor_id_cost));
+    Sprintf(qbuf, "Would you like to identify %s? (%ld %s)", an(shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description), minor_id_cost, currency(minor_id_cost));
     switch (yn_query_mon(mtmp, qbuf)) 
     {
     default:
         return 0;
     case 'y':
-        if (umoney < (long)minor_id_cost) {
+        if (umoney < minor_id_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
@@ -6799,7 +6799,7 @@ struct monst* mtmp;
 
     long umoney;
     long u_pay;
-    long reconcile_cost = max(1, (int)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0) + max(0, ESHK(mtmp)->robbed + ESHK(mtmp)->debit - ESHK(mtmp)->credit)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long reconcile_cost = max(1L, (long)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0) + max(0, ESHK(mtmp)->robbed + ESHK(mtmp)->debit - ESHK(mtmp)->credit)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
     
     multi = 0;
@@ -6823,7 +6823,7 @@ struct monst* mtmp;
     default:
         return 0;
     case 'y':
-        if (umoney < (long)reconcile_cost) {
+        if (umoney < reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
@@ -6863,7 +6863,7 @@ struct monst* mtmp;
 
     long umoney;
     long u_pay;
-    long reconcile_cost = max(1, (int)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long reconcile_cost = max(1L, (long)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -6887,7 +6887,7 @@ struct monst* mtmp;
     default:
         return 0;
     case 'y':
-        if (umoney < (long)reconcile_cost) {
+        if (umoney < reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
@@ -6923,7 +6923,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    int cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));    
+    long cost = max(1L, (long)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return spell_service_query(mtmp, SPE_ENCHANT_ARMOR, 0, "enchant an armor", cost, "enchanting an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ARMOR);
 }
 
@@ -6934,7 +6934,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    int cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long cost = max(1L, (long)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return spell_service_query(mtmp, SPE_ENCHANT_WEAPON, 0, "enchant a weapon", cost, "enchanting a weapon", SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_A_WEAPON);
 }
 
@@ -6945,7 +6945,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    long cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long cost = max(1L, (long)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return general_service_query(mtmp, repair_armor_func, "repair an armor", cost, "repairing an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_REPAIR_AN_ARMOR);
 }
 
@@ -6956,7 +6956,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    long cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long cost = max(1L, (long)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return general_service_query(mtmp, repair_weapon_func, "repair a weapon", cost, "repairing a weapon", SMITH_LINE_WOULD_YOU_LIKE_TO_REPAIR_A_WEAPON);
 }
 
@@ -6968,7 +6968,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    int cost = max(1, (int)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long cost = max(1L, (long)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return spell_service_query(mtmp, SPE_PROTECT_ARMOR, 0, "protect an armor", cost, "protecting an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_PROTECT_AN_ARMOR);
 }
 
@@ -6979,7 +6979,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    int cost = max(1, (int)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long cost = max(1L, (long)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return spell_service_query(mtmp, SPE_PROTECT_WEAPON, 0, "protect a weapon", cost, "protecting a weapon", SMITH_LINE_WOULD_YOU_LIKE_TO_PROTECT_A_WEAPON);
 }
 
@@ -6990,7 +6990,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    long cost = max(5, (int)((max(objects[BRASS_LANTERN].oc_cost, objects[POT_OIL].oc_cost)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long cost = max(5L, (long)((max(objects[BRASS_LANTERN].oc_cost, objects[POT_OIL].oc_cost)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return general_service_query(mtmp, refill_lantern_func, "refill a lamp or lantern", cost, "refilling a lamp or lantern", SMITH_LINE_WOULD_YOU_LIKE_TO_REFILL_A_LAMP_OR_LANTERN);
 }
 
@@ -7058,7 +7058,7 @@ struct monst* mtmp;
     /* Now generate the menu */
     if (select_menu(win, PICK_ONE, &pick_list) > 0)
     {
-        i = pick_list->item.a_char;
+        i = (int)pick_list->item.a_char;
         free((genericptr_t)pick_list);
     }
     destroy_nhwindow(win);
@@ -7066,32 +7066,32 @@ struct monst* mtmp;
     if (i < 1)
         return 0;
 
-    int cost = 0;
+    long cost = 0;
 
     switch(i)
     {
     case 1:
-        cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query(mtmp, forge_dragon_scale_mail_func, "forge a dragon scale mail", cost, "forging a dragon scale mail", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_DRAGON_SCALE_MAIL);
         break;
     case 2:
-        cost = max(1, (int)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_shield_of_reflection_func, "forge a shield of reflection", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "15 nuggets of silver ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_SHIELD_OF_REFLECTION);
         break;
     case 3:
-        cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_crystal_plate_mail_func, "forge a crystal plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "3 dilithium crystals", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CRYSTAL_PLATE_MAIL);
         break;
     case 4:
-        cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of adamantium ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ADAMANTIUM_FULL_PLATE_MAIL);
         break;
     case 5:
-        cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of mithril ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_MITHRIL_FULL_PLATE_MAIL);
         break;
     case 6:
-        cost = max(1, (int)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_orichalcum_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of orichalcum ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ORICHALCUM_FULL_PLATE_MAIL);
         break;
     default:
@@ -7161,24 +7161,24 @@ struct monst* mtmp;
     if (i < 1)
         return 0;
 
-    int cost = 0;
+    long cost = 0;
 
     switch (i)
     {
     case 1:
-        cost = max(1, (int)((100 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((100 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_plate_mail_func, "forge a plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_PLATE_MAIL);
         break;
     case 2:
-        cost = max(1, (int)((50 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((50 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_bronze_plate_mail_func, "forge a bronze plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of copper ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_BRONZE_PLATE_MAIL);
         break;
     case 3:
-        cost = max(1, (int)((200 + 20 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((200 + 20 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_field_plate_mail_func, "forge a field plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "15 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FIELD_PLATE_MAIL);
         break;
     case 4:
-        cost = max(1, (int)((400 + 40 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (long)((400 + 40 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_full_plate_mail_func, "forge a full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "30 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FULL_PLATE_MAIL);
         break;
     default:
@@ -7193,7 +7193,7 @@ STATIC_OVL int
 do_chat_smith_identify(mtmp)
 struct monst* mtmp;
 {
-    return do_chat_npc_general_identify(mtmp, "weapon or armor", -1, max(1, (int)((double)(75 + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))), SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR, SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_WEAPON_OR_ARMOR);
+    return do_chat_npc_general_identify(mtmp, "weapon or armor", -1, max(1L, (long)((double)(75 + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))), SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR, SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_WEAPON_OR_ARMOR);
 }
 
 STATIC_OVL boolean
@@ -7252,7 +7252,8 @@ sell_many_to_npc(mtmp, allow)
 struct monst* mtmp;
 boolean FDECL((*allow), (OBJ_P)); /* allow function */
 {
-    int n, n_sold = 0, i, cnt;
+    int n, n_sold = 0, i;
+    long cnt;
     struct obj* otmp, * otmp2;
     menu_item* pick_list = (menu_item*)0;
     boolean all_pressed = FALSE;
@@ -7339,10 +7340,10 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    int service_cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long service_cost = max(1L, (long)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 
     long umoney = money_cnt(invent);
-    int u_pay;
+    long u_pay;
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, "opening a branch portal") || !m_speak_check(mtmp))
@@ -7354,13 +7355,13 @@ struct monst* mtmp;
         return 0;
     }
 
-    Sprintf(qbuf, "Would you like to %s? (%d %s)", "open a branch portal", service_cost, currency((long)service_cost));
+    Sprintf(qbuf, "Would you like to %s? (%ld %s)", "open a branch portal", service_cost, currency(service_cost));
     switch (yn_query_mon(mtmp, qbuf))
     {
     default:
         return 0;
     case 'y':
-        if (umoney < (long)service_cost)
+        if (umoney < service_cost)
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
@@ -7370,12 +7371,12 @@ struct monst* mtmp;
         break;
     }
 
-    money2mon(mtmp, (long)u_pay);
+    money2mon(mtmp, u_pay);
     pline("%s opens a branch portal for you.", noittame_Monnam(mtmp));
     int portal_res = create_portal();
     if (!portal_res)
     {
-        money2u(mtmp, (long)u_pay);
+        money2u(mtmp, u_pay);
         pline1("Nevermind.");
         return 0;
     }
@@ -7556,7 +7557,7 @@ struct monst* mtmp;
 
     long umoney;
     long u_pay;
-    long reconcile_cost = max(1, (int)((mtmp->m_lev * 5 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long reconcile_cost = max(1L, (long)((mtmp->m_lev * 5 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -7576,7 +7577,7 @@ struct monst* mtmp;
     default:
         return 0;
     case 'y':
-        if (umoney < (long)reconcile_cost) {
+        if (umoney < reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
@@ -7614,7 +7615,7 @@ struct monst* mtmp;
 
     long umoney;
     long u_pay;
-    long observe_cost = max(1, (int)((20 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long observe_cost = max(1L, (long)((20 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -7645,7 +7646,7 @@ struct monst* mtmp;
         default:
             return 0;
         case 'y':
-            if (umoney < (long)observe_cost) {
+            if (umoney < observe_cost) {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
                 You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
                 return 0;
@@ -7695,7 +7696,7 @@ struct monst* mtmp;
 
     long umoney;
     long u_pay;
-    long observe_cost = max(1, (int)((20 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long observe_cost = max(1L, (long)((20 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -7725,7 +7726,7 @@ struct monst* mtmp;
         default:
             return 0;
         case 'y':
-            if (umoney < (long)observe_cost) {
+            if (umoney < observe_cost) {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
                 You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
                 return 0;
@@ -7766,7 +7767,7 @@ struct monst* mtmp;
 
     long umoney;
     long u_pay;
-    long reconcile_cost = max(1, (int)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long reconcile_cost = max(1L, (long)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -7794,7 +7795,7 @@ struct monst* mtmp;
     default:
         return 0;
     case 'y':
-        if (umoney < (long)reconcile_cost) {
+        if (umoney < reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
@@ -7832,7 +7833,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    int cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long cost = max(1L, (long)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return spell_service_query(mtmp, SCR_ENCHANT_ACCESSORY, 0, "enchant an accessory", cost, "enchanting an accessory", NPC_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ACCESSORY);
 }
 
@@ -7843,7 +7844,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    int cost = max(1, (int)((1200 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long cost = max(1L, (long)((1200 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return spell_service_query(mtmp, SCR_CHARGING, 0, "recharge an item", cost, "recharging an item", NPC_LINE_WOULD_YOU_LIKE_TO_RECHARGE_AN_ITEM);
 }
 
@@ -7855,7 +7856,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    int cost = max(1, (int)((4000 + 200 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long cost = max(1L, (long)((4000 + 200 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return spell_service_query(mtmp, SCR_CHARGING, 1, "fully recharge an item", cost, "fully recharging an item", NPC_LINE_WOULD_YOU_LIKE_TO_FULLY_RECHARGE_AN_ITEM);
 }
 
@@ -7943,7 +7944,7 @@ struct monst* mtmp;
 
     long umoney;
     long u_pay;
-    long reconcile_cost = max(1, (int)(500 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    long reconcile_cost = max(1L, (long)(500 * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -7979,7 +7980,7 @@ struct monst* mtmp;
     default:
         return 0;
     case 'y':
-        if (umoney < (long)reconcile_cost) {
+        if (umoney < reconcile_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
@@ -8014,7 +8015,7 @@ do_chat_npc_identify_gems_and_stones(mtmp)
 struct monst* mtmp;
 {
     return do_chat_npc_general_identify(mtmp, "gem or stone", 1, 
-        max(1, (int)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))), 
+        max(1L, (long)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
         NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_GEM_OR_STONE, NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_GEM_OR_STONE);
 }
 
@@ -8085,7 +8086,7 @@ do_chat_npc_identify_accessories_and_charged_items(mtmp)
 struct monst* mtmp;
 {
     return do_chat_npc_general_identify(mtmp, "accessory or charged item", 2,
-        max(1, (int)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+        max(1L, (long)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
         NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_AN_ACCESSORY_OR_CHARGED_ITEM, NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_ACCESSORY_OR_CHARGED_ITEM);
 }
 
@@ -8095,7 +8096,7 @@ struct monst* mtmp;
 {
 
     return do_chat_npc_general_identify(mtmp, "gem, stone or a charged item", 3,
-        max(1, (int)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+        max(1L, (long)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
         NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_GEM_STONE_OR_CHARGED_ITEM, NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_GEM_STONE_OR_CHARGED_ITEM);
 }
 
@@ -8103,7 +8104,8 @@ STATIC_OVL int
 do_chat_npc_general_identify(mtmp, identify_item_str, id_idx, minor_id_cost, spdialogue1, spdialogue2)
 struct monst* mtmp;
 const char* identify_item_str;
-int id_idx, minor_id_cost, spdialogue1, spdialogue2 UNUSED;
+int id_idx, spdialogue1, spdialogue2 UNUSED;
+long minor_id_cost;
 {
     if (!mtmp)
         return 0;
@@ -8132,13 +8134,13 @@ int id_idx, minor_id_cost, spdialogue1, spdialogue2 UNUSED;
     char qbuf[QBUFSZ];
     int res = 0;
     play_monster_special_dialogue_line(mtmp, spdialogue1);
-    Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(identify_item_str), minor_id_cost, currency((long)minor_id_cost));
+    Sprintf(qbuf, "Would you like to identify %s? (%ld %s)", an(identify_item_str), minor_id_cost, currency(minor_id_cost));
 
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
         return 0;
     case 'y':
-        if (umoney < (long)minor_id_cost) {
+        if (umoney < minor_id_cost) {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
@@ -8193,7 +8195,7 @@ int id_idx, minor_id_cost, spdialogue1, spdialogue2 UNUSED;
 int
 service_identify(mtmp, id_cost)
 struct monst* mtmp;
-int id_cost;
+long id_cost;
 {
     menu_item* pick_list;
     int n, i;
@@ -8231,7 +8233,7 @@ int id_cost;
             struct obj* otmp = pick_list[i].item.a_obj;
             if (itemize)
             {
-                Sprintf(qendbuf, " for %d %s?", id_cost, currency((long)id_cost));
+                Sprintf(qendbuf, " for %ld %s?", id_cost, currency(id_cost));
                 (void)safe_qbuf(qbuf, "Identify ", qendbuf, otmp,
                     doname, thesimpleoname,
                     (otmp->quan == 1L) ? "that" : "those");
@@ -8260,7 +8262,7 @@ int id_cost;
             }
 
             play_sfx_sound(SFX_IDENTIFY_SUCCESS);
-            money2mon(mtmp, (long)id_cost);
+            money2mon(mtmp, id_cost);
             umoney = money_cnt(invent);
             bot();
             id_res = identify(otmp);
@@ -9156,14 +9158,15 @@ const char *msg;
 STATIC_OVL int
 spell_service_query(mtmp, service_spell_id, buc, service_verb, service_cost, no_mood_string, special_dialogue_sound_id)
 struct monst* mtmp;
-int service_spell_id, buc, service_cost;
+int service_spell_id, buc;
+long service_cost;
 const char* service_verb;
 const char* no_mood_string;
 int special_dialogue_sound_id;
 {
 
     long umoney = money_cnt(invent);
-    int u_pay;
+    long  u_pay;
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, no_mood_string) || !m_speak_check(mtmp))
@@ -9178,13 +9181,13 @@ int special_dialogue_sound_id;
     if (special_dialogue_sound_id > 0)
         play_monster_special_dialogue_line(mtmp, special_dialogue_sound_id);
 
-    Sprintf(qbuf, "Would you like to %s? (%d %s)", service_verb, service_cost, currency((long)service_cost));
+    Sprintf(qbuf, "Would you like to %s? (%ld %s)", service_verb, service_cost, currency(service_cost));
     switch (yn_query_mon(mtmp, qbuf))
     {
     default:
         return 0;
     case 'y':
-        if (umoney < (long)service_cost) 
+        if (umoney < service_cost) 
         {
             play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
@@ -9209,7 +9212,7 @@ int special_dialogue_sound_id;
     (void)seffects(pseudo, &effect_happened);
     if (effect_happened)
     {
-        money2mon(mtmp, (long)u_pay);
+        money2mon(mtmp, u_pay);
         bot();
     }
     obfree(pseudo, (struct obj*)0);
@@ -9853,9 +9856,9 @@ struct monst* mtmp;
             spl_book[i].sp_amount = 0; //How many times material components have been mixed
         else
             spl_book[i].sp_amount = -1; //Infinite
-        spl_book[i].sp_cooldownlength = objects[booktype].oc_spell_cooldown;
+        spl_book[i].sp_cooldownlength = (int)objects[booktype].oc_spell_cooldown;
         spl_book[i].sp_cooldownleft = 0;
-        spl_book[i].sp_skillchance = objects[booktype].oc_spell_skill_chance;
+        spl_book[i].sp_skillchance = (int)objects[booktype].oc_spell_skill_chance;
 
         incr_spell_nknow(i, 1);
         play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);

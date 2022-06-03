@@ -2842,13 +2842,13 @@ struct monst *mtmp2, *mtmp1;
         mtmp2->mextra = newmextra();
     if (MNAME(mtmp1)) 
     {
-        new_mname(mtmp2, (int) strlen(MNAME(mtmp1)) + 1);
+        new_mname(mtmp2, strlen(MNAME(mtmp1)) + 1);
         Strcpy(MNAME(mtmp2), MNAME(mtmp1));
     }
 
     if (UMNAME(mtmp1)) 
     {
-        new_umname(mtmp2, (int)strlen(UMNAME(mtmp1)) + 1);
+        new_umname(mtmp2, strlen(UMNAME(mtmp1)) + 1);
         Strcpy(UMNAME(mtmp2), UMNAME(mtmp1));
     }
     if (EGD(mtmp1)) 
@@ -3830,7 +3830,7 @@ cleanup:
         luck_change += -5;
     }
 
-    change_luck(luck_change, TRUE);
+    change_luck((int)luck_change, TRUE);
 
     /* give experience points */
     tmp = experience(mtmp, (int) mvitals[mndx].died);
@@ -3841,17 +3841,17 @@ cleanup:
     if (mtmp->m_id == quest_status.leader_m_id) 
     { /* REAL BAD! */
         play_sfx_sound(SFX_GUILTY);
-        adjalign(-(u.ualign.record + (int) ALIGNLIM / 2));
+        adjalign(-(u.ualign.record + ALIGNLIM / 2));
         pline("That was %sa bad idea...",
               u.uevent.qcompleted ? "probably " : "");
     } 
     else if (mdat->msound == MS_NEMESIS)
     { /* Real good! */
-        adjalign((int) (ALIGNLIM / 4));
+        adjalign((ALIGNLIM / 4));
     }
     else if (mdat->msound == MS_GUARDIAN) 
     { /* Bad */
-        adjalign(-(int) (ALIGNLIM / 8));
+        adjalign(-(ALIGNLIM / 8));
         if (!Hallucination)
             pline("That was probably a bad idea...");
         else
@@ -3864,7 +3864,7 @@ cleanup:
         if (p_coaligned(mtmp))
             u.ublessed = 0;
         if (mdat->maligntyp == A_NONE)
-            adjalign((int) (ALIGNLIM / 4)); /* BIG bonus */
+            adjalign((ALIGNLIM / 4)); /* BIG bonus */
     }
     else if (is_tame(mtmp)) 
     {

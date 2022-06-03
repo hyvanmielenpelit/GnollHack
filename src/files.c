@@ -4112,8 +4112,8 @@ int ifd, ofd;
     int nfrom, nto;
 
     do {
-        nfrom = read(ifd, buf, BUFSIZ);
-        nto = write(ofd, buf, min(sizeof(buf)/sizeof(buf[0]), nfrom));
+        nfrom = (int)read(ifd, buf, BUFSIZ);
+        nto = (int)write(ofd, buf, min(sizeof(buf)/sizeof(buf[0]), nfrom));
         if (nto != nfrom)
             return FALSE;
     } while (nfrom == BUFSIZ);

@@ -16,7 +16,7 @@ ink_cost(otmp)
 register struct obj *otmp;
 {
     if (otmp->oclass == SPBOOK_CLASS)
-        return (10 * (objects[otmp->otyp].oc_spell_level + 2));
+        return (10 * ((int)objects[otmp->otyp].oc_spell_level + 2));
 
     switch (otmp->otyp)
     {

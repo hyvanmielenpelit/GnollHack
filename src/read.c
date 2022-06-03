@@ -2422,7 +2422,7 @@ boolean *effect_happened_ptr;
             coord cc = { u.ux, u.uy };
 
             if (otyp != SCR_TAMING)
-                bd = objects[otyp].oc_spell_radius;
+                bd = (int)objects[otyp].oc_spell_radius;
 
             if (objects[otyp].oc_spell_range > 0)
             {
@@ -2502,7 +2502,7 @@ boolean *effect_happened_ptr;
         int i, j, bd, res = 0;
         struct monst* mtmp;
 
-        bd = objects[otyp].oc_spell_radius;
+        bd = (int)objects[otyp].oc_spell_radius;
         candidates = results = vis_results = 0;
 
         for (i = -bd; i <= bd; i++)
@@ -2558,7 +2558,7 @@ boolean *effect_happened_ptr;
         int i, j, bd, res = 0;
         struct monst* mtmp;
 
-        bd = objects[otyp].oc_spell_radius;
+        bd = (int)objects[otyp].oc_spell_radius;
         candidates = results = vis_results = 0;
 
         for (i = -bd; i <= bd; i++)
@@ -3419,7 +3419,7 @@ boolean confused, helmet_protects, byu, skip_uswallow;
     otmp2->owt = weight(otmp2);
     if (!amorphous(youmonst.data) && !Passes_walls
         && !is_incorporeal(youmonst.data) && !unsolid(youmonst.data)) {
-        dmg = weapon_total_dmg_value(otmp2, &youmonst, (struct monst*)0, 1) * otmp2->quan;
+        dmg = weapon_total_dmg_value(otmp2, &youmonst, (struct monst*)0, 1) * (int)otmp2->quan;
         play_object_hit_sound(otmp2, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(&youmonst), dmg, HMON_THROWN);
         You("are hit by %s!", doname(otmp2));
         if (uarmh && helmet_protects) {
@@ -3471,7 +3471,7 @@ boolean confused, byu;
         struct obj *helmet = which_armor(mtmp, W_ARMH);
         int mdmg;
 
-        mdmg = weapon_total_dmg_value(otmp2, mtmp, (struct monst*)0, 1) * otmp2->quan;
+        mdmg = weapon_total_dmg_value(otmp2, mtmp, (struct monst*)0, 1) * (int)otmp2->quan;
         play_object_hit_sound(otmp2, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mtmp), mdmg, HMON_THROWN);
 
             if (cansee(mtmp->mx, mtmp->my)) {

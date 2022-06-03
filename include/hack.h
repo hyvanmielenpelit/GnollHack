@@ -611,13 +611,13 @@ enum bodypart_types {
 #endif
 #define plur(x) (((x) == 1) ? "" : "s")
 
-#define ARM_AC_BONUS(obj, ptr) (((obj)->oclass == ARMOR_CLASS || (obj)->oclass == MISCELLANEOUS_CLASS || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(obj)) ?                    \
+#define ARM_AC_BONUS(obj, ptr) ((int)(((obj)->oclass == ARMOR_CLASS || (obj)->oclass == MISCELLANEOUS_CLASS || (objects[(obj)->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || has_obj_mythic_defense(obj)) ?                    \
     (objects[(obj)->otyp].oc_armor_class + (objects[(obj)->otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC ? 0 : (!cursed_items_are_positive(ptr) ? (obj)->enchantment : abs((obj)->enchantment))) \
-     - (objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_AC ? 0 : min((int) greatest_erosion(obj), objects[(obj)->otyp].oc_armor_class))) : 0)
+     - (objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_AC ? 0 : min((int) greatest_erosion(obj), objects[(obj)->otyp].oc_armor_class))) : 0))
 
 #define ARM_MC_BONUS(obj, ptr)                      \
-    (objects[(obj)->otyp].oc_magic_cancellation + (objects[(obj)->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC ? (!cursed_items_are_positive(ptr) ? (obj)->enchantment : abs((obj)->enchantment)) / 2 : 0) \
-     - (objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC ? 0 : min(greatest_erosion(obj) / 2, objects[(obj)->otyp].oc_magic_cancellation)))
+    ((int)(objects[(obj)->otyp].oc_magic_cancellation + (objects[(obj)->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC ? (!cursed_items_are_positive(ptr) ? (obj)->enchantment : abs((obj)->enchantment)) / 2 : 0) \
+     - (objects[(obj)->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC ? 0 : min(greatest_erosion(obj) / 2, objects[(obj)->otyp].oc_magic_cancellation))))
 
 
 #define makeknown(x) discover_object((x), TRUE, TRUE)

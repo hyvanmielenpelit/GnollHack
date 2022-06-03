@@ -131,7 +131,7 @@ unsigned seed; /* for semi-controlled randomization */
                          * Pick one of the substitutes at random.
                          */
                         if (!seed)
-                            j = rn2(strlen(rubouts[i].wipeto));
+                            j = rn2((int)strlen(rubouts[i].wipeto));
                         else {
                             seed *= 31, seed %= (BUFSZ - 1);
                             j = seed % (strlen(rubouts[i].wipeto));
@@ -419,7 +419,7 @@ xchar e_type;
 unsigned short e_flags;
 {
     struct engr *ep;
-    unsigned smem = strlen(s) + 1;
+    size_t smem = strlen(s) + 1;
 
     if ((ep = engr_at(x, y)) != 0)
         del_engr(ep);
@@ -1115,7 +1115,7 @@ doengrave()
     mungspaces(ebuf);
 
     /* Count the actual # of chars engraved not including spaces */
-    len = strlen(ebuf);
+    len = (int)strlen(ebuf);
     for (sp = ebuf; *sp; sp++)
         if (*sp == ' ')
             len -= 1;

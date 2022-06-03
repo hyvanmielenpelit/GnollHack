@@ -3012,7 +3012,7 @@ struct obj *obj;
                     Hallucination ? "trippy" : "confused");
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             }
-            make_confused(itimeout_incr(HConfusion, lcount), TRUE);
+            make_confused(itimeout_incr(HConfusion, (int)lcount), TRUE);
             break;
         case 3:
             if(!Stunned)
@@ -5956,7 +5956,7 @@ int arrowtype, quan; //ObjID and quantity
     }
 
     if (otmp)
-        return otmp->quan;
+        return (int)otmp->quan;
     else
         return 0;
 }

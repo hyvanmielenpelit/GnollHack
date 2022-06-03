@@ -6065,7 +6065,7 @@ boolean
 mergable(otmp, obj)
 register struct obj *otmp, *obj;
 {
-    int objnamelth = 0, otmpnamelth = 0;
+    size_t objnamelth = 0, otmpnamelth = 0;
 
     /* fail if already the same object, if different types, if either is
        explicitly marked to prevent merge, or if not mergable in general */
@@ -6438,7 +6438,7 @@ char let;
 boolean unpaid, showsym;
 {
     const char *ocsymfmt = "  ('%c')";
-    const int invbuf_sympadding = 8; /* arbitrary */
+    const size_t invbuf_sympadding = 8; /* arbitrary */
     const char *class_name;
     const char *pos;
     int oclass = (let >= 1 && let < MAX_OBJECT_CLASSES) ? let : 0;
@@ -6465,7 +6465,7 @@ boolean unpaid, showsym;
         Strcpy(invbuf, class_name);
     if ((oclass != 0) && showsym) {
         char *bp = eos(invbuf);
-        int mlen = invbuf_sympadding - strlen(class_name);
+        size_t mlen = invbuf_sympadding - strlen(class_name);
         while (--mlen > 0) {
             *bp = ' ';
             bp++;

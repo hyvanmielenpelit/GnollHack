@@ -706,7 +706,7 @@ struct obj *otmp;
 #ifdef SHELL /* can't access mail reader without spawning subprocess */
     const char *txt, *cmd;
     char *p, buf[BUFSZ] = DUMMY, qbuf[BUFSZ];
-    int len;
+    size_t len;
 
     /* there should be a command in OMAILCMD */
     if (has_oname(otmp))

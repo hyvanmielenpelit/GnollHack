@@ -13,7 +13,7 @@
 #include "hack.h"
 #include "qtext.h"
 
-STATIC_DCL short FDECL(which_arti, (int));
+STATIC_DCL short FDECL(which_arti, (unsigned long));
 STATIC_DCL boolean FDECL(mon_has_arti, (struct monst *, SHORT_P));
 STATIC_DCL struct monst *FDECL(other_mon_has_arti, (struct monst *, SHORT_P));
 STATIC_DCL struct obj *FDECL(on_ground, (SHORT_P));
@@ -150,7 +150,7 @@ register struct monst *mtmp;
 
 STATIC_OVL short
 which_arti(mask)
-register int mask;
+unsigned long mask;
 {
     switch (mask) {
     case M3_WANTSAMUL:
@@ -420,7 +420,7 @@ register struct monst *mtmp;
     {
         long where = (strat & STRAT_STRATMASK);
         xchar tx = STRAT_GOALX(strat), ty = STRAT_GOALY(strat);
-        int targ = (int) (strat & STRAT_GOAL);
+        unsigned long targ = (strat & STRAT_GOAL);
         struct obj *otmp;
 
         if (!targ) { /* simply wants you to close */

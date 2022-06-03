@@ -3242,7 +3242,7 @@ boolean printdun;
         ADDTOBUF("ice", mptr->feat.ice);
 #endif
         /* capitalize afterwards */
-        i = strlen(PREFIX);
+        i = (int)strlen(PREFIX);
         buf[i] = highc(buf[i]);
         /* capitalizing it makes it a sentence; terminate with '.' */
         Strcat(buf, ".");

@@ -1322,7 +1322,7 @@ int fd, mode;
         /* ask window port for each message in sequence */
         while ((msg = getmsghistory_ex(&attr, &color, init)) != 0) {
             init = FALSE;
-            msglen = strlen(msg);
+            msglen = (int)strlen(msg);
             if (msglen < 1)
                 continue;
             /* sanity: truncate if necessary (shouldn't happen);
@@ -1584,8 +1584,8 @@ char *from, *to;
     if ((fdto = open(to, O_WRONLY | O_BINARY | O_CREAT | O_TRUNC, FCMASK)) < 0)
         panic("Can't copy to %s", to);
     do {
-        nfrom = read(fdfrom, buf, BUFSIZ);
-        nto = write(fdto, buf, nfrom);
+        nfrom = (int)read(fdfrom, buf, BUFSIZ);
+        nto = (int)write(fdto, buf, nfrom);
         if (nto != nfrom)
             panic("Copyfile failed!");
     } while (nfrom == BUFSIZ);

@@ -94,7 +94,7 @@ static winid toptenwin = WIN_ERR;
 void
 formatkiller(buf, siz, how, incl_helpless)
 char *buf;
-unsigned siz;
+size_t siz;
 int how;
 boolean incl_helpless;
 {
@@ -108,7 +108,7 @@ boolean incl_helpless;
         /* PANICKED, TRICKED, QUIT, ESCAPED, ASCENDED */
         "", "", "", "", ""
     };
-    unsigned l;
+    size_t l;
     char c, *kname = killer.name;
 
     buf[0] = '\0'; /* lint suppression */
@@ -898,7 +898,7 @@ boolean so;
     boolean second_line = TRUE;
     char linebuf[BUFSZ];
     char *bp, hpbuf[24], linebuf3[BUFSZ];
-    int hppos, lngr;
+    size_t hppos, lngr;
 
     linebuf[0] = '\0';
     if (rank)
@@ -994,7 +994,7 @@ boolean so;
     if (second_line)
         Sprintf(eos(linebuf), "  %c%s.", highc(*(t1->death)), t1->death + 1);
 
-    lngr = (int) strlen(linebuf);
+    lngr = strlen(linebuf);
     if (t1->hp <= 0)
         hpbuf[0] = '-', hpbuf[1] = '\0';
     else
@@ -1027,7 +1027,7 @@ boolean so;
         lngr = strlen(linebuf);
     }
     /* beginning of hp column not including padding */
-    hppos = COLNO - 7 - (int) strlen(hpbuf);
+    hppos = COLNO - 7 - strlen(hpbuf);
     bp = eos(linebuf);
 
     if (bp <= linebuf + hppos) {

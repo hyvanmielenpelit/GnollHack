@@ -204,11 +204,11 @@ int ifd, ofd;
     int nfrom, nto;
 
     do {
-        nfrom = read(ifd, buf, BUFSIZ);
+        nfrom = (int)read(ifd, buf, BUFSIZ);
         unsigned unfrom = (unsigned)nfrom;
         if (unfrom > BUFSIZ)
             unfrom = BUFSIZ;
-        nto = write(ofd, buf, unfrom);
+        nto = (int)write(ofd, buf, unfrom);
         if (nto != nfrom) {
             Fprintf(stderr, "file copy failed!\n");
             exit(EXIT_FAILURE);

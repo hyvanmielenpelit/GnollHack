@@ -709,7 +709,7 @@ reglyph_darkroom()
 boolean
 match_optname(user_string, opt_name, min_length, val_allowed)
 const char *user_string, *opt_name;
-int min_length;
+size_t min_length;
 boolean val_allowed;
 {
     int len = (int) strlen(user_string);
@@ -3178,7 +3178,7 @@ boolean tinitial, tfrom_file;
                                       paranoia[i].argMinLen, FALSE)
                         || (paranoia[i].synonym
                             && match_optname(op, paranoia[i].synonym,
-                                             paranoia[i].synMinLen, FALSE))) {
+                                             (size_t)paranoia[i].synMinLen, FALSE))) {
                         if (paranoia[i].flagmask)
                             flags.paranoia_bits |= paranoia[i].flagmask;
                         else /* 0 == "none", so clear all */
@@ -4556,7 +4556,7 @@ boolean tinitial, tfrom_file;
         fullname = default_menu_cmd_info[i].name;
         if (duplicate)
             complain_about_duplicate(opts, 1);
-        if (match_optname(opts, fullname, (int) strlen(fullname), TRUE)) {
+        if (match_optname(opts, fullname, strlen(fullname), TRUE)) {
             if (negated) {
                 bad_negation(fullname, FALSE);
                 return FALSE;
@@ -5244,7 +5244,7 @@ doset() /* changing options via menu by Per Liboriussen */
     menu_item *pick_list;
     int indexoffset, startpass, endpass, optflags;
     boolean setinitial = FALSE, fromfile = FALSE;
-    unsigned longest_name_len;
+    size_t longest_name_len;
 
     tmpwin = create_nhwindow(NHW_MENU);
     start_menu_ex(tmpwin, GHMENU_STYLE_OPTIONS);
@@ -5281,7 +5281,7 @@ doset() /* changing options via menu by Per Liboriussen */
                 if (strlen(name) > longest_name_len)
                     longest_name_len = strlen(name);
             }
-        Sprintf(fmtstr_doset, "%%s%%-%us [%%s]", longest_name_len);
+        Sprintf(fmtstr_doset, "%%s%%-%us [%%s]", (unsigned)longest_name_len);
         made_fmtstr = TRUE;
     }
 
@@ -6034,7 +6034,7 @@ boolean setinitial, setfromfile;
         } else { /* list (1) or remove (2) */
             int pick_idx, pick_cnt;
             int mt_idx;
-            unsigned ln;
+            size_t ln;
             const char *mtype;
             menu_item *pick_list = (menu_item *) 0;
             struct plinemsg_type *tmp = plinemsg_types;
@@ -6101,7 +6101,7 @@ boolean setinitial, setfromfile;
         } else { /* list (1) or remove (2) */
             int pick_idx, pick_cnt;
             int mc_idx;
-            unsigned ln;
+            size_t ln;
             const char *sattr, *sclr;
             menu_item *pick_list = (menu_item *) 0;
             struct menucoloring *tmp = menu_colorings;
@@ -7218,7 +7218,7 @@ winid datawin;
 const char *str;
 {
     static char *buf = 0;
-    int i;
+    size_t i;
     char *s;
 
     if (!buf)

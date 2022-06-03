@@ -187,7 +187,7 @@ register char *s;
  */
 char *
 get_username(lan_username_size)
-int *lan_username_size;
+size_t *lan_username_size;
 {
     static TCHAR username_buffer[BUFSZ];
     unsigned int status;

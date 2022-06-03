@@ -2057,7 +2057,7 @@ struct obj* origobj;
     start_ambient_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, zx, zy);
     tmp_at(DISP_BEAM_DIG, zapdir_to_glyph(u.dx, u.dy, ZAP_SPECIAL_DIGGING)); // cmap_to_glyph(S_digbeam) + dir_to_beam_index(u.dx, u.dy));
 
-    digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
+    digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? (int)objects[origobj->otyp].oc_spell_range : rn1(18, 8);
     context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH;
     while (--digdepth >= 0)
     {
@@ -2126,7 +2126,7 @@ struct obj* origobj;
         {
             if (playing_anim)
             {
-                delay_output_intervals(context.zap_aggregate_intervals_to_wait_until_action);
+                delay_output_intervals((int)context.zap_aggregate_intervals_to_wait_until_action);
                 context.zap_aggregate_intervals_to_wait_until_action = 0UL;
             }
             else
@@ -2339,7 +2339,7 @@ struct obj* origobj;
     }                    /* while */
     if (context.zap_aggregate_intervals_to_wait_until_end > 0)
     {
-        delay_output_intervals(context.zap_aggregate_intervals_to_wait_until_end);
+        delay_output_intervals((int)context.zap_aggregate_intervals_to_wait_until_end);
         context.zap_aggregate_intervals_to_wait_until_end = 0UL;
     }
     context.global_newsym_flags = 0;
@@ -2477,7 +2477,7 @@ struct obj* origobj;
     start_ambient_ray_sound_at_location(ZAP_SPECIAL_EVAPORATION, zx, zy);
     tmp_at(DISP_BEAM_DIG, zapdir_to_glyph(u.dx, u.dy, ZAP_SPECIAL_EVAPORATION)); // cmap_to_glyph(S_digbeam) + dir_to_beam_index(u.dx, u.dy));
 
-    digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
+    digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? (int)objects[origobj->otyp].oc_spell_range : rn1(18, 8);
     context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH;
     while (--digdepth >= 0)
     {
@@ -2542,7 +2542,7 @@ struct obj* origobj;
         {
             if (playing_anim)
             {
-                delay_output_intervals(context.zap_aggregate_intervals_to_wait_until_action);
+                delay_output_intervals((int)context.zap_aggregate_intervals_to_wait_until_action);
                 context.zap_aggregate_intervals_to_wait_until_action = 0UL;
             }
             else
@@ -2648,7 +2648,7 @@ struct obj* origobj;
     }                    /* while */
     if (context.zap_aggregate_intervals_to_wait_until_end > 0)
     {
-        delay_output_intervals(context.zap_aggregate_intervals_to_wait_until_end);
+        delay_output_intervals((int)context.zap_aggregate_intervals_to_wait_until_end);
         context.zap_aggregate_intervals_to_wait_until_end = 0UL;
     }
     context.global_newsym_flags = 0;

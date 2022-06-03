@@ -1274,7 +1274,7 @@ register struct obj* obj;
 
                 if (objects[obj->otyp].oc_edible_effect > 0)
                 {
-                    strcpy(buf2, get_property_name(objects[obj->otyp].oc_edible_effect));
+                    strcpy(buf2, get_property_name((int)objects[obj->otyp].oc_edible_effect));
                     *buf2 = highc(*buf2);
                 }
                 else if (objects[obj->otyp].oc_edible_effect < 0)
@@ -1850,7 +1850,7 @@ register struct obj* obj;
 
     if(affectsmc)
     {
-        int mc = objects[otyp].oc_magic_cancellation;
+        int mc = (int)objects[otyp].oc_magic_cancellation;
         //if (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)
         //    mc+= obj->enchantment;
 
@@ -2097,7 +2097,7 @@ register struct obj* obj;
 
             if (obj->oclass == ARMOR_CLASS || (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
             {
-                penalty = min(greatest_erosion(obj), objects[obj->otyp].oc_armor_class);
+                penalty = min(greatest_erosion(obj), (int)objects[obj->otyp].oc_armor_class);
                 Sprintf(eos(penaltybuf), "(+%d penalty to AC)", penalty);
             }
         }
@@ -2214,11 +2214,11 @@ register struct obj* obj;
                 else if (j == 3)
                     prop = objects[otyp].oc_oprop3;
                 else if (j == 4)
-                    prop = objects[otyp].oc_mana_bonus;
+                    prop = (int)objects[otyp].oc_mana_bonus;
                 else if (j == 5)
-                    prop = objects[otyp].oc_hp_bonus;
+                    prop = (int)objects[otyp].oc_hp_bonus;
                 else if (j == 6)
-                    prop = objects[otyp].oc_bonus_attributes;
+                    prop = (int)objects[otyp].oc_bonus_attributes;
 
                 char pwbuf[BUFSZ] = "";
                 if (j == 1)
@@ -2342,7 +2342,7 @@ register struct obj* obj;
                         for (k = 0; k < 14; k++)
                         {
                             strcpy(buf2, "");
-                            int stat = (k == 9 ? /* MC */ objects[otyp].oc_attribute_bonus / 3 : objects[otyp].oc_attribute_bonus);
+                            int stat = (int)(k == 9 ? /* MC */ objects[otyp].oc_attribute_bonus / 3 : objects[otyp].oc_attribute_bonus);
 
                             if (obj->cursed && (objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE))
                                 stat = -stat;
@@ -5240,7 +5240,8 @@ dodropmany()
     if (*u.ushops)
         sellobj_state(SELL_DELIBERATE);
 
-    int n, n_dropped = 0, i, cnt;
+    int n, n_dropped = 0, i;
+    long cnt;
     struct obj* otmp, * otmp2;
     menu_item* pick_list = (menu_item*)0;
 

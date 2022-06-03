@@ -217,21 +217,21 @@ struct monst {
 #ifdef NHSTDC
 #define STRAT_APPEARMSG 0x80000000UL
 #else
-#define STRAT_APPEARMSG 0x80000000L
+#define STRAT_APPEARMSG 0x80000000UL
 #endif
-#define STRAT_ARRIVE    0x40000000L /* just arrived on current level */
-#define STRAT_WAITFORU  0x20000000L
-#define STRAT_CLOSE     0x10000000L
+#define STRAT_ARRIVE    0x40000000UL /* just arrived on current level */
+#define STRAT_WAITFORU  0x20000000UL
+#define STRAT_CLOSE     0x10000000UL
 #define STRAT_WAITMASK  (STRAT_CLOSE | STRAT_WAITFORU)
-#define STRAT_HEAL      0x08000000L
-#define STRAT_GROUND    0x04000000L
-#define STRAT_MONSTR    0x02000000L
-#define STRAT_PLAYER    0x01000000L
-#define STRAT_NONE      0x00000000L
-#define STRAT_STRATMASK 0x0f000000L
-#define STRAT_XMASK     0x00ff0000L
-#define STRAT_YMASK     0x0000ff00L
-#define STRAT_GOAL      0x000000ffL
+#define STRAT_HEAL      0x08000000UL
+#define STRAT_GROUND    0x04000000UL
+#define STRAT_MONSTR    0x02000000UL
+#define STRAT_PLAYER    0x01000000UL
+#define STRAT_NONE      0x00000000UL
+#define STRAT_STRATMASK 0x0f000000UL
+#define STRAT_XMASK     0x00ff0000UL
+#define STRAT_YMASK     0x0000ff00UL
+#define STRAT_GOAL      0x000000ffUL
 #define STRAT_GOALX(s) ((xchar) ((s & STRAT_XMASK) >> 16))
 #define STRAT_GOALY(s) ((xchar) ((s & STRAT_YMASK) >> 8))
 

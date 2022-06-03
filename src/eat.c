@@ -2284,7 +2284,7 @@ struct obj *otmp;
                           ? herbivorous(youmonst.data)
                           : carnivorous(youmonst.data))
                          && rn2(10)
-                         && ((rotted < 1) ? TRUE : !rn2(rotted+1)));
+                         && ((rotted < 1) ? TRUE : !rn2((int)rotted+1)));
 
         const char *pmxnam = food_xname(otmp, FALSE);
 
@@ -2869,9 +2869,9 @@ struct obj *otmp;
     if (objects[otmp->otyp].oc_edible_effect > 0)
     {
         if (duration > 0)
-            temporary_givit(objects[otmp->otyp].oc_edible_effect, duration);
+            temporary_givit((int)objects[otmp->otyp].oc_edible_effect, duration);
         else
-            givit(objects[otmp->otyp].oc_edible_effect, (struct permonst*)0); // u.uprops[objects[otmp->otyp].oc_oprop].intrinsic |= FROM_ACQUIRED;
+            givit((int)objects[otmp->otyp].oc_edible_effect, (struct permonst*)0); // u.uprops[objects[otmp->otyp].oc_oprop].intrinsic |= FROM_ACQUIRED;
     }
 
     switch (objects[otmp->otyp].oc_edible_effect) 
@@ -3714,7 +3714,7 @@ doeat()
                 context.victual.reqtime, otmp->oeaten, basenutrit);
 
     context.victual.reqtime = (basenutrit == 0) ? 0
-        : rounddiv(context.victual.reqtime * (long) otmp->oeaten, basenutrit);
+        : rounddiv(context.victual.reqtime * (int) otmp->oeaten, basenutrit);
 
     debugpline1("after rounddiv: victual.reqtime == %d",
                 context.victual.reqtime);

@@ -379,7 +379,7 @@ int *highest_fid; /* optional output; only valid if 'fname' isn't found */
 {
     struct fruit *f, *tentativef;
     char *altfname;
-    unsigned k;
+    size_t k;
     /*
      * note: named fruits are case-senstive...
      */
@@ -419,7 +419,7 @@ int *highest_fid; /* optional output; only valid if 'fname' isn't found */
     }
     if (!f && !exact) {
         char fnamebuf[BUFSZ], *p;
-        unsigned fname_k = strlen(fname); /* length of assumed plural fname */
+        size_t fname_k = strlen(fname); /* length of assumed plural fname */
 
         tentativef = 0;
         for (f = ffruit; f; f = f->nextf) {
@@ -2461,7 +2461,7 @@ const char *str;
     } else {
         /* Probably a proper name, might not need an article */
         register char *tmp, *named, *called, *entitled, *labeled;
-        int l;
+        size_t l;
 
         /* some objects have capitalized adjectives in their names */
         if (((tmp = rindex(str, ' ')) != 0 || (tmp = rindex(str, '-')) != 0)
@@ -2542,7 +2542,7 @@ const char *verb;
     if (!carried(obj) || !obj_is_pname(obj)
         || any_quest_artifact(obj)) {
         char *outbuf = shk_your(nextobuf(), obj);
-        int space_left = BUFSZ - 1 - strlen(outbuf);
+        size_t space_left = BUFSZ - 1 - strlen(outbuf);
 
         s = strncat(outbuf, s, space_left);
     }
@@ -2600,7 +2600,7 @@ struct obj *obj;
         || any_quest_artifact(obj)) 
     {
         char *outbuf = shk_your(nextobuf(), obj);
-        int space_left = BUFSZ - 1 - strlen(outbuf);
+        size_t space_left = BUFSZ - 1 - strlen(outbuf);
 
         s = strncat(outbuf, s, space_left);
     }
@@ -2638,7 +2638,7 @@ struct obj *obj;
 {
     char *outbuf = nextobuf();
     char *s = shk_your(outbuf, obj); /* assert( s == outbuf ); */
-    int space_left = BUFSZ - 1 - strlen(s);
+    size_t space_left = BUFSZ - 1 - strlen(s);
 
     char* min_name = minimal_xname(obj);
 
@@ -2772,7 +2772,7 @@ register const char *subj;
 register const char *verb;
 {
     char *buf = nextobuf(), *bspot;
-    int len, ltmp;
+    size_t len, ltmp;
     const char *sp, *spot;
     const char *const *spec;
 
@@ -2799,7 +2799,7 @@ register const char *verb;
                 break;
             }
         }
-        len = (int) strlen(subj);
+        len = strlen(subj);
         if (!spot)
             spot = subj + len - 1;
 
@@ -2814,7 +2814,7 @@ register const char *verb;
             || !BSTRNCMPI(subj, spot - 1, "ia", 2)
             || !BSTRNCMPI(subj, spot - 1, "ae", 2)) {
             /* check for special cases to avoid false matches */
-            len = (int) (spot - subj) + 1;
+            len = (spot - subj) + 1;
             for (spec = special_subjs; *spec; spec++) {
                 ltmp = strlen(*spec);
                 if (len == ltmp && !strncmpi(*spec, subj, len))
@@ -2921,7 +2921,7 @@ const char *const *alt_as_is; /* another set like as_is[] */
     const struct sing_plur *sp;
     const char *same, *other, *const *as;
     int al;
-    int baselen = strlen(basestr);
+    size_t baselen = strlen(basestr);
 
     for (as = as_is; *as; ++as) {
         al = (int) strlen(*as);
@@ -3043,7 +3043,7 @@ const char *oldstr;
     register char *spot;
     char lo_c, *str = nextobuf();
     const char *excess = (char *) 0;
-    int len;
+    size_t len;
 
     if (oldstr)
         while (*oldstr == ' ')
@@ -4258,11 +4258,12 @@ boolean is_wiz_wish;
     {
         if (mntmp < LOW_PM && strlen(bp) > 2
             && (mntmp = name_to_mon(bp)) >= LOW_PM) {
-            int mntmptoo, mntmplen; /* double check for rank title */
+            int mntmptoo;
+            size_t mntmplen; /* double check for rank title */
             char *obp = bp;
 
             mntmptoo = title_to_mon(bp, (int *) 0, &mntmplen);
-            bp += (mntmp != mntmptoo) ? (int) strlen(mons[mntmp].mname)
+            bp += (mntmp != mntmptoo) ? strlen(mons[mntmp].mname)
                                       : mntmplen;
             if (*bp == ' ') {
                 bp++;
@@ -4395,7 +4396,7 @@ boolean is_wiz_wish;
         && strncmpi(bp, "meat ring", 9))
         for (i = 0; i < (int) (sizeof wrpsym); i++)
         {
-            register int j = strlen(wrp[i]);
+            register size_t j = strlen(wrp[i]);
 
             if (!strncmpi(bp, wrp[i], j))
             {

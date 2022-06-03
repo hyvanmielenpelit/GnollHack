@@ -1414,7 +1414,7 @@ char *buf;
 {
     const char *fp = fmt;
     char *bp = buf;
-    int slen, len = 0;
+    size_t slen, len = 0;
     char tmpbuf[BUFSZ];
     char verbuf[BUFSZ];
     long uid;
