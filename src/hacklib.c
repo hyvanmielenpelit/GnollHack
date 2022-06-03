@@ -797,9 +797,11 @@ const char *patrn, *strng;
 int
 strncmpi(s1, s2, n) /*{ aka strncasecmp }*/
 register const char *s1, *s2;
-register int n; /*(should probably be size_t, which is unsigned)*/
+register size_t n;
 {
     register char t1, t2;
+    if (!n)
+        return 0;
 
     while (n--) {
         if (!*s2)

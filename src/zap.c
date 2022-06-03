@@ -337,15 +337,15 @@ struct monst* origmonst;
             pline_ex(ATR_NONE, CLR_MSG_SPELL, "Boing!");
             break; /* skip makeknown */
         }
-        else if (u.uswallow || 1)
-        { //rnd(20) < 10 + find_mac(mtmp))
+        else // if (u.uswallow || rnd(20) < 10 + find_mac(mtmp))
+        {
             /* resist deals the damage and displays the damage dealt */
             play_sfx_sound_at_location(SFX_MAGIC_ARROW_HIT, mtmp->mx, mtmp->my);
             hit_with_hit_tile(zap_type_text, mtmp, exclam(dmg), -1, "", HIT_GENERAL, FALSE);
             (void) inflict_spell_damage(mtmp, otmp, origmonst, dmg, AD_MAGM, TELL);
         } 
-        else
-            miss(zap_type_text, mtmp);
+        //else
+        //    miss(zap_type_text, mtmp);
         learn_it = TRUE;
         break;
     case SPE_SHOCKING_TOUCH:

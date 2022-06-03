@@ -1289,7 +1289,7 @@ E boolean FDECL(pmatch, (const char *, const char *));
 E boolean FDECL(pmatchi, (const char *, const char *));
 E boolean FDECL(pmatchz, (const char *, const char *));
 #ifndef STRNCMPI
-E int FDECL(strncmpi, (const char *, const char *, int));
+E int FDECL(strncmpi, (const char *, const char *, size_t));
 #endif
 #ifndef STRSTRI
 E char *FDECL(strstri, (const char *, const char *));
