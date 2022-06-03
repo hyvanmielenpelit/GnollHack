@@ -455,7 +455,7 @@ register struct monst *mtmp;
     /* Intelligent chaotic weapons (Stormbringer) want blood */
     if ((is_safepet(mtmp) || is_displaceable_peaceful(mtmp) || is_stopping_peaceful(mtmp)) && !context.forcefight)
     {
-        if (1) //!uwep || !(uwep->oartifact && artifact_has_flag(uwep, AF_BLOODTHIRSTY))) 
+        //if (1) //!uwep || !(uwep->oartifact && artifact_has_flag(uwep, AF_BLOODTHIRSTY)))  // Always true
         {
             /* There are some additional considerations: this won't work
              * if in a shop or Punished or you miss a random roll or
@@ -2866,11 +2866,13 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         }
         break;
     case AD_FIRE:
-        if (0 /*negated*/)
+#if 0
+        if (negated)
         {
             damage = 0;
             break;
         }
+#endif
         hit_tile = HIT_ON_FIRE;
         if (!Blind)
             pline("%s is %s!", Monnam(mdef), on_fire(pd, mattk));
@@ -2903,12 +2905,14 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 
         break;
     case AD_COLD:
-        if (0 /*negated*/)
+#if 0
+
+        if (*negated)
         {
             damage = 0;
             break;
         }
-
+#endif
         hit_tile = HIT_FROZEN;
         if (!Blind)
             pline("%s is covered in frost!", Monnam(mdef));
@@ -2925,11 +2929,13 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_COLD), &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
         break;
     case AD_ELEC:
-        if (0 /*negated*/) 
+#if 0
+        if (negated) 
         {
             damage = 0;
             break;
         }
+#endif
 
         hit_tile = HIT_ELECTROCUTED;
         if (!Blind)

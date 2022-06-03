@@ -4777,7 +4777,8 @@ render_status(VOID_ARGS)
                     if (!tty_condition_bits)
                         continue;
 
-                    if (0) //num_rows == 3)
+#if 0
+                    if (num_rows == 3)
                     {
                         int k;
                         char *dat = &cw->data[y][0];
@@ -4808,6 +4809,7 @@ render_status(VOID_ARGS)
                         tty_status[NOW][BL_CONDITION].x = x;
                         tty_curs(WIN_STATUS, x, y);
                     }
+#endif
 
                     bits = tty_condition_bits;
                     for (c = 0; c < SIZE(conditions); ++c) {

@@ -180,7 +180,7 @@ uchar elemental_enchantment, exceptionality;
     (void) mpickobj(mtmp, otmp);
 }
 
-int
+long
 mongetsgold(mon, amount)
 struct monst* mon;
 long amount;

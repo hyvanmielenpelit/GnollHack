@@ -14165,7 +14165,7 @@ int x, y;
          */
         if (ss->type == SOUNDSOURCE_OBJECT && ss->x == x && ss->y == y) {
             obj = ss->id.a_obj;
-            if (1) //obj_is_burning(obj)) 
+            //if (obj_is_burning(obj)) // Always true
             {
                 del_sound_source(SOUNDSOURCE_OBJECT, obj_to_any(obj));
                 end_sound(obj, FALSE);
@@ -14319,8 +14319,8 @@ boolean timer_attached;
         return;
     }
 
-    if (1) //obj->otyp == MAGIC_LAMP || obj->otyp == MAGIC_CANDLE || artifact_light(obj) || obj_shines_magical_light(obj))
-        timer_attached = FALSE;
+    //if (1) //obj->otyp == MAGIC_LAMP || obj->otyp == MAGIC_CANDLE || artifact_light(obj) || obj_shines_magical_light(obj))
+    timer_attached = FALSE;
 
     if (!timer_attached) {
         /* [DS] Cleanup explicitly, since timer cleanup won't happen */

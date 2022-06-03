@@ -1740,7 +1740,7 @@ int propidx; /* OBSOLETE: special cases can have negative values */
     /*
      * Restrict the source of the attributes just to debug mode for now
      */
-    if (1)//wizard)
+    //if (wizard) // Always true
     {
         static NEARDATA const char because_of[] = " because of %s";
 

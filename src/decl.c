@@ -273,6 +273,13 @@ NEARDATA const struct extended_menu_info zeroextendedmenuinfo = DUMMY;
 NEARDATA const struct extended_create_window_info zerocreatewindowinfo = DUMMY;
 NEARDATA const struct d_level zerodlevel = DUMMY;
 
+#ifdef GNH_MOBILE
+NEARDATA int gnh_has_rogue_level = 0;
+#else
+NEARDATA int gnh_has_rogue_level = 1;
+#endif
+
+
 boolean disallow_keyboard_commands_in_wait_loop = FALSE;
 
 NEARDATA struct obj* getobj_autoselect_obj = (struct obj*)0;

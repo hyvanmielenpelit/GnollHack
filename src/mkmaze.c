@@ -643,7 +643,9 @@ fixup_special()
         croom = search_special(TEMPLE);
 
         create_secret_door(croom, W_ANY);
-    } else if (on_level(&u.uz, &orcus_level) && 0) {
+    } 
+#if 0
+    else if (on_level(&u.uz, &orcus_level)) {
         struct monst *mtmp, *mtmp2;
 
         /* it's a ghost town, get rid of shopkeepers */
@@ -652,7 +654,9 @@ fixup_special()
             if (mtmp->isshk)
                 mongone(mtmp);
         }
-    } else if (on_level(&u.uz, &baalzebub_level)) {
+    } 
+#endif
+    else if (on_level(&u.uz, &baalzebub_level)) {
         /* custom wallify the "beetle" potion of the level */
         baalz_fixup();
     } else if (u.uz.dnum == mines_dnum && ransacked) {

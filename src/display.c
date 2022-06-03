@@ -3322,7 +3322,7 @@ int x, y, glyph;
         return;
     }
 
-    if (1)//gbuf[y][x].layers.glyph != glyph || iflags.use_background_glyph)
+    //if (gbuf[y][x].layers.glyph != glyph || iflags.use_background_glyph) // Always true
     {
         gbuf[y][x].layers.glyph = glyph;
         gbuf[y][x].layers.bkglyph = get_bk_glyph(x, y);

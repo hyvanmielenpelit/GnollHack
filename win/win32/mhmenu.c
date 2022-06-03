@@ -1597,7 +1597,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                         RECT target_rt = { 0 };
 
                         /* First, background */
-                        if (1)
+                        //if (1) // Always true
                         {
                             source_rt.left = at_x;
                             source_rt.right = source_rt.left + jar_width;
@@ -1618,7 +1618,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 
                         /* Second, contents */
-                        if (1)
+                        //if (1) // Always true
                         {
                             /* Create copy of the contents tile */
                             source_rt.left = at_x;
@@ -1770,7 +1770,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                         }
 
                         /* Third, transparent foreground */
-                        if (1)
+                        //if (1) // Always true
                         {
                             source_rt.left = a2t_x;
                             source_rt.right = source_rt.left + tileWidth;
@@ -1853,7 +1853,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 
                         /* Fourth, opaque foreground */
-                        if (1)
+                        //if (1) // Always true
                         {
                             source_rt.left = a2t_x;
                             source_rt.right = source_rt.left + tileWidth;
@@ -2136,7 +2136,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     }
 
     /* draw focused item */
-    if (1) //item->has_focus || (NHMENU_IS_SELECTABLE(*item) && data->menu.items[lpdis->itemID].count != -1)) 
+    //if (item->has_focus || (NHMENU_IS_SELECTABLE(*item) && data->menu.items[lpdis->itemID].count != -1)) //Always true
     {
         RECT client_rt;
 
@@ -2467,7 +2467,8 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
         {
             int count;
             i = ListView_GetNextItem(hwndList, -1, LVNI_FOCUSED);
-            if (0) //i >= 0) //This system has been deactivated
+#if 0
+            if (i >= 0) //This system has been deactivated
             {
                 curcount = 0;
                 count = data->menu.items[i].count;
@@ -2484,6 +2485,7 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
                 }
             }
             else
+#endif
             {
                 count = curcount;
                 if (count == -1)

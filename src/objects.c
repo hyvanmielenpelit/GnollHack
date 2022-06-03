@@ -1755,7 +1755,7 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
 /* miscellaneous (magic) items */
 #define MISCELLANEOUSITEM(name,desc,sub,itemdesc,kn,magic,mergeable,spetype,charged,recharging,prob,cost,wt,power,power2,power3,pflags,manabonus,hpbonus,bonusattrs,attrbonus,splcastpen,nut,material,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask) \
     OBJECT(OBJ(name, desc, None, None, itemdesc, height, 0, 0, 0),                                          \
-           BITS(kn, mergeable, charged || spetype ? 1 : 0, 0, magic, spetype, charged, recharging, 0, 0, 0, 0, 0, sub, 0, material),        \
+           BITS(kn, mergeable, (charged) != 0 || (spetype) != 0 ? 1 : 0, 0, magic, spetype, charged, recharging, 0, 0, 0, 0, 0, sub, 0, material),        \
            power, power2, power3, pflags, MISCELLANEOUS_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost,  \
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
            0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, attrbonus, splcastpen, 0, \
@@ -1933,7 +1933,7 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 /* tools with weapon characteristics come last */
 #define GENERAL_TOOL(name,desc,contentname,contentdesc,itemdesc, stand_anim, enl, repl, subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,special_quality,mat,color,height,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask) \
     OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, height, stand_anim, enl, repl),                                           \
-           BITS(kn, mrg, charged || spetype ? 1 : 0, 0, mgc, spetype, charged, recharging, 0, 0, 0, 0, 0, subtype, P_NONE, mat), \
+           BITS(kn, mrg, (charged) != 0 || (spetype) != 0 ? 1 : 0, 0, mgc, spetype, charged, recharging, 0, 0, 0, 0, 0, subtype, P_NONE, mat), \
            power1, power2, power3, pflags,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
            0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, splcastpen, 0, \

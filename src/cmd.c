@@ -1506,36 +1506,54 @@ domonability(VOID_ARGS)
 int
 enter_explore_mode(VOID_ARGS)
 {
-    if (wizard) {
+    if (wizard)
+    {
         You("are in debug mode.");
-    } else if (discover) {
+    }
+    else if (discover) 
+    {
         You("are already in explore mode.");
-    } else {
+    } 
+    else 
+    {
+#if defined(GNH_MOBILE)
+        You("cannot access explore mode.");
+#else
 #ifdef SYSCF
 #if defined(UNIX)
-#if !defined(GNH_MOBILE)
-            if (!sysopt.explorers || !sysopt.explorers[0]
+        if (!sysopt.explorers || !sysopt.explorers[0]
             || !check_user_string(sysopt.explorers)) 
-#endif
         {
-            You("cannot access explore mode.");
-            return 0;
+            if (!wizard) 
+            {
+                You("cannot access explore mode.");
+                return 0;
+            }
+            else 
+            {
+                pline1("Note: normally you wouldn't be allowed into explore mode.");
+                /* keep going */
+            }
         }
 #endif
 #endif
         pline_ex(ATR_NONE, CLR_MSG_WARNING,
         "Beware!  From explore mode there will be no return to normal game.");
         if (paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidQuit, "Confirm Explore Mode",
-                           "Do you want to enter explore mode?")) {
+                           "Do you want to enter explore mode?")) 
+        {
             clear_nhwindow(WIN_MESSAGE);
             discover = TRUE;
             CasualMode = FALSE, ModernMode = FALSE;
             You_ex(ATR_NONE, CLR_MSG_HINT, "are now in %s mode.", get_game_mode_text(TRUE));
             context.botl = context.botlx = 1;
-        } else {
+        } 
+        else 
+        {
             clear_nhwindow(WIN_MESSAGE);
             pline("Resuming normal game.");
         }
+#endif
     }
     return 0;
 }

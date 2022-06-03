@@ -211,7 +211,8 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
         data->yBackTile = (int)(data->tileHeight * data->backScale);
     }
 
-    if (1) {
+    //if (1) // Always true
+    {
         LOGFONT lgfnt;
         LOGFONT lgbufffnt;
 
@@ -3232,7 +3233,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     RECT target_rt = { 0 };
 
                                     /* First, background */
-                                    if (1)
+                                    //if (1) // Always true
                                     {
                                         source_rt.left = at_x;
                                         source_rt.right = source_rt.left + jar_width;
@@ -3253,7 +3254,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 
 
                                     /* Second, contents */
-                                    if (1)
+                                    //if (1) // Always true
                                     {
                                         /* Create copy of the contents tile */
                                         source_rt.left = at_x;
@@ -3406,7 +3407,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     }
 
                                     /* Third, transparent foreground */
-                                    if (1)
+                                    //if (1) // Always true
                                     {
                                         source_rt.left = a2t_x;
                                         source_rt.right = source_rt.left + tileWidth;
@@ -3489,7 +3490,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
 
                                     /* Fourth, opaque foreground */
-                                    if (1)
+                                    //if (1) // Always true
                                     {
                                         source_rt.left = a2t_x;
                                         source_rt.right = source_rt.left + tileWidth;
@@ -4105,7 +4106,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         boolean ascension_radiance = ((data->map[darkening_i][darkening_j].layer_flags & LFLAGS_ASCENSION_RADIANCE) != 0);
                         if (!cansee(darkening_i, darkening_j)  || ascension_radiance || (data->map[darkening_i][darkening_j].layer_flags & LFLAGS_SHOWING_MEMORY))
                         {
-                            if (1)
+                            //if (1) // Always true
                             {
                                 double multiplier = 1.0;
                                 if (isyou)
@@ -4519,7 +4520,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         if (!mtmp)
                             mtmp = &youmonst;
 
-                        if (1)
+                        //if (1) // Always true
                         {
                             /* Petmark and other status marks */
                             int mglyph = STATUS_MARKS + GLYPH_UI_TILE_OFF;
@@ -5046,7 +5047,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 static void
 paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
 {
-    if (1) // data->map[i][j].glyph >= 0)
+    //if (data->map[i][j].glyph >= 0) // Always true
     {
 
         char ch;

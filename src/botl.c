@@ -943,8 +943,10 @@ struct monst* mon;
 
     unsigned long conditions = 0UL;
 
+#if 0
     if (0)
         conditions |= BL_MASK_GRAB;
+#endif
     if (is_stoning(mon))
         conditions |= BL_MASK_STONE;
     if (is_turning_into_slime(mon))
@@ -988,9 +990,10 @@ struct monst* mon;
         conditions |= BL_MASK_LEV;
     if (is_flying(mon))
         conditions |= BL_MASK_FLY;
+#if 0
     if (0)
         conditions |= BL_MASK_RIDE;
-
+#endif
     return conditions;
 }
 

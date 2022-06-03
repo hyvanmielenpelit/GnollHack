@@ -3084,6 +3084,7 @@ struct obj *obj;
 {
     return 0;
 
+#if 0
     const struct artifact *oart;
     struct prop save_Lev;
     boolean result;
@@ -3105,6 +3106,7 @@ struct obj *obj;
     result = (boolean) !Levitation;
     u.uprops[LEVITATION] = save_Lev;
     return result;
+#endif
 }
 
 /* WAC return TRUE if artifact is always lit */

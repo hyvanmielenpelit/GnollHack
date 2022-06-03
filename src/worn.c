@@ -1473,7 +1473,7 @@ boolean silently;
             mon->mprops[which] |= M_EXTRINSIC;
 
 #if 0
-            if (1) //(on)
+            //if (1) //(on) // Always true
             {
                 switch (which)
                 {

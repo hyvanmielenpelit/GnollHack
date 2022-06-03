@@ -372,6 +372,8 @@ E NEARDATA const struct extended_create_window_info zerocreatewindowinfo;
 
 E NEARDATA const struct d_level zerodlevel;
 
+E NEARDATA int gnh_has_rogue_level;
+
 #include "you.h"
 E NEARDATA struct you u;
 E NEARDATA time_t ubirthday;

@@ -2161,7 +2161,7 @@ register struct obj* omonwep;
         break;
     case AD_FIRE:
         hitmsg(mtmp, mattk, -1, TRUE);
-        if (1 /*uncancelled*/) 
+        //if (uncancelled) 
         {
             play_sfx_sound(SFX_MONSTER_ON_FIRE);
             if (completelyburns(youmonst.data)) 
@@ -2189,12 +2189,12 @@ register struct obj* omonwep;
                 destroy_item(SPBOOK_CLASS, AD_FIRE);
             burn_away_slime();
         } 
-        else
-            damage = 0;
+        //else
+        //    damage = 0;
         break;
     case AD_COLD:
         hitmsg(mtmp, mattk, -1, TRUE);
-        if (1 /*uncancelled*/) 
+        //if (uncancelled) 
         {
             play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
             if (Cold_immunity || damage == 0)
@@ -2211,14 +2211,14 @@ register struct obj* omonwep;
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(POTION_CLASS, AD_COLD);
         }
-        else
-            damage = 0;
+        //else
+        //    damage = 0;
 
         break;
     case AD_ELEC:
         play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
         hitmsg(mtmp, mattk, -1, TRUE);
-        if (1 /*uncancelled*/)
+        //if (uncancelled) 
         {
             if (Shock_immunity || damage == 0)
             {
@@ -2237,8 +2237,8 @@ register struct obj* omonwep;
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(RING_CLASS, AD_ELEC);
         } 
-        else
-            damage = 0;
+        //else
+        //    damage = 0;
         break;
     case AD_SLEE:
         hitmsg(mtmp, mattk, damagedealt, FALSE);

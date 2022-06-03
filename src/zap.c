@@ -1613,13 +1613,15 @@ struct monst* mtmp;
             strcpy(endbuf, "");
             strcpy(endbuf2, "");
 
-            if (0 && (has_innate || has_innate2))
+#if 0
+            if (has_innate || has_innate2)
             {
                 if (strcmp(endbuf, ""))
                     Strcat(endbuf, ", ");
 
                 Strcat(endbuf, "innate");
             }
+#endif
 
             if (has_extrinsic)
             {
@@ -1628,13 +1630,15 @@ struct monst* mtmp;
 
                 Strcat(endbuf, "extrinsic");
             }
-            if (0 && has_instrinsic_acquired)
+#if 0
+            if (has_instrinsic_acquired)
             {
                 if (strcmp(endbuf, ""))
                     Strcat(endbuf, ", ");
 
                 Strcat(endbuf, "acquired");
             }
+#endif
             if (has_temporary)
             {
                 if (strcmp(endbuf, ""))

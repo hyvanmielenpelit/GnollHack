@@ -1526,7 +1526,7 @@ struct mkroom *broom;
             x = y = 0;
             panic("create_door: No wall for door!");
             return;
-            goto outdirloop;
+            //goto outdirloop;
         }
     outdirloop:
         if (okdoor(x, y))

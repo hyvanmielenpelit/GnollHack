@@ -1417,11 +1417,13 @@ register struct obj* omonwep;
         }
         break;
     case AD_FIRE:
-        if (0 /*cancelled*/)
+#if 0
+        if (cancelled)
         {
             damage = 0;
             break;
         }
+#endif
         hit_tile = HIT_ON_FIRE;
         play_sfx_sound_at_location(SFX_MONSTER_ON_FIRE, mdef->mx, mdef->my);
         if (vis && canseemon(mdef))
@@ -1453,11 +1455,13 @@ register struct obj* omonwep;
         damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_FIRE), magr, mdef, AD_FIRE, ADFLAGS_NONE);
         break;
     case AD_COLD:
-        if (0 /*cancelled*/) 
+#if 0
+        if (cancelled)
         {
             damage = 0;
             break;
         }
+#endif
         hit_tile = HIT_FROZEN;
         play_sfx_sound_at_location(SFX_MONSTER_COVERED_IN_FROST, mdef->mx, mdef->my);
         if (vis && canseemon(mdef))
@@ -1476,12 +1480,14 @@ register struct obj* omonwep;
         damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_COLD), magr, mdef, AD_COLD, ADFLAGS_NONE);
         break;
     case AD_ELEC:
-        if (0 /*cancelled*/) 
+#if 0
+        if (cancelled)
         {
             damage = 0;
             break;
         }
-        
+#endif
+
         hit_tile = HIT_ELECTROCUTED;
         play_sfx_sound_at_location(SFX_MONSTER_GETS_ZAPPED, mdef->mx, mdef->my);
         if (vis && canseemon(mdef))
