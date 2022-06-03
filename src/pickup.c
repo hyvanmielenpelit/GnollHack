@@ -3498,7 +3498,7 @@ int command_id;
    5 = pick up items from the floor and put them in a container
  */
 struct obj* applied_container;
-struct obj* other_container;
+struct obj* other_container UNUSED;
 {
     int n, i, n_looted = 0;
     boolean all_categories = TRUE, loot_everything = FALSE;

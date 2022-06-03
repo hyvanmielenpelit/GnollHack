@@ -3080,7 +3080,7 @@ create_portal()
 /* OBSOLETE -- JG */
 boolean
 finesse_ahriman(obj)
-struct obj *obj;
+struct obj *obj UNUSED;
 {
     return 0;
 
