@@ -211,7 +211,7 @@ namespace GnollHackClient.Pages.Game
                 {
                     try
                     {
-                        App.FmodService.StopAllSounds((ulong)StopSoundFlags.All, 0);
+                        App.FmodService.ReleaseAllSoundInstances();
                         App.FmodService.UnloadBanks();
                     }
                     catch

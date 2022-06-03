@@ -7,6 +7,7 @@ namespace GnollHackClient
     public interface IFmodService
     {
         void InitializeFmod();
+        void ReleaseAllSoundInstances();
         void ClearLoadableSoundBanks();
         void AddLoadableSoundBank(string fullfilepath);
         void LoadBanks();

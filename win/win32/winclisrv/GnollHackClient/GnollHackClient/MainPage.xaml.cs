@@ -201,11 +201,11 @@ namespace GnollHackClient
             exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
 
-            if(App.LoadBanks)
-            {
-                GetFilesFromResources();
+            GetFilesFromResources();
+            await DownloadAndCheckFiles();
 
-                await DownloadAndCheckFiles();
+            if (App.LoadBanks)
+            {
                 try
                 {
                     App.FmodService.LoadBanks();
