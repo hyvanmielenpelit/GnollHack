@@ -20,6 +20,20 @@ namespace GnollHackClient.iOS
             return ver.ToString();
         }
 
+        public ulong GetDeviceMemoryInBytes()
+        {
+            try
+            {
+                NSProcessInfo info = NSProcessInfo.ProcessInfo;
+                ulong memory = info.PhysicalMemory;
+                return memory;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         public void CloseApplication()
         {
             RevertAnimationDuration();

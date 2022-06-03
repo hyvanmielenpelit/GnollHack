@@ -25,6 +25,24 @@ namespace GnollHackClient.Droid
             return context.PackageManager.GetPackageInfo(context.PackageName, 0).VersionName;
         }
 
+        public ulong GetDeviceMemoryInBytes()
+        {
+            try
+            {
+                var activityManager = Android.App.Application.Context.GetSystemService(Activity.ActivityService) as ActivityManager;
+                var memoryInfo = new ActivityManager.MemoryInfo();
+                activityManager.GetMemoryInfo(memoryInfo);
+
+                long totalRam = memoryInfo.TotalMem;
+
+                return (ulong)totalRam;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         public void CloseApplication()
         {
             RevertAnimationDuration();

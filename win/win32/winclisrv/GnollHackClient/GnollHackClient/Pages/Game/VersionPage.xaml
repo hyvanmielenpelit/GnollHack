@@ -20,14 +20,72 @@
                 <Label x:Name="HeaderLabel" Text="Version" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
                 <ScrollView x:Name="TextScrollView" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                     <StackLayout>
-                        <StackLayout Orientation="Horizontal">
+                        <Grid x:Name="VersionInfoGrid">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Row="0" Text="GnollHack Version:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="1" x:Name="PortVersionTitleLabel" Text="Mobile Port Version:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="2" x:Name="PortBuildTitleLabel" Text="Mobile Port Version:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="3" Text="FMOD Version:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="4" Text="Platform:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="5" Text="Device:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="6" Text="Total Memory:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+
+                            <Label Grid.Row="0" Grid.Column="1" x:Name="GnollHackVersionLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="1" Grid.Column="1" x:Name="PortVersionLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="2" Grid.Column="1" x:Name="PortBuildLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="3" Grid.Column="1" x:Name="FMODVersionLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="4" Grid.Column="1" x:Name="PlatformLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="5" Grid.Column="1" x:Name="DeviceLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="6" Grid.Column="1" x:Name="TotalMemoryLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+
+                        </Grid>
+                        <!--<StackLayout Orientation="Horizontal">
                             <Label x:Name="KeyLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
                             FontFamily="DejaVuSansMono" FontSize="13" />
                             <Label x:Name="ValueLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
                             FontFamily="DejaVuSansMono" FontSize="13" />
-                        </StackLayout>
-                        <Label x:Name="LongLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
-                            FontFamily="DejaVuSansMono" FontSize="13" />
+                        </StackLayout>-->
+
+                        <Grid x:Name="LongVersionGrid">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="0" x:Name="LongTitleLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                                FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="1" x:Name="LongLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                                FontFamily="DejaVuSansMono" FontSize="13" />
+                        </Grid>
                     </StackLayout>
                 </ScrollView>
                 <Grid Grid.Row="2" x:Name="CloseGrid" BackgroundColor="Transparent" HorizontalOptions="Center" WidthRequest="250" HeightRequest="60">
