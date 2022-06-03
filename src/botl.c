@@ -3372,7 +3372,7 @@ status_hilite_linestr_gather_conditions()
         if (cond_maps[i].bm) {
             int clr = NO_COLOR, atr = HL_NONE;
 
-            split_clridx(cond_maps[i].clratr, &clr, &atr);
+            split_clridx((int)cond_maps[i].clratr, &clr, &atr);
             if (clr != NO_COLOR || atr != HL_NONE) {
                 char clrbuf[BUFSZ];
                 char attrbuf[BUFSZ];

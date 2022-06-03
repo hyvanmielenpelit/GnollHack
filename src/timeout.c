@@ -150,7 +150,7 @@ mummy_rot_dialogue()
     if (!is_living(youmonst.data) || Sick_resistance)
         return;
 
-    register long i = context.mummyrot_advancement;
+    int i = context.mummyrot_advancement;
 
     if (i < 20)
     {

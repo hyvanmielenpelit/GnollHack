@@ -1002,7 +1002,7 @@ boolean so;
     /* beginning of hp column after padding (not actually padded yet) */
     hppos = COLNO - (sizeof("  Hp [max]") - 1); /* sizeof(str) includes \0 */
     while (lngr >= hppos) {
-        for (bp = eos(linebuf); !(*bp == ' ' && (bp - linebuf < hppos)); bp--)
+        for (bp = eos(linebuf); !(*bp == ' ' && (bp - linebuf < (int)hppos)); bp--)
             ;
         /* special case: word is too long, wrap in the middle */
         if (linebuf + 15 >= bp)
