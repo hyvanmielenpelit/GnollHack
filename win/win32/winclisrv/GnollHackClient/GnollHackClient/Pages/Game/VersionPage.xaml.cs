@@ -88,7 +88,7 @@ namespace GnollHackClient.Pages.Game
                 MainGrid.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
                 double target_width = (Math.Min(width, MainGrid.WidthRequest) - MainGrid.Margin.Left - MainGrid.Margin.Right
                     - MainGrid.Padding.Left - MainGrid.Padding.Right - margins.Left - margins.Right);
-                double newsize = 16 * target_width / 400;
+                double newsize = 15 * target_width / 400;
 
                 foreach(View v in VersionInfoGrid.Children)
                 {

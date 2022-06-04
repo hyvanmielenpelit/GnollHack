@@ -27,7 +27,7 @@ namespace GnollHackClient.Pages.Game
             App.PlayButtonClickedSound();
             CreditsTableView.IsEnabled = false;
             string fulltargetpath = Path.Combine(App.GHPath, "xcredits");
-            var displFilePage = new DisplayFilePage(fulltargetpath, "Cross-Platform Credits");
+            var displFilePage = new DisplayFilePage(fulltargetpath, "Cross-Platform Credits", 80);
             string errormsg = "";
             if (!displFilePage.ReadFile(out errormsg))
             {
@@ -45,7 +45,7 @@ namespace GnollHackClient.Pages.Game
             App.PlayButtonClickedSound();
             CreditsTableView.IsEnabled = false;
             string fulltargetpath = Path.Combine(App.GHPath, "credits");
-            var displFilePage = new DisplayFilePage(fulltargetpath, "Credits");
+            var displFilePage = new DisplayFilePage(fulltargetpath, "Credits", 77);
             string errormsg = "";
             if (!displFilePage.ReadFile(out errormsg))
             {
@@ -63,7 +63,7 @@ namespace GnollHackClient.Pages.Game
             App.PlayButtonClickedSound();
             CreditsTableView.IsEnabled = false;
             string fulltargetpath = Path.Combine(App.GHPath, "license");
-            var displFilePage = new DisplayFilePage(fulltargetpath, "License");
+            var displFilePage = new DisplayFilePage(fulltargetpath, "License", 78);
             string errormsg = "";
             if (!displFilePage.ReadFile(out errormsg))
             {

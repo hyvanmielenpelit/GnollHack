@@ -16,19 +16,22 @@ namespace GnollHackClient.Pages.Game
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DisplayFilePage : ContentPage
     {
-        public DisplayFilePage(string fileName, string header)
+        private string _fileName;
+        private int _fixedWidth;
+
+        public DisplayFilePage(string fileName, string header) : this(fileName, header, 0)
+        {
+        }
+
+        public DisplayFilePage(string fileName, string header, int fixedWidth)
         {
             InitializeComponent();
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 
             _fileName = fileName;
+            _fixedWidth = fixedWidth;
             HeaderLabel.Text = header;
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            if (App.IsiOS)
-            {
-                TextEditor.IsVisible = false;
-                TextScrollView.IsVisible = true;
-            }
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
@@ -38,18 +41,35 @@ namespace GnollHackClient.Pages.Game
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
-        private string _fileName;
-
         public bool ReadFile(out string errorMessage)
         {
             string res = "";
             try
             {
                 string text = File.ReadAllText(_fileName, Encoding.UTF8);
-                if (App.IsiOS)
-                    TextLabel.Text = text;
-                else
-                    TextEditor.Text = text;
+                if(_fixedWidth > 0)
+                {
+                    int firstLineBreak = text.IndexOf(Environment.NewLine);
+                    int len = 0;
+                    if (firstLineBreak < 0)
+                    {
+                        len = text.Length;
+                        if (len < _fixedWidth)
+                        {
+                            text = text + new string(' ', _fixedWidth - len);
+                        }
+                    }
+                    else
+                    {
+                        len = firstLineBreak;
+                        if (len < _fixedWidth)
+                        {
+                            text = text.Substring(0, firstLineBreak) + new string(' ', _fixedWidth - len) + text.Substring(firstLineBreak);
+                        }
+                    }
+
+                }
+                TextLabel.Text = text;
             }
             catch (Exception e)
             {
@@ -70,21 +90,15 @@ namespace GnollHackClient.Pages.Game
                 _currentPageWidth = width;
                 _currentPageHeight = height;
                 Thickness margins = new Thickness();
-                if (App.IsiOS)
-                    margins = TextLabel.Margin;
-                else
-                    margins = TextEditor.Margin;
+                margins = TextLabel.Margin;
 
                 double bordermargin = ClientUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
                 MainGrid.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
                 double target_width = (Math.Min(width, MainGrid.WidthRequest) - MainGrid.Margin.Left - MainGrid.Margin.Right 
                     - MainGrid.Padding.Left - MainGrid.Padding.Right - margins.Left - margins.Right);
-                double newsize = 12 * target_width / 640;
+                double newsize = 12.5 * target_width / 640;
 
-                if(App.IsiOS)
-                    TextLabel.FontSize = newsize;
-                else
-                    TextEditor.FontSize = newsize;
+                TextLabel.FontSize = newsize;
 
                 HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
