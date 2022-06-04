@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using GnollHackClient.Controls;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using Xamarin.Forms.PlatformConfiguration;
 
 namespace GnollHackClient.Pages.Game
 {
@@ -469,7 +470,7 @@ namespace GnollHackClient.Pages.Game
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+            On<iOS>().SetUseSafeArea(true);
             _mainPage = mainPage;
 
             CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
@@ -5075,7 +5076,9 @@ namespace GnollHackClient.Pages.Game
                                 float pet_target_width = pet_target_height; // inverse_canvas_scale * (float)ESCButton.Width;
 
                                 SKRect menubuttonrect = GetViewScreenRect(GameMenuButton);
-                                float menu_button_left = menubuttonrect.Left;
+                                SKRect canvasrect = GetViewScreenRect(canvasView);
+                                SKRect adjustedrect = new SKRect(menubuttonrect.Left - canvasrect.Left, menubuttonrect.Top - canvasrect.Top, menubuttonrect.Right - canvasrect.Left, menubuttonrect.Bottom - canvasrect.Top);
+                                float menu_button_left = adjustedrect.Left;
                                 float pet_tx_start = orbleft + orbbordersize * 1.1f;
                                 tx = pet_tx_start;
                                 ty = statusbarheight + 5.0f;
@@ -5551,7 +5554,7 @@ namespace GnollHackClient.Pages.Game
                     textPaint.Color = SKColors.White;
 
                     float box_left = canvaswidth < canvasheight ? 1.25f * inverse_canvas_scale * (float)ESCButton.Width :
-                        2.25f * inverse_canvas_scale * (float)ESCButton.Width;
+                        3.25f * inverse_canvas_scale * (float)ESCButton.Width;
                     float box_right = canvaswidth - box_left;
                     if (box_right < box_left)
                         box_right = box_left;
@@ -5582,7 +5585,7 @@ namespace GnollHackClient.Pages.Game
 
                     float twidth = textPaint.MeasureText("Strength");
                     float theight = textPaint.FontSpacing;
-                    float tscale =  Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 18) / theight));
+                    float tscale =  Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 21) / theight));
                     float basefontsize = textPaint.TextSize * tscale;
                     textPaint.TextSize = basefontsize;
                     float strwidth = twidth * tscale;
@@ -10516,7 +10519,6 @@ namespace GnollHackClient.Pages.Game
                 // Loop through all parents
                 while (parent != null)
                 {
-                    // Add in the coordinates of the parent with respect to ITS parent
                     screenCoordinateX += parent.X;
                     screenCoordinateY += parent.Y;
 
@@ -10539,7 +10541,9 @@ namespace GnollHackClient.Pages.Game
         public void PaintTipButton(SKCanvas canvas, SKPaint textPaint, Xamarin.Forms.VisualElement view, string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety)
         {
             SKRect viewrect = GetViewScreenRect(view);
-            PaintTipButtonByRect(canvas, textPaint, viewrect, centertext, boxtext, radius_mult, centertextfontsize, boxfontsize, linefromright, lineoffsetx, lineoffsety);
+            SKRect tiprect = GetViewScreenRect(TipView);
+            SKRect adjustedrect = new SKRect(viewrect.Left - tiprect.Left, viewrect.Top - tiprect.Top, viewrect.Right - tiprect.Left, viewrect.Bottom - tiprect.Top);
+            PaintTipButtonByRect(canvas, textPaint, adjustedrect, centertext, boxtext, radius_mult, centertextfontsize, boxfontsize, linefromright, lineoffsetx, lineoffsety);
         }
 
         public void PaintTipButtonByRect(SKCanvas canvas, SKPaint textPaint, SKRect viewrect, string centertext, string boxtext, float radius_mult, float centertextfontsize, float boxfontsize, bool linefromright, float lineoffsetx, float lineoffsety)
