@@ -5585,7 +5585,15 @@ namespace GnollHackClient.Pages.Game
 
                     float twidth = textPaint.MeasureText("Strength");
                     float theight = textPaint.FontSpacing;
-                    float tscale =  Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 21) / theight));
+                    float tscale_one_column = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 21) / theight));
+                    float tscale_two_columns = Math.Max(0.1f, Math.Min((bkgrect.Width * (1 - 2f / 12.6f) / 4) / twidth, (bkgrect.Height * (1 - 2f / 8.5f) / 18) / theight));
+                    //float strwidth_one_column = twidth * tscale_one_column;
+                    float strwidth_two_columns = twidth * tscale_two_columns;
+                    //float indentation_one_column = strwidth_one_column * 20f / 8f;
+                    float indentation_two_columns = strwidth_two_columns * 20f / 8f;
+                    bool use_two_columns = bkgrect.Width - bkgrect.Width * 2f / 12.6f >= indentation_two_columns * 2.5f;
+
+                    float tscale = use_two_columns ? tscale_two_columns : tscale_one_column;
                     float basefontsize = textPaint.TextSize * tscale;
                     textPaint.TextSize = basefontsize;
                     float strwidth = twidth * tscale;
@@ -5918,7 +5926,7 @@ namespace GnollHackClient.Pages.Game
                         ty += textPaint.FontSpacing * 0.5f;
 
                         /* Condition, status and buff marks */
-                        if (bkgrect.Width - bkgrect.Width * 2f / 12.6f >= indentation * 2.5f)
+                        if (use_two_columns)
                         {
                             tx += indentation * 1.75f;
                             ty = base_ty;
