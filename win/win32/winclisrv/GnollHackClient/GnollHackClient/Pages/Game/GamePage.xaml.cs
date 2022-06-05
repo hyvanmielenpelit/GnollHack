@@ -7492,6 +7492,11 @@ namespace GnollHackClient.Pages.Game
                         }
                         break;
                     case SKTouchAction.Cancelled:
+                        if (TouchDictionary.ContainsKey(e.Id))
+                            TouchDictionary.Remove(e.Id);
+                        else
+                            TouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+                        e.Handled = true;
                         break;
                     case SKTouchAction.Exited:
                         break;
@@ -8029,6 +8034,7 @@ namespace GnollHackClient.Pages.Game
         private void ESCButton_Clicked(object sender, EventArgs e)
         {
             App.PlayButtonClickedSound();
+            TouchDictionary.Clear();
             GenericButton_Clicked(sender, e, 27);
         }
         public void ToggleAutoCenterMode()
@@ -8168,6 +8174,7 @@ namespace GnollHackClient.Pages.Game
         {
             GameMenuButton.IsEnabled = false;
             App.PlayButtonClickedSound();
+            TouchDictionary.Clear();
             ShowGameMenu(sender, e);
             GameMenuButton.IsEnabled = true;
         }
@@ -8787,6 +8794,11 @@ namespace GnollHackClient.Pages.Game
                     }
                     break;
                 case SKTouchAction.Cancelled:
+                    if (MenuTouchDictionary.ContainsKey(e.Id))
+                        MenuTouchDictionary.Remove(e.Id);
+                    else
+                        MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+                    e.Handled = true;
                     break;
                 case SKTouchAction.Exited:
                     break;
@@ -9458,6 +9470,11 @@ namespace GnollHackClient.Pages.Game
                         }
                         break;
                     case SKTouchAction.Cancelled:
+                        if (TextTouchDictionary.ContainsKey(e.Id))
+                            TextTouchDictionary.Remove(e.Id);
+                        else
+                            TextTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+                        e.Handled = true;
                         break;
                     case SKTouchAction.Exited:
                         break;
@@ -10261,6 +10278,11 @@ namespace GnollHackClient.Pages.Game
                         }
                         break;
                     case SKTouchAction.Cancelled:
+                        if (CommandTouchDictionary.ContainsKey(e.Id))
+                            CommandTouchDictionary.Remove(e.Id);
+                        else
+                            CommandTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
+                        e.Handled = true;
                         break;
                     case SKTouchAction.Exited:
                         break;
