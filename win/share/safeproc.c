@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-04-16 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-06-05 */
 
 /* GnollHack 4.0    safeproc.c   */    
 /* Copyright (c) Michael Allison, 2018                            */

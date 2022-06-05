@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-06-05 */
 
 /* GnollHack 4.0    winnt.c    $NHDT-Date: 1524321419 2018/04/21 14:36:59 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.30 $ */
 /* Copyright (c) GnollHack PC Development Team 1993, 1994 */

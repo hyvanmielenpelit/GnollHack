@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-04-16 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-06-05 */
 
 /* GnollHack 4.0    version.c    $NHDT-Date: 1552353060 2019/03/12 01:11:00 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.52 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -110,17 +110,21 @@ doextversion()
        the file manually so we can include dynamic version info */
 
     (void) getversionstring(buf);
-    /* if extra text (git info) is present, put it on separate line */
+    /* if extra text (git info) is present, put it on separate line, unless it is (Hot Fix) */
+
     if (strlen(buf) >= COLNO)
         p = rindex(buf, '(');
-    if (p && p > buf && p[-1] == ' ')
+    if(p && p > buf && p[1] == 'H') /* First one might be (Hot Fix) */
+        p = rindex(p + 1, '(');
+    if (p && p > buf && p[-1] == ' ' && p[1] != 'H')
         p[-1] = '\0';
     else
         p = 0;
+
     putstr(win, ATR_TITLE, buf);
     if (p) {
         *--p = ' ';
-        putstr(win, 0, p);
+        putstr(win, ATR_SUBTITLE, p);
     }
 
     f = dlb_fopen(OPTIONS_USED, "r");
