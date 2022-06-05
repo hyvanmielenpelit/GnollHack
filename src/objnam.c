@@ -4135,6 +4135,15 @@ boolean is_wiz_wish;
 
     /* Mythic suffixes */
     char* mythic_sng = makesingular(bp);
+    if (mythic_sng != 0)
+    {
+        //make all lower case
+        char* lp;
+        for (lp = mythic_sng; *lp; lp++)
+        {
+            *lp = lowc(*lp);
+        }
+    }
     int mythic_idx;
     for (mythic_idx = 1; mythic_idx < MAX_MYTHIC_SUFFIXES; mythic_idx++)
     {
@@ -4158,7 +4167,7 @@ boolean is_wiz_wish;
             Sprintf(scrollbuf, "scroll%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
             Sprintf(spellbookbuf, "spellbook%s", mythic_suffix_qualities[mythic_idx].mythic_affix);
 
-            if (!(p == mythic_sng + 4 && !strcmp(p - 4, ringbuf)) /* No rings and other standard itmes etc. */
+            if (!(p == mythic_sng + 4 && !strcmp(p - 4, ringbuf)) /* No rings and other standard items etc. */
                 && !(p == mythic_sng + 4 && !strcmp(p - 4, robebuf))
                 && !(p == mythic_sng + 5 && !strcmp(p - 5, bootsbuf))
                 && !(p == mythic_sng + 5 && !strcmp(p - 5, cloakbuf))
