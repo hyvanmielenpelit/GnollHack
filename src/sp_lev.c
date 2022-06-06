@@ -2088,7 +2088,7 @@ struct mkroom *croom;
                         }
                         else
                         {
-                            otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
+                            otmp->mythic_suffix = !rn2(2) ? MYTHIC_SUFFIX_FREE_ACTION : MYTHIC_SUFFIX_SPEED;
                         }
                     }
                     else
@@ -2133,7 +2133,7 @@ struct mkroom *croom;
                     else
                     {
                         if (!rn2(2))
-                            otmp->mythic_suffix = MYTHIC_SUFFIX_SHARPNESS;
+                            otmp->mythic_suffix = objects[otmp->otyp].oc_dir == WHACK || !rn2(2) ? MYTHIC_SUFFIX_FREE_ACTION : MYTHIC_SUFFIX_SHARPNESS;
                         else
                             otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
                     }
