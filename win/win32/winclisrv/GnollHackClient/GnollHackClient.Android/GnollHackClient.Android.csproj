@@ -37,8 +37,7 @@
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <BundleAssemblies>false</BundleAssemblies>
-    <AndroidSupportedAbis>
-    </AndroidSupportedAbis>
+    <AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
     <Debugger>Xamarin</Debugger>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
@@ -125,9 +124,6 @@
   <ItemGroup>
     <AndroidNativeLibrary Include="libs\arm64-v8a\libfmod.so" />
     <AndroidNativeLibrary Include="libs\arm64-v8a\libfmodstudio.so" />
-    <AndroidNativeLibrary Include="libs\armeabi-v7a\libfmod.so" />
-    <AndroidNativeLibrary Include="libs\armeabi-v7a\libfmodstudio.so" />
-    <AndroidNativeLibrary Include="libs\armeabi-v7a\libgnollhackdroid.so" />
     <AndroidNativeLibrary Include="libs\arm64-v8a\libgnollhackdroid.so" />
     <AndroidAsset Include="gnh\credits" />
     <AndroidAsset Include="gnh\license" />
@@ -146,7 +142,6 @@
     <AndroidAsset Include="banks\Auxiliary.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
     <AndroidAsset Include="banks\Master.strings.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
     <AndroidNativeLibrary Include="libs\arm64-v8a\libc++_shared.so" />
-    <AndroidNativeLibrary Include="libs\armeabi-v7a\libc++_shared.so" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -168,8 +163,6 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="libs\x86\" />
-    <Folder Include="libs\x86_64\" />
     <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>
