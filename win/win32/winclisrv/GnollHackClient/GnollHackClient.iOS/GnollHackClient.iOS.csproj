@@ -92,6 +92,7 @@
     <Compile Include="..\GnollHackClient.FMOD\fmod_studio.cs" />
     <Compile Include="..\GnollHackClient.Common\GnollHackService.cs" />
     <Compile Include="GHEditorRenderer.cs" />
+    <Compile Include="GHGamePageRenderer.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />

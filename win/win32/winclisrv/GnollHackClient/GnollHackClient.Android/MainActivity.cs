@@ -78,5 +78,11 @@ namespace GnollHackClient.Droid
                 base.OnBackPressed();
             }
         }
+
+        public override bool OnKeyUp([GeneratedEnum] Keycode keyCode, KeyEvent e)
+        {
+            //process key press
+            return base.OnKeyUp(keyCode, e);
+        }
     }
 }
