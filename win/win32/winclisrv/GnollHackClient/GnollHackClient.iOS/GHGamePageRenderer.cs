@@ -15,26 +15,47 @@ namespace GnollHackClient.iOS
 {
     public class GHGamePageRenderer : PageRenderer
     {
+        /*
         public override bool CanBecomeFirstResponder
         {
             get { return true; }
         }
+        */
 
         protected override void OnElementChanged(VisualElementChangedEventArgs e)
         {
             base.OnElementChanged(e);
-            var selector = new ObjCRuntime.Selector("KeyPressedNormal:");
-            UIKeyCommand accelerator1 = UIKeyCommand.Create((NSString)"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890<>!\"#$%&/()=+?,.-;:_*{}[]\'\\ §", 0, selector);
-            AddKeyCommand(accelerator1);
-            var selector2 = new ObjCRuntime.Selector("KeyPressedCtrl:");
-            UIKeyCommand accelerator2 = UIKeyCommand.Create((NSString)"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890<>!\"#$%&/()=+?,.-;:_*{}[]'\\ §", UIKeyModifierFlags.Control, selector2);
-            AddKeyCommand(accelerator2);
-            var selector3 = new ObjCRuntime.Selector("KeyPressedMeta:");
-            UIKeyCommand accelerator3 = UIKeyCommand.Create((NSString)"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890<>!\"#$%&/()=+?,.-;:_*{}[]'\\ §", UIKeyModifierFlags.Alternate, selector3);
-            AddKeyCommand(accelerator3);
-            var selector4 = new ObjCRuntime.Selector("KeyPressedNumberPad:");
-            UIKeyCommand accelerator4 = UIKeyCommand.Create((NSString)"1234567890", UIKeyModifierFlags.NumericPad, selector4);
-            AddKeyCommand(accelerator4);
+            //this.BecomeFirstResponder();
+
+            /*
+            string keys = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 <> !\"#$%&/()=+?,.-;:_*{}[]\'\\ §";
+            foreach(char c in keys)
+            {
+                var selector = new ObjCRuntime.Selector("KeyPressedNormal:");
+                UIKeyCommand accelerator1 = UIKeyCommand.Create((NSString)c.ToString(), 0, selector);
+                AddKeyCommand(accelerator1);
+            }
+            foreach (char c in keys)
+            {
+                var selector2 = new ObjCRuntime.Selector("KeyPressedCtrl:");
+                UIKeyCommand accelerator2 = UIKeyCommand.Create((NSString)c.ToString(), UIKeyModifierFlags.Control, selector2);
+                AddKeyCommand(accelerator2);
+            }
+            foreach (char c in keys)
+            {
+                var selector3 = new ObjCRuntime.Selector("KeyPressedMeta:");
+                UIKeyCommand accelerator3 = UIKeyCommand.Create((NSString)c.ToString(), UIKeyModifierFlags.Alternate, selector3);
+                AddKeyCommand(accelerator3);
+            }
+
+            string numkeys = "1234567890";
+            foreach (char c in numkeys)
+            {
+                var selector4 = new ObjCRuntime.Selector("KeyPressedNumberPad:");
+                UIKeyCommand accelerator4 = UIKeyCommand.Create((NSString)c.ToString(), UIKeyModifierFlags.NumericPad, selector4);
+                AddKeyCommand(accelerator4);
+            }
+            */
         }
 
         [Export("KeyPressedNormal:")]
