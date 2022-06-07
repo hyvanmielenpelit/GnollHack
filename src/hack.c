@@ -146,12 +146,15 @@ moverock()
     register struct obj *otmp;
     register struct trap *ttmp;
     register struct monst *mtmp;
+    char pushbuf[QBUFSZ] = "";
 
     play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_PUSH_EFFORT);
 
     sx = u.ux + u.dx, sy = u.uy + u.dy; /* boulder starting position */
     while ((otmp = sobj_at(BOULDER, sx, sy)) != 0) 
     {
+        strcpy(pushbuf, "");
+
         /* make sure that this boulder is visible as the top object */
         if (otmp != level.objects[sx][sy])
             movobj(otmp, sx, sy);
@@ -173,7 +176,7 @@ moverock()
             if (Blind)
                 feel_location(sx, sy);
             play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
-            pline("You're too small to push that %s.", xname(otmp));
+            Sprintf(pushbuf, "You're too small to push that %s.", xname(otmp));
             goto cannot_push;
         }
         if (isok(rx, ry) && !IS_ROCK(levl[rx][ry].typ)
@@ -191,7 +194,7 @@ moverock()
                     feel_location(sx, sy);
 
                 play_sfx_sound(SFX_GENERAL_CANNOT);
-                pline("%s won't roll diagonally on this %s.",
+                Sprintf(pushbuf, "%s won't roll diagonally on this %s.",
                       The(xname(otmp)), surface(sx, sy));
                 goto cannot_push;
             }
@@ -207,13 +210,15 @@ moverock()
                     feel_location(sx, sy);
                 if (canspotmon(mtmp))
                 {
-                    pline("There's %s on the other side.", a_monnam(mtmp));
-                } else {
-                    You_hear("a monster behind %s.", the(xname(otmp)));
+                    Sprintf(pushbuf, "There's %s on the other side.", a_monnam(mtmp));
+                } 
+                else 
+                {
+                    Sprintf(pushbuf, "You hear a monster behind %s.", the(xname(otmp)));
                     map_invisible(rx, ry);
                 }
                 if (flags.verbose)
-                    pline("Perhaps that's why %s cannot move it.",
+                    Sprintf(eos(pushbuf), " Perhaps that's why %s cannot move it.",
                           u.usteed ? y_monnam(u.usteed) : "you");
                 goto cannot_push;
             }
@@ -394,18 +399,23 @@ moverock()
             } else {
                 newsym(sx, sy);
             }
-        } else {
- nopushmsg:
+        } 
+        else 
+        {
+nopushmsg:
             if (u.usteed)
-                pline("%s tries to move %s, but cannot.",
+                Sprintf(pushbuf, "%s tries to move %s, but cannot.",
                       upstart(y_monnam(u.usteed)), the(xname(otmp)));
             else
-                You("try to move %s, but in vain.", the(xname(otmp)));
+                Sprintf(pushbuf, "You try to move %s, but in vain.", the(xname(otmp)));
+
             if (Blind)
                 feel_location(sx, sy);
  cannot_push:
             if (throws_rocks(youmonst.data)) 
             {
+                pline1(pushbuf);
+
                 boolean
                     canpickup = (!Sokoban
                                  /* similar exception as in can_lift():
@@ -447,15 +457,28 @@ moverock()
                                             && IS_ROCK(levl[sx][u.uy].typ))))
                     || verysmall(youmonst.data)))
             {
-                if (yn_query("However, you can squeeze yourself into a small opening. Proceed?") == 'y')
+#ifdef GNH_MOBILE
+                if (*pushbuf)
+                    Strcat(pushbuf, " ");
+#else
+                if(*pushbuf)
+                    pline1(pushbuf);
+                *pushbuf = 0;
+#endif
+                Strcat(pushbuf, "However, you can squeeze yourself into a small opening. Proceed?");
+                if (yn_query_ex(ATR_NONE, NO_COLOR, "Squeeze into Opening?", pushbuf) == 'y')
                 {
                     sokoban_guilt();
                     break;
                 }
                 else
                     return -1;
-            } else
+            } 
+            else
+            {
+                pline1(pushbuf);
                 return -1;
+            }
         }
     }
     return 0;

@@ -5607,11 +5607,12 @@ dodown()
 
         if (youmonst.data->msize >= MZ_HUGE)
         {
-            char qbuf[QBUFSZ];
+            char qbuf[QBUFSZ], titlebuf[BUFSZ];
 
-            You("don't fit %s easily.", down_or_thru);
-            Sprintf(qbuf, "Try to squeeze %s?", down_or_thru);
-            if (yn_query(qbuf) == 'y')
+            //You("don't fit %s easily.", down_or_thru);
+            Sprintf(qbuf, "You don't fit %s easily. Try to squeeze %s?", down_or_thru, down_or_thru);
+            Sprintf(titlebuf, "Squeeze %s?", down_or_thru);
+            if (yn_query_ex(ATR_NONE, NO_COLOR, titlebuf, qbuf) == 'y')
             {
                 if (!rn2(3))
                 {

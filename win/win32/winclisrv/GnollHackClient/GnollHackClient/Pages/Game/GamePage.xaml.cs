@@ -488,6 +488,8 @@ namespace GnollHackClient.Pages.Game
             MonsterTargeting = Preferences.Get("MonsterTargeting", false);
             NumDisplayedMessages = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
             NumDisplayedPetRows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
+            WalkArrows = Preferences.Get("WalkArrows", true);
+
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
             MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", deffontsize * GHConstants.MapFontRelativeAlternateSize);
@@ -7550,6 +7552,7 @@ namespace GnollHackClient.Pages.Game
                     }
                 }
             }
+
             lock (_mapOffsetLock)
             {
                 offsetX += _mapOffsetX;
