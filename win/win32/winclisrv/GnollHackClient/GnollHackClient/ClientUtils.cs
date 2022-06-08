@@ -493,7 +493,7 @@ namespace GnollHackClient
             for (int cnt = 0; cnt < normal_list.Count; cnt++)
             {
                 GHPutStrItem psi = normal_list[cnt];
-                if (newpsi != null && (psi.Text == ""))
+                if (newpsi != null && (psi.Text == "" || psi.StartingSpaces != newpsi.PaddingAmount))
                 {
                     adjusted_list.Add(newpsi);
                     newpsi = null;

@@ -228,5 +228,24 @@ namespace GnollHackClient
             return "";
         }
 
+        public int StartingSpaces
+        {
+            get {
+                if (Text == null || Text == "") 
+                    return 0; 
+                else 
+                {
+                    int cnt = 0;
+                    for (int i = 0; i < Text.Length; i++)
+                    {
+                        if (Text[i] == ' ')
+                            cnt++;
+                        else
+                            break;
+                    }
+                    return cnt;
+                } 
+            }
+        }
     }
 }

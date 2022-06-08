@@ -1670,7 +1670,8 @@ namespace GnollHackClient.Pages.Game
             TextWindowGlyphImage.IsVisible = IsTextGlyphVisible;
 
             List<GHPutStrItem> items = null;
-            if (window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER)
+            if (window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER 
+                || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_HAS_INDENTED_TEXT || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_DISPLAY_FILE_WITH_INDENTED_TEXT)
             {
                 items = new List<GHPutStrItem>();
                 ClientUtils.ProcessAdjustedItems(items, strs);

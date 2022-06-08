@@ -104,7 +104,7 @@ doextversion()
 {
     dlb *f;
     char buf[BUFSZ], *p = 0;
-    winid win = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_DISPLAY_FILE, NO_GLYPH, zerocreatewindowinfo);
+    winid win = create_nhwindow_ex(NHW_TEXT, GHWINDOW_STYLE_DISPLAY_FILE_WITH_INDENTED_TEXT, NO_GLYPH, zerocreatewindowinfo);
 
     /* instead of using ``display_file(OPTIONS_USED,TRUE)'' we handle
        the file manually so we can include dynamic version info */
