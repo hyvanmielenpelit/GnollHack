@@ -26,6 +26,12 @@ namespace GnollHackClient.Pages.Game
 
             ulong TotalMemInBytes = App.PlatformService.GetDeviceMemoryInBytes();
             ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
+            ulong FreeDiskSpaceInBytes = App.PlatformService.GetDeviceFreeDiskSpaceInBytes();
+            ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
+            ulong TotalDiskSpaceInBytes = App.PlatformService.GetDeviceTotalDiskSpaceInBytes();
+            ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
+
+
             PortVersionTitleLabel.Text = Device.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = Device.RuntimePlatform + " Port Build:";
 
@@ -36,6 +42,7 @@ namespace GnollHackClient.Pages.Game
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
             TotalMemoryLabel.Text = TotalMemInMB + " MB";
+            DiskSpaceLabel.Text = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
 
             //text += Environment.NewLine + VersionTracking.CurrentVersion;
             //text += Environment.NewLine + VersionTracking.CurrentBuild;

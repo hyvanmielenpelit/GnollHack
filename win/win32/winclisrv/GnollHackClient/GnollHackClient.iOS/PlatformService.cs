@@ -34,6 +34,32 @@ namespace GnollHackClient.iOS
             }
         }
 
+        public ulong GetDeviceFreeDiskSpaceInBytes()
+        {
+            try
+            {
+                ulong freesize = NSFileManager.DefaultManager.GetFileSystemAttributes(Environment.GetFolderPath(Environment.SpecialFolder.Personal)).FreeSize;
+                return freesize;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        public ulong GetDeviceTotalDiskSpaceInBytes()
+        {
+            try
+            {
+                ulong totalsize = NSFileManager.DefaultManager.GetFileSystemAttributes(Environment.GetFolderPath(Environment.SpecialFolder.Personal)).Size;
+                return totalsize;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         public void CloseApplication()
         {
             RevertAnimationDuration();

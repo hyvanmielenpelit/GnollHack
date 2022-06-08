@@ -164,5 +164,13 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private async void btnVersion_Clicked(object sender, EventArgs e)
+        {
+            MainLayout.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            var verPage = new VersionPage();
+            await App.Current.MainPage.Navigation.PushModalAsync(verPage);
+            MainLayout.IsEnabled = true;
+        }
     }
 }

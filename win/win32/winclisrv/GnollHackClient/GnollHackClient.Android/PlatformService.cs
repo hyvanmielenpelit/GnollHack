@@ -43,6 +43,39 @@ namespace GnollHackClient.Droid
             }
         }
 
+        public ulong GetDeviceFreeDiskSpaceInBytes()
+        {
+            try
+            {
+                //Using StatFS
+                var path = new StatFs(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData));
+                long blockSize = path.BlockSizeLong;
+                long avaliableBlocks = path.AvailableBlocksLong;
+                long freeSpace = blockSize * avaliableBlocks;
+                return (ulong)freeSpace;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        public ulong GetDeviceTotalDiskSpaceInBytes()
+        {
+            try
+            {
+                //Using StatFS
+                var path = new StatFs(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData));
+                long freeSpace = path.TotalBytes;
+                return (ulong)freeSpace;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+
         public void CloseApplication()
         {
             RevertAnimationDuration();

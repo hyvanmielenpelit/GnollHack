@@ -8,6 +8,8 @@ namespace GnollHackClient
     {
         string GetVersionString();
         ulong GetDeviceMemoryInBytes();
+        ulong GetDeviceFreeDiskSpaceInBytes();
+        ulong GetDeviceTotalDiskSpaceInBytes();
         void CloseApplication();
         void SetStatusBarHidden(bool ishidden);
         bool GetStatusBarHidden();
