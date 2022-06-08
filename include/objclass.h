@@ -942,7 +942,7 @@ struct objclass {
 #define O5_FULL_NAME                   0x00000020UL /* Do not append or prepend anything to the name */
 #define O5_OK_FOR_ILLITERATE           0x00000040UL /* Does not break illiterate conduct */
 #define O5_NOT_CANCELLABLE             0x00000080UL /* Cannot be cancelled */
-#define O5_USES_SPELL_TILE             0x00000100UL /* Spellbook uses a special spell tile glyph instead of the object glyph */
+/* Free bit */
 #define O5_HAS_ALTERNATIVE_APPEARANCE  0x00000200UL /* Alternative appearance available */
 
 #define O6_NONE                        0x00000000UL
