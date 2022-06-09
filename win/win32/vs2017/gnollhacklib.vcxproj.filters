@@ -18,10 +18,10 @@
     <ClInclude Include="..\share\callback.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\dllhack.h">
+    <ClInclude Include="$(DllDir)dllhack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\dllproc.h">
+    <ClInclude Include="$(DllDir)dllproc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\action.h">
@@ -237,18 +237,18 @@
     <ClInclude Include="..\..\..\include\youprop.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\resource.h">
+    <ClInclude Include="$(DllDir)resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\lib\dllmain.c">
+    <ClCompile Include="$(DllDir)dllmain.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\dllhack.c">
+    <ClCompile Include="$(DllDir)dllhack.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\dllproc.c">
+    <ClCompile Include="$(DllDir)dllproc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\allmain.c">
@@ -642,7 +642,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\lib\dllhack.rc">
+    <ResourceCompile Include="$(DllDir)dllhack.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
