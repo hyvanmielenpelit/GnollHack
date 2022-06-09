@@ -97,7 +97,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;LIBGNOLLHACK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>..\lib\pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>$(DllDir)pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,7 +114,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;LIBGNOLLHACK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>..\lib\pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>$(DllDir)pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -132,7 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(LibShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(LibShareDir);$(WinFmodDir)core\inc\;$(WinFmodDir)fsbank\inc\;$(WinFmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,8 +151,8 @@
       <PreprocessorDefinitions>NDEBUG;LIBGNOLLHACK_EXPORTS;_WINDOWS;_USRDLL;TILES;DLB;DLL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;EXIT_THREAD_ON_EXIT;GNOLLHACK_MAIN_PROGRAM;GNOLLHACK_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>..\lib\pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(LibShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>$(DllDir)pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(LibShareDir);$(WinFmodDir)core\inc\;$(WinFmodDir)fsbank\inc\;$(WinFmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -164,225 +164,225 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\ext\fmod\core\inc\fmod.hpp" />
-    <ClInclude Include="..\..\..\ext\fmod\fsbank\inc\fsbank.h" />
-    <ClInclude Include="..\..\..\ext\fmod\fsbank\inc\fsbank_errors.h" />
-    <ClInclude Include="..\..\..\ext\fmod\studio\inc\fmod_studio.hpp" />
-    <ClInclude Include="..\..\..\include\action.h" />
-    <ClInclude Include="..\..\..\include\align.h" />
-    <ClInclude Include="..\..\..\include\animation.h" />
-    <ClInclude Include="..\..\..\include\animoff.h" />
-    <ClInclude Include="..\..\..\include\animtotals.h" />
-    <ClInclude Include="..\..\..\include\artifact.h" />
-    <ClInclude Include="..\..\..\include\artilist.h" />
-    <ClInclude Include="..\..\..\include\attrib.h" />
-    <ClInclude Include="..\..\..\include\botl.h" />
-    <ClInclude Include="..\..\..\include\color.h" />
-    <ClInclude Include="..\..\..\include\config.h" />
-    <ClInclude Include="..\..\..\include\context.h" />
-    <ClInclude Include="..\..\..\include\coord.h" />
-    <ClInclude Include="..\..\..\include\date.h" />
-    <ClInclude Include="..\..\..\include\decl.h" />
-    <ClInclude Include="..\..\..\include\display.h" />
-    <ClInclude Include="..\..\..\include\dlb.h" />
-    <ClInclude Include="..\..\..\include\dungeon.h" />
-    <ClInclude Include="..\..\..\include\encounter.h" />
-    <ClInclude Include="..\..\..\include\engrave.h" />
-    <ClInclude Include="..\..\..\include\extern.h" />
-    <ClInclude Include="..\..\..\include\flag.h" />
-    <ClInclude Include="..\..\..\include\general.h" />
-    <ClInclude Include="..\..\..\include\global.h" />
-    <ClInclude Include="..\..\..\include\hack.h" />
-    <ClInclude Include="..\..\..\include\integer.h" />
-    <ClInclude Include="..\..\..\include\isaac64.h" />
-    <ClInclude Include="..\..\..\include\layer.h" />
-    <ClInclude Include="..\..\..\include\lev.h" />
-    <ClInclude Include="..\..\..\include\matcomps.h" />
-    <ClInclude Include="..\..\..\include\mextra.h" />
-    <ClInclude Include="..\..\..\include\mfndpos.h" />
-    <ClInclude Include="..\..\..\include\mkroom.h" />
-    <ClInclude Include="..\..\..\include\mondata.h" />
-    <ClInclude Include="..\..\..\include\monflag.h" />
-    <ClInclude Include="..\..\..\include\monst.h" />
-    <ClInclude Include="..\..\..\include\monsym.h" />
-    <ClInclude Include="..\..\..\include\npc.h" />
-    <ClInclude Include="..\..\..\include\obj.h" />
-    <ClInclude Include="..\..\..\include\objclass.h" />
-    <ClInclude Include="..\..\..\include\onames.h" />
-    <ClInclude Include="..\..\..\include\permonst.h" />
-    <ClInclude Include="..\..\..\include\pm.h" />
-    <ClInclude Include="..\..\..\include\prop.h" />
-    <ClInclude Include="..\..\..\include\quest.h" />
-    <ClInclude Include="..\..\..\include\rect.h" />
-    <ClInclude Include="..\..\..\include\region.h" />
-    <ClInclude Include="..\..\..\include\rm.h" />
-    <ClInclude Include="..\..\..\include\skills.h" />
-    <ClInclude Include="..\..\..\include\soundset.h" />
-    <ClInclude Include="..\..\..\include\spell.h" />
-    <ClInclude Include="..\..\..\include\sp_lev.h" />
-    <ClInclude Include="..\..\..\include\sys.h" />
-    <ClInclude Include="..\..\..\include\system.h" />
-    <ClInclude Include="..\..\..\include\tcap.h" />
-    <ClInclude Include="..\..\..\include\tiledata.h" />
-    <ClInclude Include="..\..\..\include\timeout.h" />
-    <ClInclude Include="..\..\..\include\trap.h" />
-    <ClInclude Include="..\..\..\include\vision.h" />
-    <ClInclude Include="..\..\..\include\winprocs.h" />
-    <ClInclude Include="..\..\..\include\wintty.h" />
-    <ClInclude Include="..\..\..\include\wintype.h" />
-    <ClInclude Include="..\..\..\include\you.h" />
-    <ClInclude Include="..\..\..\include\youprop.h" />
-    <ClInclude Include="..\share\callback.h" />
-    <ClInclude Include="..\lib\dllhack.h" />
-    <ClInclude Include="..\lib\dllproc.h" />
-    <ClInclude Include="..\lib\resource.h" />
+    <ClInclude Include="$(WinFmodDir)core\inc\fmod.hpp" />
+    <ClInclude Include="$(WinFmodDir)fsbank\inc\fsbank.h" />
+    <ClInclude Include="$(WinFmodDir)fsbank\inc\fsbank_errors.h" />
+    <ClInclude Include="$(WinFmodDir)studio\inc\fmod_studio.hpp" />
+    <ClInclude Include="$(IncDir)action.h" />
+    <ClInclude Include="$(IncDir)align.h" />
+    <ClInclude Include="$(IncDir)animation.h" />
+    <ClInclude Include="$(IncDir)animoff.h" />
+    <ClInclude Include="$(IncDir)animtotals.h" />
+    <ClInclude Include="$(IncDir)artifact.h" />
+    <ClInclude Include="$(IncDir)artilist.h" />
+    <ClInclude Include="$(IncDir)attrib.h" />
+    <ClInclude Include="$(IncDir)botl.h" />
+    <ClInclude Include="$(IncDir)color.h" />
+    <ClInclude Include="$(IncDir)config.h" />
+    <ClInclude Include="$(IncDir)context.h" />
+    <ClInclude Include="$(IncDir)coord.h" />
+    <ClInclude Include="$(IncDir)date.h" />
+    <ClInclude Include="$(IncDir)decl.h" />
+    <ClInclude Include="$(IncDir)display.h" />
+    <ClInclude Include="$(IncDir)dlb.h" />
+    <ClInclude Include="$(IncDir)dungeon.h" />
+    <ClInclude Include="$(IncDir)encounter.h" />
+    <ClInclude Include="$(IncDir)engrave.h" />
+    <ClInclude Include="$(IncDir)extern.h" />
+    <ClInclude Include="$(IncDir)flag.h" />
+    <ClInclude Include="$(IncDir)general.h" />
+    <ClInclude Include="$(IncDir)global.h" />
+    <ClInclude Include="$(IncDir)hack.h" />
+    <ClInclude Include="$(IncDir)integer.h" />
+    <ClInclude Include="$(IncDir)isaac64.h" />
+    <ClInclude Include="$(IncDir)layer.h" />
+    <ClInclude Include="$(IncDir)lev.h" />
+    <ClInclude Include="$(IncDir)matcomps.h" />
+    <ClInclude Include="$(IncDir)mextra.h" />
+    <ClInclude Include="$(IncDir)mfndpos.h" />
+    <ClInclude Include="$(IncDir)mkroom.h" />
+    <ClInclude Include="$(IncDir)mondata.h" />
+    <ClInclude Include="$(IncDir)monflag.h" />
+    <ClInclude Include="$(IncDir)monst.h" />
+    <ClInclude Include="$(IncDir)monsym.h" />
+    <ClInclude Include="$(IncDir)npc.h" />
+    <ClInclude Include="$(IncDir)obj.h" />
+    <ClInclude Include="$(IncDir)objclass.h" />
+    <ClInclude Include="$(IncDir)onames.h" />
+    <ClInclude Include="$(IncDir)permonst.h" />
+    <ClInclude Include="$(IncDir)pm.h" />
+    <ClInclude Include="$(IncDir)prop.h" />
+    <ClInclude Include="$(IncDir)quest.h" />
+    <ClInclude Include="$(IncDir)rect.h" />
+    <ClInclude Include="$(IncDir)region.h" />
+    <ClInclude Include="$(IncDir)rm.h" />
+    <ClInclude Include="$(IncDir)skills.h" />
+    <ClInclude Include="$(IncDir)soundset.h" />
+    <ClInclude Include="$(IncDir)spell.h" />
+    <ClInclude Include="$(IncDir)sp_lev.h" />
+    <ClInclude Include="$(IncDir)sys.h" />
+    <ClInclude Include="$(IncDir)system.h" />
+    <ClInclude Include="$(IncDir)tcap.h" />
+    <ClInclude Include="$(IncDir)tiledata.h" />
+    <ClInclude Include="$(IncDir)timeout.h" />
+    <ClInclude Include="$(IncDir)trap.h" />
+    <ClInclude Include="$(IncDir)vision.h" />
+    <ClInclude Include="$(IncDir)winprocs.h" />
+    <ClInclude Include="$(IncDir)wintty.h" />
+    <ClInclude Include="$(IncDir)wintype.h" />
+    <ClInclude Include="$(IncDir)you.h" />
+    <ClInclude Include="$(IncDir)youprop.h" />
+    <ClInclude Include="$(LibShareDir)callback.h" />
+    <ClInclude Include="$(DllDir)dllhack.h" />
+    <ClInclude Include="$(DllDir)dllproc.h" />
+    <ClInclude Include="$(DllDir)resource.h" />
     <ClInclude Include="..\resource.h" />
     <ClInclude Include="..\soundfx.h" />
     <ClInclude Include="..\winMS.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\allmain.c" />
-    <ClCompile Include="..\..\..\src\alloc.c" />
-    <ClCompile Include="..\..\..\src\animation.c" />
-    <ClCompile Include="..\..\..\src\animdef.c" />
-    <ClCompile Include="..\..\..\src\apply.c" />
-    <ClCompile Include="..\..\..\src\artifact.c" />
-    <ClCompile Include="..\..\..\src\attrib.c" />
-    <ClCompile Include="..\..\..\src\ball.c" />
-    <ClCompile Include="..\..\..\src\bones.c" />
-    <ClCompile Include="..\..\..\src\botl.c" />
-    <ClCompile Include="..\..\..\src\cmd.c" />
-    <ClCompile Include="..\..\..\src\dbridge.c" />
-    <ClCompile Include="..\..\..\src\decl.c" />
-    <ClCompile Include="..\..\..\src\detect.c" />
-    <ClCompile Include="..\..\..\src\dig.c" />
-    <ClCompile Include="..\..\..\src\display.c" />
-    <ClCompile Include="..\..\..\src\dlb.c" />
-    <ClCompile Include="..\..\..\src\do.c" />
-    <ClCompile Include="..\..\..\src\dog.c" />
-    <ClCompile Include="..\..\..\src\dogmove.c" />
-    <ClCompile Include="..\..\..\src\dokick.c" />
-    <ClCompile Include="..\..\..\src\dothrow.c" />
-    <ClCompile Include="..\..\..\src\do_name.c" />
-    <ClCompile Include="..\..\..\src\do_wear.c" />
-    <ClCompile Include="..\..\..\src\drawing.c" />
-    <ClCompile Include="..\..\..\src\dungeon.c" />
-    <ClCompile Include="..\..\..\src\eat.c" />
-    <ClCompile Include="..\..\..\src\encounter.c" />
-    <ClCompile Include="..\..\..\src\end.c" />
-    <ClCompile Include="..\..\..\src\engrave.c" />
-    <ClCompile Include="..\..\..\src\exper.c" />
-    <ClCompile Include="..\..\..\src\explode.c" />
-    <ClCompile Include="..\..\..\src\extralev.c" />
-    <ClCompile Include="..\..\..\src\files.c" />
-    <ClCompile Include="..\..\..\src\fountain.c" />
-    <ClCompile Include="..\..\..\src\hack.c" />
-    <ClCompile Include="..\..\..\src\hacklib.c" />
-    <ClCompile Include="..\..\..\src\invent.c" />
-    <ClCompile Include="..\..\..\src\isaac64.c" />
-    <ClCompile Include="..\..\..\src\light.c" />
-    <ClCompile Include="..\..\..\src\lock.c" />
-    <ClCompile Include="..\..\..\src\mail.c" />
-    <ClCompile Include="..\..\..\src\makemon.c" />
-    <ClCompile Include="..\..\..\src\mapglyph.c" />
-    <ClCompile Include="..\..\..\src\matcomps.c" />
-    <ClCompile Include="..\..\..\src\mcastu.c" />
-    <ClCompile Include="..\..\..\src\mhitm.c" />
-    <ClCompile Include="..\..\..\src\mhitu.c" />
-    <ClCompile Include="..\..\..\src\minion.c" />
-    <ClCompile Include="..\..\..\src\mklev.c" />
-    <ClCompile Include="..\..\..\src\mkmap.c" />
-    <ClCompile Include="..\..\..\src\mkmaze.c" />
-    <ClCompile Include="..\..\..\src\mkobj.c" />
-    <ClCompile Include="..\..\..\src\mkroom.c" />
-    <ClCompile Include="..\..\..\src\mon.c" />
-    <ClCompile Include="..\..\..\src\mondata.c" />
-    <ClCompile Include="..\..\..\src\monmove.c" />
-    <ClCompile Include="..\..\..\src\monst.c" />
-    <ClCompile Include="..\..\..\src\mplayer.c" />
-    <ClCompile Include="..\..\..\src\mthrowu.c" />
-    <ClCompile Include="..\..\..\src\muse.c" />
-    <ClCompile Include="..\..\..\src\music.c" />
-    <ClCompile Include="..\..\..\src\npc.c" />
-    <ClCompile Include="..\..\..\src\objects.c" />
-    <ClCompile Include="..\..\..\src\objnam.c" />
-    <ClCompile Include="..\..\..\src\options.c" />
-    <ClCompile Include="..\..\..\src\o_init.c" />
-    <ClCompile Include="..\..\..\src\pager.c" />
-    <ClCompile Include="..\..\..\src\pickup.c" />
-    <ClCompile Include="..\..\..\src\pline.c" />
-    <ClCompile Include="..\..\..\src\polyself.c" />
-    <ClCompile Include="..\..\..\src\potion.c" />
-    <ClCompile Include="..\..\..\src\pray.c" />
-    <ClCompile Include="..\..\..\src\priest.c" />
-    <ClCompile Include="..\..\..\src\prop.c" />
-    <ClCompile Include="..\..\..\src\quest.c" />
-    <ClCompile Include="..\..\..\src\questpgr.c" />
-    <ClCompile Include="..\..\..\src\read.c" />
-    <ClCompile Include="..\..\..\src\rect.c" />
-    <ClCompile Include="..\..\..\src\region.c" />
-    <ClCompile Include="..\..\..\src\restore.c" />
-    <ClCompile Include="..\..\..\src\rip.c" />
-    <ClCompile Include="..\..\..\src\rm.c" />
-    <ClCompile Include="..\..\..\src\rnd.c" />
-    <ClCompile Include="..\..\..\src\role.c" />
-    <ClCompile Include="..\..\..\src\rumors.c" />
-    <ClCompile Include="..\..\..\src\save.c" />
-    <ClCompile Include="..\..\..\src\shk.c" />
-    <ClCompile Include="..\..\..\src\shknam.c" />
-    <ClCompile Include="..\..\..\src\sit.c" />
-    <ClCompile Include="..\..\..\src\sounds.c" />
-    <ClCompile Include="..\..\..\src\soundset.c" />
-    <ClCompile Include="..\..\..\src\spell.c" />
-    <ClCompile Include="..\..\..\src\sp_lev.c" />
-    <ClCompile Include="..\..\..\src\steal.c" />
-    <ClCompile Include="..\..\..\src\steed.c" />
-    <ClCompile Include="..\..\..\src\sys.c" />
-    <ClCompile Include="..\..\..\src\teleport.c" />
-    <ClCompile Include="..\..\..\src\tiledata.c" />
-    <ClCompile Include="..\..\..\src\timeout.c" />
-    <ClCompile Include="..\..\..\src\topten.c" />
-    <ClCompile Include="..\..\..\src\track.c" />
-    <ClCompile Include="..\..\..\src\trap.c" />
-    <ClCompile Include="..\..\..\src\uhitm.c" />
-    <ClCompile Include="..\..\..\src\u_init.c" />
-    <ClCompile Include="..\..\..\src\vault.c" />
-    <ClCompile Include="..\..\..\src\version.c" />
-    <ClCompile Include="..\..\..\src\vision.c" />
-    <ClCompile Include="..\..\..\src\vis_tab.c" />
-    <ClCompile Include="..\..\..\src\weapon.c" />
-    <ClCompile Include="..\..\..\src\were.c" />
-    <ClCompile Include="..\..\..\src\wield.c" />
-    <ClCompile Include="..\..\..\src\windows.c" />
-    <ClCompile Include="..\..\..\src\wizard.c" />
-    <ClCompile Include="..\..\..\src\worm.c" />
-    <ClCompile Include="..\..\..\src\worn.c" />
-    <ClCompile Include="..\..\..\src\write.c" />
-    <ClCompile Include="..\..\..\src\zap.c" />
-    <ClCompile Include="..\..\..\sys\share\cppregex.cpp" />
-    <ClCompile Include="..\..\..\sys\share\nhlan.c" />
-    <ClCompile Include="..\..\..\sys\share\random.c" />
-    <ClCompile Include="..\..\..\sys\winnt\ntsound.c" />
-    <ClCompile Include="..\..\..\sys\winnt\stubs.c">
+    <ClCompile Include="$(SrcDir)allmain.c" />
+    <ClCompile Include="$(SrcDir)alloc.c" />
+    <ClCompile Include="$(SrcDir)animation.c" />
+    <ClCompile Include="$(SrcDir)animdef.c" />
+    <ClCompile Include="$(SrcDir)apply.c" />
+    <ClCompile Include="$(SrcDir)artifact.c" />
+    <ClCompile Include="$(SrcDir)attrib.c" />
+    <ClCompile Include="$(SrcDir)ball.c" />
+    <ClCompile Include="$(SrcDir)bones.c" />
+    <ClCompile Include="$(SrcDir)botl.c" />
+    <ClCompile Include="$(SrcDir)cmd.c" />
+    <ClCompile Include="$(SrcDir)dbridge.c" />
+    <ClCompile Include="$(SrcDir)decl.c" />
+    <ClCompile Include="$(SrcDir)detect.c" />
+    <ClCompile Include="$(SrcDir)dig.c" />
+    <ClCompile Include="$(SrcDir)display.c" />
+    <ClCompile Include="$(SrcDir)dlb.c" />
+    <ClCompile Include="$(SrcDir)do.c" />
+    <ClCompile Include="$(SrcDir)dog.c" />
+    <ClCompile Include="$(SrcDir)dogmove.c" />
+    <ClCompile Include="$(SrcDir)dokick.c" />
+    <ClCompile Include="$(SrcDir)dothrow.c" />
+    <ClCompile Include="$(SrcDir)do_name.c" />
+    <ClCompile Include="$(SrcDir)do_wear.c" />
+    <ClCompile Include="$(SrcDir)drawing.c" />
+    <ClCompile Include="$(SrcDir)dungeon.c" />
+    <ClCompile Include="$(SrcDir)eat.c" />
+    <ClCompile Include="$(SrcDir)encounter.c" />
+    <ClCompile Include="$(SrcDir)end.c" />
+    <ClCompile Include="$(SrcDir)engrave.c" />
+    <ClCompile Include="$(SrcDir)exper.c" />
+    <ClCompile Include="$(SrcDir)explode.c" />
+    <ClCompile Include="$(SrcDir)extralev.c" />
+    <ClCompile Include="$(SrcDir)files.c" />
+    <ClCompile Include="$(SrcDir)fountain.c" />
+    <ClCompile Include="$(SrcDir)hack.c" />
+    <ClCompile Include="$(SrcDir)hacklib.c" />
+    <ClCompile Include="$(SrcDir)invent.c" />
+    <ClCompile Include="$(SrcDir)isaac64.c" />
+    <ClCompile Include="$(SrcDir)light.c" />
+    <ClCompile Include="$(SrcDir)lock.c" />
+    <ClCompile Include="$(SrcDir)mail.c" />
+    <ClCompile Include="$(SrcDir)makemon.c" />
+    <ClCompile Include="$(SrcDir)mapglyph.c" />
+    <ClCompile Include="$(SrcDir)matcomps.c" />
+    <ClCompile Include="$(SrcDir)mcastu.c" />
+    <ClCompile Include="$(SrcDir)mhitm.c" />
+    <ClCompile Include="$(SrcDir)mhitu.c" />
+    <ClCompile Include="$(SrcDir)minion.c" />
+    <ClCompile Include="$(SrcDir)mklev.c" />
+    <ClCompile Include="$(SrcDir)mkmap.c" />
+    <ClCompile Include="$(SrcDir)mkmaze.c" />
+    <ClCompile Include="$(SrcDir)mkobj.c" />
+    <ClCompile Include="$(SrcDir)mkroom.c" />
+    <ClCompile Include="$(SrcDir)mon.c" />
+    <ClCompile Include="$(SrcDir)mondata.c" />
+    <ClCompile Include="$(SrcDir)monmove.c" />
+    <ClCompile Include="$(SrcDir)monst.c" />
+    <ClCompile Include="$(SrcDir)mplayer.c" />
+    <ClCompile Include="$(SrcDir)mthrowu.c" />
+    <ClCompile Include="$(SrcDir)muse.c" />
+    <ClCompile Include="$(SrcDir)music.c" />
+    <ClCompile Include="$(SrcDir)npc.c" />
+    <ClCompile Include="$(SrcDir)objects.c" />
+    <ClCompile Include="$(SrcDir)objnam.c" />
+    <ClCompile Include="$(SrcDir)options.c" />
+    <ClCompile Include="$(SrcDir)o_init.c" />
+    <ClCompile Include="$(SrcDir)pager.c" />
+    <ClCompile Include="$(SrcDir)pickup.c" />
+    <ClCompile Include="$(SrcDir)pline.c" />
+    <ClCompile Include="$(SrcDir)polyself.c" />
+    <ClCompile Include="$(SrcDir)potion.c" />
+    <ClCompile Include="$(SrcDir)pray.c" />
+    <ClCompile Include="$(SrcDir)priest.c" />
+    <ClCompile Include="$(SrcDir)prop.c" />
+    <ClCompile Include="$(SrcDir)quest.c" />
+    <ClCompile Include="$(SrcDir)questpgr.c" />
+    <ClCompile Include="$(SrcDir)read.c" />
+    <ClCompile Include="$(SrcDir)rect.c" />
+    <ClCompile Include="$(SrcDir)region.c" />
+    <ClCompile Include="$(SrcDir)restore.c" />
+    <ClCompile Include="$(SrcDir)rip.c" />
+    <ClCompile Include="$(SrcDir)rm.c" />
+    <ClCompile Include="$(SrcDir)rnd.c" />
+    <ClCompile Include="$(SrcDir)role.c" />
+    <ClCompile Include="$(SrcDir)rumors.c" />
+    <ClCompile Include="$(SrcDir)save.c" />
+    <ClCompile Include="$(SrcDir)shk.c" />
+    <ClCompile Include="$(SrcDir)shknam.c" />
+    <ClCompile Include="$(SrcDir)sit.c" />
+    <ClCompile Include="$(SrcDir)sounds.c" />
+    <ClCompile Include="$(SrcDir)soundset.c" />
+    <ClCompile Include="$(SrcDir)spell.c" />
+    <ClCompile Include="$(SrcDir)sp_lev.c" />
+    <ClCompile Include="$(SrcDir)steal.c" />
+    <ClCompile Include="$(SrcDir)steed.c" />
+    <ClCompile Include="$(SrcDir)sys.c" />
+    <ClCompile Include="$(SrcDir)teleport.c" />
+    <ClCompile Include="$(SrcDir)tiledata.c" />
+    <ClCompile Include="$(SrcDir)timeout.c" />
+    <ClCompile Include="$(SrcDir)topten.c" />
+    <ClCompile Include="$(SrcDir)track.c" />
+    <ClCompile Include="$(SrcDir)trap.c" />
+    <ClCompile Include="$(SrcDir)uhitm.c" />
+    <ClCompile Include="$(SrcDir)u_init.c" />
+    <ClCompile Include="$(SrcDir)vault.c" />
+    <ClCompile Include="$(SrcDir)version.c" />
+    <ClCompile Include="$(SrcDir)vision.c" />
+    <ClCompile Include="$(SrcDir)vis_tab.c" />
+    <ClCompile Include="$(SrcDir)weapon.c" />
+    <ClCompile Include="$(SrcDir)were.c" />
+    <ClCompile Include="$(SrcDir)wield.c" />
+    <ClCompile Include="$(SrcDir)windows.c" />
+    <ClCompile Include="$(SrcDir)wizard.c" />
+    <ClCompile Include="$(SrcDir)worm.c" />
+    <ClCompile Include="$(SrcDir)worn.c" />
+    <ClCompile Include="$(SrcDir)write.c" />
+    <ClCompile Include="$(SrcDir)zap.c" />
+    <ClCompile Include="$(SysShareDir)cppregex.cpp" />
+    <ClCompile Include="$(SysShareDir)nhlan.c" />
+    <ClCompile Include="$(SysShareDir)random.c" />
+    <ClCompile Include="$(SysWinntDir)ntsound.c" />
+    <ClCompile Include="$(SysWinntDir)stubs.c">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TTYSTUB;</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TTYSTUB;</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TTYSTUB;</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TTYSTUB;</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="..\..\..\sys\winnt\win10.c" />
-    <ClCompile Include="..\..\..\sys\winnt\windmain.c" />
-    <ClCompile Include="..\..\..\sys\winnt\winnt.c" />
-    <ClCompile Include="..\..\share\safeproc.c" />
-    <ClCompile Include="..\lib\dllhack.c" />
-    <ClCompile Include="..\lib\dllmain.c" />
-    <ClCompile Include="..\lib\dllproc.c" />
-    <ClCompile Include="..\share\callback.c" />
+    <ClCompile Include="$(SysWinntDir)win10.c" />
+    <ClCompile Include="$(SysWinntDir)windmain.c" />
+    <ClCompile Include="$(SysWinntDir)winnt.c" />
+    <ClCompile Include="$(WinShareDir)safeproc.c" />
+    <ClCompile Include="$(DllDir)dllhack.c" />
+    <ClCompile Include="$(DllDir)dllmain.c" />
+    <ClCompile Include="$(DllDir)dllproc.c" />
+    <ClCompile Include="$(LibShareDir)callback.c" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\GnollHackNew.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\lib\dllhack.rc" />
+    <ResourceCompile Include="$(DllDir)dllhack.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

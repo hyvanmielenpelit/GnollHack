@@ -33,7 +33,7 @@
       <AdditionalOptions>/Gs /Oi- %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodDir)core\inc\;$(FmodDir)fsbank\inc\;$(FmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(WinFmodDir)core\inc\;$(WinFmodDir)fsbank\inc\;$(WinFmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TILES;_WINDOWS;DLB;MSWIN_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
@@ -43,9 +43,9 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>comctl32.lib;winmm.lib;bcrypt.lib;fmod_vc.lib;fsbank_vc.lib;fmodstudio_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FmodDir)core\lib\winnt-x64\;$(FmodDir)fsbank\lib\winnt-x64\;$(FmodDir)studio\lib\winnt-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FmodDir)core\lib\winnt-x86\;$(FmodDir)fsbank\lib\winnt-x86\;$(FmodDir)studio\lib\winnt-x86\</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FmodDir)core\lib\winnt-x64\;$(FmodDir)fsbank\lib\winnt-x64\;$(FmodDir)studio\lib\winnt-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(WinFmodDir)core\lib\winnt-x64\;$(WinFmodDir)fsbank\lib\winnt-x64\;$(WinFmodDir)studio\lib\winnt-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(WinFmodDir)core\lib\winnt-x86\;$(WinFmodDir)fsbank\lib\winnt-x86\;$(WinFmodDir)studio\lib\winnt-x86\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(WinFmodDir)core\lib\winnt-x64\;$(WinFmodDir)fsbank\lib\winnt-x64\;$(WinFmodDir)studio\lib\winnt-x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>$(WinWin32Dir)NethackW.exe.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
@@ -224,10 +224,10 @@
     <ClInclude Include="$(WinWin32Dir)mhstatus.h" />
     <ClInclude Include="$(WinWin32Dir)mhtext.h" />
     <ClInclude Include="$(WinWin32Dir)winMS.h" />
-    <ClInclude Include="$(FmodDir)core\inc\fmod.hpp" />
-    <ClInclude Include="$(FmodDir)fsbank\inc\fsbank.h" />
-    <ClInclude Include="$(FmodDir)fsbank\inc\fsbank_errors.h" />
-    <ClInclude Include="$(FmodDir)studio\inc\fmod_studio.hpp" />
+    <ClInclude Include="$(WinFmodDir)core\inc\fmod.hpp" />
+    <ClInclude Include="$(WinFmodDir)fsbank\inc\fsbank.h" />
+    <ClInclude Include="$(WinFmodDir)fsbank\inc\fsbank_errors.h" />
+    <ClInclude Include="$(WinFmodDir)studio\inc\fmod_studio.hpp" />
     <ClInclude Include="$(IncDir)encounter.h" />
     <ClInclude Include="$(IncDir)matcomps.h" />
     <ClInclude Include="$(IncDir)soundset.h" />

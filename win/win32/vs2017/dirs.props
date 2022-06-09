@@ -9,19 +9,18 @@
     <UtilDir>$(RootDir)util\</UtilDir>
     <DatDir>$(RootDir)dat\</DatDir>
     <DocDir>$(RootDir)doc\</DocDir>
-    <ExtDir>$(RootDir)ext\</ExtDir>
-    <FmodDir>$(RootDir)ext\fmod\</FmodDir>
     <IncDir>$(RootDir)include\</IncDir>
     <SrcDir>$(RootDir)src\</SrcDir>
     <SysDir>$(RootDir)sys\</SysDir>
     <UtilDir>$(RootDir)util\</UtilDir>
     <!--<Yacc>bison</Yacc>-->
     <!--<Lex>flex</Lex>-->
-	  <SysShareDir>$(RootDir)sys\share\</SysShareDir>
+	<SysShareDir>$(RootDir)sys\share\</SysShareDir>
     <SysWinntDir>$(RootDir)sys\winnt\</SysWinntDir>
     <WinShareDir>$(RootDir)win\share\</WinShareDir>
     <WinTtyDir>$(RootDir)win\tty\</WinTtyDir>
     <WinWin32Dir>$(RootDir)win\win32\</WinWin32Dir>
+    <WinFmodDir>$(RootDir)win\win32\fmod\</WinFmodDir>
     <WinCursesDir>$(RootDir)win\curses\</WinCursesDir>
     <MonoGameBinDir>$(RootDir)bin\$(Configuration)\Client\netcoreapp3.1\</MonoGameBinDir>
     <GnollHackServerBinDir>$(RootDir)bin\$(Configuration)\Server\netcoreapp3.1\</GnollHackServerBinDir>
@@ -29,6 +28,7 @@
     <LibiOSDir>$(RootDir)win\win32\winclisrv\GnollHackClient\gnollhackios\</LibiOSDir>
     <GooglePlayDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\</GooglePlayDir>
     <LibShareDir>$(RootDir)win\win32\share\</LibShareDir>
+    <DllDir>$(RootDir)win\win32\lib\</DllDir>
     <AndroidLibsDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.Android\libs\</AndroidLibsDir>
     <iOSNativeReferencesDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient.iOS\Native References\</iOSNativeReferencesDir>
     <ClientCommonAssetsDir>$(RootDir)win\win32\winclisrv\GnollHackClient\GnollHackClient\Assets\</ClientCommonAssetsDir>

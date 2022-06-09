@@ -16,4 +16,4 @@ copy ..\bank\Mobile\*.* ..\winclisrv\GnollHackClient\GnollHackClient.Android\ban
 echo Copying banks to iOS banks
 copy ..\bank\Mobile\*.* ..\winclisrv\GnollHackClient\GnollHackClient.iOS\banks
 echo Copying aapt2 to wsl-in\assetpack
-copy ..\..\..\ext\android\linux-x64\aapt2 c:\wsl-in\assetpack
+copy ..\winclisrv\GnollHackClient\GnollHackClient.Android.GooglePlay\aapt2 c:\wsl-in\assetpack
