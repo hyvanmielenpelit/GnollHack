@@ -467,7 +467,7 @@ void lib_issue_gui_command(int initid)
 
     switch (initid)
     {
-    case GUI_CMD_PETS:
+    case GUI_CMD_CLEAR_PET_DATA:
     {
         struct monst_info mi = { 0 };
         struct monst* mtmp;

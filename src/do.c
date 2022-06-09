@@ -6026,6 +6026,11 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     }
     reset_rndmonst(NON_PM); /* u.uz change affects monster generation */
 
+    /* Clear certain gui texts and effects */
+    issue_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
+    issue_gui_command(GUI_CMD_CLEAR_FLOATING_TEXTS);
+    issue_gui_command(GUI_CMD_CLEAR_GUI_EFFECTS);
+
     /* It is a good time for the garbage collector to function */
     issue_gui_command(GUI_CMD_COLLECT_GARBAGE);
 

@@ -1448,6 +1448,8 @@ int how;
     default:
         break;
     }
+
+    issue_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
  
     if(endtext)
         display_screen_text(endtext, (const char*)0, (const char*)0, screentextstyle, ATR_NONE, clr, 0UL);

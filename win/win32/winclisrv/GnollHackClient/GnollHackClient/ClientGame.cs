@@ -1449,7 +1449,7 @@ namespace GnollHackClient
                     _gamePage.EnableCasualMode = true;
                     _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
                     break;
-                case (int)gui_command_types.GUI_CMD_PETS:
+                case (int)gui_command_types.GUI_CMD_CLEAR_PET_DATA:
                     _gamePage.ClearPetData();
                     break;
                 case (int)gui_command_types.GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE:
@@ -1463,6 +1463,15 @@ namespace GnollHackClient
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.RestoreTravelMode));
                     }
+                    break;
+                case (int)gui_command_types.GUI_CMD_CLEAR_CONDITION_TEXTS:
+                    _gamePage.ClearConditionTexts();
+                    break;
+                case (int)gui_command_types.GUI_CMD_CLEAR_FLOATING_TEXTS:
+                    _gamePage.ClearFloatingTexts();
+                    break;
+                case (int)gui_command_types.GUI_CMD_CLEAR_GUI_EFFECTS:
+                    _gamePage.ClearGuiEffects();
                     break;
                 default:
                     break;

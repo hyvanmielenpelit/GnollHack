@@ -1266,6 +1266,16 @@ namespace GnollHackClient.Pages.Game
 
         public void DisplayConditionText(DisplayConditionTextData data)
         {
+            long counter = 0;
+            //lock (AnimationTimerLock)
+            //{
+            //    counter = AnimationTimers.general_animation_counter;
+            //}
+            lock (_mainCounterLock)
+            {
+                counter = _mainCounterValue;
+            }
+
             lock (_conditionTextLock)
             {
                 long highestcounter = 0;
@@ -1276,16 +1286,6 @@ namespace GnollHackClient.Pages.Game
                     {
                         highestcounter = finishcount;
                     }
-                }
-
-                long counter = 0;
-                //lock (AnimationTimerLock)
-                //{
-                //    counter = AnimationTimers.general_animation_counter;
-                //}
-                lock (_mainCounterLock)
-                {
-                    counter = _mainCounterValue;
                 }
 
                 if (highestcounter > 0 && highestcounter > counter)
@@ -1299,6 +1299,16 @@ namespace GnollHackClient.Pages.Game
 
         public void DisplayScreenFilter(DisplayScreenFilterData data)
         {
+            long counter = 0;
+            //lock (AnimationTimerLock)
+            //{
+            //    counter = AnimationTimers.general_animation_counter;
+            //}
+            lock (_mainCounterLock)
+            {
+                counter = _mainCounterValue;
+            }
+
             lock (_screenFilterLock)
             {
                 long highestcounter = 0;
@@ -1309,16 +1319,6 @@ namespace GnollHackClient.Pages.Game
                     {
                         highestcounter = finishcount;
                     }
-                }
-
-                long counter = 0;
-                //lock (AnimationTimerLock)
-                //{
-                //    counter = AnimationTimers.general_animation_counter;
-                //}
-                lock (_mainCounterLock)
-                {
-                    counter = _mainCounterValue;
                 }
 
                 if (highestcounter > 0 && highestcounter > counter)
@@ -1332,6 +1332,16 @@ namespace GnollHackClient.Pages.Game
 
         public void DisplayGUIEffect(DisplayGUIEffectData data)
         {
+            long counter = 0;
+            //lock (AnimationTimerLock)
+            //{
+            //    counter = AnimationTimers.general_animation_counter;
+            //}
+            lock (_mainCounterLock)
+            {
+                counter = _mainCounterValue;
+            }
+
             lock (_guiEffectLock)
             {
                 foreach (GHGUIEffect eff in _guiEffects)
@@ -1341,16 +1351,6 @@ namespace GnollHackClient.Pages.Game
                         _guiEffects.Remove(eff);
                         break;
                     }
-                }
-
-                long counter = 0;
-                //lock (AnimationTimerLock)
-                //{
-                //    counter = AnimationTimers.general_animation_counter;
-                //}
-                lock (_mainCounterLock)
-                {
-                    counter = _mainCounterValue;
                 }
 
                 _guiEffects.Add(new GHGUIEffect(data, counter, this));
@@ -7906,6 +7906,30 @@ namespace GnollHackClient.Pages.Game
             lock (_petDataLock)
             {
                 _petData.Add(new GHPetDataItem(monster_data));
+            }
+        }
+
+        public void ClearConditionTexts()
+        {
+            lock (_conditionTextLock)
+            {
+                _conditionTexts.Clear();
+            }
+        }
+
+        public void ClearFloatingTexts()
+        {
+            lock (_floatingTextLock)
+            {
+                _floatingTexts.Clear();
+            }
+        }
+
+        public void ClearGuiEffects()
+        {
+            lock (_guiEffectLock)
+            {
+                _guiEffects.Clear();
             }
         }
 
