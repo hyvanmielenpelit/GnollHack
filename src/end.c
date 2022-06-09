@@ -946,6 +946,9 @@ int how;
     u.uhp = u.uhpmax;
     if (Upolyd) /* Unchanging, or death which bypasses losing hit points */
         u.mh = u.mhmax;
+
+    issue_gui_command(GUI_CMD_CLEAR_CONDITION_TEXTS);
+
     if (u.uhunger < 500 || how == CHOKING) {
         init_uhunger();
     }
