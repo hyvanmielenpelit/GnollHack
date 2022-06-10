@@ -937,7 +937,7 @@ gcrownu()
     boolean gauntlets_already_exists = exist_artifact(GAUNTLETS_OF_BALANCE, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
     boolean monkgauntlets = (Role_if(PM_MONK) && !gauntlets_already_exists);
     boolean usegnollchaoticgift = (Race_if(PM_GNOLL) && !exist_artifact(FLAIL, artiname(ART_HOWLING_FLAIL)));
-    short chaotic_crowning_gift_oartifact = usegnollchaoticgift ? ART_HOWLING_FLAIL : ART_STORMBRINGER;
+    short chaotic_crowning_gift_oartifact = usegnollchaoticgift ? ART_HOWLING_FLAIL : exist_artifact(RUNESWORD, ART_STORMBRINGER) ? ART_MOURNBLADE : ART_STORMBRINGER;
     int chaotic_crowning_gift_baseitem = usegnollchaoticgift ? RUNED_FLAIL : RUNESWORD;
     enum p_skills chaotic_crowning_gift_skill = usegnollchaoticgift ? P_FLAIL : P_SWORD;
 
@@ -969,7 +969,7 @@ gcrownu()
         }
         else
         {
-            boolean takelives = ((already_exists && !in_hand && !in_hand2) || chaotic_crowning_gift_oartifact != ART_STORMBRINGER);
+            boolean takelives = ((already_exists && !in_hand && !in_hand2) || chaotic_crowning_gift_oartifact == ART_HOWLING_FLAIL);
             play_voice_god_simple_line_by_align(u.ualign.type, takelives ? GOD_LINE_THOU_ART_CHOSEN_TO_TAKE_LIVES_FOR_MY_GLORY : GOD_LINE_THOU_ART_CHOSEN_TO_STEAL_SOULS_FOR_MY_GLORY);
             verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Thou art chosen to %s for My Glory!",
                 takelives ? "take lives" : "steal souls");
@@ -1482,7 +1482,7 @@ gcrownu()
         case A_CHAOTIC: {
             char swordbuf[BUFSZ];
 
-            if(chaotic_crowning_gift_oartifact == ART_STORMBRINGER)
+            if(chaotic_crowning_gift_oartifact == ART_STORMBRINGER || chaotic_crowning_gift_oartifact == ART_MOURNBLADE)
                 Sprintf(swordbuf, "%s sword", hcolor(NH_BLACK));
             else if (chaotic_crowning_gift_oartifact == ART_HOWLING_FLAIL)
                 Sprintf(swordbuf, "runed flail");

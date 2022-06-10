@@ -432,7 +432,7 @@ struct attack *alt_attk_buf;
                && (is_cancelled(magr)
                    || (weap && ((weap->otyp == CORPSE
                                  && touch_petrifies(&mons[weap->corpsenm]))
-                                || weap->oartifact == ART_STORMBRINGER
+                                || weap->oartifact == ART_STORMBRINGER || weap->oartifact == ART_MOURNBLADE
                                 || weap->oartifact == ART_VORPAL_BLADE)))) {
         *alt_attk_buf = *attk;
         attk = alt_attk_buf;
