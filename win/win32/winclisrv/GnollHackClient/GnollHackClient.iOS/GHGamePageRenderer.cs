@@ -25,6 +25,12 @@ namespace GnollHackClient.iOS
         protected override void OnElementChanged(VisualElementChangedEventArgs e)
         {
             base.OnElementChanged(e);
+
+            if (e == null || e.OldElement != null || Element == null)
+            {
+                return;
+            }
+
             //this.BecomeFirstResponder();
 
             /*

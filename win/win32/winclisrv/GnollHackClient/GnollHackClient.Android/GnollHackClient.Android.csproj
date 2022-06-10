@@ -111,6 +111,7 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.7.2" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GHGamePageRenderer.cs" />
     <Compile Include="PlatformService.cs" />
     <Compile Include="..\GnollHackClient.FMOD\FmodService.cs" />
     <Compile Include="..\GnollHackClient.FMOD\fmod.cs" />
