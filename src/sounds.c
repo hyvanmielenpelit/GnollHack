@@ -4110,6 +4110,8 @@ dochat()
                 break;
             }
         }
+        if (!is_peaceful(mtmp))
+            stopsdialogue = TRUE;
     } while (i > 0 && !stopsdialogue);
     
     return result;
