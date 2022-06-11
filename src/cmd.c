@@ -227,6 +227,7 @@ STATIC_DCL boolean FDECL(help_dir, (CHAR_P, int, const char *));
 STATIC_DCL void FDECL(add_command_menu_items, (winid, int));
 STATIC_DCL void NDECL(check_gui_special_effect);
 STATIC_DCL void FDECL(print_monster_abilities, (winid, int*, BOOLEAN_P));
+STATIC_DCL void FDECL(print_weapon_skill_line, (struct obj*, int));
 
 
 static const char *readchar_queue = "";
@@ -2917,7 +2918,7 @@ static winid en_win = WIN_ERR;
 static boolean en_via_menu = FALSE;
 static const char You_[] = "You ", are[] = "are ", were[] = "were ",
                   have[] = "have ", had[] = "had ", can[] = "can ",
-                  could[] = "could ", cannot[] = "cannot ", could_not[] = "could_not ";
+                  could[] = "could ", cannot[] = "cannot ", could_not[] = "could not ";
 static const char have_been[] = "have been ", have_never[] = "have never ",
                   never[] = "never ";
 
@@ -3908,6 +3909,8 @@ int final;
      *
      * TODO?  Maybe merge wielding line and skill line into one sentence.
      */
+    print_weapon_skill_line(uwep, final);
+#if 0
     if ((wtype = uwep_skill_type()) != P_NONE) 
     {
         if (wtype == P_MARTIAL_ARTS)
@@ -3938,6 +3941,7 @@ int final;
         else
             you_are(buf, "");
     }
+#endif
 
     if (!uwep && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
     {
@@ -3987,6 +3991,9 @@ int final;
     }
 
     if (u.twoweap) {
+        if(uarms && is_weapon(uarms))
+            print_weapon_skill_line(uarms, final);
+
         wtype = P_TWO_WEAPON_COMBAT;
         char sklvlbuf[20];
         int sklvl = P_SKILL_LEVEL(wtype);
@@ -4022,6 +4029,48 @@ int final;
             you_are("not wearing any armor", "");
     }
 }
+
+STATIC_OVL
+void
+print_weapon_skill_line(wep, final)
+struct obj* wep;
+int final;
+{
+    char buf[BUFSZ];
+
+    enum p_skills wtype = weapon_skill_type(wep);
+    if (wtype != P_NONE)
+    {
+        if (wtype == P_MARTIAL_ARTS)
+            wtype = P_BARE_HANDED_COMBAT; /* Martial arts is separately below */
+
+        char sklvlbuf[20];
+        int sklvl = P_SKILL_LEVEL(wtype);
+        boolean hav = (sklvl != P_UNSKILLED && sklvl != P_SKILLED);
+
+        if (sklvl == P_ISRESTRICTED)
+            Strcpy(sklvlbuf, "no");
+        else
+            (void)lcase(skill_level_name(wtype, sklvlbuf, FALSE));
+        /* "you have no/basic/expert/master/grand-master skill with <skill>"
+           or "you are unskilled/skilled in <skill>" */
+
+        int hitbonus = weapon_skill_hit_bonus(wep, wtype, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
+        int dmgbonus = weapon_skill_dmg_bonus(wep, wtype, FALSE, FALSE, 0); /* Gives only pure skill bonuses */
+
+        Sprintf(buf, "%s %s %s (%s%d to hit and %s%d to damage)", sklvlbuf,
+            hav ? "skill with" : "in", skill_name(wtype, TRUE), hitbonus >= 0 ? "+" : "", hitbonus, dmgbonus >= 0 ? "+" : "", dmgbonus);
+
+        if (can_advance(wtype, FALSE))
+            Sprintf(eos(buf), " and %s that",
+                !final ? "can enhance" : "could have enhanced");
+        if (hav)
+            you_have(buf, "");
+        else
+            you_are(buf, "");
+    }
+}
+
 
 /* attributes: intrinsics and the like, other non-obvious capabilities */
 void

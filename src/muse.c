@@ -2482,7 +2482,7 @@ const char *str;
             }
             return TRUE;
         }
-        else if (is_wielded_weapon(orefl))
+        else if (is_wieldable_weapon(orefl))
         {
             if (str)
             {
@@ -2556,7 +2556,7 @@ const char *fmt, *str;
                         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "shield");
                     makeknown(uarms->otyp);
                 }
-                else if(is_wielded_weapon(uarms))
+                else if(is_wieldable_weapon(uarms))
                 {
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "left hand weapon");
                 }
@@ -2580,7 +2580,7 @@ const char *fmt, *str;
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "right hand shield");
                     makeknown(uwep->otyp);
                 }
-                else if (is_wielded_weapon(uwep))
+                else if (is_wieldable_weapon(uwep))
                 {
                     if(u.twoweap)
                         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, fmt, str, "right hand weapon");

@@ -2448,8 +2448,6 @@ dosacrifice()
                 if (flags.showscore && !u.uachieve.ascended)
                     context.botl = 1;
 #endif
-                if (!u.uachieve.ascended)
-                    achievement_gained("Ascended");
                 u.uachieve.ascended = 1;
 
                 play_sfx_sound(SFX_INVISIBLE_CHOIR_SINGS);
@@ -2475,6 +2473,7 @@ dosacrifice()
                       "In return for thy service, I grant thee the gift of Immortality!");
                 You_ex(ATR_NONE, CLR_MSG_POSITIVE, "ascend to the status of Demigod%s...",
                     flags.female ? "dess" : "");
+                achievement_gained("Ascended");
                 done(ASCENDED);
             }
         }

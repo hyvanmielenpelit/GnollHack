@@ -4256,7 +4256,7 @@ struct monst* mtmp;
     {
         if (!is_peaceful(mtmp))
         {
-            if (uwep && is_wielded_weapon(uwep))
+            if (uwep && is_wieldable_weapon(uwep))
             {
                 play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HAH_DROP_YOUR_WEAPON_FIRST_SCUM);
                 Sprintf(ansbuf, "Hah, drop your weapon first, scum!");

@@ -1668,7 +1668,7 @@ weapon_here:
     const char* hand_s = body_part(HAND);
     const char* hands_s = makeplural(hand_s);
     if ((obj->owornmask & W_WEP) && !mrg_to_wielded) {
-        if (obj->quan != 1L || !is_wielded_weapon(obj))
+        if (obj->quan != 1L || !is_wieldable_weapon(obj))
         {
             if (u.twoweap)
             {
@@ -1688,7 +1688,7 @@ weapon_here:
     }
 
     if ((obj->owornmask & W_WEP2) && obj->oclass != ARMOR_CLASS && !mrg_to_wielded) {
-        if (obj->quan != 1L || !is_wielded_weapon(obj))
+        if (obj->quan != 1L || !is_wieldable_weapon(obj))
         {
             if (u.twoweap)
                 if (bimanual(obj))

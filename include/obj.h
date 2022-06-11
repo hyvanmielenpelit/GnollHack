@@ -284,10 +284,10 @@ struct obj {
     ((o)->oclass == TOOL_CLASS && (objects[(o)->otyp].oc_flags4 & O4_WEAPON_TOOL) != 0)
         /* towel is not a weptool:  enchantment isn't an enchantment, cursed towel
            doesn't weld to hand, and twoweapon won't work with one */
-#define is_wielded_weapon(o) \
+#define is_wieldable_weapon(o) \
     ((o)->oclass == WEAPON_CLASS || is_weptool(o) || (objects[(o)->otyp].oc_flags & O1_IS_WEAPON_WHEN_WIELDED) != 0)
 #define is_weapon(o) \
-    (is_wielded_weapon(o) || (objects[(o)->otyp].oc_flags5 & O5_IS_WEAPON_WHEN_WORN) != 0)
+    (is_wieldable_weapon(o) || (objects[(o)->otyp].oc_flags5 & O5_IS_WEAPON_WHEN_WORN) != 0)
 #define is_missile(o)                                          \
     (((o)->oclass == WEAPON_CLASS || is_weptool(o)) && is_thrown_weapon_only(o))
 
@@ -410,7 +410,7 @@ struct obj {
     ((otmp)->oclass == ARMOR_CLASS && is_gnomish_obj(otmp))
 
 /* Wielded items */
-#define is_wielded_item(o) (is_wielded_weapon(o) || is_shield(o))
+#define is_wielded_item(o) (is_wieldable_weapon(o) || is_shield(o))
 
 /* Eggs and other food */
 #define MAX_EGG_HATCH_TIME 200 /* longest an egg can remain unhatched */

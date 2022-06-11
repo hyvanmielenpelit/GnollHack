@@ -1481,7 +1481,7 @@ boolean *valsetlist;
             || ((i == BL_TIME) && !flags.time)
             || ((i == BL_MOVE) && !flags.showmove)
             || ((i == BL_UWEP) && !flags.show_weapon_style)
-            || ((i == BL_UWEP2) && (!flags.show_weapon_style || (uwep && is_wielded_weapon(uwep) && objects[uwep->otyp].oc_bimanual) || (!u.twoweap && !uarms)))
+            || ((i == BL_UWEP2) && (!flags.show_weapon_style || (uwep && is_wieldable_weapon(uwep) && objects[uwep->otyp].oc_bimanual) || (!u.twoweap && !uarms)))
             || ((i == BL_HD) && !Upolyd)
             || ((i == BL_XP || i == BL_EXP) && Upolyd)) {
             notpresent++;
@@ -1553,7 +1553,7 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
                      : (fld == BL_EXP) ? (boolean) (flags.showexp && !Upolyd)
                        : (fld == BL_MOVE) ? flags.showmove
                         : (fld == BL_UWEP) ? flags.show_weapon_style
-                        : (fld == BL_UWEP2) ? flags.show_weapon_style && !(uwep && is_wielded_weapon(uwep) && objects[uwep->otyp].oc_bimanual) && (u.twoweap || uarms)
+                        : (fld == BL_UWEP2) ? flags.show_weapon_style && !(uwep && is_wieldable_weapon(uwep) && objects[uwep->otyp].oc_bimanual) && (u.twoweap || uarms)
                         : (fld == BL_XP) ? (boolean) !Upolyd
                          : (fld == BL_HD) ? (boolean) Upolyd
                            : TRUE;
