@@ -19,11 +19,11 @@ STATIC_DCL void NDECL(recalc_wt);
 STATIC_DCL struct obj *FDECL(touchfood, (struct obj *));
 STATIC_DCL void NDECL(do_reset_eat);
 STATIC_DCL void FDECL(done_eating, (BOOLEAN_P));
-STATIC_DCL void FDECL(corpse_pre_effect, (int));
+STATIC_DCL void FDECL(corpse_pre_effect, (int, UCHAR_P));
 STATIC_DCL boolean FDECL(intrinsic_possible, (int, struct permonst *));
 STATIC_DCL void FDECL(givit, (int, struct permonst *));
 STATIC_DCL void FDECL(temporary_givit, (int, int));
-STATIC_DCL void FDECL(corpse_after_effect, (int));
+STATIC_DCL void FDECL(corpse_after_effect, (int, UCHAR_P));
 STATIC_DCL void FDECL(consume_tin, (const char *));
 STATIC_DCL void FDECL(start_tin, (struct obj *));
 STATIC_DCL int FDECL(eatcorpse, (struct obj *));
@@ -514,7 +514,7 @@ boolean message;
     }
 
     if (is_obj_rotting_corpse(piece))
-        corpse_after_effect(piece->corpsenm);
+        corpse_after_effect(piece->corpsenm, (uchar)is_female_corpse_or_statue(piece));
     else
         food_after_effect(piece);
 
@@ -815,8 +815,9 @@ boolean allowmsg;
 }
 
 STATIC_OVL void
-corpse_pre_effect(pm)
+corpse_pre_effect(pm, gender)
 register int pm;
+uchar gender; /* 0 = male, 1 = female, 2 = unknown */
 {
     if (pm < LOW_PM)
         return;
@@ -826,7 +827,7 @@ register int pm;
         if (!Stone_resistance
             && !(poly_when_stoned(youmonst.data)
                  && polymon(PM_STONE_GOLEM))) {
-            Sprintf(killer.name, "tasting %s meat", pm_common_name(&mons[pm]));
+            Sprintf(killer.name, "tasting %s meat", pm_general_name(&mons[pm], gender));
             killer.format = KILLED_BY;
             play_sfx_sound(SFX_PETRIFY);
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "turn to stone.");
@@ -846,7 +847,7 @@ register int pm;
     case PM_LARGE_CAT:
         /* cannibals are allowed to eat domestic animals without penalty */
         if (!CANNIBAL_ALLOWED()) {
-            You_feel("that eating the %s was a bad idea.", pm_common_name(&mons[pm]));
+            You_feel("that eating the %s was a bad idea.", pm_general_name(&mons[pm], gender));
             HAggravate_monster |= FROM_ACQUIRED;
         }
         break;
@@ -866,7 +867,7 @@ register int pm;
     case PM_PESTILENCE:
     case PM_FAMINE: {
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Eating that is instantly fatal.");
-        Sprintf(killer.name, "unwisely ate the body of %s", pm_common_name(&mons[pm]));
+        Sprintf(killer.name, "unwisely ate the body of %s", pm_general_name(&mons[pm], gender));
         killer.format = NO_KILLER_PREFIX;
         done(DIED);
         /* life-saving needed to reach here */
@@ -1239,8 +1240,9 @@ register struct permonst *ptr;
 
 /* called after completely consuming a corpse */
 STATIC_OVL void
-corpse_after_effect(pm)
+corpse_after_effect(pm, gender)
 int pm;
+uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
 {
     int tmp = 0;
     int catch_lycanthropy = NON_PM;
@@ -1824,8 +1826,8 @@ const char *mesg;
         eating_conducts(&mons[mnum]);
 
         tin->dknown = tin->known = 1;
-        corpse_pre_effect(mnum);
-        corpse_after_effect(mnum);
+        corpse_pre_effect(mnum, 2);
+        corpse_after_effect(mnum, 2);
 
         /* charge for one at pre-eating cost */
         tin = costly_tin(COST_OPEN);
@@ -2330,7 +2332,7 @@ boolean resume;
     context.victual.total_nutrition = otmp->oeaten;
 
     if (is_obj_rotting_corpse(otmp)) {
-        corpse_pre_effect(context.victual.piece->corpsenm);
+        corpse_pre_effect(context.victual.piece->corpsenm, (uchar)is_female_corpse_or_statue(otmp));
         if (!context.victual.piece || !context.victual.eating) {
             /* rider revived, or died and lifesaved */
             return;

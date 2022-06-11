@@ -3226,7 +3226,7 @@ register struct obj* obj;
         if (artilist[obj->oartifact].role > NON_PM)
         {
             powercnt++;
-            Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, makeplural(pm_common_name(&mons[artilist[obj->oartifact].role])));
+            Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, pm_plural_name(&mons[artilist[obj->oartifact].role]));
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
@@ -3234,7 +3234,7 @@ register struct obj* obj;
         if (artilist[obj->oartifact].race > NON_PM)
         {
             powercnt++;
-            Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, makeplural(pm_common_name(&mons[artilist[obj->oartifact].race])));
+            Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, pm_plural_name(&mons[artilist[obj->oartifact].race]));
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }

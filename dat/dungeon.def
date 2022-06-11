@@ -84,7 +84,7 @@ ALIGNMENT:	lawful
 DESCRIPTION:	mazelike
 RNDLEVEL:	"Mine Town" "minetn" "T" @ (3, 2) 7
 LEVELDESC:	town
-RNDLEVEL:	"Mine's End" "minend" "E" @ (-1, 0) 3
+RNDLEVEL:	"Mines' End" "minend" "E" @ (-1, 0) 3
 CHAINBRANCH:	"The Large Circular Dungeon" "minetn" + (1, 1) portal
 
 #

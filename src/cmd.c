@@ -4288,7 +4288,7 @@ int final;
     }
     if (Warn_of_mon && context.warntype.speciesidx >= LOW_PM) {
         Sprintf(buf, "aware of the presence of %s",
-                makeplural(pm_common_name(&mons[context.warntype.speciesidx])));
+                pm_plural_name(&mons[context.warntype.speciesidx]));
         you_are(buf, from_what(WARN_OF_MON));
     }
     if (Undead_warning)

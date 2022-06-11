@@ -65,6 +65,7 @@ struct permonst {
     const char* mdescription;   /* description */
     const char* mfemalename;    /* female name, e.g. dwarf queen vs. dwarf king */
     const char* mcommonname;    /* common name for males and females, e.g. dwarf royal */
+    const char* mpluralname;    /* common plural name for males and females, e.g. dwarf lords and ladies vs. dwarf royals */
     char mlet;                  /* symbol */
     schar mlevel,               /* base monster level */
         mmove,                  /* move speed */

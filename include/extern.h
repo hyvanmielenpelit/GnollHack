@@ -1931,9 +1931,12 @@ E int NDECL(randomore);
 E const char* FDECL(pm_monster_name, (struct permonst*, BOOLEAN_P));
 E const char* FDECL(mon_monster_name, (struct monst*));
 E const char* FDECL(corpse_monster_name, (struct obj*));
+E const char* FDECL(pm_female_name, (struct permonst*));
 E const char* FDECL(pm_common_name, (struct permonst*));
 E const char* FDECL(mon_common_name, (struct monst*));
 E const char* FDECL(corpse_common_name, (struct obj*));
+E const char* FDECL(pm_plural_name, (struct permonst*));
+E const char* FDECL(pm_general_name, (struct permonst*, UCHAR_P));
 E boolean FDECL(is_female_corpse_or_statue, (struct obj*));
 E boolean FDECL(is_corpse_or_statue_facing_right, (struct obj*));
 

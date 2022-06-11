@@ -3243,8 +3243,11 @@ unsigned long mdiedflags;
      */
     tmp = mtmp->mnum;
     if (mvitals[tmp].died < 255)
+    {
         mvitals[tmp].died++;
-
+        if(mtmp->female)
+            mvitals[tmp].died_female++;
+    }
     /* if it's a (possibly polymorphed) quest leader, mark him as dead */
     if (mtmp->m_id == quest_status.leader_m_id)
         quest_status.leader_is_dead = TRUE;
@@ -5787,6 +5790,39 @@ struct obj* corpse;
     }
 }
 
+const char* pm_female_name(ptr)
+struct permonst* ptr;
+{
+    if (!ptr)
+        return "";
+
+    if (ptr->mfemalename && strcmp(ptr->mfemalename, ""))
+        return ptr->mfemalename;
+    else
+        return ptr->mname;
+
+}
+
+
+const char* pm_general_name(ptr, gender)
+struct permonst* ptr;
+uchar gender; /* 0 = male, 1 = female, 2 = unknown */
+{
+    if (!ptr)
+        return "";
+
+    switch (gender)
+    {
+    case 0:
+        return ptr->mname;
+    case 1:
+        return pm_female_name(ptr);
+    case 2:
+    default:
+        return pm_common_name(ptr);
+    }
+}
+
 const char* pm_common_name(ptr)
 struct permonst* ptr;
 {
@@ -5834,6 +5870,20 @@ struct obj* corpse;
             return "unspecified monsters";
     }
 }
+
+const char* pm_plural_name(ptr)
+struct permonst* ptr;
+{
+    if (!ptr)
+        return "";
+
+    if (ptr->mpluralname && strcmp(ptr->mpluralname, ""))
+        return ptr->mpluralname;
+    else
+        return makeplural(pm_common_name(ptr));
+
+}
+
 
 boolean 
 is_female_corpse_or_statue(corpse)

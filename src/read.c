@@ -3852,7 +3852,7 @@ do_class_genocide()
             {
                 char nam[BUFSZ];
 
-                Strcpy(nam, makeplural(mons[i].mname));
+                Strcpy(nam, pm_plural_name(&mons[i])); // makeplural(mons[i].mname));
                 /* Although "genus" is Latin for race, the hero benefits
                  * from both race and role; thus genocide affects either.
                  */
@@ -4048,22 +4048,36 @@ int how;
     }
 
     which = "all ";
-    if (Hallucination) 
+    char singularbuf[BUFSZ] = "";
+    char pluralbuf[BUFSZ] = "";
+    if (Hallucination)
     {
         if (Upolyd)
-            Strcpy(buf, youmonst.data->mname);
+        {
+            Strcpy(singularbuf, youmonst.data->mname);
+        }
         else 
         {
-            Strcpy(buf, (flags.female && urole.name.f) ? urole.name.f
+            Strcpy(singularbuf, (flags.female && urole.name.f) ? urole.name.f
                                                        : urole.name.m);
-            buf[0] = lowc(buf[0]);
+            singularbuf[0] = lowc(singularbuf[0]);
         }
+        const char* plr = makeplural(singularbuf);
+        Strcpy(pluralbuf, plr);
     }
     else 
     {
-        Strcpy(buf, ptr->mname); /* make sure we have standard singular */
         if ((ptr->geno & G_UNIQ) && ptr != &mons[PM_HIGH_PRIEST])
+        {
             which = !is_mname_proper_name(ptr) ? "the " : "";
+            Strcpy(singularbuf, ptr->mname); /* make sure we have standard singular */
+            Strcpy(pluralbuf, ptr->mname); /* make sure we have standard singular */
+        }
+        else
+        {
+            Strcpy(singularbuf, pm_common_name(ptr));
+            Strcpy(pluralbuf, pm_plural_name(ptr));
+        }
     }
 
     if (how & REALLY) 
@@ -4072,8 +4086,8 @@ int how;
 
         /* setting no-corpse affects wishing and random tin generation */
         mvitals[mndx].mvflags |= (MV_GENOCIDED | MV_NOCORPSE);
-        pline("Wiped out %s%s.", which,
-              (*which != 'a') ? buf : makeplural(buf));
+        pline("Wiped out %s%s.", which, pluralbuf);
+              //(*which != 'a') ? buf : makeplural(buf));
 
         if (killplayer) 
         {
@@ -4139,7 +4153,7 @@ int how;
             play_sfx_sound(SFX_SUMMON_MONSTER);
             cnt = monster_census(FALSE) - census;
             pline("Sent in %s%s.", (cnt > 1) ? "some " : "",
-                  (cnt > 1) ? makeplural(buf) : an(buf));
+                  (cnt > 1) ? makeplural(singularbuf) : an(singularbuf));
         }
         else
             pline1(nothing_happens);

@@ -2265,7 +2265,8 @@ char defquery;
 boolean ask, isend;
 {
     register int i;
-    int pfx, nkilled;
+    int pfx, nkilled, fkilled;
+    boolean all_female, no_female;
     unsigned ntypes, ni;
     long total_killed = 0L;
     winid klwin;
@@ -2281,7 +2282,8 @@ boolean ask, isend;
     ntypes = 0;
     for (i = LOW_PM; i < NUM_MONSTERS; i++) 
     {
-        if ((nkilled = (int) mvitals[i].died) == 0)
+        nkilled = (int)mvitals[i].died;
+        if (nkilled == 0)
             continue;
         mindx[ntypes++] = i;
         total_killed += (long) nkilled;
@@ -2324,6 +2326,9 @@ boolean ask, isend;
             {
                 i = mindx[ni];
                 nkilled = mvitals[i].died;
+                fkilled = mvitals[i].died_female;
+                no_female = (fkilled == 0);
+                all_female = (fkilled == nkilled);
                 mlet = mons[i].mlet;
                 if (class_header && mlet != prev_mlet) 
                 {
@@ -2364,10 +2369,10 @@ boolean ask, isend;
                     /* trolls or undead might have come back,
                        but we don't keep track of that */
                     if (nkilled == 1)
-                        Strcpy(buf, an(pm_common_name(&mons[i])));
+                        Strcpy(buf, an(all_female ? pm_female_name(&mons[i]) : no_female ? mons[i].mname : pm_common_name(&mons[i])));
                     else
                         Sprintf(buf, "%3d %s", nkilled,
-                                makeplural(pm_common_name(&mons[i])));
+                            all_female ? makeplural(pm_female_name(&mons[i])) : no_female ? makeplural(mons[i].mname) : pm_plural_name(&mons[i]));
                 }
                 /* number of leading spaces to match 3 digit prefix */
                 pfx = !strncmpi(buf, "the ", 3) ? 0
@@ -2492,7 +2497,7 @@ boolean ask, isend;
 
                 if (mvitals[i].mvflags & MV_GONE) 
                 {
-                    Sprintf(buf, " %s", makeplural(pm_common_name(&mons[i])));
+                    Sprintf(buf, " %s", pm_plural_name(&mons[i]));
                     /*
                      * "Extinct" is unfortunate terminology.  A species
                      * is marked extinct when its birth limit is reached,

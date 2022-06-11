@@ -391,6 +391,7 @@ E NEARDATA struct monst *mydogs, *migrating_mons;
 E NEARDATA struct mvitals {
     uchar born;
     uchar died;
+    uchar died_female;
     uchar mvflags;
 } mvitals[NUM_MONSTERS];
 
