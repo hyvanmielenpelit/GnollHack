@@ -3166,7 +3166,9 @@ const char *oldstr;
 
     /* Ends in z, x, s, ch, sh; add an "es" */
     if (index("zxs", lo_c)
-        || (len >= 2 && lo_c == 'h' && index("cs", lowc(*(spot - 1))))
+        || (len >= 2 && lo_c == 'h' && index("cs", lowc(*(spot - 1))) 
+            /* Unlike the base rule, words "patriarch" and "matriarch" do not end with "es" */
+            && !(len >= 5 && !strcmpi(spot - 4, "iarch")))
         /* Kludge to get "tomatoes" and "potatoes" right */
         || (len >= 4 && !strcmpi(spot - 2, "ato"))
         || (len >= 5 && !strcmpi(spot - 4, "dingo"))) {
