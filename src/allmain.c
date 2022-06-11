@@ -1172,6 +1172,19 @@ boolean display_nonscoring;
 void 
 choose_game_difficulty()
 {
+    if (sysopt.min_difficulty > sysopt.max_difficulty)
+    {
+        /* Assume difficulty levels are disabled; perhaps should throw an error */
+        context.game_difficulty = 0;
+        return;
+    }
+    else if (sysopt.min_difficulty == sysopt.max_difficulty)
+    {
+        /* No need to choose if only one choice */
+        context.game_difficulty = sysopt.min_difficulty;
+        return;
+    }
+
     winid menuwin;
     menu_item* selected = (menu_item*)0;
     int n = 0;
@@ -1181,7 +1194,7 @@ choose_game_difficulty()
     anything any = zeroany;
 
     int i;
-    for(i = MIN_DIFFICULTY_LEVEL; i <= MAX_DIFFICULTY_LEVEL; i++)
+    for(i = sysopt.min_difficulty; i <= sysopt.max_difficulty; i++)
     {
         any = zeroany;
         any.a_int = i - MIN_DIFFICULTY_LEVEL + 1;

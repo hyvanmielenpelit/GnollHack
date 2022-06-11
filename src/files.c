@@ -2604,6 +2604,16 @@ char *origbuf;
            but we could change that and make bones_pools==0 become an
            indicator to suppress bones usage altogether */
     } 
+    else if (src == SET_IN_SYS && match_varname(buf, "MIN_DIFFICULTY", 14))
+    {
+       n = atoi(bufp);
+       sysopt.min_difficulty = (n <= MIN_DIFFICULTY_LEVEL) ? MIN_DIFFICULTY_LEVEL : min(n, MAX_DIFFICULTY_LEVEL);
+    }
+    else if (src == SET_IN_SYS && match_varname(buf, "MAX_DIFFICULTY", 14))
+    {
+        n = atoi(bufp);
+        sysopt.max_difficulty = (n <= MIN_DIFFICULTY_LEVEL) ? MIN_DIFFICULTY_LEVEL : min(n, MAX_DIFFICULTY_LEVEL);
+    }
     else if (src == SET_IN_SYS && match_varname(buf, "SUPPORT", 7))
     {
         if (sysopt.support)

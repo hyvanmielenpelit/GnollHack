@@ -30,6 +30,8 @@ struct sysopt {
     int check_save_uid; /* restoring savefile checks UID? */
     int check_plname; /* use plname for checking wizards/explorers/shellers */
     int bones_pools;
+    int min_difficulty;
+    int max_difficulty;
 
     /* record file */
     int persmax;
