@@ -523,6 +523,8 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
             }
 
             int applicable_enchantment = otmp->enchantment;
+            if (obj_has_dual_runesword_bonus(otmp))
+                applicable_enchantment *= 2;
 #if 0
             if (use_type == 1)
                 applicable_enchantment = (applicable_enchantment + 1 * sgn(applicable_enchantment)) / 2;

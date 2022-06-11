@@ -3544,6 +3544,13 @@ register struct obj* obj;
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
+        if (aflags2 & AF2_DUAL_RUNESWORD_BONUS)
+        {
+            powercnt++;
+            Sprintf(buf, " %2d - Double enchantment and artifact to-hit and damage bonuses if wielded with another artifact runesword", powercnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
 
 
 

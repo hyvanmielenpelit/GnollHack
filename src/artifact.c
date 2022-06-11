@@ -1014,6 +1014,9 @@ struct monst *mon;
     if (dice > 0 && size > 0)
         abon += d(dice, size);
 
+    if (obj_has_dual_runesword_bonus(otmp))
+        abon *= 2;
+
     return abon;
 }
 
@@ -1039,6 +1042,9 @@ double damage;
             dbon += adjust_damage(d(weap->attk.damn, weap->attk.damd) + weap->attk.damp, (struct monst*)0, mon, !weap ? AD_PHYS : weap->attk.adtyp, ADFLAGS_NONE);
         else if(weap->attk.damn < 0)
             dbon += max(-(((double)weap->attk.damn) / 20.0) * damage, 0);
+
+        if (obj_has_dual_runesword_bonus(otmp))
+            dbon *= 2;
 
         return dbon;
     }

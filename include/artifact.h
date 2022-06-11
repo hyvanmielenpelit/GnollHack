@@ -61,6 +61,7 @@
 #define AF2_APPLICABLE_AS_AXE                  0x00000010UL  
 #define AF2_NAME_IS_PROPER_NAME                0x00000020UL  /* Do not use 'The' */
 #define AF2_INDESTRUCTIBLE                     0x00000040UL  
+#define AF2_DUAL_RUNESWORD_BONUS               0x00000080UL  
 
 
 #define has_artifact_floor_tile(artifact_idx) \
@@ -68,6 +69,12 @@
 
 #define has_artifact_proper_name(artifact_idx) \
     ((artilist[(artifact_idx)].aflags2 & AF2_NAME_IS_PROPER_NAME) != 0)
+
+#define has_artifact_dual_runesword_bonus(artifact_idx) \
+    ((artilist[(artifact_idx)].aflags2 & AF2_DUAL_RUNESWORD_BONUS) != 0)
+
+#define obj_has_dual_runesword_bonus(o) \
+    ((o)->oartifact && has_artifact_dual_runesword_bonus((o)->oartifact) && uwep && uarms && uwep->oartifact && uarms->oartifact && uwep->otyp == RUNESWORD &&  uarms->otyp == RUNESWORD)
 
 /* wielded or carried special effects */
 #define SPFX_NONE                  0x00000000UL  /* No special effects, just a bonus */

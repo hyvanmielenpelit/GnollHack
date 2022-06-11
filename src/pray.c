@@ -937,7 +937,7 @@ gcrownu()
     boolean gauntlets_already_exists = exist_artifact(GAUNTLETS_OF_BALANCE, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
     boolean monkgauntlets = (Role_if(PM_MONK) && !gauntlets_already_exists);
     boolean usegnollchaoticgift = (Race_if(PM_GNOLL) && !exist_artifact(FLAIL, artiname(ART_HOWLING_FLAIL)));
-    short chaotic_crowning_gift_oartifact = usegnollchaoticgift ? ART_HOWLING_FLAIL : exist_artifact(RUNESWORD, ART_STORMBRINGER) ? ART_MOURNBLADE : ART_STORMBRINGER;
+    short chaotic_crowning_gift_oartifact = usegnollchaoticgift ? ART_HOWLING_FLAIL : exist_artifact(RUNESWORD, artiname(ART_STORMBRINGER)) ? ART_MOURNBLADE : ART_STORMBRINGER;
     int chaotic_crowning_gift_baseitem = usegnollchaoticgift ? RUNED_FLAIL : RUNESWORD;
     enum p_skills chaotic_crowning_gift_skill = usegnollchaoticgift ? P_FLAIL : P_SWORD;
 
@@ -962,7 +962,7 @@ gcrownu()
         in_hand = (uwep && uwep->oartifact == chaotic_crowning_gift_oartifact);
         in_hand2 = (uarms && uarms->oartifact == chaotic_crowning_gift_oartifact);
         already_exists = exist_artifact(chaotic_crowning_gift_baseitem, artiname(chaotic_crowning_gift_oartifact));
-        if (Role_if(PM_WIZARD) || Role_if(PM_PRIEST))
+        if (Role_if(PM_WIZARD) || Role_if(PM_PRIEST) || Role_if(PM_MONK))
         {
             play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_I_CROWN_THEE_THE_GLORY_OF_ARIOCH);
             verbalize_ex(ATR_NONE, CLR_MSG_GOD, "I crown thee... The Glory of Arioch!");
@@ -1515,7 +1515,10 @@ gcrownu()
                 u.ugifts++;
                 obj->aknown = obj->nknown = TRUE;
             }
-            /* acquire Stormbringer's skill regardless of weapon or gift */
+            /* Acquire two-weapon combat for dual-wielding Stormbringer and Mournblade  */
+            if (chaotic_crowning_gift_oartifact == ART_STORMBRINGER || chaotic_crowning_gift_oartifact == ART_MOURNBLADE)
+                unrestrict_weapon_skill(P_TWO_WEAPON_COMBAT);
+            /* acquire weapon skill regardless of weapon or gift */
             unrestrict_weapon_skill(chaotic_crowning_gift_skill);
             if (obj && obj->oartifact == chaotic_crowning_gift_oartifact)
                 discover_artifact(chaotic_crowning_gift_oartifact);
