@@ -3101,7 +3101,7 @@ struct materialcomponentlist matlists[] =
         }
     },
 
-    { SPE_PROBE_MONSTER,
+    { SPE_PROBE,
     "10 gold pieces",
     STRANGE_OBJECT,
     1,

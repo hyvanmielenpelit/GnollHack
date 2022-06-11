@@ -94,7 +94,7 @@ static struct trobj Healer[] = {
     { SPE_EXTRA_HEALING, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
     { SPE_CURE_SICKNESS, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
     { SPE_SLEEP, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
-    { SPE_PROBE_MONSTER, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
+    { SPE_PROBE, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
     { GINSENG_ROOT, 0, REAGENT_CLASS, 4, 0, 0, 0 },
     { MANDRAKE_ROOT, 0, REAGENT_CLASS, 4, 0, 0, 0 },
     { CLOVE_OF_GARLIC, 0, REAGENT_CLASS, 2, 0, 0, 0 },

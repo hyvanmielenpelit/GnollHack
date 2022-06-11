@@ -1065,7 +1065,7 @@ struct monst* origmonst;
         if(wake)
             res = 1;
         break;
-    case SPE_PROBE_MONSTER:
+    case SPE_PROBE:
     case WAN_PROBING:
         res = 1;
         wake = FALSE;
@@ -3813,6 +3813,7 @@ struct monst* origmonst;
             obj = poly_obj(obj, STRANGE_OBJECT);
             newsym(obj->ox, obj->oy);
             break;
+        case SPE_PROBE:
         case WAN_PROBING:
             res = probe_object(obj);
             if (res)
@@ -6399,7 +6400,7 @@ boolean ordinary;
     case WAN_NOTHING:
         damage = 0;
         break;
-    case SPE_PROBE_MONSTER:
+    case SPE_PROBE:
     case WAN_PROBING: 
     {
         if (obj->otyp == WAN_PROBING && !objects[obj->otyp].oc_name_known)
@@ -6603,7 +6604,7 @@ struct obj *obj; /* wand or spell */
      * moved here from the bottom section.
      */
     case WAN_PROBING:
-    case SPE_PROBE_MONSTER:
+    case SPE_PROBE:
         probe_monster(u.usteed);
         learnwand(obj);
         steedhit = TRUE;
@@ -6794,6 +6795,7 @@ int duration;
         if (mdef->cham >= LOW_PM) {
             /* note: newcham() uncancels shapechangers (resets m->mcancelled
                to 0), but only for shapechangers whose m->cham is already
+               to 0), but only for shapechangers whose m->cham is already
                NON_PM and we just verified that it's LOW_PM or higher */
             newcham(mdef, &mons[mdef->cham], FALSE, FALSE);
             mdef->cham = NON_PM; /* cancelled shapeshifter can't shift */
@@ -6913,7 +6915,7 @@ struct obj *obj; /* wand or spell */
 
     switch (obj->otyp) {
     case WAN_PROBING:
-    case SPE_PROBE_MONSTER:
+    case SPE_PROBE:
         ptmp = 0;
         if (u.dz < 0) {
             You("probe towards the %s.", ceiling(x, y));
@@ -7853,7 +7855,7 @@ boolean stop_at_first_hit_object;
         } 
         else 
         {
-            if (weapon == ZAPPED_WAND && (obj->otyp == WAN_PROBING || obj->otyp == SPE_PROBE_MONSTER)
+            if (weapon == ZAPPED_WAND && (obj->otyp == WAN_PROBING || obj->otyp == SPE_PROBE)
                 && glyph_is_invisible(levl[bhitpos.x][bhitpos.y].hero_memory_layers.glyph))
             {
                 unmap_object(bhitpos.x, bhitpos.y);

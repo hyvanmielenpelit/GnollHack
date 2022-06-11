@@ -2541,7 +2541,7 @@ boolean atme;
     case SPE_PRODIGIOUS_HEALING:
     case SPE_FULL_HEALING:
     case SPE_DRAIN_LEVEL:
-    case SPE_PROBE_MONSTER:
+    case SPE_PROBE:
     case SPE_STONE_TO_FLESH:
     case SPE_COMMUNE:
     case SPE_PRAYER:
