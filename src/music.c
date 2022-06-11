@@ -895,6 +895,13 @@ struct obj *instr;
                                     maybe_close_drawbridge(x, y);
                                 else
                                     open_drawbridge(x, y);
+
+                                if (!u.uachieve.learned_castle_tune)
+                                {
+                                    achievement_gained("Learned Castle Drawbridge Tune");
+                                    u.uachieve.learned_castle_tune = 1;
+                                }
+
                                 return 1;
                             }
             } 

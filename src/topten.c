@@ -486,6 +486,26 @@ encodeachieve()
         r |= 1L << 12;
     if (u.uachieve.prime_codex)
         r |= 1L << 13;
+    if (u.uachieve.consulted_oracle)
+        r |= 1L << 14;
+    if (u.uachieve.read_discworld_novel)
+        r |= 1L << 15;
+    if (u.uachieve.entered_gnomish_mines)
+        r |= 1L << 16;
+    if (u.uachieve.entered_mine_town)
+        r |= 1L << 17;
+    if (u.uachieve.entered_shop)
+        r |= 1L << 18;
+    if (u.uachieve.entered_temple)
+        r |= 1L << 19;
+    if (u.uachieve.entered_sokoban)
+        r |= 1L << 20;
+    if (u.uachieve.entered_bigroom)
+        r |= 1L << 21;
+    if (u.uachieve.learned_castle_tune)
+        r |= 1L << 22;
+    if (u.uachieve.entered_large_circular_dungeon)
+        r |= 1L << 23;
 
     return r;
 }
@@ -529,10 +549,34 @@ encode_extended_achievements()
     add_achieveX(buf, "defeated_medusa", u.uachieve.killed_medusa);
     add_achieveX(buf, "defeated_yacc", u.uachieve.killed_yacc);
     add_achieveX(buf, "obtained_the_prime_codex", u.uachieve.prime_codex);
+    add_achieveX(buf, "consulted_the_oracle", u.uachieve.consulted_oracle);
+    add_achieveX(buf, "read_a_discworld_novel", u.uachieve.read_discworld_novel);
+    add_achieveX(buf, "entered_the_gnomish_mines", u.uachieve.entered_gnomish_mines);
+    add_achieveX(buf, "entered_mine_town", u.uachieve.entered_mine_town);
+    add_achieveX(buf, "entered_a_shop", u.uachieve.entered_shop);
+    add_achieveX(buf, "entered_a_temple", u.uachieve.entered_temple);
+    add_achieveX(buf, "entered_sokoban", u.uachieve.entered_sokoban);
+    add_achieveX(buf, "entered_bigroom", u.uachieve.entered_bigroom);
+    add_achieveX(buf, "learned_castle_drawbridge_tune", u.uachieve.learned_castle_tune);
+    add_achieveX(buf, "entered_large_circular_dungeon", u.uachieve.entered_large_circular_dungeon);
 
     return buf;
 }
 
+/*
+        case ACH_TUNE:
+            achievement = "learned_castle_drawbridge_tune";
+            break;
+        case ACH_RNK1: case ACH_RNK2: case ACH_RNK3: case ACH_RNK4:
+        case ACH_RNK5: case ACH_RNK6: case ACH_RNK7: case ACH_RNK8:
+            Sprintf(rnkbuf, "attained_the_rank_of_%s",
+                rank_of(rank_to_xlev(absidx - (ACH_RNK1 - 1)),
+                    Role_switch, (achidx < 0) ? TRUE : FALSE));
+            strNsubst(rnkbuf, " ", "_", 0);
+            achievement = lcase(rnkbuf);
+            break;
+            
+            */
 STATIC_OVL char*
 encode_extended_conducts()
 {

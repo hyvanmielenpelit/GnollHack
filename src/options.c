@@ -98,6 +98,7 @@ static struct Bool_Opt {
     { "autoquiver", &flags.autoquiver, FALSE, SET_IN_GAME },
     { "autostatuslines", &iflags.wc2_autostatuslines, FALSE, SET_IN_FILE },
     { "autounlock", &flags.autounlock, TRUE, SET_IN_GAME },
+    { "baseacasbonus", &flags.baseacasbonus, TRUE, SET_IN_GAME },
 #if defined(MICRO) && !defined(AMIGA)
     { "BIOS", &iflags.BIOS, FALSE, SET_IN_FILE },
 #else

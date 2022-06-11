@@ -810,6 +810,11 @@ register struct obj *spellbook;
                     newexplevel();
                     u.uevent.read_tribute = 1; /* only once */
                 }
+                if (!u.uachieve.read_discworld_novel)
+                {
+                    achievement_gained("Read a Discworld Novel");
+                    u.uachieve.read_discworld_novel = 1;
+                }
             }
             return 1;
         }

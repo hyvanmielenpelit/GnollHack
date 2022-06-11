@@ -26,6 +26,7 @@ struct flag {
     boolean  autokick;    /* Automatically kick doors and force locks */
 #endif
     boolean autounlock;   /* unlock doors and boxes whenever you find them being locked */
+    boolean baseacasbonus; /* show AC bonus for items (e.g., +1 or +2) rather than the AC they give (e.g, 8 or 9) */
     boolean beginner;
     boolean biff;      /* enable checking for mail */
     boolean bones;     /* allow saving/loading bones */

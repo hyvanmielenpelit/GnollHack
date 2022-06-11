@@ -124,9 +124,20 @@ struct u_achieve {
     Bitfield(ascended, 1); /* not quite the same as u.uevent.ascended */
     Bitfield(mines_luckstone, 1); /* got a luckstone at end of mines */
     Bitfield(finish_sokoban, 1);  /* obtained the sokoban prize */
-
     Bitfield(killed_medusa, 1);
     Bitfield(killed_yacc, 1);
+
+    Bitfield(consulted_oracle, 1);
+    Bitfield(read_discworld_novel, 1);
+    Bitfield(entered_gnomish_mines, 1);
+    Bitfield(entered_mine_town, 1);
+    Bitfield(entered_shop, 1);
+    Bitfield(entered_temple, 1);
+    Bitfield(entered_sokoban, 1);
+    Bitfield(entered_bigroom, 1);
+    Bitfield(learned_castle_tune, 1);
+    Bitfield(entered_large_circular_dungeon, 1);
+    
 };
 
 struct u_realtime {

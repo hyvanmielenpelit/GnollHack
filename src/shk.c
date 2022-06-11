@@ -540,6 +540,12 @@ char *enterstring;
     if (!*enterstring)
         return;
 
+    if (!u.uachieve.entered_shop)
+    {
+        achievement_gained("Entered a Shop");
+        u.uachieve.entered_shop = 1;
+    }
+
     if (!(shkp = shop_keeper(*enterstring))) {
         if (!index(empty_shops, *enterstring)
             && in_rooms(u.ux, u.uy, SHOPBASE)

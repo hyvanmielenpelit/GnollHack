@@ -624,6 +624,13 @@ struct monst *oracl;
         more_experienced(add_xpts, 0); //  u_pay / 50);
         newexplevel();
     }
+
+    if (!u.uachieve.consulted_oracle)
+    {
+        achievement_gained("Consulted the Oracle");
+        u.uachieve.consulted_oracle = 1;
+    }
+
     return 1;
 }
 

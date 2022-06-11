@@ -728,6 +728,12 @@ int roomno;
     if (temple_occupied(u.urooms0))
         return;
 
+    if (!u.uachieve.entered_temple)
+    {
+        achievement_gained("Entered a Temple");
+        u.uachieve.entered_temple = 1;
+    }
+
     if ((priest = findpriest((char) roomno)) != 0) 
     {
         /* tended */

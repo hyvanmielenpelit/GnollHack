@@ -1842,8 +1842,14 @@ register struct obj* obj;
 
     if (affectsac)
     {
-        Sprintf(buf2, "%ld", 10L - objects[otyp].oc_armor_class);
-        Sprintf(buf, "Base armor class:       %s", buf2);
+        if (flags.baseacasbonus)
+        {
+            Sprintf(buf, "Armor class bonus:      %s%ld", objects[otyp].oc_armor_class >= 0 ? "+" : "", objects[otyp].oc_armor_class);
+        }
+        else
+        {
+            Sprintf(buf, "Base armor class:       %ld", 10L - objects[otyp].oc_armor_class);
+        }
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
@@ -6340,6 +6346,34 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         u.uachieve.enter_gehennom = 1;
     }
 
+    if (In_mines(&u.uz))
+    {
+        if (!u.uachieve.entered_gnomish_mines)
+            achievement_gained("Entered Gnomish Mines");
+        u.uachieve.entered_gnomish_mines = 1;
+    }
+
+    if (Is_minetown_level(&u.uz))
+    {
+        if (!u.uachieve.entered_mine_town)
+            achievement_gained("Entered Mine Town");
+        u.uachieve.entered_mine_town = 1;
+    }
+
+    if (In_sokoban(&u.uz))
+    {
+        if (!u.uachieve.entered_sokoban)
+            achievement_gained("Entered Sokoban");
+        u.uachieve.entered_sokoban = 1;
+    }
+
+    if (Is_bigroom(&u.uz))
+    {
+        if (!u.uachieve.entered_bigroom)
+            achievement_gained("Entered the Big Room");
+        u.uachieve.entered_bigroom = 1;
+    }
+
     /* in case we've managed to bypass the Valley's stairway down */
     if (Inhell && !Is_valley(&u.uz))
         u.uevent.gehennom_entered = 1;
@@ -6351,7 +6385,13 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         u.uevent.hellish_pastures_entered = 1;
 
     if (In_large_circular_dgn_level(&u.uz))
+    {
         u.uevent.large_circular_dgn_entered = 1;
+
+        if (!u.uachieve.entered_large_circular_dungeon)
+            achievement_gained("Entered Large Circular Dungeon");
+        u.uachieve.entered_large_circular_dungeon = 1;
+    }
 
     if (familiar) 
     {
