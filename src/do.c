@@ -6348,29 +6348,29 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
     if (In_mines(&u.uz))
     {
-        if (!u.uachieve.entered_gnomish_mines)
-            achievement_gained("Entered Gnomish Mines");
+        //if (!u.uachieve.entered_gnomish_mines)
+        //    achievement_gained("Entered Gnomish Mines");
         u.uachieve.entered_gnomish_mines = 1;
     }
 
     if (Is_minetown_level(&u.uz))
     {
-        if (!u.uachieve.entered_mine_town)
-            achievement_gained("Entered Mine Town");
+        //if (!u.uachieve.entered_mine_town)
+        //    achievement_gained("Entered Mine Town");
         u.uachieve.entered_mine_town = 1;
     }
 
     if (In_sokoban(&u.uz))
     {
-        if (!u.uachieve.entered_sokoban)
-            achievement_gained("Entered Sokoban");
+        //if (!u.uachieve.entered_sokoban)
+        //    achievement_gained("Entered Sokoban");
         u.uachieve.entered_sokoban = 1;
     }
 
     if (Is_bigroom(&u.uz))
     {
-        if (!u.uachieve.entered_bigroom)
-            achievement_gained("Entered the Big Room");
+        //if (!u.uachieve.entered_bigroom)
+        //    achievement_gained("Entered the Big Room");
         u.uachieve.entered_bigroom = 1;
     }
 
@@ -6388,8 +6388,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     {
         u.uevent.large_circular_dgn_entered = 1;
 
-        if (!u.uachieve.entered_large_circular_dungeon)
-            achievement_gained("Entered Large Circular Dungeon");
+        //if (!u.uachieve.entered_large_circular_dungeon)
+        //    achievement_gained("Entered Large Circular Dungeon");
         u.uachieve.entered_large_circular_dungeon = 1;
     }
 

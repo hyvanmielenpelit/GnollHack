@@ -542,7 +542,7 @@ char *enterstring;
 
     if (!u.uachieve.entered_shop)
     {
-        achievement_gained("Entered a Shop");
+        //achievement_gained("Entered a Shop");
         u.uachieve.entered_shop = 1;
     }
 

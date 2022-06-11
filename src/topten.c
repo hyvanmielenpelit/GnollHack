@@ -532,7 +532,7 @@ boolean condition;
 STATIC_OVL char*
 encode_extended_achievements()
 {
-    static char buf[4 * BUFSZ]; /* Long enough */
+    static char buf[10 * BUFSZ]; /* Long enough */
 
     buf[0] = '\0';
     add_achieveX(buf, "obtained_the_bell_of_opening", u.uachieve.bell);

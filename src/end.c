@@ -2740,6 +2740,12 @@ get_current_game_score()
         + u.uhave.prime_codex /* Various things that yield points when carried out of the Dungeons of Doom */
         );
 
+    long Small_Achievements_Score = (long)(u.uachieve.consulted_oracle + u.uachieve.read_discworld_novel
+        + u.uachieve.entered_gnomish_mines + u.uachieve.entered_mine_town + u.uachieve.entered_shop + u.uachieve.entered_temple
+        + u.uachieve.entered_sokoban + u.uachieve.entered_bigroom + u.uachieve.learned_castle_tune 
+        + u.uachieve.entered_large_circular_dungeon
+        );
+
     int ngenocided = num_genocides();
 
     long Conduct_Score = (long)(u.uachieve.ascended) * (long)(
@@ -2759,7 +2765,7 @@ get_current_game_score()
         + 10 * (ngenocided == 0)
         );
 
-    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 5000L + Achievements_Score * 10000L + Conduct_Score * 5000L;
+    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 5000L + Small_Achievements_Score * 5000L + Achievements_Score * 10000L + Conduct_Score * 5000L;
 
     double Turn_Count_Multiplier = sqrt(50000.0) / sqrt((double)max(1L, moves));
     double Ascension_Multiplier = u.uachieve.ascended ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;

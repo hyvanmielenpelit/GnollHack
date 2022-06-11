@@ -115,6 +115,7 @@ struct u_event {
 };
 
 struct u_achieve {
+    /* Major Achievements */
     Bitfield(amulet, 1);  /* touched Amulet */
     Bitfield(bell, 1);    /* touched Bell */
     Bitfield(book, 1);    /* touched Book */
@@ -127,6 +128,7 @@ struct u_achieve {
     Bitfield(killed_medusa, 1);
     Bitfield(killed_yacc, 1);
 
+    /* Minor Achievements */
     Bitfield(consulted_oracle, 1);
     Bitfield(read_discworld_novel, 1);
     Bitfield(entered_gnomish_mines, 1);
@@ -137,7 +139,6 @@ struct u_achieve {
     Bitfield(entered_bigroom, 1);
     Bitfield(learned_castle_tune, 1);
     Bitfield(entered_large_circular_dungeon, 1);
-    
 };
 
 struct u_realtime {

@@ -730,7 +730,7 @@ int roomno;
 
     if (!u.uachieve.entered_temple)
     {
-        achievement_gained("Entered a Temple");
+        //achievement_gained("Entered a Temple");
         u.uachieve.entered_temple = 1;
     }
 

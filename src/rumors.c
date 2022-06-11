@@ -627,7 +627,7 @@ struct monst *oracl;
 
     if (!u.uachieve.consulted_oracle)
     {
-        achievement_gained("Consulted the Oracle");
+        //achievement_gained("Consulted the Oracle");
         u.uachieve.consulted_oracle = 1;
     }
 
