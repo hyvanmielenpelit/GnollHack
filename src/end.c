@@ -2371,8 +2371,28 @@ boolean ask, isend;
                     if (nkilled == 1)
                         Strcpy(buf, an(all_female ? pm_female_name(&mons[i]) : no_female ? mons[i].mname : pm_common_name(&mons[i])));
                     else
-                        Sprintf(buf, "%3d %s", nkilled,
-                            all_female ? makeplural(pm_female_name(&mons[i])) : no_female ? makeplural(mons[i].mname) : pm_plural_name(&mons[i]));
+                    {
+                        /* Change a possible "and" to "or", as "or" sounds better in this context */
+                        const char* plural_maybe_with_and = all_female ? makeplural(pm_female_name(&mons[i])) : no_female ? makeplural(mons[i].mname) : pm_plural_name(&mons[i]);
+                        const char* andstr = strstr(plural_maybe_with_and, " and ");
+                        char pluralbuf[BUFSZ];
+                        if (andstr && andstr >= plural_maybe_with_and)
+                        {
+                            size_t diff = (size_t)(andstr - plural_maybe_with_and);
+                            strncpy(pluralbuf, plural_maybe_with_and, diff);
+                            pluralbuf[diff] = 0;
+                            Strcat(pluralbuf, " or ");
+                            const char* poststr = andstr + 5;
+                            if (*poststr)
+                            {
+                                Strcat(pluralbuf, poststr);
+                            }
+                        }
+                        else
+                            Strcpy(pluralbuf, plural_maybe_with_and);
+
+                        Sprintf(buf, "%3d %s", nkilled, pluralbuf);
+                    }
                 }
                 /* number of leading spaces to match 3 digit prefix */
                 pfx = !strncmpi(buf, "the ", 3) ? 0
