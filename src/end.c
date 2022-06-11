@@ -1977,7 +1977,7 @@ int show_weights;
             box->cknown = 1; /* we're looking at the contents now */
             if (identified)
                 box->lknown = 1;
-            if (box->otyp == BAG_OF_TRICKS) {
+            if (Is_noncontainer(box) /*->otyp == BAG_OF_TRICKS*/) {
                 continue; /* wrong type of container */
             } else if (box->cobj) {
                 winid tmpwin = create_nhwindow(NHW_MENU);
