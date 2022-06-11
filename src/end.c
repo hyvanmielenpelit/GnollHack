@@ -1991,6 +1991,7 @@ int show_weights;
                    a cat corpse inside the box; either way, inventory
                    reports the box as containing "1 item" */
                 cat = SchroedingersBox(box);
+                count = 0;
 
                 Sprintf(buf, "Contents of %s:", the(xname(box)));
                 putstr(tmpwin, ATR_TITLE, buf);
