@@ -5871,17 +5871,58 @@ struct obj* corpse;
     }
 }
 
-const char* pm_plural_name(ptr)
+const char* pm_plural_name(ptr, style)
 struct permonst* ptr;
+uchar style; /* 0 = dwarf lords and dwarf ladies, 1 = dwarf lords and ladies, 
+                2 = dwarf lords or dwarf ladies, 3 = dwarf lords or ladies, 
+                4 = dwarf royals
+                Note: There is no difference if there is no female / common name */
 {
     if (!ptr)
         return "";
 
-    if (ptr->mpluralname && strcmp(ptr->mpluralname, ""))
-        return ptr->mpluralname;
-    else
+    if(style >= 4)
         return makeplural(pm_common_name(ptr));
 
+    const char* malename = ptr->mname;
+    const char* femalename = ptr->mfemalename;
+    if (!malename && !femalename)
+        return "";
+
+    if (!femalename || !*femalename)
+        return makeplural(malename);
+
+    const char* conjunction = (style & 2) ? "or" : "and";
+    char *str = nextobuf();
+    str[0] = 0;
+
+    char usedfemalename[BUFSZ];
+    Strcpy(usedfemalename, femalename);
+    if (style & 1)
+    {
+        const char* spacep;
+        const char* searchp = malename;
+        size_t flen = strlen(femalename);
+        char buf[BUFSZ];
+
+        while (*searchp != 0 && (spacep = strstr(searchp, " ")) != 0 && spacep > malename)
+        {
+            size_t len = (size_t)(spacep - malename);
+            if (len >= flen)
+                break;
+
+            strncpy(buf, malename, len);
+            buf[len] = 0;
+            if (!strncmp(femalename, buf, len))
+            {
+                strcpy(usedfemalename, femalename + len);
+            }
+            searchp = spacep + 1;
+        }
+    }
+
+    Sprintf(str, "%s %s %s", makeplural(malename), conjunction, makeplural(usedfemalename));
+    return str;
 }
 
 

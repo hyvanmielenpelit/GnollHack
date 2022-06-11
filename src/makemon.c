@@ -2293,7 +2293,7 @@ boolean ghostly;
         && !(mvitals[mndx].mvflags & (uchar)MV_EXTINCT)) {
         if (wizard) {
             debugpline1("Automatically extinguished %s.",
-                        pm_plural_name(&mons[mndx]));
+                        pm_plural_name(&mons[mndx], 1));
         }
         mvitals[mndx].mvflags |= (uchar)MV_EXTINCT;
         reset_rndmonst(mndx);

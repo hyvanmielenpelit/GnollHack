@@ -2373,26 +2373,8 @@ boolean ask, isend;
                         Strcpy(buf, an(all_female ? pm_female_name(&mons[i]) : no_female ? mons[i].mname : pm_common_name(&mons[i])));
                     else
                     {
-                        /* Change a possible "and" to "or", as "or" sounds better in this context */
-                        const char* plural_maybe_with_and = all_female ? makeplural(pm_female_name(&mons[i])) : no_female ? makeplural(mons[i].mname) : pm_plural_name(&mons[i]);
-                        const char* andstr = strstr(plural_maybe_with_and, " and ");
-                        char pluralbuf[BUFSZ];
-                        if (andstr && andstr >= plural_maybe_with_and)
-                        {
-                            size_t diff = (size_t)(andstr - plural_maybe_with_and);
-                            strncpy(pluralbuf, plural_maybe_with_and, diff);
-                            pluralbuf[diff] = 0;
-                            Strcat(pluralbuf, " or ");
-                            const char* poststr = andstr + 5;
-                            if (*poststr)
-                            {
-                                Strcat(pluralbuf, poststr);
-                            }
-                        }
-                        else
-                            Strcpy(pluralbuf, plural_maybe_with_and);
-
-                        Sprintf(buf, "%3d %s", nkilled, pluralbuf);
+                        const char* plural_name = all_female ? makeplural(pm_female_name(&mons[i])) : no_female ? makeplural(mons[i].mname) : pm_plural_name(&mons[i], 3);
+                        Sprintf(buf, "%3d %s", nkilled, plural_name);
                     }
                 }
                 /* number of leading spaces to match 3 digit prefix */
@@ -2518,7 +2500,7 @@ boolean ask, isend;
 
                 if (mvitals[i].mvflags & MV_GONE) 
                 {
-                    Sprintf(buf, " %s", pm_plural_name(&mons[i]));
+                    Sprintf(buf, " %s", pm_plural_name(&mons[i], 1));
                     /*
                      * "Extinct" is unfortunate terminology.  A species
                      * is marked extinct when its birth limit is reached,

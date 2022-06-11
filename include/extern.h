@@ -1935,7 +1935,7 @@ E const char* FDECL(pm_female_name, (struct permonst*));
 E const char* FDECL(pm_common_name, (struct permonst*));
 E const char* FDECL(mon_common_name, (struct monst*));
 E const char* FDECL(corpse_common_name, (struct obj*));
-E const char* FDECL(pm_plural_name, (struct permonst*));
+E const char* FDECL(pm_plural_name, (struct permonst*, UCHAR_P));
 E const char* FDECL(pm_general_name, (struct permonst*, UCHAR_P));
 E boolean FDECL(is_female_corpse_or_statue, (struct obj*));
 E boolean FDECL(is_corpse_or_statue_facing_right, (struct obj*));
@@ -2293,6 +2293,7 @@ E const char* FDECL(get_key_special_quality_description_by_otyp, (int, int));
 E const char* FDECL(get_lock_description_by_otyp, (int, int, BOOLEAN_P));
 E boolean FDECL(find_key_otyp_by_description, (char*, int*, int*));
 E void FDECL(print_lock_with_buf, (char*, int, int, BOOLEAN_P));
+E char* NDECL(nextobuf);
 
 /* ### options.c ### */
 

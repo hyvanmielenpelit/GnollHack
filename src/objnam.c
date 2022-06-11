@@ -114,7 +114,6 @@ STATIC_DCL char *FDECL(strprepend, (char *, const char *));
 STATIC_DCL short FDECL(rnd_otyp_by_wpnskill, (SCHAR_P));
 STATIC_DCL short FDECL(rnd_otyp_by_namedesc, (const char *, CHAR_P, int));
 STATIC_DCL boolean FDECL(wishymatch, (const char *, const char *, BOOLEAN_P));
-STATIC_DCL char *NDECL(nextobuf);
 STATIC_DCL void FDECL(releaseobuf, (char *));
 STATIC_DCL char *FDECL(minimal_xname, (struct obj *));
 STATIC_DCL char *FDECL(doname_base, (struct obj *obj, unsigned));
@@ -170,7 +169,7 @@ register const char *pref;
 static char NEARDATA obufs[NUMOBUF][BUFSZ];
 static int obufidx = 0;
 
-STATIC_OVL char *
+char *
 nextobuf()
 {
     obufidx = (obufidx + 1) % NUMOBUF;

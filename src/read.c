@@ -3852,7 +3852,7 @@ do_class_genocide()
             {
                 char nam[BUFSZ];
 
-                Strcpy(nam, pm_plural_name(&mons[i])); // makeplural(mons[i].mname));
+                Strcpy(nam, pm_plural_name(&mons[i], 1)); // makeplural(mons[i].mname));
                 /* Although "genus" is Latin for race, the hero benefits
                  * from both race and role; thus genocide affects either.
                  */
@@ -4076,7 +4076,7 @@ int how;
         else
         {
             Strcpy(singularbuf, pm_common_name(ptr));
-            Strcpy(pluralbuf, pm_plural_name(ptr));
+            Strcpy(pluralbuf, pm_plural_name(ptr, 1));
         }
     }
 
