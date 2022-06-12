@@ -1843,6 +1843,7 @@ register int amount;
         if (multiple)
             encumber_msg();
 
+        update_inventory();
         return 1;
 
     } 
@@ -1869,6 +1870,7 @@ register int amount;
         if (multiple)
             encumber_msg();
 
+        update_inventory();
         return 1;
     }
 
@@ -1952,6 +1954,7 @@ register int amount;
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s unexpectedly.", Yobjnam2(weapon, "suddenly vibrate"));
     }
 
+    update_inventory();
     return 1;
 }
 

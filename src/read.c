@@ -1313,6 +1313,7 @@ int curse_bless;
             }
 
             update_all_character_properties(obj, TRUE);
+            update_inventory();
         }
     }
     else
@@ -1842,6 +1843,7 @@ boolean *effect_happened_ptr;
             }
             otmp->oerodeproof = new_erodeproof ? 1 : 0;
             special_effect_wait_until_end(0);
+            update_inventory();
             break;
         }
 
@@ -1937,7 +1939,7 @@ boolean *effect_happened_ptr;
         }
 
         special_effect_wait_until_end(0);
-
+        update_inventory();
         break;
     }
     case SCR_DESTROY_ARMOR:
@@ -1964,6 +1966,7 @@ boolean *effect_happened_ptr;
                 costly_alteration(otmp, COST_DEGRD);
             }
             otmp->oerodeproof = new_erodeproof ? 1 : 0;
+            update_inventory();
             break;
         }
         if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY)
@@ -2361,7 +2364,7 @@ boolean *effect_happened_ptr;
             }
             otmp->oerodeproof = new_erodeproof ? 1 : 0;
             special_effect_wait_until_end(0);
-
+            update_inventory();
             break;
         }
         

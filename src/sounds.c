@@ -8260,6 +8260,8 @@ long id_cost;
             {
                 play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
                 You_ex1_popup("don't have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
+                if(!itemize && res > 0)
+                    update_inventory();
                 return res;
             }
 
@@ -8269,9 +8271,13 @@ long id_cost;
             bot();
             id_res = identify(otmp);
             res += id_res;
+            if (itemize)
+                update_inventory();
         }
         free((genericptr_t)pick_list);
         mark_synch(); /* Before we loop to pop open another menu */
+        if (!itemize && res > 0)
+            update_inventory();
     }
     return res;
 }
