@@ -1769,6 +1769,7 @@ const char *drop_fmt, *drop_arg, *hold_msg;
                 prinv(hold_msg, obj, oquan);
         }
     }
+    newsym(u.ux, u.uy);
     return obj;
 
  drop_it:

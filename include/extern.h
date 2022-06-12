@@ -1939,6 +1939,7 @@ E const char* FDECL(pm_plural_name, (struct permonst*, UCHAR_P));
 E const char* FDECL(pm_general_name, (struct permonst*, UCHAR_P));
 E boolean FDECL(is_female_corpse_or_statue, (struct obj*));
 E boolean FDECL(is_corpse_or_statue_facing_right, (struct obj*));
+E int FDECL(count_mon_runeswords, (struct monst*));
 
 /* ### mondata.c ### */
 

@@ -1543,7 +1543,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             strcpy(wepdesc, artifact_hit_desc);
             if (!youdefend)
             {
-                if (!has_neck(mdef->data) || notonhead || u.uswallow)
+                if (!has_neck(mdef->data) || notonhead || u.uswallow || mdef->heads_left == 0)
                 {
                     if (youattack)
                         pline("Somehow, you miss %s wildly.", mon_nam(mdef));
@@ -1576,7 +1576,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     if(mdef->data->heads <= 1)
                         pline(behead_msg[rn2(SIZE(behead_msg))], The(wepdesc),mon_nam(mdef));
                     else
-                            pline("%s cuts off %s last head!", The(wepdesc), s_suffix(mon_nam(mdef)));
+                        pline("%s cuts off %s last head!", The(wepdesc), s_suffix(mon_nam(mdef)));
 
                     if (Hallucination && !flags.female)
                         pline("Good job Henry, but that wasn't Anne.");
@@ -1586,7 +1586,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             }
             else
             {
-                if (!has_neck(youmonst.data)) {
+                if (!has_neck(youmonst.data) || mdef->heads_left == 0) {
                     pline("Somehow, %s misses you wildly.",
                           magr ? mon_nam(magr) : the(wepdesc));
                     *dmgptr = 0;
@@ -1643,17 +1643,27 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                         The(distant_name(otmp, xname)), life,
                         mon_nam(mdef));
             }
-            if (mdef->m_lev == 0)
+
+            int instakilllevel = obj_has_dual_runesword_bonus(otmp) ? 1 : 0;
+            if (mdef->m_lev <= instakilllevel)
             {
                 *dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
             }
             else
             {
                 int drain = monbasehp_per_lvl(mdef);
+                int mhpadj = monhpadj_per_lvl(mdef);
+                int levelloss = 1;
+                if (youattack ? obj_has_dual_runesword_bonus(otmp) : monwep_has_dual_runesword_bonus(magr, otmp))
+                {
+                    drain *= 2;
+                    mhpadj *= 2;
+                    levelloss *= 2;
+                }
 
-                *dmgptr += (double)drain + monhpadj_per_lvl(mdef);
+                *dmgptr += (double)drain + mhpadj;
                 mdef->mbasehpmax -= drain;
-                mdef->m_lev--;
+                mdef->m_lev -= levelloss;
                 update_mon_maxhp(mdef);
                 drain /= 2;
                 if (drain)
@@ -1682,6 +1692,9 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 pline("%s drains your %s!", The(distant_name(otmp, xname)),
                     life);
             losexp("life drainage");
+            if(monwep_has_dual_runesword_bonus(magr, otmp))
+                losexp("life drainage"); /* Lose another level */
+
             if (magr && magr->mhp < magr->mhpmax)
             {
                 magr->mhp += (oldhpmax - u.uhpmax) / 2;

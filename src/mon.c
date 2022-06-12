@@ -5983,5 +5983,21 @@ struct obj* corpse;
     }
 }
 
+int
+count_mon_runeswords(mon)
+struct monst* mon;
+{
+    if (!mon || !mon->minvent)
+        return 0;
+
+    int cnt = 0;
+    struct obj* otmp;
+    for (otmp = mon->minvent; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->otyp == RUNESWORD && otmp->oartifact > 0)
+            cnt++;
+    }
+    return cnt;
+}
 
 /*mon.c*/

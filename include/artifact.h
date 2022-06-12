@@ -74,7 +74,10 @@
     ((artilist[(artifact_idx)].aflags2 & AF2_DUAL_RUNESWORD_BONUS) != 0)
 
 #define obj_has_dual_runesword_bonus(o) \
-    ((o)->oartifact && has_artifact_dual_runesword_bonus((o)->oartifact) && uwep && uarms && uwep->oartifact && uarms->oartifact && uwep->otyp == RUNESWORD &&  uarms->otyp == RUNESWORD)
+    ((o) && (o)->oartifact && has_artifact_dual_runesword_bonus((o)->oartifact) && uwep && uarms && uwep->oartifact && uarms->oartifact && uwep->otyp == RUNESWORD &&  uarms->otyp == RUNESWORD)
+
+#define monwep_has_dual_runesword_bonus(mon, o) \
+    ((mon) == &youmonst ? obj_has_dual_runesword_bonus(o) : ((mon) && (o) && is_multiweaponmonster((mon)->data) && (o)->oartifact && has_artifact_dual_runesword_bonus((o)->oartifact) && MON_WEP(mon) && MON_WEP(mon)->oartifact && MON_WEP(mon)->otyp == RUNESWORD && count_mon_runeswords(mon) >= 2))
 
 /* wielded or carried special effects */
 #define SPFX_NONE                  0x00000000UL  /* No special effects, just a bonus */
