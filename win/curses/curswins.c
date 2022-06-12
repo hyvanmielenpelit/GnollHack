@@ -126,8 +126,8 @@ curses_create_window(int width, int height, orient orientation)
         } else {
             startx = term_cols - width;
         }
-
-        starty = 0;
+        starty = (term_rows / 2) - (height / 2);
+        //starty = 0;
         break;
     }
 
