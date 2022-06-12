@@ -355,7 +355,7 @@ extern short tile2enlargement[MAX_TILES];
 #define MM_NORMAL_HIT_DICE              0x00100000UL /* use normal hit dice */
 #define MM_EMIN_COALIGNED               0x00200000UL /* minion is of the same alignment as player */
 #define MM_SET_ORIGIN_COORDINATES       0x00400000UL /* origin coordinates are set to x, y */
-#define MM_ADJUST_HP_FROM_EXISTING      0x00800000UL /* OBSOLETE - Calculate only new maxhp and adjust HP proportionally */
+#define MM_SADDLED                      0x00800000UL
 #define MM_PLAY_SUMMON_ANIMATION        0x01000000UL
 #define MM_SUMMON_MONSTER_ANIMATION     0x00000000UL
 #define MM_CHAOTIC_SUMMON_ANIMATION     0x02000000UL

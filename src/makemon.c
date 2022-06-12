@@ -2381,12 +2381,7 @@ unsigned long mmflags;
     struct permonst *ptr = &mons[mndx];
     boolean use_maxhp = !!(mmflags & MM_MAX_HP);
     boolean use_normalhd = !!(mmflags & MM_NORMAL_HIT_DICE);
-    //boolean adj_existing_hp = !!(mmflags & MM_ADJUST_HP_FROM_EXISTING);
-    //int old_maxhp = mon->mhpmax;
-    //int old_basemaxhp = mon->mbasehpmax;
-    //int old_hp = mon->mhp;
 
-    //if(!adj_existing_hp)
     mon->m_lev = use_normalhd ? ptr->mlevel : adj_lev(ptr);
 
     boolean dragonmaxhp = !!(ptr->mlet == S_DRAGON && mndx >= PM_GRAY_DRAGON && In_endgame(&u.uz));
@@ -2619,6 +2614,7 @@ int level_limit;
     boolean allow_minvent = ((mmflags & MM_NO_MONSTER_INVENTORY) == 0);
     boolean countbirth = ((mmflags & MM_NOCOUNTBIRTH) == 0);
     boolean setorigin = ((mmflags & MM_SET_ORIGIN_COORDINATES) == 0);
+    boolean saddled = ((mmflags & MM_SADDLED) != 0);
     unsigned long gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
     int origin_x = x, origin_y = y;
 
@@ -3095,7 +3091,7 @@ int level_limit;
         m_initinv(mtmp); /* add on a few special items incl. more armor */
         m_dowear(mtmp, TRUE);
 
-        if (!rn2(100) && is_domestic(ptr)
+        if ((saddled || (!rn2(100) && is_domestic(ptr)))
             && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) 
         {
             struct obj *otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);

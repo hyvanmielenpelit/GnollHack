@@ -896,10 +896,10 @@ const char *str;
         str = Something;
     if (u.uswallow) {
         /* barrier between you and the floor */
-        pline("%s %s into %s %s.", str, vtense(str, "drop"),
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s %s into %s %s.", str, vtense(str, "drop"),
               s_suffix(mon_nam(u.ustuck)), mbodypart(u.ustuck, STOMACH));
     } else {
-        pline("%s %s %s your %s!", str,
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s %s %s your %s!", str,
               Blind ? "lands" : vtense(str, "appear"),
               Levitation ? "beneath" : "at", makeplural(body_part(FOOT)));
     }
@@ -911,6 +911,7 @@ gcrownu()
     struct obj *obj, *obj2;
     boolean already_exists, in_hand, in_hand2;
     short class_gift;
+    struct monst* steed_gift = 0;
     int sp_no;
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
@@ -1431,6 +1432,10 @@ gcrownu()
             {
                 /* acquire Rhongomyniad's skill regardless of weapon or gift */
                 unrestrict_weapon_skill(P_SPEAR);
+
+                /* Summon a ki-rin as a steed, too */
+                steed_gift = summoncreature(STRANGE_OBJECT, PM_KI_RIN, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION | MM_SADDLED,
+                    SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH);
             }
             break;
         case A_NEUTRAL:
@@ -1478,6 +1483,13 @@ gcrownu()
             unrestrict_weapon_skill(P_SWORD);
             if ((obj && obj->oartifact == ART_VORPAL_BLADE) || (obj2 && obj2->oartifact == ART_VORPAL_BLADE))
                 discover_artifact(ART_VORPAL_BLADE);
+
+            if (Role_if(PM_KNIGHT))
+            {
+                /* Summon a roc as a steed, too */
+                steed_gift = summoncreature(STRANGE_OBJECT, PM_ROC, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION | MM_SADDLED,
+                    SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH);
+            }
             break;
         case A_CHAOTIC: {
             char swordbuf[BUFSZ];
@@ -1522,6 +1534,13 @@ gcrownu()
             unrestrict_weapon_skill(chaotic_crowning_gift_skill);
             if (obj && obj->oartifact == chaotic_crowning_gift_oartifact)
                 discover_artifact(chaotic_crowning_gift_oartifact);
+
+            if (Role_if(PM_KNIGHT))
+            {
+                /* A chaotic knight gets a gorgon as a steed */
+                steed_gift = summoncreature(STRANGE_OBJECT, PM_GORGON, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION | MM_SADDLED,
+                    SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH);
+            }
             break;
         }
         default:
@@ -1553,7 +1572,7 @@ gcrownu()
         /* acquire skill in this weapon */
         unrestrict_weapon_skill(weapon_skill_type(obj2));
     }
-    else if (class_gift == STRANGE_OBJECT)
+    else if (class_gift == STRANGE_OBJECT && steed_gift == 0)
     {
         /* opportunity knocked, but there was nobody home... */
         You_feel_ex(ATR_NONE, CLR_MSG_MYSTICAL, "unworthy.");

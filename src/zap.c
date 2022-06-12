@@ -11215,7 +11215,7 @@ unsigned long scflags;
 
         (void)tamedog(mon, (struct obj*) 0, TAMEDOG_FORCE_ALL, FALSE, 0, FALSE, FALSE);
 
-        if((objects[spl_otyp].oc_spell_dur_dice > 1 && objects[spl_otyp].oc_spell_dur_diesize > 1) || objects[spl_otyp].oc_spell_dur_plus)
+        if(spl_otyp > STRANGE_OBJECT && ((objects[spl_otyp].oc_spell_dur_dice > 1 && objects[spl_otyp].oc_spell_dur_diesize > 1) || objects[spl_otyp].oc_spell_dur_plus))
             mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
         else
             mon->summonduration = 0;
