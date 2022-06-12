@@ -126,10 +126,10 @@ curses_create_window(int width, int height, orient orientation)
         } else {
             startx = term_cols - width;
         }
-        if (height <= maph)
-            starty = mapy + mapb_offset;
-        else if (height >= term_rows)
+        if (height >= term_rows)
             starty = 0;
+        else if (height <= maph)
+            starty = mapy + mapb_offset;
         else
             starty = (term_rows / 2) - (height / 2);
 
