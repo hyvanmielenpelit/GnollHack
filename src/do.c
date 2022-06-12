@@ -1844,7 +1844,7 @@ register struct obj* obj;
     {
         if (flags.baseacasbonus)
         {
-            int shownacbonus = -objects[otyp].oc_armor_class;
+            long shownacbonus = -objects[otyp].oc_armor_class;
             Sprintf(buf, "Base armor class bonus: %s%ld", shownacbonus >= 0 ? "+" : "", shownacbonus);
         }
         else

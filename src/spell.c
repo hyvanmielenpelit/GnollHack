@@ -102,7 +102,7 @@ static int* spl_orderindx = 0; /* array of spl_book[] indices */
 
 STATIC_OVL struct extended_create_window_info
 extended_create_window_info_from_spell(spell_id, active)
-int spell_id;
+int spell_id UNUSED;
 boolean active;
 {
     struct extended_create_window_info info = { 0 };
