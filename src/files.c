@@ -1187,7 +1187,7 @@ struct save_game_stats* stats_ptr;
             && read(fd, (genericptr_t)&sfi, sizeof sfi) == sizeof sfi
             && read(fd, (genericptr_t)&pltmpsiz, sizeof pltmpsiz) == sizeof pltmpsiz
             && pltmpsiz > 0 && pltmpsiz <= PL_NSIZ
-            && read(fd, (genericptr_t)&tmpplbuf, pltmpsiz) == pltmpsiz) 
+            && read(fd, (genericptr_t)&tmpplbuf, pltmpsiz) == pltmpsiz 
             && read(fd, (genericptr_t)stats_ptr, sizeof stats_ptr) == sizeof stats_ptr) {
             result = dupstr(tmpplbuf);
         }

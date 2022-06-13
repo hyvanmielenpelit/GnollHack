@@ -8306,10 +8306,10 @@ namespace GnollHackClient.Pages.Game
                     foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
                     {
                         if ((mi.Attributes & (int)MenuItemAttributes.HalfSize) != 0)
-                            textPaint.TextSize = (GHConstants.MenuDefaultRowHeight / 2) * scale;
+                            textPaint.TextSize = (mi.MinimumTouchableItemHeight / 2) * scale;
                         else
-                            textPaint.TextSize = GHConstants.MenuDefaultRowHeight * scale;
-                        float minrowheight = textPaint.FontSpacing;
+                            textPaint.TextSize = mi.MinimumTouchableItemHeight * scale;
+                        float minrowheight = mi.UsesMinRowHeight ? textPaint.FontSpacing : 0;
 
                         idx++;
                         x = leftmenupadding;
@@ -8321,33 +8321,9 @@ namespace GnollHackClient.Pages.Game
                         textPaint.TextSize = mainfontsize;
                         textPaint.TextAlign = SKTextAlign.Left;
 
-                        /* Bottom Padding */
-                        if (((ulong)mi.MenuFlags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
-                        {
-                            bottomPadding = 3 * scale;
-                        }
-                        else
-                        {
-                            if (mi.IsSuffixTextVisible && mi.IsSuffix2TextVisible)
-                                bottomPadding = 6 * scale;
-                            else
-                                bottomPadding = 3 * scale;
-                        }
-
-
-                        /* Top Padding */
-                        if (((ulong)mi.MenuFlags & (ulong)MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
-                        {
-                            topPadding = (float)mi.HeadingTopMargin * scale;
-                        }
-                        else
-                        {
-                            if (mi.IsSuffixTextVisible && mi.IsSuffix2TextVisible)
-                                topPadding = 6 * scale;
-                            else
-                                topPadding = 3 * scale;
-                        }
-
+                        /* Padding */
+                        bottomPadding = mi.BottomPadding * scale;
+                        topPadding = mi.TopPadding * scale;
 
                         mi.DrawBounds.Top = y;
                         //if (mi.DrawBounds.Top >= canvasheight)

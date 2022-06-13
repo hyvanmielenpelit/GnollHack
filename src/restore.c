@@ -1503,7 +1503,7 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
 
         for (k = 0; saved[k].playername; ++k) 
         {
-            char namebuf[BUFSZ], characterbuf[BUFSZ], alignbuf[BUFSZ], racebuf[BUFSZ], genderrolebuf[BUFSZ], tmpbuf[BUFSZ];
+            char namebuf[BUFSZ], characterbuf[BUFSZ], alignbuf[BUFSZ], racebuf[BUFSZ], genderrolebuf[BUFSZ], tmpbuf[BUFSZ], timebuf[BUFSZ] = "";
             strcpy_capitalized_for_title(alignbuf, aligns[1 - saved[k].gamestats.alignment].adj);
             strcpy_capitalized_for_title(racebuf, races[saved[k].gamestats.racenum].adj);
             if (roles[saved[k].gamestats.rolenum].name.f)
@@ -1559,10 +1559,23 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
             Sprintf(playingbuf, "%sPlaying at %s difficulty in %s mode for %ld turns", prefix, get_game_difficulty_text(saved[k].gamestats.game_difficulty),
                 get_game_mode_text_core(saved[k].gamestats.debug_mode, saved[k].gamestats.explore_mode, saved[k].gamestats.modern_mode, saved[k].gamestats.casual_mode, TRUE),
                 saved[k].gamestats.umoves);
-            Sprintf(savedbuf, "%sGame was saved on %s", prefix, ctime(&saved[k].gamestats.time_stamp));
+            char* timestr = ctime(&saved[k].gamestats.time_stamp);
+            if (timestr && *timestr)
+            {
+                strncpy(timebuf, timestr, strlen(timestr) - 1);
+                timebuf[strlen(timestr) - 1] = 0;
+            }
+            else
+            {
+                strcpy(timebuf,"unknown date");
+            }
 
+            Sprintf(savedbuf, "%sGame was saved on %s", prefix, timebuf);
+
+            int glyph = saved[k].gamestats.glyph;
+            int gui_glyph = saved[k].gamestats.gui_glyph;
             any.a_int = k + 1;
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_HEADING | ATR_BOLD, namebuf,
+            add_menu(tmpwin, iflags.using_gui_tiles ? gui_glyph : glyph, &any, 0, 0, ATR_HEADING | ATR_BOLD, namebuf,
                      MENU_UNSELECTED);
 
             any.a_int = 0;

@@ -72,6 +72,8 @@ typedef struct soundsource_t {
 
 /* Used in save and restore */
 struct save_game_stats {
+    int glyph;
+    int gui_glyph;
     short rolenum;
     short racenum;
     boolean gender;

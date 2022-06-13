@@ -275,7 +275,6 @@ mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
 
     //SetTimer(hWnd, 0, ANIMATION_TIMER_INTERVAL, NULL);
 
-
     return ret_val;
 }
 /*-----------------------------------------------------------------------------*/

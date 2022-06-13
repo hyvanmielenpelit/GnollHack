@@ -1315,20 +1315,20 @@ store_save_game_stats_in_file(fd)
 int fd;
 {
     struct save_game_stats gamestats = { 0 };
+    gamestats.glyph = abs(u_to_glyph());
+    gamestats.gui_glyph = maybe_get_replaced_glyph(gamestats.glyph, u.ux, u.uy, data_to_replacement_info(gamestats.glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL));
     gamestats.rolenum = urole.rolenum;
     gamestats.racenum = urace.racenum;
     gamestats.gender = Upolyd ? u.mfemale : flags.female;
     gamestats.alignment = u.ualign.type;
     gamestats.ulevel = (short)u.ulevel;
-    if(dungeons[u.uz.dnum].dname)
-        strcpy(gamestats.dgn_name, dungeons[u.uz.dnum].dname);
+    strcpy(gamestats.dgn_name, dungeons[u.uz.dnum].dname);
 
     s_level* slev = Is_special(&u.uz);
     mapseen* mptr = 0;
     if (slev)
         mptr = find_mapseen(&u.uz);
 
-    boolean special_lvl = FALSE;
     if (slev && mptr && mptr->flags.special_level_true_nature_known)
     {
         Sprintf(gamestats.level_name, "%s", slev->name);

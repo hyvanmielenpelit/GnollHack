@@ -41,7 +41,7 @@ namespace GnollHackClient
         public string LabelString { get { return (MaxCount <= 0 ? "N/A" : Count == -1 ? "All" : Count.ToString()); } }
         public int ConvertedCount { get { return (Count + 1); } set { Count = value - 1; } }
         public bool IsSwipeVisible { get { return (Count != 0 && MaxCount > 1); } }
-        public double MinimumRowHeight { get { return Identifier != 0 || HeadingGroupAccelerator != 0 ? 30.0 : 12.0; } }
+        public float MinimumTouchableItemHeight { get { return GHConstants.MenuDefaultRowHeight; } }
         public string EntryString { get; set; }
         public Color EntryTextColor { get; set; }
         public int MaxCount { get; set; }
@@ -265,6 +265,7 @@ namespace GnollHackClient
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                            res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                             break;
@@ -418,7 +419,7 @@ namespace GnollHackClient
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
-                        res = res * 17.0 / 15.0;
+                        res = res * 15.0 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                         res = res * 18.0 / 15.0;
@@ -492,6 +493,9 @@ namespace GnollHackClient
                 double res;
                 switch (_menuInfo.Style)
                 {
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                        res = 18;
+                        break;
                     default:
                         res = 12;
                         break;
@@ -557,5 +561,79 @@ namespace GnollHackClient
         }
 
         public bool Selected { get; set; }
+
+        public float BottomPadding
+        {
+            get
+            {
+                float bottomPadding = 0;
+                if (((ulong)MenuFlags & (ulong)GnollHackCommon.MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
+                {
+                    bottomPadding = 3;
+                }
+                else
+                {
+                    switch (_menuInfo.Style)
+                    {
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                            bottomPadding = 3;
+                            break;
+                        default:
+                            if (IsSuffixTextVisible && IsSuffix2TextVisible)
+                                bottomPadding = 6;
+                            else
+                                bottomPadding = 3;
+                            break;
+                    }
+                }
+                return bottomPadding;
+            }
+        }
+
+        public float TopPadding
+        {
+            get
+            {
+                float topPadding = 0;  
+                if (((ulong) MenuFlags & (ulong)GnollHackCommon.MenuFlags.MENU_FLAGS_IS_HEADING) != 0)
+                {
+                    topPadding = (float) HeadingTopMargin;
+                }
+                else
+                {
+                    switch (_menuInfo.Style)
+                    {
+                        case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                            topPadding = 0;
+                            break;
+                        default:
+                            if (IsSuffixTextVisible && IsSuffix2TextVisible)
+                                topPadding = 6;
+                            else
+                                topPadding = 3;
+                            break;
+                    }
+                }
+                return topPadding;
+            }
+        }
+
+        public bool UsesMinRowHeight
+        {
+            get
+            {
+                bool res = true;
+                switch(_menuInfo.Style)
+                {
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                        if (Identifier == 0 && HeadingGroupAccelerator == 0)
+                            res = false;
+                        break;
+                    default:
+                        break;
+                }
+                return res;
+            }
+        }
     }
 }
