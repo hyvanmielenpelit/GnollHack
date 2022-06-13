@@ -3825,8 +3825,8 @@ namespace GnollHackClient.Pages.Game
                                                                                     double mid_y = (double)GHConstants.TileHeight / 2.0 - 0.5;
                                                                                     double r = 0, semi_transparency = 0;
                                                                                     byte radial_opacity = 0x00;
-                                                                                    double r_constant_adjustement = Math.Sin((double)maincountervalue / (3.0 * 2.0 * Math.PI));
-                                                                                    double r_constant = 0.025 + r_constant_adjustement * 0.015;
+                                                                                    //double r_constant_adjustement = Math.Sin((double)maincountervalue / (3.0 * 2.0 * Math.PI));
+                                                                                    //double r_constant = 0.025 + r_constant_adjustement * 0.015;
                                                                                     int bytesperpixel = TileMap[sheet_idx].BytesPerPixel;
                                                                                     int copywidth = Math.Min((int)sourcerect.Width, _tempBitmap.Width);
                                                                                     int copyheight = Math.Min((int)sourcerect.Height, _tempBitmap.Height);
@@ -3842,7 +3842,7 @@ namespace GnollHackClient.Pages.Game
                                                                                             for (int col = 0; col < copywidth; col++)
                                                                                             {
                                                                                                 r = Math.Sqrt(Math.Pow((double)col - mid_x, 2.0) + Math.Pow((double)row - mid_y, 2.0));
-                                                                                                semi_transparency = r * r_constant;
+                                                                                                semi_transparency = r * 0.0375; //r_constant
                                                                                                 if (semi_transparency > 0.98)
                                                                                                     semi_transparency = 0.98;
 
