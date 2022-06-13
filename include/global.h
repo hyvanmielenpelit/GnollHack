@@ -324,6 +324,7 @@ struct savefile_info {
     unsigned long sfi2; /* miscellaneous */
     unsigned long sfi3; /* thirdparty */
 };
+
 #ifdef NHSTDC
 #define SFI1_EXTERNALCOMP (1UL)
 #define SFI1_RLECOMP (1UL << 1)

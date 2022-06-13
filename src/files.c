@@ -1188,7 +1188,8 @@ struct save_game_stats* stats_ptr;
             && read(fd, (genericptr_t)&pltmpsiz, sizeof pltmpsiz) == sizeof pltmpsiz
             && pltmpsiz > 0 && pltmpsiz <= PL_NSIZ
             && read(fd, (genericptr_t)&tmpplbuf, pltmpsiz) == pltmpsiz 
-            && read(fd, (genericptr_t)stats_ptr, sizeof stats_ptr) == sizeof stats_ptr) {
+            && read(fd, (genericptr_t)stats_ptr, sizeof stats_ptr) == sizeof stats_ptr
+            ) {
             result = dupstr(tmpplbuf);
         }
         close(fd);
@@ -3948,6 +3949,7 @@ recover_savefile()
     int processed[256];
     char savename[SAVESIZE], errbuf[BUFSZ];
     struct savefile_info sfi;
+    struct save_game_stats gamestats;
     char tmpplbuf[PL_NSIZ];
 
     for (lev = 0; lev < 256; lev++)
@@ -3988,7 +3990,10 @@ recover_savefile()
         || (read(gfd, (genericptr_t) &sfi, (readLenType)sizeof sfi) != sizeof sfi)
         || (read(gfd, (genericptr_t) &pltmpsiz, (readLenType)sizeof pltmpsiz)
             != sizeof pltmpsiz) || (pltmpsiz > PL_NSIZ)
-        || (read(gfd, (genericptr_t) &tmpplbuf, (readLenType)pltmpsiz) != pltmpsiz)) {
+        || (read(gfd, (genericptr_t) &tmpplbuf, (readLenType)pltmpsiz) != pltmpsiz)
+        || (read(gfd, (genericptr_t)&gamestats, (readLenType)sizeof gamestats) != sizeof gamestats)
+        )
+    {
         raw_printf("\nError reading %s -- can't recover.\n", lock);
         (void) nhclose(gfd);
         return FALSE;
@@ -4056,6 +4061,16 @@ recover_savefile()
         (void) nhclose(gfd);
         (void) nhclose(sfd);
         (void) nhclose(lfd);
+        delete_savefile();
+        return FALSE;
+    }
+
+    if (write(sfd, (genericptr_t)&gamestats, sizeof gamestats) != sizeof gamestats) {
+        raw_printf("\nError writing %s; recovery failed (save_game_stats).\n",
+            SAVEF);
+        (void)nhclose(gfd);
+        (void)nhclose(sfd);
+        (void)nhclose(lfd);
         delete_savefile();
         return FALSE;
     }

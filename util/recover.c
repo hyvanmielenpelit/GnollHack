@@ -15,6 +15,7 @@
 #endif
 
 #include "config.h"
+#include "lev.h"
 #if !defined(O_WRONLY) && !defined(LSC) && !defined(AZTEC_C)
 #include <fcntl.h>
 #endif
@@ -226,6 +227,7 @@ char *basename;
     xchar levc;
     struct version_info version_data;
     struct savefile_info sfi;
+    struct save_game_stats gamestats;
     char plbuf[PL_NSIZ];
 
     /* level 0 file contains:
@@ -276,7 +278,9 @@ char *basename;
         || (read(gfd, (genericptr_t) &sfi, sizeof sfi) != sizeof sfi)
         || (read(gfd, (genericptr_t) &pltmpsiz, sizeof pltmpsiz)
             != sizeof pltmpsiz) || (pltmpsiz > PL_NSIZ)
-        || (read(gfd, (genericptr_t) plbuf, pltmpsiz) != pltmpsiz)) {
+        || (read(gfd, (genericptr_t) plbuf, pltmpsiz) != pltmpsiz)
+        || (read(gfd, (genericptr_t)&gamestats, sizeof gamestats) != sizeof gamestats)
+        ) {
         Fprintf(stderr, "Error reading %s -- can't recover.\n", lock);
         Close(gfd);
         return -1;
@@ -338,6 +342,16 @@ char *basename;
     if (write(sfd, (genericptr_t) plbuf, pltmpsiz) != pltmpsiz) {
         Fprintf(stderr, "Error writing %s; recovery failed (player name).\n",
                 savename);
+        Close(gfd);
+        Close(sfd);
+        Close(lfd);
+        return -1;
+    }
+
+    if (write(sfd, (genericptr_t)&gamestats, sizeof gamestats) != sizeof gamestats) {
+        Fprintf(stderr,
+            "Error writing %s; recovery failed (save_game_stats).\n",
+            savename);
         Close(gfd);
         Close(sfd);
         Close(lfd);

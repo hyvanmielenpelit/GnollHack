@@ -11,6 +11,8 @@
 #define LEV_H
 
 #include "soundset.h"
+#include "align.h"
+#include "wintype.h"
 
 #define COUNT_SAVE 0x1
 #define WRITE_SAVE 0x2
