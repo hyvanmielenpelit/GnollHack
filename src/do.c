@@ -5944,7 +5944,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         return;
 
     /* Fade to black */
-    issue_gui_command(GUI_CMD_BEFORE_COLLECT);
+    issue_gui_command(GUI_CMD_FADE_TO_BLACK);
 
     /* discard context which applies to the level we're leaving;
        for lock-picking, container may be carried, in which case we
@@ -6293,7 +6293,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     play_environment_ambient_sounds();
 
      /* Fade back from black */
-    issue_gui_command(GUI_CMD_AFTER_COLLECT);
+    issue_gui_command(GUI_CMD_FADE_FROM_BLACK);
 
     if (play_arrival_teleport_effect)
     {

@@ -1393,7 +1393,7 @@ namespace GnollHackClient
                         }
                     }
                     break;
-                case (int)gui_command_types.GUI_CMD_BEFORE_COLLECT:
+                case (int)gui_command_types.GUI_CMD_FADE_TO_BLACK:
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.FadeToBlack, 200));
@@ -1405,7 +1405,7 @@ namespace GnollHackClient
                     GC.WaitForPendingFinalizers();
                     GC.Collect();
                     break;
-                case (int)gui_command_types.GUI_CMD_AFTER_COLLECT:
+                case (int)gui_command_types.GUI_CMD_FADE_FROM_BLACK:
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.FadeFromBlack, 200));

@@ -70,6 +70,30 @@ typedef struct soundsource_t {
 } sound_source;
 
 
+/* Used in save and restore */
+struct save_game_stats {
+    short rolenum;
+    short racenum;
+    boolean gender;
+    aligntyp alignment;
+    short ulevel;
+    char dgn_name[MAX_DGN_NAME_LENGTH];
+    char level_name[MAX_LVL_NAME_LENGTH];
+    xchar dlevel;
+    schar depth;
+    schar game_difficulty;
+    long umoves;
+    boolean debug_mode;
+    boolean explore_mode;
+    boolean modern_mode;
+    boolean casual_mode;
+    time_t time_stamp;
+};
+
+struct save_game_data {
+    char* playername;
+    struct save_game_stats gamestats;
+};
 
 
 #endif /* LEV_H */

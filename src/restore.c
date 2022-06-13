@@ -903,9 +903,11 @@ register int fd;
     xchar ltmp;
     int rtmp;
     struct obj *otmp;
+    struct save_game_stats dummy_stats = { 0 };
 
     restoring = TRUE;
     get_plname_from_file(fd, plname);
+    get_save_game_stats_from_file(fd, &dummy_stats);
     getlev(fd, 0, (xchar) 0, FALSE);
     if (!restgamestate(fd, &stuckid, &steedid)) {
         display_nhwindow(WIN_MESSAGE, TRUE);
@@ -984,6 +986,7 @@ register int fd;
 #endif
     (void) validate(fd, (char *) 0); /* skip version and savefile info */
     get_plname_from_file(fd, plname);
+    get_save_game_stats_from_file(fd, &dummy_stats);
 
     getlev(fd, 0, (xchar) 0, FALSE);
     (void) nhclose(fd);
@@ -1322,6 +1325,15 @@ char *plbuf;
     return;
 }
 
+void
+get_save_game_stats_from_file(fd, stats_ptr)
+int fd;
+struct save_game_stats* stats_ptr;
+{
+    (void)read(fd, (genericptr_t)stats_ptr, (readLenType)sizeof(struct save_game_stats));
+    return;
+}
+
 STATIC_OVL void
 restore_msghistory(fd)
 register int fd;
@@ -1459,14 +1471,14 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
 {
     winid tmpwin;
     anything any;
-    char **saved;
+    struct save_game_data *saved;
     menu_item *chosen_game = (menu_item *) 0;
     int k, clet, ch = 0; /* ch: 0 => new game */
 
     *plname = '\0';
     saved = get_saved_games(); /* array of character names */
     
-    if (saved && *saved) 
+    if (saved && saved[0].playername)
     {
         tmpwin = create_nhwindow(NHW_MENU);
         start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SAVED_GAME);
@@ -1489,20 +1501,91 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
                  "Select one of your saved games", MENU_UNSELECTED);
 #endif
 
-        for (k = 0; saved[k]; ++k) 
+        for (k = 0; saved[k].playername; ++k) 
         {
+            char namebuf[BUFSZ], characterbuf[BUFSZ], alignbuf[BUFSZ], racebuf[BUFSZ], genderrolebuf[BUFSZ], tmpbuf[BUFSZ];
+            strcpy_capitalized_for_title(alignbuf, aligns[1 - saved[k].gamestats.alignment].adj);
+            strcpy_capitalized_for_title(racebuf, races[saved[k].gamestats.racenum].adj);
+            if (roles[saved[k].gamestats.rolenum].name.f)
+            {
+                if(saved[k].gamestats.gender)
+                    strcpy_capitalized_for_title(genderrolebuf, roles[saved[k].gamestats.rolenum].name.f);
+                else
+                    strcpy_capitalized_for_title(genderrolebuf, roles[saved[k].gamestats.rolenum].name.m);
+            }
+            else
+            {
+                Sprintf(tmpbuf, "%s %s", genders[saved[k].gamestats.gender].adj, roles[saved[k].gamestats.rolenum].name.m);
+                strcpy_capitalized_for_title(genderrolebuf, tmpbuf);
+            }
+
+            char adventuringbuf[BUFSZ], lvlbuf[BUFSZ], dgnbuf[BUFSZ], totallevelbuf[BUFSZ] = "";
+            const char* dname = saved[k].gamestats.dgn_name;
+            Sprintf(dgnbuf, "%s", dname && *dname ? dname : "Dungeon");
+            if (!strncmp(dgnbuf, "The ", 4))
+                *dgnbuf = lowc(*dgnbuf);
+
+            boolean has_lvl_name = FALSE;
+            if (*saved[k].gamestats.level_name)
+            {
+                const char* conjunction = "in";
+                if (strstr(saved[k].gamestats.level_name, "Level"))
+                    conjunction = "of";
+                const char* addedthe = "";
+                if (strncmpi(lvlbuf, "the ", 4) && strstr(saved[k].gamestats.level_name, "Plane"))
+                    addedthe = "the ";
+
+                Sprintf(lvlbuf, "%s%s %s ", addedthe, saved[k].gamestats.level_name, conjunction);
+                if (!strncmp(lvlbuf, "The ", 4))
+                    *lvlbuf = lowc(*lvlbuf);
+                has_lvl_name = TRUE;
+            }
+            else
+                Sprintf(lvlbuf, "level %d of ", saved[k].gamestats.dlevel);
+
+            if(!has_lvl_name && saved[k].gamestats.depth != (schar)saved[k].gamestats.dlevel)
+                Sprintf(totallevelbuf, ", being dungeon level %d", saved[k].gamestats.depth);
+
+            char playingbuf[BUFSZ], savedbuf[BUFSZ];
+#if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS)
+            char prefix[8] = "    ";
+#else
+            char prefix[8] = "";
+#endif
+
+            Sprintf(namebuf, "%s", saved[k].playername);
+            Sprintf(characterbuf, "%sLevel %d %s %s %s", prefix, saved[k].gamestats.ulevel, alignbuf, racebuf, genderrolebuf);
+            Sprintf(adventuringbuf, "%sAdventuring on %s%s%s", prefix, lvlbuf, dgnbuf, totallevelbuf);
+            Sprintf(playingbuf, "%sPlaying at %s difficulty in %s mode for %ld turns", prefix, get_game_difficulty_text(saved[k].gamestats.game_difficulty),
+                get_game_mode_text_core(saved[k].gamestats.debug_mode, saved[k].gamestats.explore_mode, saved[k].gamestats.modern_mode, saved[k].gamestats.casual_mode, TRUE),
+                saved[k].gamestats.umoves);
+            Sprintf(savedbuf, "%sGame was saved on %s", prefix, ctime(&saved[k].gamestats.time_stamp));
+
             any.a_int = k + 1;
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, saved[k],
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_HEADING | ATR_BOLD, namebuf,
                      MENU_UNSELECTED);
+
+            any.a_int = 0;
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, characterbuf,
+                MENU_UNSELECTED);
+
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, adventuringbuf,
+                MENU_UNSELECTED);
+
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, playingbuf,
+                MENU_UNSELECTED);
+
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, savedbuf,
+                MENU_UNSELECTED);
         }
 
         clet = (k <= 'n' - 'a') ? 'n' : 0; /* new game */
         any.a_int = -1;                    /* not >= 0 */
-        add_menu(tmpwin, NO_GLYPH, &any, clet, 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, clet, 0, ATR_HEADING,
                  "Start a new character", MENU_UNSELECTED);
         clet = (k + 1 <= 'q' - 'a') ? 'q' : 0; /* quit */
         any.a_int = -2;
-        add_menu(tmpwin, NO_GLYPH, &any, clet, 0, ATR_NONE,
+        add_menu(tmpwin, NO_GLYPH, &any, clet, 0, ATR_HEADING,
                  "Never mind (quit)", MENU_SELECTED);
 
 #ifdef GNH_MOBILE
@@ -1515,8 +1598,8 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
         if (select_menu(tmpwin, PICK_ONE, &chosen_game) > 0) 
         {
             ch = chosen_game->item.a_int;
-            if (ch > 0 && saved[ch - 1] > 0)
-                Strcpy(plname, saved[ch - 1]);
+            if (ch > 0 && saved[ch - 1].playername > 0)
+                Strcpy(plname, saved[ch - 1].playername);
             else if (ch < 0)
                 ++ch; /* -1 -> 0 (new game), -2 -> -1 (quit) */
             free((genericptr_t) chosen_game);

@@ -565,6 +565,7 @@ char ***outarray;
     int count, asize;
     char *charname, wildcard[255 + 1], filename[255 + 1];
     genericptr_t context = 0;
+    struct save_game_stats gamestats = { 0 };
 
     Strcpy(wildcard, savetemplate); /* plname_from_file overwrites SAVEF */
     in.mbz = 0; /* class and type; leave them unspecified */
@@ -583,7 +584,7 @@ char ***outarray;
             if (filename[l - 1] != ' ')
                 break;
         filename[l] = '\0';
-        if ((charname = plname_from_file(filename)) != 0)
+        if ((charname = plname_from_file(filename, &gamestats)) != 0)
             savefile(charname, count++, &asize, outarray);
     }
     (void) lib$find_file_end(&context);

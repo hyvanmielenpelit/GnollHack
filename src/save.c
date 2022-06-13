@@ -223,6 +223,7 @@ dosave0()
     store_version(fd);
     store_savefileinfo(fd);
     store_plname_in_file(fd);
+    store_save_game_stats_in_file(fd);
     ustuck_id = (u.ustuck ? u.ustuck->m_id : 0);
     usteed_id = (u.usteed ? u.usteed->m_id : 0);
     savelev(fd, ledger_no(&u.uz), WRITE_SAVE | FREE_SAVE);
@@ -455,7 +456,7 @@ savestateinlock()
             store_version(fd);
             store_savefileinfo(fd);
             store_plname_in_file(fd);
-
+            store_save_game_stats_in_file(fd);
             ustuck_id = (u.ustuck ? u.ustuck->m_id : 0);
             usteed_id = (u.usteed ? u.usteed->m_id : 0);
             savegamestate(fd, WRITE_SAVE);
@@ -1304,6 +1305,47 @@ int fd;
     /* bwrite() before bufon() uses plain write() */
     bwrite(fd, (genericptr_t) &plsiztmp, sizeof(plsiztmp));
     bwrite(fd, (genericptr_t) plname, plsiztmp);
+    bufon(fd);
+    return;
+}
+
+
+void
+store_save_game_stats_in_file(fd)
+int fd;
+{
+    struct save_game_stats gamestats = { 0 };
+    gamestats.rolenum = urole.rolenum;
+    gamestats.racenum = urace.racenum;
+    gamestats.gender = Upolyd ? u.mfemale : flags.female;
+    gamestats.alignment = u.ualign.type;
+    gamestats.ulevel = (short)u.ulevel;
+    if(dungeons[u.uz.dnum].dname)
+        strcpy(gamestats.dgn_name, dungeons[u.uz.dnum].dname);
+
+    s_level* slev = Is_special(&u.uz);
+    mapseen* mptr = 0;
+    if (slev)
+        mptr = find_mapseen(&u.uz);
+
+    boolean special_lvl = FALSE;
+    if (slev && mptr && mptr->flags.special_level_true_nature_known)
+    {
+        Sprintf(gamestats.level_name, "%s", slev->name);
+    }
+    gamestats.dlevel = u.uz.dlevel;
+    gamestats.depth = depth(&u.uz);
+    gamestats.game_difficulty = context.game_difficulty;
+    gamestats.umoves = moves;
+    gamestats.debug_mode = wizard;
+    gamestats.explore_mode = discover;
+    gamestats.modern_mode = ModernMode;
+    gamestats.casual_mode = CasualMode;
+    gamestats.time_stamp = getnow();
+
+    bufoff(fd);
+    /* bwrite() before bufon() uses plain write() */
+    bwrite(fd, (genericptr_t)&gamestats, sizeof gamestats);
     bufon(fd);
     return;
 }

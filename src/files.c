@@ -176,7 +176,7 @@ extern int n_dgns; /* from dungeon.c */
 #endif
 
 #ifdef SELECTSAVED
-STATIC_PTR int FDECL(CFDECLSPEC strcmp_wrap, (const void *, const void *));
+STATIC_PTR int FDECL(CFDECLSPEC savegamedata_strcmp_wrap, (const void *, const void *));
 #endif
 STATIC_DCL char *FDECL(set_bonesfile_name, (char *, d_level *));
 STATIC_DCL char *NDECL(set_bonestemp_name);
@@ -619,14 +619,14 @@ clearlocks()
 #if defined(SELECTSAVED)
 /* qsort comparison routine */
 STATIC_OVL int CFDECLSPEC
-strcmp_wrap(p, q)
+savegamedata_strcmp_wrap(p, q)
 const void *p;
 const void *q;
 {
 #if defined(UNIX) && defined(QT_GRAPHICS)
-    return strncasecmp(*(char **) p, *(char **) q, 16);
+    return strncasecmp((((struct save_game_data*)p)->playername), (((struct save_game_data*)q)->playername), 16);
 #else
-    return strncmpi(*(char **) p, *(char **) q, 16);
+    return strncmpi((((struct save_game_data*)p)->playername), (((struct save_game_data*)q)->playername), 16);
 #endif
 }
 #endif
@@ -1086,9 +1086,21 @@ restore_saved_game()
 }
 
 #if defined(SELECTSAVED)
+struct save_game_data 
+newsavegamedata(playername, gamestats)
+char* playername;
+struct save_game_stats gamestats;
+{
+    struct save_game_data svgd = { 0 };
+    svgd.playername = playername;
+    svgd.gamestats = gamestats;
+    return svgd;
+}
+
 char *
-plname_from_file(filename)
+plname_from_file(filename, stats_ptr)
 const char *filename;
+struct save_game_stats* stats_ptr;
 {
     int fd;
     char *result = 0;
@@ -1102,6 +1114,7 @@ const char *filename;
         if (validate(fd, filename) == 0) {
             char tplname[PL_NSIZ];
             get_plname_from_file(fd, tplname);
+            get_save_game_stats_from_file(fd, stats_ptr);
             result = dupstr(tplname);
         }
         (void) nhclose(fd);
@@ -1146,8 +1159,9 @@ const struct dirent* entry;
     return *entry->d_name && entry->d_name[strlen(entry->d_name) - 1] == '0';
 }
 char*
-plname_from_running(filename)
+plname_from_running(filename, stats_ptr)
 const char* filename;
+struct save_game_stats* stats_ptr;
 {
     int fd;
     char* result = 0;
@@ -1173,7 +1187,8 @@ const char* filename;
             && read(fd, (genericptr_t)&sfi, sizeof sfi) == sizeof sfi
             && read(fd, (genericptr_t)&pltmpsiz, sizeof pltmpsiz) == sizeof pltmpsiz
             && pltmpsiz > 0 && pltmpsiz <= PL_NSIZ
-            && read(fd, (genericptr_t)&tmpplbuf, pltmpsiz) == pltmpsiz) {
+            && read(fd, (genericptr_t)&tmpplbuf, pltmpsiz) == pltmpsiz) 
+            && read(fd, (genericptr_t)stats_ptr, sizeof stats_ptr) == sizeof stats_ptr) {
             result = dupstr(tmpplbuf);
         }
         close(fd);
@@ -1184,12 +1199,13 @@ const char* filename;
 #endif
 #endif /* defined(SELECTSAVED) */
 
-char **
+struct save_game_data *
 get_saved_games()
 {
 #if defined(SELECTSAVED)
     int j = 0;
-    char **result = 0;
+    struct save_game_stats gamestats = { 0 };
+    struct save_game_data* result = 0;
 #ifdef WIN32
     {
         char *foundfile;
@@ -1210,22 +1226,21 @@ get_saved_games()
             } while (findnext());
         }
         if (n > 0) {
-            result = (char **) alloc(((size_t)n + 1) * sizeof(char *)); /* at most */
-            (void) memset((genericptr_t) result, 0, ((size_t)n + 1) * sizeof(char *));
+            result = (struct save_game_data*) alloc(((size_t)n + 1) * sizeof(struct save_game_data)); /* at most */
+            (void) memset((genericptr_t) result, 0, ((size_t)n + 1) * sizeof(struct save_game_data));
             if (findfirst((char *) fq_save)) {
                 j = n = 0;
                 do {
                     char *r;
-                    r = plname_from_file(foundfile);
+                    r = plname_from_file(foundfile, &gamestats);
                     if (r)
-                        result[j++] = r;
+                        result[j++] = newsavegamedata(r, gamestats);
                     ++n;
                 } while (findnext());
             }
         }
     }
-#endif
-#if defined(UNIX) && defined(QT_GRAPHICS)
+#elif defined(UNIX) && defined(QT_GRAPHICS)
     /* posixly correct version */
     int myuid = getuid();
     int n;
@@ -1240,8 +1255,8 @@ get_saved_games()
 
             if (!(dir = opendir(fqname("save", SAVEPREFIX, 0))))
                 return 0;
-            result = (char **) alloc((n + 1) * sizeof(char *)); /* at most */
-            (void) memset((genericptr_t) result, 0, (n + 1) * sizeof(char *));
+            result = (struct save_game_data*) alloc((n + 1) * sizeof(struct save_game_data)); /* at most */
+            (void) memset((genericptr_t) result, 0, (n + 1) * sizeof(struct save_game_data));
             for (i = 0, j = 0; i < n; i++) {
                 int uid;
                 char name[64]; /* more than PL_NSIZ */
@@ -1255,17 +1270,16 @@ get_saved_games()
                         char *r;
 
                         Sprintf(filename, "save/%d%s", uid, name);
-                        r = plname_from_file(filename);
+                        r = plname_from_file(filename, &gamestats);
                         if (r)
-                            result[j++] = r;
+                            result[j++] = newsavegamedata(r, gamestats);
                     }
                 }
             }
             closedir(dir);
         }
     }
-#endif
-#if defined(ANDROID) || defined(GNH_MOBILE)
+#elif defined(ANDROID) || defined(GNH_MOBILE)
     int myuid = getuid();
     struct dirent** namelist;
     struct dirent** namelist2;
@@ -1276,8 +1290,8 @@ get_saved_games()
     int i, uid;
     char name[64]; /* more than PL_NSIZ */
     if (n1 > 0 || n2 > 0) {
-        result = (char**)alloc((n1 + n2 + 1) * sizeof(char*)); /* at most */
-        (void)memset((genericptr_t)result, 0, (n1 + n2 + 1) * sizeof(char*));
+        result = (struct save_game_data*)alloc((n1 + n2 + 1) * sizeof(struct save_game_data)); /* at most */
+        (void)memset((genericptr_t)result, 0, (n1 + n2 + 1) * sizeof(struct save_game_data));
     }
     for (i = 0; i < n1; i++) {
         if (sscanf(namelist[i]->d_name, "%d%63s", &uid, name) == 2) {
@@ -1285,9 +1299,11 @@ get_saved_games()
                 char filename[BUFSZ];
                 char* r;
                 Sprintf(filename, "save/%d%s", uid, name);
-                r = plname_from_file(filename);
+                r = plname_from_file(filename, &gamestats);
                 if (r)
-                    result[j++] = r;
+                {
+                    result[j++] = newsavegamedata(r, gamestats);
+                }
             }
         }
     }
@@ -1295,9 +1311,9 @@ get_saved_games()
         if (sscanf(namelist2[i]->d_name, "%d%63[^.].0", &uid, name) == 2) {
             if (uid == myuid) {
                 char* r;
-                r = plname_from_running(namelist2[i]->d_name);
+                r = plname_from_running(namelist2[i]->d_name, &gamestats);
                 if (r)
-                    result[j++] = r;
+                    result[j++] = newsavegamedata(r, gamestats);
             }
         }
     }
@@ -1310,8 +1326,8 @@ get_saved_games()
 
     if (j > 0) {
         if (j > 1)
-            qsort(result, j, sizeof (char *), strcmp_wrap);
-        result[j] = 0;
+            qsort(result, j, sizeof (struct save_game_data), savegamedata_strcmp_wrap);
+        result[j].playername = 0;
         return result;
     } else if (result) { /* could happen if save files are obsolete */
         free_saved_games(result);
@@ -1322,14 +1338,14 @@ get_saved_games()
 
 void
 free_saved_games(saved)
-char **saved;
+struct save_game_data *saved;
 {
     if (saved) 
     {
         int i = 0;
 
-        while (saved[i])
-            free((genericptr_t) saved[i++]);
+        while (saved[i].playername)
+            free((genericptr_t) saved[i++].playername);
         free((genericptr_t) saved);
     }
 }

@@ -4619,14 +4619,14 @@ void NetHackQtBind::qt_askname()
 
     // We do it all here, and nothing in askname
 
-    char** saved = get_saved_games();
+    struct save_game_data* saved = get_saved_games();
     int ch = -1;
-    if ( saved && *saved ) {
+    if ( saved && saved[0].playername) {
 	if ( splash ) splash->hide();
-	NetHackQtSavedGameSelector sgsel((const char**)saved);
+	NetHackQtSavedGameSelector sgsel((struct save_game_data*)saved);
 	ch = sgsel.choose();
 	if ( ch >= 0 )
-	    strcpy(plname,saved[ch]);
+	    strcpy(plname,saved[ch].playername);
     }
     free_saved_games(saved);
 

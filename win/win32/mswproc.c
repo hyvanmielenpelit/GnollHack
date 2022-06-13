@@ -83,6 +83,9 @@ COLORREF message_fg_color = RGB(0xFF, 0xFF, 0xFF);
 
 strbuf_t raw_print_strbuf = { 0 };
 
+winid BASE_WINDOW;
+
+
 /* Interface definition, for windows.c */
 struct window_procs mswin_procs = {
     "MSWIN",
@@ -187,6 +190,7 @@ mswin_init_nhwindows(int *argc, char **argv)
 
     /* set it to WIN_ERR so we can detect attempts to
        use this ID before it is inialized */
+    BASE_WINDOW = mswin_create_nhwindow_ex(NHW_BASE, 0, NO_GLYPH, zerocreatewindowinfo);
     WIN_MAP = WIN_ERR;
 
     /* Read Windows settings from the reqistry */
@@ -780,6 +784,18 @@ mswin_askname(void)
 {
     logDebug("mswin_askname()\n");
 
+#ifdef SELECTSAVED
+    if (iflags.wc2_selectsaved && !iflags.renameinprogress)
+        switch (restore_menu(BASE_WINDOW)) {
+        case -1:
+            bail("Until next time then..."); /* quit */
+            /*NOTREACHED*/
+        case 0:
+            break; /* no game chosen; start new game */
+        case 1:
+            return; /* plname[] has been set */
+        }
+#endif /* SELECTSAVED */
     if (mswin_getlin_window(GETLINE_ASK_NAME, ATR_NONE, NO_COLOR, "Who are you?", plname, PL_NSIZ) == IDCANCEL) {
         bail("bye-bye");
         /* not reached */
@@ -919,6 +935,12 @@ mswin_create_nhwindow_ex(int type, int style, int glyph, struct extended_create_
     }
     case NHW_TEXT: {
         GetNHApp()->windowlist[i].win = mswin_init_text_window();
+        GetNHApp()->windowlist[i].type = type;
+        GetNHApp()->windowlist[i].dead = 0;
+        break;
+    }
+    case NHW_BASE: {
+        GetNHApp()->windowlist[i].win = GetNHApp()->hMainWnd;
         GetNHApp()->windowlist[i].type = type;
         GetNHApp()->windowlist[i].dead = 0;
         break;

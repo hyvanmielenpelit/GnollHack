@@ -1652,12 +1652,12 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             else
             {
                 int drain = monbasehp_per_lvl(mdef);
-                int mhpadj = monhpadj_per_lvl(mdef);
+                double mhpadj = monhpadj_per_lvl(mdef);
                 int levelloss = 1;
                 if (youattack ? obj_has_dual_runesword_bonus(otmp) : monwep_has_dual_runesword_bonus(magr, otmp))
                 {
                     drain *= 2;
-                    mhpadj *= 2;
+                    mhpadj *= 2.0;
                     levelloss *= 2;
                 }
 

@@ -34,6 +34,7 @@ E void NDECL(choose_game_difficulty);
 E const char* FDECL(get_game_difficulty_text, (int));
 E const char* FDECL(get_game_difficulty_symbol, (int));
 E const char* FDECL(get_game_mode_text, (BOOLEAN_P));
+E const char* FDECL(get_game_mode_text_core, (BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E void NDECL(show_gui_tips);
 E void FDECL(welcome, (BOOLEAN_P));
 E time_t NDECL(get_realtime);
@@ -1156,10 +1157,11 @@ E void FDECL(paniclog, (const char *, const char *));
 E void FDECL(testinglog, (const char *, const char *, const char *));
 E int FDECL(validate_prefix_locations, (char *));
 #ifdef SELECTSAVED
-E char *FDECL(plname_from_file, (const char *));
+E char *FDECL(plname_from_file, (const char *, struct save_game_stats*));
+E struct save_game_data FDECL(newsavegamedata, (char*, struct save_game_stats));
 #endif
-E char **NDECL(get_saved_games);
-E void FDECL(free_saved_games, (char **));
+E struct save_game_data *NDECL(get_saved_games);
+E void FDECL(free_saved_games, (struct save_game_data *));
 #ifdef SELF_RECOVER
 E boolean NDECL(recover_savefile);
 #endif
@@ -2744,6 +2746,7 @@ E void FDECL(restcemetery, (int, struct cemetery **));
 E void FDECL(trickery, (char *));
 E void FDECL(getlev, (int, int, XCHAR_P, BOOLEAN_P));
 E void FDECL(get_plname_from_file, (int, char *));
+E void FDECL(get_save_game_stats_from_file, (int, struct save_game_stats*));
 #ifdef SELECTSAVED
 E int FDECL(restore_menu, (winid));
 #endif
@@ -2921,6 +2924,7 @@ E void FDECL(zerocomp_bclose, (int));
 E void FDECL(savecemetery, (int, int, struct cemetery **));
 E void FDECL(savefruitchn, (int, int));
 E void FDECL(store_plname_in_file, (int));
+E void FDECL(store_save_game_stats_in_file, (int));
 E void NDECL(free_dungeons);
 E void NDECL(freedynamicdata);
 E void FDECL(store_savefileinfo, (int));

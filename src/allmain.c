@@ -1151,23 +1151,31 @@ const char*
 get_game_mode_text(display_nonscoring)
 boolean display_nonscoring;
 {
-    if (wizard)
+    return get_game_mode_text_core(wizard, discover, ModernMode, CasualMode, display_nonscoring);
+}
+
+const char*
+get_game_mode_text_core(iswizardmode, isexporemode, ismodernmode, iscasualmode, display_nonscoring)
+boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmode;
+{
+    if (iswizardmode)
         return "wizard";
-    else if (discover)
+    else if (isexporemode)
         return display_nonscoring ? "non-scoring explore" : "explore";
-    else if (CasualMode)
+    else if (iscasualmode)
     {
-        if (ModernMode)
+        if (ismodernmode)
             return display_nonscoring ? "non-scoring casual" : "casual";
         else
             return display_nonscoring ? "non-scoring casual-classic" : "casual-classic";
     }
-    else if (ModernMode)
+    else if (ismodernmode)
         return "modern";
     else
         return "classic";
 
 }
+
 
 void 
 choose_game_difficulty()
