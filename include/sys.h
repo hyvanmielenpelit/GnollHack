@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-06-13 */
 
 /* GnollHack 4.0    sys.h    $NHDT-Date: 1449296291 2015/12/05 06:18:11 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.27 $ */
 /* Copyright (c) Kenneth Lorber, Kensington, Maryland, 2008. */

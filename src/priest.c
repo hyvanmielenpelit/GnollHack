@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-06-05 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-06-13 */
 
 /* GnollHack 4.0    priest.c    $NHDT-Date: 1545131519 2018/12/18 11:11:59 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.45 $ */
 /* Copyright (c) Izchak Miller, Steve Linhart, 1989.              */

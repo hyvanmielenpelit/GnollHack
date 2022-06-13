@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-06-05 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2022-06-13 */
 
 /* GnollHack 4.0    music.c    $NHDT-Date: 1544442713 2018/12/10 11:51:53 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.57 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */

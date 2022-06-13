@@ -765,7 +765,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
 
         /* Dirty all animated tiles, unless hanging up */
-        if (!program_state.animation_hangup)
+        if (!program_state.animation_hangup && context.game_started)
         {
             program_state.animation_hangup = 1;
             for (int x = 1; x < COLNO; x++)
