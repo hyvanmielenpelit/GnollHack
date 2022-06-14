@@ -216,6 +216,8 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                    res = 320;
+                    break;
                 case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                     break;
