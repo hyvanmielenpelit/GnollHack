@@ -3591,10 +3591,12 @@ mswin_open_special_view(struct special_view_info info)
     case SPECIAL_VIEW_CHAT_MESSAGE:
         genl_chat_message();
         break;
+    case SPECIAL_VIEW_YN_DIALOG:
+        return 'y';
     default:
         break;
     }
-    return 1;
+    return 0;
 }
 
 void

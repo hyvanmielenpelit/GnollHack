@@ -1515,6 +1515,9 @@ namespace GnollHackClient.Pages.Game
                             case GHRequestType.ShowMenuPage:
                                 ShowMenuCanvas(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow);
                                 break;
+                            case GHRequestType.HideMenuPage:
+                                DelayedMenuHide();
+                                break;
                             case GHRequestType.ShowOutRipPage:
                                 ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
                                 break;
@@ -2354,26 +2357,28 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private object _canvasPageLock = new object();
-        private canvas_page_types _canvasPage = 0;
+        //private object _canvasPageLock = new object();
+        //private canvas_page_types _canvasPage = 0;
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            canvas_page_types page = 0;
-            lock (_canvasPageLock)
-            {
-                page = _canvasPage;
-            }
+            //canvas_page_types page = 0;
+            //lock (_canvasPageLock)
+            //{
+            //    page = _canvasPage;
+            //}
 
-            switch (page)
-            {
-                case canvas_page_types.MainGamePage:
-                    PaintMainGamePage(sender, e);
-                    break;
-                case canvas_page_types.MenuPage:
-                    //MenuCanvas_PaintSurface(sender, e);
-                    break;
-            }
+            //switch (page)
+            //{
+            //    case canvas_page_types.MainGamePage:
+            //        PaintMainGamePage(sender, e);
+            //        break;
+            //    case canvas_page_types.MenuPage:
+            //        //MenuCanvas_PaintSurface(sender, e);
+            //        break;
+            //}
+
+            PaintMainGamePage(sender, e);
 
 
             /* General stuff */
@@ -7157,21 +7162,23 @@ namespace GnollHackClient.Pages.Game
 
         private void canvasView_Touch(object sender, SKTouchEventArgs e)
         {
-            canvas_page_types page = 0;
-            lock (_canvasPageLock)
-            {
-                page = _canvasPage;
-            }
+            canvasView_Touch_MainPage(sender, e);
 
-            switch (page)
-            {
-                case canvas_page_types.MainGamePage:
-                    canvasView_Touch_MainPage(sender, e);
-                    break;
-                case canvas_page_types.MenuPage:
-                    //MenuCanvas_Touch(sender, e);
-                    break;
-            }
+            //canvas_page_types page = 0;
+            //lock (_canvasPageLock)
+            //{
+            //    page = _canvasPage;
+            //}
+
+            //switch (page)
+            //{
+            //    case canvas_page_types.MainGamePage:
+            //        canvasView_Touch_MainPage(sender, e);
+            //        break;
+            //    case canvas_page_types.MenuPage:
+            //        //MenuCanvas_Touch(sender, e);
+            //        break;
+            //}
         }
 
         private void canvasView_Touch_MainPage(object sender, SKTouchEventArgs e)
@@ -8997,7 +9004,8 @@ namespace GnollHackClient.Pages.Game
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist));
             }
 
-            DelayedMenuHide();
+            if(!GHMenuInfo.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
+                DelayedMenuHide();
         }
 
         private void MenuCancelButton_Clicked(object sender, EventArgs e)
@@ -9017,7 +9025,8 @@ namespace GnollHackClient.Pages.Game
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>()));
             }
 
-            DelayedMenuHide();
+            if (!GHMenuInfo.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
+                DelayedMenuHide();
         }
 
         private void DelayedMenuHide()
@@ -9044,10 +9053,10 @@ namespace GnollHackClient.Pages.Game
                 if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                     MenuCanvas.AbortAnimation("GeneralAnimationCounter");
 
-                lock (_canvasPageLock)
-                {
-                    _canvasPage = canvas_page_types.MainGamePage;
-                }
+                //lock (_canvasPageLock)
+                //{
+                //    _canvasPage = canvas_page_types.MainGamePage;
+                //}
                 lock (RefreshScreenLock)
                 {
                     RefreshScreen = true;

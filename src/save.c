@@ -1333,6 +1333,7 @@ int fd;
     {
         Sprintf(gamestats.level_name, "%s", slev->name);
     }
+    gamestats.dnum = u.uz.dnum;
     gamestats.dlevel = u.uz.dlevel;
     gamestats.depth = depth(&u.uz);
     gamestats.game_difficulty = context.game_difficulty;

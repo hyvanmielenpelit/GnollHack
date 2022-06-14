@@ -140,6 +140,8 @@ namespace GnollHackClient
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                         break;
+                    case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                    case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
@@ -264,6 +266,8 @@ namespace GnollHackClient
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                             break;
+                        case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                        case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                             res = "Immortal";
                             break;
@@ -330,6 +334,8 @@ namespace GnollHackClient
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                             break;
+                        case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                        case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
@@ -418,6 +424,10 @@ namespace GnollHackClient
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                         break;
+                    case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                        res = res * 17.0 / 15.0;
+                        break;
+                    case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                         res = res * 15.0 / 15.0;
                         break;
@@ -493,6 +503,8 @@ namespace GnollHackClient
                 double res;
                 switch (_menuInfo.Style)
                 {
+                    case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                    case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                         res = 18;
                         break;
@@ -575,9 +587,11 @@ namespace GnollHackClient
                 {
                     switch (_menuInfo.Style)
                     {
+                        case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                             bottomPadding = 3;
                             break;
+                        case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                         default:
                             if (IsSuffixTextVisible && IsSuffix2TextVisible)
                                 bottomPadding = 6;
@@ -603,9 +617,11 @@ namespace GnollHackClient
                 {
                     switch (_menuInfo.Style)
                     {
+                        case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                         case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                             topPadding = 0;
                             break;
+                        case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                         default:
                             if (IsSuffixTextVisible && IsSuffix2TextVisible)
                                 topPadding = 6;
@@ -625,10 +641,12 @@ namespace GnollHackClient
                 bool res = true;
                 switch(_menuInfo.Style)
                 {
+                    case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                     case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                         if (Identifier == 0 && HeadingGroupAccelerator == 0)
                             res = false;
                         break;
+                    case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                     default:
                         break;
                 }

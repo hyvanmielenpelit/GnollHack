@@ -2749,7 +2749,7 @@ E void FDECL(get_plname_from_file, (int, char *));
 E void FDECL(get_save_game_stats_from_file, (int, struct save_game_stats*));
 #ifdef SELECTSAVED
 E int FDECL(restore_menu, (winid));
-E int FDECL(select_saved_game, (winid, uchar, struct save_game_data*));
+E int FDECL(select_saved_game, (winid, UCHAR_P, struct save_game_data*));
 #endif
 E void NDECL(minit);
 E boolean FDECL(lookup_id_mapping, (unsigned, unsigned *));

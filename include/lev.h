@@ -83,6 +83,7 @@ struct save_game_stats {
     short ulevel;
     char dgn_name[MAX_DGN_NAME_LENGTH];
     char level_name[MAX_LVL_NAME_LENGTH];
+    xchar dnum;
     xchar dlevel;
     schar depth;
     schar game_difficulty;

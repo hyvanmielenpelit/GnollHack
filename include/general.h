@@ -453,6 +453,8 @@ enum ghmenu_styles
     GHMENU_STYLE_SPELL_COMMAND,
     GHMENU_STYLE_GENERAL_COMMAND,
     GHMENU_STYLE_MONSTER_ABILITY,
+    GHMENU_STYLE_DELETE_SAVED_GAME,
+    GHMENU_STYLE_START_GAME_MENU,
     MAX_GHMENU_STYLES
 };
 
@@ -477,8 +479,8 @@ struct special_view_info {
     enum special_view_types viewtype;
     const char* text;
     const char* title;
-    int param1;
-    int param2;
+    int attr;
+    int color;
 };
 
 /* Fountain types */

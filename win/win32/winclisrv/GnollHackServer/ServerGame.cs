@@ -464,7 +464,7 @@ namespace GnollHackServer
             return 0;
         }
 
-        protected int GameCallback_OpenSpecialView(int viewtype, string text, string title, int param1, int param2)
+        protected int GameCallback_OpenSpecialView(int viewtype, string text, string title, int attr, int color)
         {
             return 1;
         }

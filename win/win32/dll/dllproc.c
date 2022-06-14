@@ -2741,7 +2741,16 @@ dll_set_animation_timer_interval(unsigned int interval)
 int
 dll_open_special_view(struct special_view_info info)
 {
-    return 1;
+    switch (info.viewtype)
+    {
+    case SPECIAL_VIEW_CHAT_MESSAGE:
+        break;
+    case SPECIAL_VIEW_YN_DIALOG:
+        return 'y';
+    default:
+        break;
+    }
+    return 0;
 }
 
 void

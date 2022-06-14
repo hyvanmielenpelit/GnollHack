@@ -1517,7 +1517,7 @@ namespace GnollHackClient
             return 0;
         }
 
-        public int ClientCallback_OpenSpecialView(int viewtype, string text, string title, int param1, int param2)
+        public int ClientCallback_OpenSpecialView(int viewtype, string text, string title, int attr, int color)
         {
             switch (viewtype)
             {
@@ -1605,7 +1605,29 @@ namespace GnollHackClient
                         break;
                     }
                 case (int)special_view_types.SPECIAL_VIEW_YN_DIALOG:
-                    break;
+                    {
+                        ConcurrentQueue<GHRequest> queue;
+                        string responses = "yn";
+                        string descriptions = "Yes\nNo";
+                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, (int)yn_function_styles.YN_STYLE_GENERAL, attr, color, _gamePage.NoGlyph, title, text, responses, descriptions, 0UL));
+                        }
+                        else
+                            return 27;
+
+                        int val = ClientCallback_nhgetch();
+                        string res = Char.ConvertFromUtf32(val);
+                        if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, GHRequestType.HideYnResponses));
+                        }
+                        if (responses.Contains(res))
+                            return val;
+                        else
+                            return 27;
+
+                    }
                 default:
                     break;
             }

@@ -287,12 +287,16 @@ namespace GnollHackClient
         public void Destroy()
         {
             Visible = false;
-            if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
+            if (_winType == GHWinType.Menu)
             {
                 ConcurrentQueue<GHRequest> queue;
                 if (ClientGame.RequestDictionary.TryGetValue(_clientGame, out queue))
                 {
                     queue.Enqueue(new GHRequest(_clientGame, GHRequestType.DestroyWindowView, _winId));
+                    if (MenuInfo != null && MenuInfo.MenuCloseUponDestroy)
+                    {
+                        queue.Enqueue(new GHRequest(_clientGame, GHRequestType.HideMenuPage, _winId));
+                    }
                 }
             }
         }

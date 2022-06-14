@@ -215,6 +215,8 @@ namespace GnollHackClient
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                     break;
+                case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
@@ -281,6 +283,8 @@ namespace GnollHackClient
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                     break;
+                case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
@@ -340,6 +344,10 @@ namespace GnollHackClient
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                     break;
+                case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                    res = res * 17.0 / 15.0;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
@@ -399,6 +407,8 @@ namespace GnollHackClient
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                     break;
+                case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
@@ -458,6 +468,8 @@ namespace GnollHackClient
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                     break;
+                case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
@@ -483,7 +495,6 @@ namespace GnollHackClient
             }
             return res;
         }
-
 
         public static void ProcessAdjustedItems(List<GHPutStrItem> adjusted_list, List<GHPutStrItem> normal_list)
         {

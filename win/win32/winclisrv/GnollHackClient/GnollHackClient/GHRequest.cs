@@ -16,6 +16,7 @@ namespace GnollHackClient
         AskName,
         ReturnToMainMenu,
         ShowMenuPage,
+        HideMenuPage,
         ShowYnResponses,
         HideYnResponses,
         ShowDirections,

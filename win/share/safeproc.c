@@ -456,7 +456,16 @@ int
 safe_open_special_view(info)
 struct special_view_info info;
 {
-    return 1;
+    switch (info.viewtype)
+    {
+    case SPECIAL_VIEW_CHAT_MESSAGE:
+        break;
+    case SPECIAL_VIEW_YN_DIALOG:
+        return 'y';
+    default:
+        break;
+    }
+    return 0;
 }
 
 void
