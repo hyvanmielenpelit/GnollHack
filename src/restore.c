@@ -1475,14 +1475,18 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
     menu_item *chosen_action = (menu_item *) 0;
     int k, ch = 0, ret = 0; /* ch: 0 => new game */
     boolean repeat = TRUE;
+    boolean firsttime = TRUE;
 
     do
     {
         *plname = '\0';
         saved = get_saved_games(); /* array of character names */
-
         repeat = TRUE;
         ch = ret = 0;
+
+        if (firsttime && (!saved || !saved[0].playername))
+            break;
+        firsttime = FALSE;
 
         tmpwin = create_nhwindow(NHW_MENU);
         start_menu_ex(tmpwin, GHMENU_STYLE_CHOOSE_SAVED_GAME);
