@@ -7146,7 +7146,7 @@ check_gui_special_effect()
             struct special_view_info info = { 0 };
             info.viewtype = SPECIAL_VIEW_SHOW_SPECIAL_EFFECT;
             info.text = 0;
-            open_special_view(info);
+            (void)open_special_view(info);
             special_effect_shown = TRUE;
         }
     }

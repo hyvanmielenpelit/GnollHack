@@ -121,7 +121,7 @@ typedef void(__callconv* StatusUpdateCallback)(int, char*, long, int, int, int, 
 typedef BooleanVoidCallback CanSuspendYesCallback;
 typedef VoidVoidCallback StretchWindowCallback;
 typedef void(__callconv* SetAnimationTimerCallback)(unsigned long);
-typedef void(__callconv* OpenSpecialViewCallback)(int, const char*, int, int);
+typedef int(__callconv* OpenSpecialViewCallback)(int, const char*, const char*, int, int);
 typedef int(__callconv* StopAllSoundsCallback)(unsigned int, unsigned int);
 typedef int(__callconv* PlayImmediateSoundCallback)(int, const char*, int, double, double, const char**, float*, int, int, int, unsigned int, unsigned long);
 typedef int(__callconv* PlayMusicCallback)(int, const char*, int, double, double);

@@ -2121,7 +2121,7 @@ dochat()
         info.viewtype = SPECIAL_VIEW_CHAT_MESSAGE;
 
         /* Chat message functionality */
-        open_special_view(info);
+        (void)open_special_view(info);
         return 0;
     }
 

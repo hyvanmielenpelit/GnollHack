@@ -262,6 +262,8 @@ namespace GnollHackClient
         }
         public void ClientCallback_DestroyGHWindow(int winHandle)
         {
+            if (winHandle < 0)
+                return;
             lock (_ghWindowsLock)
             {
                 GHWindow ghwin = _ghWindows[winHandle];
@@ -274,6 +276,8 @@ namespace GnollHackClient
         }
         public void ClientCallback_ClearGHWindow(int winHandle)
         {
+            if (winHandle < 0)
+                return;
             lock (_ghWindowsLock)
             {
                 if (_ghWindows[winHandle] != null)
@@ -282,6 +286,8 @@ namespace GnollHackClient
         }
         public void ClientCallback_DisplayGHWindow(int winHandle, byte blocking)
         {
+            if (winHandle < 0)
+                return;
             bool ismenu = false;
             bool istext = false;
             bool ismap = false;
@@ -1511,7 +1517,7 @@ namespace GnollHackClient
             return 0;
         }
 
-        public void ClientCallback_OpenSpecialView(int viewtype, string text, int param1, int param2)
+        public int ClientCallback_OpenSpecialView(int viewtype, string text, string title, int param1, int param2)
         {
             switch (viewtype)
             {
@@ -1598,9 +1604,12 @@ namespace GnollHackClient
 
                         break;
                     }
+                case (int)special_view_types.SPECIAL_VIEW_YN_DIALOG:
+                    break;
                 default:
                     break;
             }
+            return 1;
         }
 
 

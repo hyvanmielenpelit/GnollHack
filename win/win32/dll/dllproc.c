@@ -2738,10 +2738,10 @@ dll_set_animation_timer_interval(unsigned int interval)
 }
 
 
-void
+int
 dll_open_special_view(struct special_view_info info)
 {
-    return;
+    return 1;
 }
 
 void

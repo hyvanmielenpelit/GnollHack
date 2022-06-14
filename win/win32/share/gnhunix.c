@@ -142,7 +142,7 @@ check_crash()
 
 	struct special_view_info info = { 0 };
 	info.viewtype = SPECIAL_VIEW_CRASH_DETECTED;
-	open_special_view(info);
+	(void)open_special_view(info);
 
 	/* Use recover_plname instead */
 	if(!wizard)

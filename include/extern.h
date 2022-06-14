@@ -2749,6 +2749,7 @@ E void FDECL(get_plname_from_file, (int, char *));
 E void FDECL(get_save_game_stats_from_file, (int, struct save_game_stats*));
 #ifdef SELECTSAVED
 E int FDECL(restore_menu, (winid));
+E int FDECL(select_saved_game, (winid, uchar, struct save_game_data*));
 #endif
 E void NDECL(minit);
 E boolean FDECL(lookup_id_mapping, (unsigned, unsigned *));
@@ -3862,7 +3863,7 @@ E void FDECL(genl_status_update, (int, genericptr_t, int, int, int, unsigned lon
 
 E void NDECL(genl_stretch_window);
 E void FDECL(genl_set_animation_timer_interval, (unsigned int));
-E void FDECL(genl_open_special_view, (struct special_view_info));
+E int FDECL(genl_open_special_view, (struct special_view_info));
 E void FDECL(genl_stop_all_sounds, (struct stop_all_info));
 E void FDECL(genl_play_ghsound_occupation_ambient, (struct ghsound_occupation_ambient_info));
 E void FDECL(genl_play_ghsound_effect_ambient, (struct ghsound_effect_ambient_info));

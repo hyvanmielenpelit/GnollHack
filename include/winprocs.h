@@ -93,7 +93,7 @@ struct window_procs {
     boolean NDECL((*win_can_suspend));
     void NDECL((*win_stretch_window));
     void FDECL((*win_set_animation_timer_interval), (unsigned int));
-    void FDECL((*win_open_special_view), (struct special_view_info));
+    int FDECL((*win_open_special_view), (struct special_view_info));
     void FDECL((*win_stop_all_sounds), (struct stop_all_info));
     void FDECL((*win_play_immediate_ghsound), (struct ghsound_immediate_info));
     void FDECL((*win_play_ghsound_occupation_ambient), (struct ghsound_occupation_ambient_info));
@@ -473,7 +473,7 @@ struct chain_procs {
     boolean FDECL((*win_can_suspend), (CARGS));
     void FDECL((*win_stretch_window, (CARGS)));
     void FDECL((*win_set_animation_timer_interval), (CARGS, unsigned int));
-    void FDECL((*win_open_special_view), (CARGS, struct special_view_info));
+    int FDECL((*win_open_special_view), (CARGS, struct special_view_info));
     void FDECL((*win_stop_all_sounds), (CARGS, struct stop_all_info));
     void FDECL((*win_play_immediate_ghsound), (CARGS, struct ghsound_immediate_info));
     void FDECL((*win_play_ghsound_occupation_ambient), (CARGS, struct ghsound_occupation_ambient_info));
@@ -574,7 +574,7 @@ extern void FDECL(safe_status_update, (int, genericptr_t, int, int, int, unsigne
 extern boolean NDECL(safe_can_suspend);
 extern void NDECL(safe_stretch_window);
 extern void FDECL(safe_set_animation_timer_interval, (unsigned int));
-extern void FDECL(safe_open_special_view, (struct special_view_info));
+extern int FDECL(safe_open_special_view, (struct special_view_info));
 extern void FDECL(safe_stop_all_sounds, (struct stop_all_info));
 extern void FDECL(safe_play_ghsound_occupation_ambient, (struct ghsound_occupation_ambient_info));
 extern void FDECL(safe_play_ghsound_effect_ambient, (struct ghsound_effect_ambient_info));

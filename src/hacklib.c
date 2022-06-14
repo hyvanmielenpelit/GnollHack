@@ -1688,7 +1688,7 @@ const char* str;
     struct special_view_info info = { 0 };
     info.viewtype = SPECIAL_VIEW_DEBUGLOG;
     info.text = str;
-    open_special_view(info);
+    (void)open_special_view(info);
 }
 
 /*hacklib.c*/

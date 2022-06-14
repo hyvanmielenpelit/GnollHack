@@ -1070,6 +1070,7 @@ namespace GnollHackCommon
         SPECIAL_VIEW_PANIC,
         SPECIAL_VIEW_DEBUGLOG,
         SPECIAL_VIEW_MESSAGE,
+        SPECIAL_VIEW_YN_DIALOG,
         MAX_SPECIAL_VIEW_TYPES
     }
 

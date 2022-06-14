@@ -665,7 +665,7 @@ VA_DECL(const char *, str)
             struct special_view_info info = { 0 };
             info.viewtype = SPECIAL_VIEW_PANIC;
             info.text = str;
-            open_special_view(info);
+            (void)open_special_view(info);
         }
 #endif
     }

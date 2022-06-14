@@ -243,7 +243,7 @@ unsigned int interval UNUSED;
     return;
 }
 
-void
+int
 genl_open_special_view(info)
 struct special_view_info info;
 {
@@ -255,7 +255,7 @@ struct special_view_info info;
     default:
         break;
     }
-    return;
+    return 1;
 }
 
 void

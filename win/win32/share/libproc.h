@@ -66,7 +66,7 @@ void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, BOOLE
 void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long* colormasks);
 void lib_stretch_window(void);
 void lib_set_animation_timer_interval(unsigned int);
-void lib_open_special_view(struct special_view_info info);
+int lib_open_special_view(struct special_view_info info);
 void lib_stop_all_sounds(struct stop_all_info info);
 void lib_play_immediate_ghsound(struct ghsound_immediate_info info);
 void lib_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info);

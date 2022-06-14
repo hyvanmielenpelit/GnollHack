@@ -204,7 +204,7 @@ void mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
 void mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *colormasks);
 void mswin_stretch_window(void);
 void mswin_set_animation_timer_interval(unsigned int);
-void mswin_open_special_view(struct special_view_info info);
+int mswin_open_special_view(struct special_view_info info);
 void mswin_stop_all_sounds(struct stop_all_info info);
 void mswin_play_immediate_ghsound(struct ghsound_immediate_info info);
 void mswin_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info);

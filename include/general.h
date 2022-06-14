@@ -468,6 +468,7 @@ enum special_view_types
     SPECIAL_VIEW_PANIC,
     SPECIAL_VIEW_DEBUGLOG,
     SPECIAL_VIEW_MESSAGE,
+    SPECIAL_VIEW_YN_DIALOG,
     MAX_SPECIAL_VIEW_TYPES
 };
 
@@ -475,6 +476,7 @@ enum special_view_types
 struct special_view_info {
     enum special_view_types viewtype;
     const char* text;
+    const char* title;
     int param1;
     int param2;
 };

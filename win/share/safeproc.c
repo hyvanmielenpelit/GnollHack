@@ -452,11 +452,11 @@ unsigned int interval;
     return;
 }
 
-void
+int
 safe_open_special_view(info)
 struct special_view_info info;
 {
-    return;
+    return 1;
 }
 
 void

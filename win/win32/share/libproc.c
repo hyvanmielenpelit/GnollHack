@@ -1044,14 +1044,15 @@ void lib_set_animation_timer_interval(unsigned int param)
     return;
 }
 
-void lib_open_special_view(struct special_view_info info)
+int lib_open_special_view(struct special_view_info info)
 {
-    char buf[BUFSIZ];
+    char buf[BUFSIZ], buf2[BUFSIZ];
     if (info.text)
         write_text2buf_utf8(buf, BUFSIZ, info.text);
+    if (info.title)
+        write_text2buf_utf8(buf2, BUFSIZ, info.title);
 
-    lib_callbacks.callback_open_special_view(info.viewtype, info.text ? buf : 0, info.param1, info.param2);
-    return;
+    return lib_callbacks.callback_open_special_view(info.viewtype, info.text ? buf : 0, info.title ? buf2 : 0, info.param1, info.param2);
 }
 
 void lib_stop_all_sounds(struct stop_all_info info)

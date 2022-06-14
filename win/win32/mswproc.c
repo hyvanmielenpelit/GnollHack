@@ -3583,7 +3583,7 @@ mswin_set_animation_timer_interval(unsigned int interval)
 }
 
 
-void
+int
 mswin_open_special_view(struct special_view_info info)
 {
     switch (info.viewtype)
@@ -3594,7 +3594,7 @@ mswin_open_special_view(struct special_view_info info)
     default:
         break;
     }
-    return;
+    return 1;
 }
 
 void

@@ -99,7 +99,7 @@ void dll_status_enablefield(int fieldidx, const char *nm, const char *fmt,
 void dll_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *colormasks);
 void dll_stretch_window(void);
 void dll_set_animation_timer_interval(unsigned int);
-void dll_open_special_view(struct special_view_info info);
+int dll_open_special_view(struct special_view_info info);
 void dll_stop_all_sounds(struct stop_all_info info);
 void dll_play_immediate_ghsound(struct ghsound_immediate_info info);
 void dll_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info);
