@@ -138,6 +138,7 @@ int GnollHackMain(int argc, char** argv)
 //#ifdef MAIL
 //	getmailstatus();
 //#endif
+	display_gamewindows();
 	check_crash();
 	plnamesuffix(); /* strip suffix from name; calls askname() */
 					/* again if suffix was whole name */
@@ -182,7 +183,6 @@ int GnollHackMain(int argc, char** argv)
 	 */
 	vision_init();
 
-	display_gamewindows();
 	issue_gui_command(GUI_CMD_GAME_START);
 
 	if((fd = restore_saved_game()) >= 0)

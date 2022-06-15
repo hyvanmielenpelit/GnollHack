@@ -46,6 +46,7 @@ MAIN(int argc, char **argv)
     u.uhp = 1;                   /* prevent RIP on early quits */
     process_options(argc, argv); /* command line options */
 
+    display_gamewindows();
     set_playmode(); /* sets plname to "wizard" for wizard mode */
     /* strip role,race,&c suffix; calls askname() if plname[] is empty
        or holds a generic user name like "player" or "games" */
@@ -65,8 +66,6 @@ MAIN(int argc, char **argv)
      * new game or before a level restore on a saved game.
      */
     vision_init();
-
-    display_gamewindows();
 
     /*
      * First, try to find and restore a save file for specified character.
