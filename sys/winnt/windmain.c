@@ -329,6 +329,8 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     if (WINDOWPORT("tty"))
         toggle_mouse_support();
 
+    display_gamewindows();
+
     /* strip role,race,&c suffix; calls askname() if plname[] is empty
        or holds a generic user name like "player" or "games" */
 
@@ -369,7 +371,6 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
      *  new game or before a level restore on a saved game.
      */
     vision_init();
-    display_gamewindows();
 
     /*
      * First, try to find and restore a save file for specified character.
