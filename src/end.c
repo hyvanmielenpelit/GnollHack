@@ -2743,7 +2743,7 @@ get_current_game_score()
     long Small_Achievements_Score = (long)(u.uachieve.consulted_oracle + u.uachieve.read_discworld_novel
         + u.uachieve.entered_gnomish_mines + u.uachieve.entered_mine_town + u.uachieve.entered_shop + u.uachieve.entered_temple
         + u.uachieve.entered_sokoban + u.uachieve.entered_bigroom + u.uachieve.learned_castle_tune 
-        + u.uachieve.entered_large_circular_dungeon
+        + u.uachieve.entered_large_circular_dungeon + u.uachieve.entered_plane_of_modron + u.uachieve.entered_hellish_pastures
         );
 
     int ngenocided = num_genocides();

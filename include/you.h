@@ -139,6 +139,8 @@ struct u_achieve {
     Bitfield(entered_bigroom, 1);
     Bitfield(learned_castle_tune, 1);
     Bitfield(entered_large_circular_dungeon, 1);
+    Bitfield(entered_plane_of_modron, 1);
+    Bitfield(entered_hellish_pastures, 1);
 };
 
 struct u_realtime {

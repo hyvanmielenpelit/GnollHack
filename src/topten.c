@@ -506,6 +506,10 @@ encodeachieve()
         r |= 1L << 22;
     if (u.uachieve.entered_large_circular_dungeon)
         r |= 1L << 23;
+    if (u.uachieve.entered_plane_of_modron)
+        r |= 1L << 24;
+    if (u.uachieve.entered_hellish_pastures)
+        r |= 1L << 25;
 
     return r;
 }
@@ -559,6 +563,8 @@ encode_extended_achievements()
     add_achieveX(buf, "entered_bigroom", u.uachieve.entered_bigroom);
     add_achieveX(buf, "learned_castle_drawbridge_tune", u.uachieve.learned_castle_tune);
     add_achieveX(buf, "entered_large_circular_dungeon", u.uachieve.entered_large_circular_dungeon);
+    add_achieveX(buf, "entered_plane_of_modron", u.uachieve.entered_plane_of_modron);
+    add_achieveX(buf, "entered_hellish_pastures", u.uachieve.entered_hellish_pastures);
 
     return buf;
 }

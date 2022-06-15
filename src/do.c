@@ -6380,17 +6380,20 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         u.uevent.gehennom_entered = 1;
     
     if (In_modron_level(&u.uz))
+    {
         u.uevent.modron_plane_entered = 1;
+        u.uachieve.entered_plane_of_modron = 1;
+    }
     
     if (In_bovine_level(&u.uz))
+    {
         u.uevent.hellish_pastures_entered = 1;
+        u.uachieve.entered_hellish_pastures = 1;
+    }
 
     if (In_large_circular_dgn_level(&u.uz))
     {
         u.uevent.large_circular_dgn_entered = 1;
-
-        //if (!u.uachieve.entered_large_circular_dungeon)
-        //    achievement_gained("Entered Large Circular Dungeon");
         u.uachieve.entered_large_circular_dungeon = 1;
     }
 

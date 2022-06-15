@@ -1740,20 +1740,24 @@ struct save_game_data* saved;
 
         for (k = 0; saved[k].playername; ++k)
         {
-            char namebuf[BUFSZ], characterbuf[BUFSZ], alignbuf[BUFSZ], racebuf[BUFSZ], genderrolebuf[BUFSZ], tmpbuf[BUFSZ], timebuf[BUFSZ] = "";
+            char namebuf[BUFSZ], characterbuf[BUFSZ], alignbuf[BUFSZ], genderwithspacebuf[BUFSZ], racebuf[BUFSZ], rolebuf[BUFSZ], tmpbuf[BUFSZ], timebuf[BUFSZ] = "";
             strcpy_capitalized_for_title(alignbuf, aligns[1 - saved[k].gamestats.alignment].adj);
             strcpy_capitalized_for_title(racebuf, races[saved[k].gamestats.racenum].adj);
             if (roles[saved[k].gamestats.rolenum].name.f)
             {
+                strcpy(genderwithspacebuf, "");
                 if (saved[k].gamestats.gender)
-                    strcpy_capitalized_for_title(genderrolebuf, roles[saved[k].gamestats.rolenum].name.f);
+                {
+                    strcpy_capitalized_for_title(rolebuf, roles[saved[k].gamestats.rolenum].name.f);
+                }
                 else
-                    strcpy_capitalized_for_title(genderrolebuf, roles[saved[k].gamestats.rolenum].name.m);
+                    strcpy_capitalized_for_title(rolebuf, roles[saved[k].gamestats.rolenum].name.m);
             }
             else
             {
-                Sprintf(tmpbuf, "%s %s", genders[saved[k].gamestats.gender].adj, roles[saved[k].gamestats.rolenum].name.m);
-                strcpy_capitalized_for_title(genderrolebuf, tmpbuf);
+                Sprintf(tmpbuf, "%s ", genders[saved[k].gamestats.gender].adj);
+                strcpy_capitalized_for_title(genderwithspacebuf, tmpbuf);
+                strcpy_capitalized_for_title(rolebuf, roles[saved[k].gamestats.rolenum].name.m);
             }
 
             char adventuringbuf[BUFSZ], lvlbuf[BUFSZ], dgnbuf[BUFSZ], totallevelbuf[BUFSZ] = "";
@@ -1791,7 +1795,7 @@ struct save_game_data* saved;
     #endif
 
             Sprintf(namebuf, "%s", saved[k].playername);
-            Sprintf(characterbuf, "%sLevel %d %s %s %s", prefix, saved[k].gamestats.ulevel, alignbuf, racebuf, genderrolebuf);
+            Sprintf(characterbuf, "%sLevel %d %s %s%s %s", prefix, saved[k].gamestats.ulevel, alignbuf, genderwithspacebuf, racebuf, rolebuf);
             Sprintf(adventuringbuf, "%sAdventuring on %s%s%s", prefix, lvlbuf, dgnbuf, totallevelbuf);
             Sprintf(playingbuf, "%sPlaying at %s difficulty in %s mode for %ld turns", prefix, get_game_difficulty_text(saved[k].gamestats.game_difficulty),
                 get_game_mode_text_core(saved[k].gamestats.debug_mode, saved[k].gamestats.explore_mode, saved[k].gamestats.modern_mode, saved[k].gamestats.casual_mode, TRUE),
