@@ -1496,13 +1496,14 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
         {
             /* for tty; erase copyright notice and redo it in the menu */
             clear_nhwindow(bannerwin);
-            /* COPYRIGHT_BANNER_[ABCD] */
-            for (k = 1; k <= 4; ++k)
-                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
-                    copyright_banner_line(k), MENU_UNSELECTED);
-            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
-                MENU_UNSELECTED);
         }
+
+        /* COPYRIGHT_BANNER_[ABCD] */
+        for (k = 1; k <= 4; ++k)
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                copyright_banner_line(k), MENU_UNSELECTED);
+        add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
+            MENU_UNSELECTED);
 
         any.a_int = -1;
         add_menu(tmpwin, NO_GLYPH, &any, 'n', 0, ATR_HEADING, "New Game",
@@ -1916,7 +1917,7 @@ struct save_game_data* saved;
             if (bannerwin != WIN_ERR)
                 clear_nhwindow(bannerwin);
             char qbuf[BUFSZ], tbuf[BUFSZ];
-            Sprintf(qbuf, "The saved game under the name \'%s\' is about to be deleted! Proceed?", plname);
+            Sprintf(qbuf, "Are you sure to delete the saved game for \'%s\'?", plname);
             Strcpy(tbuf, "Delete Saved Game?");
             //char ans = yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_RED, tbuf, qbuf, ynchars, 'n', yndescs);
             struct special_view_info info = { 0 };
@@ -1940,18 +1941,19 @@ struct save_game_data* saved;
 
         destroy_nhwindow(tmpwin);
 
-        if (bannerwin != WIN_ERR)
-        {
-            /* for tty; clear the menu away and put subset of copyright back
-             */
-            clear_nhwindow(bannerwin);
-            /* COPYRIGHT_BANNER_A, preceding "Who are you?" prompt */
-            int i;
-            for (i = 1; i <= 4; ++i)
-                putstr(bannerwin, 0, copyright_banner_line(i));
-            putstr(bannerwin, 0, "");
-        }
     } while (repeat);
+
+    if (bannerwin != WIN_ERR)
+    {
+        /* for tty; clear the menu away and put subset of copyright back
+         */
+        clear_nhwindow(bannerwin);
+        /* COPYRIGHT_BANNER_A, preceding "Who are you?" prompt */
+        int i;
+        for (i = 1; i <= 4; ++i)
+            putstr(bannerwin, 0, copyright_banner_line(i));
+        putstr(bannerwin, 0, "");
+    }
     return ch;
 }
 

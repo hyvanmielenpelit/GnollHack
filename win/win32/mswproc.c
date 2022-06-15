@@ -83,8 +83,6 @@ COLORREF message_fg_color = RGB(0xFF, 0xFF, 0xFF);
 
 strbuf_t raw_print_strbuf = { 0 };
 
-winid BASE_WINDOW;
-
 
 /* Interface definition, for windows.c */
 struct window_procs mswin_procs = {
@@ -190,7 +188,6 @@ mswin_init_nhwindows(int *argc, char **argv)
 
     /* set it to WIN_ERR so we can detect attempts to
        use this ID before it is inialized */
-    BASE_WINDOW = mswin_create_nhwindow_ex(NHW_BASE, 0, NO_GLYPH, zerocreatewindowinfo);
     WIN_MAP = WIN_ERR;
 
     /* Read Windows settings from the reqistry */
@@ -786,7 +783,7 @@ mswin_askname(void)
 
 #ifdef SELECTSAVED
     if (iflags.wc2_selectsaved && !iflags.renameinprogress)
-        switch (restore_menu(BASE_WINDOW)) {
+        switch (restore_menu(WIN_ERR)) {
         case -1:
             bail("Until next time then..."); /* quit */
             /*NOTREACHED*/
@@ -3592,7 +3589,7 @@ mswin_open_special_view(struct special_view_info info)
         genl_chat_message();
         break;
     case SPECIAL_VIEW_YN_DIALOG:
-        return 'y';
+        return mswin_yn_function_ex(YN_STYLE_GENERAL, info.attr, info.color, NO_GLYPH, info.title, info.text, "yn", 'n', "Yes\nNo", 0UL);
     default:
         break;
     }

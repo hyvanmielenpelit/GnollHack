@@ -140,7 +140,7 @@ struct window_procs tty_procs = {
     genl_can_suspend_yes,
     genl_stretch_window,
     genl_set_animation_timer_interval,
-    genl_open_special_view,
+    tty_open_special_view,
     genl_stop_all_sounds,
     genl_play_immediate_ghsound,
     genl_play_ghsound_occupation_ambient,
@@ -3826,6 +3826,24 @@ int *x, *y, *mod;
 #endif /* ?WIN32CON */
     return i;
 }
+
+int
+tty_open_special_view(info)
+struct special_view_info info;
+{
+    switch (info.viewtype)
+    {
+    case SPECIAL_VIEW_CHAT_MESSAGE:
+        genl_chat_message();
+        break;
+    case SPECIAL_VIEW_YN_DIALOG:
+        return tty_yn_function_ex(YN_STYLE_GENERAL, info.attr, info.color, NO_GLYPH, info.title, info.text, "yn", 'n', "Yes\nNo", 0UL);
+    default:
+        break;
+    }
+    return 0;
+}
+
 
 void
 win_tty_init(dir)
