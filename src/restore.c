@@ -1498,12 +1498,14 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
             clear_nhwindow(bannerwin);
         }
 
+#ifndef GNH_MOBILE
         /* COPYRIGHT_BANNER_[ABCD] */
         for (k = 1; k <= 4; ++k)
             add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
                 copyright_banner_line(k), MENU_UNSELECTED);
         add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
             MENU_UNSELECTED);
+#endif
 
         any.a_int = -1;
         add_menu(tmpwin, NO_GLYPH, &any, 'n', 0, ATR_HEADING, "New Game",
