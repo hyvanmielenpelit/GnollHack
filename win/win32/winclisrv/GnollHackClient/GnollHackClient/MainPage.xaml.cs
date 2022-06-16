@@ -222,10 +222,21 @@ namespace GnollHackClient
             App.InitTypefaces(assembly);
             App.InitBitmaps(assembly);
 
-            string verstr = App.GnollHackService.GetVersionString();
-            string verid = App.GnollHackService.GetVersionId();
-            string path = App.GnollHackService.GetGnollHackPath();
-            string fmodverstr = App.FmodService.GetVersionString();
+            string verstr = "?";
+            string verid = "?";
+            string path = ".";
+            string fmodverstr = "?";
+            try
+            {
+                verstr = App.GnollHackService.GetVersionString();
+                verid = App.GnollHackService.GetVersionId();
+                path = App.GnollHackService.GetGnollHackPath();
+                fmodverstr = App.FmodService.GetVersionString();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
             App.GHVersionString = verstr;
             App.GHVersionId = verid;
             App.GHPath = path;
@@ -242,15 +253,22 @@ namespace GnollHackClient
             }
             Preferences.Set("VersionId", verid);
 
-            StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            topScoreImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            optionsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
-            StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
+            try
+            {
+                StartLocalGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                StartServerGameImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                clearImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                topScoreImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                optionsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                settingsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                creditsImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
+                StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
 
             await TryGetFilesFromResources();
             await DownloadAndCheckFiles();

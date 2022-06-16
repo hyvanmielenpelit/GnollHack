@@ -261,9 +261,9 @@ namespace GnollHackClient
                         App.DiabloTypeface = SKTypeface.FromStream(stream);
                         App.TypefaceDictionary.Add("Diablo", App.DiabloTypeface);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        //E.g., if typeface already exists in the dictionary
+                        Debug.WriteLine(ex.Message);    
                     }
                 }
             }
@@ -276,9 +276,9 @@ namespace GnollHackClient
                         App.UnderwoodTypeface = SKTypeface.FromStream(stream);
                         App.TypefaceDictionary.Add("Underwood", App.UnderwoodTypeface);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        //E.g., if typeface already exists in the dictionary
+                        Debug.WriteLine(ex.Message);
                     }
                 }
             }
@@ -292,9 +292,9 @@ namespace GnollHackClient
                         App.EndorTypeface = SKTypeface.FromStream(stream);
                         App.TypefaceDictionary.Add("Endor", App.EndorTypeface);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        //E.g., if typeface already exists in the dictionary
+                        Debug.WriteLine(ex.Message);
                     }
                 }
             }
@@ -307,9 +307,9 @@ namespace GnollHackClient
                         App.ImmortalTypeface = SKTypeface.FromStream(stream);
                         App.TypefaceDictionary.Add("Immortal", App.ImmortalTypeface);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        //E.g., if typeface already exists in the dictionary
+                        Debug.WriteLine(ex.Message);
                     }
                 }
             }
@@ -322,9 +322,9 @@ namespace GnollHackClient
                         App.XizorTypeface = SKTypeface.FromStream(stream);
                         App.TypefaceDictionary.Add("Xizor", App.XizorTypeface);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        //E.g., if typeface already exists in the dictionary
+                        Debug.WriteLine(ex.Message);
                     }
                 }
             }
@@ -337,9 +337,9 @@ namespace GnollHackClient
                         App.DejaVuSansMonoTypeface = SKTypeface.FromStream(stream);
                         App.TypefaceDictionary.Add("DejaVuSansMono", App.DejaVuSansMonoTypeface);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        //E.g., if typeface already exists in the dictionary
+                        Debug.WriteLine(ex.Message);
                     }
                 }
             }
@@ -352,9 +352,9 @@ namespace GnollHackClient
                         App.DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
                         App.TypefaceDictionary.Add("DejaVuSansMono-Bold", App.DejaVuSansMonoBoldTypeface);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        //E.g., if typeface already exists in the dictionary
+                        Debug.WriteLine(ex.Message);
                     }
                 }
             }
@@ -367,9 +367,9 @@ namespace GnollHackClient
                         App.LatoRegular = SKTypeface.FromStream(stream);
                         App.TypefaceDictionary.Add("Lato-Regular", App.LatoRegular);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        //E.g., if typeface already exists in the dictionary
+                        Debug.WriteLine(ex.Message);
                     }
                 }
             }
@@ -382,9 +382,9 @@ namespace GnollHackClient
                         App.LatoBold = SKTypeface.FromStream(stream);
                         App.TypefaceDictionary.Add("Lato-Bold", App.LatoBold);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        //E.g., if typeface already exists in the dictionary
+                        Debug.WriteLine(ex.Message);
                     }
                 }
             }
@@ -397,9 +397,9 @@ namespace GnollHackClient
                         App.ARChristyTypeface = SKTypeface.FromStream(stream);
                         App.TypefaceDictionary.Add("ARChristy", App.ARChristyTypeface);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        //E.g., if typeface already exists in the dictionary
+                        Debug.WriteLine(ex.Message);
                     }
                 }
             }
@@ -418,39 +418,45 @@ namespace GnollHackClient
 
         public static void InitBitmaps(Assembly assembly)
         {
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.menubackground.png"))
+            try
             {
-                MenuBackgroundBitmap = SKBitmap.Decode(stream);
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.menubackground.png"))
+                {
+                    MenuBackgroundBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.background-oldpaper.png"))
+                {
+                    OldPaperBackgroundBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.frame-topleft.png"))
+                {
+                    SimpleFrameTopLeftCornerBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.frame-topleft-small.png"))
+                {
+                    SimpleFrameSmallTopLeftCornerBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.frame-horizontal.png"))
+                {
+                    SimpleFrameTopHorizontalBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.frame-vertical.png"))
+                {
+                    SimpleFrameLeftVerticalBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.scroll.png"))
+                {
+                    ScrollBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.you.png"))
+                {
+                    YouBitmap = SKBitmap.Decode(stream);
+                }
             }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.background-oldpaper.png"))
+            catch (Exception ex)
             {
-                OldPaperBackgroundBitmap = SKBitmap.Decode(stream);
+                Debug.WriteLine(ex.Message);
             }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.frame-topleft.png"))
-            {
-                SimpleFrameTopLeftCornerBitmap = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.frame-topleft-small.png"))
-            {
-                SimpleFrameSmallTopLeftCornerBitmap = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.frame-horizontal.png"))
-            {
-                SimpleFrameTopHorizontalBitmap = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.frame-vertical.png"))
-            {
-                SimpleFrameLeftVerticalBitmap = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.scroll.png"))
-            {
-                ScrollBitmap = SKBitmap.Decode(stream);
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.you.png"))
-            {
-                YouBitmap = SKBitmap.Decode(stream);
-            }
-
         }
 
         public static object ProfilingStopwatchLock = new object();
