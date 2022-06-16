@@ -498,6 +498,18 @@ namespace GnollHackClient
             return res;
         }
 
+        public static bool StyleClosesMenuUponDestroy(ghmenu_styles style)
+        {
+            switch (style)
+            {
+                default:
+                case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                    return false; /* Closes already upon pressing OK / Cancel before destroy */
+                case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
+                    return true;
+            }
+        }
+
         public static void ProcessAdjustedItems(List<GHPutStrItem> adjusted_list, List<GHPutStrItem> normal_list)
         {
             adjusted_list.Clear();

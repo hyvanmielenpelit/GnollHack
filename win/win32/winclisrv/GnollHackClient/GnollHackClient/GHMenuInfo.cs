@@ -32,20 +32,9 @@ namespace GnollHackClient
         {
             get
             {
-                return StyleClosesMenuUponDestroy(Style);
+                return ClientUtils.StyleClosesMenuUponDestroy(Style);
             }
         }
 
-        public static bool StyleClosesMenuUponDestroy(ghmenu_styles style)
-        {
-            switch (style)
-            {
-                default:
-                case ghmenu_styles.GHMENU_STYLE_GENERAL:
-                    return false;
-                case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
-                    return true;
-            }
-        }
     }
 }

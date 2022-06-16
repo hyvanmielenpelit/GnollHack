@@ -9004,7 +9004,7 @@ namespace GnollHackClient.Pages.Game
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist));
             }
 
-            if(!GHMenuInfo.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
+            if(!ClientUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
                 DelayedMenuHide();
         }
 
@@ -9025,7 +9025,7 @@ namespace GnollHackClient.Pages.Game
                 queue.Enqueue(new GHResponse(_clientGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>()));
             }
 
-            if (!GHMenuInfo.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
+            if (!ClientUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
                 DelayedMenuHide();
         }
 

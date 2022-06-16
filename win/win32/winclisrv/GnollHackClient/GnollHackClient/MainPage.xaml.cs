@@ -138,7 +138,7 @@ namespace GnollHackClient
                 //_sponsorAnimation.Commit(SponsorButton, "Animation", 16, 4000, Easing.Linear, (v, c) => BackgroundColor = Color.Default);
             }
         }
-        public void InitializeServices()
+        public async Task InitializeServices()
         {
             bool resetFiles = Preferences.Get("ResetAtStart", true);
             if (resetFiles)
@@ -148,24 +148,75 @@ namespace GnollHackClient
                 Preferences.Set("ResetExternalFiles", true);
             }
             App.ResetAcquiredFiles();
-            App.GnollHackService.InitializeGnollHack(App.CurrentSecrets);
-            App.FmodService.InitializeFmod();
 
-            //App.AddLogLine("Attempting to load FMOD banks.");
-            //try
-            //{
-            //    _fmodService.LoadBanks();
-            //}
-            //catch(Exception ex)
-            //{
-            //    Debug.WriteLine("Loading FMOD banks failed: " + ex.Message);
-            //}
+            await TryInitializeGnollHack();
+            await TryInitializeFMOD();
+
         }
 
+        public async Task TryInitializeGnollHack()
+        {
+            try
+            {
+                App.GnollHackService.InitializeGnollHack(App.CurrentSecrets);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("GnollHack Initialization Failed", "Initializing GnollHack failed: " + ex.Message, "OK");
+            }
+        }
+
+        public async Task TryInitializeFMOD()
+        {
+            try
+            {
+                App.FmodService.InitializeFmod();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("FMOD Initialization Failed", "Initializing FMOD failed: " + ex.Message, "OK");
+            }
+        }
+
+        public async Task TryGetFilesFromResources()
+        {
+            try
+            {
+                GetFilesFromResources();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("File Unpacking Failure", "GnollHack failed to unpack core files: " + ex.Message, "OK");
+            }
+        }
+
+        public async Task TryClearCoreFiles()
+        {
+            try
+            {
+                App.GnollHackService.ClearCoreFiles();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("File Clearing Failure", "GnollHack failed to clear core files: " + ex.Message, "OK");
+            }
+        }
+
+        public async Task TryLoadBanks()
+        {
+            try
+            {
+                App.FmodService.LoadBanks();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Loading FMOD Banks Failed", "GnollHack failed to load FMOD banks: " + ex.Message, "OK");
+            }
+        }
 
         private async Task StartUpTasks()
         {
-            InitializeServices();
+            await InitializeServices();
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             App.InitTypefaces(assembly);
@@ -181,13 +232,13 @@ namespace GnollHackClient
             App.FMODVersionString = fmodverstr;
 
             VersionLabel.Text = verid;
-            GnollHackLabel.Text = "GnollHack"; // + verstr;
+            GnollHackLabel.Text = "GnollHack";
 
             string prev_version = Preferences.Get("VersionId", "");
             if(prev_version != verid)
             {
-                App.GnollHackService.ClearCoreFiles();
-                App.GnollHackService.InitializeGnollHack(App.CurrentSecrets);
+                await TryClearCoreFiles();
+                await TryInitializeGnollHack();
             }
             Preferences.Set("VersionId", verid);
 
@@ -201,19 +252,12 @@ namespace GnollHackClient
             exitImage.Source = ImageSource.FromResource("GnollHackClient.Assets.button_normal.png", assembly);
             StillImage.Source = ImageSource.FromResource("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", assembly);
 
-            GetFilesFromResources();
+            await TryGetFilesFromResources();
             await DownloadAndCheckFiles();
 
             if (App.LoadBanks)
             {
-                try
-                {
-                    App.FmodService.LoadBanks();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("Loading FMOD banks failed: " + ex.Message);
-                }
+                await TryLoadBanks();
             }
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
@@ -229,9 +273,9 @@ namespace GnollHackClient
                 if (App.LoadBanks)
                     App.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine(ex.Message);
             }
         }
 
