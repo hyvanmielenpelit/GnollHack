@@ -90,7 +90,7 @@ struct window_procs curses_procs = {
     genl_can_suspend_yes,
     genl_stretch_window,
     genl_set_animation_timer_interval,
-    genl_open_special_view,
+    curses_open_special_view,
     genl_stop_all_sounds,
     genl_play_immediate_ghsound,
     genl_play_ghsound_occupation_ambient,
@@ -1009,5 +1009,22 @@ curs_reset_windows(boolean redo_main, boolean redo_status)
         doredraw();
     }
 }
+
+int
+curses_open_special_view(struct special_view_info info)
+{
+    switch (info.viewtype)
+    {
+    case SPECIAL_VIEW_CHAT_MESSAGE:
+        genl_chat_message();
+        break;
+    case SPECIAL_VIEW_YN_DIALOG:
+        return curses_yn_function_ex(YN_STYLE_GENERAL, info.attr, info.color, NO_GLYPH, info.title, info.text, "yn", 'n', "Yes\nNo", 0UL);
+    default:
+        break;
+    }
+    return 0;
+}
+
 
 /*cursmain.c*/
