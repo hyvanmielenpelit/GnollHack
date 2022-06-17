@@ -1660,7 +1660,7 @@ struct save_game_data* saved;
                 Sprintf(lvlbuf, "level %d of ", saved[k].gamestats.dlevel);
 
             if (!has_lvl_name && saved[k].gamestats.depth != (schar)saved[k].gamestats.dlevel)
-                Sprintf(totallevelbuf, ", being dungeon level %d", saved[k].gamestats.depth);
+                Sprintf(totallevelbuf, ", which is dungeon level %d", saved[k].gamestats.depth);
 
             char playingbuf[BUFSZ], savedbuf[BUFSZ];
     #if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS)
