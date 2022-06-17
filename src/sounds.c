@@ -3413,7 +3413,8 @@ dochat()
             }
 
         }
-        else if (is_peaceful(mtmp) && is_priest(mtmp->data) && msound != MS_ORACLE)
+        else if (is_peaceful(mtmp) && is_priest(mtmp->data) && msound != MS_ORACLE 
+            && msound != MS_LEADER && msound != MS_GUARDIAN)
         {
             /* Non-priest monster priests here */
             strcpy(available_chat_list[chatnum].name, "Healing");
