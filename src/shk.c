@@ -2736,13 +2736,14 @@ const char *arg;
      * scrolls/books (that is, blank and mail), but only if the
      * object is within the shk's area of interest/expertise.
      */
-    if (!objects[obj->otyp].oc_magic && saleable(shkp, obj)
-        && (obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS
-            || obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS
-            )) {  // Took Mirror out since there is also a magic mirror now || obj->otyp == MIRROR
-        was_unknown |= !objects[obj->otyp].oc_name_known;
-        makeknown(obj->otyp);
-    }
+    // Deactivated --JG
+    //if (!objects[obj->otyp].oc_magic && saleable(shkp, obj)
+    //    && (obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS
+    //        || obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS
+    //        )) {  // Took Mirror out since there is also a magic mirror now || obj->otyp == MIRROR
+    //    was_unknown |= !objects[obj->otyp].oc_name_known;
+    //    makeknown(obj->otyp);
+    //}
     obj_name = doname(obj);
     /* Use an alternate message when extra information is being provided */
     if (was_unknown) {

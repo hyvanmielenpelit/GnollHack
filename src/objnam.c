@@ -3480,7 +3480,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "shoes", ARMOR_CLASS, LOW_BOOTS, IRON_SHOES },
     { "cloak", ARMOR_CLASS, ELVEN_CLOAK, CLOAK_OF_DISPLACEMENT },
     { "shirt", ARMOR_CLASS, HAWAIIAN_SHIRT, T_SHIRT },
-    { "robe", ARMOR_CLASS, ROBE, MUMMY_WRAPPING },
+    { "robe", ARMOR_CLASS, WOVEN_ROBE, MUMMY_WRAPPING },
     { "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_OF_REFLECTION },
     { "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES, YELLOW_DRAGON_SCALES },
     { "dragon scale mail", ARMOR_CLASS, GRAY_DRAGON_SCALE_MAIL, YELLOW_DRAGON_SCALE_MAIL },
@@ -5463,7 +5463,7 @@ struct obj* robe;
 {
     if (robe) {
         switch (robe->otyp) {
-        case ROBE: //special types here
+        case WOVEN_ROBE: //special types here
             return "robe";
         case MUMMY_WRAPPING:
             return "wrapping";

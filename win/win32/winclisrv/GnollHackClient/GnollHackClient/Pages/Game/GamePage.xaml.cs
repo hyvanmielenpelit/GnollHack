@@ -3831,7 +3831,7 @@ namespace GnollHackClient.Pages.Game
                                                                                     double r = 0, semi_transparency = 0;
                                                                                     byte radial_opacity = 0x00;
                                                                                     //double r_constant_adjustement = Math.Sin((double)maincountervalue / (3.0 * 2.0 * Math.PI));
-                                                                                    //double r_constant = 0.025 + r_constant_adjustement * 0.015;
+                                                                                    //double r_constant = 0.0375 + r_constant_adjustement * 0.015;
                                                                                     int bytesperpixel = TileMap[sheet_idx].BytesPerPixel;
                                                                                     int copywidth = Math.Min((int)sourcerect.Width, _tempBitmap.Width);
                                                                                     int copyheight = Math.Min((int)sourcerect.Height, _tempBitmap.Height);

@@ -1351,7 +1351,7 @@ CLOAK("cloak of displacement", "piece of cloth",
 
 /* robes and gowns */
 /* with shuffled appearances... */
-ROBE("robe", "old robe", //STARTMARKER 1 & 2
+ROBE("woven robe", "old robe", //STARTMARKER 1 & 2
     0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 10, 1, 20,  25,  10, 5, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_RED, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 ROBE("robe of protection", "golden ornamental robe",
     0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_GENERAL_ARMOR, 10, 1, 25, 400,  4, 8, 0, 0, 0, 0, 0, MAT_CLOTH, HI_GOLD, 0, OBJECT_SOUNDSET_GENERIC, O1_ENCHANTMENT_AFFECTS_MC, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
