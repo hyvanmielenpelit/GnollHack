@@ -292,11 +292,6 @@ namespace GnollHackClient
                 wr = Math.Min(adjWidthConstraint, WidthRequest);
                 hr = Math.Min(adjHeightConstraint, HeightRequest);
             }
-            //else if(HorizontalOptions.Alignment == LayoutAlignment.Fill && VerticalOptions.Alignment == LayoutAlignment.Fill)
-            //{
-            //    wr = Math.Min(widthConstraint, App.DisplayWidth);
-            //    hr = Math.Min(adjHeightConstraint, App.DisplayHeight);
-            //}
             else
             {
                 float scale = App.DisplayScale;
@@ -305,15 +300,11 @@ namespace GnollHackClient
                 TextAreaSize textAreaSize = CalculateTextAreaSize(scaledwidthconstraint);
                 if (WidthRequest > 0)
                     wr = Math.Min(adjWidthConstraint, WidthRequest);
-                //else if (HorizontalOptions.Alignment == LayoutAlignment.Fill)
-                //    wr = Math.Min(adjWidthConstraint, App.DisplayWidth);
                 else
                     wr = Math.Min(adjWidthConstraint, (double)(textAreaSize.Width / scale));
 
                 if (HeightRequest > 0)
                     hr = HeightRequest; // Math.Min(adjHeightConstraint, HeightRequest);
-                //else if (VerticalOptions.Alignment == LayoutAlignment.Fill)
-                //    hr = Math.Min(adjHeightConstraint, App.DisplayHeight);
                 else
                     hr = (double)(textAreaSize.Height / scale); // Math.Min(adjHeightConstraint, (double)(textAreaSize.Height / scale));
             }
