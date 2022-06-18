@@ -142,6 +142,7 @@ namespace GnollHackClient
         private void UpdateLabel()
         {
             InvalidateSurface();
+            InvalidateMeasure();
         }
 
         float CalculateTextPartWidth(string textPart, SKPaint textPaint)
@@ -279,36 +280,42 @@ namespace GnollHackClient
 
         private SizeRequest CalculateLabelSize(double widthConstraint, double heightConstraint)
         {
+            double usedMaximumValue = 1000000.0;
+            double adjWidthConstraint = double.IsInfinity(widthConstraint) ?
+               usedMaximumValue : widthConstraint;
+            double adjHeightConstraint = double.IsInfinity(heightConstraint) ?
+               usedMaximumValue : heightConstraint;
+
             double wr = 0, hr = 0;
             if (WidthRequest > 0 && HeightRequest > 0)
             {
-                wr = Math.Min(widthConstraint, WidthRequest);
-                hr = Math.Min(heightConstraint, HeightRequest);
+                wr = Math.Min(adjWidthConstraint, WidthRequest);
+                hr = Math.Min(adjHeightConstraint, HeightRequest);
             }
             //else if(HorizontalOptions.Alignment == LayoutAlignment.Fill && VerticalOptions.Alignment == LayoutAlignment.Fill)
             //{
             //    wr = Math.Min(widthConstraint, App.DisplayWidth);
-            //    hr = Math.Min(heightConstraint, App.DisplayHeight);
+            //    hr = Math.Min(adjHeightConstraint, App.DisplayHeight);
             //}
             else
             {
                 float scale = App.DisplayScale;
-                float scaledwidthconstraint = scale * (float)(WidthRequest > 0 ? Math.Min(widthConstraint, WidthRequest) : widthConstraint);
+                float scaledwidthconstraint = scale * (float)(WidthRequest > 0 ? Math.Min(adjWidthConstraint, WidthRequest) : adjWidthConstraint);
 
                 TextAreaSize textAreaSize = CalculateTextAreaSize(scaledwidthconstraint);
                 if (WidthRequest > 0)
-                    wr = Math.Min(widthConstraint, WidthRequest);
+                    wr = Math.Min(adjWidthConstraint, WidthRequest);
                 //else if (HorizontalOptions.Alignment == LayoutAlignment.Fill)
-                //    wr = Math.Min(widthConstraint, App.DisplayWidth);
+                //    wr = Math.Min(adjWidthConstraint, App.DisplayWidth);
                 else
-                    wr = Math.Min(widthConstraint, (double)(textAreaSize.Width / scale));
+                    wr = Math.Min(adjWidthConstraint, (double)(textAreaSize.Width / scale));
 
                 if (HeightRequest > 0)
-                    hr = Math.Min(heightConstraint, HeightRequest);
+                    hr = HeightRequest; // Math.Min(adjHeightConstraint, HeightRequest);
                 //else if (VerticalOptions.Alignment == LayoutAlignment.Fill)
-                //    hr = Math.Min(heightConstraint, App.DisplayHeight);
+                //    hr = Math.Min(adjHeightConstraint, App.DisplayHeight);
                 else
-                    hr = Math.Min(heightConstraint, (double)(textAreaSize.Height / scale));
+                    hr = (double)(textAreaSize.Height / scale); // Math.Min(adjHeightConstraint, (double)(textAreaSize.Height / scale));
             }
             return new SizeRequest(new Size(wr, hr));
         }
@@ -360,7 +367,8 @@ namespace GnollHackClient
             SKCanvas canvas = surface.Canvas;
             float canvaswidth = this.CanvasSize.Width;
             float canvasheight = this.CanvasSize.Height;
-            float scale = this.Width == 0 ? 1.0f : canvaswidth / (float)this.Width;
+            float scale = App.DisplayScale;
+            float scale2 = this.Width == 0 ? 1.0f : canvaswidth / (float)this.Width;
 
             canvas.Clear();
 

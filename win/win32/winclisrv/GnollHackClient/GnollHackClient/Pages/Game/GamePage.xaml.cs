@@ -2144,7 +2144,7 @@ namespace GnollHackClient.Pages.Game
                 MenuSubtitleLabel.UseSpecialSymbols = ClientUtils.MenuSubtitleUsesSpecialSymbols(menuinfo.Style);
                 MenuSubtitleLabel.WordWrapSeparator = ClientUtils.MenuSubtitleWordWrapSeparator(menuinfo.Style);
             }
-
+            
             ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
             if (menuinfo != null)
             {
