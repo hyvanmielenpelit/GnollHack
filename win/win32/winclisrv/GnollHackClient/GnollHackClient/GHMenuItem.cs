@@ -41,7 +41,7 @@ namespace GnollHackClient
         public string LabelString { get { return (MaxCount <= 0 ? "N/A" : Count == -1 ? "All" : Count.ToString()); } }
         public int ConvertedCount { get { return (Count + 1); } set { Count = value - 1; } }
         public bool IsSwipeVisible { get { return (Count != 0 && MaxCount > 1); } }
-        public float MinimumTouchableItemHeight { get { return GHConstants.MenuDefaultRowHeight; } }
+        public float MinimumTouchableTextSize { get { return GHConstants.MenuDefaultRowHeight; } }
         public string EntryString { get; set; }
         public Color EntryTextColor { get; set; }
         public int MaxCount { get; set; }
@@ -652,6 +652,27 @@ namespace GnollHackClient
                 }
                 return res;
             }
+        }
+
+        public float MinimumRowHeight(float fontspacing, float bottompadding, float toppadding, float canvaswidth, float canvasheight)
+        {
+            float res = 0;
+
+            if (UsesMinRowHeight)
+            {
+                res = fontspacing;
+                switch (_menuInfo.Style)
+                {
+                    case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                            float altsize = Math.Min((float)GHConstants.TileHeight, (Math.Min(canvaswidth, canvasheight) / 15.25f - bottompadding - toppadding));
+                            if(altsize > fontspacing)
+                                res = altsize;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return res;
         }
     }
 }

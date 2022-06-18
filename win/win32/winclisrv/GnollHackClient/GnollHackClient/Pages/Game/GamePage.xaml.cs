@@ -8314,11 +8314,16 @@ namespace GnollHackClient.Pages.Game
 
                     foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
                     {
+                        /* Padding */
+                        bottomPadding = mi.BottomPadding * scale;
+                        topPadding = mi.TopPadding * scale;
+
+                        /* Text Size and Minimum Row Height */
                         if ((mi.Attributes & (int)MenuItemAttributes.HalfSize) != 0)
-                            textPaint.TextSize = (mi.MinimumTouchableItemHeight / 2) * scale;
+                            textPaint.TextSize = (mi.MinimumTouchableTextSize / 2) * scale;
                         else
-                            textPaint.TextSize = mi.MinimumTouchableItemHeight * scale;
-                        float minrowheight = mi.UsesMinRowHeight ? textPaint.FontSpacing : 0;
+                            textPaint.TextSize = mi.MinimumTouchableTextSize * scale;
+                        float minrowheight = mi.MinimumRowHeight(textPaint.FontSpacing, bottomPadding, topPadding, canvaswidth, canvasheight);
 
                         idx++;
                         x = leftmenupadding;
@@ -8329,10 +8334,6 @@ namespace GnollHackClient.Pages.Game
                         textPaint.Typeface = App.GetTypefaceByName(mi.FontFamily);
                         textPaint.TextSize = mainfontsize;
                         textPaint.TextAlign = SKTextAlign.Left;
-
-                        /* Padding */
-                        bottomPadding = mi.BottomPadding * scale;
-                        topPadding = mi.TopPadding * scale;
 
                         mi.DrawBounds.Top = y;
                         //if (mi.DrawBounds.Top >= canvasheight)
