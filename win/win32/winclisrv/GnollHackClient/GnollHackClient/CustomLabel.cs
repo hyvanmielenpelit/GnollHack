@@ -3,6 +3,7 @@ using SkiaSharp.Views.Forms;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace GnollHackClient
@@ -92,26 +93,53 @@ namespace GnollHackClient
             set { SetValue(VerticalTextAlignmentProperty, value); UpdateLabel(); }
         }
 
+        public static readonly BindableProperty UseSpecialSymbolsProperty = BindableProperty.Create(
+            "UseSpecialSymbols", typeof(bool), typeof(CustomLabel), false);
+
+        public bool UseSpecialSymbols
+        {
+            get { return (bool)GetValue(UseSpecialSymbolsProperty); }
+            set { SetValue(UseSpecialSymbolsProperty, value); }
+        }
+
+
         private void UpdateLabel()
         {
             InvalidateSurface();
         }
 
-        private SizeRequest SetWidthHeight(double widthConstraint, double heightConstraint)
+        private SizeRequest CalculateLabelSize(double widthConstraint, double heightConstraint)
         {
             double wr, hr;
-            using (SKPaint textPaint = new SKPaint())
+            if (WidthRequest > 0 && HeightRequest > 0)
             {
-                float canvaswidth = this.CanvasSize.Width;
-                float scale = canvaswidth / (float)this.Width;
-                if (scale == 0)
-                    return new SizeRequest();
-                textPaint.TextSize = (float)FontSize * scale;
-                textPaint.Typeface = GetFontTypeface();
-                SKRect bounds = new SKRect();
-                float width = textPaint.MeasureText(Text, ref bounds);
-                wr = Math.Min(widthConstraint, (double)(width / scale));
-                hr = Math.Min(heightConstraint, (double)(bounds.Height / scale));
+                wr = Math.Min(widthConstraint, WidthRequest);
+                hr = Math.Min(heightConstraint, HeightRequest);
+            }
+            else
+            {
+                using (SKPaint textPaint = new SKPaint())
+                {
+                    float scale = App.DisplayScale;
+                    textPaint.TextSize = (float)FontSize * scale;
+                    textPaint.Typeface = GetFontTypeface();
+                    if (OutlineWidth > 0)
+                    {
+                        textPaint.Style = SKPaintStyle.Stroke;
+                        textPaint.StrokeWidth = (float)OutlineWidth * scale;
+                    }
+                    SKRect bounds = new SKRect();
+                    float width = textPaint.MeasureText(Text, ref bounds);
+                    if (WidthRequest > 0)
+                        wr = Math.Min(widthConstraint, WidthRequest);
+                    else
+                        wr = Math.Min(widthConstraint, (double)(width / scale));
+
+                    if (HeightRequest > 0)
+                        hr = Math.Min(heightConstraint, HeightRequest);
+                    else
+                        hr = Math.Min(heightConstraint, (double)(bounds.Height / scale));
+                }
             }
             return new SizeRequest(new Size(wr, hr));
         }
@@ -201,10 +229,10 @@ namespace GnollHackClient
 
         }
 
-        //protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
-        //{
-        //    return SetWidthHeight(widthConstraint, heightConstraint);
-        //}
+        protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
+        {
+            return CalculateLabelSize(widthConstraint, heightConstraint);
+        }
 
         private double _currentWidth = 0;
         private double _currentHeight = 0;

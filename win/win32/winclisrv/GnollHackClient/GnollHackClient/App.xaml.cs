@@ -39,6 +39,10 @@ namespace GnollHackClient
             VersionTracking.Track();
             App.GetDependencyServices();
 
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
+            App.InitTypefaces(assembly);
+            App.InitBaseBitmaps(assembly);
+
             var mainPage = new MainPage();
             var navPage = new NavigationPage(mainPage);
             navPage.BarTextColor = Color.White;
@@ -207,6 +211,8 @@ namespace GnollHackClient
         public static readonly bool IsAndroid = (Device.RuntimePlatform == Device.Android);
         public static readonly bool IsiOS = (Device.RuntimePlatform == Device.iOS);
         public static readonly bool IsUWP = (Device.RuntimePlatform == Device.UWP);
+
+        public static readonly float DisplayScale = DeviceDisplay.MainDisplayInfo.Density <= 0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
 
         public static async Task<bool> OnBackButtonPressed()
         {
@@ -416,7 +422,7 @@ namespace GnollHackClient
         public static SKBitmap ScrollBitmap { get; set; }
         public static SKBitmap YouBitmap { get; set; }
 
-        public static void InitBitmaps(Assembly assembly)
+        public static void InitGameBitmaps(Assembly assembly)
         {
             try
             {
@@ -452,6 +458,112 @@ namespace GnollHackClient
                 {
                     YouBitmap = SKBitmap.Decode(stream);
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+        private static SKBitmap _successBitmap;
+        private static SKBitmap _manaBitmap;
+        private static SKBitmap _cooldownBitmap;
+        private static SKBitmap _castsBitmap;
+        private static SKBitmap _addsBitmap;
+        private static SKBitmap _foodBitmap;
+
+        private static SKBitmap _spellAbjurationBitmap;
+        private static SKBitmap _spellArcaneBitmap;
+        private static SKBitmap _spellCelestialBitmap;
+        private static SKBitmap _spellClericalBitmap;
+        private static SKBitmap _spellConjurationBitmap;
+        private static SKBitmap _spellDivinationBitmap;
+        private static SKBitmap _spellEnchantmentBitmap;
+        private static SKBitmap _spellHealingBitmap;
+        private static SKBitmap _spellMovementBitmap;
+        private static SKBitmap _spellNatureBitmap;
+        private static SKBitmap _spellNecromancyBitmap;
+        private static SKBitmap _spellTransmutationBitmap;
+
+        public static void InitBaseBitmaps(Assembly assembly)
+        {
+            try
+            {
+                /* Replaceable menu symbols */
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-success.png"))
+                {
+                    _successBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-mana.png"))
+                {
+                    _manaBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-cooldown.png"))
+                {
+                    _cooldownBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-casts.png"))
+                {
+                    _castsBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-adds.png"))
+                {
+                    _addsBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-food.png"))
+                {
+                    _foodBitmap = SKBitmap.Decode(stream);
+                }
+
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-abjuration.png"))
+                {
+                    _spellAbjurationBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-arcane.png"))
+                {
+                    _spellArcaneBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-celestial.png"))
+                {
+                    _spellCelestialBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-clerical.png"))
+                {
+                    _spellClericalBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-conjuration.png"))
+                {
+                    _spellConjurationBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-divination.png"))
+                {
+                    _spellDivinationBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-enchantment.png"))
+                {
+                    _spellEnchantmentBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-healing.png"))
+                {
+                    _spellHealingBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-movement.png"))
+                {
+                    _spellMovementBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-nature.png"))
+                {
+                    _spellNatureBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-necromancy.png"))
+                {
+                    _spellNecromancyBitmap = SKBitmap.Decode(stream);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.UI.symbol-spell-transmutation.png"))
+                {
+                    _spellTransmutationBitmap = SKBitmap.Decode(stream);
+                }
+
             }
             catch (Exception ex)
             {
@@ -688,6 +800,84 @@ namespace GnollHackClient
         //{
         //    return DateTime.Now.ToString(Culture);
         //}
+
+        public static SKBitmap GetSpecialSymbol(string str)
+        {
+            string trimmed_str = str.Trim();
+            if (trimmed_str == "&success;")
+            {
+                return _successBitmap;
+            }
+            else if (trimmed_str == "&mana;")
+            {
+                return _manaBitmap;
+            }
+            else if (trimmed_str == "&cool;")
+            {
+                return _cooldownBitmap;
+            }
+            else if (trimmed_str == "&casts;")
+            {
+                return _castsBitmap;
+            }
+            else if (trimmed_str == "&adds;")
+            {
+                return _addsBitmap;
+            }
+            else if (trimmed_str == "&food;")
+            {
+                return _foodBitmap;
+            }
+            else if (trimmed_str == "&spabj;")
+            {
+                return _spellAbjurationBitmap;
+            }
+            else if (trimmed_str == "&sparc;")
+            {
+                return _spellArcaneBitmap;
+            }
+            else if (trimmed_str == "&spcel;")
+            {
+                return _spellCelestialBitmap;
+            }
+            else if (trimmed_str == "&spcle;")
+            {
+                return _spellClericalBitmap;
+            }
+            else if (trimmed_str == "&spcon;")
+            {
+                return _spellConjurationBitmap;
+            }
+            else if (trimmed_str == "&spdiv;")
+            {
+                return _spellDivinationBitmap;
+            }
+            else if (trimmed_str == "&spenc;")
+            {
+                return _spellEnchantmentBitmap;
+            }
+            else if (trimmed_str == "&sphea;")
+            {
+                return _spellHealingBitmap;
+            }
+            else if (trimmed_str == "&spmov;")
+            {
+                return _spellMovementBitmap;
+            }
+            else if (trimmed_str == "&spnat;")
+            {
+                return _spellNatureBitmap;
+            }
+            else if (trimmed_str == "&spnec;")
+            {
+                return _spellNecromancyBitmap;
+            }
+            else if (trimmed_str == "&sptra;")
+            {
+                return _spellTransmutationBitmap;
+            }
+            return null;
+        }
 
     }
 

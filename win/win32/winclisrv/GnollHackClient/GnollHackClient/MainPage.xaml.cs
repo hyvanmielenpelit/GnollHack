@@ -219,8 +219,7 @@ namespace GnollHackClient
             await InitializeServices();
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            App.InitTypefaces(assembly);
-            App.InitBitmaps(assembly);
+            App.InitGameBitmaps(assembly);
 
             string verstr = "?";
             string verid = "?";
