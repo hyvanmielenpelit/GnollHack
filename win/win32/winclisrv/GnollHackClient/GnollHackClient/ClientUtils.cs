@@ -220,6 +220,7 @@ namespace GnollHackClient
                     break;
                 case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                    res = 550;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
                     break;
@@ -286,6 +287,8 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                    res = "ARChristy";
+                    break;
                 case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
                     break;
@@ -347,7 +350,7 @@ namespace GnollHackClient
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
                     break;
                 case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
-                    res = res * 17.0 / 15.0;
+                    res = 42;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
