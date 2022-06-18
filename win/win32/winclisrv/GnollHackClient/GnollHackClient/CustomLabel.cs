@@ -199,6 +199,19 @@ namespace GnollHackClient
                             rowstartidx++;
                         totalWidth = 0;
                     }
+                    else if (i == text.Length - 1)
+                    {
+                        word = text.Substring(wordstartidx, i - wordstartidx + 1);
+                        width = CalculateTextPartWidth(word, textPaint);
+                        if (width + totalWidth > widthConstraint && wordstartidx > rowstartidx)
+                        {
+                            result.Add(text.Substring(rowstartidx, wordstartidx - 1 - rowstartidx));
+                            rowstartidx = wordstartidx;
+                            while (rowstartidx < text.Length - 1 && text[rowstartidx] == ' ')
+                                rowstartidx++;
+                        }
+                        result.Add(text.Substring(rowstartidx));
+                    }
                     wordstartidx = i + 1;
                 }
                 else
