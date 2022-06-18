@@ -14,6 +14,25 @@ namespace GnollHackClient
         Immortal
     }
 
+    public struct TextAreaSize
+    {
+        public float Width;
+        public float Height;
+        private List<float> _rowWidths;
+        public TextAreaSize(float width, float height, List<float> rowWidths)
+        {
+            Width = width;
+            Height = height;
+            _rowWidths = rowWidths;
+        }
+
+        public float GetRowWidth(int rowidx)
+        {
+            if (_rowWidths == null || rowidx < 0 || rowidx >= _rowWidths.Count)
+                return Width;
+            return _rowWidths[rowidx];
+        }
+    }
     public class CustomLabel : SKCanvasView
     {
         public CustomLabel() : base()
@@ -108,9 +127,67 @@ namespace GnollHackClient
             InvalidateSurface();
         }
 
+
+        private TextAreaSize CalculateTextAreaSize()
+        {
+            float longestwidth = 0;
+            float totalheight = 0;
+            List<float> rowWidths = new List<float>();
+            using (SKPaint textPaint = new SKPaint())
+            {
+                float scale = App.DisplayScale;
+                textPaint.TextSize = (float)FontSize * scale;
+                textPaint.Typeface = GetFontTypeface();
+                if (OutlineWidth > 0)
+                {
+                    textPaint.Style = SKPaintStyle.Stroke;
+                    textPaint.StrokeWidth = (float)OutlineWidth * scale;
+                }
+                SKRect bounds = new SKRect();
+                string[] textRows = Text.Split('\n');
+                foreach (string textRow in textRows)
+                {
+                    totalheight += textPaint.FontSpacing;
+                    string[] textParts;
+                    if (UseSpecialSymbols)
+                    {
+                        textParts = textRow.Split(' ');
+                    }
+                    else
+                    {
+                        textParts = new string[1] { textRow };
+                    }
+                    int cnt = 0;
+                    float totalwidth = 0;
+                    foreach (string textPart in textParts)
+                    {
+                        SKBitmap symbolbitmap;
+                        if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart)) != null)
+                        {
+                            float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
+                            float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
+                            float bmpmargin = bmpheight / 8;
+                            totalwidth += bmpwidth + bmpmargin;
+                        }
+                        else
+                        {
+                            string measuredString = cnt == textParts.Length - 1 ? textPart : textPart + " ";
+                            float width = textPaint.MeasureText(measuredString, ref bounds);
+                            totalwidth += width;
+                        }
+                        cnt++;
+                    }
+                    rowWidths.Add(totalwidth);
+                    if (totalwidth > longestwidth)
+                        longestwidth = totalwidth;
+                }
+                return new TextAreaSize(longestwidth, totalheight, rowWidths);
+            }
+        }
+
         private SizeRequest CalculateLabelSize(double widthConstraint, double heightConstraint)
         {
-            double wr, hr;
+            double wr = 0, hr = 0;
             if (WidthRequest > 0 && HeightRequest > 0)
             {
                 wr = Math.Min(widthConstraint, WidthRequest);
@@ -118,28 +195,17 @@ namespace GnollHackClient
             }
             else
             {
-                using (SKPaint textPaint = new SKPaint())
-                {
-                    float scale = App.DisplayScale;
-                    textPaint.TextSize = (float)FontSize * scale;
-                    textPaint.Typeface = GetFontTypeface();
-                    if (OutlineWidth > 0)
-                    {
-                        textPaint.Style = SKPaintStyle.Stroke;
-                        textPaint.StrokeWidth = (float)OutlineWidth * scale;
-                    }
-                    SKRect bounds = new SKRect();
-                    float width = textPaint.MeasureText(Text, ref bounds);
-                    if (WidthRequest > 0)
-                        wr = Math.Min(widthConstraint, WidthRequest);
-                    else
-                        wr = Math.Min(widthConstraint, (double)(width / scale));
+                TextAreaSize textAreaSize = CalculateTextAreaSize();
+                float scale = App.DisplayScale;
+                if (WidthRequest > 0)
+                    wr = Math.Min(widthConstraint, WidthRequest);
+                else
+                    wr = Math.Min(widthConstraint, (double)(textAreaSize.Width / scale));
 
-                    if (HeightRequest > 0)
-                        hr = Math.Min(heightConstraint, HeightRequest);
-                    else
-                        hr = Math.Min(heightConstraint, (double)(bounds.Height / scale));
-                }
+                if (HeightRequest > 0)
+                    hr = Math.Min(heightConstraint, HeightRequest);
+                else
+                    hr = Math.Min(heightConstraint, (double)(textAreaSize.Height / scale));
             }
             return new SizeRequest(new Size(wr, hr));
         }
@@ -171,60 +237,95 @@ namespace GnollHackClient
 
             canvas.Clear();
 
-            using(SKPaint textPaint = new SKPaint())
+            TextAreaSize textAreaSize = CalculateTextAreaSize();
+
+            using (SKPaint textPaint = new SKPaint())
             {
                 float x = 0, y = 0;
                 textPaint.Typeface = GetFontTypeface();
                 textPaint.TextSize = (float)FontSize * scale;
-                float textwidth = textPaint.MeasureText(Text);
-                float maxtextwidth = 0.98f * canvaswidth;
-                if (textwidth > maxtextwidth)
-                    textPaint.TextSize = textPaint.TextSize * maxtextwidth / textwidth;
+                //float textwidth = textPaint.MeasureText(Text);
+                //float maxtextwidth = 0.98f * canvaswidth;
+                //if (textwidth > maxtextwidth)
+                //    textPaint.TextSize = textPaint.TextSize * maxtextwidth / textwidth;
 
-                switch (HorizontalTextAlignment)
-                {
-                    default:
-                    case TextAlignment.Start:
-                        x = 0;
-                        textPaint.TextAlign = SKTextAlign.Left;
-                        break;
-                    case TextAlignment.Center:
-                        x = canvaswidth / 2;
-                        textPaint.TextAlign = SKTextAlign.Center;
-                        break;
-                    case TextAlignment.End:
-                        x = canvaswidth;
-                        textPaint.TextAlign = SKTextAlign.Right;
-                        break;
-                }
+                string[] textRows = Text.Split('\n');
 
                 switch (VerticalTextAlignment)
                 {
                     case TextAlignment.Start:
-                        y = -textPaint.FontMetrics.Ascent;
+                        y = 0;
                         break;
                     default:
                     case TextAlignment.Center:
-                        y = canvasheight / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent;
+                        y = (canvasheight - textPaint.FontSpacing * textRows.Length) / 2;
                         break;
                     case TextAlignment.End:
-                        y = canvasheight - textPaint.FontMetrics.Descent;
+                        y = canvasheight - textPaint.FontSpacing * textRows.Length;
                         break;
                 }
+                y += -textPaint.FontMetrics.Ascent;
 
-                if(OutlineWidth > 0)
+                int rowidx = 0;
+                textPaint.TextAlign = SKTextAlign.Left;
+                foreach (string textRow in textRows)
                 {
-                    textPaint.Style = SKPaintStyle.Stroke;
-                    textPaint.StrokeWidth = (float)OutlineWidth * scale;
-                    SKColor outlinecolor = new SKColor((byte)(255 * OutlineColor.R), (byte)(255 * OutlineColor.G), (byte)(255 * OutlineColor.B), (byte)(255 * OutlineColor.A));
-                    textPaint.Color = outlinecolor;
-                    canvas.DrawText(Text, x, y, textPaint);
-                }
+                    string[] textParts = textRow.Split(' ');
+                    float textWidth = textAreaSize.GetRowWidth(rowidx);
 
-                textPaint.Style = SKPaintStyle.Fill;
-                SKColor fillcolor = new SKColor((byte)(255 * TextColor.R), (byte)(255 * TextColor.G), (byte)(255 * TextColor.B), (byte)(255 * TextColor.A));
-                textPaint.Color = fillcolor;
-                canvas.DrawText(Text, x, y, textPaint);
+                    switch (HorizontalTextAlignment)
+                    {
+                        default:
+                        case TextAlignment.Start:
+                            x = 0;
+                            break;
+                        case TextAlignment.Center:
+                            x = canvaswidth / 2 - textWidth / 2;
+                            break;
+                        case TextAlignment.End:
+                            x = canvaswidth - textWidth;
+                            break;
+                    }
+
+                    int cnt = 0;
+                    foreach(string textPart in textParts)
+                    {
+                        SKBitmap symbolbitmap;
+                        if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart)) != null)
+                        {
+                            float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
+                            float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
+                            float bmpmargin = bmpheight / 8;
+
+                            float bmpx = x;
+                            float bmpy = y + textPaint.FontMetrics.Ascent;
+                            SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
+                            canvas.DrawBitmap(symbolbitmap, bmptargetrect, textPaint);
+                            x += bmpwidth + bmpmargin;
+                        }
+                        else
+                        {
+                            string printedString = cnt == textParts.Length - 1 ? textPart : textPart + " ";
+                            if (OutlineWidth > 0)
+                            {
+                                textPaint.Style = SKPaintStyle.Stroke;
+                                textPaint.StrokeWidth = (float)OutlineWidth * scale;
+                                SKColor outlinecolor = new SKColor((byte)(255 * OutlineColor.R), (byte)(255 * OutlineColor.G), (byte)(255 * OutlineColor.B), (byte)(255 * OutlineColor.A));
+                                textPaint.Color = outlinecolor;
+                                canvas.DrawText(printedString, x, y, textPaint);
+                            }
+
+                            textPaint.Style = SKPaintStyle.Fill;
+                            SKColor fillcolor = new SKColor((byte)(255 * TextColor.R), (byte)(255 * TextColor.G), (byte)(255 * TextColor.B), (byte)(255 * TextColor.A));
+                            textPaint.Color = fillcolor;
+                            canvas.DrawText(printedString, x, y, textPaint);
+                            x += textPaint.MeasureText(printedString);
+                        }
+                        cnt++;
+                    }
+                    rowidx++;
+                    y += textPaint.FontSpacing;
+                }
             }
 
         }
