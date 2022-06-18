@@ -213,6 +213,8 @@ namespace GnollHackClient
         public static readonly bool IsUWP = (Device.RuntimePlatform == Device.UWP);
 
         public static readonly float DisplayScale = DeviceDisplay.MainDisplayInfo.Density <= 0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
+        public static readonly float DisplayWidth = (float)DeviceDisplay.MainDisplayInfo.Width * DisplayScale;
+        public static readonly float DisplayHeight = (float)DeviceDisplay.MainDisplayInfo.Height * DisplayScale;
 
         public static async Task<bool> OnBackButtonPressed()
         {

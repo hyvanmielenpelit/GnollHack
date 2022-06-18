@@ -437,9 +437,9 @@ namespace GnollHackClient
             return res;
         }
 
-        public static double MenuSubtitleFontSize(ghmenu_styles style)
+        public static CustomLabelFonts MenuSubtitleCustomFontFamily(ghmenu_styles style)
         {
-            double res = 15;
+            CustomLabelFonts res = CustomLabelFonts.Immortal;
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_GENERAL:
@@ -496,6 +496,92 @@ namespace GnollHackClient
                     break;
             }
             return res;
+        }
+
+        public static double MenuSubtitleFontSize(ghmenu_styles style)
+        {
+            double res = 15;
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_GENERAL:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_INVENTORY:
+                case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
+                case ghmenu_styles.GHMENU_STYLE_MONSTER_ABILITY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHAT:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHAT_CHOOSE_ITEM:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_SIMPLE:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_COMMAND:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                case ghmenu_styles.GHMENU_STYLE_DELETE_SAVED_GAME:
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_SAVED_GAME:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_PLAYER:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_CHARACTER:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_ATTRIBUTES:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                    res = 13.5;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_OPTIONS:
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_HELP:
+                    break;
+                case ghmenu_styles.MAX_GHMENU_STYLES:
+                    break;
+            }
+            return res;
+        }
+
+        public static bool MenuSubtitleUsesSpecialSymbols(ghmenu_styles style)
+        {
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static char MenuSubtitleWordWrapSeparator(ghmenu_styles style)
+        {
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                    return ',';
+                default:
+                    return ' ';
+            }
         }
 
         public static bool StyleClosesMenuUponDestroy(ghmenu_styles style)

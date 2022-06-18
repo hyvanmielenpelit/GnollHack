@@ -1228,7 +1228,29 @@ int* spell_no;
                 "[sort spells]", MENU_UNSELECTED);
         }
     }
+
+#ifdef GNH_MOBILE
+    if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0 && (splaction == SPELLMENU_PREPARE || splaction == SPELLMENU_CAST))
+    {
+        char subbuf[BUFSZ];
+        if (splaction == SPELLMENU_CAST)
+        {
+            Strcpy(subbuf, "&success; Success-%, &mana; Mana Cost, &cool; Cooldown, &casts; Casts Left");
+        }
+        else
+        {
+            Strcpy(subbuf, "&casts; Casts Left, &adds; Casts Added");
+        }
+        end_menu_ex(tmpwin, prompt, subbuf);
+
+    }
+    else
+    {
+        end_menu(tmpwin, prompt);
+    }
+#else 
     end_menu(tmpwin, prompt);
+#endif
 
     //Show menu
     n = select_menu(tmpwin, how, &selected);

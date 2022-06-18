@@ -157,14 +157,13 @@
                             <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
                         </Label.GestureRecognizers>
                     </Label>
-                    <Label x:Name="MenuSubtitleLabel"
+                    <gnollhackclient:CustomLabel x:Name="MenuSubtitleLabel" UseSpecialSymbols="False"
                        FontFamily="{Binding MenuSubtitleFontFamily}" FontSize="{Binding MenuSubtitleFontSize}" TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
-                        <Label.GestureRecognizers>
+                        <gnollhackclient:CustomLabel.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
-                        </Label.GestureRecognizers>
-                    </Label>
-
+                        </gnollhackclient:CustomLabel.GestureRecognizers>
+                    </gnollhackclient:CustomLabel>
                     <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                         <ff:CachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15,15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
                         <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="True" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />

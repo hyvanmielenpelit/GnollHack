@@ -2139,8 +2139,10 @@ namespace GnollHackClient.Pages.Game
             {
                 MenuSubtitleLabel.IsVisible = true;
                 MenuSubtitleLabel.Text = menuinfo.Subtitle;
-                MenuSubtitleLabel.FontFamily = ClientUtils.MenuSubtitleFontFamily(MenuCanvas.MenuStyle);
+                MenuSubtitleLabel.FontFamily = ClientUtils.MenuSubtitleCustomFontFamily(MenuCanvas.MenuStyle);
                 MenuSubtitleLabel.FontSize = ClientUtils.MenuSubtitleFontSize(MenuCanvas.MenuStyle);
+                MenuSubtitleLabel.UseSpecialSymbols = ClientUtils.MenuSubtitleUsesSpecialSymbols(menuinfo.Style);
+                MenuSubtitleLabel.WordWrapSeparator = ClientUtils.MenuSubtitleWordWrapSeparator(menuinfo.Style);
             }
 
             ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();

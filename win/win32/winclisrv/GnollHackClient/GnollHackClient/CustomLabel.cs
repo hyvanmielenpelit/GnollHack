@@ -11,7 +11,15 @@ namespace GnollHackClient
     public enum CustomLabelFonts
     {
         Diablo,
-        Immortal
+        Immortal,
+        Endor,
+        Xizor,
+        Underwood,
+        DejaVuSansMono,
+        DejaVuSansMonoBold,
+        LatoRegular,
+        LatoBold,
+        ARChristy
     }
 
     public struct TextAreaSize
@@ -118,7 +126,16 @@ namespace GnollHackClient
         public bool UseSpecialSymbols
         {
             get { return (bool)GetValue(UseSpecialSymbolsProperty); }
-            set { SetValue(UseSpecialSymbolsProperty, value); }
+            set { SetValue(UseSpecialSymbolsProperty, value); UpdateLabel(); }
+        }
+
+        public static readonly BindableProperty WordWrapSeparatorProperty = BindableProperty.Create(
+            "WordWrapSeparator", typeof(char), typeof(CustomLabel), ' ');
+
+        public char WordWrapSeparator
+        {
+            get { return (char)GetValue(WordWrapSeparatorProperty); }
+            set { SetValue(WordWrapSeparatorProperty, value); UpdateLabel(); }
         }
 
 
@@ -127,8 +144,83 @@ namespace GnollHackClient
             InvalidateSurface();
         }
 
+        float CalculateTextPartWidth(string textPart, SKPaint textPaint)
+        {
+            SKBitmap symbolbitmap;
+            if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart)) != null)
+            {
+                float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
+                float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
+                float bmpmargin = bmpheight / 8;
+                return bmpwidth + bmpmargin;
+            }
+            else
+            {
+                float width = textPaint.MeasureText(textPart);
+                return width;
+            }
+        }
 
-        private TextAreaSize CalculateTextAreaSize()
+        public string[] SplitTextWithConstraint(string text, char separator, float widthConstraint, SKPaint textPaint)
+        {
+            List<string> result = new List<string>();
+            int rowstartidx = 0;
+            int wordstartidx = 0;
+            float totalWidth = 0;
+            string separatorstr = separator.ToString();
+            float separatorwidth = textPaint.MeasureText(separatorstr);
+            float width = 0;
+            string word;
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+                if(c == separator || c == '\n')
+                {
+                    word = text.Substring(wordstartidx, i - wordstartidx);
+                    width = CalculateTextPartWidth(word, textPaint);
+                    if (width + totalWidth > widthConstraint && wordstartidx > rowstartidx)
+                    {
+                        string row = text.Substring(rowstartidx, wordstartidx - 1 - rowstartidx);
+                        result.Add(row);
+                        rowstartidx = wordstartidx;
+                        while (rowstartidx < text.Length - 1 && text[rowstartidx] == ' ')
+                            rowstartidx++;
+                        totalWidth = 0;
+                    }
+                    totalWidth += width + separatorwidth;
+                    if (c == '\n')
+                    {
+                        string row = text.Substring(rowstartidx, i - rowstartidx);
+                        result.Add(row);
+                        rowstartidx = i + 1;
+                        while (rowstartidx < text.Length - 1 && text[rowstartidx] == ' ')
+                            rowstartidx++;
+                        totalWidth = 0;
+                    }
+                    wordstartidx = i + 1;
+                }
+                else
+                {
+                    if (i == text.Length - 1)
+                    {
+                        word = text.Substring(wordstartidx, i - wordstartidx + 1);
+                        width = CalculateTextPartWidth(word, textPaint);
+                        if (width + totalWidth > widthConstraint && wordstartidx > rowstartidx)
+                        {
+                            result.Add(text.Substring(rowstartidx, wordstartidx - 1 - rowstartidx));
+                            rowstartidx = wordstartidx;
+                            while (rowstartidx < text.Length - 1 && text[rowstartidx] == ' ')
+                                rowstartidx++;
+                        }
+                        result.Add(text.Substring(rowstartidx));
+                    }
+                }
+            }
+            return result.ToArray();
+        }
+
+        private TextAreaSize CalculateTextAreaSize(float widthConstraint)
         {
             float longestwidth = 0;
             float totalheight = 0;
@@ -144,7 +236,7 @@ namespace GnollHackClient
                     textPaint.StrokeWidth = (float)OutlineWidth * scale;
                 }
                 SKRect bounds = new SKRect();
-                string[] textRows = Text.Split('\n');
+                string[] textRows = SplitTextWithConstraint(Text, WordWrapSeparator, widthConstraint, textPaint);
                 foreach (string textRow in textRows)
                 {
                     totalheight += textPaint.FontSpacing;
@@ -193,17 +285,28 @@ namespace GnollHackClient
                 wr = Math.Min(widthConstraint, WidthRequest);
                 hr = Math.Min(heightConstraint, HeightRequest);
             }
+            //else if(HorizontalOptions.Alignment == LayoutAlignment.Fill && VerticalOptions.Alignment == LayoutAlignment.Fill)
+            //{
+            //    wr = Math.Min(widthConstraint, App.DisplayWidth);
+            //    hr = Math.Min(heightConstraint, App.DisplayHeight);
+            //}
             else
             {
-                TextAreaSize textAreaSize = CalculateTextAreaSize();
                 float scale = App.DisplayScale;
+                float scaledwidthconstraint = scale * (float)(WidthRequest > 0 ? Math.Min(widthConstraint, WidthRequest) : widthConstraint);
+
+                TextAreaSize textAreaSize = CalculateTextAreaSize(scaledwidthconstraint);
                 if (WidthRequest > 0)
                     wr = Math.Min(widthConstraint, WidthRequest);
+                //else if (HorizontalOptions.Alignment == LayoutAlignment.Fill)
+                //    wr = Math.Min(widthConstraint, App.DisplayWidth);
                 else
                     wr = Math.Min(widthConstraint, (double)(textAreaSize.Width / scale));
 
                 if (HeightRequest > 0)
                     hr = Math.Min(heightConstraint, HeightRequest);
+                //else if (VerticalOptions.Alignment == LayoutAlignment.Fill)
+                //    hr = Math.Min(heightConstraint, App.DisplayHeight);
                 else
                     hr = Math.Min(heightConstraint, (double)(textAreaSize.Height / scale));
             }
@@ -222,6 +325,30 @@ namespace GnollHackClient
                 case CustomLabelFonts.Immortal:
                     tf = App.ImmortalTypeface;
                     break;
+                case CustomLabelFonts.Endor:
+                    tf = App.EndorTypeface;
+                    break;
+                case CustomLabelFonts.Xizor:
+                    tf = App.XizorTypeface;
+                    break;
+                case CustomLabelFonts.Underwood:
+                    tf = App.UnderwoodTypeface;
+                    break;
+                case CustomLabelFonts.DejaVuSansMono:
+                    tf = App.DejaVuSansMonoTypeface;
+                    break;
+                case CustomLabelFonts.DejaVuSansMonoBold:
+                    tf = App.DejaVuSansMonoBoldTypeface;
+                    break;
+                case CustomLabelFonts.LatoRegular:
+                    tf = App.LatoRegular;
+                    break;
+                case CustomLabelFonts.LatoBold:
+                    tf = App.LatoBold;
+                    break;
+                case CustomLabelFonts.ARChristy:
+                    tf = App.ARChristyTypeface;
+                    break;
             }
             return tf;
         }
@@ -237,7 +364,7 @@ namespace GnollHackClient
 
             canvas.Clear();
 
-            TextAreaSize textAreaSize = CalculateTextAreaSize();
+            TextAreaSize textAreaSize = CalculateTextAreaSize((float)Width * scale);
 
             using (SKPaint textPaint = new SKPaint())
             {
@@ -249,7 +376,8 @@ namespace GnollHackClient
                 //if (textwidth > maxtextwidth)
                 //    textPaint.TextSize = textPaint.TextSize * maxtextwidth / textwidth;
 
-                string[] textRows = Text.Split('\n');
+                //string[] textRows = Text.Split('\n');
+                string[] textRows = SplitTextWithConstraint(Text, WordWrapSeparator, (float)Width * scale, textPaint);
 
                 switch (VerticalTextAlignment)
                 {
