@@ -135,6 +135,7 @@ void lib_askname(void)
             case 0: /* no game chosen; start new game */
                 do
                 {
+                    repeataskname = FALSE;
                     name = lib_callbacks.callback_askname();
                     if (name && *name != 0 && *name != 27)
                     {
@@ -145,8 +146,12 @@ void lib_askname(void)
                             char qbuf[BUFSZ] = "";
                             Sprintf(qbuf, "There is already a saved file for a character named \'%s\'. Do you want to overwrite the save file and delete the existing character?", plname);
                             char ans = lib_yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_RED, NO_GLYPH, "Overwrite Existing Character?",
-                                qbuf, "ynq", 'n', "Yes\nNo\nQuit", 0UL);
-                            if (ans == 'y')
+                                qbuf, "ynql", 'n', "Yes\nNo\nQuit\nLoad", 0UL);
+                            if (ans == 'l')
+                            {
+                                return;
+                            }
+                            else if (ans == 'y')
                             {
                                 set_savefile_name(TRUE);
                                 delete_savefile();

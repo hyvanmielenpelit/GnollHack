@@ -1826,7 +1826,10 @@ namespace GnollHackClient.Pages.Game
                     res = "resource://GnollHackClient.Assets.UI.rightring.png";
                     break;
                 case 'l':
-                    res = "resource://GnollHackClient.Assets.UI.leftring.png";
+                    if (desc == "Load")
+                        res = "resource://GnollHackClient.Assets.UI.vitruvian-gnoll.png";
+                    else
+                        res = "resource://GnollHackClient.Assets.UI.leftring.png";
                     break;
                 default:
                     break;
