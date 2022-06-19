@@ -587,6 +587,18 @@ namespace GnollHackClient
             }
         }
 
+        public static bool MenuSubtitleDisplayWrapSeparator(ghmenu_styles style)
+        {
+            switch (style)
+            {
+                case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                    return false;
+                default:
+                    return true;
+            }
+        }
+
         public static bool StyleClosesMenuUponDestroy(ghmenu_styles style)
         {
             switch (style)

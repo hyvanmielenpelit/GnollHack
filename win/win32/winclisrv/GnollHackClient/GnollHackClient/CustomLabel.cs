@@ -138,6 +138,15 @@ namespace GnollHackClient
             set { SetValue(WordWrapSeparatorProperty, value); UpdateLabel(); }
         }
 
+        public static readonly BindableProperty DisplayWrapSeparatorProperty = BindableProperty.Create(
+            "DisplayWrapSeparatorSymbols", typeof(bool), typeof(CustomLabel), true);
+
+        public bool DisplayWrapSeparator
+        {
+            get { return (bool)GetValue(DisplayWrapSeparatorProperty); }
+            set { SetValue(DisplayWrapSeparatorProperty, value); UpdateLabel(); }
+        }
+
 
         private void UpdateLabel()
         {
@@ -162,72 +171,78 @@ namespace GnollHackClient
             }
         }
 
-        public string[] SplitTextWithConstraint(string text, char separator, float widthConstraint, SKPaint textPaint)
+        public string[] SplitTextWithConstraint(string text, float widthConstraint, SKPaint textPaint)
         {
+            char separator = WordWrapSeparator;
+            bool displayseparator = DisplayWrapSeparator;
             List<string> result = new List<string>();
-            int rowstartidx = 0;
             int wordstartidx = 0;
             float totalWidth = 0;
             string separatorstr = separator.ToString();
             float separatorwidth = textPaint.MeasureText(separatorstr);
             float width = 0;
             string word;
+            string ending = DisplayWrapSeparator && separator != ' ' ? separator.ToString() : "";
+            string currentrowstr = "";
 
             for (int i = 0; i < text.Length; i++)
             {
+                if (i  < wordstartidx)
+                    continue;
+
                 char c = text[i];
                 if(c == separator || c == '\n')
                 {
                     word = text.Substring(wordstartidx, i - wordstartidx);
-                    width = CalculateTextPartWidth(word, textPaint);
-                    if (width + totalWidth > widthConstraint && wordstartidx > rowstartidx)
+                    width = CalculateTextPartWidth(word + ending, textPaint);
+                    if (width + totalWidth > widthConstraint && currentrowstr != "")
                     {
-                        string row = text.Substring(rowstartidx, wordstartidx - 1 - rowstartidx);
+                        string row = currentrowstr;
                         result.Add(row);
-                        rowstartidx = wordstartidx;
-                        while (rowstartidx < text.Length - 1 && text[rowstartidx] == ' ')
-                            rowstartidx++;
                         totalWidth = 0;
+                        currentrowstr = "";
                     }
-                    totalWidth += width + separatorwidth;
-                    if (c == '\n')
+                    currentrowstr += word;
+                    totalWidth += width;
+                    if(DisplayWrapSeparator && c == separator)
                     {
-                        string row = text.Substring(rowstartidx, i - rowstartidx);
+                        currentrowstr += separator.ToString();
+                        totalWidth += separatorwidth;
+                    }
+                    if (c == '\n' || i == text.Length - 1)
+                    {
+                        string row = currentrowstr;
                         result.Add(row);
-                        rowstartidx = i + 1;
-                        while (rowstartidx < text.Length - 1 && text[rowstartidx] == ' ')
-                            rowstartidx++;
                         totalWidth = 0;
-                    }
-                    else if (i == text.Length - 1)
-                    {
-                        word = text.Substring(wordstartidx, i - wordstartidx + 1);
-                        width = CalculateTextPartWidth(word, textPaint);
-                        if (width + totalWidth > widthConstraint && wordstartidx > rowstartidx)
-                        {
-                            result.Add(text.Substring(rowstartidx, wordstartidx - 1 - rowstartidx));
-                            rowstartidx = wordstartidx;
-                            while (rowstartidx < text.Length - 1 && text[rowstartidx] == ' ')
-                                rowstartidx++;
-                        }
-                        result.Add(text.Substring(rowstartidx));
+                        currentrowstr = "";
                     }
                     wordstartidx = i + 1;
+
+                    //Clear out separators and spaces from the start of the row
+                    if(currentrowstr == "")
+                    {
+                        while (wordstartidx < text.Length - 1 && (text[wordstartidx] == ' ' || text[wordstartidx] == separator))
+                            wordstartidx++;
+                    }
                 }
                 else
                 {
                     if (i == text.Length - 1)
                     {
+                        string row;
                         word = text.Substring(wordstartidx, i - wordstartidx + 1);
                         width = CalculateTextPartWidth(word, textPaint);
-                        if (width + totalWidth > widthConstraint && wordstartidx > rowstartidx)
+                        if (width + totalWidth > widthConstraint && currentrowstr != "")
                         {
-                            result.Add(text.Substring(rowstartidx, wordstartidx - 1 - rowstartidx));
-                            rowstartidx = wordstartidx;
-                            while (rowstartidx < text.Length - 1 && text[rowstartidx] == ' ')
-                                rowstartidx++;
+                            row = currentrowstr;
+                            result.Add(row);
+                            totalWidth = 0;
+                            currentrowstr = "";
                         }
-                        result.Add(text.Substring(rowstartidx));
+                        row = currentrowstr + word;
+                        result.Add(row);
+                        totalWidth = 0;
+                        currentrowstr = "";
                     }
                 }
             }
@@ -250,7 +265,7 @@ namespace GnollHackClient
                     textPaint.StrokeWidth = (float)OutlineWidth * scale;
                 }
                 SKRect bounds = new SKRect();
-                string[] textRows = SplitTextWithConstraint(Text, WordWrapSeparator, widthConstraint, textPaint);
+                string[] textRows = SplitTextWithConstraint(Text, widthConstraint, textPaint);
                 foreach (string textRow in textRows)
                 {
                     totalheight += textPaint.FontSpacing;
@@ -389,7 +404,7 @@ namespace GnollHackClient
                 //    textPaint.TextSize = textPaint.TextSize * maxtextwidth / textwidth;
 
                 //string[] textRows = Text.Split('\n');
-                string[] textRows = SplitTextWithConstraint(Text, WordWrapSeparator, (float)Width * scale, textPaint);
+                string[] textRows = SplitTextWithConstraint(Text, (float)Width * scale, textPaint);
 
                 switch (VerticalTextAlignment)
                 {
