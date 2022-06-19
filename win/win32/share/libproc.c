@@ -137,7 +137,7 @@ void lib_askname(void)
                 {
                     repeataskname = FALSE;
                     name = lib_callbacks.callback_askname();
-                    if (name && *name != 0 && *name != 27)
+                    if (name && *name != 0)
                     {
                         strncpy(plname, name, PL_NSIZ - 1);
                         plname[PL_NSIZ - 1] = '\0';
@@ -175,13 +175,13 @@ void lib_askname(void)
             case 1:
                 return; /* plname[] has been set */
             }
-        } while (name == 0 || *name == 0 || *name == 27);
+        } while (name == 0 || *name == 0);
         return;
     }
 #endif /* SELECTSAVED */
 
     name = lib_callbacks.callback_askname();
-    if (name == 0 || *name == 0 || *name == 27)
+    if (name == 0 || *name == 0)
         lib_bail("Until next time then..."); /* quit */
     else
     {

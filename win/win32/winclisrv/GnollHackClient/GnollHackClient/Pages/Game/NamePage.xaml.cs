@@ -103,10 +103,9 @@ namespace GnollHackClient.Pages.Game
         {
             App.IsServerGame = false;
             ConcurrentQueue<GHResponse> queue;
-            char retval = (char)27;
             if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.AskName, retval.ToString()));
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.AskName, ""));
                 await _gamePage.Navigation.PopModalAsync();
             }
         }
