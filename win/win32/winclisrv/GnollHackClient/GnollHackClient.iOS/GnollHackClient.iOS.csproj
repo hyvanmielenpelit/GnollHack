@@ -93,6 +93,7 @@
     <Compile Include="..\GnollHackClient.Common\GnollHackService.cs" />
     <Compile Include="GHEditorRenderer.cs" />
     <Compile Include="GHGamePageRenderer.cs" />
+    <Compile Include="GHMainPageRenderer.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
