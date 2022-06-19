@@ -62,7 +62,7 @@
                                         <Label Text="{Binding Outcome}" HorizontalOptions="Start" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono"/>
                                     </Grid>
                                 </StackLayout>
-                                <Label IsVisible="{Binding IsDumplogButtonEnabled}" Margin="0" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono">
+                                <Label IsVisible="{Binding IsDumplogButtonEnabled}" Margin="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono">
                                     <Label.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="Button_Clicked"/>
                                     </Label.GestureRecognizers>

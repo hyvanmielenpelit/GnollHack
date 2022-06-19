@@ -736,9 +736,9 @@ namespace GnollHackClient
             {
                 GnollHackService.Chmod(targetpath, (uint)ChmodPermissions.S_IALL);
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine(ex.Message);
             }
 
             //DirectoryInfo dinfo = new DirectoryInfo(targetpath);
@@ -753,9 +753,9 @@ namespace GnollHackClient
 
                 writesuccessful = true;
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine(ex.Message);
             }
 
             try
@@ -763,9 +763,9 @@ namespace GnollHackClient
                 if (File.Exists(testfilepath))
                     File.Delete(testfilepath);
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine(ex.Message);
             }
 
             if (!writesuccessful)
@@ -787,9 +787,9 @@ namespace GnollHackClient
 
                     GnollHackService.Chmod(targetpath, (uint)ChmodPermissions.S_IALL);
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    Debug.WriteLine(ex.Message);
                 }
 
             }
