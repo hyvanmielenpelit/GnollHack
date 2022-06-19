@@ -2722,7 +2722,7 @@ register struct monst *shkp;
 /* shopkeeper tells you what you bought or sold, sometimes partly IDing it */
 STATIC_OVL void
 shk_names_obj(shkp, obj, fmt, amt, arg)
-struct monst *shkp;
+struct monst *shkp UNUSED;
 struct obj *obj;
 const char *fmt; /* "%s %ld %s %s", doname(obj), amt, plur(amt), arg */
 long amt;
