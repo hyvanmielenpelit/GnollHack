@@ -12,7 +12,7 @@ namespace GnollHackClient
         private DisplayScreenTextData _data;
         public long _created_at_count;
         private GamePage _gamePage;
-        private int _animationFrequency = GHConstants.MainCanvasAnimationFrequency;
+        private int _animationFrequency;
         public bool HasSuperText { get { return _data.supertext != null; } }
         public bool HasSubText { get { return _data.subtext != null; } }
 

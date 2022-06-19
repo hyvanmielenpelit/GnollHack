@@ -1017,9 +1017,18 @@ namespace GnollHackClient.Pages.Game
 
         public void HideLoadingScreen()
         {
-            LoadingGrid.IsVisible = false;
+            DelayedLoadingScreenHide();
             MainGrid.IsVisible = true;
             StartMainCanvasAnimation();
+        }
+
+        public void DelayedLoadingScreenHide()
+        {
+            Device.StartTimer(TimeSpan.FromSeconds(ClientUtils.GetWindowHideSecs()), () =>
+            {
+                LoadingGrid.IsVisible = false;
+                return false;
+            });
         }
 
         public void ClearContextMenu()
@@ -8948,7 +8957,7 @@ namespace GnollHackClient.Pages.Game
                 _menuHideCancelled = false;
                 _menuHideOn = true;
             }
-            Device.StartTimer(TimeSpan.FromSeconds(GHConstants.WindowHideIntervals / GHConstants.MainCanvasAnimationFrequency), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(ClientUtils.GetWindowHideSecs()), () =>
             {
                 lock (_menuHideCancelledLock)
                 {
@@ -8989,7 +8998,7 @@ namespace GnollHackClient.Pages.Game
                 _delayedTextHideOn = true;
                 _delayedTextHideCancelled = false;
             }
-            Device.StartTimer(TimeSpan.FromSeconds(GHConstants.WindowHideIntervals / GHConstants.MainCanvasAnimationFrequency), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(ClientUtils.GetWindowHideSecs()), () =>
             {
                 lock(_delayedTextHideLock)
                 {

@@ -1211,15 +1211,12 @@ namespace GnollHackCommon
         public const string GnollHackWikiPage = "https://github.com/hyvanmielenpelit/GnollHack/wiki";
         public const string GnollHackSponsorPage = "https://hyvanmielenpelit.fi/tule-mukaan/pienkannatusjaseneksi/in-english";
         public const string GHSettingsResourcePath = "GnollHackClient.Assets.ghsettings.json";
-        public const int MainCanvasAnimationFrequency = 40;
-        public const uint MainCanvasAnimationInterval = 25;
-        public const int GameAnimationRefreshRate = 40;
         public const int MaxRefreshRate = 120;
         public const int PollingFrequency = 60;
         public const int PollingInterval = 15;
         public const bool IsGPUDefault = true;
         public const double DefaultTextWindowMaxWidth = 600.0;
-        public const double WindowHideIntervals = 3.0;
+        public const double WindowHideIntervals = 4.0;
         public const uint MainCanvasAnimationTime = 250;
         public const uint AuxiliaryCanvasAnimationTime = 240;
         public const float MenuDefaultRowHeight = 30.0f;

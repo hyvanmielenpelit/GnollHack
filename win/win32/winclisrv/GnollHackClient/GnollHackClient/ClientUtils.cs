@@ -50,7 +50,7 @@ namespace GnollHackClient
                     res = revertblackwhite ? SKColors.Green : GHGreen;
                     break;
                 case nhcolor.CLR_BROWN:
-                    if(usealtcolors)
+                    if (usealtcolors)
                         res = GHTitleGold;
                     else
                         res = revertblackwhite ? SKColors.Brown : GHBrown;
@@ -121,7 +121,7 @@ namespace GnollHackClient
                     res = revertblackandwhite ? Color.Green : XGreen;
                     break;
                 case nhcolor.CLR_BROWN:
-                    if(usealtcolors)
+                    if (usealtcolors)
                         res = XTitleGoldColor;
                     else
                         res = revertblackandwhite ? Color.Brown : XBrown;
@@ -645,7 +645,7 @@ namespace GnollHackClient
                     }
 
                     int spacecnt = 0;
-                    for(int i = 0; i < psi.Text.Length; i++)
+                    for (int i = 0; i < psi.Text.Length; i++)
                     {
                         char ch = psi.Text[i];
                         if (ch == ' ')
@@ -808,7 +808,7 @@ namespace GnollHackClient
             else if (App.DisplayRefreshRate >= 20.0f && mapRefreshRate >= MapRefreshRateStyle.MapFPS20)
                 return 20;
             else
-                return GHConstants.MainCanvasAnimationFrequency;
+                return 40;
         }
 
         public static MapRefreshRateStyle GetDefaultMapFPS()
@@ -838,6 +838,12 @@ namespace GnollHackClient
                 return 90;
             else
                 return 60;
+        }
+
+
+        public static double GetWindowHideSecs()
+        {
+            return 0.05 + ((double)GHConstants.PollingInterval) / 1000 * GHConstants.WindowHideIntervals;
         }
     }
 }

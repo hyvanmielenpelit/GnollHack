@@ -12,7 +12,7 @@ namespace GnollHackClient
         private DisplayConditionTextData _data;
         private long _created_at_count;
         private GamePage _gamePage;
-        private int _animationFrequency = GHConstants.MainCanvasAnimationFrequency;
+        private int _animationFrequency;
 
         public GHConditionText(DisplayConditionTextData data, long created_at_count, GamePage gamePage)
         {

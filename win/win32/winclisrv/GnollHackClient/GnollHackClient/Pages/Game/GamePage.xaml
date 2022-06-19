@@ -18,17 +18,6 @@
     
     <ContentPage.Content>
         <Grid x:Name="RootGrid" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Black">
-            <Grid x:Name="LoadingGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
-                <ff:CachedImage Source="resource://GnollHackClient.Assets.dgn_entrance.jpg" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
-                                Aspect="AspectFill" />
-                <StackLayout HeightRequest="150" WidthRequest="250" HorizontalOptions="Center" VerticalOptions="Center">
-                    <Label x:Name="LoadingLabel" Text="Loading..." FontFamily="Diablo" TextColor="White" FontSize="36"
-                       HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" 
-                       VerticalOptions="End" VerticalTextAlignment="Center"/>
-                    <ProgressBar x:Name="LoadingProgressBar" HorizontalOptions="Fill" VerticalOptions="Start" 
-                                 ProgressColor="LightBlue" Progress="0" />
-                </StackLayout>
-            </Grid>
             <Grid x:Name="MainGrid" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsVisible="false" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -363,6 +352,17 @@
                                           Touch="TipView_Touch"
                                           AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
                                           AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional"/>
-         </Grid>
+            <Grid x:Name="LoadingGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+                <ff:CachedImage Source="resource://GnollHackClient.Assets.dgn_entrance.jpg" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+                                Aspect="AspectFill" />
+                <StackLayout HeightRequest="150" WidthRequest="250" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label x:Name="LoadingLabel" Text="Loading..." FontFamily="Diablo" TextColor="White" FontSize="36"
+                       HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" 
+                       VerticalOptions="End" VerticalTextAlignment="Center"/>
+                    <ProgressBar x:Name="LoadingProgressBar" HorizontalOptions="Fill" VerticalOptions="Start" 
+                                 ProgressColor="LightBlue" Progress="0" />
+                </StackLayout>
+            </Grid>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
