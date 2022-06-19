@@ -22,10 +22,25 @@
                        HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="Gray" />
 
                 <Label x:Name="lblError" HorizontalOptions="CenterAndExpand" Text="" />
-                <Grid WidthRequest="320" HeightRequest="60" HorizontalOptions="Center">
-                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320"  HeightRequest="60"  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill" />
-                    <Button x:Name="btnOK" Text="OK" WidthRequest="320" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
+                <Grid x:Name="MenuCloseGrid" BackgroundColor="Transparent" HorizontalOptions="CenterAndExpand" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0" WidthRequest="215" HeightRequest="60" HorizontalOptions="End">
+                        <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="215"  HeightRequest="60"  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                        <Button x:Name="btnOK" Text="OK" WidthRequest="215" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="btnOK_Clicked" />
+                    </Grid>
+                    <Grid Grid.Column="1" WidthRequest="215" HeightRequest="60" HorizontalOptions="Start">
+                        <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="215"  HeightRequest="60"  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                        <Button x:Name="btnCancel" Text="Cancel" WidthRequest="215" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" TextColor="White"
+                        Clicked="btnCancel_Clicked" />
+                    </Grid>
                 </Grid>
             </StackLayout>
         </Grid>

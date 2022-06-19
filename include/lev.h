@@ -97,6 +97,7 @@ struct save_game_stats {
 
 struct save_game_data {
     char* playername;
+    boolean is_running;
     struct save_game_stats gamestats;
 };
 

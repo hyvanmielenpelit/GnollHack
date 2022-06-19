@@ -99,5 +99,16 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+        private async void btnCancel_Clicked(object sender, EventArgs e)
+        {
+            App.IsServerGame = false;
+            ConcurrentQueue<GHResponse> queue;
+            char retval = (char)27;
+            if (ClientGame.ResponseDictionary.TryGetValue(_clientGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(_clientGame, GHRequestType.AskName, retval.ToString()));
+                await _gamePage.Navigation.PopModalAsync();
+            }
+        }
     }
 }

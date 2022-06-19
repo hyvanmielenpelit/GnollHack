@@ -118,26 +118,71 @@ void lib_player_selection(void)
 
 void lib_askname(void)
 {
+    char* name = 0;
+
 #ifdef SELECTSAVED
     if (iflags.wc2_selectsaved && !iflags.renameinprogress)
     {
-        switch (restore_menu(WIN_ERR))
+        do
         {
-        case -1:
-            lib_bail("Until next time then..."); /* quit */
-            /*NOTREACHED*/
-            return;
-        case 0:
-            break; /* no game chosen; start new game */
-        case 1:
-            return; /* plname[] has been set */
-        }
+            boolean repeataskname = FALSE;
+            switch (restore_menu(WIN_ERR))
+            {
+            case -1:
+                lib_bail("Until next time then..."); /* quit */
+                /*NOTREACHED*/
+                return;
+            case 0: /* no game chosen; start new game */
+                do
+                {
+                    name = lib_callbacks.callback_askname();
+                    if (name && *name != 0 && *name != 27)
+                    {
+                        strncpy(plname, name, PL_NSIZ - 1);
+                        plname[PL_NSIZ - 1] = '\0';
+                        if (check_saved_game_exists())
+                        {
+                            char qbuf[BUFSZ] = "";
+                            Sprintf(qbuf, "There is already a saved file for a character named \'%s\'. Do you want to overwrite the save file and delete the existing character?", plname);
+                            char ans = lib_yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_RED, NO_GLYPH, "Overwrite Existing Character?",
+                                qbuf, "ynq", 'n', "Yes\nNo\nQuit", 0UL);
+                            if (ans == 'y')
+                            {
+                                set_savefile_name(TRUE);
+                                delete_savefile();
+                                return;
+                            }
+                            else
+                            {
+                                name = 0;
+                                *plname = 0;
+                                if (ans == 'n')
+                                    repeataskname = TRUE;
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                } while (repeataskname);
+                break;
+            case 1:
+                return; /* plname[] has been set */
+            }
+        } while (name == 0 || *name == 0 || *name == 27);
+        return;
     }
 #endif /* SELECTSAVED */
 
-    char* name = lib_callbacks.callback_askname();
-    strncpy(plname, name, PL_NSIZ - 1);
-    plname[PL_NSIZ - 1] = '\0';
+    name = lib_callbacks.callback_askname();
+    if (name == 0 || *name == 0 || *name == 27)
+        lib_bail("Until next time then..."); /* quit */
+    else
+    {
+        strncpy(plname, name, PL_NSIZ - 1);
+        plname[PL_NSIZ - 1] = '\0';
+    }
 }
 
 void lib_get_nh_event(void)

@@ -1573,8 +1573,7 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
                 int i;
                 for (i = 1; i <= 4; ++i)
                     putstr(bannerwin, 0, copyright_banner_line(i));
-                if(repeat)
-                    putstr(bannerwin, 0, "");
+                putstr(bannerwin, 0, "");
             }
         }
 
@@ -1792,6 +1791,28 @@ struct save_game_data* saved;
 }
 
 #endif /* SELECTSAVED */
+
+boolean
+check_saved_game_exists(void)
+{
+    struct save_game_data* saved = get_saved_games(); /* array of character names */
+    if (saved)
+    {
+        int i = 0;
+        while (saved[i].playername)
+        {
+            if (!strcmp(saved[i].playername, plname) && !saved[i].is_running)
+            {
+                free_saved_games(saved);
+                return TRUE;
+            }
+            i++;
+        }
+    }
+    free_saved_games(saved);
+    return FALSE;
+}
+
 
 void
 minit()

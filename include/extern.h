@@ -1158,10 +1158,12 @@ E void FDECL(testinglog, (const char *, const char *, const char *));
 E int FDECL(validate_prefix_locations, (char *));
 #ifdef SELECTSAVED
 E char *FDECL(plname_from_file, (const char *, struct save_game_stats*));
-E struct save_game_data FDECL(newsavegamedata, (char*, struct save_game_stats));
+E struct save_game_data FDECL(newsavegamedata, (char*, struct save_game_stats, BOOLEAN_P));
 #endif
 E struct save_game_data *NDECL(get_saved_games);
 E void FDECL(free_saved_games, (struct save_game_data *));
+E boolean NDECL(check_saved_game_exists);
+
 #ifdef SELF_RECOVER
 E boolean NDECL(recover_savefile);
 #endif

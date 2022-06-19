@@ -1087,12 +1087,14 @@ restore_saved_game()
 
 #if defined(SELECTSAVED)
 struct save_game_data 
-newsavegamedata(playername, gamestats)
+newsavegamedata(playername, gamestats, is_running)
 char* playername;
 struct save_game_stats gamestats;
+boolean is_running;
 {
     struct save_game_data svgd = { 0 };
     svgd.playername = playername;
+    svgd.is_running = is_running;
     svgd.gamestats = gamestats;
     return svgd;
 }
@@ -1235,7 +1237,7 @@ get_saved_games()
                     char *r;
                     r = plname_from_file(foundfile, &gamestats);
                     if (r)
-                        result[j++] = newsavegamedata(r, gamestats);
+                        result[j++] = newsavegamedata(r, gamestats, FALSE);
                     ++n;
                 } while (findnext());
             }
@@ -1273,7 +1275,7 @@ get_saved_games()
                         Sprintf(filename, "save/%d%s", uid, name);
                         r = plname_from_file(filename, &gamestats);
                         if (r)
-                            result[j++] = newsavegamedata(r, gamestats);
+                            result[j++] = newsavegamedata(r, gamestats, FALSE);
                     }
                 }
             }
@@ -1303,7 +1305,7 @@ get_saved_games()
                 r = plname_from_file(filename, &gamestats);
                 if (r)
                 {
-                    result[j++] = newsavegamedata(r, gamestats);
+                    result[j++] = newsavegamedata(r, gamestats, FALSE);
                 }
             }
         }
@@ -1314,7 +1316,7 @@ get_saved_games()
                 char* r;
                 r = plname_from_running(namelist2[i]->d_name, &gamestats);
                 if (r)
-                    result[j++] = newsavegamedata(r, gamestats);
+                    result[j++] = newsavegamedata(r, gamestats, TRUE);
             }
         }
     }

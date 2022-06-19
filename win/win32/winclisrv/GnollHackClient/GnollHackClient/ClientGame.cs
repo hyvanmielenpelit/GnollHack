@@ -367,6 +367,7 @@ namespace GnollHackClient
         {
             Debug.WriteLine("ClientCallback_AskName");
             ConcurrentQueue<GHRequest> queue;
+            CharacterName = "";
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.AskName));
