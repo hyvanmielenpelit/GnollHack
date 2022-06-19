@@ -182,7 +182,7 @@ namespace GnollHackClient
             float separatorwidth = textPaint.MeasureText(separatorstr);
             float width = 0;
             string word;
-            string ending = DisplayWrapSeparator && separator != ' ' ? separator.ToString() : "";
+            string ending = displayseparator && separator != ' ' ? separator.ToString() : "";
             string currentrowstr = "";
 
             for (int i = 0; i < text.Length; i++)
@@ -204,7 +204,7 @@ namespace GnollHackClient
                     }
                     currentrowstr += word;
                     totalWidth += width;
-                    if(DisplayWrapSeparator && c == separator)
+                    if(displayseparator && c == separator)
                     {
                         currentrowstr += separator.ToString();
                         totalWidth += separatorwidth;
