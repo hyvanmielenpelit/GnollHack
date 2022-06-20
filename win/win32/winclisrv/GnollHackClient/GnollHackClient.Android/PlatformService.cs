@@ -121,10 +121,10 @@ namespace GnollHackClient.Droid
         {
             var resolver = Android.App.Application.Context.ContentResolver;
             var scaleName = Android.Provider.Settings.Global.AnimatorDurationScale;
-            float scale = Android.Provider.Settings.Global.GetFloat(resolver, scaleName, 1);
+            float scale = Android.Provider.Settings.Global.GetFloat(resolver, scaleName, 1.0f);
 
-            //if (scale > 0)
-            //    return;
+            if (scale == 1.0f)
+                return;
 
             if (!_originalSet)
             {
@@ -146,7 +146,7 @@ namespace GnollHackClient.Droid
         }
         public void RevertAnimationDuration(bool isfinal)
         {
-            if (_originalSet)
+            if (_originalSet && _originalAnimationDurationScale != 1.0f)
             {
                 try
                 {
