@@ -121,7 +121,7 @@ namespace GnollHackClient.Droid
         {
             var resolver = Android.App.Application.Context.ContentResolver;
             var scaleName = Android.Provider.Settings.Global.AnimatorDurationScale;
-            float scale = Android.Provider.Settings.Global.GetFloat(resolver, scaleName, 0);
+            float scale = Android.Provider.Settings.Global.GetFloat(resolver, scaleName, 1);
 
             if (scale > 0)
                 return;
