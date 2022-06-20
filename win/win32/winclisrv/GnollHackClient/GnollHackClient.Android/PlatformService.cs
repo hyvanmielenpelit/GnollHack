@@ -78,7 +78,7 @@ namespace GnollHackClient.Droid
 
         public void CloseApplication()
         {
-            RevertAnimationDuration();
+            RevertAnimationDuration(true);
             MainActivity.CurrentMainActivity.Finish();
         }
 
@@ -123,8 +123,8 @@ namespace GnollHackClient.Droid
             var scaleName = Android.Provider.Settings.Global.AnimatorDurationScale;
             float scale = Android.Provider.Settings.Global.GetFloat(resolver, scaleName, 1);
 
-            if (scale > 0)
-                return;
+            //if (scale > 0)
+            //    return;
 
             if (!_originalSet)
             {
@@ -144,7 +144,7 @@ namespace GnollHackClient.Droid
                 //Debug.WriteLine(ex.Message);
             }
         }
-        public void RevertAnimationDuration()
+        public void RevertAnimationDuration(bool isfinal)
         {
             if (_originalSet)
             {
@@ -153,7 +153,8 @@ namespace GnollHackClient.Droid
                     var classForName = JNIEnv.FindClass("android/animation/ValueAnimator");
                     var methodId = JNIEnv.GetStaticMethodID(classForName, "setDurationScale", "(F)V");
 
-                    JNIEnv.CallStaticVoidMethod(classForName, methodId, new JValue(_originalAnimationDurationScale));
+                    float usedValue = !isfinal && _originalAnimationDurationScale == 0 ? 0.1f : _originalAnimationDurationScale; //Make sure that the value is not set to zero upon sleep just in case, since that seems to create problems
+                    JNIEnv.CallStaticVoidMethod(classForName, methodId, new JValue(usedValue));
                 }
                 catch //(Exception ex)
                 {

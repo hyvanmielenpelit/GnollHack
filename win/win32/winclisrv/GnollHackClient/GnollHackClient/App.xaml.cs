@@ -99,16 +99,14 @@ namespace GnollHackClient
 
         protected override void OnSleep()
         {
-            //if (PlatformService != null)
-            //    PlatformService.RevertAnimationDuration();
+            if (PlatformService != null)
+                PlatformService.RevertAnimationDuration(false);
         }
 
         protected override void OnResume()
         {
             if (PlatformService != null)
-            {
                 PlatformService.OverrideAnimationDuration();
-            }
         }
 
         public static void GetDependencyServices()

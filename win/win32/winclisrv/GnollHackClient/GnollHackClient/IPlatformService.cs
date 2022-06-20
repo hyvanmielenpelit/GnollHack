@@ -14,7 +14,7 @@ namespace GnollHackClient
         void SetStatusBarHidden(bool ishidden);
         bool GetStatusBarHidden();
         void OverrideAnimationDuration();
-        void RevertAnimationDuration();
+        void RevertAnimationDuration(bool isfinal);
 
         //void SaveFileToDownloads(byte[] data, string name);
     }

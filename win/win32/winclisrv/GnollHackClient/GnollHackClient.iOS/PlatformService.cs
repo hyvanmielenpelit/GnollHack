@@ -62,7 +62,7 @@ namespace GnollHackClient.iOS
 
         public void CloseApplication()
         {
-            RevertAnimationDuration();
+            RevertAnimationDuration(true);
             //MainActivity.CurrentMainActivity.Finish();
         }
 
@@ -103,7 +103,7 @@ namespace GnollHackClient.iOS
         {
 
         }
-        public void RevertAnimationDuration()
+        public void RevertAnimationDuration(bool isfinal)
         {
 
         }
