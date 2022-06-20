@@ -1235,7 +1235,7 @@ int* spell_no;
         char subbuf[BUFSZ];
         if (splaction == SPELLMENU_CAST)
         {
-            Strcpy(subbuf, "&success; Success-%, &mana; Mana Cost, &cool; Cooldown, &casts; Casts Left");
+            Strcpy(subbuf, "&success; Success %, &mana; Mana Cost, &cool; Cooldown, &casts; Casts Left");
         }
         else
         {

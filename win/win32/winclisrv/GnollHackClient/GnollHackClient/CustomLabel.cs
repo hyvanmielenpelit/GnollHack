@@ -156,6 +156,9 @@ namespace GnollHackClient
 
         float CalculateTextPartWidth(string textPart, SKPaint textPaint)
         {
+            if(textPart == null || textPart == "")
+                return 0;
+
             SKBitmap symbolbitmap;
             if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart)) != null)
             {
@@ -183,6 +186,7 @@ namespace GnollHackClient
             float width = 0;
             string word;
             string ending = displayseparator && separator != ' ' ? separator.ToString() : "";
+            float ending_width = ending != "" ? textPaint.MeasureText(ending) : 0;
             string currentrowstr = "";
 
             for (int i = 0; i < text.Length; i++)
@@ -194,14 +198,26 @@ namespace GnollHackClient
                 if(c == separator || c == '\n')
                 {
                     word = text.Substring(wordstartidx, i - wordstartidx);
-                    width = CalculateTextPartWidth(word + ending, textPaint);
-                    if (width + totalWidth > widthConstraint && currentrowstr != "")
+                    width = CalculateTextPartWidth(word, textPaint);
+                    if (width + ending_width + totalWidth > widthConstraint && currentrowstr != "")
                     {
                         string row = currentrowstr;
                         result.Add(row);
                         totalWidth = 0;
                         currentrowstr = "";
                     }
+
+                    //Clear out separators and spaces from the start of the row with automatic word wrap
+                    if (currentrowstr == "")
+                    {
+                        int startIdx = 0;
+                        while (startIdx < word.Length && (word[startIdx] == ' ' || word[startIdx] == separator))
+                            startIdx++;
+
+                        word = word.Substring(startIdx);
+                        width = CalculateTextPartWidth(word, textPaint);
+                    }
+
                     currentrowstr += word;
                     totalWidth += width;
                     if(displayseparator && c == separator)
@@ -217,13 +233,6 @@ namespace GnollHackClient
                         currentrowstr = "";
                     }
                     wordstartidx = i + 1;
-
-                    //Clear out separators and spaces from the start of the row
-                    if(currentrowstr == "")
-                    {
-                        while (wordstartidx < text.Length - 1 && (text[wordstartidx] == ' ' || text[wordstartidx] == separator))
-                            wordstartidx++;
-                    }
                 }
                 else
                 {
@@ -238,6 +247,16 @@ namespace GnollHackClient
                             result.Add(row);
                             totalWidth = 0;
                             currentrowstr = "";
+                        }
+                        //Clear out separators and spaces from the start of the row with automatic word wrap
+                        if (currentrowstr == "")
+                        {
+                            int startIdx = 0;
+                            while (startIdx < word.Length && (word[startIdx] == ' ' || word[startIdx] == separator))
+                                startIdx++;
+
+                            word = word.Substring(startIdx);
+                            //width = CalculateTextPartWidth(word, textPaint);
                         }
                         row = currentrowstr + word;
                         result.Add(row);
@@ -264,7 +283,6 @@ namespace GnollHackClient
                     textPaint.Style = SKPaintStyle.Stroke;
                     textPaint.StrokeWidth = (float)OutlineWidth * scale;
                 }
-                SKRect bounds = new SKRect();
                 string[] textRows = SplitTextWithConstraint(Text, widthConstraint, textPaint);
                 foreach (string textRow in textRows)
                 {
@@ -293,7 +311,7 @@ namespace GnollHackClient
                         else
                         {
                             string measuredString = cnt == textParts.Length - 1 ? textPart : textPart + " ";
-                            float width = textPaint.MeasureText(measuredString, ref bounds);
+                            float width = textPaint.MeasureText(measuredString);
                             totalwidth += width;
                         }
                         cnt++;

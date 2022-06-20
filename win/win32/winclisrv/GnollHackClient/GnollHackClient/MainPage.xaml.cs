@@ -154,6 +154,20 @@ namespace GnollHackClient
 
         }
 
+        public async Task TryReadSecrets()
+        {
+            try
+            {
+                App.ReadSecrets();
+                Array.Sort<SecretsFile>(App.CurrentSecrets.files, new SecretsFileSizeComparer());
+
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Reading Secrets File Failed", "GnollHack failed to read secrets file: " + ex.Message, "OK");
+            }
+        }
+
         public async Task TryInitializeGnollHack()
         {
             try
@@ -216,9 +230,12 @@ namespace GnollHackClient
 
         private async Task StartUpTasks()
         {
+            await TryReadSecrets();
             await InitializeServices();
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
+            App.InitAdditionalTypefaces(assembly);
+            App.InitSymbolBitmaps(assembly);
             App.InitGameBitmaps(assembly);
 
             string verstr = "?";

@@ -141,7 +141,7 @@ namespace GnollHackClient.Droid
             }
             catch //(Exception ex)
             {
-                // Log Error
+                //Debug.WriteLine(ex.Message);
             }
         }
         public void RevertAnimationDuration()

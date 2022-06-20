@@ -40,8 +40,7 @@ namespace GnollHackClient
             App.GetDependencyServices();
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            App.InitTypefaces(assembly);
-            App.InitBaseBitmaps(assembly);
+            App.InitBaseTypefaces(assembly);
 
             var mainPage = new MainPage();
             var navPage = new NavigationPage(mainPage);
@@ -59,8 +58,6 @@ namespace GnollHackClient
             App.ShowSpecialEffect = Preferences.Get("ShowSpecialEffect", false);
             App.LoadBanks = Preferences.Get("LoadSoundBanks", true);
 
-            App.ReadSecrets();
-            Array.Sort<SecretsFile>(App.CurrentSecrets.files, new SecretsFileSizeComparer());
             App.BackButtonPressed += App.EmptyBackButtonPressed;
         }
 
@@ -258,7 +255,7 @@ namespace GnollHackClient
                 return LatoRegular;
         }
 
-        public static void InitTypefaces(Assembly assembly)
+        public static void InitBaseTypefaces(Assembly assembly)
         {
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.diablo_h.ttf"))
             {
@@ -271,7 +268,7 @@ namespace GnollHackClient
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex.Message);    
+                        Debug.WriteLine(ex.Message);
                     }
                 }
             }
@@ -290,22 +287,6 @@ namespace GnollHackClient
                     }
                 }
             }
-
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.endr.ttf"))
-            {
-                if (stream != null)
-                {
-                    try
-                    {
-                        App.EndorTypeface = SKTypeface.FromStream(stream);
-                        App.TypefaceDictionary.Add("Endor", App.EndorTypeface);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
             using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.Immortal-Regular.ttf"))
             {
                 if (stream != null)
@@ -314,6 +295,40 @@ namespace GnollHackClient
                     {
                         App.ImmortalTypeface = SKTypeface.FromStream(stream);
                         App.TypefaceDictionary.Add("Immortal", App.ImmortalTypeface);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+            }
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.archristy.ttf"))
+            {
+                if (stream != null)
+                {
+                    try
+                    {
+                        App.ARChristyTypeface = SKTypeface.FromStream(stream);
+                        App.TypefaceDictionary.Add("ARChristy", App.ARChristyTypeface);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+            }
+        }
+
+        public static void InitAdditionalTypefaces(Assembly assembly)
+        {
+            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.endr.ttf"))
+            {
+                if (stream != null)
+                {
+                    try
+                    {
+                        App.EndorTypeface = SKTypeface.FromStream(stream);
+                        App.TypefaceDictionary.Add("Endor", App.EndorTypeface);
                     }
                     catch (Exception ex)
                     {
@@ -389,21 +404,6 @@ namespace GnollHackClient
                     {
                         App.LatoBold = SKTypeface.FromStream(stream);
                         App.TypefaceDictionary.Add("Lato-Bold", App.LatoBold);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-            using (Stream stream = assembly.GetManifestResourceStream("GnollHackClient.Assets.archristy.ttf"))
-            {
-                if (stream != null)
-                {
-                    try
-                    {
-                        App.ARChristyTypeface = SKTypeface.FromStream(stream);
-                        App.TypefaceDictionary.Add("ARChristy", App.ARChristyTypeface);
                     }
                     catch (Exception ex)
                     {
@@ -487,7 +487,7 @@ namespace GnollHackClient
         private static SKBitmap _spellNecromancyBitmap;
         private static SKBitmap _spellTransmutationBitmap;
 
-        public static void InitBaseBitmaps(Assembly assembly)
+        public static void InitSymbolBitmaps(Assembly assembly)
         {
             try
             {
