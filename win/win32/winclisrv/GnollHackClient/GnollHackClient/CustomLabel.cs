@@ -208,7 +208,7 @@ namespace GnollHackClient
                 {
                     word = text.Substring(wordstartidx, i - wordstartidx);
                     width = CalculateTextPartWidth(word, textPaint);
-                    if (width + ending_width + totalWidth > widthConstraint && currentrowstr != "")
+                    if (width + (c == '\n' ? 0 : ending_width) + totalWidth > widthConstraint && currentrowstr != "")
                     {
                         string row = currentrowstr;
                         result.Add(row);
