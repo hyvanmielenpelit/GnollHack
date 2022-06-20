@@ -139,13 +139,13 @@
             <Grid x:Name="MenuGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
                 <gnollhackclient:BackgroundView x:Name="MenuBackground" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <StackLayout x:Name="menuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical"  BackgroundColor="Transparent">
-                    <Label x:Name="MenuHeaderLabel"
+                    <gnollhackclient:CustomLabel x:Name="MenuHeaderLabel"
                        FontFamily="{Binding MenuHeaderFontFamily}" FontSize="{Binding MenuHeaderFontSize}" TextColor="Black" FontAttributes="Bold" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
-                        <Label.GestureRecognizers>
+                        <gnollhackclient:CustomLabel.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
-                        </Label.GestureRecognizers>
-                    </Label>
+                        </gnollhackclient:CustomLabel.GestureRecognizers>
+                    </gnollhackclient:CustomLabel>
                     <gnollhackclient:CustomLabel x:Name="MenuSubtitleLabel" UseSpecialSymbols="False"
                        FontFamily="{Binding MenuSubtitleFontFamily}" FontSize="{Binding MenuSubtitleFontSize}" TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">

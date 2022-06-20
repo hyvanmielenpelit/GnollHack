@@ -27,6 +27,7 @@ namespace GnollHackClient
         private bool _guiTipsFinished = false;
         private bool _panicFinished = false;
         private bool _messageFinished = false;
+        private bool _characternameSet = false;
         private string _characterName = "";
         private object _characterNameLock = new object();
         private GamePage _gamePage;
@@ -83,6 +84,7 @@ namespace GnollHackClient
                     {
                         case GHRequestType.AskName:
                             CharacterName = response.ResponseStringValue;
+                            _characternameSet = true;
                             break;
                         case GHRequestType.GetChar:
                             _inputBufferLocation++;
@@ -367,11 +369,12 @@ namespace GnollHackClient
         {
             Debug.WriteLine("ClientCallback_AskName");
             ConcurrentQueue<GHRequest> queue;
+            _characternameSet = false;
             CharacterName = "";
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.AskName));
-                while (string.IsNullOrEmpty(CharacterName))
+                while (!_characternameSet)
                 {
                     Thread.Sleep(GHConstants.PollingInterval);
                     pollResponseQueue();

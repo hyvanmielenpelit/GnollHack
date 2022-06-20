@@ -58,12 +58,21 @@ namespace GnollHackClient
         }
 
         public static readonly BindableProperty FontFamilyProperty = BindableProperty.Create(
-            "FontFamily", typeof(CustomLabelFonts), typeof(CustomLabel), CustomLabelFonts.Diablo);
+            "FontFamily", typeof(string), typeof(CustomLabel), "Diablo");
 
-        public CustomLabelFonts FontFamily
+        public string FontFamily
         {
-            get { return (CustomLabelFonts)GetValue(FontFamilyProperty); }
+            get { return (string)GetValue(FontFamilyProperty); }
             set { SetValue(FontFamilyProperty, value); UpdateLabel(); }
+        }
+
+        public static readonly BindableProperty FontAttributesProperty = BindableProperty.Create(
+            "FontAttributes", typeof(FontAttributes), typeof(CustomLabel), FontAttributes.None);
+
+        public FontAttributes FontAttributes
+        {
+            get { return (FontAttributes)GetValue(FontAttributesProperty); }
+            set { SetValue(FontAttributesProperty, value); UpdateLabel(); }
         }
 
         public static readonly BindableProperty FontSizeProperty = BindableProperty.Create(
@@ -357,10 +366,29 @@ namespace GnollHackClient
             return new SizeRequest(new Size(wr, hr));
         }
 
+        Dictionary<string, CustomLabelFonts> _fontDictionary = new Dictionary<string, CustomLabelFonts>
+        {
+            {"Diablo", CustomLabelFonts.Diablo },
+            {"Immortal", CustomLabelFonts.Immortal },
+            {"Endor", CustomLabelFonts.Endor },
+            {"Xizor", CustomLabelFonts.Xizor },
+            {"Underwood", CustomLabelFonts.Underwood },
+            {"DejaVuSansMono", CustomLabelFonts.DejaVuSansMono },
+            {"DejaVuSansMonoBold", CustomLabelFonts.DejaVuSansMonoBold },
+            {"LatoRegular", CustomLabelFonts.LatoRegular },
+            {"LatoBold", CustomLabelFonts.LatoBold },
+            {"ARChristy", CustomLabelFonts.ARChristy },
+        };
+
         private SKTypeface GetFontTypeface()
         {
             SKTypeface tf = App.DiabloTypeface;
-            switch (FontFamily)
+            CustomLabelFonts clf;
+            bool success = _fontDictionary.TryGetValue(FontFamily, out clf);
+            if (!success)
+                clf = CustomLabelFonts.Diablo;
+
+            switch (clf)
             {
                 default:
                 case CustomLabelFonts.Diablo:
@@ -379,13 +407,13 @@ namespace GnollHackClient
                     tf = App.UnderwoodTypeface;
                     break;
                 case CustomLabelFonts.DejaVuSansMono:
-                    tf = App.DejaVuSansMonoTypeface;
+                    tf = FontAttributes == FontAttributes.Bold ? App.DejaVuSansMonoBoldTypeface : App.DejaVuSansMonoTypeface;
                     break;
                 case CustomLabelFonts.DejaVuSansMonoBold:
                     tf = App.DejaVuSansMonoBoldTypeface;
                     break;
                 case CustomLabelFonts.LatoRegular:
-                    tf = App.LatoRegular;
+                    tf = FontAttributes == FontAttributes.Bold ? App.LatoBold : App.LatoRegular;
                     break;
                 case CustomLabelFonts.LatoBold:
                     tf = App.LatoBold;
