@@ -2095,9 +2095,41 @@ namespace GnollHackClient.Pages.Game
             }
 
             App.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas Start");
-
             MenuTouchDictionary.Clear();
 
+            /* Set headers */
+            if (menuinfo.Header == null)
+            {
+                MenuHeaderLabel.IsVisible = true;
+                MenuHeaderLabel.Text = " ";
+                MenuHeaderLabel.FontFamily = ClientUtils.MenuHeaderFontFamily(menuinfo.Style);
+                MenuHeaderLabel.FontSize = ClientUtils.MenuHeaderFontSize(menuinfo.Style);
+            }
+            else
+            {
+                MenuHeaderLabel.IsVisible = true;
+                MenuHeaderLabel.Text = menuinfo.Header;
+                MenuHeaderLabel.FontFamily = ClientUtils.MenuHeaderFontFamily(menuinfo.Style);
+                MenuHeaderLabel.FontSize = ClientUtils.MenuHeaderFontSize(menuinfo.Style);
+            }
+
+            if (menuinfo.Subtitle == null)
+            {
+                MenuSubtitleLabel.IsVisible = false;
+                MenuSubtitleLabel.Text = "";
+            }
+            else
+            {
+                MenuSubtitleLabel.IsVisible = true;
+                MenuSubtitleLabel.Text = menuinfo.Subtitle;
+                MenuSubtitleLabel.FontFamily = ClientUtils.MenuSubtitleFontFamily(menuinfo.Style);
+                MenuSubtitleLabel.FontSize = ClientUtils.MenuSubtitleFontSize(menuinfo.Style);
+                MenuSubtitleLabel.UseSpecialSymbols = ClientUtils.MenuSubtitleUsesSpecialSymbols(menuinfo.Style);
+                MenuSubtitleLabel.WordWrapSeparator = ClientUtils.MenuSubtitleWordWrapSeparator(menuinfo.Style);
+                MenuSubtitleLabel.DisplayWrapSeparator = ClientUtils.MenuSubtitleDisplayWrapSeparator(menuinfo.Style);
+            }
+
+            /* Reset glyph */
             MenuWindowGlyphImage.Source = null;
 
             _menuGlyphImageSource.ReferenceGamePage = this;
@@ -2109,6 +2141,7 @@ namespace GnollHackClient.Pages.Game
             MenuWindowGlyphImage.Source = MenuGlyphImage;
             MenuWindowGlyphImage.IsVisible = IsMenuGlyphVisible;
 
+            /* Update canvas */
             MenuCanvas.GHWindow = ghwindow;
             MenuCanvas.MenuStyle = menuinfo.Style;
             MenuCanvas.SelectionHow = menuinfo.SelectionHow;
@@ -2125,37 +2158,6 @@ namespace GnollHackClient.Pages.Game
                         MenuCanvas.SelectionIndex = idx;
                     }
                 }
-            }
-
-            if (menuinfo.Header == null)
-            {
-                MenuHeaderLabel.IsVisible = true;
-                MenuHeaderLabel.Text = " ";
-                MenuHeaderLabel.FontFamily = ClientUtils.MenuHeaderFontFamily(MenuCanvas.MenuStyle);
-                MenuHeaderLabel.FontSize = ClientUtils.MenuHeaderFontSize(MenuCanvas.MenuStyle);
-            }
-            else
-            {
-                MenuHeaderLabel.IsVisible = true;
-                MenuHeaderLabel.Text = menuinfo.Header;
-                MenuHeaderLabel.FontFamily = ClientUtils.MenuHeaderFontFamily(MenuCanvas.MenuStyle);
-                MenuHeaderLabel.FontSize = ClientUtils.MenuHeaderFontSize(MenuCanvas.MenuStyle);
-            }
-
-            if (menuinfo.Subtitle == null)
-            {
-                MenuSubtitleLabel.IsVisible = false;
-                MenuSubtitleLabel.Text = "";
-            }
-            else
-            {
-                MenuSubtitleLabel.IsVisible = true;
-                MenuSubtitleLabel.Text = menuinfo.Subtitle;
-                MenuSubtitleLabel.FontFamily = ClientUtils.MenuSubtitleFontFamily(MenuCanvas.MenuStyle);
-                MenuSubtitleLabel.FontSize = ClientUtils.MenuSubtitleFontSize(MenuCanvas.MenuStyle);
-                MenuSubtitleLabel.UseSpecialSymbols = ClientUtils.MenuSubtitleUsesSpecialSymbols(menuinfo.Style);
-                MenuSubtitleLabel.WordWrapSeparator = ClientUtils.MenuSubtitleWordWrapSeparator(menuinfo.Style);
-                MenuSubtitleLabel.DisplayWrapSeparator = ClientUtils.MenuSubtitleDisplayWrapSeparator(menuinfo.Style);
             }
 
             ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
@@ -2181,6 +2183,7 @@ namespace GnollHackClient.Pages.Game
 
             MenuGrid.IsVisible = true;
             MainGrid.IsVisible = false;
+
             if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 canvasView.AbortAnimation("GeneralAnimationCounter");
             StartMenuCanvasAnimation();
