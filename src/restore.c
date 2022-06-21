@@ -1473,7 +1473,7 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
     anything any;
     struct save_game_data *saved;
     menu_item *chosen_action = (menu_item *) 0;
-    int k, ch = 0, ret = 0; /* ch: 0 => new game */
+    int ch = 0, ret = 0; /* ch: 0 => new game */
     boolean repeat = TRUE;
     boolean firsttime = TRUE;
 
@@ -1500,6 +1500,7 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
 
 #ifndef GNH_MOBILE
         /* COPYRIGHT_BANNER_[ABCD] */
+        int k;
         for (k = 1; k <= 4; ++k)
             add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
                 copyright_banner_line(k), MENU_UNSELECTED);

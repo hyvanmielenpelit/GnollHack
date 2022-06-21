@@ -1227,7 +1227,7 @@ const char *build_date;
     strcpy(betaflagbuf, "*");
 #endif
     if (EDITLEVEL > 0)
-        Sprintf(editbuf, "%d", EDITLEVEL % 10);
+        Sprintf(editbuf, "%d", EDITLEVEL > 20 ? EDITLEVEL - 20 : EDITLEVEL % 10);
     if (HOTFIXLEVEL > 0)
         Sprintf(hotfixbuf, " (Hot Fix %d)", HOTFIXLEVEL);
 
@@ -1274,7 +1274,7 @@ const char *build_date;
     strcpy(betaflagbuf, "*");
 #endif
     if (EDITLEVEL > 0)
-        Sprintf(editbuf, "%d", EDITLEVEL % 10);
+        Sprintf(editbuf, "%d", EDITLEVEL > 20 ? EDITLEVEL - 20 : EDITLEVEL % 10);
     if (HOTFIXLEVEL > 0)
         Sprintf(hotfixbuf, " (Hot Fix %d)", HOTFIXLEVEL);
 
