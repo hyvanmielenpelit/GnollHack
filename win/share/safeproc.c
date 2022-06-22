@@ -613,7 +613,7 @@ void
 safe_exit_hack(status)
 int status;
 {
-    exit(status);
+
 }
 
 

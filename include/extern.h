@@ -882,7 +882,7 @@ E void NDECL(port_help);
 E boolean NDECL(authorize_wizard_mode);
 #endif /* UNIX && GNH_MOBILE */
 
-/* ### unixunix.c ### */
+/* ### gnhunix.c ### */
 
 #if defined(UNIX) && defined(GNH_MOBILE)
 E void NDECL(getlock);

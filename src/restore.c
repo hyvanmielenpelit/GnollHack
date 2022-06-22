@@ -1485,7 +1485,8 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
         ch = ret = 0;
 
         if (firsttime && (!saved || !saved[0].playername))
-            break;
+            return 2; /* start new game straight; there's no menu to return to */
+
         firsttime = FALSE;
 
         tmpwin = create_nhwindow(NHW_MENU);

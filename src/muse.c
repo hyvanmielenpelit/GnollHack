@@ -1103,6 +1103,8 @@ struct monst *mtmp;
             mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 2 : 0));
         if (is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
+        if (is_mummy_rotted(mtmp))
+            mtmp->mprops[MUMMY_ROT] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
         if (vismon)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks much better.", Monnam(mtmp));
         if (oseen)
@@ -1119,6 +1121,8 @@ struct monst *mtmp;
             mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 3 : 0));
         if (is_blinded(mtmp))
             mcureblindness(mtmp, vismon);
+        if (is_mummy_rotted(mtmp))
+            mtmp->mprops[MUMMY_ROT] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
         if (vismon)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks much, much better.", Monnam(mtmp));
         if (oseen)
@@ -1134,6 +1138,8 @@ struct monst *mtmp;
         mtmp->mhp = (mtmp->mhpmax += (otmp->blessed ? 8 : 4));
         if (is_blinded(mtmp) && otmp->otyp != POT_SICKNESS)
             mcureblindness(mtmp, vismon);
+        if (is_mummy_rotted(mtmp) && otmp->otyp != POT_SICKNESS)
+            mtmp->mprops[MUMMY_ROT] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
         if (vismon)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s looks completely healed.", Monnam(mtmp));
         if (oseen)

@@ -228,7 +228,8 @@ int GnollHackMain(int argc, char** argv)
 	}
 	else
 	{
-		not_recovered: player_selection();
+	not_recovered: 
+		player_selection();
 		resuming = FALSE;
 
 		/* CHOOSE DIFFICULTY */

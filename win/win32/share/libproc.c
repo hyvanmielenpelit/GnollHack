@@ -126,12 +126,14 @@ void lib_askname(void)
         do
         {
             boolean repeataskname = FALSE;
-            switch (restore_menu(WIN_ERR))
+            int menures = restore_menu(WIN_ERR);
+            switch (menures)
             {
             case -1:
                 lib_bail("Until next time then..."); /* quit */
                 /*NOTREACHED*/
                 return;
+            case 2:
             case 0: /* no game chosen; start new game */
                 do
                 {
@@ -169,6 +171,11 @@ void lib_askname(void)
                         {
                             return;
                         }
+                    }
+                    else
+                    {
+                        if (menures == 2)
+                            lib_bail("Until next time then..."); // Cannot return to restore_menu, so terminate the program; otherwise the game will repeat askname until a name is given, which is not the intention
                     }
                 } while (repeataskname);
                 break;
@@ -1330,6 +1337,8 @@ lib_ui_has_input(VOID_ARGS)
 /* Helper functions */
 void lib_bail(const char* mesg)
 {
+    clearlocks();
+    lib_exit_nhwindows(mesg);
     gnollhack_exit(EXIT_SUCCESS);
 }
 

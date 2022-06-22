@@ -1176,7 +1176,7 @@ boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmo
 
 }
 
-
+#define QUIT_DUMMY 100
 void 
 choose_game_difficulty()
 {
@@ -1226,17 +1226,36 @@ choose_game_difficulty()
             buf2, MENU_UNSELECTED);
     }
 
+    any = zeroany;
+    add_menu(menuwin, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE,
+        " ", MENU_UNSELECTED);
+
+    any.a_int = QUIT_DUMMY;
+    add_menu(menuwin, NO_GLYPH, &any, 'q', 0, ATR_NONE,
+        "Quit", MENU_UNSELECTED);
+
     end_menu(menuwin, "Pick a level for game difficulty");
     n = select_menu(menuwin, PICK_ONE, &selected);
+    destroy_nhwindow(menuwin);
     if (n > 0)
     {
+        if (selected->item.a_int == QUIT_DUMMY)
+        {
+            /* Quit */
+            clearlocks();
+            exit_nhwindows((char*)0);
+            gnollhack_exit(EXIT_SUCCESS);
+        }
         context.game_difficulty = selected->item.a_int + MIN_DIFFICULTY_LEVEL - 1;
         free((genericptr_t)selected);
     }
     else
-        context.game_difficulty = MIN_DIFFICULTY_LEVEL;
-
-    destroy_nhwindow(menuwin);
+    {
+        /* Quit upon ESC, too */
+        clearlocks();
+        exit_nhwindows((char*)0);
+        gnollhack_exit(EXIT_SUCCESS);
+    }
 }
 
 

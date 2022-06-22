@@ -1283,6 +1283,7 @@ tty_askname()
         case -1:
             bail("Until next time then..."); /* quit */
             /*NOTREACHED*/
+        case 2:
         case 0:
             break; /* no game chosen; start new game */
         case 1:
