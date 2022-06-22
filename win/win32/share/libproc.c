@@ -130,7 +130,7 @@ void lib_askname(void)
             switch (menures)
             {
             case -1:
-                lib_bail("Until next time then..."); /* quit */
+                lib_bail((char*)0); // "Until next time then..."); /* quit */
                 /*NOTREACHED*/
                 return;
             case 2:
@@ -175,7 +175,7 @@ void lib_askname(void)
                     else
                     {
                         if (menures == 2)
-                            lib_bail("Until next time then..."); // Cannot return to restore_menu, so terminate the program; otherwise the game will repeat askname until a name is given, which is not the intention
+                            lib_bail((char*)0); // Cannot return to restore_menu, so terminate the program; otherwise the game will repeat askname until a name is given, which is not the intention
                     }
                 } while (repeataskname);
                 break;
@@ -189,7 +189,7 @@ void lib_askname(void)
 
     name = lib_callbacks.callback_askname();
     if (name == 0 || *name == 0)
-        lib_bail("Until next time then..."); /* quit */
+        lib_bail((char*)0); /* quit */
     else
     {
         strncpy(plname, name, PL_NSIZ - 1);
