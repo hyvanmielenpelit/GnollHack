@@ -314,7 +314,7 @@ namespace GnollHackClient
             Debug.WriteLine("ClientCallback_ExitWindows");
             ClientCallback_RawPrint(str);
 
-            if (str != null && str != "")
+            if (!string.IsNullOrWhiteSpace(str))
                 Thread.Sleep(1100);
 
             lock (_ghWindowsLock)
