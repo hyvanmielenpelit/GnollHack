@@ -2982,7 +2982,10 @@ do_takeoff()
     {
         if (!cursed(uwep)) {
             setuwep((struct obj *) 0, W_WEP);
-            You("are empty %s.", body_part(HANDED));
+            if(u.twoweap)
+                Your("right %s is now empty.", body_part(HAND));
+            else
+                You("are empty %s.", body_part(HANDED));
             //u.twoweap = FALSE;
         }
     }
@@ -2990,7 +2993,7 @@ do_takeoff()
     {
         if (!cursed(uarms)) {
             setuwep((struct obj*) 0, W_WEP2);
-            You("are empty %s.", body_part(HANDED));
+            Your("left %s is now empty.", body_part(HAND));
             //u.twoweap = FALSE;
         }
     }

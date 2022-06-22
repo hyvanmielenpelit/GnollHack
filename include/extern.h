@@ -3821,7 +3821,7 @@ E int NDECL(dounwield);
 E int NDECL(doswaphandedness);
 E int NDECL(doswapweapon_right_or_both);
 E int NDECL(doswapweapon);
-E int FDECL(dosingleswapweapon, (long));
+E int FDECL(dosingleswapweapon, (long, long));
 E int NDECL(dowieldquiver);
 E boolean FDECL(wield_tool, (struct obj *, const char *));
 E int NDECL(can_twoweapon);

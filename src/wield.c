@@ -218,12 +218,20 @@ long mask;
         /* No weapon */
         if (wepinhand)
         {
-            You("are now empty %s.", body_part(HANDED));
+            if(u.twoweap)
+                Your("%s %s is now empty.", mask == W_WEP2 ? "left" : "right", body_part(HAND));
+            else
+                You("are now empty %s.", body_part(HANDED));
             setuwep((struct obj *) 0, mask);
             res++;
         } 
         else
-            You("are already empty %s.", body_part(HANDED));
+        {
+            if (u.twoweap)
+                Your("%s %s is already empty.", mask == W_WEP2 ? "left" : "right", body_part(HAND));
+            else
+                You("are already empty %s.", body_part(HANDED));
+        }
     } 
     else if (wep->otyp == CORPSE && cant_wield_corpse(wep)) 
     {
@@ -513,9 +521,9 @@ struct obj* wep;
         else if (bimanual(wep) && (wep == uswapwep || wep == uswapwep2))
             return doswapweapon();
         else if (wep == uswapwep)
-            return dosingleswapweapon(W_WEP);
+            return dosingleswapweapon(W_SWAPWEP, mask);
         else if (wep == uswapwep2)
-            return dosingleswapweapon(W_WEP2);
+            return dosingleswapweapon(W_SWAPWEP2, mask);
         else if (wep == uquiver)
             setuqwep((struct obj*) 0);
         else if (wep->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) {
@@ -573,9 +581,9 @@ struct obj* wep;
         else if (bimanual(wep) && (wep == uswapwep || wep == uswapwep2))
             return doswapweapon();
         else if (wep == uswapwep)
-            return dosingleswapweapon(W_WEP);
+            return dosingleswapweapon(W_SWAPWEP, W_WEP);
         else if (wep == uswapwep2)
-            return dosingleswapweapon(W_WEP2);
+            return dosingleswapweapon(W_SWAPWEP2, W_WEP);
         else if (wep == uquiver)
             setuqwep((struct obj *) 0);
         else if (wep->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) 
@@ -648,7 +656,7 @@ dounwield()
     long mask = 0L;
     if (otmp == uwep)
         mask = W_WEP;
-    else if (otmp == uwep)
+    else if (otmp == uwep2)
         mask = W_WEP2;
     else
         return 0;
@@ -680,26 +688,42 @@ dounwield()
 
 
 int
-dosingleswapweapon(mask)
-long mask;
+dosingleswapweapon(swap_wep_mask, swap_target_mask)
+long swap_wep_mask, swap_target_mask; // swap_wep_mask = mask of original weapon in swapwep, swap_target_mask is the mask it is going to swapped to
 {
     register struct obj *oldwep, * oldswap;
     register struct obj *wep = (struct obj*)0, *altwep = (struct obj*)0, *swapwep = (struct obj*)0, *altswapwep = (struct obj*)0;
     int result = 0;
 
-    if (mask == W_WEP)
+    if (swap_wep_mask == W_SWAPWEP)
     {
-        wep = uwep;
-        altwep = uarms;
         swapwep = uswapwep;
         altswapwep = uswapwep2;
+        if (swap_target_mask == W_WEP)
+        {
+            wep = uwep;
+            altwep = uarms;
+        }
+        else
+        {
+            wep = uarms;
+            altwep = uwep;
+        }
     }
     else
     {
-        wep = uarms;
-        altwep = uwep;
         swapwep = uswapwep2;
         altswapwep = uswapwep;
+        if (swap_target_mask == W_WEP2)
+        {
+            wep = uarms;
+            altwep = uwep;
+        }
+        else
+        {
+            wep = uwep;
+            altwep = uarms;
+        }
     }
 
     /* May we attempt this? */
@@ -734,7 +758,7 @@ long mask;
     if (!wep && !swapwep)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
-        Your("%s %s is already empty.", mask == W_WEP ? "right" : "left", body_part(HAND));
+        Your("%s %s is already empty.", swap_target_mask == W_WEP ? "right" : "left", body_part(HAND));
         return 0;
     }
 
@@ -743,40 +767,73 @@ long mask;
     /* Unwield your current secondary weapon */
     oldwep = wep;
     oldswap = swapwep;
-    if(mask == W_WEP)
+
+    setuswapwep((struct obj*)0, swap_wep_mask);
+    /* Set your new secondary weapon */
+    result = ready_weapon(oldswap, swap_target_mask);
+
+    /* Handle swap */
+    struct obj* curwep = (swap_target_mask == W_WEP ? uwep : uarms);
+    if (curwep == oldwep)
     {
-        setuswapwep((struct obj*)0, W_SWAPWEP);
+        /* Wield failed for some reason */
+        setuswapwep(oldswap, swap_wep_mask);
+    }
+    else
+    {
+        if (curwep == oldswap)
+        {
+            /* Wield succeeded */
+            play_simple_object_sound(oldswap, OBJECT_SOUND_TYPE_WIELD);
+        }
+
+        setuswapwep(oldwep, swap_wep_mask);
+        struct obj* curswapwep = (swap_wep_mask == W_SWAPWEP ? uswapwep : uswapwep2);
+        struct obj* curswapwep2 = (swap_wep_mask == W_SWAPWEP ? uswapwep2 : uswapwep);
+        if (curswapwep)
+            prinv((char*)0, curswapwep, 0L);
+        else if (!(curswapwep2 && bimanual(curswapwep2)))
+            You("have no %s %s alternate weapon readied.", swap_wep_mask == W_SWAPWEP ? "right" : "left", body_part(HAND));
+    }
+
+#if 0
+    if(swap_wep_mask == W_SWAPWEP)
+    {
+        setuswapwep((struct obj*)0, swap_wep_mask);
         /* Set your new secondary weapon */
-        result = ready_weapon(oldswap, W_WEP);
+        result = ready_weapon(oldswap, swap_target_mask);
         if (uwep == oldwep) 
         {
             /* Wield failed for some reason */
-            setuswapwep(oldswap, W_SWAPWEP);
+            setuswapwep(oldswap, swap_wep_mask);
         }
         else
         {
-            if (uwep == oldswap)
+            struct obj* curwep = (swap_target_mask == W_WEP ? uwep : uarms);
+            if (curwep == oldswap)
             {
                 /* Wield succeeded */
                 play_simple_object_sound(oldswap, OBJECT_SOUND_TYPE_WIELD);
             }
 
-            setuswapwep(oldwep, W_SWAPWEP);
-            if (uswapwep)
-                prinv((char*)0, uswapwep, 0L);
-            else if (!(uswapwep2 && bimanual(uswapwep2)))
-                You("have no right hand alternate weapon readied.");
+            setuswapwep(oldwep, swap_wep_mask);
+            struct obj* curswapwep = (swap_wep_mask == W_SWAPWEP ? uswapwep : uswapwep2);
+            struct obj* curswapwep2 = (swap_wep_mask == W_SWAPWEP ? uswapwep2 : uswapwep);
+            if (curswapwep)
+                prinv((char*)0, curswapwep, 0L);
+            else if (!(curswapwep2 && bimanual(curswapwep2)))
+                You("have no %s %s alternate weapon readied.", swap_wep_mask == W_SWAPWEP ? "right" : "left", body_part(HAND));
         }
     }
     else
     {
-        setuswapwep((struct obj*)0, W_SWAPWEP2);
+        setuswapwep((struct obj*)0, swap_wep_mask);
         /* Set your new secondary weapon */
-        result = ready_weapon(oldswap, W_WEP2);
+        result = ready_weapon(oldswap, swap_target_mask);
         if (uarms == oldwep) 
         {
             /* Wield failed for some reason */
-            setuswapwep(oldswap, W_SWAPWEP2);
+            setuswapwep(oldswap, swap_wep_mask);
         }
         else 
         {
@@ -786,7 +843,7 @@ long mask;
                 play_simple_object_sound(oldswap, OBJECT_SOUND_TYPE_WIELD);
             }
 
-            setuswapwep(oldwep, W_SWAPWEP2);
+            setuswapwep(oldwep, swap_wep_mask);
             if (uswapwep2)
                 prinv((char*)0, uswapwep2, 0L);
             else if (!(uswapwep && bimanual(uswapwep)))
@@ -794,7 +851,6 @@ long mask;
         }
     }
 
-#if 0
     if (mask == W_WEP && uwep && (!oldweapon || uwep != oldweapon) && is_launcher(uwep) && P_SKILL_LEVEL(objects[uwep->otyp].oc_skill) >= P_SKILLED)
     {
         /* The player should be able to fire multishots */
@@ -844,7 +900,7 @@ int
 doswapweapon_right_or_both()
 {
     if (flags.swap_rhand_only)
-        return dosingleswapweapon(W_WEP);
+        return dosingleswapweapon(W_SWAPWEP, W_WEP);
     else
         return doswapweapon();
 }
@@ -1527,14 +1583,14 @@ const char *verb; /* "rub",&c */
     }
     else if (uswapwep == obj)
     {
-        (void) dosingleswapweapon(W_WEP);
+        (void) dosingleswapweapon(W_SWAPWEP, selected_hand_is_right ? W_WEP : W_WEP2);
         /* doswapweapon might fail */
         if (uswapwep == obj)
             return FALSE;
     }
     else if (u.twoweap && uswapwep2 == obj) /* two-weaponing is needed for swapping, as otherwise the tool wouldn't be ready for use after the function call */
     {
-        (void)dosingleswapweapon(W_WEP2);
+        (void)dosingleswapweapon(W_SWAPWEP2, selected_hand_is_right ? W_WEP : W_WEP2);
         /* doswapweapon might fail */
         if (uswapwep2 == obj)
             return FALSE;

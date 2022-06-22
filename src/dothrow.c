@@ -76,7 +76,7 @@ boolean firing;
 
     if (!canletgo(obj, firing ? "fire" : "throw"))
         return 0;
-    if ((objects[obj->otyp].oc_flags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED) && obj != uwep) {
+    if ((objects[obj->otyp].oc_flags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED) && obj != uwep && !(u.twoweap && obj == uwep2)) {
         play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s must be wielded before it can be thrown.", The(xname(obj)));
         return 0;
@@ -1680,7 +1680,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             /* in case addinv() autoquivered */
             if (thrownobj && thrownobj->owornmask & W_QUIVER)
                 setuqwep((struct obj *) 0);
-            setuwep(thrownobj, W_WEP);
+            setuwep(thrownobj, wep_mask);
         } 
         else
         {
