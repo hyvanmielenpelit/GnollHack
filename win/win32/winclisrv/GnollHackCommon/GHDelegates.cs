@@ -150,6 +150,10 @@ namespace GnollHackCommon
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [return: MarshalAs(UnmanagedType.LPStr)]
+    public delegate string AskNameCallback([MarshalAs(UnmanagedType.LPStr)] string modeName, [MarshalAs(UnmanagedType.LPStr)] string modeDescription);
+
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    [return: MarshalAs(UnmanagedType.LPStr)]
     public delegate string CharVoidCallback();
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [return: MarshalAs(UnmanagedType.LPStr)]

@@ -59,7 +59,7 @@ namespace GnollHackClient.Unknown
             ulong wincaps2,
             VoidVoidCallback callback_init_nhwindows,
             IntVoidCallback callback_player_selection,
-            CharVoidCallback callback_askname,
+            AskNameCallback callback_askname,
             VoidVoidCallback callback_get_nh_event,
             VoidConstCharCallback callback_exit_nhwindows,
             VoidConstCharCallback callback_suspend_nhwindows,

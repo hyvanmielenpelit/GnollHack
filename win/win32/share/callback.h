@@ -65,7 +65,7 @@ typedef void(__callconv* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, co
 /* Specific callback types */
 typedef VoidVoidCallback InitWindowsCallback;
 typedef IntVoidCallback PlayerSelectionCallback;
-typedef CharVoidCallback AskNameCallback;
+typedef char* (__callconv* AskNameCallback)(const char*, const char*);
 typedef VoidVoidCallback GetEventCallback;
 typedef VoidConstCharCallback ExitWindowsCallback;
 typedef VoidConstCharCallback SuspendWindowsCallback;

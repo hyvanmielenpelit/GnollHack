@@ -19,13 +19,35 @@ namespace GnollHackClient.Pages.Game
         private ClientGame _clientGame;
         private GamePage _gamePage;
 
-        public NamePage(GamePage gamepage)
+        public NamePage(GamePage gamepage, string modeName, string modeDescription)
         {
             InitializeComponent();
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
             ValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,32}$");
             _clientGame = gamepage.ClientGame;
             _gamePage = gamepage;
+            if (!string.IsNullOrWhiteSpace(modeName))
+            {
+                lblModeName.Text = "Game is in " + modeName;
+                lblModeName.IsVisible = true;
+                if (!string.IsNullOrWhiteSpace(modeDescription))
+                {
+                    lblModeDescription.Text = modeDescription;
+                    lblModeDescription.IsVisible = true;
+                }
+                else
+                {
+                    lblModeDescription.Text = "";
+                    lblModeDescription.IsVisible = false;
+                }
+            }
+            else
+            {
+                lblModeName.Text = "";
+                lblModeDescription.Text = "";
+                lblModeName.IsVisible = false;
+                lblModeDescription.IsVisible = false;
+            }
         }
 
         private async void btnOK_Clicked(object sender, EventArgs e)

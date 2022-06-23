@@ -23,7 +23,7 @@ namespace GnollHackServer
             ulong wincaps2,
             VoidVoidCallback callback_init_nhwindows,
             IntVoidCallback callback_player_selection,
-            CharVoidCallback callback_askname,
+            AskNameCallback callback_askname,
             VoidVoidCallback callback_get_nh_event,
             VoidConstCharCallback callback_exit_nhwindows,
             VoidConstCharCallback callback_suspend_nhwindows,
@@ -292,7 +292,7 @@ namespace GnollHackServer
         }
 
 
-        protected string GameCallback_AskName()
+        protected string GameCallback_AskName(string modeName, string modeDescription)
         {
             Debug.WriteLine("GameCallback_AskName");
             return "Janne Test";

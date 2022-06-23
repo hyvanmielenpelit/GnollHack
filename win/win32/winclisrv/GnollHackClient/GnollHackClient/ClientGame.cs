@@ -365,7 +365,7 @@ namespace GnollHackClient
 
         }
 
-        public string ClientCallback_AskName()
+        public string ClientCallback_AskName(string modeName, string modeDescription)
         {
             Debug.WriteLine("ClientCallback_AskName");
             ConcurrentQueue<GHRequest> queue;
@@ -373,7 +373,7 @@ namespace GnollHackClient
             CharacterName = "";
             if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
             {
-                queue.Enqueue(new GHRequest(this, GHRequestType.AskName));
+                queue.Enqueue(new GHRequest(this, GHRequestType.AskName, modeName, modeDescription));
                 while (!_characternameSet)
                 {
                     Thread.Sleep(GHConstants.PollingInterval);

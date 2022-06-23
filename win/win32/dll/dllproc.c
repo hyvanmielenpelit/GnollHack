@@ -749,7 +749,7 @@ void
 dll_askname(void)
 {
     dll_logDebug("dll_askname()\n");
-    char* askedname = dll_callbacks.callback_askname();
+    char* askedname = dll_callbacks.callback_askname("", "");
     if (!askedname)
     {
         dll_bail("bye-bye");

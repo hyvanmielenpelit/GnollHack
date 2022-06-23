@@ -3374,7 +3374,7 @@ boolean tinitial, tfrom_file;
             CasualMode = TRUE, ModernMode = TRUE, wizard = FALSE, discover = FALSE;
         } else if (!strncmpi(op, "modern", 6)) {
             CasualMode = FALSE, ModernMode = TRUE, wizard = FALSE, discover = FALSE;
-        } else if (!strncmpi(op, "casual-classic", 14)) {
+        } else if (!strncmpi(op, "reloadable", 10)) {
             CasualMode = TRUE, ModernMode = FALSE, wizard = FALSE, discover = FALSE;
         } else {
             config_error_add("Invalid value for \"%s\":%s", fullname, op);
@@ -6623,7 +6623,7 @@ char *buf;
     } else if (!strcmp(optname, "pile_limit")) {
         Sprintf(buf, "%d", flags.pile_limit);
     } else if (!strcmp(optname, "playmode")) {
-        Strcpy(buf, wizard ? "debug" : discover ? "explore" : CasualMode ? (ModernMode ? "casual" : "casual-classic") : ModernMode ? "modern" : "normal");
+        Strcpy(buf, wizard ? "debug" : discover ? "explore" : CasualMode ? (ModernMode ? "casual" : "reloadable") : ModernMode ? "modern" : "normal");
     } else if (!strcmp(optname, "preferred_screen_scale")) {
         if (flags.preferred_screen_scale)
             Sprintf(buf, "%d", flags.preferred_screen_scale);

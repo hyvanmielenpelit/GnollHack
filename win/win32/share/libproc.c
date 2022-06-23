@@ -119,6 +119,12 @@ void lib_player_selection(void)
 void lib_askname(void)
 {
     char* name = 0;
+    char mdbuf[BUFSZ] = "";
+    char modenamebuf[BUFSZ] = "";
+    char modedescbuf[BUFSZ] = "";
+    Sprintf(mdbuf, "%s mode", get_game_mode_text(FALSE));
+    strcpy_capitalized_for_title(modenamebuf, mdbuf);
+    strcpy(modedescbuf, get_game_mode_description());
 
 #ifdef SELECTSAVED
     if (iflags.wc2_selectsaved && !iflags.renameinprogress)
@@ -138,7 +144,7 @@ void lib_askname(void)
                 do
                 {
                     repeataskname = FALSE;
-                    name = lib_callbacks.callback_askname();
+                    name = lib_callbacks.callback_askname(modenamebuf, modedescbuf);
                     if (name && *name != 0)
                     {
                         strncpy(plname, name, PL_NSIZ - 1);
@@ -187,7 +193,7 @@ void lib_askname(void)
     }
 #endif /* SELECTSAVED */
 
-    name = lib_callbacks.callback_askname();
+    name = lib_callbacks.callback_askname(modenamebuf, modedescbuf);
     if (name == 0 || *name == 0)
         lib_bail((char*)0); /* quit */
     else

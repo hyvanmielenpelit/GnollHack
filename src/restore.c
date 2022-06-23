@@ -1508,9 +1508,14 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
         add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
             MENU_UNSELECTED);
 #endif
-
+        char ngbuf[BUFSZ] = "", modebuf[BUFSZ] = "", descbuf[BUFSZ] = "";
+        strcpy_capitalized_for_title(modebuf, get_game_mode_text(FALSE));
+#ifdef GNH_MOBILE
+        Sprintf(descbuf, " (%s)", get_game_mode_description());
+#endif
+        Sprintf(ngbuf, "New Game in %s Mode%s", modebuf, descbuf);
         any.a_int = -1;
-        add_menu(tmpwin, NO_GLYPH, &any, 'n', 0, ATR_HEADING, "New Game",
+        add_menu(tmpwin, NO_GLYPH, &any, 'n', 0, ATR_HEADING, ngbuf,
             MENU_UNSELECTED);
 
         if (saved && saved[0].playername)

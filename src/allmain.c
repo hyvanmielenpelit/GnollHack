@@ -1167,12 +1167,40 @@ boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmo
         if (ismodernmode)
             return display_nonscoring ? "non-scoring casual" : "casual";
         else
-            return display_nonscoring ? "non-scoring casual-classic" : "casual-classic";
+            return display_nonscoring ? "non-scoring reloadable" : "reloadable";
     }
     else if (ismodernmode)
         return "modern";
     else
         return "classic";
+
+}
+
+const char*
+get_game_mode_description()
+{
+    return get_game_mode_description_core(wizard, discover, ModernMode, CasualMode);
+}
+
+const char*
+get_game_mode_description_core(iswizardmode, isexporemode, ismodernmode, iscasualmode)
+boolean iswizardmode, isexporemode, ismodernmode, iscasualmode;
+{
+    if (iswizardmode)
+        return "Immortal debug mode with special debug commands";
+    else if (isexporemode)
+        return "Non-scoring immortal mode with loadable saved games";
+    else if (iscasualmode)
+    {
+        if (ismodernmode)
+            return "Non-scoring mode with revival upon death and loadable saved games";
+        else
+            return "Non-scoring mode with permanent death but loadable saved games";
+    }
+    else if (ismodernmode)
+        return "Revival and score reduction upon death";
+    else
+        return "Traditional mode with permanent death";
 
 }
 

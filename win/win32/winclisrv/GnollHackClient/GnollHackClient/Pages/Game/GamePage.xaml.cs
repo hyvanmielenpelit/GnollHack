@@ -1492,7 +1492,7 @@ namespace GnollHackClient.Pages.Game
                                 GetChar();
                                 break;
                             case GHRequestType.AskName:
-                                AskName();
+                                AskName(req.RequestString, req.RequestString2);
                                 break;
                             case GHRequestType.GetLine:
                                 GetLine(req.RequestString, req.PlaceHolderString, req.DefValueString, req.RequestInt, req.RequestAttr, req.RequestNhColor);
@@ -1883,9 +1883,9 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
-        private async void AskName()
+        private async void AskName(string modeName, string modeDescription)
         {
-            var namePage = new NamePage(this);
+            var namePage = new NamePage(this, modeName, modeDescription);
             await App.Current.MainPage.Navigation.PushModalAsync(namePage);
         }
 
