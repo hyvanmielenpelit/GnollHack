@@ -597,19 +597,27 @@ char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* t
     return convert_gnhch(res);
 }
 
-void lib_getlin_ex(int style, int attr, int color, const char* question, char* input, const char* placeholder, const char* linesuffix)
+void lib_getlin_ex(int style, int attr, int color, const char* question, char* input, const char* placeholder, const char* linesuffix, const char* introline)
 {
     char buf[BUFSIZ] = "";
     char phbuf[BUFSIZ] = "";
     char dvbuf[BUFSIZ] = "";
+    char qbuf[BUFSZ] = "";
     if (question)
-        write_text2buf_utf8(buf, BUFSIZ, question);
+    {
+        if (introline && *introline)
+            Sprintf(qbuf, "%s %s", introline, question);
+        else
+            Strcpy(qbuf, question);
+    }
+    if (*qbuf)
+        write_text2buf_utf8(buf, BUFSIZ, qbuf);
     if (placeholder)
         write_text2buf_utf8(phbuf, BUFSIZ, placeholder);
     if (linesuffix)
         write_text2buf_utf8(dvbuf, BUFSIZ, linesuffix);
 
-    char* res = lib_callbacks.callback_getlin_ex(style, attr, color, question ? buf : 0, placeholder ? phbuf : 0, linesuffix ? dvbuf : 0);
+    char* res = lib_callbacks.callback_getlin_ex(style, attr, color, buf, placeholder ? phbuf : 0, linesuffix ? dvbuf : 0);
     if (res && input)
     {
         char msgbuf[BUFSZ] = "";

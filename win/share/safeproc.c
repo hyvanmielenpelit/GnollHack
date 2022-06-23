@@ -644,11 +644,12 @@ unsigned long ynflags;
 
 /*ARGSUSED*/
 void
-safe_getlin_ex(style, attr, color, prompt, outbuf, placeholder, linesuffix)
+safe_getlin_ex(style, attr, color, prompt, outbuf, placeholder, linesuffix, introline)
 int style UNUSED, attr UNUSED, color UNUSED;
 const char *prompt UNUSED;
 const char* placeholder UNUSED;
 const char* linesuffix UNUSED;
+const char* introline UNUSED;
 char *outbuf;
 {
     Strcpy(outbuf, "\033");

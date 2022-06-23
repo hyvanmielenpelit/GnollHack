@@ -77,7 +77,7 @@ int dll_nh_poskey(int *x, int *y, int *mod);
 void dll_nhbell(void);
 int dll_doprev_message(void);
 char dll_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, unsigned long ynflags);
-void dll_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix);
+void dll_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix, const char* introline);
 int dll_get_ext_cmd(void);
 void dll_number_pad(int state);
 void dll_delay_output(void);

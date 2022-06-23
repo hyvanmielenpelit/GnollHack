@@ -23,7 +23,7 @@ STATIC_DCL boolean FDECL(ext_cmd_getlin_hook, (char *));
 typedef boolean FDECL((*getlin_hook_proc), (char *));
 
 STATIC_DCL void FDECL(hooked_tty_getlin_ex,
-                      (int, int, int, const char *, char *, const char*, const char*, getlin_hook_proc));
+                      (int, int, int, const char *, char *, const char*, const char*, const char*, getlin_hook_proc));
 extern int NDECL(extcmd_via_menu); /* cmd.c */
 
 extern char erase_char, kill_char; /* from appropriate tty.c file */
@@ -35,26 +35,28 @@ extern char erase_char, kill_char; /* from appropriate tty.c file */
  * resulting string is "\033".
  */
 void
-tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix)
+tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix, introline)
 int style, attr, color;
 const char *query;
 const char* placeholder;
 const char* linesuffix;
+const char* introline;
 register char *bufp;
 {
     suppress_history = FALSE;
-    hooked_tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix, (getlin_hook_proc) 0);
+    hooked_tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix, introline, (getlin_hook_proc) 0);
 }
 
 boolean skip_utf8 = FALSE;
 
 STATIC_OVL void
-hooked_tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix, hook)
+hooked_tty_getlin_ex(style, attr, color, query, bufp, placeholder, linesuffix, introline, hook)
 int style UNUSED, attr UNUSED, color UNUSED;
 const char *query;
 register char *bufp;
 const char* placeholder;
 const char* linesuffix;
+const char* introline;
 getlin_hook_proc hook;
 {
     register char *obufp = bufp;
@@ -62,6 +64,7 @@ getlin_hook_proc hook;
     struct WinDesc *cw = wins[WIN_MESSAGE];
     boolean doprev = 0;
     char promptbuf[BUFSZ] = "";
+    //Do not show introline
     if (query)
         Sprintf(promptbuf, "%s", query);
     if (placeholder)
@@ -372,7 +375,7 @@ tty_get_ext_cmd()
      *                      : (getlin_hook_proc) 0);
      */
     buf[0] = '\0';
-    hooked_tty_getlin_ex(GETLINE_EXTENDED_COMMAND, ATR_NONE, NO_COLOR, "#", buf, 0, 0, in_doagain ? (getlin_hook_proc) 0
+    hooked_tty_getlin_ex(GETLINE_EXTENDED_COMMAND, ATR_NONE, NO_COLOR, "#", buf, 0, 0, 0, in_doagain ? (getlin_hook_proc) 0
                                            : ext_cmd_getlin_hook);
     (void) mungspaces(buf);
     if (buf[0] == 0 || buf[0] == '\033')

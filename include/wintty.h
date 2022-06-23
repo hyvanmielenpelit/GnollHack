@@ -218,7 +218,7 @@ E int FDECL(tty_nh_poskey, (int *, int *, int *));
 E void NDECL(tty_nhbell);
 E int NDECL(tty_doprev_message);
 E char FDECL(tty_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, unsigned long));
-E void FDECL(tty_getlin_ex, (int, int, int, const char *, char *, const char*, const char*));
+E void FDECL(tty_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 E int NDECL(tty_get_ext_cmd);
 E void FDECL(tty_number_pad, (int));
 E void NDECL(tty_delay_output);

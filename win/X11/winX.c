@@ -1922,9 +1922,12 @@ release_getline_widgets()
 }
 
 void
-X11_getlin_ex(style, attr, color, question, input)
+X11_getlin_ex(style, attr, color, question, input, placeholder, linesuffix, introline)
 int style, attr, color;
 const char *question;
+const char* placeholder;
+const char* linesuffix;
+const char* introline;
 char *input;
 {
     getline_input = input;

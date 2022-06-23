@@ -8428,7 +8428,7 @@ const char *fltxt;
 
             if (origobj)
             {
-                Sprintf(killername, "%s from %s %s", fltxt, hisbuf, killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE));
+                Sprintf(killername, "%s from %s %s", fltxt, hisbuf, killer_xname_flags(origobj, KXNFLAGS_NO_ARTICLE | KXNFLAGS_SPELL));
             }
             else
             {
@@ -11082,7 +11082,7 @@ retry:
     if (iflags.cmdassist && tries > 0)
         Strcat(promptbuf, " (enter 'help' for assistance)");
     Strcat(promptbuf, "?");
-    getlin_ex(GETLINE_WISHING, ATR_NONE, NO_COLOR, promptbuf, buf, (char*)0, (char*)0);
+    getlin_ex(GETLINE_WISHING, ATR_NONE, NO_COLOR, promptbuf, buf, (char*)0, (char*)0, (char*)0);
     (void) mungspaces(buf);
     if (buf[0] == '\033') {
         buf[0] = '\0';

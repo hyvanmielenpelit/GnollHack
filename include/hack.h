@@ -173,6 +173,7 @@ enum dismount_types {
 #define CXN_NOCORPSE 16 /* suppress " corpse" suffix */
 
 #define KXNFLAGS_NO_ARTICLE 0x01
+#define KXNFLAGS_SPELL      0x02  // Not the book, but the spell from it
 
    /* getpos() return values */
 enum getpos_retval {

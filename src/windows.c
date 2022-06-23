@@ -726,7 +726,7 @@ boolean is_restoring;
 static int NDECL(hup_nhgetch);
 static char FDECL(hup_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, unsigned long));
 static int FDECL(hup_nh_poskey, (int *, int *, int *));
-static void FDECL(hup_getlin_ex, (int, int, int, const char *, char *, const char*, const char*));
+static void FDECL(hup_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 static void FDECL(hup_init_nhwindows, (int *, char **));
 static void FDECL(hup_exit_nhwindows, (const char *));
 static winid FDECL(hup_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
@@ -889,11 +889,12 @@ int *x UNUSED, *y UNUSED, *mod UNUSED;
 
 /*ARGSUSED*/
 static void
-hup_getlin_ex(style, attr, color, prompt, outbuf, placeholder, linesuffix)
+hup_getlin_ex(style, attr, color, prompt, outbuf, placeholder, linesuffix, introline)
 int style UNUSED, attr UNUSED, color UNUSED;
 const char *prompt UNUSED;
 const char* placeholder UNUSED;
 const char* linesuffix UNUSED;
+const char* introline UNUSED;
 char *outbuf;
 {
     Strcpy(outbuf, "\033");

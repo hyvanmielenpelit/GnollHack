@@ -1145,7 +1145,7 @@ d_level target_level;
             *buf = '\0'; /* EDIT_GETLIN: if we're on second or later pass,
                             the previous input was invalid so don't use it
                             as getlin()'s preloaded default answer */
-            getlin_ex(wizard ? GETLINE_WIZ_LEVELPORT : GETLINE_LEVELPORT, ATR_NONE, NO_COLOR, qbuf, buf, *phbuf ? phbuf : (char*)0, (char*)0);
+            getlin_ex(wizard ? GETLINE_WIZ_LEVELPORT : GETLINE_LEVELPORT, ATR_NONE, NO_COLOR, qbuf, buf, *phbuf ? phbuf : (char*)0, (char*)0, (char*)0);
             if (!strcmp(buf, "\033")) { /* cancelled */
                 if (teletype != 1 && Confusion && rnl(5)) {
                     pline("Oops...");

@@ -451,7 +451,7 @@ amii_askname()
     char plnametmp[300]; /* From winreq.c: sizeof(StrStringSIBuff) */
     *plnametmp = 0;
     do {
-        amii_getlin_ex(GETLINE_ASK_NAME, ATR_NONE, NO_COLOR, "Who are you?", plnametmp, 0, 0);
+        amii_getlin_ex(GETLINE_ASK_NAME, ATR_NONE, NO_COLOR, "Who are you?", plnametmp, 0, 0, 0));
     } while (strlen(plnametmp) == 0);
 
     strncpy(plname, plnametmp, PL_NSIZ - 1); /* Avoid overflowing plname[] */

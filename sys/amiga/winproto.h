@@ -11,7 +11,7 @@ void DrawCol(struct Window *w, int idx, UWORD *colors);
 void DispCol(struct Window *w, int idx, UWORD *colors);
 void amii_change_color(int, long, int);
 char *amii_get_color_string();
-void amii_getlin_ex(int style, int attr, int color, const char *prompt, char *bufp, const char* placeholder, const char* linesuffix);
+void amii_getlin_ex(int style, int attr, int color, const char *prompt, char *bufp, const char* placeholder, const char* linesuffix, const char* introline);
 void getlind(const char *prompt, char *bufp, const char *dflt);
 char *amii_get_color_string(void);
 int filecopy(char *from, char *to);

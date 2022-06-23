@@ -3432,7 +3432,7 @@ int show_weights;
     for (;;) {
         Sprintf(qbuf, "What kinds of thing do you want to %s?", word);
         Sprintf(ebuf, "[%s]", ilets);
-        getlin_ex(GETLINE_GENERAL, ATR_NONE, NO_COLOR, qbuf, buf, (char*)0, ebuf);
+        getlin_ex(GETLINE_GENERAL, ATR_NONE, NO_COLOR, qbuf, buf, (char*)0, ebuf, (char*)0);
         if (buf[0] == '\033')
             return 0;
         if (index(buf, 'i')) {

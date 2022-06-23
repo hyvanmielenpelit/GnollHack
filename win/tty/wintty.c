@@ -2247,7 +2247,7 @@ struct WinDesc *cw;
                 boolean on_curr_page = FALSE;
                 int lineno = 0;
 
-                tty_getlin_ex(GETLINE_MENU_SEARCH, ATR_NONE, NO_COLOR, "Search for:", tmpbuf, (char*)0, (char*)0);
+                tty_getlin_ex(GETLINE_MENU_SEARCH, ATR_NONE, NO_COLOR, "Search for:", tmpbuf, (char*)0, (char*)0, (char*)0);
                 if (!tmpbuf[0] || tmpbuf[0] == '\033')
                     break;
                 Sprintf(searchbuf, "*%s*", tmpbuf);

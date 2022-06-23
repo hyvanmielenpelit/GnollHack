@@ -46,7 +46,7 @@ void FDECL(amii_cl_end, (struct amii_WinDesc * , int ));
 void FDECL(cursor_off, (winid ));
 void FDECL(cursor_on, (winid ));
 void NDECL(amii_getret );
-void FDECL(amii_getlin_ex, (int, int, int, const char *, char *, const char*, const char*));
+void FDECL(amii_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 void FDECL(getlind, (const char * , char * , const char *));
 void FDECL(amii_suspend_nhwindows, (char * ));
 void NDECL(amii_resume_nhwindows);

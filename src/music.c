@@ -792,7 +792,7 @@ struct obj *instr;
         } 
         else 
         {
-            getlin_ex(GETLINE_TUNE, ATR_NONE, NO_COLOR, "What tune are you playing? ", buf, (char*)0, "[5 notes, A-G]");
+            getlin_ex(GETLINE_TUNE, ATR_NONE, NO_COLOR, "What tune are you playing? ", buf, (char*)0, "[5 notes, A-G]", (char*)0);
             (void) mungspaces(buf);
             if (*buf == '\033')
                 goto nevermind;

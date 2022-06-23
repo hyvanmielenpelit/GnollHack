@@ -4974,7 +4974,7 @@ struct monst *mon;
         tryct = 5;
         do {
             monclass = 0;
-            getlin_ex(GETLINE_POLYMORPH, ATR_NONE, NO_COLOR, pprompt, buf, (char*)0, (char*)0);
+            getlin_ex(GETLINE_POLYMORPH, ATR_NONE, NO_COLOR, pprompt, buf, (char*)0, (char*)0, (char*)0);
             mungspaces(buf);
             /* for ESC, take form selected above (might be NON_PM) */
             if (*buf == '\033')

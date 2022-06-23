@@ -2259,6 +2259,10 @@ unsigned kxnflags;
            those can be used to fake other objects and dungeon features */
         buf = nextobuf();
         Sprintf(buf, "deadly slime mold%s", plur(obj->quan));
+    } else if (obj->oclass == SPBOOK_CLASS && (kxnflags & KXNFLAGS_SPELL) != 0) {
+        /* It is a spell rather than the book itself */
+        buf = nextobuf();
+        Sprintf(buf, "spell of %s", OBJ_NAME(objects[obj->otyp]));
     } else {
         buf = xname(obj);
     }

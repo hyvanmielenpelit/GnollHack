@@ -96,7 +96,7 @@ E int FDECL(Gem_nh_poskey, (int *, int *, int *));
 E void NDECL(Gem_nhbell);
 E int NDECL(Gem_doprev_message);
 E char FDECL(Gem_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, unsigned long));
-E void FDECL(Gem_getlin_ex, (int, int, int, const char *, char *, const char*, const char*));
+E void FDECL(Gem_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 E int NDECL(Gem_get_ext_cmd);
 E void FDECL(Gem_number_pad, (int));
 E void NDECL(Gem_delay_output);

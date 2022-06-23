@@ -478,7 +478,7 @@ struct xwindow *wp;
     buf[0] = buf[1] = '\0';
     pat = &buf[1]; /* leave room to maybe insert '*' at front */
     if (menu_info->how != PICK_NONE) {
-        X11_getlin_ex(GETLINE_MENU_SEARCH, ATR_NONE, NO_COLOR, "Search for:", pat);
+        X11_getlin_ex(GETLINE_MENU_SEARCH, ATR_NONE, NO_COLOR, "Search for:", pat, 0, 0, 0);
         if (!*pat || *pat == '\033')
             return;
         /* convert "string" into "*string*" for use with pmatch() */

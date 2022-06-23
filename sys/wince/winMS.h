@@ -148,7 +148,7 @@ int mswin_nh_poskey(int *x, int *y, int *mod);
 void mswin_nhbell(void);
 int mswin_doprev_message(void);
 char mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, unsigned long ynflags);
-void mswin_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix);
+void mswin_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix, const char* introline);
 int mswin_get_ext_cmd(void);
 void mswin_number_pad(int state);
 void mswin_delay_output(void);

@@ -1765,7 +1765,7 @@ wiz_level_change(VOID_ARGS)
     int newlevel = 0;
     int ret;
 
-    getlin_ex(GETLINE_LEVEL_CHANGE, ATR_NONE, NO_COLOR, "To what experience level do you want to be set?", buf, (char*)0, (char*)0);
+    getlin_ex(GETLINE_LEVEL_CHANGE, ATR_NONE, NO_COLOR, "To what experience level do you want to be set?", buf, (char*)0, (char*)0, (char*)0);
     (void) mungspaces(buf);
     if (buf[0] == '\033' || buf[0] == '\0')
         ret = 0;
@@ -6349,7 +6349,7 @@ wiz_migrate_mons()
     struct monst *mtmp;
     d_level tolevel;
 
-    getlin_ex(GETLINE_NUMBERS_ONLY, ATR_NONE, NO_COLOR, "How many random monsters to migrate?", inbuf, (char*)0, "[0]");
+    getlin_ex(GETLINE_NUMBERS_ONLY, ATR_NONE, NO_COLOR, "How many random monsters to migrate?", inbuf, (char*)0, "[0]", (char*)0);
     if (*inbuf == '\033')
         return 0;
     mcount = atoi(inbuf);
@@ -8512,7 +8512,7 @@ const char *prompt, *title;
            (except we won't loop if response is ESC; it means no) */
         do {
             Sprintf(qbuf, "%s%s", promptprefix, prompt);
-            getlin_ex(GETLINE_PARANOID, attr, color, qbuf, ans, (char*)0, responsetype);
+            getlin_ex(GETLINE_PARANOID, attr, color, qbuf, ans, (char*)0, responsetype, (char*)0);
             (void) mungspaces(ans);
             confirmed_ok = !strcmpi(ans, "yes");
             if (confirmed_ok || *ans == '\033')

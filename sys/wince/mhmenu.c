@@ -1201,7 +1201,7 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
             int selected_item;
 
             reset_menu_count(hwndList, data);
-            mswin_getlin_ex(GETLINE_MENU_SEARCH, ATR_NONE, NO_COLOR, "Search for:", buf, (char*)0, (char*)0);
+            mswin_getlin_ex(GETLINE_MENU_SEARCH, ATR_NONE, NO_COLOR, "Search for:", buf, (char*)0, (char*)0, (char*)0);
             if (!*buf || *buf == '\033')
                 return -2;
             selected_item = -1;

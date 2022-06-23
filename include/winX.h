@@ -439,7 +439,7 @@ E int FDECL(X11_nh_poskey, (int *, int *, int *));
 E void NDECL(X11_nhbell);
 E int NDECL(X11_doprev_message);
 E char FDECL(X11_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, unsigned long));
-E void FDECL(X11_getlin_ex, (int, int, int, const char *, char *, const char*, const char*));
+E void FDECL(X11_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 E int NDECL(X11_get_ext_cmd);
 E void FDECL(X11_number_pad, (int));
 E void NDECL(X11_delay_output);

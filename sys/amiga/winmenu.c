@@ -759,7 +759,7 @@ menu_item **retmip;
                     if (how == PICK_ONE || how == PICK_ANY) {
                         char buf[BUFSZ];
                         amip = cw->menu.items;
-                        amii_getlin_ex(GETLINE_MENU_SEARCH, ATR_NONE, NO_COLOR, "Search for:", buf, 0, 0);
+                        amii_getlin_ex(GETLINE_MENU_SEARCH, ATR_NONE, NO_COLOR, "Search for:", buf, 0, 0, 0);
                         if (!*buf || *buf == '\033')
                             break;
                         while (amip) {

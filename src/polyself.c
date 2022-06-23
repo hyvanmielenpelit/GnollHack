@@ -498,7 +498,7 @@ int psflags;
         tryct = 5;
         do {
             mntmp = NON_PM;
-            getlin_ex(GETLINE_POLYMORPH, ATR_NONE, NO_COLOR, "Become what kind of monster?", buf, "type the name", (char*)0);
+            getlin_ex(GETLINE_POLYMORPH, ATR_NONE, NO_COLOR, "Become what kind of monster?", buf, "type the name", (char*)0, (char*)0);
             (void) mungspaces(buf);
             if (*buf == '\033')
             {

@@ -3005,17 +3005,19 @@ int col;
 /************************* getlin *******************************/
 
 void
-Gem_getlin_ex(style, attr, color, ques, input, placeholder, linesuffix)
+Gem_getlin_ex(style, attr, color, ques, input, placeholder, linesuffix, introline)
 int style, attr, color;
 const char *ques;
 const char* placeholder;
 const char* linesuffix;
+const char* introline;
 char *input;
 {
     OBJECT *z_ob = zz_oblist[LINEGET];
     int d_exit, length;
     char *pr[2], *tmp;
     char promptbuf[BUFSZ] = "";
+    //Do not show introline
     if (ques)
         Sprintf(promptbuf, "%s", ques);
     if (placeholder)

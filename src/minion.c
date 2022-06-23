@@ -906,7 +906,7 @@ struct monst *mtmp;
     long offer;
     long umoney = money_cnt(invent);
 
-    getlin_ex(GETLINE_NUMBERS_ONLY, ATR_NONE, NO_COLOR, "How much will you offer?", buf, (char*)0, (char*)0);
+    getlin_ex(GETLINE_NUMBERS_ONLY, ATR_NONE, NO_COLOR, "How much will you offer?", buf, (char*)0, (char*)0, (char*)0);
     if (sscanf(buf, "%ld", &offer) != 1)
         offer = 0L;
 

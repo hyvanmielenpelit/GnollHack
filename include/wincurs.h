@@ -115,7 +115,7 @@ extern void curses_nhbell(void);
 extern int curses_doprev_message(void);
 extern char curses_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices,
                                CHAR_P def, const char* resp_desc, unsigned long ynflags);
-extern void curses_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix);
+extern void curses_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix, const char* introline);
 extern int curses_get_ext_cmd(void);
 extern void curses_number_pad(int state);
 extern void curses_delay_output(void);

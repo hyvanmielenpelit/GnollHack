@@ -242,7 +242,7 @@ E int NDECL(mac_nhgetch);
 E int FDECL(mac_nh_poskey, (int *, int *, int *));
 E int NDECL(mac_doprev_message);
 E char FDECL(mac_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, unsigned long));
-E void FDECL(mac_getlin_ex, (int, int, int, const char *, char *, const char*, const char*));
+E void FDECL(mac_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 E int NDECL(mac_get_ext_cmd);
 E void FDECL(mac_number_pad, (int));
 E void NDECL(mac_delay_output);

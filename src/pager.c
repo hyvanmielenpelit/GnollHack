@@ -1442,7 +1442,7 @@ coord *click_cc;
           }
         case '?':
             from_screen = FALSE;
-            getlin_ex(GETLINE_GENERAL, ATR_NONE, NO_COLOR, "Specify what?", out_str, "type the word", (char*)0);
+            getlin_ex(GETLINE_GENERAL, ATR_NONE, NO_COLOR, "Specify what?", out_str, "type the word", (char*)0, (char*)0);
             if (strcmp(out_str, " ")) /* keep single space as-is */
                 /* remove leading and trailing whitespace and
                    condense consecutive internal whitespace */

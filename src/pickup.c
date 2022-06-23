@@ -200,7 +200,7 @@ int *menu_on_demand;
         not_everything = filtered = FALSE;
         Sprintf(qbuf, "What kinds of thing do you want to %s?", action);
         Sprintf(ebuf, "[%s]", ilets);
-        getlin_ex(GETLINE_GENERAL, ATR_NONE, NO_COLOR, qbuf, inbuf, (char*)0, ebuf);
+        getlin_ex(GETLINE_GENERAL, ATR_NONE, NO_COLOR, qbuf, inbuf, (char*)0, ebuf, (char*)0);
         if (*inbuf == '\033')
             return FALSE;
 

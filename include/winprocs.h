@@ -62,7 +62,7 @@ struct window_procs {
     void NDECL((*win_nhbell));
     int NDECL((*win_doprev_message));
     char FDECL((*win_yn_function_ex), (int, int, int, int, const char*, const char *, const char *, CHAR_P, const char*, unsigned long));
-    void FDECL((*win_getlin_ex), (int, int, int, const char *, char *, const char*, const char*));
+    void FDECL((*win_getlin_ex), (int, int, int, const char *, char *, const char*, const char*, const char*));
     int NDECL((*win_get_ext_cmd));
     void FDECL((*win_number_pad), (int));
     void NDECL((*win_delay_output));
@@ -174,7 +174,7 @@ extern
 #define nhbell (*windowprocs.win_nhbell)
 #define nh_doprev_message (*windowprocs.win_doprev_message)
 #define getlin_ex (*windowprocs.win_getlin_ex)
-#define getlin(x, y) (*windowprocs.win_getlin_ex)(GETLINE_GENERAL, ATR_NONE, NO_COLOR, x, y, (char*)0, (char*)0)
+#define getlin(x, y) (*windowprocs.win_getlin_ex)(GETLINE_GENERAL, ATR_NONE, NO_COLOR, x, y, (char*)0, (char*)0, (char*)0)
 #define get_ext_cmd (*windowprocs.win_get_ext_cmd)
 #define number_pad (*windowprocs.win_number_pad)
 #define delay_output (*windowprocs.win_delay_output)
@@ -442,7 +442,7 @@ struct chain_procs {
     int FDECL((*win_doprev_message), (CARGS));
     char FDECL((*win_yn_function_ex),
                (CARGS, int, int, int, int, const char *, const char *, CHAR_P, const char*, unsigned long));
-    void FDECL((*win_getlin_ex), (CARGS, int, int, int, const char *, char *, const char*, const char*));
+    void FDECL((*win_getlin_ex), (CARGS, int, int, int, const char *, char *, const char*, const char*, const char*));
     int FDECL((*win_get_ext_cmd), (CARGS));
     void FDECL((*win_number_pad), (CARGS, int));
     void FDECL((*win_delay_output), (CARGS));
@@ -546,7 +546,7 @@ extern int FDECL(safe_nh_poskey, (int *, int *, int *));
 extern void NDECL(safe_nhbell);
 extern int NDECL(safe_doprev_message);
 extern char FDECL(safe_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, unsigned long));
-extern void FDECL(safe_getlin_ex, (int, int, int, const char *, char *, const char*, const char*));
+extern void FDECL(safe_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 extern int NDECL(safe_get_ext_cmd);
 extern void FDECL(safe_number_pad, (int));
 extern void NDECL(safe_delay_output);
