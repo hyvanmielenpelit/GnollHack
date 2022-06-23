@@ -2231,16 +2231,18 @@ boolean* obj_destroyed;
         /* Shattering is done below, here just the message*/
         objectshatters = TRUE;
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
+        char dcbuf[BUFSZ] = "";
         if(obj->quan == 1)
-            pline("%s from the blow!", Yobjnam2(obj, "shatter"));
+            Sprintf(dcbuf, "%s from the blow!", Yobjnam2(obj, "shatter"));
         else
-            pline("One of %s shatters from the blow!", yname(obj));
+            Sprintf(dcbuf, "One of %s shatters from the blow!", yname(obj));
 
+        pline1(dcbuf);
         if (obj->oclass == GEM_CLASS)
         {
             if (obj->dknown && !objects[obj->otyp].oc_name_known
                 && !objects[obj->otyp].oc_uname)
-                docall(obj);
+                docall(obj, dcbuf);
         }
     }
 

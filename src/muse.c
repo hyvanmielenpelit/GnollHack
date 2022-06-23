@@ -935,7 +935,7 @@ struct monst *mtmp;
             makeknown(SCR_CREATE_MONSTER);
         else if (!objects[SCR_CREATE_MONSTER].oc_name_known
                  && !objects[SCR_CREATE_MONSTER].oc_uname)
-            docall(otmp);
+            docall(otmp, (char*)0);
         m_useup(mtmp, otmp);
         return 2;
     }
@@ -2090,12 +2090,14 @@ struct monst *mtmp;
                 if (on_level(&tolevel, &u.uz))
                     goto skipmsg;
                 if (vismon) {
+                    char dcbuf[BUFSZ] = "";
                     play_sfx_sound_at_location(SFX_CURSED_GAIN_LEVEL, mtmp->mx, mtmp->my);
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s rises up, through the %s!", Monnam(mtmp),
+                    Sprintf(dcbuf, "%s rises up, through the %s!", Monnam(mtmp),
                           ceiling(mtmp->mx, mtmp->my));
+                    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
                     if (!objects[POT_GAIN_LEVEL].oc_name_known
                         && !objects[POT_GAIN_LEVEL].oc_uname)
-                        docall(otmp);
+                        docall(otmp, dcbuf);
                 }
                 m_useup(mtmp, otmp);
                 migrate_to_level(mtmp, ledger_no(&tolevel), MIGR_RANDOM,
@@ -2104,10 +2106,12 @@ struct monst *mtmp;
             } else {
  skipmsg:
                 if (vismon) {
-                    pline("%s looks uneasy.", Monnam(mtmp));
+                    char dcbuf[BUFSZ] = "";
+                    Sprintf(dcbuf, "%s looks uneasy.", Monnam(mtmp));
+                    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
                     if (!objects[POT_GAIN_LEVEL].oc_name_known
                         && !objects[POT_GAIN_LEVEL].oc_uname)
-                        docall(otmp);
+                        docall(otmp, dcbuf);
                 }
                 m_useup(mtmp, otmp);
                 return 2;
@@ -3051,7 +3055,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
                 pline("Oh, what a pretty fire!");
             if (vis && !objects[otyp].oc_name_known
                 && !objects[otyp].oc_uname)
-                docall(obj);
+                docall(obj, (char*)0);
             m_useup(mon, obj); /* after docall() */
             vis = FALSE;       /* skip makeknown() below */
             res = FALSE;       /* failed to cure sliming */

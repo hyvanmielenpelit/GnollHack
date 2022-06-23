@@ -486,7 +486,7 @@ doread()
             if (known)
                 learnscroll(scroll);
             else if (!objects[scroll->otyp].oc_uname)
-                docall(scroll);
+                docall(scroll, (char*)0);
         }
         scroll->in_use = FALSE;
         if (scroll->otyp != SCR_BLANK_PAPER && scroll->otyp != SCR_IDENTIFY)

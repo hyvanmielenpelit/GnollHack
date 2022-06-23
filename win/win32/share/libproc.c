@@ -608,22 +608,18 @@ void lib_getlin_ex(int style, int attr, int color, const char* question, char* i
     char buf[BUFSIZ] = "";
     char phbuf[BUFSIZ] = "";
     char dvbuf[BUFSIZ] = "";
-    char qbuf[BUFSZ] = "";
+    char ibuf[BUFSZ] = "";
+
     if (question)
-    {
-        if (introline && *introline)
-            Sprintf(qbuf, "%s %s", introline, question);
-        else
-            Strcpy(qbuf, question);
-    }
-    if (*qbuf)
-        write_text2buf_utf8(buf, BUFSIZ, qbuf);
+        write_text2buf_utf8(buf, BUFSIZ, question);
     if (placeholder)
         write_text2buf_utf8(phbuf, BUFSIZ, placeholder);
     if (linesuffix)
         write_text2buf_utf8(dvbuf, BUFSIZ, linesuffix);
+    if (introline)
+        write_text2buf_utf8(ibuf, BUFSIZ, introline);
 
-    char* res = lib_callbacks.callback_getlin_ex(style, attr, color, buf, placeholder ? phbuf : 0, linesuffix ? dvbuf : 0);
+    char* res = lib_callbacks.callback_getlin_ex(style, attr, color, buf, placeholder ? phbuf : 0, linesuffix ? dvbuf : 0, introline ? ibuf : 0);
     if (res && input)
     {
         char msgbuf[BUFSZ] = "";
@@ -635,7 +631,7 @@ void lib_getlin_ex(int style, int attr, int color, const char* question, char* i
 
 int lib_get_ext_cmd(void)
 {
-    char* res = lib_callbacks.callback_getlin_ex(GETLINE_EXTENDED_COMMAND, ATR_NONE, NO_COLOR, "Type an Extended Command", 0, 0);
+    char* res = lib_callbacks.callback_getlin_ex(GETLINE_EXTENDED_COMMAND, ATR_NONE, NO_COLOR, "Type an Extended Command", 0, 0, 0);
     if (!res)
         return -1;
 

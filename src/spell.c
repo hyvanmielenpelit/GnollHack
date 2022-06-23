@@ -201,15 +201,21 @@ struct obj *spellbook;
 {
     boolean gone = FALSE;
 
-    if (!rn2(3) && spellbook->otyp != SPE_BOOK_OF_THE_DEAD && spellbook->otyp != SPE_BOOK_OF_MODRON) {
+    if (!rn2(3) && spellbook->otyp != SPE_BOOK_OF_THE_DEAD && spellbook->otyp != SPE_BOOK_OF_MODRON)
+    {
+        char dcbuf[BUFSZ] = "";
+        char dcbuf2[BUFSZ] = "";
+        char dcbuf3[BUFSZ] = "";
         spellbook->in_use = TRUE; /* in case called from learn */
-        pline_ex(ATR_NONE, CLR_MSG_WARNING,
-         "Being confused you have difficulties in controlling your actions.");
+        Strcpy(dcbuf2, "Being confused you have difficulties in controlling your actions.");
+        pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf2);
         display_nhwindow(WIN_MESSAGE, FALSE);
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "accidentally tear the spellbook to pieces.");
+        Strcpy(dcbuf3, "You accidentally tear the spellbook to pieces.");
+        pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf3);
+        Sprintf(dcbuf, "%s %s", dcbuf2, dcbuf3);
         if (!objects[spellbook->otyp].oc_name_known
             && !objects[spellbook->otyp].oc_uname)
-            docall(spellbook);
+            docall(spellbook, dcbuf);
         useup(spellbook);
         gone = TRUE;
     } else {
@@ -489,7 +495,7 @@ learn(VOID_ARGS)
             }
             if (!objects[book->otyp].oc_name_known
                 && !objects[book->otyp].oc_uname)
-                docall(book);
+                docall(book, (char*)0);
             useup(book);
         }
         else
@@ -903,7 +909,7 @@ register struct obj *spellbook;
                     pline_The("spellbook crumbles to dust!");
                 if (!objects[spellbook->otyp].oc_name_known
                     && !objects[spellbook->otyp].oc_uname)
-                    docall(spellbook);
+                    docall(spellbook, (char*)0);
                 useup(spellbook);
             } else
                 spellbook->in_use = FALSE;

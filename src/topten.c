@@ -726,7 +726,8 @@ time_t when;
     }
 #endif /* XLOGFILE */
 
-    if (wizard || discover || CasualMode) {
+    if (discover || CasualMode) // If in wizard mode, write the log normally
+    {
         if (how != PANICKED)
             HUP {
                 char pbuf[BUFSZ];

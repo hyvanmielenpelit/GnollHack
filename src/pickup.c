@@ -1602,13 +1602,17 @@ boolean telekinesis; /* not picking it up directly by hand */
             obj->speflags |= SPEFLAGS_WILL_TURN_TO_DUST_ON_PICKUP;
         else 
         {
+            char dcbuf[BUFSZ] = "";
             play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
-            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "scroll%s %s to dust as you %s %s up.", plur(obj->quan),
+            Sprintf(dcbuf, "scroll%s %s to dust as you %s %s up.", plur(obj->quan),
                       otense(obj, "turn"), telekinesis ? "raise" : "pick",
                       (obj->quan == 1L) ? "it" : "them");
+
+            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
+
             if (!(objects[SCR_SCARE_MONSTER].oc_name_known)
                 && !(objects[SCR_SCARE_MONSTER].oc_uname))
-                docall(obj);
+                docall(obj, dcbuf);
             useupf(obj, obj->quan);
             return 1; /* tried to pick something up and failed, but
                          don't want to terminate pickup loop yet   */

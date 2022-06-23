@@ -3415,12 +3415,14 @@ doeat()
     /* KMH -- Slow digestion is... indigestible */
     if (otmp->otyp == RIN_SLOW_DIGESTION)
     {
+        char dcbuf[BUFSZ] = "";
         play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
-        pline("This ring is indigestible!");
+        Strcpy(dcbuf, "This ring is indigestible!");
+        pline1(dcbuf);
         (void) rottenfood(otmp);
         if (otmp->dknown && !objects[otmp->otyp].oc_name_known
             && !objects[otmp->otyp].oc_uname)
-            docall(otmp);
+            docall(otmp, dcbuf);
         return 1;
     }
 

@@ -642,6 +642,7 @@ E const char* FDECL(get_obj_subtype_name, (struct obj*));
 E const char* FDECL(get_otyp_subtype_name, (int));
 E struct extended_create_window_info FDECL(extended_create_window_info_from_obj, (struct obj*));
 E struct extended_create_window_info FDECL(extended_create_window_info_from_mon, (struct monst*));
+E void FDECL(standard_hint, (const char*));
 
 /* ### do_name.c ### */
 
@@ -667,7 +668,7 @@ E boolean FDECL(objtyp_is_callable, (int));
 E int NDECL(docallcmd);
 E int NDECL(doname_specific_object);
 E int NDECL(doname_type_of_object);
-E void FDECL(docall, (struct obj *));
+E void FDECL(docall, (struct obj *, const char*));
 E const char *NDECL(rndghostname);
 E char *FDECL(x_monnam, (struct monst *, int, const char *, int, BOOLEAN_P));
 E char *FDECL(l_monnam, (struct monst *));

@@ -1932,7 +1932,7 @@ int how;
     if (have_windows && !iflags.toptenwin)
         exit_nhwindows((char*)0), have_windows = FALSE;
 
-    if((!wizard && !discover && !CasualMode) || (CasualMode && how == ASCENDED) /* || (wizard && yn_query("Write a top score entry?") == 'y') */)
+    if((!wizard && !discover && !CasualMode) || (CasualMode && how == ASCENDED) || (wizard && yn_query("Write a top score entry?") == 'y'))
         topten(how, endtime);
 
     if (CasualMode && how == ASCENDED && has_existing_save_file)

@@ -4665,7 +4665,7 @@ trycall(obj)
 register struct obj *obj;
 {
     if (!objects[obj->otyp].oc_name_known && !objects[obj->otyp].oc_uname)
-        docall(obj);
+        docall(obj, (char*)0);
 }
 
 /* Transforms the sink at the player's position into
@@ -7457,4 +7457,18 @@ struct monst* mon;
     info.monster = mon;
     return info;
 }
+
+void
+standard_hint(hint_text)
+const char* hint_text;
+{
+    if (hint_text && context.game_difficulty == MIN_DIFFICULTY_LEVEL)
+    {
+        char hintbuf[BUFSZ];
+        Sprintf(hintbuf, "HINT - %s", hint_text);
+        play_sfx_sound(SFX_HINT);
+        pline_ex(ATR_NONE, CLR_MSG_HINT, hintbuf);
+    }
+}
+
 /*do.c*/

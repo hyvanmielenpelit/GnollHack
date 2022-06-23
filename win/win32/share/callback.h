@@ -58,7 +58,7 @@ typedef unsigned char(__callconv* BooleanIntDoubleCallback)(int, double);
 typedef unsigned char(__callconv* BooleanIntDoubleVoidPtrCallback)(int, double, void*);
 typedef unsigned char(__callconv* BooleanVoidPtrDoubleCallback)(void* , double);
 typedef unsigned char(__callconv* BooleanVoidPtrCallback)(void*);
-typedef char*(__callconv* GetLineCallback)(int, int, int, const char*, const char*, const char*);
+typedef char*(__callconv* GetLineCallback)(int, int, int, const char*, const char*, const char*, const char*);
 typedef char*(__callconv* CharPtrBooleanCallback)(BOOLEAN_P);
 typedef void(__callconv* VoidIntConstCharPtrConstCharPtrBooleanCallback)(int, const char*, const char*, UCHAR_P);
 

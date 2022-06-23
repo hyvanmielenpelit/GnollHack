@@ -1495,7 +1495,7 @@ namespace GnollHackClient.Pages.Game
                                 AskName(req.RequestString, req.RequestString2);
                                 break;
                             case GHRequestType.GetLine:
-                                GetLine(req.RequestString, req.PlaceHolderString, req.DefValueString, req.RequestInt, req.RequestAttr, req.RequestNhColor);
+                                GetLine(req.RequestString, req.PlaceHolderString, req.DefValueString, req.IntroLineString, req.RequestInt, req.RequestAttr, req.RequestNhColor);
                                 break;
                             case GHRequestType.ReturnToMainMenu:
                                 ClearMap();
@@ -1890,7 +1890,7 @@ namespace GnollHackClient.Pages.Game
         }
 
         private int _getLineStyle = 0;
-        private void GetLine(string query, string placeholder, string linesuffix, int style, int attr, int color)
+        private void GetLine(string query, string placeholder, string linesuffix, string introline, int style, int attr, int color)
         {
             Color clr = ClientUtils.NHColor2XColor(color, attr, false, false); /* Non-title / white coloring works better here */
             string PlaceHolderText = null;
@@ -1899,7 +1899,12 @@ namespace GnollHackClient.Pages.Game
                 PlaceHolderText = char.ToUpper(placeholder[0]) + placeholder.Substring(1);
             }
 
-            GetLineCaption.Text = query;
+            if (!string.IsNullOrWhiteSpace(introline))
+                GetLineCaption.Text = introline + " ";
+            else
+                GetLineCaption.Text = "";
+
+            GetLineCaption.Text += query;
             if (!string.IsNullOrWhiteSpace(linesuffix) && linesuffix != " -")
                 GetLineCaption.Text += " " + linesuffix;
 

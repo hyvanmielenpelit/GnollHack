@@ -1636,7 +1636,7 @@ doname_type_of_object()
             You("would never recognize another one.");
         }
         else {
-            docall(obj);
+            docall(obj, (char*)0);
         }
 
     }
@@ -1727,7 +1727,7 @@ docallcmd()
                 You("know those as well as you ever will.");
 #endif
             } else {
-                docall(obj);
+                docall(obj, (char*)0);
             }
         }
         break;
@@ -1784,8 +1784,9 @@ struct obj *obj;
 }
 
 void
-docall(obj)
+docall(obj, introline)
 struct obj *obj;
+const char* introline;
 {
     char buf[BUFSZ] = DUMMY, qbuf[QBUFSZ];
     char **str1;
@@ -1813,7 +1814,9 @@ struct obj *obj;
         and_getlin_log(qbuf, buf);
     else
 #endif
-        getlin(qbuf, buf);
+
+    getlin_ex(GETLINE_GENERAL, ATR_NONE, NO_COLOR, qbuf, buf, (char*)0, (char*)0, introline);
+
     if (!*buf || *buf == '\033')
         return;
 
@@ -1911,7 +1914,7 @@ namefloorobj()
         You("don't know %s %s well enough to name %s.",
             use_plural ? "those" : "that", buf, use_plural ? "them" : "it");
     } else {
-        docall(obj);
+        docall(obj, (char*)0);
     }
     if (fakeobj) {
         obj->where = OBJ_FREE; /* object_from_map() sets it to OBJ_FLOOR */

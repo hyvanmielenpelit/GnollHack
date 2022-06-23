@@ -757,6 +757,7 @@ struct obj* uitem;
     if (!uitem)
         return;
 
+    char dcbuf[BUFSZ] = "";
     int orig_sex = poly_gender();
 
     if (Unchanging)
@@ -766,8 +767,9 @@ struct obj* uitem;
     if (orig_sex != poly_gender()) {
         makeknown(uitem->otyp);
         play_sfx_sound(SFX_SEX_CHANGE);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are suddenly very %s!",
+        Sprintf(dcbuf, "are suddenly very %s!",
             flags.female ? "feminine" : "masculine");
+        pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
         context.botl = 1;
     }
     else
@@ -775,14 +777,15 @@ struct obj* uitem;
         play_sfx_sound(SFX_UNKNOWN_ODD_EFFECT);
         /* already polymorphed into single-gender monster; only
            changed the character's base sex */
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "don't feel like yourself.");
+        Strcpy(dcbuf, "You don't feel like yourself.");
+        pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, dcbuf);
     }
     play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s disintegrates!", The(cxname(uitem)));
     if (orig_sex == poly_gender() && uitem->dknown
         && !objects[uitem->otyp].oc_name_known
         && !objects[uitem->otyp].oc_uname)
-        docall(uitem);
+        docall(uitem, dcbuf);
     useup(uitem);
     newsym(u.ux, u.uy);
 }

@@ -1774,15 +1774,7 @@ void
 dll_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix, const char* introline)
 {
     dll_logDebug("dll_getlin(%s, %p)\n", question, input);
-    char qbuf[BUFSZ] = "";
-    if (question)
-    {
-        if (introline && *introline)
-            Sprintf(qbuf, "%s %s", introline, question);
-        else
-            Strcpy(qbuf, question);
-    }
-    char* res = dll_callbacks.callback_getlin_ex(style, attr, color, qbuf, placeholder, linesuffix);
+    char* res = dll_callbacks.callback_getlin_ex(style, attr, color, question, placeholder, linesuffix, introline);
     if (res && input)
         strcpy(input, res);
 

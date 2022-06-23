@@ -3847,7 +3847,7 @@ struct obj* obj;
                 if (wandknown)
                     makeknown(obj->otyp);
                 else if (suggestnamingwand && !objects[obj->otyp].oc_uname)
-                    docall(obj);
+                    docall(obj, (char*)0);
             }
 
         }

@@ -1116,7 +1116,7 @@ rename_disco()
             odummy.quan = 1L;
             odummy.known = !objects[dis].oc_uses_known;
             odummy.dknown = 1;
-            docall(&odummy);
+            docall(&odummy, (char*)0);
         }
     }
     destroy_nhwindow(tmpwin);
