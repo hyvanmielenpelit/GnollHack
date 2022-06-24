@@ -58,7 +58,10 @@
     <None Remove="Assets\imrl.otf" />
     <None Remove="Assets\Lato-Bold.ttf" />
     <None Remove="Assets\Lato-Regular.ttf" />
+    <None Remove="Assets\main-menu-dwarf.jpg" />
+    <None Remove="Assets\main-menu-gnoll.jpg" />
     <None Remove="Assets\main-menu-portrait-snapshot.jpg" />
+    <None Remove="Assets\main-menu-ranger.jpg" />
     <None Remove="Assets\Master.bank" />
     <None Remove="Assets\Master.strings.bank" />
     <None Remove="Assets\shxi.ttf" />
@@ -256,6 +259,9 @@
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
     <EmbeddedResource Include="Assets\Icons\missing_icon.png" />
     <EmbeddedResource Include="Assets\Immortal-Regular.ttf" />
+    <EmbeddedResource Include="Assets\main-menu-dwarf.jpg" />
+    <EmbeddedResource Include="Assets\main-menu-gnoll.jpg" />
+    <EmbeddedResource Include="Assets\main-menu-ranger.jpg" />
     <Page Include="Assets\imrl.otf" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />

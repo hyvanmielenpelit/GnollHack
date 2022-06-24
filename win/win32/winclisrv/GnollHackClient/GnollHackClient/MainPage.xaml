@@ -57,6 +57,11 @@
                                 Source="ms-appx:///mainmenuportrait.mp4"
                                 />
 
+        <local:ImageCarousel x:Name="carouselView" IsVisible="false"
+               HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+               AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+               AbsoluteLayout.LayoutFlags="All" />
+
         <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="60, 35, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" >
             <StackLayout>

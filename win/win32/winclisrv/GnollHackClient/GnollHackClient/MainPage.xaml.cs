@@ -237,6 +237,7 @@ namespace GnollHackClient
             App.InitAdditionalTypefaces(assembly);
             App.InitSymbolBitmaps(assembly);
             App.InitGameBitmaps(assembly);
+            carouselView.Init();
 
             string verstr = "?";
             string verid = "?";
@@ -401,6 +402,12 @@ namespace GnollHackClient
                 videoView.Play();
                 StillImage.IsVisible = false;
             }
+            else if (App.IsiOS)
+            {
+                carouselView.IsVisible = true;
+                carouselView.Play();
+                StillImage.IsVisible = false;
+            }
 
             try
             {
@@ -436,8 +443,12 @@ namespace GnollHackClient
             }
             else
             {
-                StillImage.IsVisible = true;
-                await StillImage.FadeTo(1, 250);
+                //StillImage.IsVisible = true;
+                //await StillImage.FadeTo(1, 250);
+                carouselView.IsVisible = true;
+                carouselView.InvalidateSurface();
+                await carouselView.FadeTo(1, 250);
+                carouselView.Play();
             }
 
             UpperButtonGrid.IsVisible = true;
@@ -598,6 +609,10 @@ namespace GnollHackClient
                 videoView.Stop();
                 videoView.IsVisible = false;
             }
+            else
+            {
+                carouselView.Stop();
+            }
         }
 
         private double _currentPageWidth = 0;
@@ -631,6 +646,10 @@ namespace GnollHackClient
                     videoView.WidthRequest = width;
                     videoView.HeightRequest = height;
                     videoView.Play();
+                }
+                else
+                {
+                    carouselView.InvalidateSurface();
                 }
             }
         }
