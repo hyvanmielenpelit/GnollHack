@@ -73,15 +73,18 @@ namespace GnollHackClient
                 Init();
 
             InvalidateSurface();
-            _timerIsOn = true;
-            Device.StartTimer(TimeSpan.FromSeconds(1.0 / _refreshFrequency), () =>
+            if(!_timerIsOn)
             {
-                _counterValue++;
-                if (_counterValue >= (long)int.MaxValue)
-                    _counterValue = 0;
-                InvalidateSurface();
-                return _timerIsOn;
-            });
+                _timerIsOn = true;
+                Device.StartTimer(TimeSpan.FromSeconds(1.0 / _refreshFrequency), () =>
+                {
+                    _counterValue++;
+                    if (_counterValue >= (long)int.MaxValue)
+                        _counterValue = 0;
+                    InvalidateSurface();
+                    return _timerIsOn;
+                });
+            }
         }
 
         public void Stop()
