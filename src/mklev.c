@@ -999,7 +999,10 @@ makelevel()
             && nroom >= room_threshold && shopok)  // rn2(u_depth) < 3))
             res = mkroom(SHOPBASE);
 
-        if (!res && u_depth > 1 && u_depth < depth(&medusa_level) && !(context.npc_made & (1UL << NPC_ELVEN_BARD)))
+        if (!res && u_depth > 1 && u_depth < depth(&medusa_level) && !(context.npc_made & (1UL << NPC_ELVEN_BARD))
+            && (context.game_difficulty == MIN_DIFFICULTY_LEVEL 
+                || (context.game_difficulty < 0 && !rn2(max(2, 2 * (context.game_difficulty - MIN_DIFFICULTY_LEVEL) + 1)))
+                || (context.game_difficulty >= 0 && !rn2(100 * context.game_difficulty + 20))))
             res = mknpcroom(NPC_ELVEN_BARD);
 
         if (!res && u_depth > 8 && u_depth < depth(&medusa_level) &&
