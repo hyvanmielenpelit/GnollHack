@@ -401,7 +401,7 @@ genl_ui_has_input(VOID_ARGS)
 }
 
 void
-genl_exit_hack(int status)
+genl_exit_hack(int status UNUSED)
 {
     
 }

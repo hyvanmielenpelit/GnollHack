@@ -56,7 +56,7 @@ const char *query;
 register char *bufp;
 const char* placeholder;
 const char* linesuffix;
-const char* introline;
+const char* introline UNUSED;
 getlin_hook_proc hook;
 {
     register char *obufp = bufp;
