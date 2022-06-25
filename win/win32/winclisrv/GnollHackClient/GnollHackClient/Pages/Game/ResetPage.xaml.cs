@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -19,6 +20,9 @@ namespace GnollHackClient.Pages.Game
 		{
 			InitializeComponent();
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+#if !DEBUG
+            BaseSection.Remove(DownloadTestFilesViewCell);
+#endif
         }
 
         private async void btnDeleteFiles_Clicked(object sender, EventArgs e)
@@ -234,5 +238,76 @@ namespace GnollHackClient.Pages.Game
             }
         }
 
+
+        CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+
+        private async void btnDownloadTestFiles_Clicked(object sender, EventArgs e)
+        {
+            GameTableView.IsEnabled = false;
+            App.PlayButtonClickedSound();
+
+            string url = "https://download.gnollhack.com/test-files/test-files.zip";
+            string target_path = App.GHPath;
+            string target_file = Path.Combine(target_path, "test-files.zip");
+            bool trouble = false;
+            bool cancelled = false;
+            using (var client = new HttpClientDownloadWithProgress(url, target_file, _cancellationTokenSource))
+            {
+                client.ProgressChanged += (totalFileSize, totalBytesDownloaded, progressPercentage) => {
+                    //Do nothing currently
+                };
+
+                try
+                {
+                    await client.StartDownload();
+                }
+                catch (OperationCanceledException)
+                {
+                    /* Download was cancelled */
+                    cancelled = true; ;
+                }
+                catch (Exception ex)
+                {
+                    if (!_cancellationTokenSource.Token.IsCancellationRequested)
+                    {
+                        await DisplayAlert("Download Error", "A download error occurred: " + ex.Message, "OK");
+                        trouble = true;
+                    }
+                }
+
+                try
+                {
+                    if (File.Exists(target_file))
+                    {
+                        if(_cancellationTokenSource.Token.IsCancellationRequested)
+                            File.Delete(target_file);
+                        else
+                            System.IO.Compression.ZipFile.ExtractToDirectory(target_file, target_path);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("File Process Error", "A file processing error occurred: " + ex.Message, "OK");
+                    trouble = true;
+                }
+
+                if(trouble)
+                {
+                    btnDownloadTestFiles.Text = "Error";
+                    btnDownloadTestFiles.TextColor = Color.Red;
+                }
+                else if(cancelled)
+                {
+                    btnDownloadTestFiles.Text = "Cancelled";
+                    btnDownloadTestFiles.TextColor = Color.Red;
+                }
+                else
+                {
+                    btnDownloadTestFiles.Text = "Done";
+                    btnDownloadTestFiles.TextColor = Color.Red;
+                }
+                GameTableView.IsEnabled = true;
+            }
+        }
     }
 }

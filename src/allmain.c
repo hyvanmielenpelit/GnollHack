@@ -1233,7 +1233,7 @@ get_game_mode_description_core(iswizardmode, isexporemode, ismodernmode, iscasua
 boolean iswizardmode, isexporemode, ismodernmode, iscasualmode;
 {
     if (iswizardmode)
-        return "immortal mode with special debug commands";
+        return "immortal mode with debug commands";
     else if (isexporemode)
         return "non-scoring immortal mode with loadable saved games";
     else if (iscasualmode)

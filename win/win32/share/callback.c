@@ -10,7 +10,8 @@ STATIC_DCL int NDECL(common_prompt_for_player_selection);
 int
 common_player_selection()
 {
-    if (0 && iflags.wc_player_selection == VIA_DIALOG)
+#if 0
+    if (iflags.wc_player_selection == VIA_DIALOG)
     {
         /* pick player type randomly (use pre-selected
          * role/race/gender/alignment) */
@@ -72,6 +73,7 @@ common_player_selection()
         }
     }
     else
+#endif
     { /* iflags.wc_player_selection == VIA_PROMPTS */
         return common_prompt_for_player_selection();
     }
@@ -110,12 +112,12 @@ common_prompt_for_player_selection()
             pick4u = '\033';
 
         /* tty_putstr(BASE_WINDOW, 0, prompt); */
-        do
-        {
-            /* pick4u = lowc(readchar()); */
-            if (index(quitchars, pick4u))
-                pick4u = 'y';
-        }         while (!index(ynqchars, pick4u));
+        //do
+        //{
+        //    /* pick4u = lowc(readchar()); */
+        //    if (index(quitchars, pick4u))
+        //        pick4u = 'y';
+        //} while (!index(ynqchars, pick4u));
 
         if ((int)strlen(prompt) + 1 < CO)
         {
