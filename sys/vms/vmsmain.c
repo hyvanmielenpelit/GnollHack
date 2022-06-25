@@ -252,6 +252,14 @@ char *argv[];
         case 'x':
             discover = TRUE, wizard = FALSE;
             break;
+        case 'M':
+        case 'm':
+            ModernMode = TRUE;
+            break;
+        case 'C':
+        case 'c':
+            CasualMode = TRUE;
+            break;
 #ifdef NEWS
         case 'n':
             iflags.news = FALSE;

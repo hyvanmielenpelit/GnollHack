@@ -244,12 +244,18 @@ static void process_options(argc, argv)
 		case 'D':
 #ifdef WIZARD
 			wizard = TRUE;
-		break;
+			break;
 #endif
 		/* otherwise fall thru to discover */
 		case 'X':
 			discover = TRUE;
-		break;
+			break;
+		case 'M':
+			ModernMode = TRUE;
+			break;
+		case 'C':
+			CasualMode = TRUE;
+			break;
 #ifdef NEWS
 			case 'n':
 			iflags.news = FALSE;

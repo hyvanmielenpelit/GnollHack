@@ -35,8 +35,8 @@ namespace GnollHackClient
 
         CarouselBitmap[] _caruselBitmaps = new CarouselBitmap[]
         {
-            new CarouselBitmap("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", TextAlignment.Center, TextAlignment.Center),
-            new CarouselBitmap("GnollHackClient.Assets.main-menu-ranger.jpg", TextAlignment.Start, TextAlignment.Center),
+            //new CarouselBitmap("GnollHackClient.Assets.main-menu-portrait-snapshot.jpg", TextAlignment.Center, TextAlignment.Center),
+            new CarouselBitmap("GnollHackClient.Assets.main-menu-ranger.jpg", TextAlignment.Center, TextAlignment.Center),
             new CarouselBitmap("GnollHackClient.Assets.main-menu-dwarf.jpg", TextAlignment.Center, TextAlignment.Center),
             new CarouselBitmap("GnollHackClient.Assets.main-menu-gnoll.jpg", TextAlignment.Center, TextAlignment.Center),
         };
