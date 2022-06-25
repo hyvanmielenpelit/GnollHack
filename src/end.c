@@ -1285,14 +1285,11 @@ int how;
     if (!survive && how <= GENOCIDED)
     {
         u.utruemortality++;
-        if (wizard || discover)
+        if ((wizard || discover) && !paranoid_query_ex(ATR_NONE, NO_COLOR, ParanoidDie, (char*)0, "Die?"))
         {
-            if (!paranoid_query_ex(ATR_NONE, NO_COLOR, ParanoidDie, (char*)0, "Die?"))
-            {
-                pline("OK, so you don't %s.", (how == CHOKING) ? "choke" : "die");
-                savelife(how);
-                survive = TRUE;
-            }
+            pline("OK, so you don't %s.", (how == CHOKING) ? "choke" : "die");
+            savelife(how);
+            survive = TRUE;
         }
         else if (ModernMode)
         {

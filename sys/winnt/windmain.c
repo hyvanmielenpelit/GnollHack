@@ -396,6 +396,9 @@ attempt_restore:
 
             if (discover || wizard || CasualMode)
             {
+                if (CasualMode)
+                    pline("Keeping the save file.");
+
                 if (!CasualMode && yn_query("Do you want to keep the save file?") == 'n')
                     (void) delete_savefile();
                 else 

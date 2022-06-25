@@ -1159,9 +1159,56 @@ get_game_mode_text_core(iswizardmode, isexporemode, ismodernmode, iscasualmode, 
 boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmode;
 {
     if (iswizardmode)
-        return "wizard";
+    {
+        if (ismodernmode)
+        {
+            if (iscasualmode)
+            {
+                return "casual wizard";
+            }
+            else
+            {
+                return "modern wizard";
+            }
+        }
+        else
+        {
+            if (iscasualmode)
+            {
+                return "reloadable wizard";
+            }
+            else
+            {
+                return "wizard";
+            }
+        }
+    }
     else if (isexporemode)
-        return display_nonscoring ? "non-scoring explore" : "explore";
+    {
+        if (ismodernmode)
+        {
+            if (iscasualmode)
+            {
+                return display_nonscoring ? "non-scoring casual explore" : "casual explore";
+            }
+            else
+            {
+                return display_nonscoring ? "non-scoring modern explore" : "modern explore";
+            }
+        }
+        else
+        {
+            if (iscasualmode)
+            {
+                return display_nonscoring ? "non-scoring reloadable explore" : "reloadable explore";
+            }
+            else
+            {
+                return display_nonscoring ? "non-scoring explore" : "explore";
+            }
+        }
+       
+    }
     else if (iscasualmode)
     {
         if (ismodernmode)
@@ -1173,7 +1220,6 @@ boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmo
         return "modern";
     else
         return "classic";
-
 }
 
 const char*
@@ -1187,7 +1233,7 @@ get_game_mode_description_core(iswizardmode, isexporemode, ismodernmode, iscasua
 boolean iswizardmode, isexporemode, ismodernmode, iscasualmode;
 {
     if (iswizardmode)
-        return "immortal debug mode with special debug commands";
+        return "immortal mode with special debug commands";
     else if (isexporemode)
         return "non-scoring immortal mode with loadable saved games";
     else if (iscasualmode)
