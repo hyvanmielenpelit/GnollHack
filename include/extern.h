@@ -643,6 +643,7 @@ E const char* FDECL(get_otyp_subtype_name, (int));
 E struct extended_create_window_info FDECL(extended_create_window_info_from_obj, (struct obj*));
 E struct extended_create_window_info FDECL(extended_create_window_info_from_mon, (struct monst*));
 E void FDECL(standard_hint, (const char*));
+E void FDECL(pray_hint, (const char*));
 
 /* ### do_name.c ### */
 
@@ -2543,7 +2544,7 @@ E void FDECL(make_stunned, (long, BOOLEAN_P));
 E void FDECL(make_sick, (long, const char *, BOOLEAN_P));
 E void FDECL(make_food_poisoned, (long, const char*, BOOLEAN_P));
 E void FDECL(make_mummy_rotted, (long, const char*, BOOLEAN_P));
-E void FDECL(make_slimed, (long, const char *));
+E void FDECL(make_slimed, (long, const char*, int, const char*));
 E void FDECL(make_stoned, (long, const char *, int, const char *));
 E void FDECL(make_vomiting, (long, BOOLEAN_P));
 E void FDECL(make_blinded, (long, BOOLEAN_P));

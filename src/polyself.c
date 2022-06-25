@@ -429,7 +429,7 @@ newman()
                    : urace.noun);
     if (Slimed) {
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "body transforms, but there is still slime on you.");
-        make_slimed(10L, (const char *) 0);
+        make_slimed(10L, (const char *) 0, KILLED_BY, "sliming");
     }
 
     context.botl = context.botlx = TRUE;
@@ -869,10 +869,10 @@ int mntmp;
     }
     if (Slimed) {
         if (flaming(youmonst.data)) {
-            make_slimed(0L, "The slime burns away!");
+            make_slimed(0L, "The slime burns away!", 0, (char*)0);
         } else if (mntmp == PM_GREEN_SLIME) {
             /* do it silently */
-            make_slimed(0L, (char *) 0);
+            make_slimed(0L, (char *) 0, 0, (char*)0);
         }
     }
     check_strangling(FALSE); /* maybe stop strangling */

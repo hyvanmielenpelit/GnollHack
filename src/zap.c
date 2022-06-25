@@ -6233,7 +6233,7 @@ boolean ordinary;
                     fix_petrification();
 
                 if (Slimed)
-                    make_slimed(0L, (char*)0);
+                    make_slimed(0L, (char*)0, 0, (char*)0);
             }
             special_effect_wait_until_end(0);
 
@@ -6319,7 +6319,7 @@ boolean ordinary;
         if (Sick || FoodPoisoned || MummyRot)
             You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are no longer ill.");
         if (Slimed)
-            make_slimed(0L, "The slime disappears!");
+            make_slimed(0L, "The slime disappears!", 0, (char*)0);
         healup(0, 0, TRUE, FALSE, FALSE, FALSE, FALSE);
         special_effect_wait_until_end(0);
         break;

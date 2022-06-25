@@ -7471,4 +7471,16 @@ const char* hint_text;
     }
 }
 
+void
+pray_hint(what)
+const char* what;
+{
+    if (can_pray(FALSE))
+    {
+        char buf[BUFSZ];
+        Sprintf(buf, "You can pray to %s.", what ? what : "get out of trouble");
+        standard_hint(buf);
+    }
+}
+
 /*do.c*/

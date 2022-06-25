@@ -147,6 +147,7 @@ boolean talk;
         {
             /* newly sick */
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "deathly sick.");
+            pray_hint("cure terminal illness");
         }
         else
         {
@@ -220,6 +221,7 @@ boolean talk;
         {
             /* newly sick */
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "terminally ill from food poisoning.");
+            pray_hint("cure food poisoning");
         }
         else
         {
@@ -292,6 +294,8 @@ boolean talk;
         {
             /* newly sick */
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "severely ill.");
+            context.mummyrot_advancement = 0;
+            pray_hint("cure mummy rot");
         }
         else
         {
@@ -344,28 +348,40 @@ boolean talk;
         dealloc_killer(kptr);
 }
 
-
-
 void
-make_slimed(xtime, msg)
+make_slimed(xtime, msg, killedby, killername)
 long xtime;
 const char *msg;
+int killedby;
+const char* killername;
 {
     long old = Slimed;
+    struct kinfo* kptr;
 
 #if 0   /* tell player even if hero is unconscious */
     if (Unaware)
         msg = 0;
 #endif
     set_itimeout(&Slimed, xtime);
-    if ((xtime != 0L) ^ (old != 0L)) {
+    if ((xtime != 0L) ^ (old != 0L)) 
+    {
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
         if (msg)
             pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "%s", msg);
     }
+
+    kptr = find_delayed_killer(SLIMED);
     if (!Slimed)
-        dealloc_killer(find_delayed_killer(SLIMED));
+        dealloc_killer(kptr);
+    else
+    {
+        if (!old || !kptr)
+            delayed_killer(SLIMED, killedby, killername);
+
+        if (!old)
+            pray_hint("cure sliming");
+    }
 }
 
 /* start or stop petrification */
@@ -377,22 +393,32 @@ int killedby;
 const char *killername;
 {
     long old = Stoned;
+    struct kinfo* kptr;
 
 #if 0   /* tell player even if hero is unconscious */
     if (Unaware)
         msg = 0;
 #endif
     set_itimeout(&Stoned, xtime);
-    if ((xtime != 0L) ^ (old != 0L)) {
+    if ((xtime != 0L) ^ (old != 0L)) 
+    {
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(TRUE);
         if (msg)
             pline_ex(ATR_NONE, !xtime ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "%s", msg);
     }
+
+    kptr = find_delayed_killer(STONED);
     if (!Stoned)
-        dealloc_killer(find_delayed_killer(STONED));
-    else if (!old)
-        delayed_killer(STONED, killedby, killername);
+        dealloc_killer(kptr);
+    else
+    {
+        if (!old || !kptr)
+            delayed_killer(STONED, killedby, killername);
+
+        if (!old)
+            pray_hint("cure stoning");
+    }
 }
 
 void

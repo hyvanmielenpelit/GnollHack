@@ -10,7 +10,7 @@
 
  /* Stuff used also in makedefs, not relying on pm.h or onames.h */
 
-NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
+NEARDATA const struct animation_definition animations[MAX_ANIMATIONS] =
 {
     { "", ANIMATION_TYPE_NORMAL, 0,
       0,
@@ -3460,7 +3460,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
     },
 };
 
-NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
+NEARDATA const struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
 {
     { "", 0, 0,
       0,
@@ -9058,7 +9058,7 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       },
 };
 
-NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
+NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
 {
     { "",
       0,

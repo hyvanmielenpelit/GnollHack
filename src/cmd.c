@@ -2767,7 +2767,7 @@ wiz_intrinsic(VOID_ARGS)
             case SLIMED:
                 Sprintf(buf, fmt,
                         !Slimed ? "" : " still", "turning into slime");
-                make_slimed(newtimeout, buf);
+                make_slimed(newtimeout, buf, KILLED_BY, wizintrinsic);
                 break;
             case STONED:
                 Sprintf(buf, fmt,

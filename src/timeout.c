@@ -283,7 +283,7 @@ stoned_dialogue()
         if (Vomiting)
             make_vomiting(0L, FALSE);
         if (Slimed)
-            make_slimed(0L, (char *) 0);
+            make_slimed(0L, (char *) 0, 0, (char*)0);
         break;
     default:
         break;
@@ -499,7 +499,7 @@ void
 burn_away_slime()
 {
     if (Slimed) {
-        make_slimed(0L, "The slime that covers you is burned away!");
+        make_slimed(0L, "The slime that covers you is burned away!", 0, (char*)0);
     }
 }
 

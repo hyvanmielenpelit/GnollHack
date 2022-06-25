@@ -3043,8 +3043,7 @@ register struct obj* omonwep;
             hitmsg(mtmp, mattk, damagedealt, TRUE);
             play_sfx_sound(SFX_START_SLIMING);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "don't feel very well.");
-            make_slimed(10L, (char *) 0);
-            delayed_killer(SLIMED, KILLED_BY_AN, mon_monster_name(mtmp));
+            make_slimed(10L, (char *) 0, KILLED_BY_AN, mon_monster_name(mtmp));
         }
         else {
             hitmsg(mtmp, mattk, damagedealt, TRUE);

@@ -704,7 +704,7 @@ Amulet_on()
     switch (uamul->otyp) {
     case AMULET_OF_UNCHANGING:
         if (Slimed)
-            make_slimed(0L, (char *) 0);
+            make_slimed(0L, (char *) 0, 0, (char*)0);
         break;
     case AMULET_OF_CHANGE:
         item_change_sex_and_useup(uamul);

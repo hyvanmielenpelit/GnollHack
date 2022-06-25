@@ -341,7 +341,7 @@ struct zap_type_definition {
     short animation;
 };
 
-E NEARDATA struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES];
+E NEARDATA const struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES];
 
 
 struct explosion_type_definition {
@@ -351,7 +351,7 @@ struct explosion_type_definition {
     enum sfx_sound_types sfx;
 };
 
-E NEARDATA struct explosion_type_definition explosion_type_definitions[MAX_EXPLOSIONS];
+E NEARDATA const struct explosion_type_definition explosion_type_definitions[MAX_EXPLOSIONS];
 
 E NEARDATA struct obj *uchain; /* defined only when punished */
 E NEARDATA struct obj *uball;

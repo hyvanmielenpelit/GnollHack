@@ -3128,7 +3128,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                 if (!Slimed) {
                     play_sfx_sound(SFX_START_SLIMING);
                     You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "suck in some slime and don't feel very well.");
-                    make_slimed(10L, (char *) 0);
+                    make_slimed(10L, (char *) 0, KILLED_BY, "sucking in some green slime");
                 }
             }
             break;
@@ -3637,7 +3637,7 @@ register struct attack *mattk;
                         if (!Unchanging)
                         {
                             play_sfx_sound(SFX_START_SLIMING);
-                            make_slimed(5L, (char *) 0);
+                            make_slimed(5L, (char *) 0, KILLED_BY, "trying to digest green slime");
                         }
                     } 
                     else

@@ -398,7 +398,7 @@ int trouble;
         break;
     case TROUBLE_SLIMED:
         play_sfx_sound(SFX_CURE_AILMENT);
-        make_slimed(0L, "The slime disappears.");
+        make_slimed(0L, "The slime disappears.", 0, (char*)0);
         break;
     case TROUBLE_STRANGLED:
         if (uamul && uamul->otyp == AMULET_OF_STRANGULATION)

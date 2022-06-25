@@ -885,8 +885,7 @@ uchar gender; /* 0 = male, 1 = female, 2 = unknown */
         if (!Slimed && !Unchanging && !slimeproof(youmonst.data)) {
             play_sfx_sound(SFX_START_SLIMING);
             You("don't feel very well.");
-            make_slimed(10L, (char *) 0);
-            delayed_killer(SLIMED, KILLED_BY_AN, "");
+            make_slimed(10L, (char *) 0, KILLED_BY, "eating green slime");
         }
     /* Fall through */
     default:

@@ -189,7 +189,7 @@ NEARDATA struct obj
     *thrownobj = 0,     /* object in flight due to throwing */
     *kickedobj = 0;     /* object in flight due to kicking */
 
-struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES] = {
+NEARDATA const struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES] = {
     {"magic", HI_ZAP, MAGIC_MISSILE_RAY_ANIMATION},
     {"fire", CLR_ORANGE, FIRE_RAY_ANIMATION},
     {"frost", CLR_WHITE, FROST_RAY_ANIMATION},
@@ -217,7 +217,7 @@ struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES] = {
     {"flashed-light", CLR_WHITE, NO_ANIMATION},
 };
 
-struct explosion_type_definition explosion_type_definitions[MAX_EXPLOSIONS] = {
+NEARDATA const struct explosion_type_definition explosion_type_definitions[MAX_EXPLOSIONS] = {
     {"dark", CLR_BLACK, NO_ANIMATION, SFX_EXPLOSION_DARK},
     {"noxious", CLR_GREEN, NOXIOUS_EXPLOSION_ANIMATION, SFX_EXPLOSION_NOXIOUS},
     {"muddy", CLR_BROWN, NO_ANIMATION, SFX_EXPLOSION_MUDDY},

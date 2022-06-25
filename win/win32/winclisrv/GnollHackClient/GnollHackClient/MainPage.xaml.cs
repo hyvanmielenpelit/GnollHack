@@ -1297,7 +1297,7 @@ namespace GnollHackClient
             }
             else
             {
-                wizardModeSwitch.IsToggled = false;
+                //wizardModeSwitch.IsToggled = false;
             }
         }
 
@@ -1307,7 +1307,7 @@ namespace GnollHackClient
             Preferences.Set("CasualMode", App.CasualMode);
             if (casualModeSwitch.IsToggled)
             {
-                wizardModeSwitch.IsToggled = false;
+                //wizardModeSwitch.IsToggled = false;
             }
             else
             {
@@ -1371,8 +1371,8 @@ namespace GnollHackClient
         {
             if (wizardModeSwitch.IsToggled)
             {
-                classicModeSwitch.IsToggled = true;
-                casualModeSwitch.IsToggled = false;
+                //classicModeSwitch.IsToggled = true;
+                //casualModeSwitch.IsToggled = false;
             }
             else
             {
