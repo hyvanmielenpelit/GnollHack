@@ -1187,20 +1187,20 @@ get_game_mode_description_core(iswizardmode, isexporemode, ismodernmode, iscasua
 boolean iswizardmode, isexporemode, ismodernmode, iscasualmode;
 {
     if (iswizardmode)
-        return "Immortal debug mode with special debug commands";
+        return "immortal debug mode with special debug commands";
     else if (isexporemode)
-        return "Non-scoring immortal mode with loadable saved games";
+        return "non-scoring immortal mode with loadable saved games";
     else if (iscasualmode)
     {
         if (ismodernmode)
-            return "Non-scoring mode with revival upon death and loadable saved games";
+            return "non-scoring mode with revival upon death and loadable saved games";
         else
-            return "Non-scoring mode with permanent death but loadable saved games";
+            return "non-scoring mode with permanent death but loadable saved games";
     }
     else if (ismodernmode)
-        return "Revival and score reduction upon death";
+        return "revival and score reduction upon death";
     else
-        return "Traditional mode with permanent death";
+        return "traditional mode with permanent death";
 
 }
 

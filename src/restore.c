@@ -1511,7 +1511,10 @@ winid bannerwin; /* if not WIN_ERR, clear window and show copyright in menu */
         char ngbuf[BUFSZ] = "", modebuf[BUFSZ] = "", descbuf[BUFSZ] = "";
         strcpy_capitalized_for_title(modebuf, get_game_mode_text(FALSE));
 #ifdef GNH_MOBILE
-        Sprintf(descbuf, " (%s)", get_game_mode_description());
+        char dtmpbuf[BUFSZ];
+        strcpy(dtmpbuf, get_game_mode_description());
+        *dtmpbuf = highc(*dtmpbuf);
+        Sprintf(descbuf, " (%s)", dtmpbuf);
 #endif
         Sprintf(ngbuf, "New Game in %s Mode%s", modebuf, descbuf);
         any.a_int = -1;

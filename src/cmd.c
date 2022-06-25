@@ -3469,7 +3469,9 @@ int final;
     Sprintf(difficultybuf, " (%d%% damage by monsters, %d%% by player)", pct_monster_dmg_mult, pct_player_dmg_mult);
     enl_msg("Your game difficulty ", "is ", "was ", buf, difficultybuf);
 
-    enl_msg("You ", "are playing in ", "were playing in ", get_game_mode_text(TRUE), " mode");
+    char modebuf[BUFSIZ];
+    Sprintf(modebuf, " mode (%s)", get_game_mode_description());
+    enl_msg("You ", "are playing in ", "were playing in ", get_game_mode_text(TRUE), modebuf);
 
 }
 

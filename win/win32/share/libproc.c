@@ -125,6 +125,7 @@ void lib_askname(void)
     Sprintf(mdbuf, "%s mode", get_game_mode_text(FALSE));
     strcpy_capitalized_for_title(modenamebuf, mdbuf);
     strcpy(modedescbuf, get_game_mode_description());
+    *modedescbuf = highc(*modedescbuf);
 
 #ifdef SELECTSAVED
     if (iflags.wc2_selectsaved && !iflags.renameinprogress)
