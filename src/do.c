@@ -7467,7 +7467,7 @@ const char* hint_text;
         char hintbuf[BUFSZ];
         Sprintf(hintbuf, "HINT - %s", hint_text);
         play_sfx_sound(SFX_HINT);
-        pline_ex(ATR_NONE, CLR_MSG_HINT, hintbuf);
+        pline_ex1(ATR_NONE, CLR_MSG_HINT, hintbuf);
     }
 }
 

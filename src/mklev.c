@@ -1188,9 +1188,19 @@ makelevel()
 
             if (context.game_difficulty < 0)
             {
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, !rn2(4) ? MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_II : MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_I, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                if (otmp)
+                {
+                    otmp->bknown = 1;
+                    (void)add_to_container(stash, otmp);
+                }
+
                 otmp = mksobj(SPE_MANUAL, TRUE, FALSE, FALSE);
-                otmp->bknown = 1;
-                (void)add_to_container(stash, otmp);
+                if (otmp)
+                {
+                    otmp->bknown = 1;
+                    (void)add_to_container(stash, otmp);
+                }
             }
 
 #if 0

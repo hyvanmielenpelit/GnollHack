@@ -3828,7 +3828,8 @@ static const char* const manual_names[MAX_MANUAL_TYPES] = {
     "Basics of Kicking", "Basics of Enchantment", "Basics of Eating and Drinking", "Introduction to Dangerous Monsters",
     "Introduction to Blessed and Cursed Items", "Guide to Praying", "Essential Survival Tips",
     "Assorted Tips and Tricks", "Elementary Mechanics", "Principles of Magic", "Understanding Pets and Hirelings",
-    "Item Identification 101", "Item Identification 102",
+    "Item Identification 101", "Item Identification 102", "Guide to Essential Resistances, Vol. I",
+    "Guide to Essential Resistances, Vol. II",
     /* Never randomly generated */
     "Guide to Dragon Scale Mails", "Guide to Altars and Sacrifice",
     "Secrets of Scare Monster", "Gurathul's Guide to Ascension", "Master Class in Wands", "Infernal Inhabitants of Gehennom",
@@ -3839,7 +3840,7 @@ const char*
 manualtitle(mnlidx)
 short* mnlidx;
 {
-    short j, k = MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS; /* Number of randomly generated manuals */ //SIZE(manual_names);
+    short j, k = NUM_RANDOM_MANUALS; /* Number of randomly generated manuals */ //SIZE(manual_names);
 
     j = (short)rn2((int)k);
     if (mnlidx) {
@@ -4060,6 +4061,28 @@ struct obj* obj;
         putstr(datawin, ATR_INDENT_AT_PERIOD, "7. You can see what the price of an item is in a shop and then try to figure it out, what the item is.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "8. You can equip blessed and uncursed items to see what they do. Sometimes it is not obvious.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "9. You can zap a wand of probing at corpses to see what they do when eaten.");
+        break;
+    case MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_I:
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You should acquire various resistances to better withstand the challenges ahead.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Most important resistances are magic resistance, reflection, and free action.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Also poison, sleep, sickness, petrification, and death resistances are important to acquire.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Certain magic items may bestow you with some of these resistances.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Your role and race can also confer you resistances as you advance in experience levels.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Look for a cloak, a robe, or an ioun stone to get magic resistance.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Look for a pair of bracers, an amulet, or a special shield to get reflection.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Look for a ring or a mythic weapon or armor to get free action.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Poison resistance is important to get early on. Look for a ring, an amulet, or a monster corpse.");
+        break;
+    case MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_II:
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You should acquire various resistances to better withstand the challenges ahead.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Many resistances such as sleep, sickness, and petrification resistances are relatively rare.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Sleep resistance is important to get early on. Look for an elf or gelatinous cube corpse.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "4. Look for a healer's beak mask to get sickness resistance.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "5. Look for an amulet to get petrification resistance.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Look for a robe or a ring to get death resistance.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "7. There are also resistances against brain sucking attacks and blinding attacks.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Look for a nose ring to get protection against brain sucking attacks.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Look for eyeglasses or goggles to get protection against blinding attacks.");
         break;
     case MANUAL_SECRETS_OF_SCARE_MONSTER:
         putstr(datawin, ATR_INDENT_AT_PERIOD, "1. You can stand on a scroll of scare monster and monsters cannot attack you.");
