@@ -922,6 +922,7 @@ namespace GnollHackClient
             App.DebugWriteProfilingStopwatchTimeAndStart("SelectMenu");
             Debug.WriteLine("ClientCallback_SelectMenu");
             ConcurrentQueue<GHRequest> queue;
+            bool enqueued = false;
 
             lock (_ghWindowsLock)
             {
@@ -934,6 +935,7 @@ namespace GnollHackClient
                     if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.ShowMenuPage, _ghWindows[winid], _ghWindows[winid].MenuInfo));
+                        enqueued = true;
                     }
                 }
             }
@@ -943,21 +945,24 @@ namespace GnollHackClient
             //    _gamePage.RefreshScreen = false;
             //}
 
-            bool continuepolling = true;
-            while (continuepolling)
+            if(enqueued)
             {
-                lock (_ghWindowsLock)
+                bool continuepolling = true;
+                while (continuepolling)
                 {
-                    if (_ghWindows[winid] == null)
-                        continuepolling = false;
-                    else
-                        continuepolling = (_ghWindows[winid].SelectedMenuItems == null);
-                }
-                if (!continuepolling)
-                    break;
+                    lock (_ghWindowsLock)
+                    {
+                        if (_ghWindows[winid] == null)
+                            continuepolling = false;
+                        else
+                            continuepolling = (_ghWindows[winid].SelectedMenuItems == null);
+                    }
+                    if (!continuepolling)
+                        break;
 
-                Thread.Sleep(GHConstants.PollingInterval);
-                pollResponseQueue();
+                    Thread.Sleep(GHConstants.PollingInterval);
+                    pollResponseQueue();
+                }
             }
 
             //lock (_gamePage.RefreshScreenLock)
@@ -1192,35 +1197,35 @@ namespace GnollHackClient
                     data.tflags = tflags;
                     queue.Enqueue(new GHRequest(this, GHRequestType.DisplayScreenText, data));
                 }
-            }
 
-            if((tflags & 1UL) != 0)
-            {
-                /* Blocking call */
-                while (!_screenTextSet)
+                if ((tflags & 1UL) != 0)
                 {
-                    Thread.Sleep(GHConstants.PollingInterval);
-                    pollResponseQueue();
-                }
-
-                int cnt = 0;
-                long countervalue;
-                do
-                {
-                    countervalue = _gamePage.MainCounterValue;
-                    lock (_gamePage._screenTextLock)
+                    /* Blocking call */
+                    while (!_screenTextSet)
                     {
-                        if (_gamePage._screenText != null)
+                        Thread.Sleep(GHConstants.PollingInterval);
+                        pollResponseQueue();
+                    }
+
+                    int cnt = 0;
+                    long countervalue;
+                    do
+                    {
+                        countervalue = _gamePage.MainCounterValue;
+                        lock (_gamePage._screenTextLock)
                         {
-                            if (_gamePage._screenText.IsFinished(countervalue))
+                            if (_gamePage._screenText != null)
+                            {
+                                if (_gamePage._screenText.IsFinished(countervalue))
+                                    break;
+                            }
+                            else
                                 break;
                         }
-                        else
-                            break;
-                    }
-                    Thread.Sleep(GHConstants.PollingInterval);
-                    cnt++;
-                } while (cnt < 2000);
+                        Thread.Sleep(GHConstants.PollingInterval);
+                        cnt++;
+                    } while (cnt < 2000);
+                }
             }
         }
 
@@ -1540,51 +1545,46 @@ namespace GnollHackClient
                             break;
 
                         ConcurrentQueue<GHRequest> queue;
-                        _guiTipsFinished = false;
                         if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                         {
+                            _guiTipsFinished = false;
                             queue.Enqueue(new GHRequest(this, GHRequestType.ShowGUITips));
-                        }
-
-                        while (!_guiTipsFinished)
-                        {
-                            Thread.Sleep(GHConstants.PollingInterval);
-                            pollResponseQueue();
+                            while (!_guiTipsFinished)
+                            {
+                                Thread.Sleep(GHConstants.PollingInterval);
+                                pollResponseQueue();
+                            }
                         }
                         break;
                     }
                 case (int)special_view_types.SPECIAL_VIEW_CRASH_DETECTED:
                     {
                         ConcurrentQueue<GHRequest> queue;
-                        _crashReportFinished = false;
                         if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                         {
+                            _crashReportFinished = false;
                             queue.Enqueue(new GHRequest(this, GHRequestType.CrashReport));
+                            while (!_crashReportFinished)
+                            {
+                                Thread.Sleep(GHConstants.PollingInterval);
+                                pollResponseQueue();
+                            }
                         }
-
-                        while (!_crashReportFinished)
-                        {
-                            Thread.Sleep(GHConstants.PollingInterval);
-                            pollResponseQueue();
-                        }
-
                         break;
                     }
                 case (int)special_view_types.SPECIAL_VIEW_PANIC:
                     {
                         ConcurrentQueue<GHRequest> queue;
-                        _panicFinished = false;
                         if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                         {
+                            _panicFinished = false;
                             queue.Enqueue(new GHRequest(this, GHRequestType.Panic, text));
+                            while (!_panicFinished)
+                            {
+                                Thread.Sleep(GHConstants.PollingInterval);
+                                pollResponseQueue();
+                            }
                         }
-
-                        while (!_panicFinished)
-                        {
-                            Thread.Sleep(GHConstants.PollingInterval);
-                            pollResponseQueue();
-                        }
-
                         break;
                     }
                 case (int)special_view_types.SPECIAL_VIEW_DEBUGLOG:
@@ -1594,16 +1594,15 @@ namespace GnollHackClient
                 case (int)special_view_types.SPECIAL_VIEW_MESSAGE:
                     {
                         ConcurrentQueue<GHRequest> queue;
-                        _messageFinished = false;
                         if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                         {
+                            _messageFinished = false;
                             queue.Enqueue(new GHRequest(this, GHRequestType.Message, text));
-                        }
-
-                        while (!_messageFinished)
-                        {
-                            Thread.Sleep(GHConstants.PollingInterval);
-                            pollResponseQueue();
+                            while (!_messageFinished)
+                            {
+                                Thread.Sleep(GHConstants.PollingInterval);
+                                pollResponseQueue();
+                            }
                         }
 
                         break;
