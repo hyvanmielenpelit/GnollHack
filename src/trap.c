@@ -4513,9 +4513,7 @@ struct obj *obj;
         grease_protect(obj, (char *) 0, victim);
     } else if (obj->oclass == SCROLL_CLASS && obj->otyp != SCR_BLANK_PAPER) {
         if (obj->otyp != SCR_BLANK_PAPER
-#ifdef MAIL
             && obj->otyp != SCR_MAIL
-#endif
             ) {
             if (!Blind) {
                 if (victim == &youmonst)
@@ -4615,9 +4613,7 @@ boolean force;
     else if (obj->oclass == SCROLL_CLASS)
     {
         if (obj->otyp == SCR_BLANK_PAPER
-#ifdef MAIL
             || obj->otyp == SCR_MAIL
-#endif
            ) return 0;
         else if (is_obj_indestructible(obj))
         {

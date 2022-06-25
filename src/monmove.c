@@ -1356,7 +1356,6 @@ register int after;
     }
 
 
-#ifdef MAIL
     if (ptr == &mons[PM_MAIL_DAEMON])
     {
         if (!Deaf && canseemon(mtmp))
@@ -1364,7 +1363,6 @@ register int after;
         mongone(mtmp);
         return 2;
     }
-#endif
 
     /* teleport if that lies in our nature */
     if (ptr == &mons[PM_TENGU] && !rn2(5) && !is_cancelled(mtmp)

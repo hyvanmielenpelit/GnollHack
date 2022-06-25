@@ -3585,11 +3585,9 @@ int mndx, mvflagsmask, genomask;
         return FALSE;
     if (ptr->geno & genomask)
         return FALSE;
-#ifdef MAIL
     /* special levels might ask for random demon type; reject this one */
     if (ptr == &mons[PM_MAIL_DAEMON])
         return FALSE;
-#endif
     return TRUE;
 }
 

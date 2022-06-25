@@ -3020,10 +3020,8 @@ int mat, minwt;
             continue;
         if (obj_resists(otmp, 0, 0))
             continue; /* preserve unique objects */
-#ifdef MAIL
         if (otmp->otyp == SCR_MAIL)
             continue;
-#endif
 
         if (((int) objects[otmp->otyp].oc_material == mat)
             == (rn2(minwt + 1) != 0)) {
@@ -3164,10 +3162,9 @@ struct obj *obj;
 {
     long i;
 
-#ifdef MAIL
     if (obj->otyp == SCR_MAIL)
         return;
-#endif
+
     obj_zapped = TRUE;
 
     if (poly_zapped < 0) {
@@ -3274,7 +3271,6 @@ int id;
     if (obj_location == OBJ_INVENT)
         otmp->invlet = obj->invlet;
 
-#ifdef MAIL
     /* You can't send yourself 100 mail messages and then
      * polymorph them into useful scrolls
      */
@@ -3283,7 +3279,6 @@ int id;
         otmp->otyp = SCR_MAIL;
         otmp->special_quality = 1;
     }
-#endif
 
     /* avoid abusing eggs laid by you */
     if (obj->otyp == EGG && (obj->speflags & SPEFLAGS_YOURS))

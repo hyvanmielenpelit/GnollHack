@@ -404,7 +404,7 @@ doread()
     }
 
     confused = (Confusion != 0);
-#ifdef MAIL
+
     if (scroll->otyp == SCR_MAIL) 
     {
         confused = FALSE; /* override */
@@ -423,7 +423,6 @@ doread()
                 return 0;
         }
     }
-#endif
 
     /* Actions required to win the game aren't counted towards conduct */
     /* Novel conduct is handled in read_tribute so exclude it too*/
@@ -1746,7 +1745,6 @@ boolean *effect_happened_ptr;
                      || objects[otyp].oc_name_known);
 
     switch (otyp) {
-#ifdef MAIL
     case SCR_MAIL:
         known = TRUE;
         if (sobj->special_quality == 2)
@@ -1760,9 +1758,14 @@ boolean *effect_happened_ptr;
             pline(
                 "This seems to be junk mail addressed to the finder of the Eye of Larn.");
         else
+        {
+#ifdef MAIL
             readmail(sobj);
-        break;
+#else
+            pline("This scroll is mail, but it is totally scrambled.");
 #endif
+        }
+        break;
     case SPE_PROTECT_ARMOR:
     case SCR_PROTECT_ARMOR:
     case SPE_ENCHANT_ARMOR:

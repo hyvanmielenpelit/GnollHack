@@ -20,10 +20,8 @@ register struct obj *otmp;
 
     switch (otmp->otyp)
     {
-#ifdef MAIL
     case SCR_MAIL:
         return 2;
-#endif
     case SCR_LIGHT:
     case SCR_GOLD_DETECTION:
     case SCR_FOOD_DETECTION:
@@ -360,12 +358,11 @@ found:
     }
     new_obj->blessed = (curseval > 0);
     new_obj->cursed = (curseval < 0);
-#ifdef MAIL
+
     if (new_obj->otyp == SCR_MAIL)
         /* 0: delivered in-game via external event (or randomly for fake mail);
            1: from bones or wishing; 2: written with marker */
         new_obj->special_quality = 2;
-#endif
     /* unlike alchemy, for example, a successful result yields the
        specifically chosen item so hero recognizes it even if blind;
        the exception is for being lucky writing an undiscovered scroll,

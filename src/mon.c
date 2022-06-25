@@ -3252,11 +3252,9 @@ unsigned long mdiedflags;
     /* if it's a (possibly polymorphed) quest leader, mark him as dead */
     if (mtmp->m_id == quest_status.leader_m_id)
         quest_status.leader_is_dead = TRUE;
-#ifdef MAIL
     /* if the mail daemon dies, no more mail delivery.  -3. */
     if (tmp == PM_MAIL_DAEMON)
         mvitals[tmp].mvflags |= MV_GENOCIDED;
-#endif
 
     if (mtmp->data->mlet == S_KOP) 
     {
@@ -3750,12 +3748,10 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
     if (nocorpse || LEVEL_SPECIFIC_NOCORPSE(mdat))
         goto cleanup;
 
-#ifdef MAIL
     if (mdat == &mons[PM_MAIL_DAEMON])
     {
         stackobj(mksobj_at(SCR_MAIL, x, y, FALSE, FALSE));
     }
-#endif
 
     if (accessible(x, y) || is_pool(x, y)) 
     {

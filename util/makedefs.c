@@ -1108,7 +1108,8 @@ rumors_failure:
  *
  */
 #define IGNORED_FEATURES                 \
-    (0L | (1L << 19) /* SCORE_ON_BOTL */ \
+    (0L | (1L << 6)  /* MAIL */          \
+     | (1L << 19)    /* SCORE_ON_BOTL */ \
      | (1L << 27)    /* ZEROCOMP */      \
      | (1L << 28)    /* RLECOMP */       \
      )

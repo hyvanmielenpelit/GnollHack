@@ -1305,9 +1305,7 @@ unsigned doname_flags;
                       || obj->oclass == RING_CLASS
                       || obj->oclass == MISCELLANEOUS_CLASS
                      )
-#ifdef MAIL
                      && obj->otyp != SCR_MAIL
-#endif
                      && obj->otyp != FAKE_AMULET_OF_YENDOR
                      && obj->otyp != AMULET_OF_YENDOR
                      //&& !Role_if(PM_PRIEST)
@@ -2023,11 +2021,7 @@ struct obj *otmp;
 
     /* check fundamental ID hallmarks first */
     if (!otmp->known || !otmp->dknown
-#ifdef MAIL
         || (!otmp->bknown && otmp->otyp != SCR_MAIL)
-#else
-        || !otmp->bknown
-#endif
         || !objects[otmp->otyp].oc_name_known)
         return TRUE;
     if ((!otmp->cknown && (Is_container(otmp) || otmp->otyp == STATUE))
@@ -5069,13 +5063,11 @@ boolean is_wiz_wish;
     case STATUE:
         /* otmp->cobj already done in mksobj() */
         break;
-#ifdef MAIL
     case SCR_MAIL:
         /* 0: delivered in-game via external event (or randomly for fake mail);
            1: from bones or wishing; 2: written with marker */
         otmp->special_quality = 1;
         break;
-#endif
     default:
         break;
     }
@@ -5118,9 +5110,7 @@ boolean is_wiz_wish;
             break;
         case FIGURINE:
             if (!(mons[mntmp].geno & G_UNIQ) && !is_human(&mons[mntmp])
-#ifdef MAIL
                 && mntmp != PM_MAIL_DAEMON
-#endif
                 )
                 otmp->corpsenm = mntmp;
             break;

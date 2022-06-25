@@ -1723,9 +1723,7 @@ unsigned long mkflags;
             break;
         case POTION_CLASS: /* note: potions get some additional init below */
         case SCROLL_CLASS:
-#ifdef MAIL
             if (otmp->otyp != SCR_MAIL)
-#endif
                 blessorcurse(otmp, 4);
             break;
         case SPBOOK_CLASS:

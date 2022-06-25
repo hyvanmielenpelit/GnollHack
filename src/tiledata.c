@@ -563,10 +563,8 @@ uchar* tilemapflags;
                         {
                             for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                             {
-#ifdef MAIL
                                 tilemaparray[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
                                 tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
-#endif
                             }
                             tile_count++;
                         }
@@ -581,14 +579,12 @@ uchar* tilemapflags;
                                     boolean isfrombasedir = is_dir_from_base_dir(n, bn, &hflip, &vflip);
                                     if (isfrombasedir)
                                     {
-#ifdef MAIL
                                         tilemaparray[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
                                         tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                         if (hflip)
                                             tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
                                         if (vflip)
                                             tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
-#endif
                                     }
                                 }
                                 tile_count++;
@@ -597,7 +593,6 @@ uchar* tilemapflags;
                     }
                     else
                     {
-#ifdef MAIL
                         fullsizedflag = (objects[SCR_MAIL].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : 0;
                         fullsizedflag |= (objects[SCR_MAIL].oc_flags4 & O4_FLOOR_TILE) ? GLYPH_TILE_FLAG_HAS_FLOOR_TILE : 0;
                         gtflags = (objects[SCR_MAIL].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : GLYPH_TILE_FLAG_HALF_SIZED_TILE;
@@ -620,7 +615,6 @@ uchar* tilemapflags;
                                 }
                             }
                         }
-#endif
                         tile_count++;
                     }
                 }
