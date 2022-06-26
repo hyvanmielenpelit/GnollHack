@@ -360,9 +360,9 @@ chainin_doprev_message()
 }
 
 char
-chainin_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags)
+chainin_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
 int style, attr, color, glyph;
-const char *title, * query, * resp, *resp_desc;
+const char *title, * query, * resp, *resp_desc, *introline;
 char def;
 unsigned long ynflags;
 {

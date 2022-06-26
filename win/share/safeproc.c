@@ -630,12 +630,13 @@ safe_doprev_message()
 }
 
 char
-safe_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags)
+safe_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
 int style, attr, color, glyph;
 const char *title;
 const char *query;
 const char *resp;
 const char* resp_desc;
+const char* introline;
 char def;
 unsigned long ynflags;
 {

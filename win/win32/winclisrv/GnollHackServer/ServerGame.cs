@@ -590,7 +590,7 @@ namespace GnollHackServer
         {
             return 0;
         }
-        protected int GameCallback_YnFunction(int style, int attr, int color, int glyph, string title, string query, string responses, string def, string descriptions, ulong ynflags)
+        protected int GameCallback_YnFunction(int style, int attr, int color, int glyph, string title, string query, string responses, string def, string descriptions, string introline, ulong ynflags)
         {
             return 0;
         }

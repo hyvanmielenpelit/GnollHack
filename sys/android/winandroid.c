@@ -48,7 +48,7 @@ static int NDECL(and_nhgetch);
 static int FDECL(and_nh_poskey, (int *, int *, int *));
 static void NDECL(and_nhbell);
 static int NDECL(and_doprev_message);
-static char FDECL(and_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, unsigned long));
+static char FDECL(and_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, unsigned long));
 static void FDECL(and_getlin_ex, (int, int, int, const char *,char *, const char*, const char*, const char*));
 static int NDECL(and_get_ext_cmd);
 static void FDECL(and_number_pad, (int));
@@ -344,7 +344,7 @@ void quit_possible()
 		quit_if_possible = FALSE;
 		if(!SaveAndExit())
 		{
-			if(and_yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, "Error saving game. Quit anyway?", ynchars, 'n', yndescs, 0UL) == 'y')
+			if(and_yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, "Error saving game. Quit anyway?", ynchars, 'n', yndescs, (const char*)0, 0UL) == 'y')
 				nh_terminate(EXIT_SUCCESS);
 		}
 	}
@@ -1595,7 +1595,7 @@ int and_doprev_message()
 //		   returned, preserving case (upper or lower.) This means that
 //		   if the calling function needs an exact match, it must handle
 //		   user input correctness itself.
-char and_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, unsigned long ynflags)
+char and_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, unsigned long ynflags)
 {
 	char ch;
 	char message[BUFSZ];

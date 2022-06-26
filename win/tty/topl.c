@@ -366,9 +366,9 @@ extern char erase_char; /* from xxxtty.c; don't need kill_char */
 
 /* returns a single keystroke; also sets 'yn_number' */
 char
-tty_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags)
+tty_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
 int style UNUSED, attr UNUSED, color UNUSED, glyph UNUSED;
-const char *title UNUSED, *query, *resp, *resp_desc UNUSED;
+const char *title UNUSED, *query, *resp, *resp_desc UNUSED, *introline UNUSED;
 char def;
 unsigned long ynflags UNUSED;
 /*

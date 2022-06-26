@@ -3838,7 +3838,7 @@ struct special_view_info info;
         genl_chat_message();
         break;
     case SPECIAL_VIEW_YN_DIALOG:
-        return tty_yn_function_ex(YN_STYLE_GENERAL, info.attr, info.color, NO_GLYPH, info.title, info.text, "yn", 'n', "Yes\nNo", 0UL);
+        return tty_yn_function_ex(YN_STYLE_GENERAL, info.attr, info.color, NO_GLYPH, info.title, info.text, "yn", 'n', "Yes\nNo", (const char*)0, 0UL);
     default:
         break;
     }

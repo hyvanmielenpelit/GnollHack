@@ -1597,12 +1597,12 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-dll_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, unsigned long ynflags)
+dll_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, unsigned long ynflags)
 {
     dll_logDebug("dll_yn_function_ex(%s, %s, %d)\n", question, choices, def);
     char defs[2] = { 0, 0 };
     defs[0] = def;
-    return dll_callbacks.callback_yn_function_ex(style, attr, color, glyph, title, question, choices, defs, resp_desc, ynflags);
+    return dll_callbacks.callback_yn_function_ex(style, attr, color, glyph, title, question, choices, defs, resp_desc, introline, ynflags);
 
 #if 0
     char ch;

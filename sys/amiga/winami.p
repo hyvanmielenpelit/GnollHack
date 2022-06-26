@@ -20,7 +20,7 @@ void FDECL(amii_destroy_nhwindow, (winid ));
 int FDECL(amii_create_nhwindow_ex, (int, int, int, struct extended_create_window_info));
 void NDECL(amii_init_nhwindows );
 int NDECL(amii_get_ext_cmd);
-char FDECL(amii_yn_function_ex, (int, int, int, int, const char*, const char*, const char*, char, const char*, unsigned long));
+char FDECL(amii_yn_function_ex, (int, int, int, int, const char*, const char*, const char*, char, const char*, const char*, unsigned long));
 void FDECL(amii_addtopl, (const char *));
 void FDECL(TextSpaces, (struct RastPort * , int ));
 void FDECL(amii_putstr_ex, (winid  , int  , const char *));

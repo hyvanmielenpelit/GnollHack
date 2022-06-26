@@ -43,7 +43,7 @@ int lib_nhgetch(void);
 int lib_nh_poskey(int* x, int* y, int* mod);
 void lib_nhbell(void);
 int lib_doprev_message(void);
-char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char* question, const char* choices, CHAR_P def, const char* resp_desc, unsigned long ynflags);
+char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char* question, const char* choices, CHAR_P def, const char* resp_desc, const char* introline, unsigned long ynflags);
 void lib_getlin_ex(int style, int attr, int color, const char* question, char* input, const char* placeholder, const char* linesuffix, const char* introline);
 int lib_get_ext_cmd(void);
 void lib_number_pad(int state);

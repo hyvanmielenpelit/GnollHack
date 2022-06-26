@@ -516,7 +516,7 @@ int NetHackQtBind::qt_doprev_message()
     return 0;
 }
 
-char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question_, const char *choices, CHAR_P def, const char* resp_desc, unsigned long ynflags)
+char NetHackQtBind::qt_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question_, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, unsigned long ynflags)
 {
     QString question(QString::fromLatin1(question_));
     QString message;

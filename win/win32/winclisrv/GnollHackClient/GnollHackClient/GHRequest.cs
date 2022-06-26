@@ -242,7 +242,7 @@ namespace GnollHackClient
             RequestType = requesttype;
             MessageHistory = msgHistory;
         }
-        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int style, int attr, int color, int glyph, string titlestring, string requeststring, string responses, string descriptions, ulong ynflags)
+        public GHRequest(ClientGame clientgame, GHRequestType requesttype, int style, int attr, int color, int glyph, string titlestring, string requeststring, string responses, string descriptions, string introline, ulong ynflags)
         {
             RequestingClientGame = clientgame;
             RequestInt = style;
@@ -254,6 +254,7 @@ namespace GnollHackClient
             RequestString = requeststring;
             Responses = responses;
             ResponseDescriptions = descriptions;
+            IntroLineString = introline;
             RequestFlags = ynflags;
         }
         public GHRequest(ClientGame clientgame, GHRequestType requesttype, AddContextMenuData data)

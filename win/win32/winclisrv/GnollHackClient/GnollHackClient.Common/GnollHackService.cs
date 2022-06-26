@@ -918,7 +918,7 @@ namespace GnollHackClient.Unknown
                 clientGame.ClientCallback_nh_poskey,
                 clientGame.ClientCallback_VoidVoidDummy,
                 clientGame.ClientCallback_IntVoidDummy,
-                clientGame.ClientCallback_YnQuestion,
+                clientGame.ClientCallback_YnFunction,
                 clientGame.ClientCallback_GetLine,
                 clientGame.ClientCallback_IntVoidDummy,
                 clientGame.ClientCallback_VoidIntDummy,

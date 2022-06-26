@@ -155,7 +155,7 @@ void lib_askname(void)
                             char qbuf[BUFSZ] = "";
                             Sprintf(qbuf, "There is already a saved game for a character named \'%s\'. Do you want to overwrite the save file and delete the existing character?", plname);
                             char ans = lib_yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_RED, NO_GLYPH, "Overwrite Existing Character?",
-                                qbuf, "ynql", 'n', "Yes\nNo\nQuit\nLoad", 0UL);
+                                qbuf, "ynql", 'n', "Yes\nNo\nQuit\nLoad", (const char*)0, 0UL);
                             if (ans == 'l')
                             {
                                 return;
@@ -591,16 +591,18 @@ int lib_doprev_message(void)
     return 0;
 }
 
-char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char* question, const char* choices, CHAR_P def, const char* resp_desc, unsigned long ynflags)
+char lib_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char* question, const char* choices, CHAR_P def, const char* resp_desc, const char* introline, unsigned long ynflags)
 {
-    char buf[BUFSIZ] = "", tbuf[BUFSIZ] = "";
+    char buf[BUFSIZ] = "", tbuf[BUFSIZ] = "", ibuf[BUFSIZ] = "";
     if(question)
         write_text2buf_utf8(buf, BUFSIZ, question);
     if (title)
         write_text2buf_utf8(tbuf, BUFSIZ, title);
+    if (introline)
+        write_text2buf_utf8(ibuf, BUFSIZ, introline);
     char defs[2] = { 0,0 };
     defs[0] = def;
-    int res = lib_callbacks.callback_yn_function_ex(style, attr, color, glyph, title ? tbuf : 0, question ? buf : 0, choices, defs, resp_desc, ynflags);
+    int res = lib_callbacks.callback_yn_function_ex(style, attr, color, glyph, title ? tbuf : 0, question ? buf : 0, choices, defs, resp_desc, introline ? ibuf : 0, ynflags);
     return convert_gnhch(res);
 }
 

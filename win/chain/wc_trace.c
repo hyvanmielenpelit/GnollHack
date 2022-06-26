@@ -749,10 +749,10 @@ void *vp;
 }
 
 char
-trace_yn_function_ex(vp, style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags)
+trace_yn_function_ex(vp, style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
 void *vp;
 int style, attr, color, glyph;
-const char *title, * query, * resp, * resp_desc;
+const char *title, *query, *resp, *resp_desc, *introline;
 char def;
 unsigned long ynflags;
 {

@@ -8392,9 +8392,9 @@ dotravel(VOID_ARGS)
  *   window port causing a buffer overflow there.
  */
 char
-yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags)
+yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags)
 int style, attr, color, glyph;
-const char *title, *query, *resp, *resp_desc;
+const char *title, *query, *resp, *resp_desc, * introline;
 char def;
 unsigned long ynflags; /* 1 means use upper side for half-sized tile */
 {
@@ -8416,7 +8416,7 @@ unsigned long ynflags; /* 1 means use upper side for half-sized tile */
         Strcpy(&qbuf[QBUFSZ - 1 - 3], "...");
         query = qbuf;
     }
-    res = (*windowprocs.win_yn_function_ex)(style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags);
+    res = (*windowprocs.win_yn_function_ex)(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags);
 #ifdef DUMPLOG
     if (idx == saved_pline_index) {
         /* when idx is still the same as saved_pline_index, the interface
@@ -8435,7 +8435,7 @@ yn_function(query, resp, def, resp_desc)
 const char* query, *resp, *resp_desc;
 char def;
 {
-    return yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, query, resp, def, resp_desc, 0UL);
+    return yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, query, resp, def, resp_desc, (const char*)0, 0UL);
 }
 
 char
@@ -8452,7 +8452,7 @@ char def;
     char namebuf[BUFSZ];
     strcpy_capitalized_for_title(namebuf, Monnam(mtmp));
 
-    return yn_function_ex(YN_STYLE_MONSTER_QUESTION, ATR_NONE, NO_COLOR, glyph, namebuf, query, chars, def, descs, 0UL);
+    return yn_function_ex(YN_STYLE_MONSTER_QUESTION, ATR_NONE, NO_COLOR, glyph, namebuf, query, chars, def, descs, (const char*)0, 0UL);
 }
 
 char

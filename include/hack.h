@@ -481,9 +481,9 @@ extern short tile2enlargement[MAX_TILES];
 #define dnq(query) yn_function(query, dnqchars, 'q', dnqdescs)
 #define idq(query) yn_function(query, idqchars, 'q', idqdescs)
 
-#define yn_query_ex(a, c, title, query) yn_function_ex(YN_STYLE_GENERAL, a, c, NO_GLYPH, title, query, ynchars, 'n', yndescs, 0UL)
-#define ynq_ex(a, c, title, query) yn_function_ex(YN_STYLE_GENERAL, a, c, NO_GLYPH, title, query, ynqchars, 'q', ynqdescs, 0UL)
-#define yn_function_es(s, a, c, title, query, chars, resp, descs) yn_function_ex(s, a, c, NO_GLYPH, title, query, chars, resp, descs, 0UL)
+#define yn_query_ex(a, c, title, query) yn_function_ex(YN_STYLE_GENERAL, a, c, NO_GLYPH, title, query, ynchars, 'n', yndescs, (const char*)0, 0UL)
+#define ynq_ex(a, c, title, query) yn_function_ex(YN_STYLE_GENERAL, a, c, NO_GLYPH, title, query, ynqchars, 'q', ynqdescs, (const char*)0, 0UL)
+#define yn_function_es(s, a, c, title, query, chars, resp, descs, introline) yn_function_ex(s, a, c, NO_GLYPH, title, query, chars, resp, descs, introline, 0UL)
 
 /* Macros for scatter */
 #define VIS_EFFECTS 0x01 /* display visual effects */

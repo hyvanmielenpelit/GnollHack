@@ -253,7 +253,7 @@
 
 /* ### topl.c ### */
 #define tty_doprev_message() tty_doprev_message_()
-#define tty_yn_function_ex(x, y, z, a, b, c, d, e, f, g) tty_yn_function_ex_(x, y, z, a, b, c, d, e, f, g)
+#define tty_yn_function_ex(x, y, z, a, b, c, d, e, f, g, h) tty_yn_function_ex_(x, y, z, a, b, c, d, e, f, g, h)
 
 /* ### wintty.c ### */
 #define tty_init_nhwindows(x, y) tty_init_nhwindows_(x, y)

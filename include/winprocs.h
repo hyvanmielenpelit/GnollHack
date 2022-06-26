@@ -61,7 +61,7 @@ struct window_procs {
     int FDECL((*win_nh_poskey), (int *, int *, int *));
     void NDECL((*win_nhbell));
     int NDECL((*win_doprev_message));
-    char FDECL((*win_yn_function_ex), (int, int, int, int, const char*, const char *, const char *, CHAR_P, const char*, unsigned long));
+    char FDECL((*win_yn_function_ex), (int, int, int, int, const char*, const char *, const char *, CHAR_P, const char*, const char*, unsigned long));
     void FDECL((*win_getlin_ex), (int, int, int, const char *, char *, const char*, const char*, const char*));
     int NDECL((*win_get_ext_cmd));
     void FDECL((*win_number_pad), (int));
@@ -441,7 +441,7 @@ struct chain_procs {
     void FDECL((*win_nhbell), (CARGS));
     int FDECL((*win_doprev_message), (CARGS));
     char FDECL((*win_yn_function_ex),
-               (CARGS, int, int, int, int, const char *, const char *, CHAR_P, const char*, unsigned long));
+               (CARGS, int, int, int, int, const char *, const char *, CHAR_P, const char*, const char*, unsigned long));
     void FDECL((*win_getlin_ex), (CARGS, int, int, int, const char *, char *, const char*, const char*, const char*));
     int FDECL((*win_get_ext_cmd), (CARGS));
     void FDECL((*win_number_pad), (CARGS, int));
@@ -545,7 +545,7 @@ extern int NDECL(safe_nhgetch);
 extern int FDECL(safe_nh_poskey, (int *, int *, int *));
 extern void NDECL(safe_nhbell);
 extern int NDECL(safe_doprev_message);
-extern char FDECL(safe_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, unsigned long));
+extern char FDECL(safe_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, unsigned long));
 extern void FDECL(safe_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 extern int NDECL(safe_get_ext_cmd);
 extern void FDECL(safe_number_pad, (int));

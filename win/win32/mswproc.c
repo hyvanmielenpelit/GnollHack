@@ -1665,7 +1665,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, unsigned long ynflags)
+mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, unsigned long ynflags)
 {
     char ch;
     char yn_esc_map = '\033';
@@ -3591,7 +3591,7 @@ mswin_open_special_view(struct special_view_info info)
         genl_chat_message();
         break;
     case SPECIAL_VIEW_YN_DIALOG:
-        return mswin_yn_function_ex(YN_STYLE_GENERAL, info.attr, info.color, NO_GLYPH, info.title, info.text, "yn", 'n', "Yes\nNo", 0UL);
+        return mswin_yn_function_ex(YN_STYLE_GENERAL, info.attr, info.color, NO_GLYPH, info.title, info.text, "yn", 'n', "Yes\nNo", (const char*)0, 0UL);
     default:
         break;
     }

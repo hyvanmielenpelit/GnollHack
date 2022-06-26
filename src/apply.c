@@ -6319,7 +6319,7 @@ floorapply()
     /* "There is <an object> here; <verb> it?" or
         "There are <N objects> here; <verb> one?" */
     Sprintf(qbuf, "There is %s here; %s it?", an(trap_type_definitions[ttmp->ttyp].name), trap_type_definitions[ttmp->ttyp].apply_verb);
-    if ((c = yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, (const char*)0, qbuf, ynqchars, 'n', ynqdescs)) == 'y')
+    if ((c = yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, (const char*)0, qbuf, ynqchars, 'n', ynqdescs, (const char*)0)) == 'y')
     {
         res = use_lever(ttmp);
     }

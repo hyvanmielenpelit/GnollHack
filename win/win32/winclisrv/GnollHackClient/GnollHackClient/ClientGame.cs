@@ -474,7 +474,7 @@ namespace GnollHackClient
                 return 0;
 
         }
-        public int ClientCallback_YnQuestion(int style, int attr, int color, int glyph, string title, string question, string responses, string def, string descriptions, ulong ynflags)
+        public int ClientCallback_YnFunction(int style, int attr, int color, int glyph, string title, string question, string responses, string def, string descriptions, string introline, ulong ynflags)
         {
             if(question != null)
                 RawPrintEx(question, attr, color);
@@ -497,7 +497,7 @@ namespace GnollHackClient
             {
                 if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                 {
-                    queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, style, attr, color, glyph, title, question, responses, descriptions, ynflags));
+                    queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, style, attr, color, glyph, title, question, responses, descriptions, introline, ynflags));
                 }
 
                 int cnt = 0;
@@ -1614,7 +1614,7 @@ namespace GnollHackClient
                         string descriptions = "Yes\nNo";
                         if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                         {
-                            queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, (int)yn_function_styles.YN_STYLE_GENERAL, attr, color, _gamePage.NoGlyph, title, text, responses, descriptions, 0UL));
+                            queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, (int)yn_function_styles.YN_STYLE_GENERAL, attr, color, _gamePage.NoGlyph, title, text, responses, descriptions, null, 0UL));
                         }
                         else
                             return 27;

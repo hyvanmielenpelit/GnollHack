@@ -1477,7 +1477,7 @@ namespace GnollHackClient.Pages.Game
                                 PrintTopLine(req.RequestString, req.RequestStringAttributes);
                                 break;
                             case GHRequestType.ShowYnResponses:
-                                ShowYnResponses(req.RequestInt, req.RequestAttr, req.RequestNhColor, req.RequestGlyph, req.TitleString, req.RequestString, req.Responses, req.ResponseDescriptions, req.RequestFlags);
+                                ShowYnResponses(req.RequestInt, req.RequestAttr, req.RequestNhColor, req.RequestGlyph, req.TitleString, req.RequestString, req.Responses, req.ResponseDescriptions, req.IntroLineString, req.RequestFlags);
                                 break;
                             case GHRequestType.HideYnResponses:
                                 HideYnResponses();
@@ -1715,7 +1715,7 @@ namespace GnollHackClient.Pages.Game
 
 
         private GlyphImageSource _ynImageSource = new GlyphImageSource();
-        private void ShowYnResponses(int style, int attr, int color, int glyph, string title, string question, string responses, string descriptions, ulong ynflags)
+        private void ShowYnResponses(int style, int attr, int color, int glyph, string title, string question, string responses, string descriptions, string introline, ulong ynflags)
         {
             string[] descr_list = null;
             if (descriptions != null)
@@ -1769,7 +1769,12 @@ namespace GnollHackClient.Pages.Game
                 YnTitleLayout.IsVisible = true;
 
             /* Question */
-            YnQuestionLabel.Text = question;
+            if(string.IsNullOrWhiteSpace(introline))
+                YnQuestionLabel.Text = "";
+            else
+                YnQuestionLabel.Text = introline + " ";
+
+            YnQuestionLabel.Text += question;
 
             /* Buttons */
             LabeledImageButton[] btnList = { ZeroButton, FirstButton, SecondButton, ThirdButton, FourthButton };

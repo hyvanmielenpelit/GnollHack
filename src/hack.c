@@ -147,6 +147,7 @@ moverock()
     register struct trap *ttmp;
     register struct monst *mtmp;
     char pushbuf[BUFSZ * 2] = "";
+    int pushcolor = NO_COLOR;
 
     play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_PUSH_EFFORT);
 
@@ -154,6 +155,7 @@ moverock()
     while ((otmp = sobj_at(BOULDER, sx, sy)) != 0) 
     {
         strcpy(pushbuf, "");
+        pushcolor = NO_COLOR;
 
         /* make sure that this boulder is visible as the top object */
         if (otmp != level.objects[sx][sy])
@@ -177,6 +179,7 @@ moverock()
                 feel_location(sx, sy);
             play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
             Sprintf(pushbuf, "You're too small to push that %s.", xname(otmp));
+            pushcolor = CLR_MSG_FAIL;
             goto cannot_push;
         }
         if (isok(rx, ry) && !IS_ROCK(levl[rx][ry].typ)
@@ -196,6 +199,7 @@ moverock()
                 play_sfx_sound(SFX_GENERAL_CANNOT);
                 Sprintf(pushbuf, "%s won't roll diagonally on this %s.",
                       The(xname(otmp)), surface(sx, sy));
+                pushcolor = CLR_MSG_HINT;
                 goto cannot_push;
             }
 
@@ -208,10 +212,12 @@ moverock()
             {
                 if (Blind)
                     feel_location(sx, sy);
+
+                pushcolor = CLR_MSG_HINT;
                 if (canspotmon(mtmp))
                 {
                     Sprintf(pushbuf, "There's %s on the other side.", a_monnam(mtmp));
-                } 
+                }
                 else 
                 {
                     Sprintf(pushbuf, "You hear a monster behind %s.", the(xname(otmp)));
@@ -403,6 +409,7 @@ moverock()
         else 
         {
 nopushmsg:
+            pushcolor = CLR_MSG_FAIL;
             if (u.usteed)
                 Sprintf(pushbuf, "%s tries to move %s, but cannot.",
                       upstart(y_monnam(u.usteed)), the(xname(otmp)));
@@ -414,7 +421,7 @@ nopushmsg:
  cannot_push:
             if (throws_rocks(youmonst.data)) 
             {
-                pline1(pushbuf);
+                pline_ex1(ATR_NONE, pushcolor, pushbuf);
 
                 boolean
                     canpickup = (!Sokoban
@@ -457,16 +464,12 @@ nopushmsg:
                                             && IS_ROCK(levl[sx][u.uy].typ))))
                     || verysmall(youmonst.data)))
             {
-#ifdef GNH_MOBILE
-                if (*pushbuf)
-                    Strcat(pushbuf, " ");
-#else
                 if(*pushbuf)
-                    pline1(pushbuf);
-                *pushbuf = 0;
-#endif
-                Strcat(pushbuf, "However, you can squeeze yourself into a small opening. Proceed?");
-                if (yn_query_ex(ATR_NONE, NO_COLOR, "Squeeze into Opening?", pushbuf) == 'y')
+                    pline_ex1(ATR_NONE, pushcolor, pushbuf);
+
+                if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, "Squeeze into Opening?", 
+                    "However, you can squeeze yourself into a small opening. Proceed?",
+                    ynchars, 'n', yndescs, pushbuf) == 'y')
                 {
                     sokoban_guilt();
                     break;
@@ -476,7 +479,7 @@ nopushmsg:
             } 
             else
             {
-                pline1(pushbuf);
+                pline_ex1(ATR_NONE, pushcolor, pushbuf);
                 return -1;
             }
         }

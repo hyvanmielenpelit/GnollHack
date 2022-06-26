@@ -2169,13 +2169,14 @@ release_yn_widgets()
 /* X11-specific edition of yn_function(), the routine called by the core
    to show a prompt and get a single keystroke answer, often 'y' vs 'n' */
 char
-X11_yn_function_ex(style, attr, color, glyph, title, ques, choices, def, resp_desc, ynflags)
+X11_yn_function_ex(style, attr, color, glyph, title, ques, choices, def, resp_desc, introline, ynflags)
 int style, attr, color, glyph;
 const char* title;
 const char* ques;
 const char *choices; /* string of possible response chars; any char if Null */
 char def;            /* default response if user hits <space> or <return> */
 const char* resp_desc;
+const char* introline;
 unsigned long ynflags;
 {
     char buf[BUFSZ];

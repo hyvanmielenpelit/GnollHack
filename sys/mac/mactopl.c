@@ -51,9 +51,9 @@ topl_yn_function_ex(int style, int attr, int color, int glyph, const char* title
 }
 
 char
-mac_yn_function_ex(style, attr, color, glyph title, query, resp, def, resp_desc, ynflags)
+mac_yn_function_ex(style, attr, color, glyph title, query, resp, def, resp_desc, introline, ynflags)
 int style, attr, color, glyph;
-const char *title, *query, *resp, *resp_desc;
+const char *title, *query, *resp, *resp_desc, *introline;
 char def;
 unsigned long ynflags;
 /*
@@ -64,7 +64,7 @@ unsigned long ynflags;
  *   If resp is NULL, any single character is accepted and returned.
  */
 {
-    return topl_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, ynflags);
+    return topl_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, introline, ynflags);
 }
 
 /* mactopl.c */

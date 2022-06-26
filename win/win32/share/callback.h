@@ -98,7 +98,7 @@ typedef IntVoidCallback GetChCallback;
 typedef int(__callconv* PosKeyCallback)(int*, int*, int*);
 typedef VoidVoidCallback BellCallback;
 typedef IntVoidCallback DoPrevMessageCallback;
-typedef int(__callconv* YnFunctionCallback)(int, int, int, int, const char*, const char*, const char*, const char*, const char*, unsigned long);
+typedef int(__callconv* YnFunctionCallback)(int, int, int, int, const char*, const char*, const char*, const char*, const char*, const char*, unsigned long);
 typedef IntVoidCallback GetExtCmdCallback;
 typedef VoidIntCallback NumberPadCallback;
 typedef VoidVoidCallback DelayOutputCallback;

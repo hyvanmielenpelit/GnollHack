@@ -847,7 +847,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-curses_yn_function_ex(int style UNUSED, int attr, int color, int glyph UNUSED, const char* title UNUSED, const char *question, const char *choices, CHAR_P def, const char* resp_desc UNUSED, unsigned long ynflags UNUSED)
+curses_yn_function_ex(int style UNUSED, int attr, int color, int glyph UNUSED, const char* title UNUSED, const char *question, const char *choices, CHAR_P def, const char* resp_desc UNUSED, const char* introline UNUSED, unsigned long ynflags UNUSED)
 {
     return (char) curses_character_input_dialog(attr, color, question, choices, def);
 }
@@ -1019,7 +1019,7 @@ curses_open_special_view(struct special_view_info info)
         genl_chat_message();
         break;
     case SPECIAL_VIEW_YN_DIALOG:
-        return curses_yn_function_ex(YN_STYLE_GENERAL, info.attr, info.color, NO_GLYPH, info.title, info.text, "yn", 'n', "Yes\nNo", 0UL);
+        return curses_yn_function_ex(YN_STYLE_GENERAL, info.attr, info.color, NO_GLYPH, info.title, info.text, "yn", 'n', "Yes\nNo", (const char*)0, 0UL);
     default:
         break;
     }

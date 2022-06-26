@@ -1549,7 +1549,7 @@ struct obj* obj, *curobj;
 
         char qbuf[BUFSIZ] = "";
         Sprintf(qbuf, "You are currently wearing %s. Exchange it for %s?", an(cxname(curobj)), the(cxname(obj)));
-        char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs);
+        char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
         if (ans == 'y')
             return exchange_worn_item(obj, curobj, curobj->owornmask);
     }
@@ -1989,7 +1989,7 @@ boolean noisy;
 
                         char qbuf[BUFSIZ];
                         Sprintf(qbuf, "You cannot wear %s over %s. Take %s off and then wear the shirt?", an(cxname(otmp)), cbuf, many ? "them" : "it");
-                        char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs);
+                        char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
 
                         if (ans == 'y')
                         {
@@ -2032,7 +2032,7 @@ boolean noisy;
 
                         char qbuf[BUFSIZ];
                         Sprintf(qbuf, "You cannot wear %s over %s. Take it off and then wear the robe?", an(cxname(otmp)), cbuf);
-                        char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs);
+                        char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
                         if (ans == 'y')
                         {
                             (void)take_off_covering_and_wear(otmp, W_ARMO);
@@ -2094,7 +2094,7 @@ boolean noisy;
 
                     char qbuf[BUFSIZ];
                     Sprintf(qbuf, "You cannot wear %s over %s. Take %s off and then wear the armor?", an(cxname(otmp)), cbuf, many ? "them" : "it");
-                    char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs);
+                    char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
                     if (ans == 'y')
                     {
                         (void)take_off_covering_and_wear(otmp, W_ARM);
@@ -2205,7 +2205,7 @@ boolean in_takeoff_wear;
                     You("have %s on the left %s and %s on the right.", an(cxname(uleft)), body_part(FINGER), an(cxname(uright)));
 
                     Sprintf(qbuf, "Remove Left or Right ring?");
-                    answer = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, "lrq", '\0', "Left\nRight\nCancel");
+                    answer = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, "lrq", '\0', "Left\nRight\nCancel", (const char*)0);
                     switch (answer)
                     {
                     case '\0':
@@ -2329,7 +2329,7 @@ boolean in_takeoff_wear;
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot wear more than five miscellanous items.");
                 if (flags.exchange_prompt)
                 {
-                    char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, "Already Wearing 5 Miscellaneous Items", "Do you want to remove some of them?", ynchars, 'n', yndescs);
+                    char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, "Already Wearing 5 Miscellaneous Items", "Do you want to remove some of them?", ynchars, 'n', yndescs, (const char*)0);
                     if (ans == 'y')
                     {
                         return doremring();
