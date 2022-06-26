@@ -36,7 +36,7 @@
                             <Label WidthRequest="50" Text="MaxHP" IsVisible="{Binding IsHPMaxVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                             <Label WidthRequest="75" Text="Turns" HorizontalOptions="Start" IsVisible="{Binding IsTurnsVisible}" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                             <Label WidthRequest="85" Text="Started" IsVisible="{Binding IsBirthDateVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
-                            <Label WidthRequest="25" Text="D" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label WidthRequest="25" Text="Md" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                             <Label Text="Outcome" IsVisible="{Binding IsOutcomeVisible}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                         </StackLayout>
                     </CollectionView.Header>
