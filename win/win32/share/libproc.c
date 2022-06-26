@@ -609,7 +609,7 @@ void lib_getlin_ex(int style, int attr, int color, const char* question, char* i
     char buf[BUFSIZ] = "";
     char phbuf[BUFSIZ] = "";
     char dvbuf[BUFSIZ] = "";
-    char ibuf[BUFSZ] = "";
+    char ibuf[BUFSIZ] = "";
 
     if (question)
         write_text2buf_utf8(buf, BUFSIZ, question);
