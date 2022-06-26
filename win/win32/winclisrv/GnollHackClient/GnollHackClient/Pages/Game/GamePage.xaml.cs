@@ -4549,7 +4549,7 @@ namespace GnollHackClient.Pages.Game
                             curx += target_width;
                             curx += innerspacing;
                         }
-                        else if (valtext.StartsWith("S"))
+                        else if (valtext.StartsWith("R"))
                         {
                             target_width = target_scale * _statusCasualClassicBitmap.Width;
                             target_height = target_scale * _statusCasualClassicBitmap.Height;

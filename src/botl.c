@@ -488,7 +488,7 @@ char* buf;
     char modebuf[BUFSZ];
     const char* difsym = get_game_difficulty_symbol(context.game_difficulty);
 
-    Sprintf(modebuf, "%s%s", wizard ? "W" : discover ? "X" : CasualMode ? (ModernMode ? "C" : "S") : ModernMode ? "M" : "", difsym);
+    Sprintf(modebuf, "%s%s", wizard ? "W" : discover ? "X" : CasualMode ? (ModernMode ? "C" : "R") : ModernMode ? "M" : "", difsym);
 
     Sprintf(buf, "%s", modebuf);
     return ret;

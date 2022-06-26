@@ -68,7 +68,7 @@ namespace GnollHackClient.Pages.Game
                 }
 
                 /* Sort top scores */
-                var q = from s in newTopScores orderby s.Score descending where (App.DeveloperMode || s.Mode == "normal") select s;
+                var q = from s in newTopScores orderby s.Score descending /* where (App.DeveloperMode || s.Mode == "normal") */ select s;
                 List<GHTopScoreItem> sortedList = q.ToList();
                 _topScores = new ObservableCollection<GHTopScoreItem>();
                 foreach (GHTopScoreItem sorteditem in sortedList)
