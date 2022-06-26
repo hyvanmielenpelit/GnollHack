@@ -2542,7 +2542,7 @@ do_illness: /* Pestilence's potion of healing effect */
     /* Note: potionbreathe() does its own docall() */
     if ((distance == 0 || (distance < 3 && rn2(5)))
         && (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data)))
-        potionbreathe(obj);
+        potionbreathe(obj, dcbuf);
     else if (obj->dknown && !objects[obj->otyp].oc_name_known
              && !objects[obj->otyp].oc_uname && cansee(tx, ty))
         docall(obj, dcbuf);
@@ -2568,15 +2568,16 @@ do_illness: /* Pestilence's potion of healing effect */
 
 /* vapors are inhaled or get in your eyes */
 void
-potionbreathe(obj)
+potionbreathe(obj, introline)
 struct obj *obj;
+const char* introline;
 {
+    if (!obj || obj->oclass != POTION_CLASS)
+        return;
+
     int i, kn = 0;
     boolean cureblind = FALSE;
     char dcbuf[BUFSZ] = "";
-
-    if (obj->oclass != POTION_CLASS)
-        return;
 
     /* potion of unholy water might be wielded; prevent
        you_were() -> drop_weapon() from dropping it so that it
@@ -2906,13 +2907,26 @@ struct obj *obj;
         break;
      */
     }
+
+    char dcbuf2[BUFSZ * 2] = "";
+    if (introline && *introline)
+    {
+        Strcpy(dcbuf2, introline);
+    }
+    if (*dcbuf)
+    {
+        if(*dcbuf2)
+            Strcat(dcbuf2, " ");
+        Strcat(dcbuf2, dcbuf);
+    }
+
     /* note: no obfree() -- that's our caller's responsibility */
     if (obj->dknown) {
         if (kn)
             makeknown(obj->otyp);
         else if (!objects[obj->otyp].oc_name_known
                  && !objects[obj->otyp].oc_uname)
-            docall(obj, dcbuf);
+            docall(obj, dcbuf2);
     }
 }
 
@@ -3269,6 +3283,7 @@ dodip()
     {
         int amt = (int) obj->quan;
         boolean magic;
+        char dcbuf[BUFSZ] = "";
 
         mixture = mixtype(obj, potion);
 
@@ -3291,24 +3306,29 @@ dodip()
             }
         }
         /* [N of] the {obj(s)} mix(es) with [one of] {the potion}... */
-        pline("%s %s %s with %s%s...", qbuf, simpleonames(obj),
+        Sprintf(dcbuf, "%s %s %s with %s%s...", qbuf, simpleonames(obj),
               otense(obj, "mix"), (potion->quan > 1L) ? "one of " : "",
               thesimpleoname(potion));
+        pline1(dcbuf);
         /* get rid of 'dippee' before potential perm_invent updates */
         useup(potion); /* now gone */
         /* Mixing potions is dangerous...
            KMH, balance patch -- acid is particularly unstable */
         if (obj->cursed || obj->otyp == POT_ACID || !rn2(10)) {
+            char dcbuf2[BUFSZ] = "";
+            char dcbuf3[BUFSZ * 2] = "";
             /* it would be better to use up the whole stack in advance
                of the message, but we can't because we need to keep it
                around for potionbreathe() [and we can't set obj->in_use
                to 'amt' because that's not implemented] */
             obj->in_use = 1;
-            pline("BOOM!  They explode!");
+            Strcpy(dcbuf2, "BOOM!  They explode!");
+            pline1(dcbuf2);
+            Sprintf(dcbuf3, "%s %s", dcbuf, dcbuf2);
             wake_nearto(u.ux, u.uy, EXPLOSION_SOUND_RADIUS * EXPLOSION_SOUND_RADIUS);
             exercise(A_STR, FALSE);
             if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))
-                potionbreathe(obj);
+                potionbreathe(obj, dcbuf3);
             useupall(obj);
             losehp(adjust_damage(amt + rnd(9), (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), /* not physical damage */
                    "alchemic blast", KILLED_BY_AN);

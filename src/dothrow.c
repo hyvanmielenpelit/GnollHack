@@ -2540,19 +2540,23 @@ boolean from_invent;
             explode_oil(obj, x, y);
         } else if (distu(x, y) <= 2) {
             if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data)) {
+                char dcbuf[BUFSZ] = "";
                 if (obj->otyp != POT_WATER) {
                     if (!has_innate_breathless(youmonst.data)) {
                         /* [what about "familiar odor" when known?] */
-                        You("smell a peculiar odor...");
+                        Strcpy(dcbuf, "You smell a peculiar odor...");
+                        pline1(dcbuf);
                     } else {
                         const char *eyes = body_part(EYE);
 
                         if (eyecount(youmonst.data) != 1)
                             eyes = makeplural(eyes);
-                        Your("%s %s.", eyes, vtense(eyes, "water"));
+
+                        Sprintf(dcbuf, "Your %s %s.", eyes, vtense(eyes, "water"));
+                        pline1(dcbuf);
                     }
                 }
-                potionbreathe(obj);
+                potionbreathe(obj, dcbuf);
             }
         }
         /* monster breathing isn't handled... [yet?] */

@@ -10397,13 +10397,15 @@ boolean forcedestroy;
                                                : "All of your"); /* N of N */
 
         play_simple_object_sound(obj, obj_sound_type);
-        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s %s!", mult, xname(obj),
+        char dcbuf[BUFSZ] = "";
+        Sprintf(dcbuf, "%s %s %s!", mult, xname(obj),
               destroy_strings[dindx][(cnt > 1L)]);
+        pline_ex1(ATR_NONE, CLR_MSG_NEGATIVE, dcbuf);
 
         if (osym == POTION_CLASS && dmgtyp != AD_COLD) 
         {
             if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))
-                potionbreathe(obj);
+                potionbreathe(obj, dcbuf);
         }
 
         if (obj->owornmask) 

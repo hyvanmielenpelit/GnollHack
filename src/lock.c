@@ -1647,9 +1647,11 @@ int x, y;
 
     play_simple_object_sound_at_location(otmp, x, y, OBJECT_SOUND_TYPE_BREAK);
     if (otmp->oclass == POTION_CLASS) {
-        You("%s %s shatter!", Blind ? "hear" : "see", an(bottlename()));
+        char dcbuf[BUFSZ] = "";
+        Sprintf(dcbuf, "You %s %s shatter!", Blind ? "hear" : "see", an(bottlename()));
+        pline1(dcbuf);
         if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))
-            potionbreathe(otmp);
+            potionbreathe(otmp, dcbuf);
         return;
     }
     /* We have functions for distant and singular names, but not one */

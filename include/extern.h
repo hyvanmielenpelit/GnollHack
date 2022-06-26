@@ -2558,7 +2558,7 @@ E int FDECL(peffects, (struct obj *));
 E void FDECL(healup, (int, int, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(strange_feeling, (struct obj *, const char *));
 E void FDECL(potionhit, (struct monst *, struct obj **, int));
-E void FDECL(potionbreathe, (struct obj *));
+E void FDECL(potionbreathe, (struct obj *, const char*));
 E int NDECL(dodip);
 E void FDECL(mongrantswish, (struct monst **));
 E void FDECL(djinni_from_bottle, (struct obj *));
