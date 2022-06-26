@@ -1073,6 +1073,7 @@ namespace GnollHackCommon
         SPECIAL_VIEW_DEBUGLOG,
         SPECIAL_VIEW_MESSAGE,
         SPECIAL_VIEW_YN_DIALOG,
+        SPECIAL_VIEW_SELFIE,
         MAX_SPECIAL_VIEW_TYPES
     }
 

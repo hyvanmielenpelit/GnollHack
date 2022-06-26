@@ -260,6 +260,24 @@ struct obj *obj;
         pline1(nothing_happens);
         return 1;
     }
+
+    boolean takeselfie = FALSE;
+    mtmp = 0;
+    if (!u.dz)
+    {
+        if (!u.dx && !u.dy)
+            mtmp = &youmonst;
+        else
+            mtmp = m_at(u.ux + u.dx, u.uy + u.dy);
+
+        char selfiebuf[BUFSZ] = "Take a selfie?";
+        if (mtmp && mtmp != &youmonst)
+            Sprintf(selfiebuf, "Take a selfie with %s?", mon_nam(mtmp));
+
+        if (mtmp && (mtmp == &youmonst || canseemon(mtmp)) && yn_query(selfiebuf) == 'y')
+            takeselfie = TRUE;
+    }
+
     consume_obj_charge(obj, TRUE);
 
     if (u_action_flags(ACTION_TILE_SPECIAL_ATTACK) & ACTION_SPECIAL_ATTACK_FLAGS_CAMERA)
@@ -276,21 +294,70 @@ struct obj *obj;
     play_sfx_sound(SFX_CAMERA_CLICK);
     u_wait_until_action();
 
-    if (obj->cursed && !rn2(2)) {
+    if (obj->cursed && !rn2(2)) 
+    {
+        Your_ex(ATR_NONE, CLR_MSG_FAIL, "camera slips and you take a picture of yourself.");
         (void) zapyourself(obj, TRUE);
-    } else if (u.uswallow) {
-        You("take a picture of %s %s.", s_suffix(mon_nam(u.ustuck)),
+    }
+    else if (u.uswallow) 
+    {
+        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "take a picture of %s %s.", s_suffix(mon_nam(u.ustuck)),
             mbodypart(u.ustuck, STOMACH));
-    } else if (u.dz) {
-        You("take a picture of the %s.",
+    }
+    else if (u.dz) 
+    {
+        You_ex(ATR_NONE, CLR_MSG_SUCCESS, "take a picture of the %s.",
             (u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
-    } else if (!u.dx && !u.dy) {
-        (void) zapyourself(obj, TRUE);
-    } else if ((mtmp = bhit(u.dx, u.dy, COLNO, 0, FLASHED_LIGHT,
-                            (int FDECL((*), (MONST_P, OBJ_P, MONST_P))) 0,
-                            (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, &obj, &youmonst, TRUE, FALSE)) != 0) {
-        obj->ox = u.ux, obj->oy = u.uy;
-        (void) flash_hits_mon(mtmp, obj);
+    }
+    else if ((!u.dx && !u.dy) || mtmp == &youmonst)
+    {
+        if (takeselfie)
+        {
+            You_ex1(ATR_NONE, CLR_MSG_SUCCESS, "take a selfie.");
+            if (!rn2(2))
+                You_ex1(ATR_NONE, CLR_MSG_SUCCESS, "quite like it.");
+            else
+                pline_ex1(ATR_NONE, CLR_MSG_FAIL, "Maybe that wasn't one of your best takes.");
+        }
+        else
+        {
+            You_ex1(ATR_NONE, CLR_MSG_SUCCESS, "take a picture of yourself.");
+            (void)zapyourself(obj, TRUE);
+        }
+    } 
+    else
+    {
+        if (takeselfie && mtmp)
+        {
+            You_ex(ATR_NONE, CLR_MSG_SUCCESS, "take a selfie with %s.", mon_nam(mtmp));
+
+            if (Role_if(PM_TOURIST) && (mvitals[mtmp->mnum].mvflags & MV_SELFIE_TAKEN) == 0)
+            {
+                pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, "That turned out to be extraordinarily nice.");
+            }
+            else
+            {
+                if (!rn2(2))
+                    You_ex1(ATR_NONE, CLR_MSG_SUCCESS, "quite like it.");
+                else
+                    pline_ex1(ATR_NONE, CLR_MSG_FAIL, "Maybe that wasn't one of your best takes.");
+            }
+            mvitals[mtmp->mnum].mvflags |= MV_SELFIE_TAKEN;
+            context.botl = context.botlx = 1;
+            struct special_view_info info = { 0 };
+            info.viewtype = SPECIAL_VIEW_SELFIE;
+            (void)open_special_view(info);
+        }
+        else
+        {
+            if ((mtmp = bhit(u.dx, u.dy, COLNO, 0, FLASHED_LIGHT,
+                (int FDECL((*), (MONST_P, OBJ_P, MONST_P))) 0,
+                (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, &obj, &youmonst, TRUE, FALSE)) != 0)
+            {
+                obj->ox = u.ux, obj->oy = u.uy;
+                    (void)flash_hits_mon(mtmp, obj);
+            }
+        }
     }
 
     if(action_taken)

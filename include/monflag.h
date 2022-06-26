@@ -421,13 +421,13 @@
 #define G_LGROUP    0x00000000UL     /* 0x00000040UL appear in large groups normally */
 
 /* for mvitals[].mvflags (variant during game) */
-#define MV_EXTINCT      0x0001 /* have been extinguished as population control */
-#define MV_GENOCIDED    0x0002 /* have been genocided */
+#define MV_EXTINCT      0x01 /* have been extinguished as population control */
+#define MV_GENOCIDED    0x02 /* have been genocided */
 #define MV_GONE (MV_GENOCIDED | MV_EXTINCT)
-#define MV_KNOWN        0x0004 /* have been encountered */
-#define MV_KNOWS_EGG    0x0008 /* player recognizes egg of this monster type */
-#define MV_KNOWS_CORPSE 0x0010 /* player recognizes corpse of this monster type */
-/* free bit */
-#define MV_NOCORPSE     0x0040 /* no corpse left ever, the same bit as G_NOCORPSE just in case */
+#define MV_KNOWN        0x04 /* have been encountered */
+#define MV_KNOWS_EGG    0x08 /* player recognizes egg of this monster type */
+#define MV_KNOWS_CORPSE 0x10 /* player recognizes corpse of this monster type */
+#define MV_SELFIE_TAKEN 0x20 /* player has taken a selfie with this monster type */
+#define MV_NOCORPSE     0x40 /* no corpse left ever, the same bit as G_NOCORPSE just in case */
 
 #endif /* MONFLAG_H */

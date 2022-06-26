@@ -2743,6 +2743,19 @@ get_current_game_score()
         + u.uachieve.entered_large_circular_dungeon + u.uachieve.entered_plane_of_modron + u.uachieve.entered_hellish_pastures
         );
 
+    long Tourist_Selfie_Score = 0L;
+    if (Role_if(PM_TOURIST))
+    {
+        int i;
+        for (i = LOW_PM; i < NUM_MONSTERS; i++)
+        {
+            if (mvitals[i].mvflags & MV_SELFIE_TAKEN)
+            {
+                Tourist_Selfie_Score += 50L * (mons[i].difficulty + 1);
+            }
+        }
+    }
+
     int ngenocided = num_genocides();
 
     long Conduct_Score = (long)(u.uachieve.ascended) * (long)(
@@ -2762,7 +2775,7 @@ get_current_game_score()
         + 10 * (ngenocided == 0)
         );
 
-    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 5000L + Small_Achievements_Score * 5000L + Achievements_Score * 10000L + Conduct_Score * 5000L;
+    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 5000L + Small_Achievements_Score * 5000L + Achievements_Score * 10000L + Conduct_Score * 5000L + Tourist_Selfie_Score;
 
     double Turn_Count_Multiplier = sqrt(50000.0) / sqrt((double)max(1L, moves));
     double Ascension_Multiplier = u.uachieve.ascended ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;
