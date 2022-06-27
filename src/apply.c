@@ -254,13 +254,6 @@ struct obj *obj;
 
     update_u_facing(TRUE);
 
-    if (obj->charges <= 0) 
-    {
-        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
-        pline1(nothing_happens);
-        return 1;
-    }
-
     boolean takeselfie = FALSE;
     mtmp = 0;
     if (!u.dz)
@@ -274,8 +267,28 @@ struct obj *obj;
         if (mtmp && mtmp != &youmonst)
             Sprintf(selfiebuf, "Take a selfie with %s?", mon_nam(mtmp));
 
-        if (mtmp && (mtmp == &youmonst || canseemon(mtmp)) && yn_query(selfiebuf) == 'y')
-            takeselfie = TRUE;
+        if (mtmp && (mtmp == &youmonst || canseemon(mtmp)))
+        {
+            char ans = ynq(selfiebuf);
+            switch (ans)
+            {
+            case 'y':
+                takeselfie = TRUE;
+                break;
+            case 'n':
+                break;
+            default:
+            case 'q':
+                return 0;
+            }
+        }
+    }
+
+    if (obj->charges <= 0)
+    {
+        play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
+        pline1(nothing_happens);
+        return 1;
     }
 
     consume_obj_charge(obj, TRUE);
