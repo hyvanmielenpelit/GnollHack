@@ -2067,7 +2067,7 @@ doskill_core()
                 else if (could_advance(i))
                 {
                     color = CLR_BROWN;
-                    attr = ATR_ALT_COLORS;
+                    attr = ATR_NONE;
                 }
                 else if (peaked_skill(i))
                 {

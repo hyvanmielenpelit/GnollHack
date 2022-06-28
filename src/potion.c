@@ -1921,7 +1921,8 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
 {
     if (nxtra > 0) 
     {
-        if (Upolyd) 
+        int max_hp_before = (Upolyd ? u.mhmax : u.uhpmax);
+        if (Upolyd)
         {
             u.basemhmax += nxtra;
         }
@@ -1930,6 +1931,15 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
             u.ubasehpmax += nxtra;
         }
         updatemaxhp();
+        int max_hp_after = (Upolyd ? u.mhmax : u.uhpmax);
+        int max_hp_gain = max_hp_after - max_hp_before;
+        if (max_hp_gain > 0)
+        {
+            char fbuf[BUFSZ];
+            Sprintf(fbuf, "+%d max HP", max_hp_gain);
+            display_floating_text(u.ux, u.uy, fbuf, FLOATING_TEXT_ATTRIBUTE_GAIN, ATR_NONE, NO_COLOR, 0UL);
+        }
+
     }
 
     if (nhp > 0)

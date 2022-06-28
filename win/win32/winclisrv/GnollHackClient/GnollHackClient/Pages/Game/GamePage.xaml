@@ -85,7 +85,7 @@
                     </FlexLayout>
                     <StackLayout Grid.Row="1" x:Name="MessageNumberGrid" Padding="0,2"
                         HorizontalOptions="Start" VerticalOptions="End">
-                        <Button x:Name="ToggleMessageNumberButton" Text="" Clicked="ToggleMessageNumberButton_Clicked" HeightRequest="60" WidthRequest="60" BackgroundColor="Transparent" />
+                        <Button x:Name="ToggleMessageNumberButton" Text="" Clicked="ToggleMessageNumberButton_Clicked" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" />
                     </StackLayout>
                     <StackLayout Grid.Row="2" x:Name="ButtonRowStack" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical"
                         BackgroundColor="#66000000">

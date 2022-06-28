@@ -252,10 +252,14 @@ drinkfountain()
         int num = d(2, 6);
         int added_hp = num + ((rnd(6) + 5) * 5 * (Upolyd ? u.mhmax : u.uhpmax)) / 100;
         int added_max = 0;
+
+        if ((Upolyd ? u.mhmax == u.mh : u.uhpmax == u.uhp))
+            added_max += d(1, 3);
+
         if (fountain_blessed)
         {
             added_hp *= 2;
-            added_max += 1;
+            added_max += d(1, 3);
         }
         healup(added_hp, added_max,
             !!fountain_blessed, !fountain_blessed, FALSE, FALSE, FALSE);
@@ -276,13 +280,21 @@ drinkfountain()
     {
         int num = d(2, 6);
         int added_mana = num + ((rnd(6) + 5) * 5 * u.uenmax) / 100;
+        int added_max_mana = 0;
+
+        int mana_before = u.uen;
+        int max_mana_before = u.uenmax;
+
+        if(u.uen == u.uenmax)
+            added_max_mana += d(1, 3);
 
         if (fountain_blessed)
         {
             added_mana *= 2;
-            u.ubaseenmax += 1;
+            added_max_mana += d(1, 3);
         }
         u.uen += added_mana;
+        u.ubaseenmax += added_max_mana;
         updatemaxen();
         if (u.uenmax <= 0)
             u.uenmax = 0;
@@ -290,6 +302,26 @@ drinkfountain()
             u.uen = u.uenmax;
         else if (u.uen <= 0)
             u.uen = 0;
+
+        int mana_after = u.uen;
+        int mana_gain = mana_after - mana_before;
+        int max_mana_after = u.uenmax;
+        int max_mana_gain = max_mana_after - max_mana_before;
+        if (max_mana_gain > 0)
+        {
+            char fbuf[BUFSZ];
+            Sprintf(fbuf, "+%d max mana", max_mana_gain);
+            display_floating_text(u.ux, u.uy, fbuf, FLOATING_TEXT_ATTRIBUTE_GAIN, ATR_NONE, NO_COLOR, 0UL);
+        }
+        if (mana_gain > 0)
+        {
+            char fbuf[BUFSZ];
+            Sprintf(fbuf, "+%d", mana_gain);
+            display_floating_text(u.ux, u.uy, fbuf, FLOATING_TEXT_MANA_GAIN, ATR_NONE, NO_COLOR, 0UL);
+        }
+
+        context.botl = 1;
+
         context.botl = 1;
 
         if (ftyp == FOUNTAIN_MANA)
