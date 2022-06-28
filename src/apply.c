@@ -347,6 +347,11 @@ struct obj *obj;
             if (Role_if(PM_TOURIST) && (mvitals[mtmp->mnum].mvflags & MV_SELFIE_TAKEN) == 0)
             {
                 pline_ex1(ATR_NONE, CLR_MSG_POSITIVE, "That turned out to be extraordinarily nice.");
+                if (mtmp->mnum == PM_DEMOGORGON && !u.uachieve.role_achievement)
+                {
+                    u.uachieve.role_achievement = 1;
+                    achievement_gained("Took a Selfie with Demogorgon");
+                }
             }
             else
             {

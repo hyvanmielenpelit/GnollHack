@@ -935,6 +935,18 @@ struct obj *obj;
         obj->speflags &= ~(SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2);
         obj->nomerge = 0;
     }
+    else if (obj->otyp == GRAIL_OF_HEALING && Role_if(PM_KNIGHT)) // Holy Grail
+    {
+        if (!u.uachieve.role_achievement)
+        {
+#ifdef SHOW_SCORE_ON_BOTL
+            if (flags.showscore)
+                context.botl = 1;
+#endif
+            u.uachieve.role_achievement = 1;
+            achievement_gained("Found the Holy Grail");
+        }
+    }
 }
 
 void

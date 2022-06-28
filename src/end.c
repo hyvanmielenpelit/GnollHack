@@ -2735,6 +2735,7 @@ get_current_game_score()
         u.uachieve.killed_medusa + u.uachieve.killed_yacc + u.uachieve.menorah + u.uachieve.prime_codex + u.uachieve.mines_luckstone +
         !!In_endgame(&u.uz) + !!Is_astralevel(&u.uz) + u.uevent.invoked 
         + u.uhave.prime_codex /* Various things that yield points when carried out of the Dungeons of Doom */
+        + u.uachieve.role_achievement /* Special role-specific achievement */
         );
 
     long Small_Achievements_Score = (long)(u.uachieve.consulted_oracle + u.uachieve.read_discworld_novel

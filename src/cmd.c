@@ -920,7 +920,7 @@ doability(VOID_ARGS)
 
     abilitynum++;
 
-    strcpy(available_ability_list[abilitynum].name, "Conduct");
+    strcpy(available_ability_list[abilitynum].name, "Achievements and Conduct");
     available_ability_list[abilitynum].function_ptr = &doconduct;
 
     any = zeroany;
@@ -5321,6 +5321,8 @@ struct ext_func_tab extcmdlist[] = {
             doextcmd, IFBURIED | GENERALCMD },
     { M('?'), "?", "list all extended commands",
             doextlist, IFBURIED | GENERALCMD },
+    { '\0', "achievements", "list achievements you have earned",
+            doconduct, IFBURIED | AUTOCOMPLETE },
     { M('a'), "adjust", "adjust inventory letters",
             doorganize, IFBURIED | AUTOCOMPLETE },
     { M('A'), "annotate", "name current level",
