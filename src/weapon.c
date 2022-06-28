@@ -1973,6 +1973,7 @@ doskill_core()
     int pass, i, n;
     int to_advance, eventually_advance, maxxed_cnt;
     int color = CLR_WHITE;
+    int attr = ATR_NONE;
     boolean speedy = FALSE;
     menu_item* selected;
     anything any;
@@ -2061,18 +2062,22 @@ doskill_core()
                 if (can_advance(i, speedy))
                 {
                     color = CLR_GREEN;
+                    attr = ATR_NONE;
                 }
                 else if (could_advance(i))
                 {
-                    color = CLR_YELLOW;
+                    color = CLR_BROWN;
+                    attr = ATR_ALT_COLORS;
                 }
                 else if (peaked_skill(i))
                 {
                     color = CLR_BLUE;
+                    attr = ATR_NONE;
                 }
                 else
                 {
                     color = CLR_WHITE;
+                    attr = ATR_NONE;
                 }
 
                 (void)skill_level_name(i, skilllevelbuf, FALSE);
@@ -2089,7 +2094,7 @@ doskill_core()
                 if(canadv)
                     info.menu_flags |= MENU_FLAGS_ACTIVE;
 
-                add_extended_menu(win, i + GLYPH_SKILL_TILE_OFF, &any, info, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+                add_extended_menu(win, i + GLYPH_SKILL_TILE_OFF, &any, info, 0, 0, attr, buf, MENU_UNSELECTED);
 
             }
 
