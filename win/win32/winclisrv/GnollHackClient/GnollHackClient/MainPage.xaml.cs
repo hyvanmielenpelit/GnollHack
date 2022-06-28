@@ -1343,7 +1343,7 @@ namespace GnollHackClient
             PopupCheckBoxLayout.IsVisible = false;
             PopupTitleLabel.TextColor = ClientUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
             PopupTitleLabel.Text = "Classic Mode";
-            PopupLabel.Text = "In the Classic Mode, death is permanent. Otherwise, your god will revive you at the starting altar, or at another special location. Each such revival will reduce your game score.";
+            PopupLabel.Text = "In Classic Mode, death is permanent, has a possibility of generating a ghost, and is always recorded in top scores.\n\nOtherwise, in Modern Mode, your god will revive you at the starting altar, or at another special location. Each such revival will reduce your game score, which will be recorded in top scores upon quitting or winning the game.";
             PopupGrid.IsVisible = true;
         }
 
@@ -1353,7 +1353,7 @@ namespace GnollHackClient
             PopupCheckBoxLayout.IsVisible = false;
             PopupTitleLabel.TextColor = ClientUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
             PopupTitleLabel.Text = "Casual Mode";
-            PopupLabel.Text = "Casual Mode is a non-scoring game mode in which your saved games will not be deleted after loading, enabling you to load them again after quitting or dying.";
+            PopupLabel.Text = "Casual Mode is a non-scoring game mode in which your saved games will not be deleted after loading, enabling you to load them again after quitting or dying. Games in Casual Mode are recorded in top scores with zero score upon winning the game.";
             PopupGrid.IsVisible = true;
         }
 

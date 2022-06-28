@@ -726,7 +726,7 @@ time_t when;
     }
 #endif /* XLOGFILE */
 
-    if (discover || CasualMode) // If in wizard mode, write the log normally
+    if (discover || (CasualMode && how != ASCENDED)) // If in wizard mode, write the log normally
     {
         if (how != PANICKED)
             HUP {

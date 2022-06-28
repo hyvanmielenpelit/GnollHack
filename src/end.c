@@ -2729,6 +2729,9 @@ get_current_game_score()
         utotal = LONG_MAX; /* wrap around */
     return utotal;
 #endif
+    if (discover || CasualMode)
+        return 0L;
+
     long utotal = 0;
     long Deepest_Dungeon_Level = deepest_lev_reached(FALSE);
     long Achievements_Score = (long)(u.uachieve.amulet + u.uachieve.ascended + u.uachieve.bell + u.uachieve.book + u.uachieve.enter_gehennom + u.uachieve.finish_sokoban +
