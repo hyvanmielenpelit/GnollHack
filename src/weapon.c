@@ -1943,6 +1943,23 @@ int skill;
     You("are now %s skilled in %s.",
         P_SKILL_LEVEL(skill) >= P_MAX_SKILL_LEVEL(skill) ? "most" : "more",
         P_NAME_PLURAL(skill));
+
+    if (!u.uachieve.role_achievement &&
+        (
+            (Role_if(PM_CAVEMAN) && skill == P_BLUDGEONING_WEAPON && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
+            || (Role_if(PM_HEALER) && skill == P_HEALING_SPELL && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
+            || (Role_if(PM_MONK) && skill == P_MARTIAL_ARTS && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
+            || (Role_if(PM_RANGER) && (skill == P_BOW || skill == P_CROSSBOW) && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
+            || (Role_if(PM_VALKYRIE) && skill == P_TWO_WEAPON_COMBAT && P_SKILL_LEVEL(skill) == P_GRAND_MASTER)
+            )
+       )
+    {
+        u.uachieve.role_achievement = 1;
+        char abuf[BUFSZ];
+        strcpy_capitalized_for_title(abuf, get_role_achievement_description());
+        achievement_gained(abuf);
+    }
+
     update_can_advance_any_skill();
 }
 

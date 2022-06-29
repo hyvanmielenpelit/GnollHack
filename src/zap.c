@@ -1855,10 +1855,7 @@ void print_monster_status(datawin, mtmp)
 winid datawin;
 struct monst* mtmp;
 {
-    if (!mtmp)
-        return;
-
-    if (datawin == WIN_ERR)
+    if (!mtmp || datawin == WIN_ERR || !iflags.using_gui_tiles)
         return;
 
     struct layer_info li = isok(mtmp->mx, mtmp->my) ? layers_at(mtmp->mx, mtmp->my) : zerolayerinfo;

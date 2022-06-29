@@ -204,7 +204,7 @@ STATIC_DCL int FDECL(doviewpetstatistics, (struct monst*));
 
 STATIC_DCL void FDECL(enlght_out, (const char *, int));
 STATIC_DCL void FDECL(enlght_line, (const char *, const char *, const char *,
-                                    const char *));
+                                    const char *, BOOLEAN_P));
 STATIC_DCL char *FDECL(enlght_combatinc, (const char *, int, int, char *));
 STATIC_DCL void FDECL(enlght_halfdmg, (int, int));
 STATIC_DCL boolean NDECL(walking_on_water);
@@ -2919,13 +2919,17 @@ static boolean en_via_menu = FALSE;
 static const char You_[] = "You ", are[] = "are ", were[] = "were ",
                   have[] = "have ", had[] = "had ", can[] = "can ",
                   could[] = "could ", cannot[] = "cannot ", could_not[] = "could not ";
-static const char have_been[] = "have been ", have_never[] = "have never ",
+static const char have_been[] = "have been ", have_never[] = "have never ", have_not[] = "have not ", had_not[] = "had not ",
                   never[] = "never ";
 
 #define enl_msg(prefix, present, past, suffix, ps) \
-    enlght_line(prefix, final ? past : present, suffix, ps)
+    enlght_line(prefix, final ? past : present, suffix, ps, FALSE)
+#define enl_msg2(prefix, present, past, suffix, ps) \
+    enlght_line(prefix, final ? past : present, suffix, ps, TRUE)
 #define you_are(attr, ps) enl_msg(You_, are, were, attr, ps)
 #define you_have(attr, ps) enl_msg(You_, have, had, attr, ps)
+#define you_have_not(attr, ps) enl_msg(You_, have_not, had_not, attr, ps)
+#define you_have_not2(attr) enl_msg2(You_, have_not, had_not, attr, "")
 #define you_can(attr, ps) enl_msg(You_, can, could, attr, ps)
 #define you_cannot(attr, ps) enl_msg(You_, cannot, could_not, attr, ps)
 #define you_have_been(goodthing) enl_msg(You_, have_been, were, goodthing, "")
@@ -2949,12 +2953,13 @@ int attr;
 }
 
 static void
-enlght_line(start, middle, end, ps)
+enlght_line(start, middle, end, ps, parentheses)
 const char *start, *middle, *end, *ps;
+boolean parentheses;
 {
     char buf[BUFSZ];
 
-    Sprintf(buf, " %s%s%s%s.", start, middle, end, ps);
+    Sprintf(buf, " %s%s%s%s%s.%s", parentheses ? "(" : "", start, middle, end, ps, parentheses ? ")" : "");
     enlght_out(buf, ATR_NONE);
 }
 
@@ -3335,7 +3340,7 @@ int final;
         /* 'turns' grates on the nerves in this context... */
         Sprintf(buf, "the dungeon %ld turn%s ago", moves, plur(moves));
         /* same phrasing for current and final: "entered" is unconditional */
-        enlght_line(You_, "entered ", buf, "");
+        enlght_line(You_, "entered ", buf, "", FALSE);
     }
     if (!Upolyd) {
         /* flags.showexp does not matter */
@@ -5214,6 +5219,64 @@ int final;
 
     /* Create the conduct window */
     en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SEMI_WIDE_LIST, NO_GLYPH, zerocreatewindowinfo);
+    putstr(en_win, ATR_TITLE, "Achievements:");
+    if (!final)
+        putstr(en_win, ATR_HALF_SIZE, " ");
+    if (u.uachieve.ascended)
+        you_have("ascended to demigodhood", "");
+    if (u.uachieve.amulet)
+        you_have("found the Amulet of Yendor", "");
+    else
+        you_have_not2("found the Amulet of Yendor");
+    if (u.uachieve.role_achievement)
+        you_have(get_role_achievement_description(), "");
+    else
+        you_have_not2(get_role_achievement_description());
+
+    if (u.uachieve.bell)
+        you_have("found the Bell of Opening", "");
+    if (u.uachieve.book)
+        you_have("found the Book of the Dead", "");
+    if (u.uachieve.menorah)
+        you_have("found the Candelabrum of Invocation", "");
+    if (u.uachieve.prime_codex)
+        you_have("found the Prime Codex", "");
+    if (u.uachieve.enter_gehennom)
+        you_have("entered Gehennom", "");
+    if (u.uachieve.killed_medusa)
+        you_have("defeated Medusa", "");
+    if (u.uachieve.consulted_oracle)
+        you_have("consulted the Oracle", "");
+    if (u.uachieve.read_discworld_novel)
+        you_have("read a Discworld novel", "");
+    if (u.uachieve.entered_gnomish_mines)
+        you_have("descended to the Gnomish Mines", "");
+    if (u.uachieve.entered_mine_town)
+        you_have("visited Mine Town", "");
+    if (u.uachieve.mines_luckstone)
+        you_have("found the Gladstone", "");
+    if (u.uachieve.entered_shop)
+        you_have("visited a shop", "");
+    if (u.uachieve.entered_temple)
+        you_have("visited a temple", "");
+    if (u.uachieve.entered_sokoban)
+        you_have("found Sokoban", "");
+    if (u.uachieve.finish_sokoban)
+        you_have("solved Sokoban", "");
+    if (u.uachieve.entered_bigroom)
+        you_have("found the Big Room", "");
+    if (u.uachieve.learned_castle_tune)
+        you_have("learned the castle tune", "");
+    if (u.uachieve.entered_large_circular_dungeon)
+        you_have("entered the Large Circular Dungeon", "");
+    if (u.uachieve.entered_plane_of_modron)
+        you_have("entered the Plane of the Modron", "");
+    if (u.uachieve.entered_hellish_pastures)
+        you_have("entered Hellish Pastures", "");
+    if (u.uachieve.killed_yacc)
+        you_have("defeated Yacc, the Demon Lord of Bovines", "");
+
+    putstr(en_win, ATR_NONE, " ");
     putstr(en_win, ATR_TITLE, "Voluntary challenges:");
     if(!final)
         putstr(en_win, ATR_HALF_SIZE, " ");

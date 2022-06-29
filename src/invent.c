@@ -840,10 +840,8 @@ struct obj *obj;
         if (u.uhave.amulet)
             impossible("already have amulet?");
         u.uhave.amulet = 1;
-#ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.amulet)
             context.botl = 1;
-#endif
         if (!u.uachieve.amulet)
             achievement_gained("Amulet of Yendor");
         u.uachieve.amulet = 1;
@@ -853,10 +851,8 @@ struct obj *obj;
         if (u.uhave.menorah)
             impossible("already have candelabrum?");
         u.uhave.menorah = 1;
-#ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.menorah)
             context.botl = 1;
-#endif
         if (!u.uachieve.menorah)
             achievement_gained("Candelabrum of Invocation");
         u.uachieve.menorah = 1;
@@ -866,10 +862,8 @@ struct obj *obj;
         if (u.uhave.bell)
             impossible("already have silver bell?");
         u.uhave.bell = 1;
-#ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.bell)
             context.botl = 1;
-#endif
         if (!u.uachieve.bell)
             achievement_gained("Bell of Opening");
         u.uachieve.bell = 1;
@@ -879,10 +873,8 @@ struct obj *obj;
         if (u.uhave.book)
             impossible("already have the book?");
         u.uhave.book = 1;
-#ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.book)
             context.botl = 1;
-#endif
         if (!u.uachieve.bell)
             achievement_gained("Book of the Dead");
         u.uachieve.book = 1;
@@ -901,22 +893,70 @@ struct obj *obj;
             if (u.uhave.prime_codex)
                 impossible("already have Prime Codex?");
             u.uhave.prime_codex = 1;
-#ifdef SHOW_SCORE_ON_BOTL
             if (flags.showscore && !u.uachieve.prime_codex)
                 context.botl = 1;
-#endif
             if (!u.uachieve.prime_codex)
                 achievement_gained("Prime Codex");
             u.uachieve.prime_codex = 1;
+        }
+
+        boolean check_achievement = FALSE;
+        if (Role_if(PM_BARBARIAN))
+        {
+            check_achievement = TRUE;
+            if (u.ualignbase[A_ORIGINAL] == A_CHAOTIC)
+            {
+                if (obj->oartifact == ART_STORMBRINGER)
+                    u.uevent.role_achievement_1 = 1;
+                if (obj->oartifact == ART_MOURNBLADE)
+                    u.uevent.role_achievement_2 = 1;
+            }
+            else
+            {
+                if (obj->oartifact == ART_VORPAL_BLADE)
+                    u.uevent.role_achievement_1 = 1;
+                if (obj->oartifact == ART_KATANA_OF_MASAMUNE)
+                    u.uevent.role_achievement_2 = 1;
+            }
+        }
+        else if (Role_if(PM_KNIGHT))
+        {
+            check_achievement = TRUE;
+            if (obj->oartifact == ART_EXCALIBUR)
+                u.uevent.role_achievement_1 = 1;
+            if (obj->oartifact == ART_HOLY_GRAIL)
+                u.uevent.role_achievement_2 = 1;
+        }
+        else if (Role_if(PM_PRIEST))
+        {
+            check_achievement = TRUE;
+            if (obj->oartifact == ART_MACE_OF_SAINT_CUTHBERT)
+                u.uevent.role_achievement_1 = 1;
+            if (obj->oartifact == ART_MACE_OF_SAINT_CUTHBERT)
+                u.uevent.role_achievement_2 = 1;
+        }
+        else if (Role_if(PM_SAMURAI))
+        {
+            check_achievement = TRUE;
+            if (obj->oartifact == ART_KUSANAGI)
+                u.uevent.role_achievement_1 = 1;
+            if (obj->oartifact == ART_KUSANAGI)
+                u.uevent.role_achievement_2 = 1;
+        }
+
+        if (check_achievement && u.uevent.role_achievement_1 && u.uevent.role_achievement_2 && !u.uachieve.role_achievement)
+        {
+            u.uachieve.role_achievement = 1;
+            char abuf[BUFSZ];
+            strcpy_capitalized_for_title(abuf, get_role_achievement_description());
+            achievement_gained(abuf);
         }
     }
 
     if (is_mines_prize(obj))
     {
-#ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.mines_luckstone)
             context.botl = 1;
-#endif
         if (!u.uachieve.mines_luckstone)
             achievement_gained("Gladstone");
         u.uachieve.mines_luckstone = 1;
@@ -925,10 +965,8 @@ struct obj *obj;
     }
     else if (is_soko_prize(obj)) 
     {
-#ifdef SHOW_SCORE_ON_BOTL
         if (flags.showscore && !u.uachieve.finish_sokoban)
             context.botl = 1;
-#endif
         if (!u.uachieve.finish_sokoban)
             achievement_gained("Sokoban Solved");
         u.uachieve.finish_sokoban = 1;
@@ -939,10 +977,8 @@ struct obj *obj;
     {
         if (!u.uachieve.role_achievement)
         {
-#ifdef SHOW_SCORE_ON_BOTL
             if (flags.showscore)
                 context.botl = 1;
-#endif
             u.uachieve.role_achievement = 1;
             achievement_gained("Found the Holy Grail");
         }

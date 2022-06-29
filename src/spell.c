@@ -2408,6 +2408,14 @@ boolean atme;
     skill = spell_skilltype(otyp);
     role_skill = P_SKILL_LEVEL(skill);
 
+    if (!u.uachieve.role_achievement && Role_if(PM_WIZARD) && spellev(spell) >= 12)
+    {
+        u.uachieve.role_achievement = 1;
+        char abuf[BUFSZ];
+        strcpy_capitalized_for_title(abuf, get_role_achievement_description());
+        achievement_gained(abuf);
+    }
+
     switch (otyp) {
     /*
      * At first spells act as expected.  As the hero increases in skill

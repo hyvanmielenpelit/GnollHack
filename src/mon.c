@@ -3299,6 +3299,19 @@ unsigned long mdiedflags;
             achievement_gained("Defeated Yacc");
         u.uachieve.killed_yacc = 1;
     }
+
+    if (!u.uachieve.role_achievement &&
+        (      (Role_if(PM_ARCHAEOLOGIST) && mtmp->mnum == PM_GREATER_MUMMY_PHARAOH && mvitals[mtmp->mnum].died >= 3)
+            || (Role_if(PM_ROGUE) && mtmp->mnum == PM_CROESUS)
+        )
+       )
+    {
+        u.uachieve.role_achievement = 1;
+        char abuf[BUFSZ];
+        strcpy_capitalized_for_title(abuf, get_role_achievement_description());
+        achievement_gained(abuf);
+    }
+
     if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].hero_memory_layers.glyph))
         unmap_object(mtmp->mx, mtmp->my);
 

@@ -112,6 +112,8 @@ struct u_event {
     Bitfield(uvibrated, 1);         /* stepped on "vibrating square" */
     Bitfield(ascended, 1);          /* has offered the Amulet */
 
+    Bitfield(role_achievement_1, 1);  /* passed the first requirement of the role achievement */
+    Bitfield(role_achievement_2, 1);  /* passed the second requirement of the role achievement */
 };
 
 struct u_achieve {
