@@ -1116,14 +1116,14 @@ struct obj* obj;
 void
 clear_memoryobjs()
 {
-    struct obj* obj, *contained_obj;
+    struct obj* obj; // , * contained_obj;
     while ((obj = memoryobjs) != 0) {
         obj_extract_self(obj);
-        while ((contained_obj = obj->cobj) != 0) {
-            obj_extract_self(contained_obj);
-            dealloc_obj(contained_obj);
-        }
-        dealloc_obj(obj);
+        //while ((contained_obj = obj->cobj) != 0) {
+        //    obj_extract_self(contained_obj);
+        //    obfree(contained_obj, (struct obj*)0);
+        //}
+        obfree(obj, (struct obj*)0);
     }
 
 }
@@ -1142,15 +1142,15 @@ int x, y;
         level.locations[x][y].hero_memory_layers.o_id = 0;
 
         /* Clear actual memory objects */
-        struct obj* obj, * contained_obj;
+        struct obj* obj; // , * contained_obj;
         while ((obj = level.locations[x][y].hero_memory_layers.memory_objchn) != 0)
         {
             obj_extract_self(obj);
-            while ((contained_obj = obj->cobj) != 0) {
-                obj_extract_self(contained_obj);
-                dealloc_obj(contained_obj);
-            }
-            dealloc_obj(obj);
+            //while ((contained_obj = obj->cobj) != 0) {
+            //    obj_extract_self(contained_obj);
+            //    dealloc_obj(contained_obj);
+            //}
+            obfree(obj, (struct obj*)0);
         }
     }
 }
@@ -4642,7 +4642,8 @@ struct obj **obj1, **obj2;
             otmp1->quan = 1L;
             obj_extract_self(otmp2);
             newsym(otmp2->ox, otmp2->oy); /* in case of floor */
-            dealloc_obj(otmp2);
+            obfree(otmp2, (struct obj*)0);
+            //dealloc_obj(otmp2);
             *obj2 = (struct obj *) 0;
             return otmp1;
         }

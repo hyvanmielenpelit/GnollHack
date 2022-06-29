@@ -7198,13 +7198,13 @@ boolean nocorpse;
         }
     }
 
-    if (obj && (!strike || d_override)) 
+    if (obj && (!strike || d_override))
     {
         place_object(obj, mon->mx, mon->my);
         stackobj(obj);
     }
     else if (obj)
-        dealloc_obj(obj);
+        obfree(obj, (struct obj*)0);
 
     return trapkilled;
 }

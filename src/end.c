@@ -1460,9 +1460,9 @@ int how;
     /* maybe not on object lists; if an active light source, would cause
        big trouble (`obj_is_local' panic) for savebones() -> savelev() */
     if (thrownobj && thrownobj->where == OBJ_FREE)
-        dealloc_obj(thrownobj);
+        obfree(thrownobj, (struct obj*)0);
     if (kickedobj && kickedobj->where == OBJ_FREE)
-        dealloc_obj(kickedobj);
+        obfree(kickedobj, (struct obj*)0);
 
     /* remember time of death here instead of having bones, rip, and
        topten figure it out separately and possibly getting different
