@@ -53,6 +53,7 @@ namespace GnollHackClient
         private ClientGame _clientGame;
         private int _winId;
         private bool _useUpperSide;
+        private bool _useSpecialSymbols;
 
         public SKTypeface Typeface { get; set; }
         public SKColor TextColor { get; set; }
@@ -67,6 +68,7 @@ namespace GnollHackClient
         public ghwindow_styles WindowStyle { get { return _winStyle; } }
         public int Glyph { get { return _glyph; } }
         public bool UseUpperSide { get { return _useUpperSide; } }
+        public bool UseSpecialSymbols { get { return _useSpecialSymbols; } }
         public GamePage ClientGamePage { get { return _gamePage; } }
         public bool AutoPlacement { get; set; }
         public bool AutoCarriageReturn
@@ -192,12 +194,13 @@ namespace GnollHackClient
             set { lock (_selectedMenuItemsLock) { _selectedMenuItems = value; } }
         }
 
-        public GHWindow(GHWinType winType, ghwindow_styles winStyle, int glyph, bool useUpperSide, ObjectDataItem objdata, GamePage gamePage, int winid)
+        public GHWindow(GHWinType winType, ghwindow_styles winStyle, int glyph, bool useUpperSide, bool useSpecialSymbols, ObjectDataItem objdata, GamePage gamePage, int winid)
         {
             _winType = winType;
             _winStyle = winStyle;
             _glyph = glyph;
             _useUpperSide = useUpperSide;
+            _useSpecialSymbols = useSpecialSymbols;
             ObjData = objdata;
             _gamePage = gamePage;
             _clientGame = gamePage.ClientGame;

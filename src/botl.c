@@ -1030,7 +1030,7 @@ boolean loc_is_you, ispeaceful, ispet, isdetected;
                 display_this_status_mark = TRUE;
             break;
         case STATUS_MARK_PEACEFUL:
-            if (!loc_is_you && ispeaceful && !is_watch(mtmp->data))
+            if (!loc_is_you && ispeaceful && !ispet && !is_watch(mtmp->data))
                 display_this_status_mark = TRUE;
             break;
         case STATUS_MARK_DETECTED:

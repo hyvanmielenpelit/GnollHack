@@ -228,7 +228,8 @@ winid lib_create_nhwindow_ex(int type, int style, int glyph, struct extended_cre
 {
     struct objclassdata ocdata = get_objclassdata(info.object);
     return lib_callbacks.callback_create_nhwindow_ex(type, style, glyph,
-        (info.object ? 1 : 0) | (info.monster ? 2 : 0) | (Hallucination ? 4 : 0) | (info.create_flags & WINDOW_CREATE_FLAGS_ACTIVE ? 8 : 0), 
+        (info.object ? 1 : 0) | (info.monster ? 2 : 0) | (Hallucination ? 4 : 0) | (info.create_flags & WINDOW_CREATE_FLAGS_ACTIVE ? 8 : 0)
+        | (info.create_flags & WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS ? 16 : 0),
         info.object, &ocdata);
 }
 

@@ -805,6 +805,9 @@ namespace GnollHackClient
 
         public static SKBitmap GetSpecialSymbol(string str)
         {
+            if (str == null || !str.StartsWith("&"))
+                return null;
+
             string trimmed_str = str.Trim();
             if (trimmed_str == "&success;")
             {

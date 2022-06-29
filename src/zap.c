@@ -1851,6 +1851,101 @@ struct monst* mtmp;
 
 }
 
+void print_monster_status(datawin, mtmp)
+winid datawin;
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return;
+
+    if (datawin == WIN_ERR)
+        return;
+
+    struct layer_info li = isok(mtmp->mx, mtmp->my) ? layers_at(mtmp->mx, mtmp->my) : zerolayerinfo;
+    unsigned long layerflags = li.layer_flags;
+    boolean loc_is_you = (layerflags & LFLAGS_UXUY) != 0;
+    boolean ispeaceful = (layerflags & LFLAGS_M_PEACEFUL) != 0;
+    boolean ispet = (layerflags & LFLAGS_M_PET) != 0;
+    boolean isdetected = (layerflags & LFLAGS_M_DETECTED) != 0;
+    int condition_count = 0;
+
+    char buf[BUFSZ];
+    char sbuf[BUFSZ] = "";
+    Strcpy(buf, "Status and Conditions:");
+    putstr(datawin, ATR_HEADING, buf);
+    
+    /* Petmark and other status marks */
+    unsigned long m_status_bits = get_m_status_bits(mtmp, loc_is_you, ispeaceful, ispet, isdetected);
+    for (int statusorder_idx = 0; statusorder_idx < SIZE(statusmarkorder); statusorder_idx++)
+    {
+        int status_mark = (int)statusmarkorder[statusorder_idx];
+        if (status_mark < MAX_STATUS_MARKS && status_names[status_mark])
+        {
+            unsigned long status_bit = 1UL << status_mark;
+            if(m_status_bits & status_bit)
+            {
+                condition_count++;
+                if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0)
+                    Sprintf(sbuf, " &status-%d;", status_mark);
+                else
+                    *sbuf = 0;
+
+                Sprintf(buf, " %2d - %s%s", condition_count, status_names[status_mark], sbuf);
+                putstr(datawin, ATR_INDENT_AT_DASH, buf);
+            }
+        }
+    }
+
+    /* Conditions */
+    unsigned long m_conditions = get_m_condition_bits(mtmp);
+    for (int cond = 0; cond < ui_tile_component_array[CONDITION_MARKS].number; cond++)
+    {
+        int condition_bit = 1 << cond;
+        if (m_conditions & condition_bit)
+        {
+            if (cond < NUM_BL_CONDITIONS && condition_names[cond])
+            {
+                condition_count++;
+                if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0)
+                    Sprintf(sbuf, " &cond-%d;", cond);
+                else
+                    *sbuf = 0;
+                Sprintf(buf, " %2d - %s%s", condition_count, condition_names[cond], sbuf);
+                putstr(datawin, ATR_INDENT_AT_DASH, buf);
+            }
+        }
+    }
+
+    /* Buffs */
+    for (int propidx = 1; propidx <= LAST_PROP; propidx++)
+    {
+        if (!property_definitions[propidx].show_buff)
+            continue;
+
+        long duration = loc_is_you ? (u.uprops[propidx].intrinsic & TIMEOUT) : (long)(mtmp->mprops[propidx] & M_TIMEOUT);
+        if (duration == 0L)
+            continue;
+
+        condition_count++;
+        if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0)
+            Sprintf(sbuf, " &buff-%d;", propidx);
+        else
+            *sbuf = 0;
+
+        char pbuf[BUFSZ];
+        Strcpy(pbuf, get_property_name(propidx));
+        *pbuf = highc(*pbuf);
+        Sprintf(buf, " %2d - %s%s", condition_count, pbuf, sbuf);
+        putstr(datawin, ATR_INDENT_AT_DASH, buf);
+    }
+
+    if (!condition_count)
+    {
+        putstr(datawin, ATR_NONE, " (None)");
+    }
+    
+}
+
 void print_monster_statistics(datawin, mtmp)
 winid datawin;
 struct monst* mtmp;

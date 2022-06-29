@@ -5,6 +5,8 @@
 #ifndef TILEDATA_H
 #define TILEDATA_H
 
+#include "rm.h"
+
 #define BUFFS_PER_TILE 24
 #define BUFF_WIDTH 16
 #define BUFF_HEIGHT 16

@@ -597,7 +597,7 @@ struct objclass {
 #define BONUS_TO_EXPERIENCE     0x00000800
 #define BONUS_TO_ARCHERY        0x00001000
 #define BONUS_TO_ALL_SPELL_CASTING 0x00002000
-    /* free bit */
+#define FULL_MC_BONUS           0x00004000
     /* free bit */
 #define SETS_FIXED_ATTRIBUTE    0x00010000
 #define FIXED_IS_MAXIMUM        0x00020000

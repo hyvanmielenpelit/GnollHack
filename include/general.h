@@ -197,6 +197,7 @@ struct extended_create_window_info {
 
 #define WINDOW_CREATE_FLAGS_NONE                0x00000000
 #define WINDOW_CREATE_FLAGS_ACTIVE              0x00000001
+#define WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS 0x00000002 //For text window only; use menu flags for menu window
 
 #define MENU_FLAGS_NONE                         0x00000000
 #define MENU_FLAGS_IS_HEADING                   0x00000001

@@ -3206,6 +3206,10 @@ take_off(VOID_ARGS)
         {
             don->delay = 1;
         }
+        else if (doff->what == W_SWAPWEP2)
+        {
+            don->delay = 1;
+        }
         else if (don->what == W_QUIVER)
         {
             don->delay = 1;
@@ -3294,7 +3298,11 @@ take_off(VOID_ARGS)
     {
         doff->delay = 1;
     }
-    else if (doff->what == W_QUIVER) 
+    else if (doff->what == W_SWAPWEP2)
+    {
+        doff->delay = 1;
+    }
+    else if (doff->what == W_QUIVER)
     {
         doff->delay = 1;
     }

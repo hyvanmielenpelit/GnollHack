@@ -642,6 +642,7 @@ E const char* FDECL(get_obj_subtype_name, (struct obj*));
 E const char* FDECL(get_otyp_subtype_name, (int));
 E struct extended_create_window_info FDECL(extended_create_window_info_from_obj, (struct obj*));
 E struct extended_create_window_info FDECL(extended_create_window_info_from_mon, (struct monst*));
+E struct extended_create_window_info FDECL(extended_create_window_info_from_mon_with_flags, (struct monst*, unsigned long));
 E void FDECL(standard_hint, (const char*));
 E void FDECL(pray_hint, (const char*));
 
@@ -4012,6 +4013,7 @@ E void FDECL(probe_monster, (struct monst *));
 E int FDECL(probe_object, (struct obj*));
 E void FDECL(display_monster_information, (struct monst*));
 E void FDECL(print_monster_intrinsics, (winid win, struct monst*));
+E void FDECL(print_monster_status, (winid win, struct monst*));
 E void FDECL(print_monster_statistics, (winid win, struct monst*));
 E void FDECL(display_monster_inventory, (struct monst*, BOOLEAN_P));
 E boolean FDECL(get_obj_location, (struct obj *, xchar *, xchar *, int));

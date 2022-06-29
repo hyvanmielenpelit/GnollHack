@@ -8452,7 +8452,7 @@ namespace GnollHackClient.Pages.Game
                         {
                             indent_start_x += textPaint.MeasureText(indentstr);
                         }
-                        DrawTextSplit(canvas, maintextsplit, ref x, ref y, start_x, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols);
+                        DrawTextSplit(canvas, maintextsplit, ref x, ref y, start_x, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, 0, 0, 0, 0);
                         y += textPaint.FontMetrics.Descent + fontspacingpadding;
 
                         /* Suffix text */
@@ -8462,7 +8462,7 @@ namespace GnollHackClient.Pages.Game
                             textPaint.TextSize = suffixfontsize;
                             y += fontspacingpadding;
                             y -= textPaint.FontMetrics.Ascent;
-                            DrawTextSplit(canvas, suffixtextsplit, ref x, ref y, start_x, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols);
+                            DrawTextSplit(canvas, suffixtextsplit, ref x, ref y, start_x, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, 0, 0, 0, 0);
                             y += textPaint.FontMetrics.Descent + fontspacingpadding;
                         }
 
@@ -8474,7 +8474,7 @@ namespace GnollHackClient.Pages.Game
                             fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                             y += fontspacingpadding;
                             y -= textPaint.FontMetrics.Ascent;
-                            DrawTextSplit(canvas, suffix2textsplit, ref x, ref y, start_x, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols);
+                            DrawTextSplit(canvas, suffix2textsplit, ref x, ref y, start_x, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, 0, 0, 0, 0);
                             y += textPaint.FontMetrics.Descent + fontspacingpadding;
                         }
 
@@ -8559,11 +8559,107 @@ namespace GnollHackClient.Pages.Game
             return rows;
         }
 
-        private void DrawTextSplit(SKCanvas canvas, string[] textsplit, ref float x, ref float y, float start_x, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, SKPaint textPaint, bool usespecialsymbols)
+        SKBitmap GetGameSpecialSymbol(string str, out SKRect source_rect)
+        {
+            source_rect = new SKRect();
+            if (str.StartsWith("&status-") && str.Length > 8)
+            {
+                int status_mark = 0;
+                if (int.TryParse(str.Substring(8).Substring(0, str.Length - 8 - 1), out status_mark))
+                {
+                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                    int mglyph = (int)game_ui_tile_types.STATUS_MARKS + UITileOff;
+                    int mtile = Glyph2Tile[mglyph];
+                    int sheet_idx = TileSheetIdx(mtile);
+                    int tile_x = TileSheetX(mtile);
+                    int tile_y = TileSheetY(mtile);
+                    int within_tile_x = status_mark % tiles_per_row;
+                    int within_tile_y = status_mark / tiles_per_row;
+                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                    source_rect.Left = c_x;
+                    source_rect.Right = c_x + GHConstants.StatusMarkWidth;
+                    source_rect.Top = c_y;
+                    source_rect.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                    return TileMap[sheet_idx];
+                }
+                return null;
+            }
+            else if (str.StartsWith("&cond-") && str.Length > 6)
+            {
+                int status_mark = 0;
+                if (int.TryParse(str.Substring(6).Substring(0, str.Length - 6 - 1), out status_mark))
+                {
+                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                    int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + UITileOff;
+                    int mtile = Glyph2Tile[mglyph];
+                    int sheet_idx = TileSheetIdx(mtile);
+                    int tile_x = TileSheetX(mtile);
+                    int tile_y = TileSheetY(mtile);
+                    int within_tile_x = status_mark % tiles_per_row;
+                    int within_tile_y = status_mark / tiles_per_row;
+                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                    source_rect.Left = c_x;
+                    source_rect.Right = c_x + GHConstants.StatusMarkWidth;
+                    source_rect.Top = c_y;
+                    source_rect.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                    return TileMap[sheet_idx];
+                }
+                return null;
+            }
+            else if (str.StartsWith("&buff-") && str.Length > 6)
+            {
+                int propidx = 0;
+                if (int.TryParse(str.Substring(6).Substring(0, str.Length - 6 - 1), out propidx))
+                {
+                    if (propidx <= GHConstants.LAST_PROP)
+                    {
+                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                        int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + BuffTileOff;
+                        int mtile = Glyph2Tile[mglyph];
+                        int sheet_idx = TileSheetIdx(mtile);
+                        int tile_x = TileSheetX(mtile);
+                        int tile_y = TileSheetY(mtile);
+
+                        int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
+                        int within_tile_x = buff_mark % tiles_per_row;
+                        int within_tile_y = buff_mark / tiles_per_row;
+                        int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                        int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                        source_rect.Left = c_x;
+                        source_rect.Right = c_x + GHConstants.StatusMarkWidth;
+                        source_rect.Top = c_y;
+                        source_rect.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                        return TileMap[sheet_idx];
+                    }
+                }
+                return null;
+            }
+            else
+            {
+                SKBitmap bitmap = App.GetSpecialSymbol(str);
+                if (bitmap != null)
+                {
+                    source_rect.Right = bitmap.Width;
+                    source_rect.Bottom = bitmap.Height;
+                }
+                return bitmap;
+            }
+        }
+
+        private void DrawTextSplit(SKCanvas canvas, string[] textsplit, ref float x, ref float y, float start_x, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, SKPaint textPaint, bool usespecialsymbols, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding)
         {
             int split_idx_on_row = -1;
             x = start_x;
             float spacelength = textPaint.MeasureText(" ");
+
             foreach (string split_str in textsplit)
             {
                 bool nowrap = false;
@@ -8571,14 +8667,20 @@ namespace GnollHackClient.Pages.Game
                     nowrap = true;
                 split_idx_on_row++;
                 float endposition = x;
+                float usedglyphpadding = 0.0f;
+                if (y - curmenuoffset + textPaint.FontMetrics.Ascent <= glyphyend
+                    && y - curmenuoffset + textPaint.FontMetrics.Descent >= glyphystart)
+                    usedglyphpadding = glyphpadding;
+
                 SKBitmap symbolbitmap = null;
-                if(usespecialsymbols && (symbolbitmap = App.GetSpecialSymbol(split_str)) != null)
+                SKRect source_rect = new SKRect();
+                if(usespecialsymbols && (symbolbitmap = GetGameSpecialSymbol(split_str, out source_rect)) != null)
                 {
                     float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
                     float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
                     float bmpmargin = bmpheight / 8;
                     endposition = x + bmpwidth + bmpmargin;
-                    bool pastend = x + bmpwidth > canvaswidth - rightmenupadding;
+                    bool pastend = x + bmpwidth > canvaswidth - usedglyphpadding - rightmenupadding;
                     if (pastend && split_idx_on_row > 0 && !nowrap)
                     {
                         x = indent_start_x;
@@ -8591,14 +8693,14 @@ namespace GnollHackClient.Pages.Game
                         float bmpx = x;
                         float bmpy = y + textPaint.FontMetrics.Ascent;
                         SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
-                        canvas.DrawBitmap(symbolbitmap, bmptargetrect, textPaint);
+                        canvas.DrawBitmap(symbolbitmap, source_rect, bmptargetrect, textPaint);
                     }
                 }
                 else
                 {
                     float printlength = textPaint.MeasureText(split_str);
                     endposition = x + printlength + spacelength;
-                    bool pastend = x + printlength > canvaswidth - rightmenupadding;
+                    bool pastend = x + printlength > canvaswidth - usedglyphpadding - rightmenupadding;
                     if (pastend && split_idx_on_row > 0 && !nowrap)
                     {
                         x = indent_start_x;
@@ -9201,7 +9303,7 @@ namespace GnollHackClient.Pages.Game
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
                 float topPadding = 0;
-                float glyphpadding = scale * (float)Math.Max(0.0, TextCanvas.X + TextCanvas.Width - TextWindowGlyphImage.X);
+                float glyphpadding = 0;
                 float glyphystart = scale * (float)Math.Max(0.0, TextWindowGlyphImage.Y - TextCanvas.Y);
                 float glyphyend = scale * (float)Math.Max(0.0, TextWindowGlyphImage.Y + TextWindowGlyphImage.Height - TextCanvas.Y);
 
@@ -9242,11 +9344,17 @@ namespace GnollHackClient.Pages.Game
                         y += fontspacingpadding;
                         y -= textPaint.FontMetrics.Ascent;
                         float start_x = x;
+                        float indent_start_x = start_x;
                         string indentstr = putstritem.GetIndentationString();
                         if(indentstr != "")
                         {
-                            start_x += textPaint.MeasureText(indentstr);
+                            indent_start_x += textPaint.MeasureText(indentstr);
                         }
+
+                        if (TextWindowGlyphImage.IsVisible && putstritem.InstructionList.Count > 0 && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0)
+                            glyphpadding = scale * (float)Math.Max(0.0, TextCanvas.X + TextCanvas.Width - TextWindowGlyphImage.X);
+                        else
+                            glyphpadding = 0;
 
                         foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                         {
@@ -9267,52 +9375,54 @@ namespace GnollHackClient.Pages.Game
                                 TextCanvas.RevertBlackAndWhite);
 
                             string[] split = str.Split(' ');
-                            int idx = 0;
-                            foreach (string split_str in split)
-                            {
-                                bool nowrap = false;
-                                if (string.IsNullOrWhiteSpace(split_str))
-                                    nowrap = true;
-                                string added_str = (idx == split.Length - 1 ? "" : " ");
-                                string added_split_str = split_str + added_str;
-                                float printlength = textPaint.MeasureText(split_str);
-                                float spaceprintlength = (added_str != "") ? textPaint.MeasureText(added_str) : 0.0f;
-                                float endposition = x + printlength;
-                                float endposition_with_space = x + printlength + spaceprintlength;
-                                float usedglyphpadding = 0.0f;
+                            DrawTextSplit(canvas, split, ref x, ref y, start_x, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, TextCanvas.GHWindow.UseSpecialSymbols, curmenuoffset, glyphystart, glyphyend, glyphpadding);
 
-                                if (TextWindowGlyphImage.IsVisible
-                                    && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0
-                                    && y - curmenuoffset + textPaint.FontMetrics.Ascent <= glyphyend 
-                                    && y - curmenuoffset + textPaint.FontMetrics.Descent >= glyphystart)
-                                    usedglyphpadding = glyphpadding;
+                            //int idx = 0;
+                            //foreach (string split_str in split)
+                            //{
+                            //    bool nowrap = false;
+                            //    if (string.IsNullOrWhiteSpace(split_str))
+                            //        nowrap = true;
+                            //    string added_str = (idx == split.Length - 1 ? "" : " ");
+                            //    string added_split_str = split_str + added_str;
+                            //    float printlength = textPaint.MeasureText(split_str);
+                            //    float spaceprintlength = (added_str != "") ? textPaint.MeasureText(added_str) : 0.0f;
+                            //    float endposition = x + printlength;
+                            //    float endposition_with_space = x + printlength + spaceprintlength;
+                            //    float usedglyphpadding = 0.0f;
 
-                                bool pastend = endposition > canvaswidth - usedglyphpadding - rightmenupadding - (float)putstritem.RightPaddingWidth * scale;
-                                if (pastend && x > start_x && !nowrap)
-                                {
-                                    x = start_x;
-                                    y += textPaint.FontSpacing;
-                                    endposition_with_space = x + printlength + spaceprintlength;
-                                }
+                            //    if (TextWindowGlyphImage.IsVisible
+                            //        && (putstritem.InstructionList[0].Attributes & (int)MenuItemAttributes.Title) != 0
+                            //        && y - curmenuoffset + textPaint.FontMetrics.Ascent <= glyphyend 
+                            //        && y - curmenuoffset + textPaint.FontMetrics.Descent >= glyphystart)
+                            //        usedglyphpadding = glyphpadding;
 
-                                if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                                {
-                                    if(TextCanvas.UseTextOutline)
-                                    {
-                                        textPaint.Style = SKPaintStyle.Stroke;
-                                        textPaint.StrokeWidth = textPaint.TextSize / 10;
-                                        SKColor oldcolor = textPaint.Color;
-                                        textPaint.Color = TextCanvas.RevertBlackAndWhite ? SKColors.White : SKColors.Black;
-                                        canvas.DrawText(added_split_str, x, y, textPaint);
-                                        textPaint.Style = SKPaintStyle.Fill;
-                                        textPaint.Color = oldcolor;
-                                    }
-                                    canvas.DrawText(added_split_str, x, y, textPaint);
-                                }
+                            //    bool pastend = endposition > canvaswidth - usedglyphpadding - rightmenupadding - (float)putstritem.RightPaddingWidth * scale;
+                            //    if (pastend && x > start_x && !nowrap)
+                            //    {
+                            //        x = start_x;
+                            //        y += textPaint.FontSpacing;
+                            //        endposition_with_space = x + printlength + spaceprintlength;
+                            //    }
 
-                                x = endposition_with_space;
-                                idx++;
-                            }
+                            //    if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
+                            //    {
+                            //        if(TextCanvas.UseTextOutline)
+                            //        {
+                            //            textPaint.Style = SKPaintStyle.Stroke;
+                            //            textPaint.StrokeWidth = textPaint.TextSize / 10;
+                            //            SKColor oldcolor = textPaint.Color;
+                            //            textPaint.Color = TextCanvas.RevertBlackAndWhite ? SKColors.White : SKColors.Black;
+                            //            canvas.DrawText(added_split_str, x, y, textPaint);
+                            //            textPaint.Style = SKPaintStyle.Fill;
+                            //            textPaint.Color = oldcolor;
+                            //        }
+                            //        canvas.DrawText(added_split_str, x, y, textPaint);
+                            //    }
+
+                            //    x = endposition_with_space;
+                            //    idx++;
+                            //}
                         }
                         j++;
                         y += textPaint.FontMetrics.Descent + fontspacingpadding;

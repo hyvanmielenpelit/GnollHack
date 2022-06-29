@@ -7079,23 +7079,23 @@ struct monst* mtmp;
         break;
     case 2:
         cost = max(1L, (long)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_shield_of_reflection_func, "forge a shield of reflection", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "15 nuggets of silver ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_SHIELD_OF_REFLECTION);
+        return general_service_query_with_extra(mtmp, forge_shield_of_reflection_func, "forge a shield of reflection", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of silver ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_SHIELD_OF_REFLECTION);
         break;
     case 3:
         cost = max(1L, (long)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_crystal_plate_mail_func, "forge a crystal plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "3 dilithium crystals", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CRYSTAL_PLATE_MAIL);
+        return general_service_query_with_extra(mtmp, forge_crystal_plate_mail_func, "forge a crystal plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "2 dilithium crystals", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CRYSTAL_PLATE_MAIL);
         break;
     case 4:
         cost = max(1L, (long)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of adamantium ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ADAMANTIUM_FULL_PLATE_MAIL);
+        return general_service_query_with_extra(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of adamantium ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ADAMANTIUM_FULL_PLATE_MAIL);
         break;
     case 5:
         cost = max(1L, (long)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of mithril ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_MITHRIL_FULL_PLATE_MAIL);
+        return general_service_query_with_extra(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of mithril ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_MITHRIL_FULL_PLATE_MAIL);
         break;
     case 6:
         cost = max(1L, (long)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_orichalcum_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of orichalcum ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ORICHALCUM_FULL_PLATE_MAIL);
+        return general_service_query_with_extra(mtmp, forge_orichalcum_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of orichalcum ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ORICHALCUM_FULL_PLATE_MAIL);
         break;
     default:
         pline1(Never_mind);
@@ -7170,19 +7170,19 @@ struct monst* mtmp;
     {
     case 1:
         cost = max(1L, (long)((100 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_plate_mail_func, "forge a plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_PLATE_MAIL);
+        return general_service_query_with_extra(mtmp, forge_plate_mail_func, "forge a plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_PLATE_MAIL);
         break;
     case 2:
         cost = max(1L, (long)((50 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_bronze_plate_mail_func, "forge a bronze plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of copper ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_BRONZE_PLATE_MAIL);
+        return general_service_query_with_extra(mtmp, forge_bronze_plate_mail_func, "forge a bronze plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of copper ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_BRONZE_PLATE_MAIL);
         break;
     case 3:
         cost = max(1L, (long)((200 + 20 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_field_plate_mail_func, "forge a field plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "15 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FIELD_PLATE_MAIL);
+        return general_service_query_with_extra(mtmp, forge_field_plate_mail_func, "forge a field plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "6 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FIELD_PLATE_MAIL);
         break;
     case 4:
         cost = max(1L, (long)((400 + 40 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-        return general_service_query_with_extra(mtmp, forge_full_plate_mail_func, "forge a full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "30 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FULL_PLATE_MAIL);
+        return general_service_query_with_extra(mtmp, forge_full_plate_mail_func, "forge a full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FULL_PLATE_MAIL);
         break;
     default:
         pline1(Never_mind);
@@ -9518,63 +9518,63 @@ STATIC_OVL int
 forge_orichalcum_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_ORICHALCUM_ORE, 8, ORICHALCUM_FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_ORICHALCUM_ORE, 4, ORICHALCUM_FULL_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_crystal_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, DILITHIUM_CRYSTAL, 3, CRYSTAL_PLATE_MAIL);
+    return forge_special_func(mtmp, DILITHIUM_CRYSTAL, 2, CRYSTAL_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_shield_of_reflection_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 15, SHIELD_OF_REFLECTION);
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 8, SHIELD_OF_REFLECTION);
 }
 
 STATIC_OVL int
 forge_adamantium_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_ADAMANTIUM_ORE, 8, ADAMANTIUM_FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_ADAMANTIUM_ORE, 4, ADAMANTIUM_FULL_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_mithril_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_MITHRIL_ORE, 8, MITHRIL_FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_MITHRIL_ORE, 4, MITHRIL_FULL_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 8, PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_bronze_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_COPPER_ORE, 8, BRONZE_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_COPPER_ORE, 4, BRONZE_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_field_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 15, FIELD_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 6, FIELD_PLATE_MAIL);
 }
 
 STATIC_OVL int
 forge_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 30, FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 8, FULL_PLATE_MAIL);
 }
 
 

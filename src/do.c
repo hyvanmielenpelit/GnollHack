@@ -2349,14 +2349,14 @@ register struct obj* obj;
                         for (k = 0; k < 14; k++)
                         {
                             strcpy(buf2, "");
-                            int stat = (int)(k == 9 ? /* MC */ objects[otyp].oc_attribute_bonus / 3 : objects[otyp].oc_attribute_bonus);
+                            int stat = (int)(k == 9 && !(prop & FULL_MC_BONUS) ? /* MC */ objects[otyp].oc_attribute_bonus / 3 : objects[otyp].oc_attribute_bonus);
 
                             if (obj->cursed && (objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE))
                                 stat = -stat;
 
                             if (objects[otyp].oc_enchantable && !(prop & IGNORE_ENCHANTMENT))
                             {
-                                if (k == 9) /* MC*/
+                                if (k == 9 && !(prop & FULL_MC_BONUS)) /* MC*/
                                     stat += obj->enchantment / 3;
                                 else
                                     stat += obj->enchantment;
@@ -4063,7 +4063,7 @@ register struct monst* mon;
     int glyph = any_mon_to_glyph(mon, rn2_on_display_rng);
     int gui_glyph = maybe_get_replaced_glyph(glyph, mon->mx, mon->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mon, 0UL));
 
-    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon(mon));
+    datawin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_DESCRIPTION_SCREEN, iflags.using_gui_tiles ? gui_glyph : glyph, extended_create_window_info_from_mon_with_flags(mon, WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS));
 
     //int mnum = mon->mnum;
     struct permonst* ptr = mon->data;
@@ -4278,6 +4278,7 @@ register struct monst* mon;
 
     print_monster_statistics(datawin, mon);
     print_monster_intrinsics(datawin, mon);
+    print_monster_status(datawin, mon);
 
     display_nhwindow(datawin, FALSE);
     destroy_nhwindow(datawin), datawin = WIN_ERR;
@@ -7455,6 +7456,17 @@ struct monst* mon;
 {
     struct extended_create_window_info info = { 0 };
     info.monster = mon;
+    return info;
+}
+
+struct extended_create_window_info
+extended_create_window_info_from_mon_with_flags(mon, cflags)
+struct monst* mon;
+unsigned long cflags;
+{
+    struct extended_create_window_info info = { 0 };
+    info.monster = mon;
+    info.create_flags = cflags;
     return info;
 }
 

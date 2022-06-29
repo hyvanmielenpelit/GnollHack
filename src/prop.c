@@ -353,6 +353,61 @@ NEARDATA struct prop_info property_definitions[MAX_PROPS] =
     { "laughing",                     0, 0, 1,  0, 20,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE},  /* LAUGHING = 166 */
 };
 
+const char* condition_names[NUM_BL_CONDITIONS] = {
+    "Petrifying",
+    "Slimed",
+    "Being strangled",
+    "Suffocating",
+    "Food poisoned",
+    "Terminally ill",
+    "Blind",
+    "Deaf",
+    "Stun",
+    "Confused",
+    "Hallucinating",
+    "Levitating",
+    "Flying",
+    "Riding",
+    "Slowed",
+    "Paralyzed",
+    "Frightened",
+    "Sleeping",
+    "Cancelled",
+    "Silenced",
+    "Grabbed",
+    "Mummy rot",
+    "Lycanthropy",
+};
+
+const char* status_names[MAX_STATUS_MARKS] = {
+    "Pet",
+    "Peaceful",
+    "Detected",
+    "Object pile",
+    "Satiated",
+    "Hungry",
+    "Weak",
+    "Fainting",
+    "Burdended",
+    "Stressed",
+    "Strained",
+    "Overtaxed",
+    "Overloaded",
+    "Two-weapon fighting",
+    "Skill available",
+    "Saddled",
+    "Low hit points",
+    "Critical hit points",
+    "Cooldown",
+    "Trapped",
+    "Grabber",
+    "Carrying object",
+    "Peaceful townguard",
+    "Hostile townguard",
+};
+
+enum game_ui_status_mark_types statusmarkorder[MAX_STATUS_MARKS] = { STATUS_MARK_TOWNGUARD_PEACEFUL, STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
+
 void
 props_init()
 {

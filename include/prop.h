@@ -7,6 +7,9 @@
 #ifndef PROP_H
 #define PROP_H
 
+#include "botl.h"
+#include "tiledata.h"
+
 #define NO_POWER 0
 
 /* Resistances to troubles */
@@ -321,6 +324,9 @@ struct propname {
 };
 
 extern const struct propname propertynames[];
+extern const char* condition_names[NUM_BL_CONDITIONS];
+extern const char* status_names[MAX_STATUS_MARKS];
 
+extern enum game_ui_status_mark_types statusmarkorder[MAX_STATUS_MARKS];
 
 #endif /* PROP_H */
