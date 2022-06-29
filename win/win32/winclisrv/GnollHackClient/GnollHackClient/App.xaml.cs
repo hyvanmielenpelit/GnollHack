@@ -803,85 +803,93 @@ namespace GnollHackClient
         //    return DateTime.Now.ToString(Culture);
         //}
 
-        public static SKBitmap GetSpecialSymbol(string str)
+        public static SKBitmap GetSpecialSymbol(string str, out SKRect source_rect)
         {
+            source_rect = new SKRect();
             if (str == null || !str.StartsWith("&"))
                 return null;
 
+            SKBitmap bitmap = null;
             string trimmed_str = str.Trim();
             if (trimmed_str == "&success;")
             {
-                return _successBitmap;
+                bitmap = _successBitmap;
             }
             else if (trimmed_str == "&mana;")
             {
-                return _manaBitmap;
+                bitmap = _manaBitmap;
             }
             else if (trimmed_str == "&cool;")
             {
-                return _cooldownBitmap;
+                bitmap = _cooldownBitmap;
             }
             else if (trimmed_str == "&casts;")
             {
-                return _castsBitmap;
+                bitmap = _castsBitmap;
             }
             else if (trimmed_str == "&adds;")
             {
-                return _addsBitmap;
+                bitmap = _addsBitmap;
             }
             else if (trimmed_str == "&food;")
             {
-                return _foodBitmap;
+                bitmap = _foodBitmap;
             }
             else if (trimmed_str == "&spabj;")
             {
-                return _spellAbjurationBitmap;
+                bitmap = _spellAbjurationBitmap;
             }
             else if (trimmed_str == "&sparc;")
             {
-                return _spellArcaneBitmap;
+                bitmap = _spellArcaneBitmap;
             }
             else if (trimmed_str == "&spcel;")
             {
-                return _spellCelestialBitmap;
+                bitmap = _spellCelestialBitmap;
             }
             else if (trimmed_str == "&spcle;")
             {
-                return _spellClericalBitmap;
+                bitmap = _spellClericalBitmap;
             }
             else if (trimmed_str == "&spcon;")
             {
-                return _spellConjurationBitmap;
+                bitmap = _spellConjurationBitmap;
             }
             else if (trimmed_str == "&spdiv;")
             {
-                return _spellDivinationBitmap;
+                bitmap = _spellDivinationBitmap;
             }
             else if (trimmed_str == "&spenc;")
             {
-                return _spellEnchantmentBitmap;
+                bitmap = _spellEnchantmentBitmap;
             }
             else if (trimmed_str == "&sphea;")
             {
-                return _spellHealingBitmap;
+                bitmap = _spellHealingBitmap;
             }
             else if (trimmed_str == "&spmov;")
             {
-                return _spellMovementBitmap;
+                bitmap = _spellMovementBitmap;
             }
             else if (trimmed_str == "&spnat;")
             {
-                return _spellNatureBitmap;
+                bitmap = _spellNatureBitmap;
             }
             else if (trimmed_str == "&spnec;")
             {
-                return _spellNecromancyBitmap;
+                bitmap = _spellNecromancyBitmap;
             }
             else if (trimmed_str == "&sptra;")
             {
-                return _spellTransmutationBitmap;
+                bitmap = _spellTransmutationBitmap;
             }
-            return null;
+
+            if(bitmap != null)
+            {
+                source_rect.Right = bitmap.Width;
+                source_rect.Bottom = bitmap.Height;
+            }
+            return bitmap;
         }
 
     }

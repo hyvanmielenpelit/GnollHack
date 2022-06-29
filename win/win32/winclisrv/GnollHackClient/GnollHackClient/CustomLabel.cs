@@ -169,10 +169,11 @@ namespace GnollHackClient
                 return 0;
 
             SKBitmap symbolbitmap;
-            if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart)) != null)
+            SKRect source_rect = new SKRect();
+            if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart, out source_rect)) != null)
             {
                 float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
-                float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
+                float bmpwidth = bmpheight * source_rect.Width / Math.Max(1f, source_rect.Height);
                 float bmpmargin = bmpheight / 8;
                 return bmpwidth + bmpmargin;
             }
@@ -310,10 +311,11 @@ namespace GnollHackClient
                     foreach (string textPart in textParts)
                     {
                         SKBitmap symbolbitmap;
-                        if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart)) != null)
+                        SKRect source_rect = new SKRect();
+                        if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart, out source_rect)) != null)
                         {
                             float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
-                            float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
+                            float bmpwidth = bmpheight * source_rect.Width / Math.Max(1f, source_rect.Height);
                             float bmpmargin = bmpheight / 8;
                             totalwidth += bmpwidth + bmpmargin;
                         }
@@ -492,16 +494,17 @@ namespace GnollHackClient
                     foreach(string textPart in textParts)
                     {
                         SKBitmap symbolbitmap;
-                        if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart)) != null)
+                        SKRect source_rect = new SKRect();
+                        if (UseSpecialSymbols && (symbolbitmap = App.GetSpecialSymbol(textPart, out source_rect)) != null)
                         {
                             float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
-                            float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
+                            float bmpwidth = bmpheight * source_rect.Width / Math.Max(1f, source_rect.Height);
                             float bmpmargin = bmpheight / 8;
 
                             float bmpx = x;
                             float bmpy = y + textPaint.FontMetrics.Ascent;
                             SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
-                            canvas.DrawBitmap(symbolbitmap, bmptargetrect, textPaint);
+                            canvas.DrawBitmap(symbolbitmap, source_rect, bmptargetrect, textPaint);
                             x += bmpwidth + bmpmargin;
                         }
                         else

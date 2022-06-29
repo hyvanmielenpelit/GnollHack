@@ -8530,10 +8530,11 @@ namespace GnollHackClient.Pages.Game
                 SKBitmap symbolbitmap = null;
                 float printlength = 0;
                 float marginlength = 0;
-                if (usespecialsymbols && (symbolbitmap = App.GetSpecialSymbol(s)) != null)
+                SKRect source_rect = new SKRect();
+                if (usespecialsymbols && (symbolbitmap = App.GetSpecialSymbol(s, out source_rect)) != null)
                 {
                     float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
-                    float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
+                    float bmpwidth = bmpheight * source_rect.Width / Math.Max(1f, source_rect.Height);
                     float bmpmargin = bmpheight / 8;
                     printlength = bmpwidth;
                     marginlength = bmpmargin;
@@ -8559,10 +8560,12 @@ namespace GnollHackClient.Pages.Game
             return rows;
         }
 
-        SKBitmap GetGameSpecialSymbol(string str, out SKRect source_rect)
+        public SKBitmap GetGameSpecialSymbol(string str, out SKRect source_rect)
         {
             source_rect = new SKRect();
-            if (str.StartsWith("&status-") && str.Length > 8)
+            if (str == null || !str.StartsWith("&"))
+                return null;
+            else if (str.StartsWith("&status-") && str.Length > 8)
             {
                 int status_mark = 0;
                 if (int.TryParse(str.Substring(8).Substring(0, str.Length - 8 - 1), out status_mark))
@@ -8644,12 +8647,7 @@ namespace GnollHackClient.Pages.Game
             }
             else
             {
-                SKBitmap bitmap = App.GetSpecialSymbol(str);
-                if (bitmap != null)
-                {
-                    source_rect.Right = bitmap.Width;
-                    source_rect.Bottom = bitmap.Height;
-                }
+                SKBitmap bitmap = App.GetSpecialSymbol(str, out source_rect);
                 return bitmap;
             }
         }
