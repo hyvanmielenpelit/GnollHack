@@ -1871,7 +1871,7 @@ struct monst* mtmp;
 
     char buf[BUFSZ];
     char sbuf[BUFSZ] = "";
-    Strcpy(buf, "Status and Conditions:");
+    Strcpy(buf, "Status Marks:");
     putstr(datawin, ATR_HEADING, buf);
     
     /* Petmark and other status marks */
