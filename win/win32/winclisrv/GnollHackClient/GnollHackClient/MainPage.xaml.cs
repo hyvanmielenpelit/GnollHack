@@ -1343,7 +1343,7 @@ namespace GnollHackClient
             PopupCheckBoxLayout.IsVisible = false;
             PopupTitleLabel.TextColor = ClientUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
             PopupTitleLabel.Text = "Classic Mode";
-            PopupLabel.Text = "In Classic Mode, death is permanent, has a possibility of generating a ghost, and is always recorded in top scores.\n\nOtherwise, in Modern Mode, your god will revive you at the starting altar, or at another special location. Each such revival will reduce your game score, which will be recorded in top scores upon quitting or winning the game.";
+            PopupLabel.Text = "In Classic Mode, a character's death is permanent. The resulting score is listed in top scores. A dead character may arise as a ghost.\n\nIn Modern Mode, your god will revive you at the starting altar, or at another special location. Each such revival will reduce your game score, which will be recorded in top scores upon quitting or winning the game.";
             PopupGrid.IsVisible = true;
         }
 
