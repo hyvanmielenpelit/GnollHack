@@ -908,7 +908,7 @@ doability(VOID_ARGS)
     abilitynum++;
     */
 
-    strcpy(available_ability_list[abilitynum].name, "Goals, achievements, and conduct");
+    strcpy(available_ability_list[abilitynum].name, "Goals and achievements");
     available_ability_list[abilitynum].function_ptr = &doconduct;
 
     any = zeroany;
