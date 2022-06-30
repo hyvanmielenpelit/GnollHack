@@ -5226,7 +5226,11 @@ int final;
             putstr(en_win, ATR_HALF_SIZE, " ");
 
         if (!u.uachieve.amulet)
-            you_are("on quest to find the Amulet of Yendor", "");
+        {
+            char goalbuf[BUFSZ];
+            Sprintf(goalbuf, "on a mission to recover the Amulet of Yendor for %s", u_gname());
+            you_are(goalbuf, "");
+        }
         else if (!u.uachieve.ascended)
         {
             char goalbuf[BUFSZ];
