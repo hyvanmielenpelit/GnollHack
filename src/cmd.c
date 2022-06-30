@@ -908,19 +908,7 @@ doability(VOID_ARGS)
     abilitynum++;
     */
 
-    strcpy(available_ability_list[abilitynum].name, "Dungeon overview");
-    available_ability_list[abilitynum].function_ptr = &dooverview;
-
-    any = zeroany;
-    any.a_int = abilitynum + 1;
-
-    add_menu(win, NO_GLYPH, &any,
-        0, 0, ATR_NONE,
-        available_ability_list[abilitynum].name, MENU_UNSELECTED);
-
-    abilitynum++;
-
-    strcpy(available_ability_list[abilitynum].name, "Achievements and Conduct");
+    strcpy(available_ability_list[abilitynum].name, "Goals, achievements, and conduct");
     available_ability_list[abilitynum].function_ptr = &doconduct;
 
     any = zeroany;
@@ -932,6 +920,17 @@ doability(VOID_ARGS)
 
     abilitynum++;
 
+    strcpy(available_ability_list[abilitynum].name, "Dungeon overview");
+    available_ability_list[abilitynum].function_ptr = &dooverview;
+
+    any = zeroany;
+    any.a_int = abilitynum + 1;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+    abilitynum++;
 
     strcpy(available_ability_list[abilitynum].name, "Killed monsters");
     available_ability_list[abilitynum].function_ptr = &dokilledmonsters;
@@ -957,7 +956,7 @@ doability(VOID_ARGS)
 
     abilitynum++;
 
-    strcpy(available_ability_list[abilitynum].name, "Discovered Items");
+    strcpy(available_ability_list[abilitynum].name, "Discovered items");
     available_ability_list[abilitynum].function_ptr = &dodiscovered;
 
     any = zeroany;
@@ -2916,7 +2915,7 @@ doterrain(VOID_ARGS)
 /* -enlightenment and conduct- */
 static winid en_win = WIN_ERR;
 static boolean en_via_menu = FALSE;
-static const char You_[] = "You ", are[] = "are ", were[] = "were ",
+static const char You_[] = "You ", are[] = "are ", were[] = "were ", will[] = "will ", were_to[] = "were to ", would_have[] = "would have ",
                   have[] = "have ", had[] = "had ", can[] = "can ",
                   could[] = "could ", cannot[] = "cannot ", could_not[] = "could not ";
 static const char have_been[] = "have been ", have_never[] = "have never ", have_not[] = "have not ", had_not[] = "had not ",
@@ -2926,7 +2925,11 @@ static const char have_been[] = "have been ", have_never[] = "have never ", have
     enlght_line(prefix, final ? past : present, suffix, ps, FALSE)
 #define enl_msg2(prefix, present, past, suffix, ps) \
     enlght_line(prefix, final ? past : present, suffix, ps, TRUE)
+#define enl_msg3(prefix, present, past, suffix, past_suffix, ps) \
+    enlght_line(prefix, final ? past : present, final ? past_suffix : suffix, ps, FALSE)
 #define you_are(attr, ps) enl_msg(You_, are, were, attr, ps)
+#define you_will(attr, ps) enl_msg(You_, will, were_to, attr, ps)
+#define you_will2(attr, past_attr, ps) enl_msg3(You_, will, would_have, attr, past_attr, ps)
 #define you_have(attr, ps) enl_msg(You_, have, had, attr, ps)
 #define you_have_not(attr, ps) enl_msg(You_, have_not, had_not, attr, ps)
 #define you_have_not2(attr) enl_msg2(You_, have_not, had_not, attr, "")
@@ -5219,62 +5222,159 @@ int final;
 
     /* Create the conduct window */
     en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SEMI_WIDE_LIST, NO_GLYPH, zerocreatewindowinfo);
+
+    if (!u.uachieve.ascended || !u.uachieve.amulet || !u.uachieve.role_achievement)
+    {
+        putstr(en_win, ATR_TITLE, "Goals:");
+        if (!final)
+            putstr(en_win, ATR_HALF_SIZE, " ");
+
+        if (!u.uachieve.amulet)
+            you_are("on quest to find the Amulet of Yendor", "");
+        else if (!u.uachieve.ascended)
+        {
+            char goalbuf[BUFSZ];
+            Sprintf(goalbuf, "seeking to sacrifice the Amulet of Yendor on the high altar to %s on the Astral Plane", u_gname());
+            you_are(goalbuf, "");
+        }
+        if (!u.uachieve.role_achievement)
+        {
+            char goalbuf[BUFSZ], goalbuf2[BUFSZ];
+            Sprintf(goalbuf, "gain an achievement if you %s", get_role_achievement_description(FALSE));
+            Sprintf(goalbuf2, "gained an achievement if you had %s", get_role_achievement_description(TRUE));
+            you_will2(goalbuf, goalbuf2, "");
+        }
+    }
+
+    int num_achievements = 0;
+    putstr(en_win, ATR_NONE, " ");
     putstr(en_win, ATR_TITLE, "Achievements:");
     if (!final)
         putstr(en_win, ATR_HALF_SIZE, " ");
     if (u.uachieve.ascended)
+    {
         you_have("ascended to demigodhood", "");
+        num_achievements++;
+    }
     if (u.uachieve.amulet)
+    {
         you_have("found the Amulet of Yendor", "");
-    else
-        you_have_not2("found the Amulet of Yendor");
+        num_achievements++;
+    }
     if (u.uachieve.role_achievement)
-        you_have(get_role_achievement_description(), "");
-    else
-        you_have_not2(get_role_achievement_description());
-
+    {
+        you_have(get_role_achievement_description(TRUE), "");
+        num_achievements++;
+    }
     if (u.uachieve.bell)
+    {
         you_have("found the Bell of Opening", "");
+        num_achievements++;
+    }
     if (u.uachieve.book)
+    {
         you_have("found the Book of the Dead", "");
+        num_achievements++;
+    }
     if (u.uachieve.menorah)
+    {
         you_have("found the Candelabrum of Invocation", "");
+        num_achievements++;
+    }
     if (u.uachieve.prime_codex)
+    {
         you_have("found the Prime Codex", "");
+        num_achievements++;
+    }
     if (u.uachieve.enter_gehennom)
+    {
         you_have("entered Gehennom", "");
+        num_achievements++;
+    }
     if (u.uachieve.killed_medusa)
+    {
         you_have("defeated Medusa", "");
+        num_achievements++;
+    }
     if (u.uachieve.consulted_oracle)
+    {
         you_have("consulted the Oracle", "");
+        num_achievements++;
+    }
     if (u.uachieve.read_discworld_novel)
+    {
         you_have("read a Discworld novel", "");
+        num_achievements++;
+    }
     if (u.uachieve.entered_gnomish_mines)
+    {
         you_have("descended to the Gnomish Mines", "");
+        num_achievements++;
+    }
     if (u.uachieve.entered_mine_town)
+    {
         you_have("visited Mine Town", "");
+        num_achievements++;
+    }
     if (u.uachieve.mines_luckstone)
+    {
         you_have("found the Gladstone", "");
+        num_achievements++;
+    }
     if (u.uachieve.entered_shop)
+    {
         you_have("visited a shop", "");
+        num_achievements++;
+    }
     if (u.uachieve.entered_temple)
+    {
         you_have("visited a temple", "");
+        num_achievements++;
+    }
     if (u.uachieve.entered_sokoban)
+    {
         you_have("found Sokoban", "");
+        num_achievements++;
+    }
     if (u.uachieve.finish_sokoban)
+    {
         you_have("solved Sokoban", "");
+        num_achievements++;
+    }
     if (u.uachieve.entered_bigroom)
+    {
         you_have("found the Big Room", "");
+        num_achievements++;
+    }
     if (u.uachieve.learned_castle_tune)
+    {
         you_have("learned the castle tune", "");
+        num_achievements++;
+    }
     if (u.uachieve.entered_large_circular_dungeon)
+    {
         you_have("entered the Large Circular Dungeon", "");
+        num_achievements++;
+    }
     if (u.uachieve.entered_plane_of_modron)
+    {
         you_have("entered the Plane of the Modron", "");
+        num_achievements++;
+    }
     if (u.uachieve.entered_hellish_pastures)
+    {
         you_have("entered Hellish Pastures", "");
+        num_achievements++;
+    }
     if (u.uachieve.killed_yacc)
+    {
         you_have("defeated Yacc, the Demon Lord of Bovines", "");
+        num_achievements++;
+    }
+    if (!num_achievements)
+    {
+        you_have_not("earned any achievements", "");
+    }
 
     putstr(en_win, ATR_NONE, " ");
     putstr(en_win, ATR_TITLE, "Voluntary challenges:");

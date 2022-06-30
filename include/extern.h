@@ -3486,7 +3486,7 @@ E int FDECL(get_shooting_trap_object, (struct trap*));
 
 E void NDECL(u_init);
 E void NDECL(u_skills_init);
-E const char* NDECL(get_role_achievement_description);
+E const char* FDECL(get_role_achievement_description, (BOOLEAN_P));
 
 /* ### uhitm.c ### */
 

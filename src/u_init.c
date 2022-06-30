@@ -2064,52 +2064,99 @@ int itemtype;
 
 
 const char*
-get_role_achievement_description(VOID_ARGS)
+get_role_achievement_description(is_past_participle)
+boolean is_past_participle;
 {
     const char* res = "";
     switch (urole.rolenum)
     {
     case ROLE_ARCHAEOLOGIST:
-        res = "defeated three greater mummy pharaohs";
+        if(is_past_participle)
+            res = "defeated three greater mummy pharaohs";
+        else
+            res = "defeat three greater mummy pharaohs";
         break;
     case ROLE_BARBARIAN:
-        if(u.ualignbase[A_ORIGINAL] == A_CHAOTIC)
-            res = "found Stormbringer and Mournblade";
+        if (u.ualignbase[A_ORIGINAL] == A_CHAOTIC)
+        {
+            if (is_past_participle)
+                res = "found Stormbringer and Mournblade";
+            else
+                res = "find Stormbringer and Mournblade";
+        }
         else
-            res = "found the Vorpal Blade and Katana of Masamune";
+        {
+            if (is_past_participle)
+                res = "found the Vorpal Blade and Katana of Masamune";
+            else
+                res = "find the Vorpal Blade and Katana of Masamune";
+        }
         break;
     case ROLE_CAVEMAN:
-        res = "achieved the level of Grand Master in bludgeoning weapons";
+        if (is_past_participle)
+            res = "attained the level of Grand Master in bludgeoning weapons";
+        else
+            res = "attain the level of Grand Master in bludgeoning weapons";
         break;
     case ROLE_HEALER:
-        res = "achieved the level of Grand Master in healing";
+        if (is_past_participle)
+            res = "attained the level of Grand Master in healing";
+        else
+            res = "attain the level of Grand Master in healing";
         break;
     case ROLE_KNIGHT:
-        res = "found the Holy Grail and Excalibur";
+        if (is_past_participle)
+            res = "found the Holy Grail and Excalibur";
+        else
+            res = "find the Holy Grail and Excalibur";
         break;
     case ROLE_MONK:
-        res = "achieved the level of Grand Master in martial arts";
+        if (is_past_participle)
+            res = "attained the level of Grand Master in martial arts";
+        else
+            res = "attain the level of Grand Master in martial arts";
         break;
     case ROLE_PRIEST:
-        res = "found the Mace of St. Cuthbert";
+        if (is_past_participle)
+            res = "found the Mace of St. Cuthbert";
+        else
+            res = "find the Mace of St. Cuthbert";
         break;
     case ROLE_ROGUE:
-        res = "defeated Croesus";
+        if (is_past_participle)
+            res = "defeated Croesus";
+        else
+            res = "defeat Croesus";
         break;
     case ROLE_RANGER:
-        res = "achieved the level of Grand Master in bow or crossbow";
+        if (is_past_participle)
+            res = "attained the level of Grand Master in bow or crossbow";
+        else
+            res = "attain the level of Grand Master in bow or crossbow";
         break;
     case ROLE_SAMURAI:
-        res = "found the Kusanagi";
+        if (is_past_participle)
+            res = "found the Kusanagi";
+        else
+            res = "find the Kusanagi";
         break;
     case ROLE_TOURIST:
-        res = "taken a selfie with Demogorgon";
+        if (is_past_participle)
+            res = "taken a selfie with Demogorgon";
+        else
+            res = "take a selfie with Demogorgon";
         break;
     case ROLE_VALKYRIE:
-        res = "achieved the level of Grand Master in two-weapon fighting";
+        if (is_past_participle)
+            res = "attained the level of Grand Master in two-weapon combat";
+        else
+            res = "achieve the level of Grand Master in two-weapon combat";
         break;
     case ROLE_WIZARD:
-        res = "successfully cast a level 12 spell";
+        if (is_past_participle)
+            res = "successfully cast a level 12 spell";
+        else
+            res = "successfully cast a level 12 spell";
         break;
     default:
         res = "";

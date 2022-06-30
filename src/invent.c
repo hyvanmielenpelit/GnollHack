@@ -948,7 +948,7 @@ struct obj *obj;
         {
             u.uachieve.role_achievement = 1;
             char abuf[BUFSZ];
-            strcpy_capitalized_for_title(abuf, get_role_achievement_description());
+            strcpy_capitalized_for_title(abuf, get_role_achievement_description(TRUE));
             achievement_gained(abuf);
         }
     }
