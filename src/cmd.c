@@ -2915,7 +2915,7 @@ doterrain(VOID_ARGS)
 /* -enlightenment and conduct- */
 static winid en_win = WIN_ERR;
 static boolean en_via_menu = FALSE;
-static const char You_[] = "You ", are[] = "are ", were[] = "were ", will[] = "will ", were_to[] = "were to ", would_have[] = "would have ",
+static const char You_[] = "You ", are[] = "are ", were[] = "were ",
                   have[] = "have ", had[] = "had ", can[] = "can ",
                   could[] = "could ", cannot[] = "cannot ", could_not[] = "could not ";
 static const char have_been[] = "have been ", have_never[] = "have never ", have_not[] = "have not ", had_not[] = "had not ",
@@ -2925,11 +2925,7 @@ static const char have_been[] = "have been ", have_never[] = "have never ", have
     enlght_line(prefix, final ? past : present, suffix, ps, FALSE)
 #define enl_msg2(prefix, present, past, suffix, ps) \
     enlght_line(prefix, final ? past : present, suffix, ps, TRUE)
-#define enl_msg3(prefix, present, past, suffix, past_suffix, ps) \
-    enlght_line(prefix, final ? past : present, final ? past_suffix : suffix, ps, FALSE)
 #define you_are(attr, ps) enl_msg(You_, are, were, attr, ps)
-#define you_will(attr, ps) enl_msg(You_, will, were_to, attr, ps)
-#define you_will2(attr, past_attr, ps) enl_msg3(You_, will, would_have, attr, past_attr, ps)
 #define you_have(attr, ps) enl_msg(You_, have, had, attr, ps)
 #define you_have_not(attr, ps) enl_msg(You_, have_not, had_not, attr, ps)
 #define you_have_not2(attr) enl_msg2(You_, have_not, had_not, attr, "")
@@ -5239,10 +5235,9 @@ int final;
         }
         if (!u.uachieve.role_achievement)
         {
-            char goalbuf[BUFSZ], goalbuf2[BUFSZ];
-            Sprintf(goalbuf, "gain an achievement if you %s", get_role_achievement_description(FALSE));
-            Sprintf(goalbuf2, "gained an achievement if you had %s", get_role_achievement_description(TRUE));
-            you_will2(goalbuf, goalbuf2, "");
+            char goalbuf[BUFSZ];
+            Sprintf(goalbuf, "an optional quest to %s", get_role_achievement_description(FALSE));
+            you_have(goalbuf, "");
         }
     }
 
@@ -5470,6 +5465,16 @@ int final;
         if (!u.uconduct.wisharti)
             enl_msg(You_, "have not wished", "did not wish",
                     " for any artifacts", "");
+    }
+
+    if (Role_if(PM_TOURIST))
+    {
+        putstr(en_win, ATR_NONE, " ");
+        putstr(en_win, ATR_TITLE, "Selfies taken with:");
+        if (!final)
+            putstr(en_win, ATR_HALF_SIZE, " ");
+
+        print_selfies(en_win);
     }
 
     /* Pop up the window and wait for a key */

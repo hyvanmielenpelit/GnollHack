@@ -1052,6 +1052,8 @@ void and_you_die();
 #endif
 E long NDECL(get_current_game_score);
 E int NDECL(wiz_dumplog);
+E void FDECL(print_selfies, (winid));
+
 
 /* ### engrave.c ### */
 

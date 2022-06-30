@@ -2415,6 +2415,60 @@ boolean ask, isend;
     }
 }
 
+void
+print_selfies(enwin)
+winid enwin;
+{
+    short mindx[NUM_MONSTERS] = { 0 };
+    int ntypes = 0;
+    int i;
+    int pfx;
+    for (i = LOW_PM; i < NUM_MONSTERS; i++)
+    {
+        if (mvitals[i].mvflags & MV_SELFIE_TAKEN)
+        {
+            mindx[ntypes] = i;
+            ntypes++;
+        }
+    }
+
+    if (!ntypes)
+    {
+        putstr(enwin, 0, " (No selfies taken with monsters)");
+    }
+    else
+    {
+        qsort((genericptr_t)mindx, ntypes, sizeof * mindx, vanqsort_cmp);
+
+        char buf[BUFSZ], buftoo[BUFSZ];
+        int ni;
+        for (ni = 0; ni < ntypes; ni++)
+        {
+            i = mindx[ni];
+            if (UniqCritterIndx(i))
+            {
+                Sprintf(buf, "%s%s",
+                    !is_mname_proper_name(&mons[i]) ? "the " : "",
+                    pm_common_name(&mons[i]));
+            }
+            else
+            {
+                Strcpy(buf, an(pm_common_name(&mons[i])));
+            }
+
+            /* number of leading spaces to match 3 digit prefix */
+            pfx = !strncmpi(buf, "the ", 4) ? 0
+                : !strncmpi(buf, "an ", 3) ? 1
+                : !strncmpi(buf, "a ", 2) ? 2
+                : !digit(buf[2]) ? 4 : 0;
+
+            Sprintf(buftoo, "%*s%s", pfx, "", buf);
+            putstr(enwin, 0, buftoo);
+        }
+    }
+}
+
+
 /* number of monster species which have been genocided */
 int
 num_genocides()

@@ -3242,7 +3242,7 @@ dochat()
             strcpy(available_chat_list[chatnum].name, "Ask to join the party");
             available_chat_list[chatnum].function_ptr = &do_chat_join_party;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
-            available_chat_list[chatnum].stops_dialogue = TRUE;
+            available_chat_list[chatnum].stops_dialogue = FALSE;
 
             any = zeroany;
             any.a_char = available_chat_list[chatnum].charnum;
@@ -3359,7 +3359,7 @@ dochat()
             strcpy(available_chat_list[chatnum].name, "Bless or curse an item");
             available_chat_list[chatnum].function_ptr = &do_chat_priest_blesscurse;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
-            available_chat_list[chatnum].stops_dialogue = TRUE;
+            available_chat_list[chatnum].stops_dialogue = FALSE;
 
             any = zeroany;
             any.a_char = available_chat_list[chatnum].charnum;
@@ -3605,7 +3605,7 @@ dochat()
                 Sprintf(available_chat_list[chatnum].name, "Forge a plate armor");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_forge_standard_armor;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3619,7 +3619,7 @@ dochat()
                 Sprintf(available_chat_list[chatnum].name, "Forge a special armor");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_forge_special_armor;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3649,7 +3649,7 @@ dochat()
                 strcpy(available_chat_list[chatnum].name, sbuf);
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_sell_ore;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3663,7 +3663,7 @@ dochat()
                 Sprintf(available_chat_list[chatnum].name, "Enchant a piece of armor");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_enchant_armor;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3677,7 +3677,7 @@ dochat()
                 Sprintf(available_chat_list[chatnum].name, "Enchant a weapon");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_enchant_weapon;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3691,7 +3691,7 @@ dochat()
                 Sprintf(available_chat_list[chatnum].name, "Repair a piece of armor");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_repair_armor;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3705,7 +3705,7 @@ dochat()
                 Sprintf(available_chat_list[chatnum].name, "Repair a weapon");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_repair_weapon;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3719,7 +3719,7 @@ dochat()
                 Sprintf(available_chat_list[chatnum].name, "Protect a piece of armor");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_protect_armor;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3733,7 +3733,7 @@ dochat()
                 Sprintf(available_chat_list[chatnum].name, "Protect a weapon");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_protect_weapon;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3748,7 +3748,7 @@ dochat()
                 Sprintf(available_chat_list[chatnum].name, "Refill oil for a lamp or lantern");
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_refill_lantern;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3770,7 +3770,7 @@ dochat()
                 strcpy(available_chat_list[chatnum].name, "Offer research support");
                 available_chat_list[chatnum].function_ptr = &do_chat_quantum_mechanic_research_support;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
+                available_chat_list[chatnum].stops_dialogue = FALSE;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3840,7 +3840,7 @@ dochat()
                     Sprintf(available_chat_list[chatnum].name, "Enchant an accessory");
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_enchant_accessory;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
-                    available_chat_list[chatnum].stops_dialogue = TRUE;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
 
                     any = zeroany;
                     any.a_char = available_chat_list[chatnum].charnum;
@@ -3858,7 +3858,7 @@ dochat()
                     Sprintf(available_chat_list[chatnum].name, "Recharge an item");
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_recharge;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
-                    available_chat_list[chatnum].stops_dialogue = TRUE;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
 
                     any = zeroany;
                     any.a_char = available_chat_list[chatnum].charnum;
@@ -3875,7 +3875,7 @@ dochat()
                     Sprintf(available_chat_list[chatnum].name, "Fully recharge an item");
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_blessed_recharge;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
-                    available_chat_list[chatnum].stops_dialogue = TRUE;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
 
                     any = zeroany;
                     any.a_char = available_chat_list[chatnum].charnum;
@@ -3913,7 +3913,7 @@ dochat()
                     strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_gems_and_stones;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
-                    available_chat_list[chatnum].stops_dialogue = TRUE;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
 
                     any = zeroany;
                     any.a_char = available_chat_list[chatnum].charnum;
@@ -3932,7 +3932,7 @@ dochat()
                     strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_dilithium_crystals;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
-                    available_chat_list[chatnum].stops_dialogue = TRUE;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
 
                     any = zeroany;
                     any.a_char = available_chat_list[chatnum].charnum;
@@ -3951,7 +3951,7 @@ dochat()
                     strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_spellbooks;
                     available_chat_list[chatnum].charnum = 'a' + chatnum;
-                    available_chat_list[chatnum].stops_dialogue = TRUE;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
 
                     any = zeroany;
                     any.a_char = available_chat_list[chatnum].charnum;
