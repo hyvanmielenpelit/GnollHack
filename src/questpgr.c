@@ -578,8 +578,16 @@ boolean dopopup;
         Sprintf(eos(total_out_line), "%s", out_line);
     }
 
-    if(dopopup)
-        popup_talk_line_ex(mtmp, total_out_line, attr, color, TRUE, FALSE);
+    if (dopopup)
+    {
+        if(mtmp)
+            popup_talk_line_ex(mtmp, total_out_line, attr, color, TRUE, FALSE);
+        else
+        {
+            pline_ex(attr, color, "%s", total_out_line);
+            display_popup_text(total_out_line, "", POPUP_TEXT_GENERAL, attr, color, NO_GLYPH, POPUP_FLAGS_NONE);
+        }
+    }
     else
         pline_ex(attr, color, "%s", total_out_line);
 }
