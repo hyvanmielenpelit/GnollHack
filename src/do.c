@@ -6475,11 +6475,11 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             if (!u.uevent.qcalled) 
             {
                 u.uevent.qcalled = 1;
-                com_pager_ex((struct monst*)0, 2, ATR_NONE, CLR_MSG_ATTENTION); /* main "leader needs help" message */
+                com_pager_ex((struct monst*)0, 2, ATR_NONE, CLR_MSG_ATTENTION, FALSE); /* main "leader needs help" message */
             }
             else 
             {          /* reminder message */
-                com_pager_ex((struct monst*)0, Role_if(PM_ROGUE) ? 4 : 3, ATR_NONE, CLR_MSG_ATTENTION);
+                com_pager_ex((struct monst*)0, Role_if(PM_ROGUE) ? 4 : 3, ATR_NONE, CLR_MSG_ATTENTION, FALSE);
             }
         }
 
