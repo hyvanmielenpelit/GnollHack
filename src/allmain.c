@@ -1409,6 +1409,11 @@ newgame()
     (void) makedog();
     docrt();
 
+#ifdef STATUS_HILITES
+    if (VIA_WINDOWPORT())
+        status_initialize(REASSESS_ONLY);
+#endif
+
     if (flags.legacy) {
         flush_screen(1);
         com_pager_ex((struct monst*)0, 1, ATR_NONE, CLR_MSG_HINT);

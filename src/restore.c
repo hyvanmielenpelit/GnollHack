@@ -1035,6 +1035,11 @@ register int fd;
     restoring = FALSE;
     clear_nhwindow(WIN_MESSAGE);
 
+#ifdef STATUS_HILITES
+    if (VIA_WINDOWPORT())
+        status_initialize(REASSESS_ONLY);
+#endif
+
     /* Play ambient sounds for the dungeon; check_special_room will play music */
     play_level_ambient_sounds();
     play_environment_ambient_sounds();
