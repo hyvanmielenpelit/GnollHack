@@ -484,12 +484,18 @@ namespace GnollHackClient
             {
                 if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                 {
-                    queue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections));
+                    if((ynflags & 1UL) != 0)
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections)); //TODO: Show keyboard
+                    else
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections));
                 }
-                int res = ClientCallback_nhgetch(); /* Get direction */
+                int res = ClientCallback_nhgetch(); /* Get direction / letter */
                 if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
                 {
-                    queue.Enqueue(new GHRequest(this, GHRequestType.HideDirections));
+                    if ((ynflags & 1UL) != 0)
+                        queue.Enqueue(new GHRequest(this, GHRequestType.HideDirections)); //TODO: Hide keyboard
+                    else
+                        queue.Enqueue(new GHRequest(this, GHRequestType.HideDirections));
                 }
                 return res;
             }

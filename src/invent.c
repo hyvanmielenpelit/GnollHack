@@ -5058,7 +5058,7 @@ char avoidlet;
                 continue;
             invdone = 1;
         }
-        end_menu(win, "Inventory letters used:");
+        end_menu(win, "Adjust letter to what?");
 
         n = select_menu(win, PICK_ONE, &selected);
         if (n > 0) {
@@ -6627,7 +6627,6 @@ doorganize() /* inventory organizer by Del Lamb */
 #define GOLD_OFFSET 1
 #define OVRFLW_INDX (GOLD_OFFSET + 52) /* past gold and 2*26 letters */
     char lets[1 + 52 + 1 + 1]; /* room for '$a-zA-Z#\0' */
-    char qbuf[QBUFSZ];
     char allowall[4]; /* { ALLOW_COUNT, ALL_CLASSES, 0, 0 } */
     char *objname, *uobjname, *otmpname, *uotmpname;
     const char *adj_type;
@@ -6707,10 +6706,16 @@ doorganize() /* inventory organizer by Del Lamb */
         compactify(lets);
 
     /* get 'to' slot to use as destination */
-    Sprintf(qbuf, "Adjust letter to what [%s]%s?", lets,
-            invent ? " (? see used letters)" : "");
     for (trycnt = 1; ; ++trycnt) {
-        let = yn_function(qbuf, (char *)0, '\0', (char *)0);
+#if GNH_MOBILE
+        let = '?';
+#else
+        char qbuf[QBUFSZ];
+        Sprintf(qbuf, "Adjust letter to what [%s]%s?", lets,
+            invent ? " (? see used letters)" : "");
+        //let = yn_function(qbuf, (char *)0, '\0', (char *)0);
+        let = yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, qbuf, (const char*)0, '\0', (const char*)0, (const char*)0, 1UL);
+#endif
         if (let == '?' || let == '*') {
             let = display_used_invlets(splitting ? obj->invlet : 0);
             if (!let)
