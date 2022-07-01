@@ -2649,7 +2649,7 @@ E void FDECL(artitouch, (struct obj *));
 E boolean NDECL(ok_to_quest);
 E boolean FDECL(leader_speaks, (struct monst *));
 E boolean FDECL(nemesis_speaks, (struct monst*));
-E boolean FDECL(quest_chat, (struct monst *));
+E boolean FDECL(quest_chat, (struct monst *, BOOLEAN_P));
 E boolean FDECL(quest_talk, (struct monst *, BOOLEAN_P));
 E void FDECL(quest_stat_check, (struct monst *));
 E void FDECL(finish_quest, (struct obj *));

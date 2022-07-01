@@ -1102,7 +1102,7 @@ boolean dopopup, fromchatmenu;
     case MS_LEADER:
     case MS_NEMESIS:
     case MS_GUARDIAN:
-        quest_chat(mtmp);
+        quest_chat(mtmp, dopopup);
         break;
     case MS_SELL: /* pitch, pay, total */
         if (mtmp->isshk)
@@ -8478,7 +8478,7 @@ struct monst* mtmp;
     if (!m_speak_check(mtmp))
         return 0;
 
-    (void)quest_chat(mtmp); /* To avoid two consecutive hints */
+    (void)quest_chat(mtmp, TRUE); /* To avoid two consecutive hints */
     return 0;
 }
 

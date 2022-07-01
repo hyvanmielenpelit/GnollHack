@@ -31,9 +31,9 @@ STATIC_DCL void NDECL(on_goal);
 STATIC_DCL boolean NDECL(not_capable);
 STATIC_DCL int FDECL(is_pure, (BOOLEAN_P));
 STATIC_DCL void FDECL(expulsion, (BOOLEAN_P));
-STATIC_DCL boolean FDECL(chat_with_leader, (struct monst*));
-STATIC_DCL boolean FDECL(chat_with_nemesis, (struct monst*));
-STATIC_DCL boolean FDECL(chat_with_guardian, (struct monst*));
+STATIC_DCL boolean FDECL(chat_with_leader, (struct monst*, BOOLEAN_P));
+STATIC_DCL boolean FDECL(chat_with_nemesis, (struct monst*, BOOLEAN_P));
+STATIC_DCL boolean FDECL(chat_with_guardian, (struct monst*, BOOLEAN_P));
 STATIC_DCL boolean FDECL(prisoner_speaks, (struct monst *));
 
 STATIC_OVL void
@@ -271,8 +271,9 @@ struct obj *obj; /* quest artifact; possibly null if carrying Amulet */
 }
 
 STATIC_OVL boolean
-chat_with_leader(mtmp)
+chat_with_leader(mtmp, dopopup)
 struct monst* mtmp;
+boolean dopopup;
 {
     boolean res = FALSE;
     /*  Rule 0: Cheater checks. */
@@ -292,7 +293,7 @@ struct monst* mtmp;
         /* Rule 2: You've gone back before going for the amulet. */
         else
         {
-            qt_pager(mtmp, QT_POSTHANKS);
+            qt_pager_ex(mtmp, QT_POSTHANKS, ATR_NONE, NO_COLOR, dopopup);
         }
 
     /* Rule 3: You've got the artifact and are back to return it. */
@@ -313,7 +314,7 @@ struct monst* mtmp;
     else if (Qstat(got_quest))
     {
         res = TRUE;
-        qt_pager(mtmp, rn1(10, QT_ENCOURAGE));
+        qt_pager_ex(mtmp, rn1(10, QT_ENCOURAGE), ATR_NONE, NO_COLOR, dopopup);
 
     /* Rule 5: You aren't yet acceptable - or are you? */
     } 
@@ -322,13 +323,13 @@ struct monst* mtmp;
         res = TRUE;
         if (!Qstat(met_leader)) 
         {
-            qt_pager_ex(mtmp, QT_FIRSTLEADER, ATR_NONE, CLR_MSG_HINT, FALSE);
+            qt_pager_ex(mtmp, QT_FIRSTLEADER, ATR_NONE, CLR_MSG_HINT, dopopup);
             Qstat(met_leader) = TRUE;
             Qstat(not_ready) = 0;
         } 
         else
         {
-            qt_pager(mtmp, QT_NEXTLEADER);
+            qt_pager_ex(mtmp, QT_NEXTLEADER, ATR_NONE, NO_COLOR, dopopup);
         }
 
         /* the quest leader might have passed through the portal into
@@ -338,23 +339,23 @@ struct monst* mtmp;
 
         if (not_capable())
         {
-            qt_pager_ex(mtmp, QT_BADLEVEL, ATR_NONE, CLR_MSG_HINT, FALSE);
+            qt_pager_ex(mtmp, QT_BADLEVEL, ATR_NONE, CLR_MSG_HINT, dopopup);
             exercise(A_WIS, TRUE);
             res = FALSE; // For safety
             expulsion(FALSE);
         }
         else if (is_pure(TRUE) < 0) 
         {
-            com_pager_ex((struct monst*)0, QT_BANISHED, ATR_NONE, CLR_MSG_NEGATIVE, TRUE);
+            com_pager_ex((struct monst*)0, QT_BANISHED, ATR_NONE, CLR_MSG_NEGATIVE, dopopup);
             res = FALSE; // For safety
             expulsion(TRUE);
         }
         else if (is_pure(TRUE) == 0)
         {
-            qt_pager_ex(mtmp, QT_BADALIGN, ATR_NONE, CLR_MSG_WARNING, FALSE);
+            qt_pager_ex(mtmp, QT_BADALIGN, ATR_NONE, CLR_MSG_WARNING, dopopup);
             if (Qstat(not_ready) == MAX_QUEST_TRIES)
             {
-                qt_pager_ex(mtmp, QT_LASTLEADER, ATR_NONE, CLR_MSG_NEGATIVE, FALSE);
+                qt_pager_ex(mtmp, QT_LASTLEADER, ATR_NONE, CLR_MSG_NEGATIVE, dopopup);
                 res = FALSE; // For safety
                 expulsion(TRUE);
             }
@@ -367,7 +368,7 @@ struct monst* mtmp;
         }
         else 
         { /* You are worthy! */
-            qt_pager_ex(mtmp, QT_ASSIGNQUEST, ATR_NONE, CLR_MSG_HINT, FALSE);
+            qt_pager_ex(mtmp, QT_ASSIGNQUEST, ATR_NONE, CLR_MSG_HINT, dopopup);
             exercise(A_WIS, TRUE);
             Qstat(got_quest) = TRUE;
         }
@@ -396,22 +397,23 @@ struct monst *mtmp;
         expulsion(TRUE); // Return FALSE for safety
     }
     else if(!u.uevent.qcompleted)
-        return chat_with_leader(mtmp);
+        return chat_with_leader(mtmp, FALSE);
 
     return FALSE;
 }
 
 STATIC_OVL boolean
-chat_with_nemesis(mtmp)
+chat_with_nemesis(mtmp, dopopup)
 struct monst* mtmp;
+boolean dopopup;
 {
     /*  The nemesis will do most of the talking, but... */
     if (!Qstat(met_nemesis))
-        qt_pager(mtmp, QT_FIRSTNEMESIS);
+        qt_pager_ex(mtmp, QT_FIRSTNEMESIS, ATR_NONE, NO_COLOR, dopopup);
     else if (u.uhave.questart && !rn2(2))
-        qt_pager(mtmp, QT_NEMWANTSIT);
+        qt_pager_ex(mtmp, QT_NEMWANTSIT, ATR_NONE, NO_COLOR, dopopup);
     else
-        qt_pager(mtmp, rn1(10, QT_DISCOURAGE));
+        qt_pager_ex(mtmp, rn1(10, QT_DISCOURAGE), ATR_NONE, NO_COLOR, dopopup);
 
     if (!Qstat(met_nemesis))
         Qstat(met_nemesis) = TRUE;
@@ -456,17 +458,18 @@ struct monst* mtmp;
 }
 
 STATIC_OVL boolean
-chat_with_guardian(mtmp)
+chat_with_guardian(mtmp, dopopup)
 struct monst* mtmp;
+boolean dopopup;
 {
     /*  These guys/gals really don't have much to say... */
     if (u.uhave.questart && Qstat(killed_nemesis))
     {
-        qt_pager_ex(mtmp, rn1(5, QT_GUARDTALK2), ATR_NONE, NO_COLOR, TRUE);
+        qt_pager_ex(mtmp, rn1(5, QT_GUARDTALK2), ATR_NONE, NO_COLOR, dopopup);
     }
     else
     {
-        qt_pager_ex(mtmp, rn1(5, QT_GUARDTALK), ATR_NONE, NO_COLOR, TRUE);
+        qt_pager_ex(mtmp, rn1(5, QT_GUARDTALK), ATR_NONE, NO_COLOR, dopopup);
     }
 
     return TRUE;
@@ -501,21 +504,22 @@ struct monst *mtmp;
 }
 
 boolean
-quest_chat(mtmp)
+quest_chat(mtmp, dopopup)
 register struct monst *mtmp;
+boolean dopopup;
 {
     if (mtmp->m_id == Qstat(leader_m_id)) 
     {
-        return chat_with_leader(mtmp);
+        return chat_with_leader(mtmp, dopopup);
     }
 
     switch (mtmp->data->msound) 
     {
     case MS_NEMESIS:
-        return chat_with_nemesis(mtmp);
+        return chat_with_nemesis(mtmp, dopopup);
         break;
     case MS_GUARDIAN:
-        return chat_with_guardian(mtmp);
+        return chat_with_guardian(mtmp, dopopup);
         break;
     default:
         impossible("quest_chat: Unknown quest character %s.", mon_nam(mtmp));
