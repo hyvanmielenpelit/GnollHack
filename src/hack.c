@@ -1244,8 +1244,8 @@ int mode;
             }
             return TRUE;
         }
-        if (mode == TRAVP_TRAVEL)
-            context.run = 8;
+        //if (mode == TRAVP_TRAVEL)
+        //    context.run = 8;
     }
     if (u.tx != u.ux || u.ty != u.uy) {
         xchar travel[COLNO][ROWNO];
@@ -1361,7 +1361,7 @@ int mode;
                                     && x == u.tx && y == u.ty) {
                                     nomul(0);
                                     /* reset run so domove run checks work */
-                                    context.run = 8;
+                                    //context.run = 8;
                                     iflags.travelcc.x = iflags.travelcc.y = 0;
                                 }
                                 return TRUE;

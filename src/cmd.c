@@ -7044,7 +7044,7 @@ register char *cmd;
 
     /* handle most movement commands */
     prefix_seen = FALSE;
-    context.travel = context.travel1 = context.travel_mode = 0;
+    context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
     spkey = ch2spkeys(*cmd, NHKF_RUN, NHKF_CLICKLOOK);
 
     if (flags.prefer_fast_move)
