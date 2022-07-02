@@ -4096,9 +4096,6 @@ int final;
     enlght_out(final ? "Final Attributes:" : "Current Attributes:", ATR_HEADING);
 
     if (u.uevent.uhand_of_elbereth) {
-        static const char* const hofe_titles[3] = { "the Hand of Elbereth",
-                                                    "the Envoy of Balance",
-                                                    "the Glory of Arioch" };
         you_are(hofe_titles[u.uevent.uhand_of_elbereth - 1], "");
     }
 
@@ -5258,6 +5255,13 @@ int final;
     if (u.uachieve.amulet)
     {
         you_have("found the Amulet of Yendor", "");
+        num_achievements++;
+    }
+    if (u.uachieve.crowned && u.uevent.uhand_of_elbereth > 0)
+    {
+        char achbuf[BUFSZ];
+        Sprintf(achbuf, "become %s", hofe_titles[u.uevent.uhand_of_elbereth - 1]);
+        you_have(achbuf, "");
         num_achievements++;
     }
     if (u.uachieve.role_achievement)

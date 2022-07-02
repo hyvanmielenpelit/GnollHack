@@ -589,6 +589,8 @@ E const char unavailcmd[];
 /* for rejecting #if !SHELL, !SUSPEND */
 E const char cmdnotavail[];
 
+E const char* const hofe_titles[3];
+
 E unsigned long file_end_marker;
 #undef E
 

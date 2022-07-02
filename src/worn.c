@@ -1905,7 +1905,8 @@ boolean racialexception;
         {
         case W_AMUL:
             if (obj->oclass != AMULET_CLASS
-                || (obj->otyp != AMULET_OF_LIFE_SAVING
+                || (obj->otyp != AMULET_OF_LIFE_SAVING && obj->otyp != AMULET_VERSUS_PETRIFICATION 
+                    && obj->otyp != AMULET_VERSUS_POISON && obj->otyp != AMULET_VERSUS_UNDEATH
                     && obj->otyp != AMULET_OF_REFLECTION))
                 continue;
             best = obj;

@@ -491,6 +491,9 @@ NEARDATA const char unavailcmd[] = "Unavailable command '%s'.";
 /* for rejecting #if !SHELL, !SUSPEND */
 NEARDATA const char cmdnotavail[] = "'%s' command not available.";
 
+NEARDATA const char* const hofe_titles[3] = { "the Hand of Elbereth",
+                                            "the Envoy of Balance",
+                                            "the Glory of Arioch" };
 
 
 

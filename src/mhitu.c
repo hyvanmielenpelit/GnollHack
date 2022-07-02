@@ -2144,8 +2144,8 @@ register struct obj* omonwep;
 
         break;
     case AD_ROTS:
-        if (Sick_resistance)
-            damage = 0;
+        //if (Sick_resistance) // Note: Apply still the damage, since this is mummies' main attack.
+        //    damage = 0;
 
         hitmsg(mtmp, mattk, damage == 0 ? 0 : damagedealt, FALSE);
 
@@ -3626,7 +3626,8 @@ struct attack *mattk;
         break;
     case AD_ROTS:
         if (!mummyrotmu(mtmp))
-            damage = 0;
+            ;
+            //damage = 0;
         break;
     case AD_DREN:
         /* AC magic cancellation doesn't help when engulfed */

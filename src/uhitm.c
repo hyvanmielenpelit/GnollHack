@@ -2623,8 +2623,11 @@ demonpet()
         dtmp->disregards_enemy_strength = TRUE;
         dtmp->disregards_own_health = FALSE;
         dtmp->hasbloodlust = TRUE;
-        dtmp->summonduration = d(objects[SPE_SUMMON_DEMON].oc_spell_dur_dice, objects[SPE_SUMMON_DEMON].oc_spell_dur_diesize) + objects[SPE_SUMMON_DEMON].oc_spell_dur_plus;
-        begin_summontimer(dtmp);
+        if ((objects[SPE_SUMMON_DEMON].oc_spell_dur_dice > 0 && objects[SPE_SUMMON_DEMON].oc_spell_dur_diesize > 0) || objects[SPE_SUMMON_DEMON].oc_spell_dur_plus > 0)
+        {
+            dtmp->summonduration = d(objects[SPE_SUMMON_DEMON].oc_spell_dur_dice, objects[SPE_SUMMON_DEMON].oc_spell_dur_diesize) + objects[SPE_SUMMON_DEMON].oc_spell_dur_plus;
+            begin_summontimer(dtmp);
+        }
 
         play_sfx_sound_at_location(SFX_SUMMON_DEMON, dtmp->mx, dtmp->my);
         if (canseemon(dtmp))
