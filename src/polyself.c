@@ -148,11 +148,7 @@ set_uasmon()
 
     float_vs_flight(); /* maybe toggle (BFlying & I_SPECIAL) */
     polysense();
-
-#ifdef STATUS_HILITES
-    if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_ONLY);
-#endif
+    status_reassess();
 }
 
 /* Levitation overrides Flying; set or clear BFlying|I_SPECIAL */

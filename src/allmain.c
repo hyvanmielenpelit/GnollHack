@@ -1408,11 +1408,7 @@ newgame()
         mnexto(m_at(u.ux, u.uy));
     (void) makedog();
     docrt();
-
-#ifdef STATUS_HILITES
-    if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_ONLY);
-#endif
+    status_reassess();
 
     if (flags.legacy) {
         flush_screen(1);

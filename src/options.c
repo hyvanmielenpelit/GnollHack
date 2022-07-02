@@ -4817,8 +4817,7 @@ boolean tinitial, tfrom_file;
                 || boolopt[i].addr == &flags.show_weapon_style
                 )
             {
-                if (VIA_WINDOWPORT())
-                    status_initialize(REASSESS_ONLY);
+                status_reassess();
                 context.botl = TRUE;
             }
             else if (boolopt[i].addr == &flags.invlet_constant) 
@@ -4899,12 +4898,8 @@ boolean tinitial, tfrom_file;
             } 
             else if (boolopt[i].addr == &iflags.wc2_hitpointbar)
             {
-                if (VIA_WINDOWPORT())
-                {
-                    /* [is reassessment really needed here?] */
-                    status_initialize(REASSESS_ONLY);
-                    need_redraw = TRUE;
-                }
+                status_reassess();
+                need_redraw = TRUE;
 #ifdef TEXTCOLOR
             }
             else if (boolopt[i].addr == &iflags.use_color) 
@@ -5483,11 +5478,8 @@ doset() /* changing options via menu by Per Liboriussen */
 
     if (need_status_initialize)
     {
-        if (VIA_WINDOWPORT())
-        {
-            status_initialize(REASSESS_ONLY);
-            need_redraw = TRUE;
-        }
+        status_reassess();
+        need_redraw = TRUE;
     }
 
     if (need_redraw)

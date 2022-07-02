@@ -1568,7 +1568,7 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
 }
 
 void
-status_finish()
+status_finish(VOID_ARGS)
 {
     int i;
 
@@ -1597,6 +1597,15 @@ status_finish()
         }
 #endif /* STATUS_HILITES */
     }
+}
+
+void
+status_reassess(VOID_ARGS)
+{
+#ifdef STATUS_HILITES
+    if (VIA_WINDOWPORT())
+        status_initialize(REASSESS_ONLY);
+#endif
 }
 
 STATIC_OVL void
