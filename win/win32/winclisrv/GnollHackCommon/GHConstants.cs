@@ -806,7 +806,153 @@ namespace GnollHackCommon
         public sbyte where;        /* where the object thinks it is */
         public sbyte timed; /* # of fuses (timers) attached to this obj */
 
-        public uint bitfields;
+        internal uint bitfields;
+
+        public uint cursed 
+        {
+            get { return bitfields & 0x00000001U; } 
+            set { bitfields = (bitfields & ~0x00000001U) | (value & 0x00000001U); }
+        }
+        public uint blessed
+        {
+            get { return (bitfields >> 1) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 1)) | ((value & 0x00000001U) << 1); }
+        }
+        public uint unpaid
+        {
+            get { return (bitfields >> 2) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 2)) | ((value & 0x00000001U) << 2); }
+        }
+        public uint no_charge
+        {
+            get { return (bitfields >> 3) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 3)) | ((value & 0x00000001U) << 3); }
+        }
+        public uint known
+        {
+            get { return (bitfields >> 4) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 4)) | ((value & 0x00000001U) << 4); }
+        }
+        public uint dknown
+        {
+            get { return (bitfields >> 5) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 5)) | ((value & 0x00000001U) << 5); }
+        }
+        public uint bknown
+        {
+            get { return (bitfields >> 6) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 6)) | ((value & 0x00000001U) << 6); }
+        }
+        public uint rknown
+        {
+            get { return (bitfields >> 7) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 7)) | ((value & 0x00000001U) << 7); }
+        }
+        public uint oeroded
+        {
+            get { return (bitfields >> 8) & 0x00000003U; }
+            set { bitfields = (bitfields & ~(0x00000003U << 8)) | ((value & 0x00000003U) << 8); }
+        }
+        public uint oeroded2
+        {
+            get { return (bitfields >> 10) & 0x00000003U; }
+            set { bitfields = (bitfields & ~(0x00000003U << 10)) | ((value & 0x00000003U) << 10); }
+        }
+        public uint oerodeproof
+        {
+            get { return (bitfields >> 12) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 12)) | ((value & 0x00000001U) << 12); }
+        }
+        public uint olocked
+        {
+            get { return (bitfields >> 13) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 13)) | ((value & 0x00000001U) << 13); }
+        }
+        public uint obroken
+        {
+            get { return (bitfields >> 14) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 14)) | ((value & 0x00000001U) << 14); }
+        }
+        public uint otrapped
+        {
+            get { return (bitfields >> 15) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 15)) | ((value & 0x00000001U) << 15); }
+        }
+        public uint lamplit
+        {
+            get { return (bitfields >> 16) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 16)) | ((value & 0x00000001U) << 16); }
+        }
+        public uint makingsound
+        {
+            get { return (bitfields >> 17) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 17)) | ((value & 0x00000001U) << 17); }
+        }
+        public uint globby
+        {
+            get { return (bitfields >> 18) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 18)) | ((value & 0x00000001U) << 18); }
+        }
+        public uint greased
+        {
+            get { return (bitfields >> 19) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 19)) | ((value & 0x00000001U) << 19); }
+        }
+        public uint nomerge
+        {
+            get { return (bitfields >> 20) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 20)) | ((value & 0x00000001U) << 20); }
+        }
+        public uint was_thrown
+        {
+            get { return (bitfields >> 21) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 21)) | ((value & 0x00000001U) << 21); }
+        }
+        public uint has_special_tileset
+        {
+            get { return (bitfields >> 22) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 22)) | ((value & 0x00000001U) << 22); }
+        }
+        public uint in_use
+        {
+            get { return (bitfields >> 23) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 23)) | ((value & 0x00000001U) << 23); }
+        }
+        public uint bypass
+        {
+            get { return (bitfields >> 24) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 24)) | ((value & 0x00000001U) << 24); }
+        }
+        public uint cknown
+        {
+            get { return (bitfields >> 25) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 25)) | ((value & 0x00000001U) << 25); }
+        }
+        public uint lknown
+        {
+            get { return (bitfields >> 26) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 26)) | ((value & 0x00000001U) << 26); }
+        }
+        public uint tknown
+        {
+            get { return (bitfields >> 27) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 27)) | ((value & 0x00000001U) << 27); }
+        }
+        public uint nknown
+        {
+            get { return (bitfields >> 28) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 28)) | ((value & 0x00000001U) << 28); }
+        }
+        public uint aknown
+        {
+            get { return (bitfields >> 29) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 29)) | ((value & 0x00000001U) << 29); }
+        }
+        public uint mknown
+        {
+            get { return (bitfields >> 30) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 30)) | ((value & 0x00000001U) << 30); }
+        }
 
         public int corpsenm;         /* type of corpse is mons[corpsenm] */
         public int usecount;           /* overloaded for various things that tally */

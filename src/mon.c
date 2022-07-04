@@ -822,7 +822,7 @@ boolean createcorpse;
                 obj->owt = weight(obj);
             }
         }
-        break;
+        goto default_1;
     case PM_GRAY_OOZE:
     case PM_BROWN_PUDDING:
     case PM_GREEN_SLIME:
