@@ -3958,7 +3958,8 @@ get_cmap_or_cmap_variation_glyph_explanation(int glyph)
         return defsyms[glyph_to_cmap(glyph)].explanation;
     else if (glyph_is_cmap_variation(glyph))
     {
-        const char* var_explanation = defsym_variations[glyph_to_cmap_variation(glyph)].explanation;
+        int varidx = glyph_to_cmap_variation(glyph);
+        const char* var_explanation = defsym_variations[varidx].explanation;
         if(var_explanation && strcmp(var_explanation, ""))
             return var_explanation;
         else

@@ -599,6 +599,9 @@ char *buf, *monbuf;
         case S_cloud:
             Strcpy(buf, Is_airlevel(&u.uz) ? "cloudy area" : "fog/vapor cloud");
             break;
+        case S_fountain:
+            Strcpy(buf, get_fountain_name(x, y));
+            break;
         case S_unexplored:
             noarticle = TRUE;
             Strcpy(buf, "unexplored");
