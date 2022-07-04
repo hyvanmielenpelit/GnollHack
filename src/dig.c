@@ -1093,7 +1093,7 @@ coord *cc;
 
     /* Grave-robbing is frowned upon... */
     exercise(A_WIS, FALSE);
-    if (Role_if(PM_ARCHAEOLOGIST)) {
+    if (Role_if(PM_ARCHAEOLOGIST) && (u.ualign.type != A_CHAOTIC)) {
         play_sfx_sound(SFX_GUILTY);
         adjalign(-sgn(u.ualign.type) * 3);
         You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "like a despicable grave-robber!");
