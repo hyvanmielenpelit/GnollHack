@@ -9028,6 +9028,7 @@ enum create_context_menu_types menu_type;
 
         struct obj* otmp = level.objects[u.ux][u.uy];
         struct rm* lev = &levl[u.ux][u.uy];
+        struct trap* t = 0;
         if (IS_ALTAR(lev->typ))
         {
             add_context_menu(M('o'), cmd_from_func(dosacrifice), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Offer", 0, 0, NO_COLOR);
@@ -9059,6 +9060,12 @@ enum create_context_menu_types menu_type;
         {
             add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Go Down",
                 (u.ux == xdnladder && u.uy == ydnladder) ? "Ladder" : "Stairs", 0, NO_COLOR);
+        }
+        else if ((Flying || (Levitation && Levitation_control)) && (t = t_at(u.ux, u.uy)) != 0 && t->tseen && is_hole(t->ttyp)
+            && Can_fall_thru(&u.uz))
+        {
+            add_context_menu('>', cmd_from_func(dodown), CONTEXT_MENU_STYLE_GENERAL, back_to_glyph(u.ux, u.uy), "Go Down",
+                t->ttyp == HOLE ? "Hole" : "Trap Door", 0, NO_COLOR);
         }
 
         struct monst* shkp = can_pay_to_shkp();
