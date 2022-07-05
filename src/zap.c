@@ -10358,7 +10358,6 @@ const char *const destroy_strings[][3] = {
 /* guts of destroy_item(), which ought to be called maybe_destroy_items();
    caller must decide whether obj is eligible */
 void
-
 destroy_one_item(obj, osym, dmgtyp, forcedestroy)
 struct obj *obj;
 int osym, dmgtyp;
@@ -10771,18 +10770,27 @@ int osym, dmgtyp;
 
 boolean
 is_obj_protected_by_property(otmp, mtmp, adtyp)
-struct obj* otmp;
+struct obj* otmp; // Can be null
 struct monst* mtmp;
 int adtyp;
 {
-    if (!otmp || !mtmp)
+    if (!mtmp)
         return FALSE;
 
-    /* Worn items only, but including any wielded items (even if improperly like wielded rings and potions) */
-    if ((otmp->owornmask & ~(W_SWAP_WEAPON | W_QUIVER)) == 0L)
-        return FALSE;
+    ///* Worn items only, but including any wielded items (even if improperly like wielded rings and potions) */
+    //if (otmp && (otmp->owornmask & ~(W_SWAP_WEAPON | W_QUIVER)) == 0L)
+    //    return FALSE;
     
     boolean isyou = (mtmp == &youmonst);
+
+    //Check that mtmp is carrying the item
+    if (otmp)
+    {
+        if (isyou && !carried(otmp))
+            return FALSE;
+        else if (mcarried(otmp) && mtmp != otmp->ocarry)
+            return FALSE;
+    }
 
     switch (adtyp)
     {
@@ -10837,6 +10845,20 @@ int adtyp;
                 return TRUE;
         }
         else if (isyou ? Acid_resistance : mon_resists_acid_weakly(mtmp))
+        {
+            if (rn2(2))
+                return TRUE;
+        }
+        break;
+    case AD_MAGM:
+        if (isyou ? Magic_missile_immunity : is_mon_immune_to_magic_missile(mtmp))
+            return TRUE;
+        else if (isyou ? Improved_magic_missile_resistance : mon_resists_magic_missile_strongly(mtmp))
+        {
+            if (rn2(4))
+                return TRUE;
+        }
+        else if (isyou ? Magic_missile_resistance : mon_resists_magic_missile_weakly(mtmp))
         {
             if (rn2(2))
                 return TRUE;

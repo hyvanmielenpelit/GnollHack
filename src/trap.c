@@ -116,7 +116,7 @@ struct monst *victim;
     }
 
 #define burn_dmg(obj, descr) erode_obj(obj, descr, ERODE_BURN, EF_GREASE)
-    while (1) {
+    do {
         switch (rn2(6)) {
         case 0:
             item = hitting_u ? uarmh : which_armor(victim, W_ARMH);
@@ -170,7 +170,9 @@ struct monst *victim;
             break;
         }
         break; /* Out of while loop */
-    }
+    } 
+    while (!is_obj_protected_by_property((struct obj*)0, &youmonst, AD_FIRE)); //To limit the effect of continue statements when having fire resistance
+
 #undef burn_dmg
 
     return FALSE;
@@ -204,6 +206,7 @@ int ef_flags;
             uvictim, vismon, visobj;
     int erosion, cost_type;
     struct monst *victim;
+    int adtyp = AD_NONE;
 
     if (!otmp)
         return ER_NOTHING;
@@ -220,6 +223,7 @@ int ef_flags;
         vulnerable = is_flammable(otmp);
         check_grease = FALSE;
         cost_type = COST_BURN;
+        adtyp = AD_FIRE;
         break;
     case ERODE_RUST:
         vulnerable = is_rustprone(otmp);
@@ -266,7 +270,7 @@ int ef_flags;
                   ostr, vtense(ostr, "are"), bythe[type]);
         return ER_NOTHING;
     }
-    else if (otmp->oerodeproof || (otmp->blessed && !rnl(4))) 
+    else if (otmp->oerodeproof || (otmp->blessed && !rnl(4)) || is_obj_protected_by_property(otmp, victim, adtyp))
     {
         if (flags.verbose && (print || otmp->oerodeproof)
             && (uvictim || vismon || visobj))
@@ -4113,7 +4117,7 @@ int dice; /* of d6 */
 
     burn_away_slime();
 
-    if (burnarmor(&youmonst) || rn2(3)) 
+    if (burnarmor(&youmonst) || rn2(3))
     {
         destroy_item(SCROLL_CLASS, AD_FIRE);
         destroy_item(SPBOOK_CLASS, AD_FIRE);
@@ -4408,6 +4412,9 @@ xchar x, y;
     } 
     else if (obj->oclass == POTION_CLASS)
     {
+        if (oresist_fire(obj))
+            return FALSE;
+
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BURNT);
         dindx = (obj->otyp != POT_OIL) ? 1 : 2;
         if (in_sight)
