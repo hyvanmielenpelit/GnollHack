@@ -284,6 +284,8 @@ confused	ST_RET(CONFUSED_ID);
 seen_traps	ST_RET(SEENTRAPS_ID);
 waitforu	ST_RET(WAITFORU_ID);
 protector	ST_RET(PROTECTOR_ID);
+maxhp		ST_RET(MAXHP_ID);
+level_adjustment  ST_RET(LEVEL_ADJUSTMENT_ID);
 switchable	ST_RET(SWITCHABLE_ID);
 secret_door	ST_RET(SECRET_DOOR_ID);
 uses_up_key	ST_RET(USES_UP_KEY_ID);

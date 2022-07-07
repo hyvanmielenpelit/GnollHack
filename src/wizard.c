@@ -780,7 +780,7 @@ struct monst* summoner;
     context.makemon_spef_idx = 0;
     for (i = 1; i <= summon_num; i++)
     {
-        mtmp = makemon_limited((struct permonst*) 0, bypos.x, bypos.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END, 0, max(1, ml - 1));
+        mtmp = makemon_limited((struct permonst*) 0, bypos.x, bypos.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END, 0, max(1, ml - 1), 0);
 
         if (mtmp)
         {

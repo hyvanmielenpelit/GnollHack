@@ -1755,12 +1755,16 @@ struct mkroom *croom;
     if (MON_AT(x, y) && enexto(&cc, x, y, pm))
         x = cc.x, y = cc.y;
 
+    unsigned long mmflags = 0UL;
+    if (m->maxhp)
+        mmflags |= MM_MAX_HP;
+
     if (m->align != -(MAX_REGISTERS + 2))
         mtmp = mk_roamer(pm, Amask2align(amask), x, y, m->peaceful);
     else if (PM_ARCHAEOLOGIST <= m->id && m->id <= PM_WIZARD)
         mtmp = mk_mplayer(pm, x, y, FALSE);
     else
-        mtmp = makemon(pm, x, y, NO_MM_FLAGS);
+        mtmp = makemon_ex(pm, x, y, mmflags, 0, m->level_adjustment);
 
     if (mtmp)
     {
@@ -3804,6 +3808,14 @@ struct sp_coder *coder;
         case SP_M_V_PROTECTOR:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpmons.protector = OV_i(parm);
+            break;
+        case SP_M_V_MAXHP:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpmons.maxhp = OV_i(parm);
+            break;
+        case SP_M_V_LEVEL_ADJUSTMENT:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpmons.level_adjustment = OV_i(parm);
             break;
         case SP_M_V_INVIS:
             if (OV_typ(parm) == SPOVAR_INT)

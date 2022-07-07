@@ -5186,7 +5186,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     change_mon_ability_scores(mtmp, oldtype, newtype);
 
     /* set level and hit points */
-    newmonhp(mtmp, newtype, 0UL);
+    newmonhp(mtmp, newtype, 0, 0UL);
     /* new hp: same fraction of max as before */
 #ifndef LINT
     mtmp->mhp = (int)(((long)hpn * (long)mtmp->mhp) / (long)hpd);

@@ -2373,16 +2373,16 @@ struct monst* mon;
 /* set up a new monster's initial level and hit points;
    used by newcham() as well as by makemon() */
 void
-newmonhp(mon, mndx, mmflags)
+newmonhp(mon, mndx, level_adjustment, mmflags)
 struct monst *mon;
-int mndx;
+int mndx, level_adjustment;
 unsigned long mmflags;
 {
     struct permonst *ptr = &mons[mndx];
     boolean use_maxhp = !!(mmflags & MM_MAX_HP);
     boolean use_normalhd = !!(mmflags & MM_NORMAL_HIT_DICE);
 
-    mon->m_lev = use_normalhd ? ptr->mlevel : adj_lev(ptr);
+    mon->m_lev = use_normalhd ? ptr->mlevel : adj_lev(ptr, level_adjustment);
 
     boolean dragonmaxhp = !!(ptr->mlet == S_DRAGON && mndx >= PM_GRAY_DRAGON && In_endgame(&u.uz));
 
@@ -2579,17 +2579,17 @@ register struct permonst* ptr;
 register int x, y;
 unsigned long mmflags;
 {
-    return makemon_limited(ptr, x, y, mmflags, 0, 0);
+    return makemon_limited(ptr, x, y, mmflags, 0, 0, 0);
 }
 
 struct monst*
-makemon_ex(ptr, x, y, mmflags, subtype)
+makemon_ex(ptr, x, y, mmflags, subtype, level_adjustment)
 register struct permonst* ptr;
 register int x, y;
 unsigned long mmflags;
-int subtype;
+int subtype, level_adjustment;
 {
-    return makemon_limited(ptr, x, y, mmflags, subtype, 0);
+    return makemon_limited(ptr, x, y, mmflags, subtype, 0, level_adjustment);
 }
 
 /*
@@ -2600,12 +2600,12 @@ int subtype;
  *      In case we make a monster group, only return the one at [x,y].
  */
 struct monst *
-makemon_limited(ptr, x, y, mmflags, subtype, level_limit)
+makemon_limited(ptr, x, y, mmflags, subtype, level_limit, level_adjustment)
 register struct permonst *ptr;
 register int x, y;
 unsigned long mmflags;
 int subtype;
-int level_limit;
+int level_limit, level_adjustment;
 {
     register struct monst *mtmp;
     int mndx = NON_PM, mcham, ct, mitem;
@@ -2840,7 +2840,7 @@ int level_limit;
     }
     
     /* set up level and hit points */
-    newmonhp(mtmp, mndx, mmflags);
+    newmonhp(mtmp, mndx, level_adjustment, mmflags);
 
     /* set up the number of heads */
     mtmp->heads_left = ptr->heads;
@@ -3695,7 +3695,7 @@ int difficulty_adj;
                    being picked nearly twice as often as succubus);
                    we need the '+1' in case the entire set is too high
                    level (really low level hero) */
-                nums[last] = k + 1 - (adj_lev(&mons[last]) > (u.ulevel * 2));
+                nums[last] = k + 1 - (adj_lev(&mons[last], 0) > (u.ulevel * 2));
                 num += nums[last];
             }
         }
@@ -3750,8 +3750,9 @@ int mclass;
 
 /* adjust strength of monsters based on u.uz and u.ulevel */
 int
-adj_lev(ptr)
+adj_lev(ptr, manual_adj)
 register struct permonst *ptr;
+int manual_adj;
 {
     int tmp, tmp2;
 
@@ -3765,7 +3766,8 @@ register struct permonst *ptr;
         return tmp;
     }
 
-    if ((tmp = ptr->mlevel) > MAX_MONSTER_LEVEL)
+    tmp = ptr->mlevel + manual_adj;
+    if (tmp > MAX_MONSTER_LEVEL)
         return MAX_MONSTER_LEVEL; /* "special" demons/devils */
     tmp2 = (level_difficulty() - tmp);
     if (tmp2 < 0)
@@ -3777,9 +3779,11 @@ register struct permonst *ptr;
     if (tmp2 > 0)
         tmp += (tmp2 / 4); /* level as well */
 
-    tmp2 = (3 * ((int) ptr->mlevel)) / 2; /* crude upper limit */
+    tmp2 = (3 * ((int) ptr->mlevel)) / 2 + manual_adj; /* crude upper limit */
     if (tmp2 > MAX_MONSTER_LEVEL)
         tmp2 = MAX_MONSTER_LEVEL;  /* hard upper limit */
+    if (tmp2 < 0)
+        tmp2 = 0;  /* hard lower limit */
     return ((tmp > tmp2) ? tmp2 : (tmp > 0 ? tmp : 0)); /* 0 lower limit */
 }
 
