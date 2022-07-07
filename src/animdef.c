@@ -9527,7 +9527,7 @@ NEARDATA const struct replacement_definition replacements[MAX_REPLACEMENTS] =
       REPLACEMENT_EVENT_UPDATE_FROM_TOP,
       REPLACEMENT_ACTION_SHORE_AND_FLOOR_ADJUSTED_TILE,
       AUTODRAW_NONE,
-      { "room", "marble", "parquet", "cobblestone", "grass", "grass-swampy", "ground", "ground-swampy", "ground-desert-sand", "corridor", "smaller-room", "smaller-parquet", "smaller-marble", "smaller-grass", "smaller-grass-swampy", "smaller-ground", "smaller-ground-swampy", "smaller-corridor", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { "room", "marble", "parquet", "cobblestone", "grass", "grass-swampy", "ground", "ground-swampy", "ground-desert-sand", "corridor", "smaller-room", "smaller-parquet", "smaller-marble", "smaller-cobblestone", "smaller-grass", "smaller-grass-swampy", "smaller-ground", "smaller-ground-swampy", "smaller-ground-desert-sand", "smaller-corridor", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
