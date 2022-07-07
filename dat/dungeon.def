@@ -53,27 +53,27 @@ BRANCH:		"The Elemental Planes" @ (1, 0) no_down up
 #		monsters can properly migrate here under certain
 #		circumstances.
 #
-DUNGEON:	"Gehennom" "G" (20, 5)
+DUNGEON:	"Gehennom" "G" (18, 2)
 TILESET:    gehennom_tileset
 DESCRIPTION:	mazelike
 DESCRIPTION:	hellish
 ALIGNMENT:	noalign
-BRANCH:		"Vlad's Tower" @ (10, 5) up
+BRANCH:		"Vlad's Tower" @ (9, 5) up
 LEVEL:		"Valley of the Dead" "valley" "V" @ (1, 0)
 LEVEL:		"Moloch's Sanctum" "sanctum" "none" @ (-1, 0)
-BRANCH:		"Plane of the Modron" @ (2, 2) portal
-BRANCH:		"Hellish Pastures" @ (8, 10) portal
-LEVEL:		"Jubilex's Realm" "jubilex" "J" @ (5, 4)
-LEVEL:		"Maladomini" "baalz" "B" @ (6, 4)
-LEVEL:		"Dis" "dispater" "A" @ (2, 6)
-LEVEL:		"Wizard's Tower, Top Level" "wizard1" "none" @ (11, 6)
+LEVEL:		"Dis" "dispater" "A" @ (2, 0)
+LEVEL:		"Maladomini" "baalz" "B" @ (4, 5)
+LEVEL:		"Jubilex's Realm" "jubilex" "J" @ (4, 5)
+BRANCH:		"Plane of the Modron" @ (3, 2) portal
+BRANCH:		"Hellish Pastures" @ (8, 6) portal
+LEVEL:		"Wizard's Tower, Top Level" "wizard1" "none" @ (10, 2)
 CHAINLEVEL:	"Wizard's Tower, Middle Level" "wizard2" "X" "wizard1" + (1, 0)
 CHAINLEVEL:	"Wizard's Tower, Bottom Level" "wizard3" "Y" "wizard1" + (2, 0)
-LEVEL:		"Orcus Town" "orcus" "O" @ (10, 6)
-LEVEL:		"Yeenaghu's Domain" "yeenaghu" "Z" @ (-12, 9)
-LEVEL:		"Lair of Tarrasque" "tarrasque" "U" @ (-9, 6)
 LEVEL:		"First Fake Wizard's Tower" "fakewiz1" "F" @ (-6,4)
 LEVEL:		"Second Fake Wizard's Tower" "fakewiz2" "G" @ (-6,4)
+LEVEL:		"Orcus Town" "orcus" "O" @ (6, 10)
+LEVEL:		"Lair of Tarrasque" "tarrasque" "U" @ (-8, 6)
+LEVEL:		"Yeenaghu's Domain" "yeenaghu" "Z" @ (-8, 6)
 
 #
 #	The Mines of the Gnomes of Zurich.

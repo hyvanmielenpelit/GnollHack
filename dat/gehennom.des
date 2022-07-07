@@ -921,41 +921,41 @@ MONSTER:('&',"sandestin"),(33,07),hostile
 
 # Corrupted kings of each player race
 MONSTER:('@',"Elvenking"),random,hostile,male,maxhp,level_adjustment:10,"Orodhuil the Black-Hearted" {
-   OBJECT:('[', "royal crown"),cursed,enchantment:(3+(1d2))
+   OBJECT:('[', "royal crown"),cursed,enchantment:(2+(1d3))
    OBJECT:(')', "elven broadsword"),cursed,exceptionality:elite,enchantment:(3+(1d2)),legendary
-   OBJECT:('[', "elven mithril-coat"),cursed,enchantment:(3+(1d2)),legendary
+   OBJECT:('[', "elven mithril-coat"),cursed,enchantment:(2+(1d3)),legendary
    OBJECT:('[', "elven shield"),enchantment:(3+(1d2))
-   OBJECT:('[', "Galadhrim boots"),enchantment:(3+(1d2))
-   OBJECT:('[', "leather gloves"),enchantment:(3+(1d2))
+   OBJECT:('[', "Galadhrim boots"),enchantment:(1d4)
+   OBJECT:('[', "leather gloves"),enchantment:(1d4)
    OBJECT:('$',"gold piece"), quantity:(500+(1d500))
 }
 MONSTER:('h',"dwarf king"),random,hostile,male,maxhp,level_adjustment:10,"Burin the Wicked" {
-   OBJECT:('[', "helm of opposite alignment"),enchantment:(3+(1d2))
+   OBJECT:('[', "helm of opposite alignment"),enchantment:(2+(1d3))
    OBJECT:(')', "dwarvish axe"),cursed,exceptionality:elite,enchantment:(3+(1d2)),legendary
-   OBJECT:('[', "dwarvish mithril-coat"),cursed,enchantment:(3+(1d2)),legendary
+   OBJECT:('[', "dwarvish mithril-coat"),cursed,enchantment:(2+(1d3)),legendary
    OBJECT:('[', "dwarvish roundshield"),enchantment:(3+(1d2))
-   OBJECT:('[', "spiked boots"),enchantment:(3+(1d2))
+   OBJECT:('[', "spiked boots"),enchantment:(1d4)
    OBJECT:('8', "belt of dwarvenkind"),cursed,enchantment:(3+(1d2))
-   OBJECT:('[', "spiked gauntlets"),enchantment:(3+(1d2))
+   OBJECT:('[', "spiked gauntlets"),enchantment:(1d4)
    OBJECT:('$',"gold piece"), quantity:(500+(1d500))
 }
 MONSTER:('G',"gnoll king"),random,hostile,male,maxhp,level_adjustment:20,"Hoggen II"
 MONSTER:('@',"human king"),random,hostile,male,maxhp,level_adjustment:10,"Varamir the Terrible" {
-   OBJECT:('[', "royal crown"),cursed,enchantment:(3+(1d2))
+   OBJECT:('[', "royal crown"),cursed,enchantment:(2+(1d3))
    OBJECT:(')', "long sword"),cursed,exceptionality:elite,enchantment:(3+(1d2)),legendary
-   OBJECT:('[', "full plate mail"),cursed,enchantment:(3+(1d3)),legendary
-   OBJECT:('[', "spiked shield"),enchantment:(3+(1d2))
-   OBJECT:('[', "spiked boots"),enchantment:(3+(1d2))
+   OBJECT:('[', "full plate mail"),cursed,enchantment:(2+(1d3)),legendary
+   OBJECT:('[', "spiked shield"),enchantment:(1d4)
+   OBJECT:('[', "spiked boots"),enchantment:(1d4)
    OBJECT:('[', "gauntlets of dexterity"),enchantment:(3+(1d2))
    OBJECT:('$',"gold piece"), quantity:(500+(1d500))
 }
 MONSTER:('o',"orc king"),random,hostile,male,maxhp,level_adjustment:10,"Obuld I Longfangs" {
-   OBJECT:('[', "royal crown"),cursed,enchantment:(3+(1d2))
+   OBJECT:('[', "royal crown"),cursed,enchantment:(2+(1d3))
    OBJECT:(')', "sword of unholy desecration"),cursed,enchantment:(3+(1d2))
-   OBJECT:('[', "orcish chain mail"),cursed,enchantment:(4+(1d4)),legendary
+   OBJECT:('[', "orcish chain mail"),cursed,enchantment:(3+(1d4)),legendary
    OBJECT:('[', "great orcish shield"),enchantment:(3+(1d2))
-   OBJECT:('[', "spiked boots"),enchantment:(3+(1d2))
-   OBJECT:('[', "spiked gauntlets"),enchantment:(3+(1d2))
+   OBJECT:('[', "spiked boots"),enchantment:(1d4)
+   OBJECT:('[', "spiked gauntlets"),enchantment:(1d4)
    OBJECT:('$',"gold piece"), quantity:(500+(1d500))
 }
 

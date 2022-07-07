@@ -896,12 +896,12 @@ makelevel()
         }
         else if (In_hell(&u.uz))
         {
-            if(Invocation_lev(&u.uz) || !rn2(3))
+            if(Invocation_lev(&u.uz)) // || !rn2(3) )
                 makemaz("");
-            else if (In_hell(&u.uz))
+            else // if (In_hell(&u.uz))
                 makemaz("hellfill");
-            else
-                makemaz("mainfill");
+            //else
+            //    makemaz("mainfill");
 
             return;
         }
