@@ -390,6 +390,28 @@ unsigned long rndflags;
             continue; /* new try */
         }
 
+        if (oclass == GEM_CLASS && In_hell(&u.uz) && tryct < 25)
+        {
+            /* Kludge to adjust Gehennom gem probabilities */
+            if (i < LUCKSTONE)
+            {
+                int skip_prob = 99 - objects[i].oc_cost / 5;
+                if (rn2(100) < skip_prob)
+                    continue;
+            }
+            else if (i > CLAY_PEBBLE)
+            {
+                int skip_prob = 100 - objects[i].oc_cost / 2; //At 200 gold, no chance of being skipped
+                if (rn2(100) < skip_prob)
+                    continue;
+            }
+            else
+            {
+                if (rn2(2)) // Balance out skipping probabilities so that non-skipped sections do not become overly prevalent
+                    continue;
+            }
+        }
+
         /* Special code generating more relevant spellbooks */
         if (oclass == SPBOOK_CLASS && randomizationclass < 3)
         {
