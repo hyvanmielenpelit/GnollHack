@@ -727,6 +727,37 @@ namespace GnollHackClient
             return zipFile;
         }
 
+        public static string CreateSavedGamesZipArchive()
+        {
+            string ghdir = App.GnollHackService.GetGnollHackPath();
+            string targetpath = Path.Combine(ghdir, "archive");
+
+            App.CheckCreateDirectory(targetpath);
+
+            string filepath = Path.Combine(targetpath, "savedgames.zip");
+            if (File.Exists(filepath))
+                File.Delete(filepath);
+
+            string zipFile = filepath;
+            string[] files = Directory.GetFiles(ghdir);
+
+            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+            {
+                string[] ghsubdirlist = { "save" };
+                foreach (string ghsubdir in ghsubdirlist)
+                {
+                    string subdirpath = Path.Combine(ghdir, ghsubdir);
+                    string[] subfiles = Directory.GetFiles(subdirpath);
+                    foreach (var fPath in subfiles)
+                    {
+                        archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
+                    }
+                }
+
+            }
+            return zipFile;
+        }
+
         public static void CheckCreateDirectory(string targetpath)
         {
             if (!Directory.Exists(targetpath))

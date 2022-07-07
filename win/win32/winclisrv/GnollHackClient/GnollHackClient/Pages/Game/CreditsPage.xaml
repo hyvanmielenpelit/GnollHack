@@ -95,6 +95,13 @@
                             <ViewCell>
                                 <Grid WidthRequest="320" HorizontalOptions="Center" >
                                     <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
+                                    <Button x:Name="btnSavedGames" Text="Saved Games" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnSavedGames_Clicked" />
+                                </Grid>
+                            </ViewCell>
+                            <ViewCell>
+                                <Grid WidthRequest="320" HorizontalOptions="Center" >
+                                    <ff:CachedImage Source="resource://GnollHackClient.Assets.button_normal.png" WidthRequest="320" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Aspect="Fill" />
                                     <Button x:Name="btnCrashReport" Text="Crash Report" WidthRequest="320" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="FillAndExpand"  Clicked="btnCrashReport_Clicked" />
                                 </Grid>

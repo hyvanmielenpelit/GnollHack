@@ -7692,6 +7692,76 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
         OBJECT_INSTRUMENT_SOUNDSET_NONE,
         OBJECT_CONTAINER_SOUNDSET_GENERIC
     },
+    {
+        "ring of conflict",
+        OBJECT_SOUNDSET_GENERIC,
+        {
+            {MAX_GHSOUNDS, 0.0f}, /* Ambient */
+            {MAX_GHSOUNDS, 0.0f}, /* Melee Swing */
+            {MAX_GHSOUNDS, 0.0f}, /* Melee Hit */
+            {MAX_GHSOUNDS, 0.0f}, /* Throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Fire */
+            {MAX_GHSOUNDS, 0.0f}, /* Ranged Hit */
+
+            {MAX_GHSOUNDS, 0.0f}, /* Pick up */
+            {MAX_GHSOUNDS, 0.0f}, /* Drop */
+            {MAX_GHSOUNDS, 0.0f}, /* Drop after throw */
+            {MAX_GHSOUNDS, 0.0f}, /* Wear */
+            {MAX_GHSOUNDS, 0.0f}, /* Take off */
+            {MAX_GHSOUNDS, 0.0f}, /* Wield */
+            {MAX_GHSOUNDS, 0.0f}, /* Unwield */
+            {MAX_GHSOUNDS, 0.0f}, /* Quiver */
+            {MAX_GHSOUNDS, 0.0f}, /* Unquiver */
+            {MAX_GHSOUNDS, 1.0f}, /* Apply */
+            {MAX_GHSOUNDS, 0.0f}, /* Apply 2 */
+            {GHSOUND_AGGRAVATE_MONSTER, 1.0f}, /* Invoke */
+            {MAX_GHSOUNDS, 0.0f}, /* Invoke 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Quaff */
+            {MAX_GHSOUNDS, 0.0f}, /* Read */
+            {MAX_GHSOUNDS, 0.0f}, /* Engrave */
+            {MAX_GHSOUNDS, 0.0f}, /* Zap */
+
+            {MAX_GHSOUNDS, 0.0f}, /* Break */
+            {MAX_GHSOUNDS, 0.0f}, /* Burnt */
+            {MAX_GHSOUNDS, 0.0f}, /* Frozen */
+            {MAX_GHSOUNDS, 0.0f}, /* Electrocuted */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rusts */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Burns */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Corrodes */
+            {MAX_GHSOUNDS, 0.0f}, /* Erosion - Rots */
+            {MAX_GHSOUNDS, 0.0f}, /* General effect */
+            {MAX_GHSOUNDS, 0.0f}, /* General effect 2 */
+            {MAX_GHSOUNDS, 0.0f}, /* Push */
+            {MAX_GHSOUNDS, 0.0f}, /* Bump into */
+            {MAX_GHSOUNDS, 0.0f}, /* Tumble downwards */
+            {MAX_GHSOUNDS, 0.0f}, /* Give */
+
+            {MAX_GHSOUNDS, 0.0f}, /* Walk */
+            {MAX_GHSOUNDS, 0.0f}, /* Fly */
+            {MAX_GHSOUNDS, 0.0f}, /* Levitation */
+            {MAX_GHSOUNDS, 0.0f}  /* Swim */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_ROCK,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_GROUND,
+            OCCUPATION_SOUNDSET_GENERIC_SWINGING,
+            OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
+            OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
+        },
+        OBJECT_RAY_SOUNDSET_NONE,
+        OBJECT_INSTRUMENT_SOUNDSET_NONE,
+        OBJECT_CONTAINER_SOUNDSET_GENERIC
+    }, 
 };
 
 NEARDATA struct occupation_soundset_definition occupation_soundset_definitions[MAX_OCCUPATION_SOUNDSETS] =

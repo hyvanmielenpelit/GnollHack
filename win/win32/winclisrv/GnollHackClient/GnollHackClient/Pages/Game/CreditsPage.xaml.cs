@@ -340,5 +340,32 @@ namespace GnollHackClient.Pages.Game
             CreditsTableView.IsEnabled = true;
 
         }
+
+        private async void btnSavedGames_Clicked(object sender, EventArgs e)
+        {
+            App.PlayButtonClickedSound();
+            await CheckAndRequestWritePermission();
+            await CheckAndRequestReadPermission();
+            string archive_file = "";
+            try
+            {
+                archive_file = App.CreateSavedGamesZipArchive();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Archive Creation Failure", "GnollHack failed to create a saved games archive: " + ex.Message, "OK");
+                return;
+            }
+            try
+            {
+                if (archive_file != "")
+                    ShareFile(archive_file, "GnollHack Saved Games");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Share File Failure", "GnollHack failed to share a saved games archive: " + ex.Message, "OK");
+                return;
+            }
+        }
     }
 }

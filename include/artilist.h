@@ -300,7 +300,7 @@ NEARDATA struct artifact artilist[] = {
         (AF_RESTR | AF_NAME_KNOWN_WHEN_INVOKED | AF_INVOKE_EXPENDS_CHARGE | AF_INVOKE_REQUIRES_WORN),
         AF2_FLOOR_TILE, SPFX_NONE, SPFX_NONE, 0,
         0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, CONFLICT, 2, 10, 140, 0, 200, A_NONE, NON_PM, NON_PM, 3500L,
-        NO_COLOR, CLR_RED, 16, OBJECT_SOUNDSET_NONE),
+        NO_COLOR, CLR_RED, 16, OBJECT_SOUNDSET_RING_OF_CONFLICT),
 
     /* Other non-weapon artifacts */
     A("The Rod of Disjunction", "black metal", None, WAN_DISJUNCTION, WAN_DISJUNCTION, 
