@@ -2377,7 +2377,7 @@ struct obj* origobj;
     {
         mtmp = u.ustuck;
 
-        if (!is_whirly(mtmp->data)) 
+        if (mtmp && !is_whirly(mtmp->data)) 
         {
             if (is_animal(mtmp->data))
                 You("dehydrate %s %s wall!", s_suffix(mon_nam(mtmp)),
@@ -2436,7 +2436,7 @@ struct obj* origobj;
                 create_current_floor_location(zx, zy, 0, back_to_broken_glyph(zx, zy), TRUE);
                 newsym(zx, zy);
                 if (see_it)
-                    pline_The("fountain dries up!");
+                    pline_The1("fountain dries up!");
                 /* The location is seen if the hero/monster is invisible
                    or felt if the hero is blind. */
             }
@@ -2504,7 +2504,7 @@ struct obj* origobj;
             context.zap_animation_counter_on[idx] = TRUE;
             context.zap_aggregate_intervals_to_wait_until_action = 0UL;
             context.zap_aggregate_intervals_to_wait_until_end = anim_intervals;
-            toggle_animation_timer(ANIMATION_TIMER_ZAP, i, TRUE, zx, zy, 0, 0UL);
+            toggle_animation_timer(ANIMATION_TIMER_ZAP, idx, TRUE, zx, zy, 0, 0UL);
 
             if (animations[anim].action_execution_frame > 0)
             {
@@ -2570,9 +2570,8 @@ struct obj* origobj;
         }
 
         /* Destroy potions */
-        struct obj* otmp, * otmp2;
-        for (otmp = level.objects[zx][zy]; otmp; otmp = otmp2) {
-            otmp2 = otmp->nexthere;
+        struct obj* otmp;
+        for (otmp = level.objects[zx][zy]; otmp; otmp = otmp->nexthere) {
             if(otmp->oclass == POTION_CLASS)
             {
                 play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_OBJECT, zx, zy);

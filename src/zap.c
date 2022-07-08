@@ -5896,7 +5896,7 @@ boolean ordinary;
 
     case SPE_LOWER_WATER:
     case WAN_EVAPORATION:
-        if (youmonst.data == &mons[PM_WATER_ELEMENTAL] || youmonst.data == &mons[PM_ELDER_WATER_ELEMENTAL])
+        if (is_watery(youmonst.data))
         {
             if (!Upolyd || Unchanging)
             {
