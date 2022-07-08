@@ -53,7 +53,7 @@ BRANCH:		"The Elemental Planes" @ (1, 0) no_down up
 #		monsters can properly migrate here under certain
 #		circumstances.
 #
-DUNGEON:	"Gehennom" "G" (18, 2)
+DUNGEON:	"Gehennom" "G" (18, 3)
 TILESET:    gehennom_tileset
 DESCRIPTION:	mazelike
 DESCRIPTION:	hellish
@@ -71,9 +71,9 @@ CHAINLEVEL:	"Wizard's Tower, Middle Level" "wizard2" "X" "wizard1" + (1, 0)
 CHAINLEVEL:	"Wizard's Tower, Bottom Level" "wizard3" "Y" "wizard1" + (2, 0)
 LEVEL:		"First Fake Wizard's Tower" "fakewiz1" "F" @ (-6,4)
 LEVEL:		"Second Fake Wizard's Tower" "fakewiz2" "G" @ (-6,4)
-LEVEL:		"Orcus Town" "orcus" "O" @ (6, 10)
-LEVEL:		"Lair of Tarrasque" "tarrasque" "U" @ (-8, 6)
-LEVEL:		"Yeenaghu's Domain" "yeenaghu" "Z" @ (-8, 6)
+LEVEL:		"Lair of Tarrasque" "tarrasque" "U" @ (-9, 7)
+LEVEL:		"Yeenaghu's Domain" "yeenaghu" "Z" @ (-9, 7)
+LEVEL:		"Orcus Town" "orcus" "O" @ (5, 11)
 
 #
 #	The Mines of the Gnomes of Zurich.
