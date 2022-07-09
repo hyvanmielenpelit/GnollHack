@@ -943,6 +943,8 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
 #define has_obj_mythic_uncurseable(o)           has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_UNCURSEABLE)
 #define has_obj_mythic_great_strength(o)        has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_GREAT_STRENGTH)
 
+#define is_obj_uncurseable(o) \
+    ((objects[(o)->otyp].oc_flags& O1_NOT_CURSEABLE) || has_obj_mythic_uncurseable(o))
 /* Manuals */
 enum manual_types
 {

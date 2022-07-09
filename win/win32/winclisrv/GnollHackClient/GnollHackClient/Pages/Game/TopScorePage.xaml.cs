@@ -260,7 +260,7 @@ namespace GnollHackClient.Pages.Game
             if(tsi != null)
             {
                 string fulltargetpath = Path.Combine(App.GHPath, "dumplog", tsi.GetDumplogFileName());
-                var displFilePage = new DisplayFilePage(fulltargetpath, "Dumplog - " + tsi.Name);
+                var displFilePage = new DisplayFilePage(fulltargetpath, "Dumplog - " + tsi.Name, 0, true);
                 string errormsg = "";
                 if (!displFilePage.ReadFile(out errormsg))
                 {

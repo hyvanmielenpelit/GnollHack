@@ -892,6 +892,8 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Action/Sit", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Action/Sit in Air", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Action/Tumble in Air", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Protection End Warning", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Negative Effect Ended", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/SFX/Enter/Zoo", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Enter/Swamp", 1.0f },
@@ -10911,17 +10913,27 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_SIT",
         {GHSOUND_SIT, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_SIT_IN_AIR",
         {GHSOUND_SIT_IN_AIR, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        TRUE, SOUND_PLAY_GROUP_NORMAL
     },
     {
         "GHSOUND_TUMBLE_IN_AIR",
         {GHSOUND_TUMBLE_IN_AIR, 1.0f},
-        FALSE, SOUND_PLAY_GROUP_NORMAL
+        TRUE, SOUND_PLAY_GROUP_NORMAL
+    },
+    {
+        "GHSOUND_PROTECTION_END_WARNING",
+        {GHSOUND_PROTECTION_END_WARNING, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
+    },
+    {
+        "GHSOUND_NEGATIVE_EFFECT_ENDED",
+        {GHSOUND_NEGATIVE_EFFECT_ENDED, 1.0f},
+        FALSE, SOUND_PLAY_GROUP_LONG
     },
 };
 
@@ -12496,7 +12508,7 @@ play_simple_monster_sound(mon, sound_type)
 struct monst* mon;
 enum monster_sound_types sound_type;
 {
-    play_simple_monster_sound_with_flags(mon, sound_type, 0UL);
+    play_simple_monster_sound_with_flags(mon, sound_type, PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED);
 }
 
 void

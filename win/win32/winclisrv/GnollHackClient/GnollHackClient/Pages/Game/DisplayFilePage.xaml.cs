@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
@@ -23,7 +23,11 @@ namespace GnollHackClient.Pages.Game
         {
         }
 
-        public DisplayFilePage(string fileName, string header, int fixedWidth)
+        public DisplayFilePage(string fileName, string header, int fixedWidth) : this(fileName, header, fixedWidth, false)
+        {
+        }
+
+        public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare)
         {
             InitializeComponent();
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
@@ -31,7 +35,8 @@ namespace GnollHackClient.Pages.Game
             _fileName = fileName;
             _fixedWidth = fixedWidth;
             HeaderLabel.Text = header;
-            Assembly assembly = GetType().GetTypeInfo().Assembly;
+            BottomLayout.IsVisible = displayshare;
+            CloseGrid.IsVisible = !displayshare;
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
@@ -101,9 +106,28 @@ namespace GnollHackClient.Pages.Game
                 TextLabel.FontSize = newsize;
 
                 HeaderLabel.Margin = ClientUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
-                CloseGrid.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
+                BottomLayout.Margin = ClientUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
+                CloseGrid.Margin = BottomLayout.Margin;
             }
         }
 
+        private async void ShareButton_Clicked(object sender, EventArgs e)
+        {
+            ShareGrid.IsEnabled = false;
+            App.PlayButtonClickedSound();
+            try
+            {
+                await Share.RequestAsync(new ShareFileRequest
+                {
+                    Title = HeaderLabel.Text,
+                    File = new ShareFile(_fileName)
+                });
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Share File Failure", "GnollHack failed to share " + HeaderLabel.Text + ": " + ex.Message, "OK");
+            }
+            ShareGrid.IsEnabled = true;
+        }
     }
 }

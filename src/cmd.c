@@ -4034,6 +4034,13 @@ int final;
         else
             you_are("not wearing any armor", "");
     }
+
+    if (u.ublessed > 0)
+    {
+        char protbuf[BUFSZ];
+        Sprintf(protbuf, "endowed with divine protection (-%d to AC and +%d to MC)", u.ublessed, u.ublessed / 3);
+        you_are(protbuf, "");
+    }
 }
 
 STATIC_OVL
@@ -4521,13 +4528,6 @@ int final;
     if (Melee_life_leech)
         enl_msg("You leech", "", "d", " life in melee", from_what(MELEE_LIFE_LEECH));
 
-
-    if (u.ublessed > 0)
-    {
-        char protbuf[BUFSZ];
-        Sprintf(protbuf, "endowed with divine protection (-%d to AC and +%d to MC)", u.ublessed, u.ublessed / 3);
-        you_are(protbuf, "");
-    }
 
     int role_ac_bonus = get_role_AC_bonus();
     int role_mc_bonus = get_role_MC_bonus();

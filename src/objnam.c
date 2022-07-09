@@ -5261,11 +5261,11 @@ boolean is_wiz_wish;
     }
     else if (uncursed) {
         otmp->blessed = 0;
-        otmp->cursed = (Luck < 0 && !wiz_wishing);
+        otmp->cursed = (Luck < 0 && !wiz_wishing && !is_obj_uncurseable(otmp));
     }
     else if (blessed) {
         otmp->blessed = (Luck >= 0 || wiz_wishing);
-        otmp->cursed = (Luck < 0 && !wiz_wishing);
+        otmp->cursed = (Luck < 0 && !wiz_wishing && !is_obj_uncurseable(otmp));
     }
     else if (spesgn < 0) {
         curse(otmp);

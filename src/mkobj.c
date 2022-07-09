@@ -395,13 +395,13 @@ unsigned long rndflags;
             /* Kludge to adjust Gehennom gem probabilities */
             if (i < LUCKSTONE)
             {
-                int skip_prob = 99 - objects[i].oc_cost / 5;
+                int skip_prob = 99 - (int)objects[i].oc_cost / 5;
                 if (rn2(100) < skip_prob)
                     continue;
             }
             else if (i > CLAY_PEBBLE)
             {
-                int skip_prob = 100 - objects[i].oc_cost / 2; //At 200 gold, no chance of being skipped
+                int skip_prob = 100 - (int)objects[i].oc_cost / 2; //At 200 gold, no chance of being skipped
                 if (rn2(100) < skip_prob)
                     continue;
             }
@@ -2960,7 +2960,7 @@ register struct obj *otmp;
         old_volume = obj_ambient_sound_volume(otmp);
     already_cursed = otmp->cursed;
     otmp->blessed = 0;
-    if((objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE) || has_obj_mythic_uncurseable(otmp))
+    if(is_obj_uncurseable(otmp))
         otmp->cursed = 0;
     else
         otmp->cursed = 1;

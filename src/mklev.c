@@ -1947,7 +1947,7 @@ coord *tm;
                (less useful to use, and encourage pets to avoid the trap) */
             if (otmp) {
                 otmp->blessed = 0;
-                if((objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE) || has_obj_mythic_uncurseable(otmp))
+                if(is_obj_uncurseable(otmp))
                     otmp->cursed = 0;
                 else
                     otmp->cursed = 1;

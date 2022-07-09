@@ -3539,83 +3539,143 @@ boolean was_flying;
     {
     case REFLECTING:
         if (!Reflecting)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels less reflecting than before.");
+        }
         break;
     case FIRE_IMMUNITY:
         if (!Fire_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to burning than before.");
+        }
         break;
     case COLD_IMMUNITY:
         if (!Cold_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to frostbites than before.");
+        }
         break;
     case SHOCK_IMMUNITY:
         if (!Shock_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to electricity than before.");
+        }
         break;
     case IMPROVED_FIRE_RESISTANCE:
         if (!Improved_fire_resistance && !Fire_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to burning than before.");
+        }
         break;
     case IMPROVED_COLD_RESISTANCE:
         if (!Improved_cold_resistance && !Cold_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to frostbites than before.");
+        }
         break;
     case IMPROVED_SHOCK_RESISTANCE:
         if (!Improved_shock_resistance && !Shock_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to electricity than before.");
+        }
         break;
     case FIRE_RESISTANCE:
         if (!Fire_resistance && !Improved_fire_resistance && !Fire_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to burning than before.");
+        }
         break;
     case COLD_RESISTANCE:
         if (!Cold_resistance && !Improved_cold_resistance && !Cold_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to frostbites than before.");
+        }
         break;
     case SHOCK_RESISTANCE:
         if (!Shock_resistance && !Improved_shock_resistance && !Shock_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to electricity than before.");
+        }
         break;
     case DISINTEGRATION_RESISTANCE:
         if (!Disint_resistance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "body feels less firm than before.");
+        }
         break;
     case POISON_RESISTANCE:
         if (!Poison_resistance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less healthy than before.");
+        }
         break;
     case ACID_IMMUNITY:
         if (!Acid_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to acid than before.");
+        }
         break;
     case IMPROVED_ACID_RESISTANCE:
         if (!Improved_acid_resistance && !Acid_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to acid than before.");
+        }
         break;
     case ACID_RESISTANCE:
         if (!Acid_resistance && !Improved_acid_resistance && !Acid_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to acid than before.");
+        }
         break;
     case STONE_RESISTANCE:
         if (!Stone_resistance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less limber than before.");
+        }
         break;
     case DRAIN_RESISTANCE:
         if (!Drain_resistance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel more suspectible to draining than before.");
+        }
         break;
     case SICK_RESISTANCE:
         if (!Sick_resistance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel like you might be catching a cold.");
+        }
         break;
     case INVULNERABLE:
         if (!Invulnerable)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels more prone to damage than before.");
+        }
         break;
     case ANTIMAGIC:
         if (!Antimagic)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less protected from magic.");
+        }
         break;
     case MAGIC_MISSILE_IMMUNITY:
         if (!Magic_missile_immunity)
@@ -3623,50 +3683,83 @@ boolean was_flying;
         break;
     case IMPROVED_MAGIC_MISSILE_RESISTANCE:
         if (!Improved_magic_missile_resistance && !Magic_missile_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less protected from magic missiles.");
+        }
         break;
     case MAGIC_MISSILE_RESISTANCE:
         if (!Magic_missile_resistance && !Improved_magic_missile_resistance && !Magic_missile_immunity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less protected from magic missiles.");
+        }
         break;
     case CANCELLED:
         if (!Cancelled)
+        {
+            play_sfx_sound(SFX_NEGATIVE_EFFECT_ENDED);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic is flowing more normally.");
+        }
         break;
     case CANCELLATION_RESISTANCE:
         /* Nothing intentionally */
         break;
     case THREE_FOURTHS_MAGIC_RESISTANCE:
         if (!Three_fourths_magic_resistance && !Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
+        {
+            play_sfx_sound(SFX_NEGATIVE_EFFECT_ENDED);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is working more properly.");
+        }
         break;
     case HALVED_MAGIC_RESISTANCE:
         if (!Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
+        {
+            play_sfx_sound(SFX_NEGATIVE_EFFECT_ENDED);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is working more properly.");
+        }
         break;
     case ONE_FOURTH_MAGIC_RESISTANCE:
         if (!One_fourth_magic_resistance && !No_magic_resistance)
+        {
+            play_sfx_sound(SFX_NEGATIVE_EFFECT_ENDED);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is working more properly.");
+        }
         break;
     case NO_MAGIC_RESISTANCE:
         if (!No_magic_resistance)
+        {
+            play_sfx_sound(SFX_NEGATIVE_EFFECT_ENDED);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel your magic resistance is working more properly.");
+        }
         break;
     case FEARFUL:
         if (!Fearful)
+        {
+            play_sfx_sound(SFX_NEGATIVE_EFFECT_ENDED);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "regain your composure.");
+        }
         break;
     case SUMMON_FORBIDDEN:
         if (!Summon_forbidden)
+        {
+            play_sfx_sound(SFX_NEGATIVE_EFFECT_ENDED);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel summoning is working properly again.");
+        }
         break;
     case CHARMED:
         if (!Charmed_or_controlled)
+        {
+            play_sfx_sound(SFX_NEGATIVE_EFFECT_ENDED);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "own motivations make more sense to you now.");
+        }
         break;
     case UNDEAD_CONTROL:
         if (!Charmed_or_controlled)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "are more in control of your own actions.");
+        }
         break;
     case DEATH_RESISTANCE:
         if (!Death_resistance)
@@ -3674,55 +3767,91 @@ boolean was_flying;
         break;
     case CHARM_RESISTANCE:
         if (!Charm_resistance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less certain of your own motivations.");
+        }
         break;
     case FEAR_RESISTANCE:
         if (!Fear_resistance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less courageous.");
+        }
         break;
     case MIND_SHIELDING:
         if (!Mind_shielding)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "unprotected from mental detection.");
+        }
         break;
     case LYCANTHROPY_RESISTANCE:
         if (!Lycanthropy_resistance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel that your immunity to lycanthropy is gone.");
+        }
         break;
     case CURSE_RESISTANCE:
         if (!Curse_resistance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less protected from curses.");
+        }
         break;
     case LIFESAVED:
         if (!Lifesaved)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel more mortal than before.");
+        }
         break;
     case DETECT_MONSTERS:
         if (!Detect_monsters)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less sensitive to the presence of monsters than before.");
+        }
         see_monsters();
         break;
     case BLIND_TELEPATHY:
         if (!Blind_telepat)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less telepathic when blind.");
+        }
         see_monsters();
         break;
     case TELEPAT:
         if (!Unblind_telepat)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less telepathic.");
+        }
         see_monsters();
         break;
     case XRAY_VISION:
         if (!XRay_vision)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can no longer see through walls.");
+        }
         see_monsters();
         break;
     case WATER_WALKING:
         if (!Wwalking)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less able to walk on water.");
+        }
         break;
     case MAGICAL_BREATHING:
         if (!EMagical_breathing && !HMagical_breathing)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less able to breathe in water.");
+        }
         break;
     case DISPLACED:
         if (!Displaced)
@@ -3733,141 +3862,232 @@ boolean was_flying;
         break;
     case CONFLICT:
         if (!Conflict)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "neighborhood feels less quarrelsome than before.");
+        }
         break;
     case MAGICAL_PROTECTION:
         if (!Magical_protection)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less protected than before.");
+        }
         break;
     case MAGICAL_SHIELDING:
         if (!Magical_shielding)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less shielded than before.");
+        }
         break;
     case MAGICAL_BARKSKIN:
         if (!Magical_barkskin)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels less bark-like than before.");
+        }
         break;
     case MAGICAL_STONESKIN:
         if (!Magical_stoneskin)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels less stone-like than before.");
+        }
         break;
     case BISECTION_RESISTANCE:
         if (!Bisection_resistance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "skin feels less steel-like than before.");
+        }
         break;
     case TITAN_STRENGTH:
         if (!Titan_strength)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less strong than before.");
+        }
         break;
     case DIVINE_ENDURANCE:
         if (!Divine_endurance)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel you have less endurance than before.");
+        }
         break;
     case DIVINE_DEXTERITY:
         if (!Divine_dexterity)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less dexterous than before.");
+        }
         break;
     case DIVINE_INTELLECT:
         if (!Divine_intellect)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less smart than before.");
+        }
         break;
     case DIVINE_WISDOM:
         if (!Divine_wisdom)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel you have less common sense than before.");
+        }
         break;
     case DIVINE_CHARISMA:
         if (!Divine_charisma)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "feel less charming than before.");
+        }
         break;
     case FAST:
         if (!Lightning_fast && !Super_fast && !Ultra_fast && !Very_fast && !Fast)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less quick than before.");
+        }
         break;
     case VERY_FAST:
         if (!Lightning_fast && !Super_fast && !Ultra_fast && !Very_fast)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%sless quick than before.",
                 Fast ? "a bit " : "");
+        }
         break;
     case ULTRA_FAST:
         if (!Lightning_fast && !Super_fast && !Ultra_fast)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%sless quick than before.",
                 Very_fast || Fast ? "a bit " : "");
+        }
         break;
     case SUPER_FAST:
         if (!Lightning_fast && !Super_fast)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%sless quick than before.",
                 Ultra_fast || Very_fast || Fast ? "a bit " : "");
+        }
         break;
     case LIGHTNING_FAST:
         if (!Lightning_fast)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%sless quick than before.",
                 Super_fast || Ultra_fast || Very_fast || Fast ? "a bit " : "");
+        }
         break;
     case SLOWED:
         if (!Slowed)
+        {
+            play_sfx_sound(SFX_NEGATIVE_EFFECT_ENDED);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "yourself speed up%s.",
                 Very_fast || Ultra_fast || Super_fast || Lightning_fast ? " a lot" : Fast ? "" : " a bit");
+        }
         break;
     case HEROISM:
         if (!Super_heroism && !Heroism)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "less heroic than before.");
+        }
         break;
     case SUPER_HEROISM:
         if (!Super_heroism)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "%sless heroic than before.",
                 Heroism ? "a bit " : "");
+        }
         break;
     case RAPID_REGENERATION:
         if (!Divine_regeneration && !Rapidest_regeneration && !Rapider_regeneration && !Rapid_regeneration)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are healing %sless rapidly than before.",
                 Regeneration ? "" : "much ");
+        }
         break;
     case RAPIDER_REGENERATION:
         if (!Divine_regeneration && !Rapidest_regeneration && !Rapider_regeneration)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are healing %sless rapidly than before.",
                 Rapid_regeneration || Regeneration ? "" : "much ");
+        }
         break;
     case RAPIDEST_REGENERATION:
         if (!Divine_regeneration && !Rapidest_regeneration)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are healing %sless rapidly than before.",
                 Rapider_regeneration || Rapid_regeneration || Regeneration ? "" : "much ");
+        }
         break;
     case DIVINE_REGENERATION:
         if (!Divine_regeneration)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are healing %sless rapidly than before.",
                 Rapidest_regeneration || Rapider_regeneration || Rapid_regeneration || Regeneration ? "" : "much ");
+        }
         break;
     case RAPID_ENERGY_REGENERATION:
         if (!Rapidest_energy_regeneration && !Rapider_energy_regeneration && !Rapid_energy_regeneration)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are gaining mana %sless rapidly than before.",
                 Energy_regeneration ? "" : "much ");
+        }
         break;
     case RAPIDER_ENERGY_REGENERATION:
         if (!Rapidest_energy_regeneration && !Rapider_energy_regeneration)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are gaining mana %sless rapidly than before.",
                 Rapid_energy_regeneration || Energy_regeneration ? "" : "much ");
+        }
         break;
     case RAPIDEST_ENERGY_REGENERATION:
         if (!Rapidest_energy_regeneration)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are gaining mana %sless rapidly than before.",
                 Rapider_energy_regeneration || Rapid_energy_regeneration || Energy_regeneration ? "" : "much ");
+        }
         break;
     case MELEE_LIFE_LEECH:
         if (!Melee_life_leech)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "have lost your ability to leech life in melee!");
+        }
         break;
     case CRAZED:
         if (!Crazed)
+        {
+            play_sfx_sound(SFX_NEGATIVE_EFFECT_ENDED);
             You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "more sane than before!");
+        }
         break;
     case SILENCED:
         if (!Silenced)
+        {
+            play_sfx_sound(SFX_NEGATIVE_EFFECT_ENDED);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can speak again!");
+        }
         break;
 
     case INVISIBILITY:
         newsym(u.ux, u.uy);
         if (!Invis && !Blocks_Invisibility && !Blind) {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You(!See_invisible
                 ? "are no longer invisible."
                 : "can no longer see through yourself.");
@@ -3880,7 +4100,10 @@ boolean was_flying;
         newsym(u.ux, u.uy);   /* make self appear */
         stop_occupation();
         if (!See_invisible)
+        {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are no longer able to see invisibile monsters.");
+        }
         break;
     case LEVITATION:
         (void)float_down(I_SPECIAL | TIMEOUT, 0L);
@@ -3898,6 +4121,7 @@ boolean was_flying;
         if (!Warn_of_mon) {
             context.warntype.speciesidx = NON_PM;
             if (context.warntype.species) {
+                play_sfx_sound(SFX_PROTECTION_END_WARNING);
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are no longer warned about %s.",
                     makeplural(context.warntype.species->mname));
                 context.warntype.species = (struct permonst*)0;
@@ -3925,6 +4149,7 @@ boolean was_flying;
         break;
     case PASSES_WALLS:
         if (!Passes_walls) {
+            play_sfx_sound(SFX_PROTECTION_END_WARNING);
             if (stuck_in_wall())
                 You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "hemmed in again.");
             else
