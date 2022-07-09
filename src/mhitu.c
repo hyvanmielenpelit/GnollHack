@@ -3626,8 +3626,9 @@ struct attack *mattk;
         break;
     case AD_ROTS:
         if (!mummyrotmu(mtmp))
-            ;
+        {
             //damage = 0;
+        }
         break;
     case AD_DREN:
         /* AC magic cancellation doesn't help when engulfed */
