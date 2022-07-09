@@ -741,7 +741,7 @@ register struct obj *obj;
 
         if (obj && objects[obj->otyp].oc_charged)
         {
-            recharge(obj, 0, TRUE);
+            recharge(obj, 0, TRUE, FALSE);
             identified = TRUE;
             nowaterdamage = TRUE;
             effecthappened = TRUE;
@@ -811,7 +811,7 @@ register struct obj *obj;
 
         if (obj && objects[obj->otyp].oc_charged)
         {
-            recharge(obj, 0, TRUE);
+            recharge(obj, 0, TRUE, FALSE);
             identified = TRUE;
             nowaterdamage = TRUE;
             effecthappened = TRUE;

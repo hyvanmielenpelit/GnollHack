@@ -1823,20 +1823,20 @@ untwoweapon()
 }
 
 int
-enchant_weapon(otmp, weapon, amount)
+enchant_weapon(otmp, weapon, amount, dopopup)
 register struct obj *otmp;
 register struct obj* weapon;
 register int amount;
+boolean dopopup;
 {
     const char *color = hcolor((amount < 0) ? NH_BLACK : NH_BLUE);
     const char *xtime, *wepname = "";
     boolean multiple;
     int otyp = STRANGE_OBJECT;
+    char buf[BUFSZ] = "";
 
     if (!weapon || !((is_weapon(weapon) || is_ammo(weapon)) && objects[weapon->otyp].oc_enchantable)) 
     {
-        char buf[BUFSZ];
-
         if (amount >= 0 && weapon && will_weld(weapon, &youmonst))
         { /* cursed tin opener */
             play_sfx_sound(SFX_ENCHANT_ITEM_UNCURSE_AND_OTHER);
@@ -1862,7 +1862,7 @@ register int amount;
                     (amount >= 0) ? "twitch" : "itch");
         }
 
-        strange_feeling(otmp, buf); /* pline()+docall()+useup() */
+        strange_feeling(otmp, buf, dopopup); /* pline()+docall()+useup() */
         exercise(A_DEX, (boolean) (amount >= 0));
         return 0;
     }
@@ -1875,8 +1875,9 @@ register int amount;
         play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_SUCCESS);
         multiple = (weapon->quan > 1L);
         /* order: message, transformation, shop handling */
-        Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s %s much sharper now.", simpleonames(weapon),
+        Sprintf(buf, "%s %s much sharper now.", simpleonames(weapon),
              multiple ? "fuse, and become" : "is");
+        pline_ex1_popup(ATR_NONE, CLR_MSG_POSITIVE, buf, "Sharper", dopopup);
         weapon->otyp = CRYSKNIFE;
         weapon->oerodeproof = 0;
 
@@ -1909,7 +1910,8 @@ register int amount;
         play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_NEGATIVE);
 
         /* order matters: message, shop handling, transformation */
-        Your_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s much duller now.", simpleonames(weapon), multiple ? "fuse, and become" : "is");
+        Sprintf(buf, "Your %s %s much duller now.", simpleonames(weapon), multiple ? "fuse, and become" : "is");
+        pline_ex1_popup(ATR_NONE, CLR_MSG_NEGATIVE, buf, "Duller", dopopup);
         costly_alteration(weapon, COST_DEGRD); /* DECHNT? other? */
         weapon->otyp = WORM_TOOTH;
         weapon->oerodeproof = 0;
@@ -1937,7 +1939,10 @@ register int amount;
     {
         play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
         if (!Blind)
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s.", Yobjnam2(weapon, "faintly glow"), color);
+        {
+            Sprintf(buf, "%s %s.", Yobjnam2(weapon, "faintly glow"), color);
+            pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, buf, "Glow", dopopup);
+        }
         return 1;
     }
 
@@ -1952,9 +1957,10 @@ register int amount;
     {
         play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
         if (!Blind)
-            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s %s for a while and then %s.", Yobjnam2(weapon, "violently glow"), color, otense(weapon, "evaporate"));
+            Sprintf(buf, "%s %s for a while and then %s.", Yobjnam2(weapon, "violently glow"), color, otense(weapon, "evaporate"));
         else
-            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s.", Yobjnam2(weapon, "evaporate"));
+            Sprintf(buf, "%s.", Yobjnam2(weapon, "evaporate"));
+        pline_ex1_popup(ATR_NONE, CLR_MSG_NEGATIVE, buf, "Evaporation", dopopup);
 
         useupall(weapon); /* let all of them disappear */
         return 1;
@@ -1963,8 +1969,8 @@ register int amount;
     if (!Blind) 
     {
         xtime = (amount * amount == 1) ? "moment" : "while";
-        pline_ex(ATR_NONE, amount == 0 ? CLR_MSG_WARNING : amount > 0 ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, "%s %s for a %s.", Yobjnam2(weapon, amount == 0 ? "violently glow" : "glow"), color, xtime);
-
+        Sprintf(buf, "%s %s for a %s.", Yobjnam2(weapon, amount == 0 ? "violently glow" : "glow"), color, xtime);
+        pline_ex1_popup(ATR_NONE, amount == 0 ? CLR_MSG_WARNING : amount > 0 ? CLR_MSG_POSITIVE : CLR_MSG_NEGATIVE, buf, "Glow", dopopup);
         if (otyp != STRANGE_OBJECT && weapon->known && (amount > 0 || (amount < 0 && otmp->bknown)))
             makeknown(otyp);
     }
@@ -1997,8 +2003,9 @@ register int amount;
     if (weapon->oartifact && artifact_has_flag(weapon, AF_MAGIC_ABSORBING) && weapon->enchantment >= 0) 
     {
         play_sfx_sound(SFX_HANDS_ITCH);
-        Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "right %s %sches!", body_part(HAND),
+        Sprintf(buf, "Your right %s %sches!", body_part(HAND),
              (((amount > 1) && (weapon->enchantment > 1)) ? "flin" : "it"));
+        pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, buf, ((amount > 1) && (weapon->enchantment > 1)) ? "Flinching" : "Itching", dopopup);
     }
 
     /* an elven magic clue, cookie@keebler */
@@ -2007,7 +2014,8 @@ register int amount;
         /*&& (is_elven_weapon(weapon) || weapon->oartifact || !rn2(7)) */ ) /* Vibrates for sure */
     {
         play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s unexpectedly.", Yobjnam2(weapon, "suddenly vibrate"));
+        Sprintf(buf, "%s unexpectedly.", Yobjnam2(weapon, "suddenly vibrate"));
+        pline_ex1_popup(ATR_NONE, CLR_MSG_WARNING, buf, "Vibration", dopopup);
     }
 
     update_inventory();

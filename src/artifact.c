@@ -2644,7 +2644,7 @@ struct obj *obj;
             }
             b_effect = (obj->blessed && (oart->role == Role_switch
                                          || oart->role == NON_PM));
-            recharge(otmp, b_effect ? 1 : obj->cursed ? -1 : 0, TRUE);
+            recharge(otmp, b_effect ? 1 : obj->cursed ? -1 : 0, TRUE, FALSE);
             break;
         }
         case ARTINVOKE_LEVEL_TELEPORT:
@@ -2879,12 +2879,12 @@ struct obj *obj;
                 if (obj->charges > old_charges)
                 {
                     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
-                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE);
+                    p_glow2(obj, NH_BLUE, ATR_NONE, CLR_MSG_POSITIVE, FALSE);
                 }
                 else if (obj->recharged != old_recharged)
                 {
                     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE2);
-                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE);
+                    p_glow1(obj, ATR_NONE, CLR_MSG_POSITIVE, FALSE);
                 }
                 else
                 {

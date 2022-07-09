@@ -473,7 +473,7 @@ boolean talk;
         /* clearing temporary blindness without toggling blindness */
         if (talk) {
             if (!haseyes(youmonst.data)) {
-                strange_feeling((struct obj *) 0, (char *) 0);
+                strange_feeling((struct obj *) 0, (char *) 0, FALSE);
             } else if (Blindfolded) {
                 eyes = body_part(EYE);
                 if (eyecount(youmonst.data) != 1)
@@ -499,7 +499,7 @@ boolean talk;
         /* setting temporary blindness without toggling blindness */
         if (talk) {
             if (!haseyes(youmonst.data)) {
-                strange_feeling((struct obj *) 0, (char *) 0);
+                strange_feeling((struct obj *) 0, (char *) 0, FALSE);
             } else if (Blindfolded) {
                 eyes = body_part(EYE);
                 if (eyecount(youmonst.data) != 1)
@@ -610,7 +610,7 @@ long mask; /* nonzero if resistance status should change by mask */
         /* clearing temporary hallucination without toggling vision */
         if (!changed && !HHallucination && old && talk) {
             if (!haseyes(youmonst.data)) {
-                strange_feeling((struct obj *) 0, (char *) 0);
+                strange_feeling((struct obj *) 0, (char *) 0, FALSE);
             } else if (Blind) {
                 const char *eyes = body_part(EYE);
 
@@ -1985,9 +1985,10 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
 }
 
 void
-strange_feeling(obj, txt)
+strange_feeling(obj, txt, dopopup)
 struct obj *obj;
 const char *txt;
+boolean dopopup;
 {
     char buf[BUFSZ] = "";
     if (flags.beginner || !txt)
@@ -1996,7 +1997,7 @@ const char *txt;
     else
         Strcpy(buf, txt);
 
-    pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, buf);
+    pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, buf, "Strange Feeling", dopopup);
 
     if (!obj) /* e.g., crystal ball finds no traps */
         return;

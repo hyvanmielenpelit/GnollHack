@@ -384,7 +384,7 @@ register struct obj *sobj;
             else
                 Strcpy(buf, "You feel materially poor.");
 
-            strange_feeling(sobj, buf);
+            strange_feeling(sobj, buf, FALSE);
         }
         return 1;
     }
@@ -544,11 +544,11 @@ register struct obj *sobj;
                 boolean savebeginner = flags.beginner;
 
                 flags.beginner = FALSE; /* prevent non-delivery of message */
-                strange_feeling(sobj, buf);
+                strange_feeling(sobj, buf, FALSE);
                 flags.beginner = savebeginner;
                 u.uedibility = 1;
             } else
-                strange_feeling(sobj, buf);
+                strange_feeling(sobj, buf, FALSE);
         }
         return !stale;
     } else if (!ct) {
@@ -715,7 +715,7 @@ int class;            /* an object class, 0 for all */
     {
         if (!ctu) {
             if (detector)
-                strange_feeling(detector, "You feel a lack of something.");
+                strange_feeling(detector, "You feel a lack of something.", FALSE);
             return 1;
         }
 
@@ -861,7 +861,7 @@ int mclass;                /* monster class, 0 for all */
         if (otmp)
             strange_feeling(otmp, Hallucination
                                       ? "You get the heebie jeebies."
-                                      : "You feel threatened.");
+                                      : "You feel threatened.", FALSE);
         return 1;
     } 
     else 
@@ -1064,7 +1064,7 @@ struct obj *sobj; /* detecting object */
         char buf[BUFSZ];
 
         Sprintf(buf, "Your %s stop itching.", makeplural(body_part(TOE)));
-        strange_feeling(sobj, buf);
+        strange_feeling(sobj, buf, FALSE);
         return 1;
     }
     /* traps exist, but only under me - no separate display required */

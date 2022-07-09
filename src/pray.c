@@ -2051,7 +2051,7 @@ boolean bless_stuff;
                 if (!bless_stuff)
                 {
                     something_happened = TRUE;
-                    strip_charges(otmp, FALSE);
+                    strip_charges(otmp, FALSE, FALSE);
                 }
                 else if (bless_stuff && otmp->charges < lim)
                 {

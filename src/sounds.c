@@ -9318,28 +9318,32 @@ struct monst* mtmp;
 {
     const char repair_armor_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
     struct obj* otmp = getobj(repair_armor_objects, "repair", 0, "");
+    char talkbuf[BUFSZ];
 
     if (!otmp)
         return 0;
 
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
     if(iflags.using_gui_sounds)
-        pline("%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
+        Sprintf(talkbuf, "%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
     else
-        pline("%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
+        Sprintf(talkbuf, "%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
+    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
 
     if (otmp && otmp->oclass != ARMOR_CLASS)
     {
         play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_THIS_IS_NOT_AN_ARMOR_I_CAN_REPAIR);
-        verbalize("Sorry, this is not an armor I can repair.");
+        Strcpy(talkbuf, "Sorry, this is not an armor I can repair.");
+        popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 0;
     }
     else if (otmp && !erosion_matters(otmp))
     {
         play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_I_COULDNT_MAKE_THIS_ANY_BETTER_THAN_BEFORE);
-        verbalize("Sorry, I couldn't make this any better than before.");
+        Strcpy(talkbuf, "Sorry, I couldn't make this any better than before.");
+        popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 0;
     }
 
@@ -9347,18 +9351,21 @@ struct monst* mtmp;
     if (otmp->oeroded || otmp->oeroded2)
     {
         otmp->oeroded = otmp->oeroded2 = 0;
-        pline("%s as good as new!",
+        Sprintf(talkbuf, "%s as good as new!",
             Yobjnam2(otmp, Blind ? "feel" : "look"));
+        pline_ex1_popup(ATR_NONE, NO_COLOR, talkbuf, "As Good As New", TRUE);
     }
     else
     {
         otmp->oeroded = otmp->oeroded2 = 0;
-        pline("%s as good as new, just like %s before!",
+        Sprintf(talkbuf, "%s as good as new, just like %s before!",
             Yobjnam2(otmp, Blind ? "feel" : "look"), otmp->quan == 1 ? "it was" : "they were");
+        pline_ex1_popup(ATR_NONE, NO_COLOR, talkbuf, "As Good As New", TRUE);
     }
     update_inventory();
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
-    verbalize("Thank you for using my services.");
+    Strcpy(talkbuf, "Thank you for using my services.");
+    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
     return 1;
 }
 
@@ -9368,29 +9375,33 @@ struct monst* mtmp;
 {
     const char repair_weapon_objects[] = { ALL_CLASSES, WEAPON_CLASS, 0 };
     struct obj* otmp = getobj(repair_weapon_objects, "repair", 0, "");
+    char talkbuf[BUFSZ];
 
     if (!otmp)
         return 0;
 
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
     if (iflags.using_gui_sounds)
-        pline("%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
+        Sprintf(talkbuf, "%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
     else
-        pline("%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
+        Sprintf(talkbuf, "%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
+    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
 
     /* Check if the selection is not an appropriate weapon */
     if (otmp && !is_weapon(otmp))
     {
         play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_THIS_IS_NOT_A_WEAPON_I_CAN_REPAIR);
-        verbalize("Sorry, this is not a weapon I can repair.");
+        Strcpy(talkbuf, "Sorry, this is not a weapon I can repair.");
+        popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 0;
     }
     else if (otmp && !erosion_matters(otmp))
     {
         play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_I_COULDNT_MAKE_THIS_ANY_BETTER_THAN_BEFORE);
-        verbalize("Sorry, I couldn't make this any better than before.");
+        Strcpy(talkbuf, "Sorry, I couldn't make this any better than before.");
+        popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 0;
     }
 
@@ -9398,18 +9409,21 @@ struct monst* mtmp;
     if (otmp->oeroded || otmp->oeroded2)
     {
         otmp->oeroded = otmp->oeroded2 = 0;
-        pline("%s as good as new!",
+        Sprintf(talkbuf, "%s as good as new!",
             Yobjnam2(otmp, Blind ? "feel" : "look"));
+        pline_ex1_popup(ATR_NONE, NO_COLOR, talkbuf, "As Good As New", TRUE);
     }
     else
     {
         otmp->oeroded = otmp->oeroded2 = 0;
-        pline("%s as good as new, just like %s before!",
+        Sprintf(talkbuf, "%s as good as new, just like %s before!",
             Yobjnam2(otmp, Blind ? "feel" : "look"), otmp->quan == 1 ? "it was" : "they were");
+        pline_ex1_popup(ATR_NONE, NO_COLOR, talkbuf, "As Good As New", TRUE);
     }
     update_inventory();
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
-    verbalize("Thank you for using my services.");
+    Strcpy(talkbuf, "Thank you for using my services.");
+    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
     return 1;
 }
 
@@ -9419,6 +9433,7 @@ struct monst* mtmp;
 {
     const char refill_lantern_objects[] = { ALL_CLASSES, TOOL_CLASS, 0 };
     struct obj* otmp = getobj(refill_lantern_objects, "refill", 0, "");
+    char talkbuf[BUFSZ];
 
     if (!otmp)
         return 0;
@@ -9428,7 +9443,8 @@ struct monst* mtmp;
     {
 //        play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_THIS_IS_NOT_AN_ITEM_THAT_I_CAN_FILL_WITH_OIL);
-        verbalize("Sorry, this is not an item that I can fill with oil.");
+        Strcpy(talkbuf, "Sorry, this is not an item that I can fill with oil.");
+        popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 0;
     }
     else if (otmp && otmp->age > 1500L)
@@ -9439,16 +9455,21 @@ struct monst* mtmp;
             if (otmp->otyp == BRASS_LANTERN)
             {
                 play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_YOUR_LANTERN_IS_ALREADY_FULL);
-                verbalize("Sorry, your lantern is already full.");
+                Strcpy(talkbuf, "Sorry, your lantern is already full.");
+                popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
             }
             else
             {
                 play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_YOUR_LAMP_IS_ALREADY_FULL);
-                verbalize("Sorry, your lamp is already full.");
+                Strcpy(talkbuf, "Sorry, your lamp is already full.");
+                popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
             }
         }
         else
-            verbalize("Sorry, %s %s already full.", yname(otmp), otense(otmp, "are"));
+        {
+            Sprintf(talkbuf, "Sorry, %s %s already full.", yname(otmp), otense(otmp, "are"));
+            popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
+        }
 
         return 0;
     }
@@ -9465,14 +9486,16 @@ struct monst* mtmp;
         otmp->age = 0;
     }
 
-    pline("%s fills %s with oil.", noittame_Monnam(mtmp), yname(otmp));
+    Sprintf(talkbuf, "%s fills %s with oil.", noittame_Monnam(mtmp), yname(otmp));
+    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
 
     otmp->age = 1500L;
     otmp->special_quality = 1;
     update_inventory();
 
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
-    verbalize("Thank you for using my services.");
+    Strcpy(talkbuf, "Thank you for using my services.");
+    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
     return 1;
 }
 
@@ -9482,6 +9505,7 @@ struct monst* mtmp;
 {
     const char forge_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
     struct obj* otmp = getobj_ex(forge_objects, "forge into a dragon scale mail", 0, "", maybe_dragon_scales);
+    char talkbuf[BUFSZ];
 
     if (!otmp)
         return 0;
@@ -9489,28 +9513,37 @@ struct monst* mtmp;
     if (iflags.using_gui_sounds)
     {
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
-        pline("%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
+        Sprintf(talkbuf, "%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
     }
     else
     {
-        pline("%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
+        Sprintf(talkbuf, "%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
     }
+    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
 
     /* Check if the selection is appropriate */
     if (otmp && !maybe_dragon_scales(otmp))
     {
         //play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_THIS_IS_NOT_AN_ITEM_THAT_I_CAN_FORGE_INTO_A_DRAGON_SCALE_MAIL);
-        verbalize("Sorry, this is not an item that I can forge into a dragon scale mail.");
+        Strcpy(talkbuf, "Sorry, this is not an item that I can forge into a dragon scale mail.");
+        popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 0;
     }
 
-    pline("%s starts working on %s.", noittame_Monnam(mtmp), yname(otmp));
+    play_sfx_sound(SFX_NEARBY_LOUD_CLANGING);
+    Sprintf(talkbuf, "%s starts working on %s.", noittame_Monnam(mtmp), yname(otmp));
+    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
+#ifndef GNH_MOBILE
+    if (iflags.using_gui_sounds)
+        delay_output_milliseconds(2000);
+#endif
 
     dragon_scales_to_scale_mail(otmp, FALSE);
 
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
-    verbalize("Thank you for using my services.");
+    Strcpy(talkbuf, "Thank you for using my services.");
+    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
     return 1;
 }
 
@@ -9583,6 +9616,7 @@ forge_special_func(mtmp, forge_source_otyp, forge_source_quan, forge_dest_otyp)
 struct monst* mtmp;
 int forge_source_otyp, forge_source_quan, forge_dest_otyp;
 {
+    char talkbuf[BUFSZ];
     char forge_objects[3] = { 0, 0, 0 };
     forge_objects[0] = ALL_CLASSES;
     forge_objects[1] = objects[forge_source_otyp].oc_class;
@@ -9600,13 +9634,14 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
     if (iflags.using_gui_sounds)
     {
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
-        pline("%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
+        Sprintf(talkbuf, "%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
         delay_output_milliseconds(750);
     }
     else
     {
-        pline("%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
+        Sprintf(talkbuf, "%s says: \"Let's have a look at %s.\"", noittame_Monnam(mtmp), yname(otmp));
     }
+    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
 
     int quan_needed = forge_source_quan;
     /* Check if the selection is appropriate */
@@ -9614,7 +9649,8 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
     {
         //play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_THIS_IS_NOT_A_COMPONENT_THAT_I_CAN_FORGE_INTO_THE_REQUESTED_ITEM);
-        verbalize("Sorry, this is not an item that I can forge into %s.", an(OBJ_NAME(objects[forge_dest_otyp])));
+        Sprintf(talkbuf, "Sorry, this is not an item that I can forge into %s.", an(OBJ_NAME(objects[forge_dest_otyp])));
+        popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 0;
     }
 
@@ -9630,19 +9666,24 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
         if (iflags.using_gui_sounds)
         {
             play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_YOU_NEED_MORE_COMPONENTS_TO_FORGE_THE_REQUESTED_ITEM);
-            pline("\"Sorry, you need more components to forge the requested item.\" (You need %d %s for %s.) ", quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
+            Sprintf(talkbuf, "\"Sorry, you need more components to forge the requested item.\" (You need %d %s for %s.) ", quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
+            popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         }
         else
         {
-            verbalize("Sorry, you need %d %s to forge %s.", quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
+            Sprintf(talkbuf, "Sorry, you need %d %s to forge %s.", quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
+            popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         }
         return 0;
     }
 
     play_sfx_sound(SFX_NEARBY_LOUD_CLANGING);
-    pline("%s starts working on %s.", noittame_Monnam(mtmp), yname(otmp));
+    Sprintf(talkbuf, "%s starts working on %s.", noittame_Monnam(mtmp), yname(otmp));
+    popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
+#ifndef GNH_MOBILE
     if (iflags.using_gui_sounds)
         delay_output_milliseconds(2000);
+#endif
 
     if (otmp->quan > quan_needed)
     {
@@ -9658,7 +9699,8 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
     struct obj* craftedobj = mksobj(forge_dest_otyp, FALSE, FALSE, 3);
     if (craftedobj)
     {
-        pline("%s hands %s to you.", noittame_Monnam(mtmp), an(cxname(craftedobj)));
+        Sprintf(talkbuf, "%s hands %s to you.", noittame_Monnam(mtmp), an(cxname(craftedobj)));
+        popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         hold_another_object(craftedobj, "Oops!  %s out of your grasp!",
             The(aobjnam(craftedobj, "slip")),
             (const char*)0);
@@ -9666,11 +9708,13 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
         stop_all_immediate_sounds();
         play_sfx_sound(SFX_BUY_FROM_NPC);
         play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
-        verbalize("Thank you for using my services.");
+        Strcpy(talkbuf, "Thank you for using my services.");
+        popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
     }
     else
     {
-        pline("%s stares blankly for a moment as if something is seriously amiss.", noittame_Monnam(mtmp));
+        Sprintf(talkbuf, "%s stares blankly for a moment as if something is seriously amiss.", noittame_Monnam(mtmp));
+        popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
     }
 
     return 1;
@@ -9706,14 +9750,14 @@ int* spell_otyps;
     if (cnt == 0)
     {
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_CANNOT_TEACH_SPELLS);
-        strcpy(speakbuf, "Unfortunately, I cannot teach any spells at the moment.");
+        Strcpy(speakbuf, "Unfortunately, I cannot teach any spells at the moment.");
         popup_talk_line_ex(mtmp, speakbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 1;
     }
     else if (not_known_cnt == 0)
     {
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_CANNOT_TEACH_SPELLS_YOU_DONT_KNOW);
-        strcpy(speakbuf, "Unfortunately, I cannot teach any spells you do not already know.");
+        Strcpy(speakbuf, "Unfortunately, I cannot teach any spells you do not already know.");
         popup_talk_line_ex(mtmp, speakbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 1;
     }
@@ -9762,9 +9806,10 @@ int* spell_otyps;
 
     if (spell_count <= 0)
     {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline("%s doesn't have any spells to teach.", noittame_Monnam(mtmp));
         destroy_nhwindow(win);
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        Sprintf(speakbuf, "%s doesn't have any spells to teach.", noittame_Monnam(mtmp));
+        popup_talk_line_ex(mtmp, speakbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 0;
     }
 
