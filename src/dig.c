@@ -2570,8 +2570,9 @@ struct obj* origobj;
         }
 
         /* Destroy potions */
-        struct obj* otmp;
-        for (otmp = level.objects[zx][zy]; otmp; otmp = otmp->nexthere) {
+        struct obj* otmp, *otmp2;
+        for (otmp = level.objects[zx][zy]; otmp; otmp = otmp2) {
+            otmp2 = otmp->nexthere; //Save nextthere to otmp2, because otmp may get deleted below
             if(otmp->oclass == POTION_CLASS)
             {
                 play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_OBJECT, zx, zy);
