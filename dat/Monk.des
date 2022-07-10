@@ -13,6 +13,8 @@
 MAZE: "Mon-strt",'T'
 FLAGS: noteleport,hardfloor
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         
+#1234567890123456789012345678901234567890123456789012345678901234567890123456789
 MAP
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -38,15 +40,41 @@ ENDMAP
 # Dungeon Description
 REGION:(00,00,75,19),lit,"ordinary"
 REGION:(24,06,33,13),lit,"temple" floorsubtype:floor_marble
+REGION:(42,08,44,11),lit,"ordinary" floorsubtype:floor_marble
+REGION:(46,08,48,11),lit,"ordinary" floorsubtype:floor_marble
+
+SIGNPOST: (37,09), signpost_normal,"Silence Please - Place of Worship"
 
 REPLACE_TERRAIN:(0,0,10,19),',','T',10%
 REPLACE_TERRAIN:(65,0,75,19),',','T',10%
+
+# Braziers
+BRAZIER:(21,04)
+BRAZIER:(36,04)
+BRAZIER:(36,15)
+BRAZIER:(21,15)
+
+BRAZIER:(24,06)
+BRAZIER:(33,06)
+BRAZIER:(33,13)
+BRAZIER:(24,13)
+
+BRAZIER:(40,08)
+BRAZIER:(40,11)
+
+BRAZIER:(54,06)
+BRAZIER:(54,13)
+BRAZIER:(50,08)
+BRAZIER:(50,11)
+BRAZIER:(54,08)
+BRAZIER:(54,11)
 
 # Portal arrival point
 TERRAIN:(05,04),','
 BRANCH:(05,04,05,04),(0,0,0,0)
 # Stairs
 STAIR:(52,09),down
+
 # Doors
 DOOR:locked,(18,09)
 DOOR:locked,(18,10)
@@ -66,11 +94,14 @@ DOOR:closed,(52,12)
 DOOR:closed,(40,14)
 DOOR:closed,(46,14)
 DOOR:closed,(52,14)
+
 # Unattended Altar - unaligned due to conflict - player must align it.
 ALTAR:(28,09),noalign,altar
+
 # The Grand Master
 MONSTER:('@',"Grand Master"),(28,10),protector
 # No treasure chest!
+
 # guards for the audience chamber
 MONSTER:('@',"abbot"),(32,07),protector
 MONSTER:('@',"abbot"),(32,08),protector
@@ -80,15 +111,49 @@ MONSTER:('@',"abbot"),(33,07),protector
 MONSTER:('@',"abbot"),(33,08),protector
 MONSTER:('@',"abbot"),(33,11),protector
 MONSTER:('@',"abbot"),(33,12),protector
+
 # Non diggable walls
 NON_DIGGABLE:(18,03,55,16)
+
 # Random traps
 TRAP:"dart",(20,09)
 TRAP:"dart",(20,10)
-TRAP:random,random
-TRAP:random,random
-TRAP:random,random
-TRAP:random,random
+
+# Some other furniture
+OBJECT: ('(', "bookshelf"), (38,04)
+OBJECT: ('(', "bookshelf"), (42,04)
+CONTAINER: ('(', "large box"), (44,04) {
+  OBJECT: '%'
+  OBJECT: '%'
+  OBJECT: '%'
+  OBJECT: ('%', "orange")
+  OBJECT: ('%', "handful of nuts")
+  OBJECT: ('%', "eucalyptus leaf")
+}
+CONTAINER: ('(', "large box"), (48,04) {
+  OBJECT: '%'
+  OBJECT: '%'
+  OBJECT: '%'
+  OBJECT: ('%', "apple")
+  OBJECT: ('%', "pear")
+  OBJECT: ('%', "carrot")
+}
+OBJECT: ('!', "water"), (50,04)
+OBJECT: ('!', "water"), (54,04)
+
+OBJECT: ('9', "clove of garlic"), (38,15)
+OBJECT: ('9', "ginseng root"), (42,15)
+OBJECT: '9', (44,15)
+OBJECT: '9', (48,15)
+OBJECT: ('(', "chest"), (50,15)
+OBJECT: ('(', "chest"), (54,15)
+
+OBJECT: ('*', "clay pebble"), (43,09)
+OBJECT: ('*', "stone pebble"), (43,10)
+
+OBJECT: ('9', "pinch of sulfurous ash"), (47,09)
+OBJECT: ('9', "pinch of sulfurous ash"), (47,10)
+
 # Monsters on siege duty.
 MONSTER: ('E',"earth elemental"),(37,01)
 MONSTER: ('E',"earth elemental"),(37,18)

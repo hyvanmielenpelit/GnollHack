@@ -13,6 +13,8 @@
 MAZE: "Pri-strt",'T'
 FLAGS: noteleport,hardfloor
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         
+#1234567890123456789012345678901234567890123456789012345678901234567890123456789
 MAP
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -39,14 +41,27 @@ ENDMAP
 REGION:(00,00,75,19),lit,"ordinary"
 REGION:(24,06,33,13),lit,"temple" floorsubtype:floor_marble
 
+# Signposts
+SIGNPOST: (14,09), signpost_normal,"Welcome to the Great Temple"
+SIGNPOST: (37,09), signpost_normal,"Silence Please - Place of Worship"
+
 REPLACE_TERRAIN:(0,0,10,19),',','T',10%
 REPLACE_TERRAIN:(65,0,75,19),',','T',10%
 TERRAIN:(05,04),','
 
 # Portal arrival point
 BRANCH:(05,04,05,04),(0,0,0,0)
+
 # Stairs
 STAIR:(52,09),down
+
+
+# Braziers
+BRAZIER:(43,09)
+BRAZIER:(43,10)
+BRAZIER:(47,09)
+BRAZIER:(47,10)
+
 # Doors
 DOOR:locked,(18,09)
 DOOR:locked,(18,10)
@@ -66,13 +81,17 @@ DOOR:closed,(52,12)
 DOOR:closed,(40,14)
 DOOR:closed,(46,14)
 DOOR:closed,(52,14)
+
 # Unattended Altar - unaligned due to conflict - player must align it.
 ALTAR:(28,09),noalign,altar
+
 # High Priest
 MONSTER:('@',"Arch Priest"),(28,10),protector
+
 # The treasure of High Priest
 OBJECT:('(',"chest"),(27,10)
-# knight guards for the audience chamber
+
+# Acolytes of the audience chamber
 MONSTER:('@',"acolyte"),(32,07),protector
 MONSTER:('@',"acolyte"),(32,08),protector
 MONSTER:('@',"acolyte"),(32,11),protector
@@ -81,15 +100,130 @@ MONSTER:('@',"acolyte"),(33,07),protector
 MONSTER:('@',"acolyte"),(33,08),protector
 MONSTER:('@',"acolyte"),(33,11),protector
 MONSTER:('@',"acolyte"),(33,12),protector
+
 # Non diggable walls
 NON_DIGGABLE:(18,03,55,16)
+
+# Some candelabrums
+IF[80%] {
+  IF[50%] {
+    OBJECT: ('(', "large five-branched candelabrum"), (21,04), special_quality:(1d5), age:99000, lit
+  } ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (21,04), special_quality:(1d5), age:1000, unlit
+  }
+} ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (21,04), special_quality:0
+}
+IF[80%] {
+  IF[50%] {
+    OBJECT: ('(', "large five-branched candelabrum"), (36,04), special_quality:(1d5), age:99000, lit
+  } ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (36,04), special_quality:(1d5), age:1000, unlit
+  }
+} ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (36,04), special_quality:0
+}
+IF[80%] {
+  IF[50%] {
+    OBJECT: ('(', "large five-branched candelabrum"), (36,15), special_quality:(1d5), age:99000, lit
+  } ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (36,15), special_quality:(1d5), age:1000, unlit
+  }
+} ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (36,15), special_quality:0
+}
+IF[80%] {
+  IF[50%] {
+    OBJECT: ('(', "large five-branched candelabrum"), (21,15), special_quality:(1d5), age:99000, lit
+  } ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (21,15), special_quality:(1d5), age:1000, unlit
+  }
+} ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (21,15), special_quality:0
+}
+
+IF[90%] {
+  IF[75%] {
+    OBJECT: ('(', "large five-branched candelabrum"), (24,06), special_quality:(1d5), age:99000, lit
+  } ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (24,06), special_quality:(1d5), age:1000, unlit
+  }
+} ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (24,06), special_quality:0
+}
+IF[90%] {
+  IF[75%] {
+    OBJECT: ('(', "large five-branched candelabrum"), (33,06), special_quality:(1d5), age:99000, lit
+  } ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (33,06), special_quality:(1d5), age:1000, unlit
+  }
+} ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (33,06), special_quality:0
+}
+IF[90%] {
+  IF[75%] {
+    OBJECT: ('(', "large five-branched candelabrum"), (33,13), special_quality:(1d5), age:99000, lit
+  } ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (33,13), special_quality:(1d5), age:1000, unlit
+  }
+} ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (33,13), special_quality:0
+}
+IF[90%] {
+  IF[75%] {
+    OBJECT: ('(', "large five-branched candelabrum"), (24,13), special_quality:(1d5), age:99000, lit
+  } ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (24,13), special_quality:(1d5), age:1000, unlit
+  }
+} ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (24,13), special_quality:0
+}
+
+IF[80%] {
+  IF[50%] {
+    OBJECT: ('(', "large five-branched candelabrum"), (40,08), special_quality:(1d5), age:99000, lit
+  } ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (40,08), special_quality:(1d5), age:1000, unlit
+  }
+} ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (40,08), special_quality:0
+}
+IF[80%] {
+  IF[50%] {
+    OBJECT: ('(', "large five-branched candelabrum"), (40,11), special_quality:(1d5), age:99000, lit
+  } ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (40,11), special_quality:(1d5), age:1000, unlit
+  }
+} ELSE {
+    OBJECT: ('(', "large five-branched candelabrum"), (40,11), special_quality:0
+}
+
+OBJECT: ('(', "large five-branched candelabrum"), (54,06), special_quality:(1d5), age:99000, lit
+OBJECT: ('(', "large five-branched candelabrum"), (54,13), special_quality:(1d5), age:99000, lit
+OBJECT: ('(', "large five-branched candelabrum"), (50,08), special_quality:(1d5), age:1000, unlit
+OBJECT: ('(', "large five-branched candelabrum"), (50,11), special_quality:(1d5), age:1000, unlit
+OBJECT: ('(', "large five-branched candelabrum"), (54,08), special_quality:(1d5), age:1000, unlit
+OBJECT: ('(', "large five-branched candelabrum"), (54,11), special_quality:(1d5), age:1000, unlit
+
+# Some other furniture
+OBJECT: ('(', "bookshelf"), (38,04)
+OBJECT: ('(', "bookshelf"), (42,04)
+OBJECT: ('(', "large box"), (44,04)
+OBJECT: ('(', "large box"), (48,04)
+OBJECT: ('(', "sarcophagus"), (50,04)
+OBJECT: ('(', "coffin"), (54,04)
+
+OBJECT: ('9', "clove of garlic"), (38,15)
+OBJECT: ('9', "ginseng root"), (42,15)
+OBJECT: '9', (44,15)
+OBJECT: '9', (48,15)
+OBJECT: ('(', "chest"), (50,15)
+OBJECT: ('(', "chest"), (54,15)
+
 # Random traps
 TRAP:"dart",(20,09)
 TRAP:"dart",(20,10)
-TRAP:random,random
-TRAP:random,random
-TRAP:random,random
-TRAP:random,random
+
 # Monsters on siege duty.
 MONSTER: ('z',"human zombie"),(37,01)
 MONSTER: ('z',"human zombie"),(37,18)

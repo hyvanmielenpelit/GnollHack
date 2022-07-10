@@ -11,6 +11,8 @@ MAZE:"wizard1",' '
 FLAGS:noteleport,hardfloor,corrmaze
 NAMING:"A large square tower",name_revealed_never
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         
+#1234567890123456789012345678901234567890123456789012345678901234567890123456789
 MAP
 ----------------------------#
 |.......|..|.........|.....|#
@@ -34,10 +36,16 @@ SPECIAL_REGION:(01,01,27,11),region_special_level_seen
 # Make it a morgue for rm id in mkmaze.c
 # for the purpose of random sdoor placement
 REGION:(12,01,20,09),unlit,"morgue",unfilled
+REGION:(22,01,26,02),lit,"library",unfilled floorsubtype:floor_parquet
 # another region to constrain monster arrival
 REGION:(01,01,10,11),unlit,"ordinary",unfilled
 MAZEWALK:(28,05),east
 LADDER:(06,05),down
+SIGNPOST: (04,05), signpost_normal,"Wizard of Yendor's Private Quarters - Get Lost While You Can"
+BRAZIER: (04,07)
+BRAZIER: (10,07)
+BRAZIER: (04,11)
+BRAZIER: (10,11)
 # Non diggable walls
 # Walls inside the moat stay diggable
 NON_DIGGABLE:(00,00,11,12)
@@ -92,6 +100,10 @@ OBJECT:'?',random
 OBJECT:'+',random
 OBJECT:'+',random
 OBJECT:'+',random
+OBJECT: ('(', "bookshelf"),(23,01)
+OBJECT: ('(', "bookshelf"),(25,01)
+OBJECT: ('(', "chest"),(10,01)
+OBJECT: ('(', "chest"),(10,05)
 
 
 # The middle wizard level.
@@ -99,6 +111,8 @@ MAZE:"wizard2",' '
 FLAGS:noteleport,hardfloor,corrmaze
 NAMING:"A large square tower",name_revealed_never
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         
+#1234567890123456789012345678901234567890123456789012345678901234567890123456789
 MAP
 ----------------------------#
 |.....|.S....|.............|#
@@ -127,6 +141,7 @@ DOOR:closed,(11,10)
 MAZEWALK:(28,05),east
 LADDER:(12,01),up
 LADDER:(14,11),down
+SIGNPOST: (16,11), signpost_normal,"Rare Monsters on This Level. Thieves Watch Out!"
 # Non diggable walls everywhere
 NON_DIGGABLE:(00,00,27,12)
 #
@@ -147,7 +162,13 @@ OBJECT:'?',random
 OBJECT:'+',random
 # treasures
 OBJECT:'"',(04,06)
-
+OBJECT: ('(', "chest"),(12,01)
+OBJECT: ('(', "weapon rack"),(02,01)
+OBJECT: ('(', "weapon rack"),(04,01)
+OBJECT: ('(', "weapon rack"),(20,03)
+OBJECT: ('(', "weapon rack"),(22,03)
+OBJECT: ('(', "weapon rack"),(24,03)
+OBJECT: ('(', "weapon rack"),(26,03)
 
 # The bottom wizard level.
 # Memorialize the fakewiz setup.
@@ -155,6 +176,8 @@ MAZE:"wizard3",' '
 FLAGS:noteleport,hardfloor,corrmaze
 NAMING:"A large square tower",name_revealed_never
 GEOMETRY:center,center
+#         1         2         3         4         5         6         7         
+#1234567890123456789012345678901234567890123456789012345678901234567890123456789
 MAP
 ----------------------------#
 |..|............S..........|#
@@ -177,6 +200,8 @@ TELEPORT_REGION:levregion(01,00,79,20),(0,0,27,12)
 SPECIAL_REGION:(01,01,27,11),region_special_level_seen
 PORTAL:(25,11,25,11),(0,0,0,0),"fakewiz1"
 MAZEWALK:(28,09),east
+SIGNPOST: (23,08), signpost_normal,"Keep Out, and Don't Come Back! -Wizard of Yendor"
+SIGNPOST: (03,10), signpost_normal,"Don't Feed the Kraken!"
 REGION:(07,03,15,11),unlit,"morgue",unfilled
 REGION:(17,06,18,11),unlit,"beehive"
 # make the entry chamber a real room; it affects monster arrival;

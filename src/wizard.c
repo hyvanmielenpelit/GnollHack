@@ -863,6 +863,7 @@ resurrect()
         mtmp->mtame = mtmp->mpeaceful = 0; /* paranoia */
         set_malign(mtmp);
         newsym(mtmp->mx, mtmp->my);
+        check_boss_fight(mtmp);
         if (!Deaf) {
             pline("A voice booms out...");
             play_voice_wizard_of_yendor_simple_line(mtmp, 
@@ -874,7 +875,6 @@ resurrect()
                talkeff(mtmp->mx, mtmp->my);
 
         }
-        check_boss_fight(mtmp);
     }
 }
 
