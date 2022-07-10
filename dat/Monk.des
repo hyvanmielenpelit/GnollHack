@@ -40,8 +40,8 @@ ENDMAP
 # Dungeon Description
 REGION:(00,00,75,19),lit,"ordinary"
 REGION:(24,06,33,13),lit,"temple" floorsubtype:floor_marble
-REGION:(42,08,44,11),lit,"ordinary" floorsubtype:floor_marble
-REGION:(46,08,48,11),lit,"ordinary" floorsubtype:floor_marble
+FLOOR:fillrect(42,08,44,11),location_floor,floor_marble
+FLOOR:fillrect(46,08,48,11),location_floor,floor_marble
 
 SIGNPOST: (37,09), signpost_normal,"Silence Please - Place of Worship"
 
