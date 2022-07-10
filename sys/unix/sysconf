@@ -100,7 +100,7 @@ MAXPLAYERS=10
 #   %D current time, YYYYMMDDhhmmss format
 #   %n player name
 #   %N first character of player name
-DUMPLOGFILE=/tmp/gnollhack.%n.%t.log
+DUMPLOGFILE=/tmp/gnollhack.%n.%t.txt
 
 # Number of bones file pools.
 # The pool you belong to is determined at game start. You will

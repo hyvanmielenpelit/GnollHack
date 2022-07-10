@@ -29,7 +29,7 @@
 #define SYSCF_FILE "sysconf" /* Use a file to hold the SYSCF configuration */
 
 #define DUMPLOG      /* Enable dumplog files */
-/*#define DUMPLOG_FILE "GnollHack-%n-%d.log"*/
+/*#define DUMPLOG_FILE "GnollHack-%n-%d.txt"*/
 #undef DUMPLOG_DIR
 #define DUMPLOG_DIR        "dumplog" /* Note: this is just used to create a directory, DUMPLOG_FILE still needs to have the full path */
 #define DUMPLOG_MSG_COUNT 50

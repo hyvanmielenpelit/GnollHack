@@ -5403,7 +5403,7 @@ dump_spells()
         char buf[BUFSZ];
         char spellnamebuf[BUFSZ];
         char castingsbuf[BUFSZ];
-        putstr(0, 0, "Spells Known:");
+        putstr(0, 0, "Spells in your repertoire:");
         for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
         {
             if (spellamount(i) >= 0)

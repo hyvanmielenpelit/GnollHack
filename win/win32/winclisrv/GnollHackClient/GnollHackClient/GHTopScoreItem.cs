@@ -181,7 +181,7 @@ namespace GnollHackClient
         public string GetDumplogFileName()
         {
             string startdatestring = App.GnollHackService.DumplogDateString(StartTime);
-            return "gnollhack." + Name + "." + startdatestring + ".log";
+            return "gnollhack." + Name + "." + startdatestring + ".txt";
         }
 
         public bool IsDumplogButtonEnabled
