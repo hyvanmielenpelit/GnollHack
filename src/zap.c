@@ -36,6 +36,7 @@ STATIC_DCL int FDECL(m_spell_hit_skill_bonus, (struct monst*, int));
 STATIC_DCL int FDECL(m_spell_hit_dex_bonus, (struct monst*, int));
 STATIC_DCL int FDECL(m_wand_hit_skill_bonus, (struct monst*, int));
 STATIC_DCL void FDECL(wishcmdassist, (int));
+STATIC_DCL int FDECL(get_summon_monster_type, (int));
 
 #define ZT_MAGIC_MISSILE (AD_MAGM - 1)
 #define ZT_FIRE (AD_FIRE - 1)
@@ -4585,6 +4586,10 @@ register struct obj *obj;
         mtmp = summoncreature(obj->otyp, PM_BOA_CONSTRICTOR, "You throw the stick you prepared in the front of you. It turns into %s!", MM_NEUTRAL_SUMMON_ANIMATION | MM_NO_MONSTER_INVENTORY,
             SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH | SUMMONCREATURE_FLAGS_FAITHFUL);
         break;
+    case SPE_STICK_TO_GIANT_ANACONDA:
+        mtmp = summoncreature(obj->otyp, PM_GIANT_ANACONDA, "You throw the stick you prepared in the front of you. It turns into %s!", MM_NEUTRAL_SUMMON_ANIMATION | MM_NO_MONSTER_INVENTORY,
+            SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH | SUMMONCREATURE_FLAGS_FAITHFUL);
+        break;
     case SPE_CELESTIAL_DOVE:
         mtmp = summoncreature(obj->otyp, PM_CELESTIAL_DOVE, "%s descends from the heavens.", MM_LAWFUL_SUMMON_ANIMATION | MM_NO_MONSTER_INVENTORY,
             SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH | SUMMONCREATURE_FLAGS_PACIFIST | SUMMONCREATURE_FLAGS_FAITHFUL);
@@ -4620,6 +4625,21 @@ register struct obj *obj;
     case SPE_SUMMON_ELDER_TREANT:
         mtmp = summoncreature(obj->otyp, PM_ELDER_TREANT, "%s appears before you.", MM_NEUTRAL_SUMMON_ANIMATION | MM_NO_MONSTER_INVENTORY,
             SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH | SUMMONCREATURE_FLAGS_PACIFIST | SUMMONCREATURE_FLAGS_FAITHFUL);
+        break;
+    case SPE_SUMMON_GRIZZLY_BEAR:
+    case SPE_SUMMON_OWLBEAR:
+    case SPE_SUMMON_OWLBEAR_PATRIARCH:
+    case SPE_SUMMON_COCKATRICE:
+    case SPE_SUMMON_GIANT_COCKATRICE:
+    case SPE_SUMMON_GARGANTUAN_COCKATRICE:
+    case SPE_SUMMON_GIANT_SPIDER:
+    case SPE_SUMMON_PHASE_SPIDER:
+    case SPE_SUMMON_PURPLE_WORM:
+    case SPE_SUMMON_GARGANTUAN_BEETLE:
+    case SPE_SUMMON_RAVEN:
+    case SPE_SUMMON_WINTER_WOLF:
+        mtmp = summoncreature(obj->otyp, get_summon_monster_type(obj->otyp), "%s appears before you.", MM_NEUTRAL_SUMMON_ANIMATION | MM_NO_MONSTER_INVENTORY,
+            SUMMONCREATURE_FLAGS_CAPITALIZE | SUMMONCREATURE_FLAGS_DISREGARDS_STRENGTH | SUMMONCREATURE_FLAGS_DISREGARDS_HEALTH | SUMMONCREATURE_FLAGS_FAITHFUL);
         break;
     case SPE_GUARDIAN_ANGEL:
         You_ex(ATR_NONE, CLR_MSG_SPELL, "recite an ancient prayer to %s.", u_gname());
@@ -11302,6 +11322,9 @@ const char* message_fmt; //input the summoning message with one %s, which is for
 unsigned long mmflags;
 unsigned long scflags;
 {
+    if (monst_id < LOW_PM)
+        return (struct monst*)0;
+
     struct monst* mon = (struct monst*)0;
     boolean capitalize = !!(scflags & SUMMONCREATURE_FLAGS_CAPITALIZE); //capitalize the monster name for %s
     boolean markassummoned = !!(scflags & SUMMONCREATURE_FLAGS_MARK_AS_SUMMONED); //mark as summoned
@@ -11567,5 +11590,42 @@ int montype;
     return zombietype;
 }
 
+
+STATIC_OVL int
+get_summon_monster_type(otyp)
+int otyp;
+{
+    switch(otyp)
+    {
+    case SPE_SUMMON_GRIZZLY_BEAR:
+        return PM_GRIZZLY_BEAR;
+    case SPE_SUMMON_OWLBEAR:
+        return PM_OWLBEAR;
+    case SPE_SUMMON_OWLBEAR_PATRIARCH:
+        return PM_OWLBEAR_PATRIARCH;
+    case SPE_SUMMON_COCKATRICE:
+        return PM_COCKATRICE;
+    case SPE_SUMMON_GIANT_COCKATRICE:
+        return PM_GIANT_COCKATRICE;
+    case SPE_SUMMON_GARGANTUAN_COCKATRICE:
+        return PM_GARGANTUAN_COCKATRICE;
+    case SPE_SUMMON_GIANT_SPIDER:
+        return PM_GIANT_SPIDER;
+    case SPE_SUMMON_PHASE_SPIDER:
+        return PM_PHASE_SPIDER;
+    case SPE_SUMMON_PURPLE_WORM:
+        return PM_PURPLE_WORM;
+    case SPE_SUMMON_GARGANTUAN_BEETLE:
+        return PM_GARGANTUAN_BEETLE;
+    case SPE_SUMMON_RAVEN:
+        return PM_RAVEN;
+    case SPE_SUMMON_WINTER_WOLF:
+        return PM_WINTER_WOLF;
+    default:
+        break;
+    }
+    return NON_PM;
+
+}
 
 /*zap.c*/
