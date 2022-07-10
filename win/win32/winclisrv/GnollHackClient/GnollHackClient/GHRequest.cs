@@ -47,6 +47,8 @@ namespace GnollHackClient
         SetPetMID,
         SaveAndDisableTravelMode,
         RestoreTravelMode,
+        SaveAndDisableTravelModeOnLevel,
+        RestoreTravelModeOnLevel,
     }
 
     public struct AddContextMenuData

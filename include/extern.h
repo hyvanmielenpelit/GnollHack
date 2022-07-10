@@ -3268,6 +3268,9 @@ E double FDECL(get_spell_mana_cost, (int));
 E double FDECL(get_spellbook_adjusted_mana_cost, (int));
 E void FDECL(deduct_mana_cost, (double));
 E uchar FDECL(is_obj_component_for, (int, struct obj*));
+#ifdef DUMPLOG
+E void NDECL(dump_spells);
+#endif
 
 /* ### steal.c ### */
 

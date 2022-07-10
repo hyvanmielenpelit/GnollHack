@@ -5389,5 +5389,36 @@ int spell;
     return cooldown;
 }
 
+#ifdef DUMPLOG
+void
+dump_spells()
+{
+    if (spellid(0) == NO_SPELL)
+    {
+        putstr(0, 0, "You did not know any spells.");
+    }
+    else
+    {
+        int i;
+        char buf[BUFSZ];
+        char spellnamebuf[BUFSZ];
+        char castingsbuf[BUFSZ];
+        putstr(0, 0, "You knew the following spells:");
+        for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+        {
+            if (spellamount(i) >= 0)
+                Sprintf(castingsbuf, ", %d casting%s left", spellamount(i), plur(spellamount(i)));
+            else
+                Strcpy(castingsbuf, "");
+
+            Strcpy(spellnamebuf, spellname(i));
+            *spellnamebuf = highc(*spellnamebuf);
+
+            Sprintf(buf, " %s (%d%% success%s)", spellnamebuf, percent_success(i), castingsbuf);
+            putstr(0, 0, buf);
+        }
+    }
+}
+#endif
 
 /*spell.c*/

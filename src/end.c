@@ -749,6 +749,7 @@ dump_plines()
 }
 #endif
 
+
 /*ARGSUSED*/
 STATIC_OVL void
 dump_everything(how, when)
@@ -804,6 +805,8 @@ time_t when; /* date+time at end of game */
     container_contents(invent, TRUE, TRUE, FALSE, 0);
     enlightenment((BASICENLIGHTENMENT | MAGICENLIGHTENMENT),
                   (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
+    putstr(0, 0, "");
+    dump_spells();
     putstr(0, 0, "");
     list_vanquished('d', FALSE, TRUE); /* 'd' => 'y' */
     putstr(0, 0, "");

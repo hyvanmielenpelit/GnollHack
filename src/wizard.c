@@ -872,7 +872,9 @@ resurrect()
             verbalize("So thou thought thou couldst %s me, fool.", verb);
             if(canseemon(mtmp))
                talkeff(mtmp->mx, mtmp->my);
+
         }
+        check_boss_fight(mtmp);
     }
 }
 

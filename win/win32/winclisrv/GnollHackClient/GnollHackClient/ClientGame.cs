@@ -1485,6 +1485,18 @@ namespace GnollHackClient
                         queue.Enqueue(new GHRequest(this, GHRequestType.RestoreTravelMode));
                     }
                     break;
+                case (int)gui_command_types.GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE_ON_LEVEL:
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.SaveAndDisableTravelModeOnLevel));
+                    }
+                    break;
+                case (int)gui_command_types.GUI_CMD_RESTORE_TRAVEL_MODE_ON_LEVEL:
+                    if (ClientGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.RestoreTravelModeOnLevel));
+                    }
+                    break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_CONDITION_TEXTS:
                     _gamePage.ClearConditionTexts();
                     break;

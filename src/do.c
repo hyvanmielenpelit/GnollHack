@@ -6435,6 +6435,21 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
             final_level(); /* guardian angel,&c */
         else if (newdungeon && u.uhave.amulet)
             resurrect(); /* force confrontation with Wizard */
+
+#ifdef GNH_MOBILE
+        if (Is_waterlevel(&u.uz))
+        {
+            issue_gui_command(GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE_ON_LEVEL);
+            pline_ex1(ATR_NONE, CLR_MSG_HINT, "Beware, it is dangerous to use travel mode on the Plane of Water!");
+            pline_ex1(ATR_NONE, CLR_MSG_HINT, "[Travel mode has been disabled]");
+        }
+        else if (Is_waterlevel(&u.uz0))
+        {
+            issue_gui_command(GUI_CMD_RESTORE_TRAVEL_MODE_ON_LEVEL);
+            pline_ex1(ATR_NONE, CLR_MSG_HINT, "Phew! It is now safe to use the travel mode again!");
+            pline_ex1(ATR_NONE, CLR_MSG_HINT, "[Travel mode has been restored]");
+        }
+#endif
     } 
     else if (In_quest(&u.uz)) 
     {

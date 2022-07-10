@@ -354,6 +354,7 @@ namespace GnollHackClient.Pages.Game
         public bool MapLookMode { get { lock (_mapLookModeLock) { return _mapLookMode; } } set { lock (_mapLookModeLock) { _mapLookMode = value; } } }
 
         private bool _savedMapTravelMode = false;
+        private bool _savedMapTravelModeOnLevel = false;
         private object _mapTravelModeLock = new object();
         private bool _mapTravelMode = false;
         public bool MapTravelMode { get { lock (_mapTravelModeLock) { return _mapTravelMode; } } set { lock (_mapTravelModeLock) { _mapTravelMode = value; } } }
@@ -1585,6 +1586,15 @@ namespace GnollHackClient.Pages.Game
                                 break;
                             case GHRequestType.RestoreTravelMode:
                                 if (MapTravelMode != _savedMapTravelMode)
+                                    ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
+                                break;
+                            case GHRequestType.SaveAndDisableTravelModeOnLevel:
+                                _savedMapTravelModeOnLevel = MapTravelMode;
+                                if (MapTravelMode)
+                                    ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
+                                break;
+                            case GHRequestType.RestoreTravelModeOnLevel:
+                                if (MapTravelMode != _savedMapTravelModeOnLevel)
                                     ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
                                 break;
                         }
@@ -9777,7 +9787,7 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[1, 0, 0] = new GHCommandButtonItem("You", "GnollHackClient.Assets.UI.you.png", (int)'}');
             _moreBtnMatrix[1, 1, 0] = new GHCommandButtonItem("Skills", "GnollHackClient.Assets.UI.skill.png", (int)'S');
             _moreBtnMatrix[1, 2, 0] = new GHCommandButtonItem("Overview", "GnollHackClient.Assets.UI.overview.png", GHUtils.Ctrl((int)'o'));
-            _moreBtnMatrix[1, 3, 0] = new GHCommandButtonItem("Discoveries", "GnollHackClient.Assets.UI.discoveries.png", (int)'\\');
+            _moreBtnMatrix[1, 3, 0] = new GHCommandButtonItem("Goals", "GnollHackClient.Assets.UI.conduct.png", GHUtils.Meta(3));
 
             _moreBtnMatrix[1, 0, 1] = new GHCommandButtonItem("View Spell", "GnollHackClient.Assets.UI.viewspell.png", GHUtils.Meta((int)'z'));
             _moreBtnMatrix[1, 1, 1] = new GHCommandButtonItem("Mix", "GnollHackClient.Assets.UI.mix.png", (int)'X');
@@ -9805,7 +9815,7 @@ namespace GnollHackClient.Pages.Game
             _moreBtnMatrix[1, 3, 5] = new GHCommandButtonItem("Back to Game", "GnollHackClient.Assets.UI.more.png", -1);
 
             _moreBtnMatrix[2, 0, 0] = new GHCommandButtonItem("Attributes", "GnollHackClient.Assets.UI.attributes.png", GHUtils.Meta(2));
-            _moreBtnMatrix[2, 1, 0] = new GHCommandButtonItem("Conduct", "GnollHackClient.Assets.UI.conduct.png", GHUtils.Meta(3));
+            _moreBtnMatrix[2, 1, 0] = new GHCommandButtonItem("Discoveries", "GnollHackClient.Assets.UI.discoveries.png", (int)'\\');
             _moreBtnMatrix[2, 2, 0] = new GHCommandButtonItem("Killed", "GnollHackClient.Assets.UI.killed.png", GHUtils.Meta((int)'k'));
             _moreBtnMatrix[2, 3, 0] = new GHCommandButtonItem("Genocided", "GnollHackClient.Assets.UI.genocided.png", GHUtils.Meta((int)'g'));
 

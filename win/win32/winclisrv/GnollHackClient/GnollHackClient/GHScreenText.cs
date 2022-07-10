@@ -29,7 +29,7 @@ namespace GnollHackClient
             if (_data.style >= 3 &&_data.style < (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT)
                 return 99999.0f;
             else if (_data.style == (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT)
-                return 1.50f;
+                return 2.0f;
             else
                 return 2.0f;
         }
@@ -38,7 +38,7 @@ namespace GnollHackClient
             if (_data.style >= 3 && _data.style < (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT)
                 return 19.0f;
             else if (_data.style == (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT)
-                return 0.5f;
+                return 1.5f;
             else
                 return 1.5f;
         }
