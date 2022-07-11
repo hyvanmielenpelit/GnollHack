@@ -1054,8 +1054,7 @@ register struct obj* obj;
     putstr(datawin, ATR_TITLE, txt);
 
     /* Type */
-    strcpy(buf3, def_oc_syms[(int)obj->oclass].name);
-    *buf3 = highc(*buf3);
+    strcpy_capitalized_for_title(buf3, def_oc_syms[(int)obj->oclass].name);
     //Sprintf(buf, "Class:                  %s", buf2);
     Sprintf(buf, "%s", makesingular(buf3));
     //txt = buf;
@@ -1087,33 +1086,28 @@ register struct obj* obj;
         {
             strcpy(buf2, "Melee");
         }
-        strcpy(buf3, weapon_type_names[objects[otyp].oc_subtyp]);
-        *buf3 = highc(*buf3);
+        strcpy_capitalized_for_title(buf3, weapon_type_names[objects[otyp].oc_subtyp]);
     }
     else if (objects[otyp].oc_class == ARMOR_CLASS)
     {
-        strcpy(buf3, armor_class_simple_name(obj));
-        *buf3 = highc(*buf3);
+        strcpy_capitalized_for_title(buf3, armor_class_simple_name(obj));
 
         if (is_weapon(obj))
         {
-            strcat(buf3, ", Melee weapon");
+            strcat(buf3, ", Melee Weapon");
         }
     }
     else if (objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_subtyp > MISC_MULTIPLE_PERMITTED)
     {
-        strcpy(buf3, misc_type_names[objects[otyp].oc_subtyp]);
-        *buf3 = highc(*buf3);
+        strcpy_capitalized_for_title(buf3, misc_type_names[objects[otyp].oc_subtyp]);
     }
     else if (objects[otyp].oc_class == FOOD_CLASS && objects[otyp].oc_subtyp > FOODTYPE_GENERAL)
     {
-        strcpy(buf3, food_type_names[objects[otyp].oc_subtyp]);
-        *buf3 = highc(*buf3);
+        strcpy_capitalized_for_title(buf3, food_type_names[objects[otyp].oc_subtyp]);
     }
     else if (objects[otyp].oc_class == TOOL_CLASS && objects[otyp].oc_subtyp > TOOLTYPE_GENERAL)
     {
-        strcpy(buf3, tool_type_names[objects[otyp].oc_subtyp]);
-        *buf3 = highc(*buf3);
+        strcpy_capitalized_for_title(buf3, tool_type_names[objects[otyp].oc_subtyp]);
     }
     else if (objects[otyp].oc_class == TOOL_CLASS)
     {
@@ -1180,6 +1174,12 @@ register struct obj* obj;
     if (obj->aknown && obj->oartifact)
     {
         Sprintf(eos(buf), " - Artifact");
+        if ((obj->oclass == WEAPON_CLASS || obj->oclass == ARMOR_CLASS) && artilist[obj->oartifact].maskotyp > STRANGE_OBJECT)
+        {
+            char aobjtypebuf[BUFSZ];
+            strcpy_capitalized_for_title(aobjtypebuf, OBJ_NAME(objects[artilist[obj->oartifact].maskotyp]));
+            Sprintf(eos(buf), " %s", aobjtypebuf);
+        }
     }
     txt = buf;
     putstr(datawin, ATR_SUBTITLE, txt);
@@ -3441,14 +3441,14 @@ register struct obj* obj;
         if (aflags & AF_BEHEAD)
         {
             powercnt++;
-            Sprintf(buf, " %2d - May behead target on hit", powercnt);
+            Sprintf(buf, " %2d - Has 5%% chance to behead target on hit ", powercnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
         if (aflags & AF_BISECT)
         {
             powercnt++;
-            Sprintf(buf, " %2d - May bisect target on hit", powercnt);
+            Sprintf(buf, " %2d - Has 5%% chance to  bisect target on hit", powercnt);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
