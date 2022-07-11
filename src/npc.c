@@ -502,6 +502,15 @@ int mtype;
             {
                 mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
             }
+
+            /* Sling bullets */
+            mongets(npc, LEADEN_SLING_BULLET);
+            mongets(npc, IRON_SLING_BULLET);
+            for (i = 0; i < 3; i++)
+            {
+                if(!rn2(2))
+                    mongets(npc, rnd_class(LEADEN_SLING_BULLET, SILVER_SLING_BULLET));
+            }
             break;
         }
         case NPC_QUANTUM_MECHANIC:

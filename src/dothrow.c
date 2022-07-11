@@ -403,6 +403,16 @@ double* average_ptr;
             if (average_ptr)
                 *average_ptr = 2.0;
             break;
+        case MULTISHOT_LAUNCHER_STAFF_SLING:
+        {
+            int fixed = min(2, max(1, skilllevel / 2));
+            boolean has_random = skilllevel == P_SKILLED ? TRUE : FALSE;
+            int random = has_random ? rn2(2) : 0;
+            multishot = fixed + random;
+            if (average_ptr)
+                *average_ptr = (double)fixed + (has_random ? 0.5 : 0.0);
+            break;
+        }
         default:
             break;
         }
@@ -445,8 +455,8 @@ double* average_ptr;
             multishot = fixed + random;
             if (average_ptr)
                 *average_ptr = (double)fixed + (has_random ? 0.5 : 0.0);
-        }
             break;
+        }
         case MULTISHOT_MELEE_TRIPLE_HEADED_FLAIL:
         {
             multishot = max(1, skilllevel - 3);

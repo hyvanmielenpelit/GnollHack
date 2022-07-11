@@ -55,6 +55,7 @@ const char* multishot_style_names[MAX_MULTISHOT_TYPES] = {
     "None",
     "1+1/4 per skill level after basic when firing",
     "2 when firing",
+    "1/1.5/2 for basic/skilled/expert when firing",
     "1+1/4 per skill level after expert when thrown",
     "1+1/4 per skill level after skilled when thrown",
     "1+1/4 per skill level after basic when thrown",

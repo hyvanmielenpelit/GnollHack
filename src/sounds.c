@@ -6082,7 +6082,7 @@ struct monst* mtmp;
 
     if (!otmp->owornmask 
         && otmp->oclass != COIN_CLASS
-        && ((otmp->speflags & SPEFLAGS_GRABBED_FROM_YOU) ||
+        && ((otmp->speflags & SPEFLAGS_GRABBED_FROM_YOU) || mtmp->isnpc || mtmp->issmith ||
                (otmp->oclass != WEAPON_CLASS /* monsters do not currently sell their weapons */
             && otmp->oclass != ROCK_CLASS /* or giants their boulders */
             && !(is_pick(otmp) && needspick(mtmp->data)) /* or dwarves their picks */
