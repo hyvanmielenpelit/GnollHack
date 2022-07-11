@@ -139,6 +139,7 @@ STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_stones_and_charged_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_general_identify, (struct monst*, const char*, int, long, int, int));
 STATIC_DCL int FDECL(do_chat_npc_sell_gems_and_stones, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_forge_sling_bullets, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_dilithium_crystals, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_spellbooks, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_branch_portal, (struct monst*));
@@ -157,7 +158,7 @@ STATIC_DCL int FDECL(general_service_query_with_extra, (struct monst*, int (*)(s
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
 STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
-STATIC_DCL int FDECL(forge_special_func, (struct monst*, int, int, int));
+STATIC_DCL int FDECL(forge_special_func, (struct monst*, int, int, int, int, int));
 STATIC_DCL int FDECL(forge_dragon_scale_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_shield_of_reflection_func, (struct monst*));
 STATIC_DCL int FDECL(forge_crystal_plate_mail_func, (struct monst*));
@@ -168,6 +169,12 @@ STATIC_DCL int FDECL(forge_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_bronze_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_field_plate_mail_func, (struct monst*));
 STATIC_DCL int FDECL(forge_full_plate_mail_func, (struct monst*));
+STATIC_DCL int FDECL(forge_iron_sling_bullets_func, (struct monst*));
+STATIC_DCL int FDECL(forge_ex_iron_sling_bullets_func, (struct monst*));
+STATIC_DCL int FDECL(forge_el_iron_sling_bullets_func, (struct monst*));
+STATIC_DCL int FDECL(forge_silver_sling_bullets_func, (struct monst*));
+STATIC_DCL int FDECL(forge_ex_silver_sling_bullets_func, (struct monst*));
+STATIC_DCL int FDECL(forge_el_silver_sling_bullets_func, (struct monst*));
 STATIC_DCL int FDECL(learn_spell_func, (struct monst*));
 STATIC_DCL int FDECL(spell_teaching, (struct monst*, int*));
 STATIC_DCL boolean FDECL(maybe_dilithium_crystal, (struct obj*));
@@ -3925,6 +3932,23 @@ dochat()
                     chatnum++;
                 }
 
+                if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_FORGE_SLING_BULLETS)
+                {
+                    Sprintf(available_chat_list[chatnum].name, "Forge sling-bullets");
+                    available_chat_list[chatnum].function_ptr = &do_chat_npc_forge_sling_bullets;
+                    available_chat_list[chatnum].charnum = 'a' + chatnum;
+                    available_chat_list[chatnum].stops_dialogue = FALSE;
+
+                    any = zeroany;
+                    any.a_char = available_chat_list[chatnum].charnum;
+
+                    add_menu(win, NO_GLYPH, &any,
+                        any.a_char, 0, ATR_NONE,
+                        available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+                    chatnum++;
+                }
+
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_DILITHIUM_CRYSTALS)
                 {
                     char sbuf[BUFSIZ];
@@ -7199,6 +7223,117 @@ struct monst* mtmp;
     return do_chat_npc_general_identify(mtmp, "weapon or armor", -1, max(1L, (long)((double)(75 + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))), SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR, SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_WEAPON_OR_ARMOR);
 }
 
+
+STATIC_OVL int
+do_chat_npc_forge_sling_bullets(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
+        return 0;
+
+    menu_item* pick_list = (menu_item*)0;
+    winid win;
+    anything any;
+
+    any = zeroany;
+    win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_GENERAL, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));
+    start_menu_ex(win, GHMENU_STYLE_CHAT_CHOOSE_ITEM);
+
+
+    any = zeroany;
+    any.a_char = 1;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge 10 iron sling-bullets", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 2;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge 10 exceptional iron sling-bullets", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 3;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge 10 elite iron sling-bullets", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 4;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge 10 silver sling-bullets", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 5;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge 10 exceptional silver sling-bullets", MENU_UNSELECTED);
+
+    any = zeroany;
+    any.a_char = 6;
+
+    add_menu(win, NO_GLYPH, &any,
+        0, 0, ATR_NONE,
+        "Forge 10 elite silver sling-bullets", MENU_UNSELECTED);
+
+    /* Finish the menu */
+    end_menu(win, "Which type of armor do you want to forge?");
+
+    int i = 0;
+    /* Now generate the menu */
+    if (select_menu(win, PICK_ONE, &pick_list) > 0)
+    {
+        i = pick_list->item.a_char;
+        free((genericptr_t)pick_list);
+    }
+    destroy_nhwindow(win);
+
+    if (i < 1)
+        return 0;
+
+    long cost = 0;
+
+    switch (i)
+    {
+    case 1:
+        cost = max(1L, (long)((double)(objects[IRON_SLING_BULLET].oc_cost) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_extra(mtmp, forge_iron_sling_bullets_func, "forge 10 iron sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "2 nuggets of iron ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_IRON_SLING_BULLETS);
+        break;
+    case 2:
+        cost = max(1L, (long)((double)(objects[IRON_SLING_BULLET].oc_cost) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_extra(mtmp, forge_ex_iron_sling_bullets_func, "forge 10 exceptional iron sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "3 nuggets of iron ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_IRON_SLING_BULLETS);
+        break;
+    case 3:
+        cost = max(1L, (long)((double)(objects[IRON_SLING_BULLET].oc_cost) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_extra(mtmp, forge_el_iron_sling_bullets_func, "forge 10 elite iron sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "4 nuggets of iron ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_IRON_SLING_BULLETS);
+        break;
+    case 4:
+        cost = max(1L, (long)((double)(objects[SILVER_SLING_BULLET].oc_cost) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_extra(mtmp, forge_silver_sling_bullets_func, "forge 10 silver sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "2 nuggets of silver ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_SILVER_SLING_BULLETS);
+        break;
+    case 5:
+        cost = max(1L, (long)((double)(objects[SILVER_SLING_BULLET].oc_cost) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_extra(mtmp, forge_ex_silver_sling_bullets_func, "forge 10 exceptional silver sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "3 nuggets of silver ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_SILVER_SLING_BULLETS);
+        break;
+    case 6:
+        cost = max(1L, (long)((double)(objects[SILVER_SLING_BULLET].oc_cost) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        return general_service_query_with_extra(mtmp, forge_el_silver_sling_bullets_func, "forge 10 elite silver sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "4 nuggets of silver ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_SILVER_SLING_BULLETS);
+        break;
+    default:
+        pline1(Never_mind);
+        break;
+    }
+
+    return 0;
+}
+
+
 STATIC_OVL boolean
 maybe_forgeable_ore(otmp)
 struct obj* otmp;
@@ -9551,70 +9686,112 @@ STATIC_OVL int
 forge_orichalcum_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_ORICHALCUM_ORE, 4, ORICHALCUM_FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_ORICHALCUM_ORE, 4, ORICHALCUM_FULL_PLATE_MAIL, 0, 0);
 }
 
 STATIC_OVL int
 forge_crystal_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, DILITHIUM_CRYSTAL, 2, CRYSTAL_PLATE_MAIL);
+    return forge_special_func(mtmp, DILITHIUM_CRYSTAL, 2, CRYSTAL_PLATE_MAIL, 0, 0);
 }
 
 STATIC_OVL int
 forge_shield_of_reflection_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 8, SHIELD_OF_REFLECTION);
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 8, SHIELD_OF_REFLECTION, 0, 0);
 }
 
 STATIC_OVL int
 forge_adamantium_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_ADAMANTIUM_ORE, 4, ADAMANTIUM_FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_ADAMANTIUM_ORE, 4, ADAMANTIUM_FULL_PLATE_MAIL, 0, 0);
 }
 
 STATIC_OVL int
 forge_mithril_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_MITHRIL_ORE, 4, MITHRIL_FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_MITHRIL_ORE, 4, MITHRIL_FULL_PLATE_MAIL, 0, 0);
 }
 
 STATIC_OVL int
 forge_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, PLATE_MAIL, 0, 0);
 }
 
 STATIC_OVL int
 forge_bronze_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_COPPER_ORE, 4, BRONZE_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_COPPER_ORE, 4, BRONZE_PLATE_MAIL, 0, 0);
 }
 
 STATIC_OVL int
 forge_field_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 6, FIELD_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 6, FIELD_PLATE_MAIL, 0, 0);
 }
 
 STATIC_OVL int
 forge_full_plate_mail_func(mtmp)
 struct monst* mtmp;
 {
-    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 8, FULL_PLATE_MAIL);
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 8, FULL_PLATE_MAIL, 0, 0);
+}
+
+STATIC_OVL int
+forge_iron_sling_bullets_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 2, IRON_SLING_BULLET, 10, EXCEPTIONALITY_NORMAL);
+}
+
+STATIC_OVL int
+forge_ex_iron_sling_bullets_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 3, IRON_SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL);
+}
+
+STATIC_OVL int
+forge_el_iron_sling_bullets_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, NUGGET_OF_IRON_ORE, 4, IRON_SLING_BULLET, 10, EXCEPTIONALITY_ELITE);
+}
+
+STATIC_OVL int
+forge_silver_sling_bullets_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 2, SILVER_SLING_BULLET, 10, EXCEPTIONALITY_NORMAL);
+}
+
+STATIC_OVL int
+forge_ex_silver_sling_bullets_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 3, SILVER_SLING_BULLET, 10, EXCEPTIONALITY_EXCEPTIONAL);
+}
+
+STATIC_OVL int
+forge_el_silver_sling_bullets_func(mtmp)
+struct monst* mtmp;
+{
+    return forge_special_func(mtmp, NUGGET_OF_SILVER_ORE, 4, SILVER_SLING_BULLET, 10, EXCEPTIONALITY_ELITE);
 }
 
 
 STATIC_OVL int
-forge_special_func(mtmp, forge_source_otyp, forge_source_quan, forge_dest_otyp)
+forge_special_func(mtmp, forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality)
 struct monst* mtmp;
-int forge_source_otyp, forge_source_quan, forge_dest_otyp;
+int forge_source_otyp, forge_source_quan, forge_dest_otyp, quan, exceptionality;
 {
     char talkbuf[BUFSZ];
     char forge_objects[3] = { 0, 0, 0 };
@@ -9633,7 +9810,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
 
     if (iflags.using_gui_sounds)
     {
-        play_monster_special_dialogue_line(mtmp, SMITH_LINE_LETS_HAVE_A_LOOK);
+        play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_LETS_HAVE_A_LOOK : NPC_LINE_LETS_HAVE_A_LOOK);
         Sprintf(talkbuf, "%s says: \"Let's have a look.\"", noittame_Monnam(mtmp));
         delay_output_milliseconds(750);
     }
@@ -9648,7 +9825,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
     if (otmp && !maybe_otyp(otmp))
     {
         //play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
-        play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_THIS_IS_NOT_A_COMPONENT_THAT_I_CAN_FORGE_INTO_THE_REQUESTED_ITEM);
+        play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_LETS_HAVE_A_LOOK : NPC_LINE_SORRY_THIS_IS_NOT_A_COMPONENT_THAT_I_CAN_FORGE_INTO_THE_REQUESTED_ITEM);
         Sprintf(talkbuf, "Sorry, this is not an item that I can forge into %s.", an(OBJ_NAME(objects[forge_dest_otyp])));
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         return 0;
@@ -9665,7 +9842,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
         pseudo.quan = quan_needed;
         if (iflags.using_gui_sounds)
         {
-            play_monster_special_dialogue_line(mtmp, SMITH_LINE_SORRY_YOU_NEED_MORE_COMPONENTS_TO_FORGE_THE_REQUESTED_ITEM);
+            play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_SORRY_YOU_NEED_MORE_COMPONENTS_TO_FORGE_THE_REQUESTED_ITEM : NPC_LINE_SORRY_YOU_NEED_MORE_COMPONENTS_TO_FORGE_THE_REQUESTED_ITEM);
             Sprintf(talkbuf, "\"Sorry, you need more components to forge the requested item.\" (You need %d %s for %s.) ", quan_needed, cxname(&pseudo), an(OBJ_NAME(objects[forge_dest_otyp])));
             popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         }
@@ -9699,6 +9876,15 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
     struct obj* craftedobj = mksobj(forge_dest_otyp, FALSE, FALSE, 3);
     if (craftedobj)
     {
+        if (quan > 0)
+        {
+            craftedobj->quan = quan;
+            craftedobj->owt = weight(craftedobj);
+        }
+        if (exceptionality > 0)
+        {
+            craftedobj->exceptionality = exceptionality;
+        }
         fully_identify_obj(craftedobj);
         Sprintf(talkbuf, "%s hands %s to you.", noittame_Monnam(mtmp), an(cxname(craftedobj)));
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
@@ -9708,7 +9894,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
 
         stop_all_immediate_sounds();
         play_sfx_sound(SFX_BUY_FROM_NPC);
-        play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
+        play_monster_special_dialogue_line(mtmp, mtmp->issmith ? SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES : NPC_LINE_THANK_YOU_FOR_USING_MY_SERVICES);
         Strcpy(talkbuf, "Thank you for using my services.");
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
     }
