@@ -9699,6 +9699,7 @@ int forge_source_otyp, forge_source_quan, forge_dest_otyp;
     struct obj* craftedobj = mksobj(forge_dest_otyp, FALSE, FALSE, 3);
     if (craftedobj)
     {
+        fully_identify_obj(craftedobj);
         Sprintf(talkbuf, "%s hands %s to you.", noittame_Monnam(mtmp), an(cxname(craftedobj)));
         popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
         hold_another_object(craftedobj, "Oops!  %s out of your grasp!",
