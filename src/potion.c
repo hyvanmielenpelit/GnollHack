@@ -109,6 +109,8 @@ boolean talk;
             else
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s...", stagger(youmonst.data, "stagger"));
         }
+
+        standard_hint("You can cure stun by using a unicorn horn.", &u.uhint.got_stunned);
     }
 
     set_itimeout(&HStun, xtime);
@@ -1240,6 +1242,7 @@ struct obj *otmp;
             incr_itimeout(&HParalyzed, duration);
             context.botl = context.botlx = 1;
             refresh_u_tile_gui_info(TRUE);
+            standard_hint("Identify potions before drinking.", &u.uhint.drank_potion_of_paralysis_or_sleep);
 #if 0
             nomul(-d(5 - 2 * bcsign(otmp), 4)); // (rn1(9 - 6 * bcsign(otmp), 8 - 4 * bcsign(otmp))));
             multi_reason = "frozen by a potion";
@@ -1257,6 +1260,7 @@ struct obj *otmp;
         {
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "suddenly fall asleep!");
             fall_asleep(-duration, TRUE);
+            standard_hint("Identify potions before drinking.", &u.uhint.drank_potion_of_paralysis_or_sleep);
         }
         break;
     case POT_MONSTER_DETECTION:
@@ -1346,6 +1350,7 @@ struct obj *otmp;
 
                 exercise(A_CON, FALSE);
             }
+            standard_hint("Identify potions to avoid drinking contaminated potions.", &u.uhint.drank_potion_of_sickness);
         }
         break;
     case POT_POISON:
@@ -1365,6 +1370,7 @@ struct obj *otmp;
             }
             losehp(adjust_damage(duration, (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "drinking poison", KILLED_BY);
             exercise(A_CON, FALSE);
+            standard_hint("Identify potions to avoid drinking poisonous potions. Get poison resistance as early as possible.", &u.uhint.drank_potion_of_poison);
         }
 
         if (Hallucination) 
@@ -2761,6 +2767,7 @@ const char* introline;
             incr_itimeout(&HParalyzed, duration);
             refresh_u_tile_gui_info(TRUE);
             context.botl = context.botlx = 1;
+            standard_hint("You should acquire free action as early as possible. Keep pets around to protect you while paralyzed.", &u.uhint.paralyzed_by_thrown_potion);
 #if 0
             nomul(-d(3 - 1 * bcsign(obj), 4)); // rnd(5));
             multi_reason = "frozen by a potion";
@@ -2781,6 +2788,7 @@ const char* introline;
             Strcpy(dcbuf, "You feel rather tired.");
             pline1(dcbuf);
             fall_asleep(-duration, FALSE);
+            standard_hint("You should acquire sleep resistance as early as possible. Keep pets around to protect you while sleeping.", &u.uhint.paralyzed_by_thrown_potion);
 #if 0
             nomul(-d(3 - 1 * bcsign(obj), 4));
             multi_reason = "sleeping off a magical draught";

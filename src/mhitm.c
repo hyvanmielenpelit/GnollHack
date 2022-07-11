@@ -2042,6 +2042,8 @@ register struct obj* omonwep;
             hit_tile = HIT_SICK;
             play_sfx_sound_at_location(SFX_CATCH_MUMMY_ROT, mdef->mx, mdef->my);
             set_mon_property_verbosely(mdef, MUMMY_ROT, -1L);
+            if(is_tame(mdef) && canspotmon(mdef))
+                standard_hint("You can heal your pet of mummy rot by feeding it a fig or an eucalyptus leaf, or by using a jar of medicinal salve.", &u.uhint.pet_got_mummy_rot);
         }
         break;
     default:

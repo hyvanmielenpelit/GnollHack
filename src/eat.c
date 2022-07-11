@@ -1317,6 +1317,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         if (!Stunned)
             play_sfx_sound(SFX_ACQUIRE_STUN);
         make_stunned((HStun & TIMEOUT) + 30L, FALSE);
+        standard_hint("Some corpses make you stunned. You can also check this out by using a wand of probing.", &u.uhint.ate_stunning_corpse);
         break;
     case PM_CHAOS_MIMIC:
         tmp += 10;
@@ -1360,6 +1361,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
             create_context_menu(CREATE_CONTEXT_MENU_BLOCKING_WINDOW);
             display_nhwindow(WIN_MAP, TRUE);
             create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
+            standard_hint("Some corpses cause to polymorph. You can check this out by using a wand of probing.", &u.uhint.ate_polymorphing_corpse);
         }
         break;
     case PM_QUANTUM_MECHANIC:
@@ -1388,6 +1390,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
             You_feel("a change coming over you.");
             polyself(0);
         }
+        standard_hint("Some corpses cause to polymorph. You can check this out by using a wand of probing.", &u.uhint.ate_polymorphing_corpse);
         break;
     case PM_DISENCHANTER:
         /* picks an intrinsic at random and removes it; there's

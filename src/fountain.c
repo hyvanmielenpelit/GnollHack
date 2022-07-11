@@ -389,6 +389,7 @@ drinkfountain()
             pline_ex(ATR_NONE, Poison_resistance ? CLR_MSG_ATTENTION : CLR_MSG_NEGATIVE, "That was a fountain of poison.");
             SET_FOUNTAIN_KNOWN(u.ux, u.uy);
         }
+        standard_hint("You can test fountains by dipping potions into them. Get poison resistance before drinking from unknown fountains.", &u.uhint.poisoned_by_fountain);
     }
 
     /* Exit if not normal NetHack / magic fountain */

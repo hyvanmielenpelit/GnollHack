@@ -190,7 +190,6 @@ enum kill_hints
 #define NUM_KILL_HINT_ULONGS 2
 struct u_hint {
     unsigned long kill_hints_given[NUM_KILL_HINT_ULONGS]; //One bit per kill hint enum
-    unsigned long general_hints;    //Easy-to-add hint flags
 
     boolean ate_rotten_corpse; 
     boolean ate_tainted_corpse;
@@ -209,6 +208,7 @@ struct u_hint {
     boolean poisoned_by_fountain;
     boolean drank_potion_of_sickness;
     boolean drank_potion_of_poison;
+    boolean drank_potion_of_paralysis_or_sleep;
 
     boolean drank_potion_of_hallucination;
     boolean polymorphed_by_trap;
@@ -219,8 +219,6 @@ struct u_hint {
     boolean paralyzed_by_thrown_potion;
     boolean fell_asleep_by_thrown_potion;
     boolean fell_asleep_by_trap;
-    boolean hit_by_disintegration_ray;
-    boolean hit_by_petrification_ray;
 
     boolean got_level_drained;
     boolean damaged_by_passive_fire;
@@ -253,6 +251,11 @@ struct u_hint {
     boolean got_stunned;
     boolean got_terminal_illness;
     boolean pet_got_mummy_rot;
+
+    boolean reserved1;
+    boolean reserved2;
+    boolean reserved3;
+    boolean reserved4;
 };
 
 struct u_realtime {

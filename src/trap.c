@@ -1411,6 +1411,7 @@ unsigned short trflags;
         {
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "A cloud of gas puts you to sleep!");
             fall_asleep(-rn1(7,8), TRUE);
+            standard_hint("You should acquire sleep resistance as early as possible. Keep pets around to protect you while sleeping.", &u.uhint.fell_asleep_by_trap);
         }
 
         (void) steedintrap(trap, (struct obj *) 0);
@@ -1866,6 +1867,7 @@ unsigned short trflags;
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "a change coming over you.");
             polyself(0);
             newsym(u.ux, u.uy); /* get rid of trap symbol */
+            standard_hint("You should acquire magic resistance, polymorph control, or an amulet of unchanging before dungeon level 8.", &u.uhint.polymorphed_by_trap);
         }
         context.global_newsym_flags = 0UL;
         special_effect_wait_until_end(0);

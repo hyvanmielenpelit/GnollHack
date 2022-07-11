@@ -442,6 +442,9 @@ const char *drainer; /* cause of death, if drain should be fatal */
     find_mc();
 
     context.botl = TRUE;
+
+    standard_hint("Acquire drain resistance to protect yourself against level draining. You can restore lost levels by using a potion of restore ability or a cloudberry.", &u.uhint.got_level_drained);
+
 }
 
 /*
