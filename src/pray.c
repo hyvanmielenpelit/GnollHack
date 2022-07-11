@@ -1235,6 +1235,12 @@ gcrownu()
                 bless(otmp);
                 (void)add_to_container(obj, otmp);
             }
+            else if (!already_learnt_spell_type(SPE_CREATE_ELDER_DRACOLICH))
+            {
+                otmp = mksobj(SPE_CREATE_ELDER_DRACOLICH, TRUE, FALSE, TRUE);
+                bless(otmp);
+                (void)add_to_container(obj, otmp);
+            }
 
             if (!already_learnt_spell_type(SPE_GREATER_UNDEATH_REPLENISHMENT))
             {

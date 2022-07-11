@@ -2154,9 +2154,9 @@ boolean is_past_participle;
         break;
     case ROLE_WIZARD:
         if (is_past_participle)
-            res = "successfully cast a level 12 spell";
+            res = "successfully cast a spell of level 11 or higher";
         else
-            res = "successfully cast a level 12 spell";
+            res = "successfully cast a spell of level 11 or higher";
         break;
     default:
         res = "";

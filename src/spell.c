@@ -2408,7 +2408,7 @@ boolean atme;
     skill = spell_skilltype(otyp);
     role_skill = P_SKILL_LEVEL(skill);
 
-    if (!u.uachieve.role_achievement && Role_if(PM_WIZARD) && spellev(spell) >= 12)
+    if (!u.uachieve.role_achievement && Role_if(PM_WIZARD) && spellev(spell) >= 11)
     {
         u.uachieve.role_achievement = 1;
         char abuf[BUFSZ];
@@ -2498,6 +2498,7 @@ boolean atme;
     case SPE_RAISE_GIANT_ZOMBIE:
     case SPE_CREATE_GIANT_MUMMY:
     case SPE_CREATE_DRACOLICH:
+    case SPE_CREATE_ELDER_DRACOLICH:
     case SPE_RAISE_SKELETON:
     case SPE_RAISE_SKELETON_WARRIOR:
     case SPE_RAISE_SKELETON_LORD:

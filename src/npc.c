@@ -678,6 +678,11 @@ int mtype;
                     ENPC(npc)->special_teach_spells[cnt] = SPE_CREATE_DRACOLICH;
                     cnt++;
                 }
+                if (!rn2(6) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_CREATE_ELDER_DRACOLICH;
+                    cnt++;
+                }
             }
             else
             {

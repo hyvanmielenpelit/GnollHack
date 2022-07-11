@@ -4161,6 +4161,28 @@ struct monst* origmonst;
                 }
             }
             break;
+        case SPE_CREATE_ELDER_DRACOLICH:
+            if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM)
+            {
+                int zombietype = NON_PM;
+                if ((obj->corpsenm >= PM_ANCIENT_GRAY_DRAGON && obj->corpsenm <= PM_ANCIENT_YELLOW_DRAGON)
+                    || obj->corpsenm == PM_ANCIENT_GOLD_DRAGON
+                    || obj->corpsenm == PM_BAHAMUT || obj->corpsenm == PM_TIAMAT
+                    )
+                {
+                    zombietype = PM_ELDER_DRACOLICH;
+                }
+
+                if (zombietype > NON_PM && animate_corpse(obj, zombietype))
+                {
+                    res = 1;
+                }
+                else
+                {
+                    pline("%s twitches for a moment, but nothing else happens.", The(cxname(obj)));
+                }
+            }
+            break;
         case WAN_OPENING:
         case SPE_KNOCK:
         case WAN_LOCKING:
@@ -4955,7 +4977,7 @@ register struct obj *obj;
                         || obj->corpsenm == PM_BAHAMUT || obj->corpsenm == PM_TIAMAT
                         )
                     {
-                        if ((mons[obj->corpsenm].geno & G_UNIQ))
+                        if ((mons[obj->corpsenm].geno & G_UNIQ) || (obj->corpsenm >= PM_ANCIENT_GRAY_DRAGON && obj->corpsenm <= PM_ANCIENT_YELLOW_DRAGON) || obj->corpsenm == PM_ANCIENT_GOLD_DRAGON)
                             zombietype = PM_ELDER_DRACOLICH;
                         else
                             zombietype = PM_DRACOLICH;
