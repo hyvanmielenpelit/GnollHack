@@ -3523,6 +3523,27 @@ register struct obj* obj;
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
+        if (aflags & AF_SHINES_MAGICAL_LIGHT)
+        {
+            powercnt++;
+            Sprintf(buf, " %2d - Shines magical light when wielded", powercnt);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+        if (aflags & AF_FLICKERS)
+        {
+            powercnt++;
+            Sprintf(buf, " %2d - Flickers in the precence of %s when wielded", powercnt , "applicable monsters");
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
+        if (aflags & AF_FLICKERS_WHEN_CARRIED)
+        {
+            powercnt++;
+            Sprintf(buf, " %2d - Flickers in the precence of %s when carried", powercnt, "applicable monsters");
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
         if (aflags & AF_INTEL)
         {
             powercnt++;
