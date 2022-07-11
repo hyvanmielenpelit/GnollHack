@@ -7511,7 +7511,7 @@ unsigned long cflags;
 }
 
 void
-standard_hint(hint_text)
+hint_via_pline(hint_text)
 const char* hint_text;
 {
     if (hint_text)
@@ -7543,7 +7543,23 @@ boolean* hintflag_ptr;
         Sprintf(buf, "You can %s by %s%s.", pray_what ? pray_what : "", 
             base_hint ? base_hint : "", 
             base_hint && canpray ? " or by praying " : canpray ? "praying" : "");
-        standard_hint(buf);
+        hint_via_pline(buf);
+    }
+}
+
+void
+standard_hint(hint_txt, hintflag_ptr)
+const char* hint_txt;
+boolean* hintflag_ptr;
+{
+    if (!hint_txt)
+        return;
+
+    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && (!hintflag_ptr || !*hintflag_ptr))
+    {
+        if (hintflag_ptr)
+            *hintflag_ptr = TRUE;
+        hint_via_pline(hint_txt);
     }
 }
 
@@ -7651,26 +7667,12 @@ death_hint(VOID_ARGS)
 
             if (*buf)
             {
-                standard_hint(buf);
+                hint_via_pline(buf);
                 display_popup_text(buf, "Hint", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_HINT, NO_GLYPH, POPUP_FLAGS_NONE);
             }
         }
     }
 }
 
-void
-item_destroy_hint(what, hintflag_ptr)
-const char* what;
-boolean* hintflag_ptr;
-{
-    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && can_pray(FALSE) && (!hintflag_ptr || !*hintflag_ptr))
-    {
-        if (hintflag_ptr)
-            *hintflag_ptr = TRUE;
-        char buf[BUFSZ];
-        Sprintf(buf, "You can pray to %s.", what ? what : "get out of trouble");
-        standard_hint(buf);
-    }
-}
 
 /*do.c*/

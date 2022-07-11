@@ -193,13 +193,19 @@ struct u_hint {
     unsigned long general_hints;    //Easy-to-add hint flags
 
     boolean ate_rotten_corpse; 
+    boolean ate_tainted_corpse;
     boolean ate_poisonous_corpse;
     boolean ate_sickening_corpse;
+    boolean ate_mummy_rotted_corpse;
     boolean ate_hallucinating_corpse;
     boolean ate_stunning_corpse;
-
     boolean ate_polymorphing_corpse;
-    boolean ate_mummy_rotted_corpse;
+
+    boolean ate_tainted_food;
+    boolean ate_poisonous_food;
+    boolean ate_sickening_food;
+    boolean ate_hallucinating_food;
+
     boolean poisoned_by_fountain;
     boolean drank_potion_of_sickness;
     boolean drank_potion_of_poison;

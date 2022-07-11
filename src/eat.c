@@ -2137,6 +2137,7 @@ struct obj *otmp;
               cannibal ? ", you cannibal" : "");
         if (Sick_resistance) {
             pline("It doesn't seem at all sickening, though...");
+            standard_hint("Corpses rot and become dangerous to eat after a while. You can check their status out by using a wand of probing.", &u.uhint.ate_rotten_corpse);
         }
         else
         {
@@ -2150,10 +2151,12 @@ struct obj *otmp;
             if(!FoodPoisoned)
                 play_sfx_sound(SFX_CATCH_FOOD_POISONING);
 
+
             make_food_poisoned(sick_time, corpse_xname(otmp, "rotted", CXN_NORMAL),
                       TRUE, HINT_KILLED_OLD_CORPSE);
 
             pline("(It must have died too long ago to be safe to eat.)");
+            standard_hint("Corpses rot and become dangerous to eat after a while. You can check their status out by using a wand of probing.", &u.uhint.ate_rotten_corpse);
         }
         if (carried(otmp))
             useup(otmp);
@@ -2164,9 +2167,10 @@ struct obj *otmp;
     else if (has_sickening_corpse(&mons[mnum]) && rn2(5))
     {
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ulch - that must have been infected by terminal disease!");
-        if (Sick_resistance) 
+        if (Sick_resistance)
         {
             pline("It doesn't seem at all sickening, though...");
+            standard_hint("Some corpses are inflicted by terminal illness. You can check this out by using a wand of probing.", &u.uhint.ate_sickening_corpse);
         }
         else
         {
@@ -2184,6 +2188,7 @@ struct obj *otmp;
             make_sick(sick_time, corpse_xname(otmp, "", CXN_NORMAL), TRUE, HINT_KILLED_SICKENING_CORPSE);
 
             (void)touchfood(otmp);
+            standard_hint("Some corpses are inflicted by terminal illness. You can check this out by using a wand of probing.", &u.uhint.ate_sickening_corpse);
             return 1;
         }
     }
@@ -2193,6 +2198,7 @@ struct obj *otmp;
         if (Sick_resistance)
         {
             pline("It doesn't seem at all sickening, though...");
+            standard_hint("Some corpses are inflicted by mummy rot. You can check this out by using a wand of probing.", &u.uhint.ate_mummy_rotted_corpse);
         }
         else
         {
@@ -2201,6 +2207,7 @@ struct obj *otmp;
             make_mummy_rotted(-1L, corpse_xname(otmp, "", CXN_NORMAL), TRUE, HINT_KILLED_MUMMY_ROTTED_CORPSE);
 
             (void)touchfood(otmp);
+            standard_hint("Some corpses are inflicted by mummy rot. You can check this out by using a wand of probing.", &u.uhint.ate_mummy_rotted_corpse);
             return 1;
         }
     }
@@ -2227,7 +2234,8 @@ struct obj *otmp;
             play_sfx_sound(SFX_GENERAL_UNAFFECTED);
             You("seem unaffected by the poison.");
         }
-    /* now any corpse left too long will make you mildly ill */
+        standard_hint("Some corpses are inherently poisonous. You can check this out by using a wand of probing.", &u.uhint.ate_poisonous_corpse);
+        /* now any corpse left too long will make you mildly ill */
     } 
     else if ((rotted > 5L || (rotted > 3L && rn2(5))) && !Sick_resistance)
     {
@@ -3593,6 +3601,7 @@ doeat()
             if (Sick_resistance)
             {
                 pline("It doesn't seem at all sickening, though...");
+                standard_hint("Some food items can be inherently tainted. You can check this out, e.g., by using a wand of probing.", &u.uhint.ate_tainted_corpse);
             }
             else 
             {
@@ -3606,12 +3615,14 @@ doeat()
                 if (!FoodPoisoned)
                     play_sfx_sound(SFX_CATCH_FOOD_POISONING);
 
+                standard_hint("Some food items can be inherently tainted. You can check this out by identifying the item.", &u.uhint.ate_tainted_food);
                 make_food_poisoned(sick_time, doname(otmp), TRUE, HINT_KILLED_TAINTED_CORPSE);
             }
             if (carried(otmp))
                 useup(otmp);
             else
                 useupf(otmp, 1L);
+
             return 2;
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC && !Acid_immunity && !Acid_resistance) 
@@ -3636,6 +3647,7 @@ doeat()
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                 You("seem unaffected by the poison.");
             }
+            standard_hint("Some food items can be inherently poisonous. You can check this out by identifying the item.", &u.uhint.ate_poisonous_food);
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS)
@@ -3653,14 +3665,25 @@ doeat()
                 play_sfx_sound(SFX_GENERAL_UNAFFECTED);
                 You("seem unaffected by the poison.");
             }
+            standard_hint("Some food items can be inherently poisonous. You can check this out by identifying the item.", &u.uhint.ate_poisonous_food);
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_SICKENING && !Sick_resistance)
         {
             identifycolor = CLR_MSG_NEGATIVE;
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%ssick.", (FoodPoisoned) ? "very " : "");
-            losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, ADFLAGS_NONE), "sickening food", KILLED_BY_AN);
+            //losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, ADFLAGS_NONE), "sickening food", KILLED_BY_AN);
+            identifycolor = CLR_MSG_NEGATIVE;
+            long sick_time;
+            sick_time = (long)rn1(10, 10);
+            /* make sure new ill doesn't result in improvement */
+            if (Sick && (sick_time > Sick))
+                sick_time = (Sick > 1L) ? Sick - 1L : 1L;
+            if (!Sick)
+                play_sfx_sound(SFX_CATCH_TERMINAL_ILLNESS);
+            make_sick(sick_time, doname(otmp), TRUE, HINT_KILLED_SICKENING_CORPSE);
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
+            standard_hint("Some food items can be inflicted by terminal illness. You can check this out by identifying the item.", &u.uhint.ate_sickening_food);
         }
         else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_HALLUCINATING && !Halluc_resistance)
         {
@@ -3671,6 +3694,7 @@ doeat()
             {
                 play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
                 (void)make_hallucinated(itimeout_incr(HHallucination, duration), TRUE, 0L);
+                standard_hint("Some food items cause hallucination. You can check this out by identifying the item.", &u.uhint.ate_hallucinating_food);
             }
 
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
