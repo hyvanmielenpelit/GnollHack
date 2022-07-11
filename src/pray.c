@@ -394,11 +394,11 @@ int trouble;
     switch (trouble) {
     case TROUBLE_STONED:
         play_sfx_sound(SFX_CURE_AILMENT);
-        make_stoned(0L, "You feel more limber.", 0, (char *) 0);
+        make_stoned(0L, "You feel more limber.", 0, (char *) 0, 0);
         break;
     case TROUBLE_SLIMED:
         play_sfx_sound(SFX_CURE_AILMENT);
-        make_slimed(0L, "The slime disappears.", 0, (char*)0);
+        make_slimed(0L, "The slime disappears.", 0, (char*)0, 0);
         break;
     case TROUBLE_STRANGLED:
         if (uamul && uamul->otyp == AMULET_OF_STRANGULATION)
@@ -428,17 +428,17 @@ int trouble;
     case TROUBLE_SICK:
         play_sfx_sound(SFX_CURE_DISEASE);
         You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "better.");
-        make_sick(0L, (char *) 0, FALSE);
+        make_sick(0L, (char *) 0, FALSE, 0);
         break;
     case TROUBLE_FOOD_POISONED:
         play_sfx_sound(SFX_CURE_DISEASE);
         You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "better.");
-        make_food_poisoned(0L, (char*)0, FALSE);
+        make_food_poisoned(0L, (char*)0, FALSE, 0);
         break;
     case TROUBLE_MUMMY_ROT:
         play_sfx_sound(SFX_CURE_DISEASE);
         You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "better.");
-        make_mummy_rotted(0L, (char*)0, FALSE);
+        make_mummy_rotted(0L, (char*)0, FALSE, 0);
         break;
     case TROUBLE_REGION:
         /* stinking cloud, with hero vulnerable to HP loss */
@@ -2981,6 +2981,13 @@ dopray()
             char qbuf[BUFSZ];
             Sprintf(qbuf, "Praying too often in succession may anger your %s. Do you still want to pray?", align_gtitle(u.ualign.type));
             if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Praying Too Often", qbuf) != 'y')
+                return 0;
+        }
+        else if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && Inhell)
+        {
+            char qbuf[BUFSZ];
+            Strcpy(qbuf, "You cannot safely pray in Gehennom. Do you still want to pray?");
+            if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Praying in Gehennom", qbuf) != 'y')
                 return 0;
         }
         else if (ParanoidPray || context.game_difficulty == MIN_DIFFICULTY_LEVEL)

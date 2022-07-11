@@ -125,10 +125,11 @@ boolean talk;
    u.usick_type bit mask), but delayed killer can only support one or
    the other at a time.  They should become separate intrinsics.... */
 void
-make_sick(xtime, cause, talk)
+make_sick(xtime, cause, talk, killerhintidx)
 long xtime;
 const char *cause; /* sickness cause */
 boolean talk;
+int killerhintidx;
 {
     struct kinfo *kptr;
     long old = Sick;
@@ -147,7 +148,7 @@ boolean talk;
         {
             /* newly sick */
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "deathly sick.");
-            pray_hint("cure terminal illness");
+            pray_hint("cure terminal illness", &u.uhint.got_terminal_illness);
         }
         else
         {
@@ -187,7 +188,7 @@ boolean talk;
             int kpfx = ((cause && !strcmp(cause, "#wizintrinsic"))
                         ? KILLED_BY : KILLED_BY_AN);
 
-            delayed_killer(SICK, kpfx, cause);
+            delayed_killer(SICK, kpfx, cause, killerhintidx);
         }
     } 
     else
@@ -199,10 +200,11 @@ boolean talk;
    u.usick_type bit mask), but delayed killer can only support one or
    the other at a time.  They should become separate intrinsics.... */
 void
-make_food_poisoned(xtime, cause, talk)
+make_food_poisoned(xtime, cause, talk, killerhintidx)
 long xtime;
 const char* cause; /* sickness cause */
 boolean talk;
+int killerhintidx;
 {
     struct kinfo* kptr;
     long old = FoodPoisoned;
@@ -221,7 +223,7 @@ boolean talk;
         {
             /* newly sick */
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "terminally ill from food poisoning.");
-            pray_hint("cure food poisoning");
+            pray_hint("cure food poisoning", &u.uhint.got_food_poisoning);
         }
         else
         {
@@ -261,7 +263,7 @@ boolean talk;
             int kpfx = ((cause && !strcmp(cause, "#wizintrinsic"))
                 ? KILLED_BY : KILLED_BY_AN);
 
-            delayed_killer(FOOD_POISONED, kpfx, cause);
+            delayed_killer(FOOD_POISONED, kpfx, cause, killerhintidx);
         }
     }
     else
@@ -272,10 +274,11 @@ boolean talk;
 /* xtime = -1 makes it a permanent intrinsic */
 
 void
-make_mummy_rotted(xtime, cause, talk)
+make_mummy_rotted(xtime, cause, talk, killerhintidx)
 long xtime;
 const char* cause; /* sickness cause */
 boolean talk;
+int killerhintidx;
 {
     struct kinfo* kptr;
     long old = MummyRot;
@@ -295,7 +298,7 @@ boolean talk;
             /* newly sick */
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "severely ill.");
             context.mummyrot_advancement = 0;
-            pray_hint("cure mummy rot");
+            pray_hint("cure mummy rot", &u.uhint.got_mummy_rot);
         }
         else
         {
@@ -341,7 +344,7 @@ boolean talk;
             int kpfx = ((cause && !strcmp(cause, "#wizintrinsic"))
                 ? KILLED_BY : KILLED_BY_AN);
 
-            delayed_killer(MUMMY_ROT, kpfx, cause);
+            delayed_killer(MUMMY_ROT, kpfx, cause, killerhintidx);
         }
     }
     else
@@ -349,11 +352,12 @@ boolean talk;
 }
 
 void
-make_slimed(xtime, msg, killedby, killername)
+make_slimed(xtime, msg, killedby, killername, killerhintidx)
 long xtime;
 const char *msg;
 int killedby;
 const char* killername;
+int killerhintidx;
 {
     long old = Slimed;
     struct kinfo* kptr;
@@ -377,16 +381,16 @@ const char* killername;
     else
     {
         if (!old || !kptr)
-            delayed_killer(SLIMED, killedby, killername);
+            delayed_killer(SLIMED, killedby, killername, killerhintidx);
 
         if (!old)
-            pray_hint("cure sliming");
+            pray_hint("cure sliming", &u.uhint.got_sliming);
     }
 }
 
 /* start or stop petrification */
 void
-make_stoned(xtime, msg, killedby, killername)
+make_stoned(xtime, msg, killedby, killername, killhintidx)
 long xtime;
 const char *msg;
 int killedby;
@@ -414,10 +418,10 @@ const char *killername;
     else
     {
         if (!old || !kptr)
-            delayed_killer(STONED, killedby, killername);
+            delayed_killer(STONED, killedby, killername, killhintidx);
 
         if (!old)
-            pray_hint("cure stoning");
+            pray_hint("cure stoning", &u.uhint.got_stoning);
     }
 }
 
@@ -1044,9 +1048,9 @@ struct obj *otmp;
             {
                 play_sfx_sound(SFX_CURE_DISEASE);
                 You_feel_ex(ATR_NONE, CLR_MSG_POSITIVE, "full of awe.");
-                make_sick(0L, (char *) 0, TRUE);
-                make_food_poisoned(0L, (char*)0, TRUE);
-                make_mummy_rotted(0L, (char*)0, TRUE);
+                make_sick(0L, (char *) 0, TRUE, 0);
+                make_food_poisoned(0L, (char*)0, TRUE, 0);
+                make_mummy_rotted(0L, (char*)0, TRUE, 0);
                 exercise(A_WIS, TRUE);
                 exercise(A_CON, TRUE);
                 if (u.ulycn >= LOW_PM)
@@ -1338,7 +1342,7 @@ struct obj *otmp;
                     play_sfx_sound(SFX_CATCH_FOOD_POISONING);
                 
                 make_food_poisoned(FoodPoisoned ? FoodPoisoned / 3L + 1L : (long)rn1(ACURR(max(2, A_CON)), 20),
-                    contaminant, TRUE);
+                    contaminant, TRUE, HINT_KILLED_POTION_OF_SICKNESS);
 
                 exercise(A_CON, FALSE);
             }
@@ -1958,9 +1962,9 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
     if (curesick)
     {
         make_vomiting(0L, TRUE);
-        make_sick(0L, (char *) 0, TRUE);
-        make_food_poisoned(0L, (char*)0, TRUE);
-        make_mummy_rotted(0L, (char*)0, TRUE);
+        make_sick(0L, (char *) 0, TRUE, 0);
+        make_food_poisoned(0L, (char*)0, TRUE, 0);
+        make_mummy_rotted(0L, (char*)0, TRUE, 0);
     }
 
     if (curehallucination) 

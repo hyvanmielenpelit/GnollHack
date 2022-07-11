@@ -422,6 +422,7 @@ boolean voluntary; /* taking gloves off on purpose? */
             makeplural(body_part(HAND)));
         Sprintf(kbuf, "%s gloves while wielding %s",
                 voluntary ? "removing" : "losing", killer_xname(obj));
+        killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
         instapetrify(kbuf);
         /* life-saved; can't continue wielding cockatrice corpse though */
         remove_worn_item(obj, FALSE);
@@ -704,7 +705,7 @@ Amulet_on()
     switch (uamul->otyp) {
     case AMULET_OF_UNCHANGING:
         if (Slimed)
-            make_slimed(0L, (char *) 0, 0, (char*)0);
+            make_slimed(0L, (char *) 0, 0, (char*)0, 0);
         break;
     case AMULET_OF_CHANGE:
         item_change_sex_and_useup(uamul);

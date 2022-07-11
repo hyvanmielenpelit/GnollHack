@@ -1315,7 +1315,7 @@ struct monst *mtmp;
         /* Sound is played always to indicate reduced timer */
         play_sfx_sound(SFX_CATCH_TERMINAL_ILLNESS);
         make_sick(Sick ? Sick / 3L + 1L : (long) rn1(ACURR(A_CON), 20),
-                  mon_monster_name(mtmp), TRUE);
+                  mon_monster_name(mtmp), TRUE, HINT_KILLED_TERMINAL_ILLNESS);
         return TRUE;
     }
 }
@@ -1332,7 +1332,7 @@ struct monst* mtmp;
     {
         if(!MummyRot)
             play_sfx_sound(SFX_CATCH_MUMMY_ROT);
-        make_mummy_rotted(-1L, mon_monster_name(mtmp), TRUE);
+        make_mummy_rotted(-1L, mon_monster_name(mtmp), TRUE, HINT_KILLED_MUMMY_ROT);
         return TRUE;
     }
 }
@@ -2478,7 +2478,7 @@ register struct obj* omonwep;
                         kname = the(kname);
                     kformat = KILLED_BY;
                 }
-                make_stoned(5L, (char *) 0, kformat, kname);
+                make_stoned(5L, (char *) 0, kformat, kname, HINT_KILLED_COCKATRICE);
                 return 1;
                 /* done_in_by(mtmp, STONING); */
             }
@@ -2818,11 +2818,11 @@ register struct obj* omonwep;
             if (!rn2(3))
                 exercise(A_CON, TRUE);
             if (Sick)
-                make_sick(0L, (char *) 0, FALSE);
+                make_sick(0L, (char *) 0, FALSE, 0);
             if (FoodPoisoned)
-                make_food_poisoned(0L, (char*)0, FALSE);
+                make_food_poisoned(0L, (char*)0, FALSE, 0);
             if (MummyRot)
-                make_mummy_rotted(0L, (char*)0, FALSE);
+                make_mummy_rotted(0L, (char*)0, FALSE, 0);
             context.botl = context.botlx = TRUE;
 
             if (goaway)
@@ -3043,7 +3043,7 @@ register struct obj* omonwep;
             hitmsg(mtmp, mattk, damagedealt, TRUE);
             play_sfx_sound(SFX_START_SLIMING);
             You_ex(ATR_NONE, CLR_MSG_WARNING, "don't feel very well.");
-            make_slimed(10L, (char *) 0, KILLED_BY_AN, mon_monster_name(mtmp));
+            make_slimed(10L, (char *) 0, KILLED_BY_AN, mon_monster_name(mtmp), HINT_KILLED_SLIMED);
         }
         else {
             hitmsg(mtmp, mattk, damagedealt, TRUE);
@@ -3964,6 +3964,7 @@ struct attack *mattk;
                 break;
             play_sfx_sound(SFX_PETRIFY);
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "turn to stone...");
+            killer.hint_idx = HINT_KILLED_MEDUSA_GAZE;
             killer.format = KILLED_BY;
             Strcpy(killer.name, mon_monster_name(mtmp));
             done(STONING);

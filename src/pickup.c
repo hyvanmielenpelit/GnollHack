@@ -277,6 +277,7 @@ boolean remotely;
 
     pline("Touching %s is a fatal mistake.",
           corpse_xname(obj, (const char *) 0, CXN_SINGULAR | CXN_ARTICLE));
+    killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
     instapetrify(killer_xname(obj));
     return TRUE;
 }

@@ -87,6 +87,7 @@ struct obj *otmp;
         You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "touch %s.", mon_nam(mtmp));
         if (!(poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))) {
             Sprintf(kbuf, "attempting to saddle %s", an(mon_monster_name(mtmp)));
+            killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE;
             instapetrify(kbuf);
         }
     }
@@ -345,6 +346,7 @@ struct monst *mtmp; /* The animal */
 
         You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "touch %s.", mon_nam(mtmp));
         Sprintf(kbuf, "attempting to ride %s", an(mon_monster_name(mtmp)));
+        killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE;
         instapetrify(kbuf);
     }
     if (!is_tame(mtmp) || mtmp->isminion)

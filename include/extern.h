@@ -645,7 +645,8 @@ E struct extended_create_window_info FDECL(extended_create_window_info_from_obj,
 E struct extended_create_window_info FDECL(extended_create_window_info_from_mon, (struct monst*));
 E struct extended_create_window_info FDECL(extended_create_window_info_from_mon_with_flags, (struct monst*, unsigned long));
 E void FDECL(standard_hint, (const char*));
-E void FDECL(pray_hint, (const char*));
+E void FDECL(pray_hint, (const char*, boolean*));
+E void NDECL(death_hint);
 
 /* ### do_name.c ### */
 
@@ -1039,7 +1040,7 @@ E int NDECL(dovanquished);
 E int NDECL(dokilledmonsters);
 E int NDECL(dogenocidedmonsters);
 E int NDECL(num_genocides);
-E void FDECL(delayed_killer, (int, int, const char *));
+E void FDECL(delayed_killer, (int, int, const char *, int));
 E struct kinfo *FDECL(find_delayed_killer, (int));
 E void FDECL(dealloc_killer, (struct kinfo *));
 E void FDECL(save_killers, (int, int));
@@ -2545,11 +2546,11 @@ E void FDECL(incr_itimeout, (long *, int));
 E long FDECL(itimeout_incr, (long, int));
 E void FDECL(make_confused, (long, BOOLEAN_P));
 E void FDECL(make_stunned, (long, BOOLEAN_P));
-E void FDECL(make_sick, (long, const char *, BOOLEAN_P));
-E void FDECL(make_food_poisoned, (long, const char*, BOOLEAN_P));
-E void FDECL(make_mummy_rotted, (long, const char*, BOOLEAN_P));
-E void FDECL(make_slimed, (long, const char*, int, const char*));
-E void FDECL(make_stoned, (long, const char *, int, const char *));
+E void FDECL(make_sick, (long, const char *, BOOLEAN_P, int));
+E void FDECL(make_food_poisoned, (long, const char*, BOOLEAN_P, int));
+E void FDECL(make_mummy_rotted, (long, const char*, BOOLEAN_P, int));
+E void FDECL(make_slimed, (long, const char*, int, const char*, int));
+E void FDECL(make_stoned, (long, const char *, int, const char *, int));
 E void FDECL(make_vomiting, (long, BOOLEAN_P));
 E void FDECL(make_blinded, (long, BOOLEAN_P));
 E void NDECL(toggle_blindness);

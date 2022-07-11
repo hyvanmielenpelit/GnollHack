@@ -3399,6 +3399,7 @@ boolean was_swallowed; /* digestion */
 
             killer.name[0] = '\0';
             killer.format = 0;
+            killer.hint_idx = 0;
             return FALSE;
         }
     }

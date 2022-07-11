@@ -4173,7 +4173,7 @@ int how;
             /* KMH -- Unchanging prevents rehumanization */
             if (Upolyd && ptr != youmonst.data) 
             {
-                delayed_killer(POLYMORPH, killer.format, killer.name);
+                delayed_killer(POLYMORPH, killer.format, killer.name, HINT_KILLED_GENOCIDED_PLAYER);
                 You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s inside.", udeadinside());
             } 
             else

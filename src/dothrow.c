@@ -101,6 +101,7 @@ boolean firing;
                expression "with your bare hands" sounds better */
             makeplural(body_part(HAND)));
         Sprintf(killer.name, "throwing %s bare-handed", killer_xname(obj));
+        killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
         instapetrify(killer.name);
     }
     if (welded(obj, &youmonst)) {

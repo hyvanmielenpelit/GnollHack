@@ -2657,6 +2657,7 @@ struct obj *otmp;
 #endif
 
     /* stealing this corpse is fatal... */
+    killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
     instapetrify(corpse_xname(otmp, "stolen", CXN_ARTICLE));
     /* apparently wasn't fatal after all... */
     return TRUE;
@@ -3131,7 +3132,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                 if (!Slimed) {
                     play_sfx_sound(SFX_START_SLIMING);
                     You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "suck in some slime and don't feel very well.");
-                    make_slimed(10L, (char *) 0, KILLED_BY, "sucking in some green slime");
+                    make_slimed(10L, (char *) 0, KILLED_BY, "sucking in some green slime", HINT_KILLED_ATE_GREEN_SLIME);
                 }
             }
             break;
@@ -3563,6 +3564,7 @@ register struct attack *mattk;
                 mname = an(mname);
             You("englut %s.", mon_nam(mdef));
             Sprintf(kbuf, "swallowing %s whole", mname);
+            killer.hint_idx = HINT_KILLED_ATE_COCKATRICE_CORPSE;
             instapetrify(kbuf);
         } 
         else
@@ -3640,7 +3642,7 @@ register struct attack *mattk;
                         if (!Unchanging)
                         {
                             play_sfx_sound(SFX_START_SLIMING);
-                            make_slimed(5L, (char *) 0, KILLED_BY, "trying to digest green slime");
+                            make_slimed(5L, (char *) 0, KILLED_BY, "trying to digest green slime", HINT_KILLED_ATE_GREEN_SLIME);
                         }
                     } 
                     else

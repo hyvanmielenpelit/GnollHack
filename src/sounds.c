@@ -7679,6 +7679,7 @@ struct monst* mtmp;
             0 };
         
         hermit_talk(mtmp, linearray, GHSOUND_ELVEN_BARD_ELBERETH);
+        u.uevent.elbereth_known = 1;
         break;
     }
     }

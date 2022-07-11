@@ -505,6 +505,9 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
         if (mtmp && oraclesstyle == 1)
             play_voice_oracle_major_consultation(mtmp, oracle_idx - 1);
 
+        if (oracle_idx == oracle_cnt - 1) // Elbereth is the last major consultation
+            u.uevent.elbereth_known = 1;
+
         while (dlb_fgets(line, COLNO, oracles) && strcmp(line, "---\n")) {
             if ((endp = index(line, '\n')) != 0)
                 *endp = 0;

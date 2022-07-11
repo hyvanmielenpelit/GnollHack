@@ -1252,6 +1252,9 @@ doengrave()
     /* Put the engraving onto the map */
     make_engr_at(u.ux, u.uy, buf, moves - multi, type, ENGR_FLAGS_NONE);
 
+    if (!strcmp(buf, Elbereth_word))
+        u.uevent.elbereth_known = 1;
+
     if (post_engr_text[0])
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s", post_engr_text);
     if (doblind && !resists_blnd(&youmonst) && !Flash_resistance) {

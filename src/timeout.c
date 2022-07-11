@@ -283,7 +283,7 @@ stoned_dialogue()
         if (Vomiting)
             make_vomiting(0L, FALSE);
         if (Slimed)
-            make_slimed(0L, (char *) 0, 0, (char*)0);
+            make_slimed(0L, (char *) 0, 0, (char*)0, 0);
         break;
     default:
         break;
@@ -489,7 +489,7 @@ slime_dialogue()
     case 1L: /* turning into slime */
         /* if also turning to stone, stop doing that (no message) */
         if (Stoned)
-            make_stoned(0L, (char *) 0, KILLED_BY_AN, (char *) 0);
+            make_stoned(0L, (char *) 0, KILLED_BY_AN, (char *) 0, 0);
         break;
     }
     exercise(A_DEX, FALSE);
@@ -499,7 +499,7 @@ void
 burn_away_slime()
 {
     if (Slimed) {
-        make_slimed(0L, "The slime that covers you is burned away!", 0, (char*)0);
+        make_slimed(0L, "The slime that covers you is burned away!", 0, (char*)0, 0);
     }
 }
 
@@ -519,9 +519,11 @@ struct kinfo *kptr;
     if (kptr && kptr->name[0]) {
         killer.format = kptr->format;
         Strcpy(killer.name, kptr->name);
+        killer.hint_idx = kptr->hint_idx;
     } else {
         killer.format = NO_KILLER_PREFIX;
         Strcpy(killer.name, "turned into green slime");
+        killer.hint_idx = HINT_KILLED_SLIMED;
     }
     dealloc_killer(kptr);
 
@@ -721,10 +723,12 @@ nh_timeout()
                 if (kptr && kptr->name[0]) {
                     killer.format = kptr->format;
                     Strcpy(killer.name, kptr->name);
+                    killer.hint_idx = kptr->hint_idx;
                 }
                 else {
                     killer.format = NO_KILLER_PREFIX;
                     Strcpy(killer.name, "killed by petrification");
+                    killer.hint_idx = HINT_KILLED_PETRIFICATION;
                 }
                 if (kptr)
                     dealloc_killer(kptr);
@@ -746,11 +750,13 @@ nh_timeout()
                 {
                     killer.format = kptr->format;
                     Strcpy(killer.name, kptr->name);
+                    killer.hint_idx = kptr->hint_idx;
                 }
                 else
                 {
                     killer.format = KILLED_BY_AN;
                     killer.name[0] = 0; /* take the default */
+                    killer.hint_idx = 0;
                 }
     
                 if(kptr)
@@ -795,11 +801,13 @@ nh_timeout()
                     {
                         killer.format = kptr->format;
                         Strcpy(killer.name, kptr->name);
+                        killer.hint_idx = kptr->hint_idx;
                     }
                     else 
                     {
                         killer.format = KILLED_BY_AN;
                         killer.name[0] = 0; /* take the default */
+                        killer.hint_idx = 0;
                     }
 
                     if (kptr)
@@ -819,7 +827,7 @@ nh_timeout()
                     }
                     done(ROTTED);
                     /* Life saved */
-                    make_mummy_rotted(0L, (char*)0, FALSE);
+                    make_mummy_rotted(0L, (char*)0, FALSE, 0);
                 }
 
                 break;
@@ -840,10 +848,12 @@ nh_timeout()
                 if (uamul && uamul->otyp == AMULET_OF_STRANGULATION)
                 {
                     Strcpy(killer.name, "amulet of strangulation");
+                    killer.hint_idx = HINT_KILLED_ITEM_STRANGULATION;
                     done(STRANGULATION);
                 }
                 else if (u.ustuck && (is_constrictor(u.ustuck->data) || hug_throttles(u.ustuck->data)))
                 {
+                    killer.hint_idx = HINT_KILLED_MONSTER_STRANGULATION;
                     done_in_by(u.ustuck, STRANGULATION);
                 }
                 /* must be declining to die in explore|wizard mode;
@@ -863,7 +873,10 @@ nh_timeout()
                 {
                     You_ex(ATR_NONE, CLR_MSG_NEGATIVE, Underwater || drowned_by_monster ? "drown." : "suffocate.");
                     if (drowned_by_monster)
+                    {
+                        killer.hint_idx = HINT_KILLED_DROWNED_BY_MONSTER;
                         done_in_by(u.ustuck, DROWNED);
+                    }
                     else
                     {
                         killer.format = KILLED_BY;
@@ -871,11 +884,15 @@ nh_timeout()
 
                         if (isdrowning)
                         {
+                            killer.hint_idx = HINT_KILLED_DROWNED;
                             killer.format = KILLED_BY_AN;
                             Sprintf(killer.name, "%s", is_pool(u.ux, u.uy) ? (levl[u.ux][u.uy].typ == MOAT ? "moat" : "pool of water") : "body of water");
                         }
                         else
+                        {
+                            killer.hint_idx = u.uburied ? HINT_KILLED_SUFFOCATION_BY_BEING_BURIED : HINT_KILLED_SUFFOCATION;
                             Sprintf(killer.name, "%s", u.uburied ? "being buried alive" : "");
+                        }
 
                         done(isdrowning ? DROWNING : SUFFOCATION);
                     }
@@ -1659,6 +1676,7 @@ slip_or_trip()
             && touch_petrifies(&mons[otmp->corpsenm]) && !Stone_resistance) {
             Sprintf(killer.name, "tripping over %s corpse",
                     an(corpse_monster_name(otmp)));
+            killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
             instapetrify(killer.name);
         }
     } else if (rn2(3) && is_ice(u.ux, u.uy)) {

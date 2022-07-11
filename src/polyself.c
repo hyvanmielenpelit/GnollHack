@@ -392,13 +392,13 @@ newman()
 
     u.uhunger = rn1(500, 500);
     if (Sick)
-        make_sick(0L, (char *) 0, FALSE);
+        make_sick(0L, (char *) 0, FALSE, 0);
     if (FoodPoisoned)
-        make_food_poisoned(0L, (char*)0, FALSE);
+        make_food_poisoned(0L, (char*)0, FALSE, 0);
     if (MummyRot)
-        make_mummy_rotted(0L, (char*)0, FALSE);
+        make_mummy_rotted(0L, (char*)0, FALSE, 0);
     if (Stoned)
-        make_stoned(0L, (char *) 0, 0, (char *) 0);
+        make_stoned(0L, (char *) 0, 0, (char *) 0, 0);
     if (u.uhp <= 0) {
         if (Polymorph_control) { /* even when Stunned || Unaware */
             if (u.uhp <= 0)
@@ -425,7 +425,7 @@ newman()
                    : urace.noun);
     if (Slimed) {
         Your_ex(ATR_NONE, CLR_MSG_WARNING, "body transforms, but there is still slime on you.");
-        make_slimed(10L, (const char *) 0, KILLED_BY, "sliming");
+        make_slimed(10L, (const char *) 0, KILLED_BY, "sliming", HINT_KILLED_SLIMED);
     }
 
     context.botl = context.botlx = TRUE;
@@ -820,7 +820,7 @@ int mntmp;
     if (Stoned && poly_when_stoned(&mons[mntmp])) {
         /* poly_when_stoned already checked stone golem genocide */
         mntmp = PM_STONE_GOLEM;
-        make_stoned(0L, "You turn to stone!", 0, (char *) 0);
+        make_stoned(0L, "You turn to stone!", 0, (char *) 0, 0);
     }
 
     u.mtimedone = rn1(500, 500);
@@ -852,23 +852,23 @@ int mntmp;
 
     if (Stone_resistance && Stoned) { /* parnes@eniac.seas.upenn.edu */
         make_stoned(0L, "You no longer seem to be petrifying.", 0,
-                    (char *) 0);
+                    (char *) 0, 0);
     }
     if (Sick_resistance && (Sick || FoodPoisoned || MummyRot)) {
         if(Sick)
-            make_sick(0L, (char *) 0, FALSE);
+            make_sick(0L, (char *) 0, FALSE, 0);
         if (FoodPoisoned)
-            make_food_poisoned(0L, (char*)0, FALSE);
+            make_food_poisoned(0L, (char*)0, FALSE, 0);
         if (MummyRot)
-            make_mummy_rotted(0L, (char*)0, FALSE);
+            make_mummy_rotted(0L, (char*)0, FALSE, 0);
         You_ex(ATR_NONE, CLR_MSG_POSITIVE, "no longer feel sick.");
     }
     if (Slimed) {
         if (flaming(youmonst.data)) {
-            make_slimed(0L, "The slime burns away!", 0, (char*)0);
+            make_slimed(0L, "The slime burns away!", 0, (char*)0, 0);
         } else if (mntmp == PM_GREEN_SLIME) {
             /* do it silently */
-            make_slimed(0L, (char *) 0, 0, (char*)0);
+            make_slimed(0L, (char *) 0, 0, (char*)0, 0);
         }
     }
     check_strangling(FALSE); /* maybe stop strangling */
@@ -948,6 +948,7 @@ int mntmp;
             pline("%s touch %s.", no_longer_petrify_resistant,
                   mon_nam(u.usteed));
             Sprintf(buf, "riding %s", an(mon_monster_name(u.usteed)));
+            killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE;
             instapetrify(buf);
         }
         if (!can_ride(u.usteed))

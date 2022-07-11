@@ -189,6 +189,7 @@ struct obj *obj;
         corpse_xname(obj, (const char *) 0, CXN_PFX_THE),
         makeplural(body_part(HAND)));
     Sprintf(kbuf, "wielding %s bare-handed", killer_xname(obj));
+    killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
     instapetrify(kbuf);
     return TRUE;
 }

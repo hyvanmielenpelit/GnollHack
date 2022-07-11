@@ -3003,6 +3003,7 @@ struct obj *obj;
             Sprintf(kbuf, "trying to tin %s without gloves",
                     an(corpse_monster_name(corpse)));
         }
+        killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
         instapetrify(kbuf);
     }
     if (is_rider(&mons[corpse->corpsenm])) {
@@ -3083,7 +3084,7 @@ struct obj *obj;
                 play_sfx_sound(SFX_CATCH_TERMINAL_ILLNESS);
             make_sick((Sick & TIMEOUT) ? (Sick & TIMEOUT) / 3L + 1L
                                        : (long) rn1(ACURR(A_CON), 20),
-                      xname(obj), TRUE);
+                      xname(obj), TRUE, HINT_KILLED_ILLNESS_FROM_CURSED_UNICORN_HORN);
             break;
         case 1:
             if(!Blind)
@@ -3217,17 +3218,17 @@ struct obj *obj;
         switch (idx) {
         case prop2trbl(SICK):
             play_sfx_sound(SFX_CURE_DISEASE);
-            make_sick(0L, (char *) 0, TRUE);
+            make_sick(0L, (char *) 0, TRUE, 0);
             did_prop++;
             break;
         case prop2trbl(FOOD_POISONED):
             play_sfx_sound(SFX_CURE_DISEASE);
-            make_food_poisoned(0L, (char*)0, TRUE);
+            make_food_poisoned(0L, (char*)0, TRUE, 0);
             did_prop++;
             break;
         case prop2trbl(MUMMY_ROT):
             play_sfx_sound(SFX_CURE_DISEASE);
-            make_mummy_rotted(0L, (char*)0, TRUE);
+            make_mummy_rotted(0L, (char*)0, TRUE, 0);
             did_prop++;
             break;
         case prop2trbl(BLINDED):
@@ -4562,6 +4563,7 @@ struct obj *obj;
                         Sprintf(kbuf, "%s corpse",
                                 an(corpse_monster_name(otmp)));
                         pline("Snatching %s is a fatal mistake.", kbuf);
+                        killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
                         instapetrify(kbuf);
                     }
                     (void) hold_another_object(otmp, "You drop %s!",

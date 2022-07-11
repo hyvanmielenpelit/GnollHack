@@ -6233,7 +6233,7 @@ boolean ordinary;
             int kformat = NO_KILLER_PREFIX;
             char kname[BUFSZ] = "";
             Sprintf(kname, "casting a petrification spell on %sself", uhim());
-            make_stoned(5L, (char*)0, kformat, kname);
+            make_stoned(5L, (char*)0, kformat, kname, HINT_KILLED_PETRIFICATION);
         }
         break;
     case SPE_GAZE_OF_PETRIFICATION:
@@ -6363,7 +6363,7 @@ boolean ordinary;
                     fix_petrification();
 
                 if (Slimed)
-                    make_slimed(0L, (char*)0, 0, (char*)0);
+                    make_slimed(0L, (char*)0, 0, (char*)0, 0);
             }
             special_effect_wait_until_end(0);
 
@@ -6413,7 +6413,7 @@ boolean ordinary;
                 you_unwere(TRUE);
 
             if(Stoned)
-                make_stoned(0L, (char*)0, 0, (char*)0);
+                make_stoned(0L, (char*)0, 0, (char*)0, 0);
 
             if (u.uhunger < 500)
             {
@@ -6449,7 +6449,7 @@ boolean ordinary;
         if (Sick || FoodPoisoned || MummyRot)
             You_ex(ATR_NONE, CLR_MSG_POSITIVE, "are no longer ill.");
         if (Slimed)
-            make_slimed(0L, "The slime disappears!", 0, (char*)0);
+            make_slimed(0L, "The slime disappears!", 0, (char*)0, 0);
         healup(0, 0, TRUE, FALSE, FALSE, FALSE, FALSE);
         special_effect_wait_until_end(0);
         break;
@@ -8691,6 +8691,7 @@ const char *fltxt;
             (void)destroy_arm(uarmo);
         if (uarmu)
             (void) destroy_arm(uarmu);
+        killer.hint_idx = HINT_KILLED_DISINTEGRATION_RAY;
         killer.format = KILLED_BY_AN;
         strcpy(killer.name, killername);
         /* when killed by disintegration attack, don't leave corpse */
@@ -8719,6 +8720,7 @@ const char *fltxt;
 #endif
         killer.format = KILLED_BY_AN;
         Strcpy(killer.name, killername);
+        killer.hint_idx = HINT_KILLED_DEATH_RAY;
         display_u_being_hit(HIT_DEATH, 0, 0UL);
         done(DIED);
         return; /* lifesaved */
@@ -8755,7 +8757,7 @@ const char *fltxt;
                 int kformat = KILLED_BY_AN;
                 char kname[BUFSZ];
                 Strcpy(kname, killername);
-                make_stoned(5L, (char*)0, kformat, kname);
+                make_stoned(5L, (char*)0, kformat, kname, HINT_KILLED_PETRIFICATION_RAY);
             }
         }
         return;

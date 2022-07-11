@@ -22,6 +22,7 @@
 #include "prop.h" /* (needed here for util/makedefs.c) */
 #endif
 #include "skills.h"
+#include "general.h"
 
 #include <time.h>
 
@@ -114,6 +115,8 @@ struct u_event {
 
     Bitfield(role_achievement_1, 1);  /* passed the first requirement of the role achievement */
     Bitfield(role_achievement_2, 1);  /* passed the second requirement of the role achievement */
+
+    Bitfield(elbereth_known, 1);      /* has learned of Elbereth */
 };
 
 struct u_achieve {
@@ -147,6 +150,103 @@ struct u_achieve {
     /* Other Achievements */
     Bitfield(role_achievement, 1); /* Special achievement for the role */
     Bitfield(crowned, 1); /* Became Hand of Elbereth, Envoy of Balance, or Glory of Arioch */
+};
+
+enum kill_hints
+{
+    HINT_KILLED_NO_KILLER = 0,
+    HINT_KILLED_COCKATRICE,
+    HINT_KILLED_TOUCHED_COCKATRICE,
+    HINT_KILLED_TOUCHED_COCKATRICE_CORPSE,
+    HINT_KILLED_ATE_COCKATRICE_CORPSE,
+    HINT_KILLED_HIT_BY_COCKATRICE_CORPSE,
+    HINT_KILLED_DROWNED,
+    HINT_KILLED_DROWNED_BY_MONSTER,
+    HINT_KILLED_SUFFOCATION,
+    HINT_KILLED_SUFFOCATION_BY_BEING_BURIED,
+    HINT_KILLED_ITEM_STRANGULATION,
+    HINT_KILLED_MONSTER_STRANGULATION,
+    HINT_KILLED_DISINTEGRATION_RAY,
+    HINT_KILLED_PETRIFICATION_RAY,
+    HINT_KILLED_MEDUSA_GAZE,
+    HINT_KILLED_TOUCH_OF_DEATH,
+    HINT_KILLED_DEATH_RAY,
+    HINT_KILLED_MUMMY_ROT,
+    HINT_KILLED_FOOD_POISONING,
+    HINT_KILLED_TERMINAL_ILLNESS,
+    HINT_KILLED_SLIMED,
+    HINT_KILLED_PETRIFICATION,
+    HINT_KILLED_OLD_CORPSE,
+    HINT_KILLED_TAINTED_CORPSE,
+    HINT_KILLED_SICKENING_CORPSE,
+    HINT_KILLED_POTION_OF_SICKNESS,
+    HINT_KILLED_MUMMY_ROTTED_CORPSE,
+    HINT_KILLED_ILLNESS_FROM_CURSED_UNICORN_HORN,
+    HINT_KILLED_ATE_GREEN_SLIME,
+    HINT_KILLED_GENOCIDED_PLAYER,
+    NUM_KILL_HINTS
+};
+
+#define NUM_KILL_HINT_ULONGS 2
+struct u_hint {
+    unsigned long kill_hints_given[NUM_KILL_HINT_ULONGS]; //One bit per kill hint enum
+    unsigned long general_hints;    //Easy-to-add hint flags
+
+    boolean ate_rotten_corpse; 
+    boolean ate_poisonous_corpse;
+    boolean ate_sickening_corpse;
+    boolean ate_hallucinating_corpse;
+    boolean ate_stunning_corpse;
+
+    boolean ate_polymorphing_corpse;
+    boolean ate_mummy_rotted_corpse;
+    boolean poisoned_by_fountain;
+    boolean drank_potion_of_sickness;
+    boolean drank_potion_of_poison;
+
+    boolean drank_potion_of_hallucination;
+    boolean polymorphed_by_trap;
+    boolean being_drowned;
+    boolean being_strangled_by_item;
+    boolean being_strangled_by_monster;
+
+    boolean paralyzed_by_thrown_potion;
+    boolean fell_asleep_by_thrown_potion;
+    boolean fell_asleep_by_trap;
+    boolean hit_by_disintegration_ray;
+    boolean hit_by_petrification_ray;
+
+    boolean got_level_drained;
+    boolean damaged_by_passive_fire;
+    boolean monster_revived;
+    boolean got_grabbed;
+
+    boolean stuff_got_stolen;
+    boolean stuff_got_stolen_by_harpy;
+    boolean paralyzed_by_floating_eye;
+    boolean paralyzed_by_cube;
+    boolean got_hungry;
+
+    boolean low_hit_points;
+    boolean got_mobbed;
+    boolean got_digested;
+    boolean brain_got_eaten;
+
+    boolean items_destroyed_by_shock;
+    boolean items_destroyed_by_fire;
+    boolean items_destroyed_by_cold;
+
+    boolean bag_destroyed_by_cancellation;
+    boolean got_burdened;
+
+    boolean got_food_poisoning;
+    boolean got_mummy_rot;
+    boolean got_sliming;
+    boolean got_stoning;
+
+    boolean got_stunned;
+    boolean got_terminal_illness;
+    boolean pet_got_mummy_rot;
 };
 
 struct u_realtime {
@@ -423,6 +523,7 @@ struct you {
     unsigned udg_cnt;           /* how long you have been demigod */
     struct u_achieve uachieve;  /* achievements */
     struct u_event uevent;      /* certain events have happened */
+    struct u_hint uhint;        /* certain hints have been given */
     struct u_have uhave;        /* you're carrying special objects */
     struct u_conduct uconduct;  /* KMH, conduct */
     struct u_roleplay uroleplay;

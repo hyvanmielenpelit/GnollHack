@@ -2755,23 +2755,23 @@ wiz_intrinsic(VOID_ARGS)
                 make_hallucinated(newtimeout, TRUE, 0L);
                 break;
             case SICK:
-                make_sick(newtimeout, wizintrinsic, TRUE);
+                make_sick(newtimeout, wizintrinsic, TRUE, 0);
                 break;
             case FOOD_POISONED:
-                make_food_poisoned(newtimeout, wizintrinsic, TRUE);
+                make_food_poisoned(newtimeout, wizintrinsic, TRUE, 0);
                 break;
             case MUMMY_ROT:
-                make_mummy_rotted(newtimeout, wizintrinsic, TRUE);
+                make_mummy_rotted(newtimeout, wizintrinsic, TRUE, 0);
                 break;
             case SLIMED:
                 Sprintf(buf, fmt,
                         !Slimed ? "" : " still", "turning into slime");
-                make_slimed(newtimeout, buf, KILLED_BY, wizintrinsic);
+                make_slimed(newtimeout, buf, KILLED_BY, wizintrinsic, 0);
                 break;
             case STONED:
                 Sprintf(buf, fmt,
                         !Stoned ? "" : " still", "turning into stone");
-                make_stoned(newtimeout, buf, KILLED_BY, wizintrinsic);
+                make_stoned(newtimeout, buf, KILLED_BY, wizintrinsic, 0);
                 break;
             case STUNNED:
                 make_stunned(newtimeout, TRUE);

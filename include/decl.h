@@ -244,6 +244,7 @@ E NEARDATA struct kinfo {
 #define KILLED_BY_AN 0
 #define KILLED_BY 1
 #define NO_KILLER_PREFIX 2
+    int hint_idx;
     char name[BUFSZ]; /* actual killer name */
 } killer;
 

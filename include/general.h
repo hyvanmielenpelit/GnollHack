@@ -824,6 +824,7 @@ enum quest_states {
 };
 
 
+
 #define AD_MODULO 4
 
 

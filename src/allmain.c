@@ -870,11 +870,13 @@ regenerate_hp()
                 {
                     killer.format = kptr->format;
                     Strcpy(killer.name, kptr->name);
+                    killer.hint_idx = HINT_KILLED_MUMMY_ROT;
                 }
                 else
                 {
                     killer.format = KILLED_BY_AN;
                     killer.name[0] = 0; /* take the default */
+                    killer.hint_idx = 0;
                 }
                 dealloc_killer(kptr);
 

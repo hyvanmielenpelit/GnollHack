@@ -6110,7 +6110,8 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     flush_screen(-1);       /* ensure all map flushes are postponed */
     char wakeupbuf[BUFSZ] = "";
     boolean displaywakeup = FALSE;
-    if (portal == 1 && !In_endgame(&u.uz)) 
+    //boolean displaydeathhint = (at_location & 2) != 0;
+    if (portal == 1 && !In_endgame(&u.uz))
     {
         /* find the portal on the new level */
         register struct trap *ttrap;
@@ -6335,6 +6336,9 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, wakeupbuf);
         display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_REVIVAL, ATR_NONE, CLR_MSG_SUCCESS, NO_GLYPH, POPUP_FLAGS_NONE);
     }
+
+    //if(displaydeathhint)
+    //    death_hint();
 
     /* special levels can have a custom arrival message */
     deliver_splev_message();
@@ -7510,7 +7514,7 @@ void
 standard_hint(hint_text)
 const char* hint_text;
 {
-    if (hint_text && context.game_difficulty == MIN_DIFFICULTY_LEVEL)
+    if (hint_text)
     {
         char hintbuf[BUFSZ];
         Sprintf(hintbuf, "HINT - %s", hint_text);
@@ -7520,11 +7524,140 @@ const char* hint_text;
 }
 
 void
-pray_hint(what)
+pray_hint(what, hintflag_ptr)
 const char* what;
+boolean* hintflag_ptr;
 {
-    if (can_pray(FALSE))
+    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && can_pray(FALSE) && (!hintflag_ptr || !*hintflag_ptr))
     {
+        if (hintflag_ptr)
+            *hintflag_ptr = TRUE;
+        char buf[BUFSZ];
+        Sprintf(buf, "You can pray to %s.", what ? what : "get out of trouble");
+        standard_hint(buf);
+    }
+}
+
+void
+death_hint(VOID_ARGS)
+{
+    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && killer.name[0] && killer.hint_idx > 0)
+    {
+        unsigned long kbit = 1UL << (killer.hint_idx % 32);
+        unsigned long* hints_given = &u.uhint.kill_hints_given[min(NUM_KILL_HINT_ULONGS - 1, killer.hint_idx / 32)];
+        if (((*hints_given) & kbit) == 0)
+        {
+            *hints_given |= kbit;
+
+            char buf[BUFSZ * 2] = "";
+            switch (killer.hint_idx)
+            {
+            case HINT_KILLED_PETRIFICATION_RAY:
+                Strcpy(buf, "Acquire petrification resistance or reflection as early on as possible to avoid being killed by petrification rays. To cure petrification, eat a lizard corpse or a dragon fruit, or use a jar of basilisk blood.");
+                break;
+            case HINT_KILLED_COCKATRICE:
+            case HINT_KILLED_PETRIFICATION:
+                Strcpy(buf, "To cure petrification, eat a lizard corpse or a dragon fruit, or use a jar of basilisk blood.");
+                break;
+            case HINT_KILLED_TOUCHED_COCKATRICE_CORPSE:
+                Strcpy(buf, "You should wear gloves before touching a cockatrice corpse, cockatrice meat, or similar petrifying item.");
+                break;
+            case HINT_KILLED_TOUCHED_COCKATRICE:
+                Strcpy(buf, "You should wear gloves before touching a cockatrice or similar petrifying monster.");
+                break;
+            case HINT_KILLED_ATE_COCKATRICE_CORPSE:
+                Strcpy(buf, "Always make sure that you are not eating petrifying meat, e.g., by checking it with a wand of probing.");
+                break;
+            case HINT_KILLED_HIT_BY_COCKATRICE_CORPSE:
+                Strcpy(buf, "Keep an eye on monsters wielding a cockatrice corpse, and kill them from a distance.");
+                break;
+            case HINT_KILLED_DROWNED:
+                Strcpy(buf, "Be careful not to enter pools or water, unless you have magical breathing, or you can fly, levitate or waterwalk over them.");
+                break;
+            case HINT_KILLED_DROWNED_BY_MONSTER:
+                Strcpy(buf, "To avoid being drawned by a monster, kill it quickly or teleport either it or yourself away.");
+                break;
+            case HINT_KILLED_SUFFOCATION:
+                Strcpy(buf, "Acquire an amulet of magical breathing to avoid suffocation.");
+                break;
+            case HINT_KILLED_SUFFOCATION_BY_BEING_BURIED:
+                Strcpy(buf, "Acquire an amulet of magical breathing to avoid suffocation by being buried.");
+                break;
+            case HINT_KILLED_ITEM_STRANGULATION:
+                Strcpy(buf, "You can remove a cursed strangulation item by uncursing it first, for example, by praying.");
+                break;
+            case HINT_KILLED_MONSTER_STRANGULATION:
+                Sprintf(buf, "You can stop a monster from strangling you by praying%s or teleporting it or yourself away.", u.uevent.elbereth_known ? ", writing Elbereth," : "");
+                break;
+            case HINT_KILLED_DISINTEGRATION_RAY:
+                Strcpy(buf, "Acquire disintegration resistance or reflection as early on as possible to avoid being killed by disintegration rays.");
+                break;
+            case HINT_KILLED_MEDUSA_GAZE:
+                Strcpy(buf, "Acquire petrification resistance or reflection, or use a blindfold or a towel to make yourself blind, before engaging in combat with Medusa to avoid being turned to stone by her gaze.");
+                break;
+            case HINT_KILLED_TOUCH_OF_DEATH:
+                Strcpy(buf, "Acquire death resistance before engaging in combat with enemies capable of casting Touch of Death, such as greater mummy high priests.");
+                break;
+            case HINT_KILLED_DEATH_RAY:
+                Strcpy(buf, "Acquire death resistance or reflection as early on as possible to avoid being killed by death rays.");
+                break;
+            case HINT_KILLED_FOOD_POISONING:
+                Strcpy(buf, "Acquire sick resistance as early on as possible to avoid being killed by food poisoning. To cure food poisoning, you can eat an eucalyptus leaf or a fig.");
+                break;
+            case HINT_KILLED_TERMINAL_ILLNESS:
+                Strcpy(buf, "Acquire sick resistance as early on as possible to avoid being killed by terminal illness. To cure terminal illness, you can eat an eucalyptus leaf or a fig.");
+                break;
+            case HINT_KILLED_SLIMED:
+                Strcpy(buf, "You can burn slime away to avoid being turned into green slime.");
+                break;
+            case HINT_KILLED_MUMMY_ROT:
+                Strcpy(buf, "Acquire sick resistance as early on as possible to avoid being killed by mummy rot. To cure mummy rot, you can eat an eucalyptus leaf or a fig.");
+                break;
+            case HINT_KILLED_OLD_CORPSE:
+                Strcpy(buf, "Do not eat corpses that have died a long time ago.");
+                break;
+            case HINT_KILLED_TAINTED_CORPSE:
+                Strcpy(buf, "Some corpses are inherently tainted. You can check this, e.g., by using a wand of probing.");
+                break;
+            case HINT_KILLED_SICKENING_CORPSE:
+                Strcpy(buf, "Some corpses are inherently infected by terminal illness. You can check this, e.g., by using a wand of probing.");
+                break;
+            case HINT_KILLED_POTION_OF_SICKNESS:
+                Strcpy(buf, "A potion of sickness can cause terminal illness. Identify potions first, or cure sickness eating a fig or an eucalyptus leaf.");
+                break;
+            case HINT_KILLED_MUMMY_ROTTED_CORPSE:
+                Strcpy(buf, "Some corpses are inherently infected by mummy rot. You can check this, e.g., by using a wand of probing.");
+                break;
+            case HINT_KILLED_ILLNESS_FROM_CURSED_UNICORN_HORN:
+                Strcpy(buf, "A cursed unicorn horn can infect you with terminal illness. Identify it or determine its blessedness on an altar.");
+                break;
+            case HINT_KILLED_ATE_GREEN_SLIME:
+                Strcpy(buf, "Do not eat green slime.");
+                break;
+            case HINT_KILLED_GENOCIDED_PLAYER:
+                Strcpy(buf, "Be careful not to genocide your player race, especially if you are a dwarf, orc, or a gnoll.");
+                break;
+
+            }
+
+            if (*buf)
+            {
+                standard_hint(buf);
+                display_popup_text(buf, "Hint", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_HINT, NO_GLYPH, POPUP_FLAGS_NONE);
+            }
+        }
+    }
+}
+
+void
+item_destroy_hint(what, hintflag_ptr)
+const char* what;
+boolean* hintflag_ptr;
+{
+    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && can_pray(FALSE) && (!hintflag_ptr || !*hintflag_ptr))
+    {
+        if (hintflag_ptr)
+            *hintflag_ptr = TRUE;
         char buf[BUFSZ];
         Sprintf(buf, "You can pray to %s.", what ? what : "get out of trouble");
         standard_hint(buf);

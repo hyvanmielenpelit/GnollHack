@@ -601,7 +601,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         if (magr == &youmonst) 
         {
             if (!Stone_resistance && !Stoned)
-                make_stoned(5L, (char *) 0, KILLED_BY_AN, mon_monster_name(mdef));
+                make_stoned(5L, (char *) 0, KILLED_BY_AN, mon_monster_name(mdef), HINT_KILLED_ATE_COCKATRICE_CORPSE);
         }
         else
         {
@@ -885,7 +885,7 @@ uchar gender; /* 0 = male, 1 = female, 2 = unknown */
         if (!Slimed && !Unchanging && !slimeproof(youmonst.data)) {
             play_sfx_sound(SFX_START_SLIMING);
             You("don't feel very well.");
-            make_slimed(10L, (char *) 0, KILLED_BY, "eating green slime");
+            make_slimed(10L, (char *) 0, KILLED_BY, "eating green slime", HINT_KILLED_ATE_GREEN_SLIME);
         }
     /* Fall through */
     default:
@@ -909,7 +909,7 @@ fix_petrification()
     if (Stoned)
         play_sfx_sound(SFX_CURE_AILMENT);
 
-    make_stoned(0L, buf, 0, (char *) 0);
+    make_stoned(0L, buf, 0, (char *) 0, 0);
 }
 
 /*
@@ -2151,7 +2151,7 @@ struct obj *otmp;
                 play_sfx_sound(SFX_CATCH_FOOD_POISONING);
 
             make_food_poisoned(sick_time, corpse_xname(otmp, "rotted", CXN_NORMAL),
-                      TRUE);
+                      TRUE, HINT_KILLED_OLD_CORPSE);
 
             pline("(It must have died too long ago to be safe to eat.)");
         }
@@ -2181,7 +2181,7 @@ struct obj *otmp;
             if (!Sick)
                 play_sfx_sound(SFX_CATCH_TERMINAL_ILLNESS);
 
-            make_sick(sick_time, corpse_xname(otmp, "", CXN_NORMAL), TRUE);
+            make_sick(sick_time, corpse_xname(otmp, "", CXN_NORMAL), TRUE, HINT_KILLED_SICKENING_CORPSE);
 
             (void)touchfood(otmp);
             return 1;
@@ -2198,7 +2198,7 @@ struct obj *otmp;
         {
             play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             play_sfx_sound(SFX_CATCH_MUMMY_ROT);
-            make_mummy_rotted(-1L, corpse_xname(otmp, "", CXN_NORMAL), TRUE);
+            make_mummy_rotted(-1L, corpse_xname(otmp, "", CXN_NORMAL), TRUE, HINT_KILLED_MUMMY_ROTTED_CORPSE);
 
             (void)touchfood(otmp);
             return 1;
@@ -2983,7 +2983,7 @@ struct obj *otmp;
                 if (!Stoned) {
                     Sprintf(killer.name, "%s egg",
                             corpse_monster_name(otmp));
-                    make_stoned(5L, (char *) 0, KILLED_BY_AN, killer.name);
+                    make_stoned(5L, (char *) 0, KILLED_BY_AN, killer.name, HINT_KILLED_ATE_COCKATRICE_CORPSE);
                 }
             }
             /* note: no "tastes like chicken" message for eggs */
@@ -2995,17 +2995,17 @@ struct obj *otmp;
         if (Sick && !otmp->cursed)
         {
             cured = TRUE;
-            make_sick(0L, (char*)0, TRUE);
+            make_sick(0L, (char*)0, TRUE, 0);
         }
         if (FoodPoisoned && !otmp->cursed)
         {
             cured = TRUE;
-            make_food_poisoned(0L, (char*)0, TRUE);
+            make_food_poisoned(0L, (char*)0, TRUE, 0);
         }
         if (MummyRot && !otmp->cursed)
         {
             cured = TRUE;
-            make_mummy_rotted(0L, (char*)0, TRUE);
+            make_mummy_rotted(0L, (char*)0, TRUE, 0);
         }
         if (Vomiting && !otmp->cursed)
         {
@@ -3606,7 +3606,7 @@ doeat()
                 if (!FoodPoisoned)
                     play_sfx_sound(SFX_CATCH_FOOD_POISONING);
 
-                make_food_poisoned(sick_time, doname(otmp), TRUE);
+                make_food_poisoned(sick_time, doname(otmp), TRUE, HINT_KILLED_TAINTED_CORPSE);
             }
             if (carried(otmp))
                 useup(otmp);
@@ -4300,7 +4300,7 @@ vomit() /* A good idea from David Neves */
     else 
     {
         if (FoodPoisoned)
-            make_food_poisoned(0L, (char *) 0, TRUE);
+            make_food_poisoned(0L, (char *) 0, TRUE, 0);
 
         /* if not enough in stomach to actually vomit then dry heave;
            vomiting_dialog() gives a vomit message when its countdown

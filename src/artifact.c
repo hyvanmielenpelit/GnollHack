@@ -2588,7 +2588,7 @@ struct obj *obj;
             //if (MummyRot)
             //    make_mummy_rotted(0L, (char*)0, FALSE);
             if (Slimed)
-                make_slimed(0L, (char *) 0, 0, (char*)0);
+                make_slimed(0L, (char *) 0, 0, (char*)0, 0);
             if (Blinded > creamed)
                 make_blinded(creamed, FALSE);
             special_effect_wait_until_end(0);

@@ -957,10 +957,10 @@ int how;
     }
     /* cure impending doom of sickness hero won't have time to fix */
     if ((Sick & TIMEOUT) == 1L) {
-        make_sick(0L, (char *) 0, FALSE);
+        make_sick(0L, (char *) 0, FALSE, 0);
     }
     if ((FoodPoisoned & TIMEOUT) == 1L) {
-        make_food_poisoned(0L, (char*)0, FALSE);
+        make_food_poisoned(0L, (char*)0, FALSE, 0);
     }
     if ((Confusion & TIMEOUT) == 1L) {
         make_confused(0L, FALSE);
@@ -1152,6 +1152,7 @@ int how;
         if (killer.name[0]) {
             paniclog("trickery", killer.name);
             killer.name[0] = '\0';
+            killer.hint_idx = 0;
         }
         if (wizard) {
             You1("are a very tricky wizard, it seems.");
@@ -1198,6 +1199,7 @@ int how;
             }
             killer.name[0] = '\0';
             killer.format = 0;
+            killer.hint_idx = 0;
             return;
         }
     }
@@ -1330,6 +1332,7 @@ int how;
                     play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                 make_confused(itimeout_incr(HConfusion, d(2, 3)), FALSE);
             }
+            death_hint();
         }
     }
 
@@ -1337,6 +1340,7 @@ int how;
     {
         killer.name[0] = '\0';
         killer.format = KILLED_BY_AN; /* reset to 0 */
+        killer.hint_idx = 0;
         if (how < PANICKED)
         {
             remove_glyph_buffer_layer_flags(u.ux, u.uy, LFLAGS_M_KILLED);
@@ -1604,6 +1608,8 @@ int how;
         Sprintf(ebuf, "%s", has_existing_save_file ? "You can load the game from the point at which you last saved the game." : endtext ? endtext : "Your game is over.");
         display_popup_text(ebuf, "Game Over", POPUP_TEXT_MESSAGE, ATR_NONE, clr, NO_GLYPH, POPUP_FLAGS_NONE);
     }
+
+    death_hint();
 
     /* if pets will contribute to score, populate mydogs list now
        (bones creation isn't a factor, but pline() messaging is; used to
@@ -2604,10 +2610,11 @@ boolean ask, isend;
 
 /* set a delayed killer, ensure non-delayed killer is cleared out */
 void
-delayed_killer(id, format, killername)
+delayed_killer(id, format, killername, killerhintidx)
 int id;
 int format;
 const char *killername;
+int killerhintidx;
 {
     struct kinfo *k = find_delayed_killer(id);
 
@@ -2620,6 +2627,7 @@ const char *killername;
         killer.next = k;
     }
 
+    k->hint_idx = killerhintidx;
     k->format = format;
     Strcpy(k->name, killername ? killername : "");
     killer.name[0] = 0;

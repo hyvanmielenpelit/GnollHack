@@ -830,6 +830,7 @@ boolean is_golf_swing;
                 /* normalize body shape here; foot, not body_part(FOOT) */
                 Sprintf(killer.name, "kicking %s barefoot",
                     killer_xname(kickedobj));
+                killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
                 instapetrify(killer.name);
             }
         }

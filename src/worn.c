@@ -2386,6 +2386,7 @@ boolean polyspot;
 
             You("touch %s.", mon_nam(u.usteed));
             Sprintf(buf, "falling off %s", an(mon_monster_name(u.usteed)));
+            killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE;
             instapetrify(buf);
         }
         dismount_steed(DISMOUNT_FELL);

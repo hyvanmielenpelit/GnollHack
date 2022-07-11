@@ -3684,6 +3684,7 @@ const char *arg;
         && !Stone_resistance) {
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s touch the %s corpse.", arg, corpse_monster_name(uwep));
         Sprintf(kbuf, "%s corpse", an(corpse_monster_name(uwep)));
+        killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
         instapetrify(kbuf);
         /* life-saved; unwield the corpse if we can't handle it */
         if (!uarmg && !Stone_resistance)
@@ -3693,6 +3694,7 @@ const char *arg;
         && touch_petrifies(&mons[uarms->corpsenm]) && !Stone_resistance) {
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s touch the %s corpse.", arg, corpse_monster_name(uarms));
         Sprintf(kbuf, "%s corpse", an(corpse_monster_name(uarms)));
+        killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
         instapetrify(kbuf);
         /* life-saved; unwield the corpse */
         if (!uarmg && !Stone_resistance)
@@ -5847,6 +5849,7 @@ struct trap *ttmp;
 
             Sprintf(kbuf, "trying to help %s out of a pit",
                     an(mon_monster_name(mtmp)));
+            killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE;
             instapetrify(kbuf);
             return 1;
         }

@@ -1292,6 +1292,7 @@ random_levtport:
     }
 
     killer.name[0] = 0; /* still alive, so far... */
+    killer.hint_idx = 0;
 
     if (iflags.debug_fuzzer && newlev < 0)
         goto random_levtport;
