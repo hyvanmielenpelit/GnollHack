@@ -7524,16 +7524,25 @@ const char* hint_text;
 }
 
 void
-pray_hint(what, hintflag_ptr)
-const char* what;
+pray_hint(pray_what, base_hint, hintflag_ptr)
+const char* pray_what;
+const char* base_hint;
 boolean* hintflag_ptr;
 {
-    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && can_pray(FALSE) && (!hintflag_ptr || !*hintflag_ptr))
+    if (!pray_what)
+        return;
+
+    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && (!hintflag_ptr || !*hintflag_ptr))
     {
         if (hintflag_ptr)
             *hintflag_ptr = TRUE;
+        boolean canpray = can_pray(FALSE);
+        if (!canpray && !base_hint)
+            return;
         char buf[BUFSZ];
-        Sprintf(buf, "You can pray to %s.", what ? what : "get out of trouble");
+        Sprintf(buf, "You can %s by %s%s.", pray_what ? pray_what : "", 
+            base_hint ? base_hint : "", 
+            base_hint && canpray ? " or by praying " : canpray ? "praying" : "");
         standard_hint(buf);
     }
 }

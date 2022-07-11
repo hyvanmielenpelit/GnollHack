@@ -645,7 +645,7 @@ E struct extended_create_window_info FDECL(extended_create_window_info_from_obj,
 E struct extended_create_window_info FDECL(extended_create_window_info_from_mon, (struct monst*));
 E struct extended_create_window_info FDECL(extended_create_window_info_from_mon_with_flags, (struct monst*, unsigned long));
 E void FDECL(standard_hint, (const char*));
-E void FDECL(pray_hint, (const char*, boolean*));
+E void FDECL(pray_hint, (const char*, const char*, boolean*));
 E void NDECL(death_hint);
 
 /* ### do_name.c ### */

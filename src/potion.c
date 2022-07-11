@@ -148,7 +148,7 @@ int killerhintidx;
         {
             /* newly sick */
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "deathly sick.");
-            pray_hint("cure terminal illness", &u.uhint.got_terminal_illness);
+            pray_hint("cure terminal illness", "eating an eucalyptus leaf or a fig", &u.uhint.got_terminal_illness);
         }
         else
         {
@@ -223,7 +223,7 @@ int killerhintidx;
         {
             /* newly sick */
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "terminally ill from food poisoning.");
-            pray_hint("cure food poisoning", &u.uhint.got_food_poisoning);
+            pray_hint("cure food poisoning", "eating an eucalyptus leaf or a fig", &u.uhint.got_food_poisoning);
         }
         else
         {
@@ -298,7 +298,7 @@ int killerhintidx;
             /* newly sick */
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "severely ill.");
             context.mummyrot_advancement = 0;
-            pray_hint("cure mummy rot", &u.uhint.got_mummy_rot);
+            pray_hint("cure mummy rot", "eating an eucalyptus leaf or a fig", &u.uhint.got_mummy_rot);
         }
         else
         {
@@ -384,7 +384,7 @@ int killerhintidx;
             delayed_killer(SLIMED, killedby, killername, killerhintidx);
 
         if (!old)
-            pray_hint("cure sliming", &u.uhint.got_sliming);
+            pray_hint("cure sliming", "burning it with fire", &u.uhint.got_sliming);
     }
 }
 
@@ -421,7 +421,7 @@ const char *killername;
             delayed_killer(STONED, killedby, killername, killhintidx);
 
         if (!old)
-            pray_hint("cure stoning", &u.uhint.got_stoning);
+            pray_hint("cure stoning", "eating a lizard corpse or a dragon fruit", &u.uhint.got_stoning);
     }
 }
 
