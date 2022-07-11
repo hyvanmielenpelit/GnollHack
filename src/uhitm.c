@@ -4431,6 +4431,7 @@ boolean wep_was_destroyed;
                         incr_itimeout(&HParalyzed, (ACURR(A_WIS) > 12 || rn2(4)) ? basedmg : 127);
                         context.botl = context.botlx = 1;
                         refresh_u_tile_gui_info(TRUE);
+                        standard_hint("Do not hit floating eyes in melee unless you wear a blindfold or a towel. Use ranged weapons against them.", &u.uhint.paralyzed_by_floating_eye);
 
 #if 0
                         nomul((ACURR(A_WIS) > 12 || rn2(4)) ? -tmp : -127);
@@ -4514,6 +4515,7 @@ boolean wep_was_destroyed;
                 else
                     You("are suddenly very hot!");
                 mdamageu_with_hit_tile(mon, damage, TRUE, hit_tile); /* fire damage */
+                standard_hint("Acquire full fire resistance or use ranged weapons to bypass passive fire defense.", &u.uhint.damaged_by_passive_fire);
             }
             break;
         case AD_ELEC:
@@ -4528,6 +4530,7 @@ boolean wep_was_destroyed;
             play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
             You("are jolted with electricity!");
             mdamageu_with_hit_tile(mon, damage, TRUE, hit_tile);
+            standard_hint("Acquire full shock resistance or use ranged weapons to bypass passive electricity defense.", &u.uhint.damaged_by_passive_electricity);
             break;
         default:
             break;

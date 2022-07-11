@@ -222,13 +222,14 @@ struct u_hint {
 
     boolean got_level_drained;
     boolean damaged_by_passive_fire;
+    boolean damaged_by_passive_electricity;
     boolean monster_revived;
     boolean got_grabbed;
 
     boolean stuff_got_stolen;
     boolean stuff_got_stolen_by_harpy;
     boolean paralyzed_by_floating_eye;
-    boolean paralyzed_by_cube;
+    boolean paralyzed_by_monster;
     boolean got_hungry;
 
     boolean low_hit_points;

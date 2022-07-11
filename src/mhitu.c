@@ -2359,7 +2359,7 @@ register struct obj* omonwep;
                 incr_itimeout(&HParalyzed, (rnd(8) + 2));
                 context.botl = context.botlx = 1;
                 refresh_u_tile_gui_info(TRUE);
-
+                standard_hint("Get free action as early as possible. Use ranged weapons to fight paralyzing monsters.", &u.uhint.paralyzed_by_monster);
 #if 0
                 nomovemsg = You_can_move_again;
                 nomul(-(rnd(8) + 2));
