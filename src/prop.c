@@ -109,7 +109,7 @@ const struct propname propertynames[] = {
     { BLOCKS_INVISIBILITY, "blocking invisibility", "blocks invisibility" },
     { BLOCKS_BLINDNESS, "blocking blindness", "blocks blindness"  },
     { BLOCKS_CLAIRVOYANCE, "blocking clairvoyance", "blocks clairvoyance" },
-    { HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS, "receiving half physical damage from undead and demons", "half physical damage against undead and demons" },
+    { HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS, "receiving half physical damage from undead and demons", "half physical damage from undead and demons" },
     { MAGICAL_SHIELDING, "magically shielded", "magical shielding" },
     { MAGICAL_BARKSKIN, "magically barkskinned", "magical barkskin" },
     { MAGICAL_STONESKIN, "magically stoneskinned", "magical stoneskin" },

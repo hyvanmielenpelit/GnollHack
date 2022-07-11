@@ -2131,6 +2131,31 @@ enum autodraw_types* autodraw_ptr;
             }
             break;
         }
+        case REPLACEMENT_ACTION_ACOLYTE:
+        {
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            int glyph_idx = 0;
+            aligntyp algn = u.ualignbase[A_ORIGINAL];
+            switch (algn)
+            {
+            case A_CHAOTIC:
+                glyph_idx = 0;
+                break;
+            case A_NEUTRAL:
+                glyph_idx = 1;
+                break;
+            default:
+                return ntile;
+            }
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+            return glyph2tile[glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF];
+        }
         default:
             break;
         }
@@ -2567,6 +2592,24 @@ struct replacement_info info;
                 }
                 return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             }
+            break;
+        }
+        case REPLACEMENT_ACTION_ACOLYTE:
+        {
+            int glyph_idx = 0;
+            aligntyp algn = u.ualignbase[A_ORIGINAL];
+            switch (algn)
+            {
+            case A_CHAOTIC:
+                glyph_idx = 0;
+                break;
+            case A_NEUTRAL:
+                glyph_idx = 1;
+                break;
+            default:
+                return glyph;
+            }
+            return sign * (glyph_idx + replacement_offsets[replacement_idx] /* replacements[replacement_idx].glyph_offset */ + GLYPH_REPLACEMENT_OFF);
             break;
         }
         default:
