@@ -7608,6 +7608,56 @@ struct monst* mtmp;
 }
 
 void
+item_destruction_hint(adtyp, isray)
+int adtyp;
+boolean isray;
+{
+    if (context.game_difficulty > MIN_DIFFICULTY_LEVEL)
+        return;
+
+    boolean* hint_bool_ptr = 0;
+    const char* hintfmt = "%s";
+    const char* raytxt = isray ? "reflection or " : "";
+    switch (adtyp)
+    {
+    case AD_FIRE:
+        hintfmt = "You can protect your scrolls, books and potions from being destroyed by fire damage by keeping them in a bag, or by acquiring %sfull fire resistance.";
+        hint_bool_ptr = &u.uhint.items_destroyed_by_fire;
+        break;
+    case AD_COLD:
+        hintfmt = "You can protect your potions from being destroyed by cold damage by keeping them in a bag, or by acquiring %sfull cold resistance.";
+        hint_bool_ptr = &u.uhint.items_destroyed_by_cold;
+        break;
+    case AD_ELEC:
+        hintfmt = "You can protect your rings and wands from being destroyed by electrical damage by keeping them in a bag, or by acquiring %sfull shock resistance.";
+        hint_bool_ptr = &u.uhint.items_destroyed_by_shock;
+        break;
+    default:
+        break;
+    }
+    if (hint_bool_ptr && !*hint_bool_ptr)
+    {
+        char buf[BUFSZ * 2];
+        Sprintf(buf, hintfmt, raytxt);
+        standard_hint(buf, hint_bool_ptr);
+    }
+
+}
+
+void
+brain_hint(mtmp)
+struct monst* mtmp;
+{
+    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && !u.uhint.brain_got_eaten)
+    {
+        u.uhint.brain_got_eaten = TRUE;
+        hint_via_pline("To protect yourself agains brain-eating attacks, you can wear a nose-ring of cerebral safeguarding or wear a helmet, which gives you a high chance of blocking the attacks.");
+        if(!Race_if(PM_DWARF) && is_tentacled_one(mtmp->data))
+            hint_via_pline("You can also class-genocide all tentacled ones (and all dwarves) by reading a blessed scroll of genocide when you are not a dwarf yourself.");
+    }
+}
+
+void
 grab_hint(mtmp)
 struct monst* mtmp;
 {
@@ -7636,6 +7686,45 @@ struct monst* mtmp;
         Sprintf(buf, "You can release yourself from the clutches of a %s monster by %s.",
             isconstrictor ? "constricting" : hughthrottles ? "throttling" : "grabbing", sbuf);
 
+        hint_via_pline(buf);
+    }
+}
+
+void
+check_mobbed_hint(VOID_ARGS)
+{
+    if (context.game_difficulty > MIN_DIFFICULTY_LEVEL || u.uhint.got_mobbed)
+        return;
+
+    int i, j, x, y;
+    struct monst* mtmp = 0;
+    int cnt = 0;
+    for (i = -1; i <= 1; i++)
+    {
+        for (j = -1; j <= 1; j++)
+        {
+            if (!i && !j)
+                continue;
+
+            x = u.ux + i;
+            y = u.uy + j;
+            if(!isok(x, y))
+                continue;
+
+            mtmp = m_at(x, y);
+            if (mtmp && !is_peaceful(mtmp) && !is_tame(mtmp) && canspotmon(mtmp))
+            {
+                cnt++;
+            }
+        }
+    }
+
+    if (cnt >= 3)
+    {
+        u.uhint.got_mobbed = TRUE;
+        char buf[BUFSZ * 2] = "";
+        Sprintf(buf, "If you are mobbed by monsters, try to use a wand or scroll of teleportation%s, drop a scroll of scare monster, use an item causing conflict, or read a scroll of taming.",
+            u.uevent.elbereth_known ? ", write Elbereth" : "");
         hint_via_pline(buf);
     }
 }
@@ -7739,7 +7828,9 @@ death_hint(VOID_ARGS)
             case HINT_KILLED_GENOCIDED_PLAYER:
                 Strcpy(buf, "Be careful not to genocide your player race, especially if you are a dwarf, orc, or a gnoll.");
                 break;
-
+            case HINT_KILLED_STARVATION:
+                Strcpy(buf, "Eat food or pray to avoid being starved to death.");
+                break;
             }
 
             if (*buf)

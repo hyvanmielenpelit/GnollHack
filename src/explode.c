@@ -683,6 +683,8 @@ int expltype;
         destroy_item(RING_CLASS, (int) adtyp);
         destroy_item(WAND_CLASS, (int) adtyp);
 
+        item_destruction_hint((int)adtyp, FALSE);
+
         ugolemeffects((int) adtyp, damu);
         if (uhurt == 2 && damu) 
         {

@@ -1728,6 +1728,7 @@ encumber_msg()
             break;
         }
         context.botl = context.botlx = TRUE;
+        standard_hint("Being burdened reduces your speed and thus your combat power. Try to remain unburdened at all times, if possible. Some magical bags reduce weight of items. Put items into such bags if you have them.", &u.uhint.got_burdened);
     } else if (oldcap > newcap) {
         switch (newcap) {
         case 0:
@@ -2689,6 +2690,8 @@ register struct obj *obj;
 
         losehp(adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE), "magical explosion", KILLED_BY_AN);
         current_container = 0; /* baggone = TRUE; */
+
+        standard_hint("Putting a wand of cancellation into a magical bag will typically cause it explode. To avoid doing this accidently, put unidentified wands into a non-magical bag.", &u.uhint.bag_destroyed_by_cancellation);
     }
 
     if (current_container) 

@@ -714,6 +714,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
             {
                 Strcpy(killer.name, brainlessness);
                 killer.format = KILLED_BY;
+                killer.hint_idx = HINT_KILLED_BRAINLESSNESS;
                 done(DIED);
                 /* amulet of life saving has now been used up */
                 pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Unfortunately your brain is still gone.");
@@ -727,6 +728,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
             }
             Strcpy(killer.name, brainlessness);
             killer.format = KILLED_BY;
+            killer.hint_idx = HINT_KILLED_BRAINLESSNESS;
             done(DIED);
             /* can only get here when in wizard or explore mode and user has
                explicitly chosen not to die; arbitrarily boost intelligence */
@@ -735,6 +737,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         }
         give_nutrit = TRUE; /* in case a conflicted pet is doing this */
         exercise(A_WIS, FALSE);
+        brain_hint(magr);
         /* caller handles Int and memory loss */
 
     }
@@ -4134,10 +4137,12 @@ boolean incr;
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die from starvation.");
             killer.format = KILLED_BY;
             Strcpy(killer.name, "starvation");
+            killer.hint_idx = HINT_KILLED_STARVATION;
             done(STARVING);
             /* if we return, we lifesaved, and that calls update_hunger_status */
             return;
         }
+        pray_hint("recover from fainting due to hunger", "eating food", &u.uhint.got_fainting);
     }
 
     if (newhs != u.uhs) {
@@ -4172,6 +4177,7 @@ boolean incr;
                 && (occupation != eatfood && occupation != opentin))
                 stop_occupation();
             context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
+            pray_hint("recover from hunger", "eating food", & u.uhint.got_hungry);
             break;
         case WEAK:
             if (Hallucination)
@@ -4192,6 +4198,7 @@ boolean incr;
                 && (occupation != eatfood && occupation != opentin))
                 stop_occupation();
             context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
+            pray_hint("recover from weakness due to hunger", "eating food", &u.uhint.got_weak);
             break;
         }
         u.uhs = newhs;

@@ -831,6 +831,7 @@ int spellnum;
         destroy_item(POTION_CLASS, AD_FIRE);
         destroy_item(SPBOOK_CLASS, AD_FIRE);
         (void) burn_floor_objects(u.ux, u.uy, TRUE, FALSE);
+        item_destruction_hint(AD_FIRE, FALSE);
         break;
     case CLC_LIGHTNING: {
         boolean reflects;
@@ -848,6 +849,7 @@ int spellnum;
         destroy_item(WAND_CLASS, AD_ELEC);
         destroy_item(RING_CLASS, AD_ELEC);
         (void) flashburn((long) rnd(100));
+        item_destruction_hint(AD_ELEC, FALSE);
         break;
     }
     case CLC_CURSE_ITEMS:

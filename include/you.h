@@ -184,6 +184,8 @@ enum kill_hints
     HINT_KILLED_ILLNESS_FROM_CURSED_UNICORN_HORN,
     HINT_KILLED_ATE_GREEN_SLIME,
     HINT_KILLED_GENOCIDED_PLAYER,
+    HINT_KILLED_STARVATION,
+    HINT_KILLED_BRAINLESSNESS,
     NUM_KILL_HINTS
 };
 
@@ -228,9 +230,12 @@ struct u_hint {
 
     boolean stuff_got_stolen;
     boolean stuff_got_stolen_by_harpy;
-    boolean paralyzed_by_floating_eye;
+    boolean paralyzed_by_floating_eye; //Passive defense
+    boolean paralyzed_by_cube; //Passive defense
     boolean paralyzed_by_monster;
     boolean got_hungry;
+    boolean got_weak;
+    boolean got_fainting;
 
     boolean low_hit_points;
     boolean got_mobbed;

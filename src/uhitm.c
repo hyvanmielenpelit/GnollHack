@@ -4432,7 +4432,6 @@ boolean wep_was_destroyed;
                         context.botl = context.botlx = 1;
                         refresh_u_tile_gui_info(TRUE);
                         standard_hint("Do not hit floating eyes in melee unless you wear a blindfold or a towel. Use ranged weapons against them.", &u.uhint.paralyzed_by_floating_eye);
-
 #if 0
                         nomul((ACURR(A_WIS) > 12 || rn2(4)) ? -tmp : -127);
                         multi_reason = "frozen by a monster's gaze";
@@ -4454,7 +4453,7 @@ boolean wep_was_destroyed;
                 incr_itimeout(&HParalyzed, basedmg);
                 context.botl = context.botlx = 1;
                 refresh_u_tile_gui_info(TRUE);
-
+                standard_hint("Get free action as early as possible. Use ranged weapons to attack monsters with paralyzing passive defense.", &u.uhint.paralyzed_by_cube);
 #if 0
                 nomovemsg = You_can_move_again;
                 nomul(-tmp);
@@ -5062,6 +5061,10 @@ double hp_d;
             refresh_u_tile_gui_info(TRUE);
     }
 
+    if (hp_d > 0 && critically_low_hp(TRUE))
+    {
+        pray_hint("heal yourself", "drinking a potion of healing or retreating to another level to heal up", &u.uhint.low_hit_points);
+    }
 
     return *target_integer_part_ptr;
 }

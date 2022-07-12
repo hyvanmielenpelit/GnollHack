@@ -7013,6 +7013,7 @@ register char *cmd;
 
     //reset_all_monster_origin_coordinates();
     check_gui_special_effect();
+    check_mobbed_hint();
 
     iflags.menu_requested = FALSE;
 #ifdef SAFERHANGUP

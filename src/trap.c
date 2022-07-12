@@ -4127,6 +4127,8 @@ int dice; /* of d6 */
         destroy_item(SPBOOK_CLASS, AD_FIRE);
         destroy_item(POTION_CLASS, AD_FIRE);
 
+        item_destruction_hint(AD_FIRE, FALSE);
+
         /* Check for the Ruling Ring of Yendor */
         for (struct obj* oring = invent; oring; oring = oring->nobj)
         {
@@ -6848,6 +6850,7 @@ boolean disarm;
                 int hp_after = Upolyd ? u.mh : u.uhp;
                 display_u_being_hit(HIT_ELECTROCUTED, hp_before - hp_after, 0UL);
             }
+            item_destruction_hint(AD_ELEC, FALSE);
             break;
         } /* case 6 */
         case 5:
@@ -7373,6 +7376,7 @@ burn_stuff:
     destroy_item(SCROLL_CLASS, AD_FIRE);
     destroy_item(SPBOOK_CLASS, AD_FIRE);
     destroy_item(POTION_CLASS, AD_FIRE);
+    item_destruction_hint(AD_FIRE, FALSE);
     return FALSE;
 }
 

@@ -511,6 +511,10 @@ gotobj:
     {
         start_delayed_petrification(mtmp, FALSE);
     }
+    if(mtmp->mnum == PM_HARPY)
+        standard_hint("You can use a wand of slow monster on the harpy, or a wand of lightning to blind the harpy, and then kill it with ranged weapons. Consider also genociding harpies as early as possible.", &u.uhint.stuff_got_stolen_by_harpy);
+    else
+        standard_hint("Consider killing stealing monsters with ranged weapons before they come close to you.", &u.uhint.stuff_got_stolen);
     return (multi < 0) ? 0 : 1;
 }
 

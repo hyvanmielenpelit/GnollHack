@@ -2190,7 +2190,8 @@ register struct obj* omonwep;
             if ((int) mtmp->m_lev > rn2(25))
                 destroy_item(SPBOOK_CLASS, AD_FIRE);
             burn_away_slime();
-        } 
+            item_destruction_hint(AD_FIRE, FALSE);
+        }
         //else
         //    damage = 0;
         break;
@@ -2210,8 +2211,11 @@ register struct obj* omonwep;
 
             display_u_being_hit(HIT_FROZEN, damagedealt, 0UL);
 
-            if ((int) mtmp->m_lev > rn2(20))
+            if ((int)mtmp->m_lev > rn2(20))
+            {
                 destroy_item(POTION_CLASS, AD_COLD);
+                item_destruction_hint(AD_COLD, FALSE);
+            }
         }
         //else
         //    damage = 0;
@@ -2238,7 +2242,9 @@ register struct obj* omonwep;
                 destroy_item(WAND_CLASS, AD_ELEC);
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(RING_CLASS, AD_ELEC);
-        } 
+
+            item_destruction_hint(AD_ELEC, FALSE);
+        }
         //else
         //    damage = 0;
         break;
@@ -2361,7 +2367,7 @@ register struct obj* omonwep;
                 incr_itimeout(&HParalyzed, (rnd(8) + 2));
                 context.botl = context.botlx = 1;
                 refresh_u_tile_gui_info(TRUE);
-                standard_hint("Get free action as early as possible. Use ranged weapons to fight paralyzing monsters.", &u.uhint.paralyzed_by_monster);
+                standard_hint("Get free action as early as possible. Avoid engaging in close combat with paralyzing monsters before that.", &u.uhint.paralyzed_by_monster);
 #if 0
                 nomovemsg = You_can_move_again;
                 nomul(-(rnd(8) + 2));
@@ -3510,7 +3516,7 @@ struct attack *mattk;
 
     switch (mattk->adtyp) {
     case AD_DGST:
-        if (Slow_digestion) 
+        if (Slow_digestion || Invulnerable) 
         {
             /* Messages are handled below */
             u.uswldtim = 0;
@@ -3527,6 +3533,7 @@ struct attack *mattk;
                   (u.uswldtim == 2) ? " thoroughly"
                                     : (u.uswldtim == 1) ? " utterly" : "");
             exercise(A_STR, FALSE);
+            standard_hint("If being digested by a monster, you can use a wand of digging to reduce the monster to one hit point, or wear a ring of slow digestion.", &u.uhint.got_digested);
         }
         break;
     case AD_PHYS:
@@ -3800,6 +3807,8 @@ boolean ufound;
                 destroy_item(POTION_CLASS, (int)mattk->adtyp);
                 destroy_item(RING_CLASS, (int)mattk->adtyp);
                 destroy_item(WAND_CLASS, (int)mattk->adtyp);
+
+                item_destruction_hint((int)mattk->adtyp, FALSE);
             }
             break;
 
@@ -4099,6 +4108,7 @@ struct attack *mattk;
                     destroy_item(SPBOOK_CLASS, AD_FIRE);
                 if (damage > 0)
                     mdamageu_with_hit_tile(mtmp, damage, TRUE, HIT_ON_FIRE);
+                item_destruction_hint(AD_FIRE, FALSE);
             }
         }
         break;

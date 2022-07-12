@@ -647,9 +647,12 @@ E struct extended_create_window_info FDECL(extended_create_window_info_from_mon_
 E void FDECL(hint_via_pline, (const char*));
 E void FDECL(standard_hint, (const char*, boolean*));
 E void FDECL(reviver_hint, (struct monst*));
+E void FDECL(brain_hint, (struct monst*));
 E void FDECL(grab_hint, (struct monst*));
 E void FDECL(pray_hint, (const char*, const char*, boolean*));
 E void NDECL(death_hint);
+E void NDECL(check_mobbed_hint);
+E void FDECL(item_destruction_hint, (int, BOOLEAN_P));
 
 /* ### do_name.c ### */
 

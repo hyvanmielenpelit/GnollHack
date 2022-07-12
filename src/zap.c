@@ -5892,6 +5892,7 @@ boolean ordinary;
         destroy_item(WAND_CLASS, AD_ELEC);
         destroy_item(RING_CLASS, AD_ELEC);
         (void) flashburn((long) rnd(100));
+        item_destruction_hint(AD_ELEC, TRUE);
         break;
     case SPE_FIREBALL:
     case SPE_FIRE_STORM:
@@ -5935,6 +5936,7 @@ boolean ordinary;
         destroy_item(POTION_CLASS, AD_FIRE);
         destroy_item(SPBOOK_CLASS, AD_FIRE);
         destroy_item(FOOD_CLASS, AD_FIRE); /* only slime for now */
+        item_destruction_hint(AD_FIRE, TRUE);
         break;
 
     case SPE_LOWER_WATER:
@@ -5975,6 +5977,7 @@ boolean ordinary;
             display_u_being_hit(HIT_FROZEN, 0, 0UL);
         }
         destroy_item(POTION_CLASS, AD_COLD);
+        item_destruction_hint(AD_COLD, TRUE);
         break;
 
     case WAN_MAGIC_MISSILE:
@@ -8625,6 +8628,7 @@ const char *fltxt;
             if (!rn2(5))
                 destroy_item(SPBOOK_CLASS, AD_FIRE);
             destroy_item(FOOD_CLASS, AD_FIRE);
+            item_destruction_hint(AD_FIRE, TRUE);
         }
         break;
     case ZT_COLD:
@@ -8642,7 +8646,10 @@ const char *fltxt;
             //dam = d(nd, 6);
         }
         if (!rn2(3))
+        {
             destroy_item(POTION_CLASS, AD_COLD);
+            item_destruction_hint(AD_COLD, TRUE);
+        }
         break;
     case ZT_SLEEP:
         damage = 0;
@@ -8780,6 +8787,7 @@ const char *fltxt;
             destroy_item(WAND_CLASS, AD_ELEC);
         if (!rn2(3))
             destroy_item(RING_CLASS, AD_ELEC);
+        item_destruction_hint(AD_ELEC, TRUE);
         break;
     case ZT_POISON_GAS:
         damage = 0;
