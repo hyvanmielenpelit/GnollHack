@@ -646,6 +646,8 @@ E struct extended_create_window_info FDECL(extended_create_window_info_from_mon,
 E struct extended_create_window_info FDECL(extended_create_window_info_from_mon_with_flags, (struct monst*, unsigned long));
 E void FDECL(hint_via_pline, (const char*));
 E void FDECL(standard_hint, (const char*, boolean*));
+E void FDECL(reviver_hint, (struct monst*));
+E void FDECL(grab_hint, (struct monst*));
 E void FDECL(pray_hint, (const char*, const char*, boolean*));
 E void NDECL(death_hint);
 

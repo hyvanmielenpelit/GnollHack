@@ -6750,13 +6750,18 @@ struct obj *corpse;
                 pline_The_ex(ATR_NONE, clr, "%s writhes out of your grasp!", cname);
             else
                 You_feel_ex(ATR_NONE, clr, "squirming in your backpack!");
+
+            reviver_hint(mtmp);
             break;
 
         case OBJ_FLOOR:
             if (cansee(mtmp->mx, mtmp->my))
+            {
                 pline_ex(ATR_NONE, clr, "%s rises from the dead!",
-                      chewed ? Adjmonnam(mtmp, "bite-covered")
-                             : Monnam(mtmp));
+                    chewed ? Adjmonnam(mtmp, "bite-covered")
+                    : Monnam(mtmp));
+                reviver_hint(mtmp);
+            }
             break;
 
         case OBJ_MINVENT: /* probably a nymph's */
@@ -6768,6 +6773,7 @@ struct obj *corpse;
                     pline_ex(ATR_NONE, clr, "%s suddenly appears!",
                           chewed ? Adjmonnam(mtmp, "bite-covered")
                                  : Monnam(mtmp));
+                reviver_hint(mtmp);
             }
             break;
         case OBJ_CONTAINED: {
@@ -6777,15 +6783,18 @@ struct obj *corpse;
                 && mcarry && canseemon(mcarry) && container) {
                 pline_ex(ATR_NONE, clr, "%s writhes out of %s!", Amonnam(mtmp),
                       yname(container));
+                reviver_hint(mtmp);
             } else if (container_where == OBJ_INVENT && container) {
                 Strcpy(sackname, an(xname(container)));
                 pline_ex(ATR_NONE, clr, "%s %s out of %s in your pack!",
                       Blind ? Something : Amonnam(mtmp),
                       locomotion(mtmp->data, "writhes"), sackname);
+                reviver_hint(mtmp);
             } else if (container_where == OBJ_FLOOR && container
                        && cansee(mtmp->mx, mtmp->my)) {
                 Strcpy(sackname, an(xname(container)));
                 pline_ex(ATR_NONE, clr, "%s escapes from %s!", Amonnam(mtmp), sackname);
+                reviver_hint(mtmp);
             }
             break;
         }
@@ -7560,6 +7569,74 @@ boolean* hintflag_ptr;
         if (hintflag_ptr)
             *hintflag_ptr = TRUE;
         hint_via_pline(hint_txt);
+    }
+}
+
+void
+reviver_hint(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || !is_reviver(mtmp->data))
+        return;
+
+    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && !u.uhint.monster_revived)
+    {
+        u.uhint.monster_revived = TRUE;
+
+        boolean istinnable = !is_rider(mtmp->data) && !has_monster_type_nontinnable_corpse(mtmp->data);
+        boolean isedible = !is_rider(mtmp->data) && !has_monster_type_nontinnable_corpse(mtmp->data) && !is_not_living(mtmp->data);
+        char buf[BUFSZ];
+        char sbuf[BUFSZ] = "";
+        if(istinnable)
+            Strcat(sbuf, "tinning");
+        if (isedible)
+        {
+            if (istinnable)
+                Strcat(sbuf, " or ");
+            Strcat(sbuf, "eating");
+        }
+        if(istinnable || isedible)
+            Strcat(sbuf, " them");
+
+        if(*sbuf)
+            Sprintf(buf, "You can get rid of reviving corpses by %s.", sbuf);
+        else
+            Strcpy(buf, "You can normally get rid of reviving corpses by eating or tinning them, but it looks more difficult here.");
+
+        hint_via_pline(buf);
+    }
+}
+
+void
+grab_hint(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp || mtmp != u.ustuck)
+        return;
+
+    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && !u.uhint.got_grabbed)
+    {
+        u.uhint.got_grabbed = TRUE;
+
+        boolean isconstrictor = is_constrictor(mtmp->data);
+        boolean cannotbethrottled = !has_neck(youmonst.data) || Magical_breathing || !can_be_strangled(&youmonst);
+        boolean hughthrottles = hug_throttles(mtmp->data) && !cannotbethrottled;
+
+        char buf[BUFSZ];
+        char sbuf[BUFSZ] = "";
+        if (u.uevent.elbereth_known)
+            Strcat(sbuf, "writing Elbereth");
+        if(*sbuf)
+            Strcat(sbuf, ", ");
+        Strcat(sbuf, "dropping a scroll of scare monster");
+        if (*sbuf)
+            Strcat(sbuf, " or ");
+        Strcat(sbuf, "teleporting yourself or the monster away");
+
+        Sprintf(buf, "You can release yourself from the clutches of a %s monster by %s.",
+            isconstrictor ? "constricting" : hughthrottles ? "throttling" : "grabbing", sbuf);
+
+        hint_via_pline(buf);
     }
 }
 

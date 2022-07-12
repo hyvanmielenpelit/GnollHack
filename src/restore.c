@@ -987,6 +987,7 @@ register int fd;
     (void) validate(fd, (char *) 0); /* skip version and savefile info */
     get_plname_from_file(fd, plname);
     get_save_game_stats_from_file(fd, &dummy_stats);
+    n_game_recoveries = dummy_stats.num_recoveries;
 
     getlev(fd, 0, (xchar) 0, FALSE);
     (void) nhclose(fd);

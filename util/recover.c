@@ -286,10 +286,14 @@ char *basename;
         return -1;
     }
 
+    /* Add number of recoveries by one */
+    gamestats.num_recoveries++;
+
     /* save file should contain:
      *  version info
      *  savefile info
      *  player name
+     *  save game stats
      *  current level (including pets)
      *  (non-level-based) game state
      *  other levels

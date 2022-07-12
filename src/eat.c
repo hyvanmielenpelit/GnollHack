@@ -823,10 +823,12 @@ uchar gender; /* 0 = male, 1 = female, 2 = unknown */
         return;
 
     (void) maybe_cannibal(pm, TRUE);
-    if (flesh_petrifies(&mons[pm])) {
+    if (flesh_petrifies(&mons[pm])) 
+    {
         if (!Stone_resistance
             && !(poly_when_stoned(youmonst.data)
-                 && polymon(PM_STONE_GOLEM))) {
+                 && polymon(PM_STONE_GOLEM))) 
+        {
             Sprintf(killer.name, "tasting %s meat", pm_general_name(&mons[pm], gender));
             killer.format = KILLED_BY;
             play_sfx_sound(SFX_PETRIFY);
@@ -837,6 +839,22 @@ uchar gender; /* 0 = male, 1 = female, 2 = unknown */
             return; /* lifesaved */
         }
     }
+
+    if (has_monster_type_nonedible_corpse(&mons[pm]))
+    {
+        You_feel("this is too hard to eat.");
+        if (is_reviver(&mons[pm]) && revives_upon_meddling(&mons[pm]))
+        {
+            if (revive_corpse(context.victual.piece)) {
+                context.victual.piece = (struct obj*)0;
+                context.victual.o_id = 0;
+            }
+        }
+        else if (context.victual.piece)
+            context.victual.eating = FALSE;
+        return; /* no eating */
+    }
+
 
     switch (pm) {
     case PM_LITTLE_DOG:

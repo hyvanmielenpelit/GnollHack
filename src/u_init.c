@@ -462,7 +462,6 @@ static const struct def_skill Skill_B_Init[] = {
     { P_NONE, 0 }
 };
 
-
 static const struct def_skill Skill_C_Max[] = {
     { P_DAGGER, P_EXPERT },
     { P_AXE, P_EXPERT },
@@ -471,8 +470,8 @@ static const struct def_skill Skill_C_Max[] = {
     { P_FLAIL, P_GRAND_MASTER },
     { P_QUARTERSTAFF, P_GRAND_MASTER },
     { P_POLEARM, P_BASIC },
-    { P_SPEAR, P_EXPERT },
-    { P_BOW, P_BASIC },
+    { P_SPEAR, P_GRAND_MASTER },
+    { P_BOW, P_SKILLED },
     { P_SLING, P_GRAND_MASTER },
     { P_THROWN_WEAPON, P_MASTER },
     { P_NATURE_SPELL, P_MASTER },
@@ -481,6 +480,7 @@ static const struct def_skill Skill_C_Max[] = {
     { P_DISARM_TRAP, P_BASIC },
     { P_NONE, 0 }
 };
+
 static const struct def_skill Skill_C_Init[] = {
     { P_BLUDGEONING_WEAPON, P_SKILLED },
     { P_QUARTERSTAFF, P_BASIC },
@@ -525,9 +525,8 @@ static const struct def_skill Skill_H_Init[] = {
 
 
 static const struct def_skill Skill_K_Max[] = {
-    { P_DAGGER, P_GRAND_MASTER },
+    { P_DAGGER, P_EXPERT },
     { P_AXE, P_MASTER },
-    { P_PICK_AXE, P_EXPERT },
     { P_SWORD, P_GRAND_MASTER },
     { P_BLUDGEONING_WEAPON, P_MASTER },
     { P_FLAIL, P_GRAND_MASTER },

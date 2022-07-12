@@ -93,6 +93,9 @@ struct save_game_stats {
     boolean modern_mode;
     boolean casual_mode;
     time_t time_stamp;
+
+    /* Other information */
+    unsigned long num_recoveries;
 };
 
 struct save_game_data {

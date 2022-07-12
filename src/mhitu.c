@@ -638,6 +638,7 @@ register struct monst *mtmp;
         {
             play_sfx_sound(SFX_ACQUIRE_GRAB);
             u.ustuck = mtmp;
+            grab_hint(mtmp);
         }
         youmonst.m_ap_type = M_AP_NOTHING;
         youmonst.mappearance = 0;
@@ -1959,6 +1960,7 @@ register struct obj* omonwep;
                         else
                             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is constricting you to death!", Monnam(mtmp));
                     }
+                    grab_hint(mtmp);
                 }
             }
             else if (u.ustuck == mtmp)
@@ -2492,6 +2494,7 @@ register struct obj* omonwep;
         {
             play_sfx_sound(SFX_ACQUIRE_GRAB);
             u.ustuck = mtmp;
+            grab_hint(mtmp);
         }
         break;
     case AD_WRAP:
@@ -2523,6 +2526,8 @@ register struct obj* omonwep;
 
                     update_extrinsics();
                     context.botl = context.botlx = 1;
+
+                    grab_hint(mtmp);
                 }
             } 
             else if (u.ustuck == mtmp) 

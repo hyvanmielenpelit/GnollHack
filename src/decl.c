@@ -63,6 +63,8 @@ NEARDATA struct fruit *ffruit = (struct fruit *) 0;
 NEARDATA char tune[6] = DUMMY;
 NEARDATA boolean ransacked = 0;
 
+NEARDATA unsigned long n_game_recoveries = 0;
+
 const char *occtxt = DUMMY;
 enum object_soundset_types occsoundset = OBJECT_SOUNDSET_NONE; /* defined when occupation != NULL */
 enum object_occupation_types occtyp = OCCUPATION_NONE; /* defined when occupation != NULL */

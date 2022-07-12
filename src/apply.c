@@ -2981,6 +2981,12 @@ struct obj *obj;
         You("cannot tin %s which is partly eaten.", something);
         return;
     }
+    if (corpse->corpsenm < LOW_PM)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline("There seems to be something wrong with this corpse.");
+        return;
+    }
 
     You("start tinning %s.", the(cxname(corpse)));
 
@@ -2991,7 +2997,8 @@ struct obj *obj;
     }
 
     if (touch_petrifies(&mons[corpse->corpsenm]) && !Stone_resistance
-        && !uarmg) {
+        && !uarmg) 
+    {
         char kbuf[BUFSZ];
 
         if (poly_when_stoned(youmonst.data))
@@ -3006,20 +3013,41 @@ struct obj *obj;
         killer.hint_idx = HINT_KILLED_TOUCHED_COCKATRICE_CORPSE;
         instapetrify(kbuf);
     }
-    if (is_rider(&mons[corpse->corpsenm])) {
+    if (is_rider(&mons[corpse->corpsenm])) 
+    {
         if (revive_corpse(corpse))
+        {
             verbalize("Yes...  But War does not preserve its enemies...");
+        }
         else
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline_The("corpse evades your grasp.");
+        }
         return;
     }
-    if (mons[corpse->corpsenm].cnutrit == 0) {
+    if (has_monster_type_nontinnable_corpse(&mons[corpse->corpsenm])) 
+    {
+        if (is_reviver(&mons[corpse->corpsenm]) && revives_upon_meddling(&mons[corpse->corpsenm]) && revive_corpse(corpse))
+        {
+            pline("It was a serious mistake to try to tin that...");
+        }
+        else
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline("It seems oddly difficult to tin that.");
+        }
+        return;
+    }
+    if (mons[corpse->corpsenm].cnutrit == 0) 
+    {
         pline("That's too insubstantial to tin.");
         return;
     }
     consume_obj_charge(obj, TRUE);
 
-    if ((can = mksobj(TIN, FALSE, FALSE, FALSE)) != 0) {
+    if ((can = mksobj(TIN, FALSE, FALSE, FALSE)) != 0) 
+    {
         static const char you_buy_it[] = "You tin it, you bought it!";
 
         can->corpsenm = corpse->corpsenm;

@@ -1920,6 +1920,11 @@ int how;
         Sprintf(pbuf, "You played on %s difficulty in %s mode.", get_game_difficulty_text(context.game_difficulty),
             get_game_mode_text(TRUE));
         dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
+        if (!n_game_recoveries)
+            Strcpy(pbuf, "The dungeon never collapsed on you.");
+        else
+            Sprintf(pbuf, "The dungeon collapsed on you %lu time%s.", n_game_recoveries, plur(n_game_recoveries));
+        dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
         Sprintf(pbuf,
             "You were level %d with a maximum of %d hit point%s when you %s.",
             u.ulevel, u.uhpmax, plur(u.uhpmax), ends[how]);

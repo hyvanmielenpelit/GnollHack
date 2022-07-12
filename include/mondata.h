@@ -193,6 +193,9 @@
 #define may_start_with_saddle(ptr) (((ptr)->mflags6 & M6_MAY_START_WITH_SADDLE) != 0L)
 #define is_shade(ptr) (((ptr)->mflags6 & M6_SHADE) != 0)
 #define is_teleport_heal_caster(ptr) (((ptr)->mflags6 & M6_TELEPORT_HEAL_TACTICS) != 0)
+#define has_monster_type_nontinnable_corpse(ptr) (((ptr)->mflags6 & M6_NON_TINNABLE) != 0)
+#define has_monster_type_nonedible_corpse(ptr) (((ptr)->mflags6 & M6_NON_EDIBLE) != 0)
+#define revives_upon_meddling(ptr) (((ptr)->mflags6 & M6_REVIVES_UPON_MEDDLING) != 0)
 
 #define is_archaeologist(ptr) (((ptr)->mflags7 & M7_ARCHAEOLOGIST) != 0L)
 #define is_barbarian(ptr) (((ptr)->mflags7 & M7_BARBARIAN) != 0L)

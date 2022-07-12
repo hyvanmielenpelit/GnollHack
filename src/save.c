@@ -1343,6 +1343,7 @@ int fd;
     gamestats.modern_mode = ModernMode;
     gamestats.casual_mode = CasualMode;
     gamestats.time_stamp = getnow();
+    gamestats.num_recoveries = n_game_recoveries;
 
     bufoff(fd);
     /* bwrite() before bufon() uses plain write() */

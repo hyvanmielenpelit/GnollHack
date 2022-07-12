@@ -356,6 +356,9 @@
 #define M6_MAY_START_WITH_SADDLE    0x00002000UL /* If steed, then may be generated with saddle */
 #define M6_SHADE                    0x00004000UL /* Shade only */
 #define M6_TELEPORT_HEAL_TACTICS    0x00008000UL /* Arch-lich, Wizard of Yendor, Demogorgon, and various other monsters */
+#define M6_NON_TINNABLE             0x00010000UL /* Corpse cannot be tinned similar to riders */
+#define M6_NON_EDIBLE               0x00020000UL /* Corpse cannot be eaten similar to riders */
+#define M6_REVIVES_UPON_MEDDLING    0x00040000UL /* Revive upon corpse meddling */
 
 #define M7_NONE                     0x00000000UL
 #define M7_ARCHAEOLOGIST            0x00000001UL            /* monster can use archaeologist items */
