@@ -574,7 +574,7 @@ boolean iscontrolled;
             return FALSE;
     }
 
-    if ((Teleport_control && !Stunned) || iscontrolled || (wizard && (iswizcmd || yn_query("Enforce teleport control?") == 'y')))
+    if ((Teleport_control && !Stunned) || iscontrolled || (wizard && (iswizcmd /* || yn_query("Enforce teleport control?") == 'y'*/)))
     {
         if (unconscious() && !iscontrolled && !iswizcmd)
         {
@@ -1121,7 +1121,7 @@ d_level target_level;
         newlevel = target_level;
         newlev = target_level.dlevel;
     }
-    else if ((Teleport_control && !Stunned) || controltype == 1 || (wizard && (teletype == 1 || yn_query("Enforce teleport control?") == 'y')))
+    else if ((Teleport_control && !Stunned) || controltype == 1 || (wizard && (teletype == 1 /* || yn_query("Enforce teleport control?") == 'y'*/)))
     {
         char qbuf[BUFSZ];
         char phbuf[BUFSZ] = "";
