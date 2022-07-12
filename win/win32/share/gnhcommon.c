@@ -488,12 +488,12 @@ int RunGnollHack(
         In_Demo = TRUE;
     }
 
-    if (!wizard && !discover && (runflags & GHRUNFLAGS_MODERN_MODE))
+    if (!discover && (runflags & GHRUNFLAGS_MODERN_MODE))
     {
         ModernMode = TRUE;
     }
 
-    if (!wizard && !discover && (runflags & GHRUNFLAGS_CASUAL_MODE))
+    if (!discover && (runflags & GHRUNFLAGS_CASUAL_MODE))
     {
         CasualMode = TRUE;
     }

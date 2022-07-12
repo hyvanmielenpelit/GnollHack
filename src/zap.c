@@ -239,9 +239,9 @@ struct obj *obj;
 }
 
 int
-get_saving_throw_adjustment(otmp, origmonst)
+get_saving_throw_adjustment(otmp, targetmonst, origmonst)
 struct obj* otmp;
-struct monst* origmonst; 
+struct monst* targetmonst, *origmonst;
 {
     if (!otmp)
         return 0;
@@ -250,6 +250,39 @@ struct monst* origmonst;
 
     int res = 0;
     res += objects[otyp].oc_spell_saving_throw_adjustment;
+
+    /* Adjustment for blessed and cursed objects */
+    if (otmp->blessed)
+        res -= 5;
+    else if (otmp->cursed)
+        res += 5;
+
+    /* Extra penalties from negate/etc. magic resistance */
+    if (targetmonst)
+    {
+        if (targetmonst == &youmonst)
+        {
+            if (No_magic_resistance)
+                res -= 20;
+            else if (One_fourth_magic_resistance)
+                res -= 12;
+            else if (Half_magic_resistance)
+                res -= 8;
+            else if (Three_fourths_magic_resistance)
+                res -= 4;
+        }
+        else
+        {
+            if (targetmonst->mprops[NO_MAGIC_RESISTANCE])
+                res -= 20;
+            else if (targetmonst->mprops[ONE_FOURTH_MAGIC_RESISTANCE])
+                res -= 12;
+            else if (targetmonst->mprops[HALVED_MAGIC_RESISTANCE])
+                res -= 8;
+            else if (targetmonst->mprops[THREE_FOURTHS_MAGIC_RESISTANCE])
+                res -= 4;
+        }
+    }
 
     if (!origmonst)
         return res;
@@ -286,7 +319,7 @@ int
 get_skill_level_saving_throw_adjustment(skill_level)
 int skill_level;
 {
-    return -4 * (max(0, skill_level - 1) - 1);
+    return -3 * (max(0, skill_level - 1) - 1);
 }
 
 
@@ -309,7 +342,7 @@ struct monst* origmonst;
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
     int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
     int dmg = get_spell_damage(otyp, origmonst, mtmp);
-    int save_adj = get_saving_throw_adjustment(otmp, origmonst);
+    int save_adj = get_saving_throw_adjustment(otmp, mtmp, origmonst);
     boolean surpress_noeffect_message = FALSE;
     //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, 0, 0, NOTELL);
     boolean magic_cancellation_success = check_magic_cancellation_success(mtmp, save_adj);
@@ -5740,7 +5773,7 @@ boolean ordinary;
     int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
     double damage = 0;
     //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, obj, FALSE, 0, 0, NOTELL);
-    int save_adj = get_saving_throw_adjustment(obj, obj->oclass == SPBOOK_CLASS && !(obj->speflags & SPEFLAGS_SERVICED_SPELL) ? &youmonst : (struct monst*)0);
+    int save_adj = get_saving_throw_adjustment(obj, &youmonst, obj->oclass == SPBOOK_CLASS && !(obj->speflags & SPEFLAGS_SERVICED_SPELL) ? &youmonst : (struct monst*)0);
 
     switch (obj->otyp) {
     case WAN_STRIKING:

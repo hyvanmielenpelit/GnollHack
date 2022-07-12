@@ -1570,7 +1570,7 @@ struct monst* origmonst;
 {
     boolean was_tame = is_tame(mtmp);
     boolean was_peaceful = is_peaceful(mtmp);
-    int adj_save = get_saving_throw_adjustment(sobj, origmonst);
+    int adj_save = get_saving_throw_adjustment(sobj, mtmp, origmonst);
 
     if (sobj->cursed) 
     {
@@ -1642,7 +1642,7 @@ struct monst* origmonst;
     boolean was_tame = is_tame(mtmp);
     boolean was_peaceful = is_peaceful(mtmp);
 
-    int save_adj = get_saving_throw_adjustment(sobj, origmonst);
+    int save_adj = get_saving_throw_adjustment(sobj, mtmp, origmonst);
 
     if(is_undead(mtmp->data) || is_vampshifter(mtmp))
     {
@@ -1764,7 +1764,6 @@ boolean *effect_happened_ptr;
     boolean altfmt = FALSE;
     int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
     boolean is_serviced_spell = !!(sobj->speflags & SPEFLAGS_SERVICED_SPELL);
-    int save_adj = get_saving_throw_adjustment(sobj, sobj->oclass != SPBOOK_CLASS || is_serviced_spell ? (struct monst*)0 : &youmonst);
     if (objects[otyp].oc_magic)
         exercise(A_WIS, TRUE);                       /* just for trying */
     already_known = (sobj->oclass == SPBOOK_CLASS /* spell */
@@ -2121,6 +2120,8 @@ boolean *effect_happened_ptr;
         {
             if (DEADMONSTER(mtmp))
                 continue;
+
+            int save_adj = get_saving_throw_adjustment(sobj, mtmp, sobj->oclass != SPBOOK_CLASS || is_serviced_spell ? (struct monst*)0 : &youmonst);
             if (resists_fear(mtmp) || check_ability_resistance_success(mtmp, A_WIS, save_adj))
                 continue;
 
@@ -2564,6 +2565,7 @@ boolean *effect_happened_ptr;
                     {
                         ++candidates;
                         res = 0;
+                        int save_adj = get_saving_throw_adjustment(sobj, mtmp, sobj->oclass != SPBOOK_CLASS || is_serviced_spell ? (struct monst*)0 : &youmonst);
                         if (sleep_monst(mtmp, sobj, &youmonst, duration, save_adj, TELL))
                         {
                             slept_monst(mtmp);
@@ -2619,7 +2621,8 @@ boolean *effect_happened_ptr;
                 {
                     ++candidates;
                     res = 0;
-                    if (!mtmp->mtame && !is_peaceful(mtmp) 
+                    int save_adj = get_saving_throw_adjustment(sobj, mtmp, sobj->oclass != SPBOOK_CLASS || is_serviced_spell ? (struct monst*)0 : &youmonst);
+                    if (!mtmp->mtame && !is_peaceful(mtmp)
                         && !check_ability_resistance_success(&youmonst, A_CON, save_adj))
                     {
                         if (mtmp->m_lev < u.ulevel - 10)

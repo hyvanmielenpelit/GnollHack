@@ -1450,6 +1450,9 @@ int adjustment_to_roll;
     int adjscore = ability_score + adjustment_to_roll;
     int percentage = 0;
 
+    percentage = 5 * adjscore - 30;
+
+#if 0
     if (adjscore < 1)
         percentage = 0;
     else if (adjscore > 25)
@@ -1537,6 +1540,7 @@ int adjustment_to_roll;
             break;
         }
     }
+#endif
     boolean success = (rn2(100) < percentage);
     return success;
 }

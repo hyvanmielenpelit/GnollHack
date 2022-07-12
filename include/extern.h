@@ -4020,7 +4020,7 @@ E int FDECL(ink_cost, (struct obj*));
 /* ### zap.c ### */
 
 E void FDECL(learnwand, (struct obj *));
-E int FDECL(get_saving_throw_adjustment, (struct obj*, struct monst*));
+E int FDECL(get_saving_throw_adjustment, (struct obj*, struct monst*, struct monst*));
 E int FDECL(get_skill_level_saving_throw_adjustment, (int));
 E int FDECL(bhitm, (struct monst*, struct obj*, struct monst*));
 E void FDECL(probe_monster, (struct monst *));

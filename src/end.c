@@ -1559,6 +1559,7 @@ int how;
         taken = FALSE; /* lint; assert( !bones_ok ); */
 
     clearlocks();
+    death_hint();
 
     if (have_windows)
         display_nhwindow(WIN_MESSAGE, FALSE);
@@ -1608,8 +1609,6 @@ int how;
         Sprintf(ebuf, "%s", has_existing_save_file ? "You can load the game from the point at which you last saved the game." : endtext ? endtext : "Your game is over.");
         display_popup_text(ebuf, "Game Over", POPUP_TEXT_MESSAGE, ATR_NONE, clr, NO_GLYPH, POPUP_FLAGS_NONE);
     }
-
-    death_hint();
 
     /* if pets will contribute to score, populate mydogs list now
        (bones creation isn't a factor, but pline() messaging is; used to
