@@ -83,7 +83,6 @@ int GnollHackMain(int argc, char** argv)
 		return 0;
 	}
 
-	register int fd;
 	//boolean exact_username;
 	FILE* fp;
 
@@ -166,6 +165,7 @@ int GnollHackMain(int argc, char** argv)
 	issue_gui_command(GUI_CMD_GAME_START);
 
 #if 0
+	register int fd;
 	if((fd = restore_saved_game()) >= 0)
 	{
 		/* Since wizard is actually flags.debug, restoring might
