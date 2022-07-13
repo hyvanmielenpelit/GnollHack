@@ -156,6 +156,7 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
             {
                 play_sfx_sound(SFX_ACQUIRE_GRAB);
                 u.ustuck = mtmp;
+                refresh_m_tile_gui_info(mtmp, FALSE);
             }
         }
         /* #H7329 - if hero is on engraved "Elbereth", this will end up
@@ -4623,6 +4624,7 @@ struct monst *mtmp;
     {
         play_sfx_sound(SFX_ACQUIRE_GRAB);
         u.ustuck = mtmp;
+        refresh_m_tile_gui_info(mtmp, FALSE);
     }
 
     if (Blind) 

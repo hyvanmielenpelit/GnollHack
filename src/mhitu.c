@@ -638,6 +638,7 @@ register struct monst *mtmp;
         {
             play_sfx_sound(SFX_ACQUIRE_GRAB);
             u.ustuck = mtmp;
+            refresh_m_tile_gui_info(mtmp, FALSE);
             grab_hint(mtmp);
         }
         youmonst.m_ap_type = M_AP_NOTHING;
@@ -1950,6 +1951,7 @@ register struct obj* omonwep;
 
                     update_extrinsics();
                     context.botl = context.botlx = 1;
+                    refresh_m_tile_gui_info(mtmp, FALSE);
                     display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
 
                     if (is_constrictor(mtmp->data))
@@ -1963,7 +1965,7 @@ register struct obj* omonwep;
                             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is constricting you to death!", Monnam(mtmp));
                         }
                         if (Breathless)
-                            pline1(Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
+                            pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
                     }
                     grab_hint(mtmp);
                 }
@@ -1979,14 +1981,14 @@ register struct obj* omonwep;
                         damagedealt);
                     display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
                     if (Breathless)
-                        pline1(Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
+                        pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
                 }
                 else if (is_constrictor(mtmp->data))
                 {
                     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is %s you to death!", Monnam(mtmp), hug_throttles(mtmp->data) ? "choked" : "constricting");
                     display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
                     if (Breathless)
-                        pline1(Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
+                        pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
                 }
                 else
                 {
@@ -2509,6 +2511,7 @@ register struct obj* omonwep;
         {
             play_sfx_sound(SFX_ACQUIRE_GRAB);
             u.ustuck = mtmp;
+            refresh_m_tile_gui_info(mtmp, FALSE);
             grab_hint(mtmp);
         }
         break;
@@ -2535,17 +2538,18 @@ register struct obj* omonwep;
                     {
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is drowning you!", Monnam(mtmp));
                         if (Breathless)
-                            You("do not feel particularly concerned.");
+                            pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
                     }
                     else if (is_constrictor(mtmp->data))
                     {
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is constricting you to death!", Monnam(mtmp));
                         if (Breathless)
-                            You("do not feel particularly concerned.");
+                            pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
                     }
 
                     play_sfx_sound(SFX_ACQUIRE_GRAB);
                     u.ustuck = mtmp;
+                    refresh_m_tile_gui_info(mtmp, FALSE);
 
                     update_extrinsics();
                     context.botl = context.botlx = 1;
@@ -2560,7 +2564,7 @@ register struct obj* omonwep;
                     /* Drowning is now delayed death */
                     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is drowning you!", Monnam(mtmp));
                     if (Breathless)
-                        pline1(Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
+                        pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
 
                     /*
                     boolean moat = (levl[mtmp->mx][mtmp->my].typ != POOL)
@@ -2580,7 +2584,7 @@ register struct obj* omonwep;
                 {
                     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is constricting you to death!", Monnam(mtmp));
                     if (Breathless)
-                        You("do not feel particularly concerned.");
+                        pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
                 }
                 else if (mattk->aatyp == AT_HUGS)
                 {
