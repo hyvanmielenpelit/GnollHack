@@ -40,7 +40,6 @@ STATIC_DCL boolean FDECL(reject_specific_spell_casting, (int));
 STATIC_DCL boolean FDECL(getspell, (int *, int));
 STATIC_PTR int FDECL(CFDECLSPEC spell_cmp, (const genericptr,
                                             const genericptr));
-STATIC_DCL void NDECL(sortspells);
 STATIC_DCL boolean NDECL(spellsortmenu);
 STATIC_DCL boolean FDECL(dospellmenu, (const char *, int, int *));
 STATIC_DCL boolean FDECL(dotradspellmenu, (const char*, int, int*));
@@ -3444,8 +3443,8 @@ const genericptr vptr2;
 /* sort the index used for display order of the "view known spells"
    list (sortmode == SORTBY_xxx), or sort the spellbook itself to make
    the current display order stick (sortmode == SORTRETAINORDER) */
-STATIC_OVL void
-sortspells()
+void
+sortspells(VOID_ARGS)
 {
     short i;
 #if defined(SYSV) || defined(DGUX)

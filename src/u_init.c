@@ -1269,6 +1269,8 @@ u_init()
 
     /* Add school-specific spells */
     add_school_specific_spellbooks();
+    if (flags.spellorder > SORTBY_NONE)
+        sortspells();
 
     /* 
      * Difficulty level specific initializations 

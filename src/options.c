@@ -4505,7 +4505,7 @@ boolean tinitial, tfrom_file;
         if (negated)
         {
             bad_negation(fullname, TRUE);
-            itmp = SORTBY_ALPHA;
+            itmp = SORTBY_NONE;
             retval = FALSE;
         }
         else if (op)
@@ -4522,6 +4522,8 @@ boolean tinitial, tfrom_file;
         {
             flags.spellorder = itmp;
         }
+        if(!initial && flags.spellorder > SORTBY_NONE) //Spellbook is empty during initial options, so need to sort after spells are recorded in the spell book
+            sortspells();
         return retval;
     }
 
@@ -6029,6 +6031,25 @@ boolean setinitial, setfromfile;
             reset_commands(FALSE);
             number_pad(iflags.num_pad ? 1 : 0);
             free((genericptr_t) mode_pick);
+        }
+        destroy_nhwindow(tmpwin);
+    } else if (!strcmp("spellorder", optname)) {
+        menu_item* mode_pick = (menu_item*)0;
+        char splbuf[BUFSZ];
+        tmpwin = create_nhwindow(NHW_MENU);
+        start_menu(tmpwin);
+        any = zeroany;
+        for (i = SORTBY_NONE; i < SORTBY_CURRENT - 1; i++) {
+            Sprintf(splbuf, "%d (%s)", i, spl_sortchoices[i]);
+            any.a_int = i + 1;
+            add_menu(tmpwin, NO_GLYPH, &any, 'a' + i, 0, ATR_NONE,
+                splbuf, MENU_UNSELECTED);
+        }
+        end_menu(tmpwin, "Select spell sort method:");
+        if (select_menu(tmpwin, PICK_ONE, &mode_pick) > 0) {
+            flags.spellorder = mode_pick->item.a_int - 1;
+            sortspells();
+            free((genericptr_t)mode_pick);
         }
         destroy_nhwindow(tmpwin);
     } else if (!strcmp("menu_headings", optname)) {

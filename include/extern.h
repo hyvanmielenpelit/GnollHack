@@ -3279,6 +3279,7 @@ E void FDECL(deduct_mana_cost, (double));
 E uchar FDECL(is_obj_component_for, (int, struct obj*));
 #ifdef DUMPLOG
 E void NDECL(dump_spells);
+E void NDECL(sortspells);
 #endif
 
 /* ### steal.c ### */
