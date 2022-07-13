@@ -114,7 +114,6 @@ enum bl_conditions {
     ((windowprocs.wincap2 & (WC2_HILITE_STATUS | WC2_FLUSH_STATUS)) != 0)
 
 #define REASSESS_ONLY TRUE
-#define REASSESS_NO_UPDATE_ALL 2
 
 /* #ifdef STATUS_HILITES */
 /* hilite status field behavior - coloridx values */

@@ -629,11 +629,7 @@ struct obj* wep;
     }
 
     update_all_character_properties((struct obj*)0, TRUE);
-
-#ifdef STATUS_HILITES
-    if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_NO_UPDATE_ALL);
-#endif
+    status_reassess();
 
     return result;
 }
@@ -676,11 +672,7 @@ dounwield()
     {
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_UNWIELD);
         update_all_character_properties((struct obj*)0, TRUE);
-
-#ifdef STATUS_HILITES
-        if (VIA_WINDOWPORT())
-            status_initialize(REASSESS_NO_UPDATE_ALL);
-#endif
+        status_reassess();
     }
 
     return result;
@@ -867,10 +859,7 @@ long swap_wep_mask, swap_target_mask; // swap_wep_mask = mask of original weapon
         /* Do nothing */
     }
 
-#ifdef STATUS_HILITES
-    if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_NO_UPDATE_ALL);
-#endif
+    status_reassess();
 
     //Do not take a turn
     return 0; // result;
@@ -1159,10 +1148,7 @@ doswapweapon()
         /* Do nothing */
     }
 
-#ifdef STATUS_HILITES
-    if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_NO_UPDATE_ALL);
-#endif
+    status_reassess();
 
     //Do not take a turn
     return 0; // result;
@@ -1732,10 +1718,7 @@ dotwoweapon()
     newsym(u.ux, u.uy);
     flush_screen(1);
     update_inventory();
-#ifdef STATUS_HILITES
-    if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_NO_UPDATE_ALL);
-#endif
+    status_reassess();
     return 0;
 }
 
@@ -1757,10 +1740,7 @@ uwepgone()
         setworn((struct obj *) 0, W_WEP);
         update_unweapon();
         update_inventory();
-#ifdef STATUS_HILITES
-        if (VIA_WINDOWPORT())
-            status_initialize(REASSESS_NO_UPDATE_ALL);
-#endif
+        //status_reassess();
     }
 }
 
@@ -1776,10 +1756,7 @@ uwep2gone()
         setworn((struct obj*) 0, W_ARMS);
         update_unweapon();
         update_inventory();
-#ifdef STATUS_HILITES
-        if (VIA_WINDOWPORT())
-            status_initialize(REASSESS_NO_UPDATE_ALL);
-#endif
+        status_reassess();
     }
 }
 

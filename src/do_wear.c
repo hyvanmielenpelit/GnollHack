@@ -468,10 +468,7 @@ Shield_on(VOID_ARGS)
 
     uarms->known = 1; /* shield's +/- evident because of status line AC */
 
-#ifdef STATUS_HILITES
-    if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_NO_UPDATE_ALL);
-#endif
+    status_reassess();
 
     return 0;
 }
@@ -486,11 +483,7 @@ Shield_off(VOID_ARGS)
 
     setworn((struct obj *) 0, W_ARMS);
     context.takeoff.cancelled_don = FALSE;
-
-#ifdef STATUS_HILITES
-    if (VIA_WINDOWPORT())
-        status_initialize(REASSESS_NO_UPDATE_ALL);
-#endif
+    status_reassess();
 
     return 0;
 }

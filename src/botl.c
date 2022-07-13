@@ -1379,7 +1379,7 @@ boolean *valsetlist;
     idxmax = curr->idxmax;
     idxcurr = curr->idxcurr;
     if (idxmax >= 0)
-        chgmax = update_all ? 0 : compare_blstats(curr, &blstats[idx][idxmax]);
+        chgmax = update_all ? 0 : compare_blstats(&blstats[1 - idx][idxmax], &blstats[idx][idxmax]);
 
     chg = update_all ? 0 : compare_blstats(prev, curr);
 
@@ -1565,8 +1565,7 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
                    : initblstats[i].fldfmt;
         status_enablefield(fld, fieldname, fieldfmt, fldenabl);
     }
-    if(reassessment < REASSESS_NO_UPDATE_ALL)
-        update_all = TRUE;
+    update_all = TRUE;
 }
 
 void
