@@ -94,7 +94,7 @@ dosave()
         if (CasualMode)
         {
             clear_nhwindow(WIN_MESSAGE);
-            char ans = ynq("Continue playing after save?");
+            char ans = ynq("Continue playing after saving?");
             switch (ans)
             {
             case 'q':
