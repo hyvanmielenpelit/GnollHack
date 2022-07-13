@@ -26,21 +26,39 @@ namespace GnollHackClient
 
         public float GetFinishTime()
         {
-            if (_data.style >= 3 &&_data.style < (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT)
-                return 99999.0f;
-            else if (_data.style == (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT)
-                return 2.0f;
-            else
-                return 2.0f;
+            switch(_data.style)
+            {
+                case (int)screen_text_types.SCREEN_TEXT_DEAD:
+                case (int)screen_text_types.SCREEN_TEXT_ESCAPED:
+                case (int)screen_text_types.SCREEN_TEXT_ASCENDED:
+                case (int)screen_text_types.SCREEN_TEXT_QUIT:
+                case (int)screen_text_types.SCREEN_TEXT_SPECIAL_END:
+                    return 99999.0f;
+                case (int)screen_text_types.SCREEN_TEXT_SAVING:
+                    return 1.5f;
+                case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
+                    return 2.0f;
+                default:
+                    break;
+            }
+            return 2.0f;
         }
         public float GetFadeOutTime()
         {
-            if (_data.style >= 3 && _data.style < (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT)
-                return 19.0f;
-            else if (_data.style == (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT)
-                return 1.5f;
-            else
-                return 1.5f;
+            switch (_data.style)
+            {
+                case (int)screen_text_types.SCREEN_TEXT_DEAD:
+                case (int)screen_text_types.SCREEN_TEXT_ESCAPED:
+                case (int)screen_text_types.SCREEN_TEXT_ASCENDED:
+                case (int)screen_text_types.SCREEN_TEXT_QUIT:
+                case (int)screen_text_types.SCREEN_TEXT_SPECIAL_END:
+                    return 9999.0f;
+                case (int)screen_text_types.SCREEN_TEXT_SAVING:
+                    return 1.0f;
+                case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
+                    return 1.5f;
+            }
+            return 1.5f;
         }
         public float GetFadeInTime()
         {
@@ -104,6 +122,7 @@ namespace GnollHackClient
                 case (int)screen_text_types.SCREEN_TEXT_ESCAPED:
                 case (int)screen_text_types.SCREEN_TEXT_ASCENDED:
                 case (int)screen_text_types.SCREEN_TEXT_QUIT:
+                case (int)screen_text_types.SCREEN_TEXT_SPECIAL_END:
                     return 0.60f;
                 default:
                     return 0.70f;
@@ -123,6 +142,7 @@ namespace GnollHackClient
                 case (int)screen_text_types.SCREEN_TEXT_ESCAPED:
                 case (int)screen_text_types.SCREEN_TEXT_ASCENDED:
                 case (int)screen_text_types.SCREEN_TEXT_QUIT:
+                case (int)screen_text_types.SCREEN_TEXT_SPECIAL_END:
                     return -0.20f;
                 case (int)screen_text_types.SCREEN_TEXT_BOSS_FIGHT:
                     return -0.20f;

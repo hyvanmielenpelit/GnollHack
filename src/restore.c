@@ -899,6 +899,20 @@ int
 dorecover(fd)
 register int fd;
 {
+    if (dorecover_saved_game(fd))
+    {
+        /* Success! */
+        welcome(FALSE);
+        check_special_room(FALSE);
+        return 1;
+    }
+    return 0;
+}
+
+int
+dorecover_saved_game(fd)
+register int fd;
+{
     unsigned int stuckid = 0, steedid = 0; /* not a register */
     xchar ltmp;
     int rtmp;
@@ -1034,6 +1048,7 @@ register int fd;
     run_timers(); /* expire all timers that have gone off while away */
     docrt();
     restoring = FALSE;
+
     clear_nhwindow(WIN_MESSAGE);
     status_reassess();
 
@@ -1041,9 +1056,6 @@ register int fd;
     play_level_ambient_sounds();
     play_environment_ambient_sounds();
 
-    /* Success! */
-    welcome(FALSE);
-    check_special_room(FALSE);
     return 1;
 }
 

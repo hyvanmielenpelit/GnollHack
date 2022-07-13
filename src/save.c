@@ -82,23 +82,53 @@ dosave()
     if (iflags.debug_fuzzer)
         return 0;
     clear_nhwindow(WIN_MESSAGE);
-    if (yn_query("Really save?") == 'n') {
+    if (!CasualMode && yn_query("Really save?") == 'n')
+    {
         clear_nhwindow(WIN_MESSAGE);
         if (multi > 0)
             nomul(0);
-    } else {
+    } 
+    else 
+    {
+        boolean contplay = FALSE;
+        if (CasualMode)
+        {
+            clear_nhwindow(WIN_MESSAGE);
+            char ans = ynq("Continue playing after save?");
+            switch (ans)
+            {
+            case 'q':
+                clear_nhwindow(WIN_MESSAGE);
+                if (multi > 0)
+                    nomul(0);
+                return 0;
+            case 'y':
+                contplay = TRUE;
+                break;
+            default:
+                break;
+            }
+        }
+
         clear_nhwindow(WIN_MESSAGE);
         pline("Saving...");
 #if defined(UNIX) || defined(VMS) || defined(__EMX__)
         program_state.done_hup = 0;
 #endif
-        if (dosave0()) {
-            u.uhp = -1; /* universal game's over indicator */
-            /* make sure they see the Saving message */
-            display_nhwindow(WIN_MESSAGE, TRUE);
-            exit_nhwindows("Be seeing you...");
-            nh_terminate(EXIT_SUCCESS);
-        } else
+        if (dosave0())
+        {
+            //if(contplay)
+            //    display_popup_text("Game was saved successfully.", "Game Saved", POPUP_TEXT_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, 0UL);
+            if (!contplay || !load_saved_game(FALSE))
+            {
+                u.uhp = -1; /* universal game's over indicator */
+                /* make sure they see the Saving message */
+                display_nhwindow(WIN_MESSAGE, TRUE);
+                exit_nhwindows(contplay ? "Cannot continue the game..." : "Be seeing you...");
+                nh_terminate(EXIT_SUCCESS);
+            }
+        }
+        else
             (void) doredraw();
     }
     return 0;

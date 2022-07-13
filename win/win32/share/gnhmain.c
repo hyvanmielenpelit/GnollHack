@@ -27,9 +27,6 @@ extern struct passwd *FDECL( getpwnam, (const char *));
 static boolean NDECL( whoami);
 #endif
 static void FDECL( process_options, (int, char **));
-
-static void NDECL( wd_message);
-
 static char *make_lockname(filename, lockname)
 const char *filename;
 char *lockname;
@@ -146,23 +143,11 @@ int GnollHackMain(int argc, char** argv)
 
 	set_playmode(); /* sets plname to "wizard" for wizard mode */
 
-	if(!wizard)
+	if (!wizard)
 		Sprintf(lock, "%d%s", (int)getuid(), plname);
 	getlock();
 
-	/* Set up level 0 file to keep the game state.
-	 */
-	fd = create_levelfile(0, (char *)0);
-	if(fd < 0)
-	{
-		raw_print("Cannot create lock file");
-	}
-	else
-	{
-		hackpid = 1;
-		write(fd, (genericptr_t) & hackpid, sizeof(hackpid));
-		close(fd);
-	}
+	create_gamestate_levelfile();
 
 	dlb_init(); /* must be before newgame() */
 
@@ -170,12 +155,7 @@ int GnollHackMain(int argc, char** argv)
 	 * Initialization of the boundaries of the mazes
 	 * Both boundaries have to be even.
 	 */
-	x_maze_max = COLNO - 1;
-	if(x_maze_max % 2)
-		x_maze_max--;
-	y_maze_max = ROWNO - 1;
-	if(y_maze_max % 2)
-		y_maze_max--;
+	maze_init();
 
 	/*
 	 *  Initialize the vision system.  This must be before mklev() on a
@@ -185,6 +165,7 @@ int GnollHackMain(int argc, char** argv)
 
 	issue_gui_command(GUI_CMD_GAME_START);
 
+#if 0
 	if((fd = restore_saved_game()) >= 0)
 	{
 		/* Since wizard is actually flags.debug, restoring might
@@ -210,7 +191,7 @@ int GnollHackMain(int argc, char** argv)
 			wizard = TRUE;
 
 		check_special_room(FALSE);
-		wd_message();
+		mode_message();
 
 		if(discover || wizard || CasualMode)
 		{
@@ -230,8 +211,10 @@ int GnollHackMain(int argc, char** argv)
 		encounter_init();
 	}
 	else
+#endif
+	if(!load_saved_game(TRUE))
 	{
-	not_recovered: 
+	//not_recovered: 
 		player_selection();
 		resuming = FALSE;
 
@@ -239,7 +222,7 @@ int GnollHackMain(int argc, char** argv)
 		choose_game_difficulty();
 
 		newgame();
-		wd_message();
+		mode_message();
 	}
 
 	if(wizard)
@@ -384,12 +367,6 @@ port_help()
 }
 #endif
 
-static void wd_message()
-{
-	if (discover || CasualMode)
-		You_ex(ATR_NONE, CLR_MSG_HINT, "are in %s mode.", get_game_mode_text(TRUE));
-}
-
 /*
  * Add a slash to any name not ending in /. There must
  * be room for the /
@@ -447,3 +424,5 @@ int DoSomeHackDroid()
 {
 	return (int)artilist[ART_HOWLING_FLAIL].cost;
 }
+
+

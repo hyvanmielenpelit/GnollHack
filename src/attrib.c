@@ -895,7 +895,7 @@ update_extrinsics()
         {
             u.uprops[AIRLESS_ENVIRONMENT].extrinsic |= W_STUCK;
         }
-        if (is_constrictor(mtmp->data) && (!hug_throttles(mtmp->data) || (hug_throttles(mtmp->data) && has_neck(youmonst.data))))
+        if (is_constrictor(mtmp->data) && (!hug_throttles(mtmp->data) || has_neck(youmonst.data)))
         {
             u.uprops[STRANGLED].extrinsic |= W_STUCK;
         }

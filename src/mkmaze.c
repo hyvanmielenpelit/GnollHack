@@ -863,6 +863,18 @@ stolen_booty(VOID_ARGS)
 
 #undef ORC_LEADER
 
+void
+maze_init(VOID_ARGS)
+{
+    x_maze_max = COLNO - 1;
+    if (x_maze_max % 2)
+        x_maze_max--;
+    y_maze_max = ROWNO - 1;
+    if (y_maze_max % 2)
+        y_maze_max--;
+
+}
+
 boolean
 maze_inbounds(x, y)
 int x, y;

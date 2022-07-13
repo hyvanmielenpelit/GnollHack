@@ -291,6 +291,8 @@ struct obj {
 #define is_missile(o)                                          \
     (((o)->oclass == WEAPON_CLASS || is_weptool(o)) && is_thrown_weapon_only(o))
 
+#define is_armor(o) \
+    ((o)->oclass == ARMOR_CLASS)
 #define is_amulet(o) \
     ((o)->oclass == AMULET_CLASS)
 #define is_wet_towel(o) ((o)->otyp == TOWEL && (o)->special_quality > 0)
@@ -906,16 +908,16 @@ extern NEARDATA struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_S
     ((objects[otyp].oc_flags4 & O4_NON_MYTHIC) != 0 || objects[otyp].oc_magic) /* Inherently (already special) magical items cannot be made mythical, this is just for normal boring objects */
 
 #define can_obj_have_mythic(o) \
-    (!otyp_non_mythic((o)->otyp) && (is_weapon(o) || (o)->oclass == ARMOR_CLASS))
+    (!otyp_non_mythic((o)->otyp) && (is_weapon(o) || is_armor(o)))
 
 #define mythic_power_applies_to_obj(o, pwrflags) \
     (!(!is_weapon(o) && ((pwrflags) & MYTHIC_POWER_FLAG_WEAPON_ONLY) != 0) && \
-     !((o)->oclass != ARMOR_CLASS && ((pwrflags) & MYTHIC_POWER_FLAG_ARMOR_ONLY) != 0) && \
+     !(!is_armor(o) && ((pwrflags) & MYTHIC_POWER_FLAG_ARMOR_ONLY) != 0) && \
      !((is_missile(o) || is_ammo(o)) && ((pwrflags) & MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO) != 0) && \
      !(!is_missile(o) && ((pwrflags) & MYTHIC_POWER_FLAG_THROWN_WEAPONS_ONLY) != 0) && \
-     !(((o)->oclass != ARMOR_CLASS || objects[(o)->otyp].oc_armor_category != ARM_SUIT) && ((pwrflags) & MYTHIC_POWER_FLAG_SUIT_ONLY) != 0) && \
-     !(((o)->oclass != ARMOR_CLASS || objects[(o)->otyp].oc_armor_category != ARM_HELM) && ((pwrflags) & MYTHIC_POWER_FLAG_HELMET_ONLY) != 0) && \
-     !(((o)->oclass != ARMOR_CLASS || objects[(o)->otyp].oc_armor_category != ARM_SHIELD) && ((pwrflags) & MYTHIC_POWER_FLAG_SHIELD_ONLY) != 0) )
+     !((!is_armor(o)  || !is_suit(o)) && ((pwrflags) & MYTHIC_POWER_FLAG_SUIT_ONLY) != 0) && \
+     !((!is_armor(o)  || !is_helmet(o)) && ((pwrflags) & MYTHIC_POWER_FLAG_HELMET_ONLY) != 0) && \
+     !((!is_armor(o)  || !is_shield(o)) && ((pwrflags) & MYTHIC_POWER_FLAG_SHIELD_ONLY) != 0) )
 
 #define has_obj_mythic_prefix_power(o, pwrindex) \
     ((mythic_prefix_qualities[(o)->mythic_prefix].mythic_powers & (1UL << (pwrindex))) != 0 && mythic_power_applies_to_obj(o, mythic_prefix_powers[(pwrindex)].power_flags))

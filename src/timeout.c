@@ -606,7 +606,7 @@ nh_timeout()
     boolean was_terminally_ill = !!Sick;
     boolean was_food_poisoned = !!FoodPoisoned;
     boolean was_stoned = !!Stoned;
-    boolean was_strangled = !!Strangled;
+    boolean was_strangled = (Strangled && !Breathless);
     boolean was_suffocating = (Airless_environment && !Survives_without_air);
     boolean was_vomiting = !!Vomiting;
     boolean was_slimed = !!Slimed;
@@ -658,7 +658,7 @@ nh_timeout()
         slime_dialogue();
     if (Vomiting)
         vomiting_dialogue();
-    if (Strangled)
+    if (Strangled && !Breathless)
         choke_dialogue();
     if (Sick)
         sick_dialogue();
@@ -845,7 +845,11 @@ nh_timeout()
                 break;
             case STRANGLED:
                 killer.format = KILLED_BY_AN;
-                if (uamul && uamul->otyp == AMULET_OF_STRANGULATION)
+                if (Breathless)
+                {
+                    // Nothing
+                }
+                else if (uamul && uamul->otyp == AMULET_OF_STRANGULATION)
                 {
                     Strcpy(killer.name, "amulet of strangulation");
                     killer.hint_idx = HINT_KILLED_ITEM_STRANGULATION;
@@ -868,7 +872,9 @@ nh_timeout()
             {
                 boolean drowned_by_monster = u.ustuck && is_pool(u.ustuck->mx, u.ustuck->my) && !Swimming && !Amphibious;
                 if (Survives_without_air)
-                    ;
+                {
+                    //Nothing
+                }
                 else
                 {
                     You_ex(ATR_NONE, CLR_MSG_NEGATIVE, Underwater || drowned_by_monster ? "drown." : "suffocate.");
@@ -1284,7 +1290,10 @@ nh_timeout()
             // Continuous warning
             switch (propnum) {
             case STRANGLED:
-                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are being strangled!");
+                if (!Breathless)
+                    You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are being strangled!");
+                else
+                    upp->intrinsic &= ~TIMEOUT; /* You can breathe, so clear the strangulation timeout -- It will be set to the full time value below */
                 break;
             case AIRLESS_ENVIRONMENT:
                 if (!Survives_without_air)
@@ -1318,7 +1327,7 @@ nh_timeout()
         || (was_terminally_ill != !!Sick)
         || (was_food_poisoned != !!FoodPoisoned)
         || (was_stoned != !!Stoned)
-        || (was_strangled != !!Strangled)
+        || (was_strangled != (Strangled && !Breathless))
         || (was_suffocating != (Airless_environment && !Survives_without_air))
         || (was_vomiting != !!Vomiting)
         || (was_slimed != !!Slimed)

@@ -220,8 +220,10 @@ do_statusline2()
         Strcpy(nb = eos(nb), " Stone");
     if (Slimed)
         Strcpy(nb = eos(nb), " Slime");
-    if (Strangled)
+    if (Strangled && !Breathless)
         Strcpy(nb = eos(nb), " Strngl");
+    if (Strangled && !Survives_without_air)
+        Strcpy(nb = eos(nb), " Suffoc");
     if (Slowed)
         Strcpy(nb = eos(nb), " Slow");
     if (Silenced)
@@ -882,7 +884,7 @@ get_u_condition_bits()
         conditions |= BL_MASK_STONE;
     if (Slimed)
         conditions |= BL_MASK_SLIME;
-    if (Strangled)
+    if (Strangled && !Breathless)
         conditions |= BL_MASK_STRNGL;
     if (Airless_environment && !Survives_without_air)
         conditions |= BL_MASK_SUFFOC;

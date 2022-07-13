@@ -650,7 +650,7 @@ boolean
 can_be_strangled(mon)
 struct monst *mon;
 {
-    boolean nonbreathing, nobrainer;
+    //boolean nonbreathing, nobrainer;
 
     /* For amulet of strangulation support:  here we're considering
        strangulation to be loss of blood flow to the brain due to
@@ -661,6 +661,10 @@ struct monst *mon;
        are non-breathing creatures which have higher brain function. */
     if (!has_neck(mon->data))
         return FALSE;
+
+    return TRUE;
+
+#if 0
     if (mon == &youmonst)
     {
         /* hero can't be mindless but poly'ing into mindless form can
@@ -676,6 +680,7 @@ struct monst *mon;
         nonbreathing = is_breathless(mon);
     }
     return (boolean) (!nobrainer || !nonbreathing);
+#endif
 }
 
 /* returns True if monster can track well */

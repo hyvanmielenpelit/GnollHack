@@ -1153,6 +1153,9 @@ E int NDECL(create_savefile);
 E int NDECL(open_savefile);
 E int NDECL(delete_savefile);
 E int NDECL(restore_saved_game);
+E void NDECL(mode_message);
+E void NDECL(create_gamestate_levelfile);
+E int FDECL(load_saved_game, (BOOLEAN_P));
 E void FDECL(nh_compress, (const char *));
 E void FDECL(nh_uncompress, (const char *));
 E boolean FDECL(lock_file, (const char *, int, int));
@@ -1742,6 +1745,7 @@ E void NDECL(wallify_entire_map);
 
 /* ### mkmaze.c ### */
 
+E void NDECL(maze_init);
 E void FDECL(wallification, (int, int, int, int));
 E void FDECL(fix_wall_spines, (int, int, int, int));
 E void FDECL(walkfrom, (int, int, SCHAR_P));
@@ -2758,6 +2762,7 @@ E void FDECL(do_light_regions, (char**));
 /* ### restore.c ### */
 
 E void FDECL(inven_inuse, (BOOLEAN_P));
+E int FDECL(dorecover_saved_game, (int));
 E int FDECL(dorecover, (int));
 E void FDECL(restcemetery, (int, struct cemetery **));
 E void FDECL(trickery, (char *));

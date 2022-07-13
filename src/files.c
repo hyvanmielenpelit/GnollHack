@@ -1085,6 +1085,99 @@ restore_saved_game()
     return fd;
 }
 
+void 
+mode_message(VOID_ARGS)
+{
+    if (discover || CasualMode)
+        You_ex(ATR_NONE, CLR_MSG_HINT, "are in %s mode.", get_game_mode_text(TRUE));
+}
+
+void
+create_gamestate_levelfile(VOID_ARGS)
+{
+    /* Set up level 0 file to keep the game state.
+     */
+    int fd = create_levelfile(0, (char*)0);
+    if (fd < 0)
+    {
+        raw_print("Cannot create game state level 0 file");
+    }
+    else
+    {
+        hackpid = 1;
+        write(fd, (genericptr_t)&hackpid, sizeof(hackpid));
+        close(fd);
+    }
+}
+
+int
+load_saved_game(load_at_start)
+boolean load_at_start;
+{
+    if (!load_at_start)
+    {
+        /* Functions that would have been run at start */
+        create_gamestate_levelfile();
+    }
+
+    int fd = restore_saved_game();
+    if (fd >= 0)
+    {
+        /* Since wizard is actually flags.debug, restoring might
+         * overwrite it.
+         */
+        boolean remember_wiz_mode = wizard;
+        const char* fq_save = fqname(SAVEF, SAVEPREFIX, 1);
+
+        if (load_at_start)
+        {
+#ifdef NEWS
+            if (iflags.news)
+            {
+                display_file(NEWS, FALSE);
+                iflags.news = FALSE; /* in case dorecover() fails */
+            }
+#endif
+            pline("Restoring save file...");
+            mark_synch(); /* flush output */
+        }
+        if (!dorecover_saved_game(fd)) //This deletes the save file in normal modes
+            return 0;
+
+        if (!wizard && remember_wiz_mode)
+            wizard = TRUE;
+
+        if (load_at_start)
+            welcome(FALSE);
+
+        check_special_room(FALSE);
+        if (load_at_start)
+        {
+            mode_message();
+            encounter_init();
+        }
+
+        if (discover || wizard || CasualMode)
+        {
+            if (load_at_start && CasualMode)
+                pline("Keeping the save file.");
+
+            if (load_at_start && !CasualMode && yn_query("Do you want to keep the save file?") == 'n')
+            {
+                (void)delete_savefile();
+            }
+            else
+            {
+                nh_compress(fq_save);
+            }
+        }
+
+        return 1;
+    }
+    return 0;
+}
+
+
 #if defined(SELECTSAVED)
 struct save_game_data 
 newsavegamedata(playername, gamestats, is_running)

@@ -490,7 +490,7 @@
 
 #define Underwater (u.uinwater)
 
-#define Survives_without_air ((!Underwater && Breathless) || (Underwater && (Amphibious || Swimming)))
+#define Survives_without_air (Breathless || (Underwater && (Amphibious || Swimming)))
 
 /* Note that Underwater and u.uinwater are both used in code.
    The latter form is for later implementation of other in-water

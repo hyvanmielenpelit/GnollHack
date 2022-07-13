@@ -1956,13 +1956,14 @@ register struct obj* omonwep;
                     {
                         if (hug_throttles(mtmp->data))
                         {
-                            if (!has_neck(youmonst.data) || Magical_breathing || !can_be_strangled(&youmonst))
-                                You("do not feel particularly concerned.");
-                            else
-                                pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is choking you to death!", Monnam(mtmp));
+                            pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is choking you to death!", Monnam(mtmp));
                         }
                         else
+                        {
                             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is constricting you to death!", Monnam(mtmp));
+                        }
+                        if (Breathless)
+                            pline1(Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
                     }
                     grab_hint(mtmp);
                 }
@@ -1977,11 +1978,15 @@ register struct obj* omonwep;
                         is_constrictor(mtmp->data) ? " to death!" : ".",
                         damagedealt);
                     display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
+                    if (Breathless)
+                        pline1(Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
                 }
                 else if (is_constrictor(mtmp->data))
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is %s you to death!", Monnam(mtmp), hug_throttles(mtmp->data) ? "choking" : "constricting");
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is %s you to death!", Monnam(mtmp), hug_throttles(mtmp->data) ? "choked" : "constricting");
                     display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
+                    if (Breathless)
+                        pline1(Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
                 }
                 else
                 {
@@ -2527,9 +2532,17 @@ register struct obj* omonwep;
                         pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s swings itself around you!", Monnam(mtmp));
 
                     if (is_pool(mtmp->mx, mtmp->my) && !Swimming && !Amphibious)
+                    {
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is drowning you!", Monnam(mtmp));
+                        if (Breathless)
+                            You("do not feel particularly concerned.");
+                    }
                     else if (is_constrictor(mtmp->data))
+                    {
                         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is constricting you to death!", Monnam(mtmp));
+                        if (Breathless)
+                            You("do not feel particularly concerned.");
+                    }
 
                     play_sfx_sound(SFX_ACQUIRE_GRAB);
                     u.ustuck = mtmp;
@@ -2546,6 +2559,8 @@ register struct obj* omonwep;
                 {
                     /* Drowning is now delayed death */
                     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is drowning you!", Monnam(mtmp));
+                    if (Breathless)
+                        pline1(Magical_breathing ? "However, you can still breathe normally." : "However, you do not feel particularly concerned.");
 
                     /*
                     boolean moat = (levl[mtmp->mx][mtmp->my].typ != POOL)
@@ -2562,7 +2577,11 @@ register struct obj* omonwep;
                     */
                 } 
                 else if (is_constrictor(mtmp->data))
+                {
                     pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s is constricting you to death!", Monnam(mtmp));
+                    if (Breathless)
+                        You("do not feel particularly concerned.");
+                }
                 else if (mattk->aatyp == AT_HUGS)
                 {
                     if (damagedealt > 0)

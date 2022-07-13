@@ -2115,10 +2115,10 @@ register struct obj* obj;
     }
 
     /* Mythic status */
-    if (obj->dknown && (obj->mythic_prefix || obj->mythic_suffix))
+    boolean nonmythic = (is_weapon(obj) || is_armor(obj)) && otyp_non_mythic(obj->otyp);
+    if (obj->dknown && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
     {
-        Sprintf(buf, "Mythic status:          %s", (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
-
+        Sprintf(buf, "Mythic status:          %s", nonmythic ? "Cannot be mythic" : (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_COLON, txt);
     }
@@ -7669,8 +7669,7 @@ struct monst* mtmp;
         u.uhint.got_grabbed = TRUE;
 
         boolean isconstrictor = is_constrictor(mtmp->data);
-        boolean cannotbethrottled = !has_neck(youmonst.data) || Magical_breathing || !can_be_strangled(&youmonst);
-        boolean hughthrottles = hug_throttles(mtmp->data) && !cannotbethrottled;
+        boolean hughthrottles = hug_throttles(mtmp->data) && can_be_strangled(&youmonst);
 
         char buf[BUFSZ];
         char sbuf[BUFSZ] = "";

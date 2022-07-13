@@ -407,7 +407,10 @@ int trouble;
             Your_ex(ATR_NONE, CLR_MSG_POSITIVE, "amulet vanishes!");
             useup(uamul);
         }
-        You_ex(ATR_NONE, CLR_MSG_POSITIVE, "can breathe again.");
+        if(Breathless)
+            You_ex1(ATR_NONE, CLR_MSG_POSITIVE, "are no longer being strangled.");
+        else
+            You_ex1(ATR_NONE, CLR_MSG_POSITIVE, "can breathe again.");
         Strangled = 0;
         context.botl = context.botlx = 1;
         break;

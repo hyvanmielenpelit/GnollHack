@@ -1045,7 +1045,7 @@ boolean verbose;
     boolean was_terminally_ill = !!Sick;
     boolean was_food_poisoned = !!FoodPoisoned;
     boolean was_stoned = !!Stoned;
-    boolean was_strangled = !!Strangled;
+    boolean was_strangled = (Strangled && !Breathless);
     boolean was_suffocating = (Airless_environment && !Survives_without_air);
     boolean was_vomiting = !!Vomiting;
     boolean was_slimed = !!Slimed;
@@ -1524,7 +1524,7 @@ boolean verbose;
         || (was_terminally_ill != !!Sick)
         || (was_food_poisoned != !!FoodPoisoned)
         || (was_stoned != !!Stoned)
-        || (was_strangled != !!Strangled)
+        || (was_strangled != (Strangled && !Breathless))
         || (was_suffocating != (Airless_environment && !Survives_without_air))
         || (was_vomiting != !!Vomiting)
         || (was_slimed != !!Slimed)

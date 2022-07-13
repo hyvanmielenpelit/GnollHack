@@ -4115,7 +4115,8 @@ boolean incr;
                 stop_occupation();
                 You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "faint from lack of food.");
                 incr_itimeout(&HDeaf, duration);
-                context.botl = TRUE;
+                context.botl = context.botlx = TRUE;
+                bot();
                 refresh_u_tile_gui_info(TRUE);
                 play_environment_ambient_sounds();
                 nomul(-duration);
@@ -4210,6 +4211,7 @@ boolean incr;
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "die from hunger and exhaustion.");
             killer.format = KILLED_BY;
             Strcpy(killer.name, "exhaustion");
+            killer.hint_idx = HINT_KILLED_STARVATION;
             done(STARVING);
             return;
         }
