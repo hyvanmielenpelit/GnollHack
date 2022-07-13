@@ -522,8 +522,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
             *lo_p = CLOAK_OF_PROTECTION, *hi_p = CLOAK_OF_DISPLACEMENT;
         else if (otyp >= SPEED_BOOTS && otyp <= LEVITATION_BOOTS)
             *lo_p = SPEED_BOOTS, *hi_p = LEVITATION_BOOTS;
-        else if (otyp >= WOVEN_ROBE && otyp <= ROBE_OF_STARRY_WISDOM)
-            * lo_p = WOVEN_ROBE, * hi_p = ROBE_OF_STARRY_WISDOM;
+        else if (otyp >= MEDIEVAL_ROBE && otyp <= ROBE_OF_STARRY_WISDOM)
+            * lo_p = MEDIEVAL_ROBE, * hi_p = ROBE_OF_STARRY_WISDOM;
         else if (otyp >= LEATHER_BRACERS && otyp <= BRACERS_AGAINST_MAGIC_MISSILES)
             * lo_p = LEATHER_BRACERS, * hi_p = BRACERS_AGAINST_MAGIC_MISSILES;
         else if (otyp >= SHIRT_OF_UNCONTROLLABLE_LAUGHTER && otyp <= T_SHIRT)
@@ -626,7 +626,7 @@ shuffle_all()
         TALLOW_CANDLE, OIL_LAMP, TIN_WHISTLE, WOODEN_FLUTE, TOOLED_HORN, WOODEN_HARP, LEATHER_DRUM, JAR_OF_EXTRA_HEALING_SALVE
     };
     static short shuffle_types_with_material[] = {
-         WAN_LIGHT, WOVEN_ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION,
+         WAN_LIGHT, MEDIEVAL_ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION,
          LENSES, GOGGLES_OF_NIGHT, LEATHER_BELT, ROYAL_CROWN, CORNUTHAUM, CHAMPIGNON, 
          RIN_ADORNMENT
     };

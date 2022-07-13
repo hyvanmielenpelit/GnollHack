@@ -1368,7 +1368,7 @@ register struct monst *mtmp;
             else if (!rn2(4))
                 (void)mongets(mtmp, !rn2(2) ? ROBE_OF_MAGIC_RESISTANCE : !rn2(2) ? ROBE_OF_PROTECTION : ROBE_OF_EYES);
             else
-                (void)mongets(mtmp, WOVEN_ROBE);
+                (void)mongets(mtmp, WIZARD_S_ROBE);
 
             if(!rn2(4))
                 (void)mongets(mtmp, BRACERS_OF_DEFENSE);
@@ -1391,12 +1391,14 @@ register struct monst *mtmp;
             || quest_mon_represents_role(ptr, PM_PRIEST)) {
             if (ptr == &mons[PM_HIGH_PRIEST])
             {
-                otmp = mongets(mtmp, ROBE_OF_STARRY_WISDOM);
+                otmp = mongets(mtmp, !rn2(2) ? ROBE_OF_STARRY_WISDOM : GOWN_OF_THE_ARCHBISHOPS);
                 otmp->enchantment = max(otmp->enchantment, rn2(3));
             }
             else
             {
-                (void)mongets(mtmp, rn2(7) ? WOVEN_ROBE
+                (void)mongets(mtmp, rn2(9) ? CLERICAL_GOWN
+                    : GOWN_OF_THE_ARCHBISHOPS);
+                (void)mongets(mtmp, rn2(7) ? LEATHER_CLOAK
                     : rn2(3) ? CLOAK_OF_PROTECTION
                     : CLOAK_OF_MAGIC_RESISTANCE);
                 (void)mongets(mtmp, SMALL_SHIELD);
@@ -1404,7 +1406,8 @@ register struct monst *mtmp;
             }
         }
         else if (quest_mon_represents_role(ptr, PM_MONK)) {
-            (void)mongets(mtmp, rn2(11) ? WOVEN_ROBE : CLOAK_OF_MAGIC_RESISTANCE);
+            (void)mongets(mtmp, SIMPLE_GOWN);
+            (void)mongets(mtmp, rn2(11) ? LEATHER_CLOAK : CLOAK_OF_MAGIC_RESISTANCE);
         }
         else if (ptr == &mons[PM_ELVENKING])
         {
@@ -1515,7 +1518,7 @@ register struct monst *mtmp;
             if (!rn2(50))
                 (void)mongets(mtmp, ROBE_OF_THE_ARCHMAGI);
             else if (!rn2(4))
-                (void)mongets(mtmp, rn2(5) ? WOVEN_ROBE : rn2(2) ? ROBE_OF_MAGIC_RESISTANCE : ROBE_OF_PROTECTION);
+                (void)mongets(mtmp, rn2(5) ? WIZARD_S_ROBE : rn2(2) ? ROBE_OF_MAGIC_RESISTANCE : ROBE_OF_PROTECTION);
 
             if (!rn2(4))
                 (void)mongets(mtmp, !rn2(5) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
@@ -1588,10 +1591,10 @@ register struct monst *mtmp;
             if (!rn2(20))
                 (void)mongets(mtmp, !rn2(2) ? ROBE_OF_THE_ARCHMAGI : ROBE_OF_MAGIC_RESISTANCE);
             else
-                (void)mongets(mtmp, rn2(5) ? WOVEN_ROBE : ROBE_OF_PROTECTION);
+                (void)mongets(mtmp, rn2(5) ? WIZARD_S_ROBE : ROBE_OF_PROTECTION);
 
         } else if(!rn2(4))
-            (void)mongets(mtmp, rn2(20) ? WOVEN_ROBE : ROBE_OF_PROTECTION);
+            (void)mongets(mtmp, rn2(20) ? WIZARD_S_ROBE : ROBE_OF_PROTECTION);
 
         if (!rn2(4))
             (void)mongetsgold(mtmp, 100 + rn2(701));

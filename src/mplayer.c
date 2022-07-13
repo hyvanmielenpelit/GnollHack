@@ -137,7 +137,7 @@ register boolean special;
         special = FALSE;
 
     if ((mtmp = makemon(ptr, x, y, NO_MM_FLAGS)) != 0) {
-        short weapon, armor, cloak, helm, shield;
+        short weapon, armor, robe, cloak, bracers, helm, shield;
         int quan;
         struct obj *otmp;
 
@@ -161,6 +161,8 @@ register boolean special;
         /* default equipment; much of it will be overridden below */
         weapon = !rn2(2) ? LONG_SWORD : rnd_class(SPEAR, BULLWHIP);
         armor  = rnd_class(GRAY_DRAGON_SCALE_MAIL, YELLOW_DRAGON_SCALE_MAIL);
+        robe   = STRANGE_OBJECT;
+        bracers= STRANGE_OBJECT;
         cloak  = !rn2(8) ? STRANGE_OBJECT
                          : rnd_class(OILSKIN_CLOAK, CLOAK_OF_DISPLACEMENT);
         helm   = !rn2(8) ? STRANGE_OBJECT
@@ -210,7 +212,7 @@ register boolean special;
         case PM_MONK:
             weapon = !rn2(3) ? SHURIKEN : STRANGE_OBJECT;
             armor = STRANGE_OBJECT;
-            cloak = WOVEN_ROBE;
+            robe = SIMPLE_GOWN;
             if (rn2(2))
                 shield = STRANGE_OBJECT;
             break;
@@ -219,8 +221,7 @@ register boolean special;
                 weapon = MACE;
             if (rn2(2))
                 armor = rnd_class(PLATE_MAIL, CHAIN_MAIL);
-            if (rn2(4))
-                cloak = WOVEN_ROBE;
+            robe = CLERICAL_GOWN;
             if (rn2(4))
                 helm = rn2(2) ? HELM_OF_BRILLIANCE : HELM_OF_TELEPATHY;
             if (rn2(2))
@@ -248,7 +249,8 @@ register boolean special;
                 armor = rnd_class(PLATE_MAIL, CHAIN_MAIL);
             break;
         case PM_WIZARD:
-            armor = rn2(2) ? WOVEN_ROBE
+            armor = STRANGE_OBJECT;
+            robe = rn2(2) ? WIZARD_S_ROBE
                 : ROBE_OF_PROTECTION;
             if (rn2(4))
                 weapon = rn2(2) ? QUARTERSTAFF : ATHAME;
@@ -256,7 +258,7 @@ register boolean special;
                 cloak = CLOAK_OF_MAGIC_RESISTANCE;
             }
             if (!rn2(3)) {
-                cloak = BRACERS_OF_DEFENSE;
+                bracers = BRACERS_OF_DEFENSE;
             }
             if (!rn2(3))
                 helm = HELM_OF_BRILLIANCE;
@@ -291,7 +293,9 @@ register boolean special;
             if (!rn2(10))
                 (void) mongets(mtmp, rn2(3) ? LUCKSTONE : !rn2(2) ? LOADSTONE : JINXSTONE);
             mk_mplayer_armor(mtmp, armor);
+            mk_mplayer_armor(mtmp, robe);
             mk_mplayer_armor(mtmp, cloak);
+            mk_mplayer_armor(mtmp, bracers);
             mk_mplayer_armor(mtmp, helm);
             mk_mplayer_armor(mtmp, shield);
             if (weapon == WAR_HAMMER) /* valkyrie: wimpy weapon or Mjollnir */

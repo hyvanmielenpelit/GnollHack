@@ -3479,7 +3479,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
     { "shoes", ARMOR_CLASS, LOW_BOOTS, IRON_SHOES },
     { "cloak", ARMOR_CLASS, ELVEN_CLOAK, CLOAK_OF_DISPLACEMENT },
     { "shirt", ARMOR_CLASS, HAWAIIAN_SHIRT, T_SHIRT },
-    { "robe", ARMOR_CLASS, WOVEN_ROBE, MUMMY_WRAPPING },
+    { "robe", ARMOR_CLASS, MEDIEVAL_ROBE, MUMMY_WRAPPING },
     { "bracers", ARMOR_CLASS, LEATHER_BRACERS, BRACERS_OF_REFLECTION },
     { "dragon scales", ARMOR_CLASS, GRAY_DRAGON_SCALES, YELLOW_DRAGON_SCALES },
     { "dragon scale mail", ARMOR_CLASS, GRAY_DRAGON_SCALE_MAIL, YELLOW_DRAGON_SCALE_MAIL },
@@ -4259,6 +4259,7 @@ boolean is_wiz_wish;
     /* Find corpse type w/o "of" (red dragon scale mail, yeti corpse) */
     if (strncmpi(bp, "samurai sword", 13)  /* not the "samurai" monster! */
         && strncmpi(bp, "wizard lock", 11) /* not the "wizard" monster! */
+        && strncmpi(bp, "wizard's robe", 13) /* not the "wizard" monster! */
         && strncmpi(bp, "bat guano", 9) /* not the "bat" monster! */
         && strncmpi(bp, "ninja-to", 8)     /* not the "ninja" rank */
         && strncmpi(bp, "master key", 10)  /* not the "master" rank */
@@ -5458,7 +5459,7 @@ struct obj* robe;
 {
     if (robe) {
         switch (robe->otyp) {
-        case WOVEN_ROBE: //special types here
+        case MEDIEVAL_ROBE: //special types here
             return "robe";
         case MUMMY_WRAPPING:
             return "wrapping";
