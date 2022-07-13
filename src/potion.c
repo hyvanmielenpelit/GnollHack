@@ -395,7 +395,7 @@ void
 make_stoned(xtime, msg, killedby, killername, killhintidx)
 long xtime;
 const char *msg;
-int killedby;
+int killedby, killhintidx;
 const char *killername;
 {
     long old = Stoned;

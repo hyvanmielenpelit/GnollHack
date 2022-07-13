@@ -430,7 +430,7 @@ int fd, mode;
     if (perform_bwrite(mode)) {
         bwrite(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
         if (oracle_cnt)
-            bwrite(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(long));
+            bwrite(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(unsigned long));
     }
     if (release_data(mode)) {
         if (oracle_cnt) {
@@ -446,8 +446,8 @@ int fd;
 {
     mread(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
     if (oracle_cnt) {
-        oracle_loc = (unsigned long *) alloc(oracle_cnt * sizeof(long));
-        mread(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(long));
+        oracle_loc = (unsigned long *) alloc(oracle_cnt * sizeof(unsigned long));
+        mread(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(unsigned long));
         oracle_flg = 1; /* no need to call init_oracles() */
     }
 }
@@ -505,7 +505,7 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
         if (mtmp && oraclesstyle == 1)
             play_voice_oracle_major_consultation(mtmp, oracle_idx - 1);
 
-        if (oracle_idx == oracle_cnt - 1) // Elbereth is the last major consultation
+        if (oracle_idx == (int)oracle_cnt - 1) // Elbereth is the last major consultation
             u.uevent.elbereth_known = 1;
 
         while (dlb_fgets(line, COLNO, oracles) && strcmp(line, "---\n")) {
