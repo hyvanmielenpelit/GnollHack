@@ -80,7 +80,6 @@ NEARDATA struct artifact artilist[] = {
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, 
       NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
-    /* Note: Battle axe of cleaving is different, it mimicks the effect of Tsurugi of Muramasa --JG */
     A("Cleaver", "runed double-headed axe", None, BATTLE_AXE, BATTLE_AXE,  
       EXCEPTIONALITY_EXCEPTIONAL, MYTHIC_PREFIX_NONE, MYTHIC_SUFFIX_NONE, 
       AF_RESTR | AF_HITS_ADJACENT_SQUARES, AF2_NAME_IS_PROPER_NAME, SPFX_NONE, SPFX_NONE, 0,

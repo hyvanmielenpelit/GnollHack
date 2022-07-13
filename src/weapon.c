@@ -2366,6 +2366,8 @@ int skill_id;
             char discbuf[BUFSZ] = "";
             char arrowbuf[BUFSZ] = "";
             char magicbuf[BUFSZ] = "";
+            char savingbuf[BUFSZ] = "";
+            
             lvlcnt++;
             int color = lvl == P_SKILL_LEVEL(skill_id) ? CLR_GREEN : NO_COLOR;
 
@@ -2434,12 +2436,14 @@ int skill_id;
             }
             else if (skill_id >= P_FIRST_SPELL && skill_id <= P_LAST_SPELL)
             {
-                int successbonus = spell_skill_success_bonus(lvl);
-                int levelsuccessbonus = (lvl + 1) * u.ulevel;
+                int successbonus = spell_skill_base_success_bonus(lvl);
+                int levelsuccessbonus = spell_skill_ulevel_success_bonus(lvl);
                 int costdiscount = (int)((spell_skill_mana_cost_multiplier(lvl) - 1.0) * 100.0);
+                int savingthrowmodifier = get_skill_level_saving_throw_adjustment(lvl);
                 Sprintf(succbuf, "%s%d%%", successbonus >= 0 ? "+" : "", successbonus);
                 Sprintf(lvlsuccbuf, "%s%d%%", levelsuccessbonus >= 0 ? "+" : "", levelsuccessbonus);
                 Sprintf(discbuf, "%s%d%%", costdiscount >= 0 ? "+" : "", costdiscount);
+                Sprintf(savingbuf, "%s%d%%", savingthrowmodifier >= 0 ? "+" : "", savingthrowmodifier);
             }
             else if (skill_id == P_DISARM_TRAP)
             {
@@ -2482,6 +2486,11 @@ int skill_id;
             if (strcmp(discbuf, ""))
             {
                 Sprintf(buf, "    * Spell cost discount %s", discbuf);
+                putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
+            }
+            if (strcmp(savingbuf, ""))
+            {
+                Sprintf(buf, "    * Saving throw modifier %s", savingbuf);
                 putstr_ex(win, ATR_INDENT_AT_ASTR, buf, 0, color);
             }
             if (strcmp(arrowbuf, ""))
@@ -2948,7 +2957,7 @@ enhance_weapon_skill()
                     }
                     else if (i >= P_FIRST_SPELL && i <= P_LAST_SPELL)
                     {
-                        int successbonus = spell_skill_success_bonus(P_SKILL_LEVEL(i));
+                        int successbonus = spell_skill_base_success_bonus(P_SKILL_LEVEL(i));
                         int costdiscount = (int)((spell_skill_mana_cost_multiplier(P_SKILL_LEVEL(i)) - 1.0) * 100.0);
                         char sbuf[BUFSZ] = "";
                         char cbuf[BUFSZ] = "";
@@ -2958,7 +2967,7 @@ enhance_weapon_skill()
                         if (can_advance(i, speedy) || could_advance(i))
                         {
                             int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
-                            int successbonus2 = spell_skill_success_bonus(nextlevel);
+                            int successbonus2 = spell_skill_base_success_bonus(nextlevel);
                             int costdiscount2 = (int)((spell_skill_mana_cost_multiplier(nextlevel) - 1.0) * 100.0);
                             char sbuf2[BUFSZ] = "";
                             char cbuf2[BUFSZ] = "";

@@ -4596,7 +4596,7 @@ int spell;
      * the probability of player's success at cast a given spell.
      */
     int chance, statused = A_INT;
-    long armor_penalty, level_multiplier;
+    long armor_penalty;
 //    int difficulty;
     int skill;
 
@@ -4660,12 +4660,11 @@ int spell;
      * in that spell type.
      */
     skill = P_SKILL_LEVEL(spell_skilltype(spellid(spell)));
-    level_multiplier = skill < P_BASIC ? 1L : 1L * (long)skill;
 
     long bonus = 0L;
     bonus += 15L * (long)statused;
-    bonus += (long)spell_skill_success_bonus(skill);
-    bonus += level_multiplier * (long)u.ulevel;
+    bonus += (long)spell_skill_base_success_bonus(skill);
+    bonus += (long)spell_skill_ulevel_success_bonus(skill);
     bonus += (skill == P_ISRESTRICTED ? 0L : 5L * (long)u.uspellcastingbonus_unrestricted); /* items */
     bonus += 5L * (long)u.uspellcastingbonus_all; /* items */
 
@@ -4729,10 +4728,16 @@ int spell;
     return chance;
 }
 
-int spell_skill_success_bonus(slevel)
-int slevel;
+int spell_skill_base_success_bonus(skill_level)
+int skill_level;
 {
-    return 80 * max(0, slevel - 1);
+    return 80 * max(0, skill_level - 1);
+}
+
+int spell_skill_ulevel_success_bonus(skill_level)
+int skill_level;
+{
+    return (max(1, skill_level) * u.ulevel) / 4;
 }
 
 STATIC_OVL

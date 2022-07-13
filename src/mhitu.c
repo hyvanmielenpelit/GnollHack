@@ -2898,8 +2898,8 @@ register struct obj* omonwep;
     case AD_STUN:
         if (uncancelled && !Stun_resistance && !rn2(4)) 
         {
-            damage /= 2;
-            damagedealt = (int)damage + ((damage - (double)((int)damage) - ((double)(Upolyd ? u.mh_fraction : u.uhp_fraction) / 10000)) > 0 ? 1 : 0);
+            //damage /= 2;
+            //damagedealt = (int)damage + ((damage - (double)((int)damage) - ((double)(Upolyd ? u.mh_fraction : u.uhp_fraction) / 10000)) > 0 ? 1 : 0);
             hitmsg(mtmp, mattk, damagedealt, TRUE);
             if (!Stunned)
                 play_sfx_sound(SFX_ACQUIRE_STUN);
