@@ -3265,6 +3265,7 @@ E int NDECL(dospellmanagemenu);
 E int FDECL(tport_spell, (int));
 E void NDECL(losespells);
 E int NDECL(dovspell);
+E int NDECL(dosortspell);
 E void FDECL(initialspell, (struct obj *));
 E boolean FDECL(already_learnt_spell_type, (int));
 E int NDECL(domix);

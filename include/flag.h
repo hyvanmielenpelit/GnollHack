@@ -127,7 +127,7 @@ struct flag {
     boolean sortpack;        /* sorted inventory */
     boolean sparkle;         /* show "resisting" special FX (Scott Bigham) */
     boolean standout;        /* use standout for --More-- */
-    boolean    swap_rhand_only; /* swap only right hand */
+    boolean swap_rhand_only; /* swap only right hand */
     boolean time;            /* display elapsed 'time' */
     boolean tombstone;       /* print tombstone */
     boolean verbose;         /* max battle info */
@@ -227,6 +227,7 @@ struct flag {
     boolean showrace;  /* show hero glyph by race rather than by role */
     boolean travelcmd; /* allow travel command */
     int runmode;       /* update screen display during run moves */
+    uchar spellorder;
 };
 
 /*

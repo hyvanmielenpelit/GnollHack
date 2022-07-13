@@ -121,6 +121,7 @@ extern int NDECL(dosit);              /**/
 extern int NDECL(dotalk);             /**/
 extern int NDECL(docast);             /**/
 extern int NDECL(dovspell);           /**/
+extern int NDECL(dosortspell);        /**/
 extern int NDECL(dotelecmd);          /**/
 extern int NDECL(dountrap);           /**/
 extern int NDECL(doversion);          /**/
@@ -5713,7 +5714,9 @@ struct ext_func_tab extcmdlist[] = {
     { M('z'), "viewspell", "view spells", dospellview, IFBURIED | AUTOCOMPLETE | INSPELLMENU },
     { '\0', "managespell", "manage spells",
             dospellmanage, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
-    { '\0', "reorderspells", "sort and reorder known spells",
+    { '\0', "sortspells", "sort known spells",
+            dosortspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
+    { '\0', "reorderspells", "reorder known spells",
             dovspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
 #if defined (USE_TILES) && !defined(GNH_MOBILE)
     { M('.'), "zoomnormal", "revert to normal zoom level",

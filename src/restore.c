@@ -676,7 +676,7 @@ unsigned int *stuckid, *steedid;
     newgamesysflags = sysflags;
     mread(fd, (genericptr_t) &sysflags, sizeof(struct sysflag));
 #endif
-
+    mread(fd, (genericptr_t)&spl_orderindx, sizeof(spl_orderindx));
     role_init(); /* Reset the initial role, race, gender, and alignment */
 #ifdef AMII_GRAPHICS
     amii_setpens(amii_numcolors); /* use colors from save file */

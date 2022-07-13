@@ -216,6 +216,7 @@
 #define learn() learn_()
 #define docast() docast_()
 #define dovspell() dovspell_()
+#define dosortspell() dosortspell_()
 
 /* ### steal.c ### */
 #define stealarm() stealarm_()

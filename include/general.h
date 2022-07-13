@@ -823,6 +823,20 @@ enum quest_states {
     QUEST_STATE_FAILED,
 };
 
+enum spl_sort_types {
+    SORTBY_NONE = 0,
+    SORTBY_LETTER,
+    SORTBY_ALPHA,
+    SORTBY_LVL_LO,
+    SORTBY_LVL_HI,
+    SORTBY_SKL_AL,
+    SORTBY_SKL_LO,
+    SORTBY_SKL_HI,
+    SORTBY_CURRENT,
+    SORTRETAINORDER,
+
+    NUM_SPELL_SORTBY
+};
 
 
 #define AD_MODULO 4

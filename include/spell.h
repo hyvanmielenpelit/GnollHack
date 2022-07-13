@@ -7,6 +7,8 @@
 #ifndef SPELL_H
 #define SPELL_H
 
+#include "onames.h"
+
 #define NO_SPELL 0
 
 /* spellbook re-use control; used when reading and when polymorphing */
@@ -31,5 +33,8 @@ struct spell {
 #define decrnknow(spell) spl_book[spell].sp_know--
 #define spellid(spell) spl_book[spell].sp_id
 #define spellknow(spell) spl_book[spell].sp_know
+
+extern const char* spl_sortchoices[NUM_SPELL_SORTBY];
+extern short spl_orderindx[MAXSPELL];
 
 #endif /* SPELL_H */

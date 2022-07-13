@@ -474,6 +474,8 @@ static struct Comp_Opt {
       SET_IN_GAME },
     { "sound_volume_ui", "user interface sound volume", 3,
       SET_IN_GAME },
+    { "spellorder", "default spell sorting", 3,
+      SET_IN_GAME },
 #ifdef MSDOS
     { "soundcard", "type of sound card to use", 20, SET_IN_FILE },
 #endif
@@ -934,6 +936,8 @@ initoptions_init()
     flags.sound_volume_general = 100;
     flags.sound_volume_music = 50;
     flags.sound_volume_ui = 50;
+
+    flags.spellorder = SORTBY_NONE;
 
     /* since this is done before init_objects(), do partial init here */
     objects[SLIME_MOLD].oc_name_idx = SLIME_MOLD;
@@ -4492,6 +4496,35 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
+    fullname = "spellorder";
+    if (match_optname(opts, fullname, 10, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = SORTBY_ALPHA;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < SORTBY_NONE || itmp >= SORTBY_CURRENT)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, SORTBY_NONE, SORTBY_CURRENT - 1);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.spellorder = itmp;
+        }
+        return retval;
+    }
+
     /* menustyle:traditional or combination or full or partial */
     fullname = "menustyle";
     if (match_optname(opts, fullname, 4, TRUE)) {
@@ -6752,6 +6785,10 @@ char *buf;
     else if (!strcmp(optname, "sound_volume_ui"))
     {
        Sprintf(buf, "%d", (int)flags.sound_volume_ui);
+    }
+    else if (!strcmp(optname, "spellorder"))
+    {
+       Sprintf(buf, "%d (%s)", (int)flags.spellorder, spl_sortchoices[flags.spellorder]);
     }
     else if (!strcmp(optname, "suppress_alert")) {
         if (flags.suppress_alert == 0L)

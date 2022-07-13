@@ -11,7 +11,7 @@
 #define SPELLMENU_DETAILS (-4)
 #define SPELLMENU_PREPARE (-3)
 #define SPELLMENU_CAST (-2)
-#define SPELLMENU_VIEW (-1)
+#define SPELLMENU_REORDER (-1)
 #define SPELLMENU_SORT (MAXSPELL) /* special menu entry */
 
 
@@ -43,6 +43,7 @@ STATIC_PTR int FDECL(CFDECLSPEC spell_cmp, (const genericptr,
 STATIC_DCL void NDECL(sortspells);
 STATIC_DCL boolean NDECL(spellsortmenu);
 STATIC_DCL boolean FDECL(dospellmenu, (const char *, int, int *));
+STATIC_DCL boolean FDECL(dotradspellmenu, (const char*, int, int*));
 STATIC_DCL boolean FDECL(doaltspellmenu, (const char*, int, int*));
 STATIC_DCL int FDECL(percent_success, (int));
 STATIC_DCL int FDECL(attribute_value_for_spellbook, (int));
@@ -70,22 +71,8 @@ STATIC_DCL struct extended_create_window_info FDECL(extended_create_window_info_
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
 static const char explodes[] = "radiates explosive energy";
 
-
-enum spl_sort_types {
-    SORTBY_LETTER = 0,
-    SORTBY_ALPHA,
-    SORTBY_LVL_LO,
-    SORTBY_LVL_HI,
-    SORTBY_SKL_AL,
-    SORTBY_SKL_LO,
-    SORTBY_SKL_HI,
-    SORTBY_CURRENT,
-    SORTRETAINORDER,
-
-    NUM_SPELL_SORTBY
-};
-
-static const char* spl_sortchoices[NUM_SPELL_SORTBY] = {
+NEARDATA const char* spl_sortchoices[NUM_SPELL_SORTBY] = {
+    "no sorting",
     "by casting letter",
     "alphabetically",
     "by level, low to high",
@@ -97,8 +84,8 @@ static const char* spl_sortchoices[NUM_SPELL_SORTBY] = {
     /* a menu choice rather than a sort choice */
     "reassign casting letters to retain current order",
 };
-static int spl_sortmode = 0;   /* index into spl_sortchoices[] */
-static int* spl_orderindx = 0; /* array of spl_book[] indices */
+
+NEARDATA short spl_orderindx[MAXSPELL] = { 0 }; /* array of spl_book[] indices */
 
 STATIC_OVL struct extended_create_window_info
 extended_create_window_info_from_spell(spell_id, active)
@@ -1133,22 +1120,30 @@ int spell_list_type;
     }
 
     int splaction = (spell_list_type >= 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST);
+    return dospellmenu(titlebuf, splaction, spell_no);
+}
+
+STATIC_OVL boolean
+dospellmenu(prompt, splaction, spell_no)
+const char* prompt;
+int splaction; /* SPELLMENU_CAST, SPELLMENU_REORDER, or spl_book[] index */
+int* spell_no;
+{
     if (iflags.spell_table_format)
     {
-        return dospellmenu(titlebuf, splaction, spell_no);
+        return dotradspellmenu(prompt, splaction, spell_no);
     }
     else
     {
-        return doaltspellmenu(titlebuf, splaction, spell_no);
+        return doaltspellmenu(prompt, splaction, spell_no);
     }
 }
-
 
 /* an alternative implementation of the '+' command, designed to work better on mobile phones */
 STATIC_OVL boolean
 doaltspellmenu(prompt, splaction, spell_no)
 const char* prompt;
-int splaction; /* SPELLMENU_CAST, SPELLMENU_VIEW, or spl_book[] index */
+int splaction; /* SPELLMENU_CAST, SPELLMENU_REORDER, or spl_book[] index */
 int* spell_no;
 {
     winid tmpwin;
@@ -1162,11 +1157,11 @@ int* spell_no;
     start_menu_ex(tmpwin, GHMENU_STYLE_SPELLS_ALTERNATE);
     any = zeroany; /* zero out all bits */
 
-    if (splaction == SPELLMENU_DETAILS || splaction == SPELLMENU_VIEW || splaction == SPELLMENU_SORT || splaction >= 0)
+    if (splaction == SPELLMENU_DETAILS || splaction == SPELLMENU_REORDER || splaction == SPELLMENU_SORT || splaction >= 0)
     {
         for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) 
         {
-            splnum = !spl_orderindx ? i : spl_orderindx[i];
+            splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
             int glyph = spell_to_glyph(splnum);
             char fullname[BUFSZ] = "";
             Sprintf(fullname, "%s", spellname(splnum));
@@ -1219,7 +1214,7 @@ int* spell_no;
     }
 
     how = PICK_ONE;
-    if (splaction == SPELLMENU_VIEW) 
+    if (splaction == SPELLMENU_REORDER) 
     {
         if (spellid(1) == NO_SPELL) 
         {
@@ -3404,12 +3399,12 @@ const genericptr vptr2;
      *  levl. = spell level;
      *  skil. = skill group aka spell class.
      */
-    int indx1 = *(int *) vptr1, indx2 = *(int *) vptr2,
-        otyp1 = spl_book[indx1].sp_id, otyp2 = spl_book[indx2].sp_id,
+    short indx1 = *(short*)vptr1, indx2 = *(short*)vptr2;
+    int otyp1 = spl_book[indx1].sp_id, otyp2 = spl_book[indx2].sp_id,
         levl1 = (int)objects[otyp1].oc_spell_level, levl2 = (int)objects[otyp2].oc_spell_level,
         skil1 = objects[otyp1].oc_skill, skil2 = objects[otyp2].oc_skill;
 
-    switch (spl_sortmode) {
+    switch (flags.spellorder) {
     case SORTBY_LETTER:
         return indx1 - indx2;
     case SORTBY_ALPHA:
@@ -3438,7 +3433,6 @@ const genericptr vptr2;
         if (levl1 != levl2)
             return levl2 - levl1;
         break;
-    case SORTBY_CURRENT:
     default:
         return (vptr1 < vptr2) ? -1
                                : (vptr1 > vptr2); /* keep current order */
@@ -3453,32 +3447,21 @@ const genericptr vptr2;
 STATIC_OVL void
 sortspells()
 {
-    int i;
+    short i;
 #if defined(SYSV) || defined(DGUX)
     unsigned n;
 #else
     int n;
 #endif
 
-    if (spl_sortmode == SORTBY_CURRENT)
+    if (flags.spellorder == SORTBY_CURRENT)
         return;
     for (n = 0; n < MAXSPELL && spellid(n) != NO_SPELL; ++n)
         continue;
     if (n < 2)
         return; /* not enough entries to need sorting */
 
-    if (!spl_orderindx) {
-        /* we haven't done any sorting yet; list is in casting order */
-        if (spl_sortmode == SORTBY_LETTER /* default */
-            || spl_sortmode == SORTRETAINORDER)
-            return;
-        /* allocate enough for full spellbook rather than just N spells */
-        spl_orderindx = (int *) alloc(MAXSPELL * sizeof(int));
-        for (i = 0; i < MAXSPELL; i++)
-            spl_orderindx[i] = i;
-    }
-
-    if (spl_sortmode == SORTRETAINORDER) {
+    if (flags.spellorder == SORTRETAINORDER) {
         struct spell tmp_book[MAXSPELL];
 
         /* sort spl_book[] rather than spl_orderindx[];
@@ -3488,12 +3471,18 @@ sortspells()
             tmp_book[i] = spl_book[spl_orderindx[i]];
         for (i = 0; i < MAXSPELL; i++)
             spl_book[i] = tmp_book[i], spl_orderindx[i] = i;
-        spl_sortmode = SORTBY_LETTER; /* reset */
+        flags.spellorder = SORTBY_NONE; /* reset */
         return;
     }
 
+    for (i = 0; i < MAXSPELL; i++)
+        spl_orderindx[i] = i;
+
+    if (flags.spellorder == SORTBY_NONE)
+        return;
+
     /* usual case, sort the index rather than the spells themselves */
-    qsort((genericptr_t) spl_orderindx, n, sizeof *spl_orderindx, spell_cmp);
+    qsort((genericptr_t)spl_orderindx, n, sizeof spl_orderindx[0], spell_cmp);
     return;
 }
 
@@ -3523,7 +3512,7 @@ spellsortmenu()
         }
         any.a_int = i + 1;
         add_menu(tmpwin, NO_GLYPH, &any, let, 0, ATR_NONE, spl_sortchoices[i],
-                 (i == spl_sortmode) ? MENU_SELECTED : MENU_UNSELECTED);
+                 (i == flags.spellorder) ? MENU_SELECTED : MENU_UNSELECTED);
     }
     end_menu(tmpwin, "View known spells list sorted");
 
@@ -3532,13 +3521,22 @@ spellsortmenu()
     if (n > 0) {
         choice = selected[0].item.a_int - 1;
         /* skip preselected entry if we have more than one item chosen */
-        if (n > 1 && choice == spl_sortmode)
+        if (n > 1 && choice == flags.spellorder)
             choice = selected[1].item.a_int - 1;
         free((genericptr_t) selected);
-        spl_sortmode = choice;
+        flags.spellorder = choice;
         return TRUE;
     }
     return FALSE;
+}
+
+int
+dosortspell()
+{
+    if (spellsortmenu())
+        sortspells();
+
+    return 0;
 }
 
 int
@@ -3555,7 +3553,7 @@ dovspell()
     } 
     else 
     {
-        while (dospellmenu("Choose a spell to reorder", SPELLMENU_VIEW, &splnum))
+        while (dospellmenu("Choose a spell to reorder", SPELLMENU_REORDER, &splnum))
         {
             if (splnum == SPELLMENU_SORT) 
             {
@@ -3574,20 +3572,14 @@ dovspell()
             }
         }
     }
-    if (spl_orderindx) 
-    {
-        free((genericptr_t) spl_orderindx);
-        spl_orderindx = 0;
-    }
-    spl_sortmode = SORTBY_LETTER; /* 0 */
     return 0;
 }
 
 /* the '+' command -- view known spells */
 STATIC_OVL boolean
-dospellmenu(prompt, splaction, spell_no)
+dotradspellmenu(prompt, splaction, spell_no)
 const char *prompt;
-int splaction; /* SPELLMENU_CAST, SPELLMENU_VIEW, or spl_book[] index */
+int splaction; /* SPELLMENU_CAST, SPELLMENU_REORDER, or spl_book[] index */
 int *spell_no;
 {
     winid tmpwin;
@@ -3629,7 +3621,7 @@ int *spell_no;
      * (2) that selection letters are pre-pended to the
      * given string and are of the form "a - ".
      */
-    if (splaction == SPELLMENU_DETAILS || splaction == SPELLMENU_VIEW || splaction == SPELLMENU_SORT || splaction >= 0)
+    if (splaction == SPELLMENU_DETAILS || splaction == SPELLMENU_REORDER || splaction == SPELLMENU_SORT || splaction >= 0)
     {
         int maxlen = 15;
         int maxnamelen = 0;
@@ -3637,7 +3629,7 @@ int *spell_no;
         for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++)
         {
             int desclen = 0;
-            splnum = !spl_orderindx ? i : spl_orderindx[i];
+            splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
             if (OBJ_ITEM_DESC(spellid(splnum)))
                 desclen = (int)strlen(OBJ_ITEM_DESC(spellid(splnum)));
             else
@@ -3683,7 +3675,7 @@ int *spell_no;
 
 
         for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++) {
-            splnum = !spl_orderindx ? i : spl_orderindx[i];
+            splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
             char shortenedname[BUFSZ] = "";
             char fullname[BUFSZ] = "";
 
@@ -3748,7 +3740,7 @@ int *spell_no;
         {
             int desclen = 0;
             int namelen = 0;
-            splnum = !spl_orderindx ? i : spl_orderindx[i];
+            splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
             desclen = (int)strlen(matlists[spellmatcomp(splnum)].description_short);
             namelen = (int)strlen(spellname(splnum));
             if (desclen > maxlen)
@@ -3793,7 +3785,7 @@ int *spell_no;
         for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++)
         {
             int namelen = 0;
-            splnum = !spl_orderindx ? i : spl_orderindx[i];
+            splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
             namelen = (int)strlen(spellname(splnum));
             if (namelen > maxnamelen)
                 maxnamelen = namelen;
@@ -3823,7 +3815,7 @@ int *spell_no;
     }
 
     how = PICK_ONE;
-    if (splaction == SPELLMENU_VIEW) {
+    if (splaction == SPELLMENU_REORDER) {
         if (spellid(1) == NO_SPELL) {
             /* only one spell => nothing to swap with */
             how = PICK_NONE;
@@ -3928,7 +3920,7 @@ int namelength;
 int extraspaces;
 boolean usehotkey;
 {
-    int splnum = !spl_orderindx || usehotkey ? i : spl_orderindx[i];
+    int splnum = !flags.spellorder || usehotkey ? i : (int)spl_orderindx[i];
     char buf[BUFSZ], availablebuf[BUFSZ], matcompbuf[BUFSZ], levelbuf[10], fmt[BUFSZ];
     anything any = zeroany;
 
@@ -4084,7 +4076,7 @@ winid tmpwin;
 int i;
 int splaction;
 {
-    int splnum = !spl_orderindx ? i : spl_orderindx[i];
+    int splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
     char buf[BUFSIZ], availablebuf[BUFSZ], descbuf[BUFSZ], levelbuf[BUFSZ] = "";
     char fullname[BUFSZ] = "";
     anything any = zeroany;
@@ -4157,7 +4149,7 @@ winid tmpwin;
 int i;
 int splaction;
 {
-    int splnum = !spl_orderindx ? i : spl_orderindx[i];
+    int splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
     char buf[BUFSIZ], availablebuf[BUFSZ], matcompbuf[BUFSZ];
     anything any = zeroany;
     char fullname[BUFSZ];
@@ -4224,7 +4216,7 @@ char *colorbufs;
 int* colorbufcnt;
 boolean usehotkey;
 {
-    int splnum = !spl_orderindx || usehotkey ? i : spl_orderindx[i];
+    int splnum = !flags.spellorder || usehotkey ? i : (int)spl_orderindx[i];
     char buf[BUFSZ], availablebuf[BUFSZ], levelbuf[10], statbuf[10], fmt[BUFSZ];
     char shortenedname[BUFSZ] = "";
     char fullname[BUFSZ] = "";
