@@ -81,6 +81,7 @@
     <None Remove="Assets\UI\arrow_upleft.png" />
     <None Remove="Assets\UI\arrow_upright.png" />
     <None Remove="Assets\UI\attributes.png" />
+    <None Remove="Assets\UI\autopickup.png" />
     <None Remove="Assets\UI\background-oldpaper.png" />
     <None Remove="Assets\UI\break.png" />
     <None Remove="Assets\UI\cancel.png" />
@@ -262,6 +263,7 @@
     <EmbeddedResource Include="Assets\main-menu-dwarf.jpg" />
     <EmbeddedResource Include="Assets\main-menu-gnoll.jpg" />
     <EmbeddedResource Include="Assets\main-menu-ranger.jpg" />
+    <EmbeddedResource Include="Assets\UI\autopickup.png" />
     <Page Include="Assets\imrl.otf" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />

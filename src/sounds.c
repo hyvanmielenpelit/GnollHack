@@ -4627,10 +4627,14 @@ struct monst* mtmp;
     char pbuf[BUFSZ] = "";
     if (givepawsuccess)
     {
-        Sprintf(pbuf, "%s gives you the paw!", noittame_Monnam(mtmp));
+        boolean tamenessadded = FALSE;
         if (mtmp->mtame > 0 && mtmp->mtame < 20 && !rn2(mtmp->mtame + 20))
+        {
             mtmp->mtame++;
-        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
+            tamenessadded = TRUE;
+        }
+        Sprintf(pbuf, "%s gives you the paw%s!", noittame_Monnam(mtmp), tamenessadded ? ", and seems happier than before" : "");
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, tamenessadded ? CLR_MSG_POSITIVE : CLR_MSG_SUCCESS, TRUE, FALSE);
     }
     else
     {
@@ -4652,33 +4656,41 @@ struct monst* mtmp;
     if (is_animal(mtmp->data) && mtmp->mtame > 2 && rn2(mtmp->mtame) && mon_can_move(mtmp) && (!has_edog(mtmp) || (has_edog(mtmp) && (EDOG(mtmp)->abuse <= 0 || !rn2(EDOG(mtmp)->abuse + 2)))))
     {
         play_monster_happy_sound(mtmp, MONSTER_HAPPY_SOUND_NORMAL);
+        boolean tamenessadded = FALSE, becamefaithful = FALSE;
+        if (mtmp->mtame > 0 && mtmp->mtame < 20 && !rn2(10 + mtmp->mtame))
+        {
+            mtmp->mtame++;
+            tamenessadded = TRUE;
+        }
+        if (mtmp->mtame >= 15 && !mtmp->isfaithful && !rn2(max(2, 25 - mtmp->mtame)))
+        {
+            mtmp->isfaithful = 1;
+            becamefaithful = TRUE;
+        }
 
+        const char* adjective = tamenessadded ? "very softly" : "softly";
+        const char* inwhat = becamefaithful ? "admiration" : "appreciation";
         switch (mtmp->data->msound)
         {
         case MS_BARK:
-            Sprintf(pbuf, "%s woofs.", noittame_Monnam(mtmp));
+            Sprintf(pbuf, "%s woofs %s in %s!", noittame_Monnam(mtmp), adjective, inwhat);
             break;
         case MS_MEW:
-            Sprintf(pbuf, "%s mews softly.", noittame_Monnam(mtmp));
+            Sprintf(pbuf, "%s mews %s in %s!", noittame_Monnam(mtmp), adjective, inwhat);
             break;
         case MS_NEIGH:
-            Sprintf(pbuf, "%s snorts.", noittame_Monnam(mtmp));
+            Sprintf(pbuf, "%s snorts %s in %s!", noittame_Monnam(mtmp), adjective, inwhat);
             break;
         case MS_BLEAT:
-            Sprintf(pbuf, "%s baas.", noittame_Monnam(mtmp));
+            Sprintf(pbuf, "%s baas %s in %s!", noittame_Monnam(mtmp), adjective, inwhat);
             break;
         default:
-            Sprintf(pbuf, "%s seems to appreciate your kind words!", noittame_Monnam(mtmp));
+            Sprintf(pbuf, "%s seems to %s your kind words%s!", noittame_Monnam(mtmp),
+                becamefaithful ? "admire" : "appreciate", tamenessadded ? " very much" : "");
             break;
         }
 
-        if (mtmp->mtame > 0 && mtmp->mtame < 20 && !rn2(10 + mtmp->mtame))
-            mtmp->mtame++;
-
-        if (mtmp->mtame >= 15 && !mtmp->isfaithful && !rn2(max(2, 25 - mtmp->mtame)))
-            mtmp->isfaithful = 1;
-
-        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, tamenessadded || becamefaithful ? CLR_MSG_POSITIVE : CLR_MSG_SUCCESS, TRUE, FALSE);
     }
     else if(rn2(4) && mon_can_move(mtmp))
         domonnoise(mtmp, FALSE, TRUE);
@@ -4742,33 +4754,41 @@ struct monst* mtmp;
     else if (is_animal(mtmp->data) && mtmp->mtame > 0 && rn2(mtmp->mtame + 1) && mon_can_move(mtmp) && (!has_edog(mtmp) || (has_edog(mtmp) && (EDOG(mtmp)->abuse <= 0 || !rn2(EDOG(mtmp)->abuse + 2)))))
     {
         play_monster_happy_sound(mtmp, MONSTER_HAPPY_SOUND_PURR);
+        boolean tamenessadded = FALSE, becamefaithful = FALSE;
+        if (mtmp->mtame > 0 && mtmp->mtame < 20 && !rn2(10 + mtmp->mtame))
+        {
+            mtmp->mtame++;
+            tamenessadded = TRUE;
+        }
+        if (mtmp->mtame >= 15 && !mtmp->isfaithful && !rn2(max(2, 25 - mtmp->mtame)))
+        {
+            mtmp->isfaithful = 1;
+            becamefaithful = TRUE;
+        }
 
+        const char* adjective = tamenessadded ? "very softly" : "softly";
+        const char* inwhat = becamefaithful ? "admiration" : "appreciation";
         switch (mtmp->data->msound)
         {
         case MS_BARK:
-            Sprintf(pbuf, "%s grunts softly in appreciation!", noittame_Monnam(mtmp));
+            Sprintf(pbuf, "%s grunts %s in %s!", noittame_Monnam(mtmp), adjective, inwhat);
             break;
         case MS_MEW:
-            Sprintf(pbuf, "%s purrs in appreciation!", noittame_Monnam(mtmp));
+            Sprintf(pbuf, "%s purrs %s in %s!", noittame_Monnam(mtmp), adjective, inwhat);
             break;
         case MS_NEIGH:
-            Sprintf(pbuf, "%s snorts in appreciation!", noittame_Monnam(mtmp));
+            Sprintf(pbuf, "%s snorts %s in %s!", noittame_Monnam(mtmp), adjective, inwhat);
             break;
         case MS_BLEAT:
-            Sprintf(pbuf, "%s baas in appreciation!", noittame_Monnam(mtmp));
+            Sprintf(pbuf, "%s baas %s in %s!", noittame_Monnam(mtmp), adjective, inwhat);
             break;
         default:
-            Sprintf(pbuf, "%s seems to appreciate your gesture!", noittame_Monnam(mtmp));
+            Sprintf(pbuf, "%s seems to %s your gesture%s!", noittame_Monnam(mtmp),
+                becamefaithful ? "admire" : "appreciate", tamenessadded ? " very much" : "");
             break;
         }
 
-        if (mtmp->mtame > 0 && mtmp->mtame < 20 && !rn2(10 + mtmp->mtame))
-            mtmp->mtame++;
-
-        if (mtmp->mtame >= 15 && !mtmp->isfaithful && !rn2(max(2, 25 - mtmp->mtame)))
-            mtmp->isfaithful = 1;
-
-        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
+        popup_talk_line_ex(mtmp, pbuf, ATR_NONE, tamenessadded || becamefaithful ? CLR_MSG_POSITIVE : CLR_MSG_SUCCESS, TRUE, FALSE);
     }
     else if(rn2(4) && mon_can_move(mtmp))
         domonnoise(mtmp, FALSE, TRUE);
