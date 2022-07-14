@@ -119,7 +119,7 @@ dosave()
         {
             //if(contplay)
             //    display_popup_text("Game was saved successfully.", "Game Saved", POPUP_TEXT_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, 0UL);
-            if (!contplay || !load_saved_game(FALSE))
+            if (!contplay || !load_saved_game(1))
             {
                 u.uhp = -1; /* universal game's over indicator */
                 /* make sure they see the Saving message */

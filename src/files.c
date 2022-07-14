@@ -1111,10 +1111,10 @@ create_gamestate_levelfile(VOID_ARGS)
 }
 
 int
-load_saved_game(load_at_start)
-boolean load_at_start;
+load_saved_game(load_type)
+int load_type; // 0 = at start normally, 1 = load after saving, 2 = load otherwise
 {
-    if (!load_at_start)
+    if (load_type > 0)
     {
         /* Functions that would have been run at start */
         create_gamestate_levelfile();
@@ -1129,7 +1129,7 @@ boolean load_at_start;
         boolean remember_wiz_mode = wizard;
         const char* fq_save = fqname(SAVEF, SAVEPREFIX, 1);
 
-        if (load_at_start)
+        if (load_type == 0)
         {
 #ifdef NEWS
             if (iflags.news)
@@ -1147,28 +1147,39 @@ boolean load_at_start;
         if (!wizard && remember_wiz_mode)
             wizard = TRUE;
 
-        if (load_at_start)
+        if (load_type == 0)
+        {
+            encounter_init();
             welcome(FALSE);
+        }
 
         check_special_room(FALSE);
-        if (load_at_start)
-        {
+
+        if (load_type != 1)
             mode_message();
-            encounter_init();
-        }
 
         if (discover || wizard || CasualMode)
         {
-            if (load_at_start && CasualMode)
-                pline("Keeping the save file.");
-
-            if (load_at_start && !CasualMode && yn_query("Do you want to keep the save file?") == 'n')
+            //Note that you can be in both Casual and wizard mode
+            if (CasualMode)
             {
-                (void)delete_savefile();
+                if(load_type == 1)
+                    pline("Save successful. Continuing the game.");
+                else
+                    pline("Keeping the save file.");
+
+                nh_compress(fq_save);
             }
             else
             {
-                nh_compress(fq_save);
+                if (load_type != 1 && yn_query("Do you want to keep the save file?") == 'n')
+                {
+                    (void)delete_savefile();
+                }
+                else
+                {
+                    nh_compress(fq_save);
+                }
             }
         }
 

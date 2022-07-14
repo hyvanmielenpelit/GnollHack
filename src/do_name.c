@@ -3938,7 +3938,7 @@ struct obj* obj;
         putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You should eat corpses that are safe to eat and which give good abilities. Do not eat dangerous corpses.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Do not eat corpses left by undead creatures, except wraith corpses. Undead corpses are rotten, except for wraith corpses, which will give you an experience level.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Some fruits give you ability score bonuses, when eaten.");
-        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. You can probe monsters and corpses with a wand of probe monster to determine what abilities they have and if the corpses are safe to eat.");
+        putstr(datawin, ATR_INDENT_AT_PERIOD, "8. You can probe monsters and corpses with a wand of probing to determine what abilities they have and if the corpses are safe to eat.");
         putstr(datawin, ATR_INDENT_AT_PERIOD, "9. Rings and amulets consume nutrition periodically when worn. If you are low on food, it may be wise not to wear them.");
         break;
     case MANUAL_INTRODUCTION_TO_DANGEROUS_MONSTERS:

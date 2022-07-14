@@ -212,7 +212,7 @@ int GnollHackMain(int argc, char** argv)
 	}
 	else
 #endif
-	if(!load_saved_game(TRUE))
+	if(!load_saved_game(0))
 	{
 	//not_recovered: 
 		player_selection();

@@ -1155,7 +1155,7 @@ E int NDECL(delete_savefile);
 E int NDECL(restore_saved_game);
 E void NDECL(mode_message);
 E void NDECL(create_gamestate_levelfile);
-E int FDECL(load_saved_game, (BOOLEAN_P));
+E int FDECL(load_saved_game, (int));
 E void FDECL(nh_compress, (const char *));
 E void FDECL(nh_uncompress, (const char *));
 E boolean FDECL(lock_file, (const char *, int, int));
