@@ -5728,7 +5728,7 @@ dozap()
                 markempty = FALSE;
             }
             else
-                Sprintf(markbuf, "Mark %s empty and ", the(cxname(obj)));
+                Sprintf(markbuf, "Mark %s empty and then ", the(cxname(obj)));
 
             Sprintf(querybuf, "%s%sDrop it?", markbuf, canstash ? "Stash or " : "");
             char ans = yn_function_es(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, 
