@@ -49,9 +49,9 @@ namespace GnollHackClient
         public char GroupAccelerator { get; set; }
         public char SpecialMark { get; set; }
         public string FormattedAccelerator
-        { 
+        {
             get
-            { string res = Accelerator.ToString(); 
+            { string res = Accelerator.ToString();
                 if (res == "" || res == "\0")
                     return "";
                 else
@@ -92,6 +92,9 @@ namespace GnollHackClient
                 else
                     _mainText = "";
 
+                string trimmed_maintext = _mainText.Trim();
+                _mainTextSplit = trimmed_maintext.Split(' ');
+
                 if (first_parenthesis_open > 0 && !(_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND))  /* Ignore cases where the entire row is in parentheses */
                 {
                     _suffixText = ParseSuffixText(value, false);
@@ -102,6 +105,10 @@ namespace GnollHackClient
                     _suffixText = "";
                     _suffix2Text = "";
                 }
+                string trimmed_suffixtext = _suffixText.Trim();
+                _suffixTextSplit = trimmed_suffixtext.Split(' ');
+                string trimmed_suffix2text = _suffix2Text.Trim();
+                _suffix2TextSplit = trimmed_suffix2text.Split(' ');
             }
         }
         public int SuffixParseStyle
@@ -194,7 +201,7 @@ namespace GnollHackClient
                 if (pcidx > 0)
                 {
                     string sufstr = searchstr.Substring(0, pcidx);
-                    if(!string.IsNullOrWhiteSpace(sufstr))
+                    if (!string.IsNullOrWhiteSpace(sufstr))
                     {
                         if (res != "")
                             res = res + ", ";
@@ -207,7 +214,7 @@ namespace GnollHackClient
                     break;
                 str = searchstr.Substring(pcidx + 1);
             }
-            
+
             return res;
         }
         public LayoutOptions MainTextVerticalOptions { get { return IsSuffixTextVisible ? LayoutOptions.EndAndExpand : LayoutOptions.CenterAndExpand; } }
@@ -230,6 +237,45 @@ namespace GnollHackClient
         public ulong MenuFlags { get; set; }
         public UInt64 Oid { get; set; }
         public UInt64 Mid { get; set; }
+
+        public bool TextRowCountsSet { get; set;}
+        public int MainTextRows { get; set; }
+        public int SuffixTextRows { get; set; }
+        public int Suffix2TextRows { get; set; }
+
+        private string[] _mainTextSplit;
+        public string[] MainTextSplit 
+        {
+            get
+            {
+                if (_mainTextSplit == null)
+                    return new string[1] {""};
+                else
+                    return _mainTextSplit;
+            }
+        }
+        private string[] _suffixTextSplit;
+        public string[] SuffixTextSplit
+        {
+            get
+            {
+                if (_suffixTextSplit == null)
+                        return new string[1] { "" };
+                else
+                    return _suffixTextSplit;
+            }
+        }
+        private string[] _suffix2TextSplit;
+        public string[] Suffix2TextSplit
+        {
+            get
+            {
+                if (_suffix2TextSplit == null)
+                    return new string[1] { "" };
+                else
+                    return _suffix2TextSplit;
+            }
+        }
 
         public string FontFamily {
             get 
