@@ -736,7 +736,7 @@ handle_knapsack_full(VOID_ARGS)
     {
         /* Ask for putting things in a bag or drop items */
         char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", "Stash items into a container or Drop them?", sdqchars, 'q', sdqdescs, (const char*)0);
-        if (ans == 'i')
+        if (ans == 's')
         {
             struct obj* container = select_other_container(invent, (struct obj*)0, FALSE, FALSE);
             if (container)
