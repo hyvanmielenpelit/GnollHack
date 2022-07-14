@@ -441,7 +441,7 @@ rndcurse()
     int cnt, onum;
     struct obj *otmp;
     static const char mal_aura[] = "feel a malignant aura surround %s.";
-    boolean antimagicsuccess = Antimagic_or_resistance;
+    //boolean antimagicsuccess = Antimagic_or_resistance;
 
     if (((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_MAGIC_ABSORBING)) || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_MAGIC_ABSORBING))) && rn2(20)) 
     {
@@ -457,12 +457,12 @@ rndcurse()
         return;
     }
 
-    if (antimagicsuccess)
-    {
-        play_sfx_sound(SFX_MALIGNANT_AURA_SURROUNDS);
-        u_shieldeff();
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, mal_aura, "you");
-    }
+    //if (antimagicsuccess)
+    //{
+    //    play_sfx_sound(SFX_MALIGNANT_AURA_SURROUNDS);
+    //    u_shieldeff();
+    //    You_ex(ATR_NONE, CLR_MSG_ATTENTION, mal_aura, "you");
+    //}
 
     for (otmp = invent; otmp; otmp = otmp->nobj) {
         /* gold isn't subject to being cursed or blessed */
@@ -470,8 +470,9 @@ rndcurse()
             continue;
         nobj++;
     }
+
     if (nobj) {
-        for (cnt = rnd(6 / ((!!antimagicsuccess) + (!!Half_spell_damage) + 1));
+        for (cnt = rnd(6 / ((!!Half_spell_damage) + 1));
              cnt > 0; cnt--) {
             onum = rnd(nobj);
             for (otmp = invent; otmp; otmp = otmp->nobj) {

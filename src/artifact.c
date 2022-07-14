@@ -941,7 +941,7 @@ int dmgtype;
     switch (dmgtype)
     {
     case AD_MAGM:
-        return (yours ? (Antimagic || Magic_missile_immunity) : (resists_magic(mtmp) || is_mon_immune_to_magic_missile(mtmp)));
+        return (yours ? Magic_missile_immunity : is_mon_immune_to_magic_missile(mtmp));
     case AD_FIRE:
         return (yours ? Fire_immunity : is_mon_immune_to_fire(mtmp));
     case AD_COLD:

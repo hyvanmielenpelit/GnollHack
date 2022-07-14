@@ -203,7 +203,7 @@ int expltype;
                     explmask[i][j] = 0;
                     break;
                 case AD_MAGM:
-                    explmask[i][j] = !!Antimagic_or_resistance;
+                    explmask[i][j] = !!Magic_missile_immunity;
                     break;
                 case AD_FIRE:
                     explmask[i][j] = !!Fire_immunity;
@@ -252,7 +252,7 @@ int expltype;
                     case AD_PHYS:
                         break;
                     case AD_MAGM:
-                        explmask[i][j] |= resists_magic(mtmp) || is_mon_immune_to_magic_missile(mtmp);
+                        explmask[i][j] |= is_mon_immune_to_magic_missile(mtmp);
                         break;
                     case AD_FIRE:
                         explmask[i][j] |= is_mon_immune_to_fire(mtmp);

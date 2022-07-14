@@ -1152,6 +1152,10 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load otherwi
             encounter_init();
             welcome(FALSE);
         }
+        else if (load_type == 1)
+        {
+            pline("Save successful. Continuing the game.");
+        }
 
         check_special_room(FALSE);
 
@@ -1163,9 +1167,7 @@ int load_type; // 0 = at start normally, 1 = load after saving, 2 = load otherwi
             //Note that you can be in both Casual and wizard mode
             if (CasualMode)
             {
-                if(load_type == 1)
-                    pline("Save successful. Continuing the game.");
-                else
+                if(load_type != 1)
                     pline("Keeping the save file.");
 
                 nh_compress(fq_save);

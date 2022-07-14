@@ -1894,7 +1894,7 @@ struct monst* mtmp;
 
     struct layer_info li = isok(mtmp->mx, mtmp->my) ? layers_at(mtmp->mx, mtmp->my) : zerolayerinfo;
     unsigned long layerflags = li.layer_flags;
-    boolean loc_is_you = (layerflags & LFLAGS_UXUY) != 0;
+    boolean loc_is_you = mtmp == &youmonst; // (layerflags& LFLAGS_UXUY) != 0; //So you can separately see your steed stats properly
     boolean ispeaceful = (layerflags & LFLAGS_M_PEACEFUL) != 0;
     boolean ispet = (layerflags & LFLAGS_M_PET) != 0;
     boolean isdetected = (layerflags & LFLAGS_M_DETECTED) != 0;
@@ -6018,7 +6018,7 @@ boolean ordinary;
     case SPE_GREATER_MAGIC_MISSILE:
         learn_it = TRUE;
         damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_MAGM, ADFLAGS_SPELL_DAMAGE);
-        if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) 
+        if (Magic_missile_immunity || Invulnerable) 
         {
             play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();

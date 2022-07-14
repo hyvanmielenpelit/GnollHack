@@ -4378,7 +4378,7 @@ boolean wep_was_destroyed;
         break;
     case AD_MAGM:
         /* wrath of gods for attacking Oracle */
-        if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
+        if (Magic_missile_immunity || Invulnerable) {
             play_sfx_sound(SFX_HAIL_OF_MAGIC_MISSILES_MISSES);
             u_shieldeff();
             pline("A hail of magic missiles narrowly misses you!");

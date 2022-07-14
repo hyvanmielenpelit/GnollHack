@@ -163,7 +163,7 @@ struct obj *bp;
         bp->in_use = was_in_use;
         break;
     case 6:
-        if (Antimagic_or_resistance) {
+        if (Magic_missile_immunity) {
             u_shieldeff();
             pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "book %s, but you are unharmed!", explodes);
         } else {

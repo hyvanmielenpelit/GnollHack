@@ -4885,7 +4885,7 @@ struct obj *obj;
     cc.x = u.ux;
     cc.y = u.uy;
     if (!find_poleable_mon(&cc, min_range, max_range) && hitm
-        && !DEADMONSTER(hitm) && cansee(hitm->mx, hitm->my)
+        && !DEADMONSTER(hitm) && couldsee(hitm->mx, hitm->my) && canspotmon(hitm)
         && distu(hitm->mx, hitm->my) <= max_range
         && distu(hitm->mx, hitm->my) >= min_range) {
         cc.x = hitm->mx;

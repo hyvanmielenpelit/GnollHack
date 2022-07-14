@@ -443,7 +443,7 @@ boolean foundyou;
             delay_output_milliseconds(200);
             play_sfx_sound(SFX_HAIL_OF_MAGIC_MISSILES_HITS);
         }
-        if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
+        if (Magic_missile_immunity || Invulnerable) {
             play_sfx_sound(SFX_GENERAL_REFLECTS);
             u_shieldeff();
             pline_The("missiles bounce off!");
