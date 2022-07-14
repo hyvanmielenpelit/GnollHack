@@ -1825,6 +1825,7 @@ namespace GnollHackClient.Pages.Game
             string res = "resource://GnollHackClient.Assets.Icons.missing_icon.png";
             switch (ch)
             {
+                case 's':
                 case 'i':
                     res = "resource://GnollHackClient.Assets.UI.inventory.png";
                     break;

@@ -215,7 +215,7 @@ E const char ynqchars[];
 E const char ynaqchars[];
 E const char ynNaqchars[];
 E const char dnqchars[];
-E const char idqchars[];
+E const char sdqchars[];
 
 E const char yndescs[];
 E const char ynqdescs[];
@@ -227,7 +227,7 @@ E const char ciqdescs[];
 E const char bcqdescs[];
 E const char fnqdescs[];
 E const char dnqdescs[];
-E const char idqdescs[];
+E const char sdqdescs[];
 
 E NEARDATA long yn_number;
 

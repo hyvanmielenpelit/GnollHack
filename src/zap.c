@@ -1892,7 +1892,9 @@ struct monst* mtmp;
     if (!mtmp || datawin == WIN_ERR || !iflags.using_gui_tiles)
         return;
 
-    struct layer_info li = isok(mtmp->mx, mtmp->my) ? layers_at(mtmp->mx, mtmp->my) : zerolayerinfo;
+    xchar sx = mtmp == &youmonst ? u.ux : mtmp->mx;
+    xchar sy = mtmp == &youmonst ? u.uy : mtmp->my;
+    struct layer_info li = isok(sx, sy) ? layers_at(sx, sy) : zerolayerinfo;
     unsigned long layerflags = li.layer_flags;
     boolean loc_is_you = mtmp == &youmonst; // (layerflags& LFLAGS_UXUY) != 0; //So you can separately see your steed stats properly
     boolean ispeaceful = (layerflags & LFLAGS_M_PEACEFUL) != 0;
@@ -5706,6 +5708,70 @@ dozap()
     {
         play_sfx_sound(SFX_GENERAL_OUT_OF_CHARGES);
         pline1(nothing_happens);
+
+        //Mark empty query
+        if((obj->speflags & SPEFLAGS_EMPTY_NOTICED) == 0)
+        {
+            obj->speflags |= SPEFLAGS_EMPTY_NOTICED;
+            boolean canstash = can_stash_objs();
+            boolean markempty = TRUE;
+            char markbuf[BUFSZ];
+            char querybuf[BUFSZ];
+            if (obj->dknown && obj->known)
+            {
+                Sprintf(markbuf, "%s empty. ", Tobjnam(obj, "are"));
+                markempty = FALSE;
+            }
+            else if (has_uoname(obj) && strstri(UONAME(obj), "empty"))
+            {
+                Sprintf(markbuf, "%s marked empty. ", Tobjnam(obj, "are"));
+                markempty = FALSE;
+            }
+            else
+                Sprintf(markbuf, "Mark %s empty and ", the(cxname(obj)));
+
+            Sprintf(querybuf, "%s%sDrop it?", markbuf, canstash ? "Stash or " : "");
+            char ans = yn_function_es(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, 
+                markempty ? "Mark Empty" : obj->oclass == WAND_CLASS ? "Wand Empty" : "Item Empty", 
+                querybuf, !canstash ? "dq" : "sdq", 'q', !canstash ? "Drop\nQuit" : "Stash\nDrop\nQuit", (const char*)0);
+
+            switch (ans)
+            {
+            case 'd':
+            case 's':
+                taketurn = TRUE;
+                if (markempty && !(has_uoname(obj) && strstri(UONAME(obj), "empty")))
+                {
+                    //Name it empty
+                    if (has_uoname(obj))
+                    {
+                        char emptybuf[PL_PSIZ + 10];
+                        Sprintf(emptybuf, "%s empty", UONAME(obj));
+                        (void)uoname(obj, emptybuf);
+                    }
+                    else
+                        (void)uoname(obj, "empty");
+                }
+
+                //Drop or stash
+                if (ans == 'd')
+                {
+                    getobj_autoselect_obj = obj;
+                    (void)dodrop();
+                    getobj_autoselect_obj = (struct obj*)0;
+                }
+                else
+                {
+                    getobj_autoselect_obj = obj;
+                    (void)dostash();
+                    getobj_autoselect_obj = (struct obj*)0;
+                }
+                break;
+            case 'q':
+            default:
+                break;
+            }
+        }
     }
     else if (obj->cursed && !rn2(WAND_BACKFIRE_CHANCE)) 
     {
