@@ -2466,6 +2466,14 @@ long timeout;
 
     mon->mhp = 0;
 
+    //Unique monsters can now appear again
+    if (mon->data->geno & G_UNIQ)
+    {
+        mvitals[mon->mnum].mvflags &= ~MV_EXTINCT;
+        if (mvitals[mon->mnum].born > 0)
+            mvitals[mon->mnum].born--;
+    }
+
     /* Player is thrown from his steed when it unsummons */
     if (mon == u.usteed)
         dismount_steed(DISMOUNT_GENERIC);
@@ -2878,7 +2886,7 @@ anything *arg;
     gnu->arg = *arg;
     insert_timer(gnu);
 
-    if (kind == TIMER_OBJECT) /* increment monster's timed count */
+    if (kind == TIMER_OBJECT) /* increment object's timed count */
     {
         (arg->a_obj)->timed++;
     }

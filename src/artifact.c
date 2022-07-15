@@ -2802,7 +2802,7 @@ struct obj *obj;
         case ARTINVOKE_DEMON_SUMMON:
         {
             struct monst* mon = (struct monst*)0;
-            mon = makemon(&mons[PM_NALFESHNEE], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+            mon = makemon(&mons[PM_NALFESHNEE], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
             if (mon)
             {
                 mon->issummoned = TRUE;
@@ -2827,9 +2827,9 @@ struct obj *obj;
         case ARTINVOKE_AIR_ELEMENTAL_SUMMON:
         {
             struct monst* mon = (struct monst*)0;
-            mon = makemon(&mons[PM_ELDER_AIR_ELEMENTAL], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_NEUTRAL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+            mon = makemon(&mons[PM_ELDER_AIR_ELEMENTAL], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_NEUTRAL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
             if(!mon)
-                mon = makemon(&mons[PM_AIR_ELEMENTAL], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_PLAY_SUMMON_ANIMATION | MM_NEUTRAL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+                mon = makemon(&mons[PM_AIR_ELEMENTAL], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_NEUTRAL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
 
             if (mon)
             {
