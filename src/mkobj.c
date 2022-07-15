@@ -3716,6 +3716,10 @@ struct monst *mtmp;
             }
             otmp->owornmask = 0L; /* obfree() expects this */
         }
+
+        if (otmp->oartifact)
+            artifact_taken_away(otmp->oartifact);
+
         obfree(otmp, (struct obj *) 0); /* dealloc_obj() isn't sufficient */
     }
 }

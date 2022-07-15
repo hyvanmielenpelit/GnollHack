@@ -3443,6 +3443,17 @@ struct monst *mdef;
 {
     mdef->mhp = 0; /* can skip some inventory bookkeeping */
 
+    if (!program_state.in_bones || program_state.gameover)
+    {
+        //Unique monsters can now appear again
+        if (mdef->data->geno & G_UNIQ)
+        {
+            mvitals[mdef->mnum].mvflags &= ~MV_EXTINCT;
+            if (mvitals[mdef->mnum].born > 0)
+                mvitals[mdef->mnum].born--;
+        }
+    }
+
     /* dead vault guard is actually kept at coordinate <0,0> until
        his temporary corridor to/from the vault has been removed */
     if (mdef->isgd && !grddead(mdef))

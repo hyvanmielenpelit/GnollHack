@@ -2460,31 +2460,11 @@ long timeout;
     else
         play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mon->mx, mon->my);
 
-    //Note: assume that the monster drops all its items
-
-    struct permonst* mptr;
-
-    mon->mhp = 0;
-
-    //Unique monsters can now appear again
-    if (mon->data->geno & G_UNIQ)
-    {
-        mvitals[mon->mnum].mvflags &= ~MV_EXTINCT;
-        if (mvitals[mon->mnum].born > 0)
-            mvitals[mon->mnum].born--;
-    }
-
-    /* Player is thrown from his steed when it unsummons */
-    if (mon == u.usteed)
-        dismount_steed(DISMOUNT_GENERIC);
-
-    mptr = mon->data;
-
     if (glyph_is_invisible(levl[mon->mx][mon->my].hero_memory_layers.glyph))
         unmap_object(mon->mx, mon->my);
 
-    m_detach(mon, mptr, FALSE);
-
+    release_monster_objects(mon, FALSE, FALSE, FALSE);
+    mongone(mon);
 }
 
 
