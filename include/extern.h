@@ -3080,6 +3080,7 @@ E double FDECL(service_cost_charisma_adjustment, (int));
 E void NDECL(genl_chat_message);
 E void FDECL(popup_talk_lines, (struct monst*, const char**));
 E void FDECL(popup_talk_line, (struct monst*, const char*));
+E void FDECL(popup_talk_line_noquotes, (struct monst*, const char*));
 E void FDECL(popup_talk_line_ex, (struct monst*, const char*, int, int, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(popup_talk_line_with_know_mname, (struct monst*, const char*, BOOLEAN_P));
 E int FDECL(service_identify, (struct monst*, long));

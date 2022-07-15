@@ -1623,6 +1623,117 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Yeenaghu/Advice", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Yeenaghu/Laughter", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Yeenaghu/Death", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Modron/Death", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Modron/Get Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Modron/Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Modron/Advice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Modron/Standard Dialogue", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Shopkeeper/Modron/Item Trading", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Shopkeeper Modron Welcome", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Shopkeeper Modron Welcome Back", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Shopkeeper Modron Thank You for Shopping in My Store", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Shopkeeper Modron Invisible Customers Are Not Welcome", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Drop That Now", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Stay Away From Those", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Stay Away From That", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Cursing Shoplifters", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Id Hang onto That", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/I Wont Stock That", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Leave Stuff Outside/Leave Stuff Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Leave Stuff Outside/Will You Please Leave Stuff Outside", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Cad/Sneaky", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Candles/More Candles", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Thank You Scum", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Thank You for Your Contribution", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Out of My Way Scum", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Get Your Junk Out of My Wall", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/I Was Looking for Someone Else", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Didnt You Forget to Pay", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Adventurer Didnt You Forget to Pay", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Be Careful Sir Fall Through the Floor", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Be Careful Madam Fall Through the Floor", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Sir Do Not Damage the Floor", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Madam Do Not Damage the Floor", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Please Pay Before Leaving", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Dont You Leave Before Paying", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/You Dare to Return to My Store", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Pay for Other/Pay for the Other Item Before This One", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Pay for Other/Pay for the Other Item Before These", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Pay for Other/Pay for the Other Items Before This One", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Pay for Other/Pay for the Other Items Before These", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Pay for Other/Please Pay for the Other Item Before This One", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Pay for Other/Please Pay for the Other Item Before These", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Pay for Other/Please Pay for the Other Items Before This One", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Pay for Other/Please Pay for the Other Items Before These", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Welcome to My Store", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Welcome Back to My Store", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/How Dare You Damage/How Dare You Damage Shop", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/How Dare You Damage/How Dare You Damage Door", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/How Dare You Damage/Who Dared Damage Shop", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/How Dare You Damage/Who Dared Damage Door", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Oh Yes Youll Pay", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Didnt You Forget to Pay 2", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Whoa", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Watch It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Hey", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Ahem", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/You Owe Me Some Gold", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/You Owe Me Some Additional Gold", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/That Will Cost You Some Gold", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Emptying That Will Cost You Some Gold", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Usage Fee Some Gold", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/You Did Lot of Damage", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Cad/No Free Library", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Cad/Lot of Damage", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Close Sesame", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/You Need to Pay Lot of Gold", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Damn It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Cursed Thief", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Cursed Vandal", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/You Thief", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Thief", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/You Dare to Return", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Pay Gold in Compensation", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Dislike Nonpaying Customers", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Dislike Rude Customers", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Was Robbed", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Sir Owe Some Gold", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Madam Owe Some Gold", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Using Outstanding Credit", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Business is Bad", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Business is Good", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Problem with Shoplifters", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Im the Shopkeeper", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/I Run This Store", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Izchak Talks", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/For You/Peaceful", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/For You/Angry", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Thats a Deal", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/On Second Thought", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Your Bill Comes To This Amount", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Burn It Bought It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Burn Them Bought Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Use It Bought It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Use Them Bought Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Seen Untended Shops", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/You Tin It You Bought It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/In Addition to Cost of Item Itself", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/In Addition to Cost of Items Themselves", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/In Addition to Cost of Potion", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/No Checks No Credit No Problem", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/You Alter That You Pay for It", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/You Alter Those You Pay for Them", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Ill Add That to Your Bill", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Costly Alteration/Alter Pay", 1.0f },
+
 };
 /*
 
@@ -1933,6 +2044,62 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
             OBJECT_SOUNDSET_GENERIC,
             OBJECT_SOUNDSET_GENERIC,
             OBJECT_SOUNDSET_HUMAN_BAREFOOTED
+        }
+    },
+    {
+        "Shopkeeper Modron",
+        MONSTER_SOUNDSET_GENERIC,
+        {
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_AMBIENT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SWALLOW_AMBIENT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MALEDICTION_WITH_GOD_NAME */
+            {GHSOUND_SHOPKEEPER_MODRON_ITEM_TRADING, 1.0f}, /* MONSTER_SOUND_TYPE_ITEM_TRADING */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_STANDARD_DIALOGUE_LINE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_STANDARD_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SPECIAL_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CREATION */
+            {GHSOUND_SHOPKEEPER_MODRON_GET_ANGRY, 1.0f}, /* MONSTER_SOUND_TYPE_GET_ANGRY */
+            {GHSOUND_SHOPKEEPER_MODRON_MOLLIFIED, 1.0f}, /* MONSTER_SOUND_TYPE_MOLLIFIED */
+            {GHSOUND_SHOPKEEPER_MODRON_ADVICE, 1.0f}, /* MONSTER_SOUND_TYPE_ADVICE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_COUGH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_PUSH_EFFORT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_UNHAPPY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_1 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_2 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_3 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_OUCH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_FLOUNDER */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_4 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_5 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_6 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_BUMP_INTO */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SEARCH */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CAST */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_HAPPY */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_LAUGHTER */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RANDOM_SOUND */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_RESERVED_7 */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CURSE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_MUMBLED_CURSE */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_YELL */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_CHAT */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_START_ATTACK */
+            {MAX_GHSOUNDS, 0.0f}, /* MONSTER_SOUND_TYPE_SHUDDER */
+            {GHSOUND_SHOPKEEPER_MODRON_DEATH, 5.0f} /* MONSTER_SOUND_TYPE_DEATH */
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC,
+            OBJECT_SOUNDSET_GENERIC
         }
     },
     {
@@ -15340,7 +15507,7 @@ int rt;
     struct ghsound_immediate_info info = { 0 };
     if (eshkp->visitct == 0)
     {
-        info.ghsound = is_undead(shkp->data) || is_demon(shkp->data) ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME : GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME;
+        info.ghsound = is_modron(shkp->data) ? GHSOUND_VOICE_SHOPKEEPER_MODRON_WELCOME : is_undead(shkp->data) || is_demon(shkp->data) ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME : GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME;
         info.parameter_names[0] = "RoleIndex";
         info.parameter_values[0] = (float)yourrole;
         info.parameter_names[1] = "ShopType";
@@ -15349,7 +15516,7 @@ int rt;
     }
     else
     {
-        info.ghsound = is_undead(shkp->data) || is_demon(shkp->data) ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME_BACK : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME_BACK : GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME_BACK;
+        info.ghsound = is_modron(shkp->data) ? GHSOUND_VOICE_SHOPKEEPER_MODRON_WELCOME_BACK : is_undead(shkp->data) || is_demon(shkp->data) ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME_BACK : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME_BACK : GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME_BACK;
         info.parameter_names[0] = "RoleIndex";
         info.parameter_values[0] = (float)yourrole;
         info.parameter_names[1] = (char*)0;
@@ -15386,6 +15553,7 @@ enum shopkeeper_lines line_idx;
 
     enum role_types yourrole = urole.rolenum;
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+    boolean is_modron_shk = is_modron(shkp->data);
     float special_minimum_volume = -1.0f;
 
     struct ghsound_immediate_info info = { 0 };
@@ -15395,62 +15563,74 @@ enum shopkeeper_lines line_idx;
     case SHOPKEEPER_LINE_NONE:
         break;
     case SHOPKEEPER_LINE_THANK_YOU_SHOPPING_IN_MY_STORE:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THANK_YOU_SHOPPING_IN_MY_STORE :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_THANK_YOU_SHOPPING_IN_MY_STORE : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THANK_YOU_SHOPPING_IN_MY_STORE :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_THANK_YOU_SHOPPING_IN_MY_STORE :
             GHSOUND_VOICE_SHOPKEEPER_MALE_THANK_YOU_SHOPPING_IN_MY_STORE;
         break;
     case SHOPKEEPER_LINE_INVISIBLE_CUSTOMERS_NOT_WELCOME:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_INVISIBLE_CUSTOMERS_NOT_WELCOME :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_INVISIBLE_CUSTOMERS_NOT_WELCOME : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_INVISIBLE_CUSTOMERS_NOT_WELCOME :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_INVISIBLE_CUSTOMERS_NOT_WELCOME :
             GHSOUND_VOICE_SHOPKEEPER_MALE_INVISIBLE_CUSTOMERS_NOT_WELCOME;
         break;
     case SHOPKEEPER_LINE_DROP_THAT_NOW:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DROP_THAT_NOW :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_DROP_THAT_NOW : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DROP_THAT_NOW :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_DROP_THAT_NOW :
             GHSOUND_VOICE_SHOPKEEPER_MALE_DROP_THAT_NOW;
         break;
     case SHOPKEEPER_LINE_CURSING_SHOPLIFTERS:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_CURSING_SHOPLIFTERS :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_CURSING_SHOPLIFTERS : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_CURSING_SHOPLIFTERS :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_CURSING_SHOPLIFTERS :
             GHSOUND_VOICE_SHOPKEEPER_MALE_CURSING_SHOPLIFTERS;
         break;
     case SHOPKEEPER_LINE_STAY_AWAY_FROM_THOSE:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_STAY_AWAY_FROM_THOSE :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_STAY_AWAY_FROM_THOSE : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_STAY_AWAY_FROM_THOSE :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_STAY_AWAY_FROM_THOSE :
             GHSOUND_VOICE_SHOPKEEPER_MALE_STAY_AWAY_FROM_THOSE;
         break;
     case SHOPKEEPER_LINE_STAY_AWAY_FROM_THAT:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_STAY_AWAY_FROM_THAT :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_STAY_AWAY_FROM_THAT : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_STAY_AWAY_FROM_THAT :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_STAY_AWAY_FROM_THAT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_STAY_AWAY_FROM_THAT;
         break;
     case SHOPKEEPER_LINE_ID_HANG_ONTO_THAT:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_ID_HANG_ONTO_THAT :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_ID_HANG_ONTO_THAT : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_ID_HANG_ONTO_THAT :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_ID_HANG_ONTO_THAT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_ID_HANG_ONTO_THAT;
         break;
     case SHOPKEEPER_LINE_I_WONT_STOCK_THAT:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_I_WONT_STOCK_THAT :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_I_WONT_STOCK_THAT : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_I_WONT_STOCK_THAT :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_I_WONT_STOCK_THAT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_I_WONT_STOCK_THAT;
         break;
     case SHOPKEEPER_LINE_THANK_YOU_SCUM:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THANK_YOU_SCUM :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_THANK_YOU_SCUM : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THANK_YOU_SCUM :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_THANK_YOU_SCUM :
             GHSOUND_VOICE_SHOPKEEPER_MALE_THANK_YOU_SCUM;
         break;
     case SHOPKEEPER_LINE_OUT_OF_MY_WAY_SCUM:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_OUT_OF_MY_WAY_SCUM :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_OUT_OF_MY_WAY_SCUM : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_OUT_OF_MY_WAY_SCUM :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_OUT_OF_MY_WAY_SCUM :
             GHSOUND_VOICE_SHOPKEEPER_MALE_OUT_OF_MY_WAY_SCUM;
         break;
     case SHOPKEEPER_LINE_GET_YOUR_JUNK_OUT_OF_MY_WALL:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_GET_YOUR_JUNK_OUT_OF_MY_WALL :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_GET_YOUR_JUNK_OUT_OF_MY_WALL : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_GET_YOUR_JUNK_OUT_OF_MY_WALL :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_GET_YOUR_JUNK_OUT_OF_MY_WALL :
             GHSOUND_VOICE_SHOPKEEPER_MALE_GET_YOUR_JUNK_OUT_OF_MY_WALL;
         break;
     case SHOPKEEPER_LINE_I_WAS_LOOKING_FOR_SOMEONE_ELSE:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_I_WAS_LOOKING_FOR_SOMEONE_ELSE :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_I_WAS_LOOKING_FOR_SOMEONE_ELSE :
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_I_WAS_LOOKING_FOR_SOMEONE_ELSE :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_I_WAS_LOOKING_FOR_SOMEONE_ELSE :
             GHSOUND_VOICE_SHOPKEEPER_MALE_I_WAS_LOOKING_FOR_SOMEONE_ELSE;
         info.parameter_names[0] = "RoleIndex";
@@ -15458,7 +15638,8 @@ enum shopkeeper_lines line_idx;
         info.parameter_names[1] = (char*)0;
         break;
     case SHOPKEEPER_LINE_DIDNT_YOU_FORGET_TO_PAY:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DIDNT_YOU_FORGET_TO_PAY :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_DIDNT_YOU_FORGET_TO_PAY : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DIDNT_YOU_FORGET_TO_PAY :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_DIDNT_YOU_FORGET_TO_PAY :
             GHSOUND_VOICE_SHOPKEEPER_MALE_DIDNT_YOU_FORGET_TO_PAY;
         info.parameter_names[0] = "RoleIndex";
@@ -15466,102 +15647,122 @@ enum shopkeeper_lines line_idx;
         info.parameter_names[1] = (char*)0;
         break;
     case SHOPKEEPER_LINE_ADVENTURER_DIDNT_YOU_FORGET_TO_PAY:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_ADVENTURER_DIDNT_YOU_FORGET_TO_PAY :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_ADVENTURER_DIDNT_YOU_FORGET_TO_PAY : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_ADVENTURER_DIDNT_YOU_FORGET_TO_PAY :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_ADVENTURER_DIDNT_YOU_FORGET_TO_PAY :
             GHSOUND_VOICE_SHOPKEEPER_MALE_ADVENTURER_DIDNT_YOU_FORGET_TO_PAY;
         break;
     case SHOPKEEPER_LINE_BE_CAREFUL_SIR_FALL_THROUGH_THE_FLOOR:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_BE_CAREFUL_SIR_FALL_THROUGH_THE_FLOOR :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_BE_CAREFUL_SIR_FALL_THROUGH_THE_FLOOR : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_BE_CAREFUL_SIR_FALL_THROUGH_THE_FLOOR :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_BE_CAREFUL_SIR_FALL_THROUGH_THE_FLOOR :
             GHSOUND_VOICE_SHOPKEEPER_MALE_BE_CAREFUL_SIR_FALL_THROUGH_THE_FLOOR;
         break;
     case SHOPKEEPER_LINE_BE_CAREFUL_MADAM_FALL_THROUGH_THE_FLOOR:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_BE_CAREFUL_MADAM_FALL_THROUGH_THE_FLOOR :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_BE_CAREFUL_MADAM_FALL_THROUGH_THE_FLOOR : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_BE_CAREFUL_MADAM_FALL_THROUGH_THE_FLOOR :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_BE_CAREFUL_MADAM_FALL_THROUGH_THE_FLOOR :
             GHSOUND_VOICE_SHOPKEEPER_MALE_BE_CAREFUL_MADAM_FALL_THROUGH_THE_FLOOR;
         break;
     case SHOPKEEPER_LINE_SIR_DO_NOT_DAMAGE_FLOOR:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SIR_DO_NOT_DAMAGE_FLOOR :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_SIR_DO_NOT_DAMAGE_FLOOR : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SIR_DO_NOT_DAMAGE_FLOOR :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SIR_DO_NOT_DAMAGE_FLOOR :
             GHSOUND_VOICE_SHOPKEEPER_MALE_SIR_DO_NOT_DAMAGE_FLOOR;
         break;
     case SHOPKEEPER_LINE_MADAM_DO_NOT_DAMAGE_FLOOR:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_MADAM_DO_NOT_DAMAGE_FLOOR :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_MADAM_DO_NOT_DAMAGE_FLOOR : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_MADAM_DO_NOT_DAMAGE_FLOOR :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_MADAM_DO_NOT_DAMAGE_FLOOR :
             GHSOUND_VOICE_SHOPKEEPER_MALE_MADAM_DO_NOT_DAMAGE_FLOOR;
         break;
     case SHOPKEEPER_LINE_PLEASE_PAY_BEFORE_LEAVING:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_BEFORE_LEAVING :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_PLEASE_PAY_BEFORE_LEAVING : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_BEFORE_LEAVING :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_BEFORE_LEAVING :
             GHSOUND_VOICE_SHOPKEEPER_MALE_PLEASE_PAY_BEFORE_LEAVING;
         break;
     case SHOPKEEPER_LINE_DONT_YOU_LEAVE_BEFORE_PAYING:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DONT_YOU_LEAVE_BEFORE_PAYING :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_DONT_YOU_LEAVE_BEFORE_PAYING : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DONT_YOU_LEAVE_BEFORE_PAYING :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_DONT_YOU_LEAVE_BEFORE_PAYING :
             GHSOUND_VOICE_SHOPKEEPER_MALE_DONT_YOU_LEAVE_BEFORE_PAYING;
         break;
     case SHOPKEEPER_LINE_YOU_DARE_TO_RETURN_TO_MY_STORE:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_DARE_TO_RETURN_TO_MY_STORE :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_YOU_DARE_TO_RETURN_TO_MY_STORE :
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_DARE_TO_RETURN_TO_MY_STORE :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_DARE_TO_RETURN_TO_MY_STORE :
             GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_DARE_TO_RETURN_TO_MY_STORE;
         break;
     case SHOPKEEPER_LINE_OH_YES_YOULL_PAY:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_OH_YES_YOULL_PAY :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_OH_YES_YOULL_PAY : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_OH_YES_YOULL_PAY :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_OH_YES_YOULL_PAY :
             GHSOUND_VOICE_SHOPKEEPER_MALE_OH_YES_YOULL_PAY;
         break;
     case SHOPKEEPER_LINE_DIDNT_YOU_FORGET_TO_PAY2:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DIDNT_YOU_FORGET_TO_PAY2 :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_DIDNT_YOU_FORGET_TO_PAY2 : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DIDNT_YOU_FORGET_TO_PAY2 :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_DIDNT_YOU_FORGET_TO_PAY2 :
             GHSOUND_VOICE_SHOPKEEPER_MALE_DIDNT_YOU_FORGET_TO_PAY2;
         break;
     case SHOPKEEPER_LINE_WHOA:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHOA :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_WHOA : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHOA :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHOA :
             GHSOUND_VOICE_SHOPKEEPER_MALE_WHOA;
         break;
     case SHOPKEEPER_LINE_WATCH_IT:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WATCH_IT :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_WATCH_IT : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WATCH_IT :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WATCH_IT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_WATCH_IT;
         break;
     case SHOPKEEPER_LINE_HEY:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HEY :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_HEY : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HEY :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HEY :
             GHSOUND_VOICE_SHOPKEEPER_MALE_HEY;
         break;
     case SHOPKEEPER_LINE_AHEM:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_AHEM :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_AHEM : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_AHEM :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_AHEM :
             GHSOUND_VOICE_SHOPKEEPER_MALE_AHEM;
         break;
     case SHOPKEEPER_LINE_YOU_OWE_ME_SOME_GOLD:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_OWE_ME_SOME_GOLD :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_YOU_OWE_ME_SOME_GOLD : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_OWE_ME_SOME_GOLD :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_OWE_ME_SOME_GOLD :
             GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_OWE_ME_SOME_GOLD;
         break;
     case SHOPKEEPER_LINE_YOU_OWE_ME_SOME_ADDITIONAL_GOLD:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_OWE_ME_SOME_ADDITIONAL_GOLD :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_YOU_OWE_ME_SOME_ADDITIONAL_GOLD :
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_OWE_ME_SOME_ADDITIONAL_GOLD :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_OWE_ME_SOME_ADDITIONAL_GOLD :
             GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_OWE_ME_SOME_ADDITIONAL_GOLD;
         break;
     case SHOPKEEPER_LINE_THAT_WILL_COST_YOU_SOME_GOLD:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THAT_WILL_COST_YOU_SOME_GOLD :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_THAT_WILL_COST_YOU_SOME_GOLD : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THAT_WILL_COST_YOU_SOME_GOLD :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_THAT_WILL_COST_YOU_SOME_GOLD :
             GHSOUND_VOICE_SHOPKEEPER_MALE_THAT_WILL_COST_YOU_SOME_GOLD;
         break;
     case SHOPKEEPER_LINE_EMPTYING_THAT_WILL_COST_YOU_SOME_GOLD:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_EMPTYING_THAT_WILL_COST_YOU_SOME_GOLD :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_EMPTYING_THAT_WILL_COST_YOU_SOME_GOLD : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_EMPTYING_THAT_WILL_COST_YOU_SOME_GOLD :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_EMPTYING_THAT_WILL_COST_YOU_SOME_GOLD :
             GHSOUND_VOICE_SHOPKEEPER_MALE_EMPTYING_THAT_WILL_COST_YOU_SOME_GOLD;
         break;
     case SHOPKEEPER_LINE_USAGE_FEE_SOME_GOLD:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_USAGE_FEE_SOME_GOLD :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_USAGE_FEE_SOME_GOLD : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_USAGE_FEE_SOME_GOLD :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_USAGE_FEE_SOME_GOLD :
             GHSOUND_VOICE_SHOPKEEPER_MALE_USAGE_FEE_SOME_GOLD;
         break;
     case SHOPKEEPER_LINE_WELCOME_TO_MY_STORE:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME_TO_MY_STORE_SHORT :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_WELCOME_TO_MY_STORE_SHORT : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME_TO_MY_STORE_SHORT :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME_TO_MY_STORE_SHORT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME_TO_MY_STORE_SHORT;
         info.parameter_names[0] = "ShopType";
@@ -15569,113 +15770,135 @@ enum shopkeeper_lines line_idx;
         info.parameter_names[1] = (char*)0;
         break;
     case SHOPKEEPER_LINE_WELCOME_BACK_TO_MY_STORE:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME_BACK_TO_MY_STORE_SHORT :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_WELCOME_BACK_TO_MY_STORE_SHORT : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WELCOME_BACK_TO_MY_STORE_SHORT :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WELCOME_BACK_TO_MY_STORE_SHORT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_WELCOME_BACK_TO_MY_STORE_SHORT;
         break;
     case SHOPKEEPER_LINE_YOU_DID_LOT_OF_DAMAGE:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_DID_LOT_OF_DAMAGE_SIMPLE :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_YOU_DID_LOT_OF_DAMAGE_SIMPLE : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_DID_LOT_OF_DAMAGE_SIMPLE :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_DID_LOT_OF_DAMAGE_SIMPLE :
             GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_DID_LOT_OF_DAMAGE_SIMPLE;
         break;
     case SHOPKEEPER_LINE_CLOSE_SESAME:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_CLOSE_SESAME :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_CLOSE_SESAME : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_CLOSE_SESAME :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_CLOSE_SESAME :
             GHSOUND_VOICE_SHOPKEEPER_MALE_CLOSE_SESAME;
         special_minimum_volume = 0.0f;
         break;
     case SHOPKEEPER_LINE_YOU_NEED_TO_PAY_LOT_OF_GOLD:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_NEED_TO_PAY_LOT_OF_GOLD :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_YOU_NEED_TO_PAY_LOT_OF_GOLD : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_NEED_TO_PAY_LOT_OF_GOLD :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_NEED_TO_PAY_LOT_OF_GOLD :
             GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_NEED_TO_PAY_LOT_OF_GOLD;
         break;
     case SHOPKEEPER_LINE_DAMN_IT:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DAMN_IT :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_DAMN_IT : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DAMN_IT :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_DAMN_IT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_DAMN_IT;
         break;
     case SHOPKEEPER_LINE_CURSED_THIEF:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_CURSED_THIEF :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_CURSED_THIEF : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_CURSED_THIEF :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_CURSED_THIEF :
             GHSOUND_VOICE_SHOPKEEPER_MALE_CURSED_THIEF;
         break;
     case SHOPKEEPER_LINE_CURSED_VANDAL:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_CURSED_VANDAL :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_CURSED_VANDAL : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_CURSED_VANDAL :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_CURSED_VANDAL :
             GHSOUND_VOICE_SHOPKEEPER_MALE_CURSED_VANDAL;
         break;
     case SHOPKEEPER_LINE_YOU_THIEF:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_THIEF :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_YOU_THIEF : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_THIEF :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_THIEF :
             GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_THIEF;
         break;
     case SHOPKEEPER_LINE_THIEF:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THIEF :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_THIEF : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THIEF :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_THIEF :
             GHSOUND_VOICE_SHOPKEEPER_MALE_THIEF;
         break;
     case SHOPKEEPER_LINE_YOU_DARE_TO_RETURN:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_DARE_TO_RETURN :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_YOU_DARE_TO_RETURN : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_DARE_TO_RETURN :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_DARE_TO_RETURN :
             GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_DARE_TO_RETURN;
         break;
     case SHOPKEEPER_LINE_PAY_GOLD_IN_COMPENSATION:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_GOLD_IN_COMPENSATION :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_PAY_GOLD_IN_COMPENSATION : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_GOLD_IN_COMPENSATION :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_GOLD_IN_COMPENSATION :
             GHSOUND_VOICE_SHOPKEEPER_MALE_PAY_GOLD_IN_COMPENSATION;
         break;
     case SHOPKEEPER_LINE_DISLIKE_NON_PAYING_CUSTOMERS:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DISLIKE_NON_PAYING_CUSTOMERS :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_DISLIKE_NON_PAYING_CUSTOMERS :
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DISLIKE_NON_PAYING_CUSTOMERS :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_DISLIKE_NON_PAYING_CUSTOMERS :
             GHSOUND_VOICE_SHOPKEEPER_MALE_DISLIKE_NON_PAYING_CUSTOMERS;
         break;
     case SHOPKEEPER_LINE_DISLIKE_RUDE_CUSTOMERS:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DISLIKE_RUDE_CUSTOMERS :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_DISLIKE_RUDE_CUSTOMERS : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_DISLIKE_RUDE_CUSTOMERS :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_DISLIKE_RUDE_CUSTOMERS :
             GHSOUND_VOICE_SHOPKEEPER_MALE_DISLIKE_RUDE_CUSTOMERS;
         break;
     case SHOPKEEPER_LINE_WAS_ROBBED:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WAS_ROBBED :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_WAS_ROBBED : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WAS_ROBBED :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WAS_ROBBED :
             GHSOUND_VOICE_SHOPKEEPER_MALE_WAS_ROBBED;
         break;
     case SHOPKEEPER_LINE_OWE_SOME_GOLD:
         if (flags.female)
-            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_MADAM_OWE_SOME_GOLD :
+            info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_MADAM_OWE_SOME_GOLD : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_MADAM_OWE_SOME_GOLD :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_MADAM_OWE_SOME_GOLD :
             GHSOUND_VOICE_SHOPKEEPER_MALE_MADAM_OWE_SOME_GOLD;
         else
-            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SIR_OWE_SOME_GOLD :
+            info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_SIR_OWE_SOME_GOLD : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SIR_OWE_SOME_GOLD :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SIR_OWE_SOME_GOLD :
             GHSOUND_VOICE_SHOPKEEPER_MALE_SIR_OWE_SOME_GOLD;
         break;
     case SHOPKEEPER_LINE_USING_OUTSTANDING_CREDIT:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_USING_OUTSTANDING_CREDIT :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_USING_OUTSTANDING_CREDIT : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_USING_OUTSTANDING_CREDIT :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_USING_OUTSTANDING_CREDIT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_USING_OUTSTANDING_CREDIT;
         break;
     case SHOPKEEPER_LINE_BUSINESS_IS_BAD:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_BUSINESS_IS_BAD :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_BUSINESS_IS_BAD :
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_BUSINESS_IS_BAD :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_BUSINESS_IS_BAD :
             GHSOUND_VOICE_SHOPKEEPER_MALE_BUSINESS_IS_BAD;
         break;
     case SHOPKEEPER_LINE_BUSINESS_IS_GOOD:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_BUSINESS_IS_GOOD :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_BUSINESS_IS_GOOD :
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_BUSINESS_IS_GOOD :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_BUSINESS_IS_GOOD :
             GHSOUND_VOICE_SHOPKEEPER_MALE_BUSINESS_IS_GOOD;
         break;
     case SHOPKEEPER_LINE_PROBLEM_WITH_SHOPLIFTERS:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PROBLEM_WITH_SHOPLIFTERS :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_PROBLEM_WITH_SHOPLIFTERS : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PROBLEM_WITH_SHOPLIFTERS :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PROBLEM_WITH_SHOPLIFTERS :
             GHSOUND_VOICE_SHOPKEEPER_MALE_PROBLEM_WITH_SHOPLIFTERS;
         break;
     case SHOPKEEPER_LINE_IM_THE_SHOPKEEPER:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_IM_THE_SHOPKEEPER :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_IM_THE_SHOPKEEPER : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_IM_THE_SHOPKEEPER :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_IM_THE_SHOPKEEPER :
             GHSOUND_VOICE_SHOPKEEPER_MALE_IM_THE_SHOPKEEPER;
         break;
     case SHOPKEEPER_LINE_I_RUN_THIS_STORE:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_I_RUN_THIS_STORE :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_I_RUN_THIS_STORE : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_I_RUN_THIS_STORE :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_I_RUN_THIS_STORE :
             GHSOUND_VOICE_SHOPKEEPER_MALE_I_RUN_THIS_STORE;
         info.parameter_names[0] = "ShopType";
@@ -15683,42 +15906,50 @@ enum shopkeeper_lines line_idx;
         info.parameter_names[1] = (char*)0;
         break;
     case SHOPKEEPER_LINE_THATS_A_DEAL:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THATS_A_DEAL :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_THATS_A_DEAL : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_THATS_A_DEAL :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_THATS_A_DEAL :
             GHSOUND_VOICE_SHOPKEEPER_MALE_THATS_A_DEAL;
         break;
     case SHOPKEEPER_LINE_ON_SECOND_THOUGHT:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_ON_SECOND_THOUGHT :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_ON_SECOND_THOUGHT :
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_ON_SECOND_THOUGHT :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_ON_SECOND_THOUGHT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_ON_SECOND_THOUGHT;
         break;
     case SHOPKEEPER_LINE_YOUR_BILL_COMES_TO_THIS_AMOUNT:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOUR_BILL_COMES_TO_THIS_AMOUNT :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_YOUR_BILL_COMES_TO_THIS_AMOUNT : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOUR_BILL_COMES_TO_THIS_AMOUNT :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOUR_BILL_COMES_TO_THIS_AMOUNT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_YOUR_BILL_COMES_TO_THIS_AMOUNT;
         break;
     case SHOPKEEPER_LINE_BURN_IT_BOUGHT_IT:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_BURN_IT_BOUGHT_IT :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_BURN_IT_BOUGHT_IT : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_BURN_IT_BOUGHT_IT :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_BURN_IT_BOUGHT_IT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_BURN_IT_BOUGHT_IT;
         break;
     case SHOPKEEPER_LINE_BURN_THEM_BOUGHT_THEM:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_BURN_THEM_BOUGHT_THEM :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_BURN_THEM_BOUGHT_THEM : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_BURN_THEM_BOUGHT_THEM :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_BURN_THEM_BOUGHT_THEM :
             GHSOUND_VOICE_SHOPKEEPER_MALE_BURN_THEM_BOUGHT_THEM;
         break;
     case SHOPKEEPER_LINE_USE_IT_BOUGHT_IT:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_USE_IT_BOUGHT_IT :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_USE_IT_BOUGHT_IT : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_USE_IT_BOUGHT_IT :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_USE_IT_BOUGHT_IT :
             GHSOUND_VOICE_SHOPKEEPER_MALE_USE_IT_BOUGHT_IT;
         break;
     case SHOPKEEPER_LINE_USE_THEM_BOUGHT_THEM:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_USE_THEM_BOUGHT_THEM :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_USE_THEM_BOUGHT_THEM : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_USE_THEM_BOUGHT_THEM :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_USE_THEM_BOUGHT_THEM :
             GHSOUND_VOICE_SHOPKEEPER_MALE_USE_THEM_BOUGHT_THEM;
         break;
     case SHOPKEEPER_LINE_SEEN_UNTENDED_SHOPS:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SEEN_UNTENDED_SHOPS :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_SEEN_UNTENDED_SHOPS : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SEEN_UNTENDED_SHOPS :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SEEN_UNTENDED_SHOPS :
             GHSOUND_VOICE_SHOPKEEPER_MALE_SEEN_UNTENDED_SHOPS;
         break;
@@ -15732,7 +15963,8 @@ enum shopkeeper_lines line_idx;
     case SHOPKEEPER_LINE_ILL_ADD_THAT_TO_YOUR_BILL:
     {
         int dif = line_idx - SHOPKEEPER_LINE_YOU_TIN_IT_YOU_BOUGHT_IT;
-        info.ghsound = is_undead_shk ? dif + GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_TIN_IT_YOU_BOUGHT_IT :
+        info.ghsound = is_modron_shk ? dif + GHSOUND_VOICE_SHOPKEEPER_MODRON_YOU_TIN_IT_YOU_BOUGHT_IT : 
+            is_undead_shk ? dif + GHSOUND_VOICE_SHOPKEEPER_UNDEAD_YOU_TIN_IT_YOU_BOUGHT_IT :
             shkp->female ? dif + GHSOUND_VOICE_SHOPKEEPER_FEMALE_YOU_TIN_IT_YOU_BOUGHT_IT :
             dif + GHSOUND_VOICE_SHOPKEEPER_MALE_YOU_TIN_IT_YOU_BOUGHT_IT;
         break;
@@ -15777,16 +16009,19 @@ boolean is_angry;
         return;
 
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+    boolean is_modron_shk = is_modron(shkp->data);
     int pickindex = 0;
     int howmanyindex = cnt > 1 ? 2 : 1;
 
     struct ghsound_immediate_info info = { 0 };
     if (is_angry)
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_STUFF_OUTSIDE :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_LEAVE_STUFF_OUTSIDE : 
+        is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LEAVE_STUFF_OUTSIDE :
         shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LEAVE_STUFF_OUTSIDE :
         GHSOUND_VOICE_SHOPKEEPER_MALE_LEAVE_STUFF_OUTSIDE;
     else
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE : 
+        is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE :
         shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE :
         GHSOUND_VOICE_SHOPKEEPER_MALE_WILL_YOU_PLEASE_LEAVE_STUFF_OUTSIDE;
 
@@ -15847,6 +16082,7 @@ const char* cad_str;
         return;
 
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+    boolean is_modron_shk = is_modron(shkp->data);
     int cad_id = 0;
 
     struct ghsound_immediate_info info = { 0 };
@@ -15856,17 +16092,20 @@ const char* cad_str;
     case SHOPKEEPER_CAD_LINE_NONE:
         break;
     case SHOPKEEPER_CAD_LINE_YOU_SNEAKY:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_SNEAKY : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_SNEAKY :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_SNEAKY :
             GHSOUND_VOICE_SHOPKEEPER_MALE_SNEAKY;
         break;
     case SHOPKEEPER_CAD_LINE_NO_FREE_LIBRARY:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_NO_FREE_LIBRARY : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_NO_FREE_LIBRARY :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_NO_FREE_LIBRARY :
             GHSOUND_VOICE_SHOPKEEPER_MALE_NO_FREE_LIBRARY;
         break;
     case SHOPKEEPER_CAD_LINE_LOT_OF_DAMAGE:
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LOT_OF_DAMAGE :
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_LOT_OF_DAMAGE : 
+            is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_LOT_OF_DAMAGE :
             shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_LOT_OF_DAMAGE :
             GHSOUND_VOICE_SHOPKEEPER_MALE_LOT_OF_DAMAGE;
         break;
@@ -15929,11 +16168,12 @@ struct obj* candelabrum;
         return;
 
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+    boolean is_modron_shk = is_modron(shkp->data);
 
     struct ghsound_immediate_info info = { 0 };
     int howmanymore = (7 - candelabrum->special_quality);
 
-    info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_MORE_CANDLES : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_MORE_CANDLES : GHSOUND_VOICE_SHOPKEEPER_MALE_MORE_CANDLES;
+    info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_MORE_CANDLES : is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_MORE_CANDLES : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_MORE_CANDLES : GHSOUND_VOICE_SHOPKEEPER_MALE_MORE_CANDLES;
 
     info.parameter_names[0] = "HowManyIndex";
     info.parameter_values[0] = (float)howmanymore;
@@ -15970,10 +16210,11 @@ int line_idx;
         return;
 
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+    boolean is_modron_shk = is_modron(shkp->data);
 
     struct ghsound_immediate_info info = { 0 };
 
-    info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_IZCHAK_TALKS : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_IZCHAK_TALKS : GHSOUND_VOICE_SHOPKEEPER_MALE_IZCHAK_TALKS;
+    info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_IZCHAK_TALKS : is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_IZCHAK_TALKS : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_IZCHAK_TALKS : GHSOUND_VOICE_SHOPKEEPER_MALE_IZCHAK_TALKS;
 
     info.parameter_names[0] = "LineIndex";
     info.parameter_values[0] = (float)line_idx;
@@ -16011,18 +16252,19 @@ long quan;
         return;
 
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+    boolean is_modron_shk = is_modron(shkp->data);
     struct ghsound_immediate_info info = { 0 };
 
     if (ANGRY(shkp))
     {
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_FOR_YOU_ANGRY : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_FOR_YOU_ANGRY : GHSOUND_VOICE_SHOPKEEPER_MALE_FOR_YOU_ANGRY;
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_FOR_YOU_ANGRY : is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_FOR_YOU_ANGRY : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_FOR_YOU_ANGRY : GHSOUND_VOICE_SHOPKEEPER_MALE_FOR_YOU_ANGRY;
         info.parameter_names[0] = "ItemPriceDescriptionIndex";
         info.parameter_values[0] = (float)(base_line_idx + (quan > 1) * 8);
         info.parameter_names[1] = (char*)0;
     }
     else
     {
-        info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_FOR_YOU_PEACEFUL : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_FOR_YOU_PEACEFUL : GHSOUND_VOICE_SHOPKEEPER_MALE_FOR_YOU_PEACEFUL;
+        info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_FOR_YOU_PEACEFUL : is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_FOR_YOU_PEACEFUL : shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_FOR_YOU_PEACEFUL : GHSOUND_VOICE_SHOPKEEPER_MALE_FOR_YOU_PEACEFUL;
         info.parameter_names[0] = "GenderIndex";
         info.parameter_values[0] = (float)(!humanoid(youmonst.data) ? 2 : flags.female);
         info.parameter_names[1] = "HonorificIndex";
@@ -16063,6 +16305,7 @@ long obj_quan, save_quan;
         return;
 
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+    boolean is_modron_shk = is_modron(shkp->data);
 
     struct ghsound_immediate_info info = { 0 };
 
@@ -16072,13 +16315,15 @@ long obj_quan, save_quan;
         {
             if (save_quan > 1)
             {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
+                info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE : 
+                    is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE;
             }
             else
             {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
+                info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE : 
+                    is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE;
             }
@@ -16087,13 +16332,15 @@ long obj_quan, save_quan;
         {
             if (save_quan > 1)
             {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
+                info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
+                    is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE;
             }
             else
             {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE :
+                info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE : 
+                    is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE :
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE;
             }
@@ -16105,13 +16352,15 @@ long obj_quan, save_quan;
         {
             if (save_quan > 1)
             {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
+                info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE : 
+                    is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THESE;
             }
             else
             {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
+                info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
+                    is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PLEASE_PAY_FOR_OTHER_ITEMS_BEFORE_BUYING_THIS_ONE;
             }
@@ -16120,13 +16369,15 @@ long obj_quan, save_quan;
         {
             if (save_quan > 1)
             {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
+                info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
+                    is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THESE;
             }
             else
             {
-                info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE :
+                info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE : 
+                    is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE :
                     shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE :
                     GHSOUND_VOICE_SHOPKEEPER_MALE_PLEASE_PAY_FOR_OTHER_ITEM_BEFORE_BUYING_THIS_ONE;
             }
@@ -16166,6 +16417,7 @@ boolean is_shop;
         return;
 
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+    boolean is_modron_shk = is_modron(shkp->data);
 
     struct ghsound_immediate_info info = { 0 };
     int damagetype = 0;
@@ -16174,13 +16426,15 @@ boolean is_shop;
     {
         if (is_shop)
         {
-            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DAMAGE_SHOP :
+            info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_WHO_DARED_DAMAGE_SHOP : 
+                is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DAMAGE_SHOP :
                 shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_DAMAGE_SHOP :
                 GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_DAMAGE_SHOP;
         }
         else
         {
-            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DAMAGE_DOOR :
+            info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_WHO_DARED_DAMAGE_DOOR : 
+                is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_WHO_DARED_DAMAGE_DOOR :
                 shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_WHO_DARED_DAMAGE_DOOR :
                 GHSOUND_VOICE_SHOPKEEPER_MALE_WHO_DARED_DAMAGE_DOOR;
         }
@@ -16189,13 +16443,15 @@ boolean is_shop;
     {
         if (is_shop)
         {
-            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DAMAGE_SHOP :
+            info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_HOW_DARE_YOU_DAMAGE_SHOP : 
+                is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DAMAGE_SHOP :
                 shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_DAMAGE_SHOP :
                 GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_DAMAGE_SHOP;
         }
         else
         {
-            info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DAMAGE_DOOR :
+            info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_HOW_DARE_YOU_DAMAGE_DOOR : 
+                is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_HOW_DARE_YOU_DAMAGE_DOOR :
                 shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_HOW_DARE_YOU_DAMAGE_DOOR :
                 GHSOUND_VOICE_SHOPKEEPER_MALE_HOW_DARE_YOU_DAMAGE_DOOR;
         }
@@ -16264,10 +16520,12 @@ enum cost_alteration_types alteration_type;
         return;
 
     boolean is_undead_shk = is_undead(shkp->data) || is_demon(shkp->data);
+    boolean is_modron_shk = is_modron(shkp->data);
 
     struct ghsound_immediate_info info = { 0 };
 
-    info.ghsound = is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_COSTLY_ALTERATION :
+    info.ghsound = is_modron_shk ? GHSOUND_VOICE_SHOPKEEPER_MODRON_COSTLY_ALTERATION : 
+        is_undead_shk ? GHSOUND_VOICE_SHOPKEEPER_UNDEAD_COSTLY_ALTERATION :
         shkp->female ? GHSOUND_VOICE_SHOPKEEPER_FEMALE_COSTLY_ALTERATION :
         GHSOUND_VOICE_SHOPKEEPER_MALE_COSTLY_ALTERATION;
     info.parameter_names[0] = "IsMany";
@@ -16747,7 +17005,7 @@ struct monst* mtmp;
     if (mtmp->issmith)
         return is_gnoll(mtmp->data) ? MONSTER_SOUNDSET_SMITH_FLIND : is_undead(mtmp->data) ? MONSTER_SOUNDSET_SMITH_UNDEAD : isfemale ? MONSTER_SOUNDSET_SMITH_FEMALE : MONSTER_SOUNDSET_SMITH_MALE;
     else if (mtmp->isshk)
-        return is_undead(mtmp->data) ? MONSTER_SOUNDSET_SHOPKEEPER_UNDEAD : isfemale ? MONSTER_SOUNDSET_SHOPKEEPER_FEMALE : MONSTER_SOUNDSET_SHOPKEEPER_MALE;
+        return is_modron(mtmp->data) ? MONSTER_SOUNDSET_SHOPKEEPER_MODRON : is_undead(mtmp->data) ? MONSTER_SOUNDSET_SHOPKEEPER_UNDEAD : isfemale ? MONSTER_SOUNDSET_SHOPKEEPER_FEMALE : MONSTER_SOUNDSET_SHOPKEEPER_MALE;
     else if (mtmp->isnpc && has_enpc(mtmp))
     {
         switch (ENPC(mtmp)->npc_typ)
@@ -16777,6 +17035,7 @@ struct monst* mtmp;
             return MONSTER_SOUNDSET_PROFESSOR_OF_QUANTUM_MECHANICS;
             break;
         case NPC_WARP_ENGINEER:
+            return MONSTER_SOUNDSET_SHOPKEEPER_MODRON;
             break;
         default:
             break;

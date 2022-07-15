@@ -8668,6 +8668,17 @@ const char* line;
 }
 
 void
+popup_talk_line_noquotes(mtmp, line)
+struct monst* mtmp;
+const char* line;
+{
+    const char* linearray[2] = { 0, 0 };
+    linearray[0] = line;
+    popup_talk(mtmp, linearray, GHSOUND_NONE, ATR_NONE, NO_COLOR, TRUE, FALSE);
+}
+
+
+void
 popup_talk_line_ex(mtmp, line, attr, color, printtext, addquotes)
 struct monst* mtmp;
 const char* line;
