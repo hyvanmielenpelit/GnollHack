@@ -5733,39 +5733,39 @@ dozap()
             Sprintf(querybuf, "%s%sDrop it?", markbuf, canstash ? "Stash or " : "");
             char ans = yn_function_es(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, 
                 markempty ? "Mark Empty" : obj->oclass == WAND_CLASS ? "Wand Empty" : "Item Empty", 
-                querybuf, !canstash ? "dq" : "sdq", 'q', !canstash ? "Drop\nQuit" : "Stash\nDrop\nQuit", (const char*)0);
+                querybuf, markempty ? (!canstash ? "dmq" : "sdmq") : (!canstash ? "dq" : "sdq"), 'q', 
+                markempty ? (!canstash ? "Drop\nMark Only\nQuit" : "Stash\nDrop\nMark Only\nQuit") : (!canstash ? "Drop\nQuit" : "Stash\nDrop\nQuit"), 
+                (const char*)0);
+
+            if (ans != 'q' && markempty && !(has_uoname(obj) && strstri(UONAME(obj), "empty")))
+            {
+                //Name it empty
+                if (has_uoname(obj))
+                {
+                    char emptybuf[PL_PSIZ + 10];
+                    Sprintf(emptybuf, "%s empty", UONAME(obj));
+                    (void)uoname(obj, emptybuf);
+                }
+                else
+                    (void)uoname(obj, "empty");
+
+                if (ans == 'm')
+                    prinv((char*)0, obj, 0L);
+            }
 
             switch (ans)
             {
             case 'd':
+                taketurn = TRUE;
+                getobj_autoselect_obj = obj;
+                (void)dodrop();
+                getobj_autoselect_obj = (struct obj*)0;
+                break;
             case 's':
                 taketurn = TRUE;
-                if (markempty && !(has_uoname(obj) && strstri(UONAME(obj), "empty")))
-                {
-                    //Name it empty
-                    if (has_uoname(obj))
-                    {
-                        char emptybuf[PL_PSIZ + 10];
-                        Sprintf(emptybuf, "%s empty", UONAME(obj));
-                        (void)uoname(obj, emptybuf);
-                    }
-                    else
-                        (void)uoname(obj, "empty");
-                }
-
-                //Drop or stash
-                if (ans == 'd')
-                {
-                    getobj_autoselect_obj = obj;
-                    (void)dodrop();
-                    getobj_autoselect_obj = (struct obj*)0;
-                }
-                else
-                {
-                    getobj_autoselect_obj = obj;
-                    (void)dostash();
-                    getobj_autoselect_obj = (struct obj*)0;
-                }
+                getobj_autoselect_obj = obj;
+                (void)dostash();
+                getobj_autoselect_obj = (struct obj*)0;
                 break;
             case 'q':
             default:

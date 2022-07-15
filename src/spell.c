@@ -71,8 +71,7 @@ STATIC_DCL struct extended_create_window_info FDECL(extended_create_window_info_
 static const char explodes[] = "radiates explosive energy";
 
 NEARDATA const char* spl_sortchoices[NUM_SPELL_SORTBY] = {
-    "no sorting",
-    "by casting letter",
+    "no sorting, by casting letter",
     "alphabetically",
     "by level, low to high",
     "by level, high to low",

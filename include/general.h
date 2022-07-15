@@ -825,7 +825,7 @@ enum quest_states {
 
 enum spl_sort_types {
     SORTBY_NONE = 0,
-    SORTBY_LETTER,
+    SORTBY_LETTER = 0, //This is the same as none in fact
     SORTBY_ALPHA,
     SORTBY_LVL_LO,
     SORTBY_LVL_HI,
