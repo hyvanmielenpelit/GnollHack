@@ -179,6 +179,8 @@ E int NDECL(create_portal);
 E const char* FDECL(get_artifact_invoke_name, (int));
 E boolean FDECL(is_artifact_applicable_as_axe, (struct obj*));
 E int FDECL(artifact_to_obj, (int));
+E void FDECL(artifact_taken_away, (int));
+
 
 /* ### attrib.c ### */
 
@@ -3301,7 +3303,7 @@ E void FDECL(stealamulet, (struct monst *));
 E void FDECL(maybe_absorb_item, (struct monst *, struct obj *, int, int));
 E void FDECL(mdrop_obj, (struct monst *, struct obj *, BOOLEAN_P));
 E void FDECL(mdrop_special_objs, (struct monst *));
-E void FDECL(relobj, (struct monst *, int, BOOLEAN_P, BOOLEAN_P));
+E void FDECL(release_monster_objects, (struct monst *, int, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(mdrop_droppable_objs, (struct monst*));
 E struct obj *FDECL(findgold, (struct obj *));
 E struct obj* FDECL(findobjecttype, (struct obj*, int));

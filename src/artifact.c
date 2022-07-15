@@ -56,6 +56,14 @@ STATIC_OVL short artidisco[NUM_ARTIFACTS];
 STATIC_DCL void NDECL(hack_artifacts);
 STATIC_DCL boolean FDECL(artifact_attack_type, (int, struct obj *));
 
+
+void
+artifact_taken_away(artidx)
+int artidx;
+{
+    artiexist[artidx] = FALSE;
+}
+
 /* handle some special cases; must be called after u_init() */
 STATIC_OVL void
 hack_artifacts()

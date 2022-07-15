@@ -805,7 +805,7 @@ struct monst *mon;
 
 /* release the objects the creature is carrying */
 void
-relobj(mtmp, show, is_pet, is_mon_dead)
+release_monster_objects(mtmp, show, is_pet, is_mon_dead)
 struct monst *mtmp;
 int show;
 boolean is_pet; /* If true, pet should keep wielded/worn items */
@@ -878,6 +878,10 @@ boolean is_mon_dead;
                     dismount_steed(DISMOUNT_FELL);
             }
 
+            if (otmp->oartifact)
+            {
+                artifact_taken_away(otmp->oartifact); //It can now be generated again some time later
+            }
             obfree(otmp, (struct obj*) 0); //Delete the item
         }
         else

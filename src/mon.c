@@ -2969,10 +2969,10 @@ boolean is_mon_dead;
         context.polearm.hitmon = 0;
     if (mtmp->mleashed)
         m_unleash(mtmp, FALSE);
-    /* to prevent an infinite relobj-flooreffects-hmon-killed loop */
+    /* to prevent an infinite release_monster_objects-flooreffects-hmon-killed loop */
     mtmp->mtrapped = 0;
     mtmp->mhp = 0; /* simplify some tests: force mhp to 0 */
-    relobj(mtmp, 0, FALSE, is_mon_dead);
+    release_monster_objects(mtmp, 0, FALSE, is_mon_dead);
     if (onmap || mtmp == level.monsters[0][0]) 
     {
         if (mtmp->wormno)
