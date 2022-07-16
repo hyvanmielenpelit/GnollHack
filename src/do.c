@@ -1876,7 +1876,7 @@ register struct obj* obj;
         wep_multipliable_avg_dmg += str_bonus;
     }
 
-    int mcadj = objects[otyp].oc_mc_adjustment + (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT) ? obj->enchantment : 0;
+    int mcadj = objects[otyp].oc_mc_adjustment + ((objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT) ? -obj->enchantment : 0);
     if (objects[otyp].oc_mc_adjustment != 0 || mcadj != 0)
     {
         if (mcadj >= 0)
