@@ -4096,7 +4096,7 @@ dochat()
         {
             You("don't have anything to talk about.");
             destroy_nhwindow(win);
-            return result;
+            break; //Out of while loop
         }
 
 
@@ -4109,7 +4109,7 @@ dochat()
         destroy_nhwindow(win);
 
         if (i == '\0')
-            return result;
+            break; //Out of while loop
 
         int res = 0;
         int j;
@@ -4124,7 +4124,10 @@ dochat()
                     res = (available_chat_list[j].function_ptr)(mtmp);
 
                     if (res == 2) /* Changed level or the like and mtmp does not exist anymore */
-                        return 1;
+                    {
+                        result = 1;
+                        goto end_of_chat_here;
+                    }
 
                     if(res != 0)
                         result = 1;
@@ -4140,6 +4143,7 @@ dochat()
             stopsdialogue = TRUE;
     } while (i > 0 && !stopsdialogue);
     
+end_of_chat_here:
     if (!elbereth_was_known && u.uevent.elbereth_known)
         standard_hint("You can engrave \'Elbereth\' on the ground to protect yourself against attacking monsters.", &u.uhint.elbereth);
 
