@@ -7643,7 +7643,7 @@ boolean* hintflag_ptr;
     if (!pray_what)
         return;
 
-    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && (!hintflag_ptr || !*hintflag_ptr))
+    if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && (!hintflag_ptr || !*hintflag_ptr))
     {
         if (hintflag_ptr)
             *hintflag_ptr = TRUE;
@@ -7666,7 +7666,7 @@ boolean* hintflag_ptr;
     if (!hint_txt)
         return;
 
-    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && (!hintflag_ptr || !*hintflag_ptr))
+    if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && (!hintflag_ptr || !*hintflag_ptr))
     {
         if (hintflag_ptr)
             *hintflag_ptr = TRUE;
@@ -7681,7 +7681,7 @@ struct monst* mtmp;
     if (!mtmp || !is_reviver(mtmp->data))
         return;
 
-    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && !u.uhint.monster_revived)
+    if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && !u.uhint.monster_revived)
     {
         u.uhint.monster_revived = TRUE;
 
@@ -7714,7 +7714,7 @@ item_destruction_hint(adtyp, isray)
 int adtyp;
 boolean isray;
 {
-    if (context.game_difficulty > MIN_DIFFICULTY_LEVEL)
+    if (!(flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty))
         return;
 
     boolean* hint_bool_ptr = 0;
@@ -7750,7 +7750,7 @@ void
 brain_hint(mtmp)
 struct monst* mtmp;
 {
-    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && !u.uhint.brain_got_eaten)
+    if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && !u.uhint.brain_got_eaten)
     {
         u.uhint.brain_got_eaten = TRUE;
         hint_via_pline("To protect yourself agains brain-eating attacks, you can wear a nose-ring of cerebral safeguarding or wear a helmet, which gives you a high chance of blocking the attacks.");
@@ -7766,7 +7766,7 @@ struct monst* mtmp;
     if (!mtmp || mtmp != u.ustuck)
         return;
 
-    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && !u.uhint.got_grabbed)
+    if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && !u.uhint.got_grabbed)
     {
         u.uhint.got_grabbed = TRUE;
 
@@ -7794,7 +7794,7 @@ struct monst* mtmp;
 void
 check_mobbed_hint(VOID_ARGS)
 {
-    if (context.game_difficulty > MIN_DIFFICULTY_LEVEL || u.uhint.got_mobbed)
+    if (!(flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) || u.uhint.got_mobbed)
         return;
 
     int i, j, x, y;
@@ -7833,7 +7833,7 @@ check_mobbed_hint(VOID_ARGS)
 void
 death_hint(VOID_ARGS)
 {
-    if (context.game_difficulty == MIN_DIFFICULTY_LEVEL && killer.name[0] && killer.hint_idx > 0)
+    if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && killer.name[0] && killer.hint_idx > 0)
     {
         unsigned long kbit = 1UL << (killer.hint_idx % 32);
         unsigned long* hints_given = &u.uhint.kill_hints_given[min(NUM_KILL_HINT_ULONGS - 1, killer.hint_idx / 32)];

@@ -162,6 +162,7 @@ static struct Bool_Opt {
 #else
     { "force_invmenu", &iflags.force_invmenu, FALSE, SET_IN_GAME },
 #endif
+    { "force_hint", &flags.force_hint, FALSE, SET_IN_GAME },
     { "fullscreen", &iflags.wc2_fullscreen, FALSE, SET_IN_FILE }, /*WC2*/
     { "goldX", &iflags.goldX, FALSE, SET_IN_GAME },
     { "guicolor", &iflags.wc2_guicolor, TRUE, SET_IN_GAME}, /*WC2*/
@@ -381,6 +382,8 @@ static struct Comp_Opt {
     { "luggagename", "the name of your (first) luggage (e.g., luggagename:Albert)",
       PL_PSIZ, DISP_IN_GAME },
     { "map_mode", "map display mode under Windows", 20, DISP_IN_GAME }, /*WC*/
+    { "max_hint_difficulty", "maximum difficulty level for showing hints", 3,
+      DISP_IN_GAME },
     { "menustyle", "user interface for object selection", MENUTYPELEN,
       SET_IN_GAME },
     { "menu_deselect_all", "deselect all items in a menu", 4, SET_IN_FILE },
@@ -938,6 +941,7 @@ initoptions_init()
     flags.sound_volume_ui = 50;
 
     flags.spellorder = SORTBY_NONE;
+    flags.max_hint_difficulty = MIN_DIFFICULTY_LEVEL;
 
     /* since this is done before init_objects(), do partial init here */
     objects[SLIME_MOLD].oc_name_idx = SLIME_MOLD;
@@ -4527,6 +4531,35 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
+    fullname = "max_hint_difficulty";
+    if (match_optname(opts, fullname, 19, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = MIN_DIFFICULTY_LEVEL;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < MIN_DIFFICULTY_LEVEL - 1 || itmp > MAX_DIFFICULTY_LEVEL)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, MIN_DIFFICULTY_LEVEL - 1, MAX_DIFFICULTY_LEVEL);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.max_hint_difficulty = itmp;
+        }
+        return retval;
+    }
+
     /* menustyle:traditional or combination or full or partial */
     fullname = "menustyle";
     if (match_optname(opts, fullname, 4, TRUE)) {
@@ -6052,6 +6085,27 @@ boolean setinitial, setfromfile;
             free((genericptr_t)mode_pick);
         }
         destroy_nhwindow(tmpwin);
+    } else if (!strcmp("max_hint_difficulty", optname)) {
+        menu_item* mode_pick = (menu_item*)0;
+        char splbuf[BUFSZ];
+        tmpwin = create_nhwindow(NHW_MENU);
+        start_menu(tmpwin);
+        any = zeroany;
+        for (i = MIN_DIFFICULTY_LEVEL - 1; i <= MAX_DIFFICULTY_LEVEL; i++) {
+            char dlbuf[BUFSZ];
+            Strcpy(dlbuf, i < MIN_DIFFICULTY_LEVEL ? "off" : get_game_difficulty_text(i));
+            *dlbuf = highc(*dlbuf);
+            Sprintf(splbuf, "%s (%d)", dlbuf, i);
+            any.a_int = i + 1 - (MIN_DIFFICULTY_LEVEL - 1);
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE,
+                splbuf, MENU_UNSELECTED);
+        }
+        end_menu(tmpwin, "Select maximum hint difficulty level:");
+        if (select_menu(tmpwin, PICK_ONE, &mode_pick) > 0) {
+            flags.max_hint_difficulty = mode_pick->item.a_int - 1 + (MIN_DIFFICULTY_LEVEL - 1);
+            free((genericptr_t)mode_pick);
+        }
+        destroy_nhwindow(tmpwin);
     } else if (!strcmp("menu_headings", optname)) {
         int mhattr = query_attr("How to highlight menu headings:");
 
@@ -6782,6 +6836,12 @@ char *buf;
     else if (!strcmp(optname, "last_item_show_duration"))
     {
         Sprintf(buf, "%d", flags.last_item_show_duration);
+    }
+    else if (!strcmp(optname, "max_hint_difficulty"))
+    {
+        char dlbuf[BUFSZ];
+        Strcpy(dlbuf, flags.max_hint_difficulty < MIN_DIFFICULTY_LEVEL ? "off" : get_game_difficulty_text(flags.max_hint_difficulty));
+        Sprintf(buf, "%s (%d)", dlbuf, (int)flags.max_hint_difficulty);
     }
     else if (!strcmp(optname, "sound_volume_ambient"))
     {
