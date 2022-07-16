@@ -24,7 +24,7 @@
 #define AF_BEHEAD      0x00000020UL  /* beheads monsters */
 #define AF_BISECT      0x00000040UL  /* bisects monsters */
 #define AF_HITS_ADJACENT_SQUARES               0x00000080UL  /* hits adjacent squares (like Cleaver) */
-#define AF_BLOODTHIRSTY                        0x00000100UL  /* no attack confirmation (like Stormbringer) */
+#define AF_BLOODTHIRSTY                        0x00000100UL  /* no attack confirmation (like Stormbringer); DEACTIVATED in GnollHack */
 #define AF_MAGIC_ABSORBING                     0x00000200UL  /* absorbs curses (like Magicbane) */
 #define AF_PREVENTS_REVIVAL_OF_MON             0x00000400UL  /* prevents revival of specified monsters (like Trollsbane) */
 #define AF_PREVENTS_SUMMONING_OF_MON           0x00000800UL  /* prevents summoning by specified monsters (like Demonbane) */
