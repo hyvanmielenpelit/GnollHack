@@ -1039,6 +1039,8 @@ register struct obj* obj;
     
     boolean stats_known = object_stats_known(obj);
     boolean uses_spell_flags = object_uses_spellbook_wand_flags_and_properties(obj);
+    boolean has_conferred_powers = FALSE;
+    boolean has_extra_damage = FALSE;
     double wep_avg_dmg = 0;
     int i;
 
@@ -1680,6 +1682,7 @@ register struct obj* obj;
         if (stats_known
             && ((objects[otyp].oc_wedice > 0 && objects[otyp].oc_wedam > 0) || objects[otyp].oc_wedmgplus != 0))
         {
+            has_extra_damage = TRUE;
 
             /* Damage - Extra */
             maindiceprinted = FALSE;
@@ -1704,7 +1707,7 @@ register struct obj* obj;
             }
 
             char endbuf[BUFSZ] = "";
-            double avgdmg = (double)exceptionality_multiplier * ((double)objects[otyp].oc_wedice * (double)(1 + objects[otyp].oc_wedam) / 2.0 + (double)objects[otyp].oc_wedmgplus);
+            double avgdmg = ((double)objects[otyp].oc_wedice * (double)(1 + objects[otyp].oc_wedam) / 2.0 + (double)objects[otyp].oc_wedmgplus);
             if (*endbuf)
                 Strcat(endbuf, ", ");
             Sprintf(eos(endbuf), "avg %.1f", avgdmg);
@@ -1721,6 +1724,20 @@ register struct obj* obj;
                 if (*endbuf)
                     Strcat(endbuf, ", ");
                 Strcat(endbuf, "confers HP");
+            }
+
+            if (!(objects[otyp].oc_aflags & A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS) && objects[otyp].oc_power_permissions > 0)
+            {
+                if (*endbuf)
+                    Strcat(endbuf, ", ");
+                Strcat(endbuf, "by eligible wielders");
+            }
+
+            if (!(objects[otyp].oc_aflags & A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS) && objects[otyp].oc_target_permissions > 0)
+            {
+                if (*endbuf)
+                    Strcat(endbuf, ", ");
+                Strcat(endbuf, "to eligible targets");
             }
 
             if (*endbuf)
@@ -2205,6 +2222,8 @@ register struct obj* obj;
             || objects[otyp].oc_pflags & P1_CONFERS_UNLUCK
             )
         {
+            has_conferred_powers = TRUE;
+
             Sprintf(buf, "Conferred powers:");
             txt = buf;
             putstr(datawin, ATR_HEADING, txt);
@@ -2669,195 +2688,193 @@ register struct obj* obj;
                 putstr(datawin, 0, txt);
             }
 
-
-
-            /* Power confer limitations */
-            if (objects[otyp].oc_power_permissions)
-            {
-                powercnt = 0;
-
-                Sprintf(buf, "Powers are conferred only to:");
-                txt = buf;
-                putstr(datawin, ATR_HEADING, txt);
-
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHAEOLOGIST)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Archaeologists", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_BARBARIAN)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Barbarians", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_CAVEMAN)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Cavemen and cavewomen", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_HEALER)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Healers", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_KNIGHT)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Knights", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_MONK)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Monks", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Priests and priestesses", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_RANGER)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Rangers", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_ROGUE)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Rogues", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_SAMURAI)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Samurais", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_TOURIST)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Tourists", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_VALKYRIE)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Valkyries", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_WIZARD)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Wizards", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_RACE_DWARF)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Dwarves", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_RACE_ELF)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Elves", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOLL)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Gnolls", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOME)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Gnomes", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_RACE_HUMAN)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Humans", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_RACE_ORC)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Orcs", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_GENDER_FEMALE)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Females", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_GENDER_MALE)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Males", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_CHAOTIC)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Chaotic", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_LAWFUL)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Lawful", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_NEUTRAL)
-                {
-                    powercnt++;
-                    Sprintf(buf, " %2d - Neutral", powercnt);
-                    txt = buf;
-                    putstr(datawin, ATR_INDENT_AT_DASH, txt);
-                }
-                if (powercnt == 0)
-                {
-                    Sprintf(buf, " (None)");
-                    txt = buf;
-                    putstr(datawin, 0, txt);
-                }
-
-            }
         }
 
+        /* Power confer limitations */
+        if (objects[otyp].oc_power_permissions)
+        {
+            int powercnt = 0;
+
+            Sprintf(buf, "%s conferred only to:", has_conferred_powers && has_extra_damage ? "Powers and extra damage are" : has_extra_damage ? "Extra damage is" : "Powers are");
+            txt = buf;
+            putstr(datawin, ATR_HEADING, txt);
+
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHAEOLOGIST)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Archaeologists", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_BARBARIAN)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Barbarians", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_CAVEMAN)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Cavemen and cavewomen", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_HEALER)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Healers", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_KNIGHT)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Knights", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_MONK)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Monks", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Priests and priestesses", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_RANGER)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Rangers", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_ROGUE)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Rogues", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_SAMURAI)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Samurais", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_TOURIST)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Tourists", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_VALKYRIE)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Valkyries", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ROLE_WIZARD)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Wizards", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_RACE_DWARF)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Dwarves", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_RACE_ELF)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Elves", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOLL)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Gnolls", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_RACE_GNOME)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Gnomes", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_RACE_HUMAN)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Humans", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_RACE_ORC)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Orcs", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_GENDER_FEMALE)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Females", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_GENDER_MALE)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Males", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_CHAOTIC)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Chaotic", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_LAWFUL)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Lawful", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (objects[otyp].oc_power_permissions & PERMITTED_ALIGNMENT_NEUTRAL)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Neutral", powercnt);
+                txt = buf;
+                putstr(datawin, ATR_INDENT_AT_DASH, txt);
+            }
+            if (powercnt == 0)
+            {
+                Sprintf(buf, " (None)");
+                txt = buf;
+                putstr(datawin, 0, txt);
+            }
+
+        }
 
         /* Target permissions */
         if (objects[otyp].oc_target_permissions != ALL_TARGETS || (objects[otyp].oc_flags3 & (O3_PERMTTED_TARGET_CHAOTIC | O3_PERMTTED_TARGET_NEUTRAL | O3_PERMTTED_TARGET_LAWFUL)))
