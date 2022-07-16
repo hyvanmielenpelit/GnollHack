@@ -1041,7 +1041,10 @@ register struct obj* obj;
     boolean uses_spell_flags = object_uses_spellbook_wand_flags_and_properties(obj);
     boolean has_conferred_powers = FALSE;
     boolean has_extra_damage = FALSE;
+    boolean has_slaying = FALSE;
     double wep_avg_dmg = 0;
+    double wep_multipliable_avg_dmg = 0; //Multiplied by slaying
+    double wep_all_extra_avg_dmg = 0;
     int i;
 
     char buf[BUFSZ];
@@ -1530,6 +1533,7 @@ register struct obj* obj;
             exceptionality_multiplier += 2;
 
         boolean printmaindmgtype = FALSE;
+        boolean doubledamagetopermittedtargets = FALSE;
 
         /* Damage - Small */
         if((objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0) || objects[otyp].oc_wsdmgplus != 0)
@@ -1566,6 +1570,7 @@ register struct obj* obj;
                 if (*endbuf)
                     Strcat(endbuf, ", ");
                 Strcat(endbuf, "x2");
+                doubledamagetopermittedtargets = TRUE;
             }
             if (objects[otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
             {
@@ -1631,6 +1636,7 @@ register struct obj* obj;
                 if (*endbuf)
                     Strcat(endbuf, ", ");
                 Strcat(endbuf, "x2");
+                doubledamagetopermittedtargets = TRUE;
             }
 
             if(objects[otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
@@ -1659,9 +1665,21 @@ register struct obj* obj;
             putstr(datawin, ATR_INDENT_AT_COLON, txt);
         }
 
-        wep_avg_dmg += 0.5 * ((double)objects[otyp].oc_wsdice * (double)exceptionality_multiplier * (1.0 + (double)objects[otyp].oc_wsdam) / 2.0 + (double)objects[otyp].oc_wsdmgplus * (double)exceptionality_multiplier
+        double base_avg_dmg = 0.5 * ((double)objects[otyp].oc_wsdice * (double)exceptionality_multiplier * (1.0 + (double)objects[otyp].oc_wsdam) / 2.0 + (double)objects[otyp].oc_wsdmgplus * (double)exceptionality_multiplier
             + objects[otyp].oc_wldice * (double)exceptionality_multiplier * (1.0 + (double)objects[otyp].oc_wldam) / 2.0 + (double)objects[otyp].oc_wldmgplus * (double)exceptionality_multiplier);
-        
+        wep_avg_dmg += base_avg_dmg;
+        wep_multipliable_avg_dmg += base_avg_dmg;
+        if (doubledamagetopermittedtargets)
+        {
+            if (objects[otyp].oc_target_permissions)
+                wep_all_extra_avg_dmg += base_avg_dmg;
+            else
+            {
+                wep_avg_dmg += base_avg_dmg;
+                wep_multipliable_avg_dmg += base_avg_dmg;
+            }
+        }
+
         if (wep_avg_dmg < 0)
             wep_avg_dmg = 0;
 
@@ -1726,11 +1744,14 @@ register struct obj* obj;
                 Strcat(endbuf, "confers HP");
             }
 
+            boolean eligiblewielders = FALSE;
+            boolean eligibletargets = FALSE;
             if (!(objects[otyp].oc_aflags & A1_EXTRA_DAMAGE_DISRESPECTS_CHARACTERS) && objects[otyp].oc_power_permissions > 0)
             {
                 if (*endbuf)
                     Strcat(endbuf, ", ");
                 Strcat(endbuf, "by eligible wielders");
+                eligiblewielders = TRUE;
             }
 
             if (!(objects[otyp].oc_aflags & A1_EXTRA_DAMAGE_DISRESPECTS_TARGETS) && objects[otyp].oc_target_permissions > 0)
@@ -1738,6 +1759,7 @@ register struct obj* obj;
                 if (*endbuf)
                     Strcat(endbuf, ", ");
                 Strcat(endbuf, "to eligible targets");
+                eligibletargets = TRUE;
             }
 
             if (*endbuf)
@@ -1748,7 +1770,15 @@ register struct obj* obj;
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
-            wep_avg_dmg += (double)objects[otyp].oc_wedice * (1.0 + (double)objects[otyp].oc_wedam) / 2.0 + (double)objects[otyp].oc_wedmgplus;
+            double extra_avg_dmg = (double)objects[otyp].oc_wedice * (1.0 + (double)objects[otyp].oc_wedam) / 2.0 + (double)objects[otyp].oc_wedmgplus;
+            if (eligiblewielders || eligibletargets)
+                wep_all_extra_avg_dmg += extra_avg_dmg;
+            else
+            {
+                wep_avg_dmg += extra_avg_dmg;
+                wep_multipliable_avg_dmg += extra_avg_dmg;
+            }
+
             if (wep_avg_dmg < 0)
                 wep_avg_dmg = 0;
 
@@ -1768,12 +1798,17 @@ register struct obj* obj;
         }
         else
         {
+            double simple_dmg = 0;
             if (obj->oclass == POTION_CLASS)
-                wep_avg_dmg += 1;
+                simple_dmg += 1;
             else if (otyp == CORPSE)
-                wep_avg_dmg += (obj->corpsenm >= LOW_PM ? mons[obj->corpsenm].msize : 0) + 1;
+                simple_dmg += (obj->corpsenm >= LOW_PM ? mons[obj->corpsenm].msize : 0) + 1;
             else
-                wep_avg_dmg += 0;
+                simple_dmg += 0;
+
+            wep_avg_dmg += simple_dmg;
+            wep_multipliable_avg_dmg += simple_dmg;
+
         }
 
         /* Damage - Silver*/
@@ -1785,6 +1820,7 @@ register struct obj* obj;
             Strcat(buf, plusbuf);
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_COLON, txt);
+            wep_all_extra_avg_dmg += (1.0 + 20.0) / 2.0;
         }
 
         /* Fixed damage bonus */
@@ -1796,20 +1832,26 @@ register struct obj* obj;
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_COLON, txt);
 
-            wep_avg_dmg += (double)objects[otyp].oc_fixed_damage_bonus;
+            double fixed_bonus = (double)objects[otyp].oc_fixed_damage_bonus;
+            wep_avg_dmg += fixed_bonus;
+            wep_multipliable_avg_dmg += fixed_bonus;
             if (wep_avg_dmg < 0)
                 wep_avg_dmg = 0;
         }
         else
         {
+            double dmg_bonus = 0;
             if (is_ammo(obj) && uwep && is_launcher(uwep) && (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
-                wep_avg_dmg += (double)objects[uwep->otyp].oc_fixed_damage_bonus;
+                dmg_bonus += (double)objects[uwep->otyp].oc_fixed_damage_bonus;
             else if (is_ammo(obj) && uswapwep && is_launcher(uswapwep) && (objects[uswapwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
-                wep_avg_dmg += (double)objects[uswapwep->otyp].oc_fixed_damage_bonus;
+                dmg_bonus += (double)objects[uswapwep->otyp].oc_fixed_damage_bonus;
             else if(throwing_weapon(obj) || objects[obj->otyp].oc_skill == P_NONE)
-                wep_avg_dmg += (double)((int)strength_damage_bonus(ACURR(A_STR)) / 2);
+                dmg_bonus += (double)((int)strength_damage_bonus(ACURR(A_STR)) / 2);
             else
-                wep_avg_dmg += (double)strength_damage_bonus(ACURR(A_STR));
+                dmg_bonus += (double)strength_damage_bonus(ACURR(A_STR));
+
+            wep_avg_dmg += dmg_bonus;
+            wep_multipliable_avg_dmg += dmg_bonus;
 
             if (wep_avg_dmg < 0)
                 wep_avg_dmg = 0;
@@ -1829,7 +1871,9 @@ register struct obj* obj;
     else
     {
         /* Otherwise get full melee strength damage bonus */
-        wep_avg_dmg += (double)strength_damage_bonus(ACURR(A_STR));
+        double str_bonus = (double)strength_damage_bonus(ACURR(A_STR));
+        wep_avg_dmg += str_bonus;
+        wep_multipliable_avg_dmg += str_bonus;
     }
 
     int mcadj = objects[otyp].oc_mc_adjustment + (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT) ? obj->enchantment : 0;
@@ -2042,13 +2086,16 @@ register struct obj* obj;
                     int tohitplus = enchplus; // is_launcher(obj) ? (enchplus + 1 * sgn(enchplus)) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
                     int dmgplus = enchplus; //  is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1 * sgn(enchplus)) / 2 : enchplus;
 
-                    wep_avg_dmg += (double)dmgplus;
+                    double ench_bonus = (double)dmgplus;
+                    wep_avg_dmg += ench_bonus;
+                    wep_multipliable_avg_dmg += ench_bonus;
                     if (wep_avg_dmg < 0)
                         wep_avg_dmg = 0;
 
                     if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
                     {
                         enchplus *= 2;
+                        wep_all_extra_avg_dmg += enchplus;
                     }
                     if (tohitplus == dmgplus)
                         Sprintf(bonusbuf, " (%s%d to hit and damage)", tohitplus >= 0 ? "+" : "", tohitplus);
@@ -2114,7 +2161,9 @@ register struct obj* obj;
             {
                 penalty = greatest_erosion(obj);
                 Sprintf(penaltybuf, "(%d to damage) ", -penalty);
-                wep_avg_dmg -= (double)penalty;
+                double erosion_bonus = -1.0 * (double)penalty;
+                wep_avg_dmg += erosion_bonus;
+                wep_multipliable_avg_dmg += erosion_bonus;
                 if (wep_avg_dmg < 0)
                     wep_avg_dmg = 0;
             }
@@ -2161,7 +2210,7 @@ register struct obj* obj;
             obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Death-magical (kills on hit)" : "Unknown enchantment"
         );
 
-        wep_avg_dmg += obj->elemental_enchantment == FIRE_ENCHANTMENT ? 14.0 :
+        wep_all_extra_avg_dmg += obj->elemental_enchantment == FIRE_ENCHANTMENT ? 14.0 :
             obj->elemental_enchantment == COLD_ENCHANTMENT ? 42.0 :
             obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? 21.0 :
             obj->elemental_enchantment == DEATH_ENCHANTMENT ? 0.0 : 0.0;
@@ -2999,6 +3048,8 @@ register struct obj* obj;
                         Sprintf(buf, " %2d - %s", powercnt, mythic_prefix_powers[i].description);
                         txt = buf;
                         putstr(datawin, ATR_INDENT_AT_DASH, txt);
+                        if (mythic_prefix_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING)
+                            has_slaying = TRUE;
                     }
                     if (!mythic_prefix_powers[i].description)
                         break;
@@ -3015,6 +3066,8 @@ register struct obj* obj;
                         Sprintf(buf, " %2d - %s", powercnt, mythic_suffix_powers[i].description);
                         txt = buf;
                         putstr(datawin, ATR_INDENT_AT_DASH, txt);
+                        if (mythic_suffix_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING)
+                            has_slaying = TRUE;
                     }
                     if (!mythic_suffix_powers[i].description)
                         break;
@@ -3316,11 +3369,18 @@ register struct obj* obj;
             else
                 Sprintf(dmgbuf, "Artifact damage bonus is %s", plusbuf);
 
+            double art_avg_dmg = 0;
             if (artilist[obj->oartifact].attk.damn < 0)
-                wep_avg_dmg *= (1.0 - ((double)artilist[obj->oartifact].attk.damn) / 20.0);
+                art_avg_dmg *= (1.0 - ((double)artilist[obj->oartifact].attk.damn) / 20.0);
             else
-                wep_avg_dmg += (double)artilist[obj->oartifact].attk.damn * (1.0 + (double)artilist[obj->oartifact].attk.damd) / 2.0 + (double)artilist[obj->oartifact].attk.damp;
-            
+                art_avg_dmg += (double)artilist[obj->oartifact].attk.damn * (1.0 + (double)artilist[obj->oartifact].attk.damd) / 2.0 + (double)artilist[obj->oartifact].attk.damp;
+
+            if (artilist[obj->oartifact].aflags & (AF_DMONS | AF_DCLAS | AF_DFLAG1 | AF_DFLAG2))
+                wep_all_extra_avg_dmg += art_avg_dmg;
+            else
+            {
+                wep_avg_dmg += art_avg_dmg;
+            }
             if (wep_avg_dmg < 0)
                 wep_avg_dmg = 0;
 
@@ -3487,17 +3547,16 @@ register struct obj* obj;
         {
             powercnt++;
             Sprintf(buf, " %2d - Prevents revival of %s", powercnt,
-                ((aflags & AF_DFLAG2) && mtype & M2_ORC) ? "orcs" : 
-                ((aflags & AF_DFLAG2) && mtype & M2_ELF) ? "elves" :
-                ((aflags & AF_DFLAG2) && mtype & M2_DEMON) ? "demons" :
-                ((aflags & AF_DFLAG2) && mtype & M2_ANGEL) ? "angels" :
-                ((aflags & AF_DFLAG2) && mtype & M2_UNDEAD) ? "undead" :
-                ((aflags & AF_DFLAG2) && mtype & M2_GIANT) ? "giants" :
-                ((aflags & AF_DFLAG2) && mtype & M2_WERE) ? "lycanthropes" :
-                ((aflags & AF_DCLAS) && mtype == S_TROLL) ? "trolls" :
-                ((aflags & AF_DCLAS) && mtype == S_OGRE) ? "ogres" :
-                ((aflags & AF_DCLAS) && mtype == S_DRAGON) ? "dragons" :
-                "a specific type of monsters");
+                ((aflags & AF_DFLAG2) && (mtype & M2_ORC)) ? "orcs" : 
+                ((aflags & AF_DFLAG2) && (mtype & M2_ELF)) ? "elves" :
+                ((aflags & AF_DFLAG2) && (mtype & M2_DEMON)) ? "demons" :
+                ((aflags & AF_DFLAG2) && (mtype & M2_ANGEL)) ? "angels" :
+                ((aflags & AF_DFLAG2) && (mtype & M2_UNDEAD)) ? "undead" :
+                ((aflags & AF_DFLAG2) && (mtype & M2_GIANT)) ? "giants" :
+                ((aflags & AF_DFLAG2) && (mtype & M2_WERE)) ? "lycanthropes" :
+                ((aflags & AF_DCLAS) && mtype < MAX_MONSTER_CLASSES) ? def_monsyms[mtype].name :
+                ((aflags & AF_DMONS) && mtype < NUM_MONSTERS) ? pm_plural_name(&mons[mtype], 1) :
+                "an unknown type of monsters");
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
@@ -3505,17 +3564,16 @@ register struct obj* obj;
         {
             powercnt++;
             Sprintf(buf, " %2d - Prevents summoning by %s", powercnt,
-                ((aflags & AF_DFLAG2) && mtype & M2_ORC) ? "orcs" :
-                ((aflags & AF_DFLAG2) && mtype & M2_ELF) ? "elves" :
-                ((aflags & AF_DFLAG2) && mtype & M2_DEMON) ? "demons" :
-                ((aflags & AF_DFLAG2) && mtype & M2_ANGEL) ? "angels" :
-                ((aflags & AF_DFLAG2) && mtype & M2_UNDEAD) ? "undead" :
-                ((aflags & AF_DFLAG2) && mtype & M2_GIANT) ? "giants" :
-                ((aflags & AF_DFLAG2) && mtype & M2_WERE) ? "lycanthropes" :
-                ((aflags & AF_DCLAS) && mtype == S_TROLL) ? "trolls" :
-                ((aflags & AF_DCLAS) && mtype == S_OGRE) ? "ogres" :
-                ((aflags & AF_DCLAS) && mtype == S_DRAGON) ? "dragons" :
-                "a specific type of monsters");
+                ((aflags & AF_DFLAG2) && (mtype & M2_ORC)) ? "orcs" :
+                ((aflags & AF_DFLAG2) && (mtype & M2_ELF)) ? "elves" :
+                ((aflags & AF_DFLAG2) && (mtype & M2_DEMON)) ? "demons" :
+                ((aflags & AF_DFLAG2) && (mtype & M2_ANGEL)) ? "angels" :
+                ((aflags & AF_DFLAG2) && (mtype & M2_UNDEAD)) ? "undead" :
+                ((aflags & AF_DFLAG2) && (mtype & M2_GIANT)) ? "giants" :
+                ((aflags & AF_DFLAG2) && (mtype & M2_WERE)) ? "lycanthropes" :
+                ((aflags & AF_DCLAS) && mtype < MAX_MONSTER_CLASSES) ? def_monsyms[mtype].name :
+                ((aflags & AF_DMONS) && mtype < NUM_MONSTERS) ? pm_plural_name(&mons[mtype], 1) :
+                "an unknown type of monsters");
             txt = buf;
             putstr(datawin, ATR_INDENT_AT_DASH, txt);
         }
@@ -3724,7 +3782,7 @@ register struct obj* obj;
             char endbuf[BUFSIZ] = "";
             if ((artilist[obj->oartifact].aflags & AF_DMONS) && artilist[obj->oartifact].mtype < NUM_MONSTERS)
             {
-                strcpy(endbuf, pm_common_name(&mons[artilist[obj->oartifact].mtype]));
+                strcpy(endbuf, pm_plural_name(&mons[artilist[obj->oartifact].mtype], 1));
             }
             else if (artilist[obj->oartifact].aflags & (AF_DFLAG1 | AF_DFLAG2))
             {
@@ -3936,7 +3994,9 @@ register struct obj* obj;
                     }
 
                     roll_to_hit += u.uarcherybonus;
-                    wep_avg_dmg += (double)u.uarcherybonus;
+                    double archery_avg_dmg = (double)u.uarcherybonus;
+                    wep_avg_dmg += archery_avg_dmg;
+                    wep_multipliable_avg_dmg += archery_avg_dmg;
                     if (wep_avg_dmg < 0)
                         wep_avg_dmg = 0;
                 }
@@ -3994,16 +4054,30 @@ register struct obj* obj;
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
-        wep_avg_dmg += (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, 0);
+        double skill_dmg_bonus = (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, 0);
+        wep_avg_dmg += skill_dmg_bonus;
+        wep_multipliable_avg_dmg += skill_dmg_bonus;
         if (wep_avg_dmg < 0)
             wep_avg_dmg = 0;
+
         wep_avg_dmg *= average_multi_shot_times;
+        wep_multipliable_avg_dmg *= average_multi_shot_times;
+
+        if (has_slaying)
+            wep_all_extra_avg_dmg += wep_multipliable_avg_dmg * 2;
 
         powercnt++;
         Sprintf(buf, " %2d - Your basic average damage is %.1f per round", powercnt, wep_avg_dmg);
         txt = buf;
         putstr(datawin, ATR_INDENT_AT_DASH, txt);
 
+        if (wep_all_extra_avg_dmg != 0)
+        {
+            powercnt++;
+            Sprintf(buf, " %2d - Your average damage with extras is %.1f per round", powercnt, wep_avg_dmg + wep_all_extra_avg_dmg);
+            txt = buf;
+            putstr(datawin, ATR_INDENT_AT_DASH, txt);
+        }
     }
 
     /* Hints */
